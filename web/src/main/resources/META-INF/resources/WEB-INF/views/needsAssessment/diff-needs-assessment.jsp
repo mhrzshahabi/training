@@ -22,8 +22,8 @@
     var competenceTopData = [];
     var competenceBottomData = [];
 
-    let NeedsAssessmentTargetDS_needsAssessment = isc.TrDS.create({
-        ID: "NeedsAssessmentTargetDS_needsAssessment",
+    let NeedsAssessmentTargetDS_DiffNeedsAssessment = isc.TrDS.create({
+        ID: "NeedsAssessmentTargetDS_DiffNeedsAssessment",
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "title", title: "<spring:message code="title"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
@@ -32,7 +32,7 @@
         fetchDataURL: parameterValueUrl + "/iscList/103",
 
     });
-    let JobDs_needsAssessment = isc.TrDS.create({
+    let JobDs_diffNeedsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -40,7 +40,7 @@
         ],
         fetchDataURL: jobUrl + "/spec-list"
     });
-    let JobGroupDs_needsAssessment = isc.TrDS.create({
+    let JobGroupDs_diffNeedsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
@@ -48,7 +48,7 @@
         ],
         fetchDataURL: jobGroupUrl + "iscList"
     });
-    let PostDs_needsAssessment = isc.TrDS.create({
+    let PostDs_diffNeedsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -65,7 +65,7 @@
         ],
         fetchDataURL: postUrl + "/spec-list"
     });
-    let PostGroupDs_needsAssessment = isc.TrDS.create({
+    let PostGroupDs_diffNeedsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
@@ -73,7 +73,7 @@
         ],
         fetchDataURL: postGroupUrl + "/spec-list"
     });
-    let PostGradeDs_needsAssessment = isc.TrDS.create({
+    let PostGradeDs_diffNeedsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -81,7 +81,7 @@
         ],
         fetchDataURL: postGradeUrl + "/spec-list"
     });
-    let PostGradeGroupDs_needsAssessment = isc.TrDS.create({
+    let PostGradeGroupDs_diffNeedsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "<spring:message code='title'/>", filterOperator: "iContains"},
@@ -148,15 +148,15 @@
         fetchDataURL: skillUrl + "/WFC/spec-list"
 
     });
-    var RestDataSource_category_JspCourse = isc.TrDS.create({
-        ID: "categoryDS",
+    var RestDataSource_category_JspDiff = isc.TrDS.create({
+        ID: "categoryDS_Diff",
         fields: [
             {name: "id", primaryKey: true},
             {name: "titleFa", type: "text"}
         ],
         fetchDataURL: categoryUrl + "spec-list",
     });
-    var RestDataSource_subCategory_JspCourse = isc.TrDS.create({
+    var RestDataSource_subCategory_JspDiff = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "titleFa", type: "text"}
@@ -266,8 +266,8 @@
         clientOnly: true,
     });
 
-    let CompetenceTS_needsAssessment = isc.ToolStrip.create({
-        ID: "CompetenceTS_needsAssessment",
+    let CompetenceTS_diffNeedsAssessment = isc.ToolStrip.create({
+        ID: "CompetenceTS_diffNeedsAssessment",
         members: [
             // isc.ToolStripButtonRefresh.create({
             //     click: function () { refreshLG(ListGridTop_Competence_JspDiffNeedsAssessment); }
@@ -287,7 +287,7 @@
             }),
             // isc.ToolStripButtonCreate.create({click: function () { createCompetence_competence(); }}),
             isc.LayoutSpacer.create({width: "*"}),
-            isc.Label.create({ID: "CompetenceLGCount_needsAssessment"}),
+            isc.Label.create({ID: "CompetenceLGCount_diffNeedsAssessment"}),
         ]
     });
 
@@ -348,7 +348,7 @@
                             {
                                 name: "course.categoryId",
                                 title: "<spring:message code="category"/> <spring:message code="course"/>",
-                                optionDataSource: RestDataSource_category_JspCourse,
+                                optionDataSource: RestDataSource_category_JspDiff,
                                 filterOnKeypress: true,
                                 valueField: "id",
                                 displayField: "titleFa",
@@ -357,7 +357,7 @@
                             {
                                 name: "course.subCategoryId",
                                 title: "<spring:message code="subcategory"/> <spring:message code="course"/>",
-                                optionDataSource: RestDataSource_subCategory_JspCourse,
+                                optionDataSource: RestDataSource_subCategory_JspDiff,
                                 filterOnKeypress: true,
                                 valueField: "id",
                                 displayField: "titleFa",
@@ -389,7 +389,11 @@
         title:"جزئیات دوره",
         margin: 1,
         click(){
-           if(ListGridTop_Knowledge_JspDiffNeedsAssessment.getSelectedRecord()||ListGridTop_Ability_JspDiffNeedsAssessment.getSelectedRecord()||ListGridTop_Attitude_JspDiffNeedsAssessment.getSelectedRecord()||ListGrid_SkillAll_JspDiffNeedsAssessment.getSelectedRecord()){
+           if(ListGridTop_Knowledge_JspDiffNeedsAssessment.getSelectedRecord()||ListGridTop_Ability_JspDiffNeedsAssessment.getSelectedRecord()
+               ||ListGridTop_Attitude_JspDiffNeedsAssessment.getSelectedRecord()||ListGrid_SkillAll_JspDiffNeedsAssessment.getSelectedRecord()
+               ||ListGridBottom_Knowledge_JspDiffNeedsAssessment.getSelectedRecord()||ListGridBottom_Ability_JspDiffNeedsAssessment.getSelectedRecord()
+               ||ListGridBottom_Attitude_JspDiffNeedsAssessment.getSelectedRecord()||ListGrid_SkillAll_JspDiffNeedsAssessment.getSelectedRecord()
+           ){
                let skillIds = [];
                if(ListGridTop_Knowledge_JspDiffNeedsAssessment.getSelectedRecord()!= undefined && ListGridTop_Knowledge_JspDiffNeedsAssessment.getSelectedRecord().course != undefined) {
                    skillIds.push(ListGridTop_Knowledge_JspDiffNeedsAssessment.getSelectedRecord().skillId);
@@ -399,6 +403,16 @@
                }
                if(ListGridTop_Attitude_JspDiffNeedsAssessment.getSelectedRecord()!= undefined && ListGridTop_Attitude_JspDiffNeedsAssessment.getSelectedRecord().course!= undefined) {
                    skillIds.push(ListGridTop_Attitude_JspDiffNeedsAssessment.getSelectedRecord().skillId);
+               }
+
+               if(ListGridBottom_Knowledge_JspDiffNeedsAssessment.getSelectedRecord()!= undefined && ListGridBottom_Knowledge_JspDiffNeedsAssessment.getSelectedRecord().course != undefined) {
+                   skillIds.push(ListGridBottom_Knowledge_JspDiffNeedsAssessment.getSelectedRecord().skillId);
+               }
+               if(ListGridBottom_Ability_JspDiffNeedsAssessment.getSelectedRecord()!= undefined && ListGridBottom_Ability_JspDiffNeedsAssessment.getSelectedRecord().course!= undefined) {
+                   skillIds.push(ListGridBottom_Ability_JspDiffNeedsAssessment.getSelectedRecord().skillId);
+               }
+               if(ListGridBottom_Attitude_JspDiffNeedsAssessment.getSelectedRecord()!= undefined && ListGridBottom_Attitude_JspDiffNeedsAssessment.getSelectedRecord().course!= undefined) {
+                   skillIds.push(ListGridBottom_Attitude_JspDiffNeedsAssessment.getSelectedRecord().skillId);
                }
                if(ListGrid_SkillAll_JspDiffNeedsAssessment.getSelectedRecord()!= undefined && ListGrid_SkillAll_JspDiffNeedsAssessment.getSelectedRecord().course!= undefined) {
                    skillIds.push(ListGrid_SkillAll_JspDiffNeedsAssessment.getSelectedRecord().id);
@@ -419,18 +433,18 @@
            }
         }
     });
-    var Button_CancelChange_JspDiffNeedsAssessment = isc.Button.create({
-        title:"لغو تغییرات",
-        margin: 1,
-        click(){
-
-        }
-    });
+    // var Button_CancelChange_JspDiffNeedsAssessment = isc.Button.create({
+    //     title:"لغو تغییرات",
+    //     margin: 1,
+    //     click(){
+    //
+    //     }
+    // });
     var Button_AddSkill_JspDiffNeedsAssessment = isc.Button.create({
         title:"مهارت ها",
         margin: 1,
         click(){
-            Window_AddSkill.show();
+            Window_AddSkill_Diff.show();
         }
     });
 
@@ -452,7 +466,7 @@
         // selectionUpdated: "ListGridTop_Competence_JspDiffNeedsAssessment.setData(this.getSelection())"
         selectionChanged(record, state) {
             if (state == true) {
-                if (checkSaveData(record, DataSource_Competence_Top_JspDiffNeedsAssessment, "id")) {
+                if (checkSaveData_Diff(record, DataSource_Competence_Top_JspDiffNeedsAssessment, "id")) {
                     ListGridTop_Competence_JspDiffNeedsAssessment.transferSelectedData(this);
                     return;
                 }
@@ -518,7 +532,7 @@
         fields: [{name: "title", title: "<spring:message code="title"/>"}, {name: "competenceType.title", title: "<spring:message code="type"/>"},],
         gridComponents: [
             isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="competence.list"/>" + "</b></span>", customEdges: ["B"]}),
-            CompetenceTS_needsAssessment, "header", "body"
+            CompetenceTS_diffNeedsAssessment, "header", "body"
         ],
         canRemoveRecords:true,
         canDragRecordsOut: true,
@@ -610,7 +624,7 @@
             if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {
                 if (sourceWidget.ID === 'ListGrid_SkillAll_JspDiffNeedsAssessment') {
                     for (let i = 0; i < dropRecords.length; i++) {
-                        createNeedsAssessmentRecords(createData_JspDiffNeedsAssessment(dropRecords[i], 108));
+                        createNeedsAssessmentRecords_Diff(createData_JspDiffNeedsAssessment(dropRecords[i], 108));
                         // fetchDataDomainsTopGrid();
                         // this.fetchData();
                     }
@@ -685,9 +699,9 @@
             if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {
                 if (sourceWidget.ID === 'ListGrid_SkillAll_JspDiffNeedsAssessment') {
                     for (let i = 0; i < dropRecords.length; i++) {
-                        createNeedsAssessmentRecords(createData_JspDiffNeedsAssessment(dropRecords[i], 109));
+                        createNeedsAssessmentRecords_Diff(createData_JspDiffNeedsAssessment(dropRecords[i], 109));
                         // DataSource_Skill_Top_JspDiffNeedsAssessment.addData(data);
-                        // createNeedsAssessmentRecords(data);
+                        // createNeedsAssessmentRecords_Diff(data);
                         // this.fetchData();
                         // fetchDataDomainsTopGrid();
                     }
@@ -762,9 +776,9 @@
             if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {
                 if (sourceWidget.ID === 'ListGrid_SkillAll_JspDiffNeedsAssessment') {
                     for (let i = 0; i < dropRecords.length; i++) {
-                        createNeedsAssessmentRecords(createData_JspDiffNeedsAssessment(dropRecords[i], 110));
+                        createNeedsAssessmentRecords_Diff(createData_JspDiffNeedsAssessment(dropRecords[i], 110));
                         // DataSource_Skill_Top_JspDiffNeedsAssessment.addData(data);
-                        // createNeedsAssessmentRecords(data);
+                        // createNeedsAssessmentRecords_Diff(data);
                         // this.fetchData();
                         // fetchDataDomainsTopGrid()
                     }
@@ -993,7 +1007,7 @@
                 ]
             })]
     });
-    var Window_AddSkill = isc.Window.create({
+    var Window_AddSkill_Diff = isc.Window.create({
         title: "<spring:message code="skill.plural.list"/>",
         width: "60%",
         height: "40%",
@@ -1002,10 +1016,10 @@
         // isModal: true,
         left:"1%", top:"60%",
         autoSize: false,
-        modalMask: Window_AddSkill,
-        topElement: Window_NeedsAssessment_Edit,
+        modalMask: Window_AddSkill_Diff,
+        topElement: Window_NeedsAssessment_Diff,
         showModalMask: true,
-        // opacity: 90,
+        opacity: 90,
         items: [
             isc.TrHLayout.create({
                 members: [
@@ -1023,7 +1037,7 @@
             {
                 name: "objectType",
                 showTitle: false,
-                optionDataSource: NeedsAssessmentTargetDS_needsAssessment,
+                optionDataSource: NeedsAssessmentTargetDS_DiffNeedsAssessment,
                 valueField: "code",
                 displayField: "title",
                 defaultValue: "Job",
@@ -1032,8 +1046,8 @@
                 defaultToFirstOption: true,
                 changed: function (form, item, value, oldValue) {
                     if(value !== oldValue) {
-                        updateObjectIdLG(form, value);
-                        clearAllGrid();
+                        updateObjectIdLG_Diff(form, value);
+                        clearAllGrid_Diff();
                         form.getItem("objectId").clearValue();
                         Label_PlusData_JspDiffNeedsAssessment.setContents("");
                         // refreshPersonnelLG();
@@ -1043,7 +1057,7 @@
             {
                 name: "objectId",
                 showTitle: false,
-                optionDataSource: JobDs_needsAssessment,
+                optionDataSource: JobDs_diffNeedsAssessment,
                 // editorType: "SelectItem",
                 valueField: "id",
                 displayField: "titleFa",
@@ -1054,7 +1068,7 @@
                 ],
                 click: function(form, item){
                     item.fetchData();
-                    // updateObjectIdLG(form, form.getValue("objectType"));
+                    // updateObjectIdLG_Diff(form, form.getValue("objectType"));
                     // if(form.getValue("objectType") === "Post"){
                         // PostDs_needsAssessment.fetchDataURL = postUrl + "/spec-list";
                         // Window_AddPost_JspDiffNeedsAssessment.show();
@@ -1062,7 +1076,7 @@
                 },
                 changed: function (form, item, value, oldValue) {
                     if(value !== oldValue){
-                        editNeedsAssessmentRecord(NeedsAssessmentTargetDF_diffNeedsAssessment.getValue("objectId"), NeedsAssessmentTargetDF_diffNeedsAssessment.getValue("objectType"));
+                        editNeedsAssessmentRecord_Diff(NeedsAssessmentTargetDF_diffNeedsAssessment.getValue("objectId"), NeedsAssessmentTargetDF_diffNeedsAssessment.getValue("objectType"));
                         // refreshPersonnelLG();
                         updateLabelDiffNeedsAssessment(item.getSelectedRecord());
                     }
@@ -1076,7 +1090,7 @@
         padding:2,
         members: [
             Button_CourseDetail_JspDiffNeedsAssessment,
-            Button_CancelChange_JspDiffNeedsAssessment,
+            // Button_CancelChange_JspDiffNeedsAssessment,
             Button_AddSkill_JspDiffNeedsAssessment,
             Label_PlusData_JspDiffNeedsAssessment,
         ],
@@ -1122,42 +1136,42 @@
         members: [HLayout_Label_PlusData_JspDiffNeedsAssessment, HLayout_Bottom],
     });
 
-    function updateObjectIdLG(form, value) {
+    function updateObjectIdLG_Diff(form, value) {
         // form.getItem("objectId").canEdit = true;
         switch (value) {
             case 'Job':
-                form.getItem("objectId").optionDataSource = JobDs_needsAssessment;
+                form.getItem("objectId").optionDataSource = JobDs_diffNeedsAssessment;
                 form.getItem("objectId").pickListFields = [
                     {name: "code", title: "<spring:message code="code"/>", autoFitWidth: false},
                     {name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false }
                 ];
                 break;
             case 'JobGroup':
-                form.getItem("objectId").optionDataSource = JobGroupDs_needsAssessment;
+                form.getItem("objectId").optionDataSource = JobGroupDs_diffNeedsAssessment;
                 form.getItem("objectId").pickListFields = [{name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}, {name: "code", title: "<spring:message code="code"/>", autoFitWidth: false}];
                 break;
             case 'Post':
-                form.getItem("objectId").optionDataSource = PostDs_needsAssessment;
+                form.getItem("objectId").optionDataSource = PostDs_diffNeedsAssessment;
                 form.getItem("objectId").pickListFields = [
                     {name: "code", keyPressFilter: false}, {name: "titleFa"}, {name: "job.titleFa"}, {name: "postGrade.titleFa"}, {name: "area"}, {name: "assistance"}, {name: "affairs"},
                     {name: "section"}, {name: "unit"}, {name: "costCenterCode"}, {name: "costCenterTitleFa"}
                 ];
                 // form.getItem("objectId").canEdit = false;
-                // PostDs_needsAssessment.fetchDataURL = postUrl + "/spec-list";
+                // PostDs_diffNeedsAssessment.fetchDataURL = postUrl + "/spec-list";
                 break;
             case 'PostGroup':
-                form.getItem("objectId").optionDataSource = PostGroupDs_needsAssessment;
+                form.getItem("objectId").optionDataSource = PostGroupDs_diffNeedsAssessment;
                 form.getItem("objectId").pickListFields = [{name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}, {name: "code", title: "<spring:message code="code"/>", autoFitWidth: false}];
                 break;
             case 'PostGrade':
-                form.getItem("objectId").optionDataSource = PostGradeDs_needsAssessment;
+                form.getItem("objectId").optionDataSource = PostGradeDs_diffNeedsAssessment;
                 form.getItem("objectId").pickListFields = [
                     {name: "code", title: "<spring:message code="code"/>", autoFitWidth: false},
                     {name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}
                 ];
                 break;
             case 'PostGradeGroup':
-                form.getItem("objectId").optionDataSource = PostGradeGroupDs_needsAssessment;
+                form.getItem("objectId").optionDataSource = PostGradeGroupDs_diffNeedsAssessment;
                 form.getItem("objectId").pickListFields = [
                     {name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false},
                     {name: "code", title: "<spring:message code="code"/>", autoFitWidth: false}
@@ -1165,8 +1179,9 @@
                 break;
         }
     }
-    function clearAllGrid() {
+    function clearAllGrid_Diff() {
         competenceTopData.length = 0;
+        competenceBottomData.length = 0;
         skillTopData.length = 0;
         skillBottomData.length = 0;
         ListGridTop_Competence_JspDiffNeedsAssessment.setData([]);
@@ -1178,7 +1193,7 @@
         ListGridBottom_Attitude_JspDiffNeedsAssessment.setData([]);
         ListGridBottom_Ability_JspDiffNeedsAssessment.setData([]);
     }
-    function checkSaveData(data, dataSource, field = "skillId", objectType = null) {
+    function checkSaveData_Diff(data, dataSource, field = "skillId", objectType = null) {
         if(!objectType) {
             if(dataSource.testData.find(f => f[field] === data[field]) != null) {
                 return false;
@@ -1220,7 +1235,7 @@
     }
     function removeRecord_JspDiffNeedsAssessment(record, state=0) {
         if(record.objectType === NeedsAssessmentTargetDF_diffNeedsAssessment.getValue("objectType")){
-            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "DELETE", null, function (resp) {
+            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/workflow/" + record.id, "DELETE", null, function (resp) {
                 if (resp.httpResponseCode !== 200) {
                     createDialog("info","خطا در حذف مهارت");
                     return 0;
@@ -1237,16 +1252,15 @@
         }
     }
 
-    function editNeedsAssessmentRecord(objectId, objectType) {
+    function editNeedsAssessmentRecord_Diff(objectId, objectType) {
         // let criteria = [
         //     '{"fieldName":"objectType","operator":"equals","value":"'+objectType+'"}',
         //     '{"fieldName":"objectId","operator":"equals","value":'+objectId+'}'
         // ];
-        updateObjectIdLG(NeedsAssessmentTargetDF_diffNeedsAssessment, objectType);
-        clearAllGrid();
+        updateObjectIdLG_Diff(NeedsAssessmentTargetDF_diffNeedsAssessment, objectType);
+        clearAllGrid_Diff();
         let wait = createDialog("wait");
         isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/editList/" + objectType + "/" + objectId, "GET", null, function(resp){
-            wait.close();
             if (resp.httpResponseCode !== 200){
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                 return;
@@ -1272,7 +1286,6 @@
                 else {
                     skill.course = data[i].skill.course;
                 }
-                DataSource_Skill_Top_JspDiffNeedsAssessment.addData(skill);
                 DataSource_Skill_Bottom_JspDiffNeedsAssessment.addData(skill);
                 if(flags[data[i].competenceId]) continue;
                 flags[data[i].competenceId] = true;
@@ -1280,28 +1293,66 @@
                 competence.id = data[i].competenceId;
                 competence.title = data[i].competence.title;
                 competence.competenceType = data[i].competence.competenceType;
-                DataSource_Competence_Top_JspDiffNeedsAssessment.addData(competence, ()=>{ListGridTop_Competence_JspDiffNeedsAssessment.selectRecord(0)});
                 DataSource_Competence_Bottom_JspDiffNeedsAssessment.addData(competence, ()=>{ListGridBottom_Competence_JspDiffNeedsAssessment.selectRecord(0)});
             }
-            ListGridTop_Competence_JspDiffNeedsAssessment.fetchData();
-            ListGridTop_Competence_JspDiffNeedsAssessment.emptyMessage = "<spring:message code="msg.no.records.for.show"/>";
             ListGridBottom_Competence_JspDiffNeedsAssessment.fetchData();
             ListGridBottom_Competence_JspDiffNeedsAssessment.emptyMessage = "<spring:message code="msg.no.records.for.show"/>";
             NeedsAssessmentTargetDF_diffNeedsAssessment.setValue("objectId", objectId);
             NeedsAssessmentTargetDF_diffNeedsAssessment.setValue("objectType", objectType);
-            fetchDataDomainsTopGrid();
             fetchDataDomainsBottomGrid();
+            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/workflowList/" + objectType + "/" + objectId, "GET", null, (resp)=>{
+                wait.close();
+                if (resp.httpResponseCode !== 200){
+                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                    return;
+                }
+                let data = JSON.parse(resp.data).list;
+                let flags  = [];
+                for (let i = 0; i < data.length; i++) {
+                    let skill = {};
+                    let competence = {};
+                    skill.id = data[i].id;
+                    skill.titleFa = data[i].skill.titleFa;
+                    skill.needsAssessmentPriorityId = data[i].needsAssessmentPriorityId;
+                    skill.needsAssessmentDomainId = data[i].needsAssessmentDomainId;
+                    skill.skillId = data[i].skillId;
+                    skill.competenceId = data[i].competenceId;
+                    skill.objectId = data[i].objectId;
+                    skill.objectType = data[i].objectType;
+                    skill.objectName = data[i].objectName;
+                    skill.objectCode = data[i].objectCode;
+                    if(data[i].skill.course === undefined){
+                        skill.hasWarning = "alarm";
+                    }
+                    else {
+                        skill.course = data[i].skill.course;
+                    }
+                    DataSource_Skill_Top_JspDiffNeedsAssessment.addData(skill);
+                    if(flags[data[i].competenceId]) continue;
+                    flags[data[i].competenceId] = true;
+                    // outPut.push(data[i].competenceId);
+                    competence.id = data[i].competenceId;
+                    competence.title = data[i].competence.title;
+                    competence.competenceType = data[i].competence.competenceType;
+                    DataSource_Competence_Top_JspDiffNeedsAssessment.addData(competence, ()=>{ListGridBottom_Competence_JspDiffNeedsAssessment.selectRecord(0)});
+                }
+                ListGridTop_Competence_JspDiffNeedsAssessment.fetchData();
+                ListGridTop_Competence_JspDiffNeedsAssessment.emptyMessage = "<spring:message code="msg.no.records.for.show"/>";
+                // NeedsAssessmentTargetDF_diffNeedsAssessment.setValue("objectId", objectId);
+                // NeedsAssessmentTargetDF_diffNeedsAssessment.setValue("objectType", objectType);
+                fetchDataDomainsTopGrid();
+            }))
         }))
     }
-    function createNeedsAssessmentRecords(data) {
+    function createNeedsAssessmentRecords_Diff(data) {
         if(data === null){
             return;
         }
-        if(!checkSaveData(data, DataSource_Skill_Top_JspDiffNeedsAssessment)){
+        if(!checkSaveData_Diff(data, DataSource_Skill_Top_JspDiffNeedsAssessment)){
             createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
             return;
         }
-        isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl, "POST", JSON.stringify(data),function(resp){
+        isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/workflow", "POST", JSON.stringify(data),function(resp){
             if (resp.httpResponseCode != 200){
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                 return;
@@ -1377,7 +1428,7 @@
                     record.needsAssessmentPriorityId = 111;
                     break;
             }
-            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "PUT", JSON.stringify(record), function (resp) {
+            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/workflow/" + record.id, "PUT", JSON.stringify(record), function (resp) {
                 if (resp.httpResponseCode !== 200) {
                     createDialog("info", "<spring:message code='error'/>");
                     return;
@@ -1406,17 +1457,17 @@
         if(state === "read"){
             NeedsAssessmentTargetDF_diffNeedsAssessment.disable()
         }
-        updateObjectIdLG(NeedsAssessmentTargetDF_diffNeedsAssessment, type);
+        updateObjectIdLG_Diff(NeedsAssessmentTargetDF_diffNeedsAssessment, type);
         NeedsAssessmentTargetDF_diffNeedsAssessment.setValue("objectType", type);
         NeedsAssessmentTargetDF_diffNeedsAssessment.setValue("objectId", objectId.id);
-        clearAllGrid();
-        editNeedsAssessmentRecord(objectId.id, type);
+        clearAllGrid_Diff();
+        editNeedsAssessmentRecord_Diff(objectId.id, type);
         // refreshPersonnelLG(objectId);
         updateLabelDiffNeedsAssessment(objectId);
     }
-    Window_NeedsAssessment_Edit.addProperties({
+    Window_NeedsAssessment_Diff.addProperties({
         hide(){
-            Window_AddSkill.close()
+            Window_AddSkill_Diff.close()
             this.Super("hide", arguments);
         }
     })

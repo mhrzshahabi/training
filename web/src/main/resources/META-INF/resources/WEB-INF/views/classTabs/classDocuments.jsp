@@ -20,10 +20,21 @@
         fetchDataURL: parameterValueUrl  + "/iscList/339"
     });
 
+    var RestDataSource_Document_JspClassDocuments = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "classId"},
+            {name: "letterNum"},
+            {name: "letterTypeId"},
+            {name: "referenceId"}
+        ]
+    });
+
     DynamicForm_JspClassDocuments = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
         fields: [
+            {name: "id", hidden: true},
             {
                 name: "referenceId",
                 title: "فیلد مرجع",
@@ -76,35 +87,35 @@
             if (!DynamicForm_JspClassDocuments.validate()) {
                 return;
             }
-            if (methodAttachment === "POST") {
-                if (!isAttachedAttachment || document.getElementById('file_JspClassDocuments').files.length === 0) {
+            if (methodClassDocument === "POST") {
+                if (!isAttachedClassDocument || document.getElementById('file_JspClassDocuments').files.length === 0) {
                     createDialog("info", "<spring:message code='file.not.uploaded'/>");
                     return;
                 }
-                if (document.getElementById('file_JspClassDocuments').files[0].size > maxFileSizeAttachment) {
+                if (document.getElementById('file_JspClassDocuments').files[0].size > maxFileSizeClassDocument) {
                     createDialog("info", "<spring:message code='file.size.hint'/>");
                     return;
                 }
-                attachmentWait = createDialog("wait");
+                classDocumentWait = createDialog("wait");
                 let formData1 = new FormData();
                 let file = document.getElementById('file_JspClassDocuments').files[0];
                 let fileName = DynamicForm_JspClassDocuments.getValue("fileName");
                 if (file.name.split('.').length > 1)
                     fileName += "." + file.name.split('.')[1];
                 formData1.append("file", file);
-                formData1.append("objectType", objectTypeAttachment);
-                formData1.append("objectId", objectIdAttachment);
+                formData1.append("objectType", objectTypeClassDocument);
+                formData1.append("objectId", objectIdClassDocument);
                 formData1.append("fileName", fileName);
                 formData1.append("fileTypeId", DynamicForm_JspClassDocuments.getValue("fileTypeId"));
                 formData1.append("description", DynamicForm_JspClassDocuments.getValue("description"));
-                TrnXmlHttpRequest(formData1, saveActionUrlAttachment, methodAttachment, save_result_Attachments);
-            } else if (methodAttachment === "PUT") {
-                attachmentWait = createDialog("wait");
+                TrnXmlHttpRequest(formData1, saveActionUrlClassDocument, methodClassDocument, save_result_ClassDocuments);
+            } else if (methodClassDocument === "PUT") {
+                classDocumentWait = createDialog("wait");
                 let data = DynamicForm_JspClassDocuments.getValues();
                 if (ListGrid_JspClassDocuments.getSelectedRecord().fileName.split('.').length > 1)
                     data.fileName += "." + ListGrid_JspClassDocuments.getSelectedRecord().fileName.split('.')[1];
-                isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlAttachment,
-                    methodAttachment, JSON.stringify(data), save_result_Attachments));
+                isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlClassDocument,
+                    methodClassDocument, JSON.stringify(data), save_result_ClassDocuments));
             }
         }
     });
@@ -151,7 +162,7 @@
     var ListGrid_JspClassDocuments = isc.TrLG.create({
         width: "100%",
         height: "100%",
-        dataSource:RestDataSource_Refrence_JspClassDocuments,
+        dataSource:RestDataSource_Document_JspClassDocuments,
         selectionType: "single",
         sortField: 1,
         sortDirection: "descending",
@@ -190,32 +201,33 @@
             },
             {
                 name: "letterNum",
-                title: "شماره نامه"
+                title: "شماره نامه",
+                filterOperator: "iContains"
             }
         ]
     });
 
     ToolStripButton_Refresh_JspClassDocuments = isc.ToolStripButtonRefresh.create({
         click: function () {
-            ListGrid_Attachments_refresh();
+            ListGrid_ClassDocuments_refresh();
         }
     });
 
     ToolStripButton_Edit_JspClassDocuments = isc.ToolStripButtonEdit.create({
         click: function () {
-            ListGrid_Attachments_Edit();
+            // ListGrid_ClassDocuments_Edit();
         }
     });
 
     ToolStripButton_Add_JspClassDocuments = isc.ToolStripButtonCreate.create({
         click: function () {
-            ListGrid_Attachments_Add();
+            // ListGrid_ClassDocuments_Add();
         }
     });
 
     ToolStripButton_Remove_JspClassDocuments = isc.ToolStripButtonRemove.create({
         click: function () {
-            ListGrid_Attachments_Remove();
+            // ListGrid_ClassDocuments_Remove();
         }
     });
 
@@ -224,19 +236,9 @@
         membersMargin: 5,
         members:
             [
-                <sec:authorize access="hasAnyAuthority('TclassAttachmentsTab_C','TclassAttachmentsTab_classStatus')">
                 ToolStripButton_Add_JspClassDocuments,
-                </sec:authorize>
-
-                <sec:authorize access="hasAnyAuthority('TclassAttachmentsTab_U','TclassAttachmentsTab_classStatus')">
                 ToolStripButton_Edit_JspClassDocuments,
-                </sec:authorize>
-
-                <sec:authorize access="hasAnyAuthority('TclassAttachmentsTab_D','TclassAttachmentsTab_classStatus')">
                 ToolStripButton_Remove_JspClassDocuments,
-                </sec:authorize>
-
-                <sec:authorize access="hasAnyAuthority('TclassAttachmentsTab_R','TclassAttachmentsTab_classStatus')">
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
@@ -245,8 +247,6 @@
                         ToolStripButton_Refresh_JspClassDocuments
                     ]
                 })
-                </sec:authorize>
-
             ]
     });
 
@@ -267,18 +267,18 @@
 
     ///////////////////////////////////////////////////////functions///////////////////////////////////////
 
-    function ListGrid_Attachments_refresh() {
+    function ListGrid_ClassDocuments_refresh() {
         ListGrid_JspClassDocuments.invalidateCache();
         ListGrid_JspClassDocuments.filterByEditor();
     }
 
-    function ListGrid_Attachments_Edit() {
+    function ListGrid_ClassDocuments_Edit() {
         let record = ListGrid_JspClassDocuments.getSelectedRecord();
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            methodAttachment = "PUT";
-            saveActionUrlAttachment = attachmentUrl + "/" + record.id;
+            methodClassDocument = "PUT";
+            saveActionUrlClassDocument = classDocumentUrl + "/" + record.id;
             DynamicForm_JspClassDocuments.clearValues();
             DynamicForm_JspClassDocuments.editRecord(record);
             DynamicForm_JspClassDocuments.setValue("fileName", record.fileName.split('.')[0]);
@@ -286,19 +286,19 @@
         }
     }
 
-    function ListGrid_Attachments_Add() {
-        isAttachedAttachment = false;
-        methodAttachment = "POST";
-        saveActionUrlAttachment = attachmentUrl + "/upload";
+    function ListGrid_ClassDocuments_Add() {
+        isAttachedClassDocument = false;
+        methodClassDocument = "POST";
+        saveActionUrlClassDocument = classDocumentUrl + "/upload";
         DynamicForm_JspClassDocuments.clearValues();
         Window_JspClassDocuments.show();
     }
 
-    function save_result_Attachments(resp) {
+    function save_result_ClassDocuments(resp) {
         let stat;
         let respText;
-        attachmentWait.close();
-        if (methodAttachment === "POST") {
+        classDocumentWait.close();
+        if (methodClassDocument === "POST") {
             stat = resp.status;
             respText = resp.responseText;
         } else {
@@ -307,7 +307,7 @@
         }
         if (stat === 200 || stat === 201) {
             let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
-            ListGrid_Attachments_refresh();
+            ListGrid_ClassDocuments_refresh();
             Window_JspClassDocuments.close();
             setTimeout(function () {
                 OK.close();
@@ -321,7 +321,7 @@
         }
     }
 
-    function ListGrid_Attachments_Remove() {
+    function ListGrid_ClassDocuments_Remove() {
         let record = ListGrid_JspClassDocuments.getSelectedRecord();
         if (record == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
@@ -332,19 +332,19 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                        attachmentWait = createDialog("wait");
-                        isc.RPCManager.sendRequest(TrDSRequest(attachmentUrl + "/delete/" + record.id, "DELETE", null,
-                            "callback: remove_result_Attachments(rpcResponse)"));
+                        classDocumentWait = createDialog("wait");
+                        isc.RPCManager.sendRequest(TrDSRequest(classDocumentUrl + "/delete/" + record.id, "DELETE", null,
+                            "callback: remove_result_ClassDocuments(rpcResponse)"));
                     }
                 }
             });
         }
     }
 
-    function remove_result_Attachments(resp) {
-        attachmentWait.close();
+    function remove_result_ClassDocuments(resp) {
+        classDocumentWait.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            ListGrid_Attachments_refresh();
+            ListGrid_ClassDocuments_refresh();
             let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
             setTimeout(function () {
                 OK.close();
@@ -359,10 +359,10 @@
         }
     }
 
-    function Show_Attachment_Attachments(record) {
+    function Show_ClassDocument_ClassDocuments(record) {
         let downloadForm = isc.DynamicForm.create({
             method: "GET",
-            action: "attachment/download/" + record.id,
+            action: "classDocument/download/" + record.id,
             target: "_Blank",
             canSubmit: true,
             fields:
@@ -376,10 +376,12 @@
     }
 
     function loadPage_classDocuments(classId){
-        alert("hi");
+        RestDataSource_Document_JspClassDocuments.fetchDataURL = classDocumentUrl  + "iscList/" + classId;
+        ListGrid_JspClassDocuments.invalidateCache();
+        ListGrid_JspClassDocuments.fetchData();
     }
 
-    function clear_Attachments() {
+    function clear_ClassDocuments() {
         ListGrid_JspClassDocuments.clear();
     }
 
