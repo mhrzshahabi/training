@@ -231,7 +231,7 @@ public class StudentDTO {
         private String fullName;
 
         public String getFullName() {
-            return firstName + " " + lastName;
+            return (firstName + " " + lastName).compareTo("null null")==0?null:firstName + " " + lastName;
         }
     }
 
@@ -283,7 +283,7 @@ public class StudentDTO {
         private String fullName;
 
         public String getFullName(){
-            return firstName + " " + lastName;
+            return (firstName + " " + lastName).compareTo("null null")==0?null:firstName + " " + lastName;
         }
     }
 
@@ -302,7 +302,7 @@ public class StudentDTO {
         private String fullName;
 
         public String getFullName(){
-            return firstName + " " + lastName;
+            return (firstName + " " + lastName).compareTo("null null")==0?null:firstName + " " + lastName;
         }
     }
 }

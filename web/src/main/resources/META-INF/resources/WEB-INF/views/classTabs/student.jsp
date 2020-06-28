@@ -759,7 +759,7 @@
                                 isc.ToolStripButtonAdd.create({
                                     title:'اضافه کردن گروهي',
                                     click: function () {
-                                        groupFilter("اضافه کردن گروهی",personnelUrl+"/checkPersonnelNos/",checkPersonnelNosResponse);
+                                        groupFilter("اضافه کردن گروهی",personnelUrl+"/checkPersonnelNos/",checkPersonnelNosResponse,true);
                                     }
                                 })
                             ]
@@ -789,7 +789,7 @@
                                 isc.ToolStripButtonAdd.create({
                                     title:'اضافه کردن گروهي',
                                     click: function () {
-                                        groupFilter("اضافه کردن گروهی",personnelRegUrl+"/checkPersonnelNos/",checkPersonnelNosResponse);
+                                        groupFilter("اضافه کردن گروهی",personnelRegUrl+"/checkPersonnelNos/",checkPersonnelNosResponse, true);
                                     }
                                 })
                             ]
@@ -1199,31 +1199,55 @@
                     if(personnelNo != "" && personnelNo != null && typeof(personnelNo) != "undefined")
                     {
                         let person=data.filter(function (item) {
-                            return item.personnelNo==personnelNo|| item.personnelNo2 === personnelNo;
+                            return item.personnelNo == personnelNo || item.personnelNo2 == personnelNo;
                         });
 
-                        if(person.length==0){
+                        if(person.length==0)
+                        {
                             allRowsOK=false;
                             list[i].error=true;
                             list[i].hasWarning="warning";
                             list[i].description="<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">شخصی با کد پرسنلی وارد شده وجود ندارد.</span>";
                         }
-                        else if(person[0].nationalCode== "" || person[0].nationalCode == null || typeof(person[0].nationalCode) == "undefined"){
-                            allRowsOK=false;
-                            list[i].error=true;
-                            list[i].hasWarning="warning";
-                            list[i].description="<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">اطلاعات شخص مورد نظر ناقص است. کد ملی برای این شخص وارد نشده است.</span>";
-                        }
-                        else if(nationalCodeExists(person[0].nationalCode))
+                        else
                         {
-                            allRowsOK=false;
-                            list[i].error=true;
-                            list[i].hasWarning="warning";
-                            list[i].description="<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">این شخص قبلا اضافه شده است.</span>";
-                        }else{
-                            list[i].error=false;
-                            list[i].hasWarning="check";
-                            list[i].description="";
+                            person=person[0];
+
+                            if(person.nationalCode== "" || person.nationalCode == null || typeof(person.nationalCode) == "undefined")
+                            {
+                                allRowsOK=false;
+                                list[i].firstName = person.firstName;
+                                list[i].lastName = person.lastName;
+                                list[i].nationalCode =person.nationalCode;
+                                list[i].personnelNo1 =person.personnelNo;
+                                list[i].personnelNo2=person.personnelNo2;
+                                list[i].error=true;
+                                list[i].hasWarning="warning";
+                                list[i].description="<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">اطلاعات شخص مورد نظر ناقص است. کد ملی برای این شخص وارد نشده است.</span>";
+                            }
+                            else if(nationalCodeExists(person.nationalCode))
+                            {
+                                allRowsOK=false;
+                                list[i].firstName = person.firstName;
+                                list[i].lastName = person.lastName;
+                                list[i].nationalCode =person.nationalCode;
+                                list[i].personnelNo1 =person.personnelNo;
+                                list[i].personnelNo2=person.personnelNo2;
+                                list[i].error=true;
+                                list[i].hasWarning="warning";
+                                list[i].description="<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">این شخص قبلا اضافه شده است.</span>";
+                            }
+                            else
+                            {
+                                list[i].firstName = person.firstName;
+                                list[i].lastName = person.lastName;
+                                list[i].nationalCode =person.nationalCode;
+                                list[i].personnelNo1 =person.personnelNo;
+                                list[i].personnelNo2=person.personnelNo2;
+                                list[i].error=false;
+                                list[i].hasWarning="check";
+                                list[i].description="";
+                            }
                         }
                     }
                 }
