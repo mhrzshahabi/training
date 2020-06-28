@@ -478,7 +478,7 @@
                         editorExit:function(){
                             let val=DynamicForm_Session.getValue("sessionStartHour");
 
-                            if(val!=null && val!='' && typeof (val) != 'undefined'&& !val.match(/^(([0-1][0-9]|2[0-3]):([0-5][0-9]))|(24:00)$/)){
+                            if(val===null || val==='' || typeof (val) === 'undefined'|| !val.match(/^(([0-1][0-9]|2[0-3]):([0-5][0-9]))$/)){
                                 DynamicForm_Session.addFieldErrors("sessionStartHour", "<spring:message code="session.hour.invalid"/>", true);
                             }else{
                                 DynamicForm_Session.clearFieldErrors("sessionStartHour", true);
@@ -541,7 +541,7 @@
                         },*/
                         editorExit:function(){
                             let val=DynamicForm_Session.getValue("sessionEndHour");
-                            if(val!=null && val!='' && typeof (val) != 'undefined'&& !val.match(/^(([0-1][0-9]|2[0-3]):([0-5][0-9]))|(24:00)$/)){
+                            if(val===null || val==='' || typeof (val) === 'undefined'|| !val.match(/^(([0-1][0-9]|2[0-3]):([0-5][0-9]))$/)){
                                 DynamicForm_Session.addFieldErrors("sessionEndHour", "<spring:message code="session.hour.invalid"/>", true);
                             }else{
                                 DynamicForm_Session.clearFieldErrors("sessionEndHour", true);
@@ -743,6 +743,9 @@
         //*****check date is valid*****
         function check_valid_date() {
 
+            DynamicForm_Session.getField("sessionStartHour").editorExit()
+            DynamicForm_Session.getField("sessionEndHour").editorExit();
+
             DynamicForm_Session.clearFieldErrors("sessionDate", true);
 
             if (DynamicForm_Session.getValue("sessionDate") === undefined || !checkDate(DynamicForm_Session.getValue("sessionDate"))) {
@@ -852,6 +855,8 @@
         function edit_Session() {
 
             DynamicForm_Session.validate();
+
+
 
             check_valid_date();
 
