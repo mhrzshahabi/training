@@ -1013,10 +1013,10 @@
                 textAlign: "center",
                 pickListFields: [
                     {name: "titleFa"},
-                    {name: "capacity"}
+                    {name: "capacity",width:"62"}
                 ],
                 pickListProperties: {
-                    sortField: 1
+                    sortField: 1,showFilterEditor: true
                 },
                 click: function (form, item) {
                     if (form.getValue("instituteId")) {
