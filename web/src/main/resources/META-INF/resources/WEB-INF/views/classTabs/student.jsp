@@ -335,7 +335,7 @@
             }//end switch-case
 
             if (this.getFieldName(colNum) == "student.personnelNo") {
-                result+="color: #0066cc !important;text-decoration: underline !important;cursor: pointer !important;"
+                result+=";color: #0066cc !important;text-decoration: underline !important;cursor: pointer !important;"
             }
 
             return result;
@@ -1079,10 +1079,12 @@
             StudentsDS_student.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
             if(classRecord.classStatus === "3")
             {
-                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_ADD','TclassStudentsTab_D','TclassStudentsTab_E','TclassStudentsTab_P','TclassStudentsTab_R')">
+                <%--<sec:authorize access="hasAnyAuthority('TclassStudentsTab_ADD','TclassStudentsTab_D','TclassStudentsTab_E','TclassStudentsTab_P','TclassStudentsTab_R')">
                 StudentTS_student.setVisibility(false)
 
-                </sec:authorize>
+                </sec:authorize>--%>
+
+                StudentTS_student.setVisibility(false)
             }
             else
             {
