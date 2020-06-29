@@ -960,35 +960,11 @@
                 let totalSizes=parseInt(dataTemp.totalSizes);
                 let failures=totalSizes-success;
 
-                studentRemoveWait.close();
-
-                if (success!=0 && failures!=0)
-                {
-                    MyOkDialog_Session= isc.Dialog.create({
-                        message: getFormulaMessage(failures.toString()+" ", 2, "red", "B") + "<spring:message code="attendance.meeting.none.nums"/>"+"<br/>"+
-                                 getFormulaMessage(success.toString()+" ", 2, "green", "B") + "<spring:message code="attendance.meeting.ok.nums"/>",
-                        icon: "[SKIN]say.png",
-                        title: "<spring:message code="warning"/>",
-                    });
-                }
-
-                else if (success!=0)
-                {
-                    MyOkDialog_Session= isc.Dialog.create({
-                        message: getFormulaMessage(success.toString()+" ", 2, "green", "B") + "<spring:message code="attendance.meeting.ok.nums"/>",
-                        icon: "[SKIN]say.png",
-                        title: "<spring:message code="warning"/>",
-                    });
-                }
-
-                else
-                {
-                    MyOkDialog_Session= isc.Dialog.create({
-                        message: getFormulaMessage(failures.toString()+" ", 2, "red", "B") + "<spring:message code="attendance.meeting.none.nums"/>"+"<br/>",
-                        icon: "[SKIN]say.png",
-                        title: "<spring:message code="warning"/>",
-                    });
-                }
+                MyOkDialog_Session= isc.Dialog.create({
+                    message: "<spring:message code="global.form.request.successful"/>",
+                    icon: "[SKIN]say.png",
+                    title: "<spring:message code="ok"/>",
+                });
 
                 setTimeout(function () {
 
@@ -998,7 +974,7 @@
 
                     ListGrid_session.scrollToRow(ListGrid_session.getRecordIndex(ListGrid_session.getSelectedRecord()), 0);
 
-                },2000);
+                },20000);
 
                 Window_Session.close();
 
