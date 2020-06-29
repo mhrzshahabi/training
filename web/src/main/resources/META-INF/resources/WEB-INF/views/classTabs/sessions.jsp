@@ -308,11 +308,11 @@
                 {name: "titleFa", title: "<spring:message code="institution.name"/>"},
                 {name: "manager.firstNameFa", title: "<spring:message code="manager.name"/>"},
                 {name: "manager.lastNameFa", title: "<spring:message code="manager.family"/>"},
-                {name: "mobile", title: "<spring:message code="mobile"/>"},
-                {name: "restAddress", title: "<spring:message code="address"/>"},
-                {name: "phone", title: "<spring:message code="telephone"/>"}
+                <%--{name: "mobile", title: "<spring:message code="mobile"/>"},--%>
+                <%--{name: "restAddress", title: "<spring:message code="address"/>"},--%>
+                <%--{name: "phone", title: "<spring:message code="telephone"/>"}--%>
             ],
-            fetchDataURL: instituteUrl + "spec-list"
+            fetchDataURL: instituteUrl + "iscSessionTupleList"
         });
 
         var RestDataSource_TrainingPlace_JspSession = isc.TrDS.create({
