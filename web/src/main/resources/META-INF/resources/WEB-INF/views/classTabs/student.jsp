@@ -334,8 +334,32 @@
                     break;
             }//end switch-case
 
+            if (this.getFieldName(colNum) == "student.personnelNo") {
+                result+="color: #0066cc !important;text-decoration: underline !important;cursor: pointer !important;"
+            }
+
             return result;
-        }//end getCellCSSText
+        },//end getCellCSSText
+        cellClick: function (record, rowNum, colNum) {
+            if (colNum === 6) {
+                 let window_class_Information = isc.Window.create({
+                     title: "<spring:message code="personnel.information"/>",
+                    width: "70%",
+                    minWidth: 500,
+                    autoSize:false,
+                    height: "50%",
+                    items: [isc.VLayout.create({
+                        width: "100%",
+                        height: "100%",
+                        members: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/personnel-information-details/"})]
+                    })]
+                });
+
+                window_class_Information.show();
+
+
+            }
+        }
     });
 
     SelectedPersonnelsLG_student = isc.TrLG.create({
@@ -487,6 +511,8 @@
             {name: "ccpSection",hidden:true},
             {name: "ccpUnit",hidden:true},
         ],
+        gridComponents: [PersonnelsTS_student, "filterEditor", "header", "body"],
+        selectionAppearance: "checkbox",
         dataArrived:function(startRow, endRow){
             let lgNationalCodes = StudentsLG_student.data.localData.map(function(item) {
                 return item.student.nationalCode;
@@ -505,7 +531,6 @@
 
             studentSelection=false;
         },
-        gridComponents: [PersonnelsTS_student, "filterEditor", "header", "body"],
         dataChanged: function () {
             this.Super("dataChanged", arguments);
             totalRows = this.data.getLength();
@@ -515,7 +540,6 @@
                 PersonnelsCount_student.setContents("&nbsp;");
             }
         },
-        selectionAppearance: "checkbox",
         selectionUpdated: function () {
 
             if(studentSelection){
