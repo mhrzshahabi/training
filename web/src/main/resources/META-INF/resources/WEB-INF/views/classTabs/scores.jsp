@@ -812,11 +812,11 @@
             ListGrid_Class_Student.refreshCell;
             ListGrid_Class_Student.dataChanged()
         } else {
-            let wait=createDialog("wait", "در حال بروز رسانی اطلاعات", "<spring:message code="message"/>");
+            let scores_wait=createDialog("wait", "در حال بروز رسانی اطلاعات", "<spring:message code="message"/>");
             setTimeout(function () {
                 ListGrid_Class_Student.fetchData()
                 ListGrid_Class_Student.invalidateCache()
-                wait.close()
+                scores_wait.close()
             },3000);
             return;
         }
@@ -829,11 +829,11 @@
             ListGrid_Class_Student.refreshFields();
             ListGrid_Class_Student.dataChanged()
         } else {
-            let wait=createDialog("wait", "در حال بروز رسانی اطلاعات", "<spring:message code="message"/>");
+            let scores_wait=createDialog("wait", "در حال بروز رسانی اطلاعات", "<spring:message code="message"/>");
             setTimeout(function () {
                 ListGrid_Class_Student.fetchData()
                 ListGrid_Class_Student.invalidateCache()
-                wait.close()
+                scores_wait.close()
             },3000);
             return;
         }
@@ -859,11 +859,11 @@
             ListGrid_Class_Student.refreshFields()
             ListGrid_Class_Student.dataChanged()
         } else {
-            let wait=createDialog("wait", "در حال بروز رسانی اطلاعات", "<spring:message code="message"/>");
+            let scores_wait=createDialog("wait", "در حال بروز رسانی اطلاعات", "<spring:message code="message"/>");
             setTimeout(function () {
                 ListGrid_Class_Student.fetchData()
                 ListGrid_Class_Student.invalidateCache()
-                wait.close()
+                scores_wait.close()
             },3000);
             return;
         }
@@ -888,11 +888,11 @@
             }
 
         } else {
-            let wait=createDialog("wait", "در حال بروز رسانی اطلاعات", "<spring:message code="message"/>");
+            let scores_wait=createDialog("wait", "در حال بروز رسانی اطلاعات", "<spring:message code="message"/>");
             setTimeout(function () {
                 ListGrid_Class_Student.fetchData()
                 ListGrid_Class_Student.invalidateCache()
-                wait.close()
+                scores_wait.close()
             },2000);
             return;
         }

@@ -111,7 +111,7 @@
                     if (form.hasErrors()) {
                         return
                     }
-                    var wait = createDialog("wait");
+                    var attendance_Report_wait = createDialog("wait");
                     setTimeout(function () {
                         let url = attendanceReportUrl + "/list?startDate=" + form.getValue("startDate") + "&endDate=" + form.getValue("endDate")+ "&absentType=" + form.getValue("absentType");
 
@@ -119,7 +119,7 @@
 
                         ListGrid_AttendanceReport_AttendanceReportJSP.invalidateCache();
                         ListGrid_AttendanceReport_AttendanceReportJSP.fetchData();
-                        wait.close();
+                        attendance_Report_wait.close();
 
                     }, 100);
                 }

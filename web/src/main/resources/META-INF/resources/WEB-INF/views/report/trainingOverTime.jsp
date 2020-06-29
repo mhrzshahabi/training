@@ -101,14 +101,14 @@
                     if (form.hasErrors()) {
                         return
                     }
-                    var wait = createDialog("wait");
+                    var training_over_time_wait = createDialog("wait");
                     setTimeout(function () {
                         let url = trainingOverTimeReportUrl + "/list?startDate=" + form.getValue("startDate") + "&endDate=" + form.getValue("endDate");
                         RestDataSource_Class_JspTrainingOverTime.fetchDataURL = url;
 
                         ListGrid_TrainingOverTime_TrainingOverTimeJSP.invalidateCache();
                         ListGrid_TrainingOverTime_TrainingOverTimeJSP.fetchData();
-                        wait.close();
+                        training_over_time_wait.close();
 
                     }, 100);
 
@@ -117,7 +117,7 @@
                     /*ListGrid_TrainingOverTime_TrainingOverTimeJSP.setData([]);
                     let url = trainingOverTimeReportUrl + "/list?startDate=" + form.getValue("startDate") + "&endDate=" + form.getValue("endDate");
                     isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
-                        wait.close();
+                        training_over_time_wait.close();
                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                             ListGrid_TrainingOverTime_TrainingOverTimeJSP.setData(JSON.parse(resp.data));
                         }

@@ -280,7 +280,7 @@
                     this.close();
 
                     if (index == 0) {
-                        var wait = isc.Dialog.create({
+                        var skill_level_wait = isc.Dialog.create({
                             message: "<spring:message code='global.form.do.operation'/>",
                             icon: "[SKIN]say.png",
                             title: "<spring:message code='global.message'/>"
@@ -294,7 +294,7 @@
                             showPrompt: true,
                             serverOutputAsString: false,
                             callback: function (resp) {
-                                wait.close();
+                                skill_level_wait.close();
                                 if (resp.data == "true") {
                                     ListGrid_skill_level.invalidateCache();
                                     var OK = isc.Dialog.create({
