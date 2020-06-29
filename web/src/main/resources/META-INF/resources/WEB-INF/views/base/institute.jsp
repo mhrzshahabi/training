@@ -2227,12 +2227,11 @@
                     this.close();
 
                     if (index == 0) {
-                        var wait = isc.Dialog.create({
+                        globalWait = isc.Dialog.create({
                             message: "<spring:message code='global.form.do.operation'/>",
                             icon: "[SKIN]say.png",
                             title: "<spring:message code='global.message'/>"
                         });
-                        globalWait = wait;
                         isc.RPCManager.sendRequest(TrDSRequest(institute_Institute_Account_Url + record.id, "DELETE", null, "callback: Function_Institute_Account_Remove_Result(rpcResponse)"));
                     }
                 }
@@ -2570,12 +2569,11 @@
                     this.close();
 
                     if (index == 0) {
-                        var wait = isc.Dialog.create({
+                        globalWait = isc.Dialog.create({
                             message: "<spring:message code='global.form.do.operation'/>",
                             icon: "[SKIN]say.png",
                             title: "<spring:message code='global.message'/>"
                         });
-                        globalWait = wait;
                         isc.RPCManager.sendRequest(TrDSRequest(institute_Institute_TrainingPlace_Url + record.id, "DELETE", null, "callback: Function_Institute_TrainingPlace_Remove_Result(rpcResponse)"));
                     }
                 }
@@ -3335,12 +3333,11 @@
                     this.close();
 
                     if (index == 0) {
-                        var wait = isc.Dialog.create({
+                        globalWait = isc.Dialog.create({
                             message: "<spring:message code='global.form.do.operation'/>",
                             icon: "[SKIN]say.png",
                             title: "<spring:message code='global.message'/>"
                         });
-                        globalWait = wait;
                         isc.RPCManager.sendRequest(TrDSRequest(institute_Institute_Url + record.id, "DELETE", null, "callback: ListGrid_Institute_Institute_Remove_CallBack(rpcResponse)"));
                     }
                 }

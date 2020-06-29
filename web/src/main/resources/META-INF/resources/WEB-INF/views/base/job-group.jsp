@@ -1248,7 +1248,7 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
-                        var wait = isc.Dialog.create({
+                        var job_group_Wait = isc.Dialog.create({
                             message: "در حال انجام عملیات...",
                             icon: "[SKIN]say.png",
                             title: "پیام"
@@ -1262,7 +1262,7 @@
                             showPrompt: true,
                             serverOutputAsString: false,
                             callback: function (resp) {
-                                wait.close();
+                                job_group_Wait.close();
                                 if (resp.httpResponseCode == 200) {
                                     ListGrid_Job_Group_Jsp.invalidateCache();
                                     simpleDialog("انجام فرمان", "حذف با موفقیت انجام شد", 2000, "say");

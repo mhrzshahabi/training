@@ -943,7 +943,7 @@
                             buttonClick: function (button, index) {
                                 this.close();
                                 if (index == 0) {
-                                    var wait = isc.Dialog.create({
+                                    var goalWait = isc.Dialog.create({
                                         message: "<spring:message code='msg.waiting'/>",
                                         icon: "[SKIN]say.png",
                                         title: "<spring:message code='message'/>"
@@ -957,7 +957,7 @@
                                         showPrompt: true,
                                         serverOutputAsString: false,
                                         callback: function (resp) {
-                                            wait.close();
+                                            goalWait.close();
                                             if (resp.httpResponseCode == 200) {
                                                 ListGrid_Goal_refresh();
                                                 ListGrid_Syllabus_Goal_refresh();
@@ -1060,21 +1060,21 @@
                             buttonClick: function (button, index) {
                                 this.close();
                                 if (index == 0) {
-                                    <%--let wait = isc.Dialog.create({--%>
+                                    <%--let goalWait = isc.Dialog.create({--%>
                                         <%--message: "<spring:message code='global.form.do.operation'/>",--%>
                                         <%--icon: "[SKIN]say.png",--%>
                                         <%--title: "<spring:message code='global.message'/>"--%>
                                     <%--});--%>
-                                    let wait = createDialog("wait");
+                                    let goalWait = createDialog("wait");
                                     isc.RPCManager.sendRequest(TrDSRequest(goalUrl + "course/" + record.goalId, "GET", null,(resp)=>{
                                         let courses = JSON.parse(resp.data);
                                         if(courses.length>1){
                                             createDialog("info", "از هدف، سرفصل مورد نظر در دوره دیگری استفاده شده است");
-                                            wait.close();
+                                            goalWait.close();
                                             return;
                                         }
                                         isc.RPCManager.sendRequest(TrDSRequest(syllabusUrl + record.id, "DELETE", null, (resp)=>{
-                                            wait.close();
+                                            goalWait.close();
                                             if (resp.httpResponseCode == 200) {
                                                 ListGrid_Syllabus_Goal.invalidateCache();
                                                 evalDomain();

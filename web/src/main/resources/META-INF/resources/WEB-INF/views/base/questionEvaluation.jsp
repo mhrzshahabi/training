@@ -356,10 +356,10 @@
             }
 
             data.classId = DynamicForm_Questions_Title_JspQuestionEvaluation.getItem('course').getSelectedRecord().id;
-            let wait = createDialog("wait");
+            let wait_JspQuestionEvaluation = createDialog("wait");
 
             isc.RPCManager.sendRequest(TrDSRequest(saveUrl, saveMethod, JSON.stringify(data), function (resp) {
-                wait.close();
+                wait_JspQuestionEvaluation.close();
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     createDialog("info", "<spring:message code="msg.operation.successful"/>");
                     mainTS_SP.removeTab(mainTS_SP.selectedTab);
