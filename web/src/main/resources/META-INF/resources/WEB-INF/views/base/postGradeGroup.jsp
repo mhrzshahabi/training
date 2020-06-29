@@ -7,7 +7,7 @@
 
     var method = "POST";
     var url;
-    var wait;
+    var wait_PostGradeGroup;
 
     var postGrade_PGG = null;
     var naJob_PGG = null;
@@ -104,7 +104,7 @@
     });
 
     var ListGrid_Post_Grade_Group_Jsp = isc.TrLG.create({
-        selectionType: "multiple",
+        selectionType: "single",
         autoFetchData: true,
         sortField: 2,
         dataSource: RestDataSource_PostGradeGroup_Jsp,
@@ -157,12 +157,15 @@
             },
             {name: "titleFa", title: "<spring:message code='post.grade.title'/>", filterOperator: "iContains", align: "center"}
         ],
+        selectionAppearance: "checkbox",
+        selectionType: "simple",
         recordDrop: function (dropRecords) {
             var postGradeGroupId = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord().id;
             var postGradeIds = [];
             for (var i = 0; i < dropRecords.getLength(); i++) {
                 postGradeIds.add(dropRecords[i].id);
             }
+            wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + "removePostGrades/" + postGradeGroupId + "/" + postGradeIds,
                 "DELETE", null, "callback: allPostGrade_remove_result(rpcResponse)"));
         }
@@ -178,6 +181,8 @@
         showRecordComponentsByCell: true,
         autoFetchData: false,
         dataSource: RestDataSource_ForThisPostGroup_GetPosts_PostGradeGroup_Jsp,
+        selectionAppearance: "checkbox",
+        selectionType: "simple",
         fields: [
             {name: "code", title: "<spring:message code='post.grade.code'/>", filterOperator: "iContains", align: "center",
                 filterEditorProperties: {
@@ -223,6 +228,7 @@
             for (var i = 0; i < dropRecords.getLength(); i++) {
                 postGradeIds.add(dropRecords[i].id);
             }
+            wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + "addPostGrades/" + postGradeGroupId + "/" + postGradeIds,
                 "POST", null, "callback: postGrade_add_result(rpcResponse)"));
         }
@@ -810,6 +816,7 @@
     }
 
     function postGrade_add_result(resp) {
+        wait.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.invalidateCache();
             ListGrid_AllPostGrades.invalidateCache();
@@ -820,6 +827,7 @@
     }
 
     function allPostGrade_remove_result(resp) {
+        wait.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.invalidateCache();
             ListGrid_AllPostGrades.invalidateCache();
@@ -853,7 +861,7 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                        wait = createDialog("wait");
+                        wait_PostGradeGroup = createDialog("wait");
                         isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + record.id, "DELETE", null,
                             "callback: Post_Grade_Group_remove_result(rpcResponse)"));
                     }
@@ -863,7 +871,7 @@
     }
 
     function Post_Grade_Group_remove_result(resp) {
-        wait.close();
+        wait_PostGradeGroup.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             ListGrid_Post_Grade_Group_Jsp.invalidateCache();
             var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",

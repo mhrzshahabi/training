@@ -298,6 +298,7 @@
 
 
     PostLG_post = isc.TrLG.create({
+        selectionType: "single",
         dataSource: PostDS_post,
         fields: [
             {name: "code",
