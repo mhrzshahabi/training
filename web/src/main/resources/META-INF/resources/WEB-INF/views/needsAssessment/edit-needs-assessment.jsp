@@ -492,7 +492,7 @@
         dragDataAction: "none",
         removeRecordClick(rowNum){
             if(isReadOnly(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"))){
-                createDialog("info", "بدلیل تایید نشدن تغییرات قبلی، امکان حذف وجود ندارد");
+                createDialog("info", "<spring:message code='read.only.na.message'/>");
                 return;
             }
             let Dialog_Competence_remove = createDialog("ask", "هشدار: در صورت حذف شایستگی تمام مهارت های مربوط به آن حذف خواهند شد.",
@@ -1431,7 +1431,7 @@
             Button_changeShow_JspEditNeedsAssessment.show();
             Button_CopyOf_JspEditNeedsAssessment.hide();
             ToolStrip_JspNeedsAssessment.disable();
-            createDialog("info", "بدلیل تایید نشدن تغییرات قبلی، امکان ویرایش وجود ندارد");
+            createDialog("info", "<spring:message code='read.only.na.message'/>");
         }
         else{
             DynamicForm_JspEditNeedsAssessment.enable();
