@@ -270,7 +270,7 @@
                     this.close();
 
                     if (index == 0) {
-                        var wait = isc.Dialog.create({
+                        var equipmentWait = isc.Dialog.create({
                             message: "<spring:message code='global.form.do.operation'/>",
                             icon: "[SKIN]say.png",
                             title: "<spring:message code='global.message'/>"
@@ -284,7 +284,7 @@
                             showPrompt: true,
                             serverOutputAsString: false,
                             callback: function (resp) {
-                                wait.close();
+                                equipmentWait.close();
                                 if (resp.data == "true") {
                                     ListGrid_Equipment.invalidateCache();
                                     var OK = isc.Dialog.create({

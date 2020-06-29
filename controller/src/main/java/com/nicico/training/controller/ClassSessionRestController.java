@@ -8,6 +8,7 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.model.ClassSession;
@@ -131,7 +132,12 @@ public class ClassSessionRestController {
     @Transactional
     @DeleteMapping(value = "/deleteSessions/{sessionIds}")
     public ResponseEntity<ClassSessionDTO.DeleteStatus> deleteSessions(@PathVariable List<Long> sessionIds) {
-        return new ResponseEntity<>(classSessionService.deleteSessions(sessionIds),HttpStatus.OK);
+        ClassSessionDTO.DeleteStatus deleteStatus = classSessionService.deleteSessions(sessionIds);
+        if(deleteStatus.getSucesses() > 0)
+            return new ResponseEntity<>(deleteStatus,HttpStatus.OK);
+        else
+            return new ResponseEntity<>(deleteStatus,HttpStatus.PRECONDITION_REQUIRED);
+//            return new ResponseEntity<>(deleteStatus,HttpStatus.valueOf(TrainingException.ErrorType.NoChangeEvent.getHttpStatusCode()));
     }
 
     //*********************************

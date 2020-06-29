@@ -141,7 +141,7 @@
                     this.close();
 
                     if (index == 0) {
-                        var wait = isc.Dialog.create({
+                        var syllabus_wait = isc.Dialog.create({
                             message: "<spring:message code='global.form.do.operation'/>",
                             icon: "[SKIN]say.png",
                             title: "<spring:message code='global.message'/>"
@@ -155,7 +155,7 @@
                             showPrompt: true,
                             serverOutputAsString: false,
                             callback: function (resp) {
-                                wait.close();
+                                syllabus_wait.close();
                                 if (resp.httpResponseCode == 200) {
                                     ListGrid_Syllabus.invalidateCache();
                                     var OK = isc.Dialog.create({

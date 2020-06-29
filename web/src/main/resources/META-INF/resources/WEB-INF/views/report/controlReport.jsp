@@ -10,7 +10,7 @@
     var endDate1Check_JspControlReport = true;
     var endDate2Check_JspControlReport = true;
     var endDateCheck_Order_JspControlReport = true;
-    let wait;
+    let control_report_wait;
     //----------------------------------------------------Rest DataSource-----------------------------------------------
     RestDataSource_JspControlReport = isc.TrDS.create({
         fields: [
@@ -792,7 +792,7 @@
                 return;
             }
 
-            wait=createDialog("wait");
+            control_report_wait=createDialog("wait");
             isc.RPCManager.sendRequest(TrDSRequest(controlReportUrl+"/listClassIds" ,"POST", JSON.stringify(DynamicForm_CriteriaForm_JspControlReport.getValues()), "callback: fill_control_result(rpcResponse)"));
         }
     });
@@ -870,7 +870,7 @@
 
     function fill_control_result(resp) {
         if (resp.httpResponseCode === 200) {
-            wait.close();
+            control_report_wait.close();
             ListGrid_JspControlReport.setData(JSON.parse(resp.data).response.data);
             Window_JspControlReport.show();
         }

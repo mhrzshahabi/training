@@ -104,6 +104,7 @@
         contextMenu: JobMenu_job,
         showResizeBar: true,
         sortField: 2,
+        selectionType: "single",
         dataChanged: function () {
             this.Super("dataChanged", arguments);
             let totalRows = this.data.getLength();
