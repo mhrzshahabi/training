@@ -108,7 +108,11 @@
         autoFetchData: true,
         gridComponents: [PostGradeTS_postGrade, ToolStrip_NA_PostGrade, "filterEditor", "header", "body",],
         contextMenu: PostGradeMenu_postGrade,
-        sortField: 2,
+        canMultiSort: true,
+        initialSort: [
+            {property: "competenceCount", direction: "ascending"},
+            {property: "code", direction: "ascending"}
+        ],
         selectionType: "single",
         dataChanged: function () {
             this.Super("dataChanged", arguments);

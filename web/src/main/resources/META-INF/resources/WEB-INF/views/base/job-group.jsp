@@ -184,9 +184,13 @@
         color: "red",
         dataSource: RestDataSource_Job_Group_Jsp,
         contextMenu: Menu_ListGrid_Job_Group_Jsp,
-        sortField: 5,
         autoFetchData: true,
         selectionType: "single",
+        canMultiSort: true,
+        initialSort: [
+            {property: "competenceCount", direction: "ascending"},
+            {property: "id", direction: "descending"}
+        ],
         selectionUpdated: function () {
             selectionUpdated_JobGroupGroup();
         },

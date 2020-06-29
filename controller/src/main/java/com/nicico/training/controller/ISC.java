@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -39,7 +40,6 @@ public class ISC<T> {
         String startRowStr = rq.getParameter("_startRow");
         String endRowStr = rq.getParameter("_endRow");
         String constructor = rq.getParameter("_constructor");
-        String sortBy = rq.getParameter("_sortBy");
         String[] criteriaList = rq.getParameterValues("criteria");
         String operator = rq.getParameter("operator");
 
@@ -49,8 +49,8 @@ public class ISC<T> {
         searchRq.setStartIndex(startRow);
         searchRq.setCount(endRow - startRow);
 
-        if (StringUtils.isNotEmpty(sortBy)) {
-            searchRq.setSortBy(sortBy);
+        if (rq.getParameterValues("_sortBy") != null) {
+            searchRq.setSortBy(Arrays.asList(rq.getParameterValues("_sortBy")));
         }
 
         ObjectMapper objectMapper = new ObjectMapper();

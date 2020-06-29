@@ -327,7 +327,11 @@
         gridComponents: [PostTS_post, ToolStrip_NA_POST, "filterEditor", "header", "body",],
         contextMenu: PostMenu_post,
         showResizeBar: true,
-        sortField: 0,
+        canMultiSort: true,
+        initialSort: [
+            {property: "competenceCount", direction: "ascending"},
+            {property: "code", direction: "ascending"}
+        ],
         dataChanged: function () {
             this.Super("dataChanged", arguments);
             let totalRows = this.data.getLength();
