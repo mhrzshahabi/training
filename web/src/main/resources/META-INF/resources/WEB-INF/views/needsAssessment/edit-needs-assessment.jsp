@@ -427,9 +427,7 @@
         title:"مشاهده تغییرات",
         margin: 1,
         click(){
-            if(Window_NeedsAssessment_Diff === undefined) {
-                showWindowDiffNeedsAssessment(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"))
-            }
+            showWindowDiffNeedsAssessment(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"))
         }
     });
 
