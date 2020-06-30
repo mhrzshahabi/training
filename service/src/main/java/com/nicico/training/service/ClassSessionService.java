@@ -284,7 +284,7 @@ public class ClassSessionService implements IClassSession {
     public void delete(Long id, HttpServletResponse response) {
 
         try {
-            if (attendanceDAO.checkSessionIdAndState(id, "0") <= 0) {
+            if (attendanceDAO.checkSessionIdAndState(id, "0", new Long(104)) <= 0) {
                 classSessionDAO.deleteById(id);
             } else {
                 Locale locale = LocaleContextHolder.getLocale();
@@ -309,7 +309,7 @@ public class ClassSessionService implements IClassSession {
         for (int i=0;i<sessionIds.size();i++) {
              Long sessionId=sessionIds.get(i);
 
-             if (attendanceDAO.checkSessionIdAndState(sessionId, "0") <= 0) {
+             if (attendanceDAO.checkSessionIdAndState(sessionId, "0", new Long(104)) <= 0) {
                  Long classId = getClassIdBySessionId(sessionId);
                  attendanceDAO.deleteAllBySessionId(sessionId);
                  classSessionDAO.deleteById(sessionId);
