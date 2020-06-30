@@ -14,18 +14,18 @@
     var personnelJob_JobGroup = null;
     var postJob_JobGroup = null;
 
-    if(Window_NeedsAssessment_Edit === undefined) {
-        var Window_NeedsAssessment_Edit = isc.Window.create({
-            title: "<spring:message code="needs.assessment"/>",
-            placement: "fillScreen",
-            minWidth: 1024,
-            items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],
-            showUs(record, objectType) {
-                loadEditNeedsAssessment(record, objectType);
-                this.Super("show", arguments);
-            }
-        });
-    }
+    <%--if(Window_NeedsAssessment_Edit === undefined) {--%>
+        <%--var Window_NeedsAssessment_Edit = isc.Window.create({--%>
+            <%--title: "<spring:message code="needs.assessment"/>",--%>
+            <%--placement: "fillScreen",--%>
+            <%--minWidth: 1024,--%>
+            <%--items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],--%>
+            <%--showUs(record, objectType) {--%>
+                <%--loadEditNeedsAssessment(record, objectType);--%>
+                <%--this.Super("show", arguments);--%>
+            <%--}--%>
+        <%--});--%>
+    <%--}--%>
     
     var RestDataSource_Job_Group_Jsp = isc.TrDS.create({
         fields: [
@@ -90,58 +90,6 @@
                 ListGrid_Job_Group_remove();
             }
         },
-            <%--{isSeparator: true},--%>
-            <%--{--%>
-            <%--    title: "چاپ همه گروه شغل ها", icon: "<spring:url value="pdf.png"/>",--%>
-            <%--    click: "window.open('job-group/print/pdf/<%=accessToken%>/')"--%>
-            <%--},--%>
-            <%--{--%>
-            <%--    title: "چاپ با جزئیات", icon: "<spring:url value="pdf.png"/>",--%>
-            <%--    click: "window.open('job-group/printDetail/pdf/<%=accessToken%>/'+ListGrid_Job_Group_Jsp.getSelectedRecord().id)"--%>
-            <%--},--%>
-            {isSeparator: true}, {
-                title: "حذف گروه شغل از تمام شایستگی ها", icon: "<spring:url value="remove.png"/>", click: function () {
-                    var record = ListGrid_Job_Group_Jsp.getSelectedRecord();
-
-
-                    if (record == null || record.id == null) {
-
-                        isc.Dialog.create({
-
-                            message: "<spring:message code="msg.jobGroup.notFound"/>",
-                            icon: "[SKIN]ask.png",
-                            title: "پیام",
-                            buttons: [isc.IButtonSave.create({title: "تائید"})],
-                            buttonClick: function (button, index) {
-                                this.close();
-                            }
-                        });
-                    } else {
-
-
-                        var Dialog_Delete = isc.Dialog.create({
-                            message: getFormulaMessage("آیا از حذف  گروه شغل:' ", "2", "black", "c") + getFormulaMessage(record.titleFa, "3", "red", "U") + getFormulaMessage(" از  کلیه شایستگی هایش ", "2", "black", "c") + getFormulaMessage("  مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه شغل:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
-                            icon: "[SKIN]ask.png",
-                            title: "تائید حذف",
-                            buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
-                                title: "خیر"
-                            })],
-                            buttonClick: function (button, index) {
-                                this.close();
-
-                                if (index == 0) {
-                                    deleteJobGroupFromAllCompetence(record.id);
-                                    simpleDialog("پیغام", "حذف با موفقیت انجام گردید.", 0, "confirm");
-                                }
-                            }
-                        });
-
-
-                        // ListGrid_Job_Group_Competence.invalidateCache();
-
-                    }
-                }
-            },
             {isSeparator: true}, {
                 title: "لیست شغل ها", icon: "<spring:url value="job.png"/>", click: function () {
                     var record = ListGrid_Job_Group_Jsp.getSelectedRecord();
@@ -184,9 +132,13 @@
         color: "red",
         dataSource: RestDataSource_Job_Group_Jsp,
         contextMenu: Menu_ListGrid_Job_Group_Jsp,
-        sortField: 5,
         autoFetchData: true,
         selectionType: "single",
+        canMultiSort: true,
+        initialSort: [
+            {property: "competenceCount", direction: "ascending"},
+            {property: "id", direction: "descending"}
+        ],
         selectionUpdated: function () {
             selectionUpdated_JobGroupGroup();
         },
@@ -197,42 +149,6 @@
             if (record.competenceCount === 0)
                 return "color:red;font-size: 12px;";
         },
-    });
-    var Menu_ListGrid_Job_Group_Competences = isc.Menu.create({
-        width: 150,
-        data: [{
-            title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
-                ListGrid_Job_Group_Competence_refresh();
-            }
-        }, {
-            title: " حذف گروه شغل از  شایستگی مربوطه", icon: "<spring:url value="remove.png"/>", click: function () {
-                activeJobGroup = ListGrid_Job_Group_Jsp.getSelectedRecord();
-                activeCompetence = ListGrid_Job_Group_Competence.getSelectedRecord();
-                if (activeJobGroup == null || activeCompetence == null) {
-                    simpleDialog("پیام", "شایستگی یا گروه شغل انتخاب نشده است.", 0, "confirm");
-
-                } else {
-                    var Dialog_Delete = isc.Dialog.create({
-                        message: getFormulaMessage("آیا از حذف  گروه شغل:' ", "2", "black", "c") + getFormulaMessage(activeJobGroup.titleFa, "3", "red", "U") + getFormulaMessage(" از  شایستگی:' ", "2", "black", "c") + getFormulaMessage(activeCompetence.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه شغل:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
-                        icon: "[SKIN]ask.png",
-                        title: "تائید حذف",
-                        buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
-                            title: "خیر"
-                        })],
-                        buttonClick: function (button, index) {
-                            this.close();
-
-                            if (index == 0) {
-                                deleteCompetenceFromJobGroup(activeCompetence.id, activeJobGroup.id);
-                            }
-                        }
-                    });
-
-                }
-            }
-        },
-
-        ]
     });
     var Menu_ListGrid_Job_Group_Jobs = isc.Menu.create({
         width: 150,
@@ -524,23 +440,12 @@
         height: "400",
         align: "center",
         closeClick: function () {
-            ListGrid_Job_Group_Competence.invalidateCache();
             ListGrid_Job_Group_Jobs.invalidateCache();
             this.hide();
         },
         items: [
             VLayOut_JobGroup_Jobs_Jsp
         ]
-    });
-    var RestDataSource_Job_Group_Competencies_Jsp = isc.TrDS.create({
-        fields: [
-            {name: "id"},
-            {name: "titleFa"},
-            {name: "titleEn"},
-            {name: "description"},
-            {name: "version"}
-        ]
-        //,fetchDataURL:"${restApiUrl}/api/job-group/?/getCompetences"
     });
     
     var ListGrid_Job_Group_Jobs = isc.TrLG.create({
@@ -559,38 +464,6 @@
         sortField: 1,
         sortDirection: "descending",
         autoFetchData: false,
-    });
-    
-    var ListGrid_Job_Group_Competence = isc.TrLG.create({
-        width: "100%",
-        height: "100%",
-        showResizeBars: true,
-        dataSource: RestDataSource_Job_Group_Competencies_Jsp,
-        contextMenu: Menu_ListGrid_Job_Group_Competences,
-        doubleClick: function () {
-            //    ListGrid_Job_Group_edit();
-        },
-        fields: [
-            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "نام شایستگی", align: "center"},
-            {name: "titleEn", title: "نام لاتین شایستگی ", align: "center"},
-            {name: "description", title: "توضیحات", align: "center"},
-            {name: "version", title: "version", canEdit: false, hidden: true}
-        ],
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 22,
-        autoFetchData: false,
-        showFilterEditor: true,
-        filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
     });
     
     var DynamicForm_Job_Group_Jsp = isc.DynamicForm.create({
@@ -655,6 +528,9 @@
             }
         ]
     });
+
+    defineWindowsEditNeedsAssessment(ListGrid_Job_Group_Jsp);
+    defineWindowTreeNeedsAssessment();
     
     var IButton_Job_Group_Exit_Jsp = isc.IButtonCancel.create({
         top: 260, title: "لغو",
@@ -748,7 +624,7 @@
         })]
     });
 
-    ToolStripButton_EditNA_JobGroup = isc.ToolStripButton.create({
+    let ToolStripButton_EditNA_JobGroup = isc.ToolStripButton.create({
         title: "ویرایش نیازسنجی",
         click: function () {
             if (ListGrid_Job_Group_Jsp.getSelectedRecord() == null){
@@ -758,28 +634,27 @@
             Window_NeedsAssessment_Edit.showUs(ListGrid_Job_Group_Jsp.getSelectedRecord(), "JobGroup");
         }
     });
-    ToolStrip_NA_JobGroup = isc.ToolStrip.create({
+    let ToolStripButton_TreeNA_JobGroup = isc.ToolStripButton.create({
+        title: "درخت نیازسنجی",
+        click: function () {
+            if (ListGrid_Job_Group_Jsp.getSelectedRecord() == null){
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            Window_NeedsAssessment_Tree.showUs(ListGrid_Job_Group_Jsp.getSelectedRecord(), "JobGroup");
+        }
+    });
+    let ToolStrip_NA_JobGroup = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
-        members: [ToolStripButton_EditNA_JobGroup]
+        members: [ToolStripButton_EditNA_JobGroup, ToolStripButton_TreeNA_JobGroup]
     });
 
     var ToolStripButton_Refresh_Job_Group_Jsp = isc.ToolStripButtonRefresh.create({
         // icon: "<spring:url value="refresh.png"/>",
         title: "بازخوانی اطلاعات",
         click: function () {
-            //  var xx;
-            //  yesNoDialog("taeed","salam???",0,"stop",xx);
-            //
-            // if(parseInt(xx)==0){
-            // }
-            // else{
-            //     }
-
-
             ListGrid_Job_Group_refresh();
-            //ListGrid_Job_Group_Competence_refresh();
-            //ListGrid_Job_Group_Jobs_refresh();
         }
     });
     var ToolStripButton_Edit_Job_Group_Jsp = isc.ToolStripButtonEdit.create({
@@ -915,7 +790,7 @@
         dataSource: PersonnelDS_JobGroup,
         selectionType: "single",
         alternateRecordStyles: true,
-        groupByField: "jobTitle",
+        // groupByField: "jobTitle",
         fields: [
             {name: "firstName"},
             {name: "lastName"},
@@ -1080,7 +955,7 @@
         autoFetchData: false,
         showResizeBar: true,
         sortField: 0,
-        groupByField: "job.titleFa",
+        // groupByField: "job.titleFa",
         fields: [
             {name: "code",
                 filterEditorProperties: {
@@ -1150,14 +1025,6 @@
             refreshLG(ListGrid_Job_Group_Jobs);
     }
 
-    function ListGrid_Job_Group_Competence_refresh() {
-
-        if (ListGrid_Job_Group_Jsp.getSelectedRecord() == null)
-            ListGrid_Job_Group_Competence.setData([]);
-        else
-            refreshLG(ListGrid_Job_Group_Competence);
-    }
-
     function deleteJobFromJobGroup(jobId, jobGroupId) {
 
         isc.RPCManager.sendRequest({
@@ -1170,46 +1037,6 @@
             callback: function (resp) {
                 if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                     ListGrid_Job_Group_Jobs.invalidateCache();
-
-                } else {
-                    isc.say("خطا در پاسخ سرویس دهنده");
-                }
-            }
-        });
-    }
-
-    function deleteCompetenceFromJobGroup(competenceId, jobGroupId) {
-        isc.RPCManager.sendRequest({
-            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-            useSimpleHttp: true,
-            contentType: "application/json; charset=utf-8",
-            actionURL: jobGroupUrl + "removeCompetence/" + jobGroupId + "/" + competenceId,
-            httpMethod: "DELETE",
-            serverOutputAsString: false,
-            callback: function (resp) {
-                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                    ListGrid_Job_Group_Competence.invalidateCache();
-
-                } else {
-                    isc.say("خطا در پاسخ سرویس دهنده");
-                }
-            }
-        });
-    }
-
-    function deleteJobGroupFromAllCompetence(jobGroupId) {
-
-
-        isc.RPCManager.sendRequest({
-            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-            useSimpleHttp: true,
-            contentType: "application/json; charset=utf-8",
-            actionURL: jobGroupUrl + "removeAllCompetence/" + jobGroupId + "/",
-            httpMethod: "DELETE",
-            serverOutputAsString: false,
-            callback: function (resp) {
-                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                    ListGrid_Job_Group_Competence.invalidateCache();
 
                 } else {
                     isc.say("خطا در پاسخ سرویس دهنده");
@@ -1248,11 +1075,7 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
-                        var job_group_Wait = isc.Dialog.create({
-                            message: "در حال انجام عملیات...",
-                            icon: "[SKIN]say.png",
-                            title: "پیام"
-                        });
+                        wait.show();
                         isc.RPCManager.sendRequest({
                             actionURL: jobGroupUrl + record.id,
                             httpMethod: "DELETE",
@@ -1262,13 +1085,11 @@
                             showPrompt: true,
                             serverOutputAsString: false,
                             callback: function (resp) {
-                                job_group_Wait.close();
+                                wait.close();
                                 if (resp.httpResponseCode == 200) {
                                     ListGrid_Job_Group_Jsp.invalidateCache();
                                     simpleDialog("انجام فرمان", "حذف با موفقیت انجام شد", 2000, "say");
                                     ListGrid_Job_Group_Jobs.setData([]);
-                                    ListGrid_Job_Group_Competence.setData([]);
-
                                 } else {
                                     simpleDialog("پیام خطا", "حذف با خطا مواجه شد", 2000, "stop");
 

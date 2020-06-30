@@ -69,3 +69,70 @@ function courseCounterCode(n) {
 
 }
 
+function defineWindowsEditNeedsAssessment(grid) {
+    const Window_NeedsAssessment_Edit = isc.Window.create({
+        ID: "Window_NeedsAssessment_Edit",
+        title: "ویرایش نیازسنجی",
+        minWidth: 1024,
+        visibility : "hidden",
+        items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],
+        // items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/diff-needs-assessment/"})],
+        placement: "fillScreen",
+        showUs(record, objectType) {
+            loadEditNeedsAssessment(record, objectType);
+            // loadDiffNeedsAssessment(record, objectType);
+            isChanged = false;
+            this.Super("show", arguments);
+        },
+        close(){
+            if(isChanged){
+                const dialog = isc.Dialog.create({
+                    ID: "dialog",
+                    icon:  'info.png',
+                    title: "پیغام",
+                    message: "تغییراتی در پنجره ویرایش نیازسنجی ثبت شده است لطفا یکی از گزینه های زیر را با توجه به تغییرات اعمال شده انتخاب کنید.",
+                    buttons : [
+                        isc.Button.create({ title:"ارسال به گردش کار"}),
+                        isc.Button.create({ title:"لغو تغییرات"}),
+                        isc.Button.create({ title:"خروج از نیازسنجی"}),
+                    ],
+                    buttonClick : function (button, index) {
+                        dialog.close();
+                        switch(index){
+                            case 0:
+
+                                break;
+                            case 1:
+                                CancelChange_JspENA.click();
+                                break;
+                            case 2:
+                                Window_NeedsAssessment_Edit.Super("close", arguments);
+                                grid.invalidateCache();
+                                break;
+                        }
+                    }
+                });
+            }
+            else {
+                Window_NeedsAssessment_Edit.Super("close", arguments);
+                grid.invalidateCache();
+            }
+        },
+    });
+}
+
+function defineWindowTreeNeedsAssessment() {
+    const Window_NeedsAssessment_Tree = isc.Window.create({
+        ID: "Window_NeedsAssessment_Tree",
+        title: "درخت نیازسنجی",
+        placement: "fillScreen",
+        visibility : "hidden",
+        minWidth: 1024,
+        items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/tree-needs-assessment/"})],
+        showUs(record, objectType) {
+            loadNeedsAssessmentTree(record, objectType);
+            this.Super("show", arguments);
+        },
+    });
+}
+

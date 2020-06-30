@@ -753,6 +753,7 @@
     const classPerformanceReport = rootUrl + "/classPerformance/";
     const attendancePerformanceReportUrl = rootUrl + "/attendancePerformance/";
     const controlReportUrl = rootUrl + "/controlReport";
+    const presenceReportUrl = rootUrl + "/presence-report";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -1181,14 +1182,14 @@
                 </sec:authorize>
 
 
-                <sec:authorize access="hasAuthority('Menu_BasicInfo_Personnel')">
-                {
-                    title: "<spring:message code="organizational.chart"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/organizationalChart"/>");
-                    }
-                },
-                </sec:authorize>
+                <%--<sec:authorize access="hasAuthority('Menu_BasicInfo_Personnel')">--%>
+                <%--{--%>
+                    <%--title: "<spring:message code="organizational.chart"/>",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="web/organizationalChart"/>");--%>
+                    <%--}--%>
+                <%--},--%>
+                <%--</sec:authorize>--%>
             ]
         }),
     });
@@ -1575,6 +1576,12 @@
         menu: isc.Menu.create({
             placement: "none",
             data: [
+                <%--{--%>
+                <%--    title: "گزارش حضور و غیاب",--%>
+                <%--    click: function () {--%>
+                <%--        createTab(this.title, "<spring:url value="web/presenceReport"/>");--%>
+                <%--    }--%>
+                <%--},--%>
                 <sec:authorize access="hasAuthority('Menu_Report_Basic')">
                 {
                     title: "<spring:message code="reports.basic"/>",
@@ -2118,7 +2125,7 @@
         if (type === 'wait') {
             message = message ? message : "<spring:message code='in.operation'/>"
         }
-        var dialog = isc.Dialog.create({
+        let dialog = isc.Dialog.create({
             icon: type + '.png',
             title: title ? title : "<spring:message code="message"/>",
             message: message,

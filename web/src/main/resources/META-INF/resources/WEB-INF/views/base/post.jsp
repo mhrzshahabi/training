@@ -3,33 +3,37 @@
 
 // <script>
 
-    if(Window_NeedsAssessment_Edit === undefined) {
-        var Window_NeedsAssessment_Edit = isc.Window.create({
-            ID: "Window_NeedsAssessment_Edit",
-            title: "<spring:message code="needs.assessment"/>",
-            placement: "fillScreen",
-            minWidth: 1024,
-            items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],
-            // items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/diff-needs-assessment/"})],
-            showUs(record, objectType) {
-                loadEditNeedsAssessment(record, objectType);
-                // loadDiffNeedsAssessment(record, objectType);
-                this.Super("show", arguments);
-            },
-        });
-    }
-    if(Window_NeedsAssessment_Tree === undefined) {
-        var Window_NeedsAssessment_Tree = isc.Window.create({
-            title: "<spring:message code="needs.assessment"/>",
-            placement: "fillScreen",
-            minWidth: 1024,
-            items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/tree-needs-assessment/"})],
-            showUs(record, objectType) {
-                loadNeedsAssessmentTree(record, objectType);
-                this.Super("show", arguments);
-            },
-        });
-    }
+    <%--if(Window_NeedsAssessment_Edit === undefined) {--%>
+        <%--var Window_NeedsAssessment_Edit = isc.Window.create({--%>
+            <%--ID: "Window_NeedsAssessment_Edit",--%>
+            <%--title: "<spring:message code="needs.assessment"/>",--%>
+            <%--minWidth: 1024,--%>
+            <%--items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],--%>
+            <%--// items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/diff-needs-assessment/"})],--%>
+            <%--placement: "fillScreen",--%>
+            <%--showUs(record, objectType) {--%>
+                <%--loadEditNeedsAssessment(record, objectType);--%>
+                <%--// loadDiffNeedsAssessment(record, objectType);--%>
+                <%--isChanged = false;--%>
+                <%--this.Super("show", arguments);--%>
+            <%--},--%>
+        <%--});--%>
+    // }
+
+    <%--if(Window_NeedsAssessment_Tree === undefined) {--%>
+        <%--var Window_NeedsAssessment_Tree = isc.Window.create({--%>
+            <%--title: "<spring:message code="needs.assessment"/>",--%>
+            <%--placement: "fillScreen",--%>
+            <%--minWidth: 1024,--%>
+            <%--items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/tree-needs-assessment/"})],--%>
+            <%--showUs(record, objectType) {--%>
+                <%--loadNeedsAssessmentTree(record, objectType);--%>
+                <%--this.Super("show", arguments);--%>
+            <%--},--%>
+        <%--});--%>
+    <%--}--%>
+
+
 
     // ------------------------------------------- Menu -------------------------------------------
     PostMenu_post = isc.Menu.create({
@@ -77,13 +81,6 @@
                 return;
             }
             Window_NeedsAssessment_Edit.showUs(PostLG_post.getSelectedRecord(), "Post");
-            Window_NeedsAssessment_Edit.setProperties({
-                close() {
-                    PostLG_post.invalidateCache()
-                    this.Super("close", arguments)
-                }
-            })
-// createTab(this.title, "web/edit-needs-assessment/", "loadEditNeedsAssessment(PostLG_post.getSelectedRecord(), 'Post')");
         }
     });
     ToolStripButton_TreeNA_JspPost = isc.ToolStripButton.create({
@@ -327,7 +324,11 @@
         gridComponents: [PostTS_post, ToolStrip_NA_POST, "filterEditor", "header", "body",],
         contextMenu: PostMenu_post,
         showResizeBar: true,
-        sortField: 0,
+        canMultiSort: true,
+        initialSort: [
+            {property: "competenceCount", direction: "ascending"},
+            {property: "code", direction: "ascending"}
+        ],
         dataChanged: function () {
             this.Super("dataChanged", arguments);
             let totalRows = this.data.getLength();
@@ -349,6 +350,9 @@
                 return "color:red;font-size: 12px;";
         },
     });
+
+    defineWindowsEditNeedsAssessment(PostLG_post);
+    defineWindowTreeNeedsAssessment();
 
 
     DepartmentWebserviceLG_post = isc.TrLG.create({
@@ -749,4 +753,6 @@
     function closeToShowUnGroupedPosts_POST(){
         PostLG_post.setImplicitCriteria(null);
     }
+
+
     // </script>
