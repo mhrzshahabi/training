@@ -14,18 +14,18 @@
     var personnelJob_PGG = null;
     var post_PGG = null;
 
-    if(Window_NeedsAssessment_Edit === undefined) {
-        var Window_NeedsAssessment_Edit = isc.Window.create({
-            title: "<spring:message code="needs.assessment"/>",
-            placement: "fillScreen",
-            minWidth: 1024,
-            items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],
-            showUs(record, objectType) {
-                loadEditNeedsAssessment(record, objectType);
-                this.Super("show", arguments);
-            }
-        });
-    }
+    <%--if(Window_NeedsAssessment_Edit === undefined) {--%>
+        <%--var Window_NeedsAssessment_Edit = isc.Window.create({--%>
+            <%--title: "<spring:message code="needs.assessment"/>",--%>
+            <%--placement: "fillScreen",--%>
+            <%--minWidth: 1024,--%>
+            <%--items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],--%>
+            <%--showUs(record, objectType) {--%>
+                <%--loadEditNeedsAssessment(record, objectType);--%>
+                <%--this.Super("show", arguments);--%>
+            <%--}--%>
+        <%--});--%>
+    <%--}--%>
 
     //////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -120,6 +120,9 @@
             ListGrid_Post_Grade_Group_edit();
         }
     });
+
+    defineWindowsEditNeedsAssessment(ListGrid_Post_Grade_Group_Jsp);
+    defineWindowTreeNeedsAssessment();
 
     var DynamicForm_thisPostGradeGroupHeader_Jsp = isc.DynamicForm.create({
         titleWidth: "400",
@@ -417,10 +420,22 @@
             Window_NeedsAssessment_Edit.showUs(ListGrid_Post_Grade_Group_Jsp.getSelectedRecord(), "PostGradeGroup");
         }
     });
+
+    ToolStripButton_TreeNA_PGG = isc.ToolStripButton.create({
+        title: "درخت نیازسنجی",
+        click: function () {
+            if (ListGrid_Post_Grade_Group_Jsp.getSelectedRecord() == null){
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            Window_NeedsAssessment_Tree.showUs(ListGrid_Post_Grade_Group_Jsp.getSelectedRecord(), "PostGradeGroup");
+        }
+    });
+
     ToolStrip_NA_PGG = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
-        members: [ToolStripButton_EditNA_PGG]
+        members: [ToolStripButton_EditNA_PGG, ToolStripButton_TreeNA_PGG]
     });
 
     var ToolStripButton_Refresh_Post_Grade_Group_Jsp = isc.ToolStripButtonRefresh.create({

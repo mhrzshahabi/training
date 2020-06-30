@@ -1085,41 +1085,40 @@
             ToolStrip_JspNeedsAssessment],
     });
 
-    Window_NeedsAssessment_Edit.addProperties({
-        title: "ویرایش نیازسنجی",
-        hide(){
-            if(isChanged){
-                let dialog = isc.Dialog.create({
-                    ID: "dialog",
-                    icon:  'info.png',
-                    title: "<spring:message code="message"/>",
-                    message: "تغییراتی در پنجره ویرایش نیازسنجی ثبت شده است لطفا یکی از گزینه های زیر را با توجه به تغییرات اعمال شده انتخاب کنید.",
-                    buttons : [
-                        isc.Button.create({ title:"ارسال به گردش کار"}),
-                        isc.Button.create({ title:"لغو تغییرات"}),
-                        isc.Button.create({ title:"خروج از نیازسنجی"}),
-                    ],
-                    buttonClick : function (button, index) {
-                        dialog.close();
-                        switch(index){
-                            case 0:
+    <%--Window_NeedsAssessment_Edit.addProperties({--%>
+        <%--hide(){--%>
+            <%--if(isChanged){--%>
+                <%--let dialog = isc.Dialog.create({--%>
+                    <%--ID: "dialog",--%>
+                    <%--icon:  'info.png',--%>
+                    <%--title: "<spring:message code="message"/>",--%>
+                    <%--message: "تغییراتی در پنجره ویرایش نیازسنجی ثبت شده است لطفا یکی از گزینه های زیر را با توجه به تغییرات اعمال شده انتخاب کنید.",--%>
+                    <%--buttons : [--%>
+                        <%--isc.Button.create({ title:"ارسال به گردش کار"}),--%>
+                        <%--isc.Button.create({ title:"لغو تغییرات"}),--%>
+                        <%--isc.Button.create({ title:"خروج از نیازسنجی"}),--%>
+                    <%--],--%>
+                    <%--buttonClick : function (button, index) {--%>
+                        <%--dialog.close();--%>
+                        <%--switch(index){--%>
+                            <%--case 0:--%>
 
-                                break;
-                            case 1:
-                                CancelChange_JspENA.click();
-                                break;
-                            case 2:
-                                Window_NeedsAssessment_Edit.Super("hide", arguments);
-                                break;
-                        }
-                    }
-                });
-            }
-            else {
-                Window_NeedsAssessment_Edit.Super("hide", arguments);
-            }
-        }
-    })
+                                <%--break;--%>
+                            <%--case 1:--%>
+                                <%--CancelChange_JspENA.click();--%>
+                                <%--break;--%>
+                            <%--case 2:--%>
+                                <%--Window_NeedsAssessment_Edit.Super("hide", arguments);--%>
+                                <%--break;--%>
+                        <%--}--%>
+                    <%--}--%>
+                <%--});--%>
+            <%--}--%>
+            <%--else {--%>
+                <%--Window_NeedsAssessment_Edit.Super("hide", arguments);--%>
+            <%--}--%>
+        <%--},--%>
+    <%--})--%>
 
     function updateObjectIdLG(form, value) {
         // form.getItem("objectId").canEdit = true;

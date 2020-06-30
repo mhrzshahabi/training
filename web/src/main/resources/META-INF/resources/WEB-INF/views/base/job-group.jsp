@@ -14,18 +14,18 @@
     var personnelJob_JobGroup = null;
     var postJob_JobGroup = null;
 
-    if(Window_NeedsAssessment_Edit === undefined) {
-        var Window_NeedsAssessment_Edit = isc.Window.create({
-            title: "<spring:message code="needs.assessment"/>",
-            placement: "fillScreen",
-            minWidth: 1024,
-            items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],
-            showUs(record, objectType) {
-                loadEditNeedsAssessment(record, objectType);
-                this.Super("show", arguments);
-            }
-        });
-    }
+    <%--if(Window_NeedsAssessment_Edit === undefined) {--%>
+        <%--var Window_NeedsAssessment_Edit = isc.Window.create({--%>
+            <%--title: "<spring:message code="needs.assessment"/>",--%>
+            <%--placement: "fillScreen",--%>
+            <%--minWidth: 1024,--%>
+            <%--items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],--%>
+            <%--showUs(record, objectType) {--%>
+                <%--loadEditNeedsAssessment(record, objectType);--%>
+                <%--this.Super("show", arguments);--%>
+            <%--}--%>
+        <%--});--%>
+    <%--}--%>
     
     var RestDataSource_Job_Group_Jsp = isc.TrDS.create({
         fields: [
@@ -655,6 +655,9 @@
             }
         ]
     });
+
+    defineWindowsEditNeedsAssessment(ListGrid_Job_Group_Jsp);
+    defineWindowTreeNeedsAssessment();
     
     var IButton_Job_Group_Exit_Jsp = isc.IButtonCancel.create({
         top: 260, title: "لغو",
@@ -748,7 +751,7 @@
         })]
     });
 
-    ToolStripButton_EditNA_JobGroup = isc.ToolStripButton.create({
+    let ToolStripButton_EditNA_JobGroup = isc.ToolStripButton.create({
         title: "ویرایش نیازسنجی",
         click: function () {
             if (ListGrid_Job_Group_Jsp.getSelectedRecord() == null){
@@ -758,10 +761,20 @@
             Window_NeedsAssessment_Edit.showUs(ListGrid_Job_Group_Jsp.getSelectedRecord(), "JobGroup");
         }
     });
-    ToolStrip_NA_JobGroup = isc.ToolStrip.create({
+    let ToolStripButton_TreeNA_JobGroup = isc.ToolStripButton.create({
+        title: "درخت نیازسنجی",
+        click: function () {
+            if (ListGrid_Job_Group_Jsp.getSelectedRecord() == null){
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            Window_NeedsAssessment_Tree.showUs(ListGrid_Job_Group_Jsp.getSelectedRecord(), "JobGroup");
+        }
+    });
+    let ToolStrip_NA_JobGroup = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
-        members: [ToolStripButton_EditNA_JobGroup]
+        members: [ToolStripButton_EditNA_JobGroup, ToolStripButton_TreeNA_JobGroup]
     });
 
     var ToolStripButton_Refresh_Job_Group_Jsp = isc.ToolStripButtonRefresh.create({

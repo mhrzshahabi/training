@@ -7,19 +7,6 @@
     var personnelJob_PostGrade = null;
     var postJob_PostGrade = null;
 
-    if(Window_NeedsAssessment_Edit === undefined) {
-        var Window_NeedsAssessment_Edit = isc.Window.create({
-            title: "<spring:message code="needs.assessment"/>",
-            placement: "fillScreen",
-            minWidth: 1024,
-            items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],
-            showUs(record, objectType) {
-                loadEditNeedsAssessment(record, objectType);
-                this.Super("show", arguments);
-            }
-        });
-    }
-
     // ------------------------------------------- Menu -------------------------------------------
     PostGradeMenu_postGrade = isc.Menu.create({
         data: [
@@ -44,10 +31,20 @@
             Window_NeedsAssessment_Edit.showUs(PostGradeLG_postGrade.getSelectedRecord(), "PostGrade");
         }
     });
+    ToolStripButton_TreeNA_PostGrade = isc.ToolStripButton.create({
+        title: "درخت نیازسنجی",
+        click: function () {
+            if (PostGradeLG_postGrade.getSelectedRecord() == null){
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            Window_NeedsAssessment_Tree.showUs(PostGradeLG_postGrade.getSelectedRecord(), "PostGrade");
+        }
+    });
     ToolStrip_NA_PostGrade = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
-        members: [ToolStripButton_EditNA_PostGrade]
+        members: [ToolStripButton_EditNA_PostGrade, ToolStripButton_TreeNA_PostGrade]
     });
     
     PostGradeTS_postGrade = isc.ToolStrip.create({
@@ -127,6 +124,9 @@
             selectionUpdated_PostGrade();
         },
     });
+
+    defineWindowsEditNeedsAssessment(PostGradeLG_postGrade);
+    defineWindowTreeNeedsAssessment();
 
     ////////////////////////////////////////////////////////////personnel///////////////////////////////////////////////
     PersonnelDS_PostGrade = isc.TrDS.create({

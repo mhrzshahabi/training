@@ -77,30 +77,30 @@
         items: [PostLG_PostGroup],
     });
 
-    if(Window_NeedsAssessment_Edit === undefined) {
-        var Window_NeedsAssessment_Edit = isc.Window.create({
-            title: "<spring:message code="needs.assessment"/>",
-            placement: "fillScreen",
-            minWidth: 1024,
-            items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],
-            showUs(record, objectType) {
-                loadEditNeedsAssessment(record, objectType);
-                this.Super("show", arguments);
-            },
-        });
-    }
-    if(Window_NeedsAssessment_Tree === undefined) {
-        var Window_NeedsAssessment_Tree = isc.Window.create({
-            title: "<spring:message code="needs.assessment"/>",
-            placement: "fillScreen",
-            minWidth: 1024,
-            items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/tree-needs-assessment/"})],
-            showUs(record, objectType) {
-                loadNeedsAssessmentTree(record, objectType);
-                this.Super("show", arguments);
-            },
-        });
-    }
+    <%--if(Window_NeedsAssessment_Edit === undefined) {--%>
+        <%--var Window_NeedsAssessment_Edit = isc.Window.create({--%>
+            <%--title: "<spring:message code="needs.assessment"/>",--%>
+            <%--placement: "fillScreen",--%>
+            <%--minWidth: 1024,--%>
+            <%--items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],--%>
+            <%--showUs(record, objectType) {--%>
+                <%--loadEditNeedsAssessment(record, objectType);--%>
+                <%--this.Super("show", arguments);--%>
+            <%--},--%>
+        <%--});--%>
+    <%--}--%>
+    <%--if(Window_NeedsAssessment_Tree === undefined) {--%>
+        <%--var Window_NeedsAssessment_Tree = isc.Window.create({--%>
+            <%--title: "<spring:message code="needs.assessment"/>",--%>
+            <%--placement: "fillScreen",--%>
+            <%--minWidth: 1024,--%>
+            <%--items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/tree-needs-assessment/"})],--%>
+            <%--showUs(record, objectType) {--%>
+                <%--loadNeedsAssessmentTree(record, objectType);--%>
+                <%--this.Super("show", arguments);--%>
+            <%--},--%>
+        <%--});--%>
+    <%--}--%>
 
     var RestDataSource_Post_Group_Jsp = isc.TrDS.create({
         fields: [
@@ -223,6 +223,10 @@
                 return "color:red;font-size: 12px;";
         },
     });
+
+    defineWindowsEditNeedsAssessment(ListGrid_Post_Group_Jsp);
+    defineWindowTreeNeedsAssessment();
+
     var method = "POST";
     var Menu_ListGrid_Post_Group_Competences = isc.Menu.create({
         width: 150,
@@ -803,12 +807,12 @@
                 return;
             }
             Window_NeedsAssessment_Edit.showUs(ListGrid_Post_Group_Jsp.getSelectedRecord(), "PostGroup");
-            Window_NeedsAssessment_Edit.setProperties({
-                close() {
-                    ListGrid_Post_Group_Jsp.invalidateCache()
-                    this.Super("close", arguments)
-                }
-            })
+            // Window_NeedsAssessment_Edit.setProperties({
+            //     close() {
+            //         ListGrid_Post_Group_Jsp.invalidateCache()
+            //         this.Super("close", arguments)
+            //     }
+            // })
             // createTab(this.title, "web/edit-needs-assessment/", "loadEditNeedsAssessment(ListGrid_Post_Group_Jsp.getSelectedRecord(), 'PostGroup')");
             // Window_NeedsAssessment_Edit.show();
         }
