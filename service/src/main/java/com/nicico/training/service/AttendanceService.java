@@ -1,11 +1,13 @@
 package com.nicico.training.service;
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AttendanceDTO;
 import com.nicico.training.dto.ClassSessionDTO;
+import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.iservice.IAttendanceService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.AttendanceDAO;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,6 +33,7 @@ public class AttendanceService implements IAttendanceService {
     private final ClassSessionDAO classSessionDAO;
     private final TclassService tclassService;
     private final ClassSessionService classSessionService;
+    private final ParameterService parameterService;
 
     @Transactional(readOnly = true)
     @Override
@@ -277,13 +281,30 @@ public class AttendanceService implements IAttendanceService {
 
     @Transactional()
     @Override
-    public List<ClassSessionDTO.Info> studentAbsentSessionsInClass(Long classId, Long studentId) {
+    public boolean studentAbsentSessionsInClass(Long classId, List<Long> sessionId, Long studentId) throws ParseException {
+
         List<ClassSessionDTO.Info> sessions = classSessionService.loadSessions(classId);
         List<Long> sessionIds = sessions.stream().map(ClassSessionDTO.Info::getId).collect(Collectors.toList());
         List<Attendance> absentList = attendanceDAO.findBySessionIdInAndStudentIdAndState(sessionIds, studentId, "3");
-        List<ClassSessionDTO.Info> absentSessionList = new ArrayList<>();
+        Set<ClassSessionDTO.Info> absentSessionList = new HashSet<>();
+
         absentList.forEach(a -> absentSessionList.add(modelMapper.map(a.getSession(), ClassSessionDTO.Info.class)));
-        return absentSessionList;
+        for (Long aLong : sessionId) {
+            absentSessionList.add(classSessionService.get(aLong));
+        }
+
+        Long sum = 0L;
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        for (ClassSessionDTO.Info classSession : absentSessionList) {
+            sum += sdf.parse(classSession.getSessionEndHour()).getTime() - sdf.parse(classSession.getSessionStartHour()).getTime();
+        }
+
+        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("ClassConfig");
+        ParameterValueDTO.Info info = parameters.getResponse().getData().stream().filter(p -> p.getCode().equals("VAP")).findFirst().orElse(null);
+
+        Double acceptAbsentHoursForClass = acceptAbsentHoursForClass(classId, Double.valueOf(info == null ? "0" : info.getValue())/100);
+
+        return acceptAbsentHoursForClass >= sum;
     }
 
     // ------------------------------

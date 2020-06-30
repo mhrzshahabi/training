@@ -18,6 +18,9 @@ public class ViewEvaluationStaticalReportDTO implements Serializable {
     @ApiModel("ViewEvaluationStaticalReportInfo")
     public static class Info{
         private Long id;
+        private Long unitId;
+        private Long tclassId;
+        private Long evaluationAnalysisId;
         private Long termId;
         private Long instituteId;
         private Long teacherId;
@@ -49,6 +52,17 @@ public class ViewEvaluationStaticalReportDTO implements Serializable {
         private String evaluationTeacherGrade;
         private Boolean evaluationTeacherPass;
         private Boolean evaluationTeacherStatus;
+        private Long tclassDuration;
+        private Long tclassOrganizerId;
+        private String tclassStatus;
+        private Long tclassPlanner;
+        private Long tclassSupervisor;
+        private String termTitleFa;
+        private String teacherFirstName;
+        private String teacherLastName;
+        public String getTeacherFullName(){
+            return teacherFirstName+" "+teacherLastName;
+        }
     }
 
     @Getter

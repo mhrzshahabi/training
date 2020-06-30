@@ -436,4 +436,69 @@ public class ControlFormController {
             response.sendError(500, messageSource.getMessage("error", null, locale));
         }
     }
+
+    @Transactional(readOnly = true)
+    @PostMapping(value = {"/exportExcelControl"})
+    public void exportExcelControl(final HttpServletResponse response,
+                                 @RequestParam(value = "classId") String classId,
+                                 @RequestParam(value = "dataStatus") String dataStatus
+    ) throws IOException {
+        Long[] idClasses= Arrays.stream(classId.split(",")).map(x->Long.valueOf(x)).toArray(Long[]::new);
+        List<List<StudentDTO.controlAttendance>> listStudentArray=new ArrayList<>();
+        List<List<ClassSession>> listSessionList=new ArrayList<>();
+        List<Map<String, String>> listMaps=new ArrayList<>();
+
+        for (int m=0;m<idClasses.length;m++) {
+            Tclass tClass = tclassService.getTClass(idClasses[m]);
+            TclassDTO.Info tclassDTO = modelMapper.map(tClass, TclassDTO.Info.class);
+            Set<ClassStudent> students = tClass.getClassStudents();
+
+            List<ClassStudent> listClassStudents = new ArrayList<ClassStudent>();
+            listClassStudents.addAll(students);
+
+            List<Long> studentsId = students.stream().map(s -> s.getStudent().getId()).collect(Collectors.toList());
+            List<StudentDTO.controlAttendance> studentArrayList = new ArrayList<>();
+
+            int i=0;
+
+
+            for (Long studentId : studentsId) {
+                Optional<Student> byId = studentDAO.findById(studentId);
+                Student student = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.StudentNotFound));
+                StudentDTO.controlAttendance st = modelMapper.map(student, StudentDTO.controlAttendance.class);
+                st.setFullName(st.getFirstName() + " " + st.getLastName());
+
+                studentArrayList.add(st);
+                i++;
+            }//end outer for
+
+            listStudentArray.add(studentArrayList);
+
+            Set<ClassSession> sessions = tClass.getClassSessions();
+            List<ClassSession> sessionList = sessions.stream().sorted(Comparator.comparing(ClassSession::getSessionDate)
+                    .thenComparing(ClassSession::getSessionStartHour))
+                    .collect(Collectors.toList());
+
+            Set<String> daysOnClass = sessionList.stream().map(ClassSession::getDayName).collect(Collectors.toSet());
+
+            final Map<String, String> params = new HashMap<>();
+            params.put("days", "روزهای تشکیل کلاس: " + daysOnClass.toString());
+            params.put("days", sessionList.stream().map(ClassSession::getDayName).collect(Collectors.toSet()).toString());
+            params.put("titleClass", tclassDTO.getTitleClass());
+            params.put("code", tclassDTO.getCode());
+            params.put("startDate", tclassDTO.getStartDate());
+            params.put("endDate", tclassDTO.getEndDate());
+            params.put("teacher", tclassDTO.getTeacher());
+
+            listMaps.add(params);
+        }
+
+        try {
+            controlReportService.exportToExcelControl(response,listMaps,listStudentArray);
+        } catch (Exception ex) {
+
+            Locale locale = LocaleContextHolder.getLocale();
+            response.sendError(500, messageSource.getMessage("error", null, locale));
+        }
+    }
 }

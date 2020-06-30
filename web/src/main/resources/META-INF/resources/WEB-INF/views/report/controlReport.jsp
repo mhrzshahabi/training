@@ -243,6 +243,29 @@
         }
     });
 
+    IButton_JspControlReport_ControlExcel = isc.IButtonSave.create({
+        top: 260,
+        title: "گزارش کنترل",
+        width: 300,
+        click: function () {
+            let criteriaForm = isc.DynamicForm.create({
+                fields:[
+                    {name: "classId", type: "hidden"},
+                    {name: "dataStatus", type: "hidden"}
+                ],
+                method: "POST",
+                action: "<spring:url value="/controlForm/exportExcelControl"/>",
+                target: "_Blank",
+                canSubmit: true
+            });
+            criteriaForm.setValue("classId", idClasses);
+            criteriaForm.setValue("dataStatus",DynamicForm_CriteriaForm_JspControlReport.getItem("dataStatus").getValue() )
+
+            criteriaForm.show();
+            criteriaForm.submitForm();
+        }
+    });
+
     var HLayOut_CriteriaForm_JspControlReport_Details = isc.TrHLayoutButtons.create({
         showEdges: false,
         edgeImage: "",
@@ -263,7 +286,7 @@
         alignLayout: "center",
         padding: 10,
         members: [
-            IButton_JspControlReport_AttendanceExcel,IButton_JspControlReport_ScoreExcel
+            IButton_JspControlReport_AttendanceExcel,IButton_JspControlReport_ScoreExcel,IButton_JspControlReport_ControlExcel
         ]
     });
 

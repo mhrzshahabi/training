@@ -144,7 +144,7 @@ function showWindowDiffNeedsAssessment(objectId, objectType) {
     let interval = setInterval(()=>{
         if(Window_NeedsAssessment_Diff !== undefined) {
             Window_NeedsAssessment_Diff.showUs(objectId, objectType);
-            if(Window_NeedsAssessment_Edit !== undefined){
+            if(typeof Window_NeedsAssessment_Edit !== "undefined"){
                 Window_NeedsAssessment_Edit.close();
             }
             clearInterval(interval);
