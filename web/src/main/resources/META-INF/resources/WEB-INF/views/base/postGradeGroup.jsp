@@ -537,7 +537,7 @@
         dataSource: PersonnelDS_PGG,
         selectionType: "single",
         alternateRecordStyles: true,
-        groupByField: "postGradeTitle",
+        // groupByField: "postGradeTitle",
         fields: [
             {name: "firstName"},
             {name: "lastName"},
@@ -703,7 +703,7 @@
         autoFetchData: false,
         showResizeBar: true,
         sortField: 0,
-        groupByField: "postGrade.titleFa",
+        // groupByField: "postGrade.titleFa",
         fields: [
             {name: "code",
                 filterEditorProperties: {

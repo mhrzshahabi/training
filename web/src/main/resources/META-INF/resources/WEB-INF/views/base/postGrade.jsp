@@ -170,7 +170,7 @@
         dataSource: PersonnelDS_PostGrade,
         selectionType: "single",
         alternateRecordStyles: true,
-        groupByField: "jobTitle",
+        sortField: 1,
         fields: [
             {name: "firstName"},
             {name: "lastName"},
@@ -335,7 +335,6 @@
         autoFetchData: false,
         showResizeBar: true,
         sortField: 0,
-        groupByField: "job.titleFa",
         fields: [
             {name: "code",
                 filterEditorProperties: {

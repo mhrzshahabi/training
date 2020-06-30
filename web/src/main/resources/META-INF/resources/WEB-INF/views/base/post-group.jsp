@@ -509,24 +509,12 @@
         ]
     });
 
-    var RestDataSource_Post_Group_Competencies_Jsp = isc.TrDS.create({
-        fields: [
-            {name: "id"},
-            {name: "titleFa"},
-            {name: "titleEn"},
-            {name: "description"},
-            {name: "version"}
-        ]
-        //,fetchDataURL:"${restApiUrl}/api/post-group/?/getCompetences"
-    });
-
     var ListGrid_Post_Group_Posts = isc.TrLG.create({
         dataSource: RestDataSource_Post_Group_Posts_Jsp,
         contextMenu: Menu_ListGrid_Post_Group_Posts,
         autoFetchData: false,
         showResizeBar: true,
         sortField: 1,
-        groupByField: "postGrade.titleFa",
         fields: [
             {name: "code",
                 filterEditorProperties: {
@@ -1169,42 +1157,6 @@
             callback: function (resp) {
                 if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                     ListGrid_Post_Group_Posts.invalidateCache();
-
-                } else {
-                    isc.say("خطا در پاسخ سرویس دهنده");
-                }
-            }
-        });
-    }
-
-    function deleteCompetenceFromPostGroup(competenceId, postGroupId) {
-        isc.RPCManager.sendRequest({
-            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-            useSimpleHttp: true,
-            contentType: "application/json; charset=utf-8",
-            actionURL: postGroupUrl + "/removeCompetence/" + postGroupId + "/" + competenceId,
-            httpMethod: "DELETE",
-            serverOutputAsString: false,
-            callback: function (resp) {
-                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-
-                } else {
-                    isc.say("خطا در پاسخ سرویس دهنده");
-                }
-            }
-        });
-    }
-
-    function deletePostGroupFromAllCompetence(postGroupId) {
-        isc.RPCManager.sendRequest({
-            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-            useSimpleHttp: true,
-            contentType: "application/json; charset=utf-8",
-            actionURL: postGroupUrl + "/removeAllCompetence/" + postGroupId + "/",
-            httpMethod: "DELETE",
-            serverOutputAsString: false,
-            callback: function (resp) {
-                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
 
                 } else {
                     isc.say("خطا در پاسخ سرویس دهنده");
