@@ -206,10 +206,10 @@
     });
     var ListGrid_Post_Group_Jsp = isc.TrLG.create({
         color: "red",
-        selectionType: "multiple",
+        selectionType: "single",
         dataSource: RestDataSource_Post_Group_Jsp,
         contextMenu: Menu_ListGrid_Post_Group_Jsp,
-        sortField: 5,
+        sortField: 1,
         autoFetchData: true,
         selectionUpdated: function() {
             postGroupPostList_Post_Group_Jsp = null;
@@ -349,7 +349,7 @@
         canAcceptDroppedRecords: true,
         dataSource: RestDataSource_All_Posts,
         selectionAppearance: "checkbox",
-        selectionType: "multiple",
+        selectionType: "simple",
         sortField: 1,
         dragTrackerMode: "title",
         canDrag: true,
@@ -366,13 +366,14 @@
             {name: "unit"}
         ],
         recordDrop: function (dropRecords) {
-            var postGroupRecord = ListGrid_Post_Group_Jsp.getSelectedRecord();
-            var postGroupId = postGroupRecord.id;
-            var postIds = [];
+            let postGroupRecord = ListGrid_Post_Group_Jsp.getSelectedRecord();
+            let postGroupId = postGroupRecord.id;
+            let postIds = [];
             for (let i = 0; i < dropRecords.getLength(); i++) {
                 postIds.add(dropRecords[i].id);
             }
-            var JSONObj = {"ids": postIds};
+            wait.show();
+            let JSONObj = {"ids": postIds};
             isc.RPCManager.sendRequest({
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
@@ -382,12 +383,10 @@
                 data: JSON.stringify(JSONObj),
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-
+                    wait.close();
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                         ListGrid_ForThisPostGroup_GetPosts.invalidateCache();
                         ListGrid_AllPosts.invalidateCache();
-
-
                     } else {
                         isc.say("خطا");
                     }
@@ -406,6 +405,11 @@
         gridComponents: [Lable_ForThisPostGroup_GetPosts, "filterEditor", "header", "body"],
         dataSource: RestDataSource_ForThisPostGroup_GetPosts,
         sortField: 1,
+        // selectionAppearance: "checkbox",
+        selectionType: "simple",
+        canDragResize: true,
+        dragTrackerMode: "title",
+        canDrag: true,
         fields: [
             {name: "code", filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
@@ -419,17 +423,16 @@
             {name: "OnDelete", title: "حذف", align: "center", autoFitWidth: true, autoFitWidthApproach: "both"}
         ],
         createRecordComponent: function (record, colNum) {
-            var fieldName = this.getFieldName(colNum);
-
+            let fieldName = this.getFieldName(colNum);
             if (fieldName === "OnDelete") {
-                var recordCanvas = isc.HLayout.create({
+                let recordCanvas = isc.HLayout.create({
                     height: 20,
                     width: "100%",
                     layoutMargin: 5,
                     membersMargin: 10,
                     align: "center"
                 });
-                var removeIcon = isc.ImgButton.create({
+                let removeIcon = isc.ImgButton.create({
                     showDown: false,
                     showRollOver: false,
                     layoutAlign: "center",
@@ -439,10 +442,10 @@
                     width: 16,
                     grid: this,
                     click: function () {
-                        var activePost = record;
-                        var activePostId = activePost.id;
-                        var activePostGroup = ListGrid_Post_Group_Jsp.getSelectedRecord();
-                        var activePostGroupId = activePostGroup.id;
+                        let activePostId = record.id;
+                        let activePostGroup = ListGrid_Post_Group_Jsp.getSelectedRecord();
+                        let activePostGroupId = activePostGroup.id;
+                        wait.show();
                         isc.RPCManager.sendRequest({
                             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             useSimpleHttp: true,
@@ -451,9 +454,8 @@
                             httpMethod: "DELETE",
                             serverOutputAsString: false,
                             callback: function (resp) {
-                                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-
-                                    // RestDataSource_ForThisPostGroup_GetPosts.removeRecord(activePost);
+                                wait.close();
+                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                     ListGrid_AllPosts.invalidateCache();
                                     ListGrid_ForThisPostGroup_GetPosts.invalidateCache();
                                 } else {
@@ -469,15 +471,15 @@
                 return null;
         },
         recordDrop: function (dropRecords) {
-            var postGroupRecord = ListGrid_Post_Group_Jsp.getSelectedRecord();
-            var postGroupId = postGroupRecord.id;
-            var postIds = [];
+            let postGroupRecord = ListGrid_Post_Group_Jsp.getSelectedRecord();
+            let postGroupId = postGroupRecord.id;
+            let postIds = [];
             for (let i = 0; i < dropRecords.getLength(); i++) {
                 postIds.add(dropRecords[i].id);
             }
-            var JSONObj = {"ids": postIds};
+            let JSONObj = {"ids": postIds};
             TrDSRequest();
-            wait_PostGroup = createDialog("wait");
+            wait.show();
             isc.RPCManager.sendRequest({
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
@@ -487,20 +489,10 @@
                 data: JSON.stringify(JSONObj),
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    wait_PostGroup.close();
+                    wait.close();
                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-
                         ListGrid_ForThisPostGroup_GetPosts.invalidateCache();
                         ListGrid_AllPosts.invalidateCache();
-
-                        // var OK = isc.Dialog.create({
-                        //     message: "عملیات با موفقیت انجام شد",
-                        //     icon: "[SKIN]say.png",
-                        //     title: "پیام موفقیت"
-                        // });
-                        // setTimeout(function () {
-                        //     // OK.close();
-                        // }, 3000);
                     } else {
                         isc.say("خطا");
                     }

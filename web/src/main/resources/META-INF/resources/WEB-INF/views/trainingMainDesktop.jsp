@@ -1181,14 +1181,14 @@
                 </sec:authorize>
 
 
-                <sec:authorize access="hasAuthority('Menu_BasicInfo_Personnel')">
-                {
-                    title: "<spring:message code="organizational.chart"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/organizationalChart"/>");
-                    }
-                },
-                </sec:authorize>
+                <%--<sec:authorize access="hasAuthority('Menu_BasicInfo_Personnel')">--%>
+                <%--{--%>
+                    <%--title: "<spring:message code="organizational.chart"/>",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="web/organizationalChart"/>");--%>
+                    <%--}--%>
+                <%--},--%>
+                <%--</sec:authorize>--%>
             ]
         }),
     });
@@ -2118,7 +2118,7 @@
         if (type === 'wait') {
             message = message ? message : "<spring:message code='in.operation'/>"
         }
-        var dialog = isc.Dialog.create({
+        let dialog = isc.Dialog.create({
             icon: type + '.png',
             title: title ? title : "<spring:message code="message"/>",
             message: message,

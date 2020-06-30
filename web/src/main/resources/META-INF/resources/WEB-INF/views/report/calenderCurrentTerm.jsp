@@ -8,7 +8,7 @@
 %>
 
 // <script>
-    var wait_Variable;
+    var calander_current_term_wait;
     var flag = 0;
 
     var selectedPerson_CurrentTerm = null;
@@ -243,7 +243,7 @@
             }
             },
         dataArrived: function () {
-            wait_Variable.close()
+            calander_current_term_wait.close()
         },
         showFilterEditor: false,
         filterOnKeypress: true,
@@ -379,7 +379,7 @@
 
             var code = record.postCode.replace("/", ".");
             selectedPerson_CurrentTerm = record;
-            wait_Variable = createDialog("wait");
+            calander_current_term_wait = createDialog("wait");
             isc.RPCManager.sendRequest(TrDSRequest(postUrl + "/" + code, "GET", null, PostCodeSearch));
 
         } else {
@@ -392,10 +392,10 @@
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 200) {
             needAssessmentClass_CurrentTerm(JSON.parse(resp.httpResponseText));
         } else if (resp.httpResponseCode === 404 && resp.httpResponseText === "PostNotFound") {
-            wait_Variable.close();
+            calander_current_term_wait.close();
             createDialog("info", "<spring:message code='needsAssessmentReport.postCode.not.Found'/>");
         } else {
-            wait_Variable.close();
+            calander_current_term_wait.close();
             createDialog("info", "<spring:message code="msg.operation.error"/>");
         }
     }
@@ -409,7 +409,7 @@
         click: function () {
 
             if (flag === 1) {
-                wait_Variable = createDialog("wait");
+                calander_current_term_wait = createDialog("wait");
                 ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1.invalidateCache();
                 ListGrid_ALLClass_CalculatorCurrentTerm1.invalidateCache();
                 ListGrid_All_Courses_CalculatorCurrentTerm.invalidateCache();

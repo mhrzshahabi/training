@@ -182,11 +182,11 @@
     });
     var ListGrid_Job_Group_Jsp = isc.TrLG.create({
         color: "red",
-        selectionType: "multiple",
         dataSource: RestDataSource_Job_Group_Jsp,
         contextMenu: Menu_ListGrid_Job_Group_Jsp,
         sortField: 5,
         autoFetchData: true,
+        selectionType: "single",
         selectionUpdated: function () {
             selectionUpdated_JobGroupGroup();
         },
@@ -313,33 +313,17 @@
         filterOnKeypress: true,
         dragTrackerMode: "title",
         canDrag: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن",
-
-
+        selectionAppearance: "checkbox",
+        selectionType: "simple",
         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
-
-            // var activeJob = record;
-            // var activeJobId = activeJob.id;
-            // var activeJobGroup = ListGrid_Job_Group_Jsp.getSelectedRecord();
-            // var activeJobGroupId = activeJobGroup.id;
-
-            var jobGroupRecord = ListGrid_Job_Group_Jsp.getSelectedRecord();
-            var jobGroupId = jobGroupRecord.id;
-            // var jobId=dropRecords[0].id;
-            var jobIds = new Array();
-            for (i = 0; i < dropRecords.getLength(); i++) {
+            let jobGroupRecord = ListGrid_Job_Group_Jsp.getSelectedRecord();
+            let jobGroupId = jobGroupRecord.id;
+            let jobIds = [];
+            for (let i = 0; i < dropRecords.getLength(); i++) {
                 jobIds.add(dropRecords[i].id);
             }
-            ;
-
-            var JSONObj = {"ids": jobIds};
+            let JSONObj = {"ids": jobIds};
+            wait.show();
             isc.RPCManager.sendRequest({
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
@@ -349,12 +333,10 @@
                 data: JSON.stringify(JSONObj),
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-
+                    wait.close();
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                         ListGrid_ForThisJobGroup_GetJobs.invalidateCache();
                         ListGrid_AllJobs.invalidateCache();
-
-
                     } else {
                         isc.say("خطا");
                     }
@@ -372,7 +354,8 @@
         //showRowNumbers: true,
         showRecordComponents: true,
         showRecordComponentsByCell: true,
-
+        selectionAppearance: "checkbox",
+        selectionType: "simple",
         dataSource: RestDataSource_ForThisJobGroup_GetJobs,
         fields: [
             {name: "id", title: "id", primaryKey: true, hidden: true},
@@ -384,10 +367,6 @@
             {name: "titleFa", title: "نام شغل", align: "center", width: "70%"},
             {name: "OnDelete", title: "حذف", align: "center"}
         ],
-
-        //--------------------------------------------
-
-
         createRecordComponent: function (record, colNum) {
             var fieldName = this.getFieldName(colNum);
 
@@ -439,51 +418,28 @@
             } else
                 return null;
         },
-
-
-        //----------------------------------------------------
-
-
         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
-
-
-
-            var jobGroupRecord = ListGrid_Job_Group_Jsp.getSelectedRecord();
-            var jobGroupId = jobGroupRecord.id;
-            // var jobId=dropRecords[0].id;
-            var jobIds = new Array();
-            for (i = 0; i < dropRecords.getLength(); i++) {
+            let jobGroupRecord = ListGrid_Job_Group_Jsp.getSelectedRecord();
+            let jobGroupId = jobGroupRecord.id;
+            let jobIds = [];
+            for (let i = 0; i < dropRecords.getLength(); i++) {
                 jobIds.add(dropRecords[i].id);
             }
-            ;
-            var JSONObj = {"ids": jobIds};
-
-
-            TrDSRequest()
-
-
+            let JSONObj = {"ids": jobIds};
+            wait.show();
             isc.RPCManager.sendRequest({
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
-                actionURL: jobGroupUrl + "addJobs/" + jobGroupId + "/" + jobIds, //"${restApiUrl}/api/tclass/addStudents/" + ClassID,
+                actionURL: jobGroupUrl + "addJobs/" + jobGroupId + "/" + jobIds,
                 httpMethod: "POST",
                 data: JSON.stringify(JSONObj),
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-
+                    wait.close();
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                         ListGrid_ForThisJobGroup_GetJobs.invalidateCache();
                         ListGrid_AllJobs.invalidateCache();
-
-                        // var OK = isc.Dialog.create({
-                        //     message: "عملیات با موفقیت انجام شد",
-                        //     icon: "[SKIN]say.png",
-                        //     title: "پیام موفقیت"
-                        // });
-                        // setTimeout(function () {
-                        //     // OK.close();
-                        // }, 3000);
                     } else {
                         isc.say("خطا");
                     }
@@ -497,16 +453,6 @@
         autoFetchData: false,
         showFilterEditor: true,
         filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
-
-
     });
 
     var SectionStack_All_Jobs_Jsp = isc.SectionStack.create({
@@ -1302,11 +1248,7 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
-                        var wait = isc.Dialog.create({
-                            message: "در حال انجام عملیات...",
-                            icon: "[SKIN]say.png",
-                            title: "پیام"
-                        });
+                        wait.show();
                         isc.RPCManager.sendRequest({
                             actionURL: jobGroupUrl + record.id,
                             httpMethod: "DELETE",

@@ -109,6 +109,7 @@
         gridComponents: [PostGradeTS_postGrade, ToolStrip_NA_PostGrade, "filterEditor", "header", "body",],
         contextMenu: PostGradeMenu_postGrade,
         sortField: 2,
+        selectionType: "single",
         dataChanged: function () {
             this.Super("dataChanged", arguments);
             var totalRows = this.data.getLength();

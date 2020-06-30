@@ -284,7 +284,7 @@ public class ClassSessionService implements IClassSession {
     public void delete(Long id, HttpServletResponse response) {
 
         try {
-            if (!attendanceDAO.existsBySessionId(id)) {
+            if (attendanceDAO.checkSessionIdAndState(id, "0") <= 0) {
                 classSessionDAO.deleteById(id);
             } else {
                 Locale locale = LocaleContextHolder.getLocale();
@@ -309,16 +309,16 @@ public class ClassSessionService implements IClassSession {
         for (int i=0;i<sessionIds.size();i++) {
              Long sessionId=sessionIds.get(i);
 
-             if (!attendanceDAO.existsBySessionId(sessionId)) {
+             if (attendanceDAO.checkSessionIdAndState(sessionId, "0") <= 0) {
                  Long classId = getClassIdBySessionId(sessionId);
-
+                 attendanceDAO.deleteAllBySessionId(sessionId);
                  classSessionDAO.deleteById(sessionId);
                  classAlarmService.alarmSumSessionsTimes(classId);
                  classAlarmService.alarmTeacherConflict(classId);
                  classAlarmService.alarmStudentConflict(classId);
                  classAlarmService.alarmTrainingPlaceConflict(classId);
                  successes++;
-             }//end if
+             }
         }
 
         ClassSessionDTO.DeleteStatus deleteStatus=new ClassSessionDTO.DeleteStatus();

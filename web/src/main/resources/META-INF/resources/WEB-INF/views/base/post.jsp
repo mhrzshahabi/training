@@ -7,10 +7,10 @@
         var Window_NeedsAssessment_Edit = isc.Window.create({
             ID: "Window_NeedsAssessment_Edit",
             title: "<spring:message code="needs.assessment"/>",
-            placement: "fillScreen",
             minWidth: 1024,
             items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],
             // items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/diff-needs-assessment/"})],
+            placement: "fillScreen",
             showUs(record, objectType) {
                 loadEditNeedsAssessment(record, objectType);
                 // loadDiffNeedsAssessment(record, objectType);
@@ -298,6 +298,7 @@
 
 
     PostLG_post = isc.TrLG.create({
+        selectionType: "single",
         dataSource: PostDS_post,
         fields: [
             {name: "code",
