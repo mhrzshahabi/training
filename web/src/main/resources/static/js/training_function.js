@@ -6,11 +6,8 @@ function getFormulaMessage(message, font_size, font_color, font_type) {
         return "<font size=" + font_size + " color='" + font_color + "'>" + message + "</font>"
 }
 
-
 function simpleDialog(title, message, timeout, dialogType) {
-
-
-    var di = isc.Dialog.create({
+    let di = isc.Dialog.create({
         message: message,
         icon: "[SKIN]" + dialogType + ".png",
         title: title,
@@ -24,16 +21,11 @@ function simpleDialog(title, message, timeout, dialogType) {
         setTimeout(function () {
             di.close();
         }, timeout);
-
-
     }
-
 }
 
-
-function yesNoDialog(title, message, timeout, dialogType, retIndex) {
-    var retIndex = 6;
-    var ynd = isc.Dialog.create({
+function yesNoDialog(title, message, timeout, dialogType, retIndex = 6) {
+    let ynd = isc.Dialog.create({
         message: message,
         icon: "[SKIN]" + dialogType + ".png",
         title: title,
@@ -134,5 +126,29 @@ function defineWindowTreeNeedsAssessment() {
             this.Super("show", arguments);
         },
     });
+}
+
+function showWindowDiffNeedsAssessment(objectId, objectType) {
+    let Window_NeedsAssessment_Diff = isc.Window.create({
+        ID: "Window_NeedsAssessment_Diff",
+        title: "اختلاف نیازسنجی",
+        placement: "fillScreen",
+        visibility : "hidden",
+        minWidth: 1024,
+        items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/diff-needs-assessment/"})],
+        showUs(id, type) {
+            loadDiffNeedsAssessment(id, type);
+            this.Super("show", arguments);
+        },
+    });
+    let interval = setInterval(()=>{
+        if(Window_NeedsAssessment_Diff !== undefined) {
+            Window_NeedsAssessment_Diff.showUs(objectId, objectType);
+            if(Window_NeedsAssessment_Edit !== undefined){
+                Window_NeedsAssessment_Edit.close();
+            }
+            clearInterval(interval);
+        }
+    },50)
 }
 

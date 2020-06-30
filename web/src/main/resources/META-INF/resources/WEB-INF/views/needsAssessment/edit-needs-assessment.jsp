@@ -428,24 +428,7 @@
         margin: 1,
         click(){
             if(Window_NeedsAssessment_Diff === undefined) {
-                var Window_NeedsAssessment_Diff = isc.Window.create({
-                    ID: "Window_NeedsAssessment_Diff",
-                    title: "<spring:message code="needs.assessment"/>",
-                    placement: "fillScreen",
-                    minWidth: 1024,
-                    items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/diff-needs-assessment/"})],
-                    showUs(record, objectType) {
-                        loadDiffNeedsAssessment(record, objectType);
-                        this.Super("show", arguments);
-                    },
-                });
-                let interval = setInterval(()=>{
-                    if(Window_NeedsAssessment_Diff !== undefined) {
-                        Window_NeedsAssessment_Diff.showUs(DynamicForm_JspEditNeedsAssessment.getField("objectId").getSelectedRecord(), DynamicForm_JspEditNeedsAssessment.getValue("objectType"))
-                        Window_NeedsAssessment_Edit.close();
-                        clearInterval(interval);
-                    }
-                },50)
+                showWindowDiffNeedsAssessment(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"))
             }
         }
     });
