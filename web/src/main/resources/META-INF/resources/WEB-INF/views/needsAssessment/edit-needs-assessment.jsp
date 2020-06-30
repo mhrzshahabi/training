@@ -1097,7 +1097,7 @@
                     buttons : [
                         isc.Button.create({ title:"ارسال به گردش کار"}),
                         isc.Button.create({ title:"لغو تغییرات"}),
-                        isc.Button.create({ title:"خروج از پنجره نیازسنجی"}),
+                        isc.Button.create({ title:"خروج از نیازسنجی"}),
                     ],
                     buttonClick : function (button, index) {
                         dialog.close();
@@ -1114,6 +1114,9 @@
                         }
                     }
                 });
+            }
+            else {
+                Window_NeedsAssessment_Edit.Super("hide", arguments);
             }
         }
     })
