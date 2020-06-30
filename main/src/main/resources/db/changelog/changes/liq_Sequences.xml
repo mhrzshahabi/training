@@ -240,5 +240,8 @@
     <changeSet author="razmnoosh (generated)" id="1593244318133-425">
         <createSequence sequenceName="seq_class_document_id"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1593510287630-431">
+        <createSequence sequenceName="seq_training_post_id"/>
+    </changeSet>
 
 </databaseChangeLog>

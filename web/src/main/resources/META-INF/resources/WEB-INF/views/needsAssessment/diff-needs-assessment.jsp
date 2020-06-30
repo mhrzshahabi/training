@@ -1422,13 +1422,20 @@
     function updateLabelDiffNeedsAssessment(objectId) {
         Label_PlusData_JspDiffNeedsAssessment.setContents("");
         if(NeedsAssessmentTargetDF_diffNeedsAssessment.getValue("objectType") === "Post") {
-            Label_PlusData_JspDiffNeedsAssessment.setContents(
-                "عنوان پست: " + objectId.titleFa
-                // + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + objectId.postGrade.titleFa
-                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "حوزه: " + objectId.area
-                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "معاونت: " + objectId.assistance
-                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "امور: " + objectId.affairs
-            );
+            isc.RPCManager.sendRequest(TrDSRequest(postUrl + "/spec-list?id=" + objectId , "GET", null, (resp)=> {
+                if(resp.httpResponseCode === 200){
+                    let record = JSON.parse(resp.data).response.data[0];
+                    Label_PlusData_JspDiffNeedsAssessment.setContents(
+                        "عنوان پست: " + record.titleFa
+                        // + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + objectId.postGrade.titleFa
+                        + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "حوزه: " + record.area
+                        + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "معاونت: " + record.assistance
+                        + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "امور: " + record.affairs
+                    );
+                }
+
+            }));
+
         }
     }
     function updatePriority_JspDiffNeedsAssessment(viewer, record) {
@@ -1477,9 +1484,9 @@
         }
         updateObjectIdLG_Diff(NeedsAssessmentTargetDF_diffNeedsAssessment, type);
         NeedsAssessmentTargetDF_diffNeedsAssessment.setValue("objectType", type);
-        NeedsAssessmentTargetDF_diffNeedsAssessment.setValue("objectId", objectId.id);
+        NeedsAssessmentTargetDF_diffNeedsAssessment.setValue("objectId", objectId);
         clearAllGrid_Diff();
-        editNeedsAssessmentRecord_Diff(objectId.id, type);
+        editNeedsAssessmentRecord_Diff(objectId, type);
         // refreshPersonnelLG(objectId);
         updateLabelDiffNeedsAssessment(objectId);
     }

@@ -72,6 +72,6 @@ public class ViewPost extends Auditable {
     @Column(name = "n_personnel_count")
     private Integer personnelCount;
 
-    @ManyToMany(mappedBy = "postSet")
+    @ManyToMany(mappedBy = "postSet", fetch = FetchType.LAZY)
     private Set<PostGroup> postGroupSet;
 }

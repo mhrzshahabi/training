@@ -412,7 +412,8 @@
                   sessionInOneDate.length = 0;
                   ListGrid_Attendance_AttendanceJSP.invalidateCache();
                   form.setValue("sessionDate","");
-                }
+                },
+                pickListProperties: {showFilterEditor: false},
             },
             {
                 name: "sessionDate",
