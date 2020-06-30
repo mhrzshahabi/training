@@ -43,10 +43,13 @@ public interface PersonnelDAO extends JpaRepository<Personnel, String>, JpaSpeci
     @Query(value = "SELECT DISTINCT tbl_personnel.ccp_area FROM tbl_personnel WHERE tbl_personnel.ccp_area IS NOT NULL ORDER BY  tbl_personnel.ccp_area", nativeQuery = true)
     List<String> findAllAreaFromPersonnel();
 
-    List<Personnel> findByPersonnelNoInOrPersonnelNo2In(List<String> personnelNos,List<String> personnelNos2);
+    List<Personnel> findByPersonnelNoInOrPersonnelNo2In(List<String> personnelNos, List<String> personnelNos2);
 
     Personnel findPersonnelByPersonnelNo(String personnelNo);
 
     Personnel findById(Long Id);
+
+    @Query(value = "SELECT complex_title FROM tbl_personnel where national_code = :national_code AND active = 1 AND employment_status_id=5 AND ROWNUM < 2", nativeQuery = true)
+    String getComplexTitleByNationalCode(String national_code);
 
 }

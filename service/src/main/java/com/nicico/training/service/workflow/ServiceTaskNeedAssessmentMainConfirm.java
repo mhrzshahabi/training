@@ -1,5 +1,7 @@
 package com.nicico.training.service.workflow;
 
+import com.nicico.copper.core.SecurityUtil;
+import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.service.NeedsAssessmentService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,16 +16,27 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class ServiceTaskNeedAssessmentMainConfirm implements JavaDelegate {
 
+
     NeedsAssessmentService needsAssessmentService;
+    private final PersonnelDAO personnelDAO;
 
     @Override
     public void execute(DelegateExecution exe) {
+
+        String mainConfirmBoss = "ahmadi_z";
+        String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
+
+        if(complexTitle.equals("شهر بابک"))
+        {
+            mainConfirmBoss = "ebrahimi_l";
+        }
+
 
         String taskName = exe.getCurrentActivityId();
 
         //**********service task detect committee boss**********
         if (taskName.equalsIgnoreCase("servicetaskAssignMainConfirmBoss")) {
-            exe.setVariable("needAssessmentMainConfirmBoss", "ahmadi_z");
+            exe.setVariable("needAssessmentMainConfirmBoss", mainConfirmBoss);
 
             if (exe.getVariable("REJECT").toString().equals("") && exe.getVariable("workflowStatusCode").toString().equals("0")) {
 
