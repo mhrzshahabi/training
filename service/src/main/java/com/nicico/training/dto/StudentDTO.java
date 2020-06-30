@@ -168,7 +168,7 @@ public class StudentDTO {
         private String fatherName;
         private String mobile;
         private String birthCertificateNo;
-
+        private String postCode;
     }
 
     @Getter

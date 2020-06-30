@@ -133,10 +133,15 @@ public class ClassSessionRestController {
     @DeleteMapping(value = "/deleteSessions/{sessionIds}")
     public ResponseEntity<ClassSessionDTO.DeleteStatus> deleteSessions(@PathVariable List<Long> sessionIds) {
         ClassSessionDTO.DeleteStatus deleteStatus = classSessionService.deleteSessions(sessionIds);
-        if(deleteStatus.getSucesses() > 0)
+        if(deleteStatus.getSucesses() == deleteStatus.getTotalSizes())
             return new ResponseEntity<>(deleteStatus,HttpStatus.OK);
-        else
-            return new ResponseEntity<>(deleteStatus,HttpStatus.PRECONDITION_REQUIRED);
+        else if(deleteStatus.getSucesses() > 0)
+            return new ResponseEntity<>(deleteStatus,HttpStatus.OK);
+        else {
+            deleteStatus.setSucesses(0);
+            deleteStatus.setTotalSizes(0);
+            return new ResponseEntity<>(deleteStatus, HttpStatus.PRECONDITION_REQUIRED);
+        }
 //            return new ResponseEntity<>(deleteStatus,HttpStatus.valueOf(TrainingException.ErrorType.NoChangeEvent.getHttpStatusCode()));
     }
 

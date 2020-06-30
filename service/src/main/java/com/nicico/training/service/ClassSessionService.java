@@ -47,6 +47,7 @@ public class ClassSessionService implements IClassSession {
     private final MessageSource messageSource;
     private final TclassDAO tclassDAO;
     private final ClassAlarmService classAlarmService;
+    private final ParameterValueService parameterValueService;
 
     //*********************************
 
@@ -282,9 +283,9 @@ public class ClassSessionService implements IClassSession {
     @Transactional
     @Override
     public void delete(Long id, HttpServletResponse response) {
-
+        Long kh = parameterValueService.getId("kh");
         try {
-            if (attendanceDAO.checkSessionIdAndState(id, "0") <= 0) {
+            if (attendanceDAO.checkSessionIdAndState(id, "0", kh) <= 0) {
                 classSessionDAO.deleteById(id);
             } else {
                 Locale locale = LocaleContextHolder.getLocale();
@@ -305,11 +306,12 @@ public class ClassSessionService implements IClassSession {
     public ClassSessionDTO.DeleteStatus deleteSessions(List<Long> sessionIds) {
         int totalSize = sessionIds.size();
         int successes = 0;
+        Long kh = parameterValueService.getId("kh");
 
         for (int i=0;i<sessionIds.size();i++) {
              Long sessionId=sessionIds.get(i);
 
-             if (attendanceDAO.checkSessionIdAndState(sessionId, "0") <= 0) {
+             if (attendanceDAO.checkSessionIdAndState(sessionId, "0", kh) <= 0) {
                  Long classId = getClassIdBySessionId(sessionId);
                  attendanceDAO.deleteAllBySessionId(sessionId);
                  classSessionDAO.deleteById(sessionId);

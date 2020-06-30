@@ -313,4 +313,9 @@ public class MainFormController {
 
     }
 
+    @GetMapping("/personnel-information-details")
+    public String showPersonnelInformationDetailsForm() {
+        return "basic/personnelInformationDetails";
+    }
+
 }
