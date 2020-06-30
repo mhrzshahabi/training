@@ -1339,13 +1339,12 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_EVALUATION_STATICAL_REPORT-008">
+    <changeSet author="NICICO" id="VIEW_EVALUATION_STATICAL_REPORT-009">
         <createView viewName="VIEW_EVALUATION_STATICAL_REPORT" replaceIfExists="true">
             <![CDATA[
 	   SELECT
         rowNum as id,
         tclass.N_H_DURATION as tclass_n_duration,
-        term.C_TITLE_FA as term_c_title,
         tclass.F_INSTITUTE_ORGANIZER as tclass_organizer,
         tclass.C_STATUS as tclass_status,
         tclass.F_PLANNER as tclass_planner,
@@ -1404,9 +1403,6 @@ FROM
             GROUP BY TBL_CLASS_STUDENT.CLASS_ID) students ON students.CLASS_ID = tclass.ID
         LEFT JOIN TBL_EVALUATION_ANALYSIS evaluationanalysis
         ON evaluationanalysis.F_TCLASS = tclass.ID
-
-        INNER JOIN TBL_TERM term
-        ON term.id = tclass.F_TERM
     			]]>
         </createView>
     </changeSet>
