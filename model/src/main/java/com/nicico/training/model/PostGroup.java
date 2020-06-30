@@ -40,4 +40,10 @@ public class PostGroup extends Auditable {
             joinColumns = {@JoinColumn(name = "f_postgroup_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_post_id", referencedColumnName = "id")})
     private Set<Post> postSet;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "tbl_training_post_post_group",
+            joinColumns = {@JoinColumn(name = "f_post_group_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "f_training_post_id", referencedColumnName = "id")})
+    private Set<TrainingPost> trainingPostSet;
 }
