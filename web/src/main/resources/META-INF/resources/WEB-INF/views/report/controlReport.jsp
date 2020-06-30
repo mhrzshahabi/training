@@ -10,7 +10,10 @@
     var endDate1Check_JspControlReport = true;
     var endDate2Check_JspControlReport = true;
     var endDateCheck_Order_JspControlReport = true;
-    let control_report_wait;
+    let wait;
+    <%
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+    %>
     //----------------------------------------------------Rest DataSource-----------------------------------------------
     RestDataSource_JspControlReport = isc.TrDS.create({
         fields: [
@@ -108,6 +111,7 @@
             {name: "startDateClass",title:"تاریخ شروع"},
             {name: "endDateClass",title:"تاریخ پایان"},
             {name: "saveTypeA", title: " ", align: "center", canSort: false, canFilter: false},
+            {name: "saveTypeA1", title: " ", align: "center", canSort: false, canFilter: false},
             {name: "saveTypeB", title: " ", align: "center", canSort: false, canFilter: false},
             {name: "saveTypeC", title: " ", align: "center", canSort: false, canFilter: false}
         ],
@@ -184,6 +188,58 @@
                     title: "گزارش کنترل",
                     click: function () {
                         printControlScoreForm(record.idClass);
+                    }//end click function
+                });
+                return button;
+            }
+
+            else if (fieldName == "saveTypeA1") {
+                var button = isc.IButton.create({
+                    layoutAlign: "center",
+                    title: "گزارش اکسل",
+                    click: function () {
+
+
+                        isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "sessions/" + record.idClass, "GET", null,(resp)=>{
+                                if(resp.httpResponseCode == 200){
+                                    const sessions = JSON.parse(resp.data);
+
+                                    if (sessions==null || sessions.length==0)
+                                    {
+                                        isc.Dialog.create({
+                                            message: "<spring:message code="attendance.class.nomeeting"/>",
+                                            icon: "[SKIN]ask.png",
+                                            title: "<spring:message code="message"/>",
+                                            buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                                            buttonClick: function (button, index) {
+                                                this.close();
+                                            }
+                                        });
+
+                                        return;
+                                    }
+
+                                    let criteriaForm = isc.DynamicForm.create({
+                                        fields:[
+                                            {name: "classId", type: "hidden"},
+                                            {name: "list", type: "hidden"}
+                                        ],
+                                    method: "POST",
+                                    action: "<spring:url value="/controlForm/exportExcel"/>",
+                                    target: "_Blank",
+                                    canSubmit: true
+                                    });
+                                    criteriaForm.setValue("classId", record.idClass);
+                                    criteriaForm.setValue("list", JSON.stringify(sessions));
+
+                                    criteriaForm.show();
+                                    criteriaForm.submitForm();
+                                }//end if
+                            }//end resp body function
+                        ));
+
+
+
                     }//end click function
                 });
                 return button;
@@ -792,7 +848,7 @@
                 return;
             }
 
-            control_report_wait=createDialog("wait");
+            wait=createDialog("wait");
             isc.RPCManager.sendRequest(TrDSRequest(controlReportUrl+"/listClassIds" ,"POST", JSON.stringify(DynamicForm_CriteriaForm_JspControlReport.getValues()), "callback: fill_control_result(rpcResponse)"));
         }
     });
@@ -870,7 +926,7 @@
 
     function fill_control_result(resp) {
         if (resp.httpResponseCode === 200) {
-            control_report_wait.close();
+            wait.close();
             ListGrid_JspControlReport.setData(JSON.parse(resp.data).response.data);
             Window_JspControlReport.show();
         }

@@ -16,22 +16,21 @@ import com.nicico.training.model.Student;
 import com.nicico.training.model.Tclass;
 import com.nicico.training.repository.AttendanceDAO;
 import com.nicico.training.repository.StudentDAO;
-import com.nicico.training.service.AttendanceService;
+import com.nicico.training.service.ControlReportService;
 import com.nicico.training.service.TclassService;
 import lombok.RequiredArgsConstructor;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -48,6 +47,8 @@ public class ControlFormController {
     private final ModelMapper modelMapper;
     private final StudentDAO studentDAO;
     private final AttendanceDAO attendanceDOA;
+    private final ControlReportService controlReportService;
+    private final MessageSource messageSource;
 
     @Transactional(readOnly = true)
     @PostMapping(value = {"/clear-print/{type}"})
@@ -273,4 +274,97 @@ public class ControlFormController {
         reportUtil.export("/reports/control.jasper", params, jsonDataSource, response);
     }
 
+    @Transactional(readOnly = true)
+    @PostMapping(value = {"/exportExcel"})
+    public void exportExcelFromClient(final HttpServletResponse response,
+                                      @RequestParam(value = "list") String list,
+                                      @RequestParam(value = "classId") Long classId
+                                      ) throws IOException {
+
+        String dataStatus="true";
+
+        Gson gson = new Gson();
+        Type resultType = new TypeToken<List<ClassSessionDTO.AttendanceClearForm>>() {
+        }.getType();
+        List<ClassSessionDTO.AttendanceClearForm> allData = gson.fromJson(list, resultType);
+
+        Tclass tClass = tclassService.getTClass(classId);
+        TclassDTO.Info tclassDTO = modelMapper.map(tClass, TclassDTO.Info.class);
+        Set<ClassStudent> students = tClass.getClassStudents();
+        List<Long> studentsId = students.stream().map(s -> s.getStudent().getId()).collect(Collectors.toList());
+        List<StudentDTO.clearAttendance> studentArrayList = new ArrayList<>();
+
+        Set<ClassSession> sessions = tClass.getClassSessions();
+        List<ClassSession> sessionList = sessions.stream().sorted(Comparator.comparing(ClassSession::getSessionDate)
+                .thenComparing(ClassSession::getSessionStartHour))
+                .collect(Collectors.toList());
+
+        for (Long studentId : studentsId) {
+            Optional<Student> byId = studentDAO.findById(studentId);
+            Student student = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.StudentNotFound));
+            StudentDTO.clearAttendanceWithState st = modelMapper.map(student, StudentDTO.clearAttendanceWithState.class);
+            st.setFullName(st.getFirstName() + " " + st.getLastName());
+
+            if (dataStatus.equals("true")) {
+                String dayName = sessionList.get(0).getDayName() != null ? sessionList.get(0).getDayName() : "";
+
+                int z = 0;
+                int ztemp = 0;
+                Map<String, String> statePerStudent = new HashMap<>();
+
+                for (int i = 0; i < allData.size(); i++) {
+                    final int j = i;
+                    ClassSession classSession=null;
+
+                    ClassSessionDTO.AttendanceClearForm data=allData.get(j);
+
+                    if (data!=null)
+                    {
+                        classSession = sessionList.stream().filter(x ->
+                                x.getDayName().equals(data.getDayName()) &&
+                                        x.getSessionDate().equals(data.getSessionDate()) &&
+                                        x.getSessionStartHour().equals(data.getSessionStartHour()) &&
+                                        x.getSessionEndHour().equals(data.getSessionEndHour())).findFirst().get();
+                    }
+
+                    if (classSession != null) {
+                        if (!sessionList.get(i).getDayName().equals(dayName)) {
+                            dayName = sessionList.get(i).getDayName();
+                            ztemp += 5;
+                            z = ztemp;
+                        }
+
+                        List<AttendanceDTO> attendanceDTOS = modelMapper.map(attendanceDOA.findBySessionIdAndStudentId(classSession.getId(), studentId), new TypeToken<List<AttendanceDTO>>() {
+                        }.getType());
+                        AttendanceDTO attendanceDTO = attendanceDTOS.size() != 0 && attendanceDTOS.get(0) != null ? attendanceDTOS.get(0) : null;
+
+                        if (attendanceDTO != null) {
+                            statePerStudent.put("z" + z, attendanceDTO.statusName(Integer.parseInt(attendanceDTO.getState())));
+                        }//end if
+
+                    }//end if
+                    z++;
+                }//end inner for
+
+                st.setStates(statePerStudent);
+            }
+            studentArrayList.add(st);
+        }//end outer for
+
+        final Map<String, String> params = new HashMap<>();
+        params.put("days",  sessionList.stream().map(ClassSession::getDayName).collect(Collectors.toSet()).toString());
+        params.put("titleClass", tclassDTO.getTitleClass());
+        params.put("code", tclassDTO.getCode());
+        params.put("startDate", tclassDTO.getStartDate());
+        params.put("endDate", tclassDTO.getEndDate());
+        params.put("teacher", tclassDTO.getTeacher());
+
+        try {
+            controlReportService.exportToExcel(response,params,sessionList);
+        } catch (Exception ex) {
+
+            Locale locale = LocaleContextHolder.getLocale();
+            response.sendError(500, messageSource.getMessage("error", null, locale));
+        }
+    }
 }
