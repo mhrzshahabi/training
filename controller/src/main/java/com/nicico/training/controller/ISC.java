@@ -17,8 +17,10 @@ import org.springframework.data.domain.Page;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -39,7 +41,6 @@ public class ISC<T> {
         String startRowStr = rq.getParameter("_startRow");
         String endRowStr = rq.getParameter("_endRow");
         String constructor = rq.getParameter("_constructor");
-        String sortBy = rq.getParameter("_sortBy");
         String[] criteriaList = rq.getParameterValues("criteria");
         String operator = rq.getParameter("operator");
 
@@ -49,8 +50,8 @@ public class ISC<T> {
         searchRq.setStartIndex(startRow);
         searchRq.setCount(endRow - startRow);
 
-        if (StringUtils.isNotEmpty(sortBy)) {
-            searchRq.setSortBy(sortBy);
+        if (rq.getParameterValues("_sortBy") != null) {
+            searchRq.setSortBy(Arrays.asList(rq.getParameterValues("_sortBy")));
         }
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -89,7 +90,7 @@ public class ISC<T> {
         response.setData(searchRs.getList()).setStartRow(startRow)
                 .setEndRow(startRow + searchRs.getList().size())
                 .setTotalRows(searchRs.getTotalCount().intValue());
-        return new ISC(response);
+        return new ISC<>(response);
     }
 
     public static <T> ISC<T> convertToIscRs(Page<T> page, Integer startRow) {
@@ -97,14 +98,14 @@ public class ISC<T> {
         response.setData(page.getContent()).setStartRow(startRow)
                 .setEndRow(startRow + page.getNumberOfElements())
                 .setTotalRows((int) page.getTotalElements());
-        return new ISC(response);
+        return new ISC<>(response);
     }
 
-    public static void convertDate(SearchDTO.CriteriaRq criteria) {
+    private static void convertDate(SearchDTO.CriteriaRq criteria) {
         if (criteria == null)
             return;
         if ("createdDate".equals(criteria.getFieldName()) || "lastModifiedDate".equals(criteria.getFieldName())) {
-            criteria.setValue(new Date(criteria.getValue().get(0).toString()));
+            criteria.setValue(criteria.getValue().stream().map(o -> new Date(o.toString())).collect(Collectors.toList()));
         }
         if (criteria.getCriteria() != null)
             criteria.getCriteria().forEach(ISC::convertDate);

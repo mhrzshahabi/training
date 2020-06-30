@@ -2802,4 +2802,60 @@
         </createTable>
     </changeSet>
 
+    <changeSet author="poursalehi_mos (generated)" id="1593510287630-432">
+        <createTable tableName="tbl_post_training_post">
+            <column name="f_training_post_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_post_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1593510287630-433">
+        <createTable tableName="tbl_training_post">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_training_postPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_affairs" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_area" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_assistance" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_code" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_cost_center_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_cost_center_title_fa" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_section" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_unit" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_job_id" type="NUMBER(19, 0)"/>
+            <column name="f_post_grade_id" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1593510287630-434">
+        <createTable tableName="tbl_training_post_post_group">
+            <column name="f_post_group_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_training_post_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>

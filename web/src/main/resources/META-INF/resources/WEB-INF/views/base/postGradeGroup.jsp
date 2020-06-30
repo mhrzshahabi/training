@@ -106,9 +106,13 @@
     var ListGrid_Post_Grade_Group_Jsp = isc.TrLG.create({
         selectionType: "single",
         autoFetchData: true,
-        sortField: 2,
         dataSource: RestDataSource_PostGradeGroup_Jsp,
         contextMenu: Menu_ListGrid_Post_Grade_Group_Jsp,
+        canMultiSort: true,
+        initialSort: [
+            {property: "competenceCount", direction: "ascending"},
+            {property: "id", direction: "descending"}
+        ],
         getCellCSSText: function (record) {
             if (record.competenceCount === 0)
                 return "color:red;font-size: 12px;";
@@ -533,7 +537,7 @@
         dataSource: PersonnelDS_PGG,
         selectionType: "single",
         alternateRecordStyles: true,
-        groupByField: "postGradeTitle",
+        // groupByField: "postGradeTitle",
         fields: [
             {name: "firstName"},
             {name: "lastName"},
@@ -699,7 +703,7 @@
         autoFetchData: false,
         showResizeBar: true,
         sortField: 0,
-        groupByField: "postGrade.titleFa",
+        // groupByField: "postGrade.titleFa",
         fields: [
             {name: "code",
                 filterEditorProperties: {

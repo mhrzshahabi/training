@@ -113,7 +113,11 @@
         gridComponents: [JobTS_job, ToolStrip_NA_Job, "filterEditor", "header", "body"],
         contextMenu: JobMenu_job,
         showResizeBar: true,
-        sortField: 2,
+        canMultiSort: true,
+        initialSort: [
+            {property: "competenceCount", direction: "ascending"},
+            {property: "code", direction: "ascending"}
+        ],
         selectionType: "single",
         dataChanged: function () {
             this.Super("dataChanged", arguments);
