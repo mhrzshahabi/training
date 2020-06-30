@@ -52,23 +52,27 @@
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
+    var btnAdd_student_class=isc.ToolStripButtonAdd.create({
+        click: function () {
+            addStudent_student();
+        }
+    });
+
+    var btnRemove_student_class=isc.ToolStripButtonRemove.create({
+        click: function () {
+            removeStudent_student();
+        }
+    });
+
     StudentTS_student = isc.ToolStrip.create({
         members: [
 
             <sec:authorize access="hasAnyAuthority('TclassStudentsTab_ADD','TclassStudentsTab_classStatus')">
-            isc.ToolStripButtonAdd.create({
-                click: function () {
-                    addStudent_student();
-                }
-            }),
+            btnAdd_student_class,
             </sec:authorize>
 
             <sec:authorize access="hasAnyAuthority('TclassStudentsTab_D','TclassStudentsTab_classStatus')">
-            isc.ToolStripButtonRemove.create({
-                click: function () {
-                    removeStudent_student();
-                }
-            }),
+            btnRemove_student_class,
             </sec:authorize>
 
             <sec:authorize access="hasAnyAuthority('TclassStudentsTab_E','TclassStudentsTab_classStatus')">
@@ -1196,14 +1200,15 @@
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         if (!(classRecord === undefined || classRecord == null)) {
             StudentsDS_student.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
+
+            btnAdd_student_class.setVisibility(true);
+            btnRemove_student_class.setVisibility(true);
+
             if(classRecord.classStatus === "3")
             {
-                <%--<sec:authorize access="hasAnyAuthority('TclassStudentsTab_ADD','TclassStudentsTab_D','TclassStudentsTab_E','TclassStudentsTab_P','TclassStudentsTab_R')">
-                StudentTS_student.setVisibility(false)
-
-                </sec:authorize>--%>
-
-                StudentTS_student.setVisibility(false)
+                //StudentTS_student.setVisibility(false)
+                btnAdd_student_class.setVisibility(false);
+                btnRemove_student_class.setVisibility(false);
             }
             else
             {
@@ -1213,13 +1218,6 @@
                 </sec:authorize>
             }
 
-            if (classRecord.classStatus === "3")
-            {
-                <sec:authorize access="hasAuthority('TclassStudentsTab_classStatus')">
-                StudentTS_student.setVisibility(true)
-
-                </sec:authorize>
-            }
             StudentsLG_student.invalidateCache();
             StudentsLG_student.fetchData();
         }
