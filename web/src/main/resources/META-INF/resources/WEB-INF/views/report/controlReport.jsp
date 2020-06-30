@@ -11,9 +11,7 @@
     var endDate2Check_JspControlReport = true;
     var endDateCheck_Order_JspControlReport = true;
     let wait;
-    <%
-    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-    %>
+    let idClasses;
     //----------------------------------------------------Rest DataSource-----------------------------------------------
     RestDataSource_JspControlReport = isc.TrDS.create({
         fields: [
@@ -111,7 +109,6 @@
             {name: "startDateClass",title:"تاریخ شروع"},
             {name: "endDateClass",title:"تاریخ پایان"},
             {name: "saveTypeA", title: " ", align: "center", canSort: false, canFilter: false},
-            {name: "saveTypeA1", title: " ", align: "center", canSort: false, canFilter: false},
             {name: "saveTypeB", title: " ", align: "center", canSort: false, canFilter: false},
             {name: "saveTypeC", title: " ", align: "center", canSort: false, canFilter: false}
         ],
@@ -193,62 +190,81 @@
                 return button;
             }
 
-            else if (fieldName == "saveTypeA1") {
-                var button = isc.IButton.create({
-                    layoutAlign: "center",
-                    title: "گزارش اکسل",
-                    click: function () {
-
-
-                        isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "sessions/" + record.idClass, "GET", null,(resp)=>{
-                                if(resp.httpResponseCode == 200){
-                                    const sessions = JSON.parse(resp.data);
-
-                                    if (sessions==null || sessions.length==0)
-                                    {
-                                        isc.Dialog.create({
-                                            message: "<spring:message code="attendance.class.nomeeting"/>",
-                                            icon: "[SKIN]ask.png",
-                                            title: "<spring:message code="message"/>",
-                                            buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
-                                            buttonClick: function (button, index) {
-                                                this.close();
-                                            }
-                                        });
-
-                                        return;
-                                    }
-
-                                    let criteriaForm = isc.DynamicForm.create({
-                                        fields:[
-                                            {name: "classId", type: "hidden"},
-                                            {name: "list", type: "hidden"}
-                                        ],
-                                    method: "POST",
-                                    action: "<spring:url value="/controlForm/exportExcel"/>",
-                                    target: "_Blank",
-                                    canSubmit: true
-                                    });
-                                    criteriaForm.setValue("classId", record.idClass);
-                                    criteriaForm.setValue("list", JSON.stringify(sessions));
-
-                                    criteriaForm.show();
-                                    criteriaForm.submitForm();
-                                }//end if
-                            }//end resp body function
-                        ));
-
-
-
-                    }//end click function
-                });
-                return button;
-            }
-
             else {
                 return null;
             }
         }
+    });
+
+    IButton_JspControlReport_AttendanceExcel = isc.IButtonSave.create({
+        top: 260,
+        title: "گزارش حضور و غیاب",
+        width: 300,
+        click: function () {
+            let criteriaForm = isc.DynamicForm.create({
+                fields:[
+                    {name: "classId", type: "hidden"},
+                    {name: "dataStatus", type: "hidden"}
+                ],
+                method: "POST",
+                action: "<spring:url value="/controlForm/exportExcelAttendance"/>",
+                target: "_Blank",
+                canSubmit: true
+            });
+            criteriaForm.setValue("classId", idClasses);
+            criteriaForm.setValue("dataStatus",DynamicForm_CriteriaForm_JspControlReport.getItem("dataStatus").getValue() )
+
+            criteriaForm.show();
+            criteriaForm.submitForm();
+        }
+    });
+
+
+    IButton_JspControlReport_ScoreExcel = isc.IButtonSave.create({
+        top: 260,
+        title: "گزارش نمرات",
+        width: 300,
+        click: function () {
+            let criteriaForm = isc.DynamicForm.create({
+                fields:[
+                    {name: "classId", type: "hidden"},
+                    {name: "dataStatus", type: "hidden"}
+                ],
+                method: "POST",
+                action: "<spring:url value="/controlForm/exportExcelScore"/>",
+                target: "_Blank",
+                canSubmit: true
+            });
+            criteriaForm.setValue("classId", idClasses);
+            criteriaForm.setValue("dataStatus",DynamicForm_CriteriaForm_JspControlReport.getItem("dataStatus").getValue() )
+
+            criteriaForm.show();
+            criteriaForm.submitForm();
+        }
+    });
+
+    var HLayOut_CriteriaForm_JspControlReport_Details = isc.TrHLayoutButtons.create({
+        showEdges: false,
+        edgeImage: "",
+        width: "100%",
+        height: "100%",
+        alignLayout: "center",
+        members: [
+            ListGrid_JspControlReport
+        ]
+    });
+
+    var HLayOut_Confirm_JspControlReport_AttendanceExcel = isc.TrHLayoutButtons.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        width: "70%",
+        height: "10%",
+        alignLayout: "center",
+        padding: 10,
+        members: [
+            IButton_JspControlReport_AttendanceExcel,IButton_JspControlReport_ScoreExcel
+        ]
     });
 
     var Window_JspControlReport = isc.Window.create({
@@ -262,7 +278,7 @@
         items: [
             isc.TrVLayout.create({
                 members: [
-                    ListGrid_JspControlReport
+                    HLayOut_CriteriaForm_JspControlReport_Details,HLayOut_Confirm_JspControlReport_AttendanceExcel
                 ]
             })
         ]
@@ -927,6 +943,7 @@
     function fill_control_result(resp) {
         if (resp.httpResponseCode === 200) {
             wait.close();
+            idClasses=JSON.parse(resp.data).response.data.map(x=>x.idClass);
             ListGrid_JspControlReport.setData(JSON.parse(resp.data).response.data);
             Window_JspControlReport.show();
         }

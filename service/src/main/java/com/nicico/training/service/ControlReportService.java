@@ -548,7 +548,6 @@ public class ControlReportService {
             rFont2.setFontName("Tahoma");
             rFont2.setBoldweight(XSSFFont.BOLDWEIGHT_BOLD);
 
-
             int cnt=0;
             for (int m=0;m<masterHeader.size();m++) {
                 //first row
