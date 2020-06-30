@@ -9,6 +9,7 @@
     const red = "#ff8abc";
     const green = "#5dd851";
     var editing = false;
+    var isChanged = false;
     var priorityList = {
         "Post": "پست",
         "PostGroup": "گروه پستی",
@@ -273,14 +274,16 @@
                 }
             }),
             isc.ToolStripButtonRemove.create({
+                ID: "CancelChange_JspENA",
                 title: "بازخوانی / لغو تغییرات",
                 click: function () {
                     let id = DynamicForm_JspEditNeedsAssessment.getValue("objectId");
-                    let type = DynamicForm_JspEditNeedsAssessment.getValue("objectType")
+                    let type = DynamicForm_JspEditNeedsAssessment.getValue("objectType");
                     wait.show();
                     isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/rollBack/" + type + "/" + id, "PUT", null, (resp)=>{
-                        wait.close()
+                        wait.close();
                         if(resp.httpResponseCode === 200){
+                            isChanged = false;
                             editNeedsAssessmentRecord(id, type);
                         }
                     }));
@@ -986,6 +989,7 @@
                         console.log(resp.data);
                         if(resp.data === "true"){
                             editNeedsAssessmentRecord(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"))
+                            isChanged = true;
                         }
                         else if(resp.data === "false"){
                             readOnly(true);
@@ -1080,6 +1084,42 @@
             HLayout_Bottom,
             ToolStrip_JspNeedsAssessment],
     });
+
+    Window_NeedsAssessment_Edit.addProperties({
+        title: "ویرایش نیازسنجی",
+        hide(){
+            if(isChanged){
+                let dialog = isc.Dialog.create({
+                    ID: "dialog",
+                    icon:  'info.png',
+                    title: "<spring:message code="message"/>",
+                    message: "تغییراتی در پنجره ویرایش نیازسنجی ثبت شده است لطفا یکی از گزینه های زیر را با توجه به تغییرات اعمال شده انتخاب کنید.",
+                    buttons : [
+                        isc.Button.create({ title:"ارسال به گردش کار"}),
+                        isc.Button.create({ title:"لغو تغییرات"}),
+                        isc.Button.create({ title:"خروج از نیازسنجی"}),
+                    ],
+                    buttonClick : function (button, index) {
+                        dialog.close();
+                        switch(index){
+                            case 0:
+
+                                break;
+                            case 1:
+                                CancelChange_JspENA.click();
+                                break;
+                            case 2:
+                                Window_NeedsAssessment_Edit.Super("hide", arguments);
+                                break;
+                        }
+                    }
+                });
+            }
+            else {
+                Window_NeedsAssessment_Edit.Super("hide", arguments);
+            }
+        }
+    })
 
     function updateObjectIdLG(form, value) {
         // form.getItem("objectId").canEdit = true;
@@ -1211,6 +1251,7 @@
                     return 0;
                 }
                 DataSource_Skill_JspNeedsAssessment.removeData(record);
+                isChanged = true;
                 return 1;
             }));
         }
@@ -1305,6 +1346,7 @@
             }
             data.id = JSON.parse(resp.data).id;
             DataSource_Skill_JspNeedsAssessment.addData(data);
+            isChanged = true;
             fetchDataDomainsGrid();
         }))
     }
@@ -1375,6 +1417,7 @@
                 }
                 record.needsAssessmentPriorityId = record.needsAssessmentPriorityId + 1 > 113 ? 111 : record.needsAssessmentPriorityId + 1;
                 DataSource_Skill_JspNeedsAssessment.updateData(record);
+                isChanged = true;
                 viewer.endEditing();
             }));
         }

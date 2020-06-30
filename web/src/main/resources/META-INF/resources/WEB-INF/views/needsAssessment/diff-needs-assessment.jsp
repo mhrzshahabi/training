@@ -529,9 +529,15 @@
         showHeaderContextMenu: false,
         showRowNumbers: false,
         border: "1px solid",
-        fields: [{name: "title", title: "<spring:message code="title"/>"}, {name: "competenceType.title", title: "<spring:message code="type"/>"},],
+        fields: [{name: "title", title: "<spring:message code="title"/>"}, {name: "competenceType.title", title: "<spring:message code="type"/>"}],
+        headerHeight: 50,
+        headerSpans: [
+            {
+                fields: ["title", "competenceType.title"],
+                title: "<spring:message code="competence.list"/>"
+            }],
         gridComponents: [
-            isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="competence.list"/>" + "</b></span>", customEdges: ["B"]}),
+            isc.LgLabel.create({contents: "<span><h3><b>" + "نیازسنجی تایید نشده" + "</b></h3></span>", customEdges: ["B"]}),
             CompetenceTS_diffNeedsAssessment, "header", "body"
         ],
         canRemoveRecords:true,
@@ -814,9 +820,15 @@
         showHeaderContextMenu: false,
         showRowNumbers: false,
         border: "1px solid",
-        fields: [{name: "title", title: "<spring:message code="title"/>"}, {name: "competenceType.title", title: "<spring:message code="type"/>"},],
+        headerHeight: 50,
+        headerSpans: [
+            {
+                fields: ["title", "competenceType.title"],
+                title: "<spring:message code="competence.list"/>"
+            }],
+        fields: [{name: "title", title: "<spring:message code="title"/>"}, {name: "competenceType.title", title: "<spring:message code="type"/>"}],
         gridComponents: [
-            isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="competence.list"/>" + "</b></span>", customEdges: ["B"]}),
+            isc.LgLabel.create({contents: "<span><h3><b>" + "نیزسنجی موجود سیستم" + "</b></h3></span>", customEdges: ["B"]}),
             "header", "body"
         ],
         // canRemoveRecords:true,

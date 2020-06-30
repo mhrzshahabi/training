@@ -2118,7 +2118,7 @@
         if (type === 'wait') {
             message = message ? message : "<spring:message code='in.operation'/>"
         }
-        var dialog = isc.Dialog.create({
+        let dialog = isc.Dialog.create({
             icon: type + '.png',
             title: title ? title : "<spring:message code="message"/>",
             message: message,

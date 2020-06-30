@@ -1248,11 +1248,7 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
-                        var job_group_Wait = isc.Dialog.create({
-                            message: "در حال انجام عملیات...",
-                            icon: "[SKIN]say.png",
-                            title: "پیام"
-                        });
+                        wait.show();
                         isc.RPCManager.sendRequest({
                             actionURL: jobGroupUrl + record.id,
                             httpMethod: "DELETE",
@@ -1262,7 +1258,7 @@
                             showPrompt: true,
                             serverOutputAsString: false,
                             callback: function (resp) {
-                                job_group_Wait.close();
+                                wait.close();
                                 if (resp.httpResponseCode == 200) {
                                     ListGrid_Job_Group_Jsp.invalidateCache();
                                     simpleDialog("انجام فرمان", "حذف با موفقیت انجام شد", 2000, "say");
