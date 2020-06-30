@@ -77,8 +77,8 @@
             if (DynamicForm_syllabus.hasErrors()) {
                 return;
             }
-            var data = DynamicForm_syllabus.getValues();
-
+            let data = DynamicForm_syllabus.getValues();
+            wait.show();
             isc.RPCManager.sendRequest({
                 actionURL: url,
                 httpMethod: method,
@@ -89,8 +89,9 @@
                 data: JSON.stringify(data),
                 serverOutputAsString: false,
                 callback: function (resp) {
+                    wait.close()
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                        var OK = isc.Dialog.create({
+                        let OK = isc.Dialog.create({
                             message: "عملیات با موفقیت انجام شد.",
                             icon: "[SKIN]say.png",
                             title: "انجام فرمان"
@@ -101,7 +102,7 @@
                         ListGrid_syllabus_refresh();
                         Window_syllabus.close();
                     } else {
-                        var ERROR = isc.Dialog.create({
+                        let ERROR = isc.Dialog.create({
                             message: ("اجرای عملیات با مشکل مواجه شده است!"),
                             icon: "[SKIN]stop.png",
                             title: "پیغام"
@@ -119,7 +120,7 @@
     function ListGrid_Syllabus_remove() {
 
 
-        var record = ListGrid_Syllabus.getSelectedRecord();
+        let record = ListGrid_Syllabus.getSelectedRecord();
 //console.log(record);
         if (record == null) {
             isc.Dialog.create({
@@ -132,7 +133,7 @@
                 }
             });
         } else {
-            var Dialog_Delete = isc.Dialog.create({
+            let Dialog_Delete = isc.Dialog.create({
                 message: "<spring:message code='global.grid.record.remove.ask'/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code='global.grid.record.remove.ask.title'/>",
@@ -141,11 +142,7 @@
                     this.close();
 
                     if (index == 0) {
-                        var syllabus_wait = isc.Dialog.create({
-                            message: "<spring:message code='global.form.do.operation'/>",
-                            icon: "[SKIN]say.png",
-                            title: "<spring:message code='global.message'/>"
-                        });
+                        wait.show()
                         isc.RPCManager.sendRequest({
                             actionURL: "${restApiUrl}/api/syllabus/" + record.id,
                             httpMethod: "DELETE",
@@ -155,7 +152,7 @@
                             showPrompt: true,
                             serverOutputAsString: false,
                             callback: function (resp) {
-                                syllabus_wait.close();
+                                wait.close();
                                 if (resp.httpResponseCode == 200) {
                                     ListGrid_Syllabus.invalidateCache();
                                     var OK = isc.Dialog.create({

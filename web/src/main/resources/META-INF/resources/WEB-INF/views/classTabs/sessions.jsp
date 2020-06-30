@@ -124,9 +124,8 @@
                     {name: "sessionState"},
                     {name: "sessionStateFa"},
                     {name: "description"}
-                ]
-            //// fetchDataURL: sessionServiceUrl + "load-sessions/428"
-            //// fetchDataURL: sessionServiceUrl + "spec-list"
+                ],
+                fetchDataURL: sessionServiceUrl + "spec-list"
         });
 
 
@@ -928,12 +927,12 @@
                         buttonClick: function (button, index) {
                             this.close();
                             if (index === 0) {
-                                studentRemoveWait = isc.Dialog.create({
-                                    message: "<spring:message code='msg.waiting'/>",
-                                    icon: "[SKIN]say.png",
-                                    title: "<spring:message code='message'/>"
-                                });
-
+                                <%--studentRemoveWait = isc.Dialog.create({--%>
+                                    <%--message: "<spring:message code='msg.waiting'/>",--%>
+                                    <%--icon: "[SKIN]say.png",--%>
+                                    <%--title: "<spring:message code='message'/>"--%>
+                                <%--});--%>
+                                wait.show();
                                 records.forEach(item=> sessionIds=[...sessionIds,parseInt(item.id)]);
                                 isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "deleteSessions/" + sessionIds , "DELETE", null, show_SessionActionResult));
                             }
@@ -949,6 +948,7 @@
         var MyOkDialog_Session;
 
         function show_SessionActionResult(resp) {
+            wait.close();
             var respCode = resp.httpResponseCode;
             if (respCode === 200 || respCode === 201) {
                 loadPage_session();
@@ -958,13 +958,35 @@
                 let dataTemp=JSON.parse(resp.data);
                 let success=parseInt(dataTemp.sucesses);
                 let totalSizes=parseInt(dataTemp.totalSizes);
-                let failures=totalSizes-success;
+                let failures = totalSizes-success;
 
-                MyOkDialog_Session= isc.Dialog.create({
-                    message: "<spring:message code="global.form.request.successful"/>",
-                    icon: "[SKIN]say.png",
-                    title: "<spring:message code="ok"/>",
-                });
+                console.log(success);
+                console.log(failures);
+
+                if (success!=0 && failures!=0)
+                {
+                    MyOkDialog_Session= isc.Dialog.create({
+                        message: getFormulaMessage(failures.toString()+" ", 2, "red", "B") + "<spring:message code="attendance.meeting.none.nums"/>"+"<br/>"+
+                            getFormulaMessage(success.toString()+" ", 2, "green", "B") + "<spring:message code="attendance.meeting.ok.nums"/>",
+                        icon: "[SKIN]say.png",
+                        title: "<spring:message code="warning"/>",
+                    });
+                }
+                else if (success!=0)
+                {
+                    MyOkDialog_Session= isc.Dialog.create({
+                        message: getFormulaMessage(success.toString()+" ", 2, "green", "B") + "<spring:message code="attendance.meeting.ok.nums"/>",
+                        icon: "[SKIN]say.png",
+                        title: "<spring:message code="warning"/>",
+                    });
+                }
+                else {
+                    MyOkDialog_Session= isc.Dialog.create({
+                        message: "<spring:message code="global.form.request.successful"/>",
+                        icon: "[SKIN]say.png",
+                        title: "<spring:message code="ok"/>",
+                    });
+                }
 
                 setTimeout(function () {
 
@@ -974,7 +996,7 @@
 
                     ListGrid_session.scrollToRow(ListGrid_session.getRecordIndex(ListGrid_session.getSelectedRecord()), 0);
 
-                },20000);
+                },6000);
 
                 Window_Session.close();
 
@@ -1005,7 +1027,16 @@
                         icon: "[SKIN]stop.png"
                     });
 
-                } else {
+                }
+                else if (resp.httpResponseCode === 428) {
+
+                    MyOkDialog_Session = isc.MyOkDialog.create({
+                        message: "<spring:message code="global.no.change.happend"/>"+ " " + "<spring:message code="check.attendance"/>",
+                        icon: "[SKIN]stop.png"
+                    });
+
+                }
+                else {
                     MyOkDialog_Session = isc.MyOkDialog.create({
                         message: "<spring:message code="msg.operation.error"/>"
                     });
