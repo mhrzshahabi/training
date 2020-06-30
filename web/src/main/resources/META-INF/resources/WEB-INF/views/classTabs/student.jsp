@@ -10,6 +10,7 @@
     var isEditing=false;
     var url='';
     var studentSelection=false;
+    var selectedRecord_addStudent_class='';
 
     // ------------------------------------------- Menu -------------------------------------------
     StudentMenu_student = isc.Menu.create({
@@ -447,6 +448,46 @@
             studentSelection=false;
 
             SelectedPersonnelsLG_student.data.removeAt(rowNum);
+        },
+        cellClick: function (record, rowNum, colNum) {
+            if (colNum === 4) {
+
+                selectedRecord_addStudent_class= {
+                    firstName: record.firstName,
+                    lastName: record.lastName,
+                    postTitle: record.postTitle,
+                    ccpArea: record.ccpArea,
+                    ccpAffairs: record.ccpAffairs,
+                    personnelNo: record.personnelNo,
+                    nationalCode: record.nationalCode,
+                    postCode: record.postCode,
+                }
+
+                let window_class_Information = isc.Window.create({
+                    title: "<spring:message code="personnel.information"/>",
+                    width: "70%",
+                    minWidth: 500,
+                    autoSize:false,
+                    height: "50%",
+                    items: [isc.VLayout.create({
+                        width: "100%",
+                        height: "100%",
+                        members: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/personnel-information-details/"})]
+                    })]
+                });
+
+                window_class_Information.show();
+
+
+            }
+        },
+        getCellCSSText: function (record, rowNum, colNum) {
+            let result='';
+            if (this.getFieldName(colNum) == "nationalCode") {
+                result+="color: #0066cc !important;text-decoration: underline !important;cursor: pointer !important;"
+            }
+
+            return result;
         }
     });
 
@@ -531,6 +572,14 @@
 
             studentSelection=false;
         },
+        getCellCSSText: function (record, rowNum, colNum) {
+            let result='';
+            if (this.getFieldName(colNum) == "personnelNo") {
+                result+="color: #0066cc !important;text-decoration: underline !important;cursor: pointer !important;"
+            }
+
+            return result;
+        },
         dataChanged: function () {
             this.Super("dataChanged", arguments);
             totalRows = this.data.getLength();
@@ -600,6 +649,37 @@
                 studentSelection=true;
                 PersonnelsLG_student.deselectRecord(current)
                 studentSelection=false;
+            }
+        },
+        cellClick: function (record, rowNum, colNum) {
+            if (colNum === 5) {
+                selectedRecord_addStudent_class= {
+                    firstName: record.firstName,
+                    lastName: record.lastName,
+                    postTitle: record.postTitle,
+                    ccpArea: record.ccpArea,
+                    ccpAffairs: record.ccpAffairs,
+                    personnelNo: record.personnelNo,
+                    nationalCode: record.nationalCode,
+                    postCode: record.postCode,
+                }
+
+                let window_class_Information = isc.Window.create({
+                    title: "<spring:message code="personnel.information"/>",
+                    width: "70%",
+                    minWidth: 500,
+                    autoSize:false,
+                    height: "50%",
+                    items: [isc.VLayout.create({
+                        width: "100%",
+                        height: "100%",
+                        members: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/personnel-information-details/"})]
+                    })]
+                });
+
+                window_class_Information.show();
+
+
             }
         }
     });
@@ -689,6 +769,14 @@
 
             studentSelection=false;
         },
+        getCellCSSText: function (record, rowNum, colNum) {
+            let result='';
+            if (this.getFieldName(colNum) == "personnelNo") {
+                result+="color: #0066cc !important;text-decoration: underline !important;cursor: pointer !important;"
+            }
+
+            return result;
+        },
         dataChanged: function () {
             this.Super("dataChanged", arguments);
             totalRows = this.data.getLength();
@@ -758,7 +846,38 @@
                 PersonnelsRegLG_student.deselectRecord(current)
                 studentSelection=false;
             }
+        },
+        cellClick: function (record, rowNum, colNum) {
+            if (colNum === 5) {
 
+                selectedRecord_addStudent_class= {
+                    firstName: record.firstName,
+                    lastName: record.lastName,
+                    postTitle: record.postTitle,
+                    ccpArea: record.ccpArea,
+                    ccpAffairs: record.ccpAffairs,
+                    personnelNo: record.personnelNo,
+                    nationalCode: record.nationalCode,
+                    postCode: record.postCode,
+                }
+
+                let window_class_Information = isc.Window.create({
+                    title: "<spring:message code="personnel.information"/>",
+                    width: "70%",
+                    minWidth: 500,
+                    autoSize:false,
+                    height: "50%",
+                    items: [isc.VLayout.create({
+                        width: "100%",
+                        height: "100%",
+                        members: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/personnel-information-details/"})]
+                    })]
+                });
+
+                window_class_Information.show();
+
+
+            }
         }
     });
 
