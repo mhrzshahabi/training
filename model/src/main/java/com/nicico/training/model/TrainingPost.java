@@ -1,0 +1,69 @@
+package com.nicico.training.model;
+
+import lombok.*;
+import lombok.experimental.Accessors;
+
+import javax.persistence.*;
+import java.util.Set;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Accessors(chain = true)
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
+@Table(name = "tbl_training_post")
+@DiscriminatorValue("TrainingPost")
+public class TrainingPost extends Auditable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "training_post_seq")
+    @SequenceGenerator(name = "training_post_seq", sequenceName = "seq_training_post_id", allocationSize = 1)
+    @Column(name = "id", precision = 10)
+    private Long id;
+
+    @Column(name = "c_code", nullable = false, unique = true)
+    private String code;
+
+    @Column(name = "c_title_fa", nullable = false)
+    private String titleFa;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_job_id")
+    private Job job;
+
+    @Column(name = "c_area")
+    private String area;
+
+    @Column(name = "c_assistance")
+    private String assistance;
+
+    @Column(name = "c_affairs")
+    private String affairs;
+
+    @Column(name = "c_section")
+    private String section;
+
+    @Column(name = "c_unit")
+    private String unit;
+
+    @Column(name = "c_cost_center_code")
+    private String costCenterCode;
+
+    @Column(name = "c_cost_center_title_fa")
+    private String costCenterTitleFa;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "tbl_post_training_post",
+            joinColumns = {@JoinColumn(name = "f_training_post_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "f_post_id", referencedColumnName = "id")})
+    private Set<Post> postSet;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_post_grade_id")
+    private PostGrade postGrade;
+
+    @ManyToMany(mappedBy = "postSet")
+    private Set<PostGroup> postGroupSet;
+}
