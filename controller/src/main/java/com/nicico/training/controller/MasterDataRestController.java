@@ -107,7 +107,7 @@ public class MasterDataRestController {
         TotalResponse<MasterDataService.CompetenceWebserviceDTO> childeren = masterDataService.getDepartments(iscRq,resp);
         Set<MasterDataService.CompetenceWebserviceDTOInfoTuple> departments = new HashSet<>();//getDepartmentsRoot().getBody()
         //Long anccestorId = departments.iterator().next().getId();//
-        getDepartmentsRoot().getBody().get(0).setParentId(new Long(0));
+//        getDepartmentsRoot().getBody().get(0).setParentId(new Long(0));
         Long anccestorId = getDepartmentsRoot().getBody().get(0).getId();
         departments.add(getDepartmentsRoot().getBody().get(0));
         for(MasterDataService.CompetenceWebserviceDTO child : childeren.getResponse().getData()){
