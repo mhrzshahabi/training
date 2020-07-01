@@ -441,16 +441,6 @@ public class ControlReportService {
 
 
                     cellOfRow = row.createCell(3);
-                    cellOfRow.setCellValue(students.get(m).get(i).getJobTitle());
-                    rCellStyle8.setAlignment(CellStyle.ALIGN_CENTER);
-                    rCellStyle8.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
-                    rCellStyle8.setBorderBottom(BorderStyle.MEDIUM);
-                    rCellStyle8.setBorderTop(BorderStyle.MEDIUM);
-                    rCellStyle8.setBorderLeft(BorderStyle.MEDIUM);
-                    rCellStyle8.setBorderRight(BorderStyle.MEDIUM);
-                    cellOfRow.setCellStyle(rCellStyle8);
-
-                    cellOfRow = row.createCell(4);
                     cellOfRow.setCellValue(students.get(m).get(i).getCcpAffairs());
                     rCellStyle8.setAlignment(CellStyle.ALIGN_CENTER);
                     rCellStyle8.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
@@ -460,8 +450,18 @@ public class ControlReportService {
                     rCellStyle8.setBorderRight(BorderStyle.MEDIUM);
                     cellOfRow.setCellStyle(rCellStyle8);
 
-                    cellOfRow = row.createCell(5);
+                    cellOfRow = row.createCell(4);
                     cellOfRow.setCellValue(students.get(m).get(i).getEducationMajorTitle());
+                    rCellStyle8.setAlignment(CellStyle.ALIGN_CENTER);
+                    rCellStyle8.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+                    rCellStyle8.setBorderBottom(BorderStyle.MEDIUM);
+                    rCellStyle8.setBorderTop(BorderStyle.MEDIUM);
+                    rCellStyle8.setBorderLeft(BorderStyle.MEDIUM);
+                    rCellStyle8.setBorderRight(BorderStyle.MEDIUM);
+                    cellOfRow.setCellStyle(rCellStyle8);
+
+                    cellOfRow = row.createCell(5);
+                    cellOfRow.setCellValue(students.get(m).get(i).getJobTitle());
                     rCellStyle8.setAlignment(CellStyle.ALIGN_CENTER);
                     rCellStyle8.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
                     rCellStyle8.setBorderBottom(BorderStyle.MEDIUM);
@@ -916,7 +916,7 @@ public class ControlReportService {
         try {
             Workbook workbook = new XSSFWorkbook();
             CreationHelper createHelper = workbook.getCreationHelper();
-            Sheet sheet = workbook.createSheet("گزارش نمرات");
+            Sheet sheet = workbook.createSheet("گزارش کنترل");
             sheet.setColumnWidth(0,1000);
             sheet.setColumnWidth(1,5200);
             sheet.setColumnWidth(2,3000);
@@ -1683,10 +1683,10 @@ public class ControlReportService {
                 sheet.setColumnWidth(4,5200);
                 sheet.setColumnWidth(5,5200);
 
-                for (int i=6;i<100;i++)
-                    sheet.setColumnWidth(i, 480);
+            for (int i=6;i<100;i++)
+                sheet.setColumnWidth(i, 480);
 
-                sheet.setRightToLeft(true);
+            sheet.setRightToLeft(true);
 
                 cnt=0;
                 for (int m=0;m<masterHeader.size();m++) {
@@ -2078,16 +2078,6 @@ public class ControlReportService {
 
 
                         cellOfRow = row.createCell(3);
-                        cellOfRow.setCellValue(students.get(m).get(i).getPersonnelNo2());
-                        rCellStyle8.setAlignment(CellStyle.ALIGN_CENTER);
-                        rCellStyle8.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
-                        rCellStyle8.setBorderBottom(BorderStyle.MEDIUM);
-                        rCellStyle8.setBorderTop(BorderStyle.MEDIUM);
-                        rCellStyle8.setBorderLeft(BorderStyle.MEDIUM);
-                        rCellStyle8.setBorderRight(BorderStyle.MEDIUM);
-                        cellOfRow.setCellStyle(rCellStyle8);
-
-                        cellOfRow = row.createCell(4);
                         cellOfRow.setCellValue(students.get(m).get(i).getCcpAffairs());
                         rCellStyle8.setAlignment(CellStyle.ALIGN_CENTER);
                         rCellStyle8.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
@@ -2097,7 +2087,7 @@ public class ControlReportService {
                         rCellStyle8.setBorderRight(BorderStyle.MEDIUM);
                         cellOfRow.setCellStyle(rCellStyle8);
 
-                        cellOfRow = row.createCell(5);
+                        cellOfRow = row.createCell(4);
                         cellOfRow.setCellValue(students.get(m).get(i).getEducationMajorTitle());
                         rCellStyle8.setAlignment(CellStyle.ALIGN_CENTER);
                         rCellStyle8.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
@@ -2107,8 +2097,18 @@ public class ControlReportService {
                         rCellStyle8.setBorderRight(BorderStyle.MEDIUM);
                         cellOfRow.setCellStyle(rCellStyle8);
 
-                        Set<String> statesPerStudentKeys = students.get(m).get(i).getStates().keySet();
-                        List<String> statesPerStudentKeysList = new ArrayList<>(statesPerStudentKeys);
+                        cellOfRow = row.createCell(5);
+                        cellOfRow.setCellValue(students.get(m).get(i).getJobTitle());
+                        rCellStyle8.setAlignment(CellStyle.ALIGN_CENTER);
+                        rCellStyle8.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+                        rCellStyle8.setBorderBottom(BorderStyle.MEDIUM);
+                        rCellStyle8.setBorderTop(BorderStyle.MEDIUM);
+                        rCellStyle8.setBorderLeft(BorderStyle.MEDIUM);
+                        rCellStyle8.setBorderRight(BorderStyle.MEDIUM);
+                        cellOfRow.setCellStyle(rCellStyle8);
+
+                        Set<Integer> statesPerStudentKeys = students.get(m).get(i).getStates().keySet();
+                        List<Integer> statesPerStudentKeysList = new ArrayList<>(statesPerStudentKeys);
 
                         Collection<String> statesPerStudentValues = students.get(m).get(i).getStates().values();
                         List<String> statesPerStudentValuesList = new ArrayList<>(statesPerStudentValues);

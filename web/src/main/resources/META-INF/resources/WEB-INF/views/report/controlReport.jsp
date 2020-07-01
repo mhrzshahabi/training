@@ -349,8 +349,7 @@
                     src: "[SKIN]/pickers/search_picker.png",
                     click: function () {
                         Window_SelectClasses_JspControlReport.show();
-                    }
-                }],
+                    }}],
                 keyPressFilter: "[A-Z|0-9|,-]"
             },
             {
