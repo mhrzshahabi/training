@@ -241,6 +241,15 @@ public class StudentDTO {
     @Accessors
     @ApiModel("Clear With Attendance")
     public static class clearAttendanceWithState extends clearAttendance {
+        private Map<Integer,String> states;
+    }
+
+    //Amin HK
+    @Getter
+    @Setter
+    @Accessors
+    @ApiModel("Clear With Attendance PDF")
+    public static class clearAttendanceWithStatePDF extends clearAttendance {
         private Map<String,String> states;
     }
 
@@ -308,6 +317,6 @@ public class StudentDTO {
         private String educationMajorTitle;
         private String jobTitle;
 
-        private Map<String,String> states;
+        private Map<Integer,String> states;
     }
 }
