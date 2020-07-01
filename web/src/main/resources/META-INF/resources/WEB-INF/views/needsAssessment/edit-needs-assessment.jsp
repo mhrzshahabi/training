@@ -475,35 +475,46 @@
         canDragRecordsOut: true,
         dragDataAction: "none",
         removeRecordClick(rowNum){
-            if(isReadOnly(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"))){
-                createDialog("info", "<spring:message code='read.only.na.message'/>");
-                return;
-            }
-            let Dialog_Competence_remove = createDialog("ask", "هشدار: در صورت حذف شایستگی تمام مهارت های مربوط به آن حذف خواهند شد.",
-                "<spring:message code="verify.delete"/>");
-            Dialog_Competence_remove.addProperties({
-                buttonClick: function (button, index) {
-                    this.close();
-                    if (index === 0) {
-                        let data = ListGrid_Knowledge_JspNeedsAssessment.data.localData.toArray();
-                        data.addAll(ListGrid_Attitude_JspNeedsAssessment.data.localData.toArray());
-                        data.addAll(ListGrid_Ability_JspNeedsAssessment.data.localData.toArray());
-                        let hasFather = false;
-                        for (let i = 0; i < data.length; i++) {
-                            let state = removeRecord_JspNeedsAssessment(data[i], 1);
-                            if(state===0){
-                                return;
-                            }
-                            else if(state===2){
-                                hasFather = true;
-                            }
-                        }
-                        if(hasFather===false) {
-                            DataSource_Competence_JspNeedsAssessment.removeData(this.getRecord(rowNum));
-                        }
-                    }
+            wait.show();
+            let id = DynamicForm_JspEditNeedsAssessment.getValue("objectId");
+            let type = DynamicForm_JspEditNeedsAssessment.getValue("objectType");
+            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/isReadOnly/" + type + "/" + id, "GET", null, (resp) => {
+                wait.close();
+                if (resp.httpResponseCode !== 200) {
+                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                    return;
                 }
-            });
+                if(resp.data === "true"){
+                    createDialog("info", "<spring:message code='read.only.na.message'/>");
+                }
+                else {
+                    let Dialog_Competence_remove = createDialog("ask", "هشدار: در صورت حذف شایستگی تمام مهارت های مربوط به آن حذف خواهند شد.",
+                        "<spring:message code="verify.delete"/>");
+                    Dialog_Competence_remove.addProperties({
+                        buttonClick: function (button, index) {
+                            this.close();
+                            if (index === 0) {
+                                let data = ListGrid_Knowledge_JspNeedsAssessment.data.localData.toArray();
+                                data.addAll(ListGrid_Attitude_JspNeedsAssessment.data.localData.toArray());
+                                data.addAll(ListGrid_Ability_JspNeedsAssessment.data.localData.toArray());
+                                let hasFather = false;
+                                for (let i = 0; i < data.length; i++) {
+                                    let state = removeRecord_JspNeedsAssessment(data[i], 1);
+                                    if(state===0){
+                                        return;
+                                    }
+                                    else if(state===2){
+                                        hasFather = true;
+                                    }
+                                }
+                                if(hasFather===false) {
+                                    DataSource_Competence_JspNeedsAssessment.removeData(this.getRecord(rowNum));
+                                }
+                            }
+                        }
+                    });
+                }
+            }))
         },
         dataChanged(){
             editing = true;
@@ -1448,6 +1459,7 @@
     function readOnly(status){
         if(status === true){
             DynamicForm_JspEditNeedsAssessment.disable();
+            CompetenceTS_needsAssessment.disable();
             ListGrid_Knowledge_JspNeedsAssessment.disable();
             ListGrid_Ability_JspNeedsAssessment.disable();
             ListGrid_Attitude_JspNeedsAssessment.disable();
@@ -1458,6 +1470,7 @@
         }
         else{
             DynamicForm_JspEditNeedsAssessment.enable();
+            CompetenceTS_needsAssessment.enable();
             ListGrid_Knowledge_JspNeedsAssessment.enable();
             ListGrid_Ability_JspNeedsAssessment.enable();
             ListGrid_Attitude_JspNeedsAssessment.enable();
@@ -1476,11 +1489,7 @@
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                 return true;
             }
-            if (resp.data === "true") {
-                return true;
-            } else {
-                return false;
-            }
+            return resp.data === "true";
         }))
     }
 

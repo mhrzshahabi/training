@@ -55,17 +55,17 @@
                 }
             }),
             </sec:authorize>
-            isc.ToolStrip.create({
-                width: "100%",
-                align: "left",
-                border: '0px',
-                members: [
-                    isc.ToolStripButtonRefresh.create({
-                        click: function () {
-                        }
-                    })
-                ]
-            })
+            // isc.ToolStrip.create({
+            //     width: "100%",
+            //     align: "left",
+            //     border: '0px',
+            //     members: [
+            //         isc.ToolStripButtonRefresh.create({
+            //             click: function () {
+            //             }
+            //         })
+            //     ]
+            // })
         ]
     });
     var Label_Title_JspTreeNeedsAssessment = isc.LgLabel.create({
