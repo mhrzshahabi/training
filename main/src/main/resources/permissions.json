@@ -1,5 +1,5 @@
 {
- /* "list": [
+  "list": [
     {
       "code": "Menu_BasicInfo",
       "title": "منوی اطلاعات پایه"
@@ -28,6 +28,7 @@
       "code": "Menu_BasicInfo_Personnel",
       "title": "منوی اطلاعات پایه - اطلاعات پرسنلی"
     },
+
 
 
 
@@ -656,8 +657,9 @@
 
     {"code": "TclassAttendanceTab_ShowOption", "title": "کلاس - تب حضور غیاب - نمایش گزینه ها"},
     {"code": "TclassCheckListTab_classStatus_ShowOption", "title": "کلاس - تب چک لیست - نمایش گزینه ها"},
-    {"code": "TclassPreCourseTestQuestionsTab_ShowOption", "title": "کلاس - سوالات پیش آزمون - نمایش گزینه ها"}
-      ]*/
+    {"code": "TclassPreCourseTestQuestionsTab_ShowOption", "title": "کلاس - سوالات پیش آزمون - نمایش گزینه ها"},
+    {"code": "Menu_Organizational_chart", "title": "درخت سازمانی"}
+      ]
 }
 
 
