@@ -707,7 +707,7 @@ public class MasterDataService implements IMasterDataService {
                             tmp.setComment(jsonNode.get(i).get("comment").asText());
                             tmp.setCorrection(jsonNode.get(i).get("correction").asText());
                             tmp.setAlignment(jsonNode.get(i).get("alignment").asText());
-                            tmp.setParentId(Long.parseLong(jsonNode.get(i).get("parentId").asText()));
+                            tmp.setParentId(Long.parseLong(jsonNode.get(i).get("parentId").asText() == "null" ? "-1" : jsonNode.get(i).get("parentId").asText()));
 
                             list.getData().add(tmp);
                         }
@@ -1014,7 +1014,8 @@ public class MasterDataService implements IMasterDataService {
                             tmp.setComment(jsonNode.get(i).get("comment").asText());
                             tmp.setCorrection(jsonNode.get(i).get("correction").asText());
                             tmp.setAlignment(jsonNode.get(i).get("alignment").asText());
-                            tmp.setParentId(Long.parseLong(jsonNode.get(i).get("parentId").asText()));
+                            String parent = new String();
+                            tmp.setParentId(Long.parseLong(jsonNode.get(i).get("parentId").asText() == "null" ? "-1" : jsonNode.get(i).get("parentId").asText()));
 
                             list.add(tmp);
                         }
@@ -1141,7 +1142,7 @@ public class MasterDataService implements IMasterDataService {
                                 tmp.setComment(jsonNode.get(i).get("comment").asText());
                                 tmp.setCorrection(jsonNode.get(i).get("correction").asText());
                                 tmp.setAlignment(jsonNode.get(i).get("alignment").asText());
-                                tmp.setParentId(Long.parseLong(jsonNode.get(i).get("parentId").asText()));
+                                tmp.setParentId(Long.parseLong(jsonNode.get(i).get("parentId").asText() == "null" ? "-1" : jsonNode.get(i).get("parentId").asText()));
 
                                 list.add(tmp);
                             }
@@ -1244,7 +1245,7 @@ public class MasterDataService implements IMasterDataService {
                     tmp.setComment(jsonNode.get("comment").asText());
                     tmp.setCorrection(jsonNode.get("correction").asText());
                     tmp.setAlignment(jsonNode.get("alignment").asText());
-                    tmp.setParentId(Long.parseLong(jsonNode.get("parentId").asText()));
+                    tmp.setParentId(Long.parseLong(jsonNode.get("parentId").asText() == "null" ? "-1" : jsonNode.get("parentId").asText()));
 
                     return tmp;
                 }else
