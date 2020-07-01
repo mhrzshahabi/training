@@ -501,4 +501,109 @@ public class ControlFormController {
             response.sendError(500, messageSource.getMessage("error", null, locale));
         }
     }
+
+    @Transactional(readOnly = true)
+    @PostMapping(value = {"/exportExcelAll"})
+    public void exportExcelAll(final HttpServletResponse response,
+                                      @RequestParam(value = "classId") String classId,
+                                      @RequestParam(value = "dataStatus") String dataStatus
+    ) throws IOException {
+        Long[] idClasses= Arrays.stream(classId.split(",")).map(x->Long.valueOf(x)).toArray(Long[]::new);
+        List<Map<String, String>> listMaps=new ArrayList<>();
+        List<List<StudentDTO.fullAttendance>> listStudentArray=new ArrayList<>();
+        List<List<ClassSession>> listSessionList=new ArrayList<>();
+
+        for (int m=0;m<idClasses.length;m++) {
+            Tclass tClass = tclassService.getTClass(idClasses[m]);
+            TclassDTO.Info tclassDTO = modelMapper.map(tClass, TclassDTO.Info.class);
+            Set<ClassStudent> students = tClass.getClassStudents();
+            List<ClassStudent> listClassStudents = new ArrayList<ClassStudent>();
+            listClassStudents.addAll(students);
+
+            List<Long> studentsId = students.stream().map(s -> s.getStudent().getId()).collect(Collectors.toList());
+            List<StudentDTO.fullAttendance> studentArrayList = new ArrayList<>();
+
+            Set<ClassSession> sessions = tClass.getClassSessions();
+
+            //must be think about it
+           // if (sessions == null || sessions.size() == 0)
+            //    continue;
+
+            List<ClassSession> sessionList = sessions.stream().sorted(Comparator.comparing(ClassSession::getSessionDate)
+                    .thenComparing(ClassSession::getSessionStartHour))
+                    .collect(Collectors.toList());
+
+            listSessionList.add(sessionList);
+
+            int cnt=0;
+
+            for (Long studentId : studentsId) {
+                Optional<Student> byId = studentDAO.findById(studentId);
+                Student student = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.StudentNotFound));
+                StudentDTO.fullAttendance st = modelMapper.map(student, StudentDTO.fullAttendance.class);
+                st.setFullName(st.getFirstName() + " " + st.getLastName());
+
+                st.setScoreA(listClassStudents.get(cnt).getScore() != null && dataStatus.equals("true") ? listClassStudents.get(cnt).getScore().toString() : "");
+                st.setScoreB(st.calScoreB(st.getScoreA()));
+
+                String dayName = sessionList.get(0).getDayName() != null ? sessionList.get(0).getDayName() : "";
+
+                int z = 0;
+                int ztemp = 0;
+                Map<String, String> statePerStudent = new HashMap<>();
+
+                for (int i = 0; i < sessionList.size(); i++) {
+                    ClassSession classSession = sessionList.get(i);
+
+                    if (classSession != null) {
+                        if (!sessionList.get(i).getDayName().equals(dayName)) {
+                            dayName = sessionList.get(i).getDayName();
+                            ztemp += 5;
+                            z = ztemp;
+                        }
+
+                        List<AttendanceDTO> attendanceDTOS = modelMapper.map(attendanceDOA.findBySessionIdAndStudentId(classSession.getId(), studentId),
+                                new TypeToken<List<AttendanceDTO>>() {
+                                }.getType());
+
+                        AttendanceDTO attendanceDTO = attendanceDTOS.size() != 0 && attendanceDTOS.get(0) != null ? attendanceDTOS.get(0) : null;
+
+                        if (attendanceDTO != null) {
+                            if (dataStatus.equals("true"))
+                                statePerStudent.put("z" + z, attendanceDTO.statusName(Integer.parseInt(attendanceDTO.getState())));
+                            else
+                                statePerStudent.put("z" + z, "");
+                        }//end if
+
+                    }//end if
+                    z++;
+                }//end inner for
+
+                st.setStates(statePerStudent);
+
+                studentArrayList.add(st);
+                cnt++;
+            }//end outer for
+
+            listStudentArray.add(studentArrayList);
+
+            final Map<String, String> params = new HashMap<>();
+            params.put("days", sessionList.stream().map(ClassSession::getDayName).collect(Collectors.toSet()).toString());
+            params.put("titleClass", tclassDTO.getTitleClass());
+            params.put("code", tclassDTO.getCode());
+            params.put("startDate", tclassDTO.getStartDate());
+            params.put("endDate", tclassDTO.getEndDate());
+            params.put("teacher", tclassDTO.getTeacher());
+
+            listMaps.add(params);
+        }
+
+        try {
+           controlReportService.exportToExcelFull(response,listMaps,listSessionList,listStudentArray);
+        } catch (Exception ex) {
+
+            Locale locale = LocaleContextHolder.getLocale();
+            response.sendError(500, messageSource.getMessage("error", null, locale));
+        }
+    }
 }
