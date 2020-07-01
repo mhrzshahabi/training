@@ -241,7 +241,7 @@ public class StudentDTO {
     @Accessors
     @ApiModel("Clear With Attendance")
     public static class clearAttendanceWithState extends clearAttendance {
-        private Map<String,String> states;
+        private Map<Integer,String> states;
     }
 
     //Amin HK

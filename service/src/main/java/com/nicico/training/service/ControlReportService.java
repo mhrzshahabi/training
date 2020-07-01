@@ -37,7 +37,7 @@ public class ControlReportService {
             sheet.setColumnWidth(4,5200);
             sheet.setColumnWidth(5,5200);
 
-            for (int i=6;i<2000;i++)
+            for (int i=6;i<100;i++)
                 sheet.setColumnWidth(i, 480);
 
             sheet.setRightToLeft(true);
@@ -470,16 +470,17 @@ public class ControlReportService {
                     rCellStyle8.setBorderRight(BorderStyle.MEDIUM);
                     cellOfRow.setCellStyle(rCellStyle8);
 
-                    Set<String> statesPerStudentKeys = students.get(m).get(i).getStates().keySet();
-                    List<String> statesPerStudentKeysList = new ArrayList<>(statesPerStudentKeys);
+                    Set<Integer> statesPerStudentKeys = students.get(m).get(i).getStates().keySet();
+                    List<Integer> statesPerStudentKeysList = new ArrayList<>(statesPerStudentKeys);
 
                     Collection<String> statesPerStudentValues = students.get(m).get(i).getStates().values();
                     List<String> statesPerStudentValuesList = new ArrayList<>(statesPerStudentValues);
 
+                    z = 0;
                     for (int j = 0; j < reaminCols; j++) {
                         cellOfRow = row.createCell(6 + j);
 
-                        if (j < statesPerStudentKeysList.size() && statesPerStudentKeysList.get(j).equals("z" + j)) {
+                        if (j < statesPerStudentKeysList.size() && statesPerStudentKeysList.get(j).equals(j)) {
                             cellOfRow.setCellValue(statesPerStudentValuesList.get(j));
                         }
 
@@ -1682,13 +1683,16 @@ public class ControlReportService {
                 sheet.setColumnWidth(4,5200);
                 sheet.setColumnWidth(5,5200);
 
-                for (int i=6;i<2000;i++)
+                for (int i=6;i<100;i++)
                     sheet.setColumnWidth(i, 480);
 
                 sheet.setRightToLeft(true);
 
                 cnt=0;
                 for (int m=0;m<masterHeader.size();m++) {
+                    if (sessionList.get(m).size()==0){
+                        continue;
+                    }
                     //first row
                     CellStyle rCellStyle = workbook.createCellStyle();
                     rCellStyle.setFont(rFont);
@@ -2112,7 +2116,7 @@ public class ControlReportService {
                         for (int j = 0; j < reaminCols; j++) {
                             cellOfRow = row.createCell(6 + j);
 
-                            if (j < statesPerStudentKeysList.size() && statesPerStudentKeysList.get(j).equals("z" + j)) {
+                            if (j < statesPerStudentKeysList.size() && statesPerStudentKeysList.get(j).equals(j)) {
                                 cellOfRow.setCellValue(statesPerStudentValuesList.get(j));
                             }
 

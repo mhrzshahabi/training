@@ -198,7 +198,7 @@
 
     IButton_JspControlReport_AttendanceExcel = isc.IButtonSave.create({
         top: 260,
-        title: "گزارش حضور و غیاب",
+        title: "گزارش اکسل حضور و غیاب",
         width: 300,
         click: function () {
             let criteriaForm = isc.DynamicForm.create({
@@ -222,7 +222,7 @@
 
     IButton_JspControlReport_ScoreExcel = isc.IButtonSave.create({
         top: 260,
-        title: "گزارش نمرات",
+        title: "گزارش اکسل نمرات",
         width: 300,
         click: function () {
             let criteriaForm = isc.DynamicForm.create({
@@ -245,7 +245,7 @@
 
     IButton_JspControlReport_ControlExcel = isc.IButtonSave.create({
         top: 260,
-        title: "گزارش کنترل",
+        title: "گزارش اکسل کنترل",
         width: 300,
         click: function () {
             let criteriaForm = isc.DynamicForm.create({
@@ -268,7 +268,7 @@
 
     IButton_JspControlReport_FullExcel = isc.IButtonSave.create({
         top: 260,
-        title: "گزارش کلي",
+        title: "گزارش اکسل کلي",
         width: 300,
         click: function () {
             let criteriaForm = isc.DynamicForm.create({
