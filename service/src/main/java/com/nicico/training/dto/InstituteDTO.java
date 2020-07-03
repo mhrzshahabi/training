@@ -72,6 +72,19 @@ public class InstituteDTO {
 
     @Getter
     @Setter
+    @ApiModel("InstituteSessionTuple")
+    public static class InstituteSessionTuple {
+        private Long id;
+        private String titleFa;
+        private PersonalInfoDTO.PersonalInfoCustom manager;
+    }
+
+    // ------------------------------
+
+    // ------------------------------
+
+    @Getter
+    @Setter
     @ApiModel("InstituteInfoTuple")
     public static class InstituteInfoTuple {
         private Long id;

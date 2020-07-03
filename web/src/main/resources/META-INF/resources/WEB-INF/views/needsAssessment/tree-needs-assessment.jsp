@@ -55,17 +55,17 @@
                 }
             }),
             </sec:authorize>
-            isc.ToolStrip.create({
-                width: "100%",
-                align: "left",
-                border: '0px',
-                members: [
-                    isc.ToolStripButtonRefresh.create({
-                        click: function () {
-                        }
-                    })
-                ]
-            })
+            // isc.ToolStrip.create({
+            //     width: "100%",
+            //     align: "left",
+            //     border: '0px',
+            //     members: [
+            //         isc.ToolStripButtonRefresh.create({
+            //             click: function () {
+            //             }
+            //         })
+            //     ]
+            // })
         ]
     });
     var Label_Title_JspTreeNeedsAssessment = isc.LgLabel.create({
@@ -131,7 +131,9 @@
             if(ListGrid_MoreInformation_JspTreeNeedAssessment!==undefined) {
                 treeNeedsAssessmentList.length = 0;
                 ListGrid_MoreInformation_JspTreeNeedAssessment.invalidateCache();
+                wait.show();
                 isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/editList/" + type + "/" + rec.id, "GET", null, (resp)=>{
+                    wait.close()
                     if(resp.httpResponseCode === 200){
                         list = JSON.parse(resp.data).list
                         Label_Title_JspTreeNeedsAssessment.setContents(priorityList[type] + ": " + rec.titleFa + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + (rec.code ? " کد: " + rec.code : ""));

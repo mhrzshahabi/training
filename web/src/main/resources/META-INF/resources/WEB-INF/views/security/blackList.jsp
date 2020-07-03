@@ -52,7 +52,9 @@
                 name: "teacherCode",
                 title: "<spring:message code='code'/>",
                 align: "center", showHover:true,
-
+                filterOperator: "iContains",
+                filterOnKeypress: false,
+                showFilterEditor:true
             },
             {
                 name: "personality.firstNameFa",
@@ -61,7 +63,9 @@
                 sortNormalizer: function (record) {
                     return record.personality.firstNameFa;
                 }, showHover:true,
-
+                filterOperator: "iContains",
+                filterOnKeypress: false,
+                showFilterEditor:true
             },
             {
                 name: "personality.lastNameFa",
@@ -70,7 +74,9 @@
                 sortNormalizer: function (record) {
                     return record.personality.lastNameFa;
                 },
-
+                filterOperator: "iContains",
+                filterOnKeypress: false,
+                showFilterEditor:true
             },
             {
                 name: "blackListDescription", canEdit: false, title: "<spring:message code='black.List.Description'/>",
@@ -83,7 +89,10 @@
                     else if (record.inBlackList === true) {
                         return value
                     }
-                }
+                },
+                filterOperator: "iContains",
+                filterOnKeypress: false,
+                showFilterEditor:true
             },
             {
                 name: "enableStatus",

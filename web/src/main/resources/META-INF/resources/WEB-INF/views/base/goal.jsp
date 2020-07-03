@@ -194,7 +194,8 @@
             if (DynamicForm_Goal.hasErrors()) {
                 return;
             }
-            var data = DynamicForm_Goal.getValues();
+            let data = DynamicForm_Goal.getValues();
+            wait.show()
             isc.RPCManager.sendRequest({
                 actionURL: urlGoal,
                 httpMethod: methodGoal,
@@ -205,6 +206,7 @@
                 data: JSON.stringify(data),
                 serverOutputAsString: false,
                 callback: function (resp) {
+                    wait.close()
                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                         var responseID = JSON.parse(resp.data).id;
                         var gridState = "[{id:" + responseID + "}]";
@@ -248,6 +250,7 @@
                 "eDomainTypeId": eDomainType
             };
             // var data = DynamicForm_Syllabus.getValuesForm();
+            wait.show()
             isc.RPCManager.sendRequest({
                 actionURL: urlSyllabus,
                 httpMethod: methodSyllabus,
@@ -258,6 +261,7 @@
                 data: JSON.stringify(data),
                 serverOutputAsString: false,
                 callback: function (resp) {
+                    wait.close()
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                         var responseID = JSON.parse(resp.data).id;
                         evalDomain();
@@ -913,7 +917,8 @@
                 }
             });
         } else {
-            var names = "";
+            let names = "";
+            wait.show()
             isc.RPCManager.sendRequest({
                 actionURL: goalUrl + "course/" + record.id,
                 httpMethod: "GET",
@@ -923,6 +928,7 @@
                 showPrompt: true,
                 serverOutputAsString: false,
                 callback: function (resp) {
+                    wait.close()
                     let courses = JSON.parse(resp.data);
                     if (courses.length > 1) {
                         for (let i = 0; i < courses.length; i++) {
@@ -943,11 +949,7 @@
                             buttonClick: function (button, index) {
                                 this.close();
                                 if (index == 0) {
-                                    var wait = isc.Dialog.create({
-                                        message: "<spring:message code='msg.waiting'/>",
-                                        icon: "[SKIN]say.png",
-                                        title: "<spring:message code='message'/>"
-                                    });
+                                    wait.show()
                                     isc.RPCManager.sendRequest({
                                         actionURL: goalUrl + "delete/" + record.id,
                                         httpMethod: "DELETE",
@@ -1060,12 +1062,12 @@
                             buttonClick: function (button, index) {
                                 this.close();
                                 if (index == 0) {
-                                    <%--let wait = isc.Dialog.create({--%>
+                                    <%--let goalWait = isc.Dialog.create({--%>
                                         <%--message: "<spring:message code='global.form.do.operation'/>",--%>
                                         <%--icon: "[SKIN]say.png",--%>
                                         <%--title: "<spring:message code='global.message'/>"--%>
                                     <%--});--%>
-                                    let wait = createDialog("wait");
+                                    wait.show()
                                     isc.RPCManager.sendRequest(TrDSRequest(goalUrl + "course/" + record.goalId, "GET", null,(resp)=>{
                                         let courses = JSON.parse(resp.data);
                                         if(courses.length>1){
@@ -1177,6 +1179,7 @@
                 for (let i = 0; i < goalRecord.length; i++) {
                     goalList.add(goalRecord[i].id);
                 }
+                wait.show()
                 isc.RPCManager.sendRequest({
                     actionURL: courseUrl + courseRecord.id + "/" + goalList.toString(),
                     httpMethod: "GET",
@@ -1186,6 +1189,7 @@
                     showPrompt: false,
                     serverOutputAsString: false,
                     callback: function (resp) {
+                        wait.close()
                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                             ListGrid_GoalAll.invalidateCache();
                             ListGrid_CourseGoal_Goal.invalidateCache();
@@ -1226,14 +1230,14 @@
                     }
                 });
             } else {
-                var arryRecord = new Array();
+                let arrayRecord = new Array();
                 for (let i = 0; i < goalrRecord.length; i++) {
-                    arryRecord.add(goalrRecord[i].id)
-
+                    arrayRecord.add(goalrRecord[i].id)
                 }
-                isc.RPCManager.sendRequest({
 
-                    actionURL: courseUrl + "remove/" + courseRecord.id + "/" + arryRecord.toString(),
+                wait.show();
+                isc.RPCManager.sendRequest({
+                    actionURL: courseUrl + "remove/" + courseRecord.id + "/" + arrayRecord.toString(),
                     httpMethod: "GET",
                     httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
@@ -1241,6 +1245,7 @@
                     showPrompt: false,
                     serverOutputAsString: false,
                     callback: function (resp) {
+                        wait.close()
                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                             ListGrid_GoalAll.invalidateCache();
                             ListGrid_CourseGoal_Goal.invalidateCache();

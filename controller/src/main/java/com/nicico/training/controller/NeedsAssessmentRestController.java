@@ -81,11 +81,20 @@ public class NeedsAssessmentRestController {
     }
 
     @Loggable
+    @GetMapping("/copy/{typeCopyOf}/{idCopyOf}/{typeCopyTo}/{idCopyTo}")
+    public ResponseEntity<Boolean> copyOf(@PathVariable String typeCopyOf,
+                                          @PathVariable Long idCopyOf,
+                                          @PathVariable String typeCopyTo,
+                                          @PathVariable Long idCopyTo) {
+        return new ResponseEntity<>(needsAssessmentTempService.copyNA(typeCopyOf, idCopyOf, typeCopyTo, idCopyTo), HttpStatus.OK);
+    }
+
+    @Loggable
     @PostMapping
     public ResponseEntity create(@RequestBody Object rq) {
         NeedsAssessmentDTO.Create create = modelMapper.map(rq, NeedsAssessmentDTO.Create.class);
         if (!needsAssessmentTempService.isEditable(create.getObjectType(), create.getObjectId()))
-            return new ResponseEntity<>(messageSource.getMessage("student.not.found", null, LocaleContextHolder.getLocale()), HttpStatus.CONFLICT);
+            return new ResponseEntity<>(messageSource.getMessage("read.only.na.message", null, LocaleContextHolder.getLocale()), HttpStatus.CONFLICT);
         return new ResponseEntity<>(needsAssessmentTempService.create(create), HttpStatus.OK);
     }
 
@@ -94,7 +103,7 @@ public class NeedsAssessmentRestController {
     public ResponseEntity update(@PathVariable Long id, @RequestBody Object rq) {
         NeedsAssessmentDTO.Update update = modelMapper.map(rq, NeedsAssessmentDTO.Update.class);
         if (!needsAssessmentTempService.isEditable(update.getObjectType(), update.getObjectId()))
-            return new ResponseEntity<>(messageSource.getMessage("student.not.found", null, LocaleContextHolder.getLocale()), HttpStatus.CONFLICT);
+            return new ResponseEntity<>(messageSource.getMessage("read.only.na.message", null, LocaleContextHolder.getLocale()), HttpStatus.CONFLICT);
         return new ResponseEntity<>(needsAssessmentTempService.update(id, update), HttpStatus.OK);
     }
 
@@ -102,7 +111,7 @@ public class NeedsAssessmentRestController {
     @DeleteMapping("/{id}/{objectType}/{objectId}")
     public ResponseEntity delete(@PathVariable Long id, @PathVariable String objectType, @PathVariable Long objectId) {
         if (!needsAssessmentTempService.isEditable(objectType, objectId))
-            return new ResponseEntity<>(messageSource.getMessage("student.not.found", null, LocaleContextHolder.getLocale()), HttpStatus.CONFLICT);
+            return new ResponseEntity<>(messageSource.getMessage("read.only.na.message", null, LocaleContextHolder.getLocale()), HttpStatus.CONFLICT);
         try {
             return new ResponseEntity<>(needsAssessmentTempService.delete(id), HttpStatus.OK);
         } catch (Exception ex) {
@@ -146,7 +155,7 @@ public class NeedsAssessmentRestController {
     @GetMapping("/isReadOnly/{objectType}/{objectId}")
     public ResponseEntity<Boolean> isReadOnly(@PathVariable String objectType,
                                               @PathVariable Long objectId) {
-        if(needsAssessmentTempService.readOnlyStatus(objectType, objectId)>1)
+        if (needsAssessmentTempService.readOnlyStatus(objectType, objectId) > 1)
             return new ResponseEntity<>(true, HttpStatus.OK);
         return new ResponseEntity<>(false, HttpStatus.OK);
     }

@@ -10,6 +10,7 @@
     var isEditing=false;
     var url='';
     var studentSelection=false;
+    var selectedRecord_addStudent_class='';
 
     // ------------------------------------------- Menu -------------------------------------------
     StudentMenu_student = isc.Menu.create({
@@ -51,23 +52,27 @@
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
+    var btnAdd_student_class=isc.ToolStripButtonAdd.create({
+        click: function () {
+            addStudent_student();
+        }
+    });
+
+    var btnRemove_student_class=isc.ToolStripButtonRemove.create({
+        click: function () {
+            removeStudent_student();
+        }
+    });
+
     StudentTS_student = isc.ToolStrip.create({
         members: [
 
             <sec:authorize access="hasAnyAuthority('TclassStudentsTab_ADD','TclassStudentsTab_classStatus')">
-            isc.ToolStripButtonAdd.create({
-                click: function () {
-                    addStudent_student();
-                }
-            }),
+            btnAdd_student_class,
             </sec:authorize>
 
             <sec:authorize access="hasAnyAuthority('TclassStudentsTab_D','TclassStudentsTab_classStatus')">
-            isc.ToolStripButtonRemove.create({
-                click: function () {
-                    removeStudent_student();
-                }
-            }),
+            btnRemove_student_class,
             </sec:authorize>
 
             <sec:authorize access="hasAnyAuthority('TclassStudentsTab_E','TclassStudentsTab_classStatus')">
@@ -115,7 +120,7 @@
                         obj.firstName =  localData[i].student.firstName.trim();
                         obj.lastName =  localData[i].student.lastName.trim();
                         obj.fatherName =  localData[i].student.fatherName;
-                        obj.companyName =  localData[i].applicantCompanyName;
+                        obj.mobile =  localData[i].student.mobile;
                         obj.ccpArea =  localData[i].student.ccpArea;
                         obj.ccpAssistant =  localData[i].student.ccpAssistant;
                         obj.ccpAffairs =  localData[i].student.ccpAffairs;
@@ -334,8 +339,32 @@
                     break;
             }//end switch-case
 
+            if (this.getFieldName(colNum) == "student.personnelNo") {
+                result+=";color: #0066cc !important;text-decoration: underline !important;cursor: pointer !important;"
+            }
+
             return result;
-        }//end getCellCSSText
+        },//end getCellCSSText
+        cellClick: function (record, rowNum, colNum) {
+            if (colNum === 6) {
+                 let window_class_Information = isc.Window.create({
+                     title: "<spring:message code="personnel.information"/>",
+                    width: "70%",
+                    minWidth: 500,
+                    autoSize:false,
+                    height: "50%",
+                    items: [isc.VLayout.create({
+                        width: "100%",
+                        height: "100%",
+                        members: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/personnel-information-details/"})]
+                    })]
+                });
+
+                window_class_Information.show();
+
+
+            }
+        }
     });
 
     SelectedPersonnelsLG_student = isc.TrLG.create({
@@ -423,6 +452,46 @@
             studentSelection=false;
 
             SelectedPersonnelsLG_student.data.removeAt(rowNum);
+        },
+        cellClick: function (record, rowNum, colNum) {
+            if (colNum === 4) {
+
+                selectedRecord_addStudent_class= {
+                    firstName: record.firstName,
+                    lastName: record.lastName,
+                    postTitle: record.postTitle,
+                    ccpArea: record.ccpArea,
+                    ccpAffairs: record.ccpAffairs,
+                    personnelNo: record.personnelNo,
+                    nationalCode: record.nationalCode,
+                    postCode: record.postCode,
+                }
+
+                let window_class_Information = isc.Window.create({
+                    title: "<spring:message code="personnel.information"/>",
+                    width: "70%",
+                    minWidth: 500,
+                    autoSize:false,
+                    height: "50%",
+                    items: [isc.VLayout.create({
+                        width: "100%",
+                        height: "100%",
+                        members: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/personnel-information-details/"})]
+                    })]
+                });
+
+                window_class_Information.show();
+
+
+            }
+        },
+        getCellCSSText: function (record, rowNum, colNum) {
+            let result='';
+            if (this.getFieldName(colNum) == "nationalCode") {
+                result+="color: #0066cc !important;text-decoration: underline !important;cursor: pointer !important;"
+            }
+
+            return result;
         }
     });
 
@@ -487,6 +556,8 @@
             {name: "ccpSection",hidden:true},
             {name: "ccpUnit",hidden:true},
         ],
+        gridComponents: [PersonnelsTS_student, "filterEditor", "header", "body"],
+        selectionAppearance: "checkbox",
         dataArrived:function(startRow, endRow){
             let lgNationalCodes = StudentsLG_student.data.localData.map(function(item) {
                 return item.student.nationalCode;
@@ -505,7 +576,14 @@
 
             studentSelection=false;
         },
-        gridComponents: [PersonnelsTS_student, "filterEditor", "header", "body"],
+        getCellCSSText: function (record, rowNum, colNum) {
+            let result='';
+            if (this.getFieldName(colNum) == "personnelNo") {
+                result+="color: #0066cc !important;text-decoration: underline !important;cursor: pointer !important;"
+            }
+
+            return result;
+        },
         dataChanged: function () {
             this.Super("dataChanged", arguments);
             totalRows = this.data.getLength();
@@ -515,7 +593,6 @@
                 PersonnelsCount_student.setContents("&nbsp;");
             }
         },
-        selectionAppearance: "checkbox",
         selectionUpdated: function () {
 
             if(studentSelection){
@@ -576,6 +653,37 @@
                 studentSelection=true;
                 PersonnelsLG_student.deselectRecord(current)
                 studentSelection=false;
+            }
+        },
+        cellClick: function (record, rowNum, colNum) {
+            if (colNum === 5) {
+                selectedRecord_addStudent_class= {
+                    firstName: record.firstName,
+                    lastName: record.lastName,
+                    postTitle: record.postTitle,
+                    ccpArea: record.ccpArea,
+                    ccpAffairs: record.ccpAffairs,
+                    personnelNo: record.personnelNo,
+                    nationalCode: record.nationalCode,
+                    postCode: record.postCode,
+                }
+
+                let window_class_Information = isc.Window.create({
+                    title: "<spring:message code="personnel.information"/>",
+                    width: "70%",
+                    minWidth: 500,
+                    autoSize:false,
+                    height: "50%",
+                    items: [isc.VLayout.create({
+                        width: "100%",
+                        height: "100%",
+                        members: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/personnel-information-details/"})]
+                    })]
+                });
+
+                window_class_Information.show();
+
+
             }
         }
     });
@@ -665,6 +773,14 @@
 
             studentSelection=false;
         },
+        getCellCSSText: function (record, rowNum, colNum) {
+            let result='';
+            if (this.getFieldName(colNum) == "personnelNo") {
+                result+="color: #0066cc !important;text-decoration: underline !important;cursor: pointer !important;"
+            }
+
+            return result;
+        },
         dataChanged: function () {
             this.Super("dataChanged", arguments);
             totalRows = this.data.getLength();
@@ -734,7 +850,38 @@
                 PersonnelsRegLG_student.deselectRecord(current)
                 studentSelection=false;
             }
+        },
+        cellClick: function (record, rowNum, colNum) {
+            if (colNum === 5) {
 
+                selectedRecord_addStudent_class= {
+                    firstName: record.firstName,
+                    lastName: record.lastName,
+                    postTitle: record.postTitle,
+                    ccpArea: record.ccpArea,
+                    ccpAffairs: record.ccpAffairs,
+                    personnelNo: record.personnelNo,
+                    nationalCode: record.nationalCode,
+                    postCode: record.postCode,
+                }
+
+                let window_class_Information = isc.Window.create({
+                    title: "<spring:message code="personnel.information"/>",
+                    width: "70%",
+                    minWidth: 500,
+                    autoSize:false,
+                    height: "50%",
+                    items: [isc.VLayout.create({
+                        width: "100%",
+                        height: "100%",
+                        members: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/personnel-information-details/"})]
+                    })]
+                });
+
+                window_class_Information.show();
+
+
+            }
         }
     });
 
@@ -759,7 +906,7 @@
                                 isc.ToolStripButtonAdd.create({
                                     title:'اضافه کردن گروهي',
                                     click: function () {
-                                        groupFilter("اضافه کردن گروهی",personnelUrl+"/checkPersonnelNos/",checkPersonnelNosResponse);
+                                        groupFilter("اضافه کردن گروهی",personnelUrl+"/checkPersonnelNos/",checkPersonnelNosResponse,true);
                                     }
                                 })
                             ]
@@ -789,7 +936,7 @@
                                 isc.ToolStripButtonAdd.create({
                                     title:'اضافه کردن گروهي',
                                     click: function () {
-                                        groupFilter("اضافه کردن گروهی",personnelRegUrl+"/checkPersonnelNos/",checkPersonnelNosResponse);
+                                        groupFilter("اضافه کردن گروهی",personnelRegUrl+"/checkPersonnelNos/",checkPersonnelNosResponse, true);
                                     }
                                 })
                             ]
@@ -1053,12 +1200,15 @@
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         if (!(classRecord === undefined || classRecord == null)) {
             StudentsDS_student.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
+
+            btnAdd_student_class.setVisibility(true);
+            btnRemove_student_class.setVisibility(true);
+
             if(classRecord.classStatus === "3")
             {
-                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_ADD','TclassStudentsTab_D','TclassStudentsTab_E','TclassStudentsTab_P','TclassStudentsTab_R')">
-                StudentTS_student.setVisibility(false)
-
-                </sec:authorize>
+                //StudentTS_student.setVisibility(false)
+                btnAdd_student_class.setVisibility(false);
+                btnRemove_student_class.setVisibility(false);
             }
             else
             {
@@ -1068,13 +1218,6 @@
                 </sec:authorize>
             }
 
-            if (classRecord.classStatus === "3")
-            {
-                <sec:authorize access="hasAuthority('TclassStudentsTab_classStatus')">
-                StudentTS_student.setVisibility(true)
-
-                </sec:authorize>
-            }
             StudentsLG_student.invalidateCache();
             StudentsLG_student.fetchData();
         }
@@ -1199,31 +1342,55 @@
                     if(personnelNo != "" && personnelNo != null && typeof(personnelNo) != "undefined")
                     {
                         let person=data.filter(function (item) {
-                            return item.personnelNo==personnelNo|| item.personnelNo2 === personnelNo;
+                            return item.personnelNo == personnelNo || item.personnelNo2 == personnelNo;
                         });
 
-                        if(person.length==0){
+                        if(person.length==0)
+                        {
                             allRowsOK=false;
                             list[i].error=true;
                             list[i].hasWarning="warning";
                             list[i].description="<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">شخصی با کد پرسنلی وارد شده وجود ندارد.</span>";
                         }
-                        else if(person[0].nationalCode== "" || person[0].nationalCode == null || typeof(person[0].nationalCode) == "undefined"){
-                            allRowsOK=false;
-                            list[i].error=true;
-                            list[i].hasWarning="warning";
-                            list[i].description="<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">اطلاعات شخص مورد نظر ناقص است. کد ملی برای این شخص وارد نشده است.</span>";
-                        }
-                        else if(nationalCodeExists(person[0].nationalCode))
+                        else
                         {
-                            allRowsOK=false;
-                            list[i].error=true;
-                            list[i].hasWarning="warning";
-                            list[i].description="<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">این شخص قبلا اضافه شده است.</span>";
-                        }else{
-                            list[i].error=false;
-                            list[i].hasWarning="check";
-                            list[i].description="";
+                            person=person[0];
+
+                            if(person.nationalCode== "" || person.nationalCode == null || typeof(person.nationalCode) == "undefined")
+                            {
+                                allRowsOK=false;
+                                list[i].firstName = person.firstName;
+                                list[i].lastName = person.lastName;
+                                list[i].nationalCode =person.nationalCode;
+                                list[i].personnelNo1 =person.personnelNo;
+                                list[i].personnelNo2=person.personnelNo2;
+                                list[i].error=true;
+                                list[i].hasWarning="warning";
+                                list[i].description="<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">اطلاعات شخص مورد نظر ناقص است. کد ملی برای این شخص وارد نشده است.</span>";
+                            }
+                            else if(nationalCodeExists(person.nationalCode))
+                            {
+                                allRowsOK=false;
+                                list[i].firstName = person.firstName;
+                                list[i].lastName = person.lastName;
+                                list[i].nationalCode =person.nationalCode;
+                                list[i].personnelNo1 =person.personnelNo;
+                                list[i].personnelNo2=person.personnelNo2;
+                                list[i].error=true;
+                                list[i].hasWarning="warning";
+                                list[i].description="<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">این شخص قبلا اضافه شده است.</span>";
+                            }
+                            else
+                            {
+                                list[i].firstName = person.firstName;
+                                list[i].lastName = person.lastName;
+                                list[i].nationalCode =person.nationalCode;
+                                list[i].personnelNo1 =person.personnelNo;
+                                list[i].personnelNo2=person.personnelNo2;
+                                list[i].error=false;
+                                list[i].hasWarning="check";
+                                list[i].description="";
+                            }
                         }
                     }
                 }

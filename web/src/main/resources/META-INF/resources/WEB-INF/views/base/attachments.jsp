@@ -383,7 +383,8 @@
             if (stat === 406 && respText === "DuplicateRecord") {
                 createDialog("info", "<spring:message code="msg.record.duplicate"/>");
             } else {
-                createDialog("info", "<spring:message code="msg.operation.error"/>");
+                createDialog("info", "<spring:message code="msg.record.duplicate"/>");
+                <%--createDialog("info", "<spring:message code="msg.operation.error"/>");--%>
             }
         }
     }

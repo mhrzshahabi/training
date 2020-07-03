@@ -22,6 +22,11 @@ public class MainFormController {
         return "basic/parameter";
     }
 
+    @RequestMapping("/organizationalChart")
+    public String showOrganizationalChartForm() {
+        return "basic/organizationalChart";
+    }
+
     @RequestMapping("/trainingFile")
     public String showTrainingFileForm() {
         return "report/trainingFile";
@@ -144,6 +149,11 @@ public class MainFormController {
     @RequestMapping("/categoriesPerformanceReport")
     public String showCategoriesPerformanceReportForm() {
         return "report/categoriesPerformanceReport";
+    }
+
+    @RequestMapping("/presenceReport")
+    public String showPresenceReport() {
+        return "report/presenceReport";
     }
 
     @RequestMapping("class-contract")
@@ -306,6 +316,11 @@ public class MainFormController {
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
         return restTemplate.exchange(restApiUrl + "/api/calenderCurrentTerm/print", HttpMethod.POST, entity, byte[].class);
 
+    }
+
+    @GetMapping("/personnel-information-details")
+    public String showPersonnelInformationDetailsForm() {
+        return "basic/personnelInformationDetails";
     }
 
 }

@@ -50,22 +50,16 @@ public class PostRestController {
 
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<PostDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
-        int startRow = 0;
-        if (iscRq.getParameter("_startRow") != null)
-            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.SearchRs<PostDTO.Info> searchRs = postService.searchWithoutPermission(searchRq);
-        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 
     @GetMapping(value = "/wpIscList")
     public ResponseEntity<ISC<PostDTO.Info>> withPermissionList(HttpServletRequest iscRq) throws IOException {
-        int startRow = 0;
-        if (iscRq.getParameter("_startRow") != null)
-            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.SearchRs<PostDTO.Info> searchRs = postService.search(searchRq);
-        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 
     @GetMapping("/{postCode}")
@@ -80,12 +74,9 @@ public class PostRestController {
 
     @GetMapping(value = "/unassigned-iscList")
     public ResponseEntity<ISC<PostDTO.Info>> unassignedList(HttpServletRequest iscRq) throws IOException {
-        int startRow = 0;
-        if (iscRq.getParameter("_startRow") != null)
-            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.SearchRs<PostDTO.Info> searchRs = postService.unassignedSearch(searchRq);
-        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 
     @GetMapping(value = "/iscList/job/{jobId}")
@@ -165,48 +156,4 @@ public class PostRestController {
 
         return new ResponseEntity<>( specRs, HttpStatus.OK);
     }
-
-//        Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
-//        Page<Post> postPage = postService.listByJobId(jobId, createPageable(iscRq));
-//        Object x = ISC.convertToIscRs(postPage, startRow);
-//        return new ResponseEntity<>(ISC.convertToIscRs(postPage, startRow), HttpStatus.OK);
-       /* return new ResponseEntity<>(  ISC.convertToIscRs(postService.listByJobId(jobId, createPageable(iscRq)), startRow), HttpStatus.OK);
-
-        return modelMapper.map(postPage.getContent(), new TypeToken<List<PostDTO.Info>>() {
-        }.getType());
-
-        return modelMapper.map(postPage.getContent(), new TypeToken<List<PostDTO.Info>>() {
-        }.getType());*/
-    /*
-    Set<SkillDTO.Info> skills;
-        skills=skillGroupService.unAttachSkills(skillGroupId);
-        List<SkillDTO.Info> skillList=new ArrayList<>();
-        for (SkillDTO.Info skillDTOInfo:skills)
-        {
-            skillList.add(skillDTOInfo);
-
-        }
-        final  SkillDTO.SpecRs specRs=new SkillDTO.SpecRs();
-        specRs.setData(skillList)
-                .setStartRow(0)
-                .setEndRow(skills.size())
-                .setTotalRows(skills.size());
-
-        final SkillDTO.SkillSpecRs skillSpecRs=new SkillDTO.SkillSpecRs();
-        skillSpecRs.setResponse(specRs);
-        return new ResponseEntity<>(skillSpecRs,HttpStatus.OK);
-     */
-
-   /* Pageable createPageable(HttpServletRequest rq) {
-        String startRowStr = rq.getParameter("_startRow");
-        String endRowStr = rq.getParameter("_endRow");
-        Integer startRow = (startRowStr != null) ? Integer.parseInt(startRowStr) : 0;
-        Integer endRow = (endRowStr != null) ? Integer.parseInt(endRowStr) : 50;
-
-        Integer pageSize = endRow - startRow;
-        Integer pageNo = (endRow - 1) / pageSize;
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
-        return pageable;
-    }*/
-
 }

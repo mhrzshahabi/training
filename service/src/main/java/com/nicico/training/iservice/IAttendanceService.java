@@ -5,8 +5,10 @@ import com.nicico.training.dto.AttendanceDTO;
 import com.nicico.training.dto.ClassSessionDTO;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface IAttendanceService {
 
@@ -60,7 +62,7 @@ public interface IAttendanceService {
 
     Double acceptAbsentHoursForClass(Long classId, Double x);
 
-    List<ClassSessionDTO.Info> studentAbsentSessionsInClass(Long classId, Long studentId);
+    boolean studentAbsentSessionsInClass(Long classId, List<Long> sessionId, Long studentId) throws ParseException;
 
     void studentAttendanceSave(List<List<Map<String, String>>> maps);
 

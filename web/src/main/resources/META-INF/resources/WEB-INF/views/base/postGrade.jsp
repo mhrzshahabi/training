@@ -7,19 +7,6 @@
     var personnelJob_PostGrade = null;
     var postJob_PostGrade = null;
 
-    if(Window_NeedsAssessment_Edit === undefined) {
-        var Window_NeedsAssessment_Edit = isc.Window.create({
-            title: "<spring:message code="needs.assessment"/>",
-            placement: "fillScreen",
-            minWidth: 1024,
-            items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],
-            showUs(record, objectType) {
-                loadEditNeedsAssessment(record, objectType);
-                this.Super("show", arguments);
-            }
-        });
-    }
-
     // ------------------------------------------- Menu -------------------------------------------
     PostGradeMenu_postGrade = isc.Menu.create({
         data: [
@@ -44,10 +31,20 @@
             Window_NeedsAssessment_Edit.showUs(PostGradeLG_postGrade.getSelectedRecord(), "PostGrade");
         }
     });
+    ToolStripButton_TreeNA_PostGrade = isc.ToolStripButton.create({
+        title: "درخت نیازسنجی",
+        click: function () {
+            if (PostGradeLG_postGrade.getSelectedRecord() == null){
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            Window_NeedsAssessment_Tree.showUs(PostGradeLG_postGrade.getSelectedRecord(), "PostGrade");
+        }
+    });
     ToolStrip_NA_PostGrade = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
-        members: [ToolStripButton_EditNA_PostGrade]
+        members: [ToolStripButton_EditNA_PostGrade, ToolStripButton_TreeNA_PostGrade]
     });
     
     PostGradeTS_postGrade = isc.ToolStrip.create({
@@ -108,7 +105,12 @@
         autoFetchData: true,
         gridComponents: [PostGradeTS_postGrade, ToolStrip_NA_PostGrade, "filterEditor", "header", "body",],
         contextMenu: PostGradeMenu_postGrade,
-        sortField: 2,
+        canMultiSort: true,
+        initialSort: [
+            {property: "competenceCount", direction: "ascending"},
+            {property: "code", direction: "ascending"}
+        ],
+        selectionType: "single",
         dataChanged: function () {
             this.Super("dataChanged", arguments);
             var totalRows = this.data.getLength();
@@ -126,6 +128,9 @@
             selectionUpdated_PostGrade();
         },
     });
+
+    defineWindowsEditNeedsAssessment(PostGradeLG_postGrade);
+    defineWindowTreeNeedsAssessment();
 
     ////////////////////////////////////////////////////////////personnel///////////////////////////////////////////////
     PersonnelDS_PostGrade = isc.TrDS.create({
@@ -165,7 +170,7 @@
         dataSource: PersonnelDS_PostGrade,
         selectionType: "single",
         alternateRecordStyles: true,
-        groupByField: "jobTitle",
+        sortField: 1,
         fields: [
             {name: "firstName"},
             {name: "lastName"},
@@ -330,7 +335,6 @@
         autoFetchData: false,
         showResizeBar: true,
         sortField: 0,
-        groupByField: "job.titleFa",
         fields: [
             {name: "code",
                 filterEditorProperties: {

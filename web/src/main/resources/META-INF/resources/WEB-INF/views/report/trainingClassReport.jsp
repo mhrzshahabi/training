@@ -13,6 +13,7 @@
     var endDateCheck_Order_JspTClassReport = true;
 
     var data_values = null;
+    let societies = [];
 
     var courseInfo_print = "";
     var classTimeInfo_print = "";
@@ -46,21 +47,25 @@
         align: "center"
     });
     //----------------------------------------------------Rest DataSource-----------------------------------------------
-    var RestDataSource_Class_JspClassResult = isc.TrDS.create({
+    var RestDataSource_RestDataSource_ListResult = isc.TrDS.create({
         fields: [
             {name: "id"},
-            {name: "code"},
-            {name: "course.code"},
-            {name: "course.titleFa"},
-            {name: "hduration",canSort:false,canFilter:false},
-            {name: "teacher"},
-            {name: "startDate"},
-            {name: "endDate"},
-            {name: "year",canSort:false,canFilter:false},
-            {name: "classStatus"},
-            {name: "studentsCount",canSort:false,canFilter:false}
+            {name: "courseCode"},
+            {name: "courseTitleFa"},
+            {name: "tclassDuration"},
+            {name: "tclassStartDate"},
+            {name: "tclassEndDate"},
+            {name: "tclassYear"},
+            {name: "termTitleFa"},
+            {name: "teacherFullName"},
+            {name: "tclassStatus"},
+            {name: "unitId"},
+            {name: "tclassPlanner"},
+            {name: "tclassSupervisor"},
+            {name: "tclassCode"},
+            {name: "tclassStudentsCount"}
         ],
-        fetchDataURL: classUrl + "list-training-report"
+        fetchDataURL: viewEvaluationStaticalReportUrl + "/iscList"
     });
 
     var RestDataSource_Category_JspTClassReport = isc.TrDS.create({
@@ -111,11 +116,58 @@
     var RestDataSource_Institute_JspTClassReport = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "titleFa"},
-            {name: "manager.firstNameFa"},
-            {name: "manager.lastNameFa"}
+            {name: "titleFa", title: "نام موسسه"},
+            {name: "manager.firstNameFa", title: "نام مدیر"},
+            {name: "manager.lastNameFa", title: "نام خانوادگی مدیر"},
+            {name: "mobile", title: "موبایل"},
+            {name: "restAddress", title: "آدرس"},
+            {name: "phone", title: "تلفن"}
         ],
-        fetchDataURL: instituteUrl + "iscList"
+        fetchDataURL: instituteUrl + "spec-list",
+        allowAdvancedCriteria: true
+    });
+
+    var RestDataSource_SupervisorDS_JspTClassReport = isc.TrDS.create({
+        fields: [
+            {name: "id", filterOperator: "equals", primaryKey: true, hidden: true},
+            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+        ],
+        fetchDataURL: personnelUrl + "/iscList",
+        implicitCriteria: {
+            _constructor:"AdvancedCriteria",
+            operator:"and",
+            criteria:[{ fieldName: "active", operator: "equals", value: 1}]
+        }
+    });
+
+    var RestDataSource_PlannerDS_JspTClassReport = isc.TrDS.create({
+        fields: [
+            {name: "id", filterOperator: "equals", primaryKey: true, hidden: true},
+            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+        ],
+        fetchDataURL: personnelUrl + "/iscList",
+        implicitCriteria: {
+            _constructor:"AdvancedCriteria",
+            operator:"and",
+            criteria:[{ fieldName: "active", operator: "equals", value: 1}]
+        }
+    });
+
+    var RestDataSource_TargetSociety_JspTClassReport =  isc.DataSource.create({
+        clientOnly: true,
+        testData: societies,
+        fields: [
+            {name: "societyId", primaryKey: true},
+            {name: "title", type: "text"}
+        ]
     });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
     var Menu_ListGrid_JspTClassReport= isc.Menu.create({
@@ -166,59 +218,39 @@
     var ListGrid_Result_JspTClassReport = isc.TrLG.create({
         width: "100%",
         height: "100%",
-        dataSource: RestDataSource_Class_JspClassResult,
+        dataSource: RestDataSource_RestDataSource_ListResult,
         contextMenu: Menu_ListGrid_JspTClassReport,
         fields: [
             {name: "id", title: "id", canEdit: false, hidden: true},
-            {
-                name: "code",
-                title: "کد کلاس"
-            },
-            {
-                name: "course.code",
-                title: "کد دوره"
-            },
-            {
-                name: "course.titleFa",
-                title: "نام دوره"
-            },
-            {
-                name: "hduration",
-                title: "مدت به ساعت"
-            },
-            {
-                name: "teacher",
-                title: "مدرس"
-            },
-            {
-                name: "startDate",
-                title: "تاریخ شروع"
-            },
-            {
-                name: "endDate",
-                title: "تاریخ خاتمه"
-            },
-            {
-                name: "year",
-                title: "سال"
-            },
-            {
-                name: "classStatus",
-                title: "وضعیت کلاس",
+            {name: "tclassCode", title: "کد کلاس"},
+            {name: "courseCode", title: "کد دوره"},
+            {name: "courseTitleFa", title: "نام دوره"},
+            {name: "tclassDuration", title: "مدت کلاس"},
+            {name: "tclassStartDate", title: "تاریخ شروع"},
+            {name: "tclassEndDate", title: "تاریخ پایان"},
+            {name: "tclassYear", title: "سال کاری"},
+            {name: "termTitleFa", title: "ترم"},
+            {name: "teacherFullName", title: "استاد"},
+            {name: "unitId", title: "حوزه"},
+            <%--{name: "tclassPlanner",  title: "<spring:message code="planner"/>"},--%>
+            <%--{name: "tclassSupervisor",  title: "<spring:message code="supervisor"/>"},--%>
+            {name: "tclassStudentsCount", title: "تعداد فراگیران"},
+            {name: "tclassStatus", title: "وضعیت کلاس",
+                type: "SelectItem",
                 valueMap: {
                     "1": "برنامه ریزی",
                     "2": "در حال اجرا",
                     "3": "پایان یافته"
-                }
-            },
-            {
-                name: "studentsCount",
-                title: "تعداد فراگیران"
-            }
+                },
+                filterEditorProperties: {
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                }},
         ],
         cellHeight: 43,
         filterOperator: "iContains",
-        filterOnKeypress: true,
+        filterOnKeypress: false,
         autoFetchData: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
@@ -252,7 +284,7 @@
                     isc.ToolStripButtonExcel.create({
                         margin:5,
                         click: function() {
-                            ListGrid_Result_JspTClassReport.sortFieldNum=6;
+                            // ListGrid_Result_JspTClassReport.sortFieldNum=6;
                             ExportToFile.showDialog(null, ListGrid_Result_JspTClassReport, 'trainingClassReport', 0, null, '',  "گزارش کلاس هاي آموزشي", ListGrid_Result_JspTClassReport.data.criteria, null);
                         }
                     }),
@@ -272,7 +304,7 @@
         colWidths: ["5%", "25%", "5%", "25%","5%","25%"],
         fields: [
             {
-                name: "course.code",
+                name: "courseCode",
                 title: "کد دوره",
                 hint: "کدهای دوره را با ; از یکدیگر جدا کنید",
                 prompt: "کدهای دوره فقط میتوانند شامل حروف انگلیسی بزرگ، اعداد و - باشند",
@@ -287,7 +319,7 @@
                 keyPressFilter: "[A-Z|0-9|;-]"
             },
             {
-                name: "course.titleFa",
+                name: "courseTitleFa",
                 title: "نام دوره",
                 length: 100,
                 filterOperator: "iContains"
@@ -298,9 +330,9 @@
                 type: "radioGroup",
                 vertical: false,
                 valueMap: {
-                    "starts with": "شروع با",
-                    "ends with": "خاتمه با",
-                    "iContains": "شامل",
+                    "startsWith": "شروع با",
+                    "endsWith": "خاتمه با",
+                    "contains": "شامل",
                     "equals": "دقیقا شامل"
                 },
                 defaultValue: "iContains"
@@ -530,7 +562,7 @@
                 canEdit: false
             },
             {
-                name: "course.categoryId",
+                name: "courseCategory",
                 title: "گروه کاری",
                 type: "SelectItem",
                 textAlign: "center",
@@ -546,7 +578,7 @@
                 },
                 changed: function () {
                     isCriteriaCategoriesChanged_JspTClassReport = true;
-                    var subCategoryField = DynamicForm_CriteriaForm_JspTClassReport.getField("course.subCategoryId");
+                    var subCategoryField = DynamicForm_CriteriaForm_JspTClassReport.getField("courseSubCategory");
                     if (this.getSelectedRecords() == null) {
                         subCategoryField.clearValue();
                         subCategoryField.disable();
@@ -567,7 +599,7 @@
                 }
             },
             {
-                name: "course.subCategoryId",
+                name: "courseSubCategory",
                 title: "زیرگروه کاری",
                 type: "SelectItem",
                 textAlign: "center",
@@ -586,7 +618,7 @@
                 focus: function () {
                     if (isCriteriaCategoriesChanged_JspTClassReport) {
                         isCriteriaCategoriesChanged_JspTClassReport = false;
-                        var ids = DynamicForm_CriteriaForm_JspTClassReport.getField("course.categoryId").getValue();
+                        var ids = DynamicForm_CriteriaForm_JspTClassReport.getField("courseCategory").getValue();
                         if (ids === []) {
                             RestDataSource_SubCategory_JspTClassReport.implicitCriteria = null;
                         } else {
@@ -606,7 +638,7 @@
                 canEdit: false
             },
             {
-                name: "workYear",
+                name: "tclassYear",
                 title: "سال کاری",
                 type: "SelectItem",
                 multiple: true,
@@ -629,7 +661,7 @@
                                     icon: "[SKIN]/actions/approve.png",
                                     title: "انتخاب همه",
                                     click: function () {
-                                        var item = DynamicForm_CriteriaForm_JspTClassReport.getField("workYear"),
+                                        var item = DynamicForm_CriteriaForm_JspTClassReport.getField("tclassYear"),
                                             fullData = item.pickList.data,
                                             cache = fullData.localData,
                                             values = [];
@@ -646,7 +678,7 @@
                                     icon: "[SKIN]/actions/close.png",
                                     title: "حذف همه",
                                     click: function () {
-                                        var item = DynamicForm_CriteriaForm_JspTClassReport.getField("workYear");
+                                        var item = DynamicForm_CriteriaForm_JspTClassReport.getField("tclassYear");
                                         item.setValue([]);
                                         item.pickList.hide();
                                     }
@@ -741,57 +773,107 @@
                     filterOperator: "iContains"
                 }
             },
+            // {
+            //     name: "teacherPayingStatus",
+            //     title: "وضعیت هزینه ی مدرس",
+            //     type: "SelectItem",
+            //     defaultValue: "3",
+            //     valueMap: {
+            //         "1": "پرداخت شده",
+            //         "2": "پرداخت نشده",
+            //         "3": "همه"
+            //     },
+            //     pickListProperties: {
+            //         showFilterEditor: false
+            //     },
+            // },
             {
-                name: "teacherPayingStatus",
-                title: "وضعیت هزینه ی مدرس",
-                type: "SelectItem",
-                defaultValue: "3",
-                valueMap: {
-                    "1": "پرداخت شده",
-                    "2": "پرداخت نشده",
-                    "3": "همه"
-                },
-                pickListProperties: {
-                    showFilterEditor: false
-                },
-            },
-            {
-                name: "organizerId",
+                name: "tclassOrganizerId",
                 title: "برگزار کننده",
-                type: "SelectItem",
-                filterOperator: "equals",
-                allowEmptyValue: true,
+                editorType: "TrComboAutoRefresh",
                 optionDataSource: RestDataSource_Institute_JspTClassReport,
-                valueField: "id",
                 displayField: "titleFa",
-                filterFields: ["titleFa", "mobile", "manager.firstNameFa", "manager.lastNameFa"],
-                pickListFields: [
-                    {name: "titleFa", title: "نام موسسه", filterOperator: "iContains", autoFitWidth: true},
-                    {name: "manager.firstNameFa", title: "نام مدیر", filterOperator: "iContains"},
-                    {name: "manager.lastNameFa", title: "نام خانوادگی مدیر", filterOperator: "iContains"}
-                ],
-                filterLocally: true,
-                pickListProperties: {
-                    showFilterEditor: true
-                }
-            },
-            {
-                name: "courseStatus",
-                title: "نوع دوره",
-                type: "SelectItem",
-                defaultValue: "3",
                 filterOperator: "equals",
-                valueMap: {
-                    "1": "وابسته به نیازسنجی مشاغل",
-                    "2": "عدم نیازسنجی",
-                    "3": "همه"
-                },
+                valueField: "id",
+                textAlign: "center",
+                filterFields: ["titleFa", "titleFa"],
+                showHintInField: true,
+                hint: "موسسه",
+                pickListWidth: 500,
+                textMatchStyle: "substring",
+                pickListFields: [
+                    {name: "titleFa", filterOperator: "iContains"},
+                    {name: "manager.firstNameFa", filterOperator: "iContains"},
+                    {name: "manager.lastNameFa", filterOperator: "iContains"}
+                ],
                 pickListProperties: {
+                    sortField: 0,
                     showFilterEditor: false
                 }
             },
             {
-                name: "classStatus",
+                name: "unitId",
+                title: "حوزه",
+                type: "SelectItem",
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                textAlign: "center",
+                wrapTitle: false,
+                filterOperator: "equals",
+                optionDataSource: RestDataSource_TargetSociety_JspTClassReport,
+                displayField: "title",
+                valueField: "societyId"
+            },
+            {
+                name: "tclassSupervisor",
+                title: "<spring:message code="supervisor"/>:",
+                type: "ComboBoxItem",
+                textAlign: "center",
+                optionDataSource: RestDataSource_SupervisorDS_JspTClassReport,
+                autoFetchData: false,
+                valueField: "id",
+                displayField: "lastName",
+                pickListWidth: 550,
+                pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "nationalCode"}, {name: "personnelNo"}],
+                pickListProperties: {sortField: "personnelNo2", showFilterEditor: true}
+            },
+            {
+                name: "tclassPlanner",
+                wrapTitle: false,
+                title: "<spring:message code="planner"/>:",
+                type: "ComboBoxItem",
+                textAlign: "center",
+                optionDataSource: RestDataSource_PlannerDS_JspTClassReport,
+                autoFetchData: false,
+                valueField: "id",
+                displayField: "lastName",
+                pickListWidth: 550,
+                pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "nationalCode"}, {name: "personnelNo"}],
+                pickListProperties: {sortField: "personnelNo2", showFilterEditor: true}
+            },
+            // {
+            //     name: "courseStatus",
+            //     title: "نوع دوره",
+            //     type: "SelectItem",
+            //     defaultValue: "3",
+            //     filterOperator: "equals",
+            //     valueMap: {
+            //         "1": "وابسته به نیازسنجی مشاغل",
+            //         "2": "عدم نیازسنجی",
+            //         "3": "همه"
+            //     },
+            //     pickListProperties: {
+            //         showFilterEditor: false
+            //     }
+            // },
+            {
+                name: "temp6",
+                title: "",
+                canEdit: false
+            },
+            {
+                name: "tclassStatus",
                 title: "وضعیت کلاس",
                 wrapTitle: true,
                 type: "radioGroup",
@@ -802,11 +884,17 @@
                 valueMap: {
                     "1": "برنامه ریزی",
                     "2": "در حال اجرا",
-                    "3": "پایان یافته"
+                    "3": "پایان یافته",
+                    "4": "همه"
                 }
             },
             {
-                name: "temp6",
+                name: "temp7",
+                title: "",
+                canEdit: false
+            },
+            {
+                name: "temp8",
                 title: "",
                 canEdit: false
             },
@@ -817,12 +905,12 @@
                 changed: function (form, item, value) {
                     if (value == true) {
                         form.getField("reactionEvaluationOperator").disabled = false;
-                        form.getField("reactionEvaluationGrade").enable();
+                        form.getField("evaluationReactionGrade").enable();
                     } else if (value == false) {
                         form.getField("reactionEvaluationOperator").disabled = true;
                         form.getField("reactionEvaluationOperator").clearValue();
-                        form.getField("reactionEvaluationGrade").disabled = true;
-                        form.getField("reactionEvaluationGrade").clearValue();
+                        form.getField("evaluationReactionGrade").disabled = true;
+                        form.getField("evaluationReactionGrade").clearValue();
                     }
                 }
             },
@@ -831,8 +919,8 @@
                 title: "",
                 type: "SelectItem",
                 valueMap: {
-                    "1": "کمتر از",
-                    "2": "بیشتر از"
+                    "lessOrEqual": "کمتر از",
+                    "greaterOrEqual": "بیشتر از"
                 },
                 disabled: true,
                 hint: "اپراتور مقایسه ی مد نظر را انتخاب کنید",
@@ -842,7 +930,7 @@
                 },
             },
             {
-                name: "reactionEvaluationGrade",
+                name: "evaluationReactionGrade",
                 title: "",
                 disabled: true,
                 hint: "نمره ی ارزیابی واکنشی مد نظر را وارد کنید",
@@ -857,12 +945,12 @@
                 changed: function (form, item, value) {
                     if (value == true) {
                         form.getField("learningEvaluationOperator").disabled = false;
-                        form.getField("learningEvaluationGrade").enable();
+                        form.getField("evaluationLearningGrade").enable();
                     } else if (value == false) {
                         form.getField("learningEvaluationOperator").disabled = true;
                         form.getField("learningEvaluationOperator").clearValue();
-                        form.getField("learningEvaluationGrade").disabled = true;
-                        form.getField("learningEvaluationGrade").clearValue();
+                        form.getField("evaluationLearningGrade").disabled = true;
+                        form.getField("evaluationLearningGrade").clearValue();
                     }
                 }
             },
@@ -871,8 +959,8 @@
                 title: "",
                 type: "SelectItem",
                 valueMap: {
-                    "1": "کمتر از",
-                    "2": "بیشتر از"
+                    "lessOrEqual": "کمتر از",
+                    "greaterOrEqual": "بیشتر از"
                 },
                 disabled: true,
                 hint: "اپراتور مقایسه ی مد نظر را انتخاب کنید",
@@ -882,7 +970,7 @@
                 },
             },
             {
-                name: "learningEvaluationGrade",
+                name: "evaluationLearningGrade",
                 title: "",
                 disabled: true,
                 hint: "نمره ی ارزیابی یادگیری مد نظر را وارد کنید",
@@ -897,12 +985,12 @@
                 changed: function (form, item, value) {
                     if (value == true) {
                         form.getField("behavioralEvaluationOperator").disabled = false;
-                        form.getField("behavioralEvaluationGrade").enable();
+                        form.getField("evaluationBehavioralGrade").enable();
                     } else if (value == false) {
                         form.getField("behavioralEvaluationOperator").disabled = true;
                         form.getField("behavioralEvaluationOperator").clearValue();
-                        form.getField("behavioralEvaluationGrade").disabled = true;
-                        form.getField("behavioralEvaluationGrade").clearValue();
+                        form.getField("evaluationBehavioralGrade").disabled = true;
+                        form.getField("evaluationBehavioralGrade").clearValue();
                     }
                 }
             },
@@ -911,18 +999,18 @@
                 title: "",
                 type: "SelectItem",
                 valueMap: {
-                    "1": "کمتر از",
-                    "2": "بیشتر از"
+                    "lessOrEqual": "کمتر از",
+                    "greaterOrEqual": "بیشتر از"
                 },
                 disabled: true,
                 hint: "اپراتور مقایسه ی مد نظر را انتخاب کنید",
                 showHintInField: true,
                 pickListProperties: {
                     showFilterEditor: false
-                },
+                }
             },
             {
-                name: "behavioralEvaluationGrade",
+                name: "evaluationBehavioralGrade",
                 title: "",
                 disabled: true,
                 hint: "نمره ی ارزیابی رفتاری مد نظر را وارد کنید",
@@ -937,12 +1025,12 @@
                 changed: function (form, item, value) {
                     if (value == true) {
                         form.getField("evaluationOperator").disabled = false;
-                        form.getField("evaluationGrade").enable();
+                        form.getField("evaluationEffectivenessGrade").enable();
                     } else if (value == false) {
                         form.getField("evaluationOperator").disabled = true;
                         form.getField("evaluationOperator").clearValue();
-                        form.getField("evaluationGrade").disabled = true;
-                        form.getField("evaluationGrade").clearValue();
+                        form.getField("evaluationEffectivenessGrade").disabled = true;
+                        form.getField("evaluationEffectivenessGrade").clearValue();
                     }
                 }
             },
@@ -951,18 +1039,18 @@
                 title: "",
                 type: "SelectItem",
                 valueMap: {
-                    "1": "کمتر از",
-                    "2": "بیشتر از"
+                    "lessOrEqual": "کمتر از",
+                    "greaterOrEqual": "بیشتر از"
                 },
                 disabled: true,
                 hint: "اپراتور مقایسه ی مد نظر را انتخاب کنید",
                 showHintInField: true,
                 pickListProperties: {
                     showFilterEditor: false
-                },
+                }
             },
             {
-                name: "evaluationGrade",
+                name: "evaluationEffectivenessGrade",
                 title: "",
                 disabled: true,
                 hint: "نمره ی اثربخشی مد نظر را وارد کنید",
@@ -982,7 +1070,7 @@
         height: 300,
         fields: [
             {
-                name: "course.code",
+                name: "courseCode",
                 align: "center",
                 title: "",
                 editorType: "MultiComboBoxItem",
@@ -998,13 +1086,13 @@
             }
         ]
     });
-    DynamicForm_SelectCourses_JspTClassReport.getField("course.code").comboBox.setHint("دوره های مورد نظر را انتخاب کنید");
-    DynamicForm_SelectCourses_JspTClassReport.getField("course.code").comboBox.pickListFields =
+    DynamicForm_SelectCourses_JspTClassReport.getField("courseCode").comboBox.setHint("دوره های مورد نظر را انتخاب کنید");
+    DynamicForm_SelectCourses_JspTClassReport.getField("courseCode").comboBox.pickListFields =
         [{name: "titleFa", title: "نام دوره", width: "30%", filterOperator: "iContains"},
             {
                 name: "code", title: "کد دوره", width: "30%", filterOperator: "iContains"
             }];
-    DynamicForm_SelectCourses_JspTClassReport.getField("course.code").comboBox.filterFields = ["titleFa", "code"];
+    DynamicForm_SelectCourses_JspTClassReport.getField("courseCode").comboBox.filterFields = ["titleFa", "code"];
 
     IButton_ConfirmCourseSelections_JspTClassReport = isc.IButtonSave.create({
         top: 260,
@@ -1012,10 +1100,10 @@
         width: 300,
         click: function () {
             var criteriaDisplayValues = "";
-            var selectorDisplayValues = DynamicForm_SelectCourses_JspTClassReport.getItem("course.code").getValue();
-            if (DynamicForm_CriteriaForm_JspTClassReport.getField("course.code").getValue() != undefined
-                && DynamicForm_CriteriaForm_JspTClassReport.getField("course.code").getValue() != "") {
-                criteriaDisplayValues = DynamicForm_SelectCourses_JspTClassReport.getField("course.code").getValue().join(";");
+            var selectorDisplayValues = DynamicForm_SelectCourses_JspTClassReport.getItem("courseCode").getValue();
+            if (DynamicForm_CriteriaForm_JspTClassReport.getField("courseCode").getValue() != undefined
+                && DynamicForm_CriteriaForm_JspTClassReport.getField("courseCode").getValue() != "") {
+                criteriaDisplayValues = DynamicForm_SelectCourses_JspTClassReport.getField("courseCode").getValue().join(";");
                 var ALength = criteriaDisplayValues.length;
                 var lastChar = criteriaDisplayValues.charAt(ALength - 1);
                 if (lastChar != ";")
@@ -1039,7 +1127,7 @@
 
             criteriaDisplayValues = criteriaDisplayValues == ";undefined" ? "" : criteriaDisplayValues;
 
-            DynamicForm_CriteriaForm_JspTClassReport.getField("course.code").setValue(criteriaDisplayValues);
+            DynamicForm_CriteriaForm_JspTClassReport.getField("courseCode").setValue(criteriaDisplayValues);
             Window_SelectCourses_JspTClassReport.close();
         }
     });
@@ -1218,7 +1306,7 @@
         var removedObjects = [];
         for (var i = 0; i < data_values.criteria.size(); i++) {
 
-            if (data_values.criteria[i].fieldName == "course.code") {
+            if (data_values.criteria[i].fieldName == "courseCode") {
                 var codesString = data_values.criteria[i].value;
                 var codesArray;
                 codesArray = codesString.split(";");
@@ -1230,42 +1318,58 @@
                 data_values.criteria[i].operator = "equals";
                 data_values.criteria[i].value = codesArray;
             }
-
-            else if (data_values.criteria[i].fieldName == "course.titleFa") {
+            else if (data_values.criteria[i].fieldName == "courseTitleFa") {
                 data_values.criteria[i].operator = DynamicForm_CriteriaForm_JspTClassReport.getField("courseFilterOperator").getValue();
             }
             else if (data_values.criteria[i].fieldName == "hDurationStart") {
-                data_values.criteria[i].fieldName = "hDuration";
+                data_values.criteria[i].fieldName = "tclassDuration";
                 data_values.criteria[i].operator = "greaterOrEqual";
             }
             else if (data_values.criteria[i].fieldName == "hDurationEnd") {
-                data_values.criteria[i].fieldName = "hDuration";
+                data_values.criteria[i].fieldName = "tclassDuration";
                 data_values.criteria[i].operator = "lessOrEqual";
             }
             else if (data_values.criteria[i].fieldName == "startDate1") {
-                data_values.criteria[i].fieldName = "startDate";
+                data_values.criteria[i].fieldName = "tclassStartDate";
                 data_values.criteria[i].operator = "greaterThan";
             }
             else if (data_values.criteria[i].fieldName == "startDate2") {
-                data_values.criteria[i].fieldName = "startDate";
+                data_values.criteria[i].fieldName = "tclassStartDate";
                 data_values.criteria[i].operator = "lessThan";
             }
             else if (data_values.criteria[i].fieldName == "endDate1") {
-                data_values.criteria[i].fieldName = "endDate";
+                data_values.criteria[i].fieldName = "tclassEndDate";
                 data_values.criteria[i].operator = "greaterThan";
             }
             else if (data_values.criteria[i].fieldName == "endDate2") {
-                data_values.criteria[i].fieldName = "endDate";
+                data_values.criteria[i].fieldName = "tclassEndDate";
                 data_values.criteria[i].operator = "lessThan";
             }
-            else if (data_values.criteria[i].fieldName == "workYear") {
-                data_values.criteria[i].fieldName = "startDate";
+            // else if (data_values.criteria[i].fieldName == "tclassYear") {
+            //     data_values.criteria[i].operator = "inSet";
+            // }
+            // else if (data_values.criteria[i].fieldName == "termId") {
+            //     data_values.criteria[i].operator = "inSet";
+            // }
+            // else if (data_values.criteria[i].fieldName == "teacherId") {
+            //     data_values.criteria[i].operator = "inSet";
+            // }
+            // else if (data_values.criteria[i].fieldName == "unitId") {
+            //     data_values.criteria[i].operator = "inSet";
+            // }
+            // else if (data_values.criteria[i].fieldName == "tclassStatus") {
+            //     data_values.criteria[i].operator = "inSet";
+            // }
+            else if(data_values.criteria[i].fieldName == "tclassOrganizerId")
+                data_values.criteria[i].operator = "equals";
+            else if(data_values.criteria[i].fieldName == "tclassSupervisor")
+                data_values.criteria[i].operator = "equals";
+            else if(data_values.criteria[i].fieldName == "tclassPlanner")
+                data_values.criteria[i].operator = "equals";
+            else if(data_values.criteria[i].fieldName == "courseCategory"){
                 data_values.criteria[i].operator = "inSet";
             }
-            else if(data_values.criteria[i].fieldName == "course.categoryId"){
-                data_values.criteria[i].operator = "inSet";
-            }
-            else if(data_values.criteria[i].fieldName == "course.subCategoryId"){
+            else if(data_values.criteria[i].fieldName == "courseSubCategory"){
                 data_values.criteria[i].operator = "inSet";
             }
             else if (data_values.criteria[i].fieldName == "courseFilterOperator") {
@@ -1283,35 +1387,37 @@
             else if (data_values.criteria[i].fieldName == "evaluation") {
                 removedObjects.add(data_values.criteria[i]);
             }
-            //-----------------------------------TEMP----------------------------
-            // else if (data_values.criteria[i].fieldName == "reactionEvaluationOperator") {
-            //     removedObjects.add(data_values.criteria[i]);
-            // }
-            // else if (data_values.criteria[i].fieldName == "reactionEvaluationGrade") {
-            //     removedObjects.add(data_values.criteria[i]);
-            // }
-            // else if (data_values.criteria[i].fieldName == "learningEvaluationOperator") {
-            //     removedObjects.add(data_values.criteria[i]);
-            // }
-            // else if (data_values.criteria[i].fieldName == "learningEvaluationGrade") {
-            //     removedObjects.add(data_values.criteria[i]);
-            // }
-            // else if (data_values.criteria[i].fieldName == "behavioralEvaluationOperator") {
-            //     removedObjects.add(data_values.criteria[i]);
-            // }
-            // else if (data_values.criteria[i].fieldName == "behavioralEvaluationGrade") {
-            //     removedObjects.add(data_values.criteria[i]);
-            // }
-            // else if (data_values.criteria[i].fieldName == "evaluationOperator") {
-            //     removedObjects.add(data_values.criteria[i]);
-            // }
-            // else if (data_values.criteria[i].fieldName == "evaluationGrade") {
-            //     removedObjects.add(data_values.criteria[i]);
-            // }
-            //-----------------------------------TEMP----------------------------
-            else if (data_values.criteria[i].fieldName == "teacherPayingStatus") {
+            else if (data_values.criteria[i].fieldName == "reactionEvaluationOperator") {
                 removedObjects.add(data_values.criteria[i]);
             }
+            else if (data_values.criteria[i].fieldName == "learningEvaluationOperator") {
+                removedObjects.add(data_values.criteria[i]);
+            }
+            else if (data_values.criteria[i].fieldName == "behavioralEvaluationOperator") {
+                removedObjects.add(data_values.criteria[i]);
+            }
+            else if (data_values.criteria[i].fieldName == "evaluationOperator") {
+                removedObjects.add(data_values.criteria[i]);
+            }
+            else if (data_values.criteria[i].fieldName == "evaluationReactionGrade") {
+                data_values.criteria[i].operator = DynamicForm_CriteriaForm_JspTClassReport.getField("reactionEvaluationOperator").getValue();
+            }
+            else if (data_values.criteria[i].fieldName == "evaluationLearningGrade") {
+                data_values.criteria[i].operator = DynamicForm_CriteriaForm_JspTClassReport.getField("learningEvaluationOperator").getValue();
+            }
+            else if (data_values.criteria[i].fieldName == "evaluationBehavioralGrade") {
+                data_values.criteria[i].operator = DynamicForm_CriteriaForm_JspTClassReport.getField("behavioralEvaluationOperator").getValue();
+            }
+            else if (data_values.criteria[i].fieldName == "evaluationEffectivenessGrade") {
+                data_values.criteria[i].operator = DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationOperator").getValue();
+            }
+            else if(data_values.criteria[i].fieldName == "tclassStatus" && data_values.criteria[i].value == "4")
+                removedObjects.add(data_values.criteria[i]);
+
+            //-----------------------------------TEMP----------------------------
+            // else if (data_values.criteria[i].fieldName == "teacherPayingStatus") {
+            //     removedObjects.add(data_values.criteria[i]);
+            // }
         }
         data_values.criteria.removeList(removedObjects);
 
@@ -1329,64 +1435,64 @@
         executionInfo_print = "";
         evaluationInfo_print = "";
 
-        if (DynamicForm_CriteriaForm_JspTClassReport.getField("course.code").getValue() != undefined) {
+        if (DynamicForm_CriteriaForm_JspTClassReport.getField("courseCode").getValue() != undefined) {
             courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "کد دوره: " + "</span>";
             courseInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_JspTClassReport.getField("course.code").getDisplayValue() + "</span>";
+                DynamicForm_CriteriaForm_JspTClassReport.getField("courseCode").getDisplayValue() + "</span>";
             courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
 
             courseInfo_print +=  "کد دوره: " ;
-            courseInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("course.code").getDisplayValue();
+            courseInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("courseCode").getDisplayValue();
             courseInfo_print +=  ", " ;
         }
-        if (DynamicForm_CriteriaForm_JspTClassReport.getField("course.titleFa").getValue() != undefined) {
+        if (DynamicForm_CriteriaForm_JspTClassReport.getField("courseTitleFa").getValue() != undefined) {
             courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "نام دوره: " + "</span>";
             courseInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_JspTClassReport.getField("course.titleFa").getDisplayValue() + "</span>";
+                DynamicForm_CriteriaForm_JspTClassReport.getField("courseTitleFa").getDisplayValue() + "</span>";
             courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
 
             courseInfo_print +=  "نام دوره: " ;
-            courseInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("course.titleFa").getValue();
+            courseInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("courseTitleFa").getValue();
             courseInfo_print +=  ", " ;
         }
-        if (DynamicForm_CriteriaForm_JspTClassReport.getField("course.categoryId").getValue() != undefined) {
+        if (DynamicForm_CriteriaForm_JspTClassReport.getField("courseCategory").getValue() != undefined) {
             courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "گروه های کاری: " + "</span>";
             courseInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_JspTClassReport.getField("course.categoryId").getDisplayValue() + "</span>";
+                DynamicForm_CriteriaForm_JspTClassReport.getField("courseCategory").getDisplayValue() + "</span>";
             courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
 
             courseInfo_print  += "گروه های کاری: " ;
-            courseInfo_print  += DynamicForm_CriteriaForm_JspTClassReport.getField("course.categoryId").getDisplayValue() ;
+            courseInfo_print  += DynamicForm_CriteriaForm_JspTClassReport.getField("courseCategory").getDisplayValue() ;
             courseInfo_print  +=   ", " ;
         }
-        if (DynamicForm_CriteriaForm_JspTClassReport.getField("course.subCategoryId").getValue() != undefined) {
+        if (DynamicForm_CriteriaForm_JspTClassReport.getField("courseSubCategory").getValue() != undefined) {
             courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "زیرگروه های کاری: " + "</span>";
             courseInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_JspTClassReport.getField("course.subCategoryId").getDisplayValue() + "</span>";
+                DynamicForm_CriteriaForm_JspTClassReport.getField("courseSubCategory").getDisplayValue() + "</span>";
             courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
 
             courseInfo_print +=   "زیرگروه های کاری: " ;
-            courseInfo_print  += DynamicForm_CriteriaForm_JspTClassReport.getField("course.subCategoryId").getDisplayValue() ;
+            courseInfo_print  += DynamicForm_CriteriaForm_JspTClassReport.getField("courseSubCategory").getDisplayValue() ;
             courseInfo_print  += ", " ;
         }
-        if (DynamicForm_CriteriaForm_JspTClassReport.getField("courseStatus").getValue() != undefined) {
-            courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "نوع دوره: " + "</span>";
-            courseInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_JspTClassReport.getField("courseStatus").getDisplayValue() + "</span>";
-            courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            courseInfo_print += "نوع دوره: ";
-            courseInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("courseStatus").getDisplayValue() ;
-            courseInfo_print +=  ", " ;
-        }
-        if (DynamicForm_CriteriaForm_JspTClassReport.getField("classStatus").getValue() != undefined) {
+        // if (DynamicForm_CriteriaForm_JspTClassReport.getField("courseStatus").getValue() != undefined) {
+        //     courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "نوع دوره: " + "</span>";
+        //     courseInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
+        //         DynamicForm_CriteriaForm_JspTClassReport.getField("courseStatus").getDisplayValue() + "</span>";
+        //     courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
+        //
+        //     courseInfo_print += "نوع دوره: ";
+        //     courseInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("courseStatus").getDisplayValue() ;
+        //     courseInfo_print +=  ", " ;
+        // }
+        if (DynamicForm_CriteriaForm_JspTClassReport.getField("tclassStatus").getValue() != undefined) {
             courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "وضعیت کلاس: " + "</span>";
             courseInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_JspTClassReport.getField("classStatus").getDisplayValue() + "</span>";
+                DynamicForm_CriteriaForm_JspTClassReport.getField("tclassStatus").getDisplayValue() + "</span>";
             courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
 
             courseInfo_print +=  "وضعیت کلاس: " ;
-            courseInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("classStatus").getDisplayValue();
+            courseInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("tclassStatus").getDisplayValue();
             courseInfo_print += ", ";
         }
 
@@ -1450,14 +1556,14 @@
             classTimeInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("endDate2").getDisplayValue();
             classTimeInfo_print += ", " ;
         }
-        if (DynamicForm_CriteriaForm_JspTClassReport.getField("workYear").getValue() != undefined) {
+        if (DynamicForm_CriteriaForm_JspTClassReport.getField("tclassYear").getValue() != undefined) {
             classTimeInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "سال کاری: " + "</span>";
             classTimeInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_JspTClassReport.getField("workYear").getDisplayValue() + "</span>";
+                DynamicForm_CriteriaForm_JspTClassReport.getField("tclassYear").getDisplayValue() + "</span>";
             classTimeInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
 
             classTimeInfo_print +=  "سال کاری: " ;
-            classTimeInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("workYear").getValue();
+            classTimeInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("tclassYear").getValue();
             classTimeInfo_print += ", ";
         }
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("termId").getValue() != undefined) {
@@ -1481,80 +1587,80 @@
             executionInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("teacherId").getDisplayValue();
             executionInfo_print += ", " ;
         }
-        if (DynamicForm_CriteriaForm_JspTClassReport.getField("teacherPayingStatus").getValue() != undefined) {
-            executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "وضعیت هزینه ی مدرس: " + "</span>";
-            executionInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_JspTClassReport.getField("teacherPayingStatus").getDisplayValue() + "</span>";
-            executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            executionInfo_print  +=  "وضعیت هزینه ی مدرس: ";
-            executionInfo_print  += DynamicForm_CriteriaForm_JspTClassReport.getField("teacherPayingStatus").getDisplayValue();
-            executionInfo_print  += ", ";
-        }
-        if (DynamicForm_CriteriaForm_JspTClassReport.getField("organizerId").getValue() != undefined) {
+        // if (DynamicForm_CriteriaForm_JspTClassReport.getField("teacherPayingStatus").getValue() != undefined) {
+        //     executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "وضعیت هزینه ی مدرس: " + "</span>";
+        //     executionInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
+        //         DynamicForm_CriteriaForm_JspTClassReport.getField("teacherPayingStatus").getDisplayValue() + "</span>";
+        //     executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
+        //
+        //     executionInfo_print  +=  "وضعیت هزینه ی مدرس: ";
+        //     executionInfo_print  += DynamicForm_CriteriaForm_JspTClassReport.getField("teacherPayingStatus").getDisplayValue();
+        //     executionInfo_print  += ", ";
+        // }
+        if (DynamicForm_CriteriaForm_JspTClassReport.getField("tclassOrganizerId").getValue() != undefined) {
             executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "برگزار کننده: " + "</span>";
             executionInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_JspTClassReport.getField("organizerId").getDisplayValue() + "</span>";
+                DynamicForm_CriteriaForm_JspTClassReport.getField("tclassOrganizerId").getDisplayValue() + "</span>";
             executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
 
             executionInfo_print +=  "برگزار کننده: " ;
-            executionInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("organizerId").getDisplayValue() ;
+            executionInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("tclassOrganizerId").getDisplayValue() ;
             executionInfo_print +=  ", " ;
         }
 
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("reactionEvaluationOperator").getValue() != undefined &&
-            DynamicForm_CriteriaForm_JspTClassReport.getField("reactionEvaluationGrade").getValue() != undefined) {
+            DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationReactionGrade").getValue() != undefined) {
             reactionEvaluationInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "نمره ارزیابی واکنشی کلاس: " + "</span>";
             reactionEvaluationInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("reactionEvaluationOperator").getDisplayValue() + "</span>";
             reactionEvaluationInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_JspTClassReport.getField("reactionEvaluationGrade").getValue() + "</span>";
+                DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationReactionGrade").getValue() + "</span>";
 
             evaluationInfo_print += "نمره ارزیابی واکنشی کلاس: " ;
             evaluationInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("reactionEvaluationOperator").getDisplayValue();
-            evaluationInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("reactionEvaluationGrade").getDisplayValue();
+            evaluationInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationReactionGrade").getDisplayValue();
             evaluationInfo_print +=  ", " ;
         }
 
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("learningEvaluationOperator").getValue() != undefined &&
-            DynamicForm_CriteriaForm_JspTClassReport.getField("learningEvaluationGrade").getValue() != undefined) {
+            DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationLearningGrade").getValue() != undefined) {
             learningEvaluationInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "نمره ارزیابی یادگیری کلاس: " + "</span>";
             learningEvaluationInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("learningEvaluationOperator").getDisplayValue() + "</span>";
             learningEvaluationInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_JspTClassReport.getField("learningEvaluationGrade").getDisplayValue() + "</span>";
+                DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationLearningGrade").getDisplayValue() + "</span>";
 
             evaluationInfo_print += "نمره ارزیابی یادگیری کلاس: " ;
             evaluationInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("learningEvaluationOperator").getDisplayValue();
-            evaluationInfo_print +=  DynamicForm_CriteriaForm_JspTClassReport.getField("learningEvaluationGrade").getValue();
+            evaluationInfo_print +=  DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationLearningGrade").getValue();
             evaluationInfo_print +=  ", " ;
         }
 
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("behavioralEvaluationOperator").getValue() != undefined &&
-            DynamicForm_CriteriaForm_JspTClassReport.getField("behavioralEvaluationGrade").getValue() != undefined) {
+            DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationBehavioralGrade").getValue() != undefined) {
             behavioralEvaluationInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "نمره ارزیابی رفتاری کلاس: " + "</span>";
             behavioralEvaluationInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("behavioralEvaluationOperator").getDisplayValue() + "</span>";
             behavioralEvaluationInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_JspTClassReport.getField("behavioralEvaluationGrade").getDisplayValue() + "</span>";
+                DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationBehavioralGrade").getDisplayValue() + "</span>";
 
             evaluationInfo_print += "نمره ارزیابی رفتاری کلاس: " ;
             evaluationInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("behavioralEvaluationOperator").getDisplayValue();
-            evaluationInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("behavioralEvaluationGrade").getDisplayValue();
+            evaluationInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationBehavioralGrade").getDisplayValue();
             evaluationInfo_print +=  ", " ;
         }
 
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationOperator").getValue() != undefined &&
-            DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationGrade").getValue() != undefined) {
+            DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationEffectivenessGrade").getValue() != undefined) {
             evaluationInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "نمره اثربخشی کلاس: " + "</span>";
             evaluationInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationOperator").getDisplayValue() + "</span>";
             evaluationInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationGrade").getDisplayValue() + "</span>";
+                DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationEffectivenessGrade").getDisplayValue() + "</span>";
 
             evaluationInfo_print += "نمره اثربخشی کلاس: " ;
             evaluationInfo_print  += DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationOperator").getDisplayValue() ;
-            evaluationInfo_print  +=  DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationGrade").getDisplayValue();
+            evaluationInfo_print  +=  DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationEffectivenessGrade").getDisplayValue();
             evaluationInfo_print +=  ", " ;
         }
 

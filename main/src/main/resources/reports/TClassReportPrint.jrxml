@@ -30,16 +30,16 @@
 		</box>
 	</style>
 	<subDataset name="content" uuid="da7e6fac-4bf7-4f4e-8d72-e83be9c32594">
-		<field name="code" class="java.lang.String"/>
-		<field name="course.code" class="java.lang.String"/>
-		<field name="course.titleFa" class="java.lang.String"/>
-		<field name="hduration" class="java.lang.String"/>
-		<field name="teacher" class="java.lang.String"/>
-		<field name="startDate" class="java.lang.String"/>
-		<field name="endDate" class="java.lang.String"/>
-		<field name="year" class="java.lang.String"/>
-		<field name="classStatus" class="java.lang.String"/>
-		<field name="studentsCount" class="java.lang.String"/>
+		<field name="tclassCode" class="java.lang.String"/>
+		<field name="courseCode" class="java.lang.String"/>
+		<field name="courseTitleFa" class="java.lang.String"/>
+		<field name="tclassDuration" class="java.lang.String"/>
+		<field name="teacherFullName" class="java.lang.String"/>
+		<field name="tclassStartDate" class="java.lang.String"/>
+		<field name="tclassEndDate" class="java.lang.String"/>
+		<field name="tclassYear" class="java.lang.String"/>
+		<field name="tclassStatus" class="java.lang.String"/>
+		<field name="tclassStudentsCount" class="java.lang.String"/>
 	</subDataset>
 	<parameter name="logo_nicico" class="java.lang.Object"/>
 	<parameter name="todayDate" class="java.lang.String"/>
@@ -108,7 +108,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="8"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{studentsCount}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{tclassStudentsCount}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -129,9 +129,9 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="8"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{classStatus}.equals("1") ? "برنامه ریزی" : (
-									$F{classStatus}.equals("2")?"در حال اجرا":(
-									$F{classStatus}.equals("3")?"پایان یافته":$F{classStatus})
+								<textFieldExpression><![CDATA[$F{tclassStatus}.equals("1") ? "برنامه ریزی" : (
+									$F{tclassStatus}.equals("2")?"در حال اجرا":(
+									$F{tclassStatus}.equals("3")?"پایان یافته":$F{tclassStatus})
 									)]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -153,7 +153,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="8"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{year}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{tclassYear}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -174,7 +174,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="8"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{endDate}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{tclassEndDate}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -195,7 +195,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="8"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{startDate}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{tclassStartDate}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -216,7 +216,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="8"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{teacher}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{teacherFullName}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -237,7 +237,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="8"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{hduration}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{tclassDuration}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -258,7 +258,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="8"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{course.titleFa}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{courseTitleFa}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -279,7 +279,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="8"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{course.code}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{courseCode}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -300,7 +300,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="8"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{tclassCode}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

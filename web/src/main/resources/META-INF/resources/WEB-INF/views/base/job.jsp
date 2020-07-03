@@ -7,18 +7,18 @@
     var personnelJob_Job = null;
     var postJob_Job = null;
 
-    if(Window_NeedsAssessment_Edit === undefined) {
-        var Window_NeedsAssessment_Edit = isc.Window.create({
-            title: "<spring:message code="needs.assessment"/>",
-            placement: "fillScreen",
-            minWidth: 1024,
-            items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],
-            showUs(record, objectType) {
-                loadEditNeedsAssessment(record, objectType);
-                this.Super("show", arguments);
-            }
-        });
-    }
+    <%--if(Window_NeedsAssessment_Edit === undefined) {--%>
+        <%--var Window_NeedsAssessment_Edit = isc.Window.create({--%>
+            <%--title: "<spring:message code="needs.assessment"/>",--%>
+            <%--placement: "fillScreen",--%>
+            <%--minWidth: 1024,--%>
+            <%--items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],--%>
+            <%--showUs(record, objectType) {--%>
+                <%--loadEditNeedsAssessment(record, objectType);--%>
+                <%--this.Super("show", arguments);--%>
+            <%--}--%>
+        <%--});--%>
+    <%--}--%>
 
     ///////////////////////////////////////////////////Menu/////////////////////////////////////////////////////////////
     JobMenu_job = isc.Menu.create({
@@ -44,10 +44,20 @@
             Window_NeedsAssessment_Edit.showUs(JobLG_job.getSelectedRecord(), "Job");
         }
     });
+    ToolStripButton_TreeNA_JspJob = isc.ToolStripButton.create({
+        title: "درخت نیازسنجی",
+        click: function () {
+            if (JobLG_job.getSelectedRecord() == null){
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            Window_NeedsAssessment_Tree.showUs(JobLG_job.getSelectedRecord(), "Job");
+        }
+    });
     ToolStrip_NA_Job = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
-        members: [ToolStripButton_EditNA_Job]
+        members: [ToolStripButton_EditNA_Job, ToolStripButton_TreeNA_JspJob]
     });
     
     JobTS_job = isc.ToolStrip.create({
@@ -103,7 +113,12 @@
         gridComponents: [JobTS_job, ToolStrip_NA_Job, "filterEditor", "header", "body"],
         contextMenu: JobMenu_job,
         showResizeBar: true,
-        sortField: 2,
+        canMultiSort: true,
+        initialSort: [
+            {property: "competenceCount", direction: "ascending"},
+            {property: "code", direction: "ascending"}
+        ],
+        selectionType: "single",
         dataChanged: function () {
             this.Super("dataChanged", arguments);
             let totalRows = this.data.getLength();
@@ -121,6 +136,9 @@
                 return "color:red;font-size: 12px;";
         },
     });
+
+    defineWindowsEditNeedsAssessment(JobLG_job);
+    defineWindowTreeNeedsAssessment();
 
     ////////////////////////////////////////////////////////////personnel///////////////////////////////////////////////
     PersonnelDS_Job = isc.TrDS.create({
