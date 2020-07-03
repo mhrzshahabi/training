@@ -1507,7 +1507,7 @@
                         var varParams = [{
                             "processKey": "needAssessment_MainWorkflow",
                             "cId": DynamicForm_JspEditNeedsAssessment.getValue("objectId"),
-                            "objectName": "تغییر نیازسنجی پست : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().titleFa + " با کد : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code,
+                            "objectName": "تغییر نیازسنجی " + priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] + " : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().titleFa + ( DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code !== undefined ? " با کد : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code: ""),
                             "objectType": priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")],
                             "needAssessmentCreatorId": "${username}",
                             "needAssessmentCreator": userFullName,
@@ -1516,7 +1516,9 @@
                             "target": "/course/show-form",
                             "targetTitleFa": "نیازسنجی",
                             "workflowStatus": "ثبت اولیه",
-                            "workflowStatusCode": "0"
+                            "workflowStatusCode": "0",
+                            "workFlowName": "NeedAssessment",
+                            "cType": DynamicForm_JspEditNeedsAssessment.getValue("objectType")
                         }];
 
                         isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
