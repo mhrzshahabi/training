@@ -198,7 +198,7 @@
 
     IButton_JspControlReport_AttendanceExcel = isc.IButtonSave.create({
         top: 260,
-        title: "گزارش حضور و غیاب",
+        title: "گزارش اکسل حضور و غیاب",
         width: 300,
         click: function () {
             let criteriaForm = isc.DynamicForm.create({
@@ -222,7 +222,7 @@
 
     IButton_JspControlReport_ScoreExcel = isc.IButtonSave.create({
         top: 260,
-        title: "گزارش نمرات",
+        title: "گزارش اکسل نمرات",
         width: 300,
         click: function () {
             let criteriaForm = isc.DynamicForm.create({
@@ -245,7 +245,7 @@
 
     IButton_JspControlReport_ControlExcel = isc.IButtonSave.create({
         top: 260,
-        title: "گزارش کنترل",
+        title: "گزارش اکسل کنترل",
         width: 300,
         click: function () {
             let criteriaForm = isc.DynamicForm.create({
@@ -255,6 +255,29 @@
                 ],
                 method: "POST",
                 action: "<spring:url value="/controlForm/exportExcelControl"/>",
+                target: "_Blank",
+                canSubmit: true
+            });
+            criteriaForm.setValue("classId", idClasses);
+            criteriaForm.setValue("dataStatus",DynamicForm_CriteriaForm_JspControlReport.getItem("dataStatus").getValue() )
+
+            criteriaForm.show();
+            criteriaForm.submitForm();
+        }
+    });
+
+    IButton_JspControlReport_FullExcel = isc.IButtonSave.create({
+        top: 260,
+        title: "گزارش اکسل کلي",
+        width: 300,
+        click: function () {
+            let criteriaForm = isc.DynamicForm.create({
+                fields:[
+                    {name: "classId", type: "hidden"},
+                    {name: "dataStatus", type: "hidden"}
+                ],
+                method: "POST",
+                action: "<spring:url value="/controlForm/exportExcelAll"/>",
                 target: "_Blank",
                 canSubmit: true
             });
@@ -286,7 +309,7 @@
         alignLayout: "center",
         padding: 10,
         members: [
-            IButton_JspControlReport_AttendanceExcel,IButton_JspControlReport_ScoreExcel,IButton_JspControlReport_ControlExcel
+            IButton_JspControlReport_AttendanceExcel,IButton_JspControlReport_ScoreExcel,IButton_JspControlReport_ControlExcel,IButton_JspControlReport_FullExcel
         ]
     });
 
@@ -326,8 +349,7 @@
                     src: "[SKIN]/pickers/search_picker.png",
                     click: function () {
                         Window_SelectClasses_JspControlReport.show();
-                    }
-                }],
+                    }}],
                 keyPressFilter: "[A-Z|0-9|,-]"
             },
             {

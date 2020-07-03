@@ -80,52 +80,51 @@ public class ControlFormController {
         for (Long studentId : studentsId) {
             Optional<Student> byId = studentDAO.findById(studentId);
             Student student = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.StudentNotFound));
-            StudentDTO.clearAttendanceWithState st = modelMapper.map(student, StudentDTO.clearAttendanceWithState.class);
+            StudentDTO.clearAttendanceWithStatePDF st = modelMapper.map(student, StudentDTO.clearAttendanceWithStatePDF.class);
             st.setFullName(st.getFirstName() + " " + st.getLastName());
 
-            if (dataStatus.equals("true")) {
-                String dayName = sessionList.get(0).getDayName() != null ? sessionList.get(0).getDayName() : "";
 
-                int z = 0;
-                int ztemp = 0;
-                Map<String, String> statePerStudent = new HashMap<>();
+            String dayDate = sessionList.get(0).getSessionDate() != null ? sessionList.get(0).getSessionDate() : "";
 
-                for (int i = 0; i < allData.size(); i++) {
-                    final int j = i;
-                    ClassSession classSession=null;
+            int z = 0;
+            int ztemp = 0;
+            Map<String, String> statePerStudent = new HashMap<>();
 
-                    ClassSessionDTO.AttendanceClearForm data=allData.get(j);
+            for (int i = 0; i < sessionList.size(); i++) {
+                ClassSession classSession = sessionList.get(i);
 
-                    if (data!=null)
-                    {
-                        classSession = sessionList.stream().filter(x ->
-                                        x.getDayName().equals(data.getDayName()) &&
-                                        x.getSessionDate().equals(data.getSessionDate()) &&
-                                        x.getSessionStartHour().equals(data.getSessionStartHour()) &&
-                                        x.getSessionEndHour().equals(data.getSessionEndHour())).findFirst().get();
+                if (classSession != null) {
+                    if (!sessionList.get(i).getSessionDate().equals(dayDate)) {
+                        dayDate = sessionList.get(i).getSessionDate();
+                        ztemp += 5;
+                        z = ztemp;
                     }
 
-                    if (classSession != null) {
-                        if (!sessionList.get(i).getDayName().equals(dayName)) {
-                            dayName = sessionList.get(i).getDayName();
-                            ztemp += 5;
-                            z = ztemp;
-                        }
+                    List<AttendanceDTO> attendanceDTOS = modelMapper.map(attendanceDOA.findBySessionIdAndStudentId(classSession.getId(), studentId),
+                            new TypeToken<List<AttendanceDTO>>() {
+                            }.getType());
 
-                        List<AttendanceDTO> attendanceDTOS = modelMapper.map(attendanceDOA.findBySessionIdAndStudentId(classSession.getId(), studentId), new TypeToken<List<AttendanceDTO>>() {
-                        }.getType());
-                        AttendanceDTO attendanceDTO = attendanceDTOS.size() != 0 && attendanceDTOS.get(0) != null ? attendanceDTOS.get(0) : null;
+                    AttendanceDTO attendanceDTO = attendanceDTOS.size() != 0 && attendanceDTOS.get(0) != null ? attendanceDTOS.get(0) : null;
 
-                        if (attendanceDTO != null) {
-                            statePerStudent.put("z" + z, attendanceDTO.statusName(Integer.parseInt(attendanceDTO.getState())));
-                        }//end if
+                    if (attendanceDTO != null) {
+                        String tempZ="";
+                        if (z<=9)
+                            tempZ="0"+z;
+                        else
+                            tempZ=z+"";
 
+                        if (dataStatus.equals("true"))
+                            statePerStudent.put("z"+tempZ, attendanceDTO.statusName(Integer.parseInt(attendanceDTO.getState())));
+                        else
+                            statePerStudent.put("z"+tempZ, "");
                     }//end if
-                    z++;
-                }//end inner for
 
-                st.setStates(statePerStudent);
-            }
+                }//end if
+                z++;
+            }//end inner for
+
+            st.setStates(statePerStudent);
+
             studentArrayList.add(st);
         }//end outer for
 
@@ -153,20 +152,34 @@ public class ControlFormController {
         final HashMap<String, Object> params = new HashMap<>();
         String date = sessionList.get(0).getSessionDate();
         int d = 1;
-        double se = 1;
+        int se = 1;
+        int seTemp=1;
         params.put("d" + d, date);
         for (ClassSessionDTO.AttendanceClearForm session : sessionList) {
             if (session.getSessionDate().equals(date)) {
-                params.put("se" + (int) se, session.getSessionStartHour() + " - " + session.getSessionEndHour());
-                se++;
+                String strSe="";
+                if (se<=9)
+                    strSe="0"+se;
+                else
+                    strSe=se+"";
+
+                params.put("se" +  strSe, session.getSessionStartHour() + " - " + session.getSessionEndHour());
             } else {
                 date = session.getSessionDate();
                 d++;
                 params.put("d" + d, date);
-                se = Math.ceil(se / 5) * 5 + 1;
-                params.put("se" + (int) se, session.getSessionStartHour() + " - " + session.getSessionEndHour());
-                se++;
+                seTemp+=5;
+                se=seTemp;
+
+                String strSe="";
+                if (se<=9)
+                    strSe="0"+se;
+                else
+                    strSe=se+"";
+
+                params.put("se" + strSe, session.getSessionStartHour() + " - " + session.getSessionEndHour());
             }
+            se++;
         }
         return params;
 
@@ -310,18 +323,18 @@ public class ControlFormController {
                 st.setFullName(st.getFirstName() + " " + st.getLastName());
 
 
-                    String dayName = sessionList.get(0).getDayName() != null ? sessionList.get(0).getDayName() : "";
+                    String dayDate = sessionList.get(0).getSessionDate() != null ? sessionList.get(0).getSessionDate() : "";
 
                     int z = 0;
                     int ztemp = 0;
-                    Map<String, String> statePerStudent = new HashMap<>();
+                    Map<Integer, String> statePerStudent = new HashMap<>();
 
                     for (int i = 0; i < sessionList.size(); i++) {
                         ClassSession classSession = sessionList.get(i);
 
                         if (classSession != null) {
-                            if (!sessionList.get(i).getDayName().equals(dayName)) {
-                                dayName = sessionList.get(i).getDayName();
+                            if (!sessionList.get(i).getSessionDate().equals(dayDate)) {
+                                dayDate = sessionList.get(i).getSessionDate();
                                 ztemp += 5;
                                 z = ztemp;
                             }
@@ -334,9 +347,9 @@ public class ControlFormController {
 
                             if (attendanceDTO != null) {
                                 if (dataStatus.equals("true"))
-                                    statePerStudent.put("z" + z, attendanceDTO.statusName(Integer.parseInt(attendanceDTO.getState())));
+                                    statePerStudent.put(z, attendanceDTO.statusName(Integer.parseInt(attendanceDTO.getState())));
                                 else
-                                    statePerStudent.put("z" + z, "");
+                                    statePerStudent.put(z, "");
                             }//end if
 
                         }//end if
@@ -495,6 +508,118 @@ public class ControlFormController {
 
         try {
             controlReportService.exportToExcelControl(response,listMaps,listStudentArray);
+        } catch (Exception ex) {
+
+            Locale locale = LocaleContextHolder.getLocale();
+            response.sendError(500, messageSource.getMessage("error", null, locale));
+        }
+    }
+
+    @Transactional(readOnly = true)
+    @PostMapping(value = {"/exportExcelAll"})
+    public void exportExcelAll(final HttpServletResponse response,
+                                      @RequestParam(value = "classId") String classId,
+                                      @RequestParam(value = "dataStatus") String dataStatus
+    ) throws IOException {
+        Long[] idClasses= Arrays.stream(classId.split(",")).map(x->Long.valueOf(x)).toArray(Long[]::new);
+        List<Map<String, String>> listMaps=new ArrayList<>();
+        List<List<StudentDTO.fullAttendance>> listStudentArray=new ArrayList<>();
+        List<List<ClassSession>> listSessionList=new ArrayList<>();
+
+        for (int m=0;m<idClasses.length;m++) {
+            Tclass tClass = tclassService.getTClass(idClasses[m]);
+            TclassDTO.Info tclassDTO = modelMapper.map(tClass, TclassDTO.Info.class);
+            Set<ClassStudent> students = tClass.getClassStudents();
+            List<ClassStudent> listClassStudents = new ArrayList<ClassStudent>();
+            listClassStudents.addAll(students);
+
+            List<Long> studentsId = students.stream().map(s -> s.getStudent().getId()).collect(Collectors.toList());
+            List<StudentDTO.fullAttendance> studentArrayList = new ArrayList<>();
+
+            Set<ClassSession> sessions = tClass.getClassSessions();
+            boolean flag=true;
+            List<ClassSession> sessionList=new ArrayList<>();
+
+            if (sessions == null || sessions.size() == 0)
+              flag=false;
+
+            if (flag) {
+                 sessionList = sessions.stream().sorted(Comparator.comparing(ClassSession::getSessionDate)
+                        .thenComparing(ClassSession::getSessionStartHour))
+                        .collect(Collectors.toList());
+            }
+
+            listSessionList.add(sessionList);
+
+            int cnt=0;
+
+            for (Long studentId : studentsId) {
+                Optional<Student> byId = studentDAO.findById(studentId);
+                Student student = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.StudentNotFound));
+                StudentDTO.fullAttendance st = modelMapper.map(student, StudentDTO.fullAttendance.class);
+                st.setFullName(st.getFirstName() + " " + st.getLastName());
+
+                st.setScoreA(listClassStudents.get(cnt).getScore() != null && dataStatus.equals("true") ? listClassStudents.get(cnt).getScore().toString() : "");
+                st.setScoreB(st.calScoreB(st.getScoreA()));
+
+                String dayDate = "";
+
+                if (flag) {
+                    dayDate = sessionList.get(0).getSessionDate() != null ? sessionList.get(0).getSessionDate() : "";
+
+                    int z = 0;
+                    int ztemp = 0;
+                    Map<Integer, String> statePerStudent = new HashMap<>();
+
+                    for (int i = 0; i < sessionList.size(); i++) {
+                        ClassSession classSession = sessionList.get(i);
+
+                        if (classSession != null) {
+                            if (!sessionList.get(i).getSessionDate().equals(dayDate)) {
+                                dayDate = sessionList.get(i).getSessionDate();
+                                ztemp += 5;
+                                z = ztemp;
+                            }
+
+                            List<AttendanceDTO> attendanceDTOS = modelMapper.map(attendanceDOA.findBySessionIdAndStudentId(classSession.getId(), studentId),
+                                    new TypeToken<List<AttendanceDTO>>() {
+                                    }.getType());
+
+                            AttendanceDTO attendanceDTO = attendanceDTOS.size() != 0 && attendanceDTOS.get(0) != null ? attendanceDTOS.get(0) : null;
+
+                            if (attendanceDTO != null) {
+                                if (dataStatus.equals("true"))
+                                    statePerStudent.put(z, attendanceDTO.statusName(Integer.parseInt(attendanceDTO.getState())));
+                                else
+                                    statePerStudent.put(z, "");
+                            }//end if
+
+                        }//end if
+                        z++;
+                    }//end inner for
+
+                    st.setStates(statePerStudent);
+                }
+
+                studentArrayList.add(st);
+                cnt++;
+            }//end outer for
+
+            listStudentArray.add(studentArrayList);
+
+            final Map<String, String> params = new HashMap<>();
+            params.put("days", sessionList.stream().map(ClassSession::getDayName).collect(Collectors.toSet()).toString());
+            params.put("titleClass", tclassDTO.getTitleClass());
+            params.put("code", tclassDTO.getCode());
+            params.put("startDate", tclassDTO.getStartDate());
+            params.put("endDate", tclassDTO.getEndDate());
+            params.put("teacher", tclassDTO.getTeacher());
+
+            listMaps.add(params);
+        }
+
+        try {
+           controlReportService.exportToExcelFull(response,listMaps,listSessionList,listStudentArray);
         } catch (Exception ex) {
 
             Locale locale = LocaleContextHolder.getLocale();

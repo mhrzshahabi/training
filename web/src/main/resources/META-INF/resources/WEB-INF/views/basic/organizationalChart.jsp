@@ -5,6 +5,8 @@
 
 // <script>
 
+    let batch = true;
+
     var searchTree = isc.TreeGrid.create({
         ID: "searchTree",
         data:[],
@@ -49,17 +51,19 @@
             },
         },
         rowClick: function (_1,_2,_3) {
-            if(_1.isFolder === undefined){
-                console.log(_1);
+            if(batch){
+                if(_1.isFolder === undefined){
+                    console.log(_1);
                 }
-            if(_1.isFolder === true || _1.isFolder === false){
-                _1.isOpen = true;
-                let childeren = [];
-                _1.children.forEach(function (currentValue, index, arr) {
-                    if(currentValue.isFolder == undefined)
-                        childeren.add(currentValue.id);
-                });
-                getchilderen(childeren);
+                if(_1.isFolder === true || _1.isFolder === false){
+                    _1.isOpen = true;
+                    let childeren = [];
+                    _1.children.forEach(function (currentValue, index, arr) {
+                        if(currentValue.isFolder == undefined)
+                            childeren.add(currentValue.id);
+                    });
+                    getchilderen(childeren);
+                }
             }
         },
         openFolder:function () {}
@@ -164,28 +168,75 @@
     var HLayout_Tree_Data = isc.TrHLayout.create({
         ID: "HLayoutCenter_JspEditNeedsAssessment",
         height: "70%",
-        showResizeBar: true,
+        // showResizeBar: true,
+        // overflow: "scroll",
         members: [
             ToolStripButton_Refresh,
             search_bar,
         ]
-    })
+    });
+    var VLayout_organizationalTree = isc.VLayout.create({
+        // width: "100%",
+        // height: "100%",
+        showResizeBar: true,
+        // overflow: "scroll",
+        members: [organizationalTree]
+    });
+    var VLayout_searchTree = isc.VLayout.create({
+        // width: "100%",
+        // height: "100%",
+        showResizeBar: true,
+        // overflow: "scroll",
+        members: [searchTree]
+    });
 
     var VLayout_Tree_Data = isc.VLayout.create({
-        width: "100%",
-        height: "100%",
-        members: [search_bar, searchTree, organizationalTree]
+        // width: "100%",
+        // height: "100%",
+        // showResizeBar: true,
+        // overflow: "scroll",
+        members: [search_bar, VLayout_searchTree, VLayout_organizationalTree]
     });
 
     // ---------------------------------------------- Create - Layout ---------------------------------------->>
 
     // <<----------------------------------------------- Functions --------------------------------------------
     $(document).ready(function () {
-        getRootTreeData();
+        if(batch)
+            getRootTreeData();
+        else
+            getAllTreeData();
     });
 
+    function getAllTreeData() {
+        var url = masterDataUrl + "/department/touple-iscList";
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
+            wait.close();
+            if (resp.httpResponseCode != 200) {
+                return false;
+            } else {
+                let data = JSON.parse(resp.data);
+                console.log(data);
+                var Treedata = isc.Tree.create({
+                    modelType: "parent",
+                    nameProperty: "title",
+                    idField: "id",
+                    parentIdField: "parentId",
+                    data: data,
+                    openProperty: "isOpen",
+                });
+                organizationalTree.setData(Treedata);
+                //organizationalTree.getData().openAll();
+            }
+        }));
+    }
+
     function getchilderen(data) {
-        isc.RPCManager.sendRequest(TrDSRequest(masterDataUrl + "/department/getDepartmentsChilderen", "POST", JSON.stringify(data),function(resp){
+        let url = masterDataUrl + "/department/getDepartmentsChilderen";
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(data),function(resp){
+            wait.close();
             if (resp.httpResponseCode != 200){
                 return;
             } else {
@@ -206,7 +257,9 @@
 
     function getTreeData(parentId) {
         var url = masterDataUrl + "/department/getDepartmentsByParentId/" + parentId;
+        wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
+            wait.close();
             if (resp.httpResponseCode != 200) {
                 return false;
             } else {
@@ -227,7 +280,9 @@
 
     function getRootTreeData() {
         var url = masterDataUrl + "/department/getDepartmentsRoot";
+        wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
+            wait.close();
             if (resp.httpResponseCode != 200) {
                 return false;
             } else {
@@ -249,7 +304,9 @@
 
     function getSearchData(criteria) {
         var url = masterDataUrl + "/department/getDepartmentsChilderenAndParents" + "?operator=or&_constructor=AdvancedCriteria&criteria="+ criteria;
+        wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
+            wait.close();
             if (resp.httpResponseCode != 200) {
                 return false;
             } else {
