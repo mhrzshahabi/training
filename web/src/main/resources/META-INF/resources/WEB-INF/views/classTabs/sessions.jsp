@@ -805,7 +805,6 @@
             //**add new property to form values**
             sessionData["classId"] = classId;
             sessionData["sessionType"] = DynamicForm_Session.getItem("sessionTypeId").getDisplayValue();
-            //sessionData["sessionStateFa"] = DynamicForm_Session.getItem("sessionState").getDisplayValue();
 
             isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl, session_method, JSON.stringify(sessionData), show_SessionActionResult));
         }
@@ -959,9 +958,6 @@
                 let success=parseInt(dataTemp.sucesses);
                 let totalSizes=parseInt(dataTemp.totalSizes);
                 let failures = totalSizes-success;
-
-                console.log(success);
-                console.log(failures);
 
                 if (success!=0 && failures!=0)
                 {

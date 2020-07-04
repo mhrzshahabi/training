@@ -105,7 +105,11 @@
         autoFetchData: true,
         gridComponents: [PostGradeTS_postGrade, ToolStrip_NA_PostGrade, "filterEditor", "header", "body",],
         contextMenu: PostGradeMenu_postGrade,
-        sortField: 2,
+        canMultiSort: true,
+        initialSort: [
+            {property: "competenceCount", direction: "ascending"},
+            {property: "code", direction: "ascending"}
+        ],
         selectionType: "single",
         dataChanged: function () {
             this.Super("dataChanged", arguments);
@@ -166,7 +170,7 @@
         dataSource: PersonnelDS_PostGrade,
         selectionType: "single",
         alternateRecordStyles: true,
-        groupByField: "jobTitle",
+        sortField: 1,
         fields: [
             {name: "firstName"},
             {name: "lastName"},
@@ -331,7 +335,6 @@
         autoFetchData: false,
         showResizeBar: true,
         sortField: 0,
-        groupByField: "job.titleFa",
         fields: [
             {name: "code",
                 filterEditorProperties: {

@@ -5,6 +5,10 @@
 // <script>
 
     // var view_ENA = null;
+    isc.defineClass("NaLG", TrLG);
+    isc.NaLG.addProperties({
+        sortField: 1,
+    });
     const yellow ="#d6d216";
     const red = "#ff8abc";
     const green = "#5dd851";
@@ -207,6 +211,12 @@
                 hoverHTML(record) {
                     return "نام: " + record.objectName + "<br>" + "کد:" + record.objectCode;
                 },
+                sortNormalizer(record){
+                    if(record.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")){
+                        return 0;
+                    }
+                    return 1;
+                }
             },
             {name: "objectName"},
             {name: "objectCode"},
@@ -248,6 +258,12 @@
                 hoverHTML(record) {
                     return "نام: " + record.objectName + "<br>" + "کد:" + record.objectCode;
                 },
+                sortNormalizer(record){
+                    if(record.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")){
+                        return 0;
+                    }
+                    return 1;
+                }
             },
             {name: "objectName"},
             {name: "objectCode"},
@@ -579,7 +595,7 @@
             fetchDataDomainsTopGrid();
         }
     });
-    var ListGridTop_Knowledge_JspDiffNeedsAssessment = isc.TrLG.create({
+    var ListGridTop_Knowledge_JspDiffNeedsAssessment = isc.NaLG.create({
         ID: "ListGridTop_Knowledge_JspDiffNeedsAssessment",
         autoFetchData:false,
         dataSource: DataSource_Skill_Top_JspDiffNeedsAssessment,
@@ -657,7 +673,7 @@
             updatePriority_JspDiffNeedsAssessment(viewer, record);
         }
     });
-    var ListGridTop_Ability_JspDiffNeedsAssessment = isc.TrLG.create({
+    var ListGridTop_Ability_JspDiffNeedsAssessment = isc.NaLG.create({
         ID: "ListGridTop_Ability_JspDiffNeedsAssessment",
         dataSource: DataSource_Skill_Top_JspDiffNeedsAssessment,
         autoFetchData:false,
@@ -734,7 +750,7 @@
             updatePriority_JspDiffNeedsAssessment(viewer, record);
         }
     });
-    var ListGridTop_Attitude_JspDiffNeedsAssessment = isc.TrLG.create({
+    var ListGridTop_Attitude_JspDiffNeedsAssessment = isc.NaLG.create({
         ID: "ListGridTop_Attitude_JspDiffNeedsAssessment",
         dataSource: DataSource_Skill_Top_JspDiffNeedsAssessment,
         showHeaderContextMenu: false,
@@ -869,7 +885,7 @@
             fetchDataDomainsBottomGrid();
         }
     });
-    var ListGridBottom_Knowledge_JspDiffNeedsAssessment = isc.TrLG.create({
+    var ListGridBottom_Knowledge_JspDiffNeedsAssessment = isc.NaLG.create({
         ID: "ListGridBottom_Knowledge_JspDiffNeedsAssessment",
         autoFetchData:false,
         dataSource: DataSource_Skill_Bottom_JspDiffNeedsAssessment,
@@ -917,7 +933,7 @@
             return priorityColor(record);
         },
     });
-    var ListGridBottom_Ability_JspDiffNeedsAssessment = isc.TrLG.create({
+    var ListGridBottom_Ability_JspDiffNeedsAssessment = isc.NaLG.create({
         ID: "ListGridBottom_Ability_JspDiffNeedsAssessment",
         dataSource: DataSource_Skill_Bottom_JspDiffNeedsAssessment,
         autoFetchData:false,
@@ -962,7 +978,7 @@
             return priorityColor(record);
         },
     });
-    var ListGridBottom_Attitude_JspDiffNeedsAssessment = isc.TrLG.create({
+    var ListGridBottom_Attitude_JspDiffNeedsAssessment = isc.NaLG.create({
         ID: "ListGridBottom_Attitude_JspDiffNeedsAssessment",
         dataSource: DataSource_Skill_Bottom_JspDiffNeedsAssessment,
         showHeaderContextMenu: false,
@@ -1422,13 +1438,20 @@
     function updateLabelDiffNeedsAssessment(objectId) {
         Label_PlusData_JspDiffNeedsAssessment.setContents("");
         if(NeedsAssessmentTargetDF_diffNeedsAssessment.getValue("objectType") === "Post") {
-            Label_PlusData_JspDiffNeedsAssessment.setContents(
-                "عنوان پست: " + objectId.titleFa
-                // + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + objectId.postGrade.titleFa
-                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "حوزه: " + objectId.area
-                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "معاونت: " + objectId.assistance
-                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "امور: " + objectId.affairs
-            );
+            isc.RPCManager.sendRequest(TrDSRequest(postUrl + "/spec-list?id=" + objectId , "GET", null, (resp)=> {
+                if(resp.httpResponseCode === 200){
+                    let record = JSON.parse(resp.data).response.data[0];
+                    Label_PlusData_JspDiffNeedsAssessment.setContents(
+                        "عنوان پست: " + record.titleFa
+                        // + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + objectId.postGrade.titleFa
+                        + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "حوزه: " + record.area
+                        + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "معاونت: " + record.assistance
+                        + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "امور: " + record.affairs
+                    );
+                }
+
+            }));
+
         }
     }
     function updatePriority_JspDiffNeedsAssessment(viewer, record) {
@@ -1477,9 +1500,9 @@
         }
         updateObjectIdLG_Diff(NeedsAssessmentTargetDF_diffNeedsAssessment, type);
         NeedsAssessmentTargetDF_diffNeedsAssessment.setValue("objectType", type);
-        NeedsAssessmentTargetDF_diffNeedsAssessment.setValue("objectId", objectId.id);
+        NeedsAssessmentTargetDF_diffNeedsAssessment.setValue("objectId", objectId);
         clearAllGrid_Diff();
-        editNeedsAssessmentRecord_Diff(objectId.id, type);
+        editNeedsAssessmentRecord_Diff(objectId, type);
         // refreshPersonnelLG(objectId);
         updateLabelDiffNeedsAssessment(objectId);
     }

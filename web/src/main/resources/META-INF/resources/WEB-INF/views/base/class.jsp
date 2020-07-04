@@ -535,7 +535,12 @@
         // },
     });
 
-    var VM_JspClass = isc.ValuesManager.create({});
+    var VM_JspClass = isc.ValuesManager.create({
+        validate : function () {
+            DynamicForm_Class_JspClass.getField("trainingPlaceIds").validate();
+            return this.Super("validate", arguments);
+        }
+    });
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*DynamicForm Add Or Edit*/
@@ -990,7 +995,8 @@
                     {name: "manager.lastNameFa", filterOperator: "iContains"}
                 ],
                 changed: function (form, item) {
-                    form.clearValue("trainingPlaceIds")
+                    form.clearValue("trainingPlaceIds");
+                    // form.getField("trainingPlaceIds")._value = null;
                 },
                 pickListProperties: {
                     sortField: 0,
@@ -1034,6 +1040,11 @@
                     }
 // VM_JspClass.getField("course.id").getSelectedRecord().category.id;
 // return {category:category};
+                },
+            validate: function(){
+                if(this.form.getItem("trainingPlaceIds")._value.length <= 0)
+                    this.form.getItem("trainingPlaceIds")._value = null;
+                return this.Super("validate",arguments);
                 }
             },
 
@@ -1690,6 +1701,7 @@
                 }
             }
 
+            var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
             VM_JspClass.validate();
             if (VM_JspClass.hasErrors()) {
                 return;
@@ -1703,13 +1715,12 @@
             }
             let classSaveUrl = classUrl;
             if (classMethod.localeCompare("PUT") === 0) {
-                var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
                 classSaveUrl += "safeUpdate/" + classRecord.id;
             } else if (classMethod.localeCompare("POST") === 0)
             {
                 classSaveUrl += "safeCreate";
             }
-            wait.show()
+            wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(classSaveUrl, classMethod, JSON.stringify(data), (resp)=>{
                 wait.close();
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
@@ -1728,13 +1739,13 @@
                     Window_Class_JspClass.close();
 
                     //**********generate class sessions**********
-                    if (!VM_JspClass.hasErrors() && classMethod.localeCompare("POST") === 0) {
+                    if (!VM_JspClass.hasErrors() && ((classMethod.localeCompare("POST") === 0) || (classMethod.localeCompare("PUT") === 0 && ListGrid_session.getData().localData.length > 0 ? false : true && VM_JspClass.getValues().autoValid))) {
                         if (autoValid) {
                             ClassID = JSON.parse(resp.data).id;
-                            wait.show()
+                            wait.show();
                             isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "generateSessions" + "/" + ClassID, "POST", JSON.stringify(data), (resp)=>{
-                                wait.close()
-                                class_get_sessions_result(resp)
+                                wait.close();
+                                class_get_sessions_result(resp);
                             }));
                         }
                     }
@@ -2391,7 +2402,7 @@
                     DynamicForm_Class_JspClass.getItem("preCourseTest").hide();
                 } else
                     DynamicForm_Class_JspClass.getItem("preCourseTest").show();
-                autoTimeActivation(false);
+                autoTimeActivation(ListGrid_session.getData().localData.length > 0 ? false : true);
             } else {
                 classMethod = "POST";
                 url = classUrl;
@@ -2875,7 +2886,6 @@
             ListGrid_class_edit();
             taskConfirmationWindow.maximize();
         }
-
     }
 
     function sendToWorkflowAfterUpdate(selectedRecord) {
