@@ -22,6 +22,11 @@ public class MainFormController {
         return "basic/parameter";
     }
 
+    @RequestMapping("/organizationalChart")
+    public String showOrganizationalChartForm() {
+        return "basic/organizationalChart";
+    }
+
     @RequestMapping("/trainingFile")
     public String showTrainingFileForm() {
         return "report/trainingFile";
@@ -146,6 +151,16 @@ public class MainFormController {
         return "report/categoriesPerformanceReport";
     }
 
+    @RequestMapping("/continuousStatusReport")
+    public String showcontinuousStatusReportForm() {
+        return "report/continuousStatusReport";
+    }
+
+    @RequestMapping("/presenceReport")
+    public String showPresenceReport() {
+        return "report/presenceReport";
+    }
+
     @RequestMapping("class-contract")
     public String showClassContractForm() {
         return "run/class-contract";
@@ -202,6 +217,10 @@ public class MainFormController {
     @GetMapping("/edit-needs-assessment")
     public String showEditNeedsAssessmentForm() {
         return "needsAssessment/edit-needs-assessment";
+    }
+    @GetMapping("/diff-needs-assessment")
+    public String showDiffNeedsAssessmentForm() {
+        return "needsAssessment/diff-needs-assessment";
     }
     @GetMapping("/tree-needs-assessment")
     public String showTreeNeedsAssessmentForm() {
@@ -302,6 +321,11 @@ public class MainFormController {
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
         return restTemplate.exchange(restApiUrl + "/api/calenderCurrentTerm/print", HttpMethod.POST, entity, byte[].class);
 
+    }
+
+    @GetMapping("/personnel-information-details")
+    public String showPersonnelInformationDetailsForm() {
+        return "basic/personnelInformationDetails";
     }
 
 }

@@ -122,7 +122,7 @@ public class PersonnelDTO implements Serializable {
         private String fullName;
 
         public String getFullName() {
-            return getFirstName() + " " + getLastName();
+            return (firstName + " " + lastName).compareTo("null null")==0?null:firstName + " " + lastName;
         }
     }
 

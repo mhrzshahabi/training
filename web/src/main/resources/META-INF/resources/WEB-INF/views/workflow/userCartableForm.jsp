@@ -117,9 +117,6 @@
 
             userTaskViewLoader.setViewURL("${getUserTaskHistoryForm}" + pId);
 
-            console.log(record);
-            console.log("${getUserTaskHistoryForm}");
-
             activeDocumentDS.fetchDataURL = workflowUrl + "/userTaskHistory/list/" + pId;
 
             setTimeout(function () {

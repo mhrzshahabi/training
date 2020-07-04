@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.prefs.NodeChangeEvent;
+
 @Getter
 public class TrainingException extends NICICOException {
 
@@ -108,7 +110,9 @@ public class TrainingException extends NICICOException {
         EvaluationNotFound(404),
         EvaluationAnswerNotFound(404),
         ProvinceNotFound(404),
-        InvalidData(405), PersonnelNotFound(404);
+        InvalidData(405),
+        PersonnelNotFound(404),
+        NoChangeEvent(100);
 
         private final Integer httpStatusCode;
 

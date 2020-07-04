@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -166,7 +167,8 @@ public class StudentDTO {
         private String ccpUnit;
         private String fatherName;
         private String mobile;
-
+        private String birthCertificateNo;
+        private String postCode;
     }
 
     @Getter
@@ -228,11 +230,30 @@ public class StudentDTO {
         @Getter(AccessLevel.NONE)
         private String fullName;
 
-        public String getFullName(){
-            return firstName + " " + lastName;
+        public String getFullName() {
+            return (firstName + " " + lastName).compareTo("null null")==0?null:firstName + " " + lastName;
         }
     }
 
+    //Amin HK
+    @Getter
+    @Setter
+    @Accessors
+    @ApiModel("Clear With Attendance")
+    public static class clearAttendanceWithState extends clearAttendance {
+        private Map<Integer,String> states;
+    }
+
+    //Amin HK
+    @Getter
+    @Setter
+    @Accessors
+    @ApiModel("Clear With Attendance PDF")
+    public static class clearAttendanceWithStatePDF extends clearAttendance {
+        private Map<String,String> states;
+    }
+
+    //Amin HK
     @Getter
     @Setter
     @Accessors
@@ -243,6 +264,7 @@ public class StudentDTO {
         private String personnelNo;
         private String scoreA;
         private String scoreB;
+        private String fullName;
 
         public String calScoreB(String score){
             if (score==null || score.length()==0)
@@ -267,16 +289,10 @@ public class StudentDTO {
             }
 
             return  scoreStr;
-        }
+        }//end method calScoreB
+    }//end class scoreAttendance
 
-        @Getter(AccessLevel.NONE)
-        private String fullName;
-
-        public String getFullName(){
-            return firstName + " " + lastName;
-        }
-    }
-
+    //Amin HK
     @Getter
     @Setter
     @Accessors
@@ -287,12 +303,20 @@ public class StudentDTO {
         private String personnelNo;
         private String personnelNo2;
         private String ccpAffairs;
-
-        @Getter(AccessLevel.NONE)
         private String fullName;
+    }
 
-        public String getFullName(){
-            return firstName + " " + lastName;
-        }
+    //Amin HK
+    @Getter
+    @Setter
+    @Accessors
+    @ApiModel("Full - Attendance")
+    public static class fullAttendance extends scoreAttendance {
+        private String personnelNo2;
+        private String ccpAffairs;
+        private String educationMajorTitle;
+        private String jobTitle;
+
+        private Map<Integer,String> states;
     }
 }

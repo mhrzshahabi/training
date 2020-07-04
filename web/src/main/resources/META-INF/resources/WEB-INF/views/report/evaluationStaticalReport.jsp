@@ -14,7 +14,7 @@
 
     var data_values = null;
 
-    var societies = [];
+    let societies = [];
 
     var classCount_reaction = 0;
     var classCount_learning = 0;
@@ -174,7 +174,6 @@
         ]
     });
 
-
     var RestDataSource_Institute_JspEvaluationStaticalReport = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -276,7 +275,7 @@
         sortField: 1,
         filterOperator: "iContains",
         filterOnKeypress: true,
-        autoFetchData: true,
+        autoFetchData: false,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         selectionType: "single",

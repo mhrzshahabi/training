@@ -148,5 +148,8 @@
     <changeSet author="poursalehi_mos (generated)" id="1592578568485-427">
         <addUniqueConstraint columnNames="f_equal_course_id, list_equal_and_course" constraintName="UKcighigweqkeocnrjxvy37ysb1" tableName="tbl_equal_and_course"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1593510287630-445">
+        <addUniqueConstraint columnNames="c_code" constraintName="UC_TBL_TRAINING_POSTC_CODE_COL" tableName="tbl_training_post"/>
+    </changeSet>
     
 </databaseChangeLog>

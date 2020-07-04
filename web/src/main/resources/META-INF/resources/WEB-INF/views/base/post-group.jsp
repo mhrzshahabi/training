@@ -12,6 +12,7 @@
     var postGroupPostList_Post_Group_Jsp = null;
     var naPostGroup_Post_Group_Jsp = null;
     var PersonnelPostGroup_Post_Group_Jsp = null;
+    var wait_PostGroup = null;
 
 
     PostDS_PostGroup = isc.TrDS.create({
@@ -37,6 +38,9 @@
 
     PostLG_PostGroup = isc.TrLG.create({
         dataSource: PostDS_PostGroup,
+        autoFetchData: true,
+        showResizeBar: true,
+        sortField: 0,
         fields: [
             {name: "code",
                 filterEditorProperties: {
@@ -60,9 +64,6 @@
             {name: "competenceCount"},
             {name: "personnelCount"}
         ],
-        autoFetchData: true,
-        showResizeBar: true,
-        sortField: 0,
     });
 
     window_unGroupedPosts_PostGroup = isc.Window.create({
@@ -76,30 +77,30 @@
         items: [PostLG_PostGroup],
     });
 
-    if(Window_NeedsAssessment_Edit === undefined) {
-        var Window_NeedsAssessment_Edit = isc.Window.create({
-            title: "<spring:message code="needs.assessment"/>",
-            placement: "fillScreen",
-            minWidth: 1024,
-            items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],
-            showUs(record, objectType) {
-                loadEditNeedsAssessment(record, objectType);
-                this.Super("show", arguments);
-            },
-        });
-    }
-    if(Window_NeedsAssessment_Tree === undefined) {
-        var Window_NeedsAssessment_Tree = isc.Window.create({
-            title: "<spring:message code="needs.assessment"/>",
-            placement: "fillScreen",
-            minWidth: 1024,
-            items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/tree-needs-assessment/"})],
-            showUs(record, objectType) {
-                loadNeedsAssessmentTree(record, objectType);
-                this.Super("show", arguments);
-            },
-        });
-    }
+    <%--if(Window_NeedsAssessment_Edit === undefined) {--%>
+        <%--var Window_NeedsAssessment_Edit = isc.Window.create({--%>
+            <%--title: "<spring:message code="needs.assessment"/>",--%>
+            <%--placement: "fillScreen",--%>
+            <%--minWidth: 1024,--%>
+            <%--items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],--%>
+            <%--showUs(record, objectType) {--%>
+                <%--loadEditNeedsAssessment(record, objectType);--%>
+                <%--this.Super("show", arguments);--%>
+            <%--},--%>
+        <%--});--%>
+    <%--}--%>
+    <%--if(Window_NeedsAssessment_Tree === undefined) {--%>
+        <%--var Window_NeedsAssessment_Tree = isc.Window.create({--%>
+            <%--title: "<spring:message code="needs.assessment"/>",--%>
+            <%--placement: "fillScreen",--%>
+            <%--minWidth: 1024,--%>
+            <%--items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/tree-needs-assessment/"})],--%>
+            <%--showUs(record, objectType) {--%>
+                <%--loadNeedsAssessmentTree(record, objectType);--%>
+                <%--this.Super("show", arguments);--%>
+            <%--},--%>
+        <%--});--%>
+    <%--}--%>
 
     var RestDataSource_Post_Group_Jsp = isc.TrDS.create({
         fields: [
@@ -205,10 +206,14 @@
     });
     var ListGrid_Post_Group_Jsp = isc.TrLG.create({
         color: "red",
-        selectionType: "multiple",
+        selectionType: "single",
         dataSource: RestDataSource_Post_Group_Jsp,
         contextMenu: Menu_ListGrid_Post_Group_Jsp,
-        sortField: 5,
+        canMultiSort: true,
+        initialSort: [
+            {property: "competenceCount", direction: "ascending"},
+            {property: "id", direction: "descending"}
+        ],
         autoFetchData: true,
         selectionUpdated: function() {
             postGroupPostList_Post_Group_Jsp = null;
@@ -222,43 +227,11 @@
                 return "color:red;font-size: 12px;";
         },
     });
+
+    defineWindowsEditNeedsAssessment(ListGrid_Post_Group_Jsp);
+    defineWindowTreeNeedsAssessment();
+
     var method = "POST";
-    var Menu_ListGrid_Post_Group_Competences = isc.Menu.create({
-        width: 150,
-        data: [{
-            title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
-                ListGrid_Post_Group_Competence_refresh();
-            }
-        }, {
-            title: " حذف گروه پست از  شایستگی مربوطه", icon: "<spring:url value="remove.png"/>", click: function () {
-                activePostGroup = ListGrid_Post_Group_Jsp.getSelectedRecord();
-                activeCompetence = ListGrid_Post_Group_Competence.getSelectedRecord();
-                if (activePostGroup == null || activeCompetence == null) {
-                    simpleDialog("پیام", "شایستگی یا گروه پست انتخاب نشده است.", 0, "confirm");
-
-                } else {
-                    var Dialog_Delete = isc.Dialog.create({
-                        message: getFormulaMessage("آیا از حذف  گروه پست:' ", "2", "black", "c") + getFormulaMessage(activePostGroup.titleFa, "3", "red", "U") + getFormulaMessage(" از  شایستگی:' ", "2", "black", "c") + getFormulaMessage(activeCompetence.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
-                        icon: "[SKIN]ask.png",
-                        title: "تائید حذف",
-                        buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
-                            title: "خیر"
-                        })],
-                        buttonClick: function (button, index) {
-                            this.close();
-
-                            if (index == 0) {
-                                deleteCompetenceFromPostGroup(activeCompetence.id, activePostGroup.id);
-                            }
-                        }
-                    });
-
-                }
-            }
-        },
-
-        ]
-    });
     var Menu_ListGrid_Post_Group_Posts = isc.Menu.create({
         width: 150,
         data: [{
@@ -298,12 +271,22 @@
 
     var RestDataSource_Post_Group_Posts_Jsp = isc.TrDS.create({
         fields: [
-            {name: "id", primaryKey: true},
-            {name: "titleFa", filterOperator: "iContains"},
-            {name: "code", filterOperator: "iContains"},
-            // {name: "description"},
-            // {name: "version"}
-        ]
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "job.code", title: "<spring:message code="job.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true}
+
+        ],
+        fetchDataURL: postUrl + "/iscList"
     });
     var RestDataSource_All_Posts = isc.TrDS.create({
         fields: [
@@ -348,7 +331,7 @@
         canAcceptDroppedRecords: true,
         dataSource: RestDataSource_All_Posts,
         selectionAppearance: "checkbox",
-        selectionType: "multiple",
+        selectionType: "simple",
         sortField: 1,
         dragTrackerMode: "title",
         canDrag: true,
@@ -365,13 +348,14 @@
             {name: "unit"}
         ],
         recordDrop: function (dropRecords) {
-            var postGroupRecord = ListGrid_Post_Group_Jsp.getSelectedRecord();
-            var postGroupId = postGroupRecord.id;
-            var postIds = [];
+            let postGroupRecord = ListGrid_Post_Group_Jsp.getSelectedRecord();
+            let postGroupId = postGroupRecord.id;
+            let postIds = [];
             for (let i = 0; i < dropRecords.getLength(); i++) {
                 postIds.add(dropRecords[i].id);
             }
-            var JSONObj = {"ids": postIds};
+            wait.show();
+            let JSONObj = {"ids": postIds};
             isc.RPCManager.sendRequest({
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
@@ -381,12 +365,10 @@
                 data: JSON.stringify(JSONObj),
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-
+                    wait.close();
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                         ListGrid_ForThisPostGroup_GetPosts.invalidateCache();
                         ListGrid_AllPosts.invalidateCache();
-
-
                     } else {
                         isc.say("خطا");
                     }
@@ -405,6 +387,11 @@
         gridComponents: [Lable_ForThisPostGroup_GetPosts, "filterEditor", "header", "body"],
         dataSource: RestDataSource_ForThisPostGroup_GetPosts,
         sortField: 1,
+        // selectionAppearance: "checkbox",
+        selectionType: "simple",
+        canDragResize: true,
+        dragTrackerMode: "title",
+        canDrag: true,
         fields: [
             {name: "code", filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
@@ -418,17 +405,16 @@
             {name: "OnDelete", title: "حذف", align: "center", autoFitWidth: true, autoFitWidthApproach: "both"}
         ],
         createRecordComponent: function (record, colNum) {
-            var fieldName = this.getFieldName(colNum);
-
+            let fieldName = this.getFieldName(colNum);
             if (fieldName === "OnDelete") {
-                var recordCanvas = isc.HLayout.create({
+                let recordCanvas = isc.HLayout.create({
                     height: 20,
                     width: "100%",
                     layoutMargin: 5,
                     membersMargin: 10,
                     align: "center"
                 });
-                var removeIcon = isc.ImgButton.create({
+                let removeIcon = isc.ImgButton.create({
                     showDown: false,
                     showRollOver: false,
                     layoutAlign: "center",
@@ -438,10 +424,10 @@
                     width: 16,
                     grid: this,
                     click: function () {
-                        var activePost = record;
-                        var activePostId = activePost.id;
-                        var activePostGroup = ListGrid_Post_Group_Jsp.getSelectedRecord();
-                        var activePostGroupId = activePostGroup.id;
+                        let activePostId = record.id;
+                        let activePostGroup = ListGrid_Post_Group_Jsp.getSelectedRecord();
+                        let activePostGroupId = activePostGroup.id;
+                        wait.show();
                         isc.RPCManager.sendRequest({
                             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             useSimpleHttp: true,
@@ -450,9 +436,8 @@
                             httpMethod: "DELETE",
                             serverOutputAsString: false,
                             callback: function (resp) {
-                                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-
-                                    // RestDataSource_ForThisPostGroup_GetPosts.removeRecord(activePost);
+                                wait.close();
+                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                     ListGrid_AllPosts.invalidateCache();
                                     ListGrid_ForThisPostGroup_GetPosts.invalidateCache();
                                 } else {
@@ -468,40 +453,28 @@
                 return null;
         },
         recordDrop: function (dropRecords) {
-            var postGroupRecord = ListGrid_Post_Group_Jsp.getSelectedRecord();
-            var postGroupId = postGroupRecord.id;
-            var postIds = [];
+            let postGroupRecord = ListGrid_Post_Group_Jsp.getSelectedRecord();
+            let postGroupId = postGroupRecord.id;
+            let postIds = [];
             for (let i = 0; i < dropRecords.getLength(); i++) {
                 postIds.add(dropRecords[i].id);
             }
-            var JSONObj = {"ids": postIds};
-
-
+            let JSONObj = {"ids": postIds};
             TrDSRequest();
-
-
+            wait.show();
             isc.RPCManager.sendRequest({
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
-                actionURL: postGroupUrl + "/addPosts/" + postGroupId + "/" + postIds, //"${restApiUrl}/api/tclass/addStudents/" + ClassID,
+                actionURL: postGroupUrl + "/addPosts/" + postGroupId + "/" + postIds,
                 httpMethod: "POST",
                 data: JSON.stringify(JSONObj),
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-
+                    wait.close();
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                         ListGrid_ForThisPostGroup_GetPosts.invalidateCache();
                         ListGrid_AllPosts.invalidateCache();
-
-                        // var OK = isc.Dialog.create({
-                        //     message: "عملیات با موفقیت انجام شد",
-                        //     icon: "[SKIN]say.png",
-                        //     title: "پیام موفقیت"
-                        // });
-                        // setTimeout(function () {
-                        //     // OK.close();
-                        // }, 3000);
                     } else {
                         isc.say("خطا");
                     }
@@ -528,7 +501,6 @@
         placement: "fillScreen",
         minWidth: 1024,
         closeClick: function () {
-            ListGrid_Post_Group_Competence.invalidateCache();
             ListGrid_Post_Group_Posts.invalidateCache();
             this.hide();
         },
@@ -537,92 +509,37 @@
         ]
     });
 
-    var RestDataSource_Post_Group_Competencies_Jsp = isc.TrDS.create({
-        fields: [
-            {name: "id"},
-            {name: "titleFa"},
-            {name: "titleEn"},
-            {name: "description"},
-            {name: "version"}
-        ]
-        //,fetchDataURL:"${restApiUrl}/api/post-group/?/getCompetences"
-    });
-
     var ListGrid_Post_Group_Posts = isc.TrLG.create({
-        width: "100%",
-        height: "100%",
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        showResizeBars: true,
-        filterOnKeypress: true,
         dataSource: RestDataSource_Post_Group_Posts_Jsp,
         contextMenu: Menu_ListGrid_Post_Group_Posts,
-        doubleClick: function () {
-            //    ListGrid_Post_Group_edit();
-        },
+        autoFetchData: false,
+        showResizeBar: true,
+        sortField: 1,
+        fields: [
+            {name: "code",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
+            {name: "titleFa"},
+            {name: "job.titleFa"},
+            {name: "postGrade.titleFa"},
+            {name: "area"},
+            {name: "assistance"},
+            {name: "affairs"},
+            {name: "section"},
+            {name: "unit"},
+            {name: "costCenterCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "costCenterTitleFa"}
+        ],
         dataArrived: function () {
             postGroupPostList_Post_Group_Jsp = ListGrid_Post_Group_Posts.data.localData;
             fetchPersonnelData_Post_Group_Jsp();
         },
-        fields: [
-            {name: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
-        ],
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 22,
-        autoFetchData: false,
-        showFilterEditor: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
-    });
-
-    var ListGrid_Post_Group_Competence = isc.TrLG.create({
-        width: "100%",
-        height: "100%",
-        showResizeBars: true,
-        dataSource: RestDataSource_Post_Group_Competencies_Jsp,
-        contextMenu: Menu_ListGrid_Post_Group_Competences,
-        doubleClick: function () {
-            //    ListGrid_Post_Group_edit();
-        },
-        fields: [
-            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "نام شایستگی", align: "center"},
-            {name: "titleEn", title: "نام لاتین شایستگی ", align: "center"},
-            {name: "description", title: "توضیحات", align: "center"},
-            {name: "version", title: "version", canEdit: false, hidden: true}
-        ],
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 22,
-        autoFetchData: false,
-        showFilterEditor: true,
-        filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
     });
 
     var DynamicForm_Post_Group_Jsp = isc.DynamicForm.create({
@@ -812,12 +729,12 @@
                 return;
             }
             Window_NeedsAssessment_Edit.showUs(ListGrid_Post_Group_Jsp.getSelectedRecord(), "PostGroup");
-            Window_NeedsAssessment_Edit.setProperties({
-                close() {
-                    ListGrid_Post_Group_Jsp.invalidateCache()
-                    this.Super("close", arguments)
-                }
-            })
+            // Window_NeedsAssessment_Edit.setProperties({
+            //     close() {
+            //         ListGrid_Post_Group_Jsp.invalidateCache()
+            //         this.Super("close", arguments)
+            //     }
+            // })
             // createTab(this.title, "web/edit-needs-assessment/", "loadEditNeedsAssessment(ListGrid_Post_Group_Jsp.getSelectedRecord(), 'PostGroup')");
             // Window_NeedsAssessment_Edit.show();
         }
@@ -1152,14 +1069,6 @@
         PersonnelLG_Post_Group_Jsp.setData([]);
     }
 
-    function ListGrid_Post_Group_Competence_refresh() {
-
-        if (ListGrid_Post_Group_Jsp.getSelectedRecord() == null)
-            ListGrid_Post_Group_Competence.setData([]);
-        else
-            ListGrid_Post_Group_Competence.invalidateCache();
-    }
-
     function ListGrid_Post_Group_edit() {
         var record = ListGrid_Post_Group_Jsp.getSelectedRecord();
         if (record == null || record.id == null) {
@@ -1209,8 +1118,6 @@
                                     ListGrid_Post_Group_Jsp.invalidateCache();
                                     simpleDialog("انجام فرمان", "حذف با موفقیت انجام شد", 2000, "say");
                                     ListGrid_Post_Group_Posts.setData([]);
-                                    ListGrid_Post_Group_Competence.setData([]);
-
                                 } else {
                                     simpleDialog("پیام خطا", "حذف با خطا مواجه شد", 2000, "stop");
 
@@ -1229,9 +1136,6 @@
         PersonnelPostGroup_Post_Group_Jsp = null;
         ListGrid_Post_Group_Jsp.invalidateCache();
         ListGrid_Post_Group_Posts_refresh();
-        ListGrid_Post_Group_Competence_refresh();
-
-
     }
 
     function ListGrid_Post_Group_add() {
@@ -1253,46 +1157,6 @@
             callback: function (resp) {
                 if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                     ListGrid_Post_Group_Posts.invalidateCache();
-
-                } else {
-                    isc.say("خطا در پاسخ سرویس دهنده");
-                }
-            }
-        });
-    }
-
-    function deleteCompetenceFromPostGroup(competenceId, postGroupId) {
-        isc.RPCManager.sendRequest({
-            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-            useSimpleHttp: true,
-            contentType: "application/json; charset=utf-8",
-            actionURL: postGroupUrl + "/removeCompetence/" + postGroupId + "/" + competenceId,
-            httpMethod: "DELETE",
-            serverOutputAsString: false,
-            callback: function (resp) {
-                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                    ListGrid_Post_Group_Competence.invalidateCache();
-
-                } else {
-                    isc.say("خطا در پاسخ سرویس دهنده");
-                }
-            }
-        });
-    }
-
-    function deletePostGroupFromAllCompetence(postGroupId) {
-
-
-        isc.RPCManager.sendRequest({
-            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-            useSimpleHttp: true,
-            contentType: "application/json; charset=utf-8",
-            actionURL: postGroupUrl + "/removeAllCompetence/" + postGroupId + "/",
-            httpMethod: "DELETE",
-            serverOutputAsString: false,
-            callback: function (resp) {
-                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                    ListGrid_Post_Group_Competence.invalidateCache();
 
                 } else {
                     isc.say("خطا در پاسخ سرویس دهنده");

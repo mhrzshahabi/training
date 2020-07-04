@@ -702,8 +702,6 @@
                         keyPressFilter: "[0-9]"
                     }
                 },
-                // {name: "student.postTitle"},
-                // {name: "student.ccpArea"},
                 {
                     name: "evaluationStatusReaction",
                     valueMap: {
@@ -789,7 +787,10 @@
                         width: "120",
                         baseStyle: "registerFile",
                         click: function () {
-                            register_evaluation_result_reaction_student(record);
+                            if(record.evaluationStatusReaction == "0")
+                                createDialog("info", "فرمی صادر نشده است");
+                            else
+                                register_evaluation_result_reaction_student(record);
                         }
                     });
                     if(Detail_Tab_Evaluation.getSelectedTab().id == "TabPane_Behavior"){
@@ -843,21 +844,13 @@
                     align: "left",
                     border: '0px',
                     members: [
-                        ToolStripButton_Refresh,
+                        ToolStripButton_Refresh
                     ]
                 })
                 </sec:authorize>
 
             ]
         });
-
-        //*****evaluation toolStrip*****
-        <%--var ToolStripButton_FormIssuance = isc.ToolStripButton.create({--%>
-        <%--    title: "<spring:message code="student.form.issuance.Behavioral"/>",--%>
-        <%--    click: function () {--%>
-        <%--        set_print_Status("single");--%>
-        <%--    }--%>
-        <%--});--%>
 
         var ToolStripButton_FormIssuanceForAll = isc.ToolStripButton.create({
             title: "<spring:message code="students.form.issuance.Behavioral"/>",
@@ -892,14 +885,24 @@
             title: "ثبت نتایج ارزیابی مدرس از کلاس",
             baseStyle: "registerFile",
             click: function () {
-                register_evaluation_result_reaction(0);
+                isc.RPCManager.sendRequest(TrDSRequest(classUrl + "getTeacherReactionStatus/" + ListGrid_evaluation_class.getSelectedRecord().id , "GET", null, function (resp) {
+                    if(resp.httpResponseText == "1")
+                        register_evaluation_result_reaction(0);
+                    else
+                        createDialog('info', "برای مدرس فرمی صادر نشده است.");
+                }));
             }
         });
         var ToolStripButton_RegisterForm_Training = isc.ToolStripButton.create({
             title: "ثبت نتایج ارزیابی مسئول آموزش از استاد",
             baseStyle: "registerFile",
             click: function () {
-                register_evaluation_result_reaction(1);
+                isc.RPCManager.sendRequest(TrDSRequest(classUrl + "getTrainingReactionStatus/" + ListGrid_evaluation_class.getSelectedRecord().id , "GET", null, function (resp) {
+                    if(resp.httpResponseText == "1")
+                        register_evaluation_result_reaction(1);
+                    else
+                        createDialog('info', "برای مسئول آموزش فرمی صادر نشده است.");
+                }));
             }
         });
 

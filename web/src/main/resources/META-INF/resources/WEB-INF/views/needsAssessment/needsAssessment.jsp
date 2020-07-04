@@ -1018,7 +1018,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                             // };
                             let criteria = '{"fieldName":"id","operator":"equals","value":"'+record.id+'"}';
                             PostDs_needsAssessment.fetchDataURL = postUrl + "/iscList?operator=or&_constructor=AdvancedCriteria&criteria="+ criteria;
-                            let wating = createDialog("wait");
+                            let needsAssessment_wait = createDialog("wait");
                             NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData(function () {
                                 NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", record.id);
                                 editNeedsAssessmentRecord(record.id, "Post");
@@ -1029,7 +1029,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                                     + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "معاونت: " + record.assistance
                                     + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "امور: " + record.affairs
                                 );
-                                wating.close();
+                                needsAssessment_wait.close();
                             });
                             // NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").pickListCriteria = {"id" : record.id};
                             refreshPersonnelLG(record);

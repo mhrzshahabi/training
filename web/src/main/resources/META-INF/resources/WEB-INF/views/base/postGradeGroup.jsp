@@ -7,25 +7,26 @@
 
     var method = "POST";
     var url;
-    var wait;
+    var wait_PostGradeGroup;
 
     var postGrade_PGG = null;
     var naJob_PGG = null;
     var personnelJob_PGG = null;
     var post_PGG = null;
+    var postGradesSelection=false;
 
-    if(Window_NeedsAssessment_Edit === undefined) {
-        var Window_NeedsAssessment_Edit = isc.Window.create({
-            title: "<spring:message code="needs.assessment"/>",
-            placement: "fillScreen",
-            minWidth: 1024,
-            items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],
-            showUs(record, objectType) {
-                loadEditNeedsAssessment(record, objectType);
-                this.Super("show", arguments);
-            }
-        });
-    }
+    <%--if(Window_NeedsAssessment_Edit === undefined) {--%>
+        <%--var Window_NeedsAssessment_Edit = isc.Window.create({--%>
+            <%--title: "<spring:message code="needs.assessment"/>",--%>
+            <%--placement: "fillScreen",--%>
+            <%--minWidth: 1024,--%>
+            <%--items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],--%>
+            <%--showUs(record, objectType) {--%>
+                <%--loadEditNeedsAssessment(record, objectType);--%>
+                <%--this.Super("show", arguments);--%>
+            <%--}--%>
+        <%--});--%>
+    <%--}--%>
 
     //////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -104,11 +105,15 @@
     });
 
     var ListGrid_Post_Grade_Group_Jsp = isc.TrLG.create({
-        selectionType: "multiple",
+        selectionType: "single",
         autoFetchData: true,
-        sortField: 2,
         dataSource: RestDataSource_PostGradeGroup_Jsp,
         contextMenu: Menu_ListGrid_Post_Grade_Group_Jsp,
+        canMultiSort: true,
+        initialSort: [
+            {property: "competenceCount", direction: "ascending"},
+            {property: "id", direction: "descending"}
+        ],
         getCellCSSText: function (record) {
             if (record.competenceCount === 0)
                 return "color:red;font-size: 12px;";
@@ -120,6 +125,9 @@
             ListGrid_Post_Grade_Group_edit();
         }
     });
+
+    defineWindowsEditNeedsAssessment(ListGrid_Post_Grade_Group_Jsp);
+    defineWindowTreeNeedsAssessment();
 
     var DynamicForm_thisPostGradeGroupHeader_Jsp = isc.DynamicForm.create({
         titleWidth: "400",
@@ -140,31 +148,94 @@
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_All_PostGrades_PostGradeGroup_Jsp,
-        canDragResize: true,
-        canDragRecordsOut: true,
-        canAcceptDroppedRecords: true,
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
         autoFetchData: false,
-        showRowNumbers: false,
+        showRowNumbers: true,
         sortField: 1,
         sortDirection: "descending",
-        dragTrackerMode: "title",
-        canDrag: true,
         fields: [
             {name: "code", title: "<spring:message code='post.grade.code'/>", filterOperator: "iContains", align: "center",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
                 }
             },
-            {name: "titleFa", title: "<spring:message code='post.grade.title'/>", filterOperator: "iContains", align: "center"}
+            {name: "titleFa", title: "<spring:message code='post.grade.title'/>", filterOperator: "iContains", align: "center"},
+            {name: "OnAdd", title: " ", align: "center",canSort:false,canFilter:false},
         ],
-        recordDrop: function (dropRecords) {
-            var postGradeGroupId = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord().id;
-            var postGradeIds = [];
-            for (var i = 0; i < dropRecords.getLength(); i++) {
-                postGradeIds.add(dropRecords[i].id);
-            }
-            isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + "removePostGrades/" + postGradeGroupId + "/" + postGradeIds,
-                "DELETE", null, "callback: allPostGrade_remove_result(rpcResponse)"));
+        selectionAppearance: "checkbox",
+        selectionType: "simple",
+        dataArrived:function(startRow, endRow){
+            let lgIds = ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.data.getAllCachedRows().map(function(item) {
+                return item.id;
+            });
+
+            let findRows=ListGrid_AllPostGrades.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:lgIds}]});
+            ListGrid_AllPostGrades.setSelectedState(findRows);
+            findRows.setProperty("enabled", false);
+        },
+        createRecordComponent: function (record, colNum) {
+            var fieldName = this.getFieldName(colNum);
+            if (fieldName == "OnAdd") {
+                var recordCanvas = isc.HLayout.create({
+                    height: "100%",
+                    width: "100%",
+                    layoutMargin: 5,
+                    membersMargin: 10,
+                    align: "center"
+                });
+                var addIcon = isc.ImgButton.create({
+                    showDown: false,
+                    showRollOver: false,
+                    layoutAlign: "center",
+                    src: "[SKIN]/actions/add.png",
+                    prompt: "اضافه کردن",
+                    height: 16,
+                    width: 16,
+                    grid: this,
+                    click: function () {
+                        let current = record;
+                        let selected=ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.data.getAllCachedRows().map(function(item) {return item.id;});
+
+                        let ids = [];
+
+                        if ($.inArray(current.id, selected) === -1){
+                            ids.push(current.id);
+                        }
+
+                        if(ids.length!=0){
+                            let findRows=ListGrid_AllPostGrades.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"equals",value:current.id}]});
+
+                            let groupRecord = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
+                            let groupId = groupRecord.id;
+
+                            let JSONObj = {"ids": ids};
+                            wait.show();
+                            isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + "addPostGrades/" + groupId + "/" + ids,
+                                    "POST", null, function (resp) {
+                                    wait.close();
+                                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                        ListGrid_AllPostGrades.selectRecord(findRows);
+                                        findRows.setProperty("enabled", false);
+                                        ListGrid_AllPostGrades.redraw();
+
+                                        ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.invalidateCache();
+                                        ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.fetchData();
+
+                                    } else {
+                                        createDialog("info", "<spring:message code="msg.operation.error"/>",
+                                        "<spring:message code="message"/>");
+                                    }
+                                    }
+                                )
+                            );
+                        }
+                    }
+                });
+                recordCanvas.addMember(addIcon);
+                return recordCanvas;
+            } else
+                return null;
         }
     });
 
@@ -173,11 +244,13 @@
         height: "100%",
         canDragRecordsOut: true,
         canAcceptDroppedRecords: true,
-        showRowNumbers: false,
+        showRowNumbers: true,
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         autoFetchData: false,
         dataSource: RestDataSource_ForThisPostGroup_GetPosts_PostGradeGroup_Jsp,
+        selectionAppearance: "checkbox",
+        selectionType: "simple",
         fields: [
             {name: "code", title: "<spring:message code='post.grade.code'/>", filterOperator: "iContains", align: "center",
                 filterEditorProperties: {
@@ -185,8 +258,15 @@
                 }
             },
             {name: "titleFa", title: "<spring:message code='post.grade.title'/>", filterOperator: "iContains", align: "center"},
-            {name: "OnDelete", title: "<spring:message code='global.form.remove'/>", align: "center", canFilter: false}
+            {name: "OnDelete", title: " ", align: "center", canFilter: false}
         ],
+        dataArrived:function(){
+            if(postGradesSelection) {
+                ListGrid_AllPostGrades.invalidateCache();
+                ListGrid_AllPostGrades.fetchData();
+                postGradesSelection=false;
+            }
+        },
         createRecordComponent: function (record, colNum) {
             var fieldName = this.getFieldName(colNum);
             if (fieldName === "OnDelete") {
@@ -201,30 +281,38 @@
                     showDown: false,
                     showRollOver: false,
                     layoutAlign: "center",
-                    src: "<spring:url value='remove.png'/>",
+                    src: "[SKIN]/actions/remove.png",
                     height: 16,
                     width: 16,
                     grid: this,
                     click: function () {
-                        var activePostGradeGroup = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
-                        isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + "removePostGrades/" + activePostGradeGroup.id + "/" + [record.id],
-                            "DELETE", null, "callback: postGrade_remove_result(rpcResponse)"));
+                        let active = record;
+                        let activeId = active.id;
+                        let activeGroup = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
+                        let activeGroupId = activeGroup.id;
+                        isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + "removePostGrades/" + activeGroupId + "/" + [activeId],
+                            "DELETE", null, function (resp) {
+                                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+
+                                    ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.invalidateCache();
+
+                                    let findRows=ListGrid_AllPostGrades.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:[activeId]}]});
+
+                                    if(typeof (findRows)!='undefined' && findRows.length>0){
+                                        findRows.setProperty("enabled", true);
+                                        ListGrid_AllPostGrades.deselectRecord(findRows[0]);
+                                    }
+
+                                } else {
+                                    isc.say("خطا در پاسخ سرویس دهنده");
+                                }
+                            }));
                     }
                 });
                 recordCanvas.addMember(removeIcon);
                 return recordCanvas;
             } else
                 return null;
-        },
-
-        recordDrop: function (dropRecords) {
-            var postGradeGroupId = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord().id;
-            var postGradeIds = [];
-            for (var i = 0; i < dropRecords.getLength(); i++) {
-                postGradeIds.add(dropRecords[i].id);
-            }
-            isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + "addPostGrades/" + postGradeGroupId + "/" + postGradeIds,
-                "POST", null, "callback: postGrade_add_result(rpcResponse)"));
         }
     });
 
@@ -238,7 +326,51 @@
                 canCollapse: false,
                 align: "center",
                 items: [
-                    ListGrid_AllPostGrades
+                    ListGrid_AllPostGrades,
+                    isc.ToolStripButtonAdd.create({
+                        width:"100%",
+                        height:25,
+                        title:"اضافه کردن گروهی",
+                        click: function () {
+                            let dialog = createDialog('ask', "<spring:message code="msg.record.adds.ask"/>");
+                            dialog.addProperties({
+                                buttonClick: function (button, index) {
+                                    this.close();
+                                    if (index == 0) {
+                                        var ids = ListGrid_AllPostGrades.getSelection().filter(function(x){return x.enabled!=false}).map(function(item) {return item.id;});
+                                        var activeGroup = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
+                                        var activeGroupId = activeGroup.id;
+                                        let JSONObj = {"ids": ids};
+
+                                        isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + "addPostGrades/" + activeGroupId + "/" + ids,
+                                            "POST", null, function (resp) {
+                                                wait.close();
+                                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                                    ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.invalidateCache();
+                                                    ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.fetchData();
+
+                                                    let findRows=ListGrid_AllPostGrades.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:ids}]});
+
+                                                    if(typeof (findRows)!='undefined' && findRows.length>0){
+                                                        findRows.setProperty("enabled", false);
+                                                        ListGrid_AllPostGrades.redraw();
+                                                    }
+                                                    isc.say("عملیات با موفقیت انجام شد.");
+
+
+
+                                                } else {
+                                                    createDialog("info", "<spring:message code="msg.operation.error"/>",
+                                                        "<spring:message code="message"/>");
+                                                }
+                                            }
+                                        ));
+                                    }
+                                }
+                            })
+
+                        }
+                    })
                 ]
             }
         ]
@@ -253,7 +385,54 @@
                 canCollapse: false,
                 align: "center",
                 items: [
-                    ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa
+                    ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa,
+                    isc.ToolStripButtonRemove.create({
+                        width:"100%",
+                        height:25,
+                        title:"حذف گروهی",
+                        click: function () {
+                            let dialog = createDialog('ask', "<spring:message code="msg.record.remove.ask"/>");
+                            dialog.addProperties({
+                                buttonClick: function (button, index) {
+                                    this.close();
+                                    if (index == 0) {
+                                        var ids = ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.getSelection().map(function(item) {return item.id;});
+                                        var activeGroup = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
+                                        var activeGroupId = activeGroup.id;
+                                        let JSONObj = {"ids": ids};
+
+
+                                        isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + "removePostGrades/" + activeGroupId + "/" + ids,
+                                            "DELETE", null, function (resp) {
+
+                                                wait.close();
+                                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                                    ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.invalidateCache();
+                                                    ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.fetchData();
+
+                                                    let findRows=ListGrid_AllPostGrades.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:ids}]});
+
+                                                    if(typeof (findRows)!='undefined' && findRows.length>0){
+                                                        findRows.setProperty("enabled", true);
+                                                        ListGrid_AllPostGrades.deselectRecord(findRows);
+                                                        ListGrid_AllPostGrades.redraw();
+                                                    }
+                                                    isc.say("عملیات با موفقیت انجام شد.");
+
+
+
+                                                } else {
+                                                    createDialog("info", "<spring:message code="msg.operation.error"/>",
+                                                        "<spring:message code="message"/>");
+                                                }
+                                            }
+                                        ));
+                                    }
+                                }
+                            })
+
+                        }
+                    })
                 ]
             }
         ]
@@ -411,10 +590,22 @@
             Window_NeedsAssessment_Edit.showUs(ListGrid_Post_Grade_Group_Jsp.getSelectedRecord(), "PostGradeGroup");
         }
     });
+
+    ToolStripButton_TreeNA_PGG = isc.ToolStripButton.create({
+        title: "درخت نیازسنجی",
+        click: function () {
+            if (ListGrid_Post_Grade_Group_Jsp.getSelectedRecord() == null){
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            Window_NeedsAssessment_Tree.showUs(ListGrid_Post_Grade_Group_Jsp.getSelectedRecord(), "PostGradeGroup");
+        }
+    });
+
     ToolStrip_NA_PGG = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
-        members: [ToolStripButton_EditNA_PGG]
+        members: [ToolStripButton_EditNA_PGG, ToolStripButton_TreeNA_PGG]
     });
 
     var ToolStripButton_Refresh_Post_Grade_Group_Jsp = isc.ToolStripButtonRefresh.create({
@@ -512,7 +703,7 @@
         dataSource: PersonnelDS_PGG,
         selectionType: "single",
         alternateRecordStyles: true,
-        groupByField: "postGradeTitle",
+        // groupByField: "postGradeTitle",
         fields: [
             {name: "firstName"},
             {name: "lastName"},
@@ -678,7 +869,7 @@
         autoFetchData: false,
         showResizeBar: true,
         sortField: 0,
-        groupByField: "postGrade.titleFa",
+        // groupByField: "postGrade.titleFa",
         fields: [
             {name: "code",
                 filterEditorProperties: {
@@ -782,23 +973,12 @@
         }
     }
 
-    function postGrade_remove_result(resp) {
-        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            ListGrid_AllPostGrades.invalidateCache();
-            ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.invalidateCache();
-        } else {
-            createDialog("info", "<spring:message code="msg.operation.error"/>",
-                "<spring:message code="message"/>");
-        }
-    }
-
     function Add_Post_Grade_Group_AddPostGrade_Jsp() {
         var record = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            ListGrid_AllPostGrades.fetchData();
-            ListGrid_AllPostGrades.invalidateCache();
+            postGradesSelection=true;
             RestDataSource_ForThisPostGroup_GetPosts_PostGradeGroup_Jsp.fetchDataURL = postGradeGroupUrl + record.id + "/getPostGrades";
             ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.invalidateCache();
             ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.fetchData();
@@ -806,26 +986,6 @@
             SectionStack_Current_Post_Grade_Jsp.setSectionTitle(0,"<spring:message code='post.grade.group'/>" + " " +
                 getFormulaMessage(record.titleFa, "2", "red", "B"));
             Window_Add_PostGrade_to_PostGradeGroup_Jsp.show();
-        }
-    }
-
-    function postGrade_add_result(resp) {
-        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.invalidateCache();
-            ListGrid_AllPostGrades.invalidateCache();
-        } else {
-            createDialog("info", "<spring:message code="msg.operation.error"/>",
-                "<spring:message code="message"/>");
-        }
-    }
-
-    function allPostGrade_remove_result(resp) {
-        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.invalidateCache();
-            ListGrid_AllPostGrades.invalidateCache();
-        } else {
-            createDialog("info", "<spring:message code="msg.operation.error"/>",
-                "<spring:message code="message"/>");
         }
     }
 
@@ -853,7 +1013,7 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                        wait = createDialog("wait");
+                        wait_PostGradeGroup = createDialog("wait");
                         isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + record.id, "DELETE", null,
                             "callback: Post_Grade_Group_remove_result(rpcResponse)"));
                     }
@@ -863,7 +1023,7 @@
     }
 
     function Post_Grade_Group_remove_result(resp) {
-        wait.close();
+        wait_PostGradeGroup.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             ListGrid_Post_Grade_Group_Jsp.invalidateCache();
             var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",

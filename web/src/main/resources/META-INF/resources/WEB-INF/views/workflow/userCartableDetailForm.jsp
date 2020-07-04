@@ -11,6 +11,7 @@ abaspour 9803
 %>
 // <script>
 
+    var workFlowName = null;
     var rejectDocumentLabel = null;
     var doRejectTaskButton = null;
     var doDeleteTaskButton = null;
@@ -70,6 +71,10 @@ abaspour 9803
 
     </c:if>
 
+    <c:if test="${taskFormVariable.id =='workFlowName'}">
+     workFlowName = "${taskFormVariable.value}";
+    </c:if>
+
     <c:if test="${taskFormVariable.id =='targetTitleFa'}">
     var targetTitleFa = "${taskFormVariable.value}";
     var targetTitleFaFull = "مشاهده ی " + targetTitleFa;
@@ -84,12 +89,16 @@ abaspour 9803
 
             var data = taskStartConfirmForm.getValues();
             workflowRecordId = data.cId;
-            trainingTabSet.removeTab(targetTitleFa)
-            createTab(targetTitleFa, "${addDocumentUrl}");
-            // taskConfirmationWindow.resizeTo(taskConfirmationWindow.widht, 70);
-            // taskConfirmationWindow.maximize();
-            taskConfirmationWindow.top = "0";
-            taskConfirmationWindow.minimize();
+            if (workFlowName === "NeedAssessment") {
+                showWindowDiffNeedsAssessment(workflowRecordId, data.cType);
+            } else {
+                trainingTabSet.removeTab(targetTitleFa);
+                createTab(targetTitleFa, "${addDocumentUrl}");
+                // taskConfirmationWindow.resizeTo(taskConfirmationWindow.widht, 70);
+                // taskConfirmationWindow.maximize();
+                taskConfirmationWindow.top = "0";
+                taskConfirmationWindow.minimize();
+            }
 
             workflowParameters = {
                 "taskId": "${id}",
@@ -161,6 +170,10 @@ abaspour 9803
                 <c:when test="${taskFormVariable.id =='targetTitleFa'}">,
                 type: "hidden" </c:when>
                 <c:when test="${taskFormVariable.id =='cId'}">,
+                type: "hidden" </c:when>
+                <c:when test="${taskFormVariable.id =='workFlowName'}">,
+                type: "hidden" </c:when>
+                <c:when test="${taskFormVariable.id =='cType'}">,
                 type: "hidden" </c:when>
                 <c:when test="${taskFormVariable.id =='DELETE'}">,
                 type: "hidden" </c:when>
@@ -327,13 +340,13 @@ abaspour 9803
                                 if (RpcResponse_o.data == 'success') {
                                     // isc.say(rejectDocumentLabel == null ? targetTitleFa + " تایید شد." : targetTitleFa + " جهت بررسی ارسال شد.");
                                     //isc.say(rejectDocumentLabel == null ? " تایید شد." : " جهت بررسی ارسال شد.");
-                                    simpleDialog("<spring:message code="message"/>",rejectDocumentLabel == null ? " تایید شد." : " جهت بررسی ارسال شد.", 3000, "say");
+                                    simpleDialog("<spring:message code="message"/>", rejectDocumentLabel == null ? " تایید شد." : " جهت بررسی ارسال شد.", 3000, "say");
                                     taskConfirmationWindow.hide();
                                     ListGrid_UserTaskList.invalidateCache();
                                     <%--userCartableButton.setTitle("شخصی (" + ${cartableCount -1} +"   )");--%>
                                     <%--<c:set var="cartableCount" value="${cartableCount -1}"/>--%>
 
-                                     activeDocumentDS.fetchDataURL = "";
+                                    activeDocumentDS.fetchDataURL = "";
                                     ListGrid_DocumentActivity.setData([]);
 
                                 } else {
@@ -445,7 +458,7 @@ abaspour 9803
                                             serverOutputAsString: false,
                                             callback: function (RpcResponse_o) {
                                                 if (RpcResponse_o.data == 'success') {
-                                                    simpleDialog("<spring:message code="message"/>", targetTitleFa + " عودت داده شد." , 3000, "say");
+                                                    simpleDialog("<spring:message code="message"/>", targetTitleFa + " عودت داده شد.", 3000, "say");
                                                     taskConfirmationWindow.hide();
                                                     ListGrid_UserTaskList.invalidateCache();
                                                     <%--userCartableButton.setTitle("شخصی (" + ${cartableCount} +"   )");--%>

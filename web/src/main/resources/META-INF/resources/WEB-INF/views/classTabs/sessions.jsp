@@ -124,9 +124,8 @@
                     {name: "sessionState"},
                     {name: "sessionStateFa"},
                     {name: "description"}
-                ]
-            //// fetchDataURL: sessionServiceUrl + "load-sessions/428"
-            //// fetchDataURL: sessionServiceUrl + "spec-list"
+                ],
+                fetchDataURL: sessionServiceUrl + "spec-list"
         });
 
 
@@ -308,11 +307,11 @@
                 {name: "titleFa", title: "<spring:message code="institution.name"/>"},
                 {name: "manager.firstNameFa", title: "<spring:message code="manager.name"/>"},
                 {name: "manager.lastNameFa", title: "<spring:message code="manager.family"/>"},
-                {name: "mobile", title: "<spring:message code="mobile"/>"},
-                {name: "restAddress", title: "<spring:message code="address"/>"},
-                {name: "phone", title: "<spring:message code="telephone"/>"}
+                <%--{name: "mobile", title: "<spring:message code="mobile"/>"},--%>
+                <%--{name: "restAddress", title: "<spring:message code="address"/>"},--%>
+                <%--{name: "phone", title: "<spring:message code="telephone"/>"}--%>
             ],
-            fetchDataURL: instituteUrl + "spec-list"
+            fetchDataURL: instituteUrl + "iscSessionTupleList"
         });
 
         var RestDataSource_TrainingPlace_JspSession = isc.TrDS.create({
@@ -478,7 +477,7 @@
                         editorExit:function(){
                             let val=DynamicForm_Session.getValue("sessionStartHour");
 
-                            if(val!=null && val!='' && typeof (val) != 'undefined'&& !val.match(/^(([0-1][0-9]|2[0-3]):([0-5][0-9]))|(24:00)$/)){
+                            if(val===null || val==='' || typeof (val) === 'undefined'|| !val.match(/^(([0-1][0-9]|2[0-3]):([0-5][0-9]))$/)){
                                 DynamicForm_Session.addFieldErrors("sessionStartHour", "<spring:message code="session.hour.invalid"/>", true);
                             }else{
                                 DynamicForm_Session.clearFieldErrors("sessionStartHour", true);
@@ -541,7 +540,7 @@
                         },*/
                         editorExit:function(){
                             let val=DynamicForm_Session.getValue("sessionEndHour");
-                            if(val!=null && val!='' && typeof (val) != 'undefined'&& !val.match(/^(([0-1][0-9]|2[0-3]):([0-5][0-9]))|(24:00)$/)){
+                            if(val===null || val==='' || typeof (val) === 'undefined'|| !val.match(/^(([0-1][0-9]|2[0-3]):([0-5][0-9]))$/)){
                                 DynamicForm_Session.addFieldErrors("sessionEndHour", "<spring:message code="session.hour.invalid"/>", true);
                             }else{
                                 DynamicForm_Session.clearFieldErrors("sessionEndHour", true);
@@ -743,6 +742,9 @@
         //*****check date is valid*****
         function check_valid_date() {
 
+            DynamicForm_Session.getField("sessionStartHour").editorExit()
+            DynamicForm_Session.getField("sessionEndHour").editorExit();
+
             DynamicForm_Session.clearFieldErrors("sessionDate", true);
 
             if (DynamicForm_Session.getValue("sessionDate") === undefined || !checkDate(DynamicForm_Session.getValue("sessionDate"))) {
@@ -803,7 +805,6 @@
             //**add new property to form values**
             sessionData["classId"] = classId;
             sessionData["sessionType"] = DynamicForm_Session.getItem("sessionTypeId").getDisplayValue();
-            //sessionData["sessionStateFa"] = DynamicForm_Session.getItem("sessionState").getDisplayValue();
 
             isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl, session_method, JSON.stringify(sessionData), show_SessionActionResult));
         }
@@ -852,6 +853,8 @@
         function edit_Session() {
 
             DynamicForm_Session.validate();
+
+
 
             check_valid_date();
 
@@ -923,12 +926,12 @@
                         buttonClick: function (button, index) {
                             this.close();
                             if (index === 0) {
-                                studentRemoveWait = isc.Dialog.create({
-                                    message: "<spring:message code='msg.waiting'/>",
-                                    icon: "[SKIN]say.png",
-                                    title: "<spring:message code='message'/>"
-                                });
-
+                                <%--studentRemoveWait = isc.Dialog.create({--%>
+                                    <%--message: "<spring:message code='msg.waiting'/>",--%>
+                                    <%--icon: "[SKIN]say.png",--%>
+                                    <%--title: "<spring:message code='message'/>"--%>
+                                <%--});--%>
+                                wait.show();
                                 records.forEach(item=> sessionIds=[...sessionIds,parseInt(item.id)]);
                                 isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "deleteSessions/" + sessionIds , "DELETE", null, show_SessionActionResult));
                             }
@@ -944,6 +947,7 @@
         var MyOkDialog_Session;
 
         function show_SessionActionResult(resp) {
+            wait.close();
             var respCode = resp.httpResponseCode;
             if (respCode === 200 || respCode === 201) {
                 loadPage_session();
@@ -953,20 +957,17 @@
                 let dataTemp=JSON.parse(resp.data);
                 let success=parseInt(dataTemp.sucesses);
                 let totalSizes=parseInt(dataTemp.totalSizes);
-                let failures=totalSizes-success;
-
-                studentRemoveWait.close();
+                let failures = totalSizes-success;
 
                 if (success!=0 && failures!=0)
                 {
                     MyOkDialog_Session= isc.Dialog.create({
                         message: getFormulaMessage(failures.toString()+" ", 2, "red", "B") + "<spring:message code="attendance.meeting.none.nums"/>"+"<br/>"+
-                                 getFormulaMessage(success.toString()+" ", 2, "green", "B") + "<spring:message code="attendance.meeting.ok.nums"/>",
+                            getFormulaMessage(success.toString()+" ", 2, "green", "B") + "<spring:message code="attendance.meeting.ok.nums"/>",
                         icon: "[SKIN]say.png",
                         title: "<spring:message code="warning"/>",
                     });
                 }
-
                 else if (success!=0)
                 {
                     MyOkDialog_Session= isc.Dialog.create({
@@ -975,13 +976,11 @@
                         title: "<spring:message code="warning"/>",
                     });
                 }
-
-                else
-                {
+                else {
                     MyOkDialog_Session= isc.Dialog.create({
-                        message: getFormulaMessage(failures.toString()+" ", 2, "red", "B") + "<spring:message code="attendance.meeting.none.nums"/>"+"<br/>",
+                        message: "<spring:message code="global.form.request.successful"/>",
                         icon: "[SKIN]say.png",
-                        title: "<spring:message code="warning"/>",
+                        title: "<spring:message code="ok"/>",
                     });
                 }
 
@@ -993,7 +992,7 @@
 
                     ListGrid_session.scrollToRow(ListGrid_session.getRecordIndex(ListGrid_session.getSelectedRecord()), 0);
 
-                },2000);
+                },6000);
 
                 Window_Session.close();
 
@@ -1024,7 +1023,16 @@
                         icon: "[SKIN]stop.png"
                     });
 
-                } else {
+                }
+                else if (resp.httpResponseCode === 428) {
+
+                    MyOkDialog_Session = isc.MyOkDialog.create({
+                        message: "<spring:message code="global.no.change.happend"/>"+ " " + "<spring:message code="check.attendance"/>",
+                        icon: "[SKIN]stop.png"
+                    });
+
+                }
+                else {
                     MyOkDialog_Session = isc.MyOkDialog.create({
                         message: "<spring:message code="msg.operation.error"/>"
                     });

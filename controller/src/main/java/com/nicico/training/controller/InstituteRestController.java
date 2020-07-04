@@ -620,4 +620,17 @@ public class InstituteRestController {
         SearchDTO.SearchRs<InstituteDTO.InstituteInfoTuple> searchRs = instituteService.search(searchRq, i -> modelMapper.map(i, InstituteDTO.InstituteInfoTuple.class));
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
+
+    @GetMapping(value = "/iscSessionTupleList")
+    public ResponseEntity<ISC<InstituteDTO.InstituteSessionTuple>> sessionlist(HttpServletRequest iscRq, @RequestParam(required = false) Long id) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        if (id != null) {
+            searchRq.setCriteria(makeNewCriteria("id", id, EOperator.equals, null));
+        }
+        SearchDTO.SearchRs<InstituteDTO.InstituteSessionTuple> searchRs = instituteService.search(searchRq, i -> modelMapper.map(i, InstituteDTO.InstituteSessionTuple.class));
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
 }

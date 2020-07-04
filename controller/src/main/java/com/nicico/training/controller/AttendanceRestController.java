@@ -46,7 +46,6 @@ public class AttendanceRestController {
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
-    private final ParameterService parameterService;
 
     // ------------------------------
 
@@ -94,25 +93,8 @@ public class AttendanceRestController {
     public ResponseEntity<Boolean> acceptAbsent(@RequestParam("classId") Long classId,
                                                 @RequestParam("studentId") Long studentId,
                                                 @RequestParam("sessionId") List<Long> sessionId) throws ParseException {
-//		List<List<Map>> maps = attendanceService.autoCreate(classId, date);
-//		ClassSessionDTO.Info sessionInfo = ;
-//		List<ClassSessionDTO.Info> classSessions = attendanceService.studentAbsentSessionsInClass(classId, studentId);
-        Set<ClassSessionDTO.Info> classSessions = new HashSet<>(attendanceService.studentAbsentSessionsInClass(classId, studentId));
 
-        for (Long aLong : sessionId) {
-            classSessions.add(classSessionService.get(aLong));
-        }
-        Long sum = 0L;
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        for (ClassSessionDTO.Info classSession : classSessions) {
-            sum += sdf.parse(classSession.getSessionEndHour()).getTime() - sdf.parse(classSession.getSessionStartHour()).getTime();
-        }
-
-        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("ClassConfig");
-        List<ParameterValueDTO.Info> parameterValues = parameters.getResponse().getData();
-
-        Double acceptAbsentHoursForClass = attendanceService.acceptAbsentHoursForClass(classId, Double.valueOf(parameterValues.get(0).getValue())/100);
-        return new ResponseEntity<>(acceptAbsentHoursForClass >= sum, HttpStatus.CREATED);
+        return new ResponseEntity<>(attendanceService.studentAbsentSessionsInClass(classId, sessionId, studentId), HttpStatus.CREATED);
     }
 
     @Loggable
