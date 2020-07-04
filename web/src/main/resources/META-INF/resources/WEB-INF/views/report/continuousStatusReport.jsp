@@ -6,87 +6,17 @@
 // <script>
 
     // <<-------------------------------------- Create - RestDataSource  ----------------------------
-    {
-        var RestDataSource_Institute = isc.TrDS.create({
-            fields: [
-                {name: "id", primaryKey: true},
-                {name: "titleFa", title: "<spring:message code="institute"/>"}
-            ],
-            fetchDataURL: instituteUrl +"iscTupleList",
-            allowAdvancedCriteria: true,
-        });
-
-        var RestDataSource_Category = isc.TrDS.create({
-            fields: [{name: "id"},
-                {name: "titleFa"}],
-            fetchDataURL: categoryUrl + "iscTupleList"
-        });
-
-        var RestDataSource_Sub_Category = isc.TrDS.create({
-            fields: [
-                {name: "id", primaryKey: true},
-                {name: "titleFa", type: "text"}
-            ],
-            fetchDataURL: subCategoryUrl + "iscTupleList",
-        });
-
-        var RestDataSource_Course = isc.TrDS.create({
-            fields: [
-                {name: "id"},
-                {name: "titleFa"}
-            ],
-            fetchDataURL: courseUrl + "iscTupleList"
-        });
-
-        var RestDataSource_Term = isc.TrDS.create({
-            fields: [
-                {name: "id", primaryKey: true},
-                {name: "titleFa"},
-            ],
-            fetchDataURL: termUrl + "spec-list",
-            autoFetchData: true
-        });
-
-
-        var RestDataSource_ClPReport = isc.TrDS.create({
+        var RestDataSource_CTReport = isc.TrDS.create({
             fields:
                 [
-                    {name: "institute"},
-                    {name: "category"},
-                    {name: "planingClasses"},
-                    {name: "processingClasses"},
-                    {name: "finishedClasses"},
-                    {name: "endedClasses"},
-                    // {name: "presentStudents"},
-                    // {name: "overdueStudents"},
-                    // {name: "absentStudents"},
-                    // {name: "unjustifiedStudents"},
-                    // {name: "unknownStudents"},
+
                 ],
         });
 
-
-        var RestDataSource_atPReport = isc.TrDS.create({
-            fields:
-                [
-                    {name: "institute"},
-                    {name: "category"},
-                    // {name: "planingClasses"},
-                    // {name: "processingClasses"},
-                    // {name: "finishedClasses"},
-                    // {name: "endedClasses"},
-                    {name: "presentStudents"},
-                    {name: "overdueStudents"},
-                    {name: "absentStudents"},
-                    {name: "unjustifiedStudents"},
-                    {name: "unknownStudents"},
-                ],
-        });
 
     // ---------------------------------------- Create - RestDataSource -------------------------->>
 
     // <<--------------------------------- Create - DynamicForm & Window & Layout -----------------------------
-    {
         //*****report main dynamic form*****
         var DynamicForm_CPReport = isc.DynamicForm.create({
             numCols: 16,
@@ -194,7 +124,7 @@
                     }
 
                 },
-                {
+                /*{
                     name: "institute",
                     ID: "institute",
                     emptyDisplayValue: "همه",
@@ -341,16 +271,16 @@
                     click: function () {
                         searchResult();
                     }
-                }
+                }*/
             ]
         });
         // ----------------------------------- Create - DynamicForm & Window --------------------------->>
         // <<----------------------------------------------- List Grid --------------------------------------------
 
-        var ListGrid_ClPReport = isc.TrLG.create({
+        var ListGrid_CTReport = isc.TrLG.create({
             width: "100%",
             height: "100%",
-            dataSource: RestDataSource_ClPReport,
+            dataSource: RestDataSource_CTReport,
             canAddFormulaFields: false,
             showFilterEditor: true,
             allowAdvancedCriteria: true,
@@ -359,7 +289,7 @@
             selectionType: "single",
             showGridSummary: true,
             initialSort: [
-                {property: "institute", direction: "ascending"}
+                {property: "", direction: "ascending"}
             ],
             gridComponents: [
                 DynamicForm_CPReport,
@@ -372,170 +302,9 @@
                 , "header", "filterEditor", "body", "summaryRow"
             ],
             fields: [
-                {
-                    name: "institute",
-                    title: "<spring:message code="institute"/>",
-                    align: "center",
-                    filterOperator: "iContains",
-                    showGridSummary: true,
-                    summaryFunction: "totalSummary()"
-                },
-                {
-                    name: "category",
-                    title: "<spring:message code="course_category"/>",
-                    align: "center",
-                    filterOperator: "iContains",
-                    // summaryFunction: "totalCategory(records)",
-                },
-                {
-                    name: "planingClasses",
-                    title: "<spring:message code="classes.planing"/>",
-                    align: "center",
-                    filterOperator: "iContains",
-                    summaryFunction: "totalPlaningClasses(records)",
-                    filterEditorProperties: {
-                        keyPressFilter: "[0-9|:]"
-                    }
-                },
-                {
-                    name: "processingClasses",
-                    title: "<spring:message code="classes.processing"/>",
-                    align: "center",
-                    filterOperator: "iContains",
-                    summaryFunction: "totalProcessingClasses(records)",
-                    filterEditorProperties: {
-                        keyPressFilter: "[0-9|:]"
-                    }
-                },
-                {
-                    name: "finishedClasses",
-                    title: "<spring:message code="classes.finished"/>",
-                    align: "center",
-                    filterOperator: "iContains",
-                    summaryFunction: "totalFinishedClasses(records)",
-                    filterEditorProperties: {
-                        keyPressFilter: "[0-9|:]"
-                    }
-                },
-                {
-                    name: "endedClasses",
-                    title: "<spring:message code="classes.ended"/>",
-                    align: "center",
-                    filterOperator: "iContains",
-                    summaryFunction: "totalEndedClasses(records)",
-                    filterEditorProperties: {
-                        keyPressFilter: "[0-9|:]"
-                    }
-                },
+
             ]
         });
-
-    }
-
-
-        var ListGrid_atPReport = isc.TrLG.create({
-            width: "100%",
-            height: "100%",
-            dataSource: RestDataSource_atPReport,
-            canAddFormulaFields: false,
-            showFilterEditor: true,
-            allowAdvancedCriteria: true,
-            allowFilterExpressions: true,
-            filterOnKeypress: true,
-            selectionType: "single",
-            showGridSummary: true,
-            initialSort: [
-                {property: "institute", direction: "ascending"}
-            ],
-            gridComponents: [
-                DynamicForm_CPReport,
-                // isc.ToolStripButtonExcel.create({
-                //     margin:5,
-                //     click: function() {
-                //
-                //         let criteria = DynamicForm_CPReport.getValuesAsAdvancedCriteria();
-                //
-                //         if(criteria != null && Object.keys(criteria).length != 0) {
-                //
-                //         }else{
-                //             return ;
-                //         }
-                //
-                //         ExportToFile.showDialog(null, ListGrid_CPReport, 'categoriesPerformanceReport', 0, null, '',  "عملکرد واحدهای آموزشی", criteria, null);
-                //     }
-                // })
-                , "header", "filterEditor", "body", "summaryRow"
-            ],
-            fields: [
-                {
-                    name: "institute",
-                    title: "<spring:message code="institute"/>",
-                    align: "center",
-                    filterOperator: "iContains",
-                    showGridSummary: true,
-                    summaryFunction: "totalSummary()"
-                },
-                {
-                    name: "category",
-                    title: "<spring:message code="course_category"/>",
-                    align: "center",
-                    filterOperator: "iContains",
-                    // summaryFunction: "totalCategory(records)",
-                },
-                {
-                name: "presentStudents",
-                title: "<spring:message code="students.all.present"/>",
-                align: "center",
-                filterOperator: "iContains",
-                summaryFunction: "totalPresentStudents(records)",
-                filterEditorProperties: {
-                keyPressFilter: "[0-9|:]"
-                }
-                },
-                {
-                name: "overdueStudents",
-                title: "<spring:message code="students.all.overtime"/>",
-                align: "center",
-                filterOperator: "iContains",
-                summaryFunction: "totalOverdueStudents(records)",
-                filterEditorProperties: {
-                keyPressFilter: "[0-9|:]"
-                }
-                },
-                {
-                name: "absentStudents",
-                title: "<spring:message code="students.all.absent"/>",
-                align: "center",
-                filterOperator: "iContains",
-                summaryFunction: "totalAbsentStudents(records)",
-                filterEditorProperties: {
-                keyPressFilter: "[0-9|:]"
-                }
-                },
-                {
-                name: "unjustifiedStudents",
-                title: "<spring:message code="students.all.unjustified"/>",
-                align: "center",
-                filterOperator: "iContains",
-                summaryFunction: "totalUnjustifiedStudents(records)",
-                filterEditorProperties: {
-                keyPressFilter: "[0-9|:]"
-                }
-                },
-                {
-                name: "unknownStudents",
-                title: "<spring:message code="students.all.unknown"/>",
-                align: "center",
-                filterOperator: "iContains",
-                summaryFunction: "totalUnknownStudents(records)",
-                filterEditorProperties: {
-                keyPressFilter: "[0-9|:]"
-                }
-                },
-            ]
-        });
-
-    }
 
         // <<----------------------------------------------- List Grid --------------------------------------------
         // <<----------------------------------------------- Layout --------------------------------------------
@@ -543,13 +312,12 @@
             width: "100%",
             height: "100%",
             overflow: "visible",
-            members: [ListGrid_ClPReport]
+            members: [ListGrid_CTReport]
         })
 
     // <<----------------------------------------------- Layout --------------------------------------------
 
     // <<----------------------------------------------- Functions --------------------------------------------
-    {
         //*****check date is valid*****
         function  checkUndefinedDate(id) {
 
@@ -602,125 +370,12 @@
             CPReport_check_date("firstStartDate","secondStartDate");
             CPReport_check_date("firstFinishDate","secondFinishDate");
 
-            if (DynamicForm_CPReport.hasErrors())
-                return;
-            /*if(firstStartDate._value === undefined || firstStartDate._value === null)
-                firstStartDate._value = " ";
-            if(secondStartDate._value === undefined || secondStartDate._value === null)
-                secondStartDate._value = " ";
-            if(firstFinishDate._value === undefined || firstFinishDate._value === null)
-                firstFinishDate._value = " ";
-            if(secondFinishDate._value === undefined || secondFinishDate._value === null)
-                secondFinishDate._value = " ";*/
-
-            var reportParameters = {
-                firstStartDate: firstStartDate._value.replace(/\//g, "^"),
-                secondStartDate: secondStartDate._value.replace(/\//g, "^"),
-                firstFinishDate: firstFinishDate._value.replace(/\//g, "^"),
-                secondFinishDate: secondFinishDate._value.replace(/\//g, "^"),
-                institute: DynamicForm_CPReport.getValue("institute") !== undefined ? DynamicForm_CPReport.getValue("institute") : "همه",
-                category: DynamicForm_CPReport.getValue("category") !== undefined ? DynamicForm_CPReport.getValue("category") : "همه",
-                subcategory: DynamicForm_CPReport.getValue("subcategory") !== undefined ? DynamicForm_CPReport.getValue("subcategory") : "همه",
-                term: DynamicForm_CPReport.getValue("term") !== undefined ? DynamicForm_CPReport.getValue("term") : "همه",
-                course: DynamicForm_CPReport.getValue("course") !== undefined ? DynamicForm_CPReport.getValue("course") : "همه"
-            };
-
-            if (DynamicForm_CPReport.getValue("reportType") === "1"){
-                RestDataSource_ClPReport.fetchDataURL = classPerformanceReport + "list" + "/" + JSON.stringify(reportParameters);
-                //classPerformanceReport
-                ListGrid_ClPReport.invalidateCache();
-                ListGrid_ClPReport.fetchData();
-            }
-            else if(DynamicForm_CPReport.getValue("reportType") === "2"){
-                RestDataSource_atPReport.fetchDataURL = attendancePerformanceReportUrl + "list" + "/" + JSON.stringify(reportParameters);
-                //attendancePerformanceReport
-                ListGrid_atPReport.invalidateCache();
-                ListGrid_atPReport.fetchData();
-            }
-
-
         }
 
         //*****calculate total summary*****
-        function totalSummary() {
-            return "جمع کل :";
-        }
 
-        function totalPlaningClasses(records) {
-            let total = 0;
-            for (let i = 0; i < records.length; i++) {
-                total += records[i].planingClasses;
-            }
-            return total.toString();
-        }
-
-        function totalProcessingClasses(records) {
-            let total = 0;
-            for (let i = 0; i < records.length; i++) {
-                total += records[i].processingClasses;
-            }
-            return total.toString();
-        }
-
-        function totalFinishedClasses(records) {
-            let total = 0;
-            for (let i = 0; i < records.length; i++) {
-                total += records[i].finishedClasses;
-            }
-            return total.toString();
-        }
-
-        function totalEndedClasses(records) {
-            let total = 0;
-            for (let i = 0; i < records.length; i++) {
-                total += records[i].endedClasses;
-            }
-            return total.toString();
-        }
-
-        function totalPresentStudents(records) {
-            let total = 0;
-            for (let i = 0; i < records.length; i++) {
-                total += records[i].presentStudents;
-            }
-            return total.toString() + " نفر بر ساعت";
-        }
-
-        function totalOverdueStudents(records) {
-            let total = 0;
-            for (let i = 0; i < records.length; i++) {
-                total += records[i].overdueStudents;
-            }
-            return total.toString() + " نفر بر ساعت";
-        }
-
-        function totalAbsentStudents(records) {
-            let total = 0;
-            for (let i = 0; i < records.length; i++) {
-                total += records[i].absentStudents;
-            }
-            return total.toString() + " نفر بر ساعت";
-        }
-
-        function totalUnjustifiedStudents(records) {
-            let total = 0;
-            for (let i = 0; i < records.length; i++) {
-                total += records[i].unjustifiedStudents;
-            }
-            return total.toString() + " نفر بر ساعت";
-        }
-
-        function totalUnknownStudents(records) {
-            let total = 0;
-            for (let i = 0; i < records.length; i++) {
-                total += records[i].unknownStudents;
-            }
-            return total.toString() + " نفر بر ساعت";
-        }
 
         //***********************************
-
-    }
     // ------------------------------------------------- Functions ------------------------------------------>>
 
     // </script>

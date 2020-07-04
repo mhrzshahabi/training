@@ -1808,7 +1808,17 @@
                             {isSeparator: true},
                             </sec:authorize>
 
-                            <sec:authorize access="hasAuthority('Menu_Report_ReportsManagment_ReportMonthlyStatistical')">
+                            <sec:authorize access="hasAuthority('Menu_Categories_performance')">
+                            {
+                                title: "<spring:message code="course.performance.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/categoriesPerformanceReport"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            </sec:authorize>
+
+                            <sec:authorize access="hasAuthority('Menu_continuous_Status_Report')">
                             {
                                 title: "<spring:message code="course.performance.report"/>",
                                 click: function () {
