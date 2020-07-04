@@ -684,6 +684,8 @@
             selectionType: "single",
             showRecordComponents: true,
             showRecordComponentsByCell: true,
+            sortField: 5,
+            sortDirection: "descending",
             fields: [
                 {name: "student.firstName"},
                 {name: "student.lastName"},
@@ -707,7 +709,8 @@
                     valueMap: {
                         "0": "صادر نشده",
                         "1": "صادر شده",
-                        "3": "تکمیل شده"
+                        "2": "تکمیل شده و کامل",
+                        "3": "تکمیل شده و ناقص"
                     },
                     filterEditorProperties:{
                         pickListProperties: {
@@ -721,7 +724,8 @@
                     valueMap: {
                         "0": "صادر نشده",
                         "1": "صادر شده",
-                        "2": "تکمیل شده"
+                        "2": "تکمیل شده و کامل",
+                        "3": "تکمیل شده و ناقص"
                     },
                     hidden: true,
                     filterEditorProperties:{
@@ -736,7 +740,8 @@
                     valueMap: {
                         "0": "صادر نشده",
                         "1": "صادر شده",
-                        "2": "تکمیل شده"
+                        "2": "تکمیل شده و کامل",
+                        "3": "تکمیل شده و ناقص"
                     },
                     hidden: true,
                     filterEditorProperties:{
@@ -751,7 +756,8 @@
                     valueMap: {
                         "0": "صادر نشده",
                         "1": "صادر شده",
-                        "2": "تکمیل شده"
+                        "2": "تکمیل شده و کامل",
+                        "3": "تکمیل شده و ناقص"
                     },
                     hidden: true,
                     filterEditorProperties:{
@@ -772,10 +778,10 @@
                     || (!ListGrid_evaluation_student.getFieldByName("evaluationStatusResults").hidden && record.evaluationStatusResults === 1))
                     return "background-color : #d8e4bc";
 
-                if ((!ListGrid_evaluation_student.getFieldByName("evaluationStatusReaction").hidden && record.evaluationStatusReaction === 3)
-                    || (!ListGrid_evaluation_student.getFieldByName("evaluationStatusLearning").hidden && record.evaluationStatusLearning === 3)
-                    || (!ListGrid_evaluation_student.getFieldByName("evaluationStatusBehavior").hidden && record.evaluationStatusBehavior === 3)
-                    || (!ListGrid_evaluation_student.getFieldByName("evaluationStatusResults").hidden && record.evaluationStatusResults === 3))
+                if ((!ListGrid_evaluation_student.getFieldByName("evaluationStatusReaction").hidden && (record.evaluationStatusReaction === 3 || record.evaluationStatusReaction === 2))
+                    || (!ListGrid_evaluation_student.getFieldByName("evaluationStatusLearning").hidden && (record.evaluationStatusLearning === 3 || record.evaluationStatusLearning === 2))
+                    || (!ListGrid_evaluation_student.getFieldByName("evaluationStatusBehavior").hidden && (record.evaluationStatusBehavior === 3 || record.evaluationStatusBehavior === 2 ))
+                    || (!ListGrid_evaluation_student.getFieldByName("evaluationStatusResults").hidden && (record.evaluationStatusResults === 3 || record.evaluationStatusResults === 2)))
                     return "background-color : #b7dee8";
             },
             createRecordComponent: function (record, colNum) {
@@ -854,12 +860,14 @@
 
         var ToolStripButton_FormIssuanceForAll = isc.ToolStripButton.create({
             title: "<spring:message code="students.form.issuance.Behavioral"/>",
+            baseStyle: "sendFile",
             click: function () {
                 set_print_Status("all");
             }
         });
         var ToolStripButton_FormIssuance_Teacher = isc.ToolStripButton.create({
             title: "صدور فرم ارزیابی مدرس از کلاس",
+            baseStyle: "sendFile",
             click: function () {
                 setReactionStatus(1,10);
                 print_Teacher_FormIssuance();
@@ -868,6 +876,8 @@
 
         var ToolStripButton_FormIssuance_Training = isc.ToolStripButton.create({
             title: "صدور فرم ارزیابی مسئول آموزش از استاد",
+            baseStyle: "sendFile",
+            align: "center",
             click: function () {
                 setReactionStatus(10,1);
                 print_Training_FormIssuance();
@@ -896,6 +906,7 @@
         var ToolStripButton_RegisterForm_Training = isc.ToolStripButton.create({
             title: "ثبت نتایج ارزیابی مسئول آموزش از استاد",
             baseStyle: "registerFile",
+            align: "center",
             click: function () {
                 isc.RPCManager.sendRequest(TrDSRequest(classUrl + "getTrainingReactionStatus/" + ListGrid_evaluation_class.getSelectedRecord().id , "GET", null, function (resp) {
                     if(resp.httpResponseText == "1")
@@ -908,37 +919,41 @@
 
         var ToolStrip_evaluation = isc.ToolStrip.create({
             width: "100%",
-            membersMargin: 5,
+            membersMargin: 10,
             members: [
                 <sec:authorize access="hasAuthority('Evaluation_PrintPreTest')">
-                isc.VLayout.create({
-                    membersMargin: 5,
-                    members: [
-                        isc.HLayout.create({
-                            membersMargin: 5,
-                            members: [
-                                ToolStripButton_FormIssuanceForAll,
-                                ToolStripButton_FormIssuance_Teacher,
-                                ToolStripButton_FormIssuance_Training
-                            ]
-                        }),
-                        isc.HLayout.create({
-                            membersMargin: 5,
-                            members: [
-                                ToolStripButton_RegisterForm_Teacher,
-                                ToolStripButton_RegisterForm_Training
-                            ]
-                        }),
-                        isc.ToolStrip.create({
-                            width: "100%",
-                            align: "left",
-                            border: '0px',
-                            members: [
-                                ToolStripButton_RefreshIssuance
-                            ]
-                        })
-                    ]
-                })
+                                isc.VLayout.create({
+                                    membersMargin: 5,
+                                    layoutAlign: "center",
+                                    defaultLayoutAlign: "center",
+                                    members: [
+                                        ToolStripButton_FormIssuance_Teacher,
+                                        ToolStripButton_RegisterForm_Teacher
+                                    ]
+                                }),
+                                isc.VLayout.create({
+                                    membersMargin: 5,
+                                    layoutAlign: "center",
+                                    defaultLayoutAlign: "center",
+                                    members: [
+                                        ToolStripButton_FormIssuance_Training,
+                                        ToolStripButton_RegisterForm_Training
+                                    ]
+                                }),
+                                isc.VLayout.create({
+                                    members: [
+                                        ToolStripButton_FormIssuanceForAll,
+                                        isc.LayoutSpacer.create({height: "22"})
+                                    ]
+                                }),
+                                isc.ToolStrip.create({
+                                    width: "100%",
+                                    align: "left",
+                                    border: '0px',
+                                    members: [
+                                        ToolStripButton_RefreshIssuance
+                                    ]
+                                })
                 </sec:authorize>
 
             ]
@@ -993,11 +1008,45 @@
             height: "100%",
             members: [ListGrid_evaluation_student]
         });
+        var HLayout_returnData_evaluation = isc.HLayout.create({
+            width: "100%",
+            members: [
+                DynamicForm_ReturnDate,
+                isc.LayoutSpacer.create({width: "80%"}),
+                isc.RibbonGroup.create({
+                ID: "fileGroup",
+                title: "راهنمای رنگ بندی لیست",
+                numRows: 1,
+                colWidths: [ 40, "*" ],
+                height: "10px",
+                titleAlign: "center",
+                titleStyle : "gridHint",
+                controls: [
+                    isc.IconButton.create(isc.addProperties({
+                        title: "صادر نشده",
+                        baseStyle: "gridHint",
+                        backgroundColor: '#fffff'
+                    })),
+                    isc.IconButton.create(isc.addProperties({
+                        title: "صادر شده",
+                        baseStyle: "gridHint",
+                        backgroundColor: '#d8e4bc'
+                    })),
+                    isc.IconButton.create(isc.addProperties({
+                        title: "تکمیل شده",
+                        baseStyle: "gridHint",
+                        backgroundColor: '#b7dee8'
+                    }))
+                ],
+                autoDraw: false
+            })]
+        });
+
 
         var VLayout_Body_evaluation = isc.VLayout.create({
             width: "100%",
             height: "100%",
-            members: [DynamicForm_ReturnDate, HLayout_Actions_evaluation, Hlayout_Grid_evaluation]
+            members: [HLayout_returnData_evaluation, HLayout_Actions_evaluation, Hlayout_Grid_evaluation]
         });
 
         var Detail_Tab_Evaluation = isc.TabSet.create({
@@ -2052,6 +2101,32 @@
                 }
             ]
         });
+        let Window_Questions_JspEvaluation = isc.Window.create({
+            width: 1024,
+            height: 768,
+            keepInParentRect: true,
+            title: "<spring:message code="record.evaluation.results"/>",
+            items: [
+                DynamicForm_Questions_Title_JspEvaluation,
+                DynamicForm_Questions_Body_JspEvaluation,
+                DynamicForm_Description_JspEvaluation,
+                isc.TrHLayoutButtons.create({
+                    members: [
+                        IButton_Questions_Save,
+                        <sec:authorize access="hasAuthority('Evaluation_P')">
+                        <%--                        IButton_Questions_Print,--%>
+                        </sec:authorize>
+
+                        isc.IButtonCancel.create({
+                            click: function () {
+                                ListGrid_evaluation_class.invalidateCache();
+                                Window_Questions_JspEvaluation.close();
+                            }
+                        })]
+                })
+            ],
+            minWidth: 1024
+        });
 
         let IButton_Questions_Save = isc.IButtonSave.create({
             click: function () {
@@ -2110,6 +2185,8 @@
                 data.classId = LGRecord.id;
                 isc.RPCManager.sendRequest(TrDSRequest(saveUrl, saveMethod, JSON.stringify(data), function (resp) {
                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                        Window_Questions_JspEvaluation.close();
+                        ListGrid_evaluation_student.invalidateCache();
                         isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
                             LGRecord.id,
                             "GET", null, null));
@@ -2117,8 +2194,6 @@
                         setTimeout(() => {
                             msg.close();
                         }, 3000);
-                        ListGrid_evaluation_class.invalidateCache();
-                        // Window_Questions_JspEvaluation.close();
                     } else {
                         createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                     }
@@ -2141,32 +2216,7 @@
                 print_Question(questions)
             }
         });
-        let Window_Questions_JspEvaluation = isc.Window.create({
-            width: 1024,
-            height: 768,
-            keepInParentRect: true,
-            title: "<spring:message code="record.evaluation.results"/>",
-            items: [
-                DynamicForm_Questions_Title_JspEvaluation,
-                DynamicForm_Questions_Body_JspEvaluation,
-                DynamicForm_Description_JspEvaluation,
-                isc.TrHLayoutButtons.create({
-                    members: [
-                        IButton_Questions_Save,
-                        <sec:authorize access="hasAuthority('Evaluation_P')">
-<%--                        IButton_Questions_Print,--%>
-                        </sec:authorize>
 
-                        isc.IButtonCancel.create({
-                            click: function () {
-                                ListGrid_evaluation_class.invalidateCache();
-                                Window_Questions_JspEvaluation.close();
-                            }
-                        })]
-                })
-            ],
-            minWidth: 1024
-        });
         let Window_AddStudent_JspEvaluation = isc.Window.create({
             title: "<spring:message code="students.list"/>",
             width: "50%",
@@ -2837,6 +2887,8 @@
                     data.classId = LGRecord.id;
                     isc.RPCManager.sendRequest(TrDSRequest(saveUrl, saveMethod, JSON.stringify(data), function (resp) {
                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                            Window_Questions_JspEvaluation.close();
+                            ListGrid_evaluation_student.invalidateCache();
                             isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
                                 LGRecord.id,
                                 "GET", null, null));
@@ -3314,6 +3366,8 @@
                 data.classId = LGRecord.id;
                 isc.RPCManager.sendRequest(TrDSRequest(saveUrl, saveMethod, JSON.stringify(data), function (resp) {
                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                        Window_Questions_JspEvaluation.close();
+                        ListGrid_evaluation_student.invalidateCache();
                         isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
                             LGRecord.id,
                             "GET", null, null));
