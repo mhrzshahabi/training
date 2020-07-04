@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" id="prefix__survey" width="74.788" height="78" viewBox="0 0 74.788 78">
+    <defs>
+        <style>
+            .prefix__cls-1{fill:#aab5b9}
+        </style>
+    </defs>
+    <path id="prefix__Path_27" d="M1.438 97.464h50.338v-2.785H5.753a2.832 2.832 0 0 1-2.876-2.786V37.571a2.832 2.832 0 0 1 2.876-2.786h8.629V32H1.438A1.416 1.416 0 0 0 0 33.393v62.678a1.416 1.416 0 0 0 1.438 1.393zm0 0" class="prefix__cls-1" data-name="Path 27" transform="translate(0 -26.429)"/>
+    <path id="prefix__Subtraction_1" d="M19.723 38.2a19.922 19.922 0 0 1-13.946-5.591 18.679 18.679 0 0 1 0-27.014 20.166 20.166 0 0 1 27.888.005 18.664 18.664 0 0 1 .006 27.008A19.923 19.923 0 0 1 19.723 38.2zm0-35.02A16.2 16.2 0 0 0 3.287 19.1 15.439 15.439 0 0 0 6.852 29 16.026 16.026 0 1 0 19.723 3.373z" class="prefix__cls-1" data-name="Subtraction 1" transform="translate(35.34 19.898)"/>
+    <path id="prefix__Path_29" d="M304 372.536a2.878 2.878 0 0 0 5.753 0V360H304zm0 0" class="prefix__cls-1" data-name="Path 29" transform="translate(-249.347 -297.321)"/>
+    <path id="prefix__Path_30" d="M313.438 335.664c-.486 0-.961-.037-1.438-.071v1.464h2.876v-1.464c-.476.034-.952.071-1.438.071zm0 0" class="prefix__cls-1" data-name="Path 30" transform="translate(-255.909 -277.164)"/>
+    <path id="prefix__Path_31" d="M84.371 158.964h-.056a1.463 1.463 0 0 1-1.017-.408l-2.876-2.786 2.034-1.97 1.777 1.721 3.12-3.521H80v8.357h8.63v-5.521l-3.223 3.641a1.454 1.454 0 0 1-1.036.487zm0 0" class="prefix__cls-1" data-name="Path 31" transform="translate(-65.618 -125.536)"/>
+    <path id="prefix__Path_32" d="M254.382 45.929V33.393A1.416 1.416 0 0 0 252.944 32H240v2.786h8.629a2.832 2.832 0 0 1 2.876 2.786v8.58a20.565 20.565 0 0 1 2.876-.223zm0 0" class="prefix__cls-1" data-name="Path 32" transform="translate(-196.853 -26.429)"/>
+    <path id="prefix__Path_33" d="M96 0h23.013v13.929H96zm0 0" class="prefix__cls-1" data-name="Path 33" transform="translate(-78.741)"/>
+    <path id="prefix__Path_34" d="M79.462 110.895a19.343 19.343 0 0 1-1.438-37.716V64h-8.63v2.786a2.832 2.832 0 0 1-2.876 2.786H43.506a2.832 2.832 0 0 1-2.876-2.786V64H32v54.321h46.023v-4.179a1.416 1.416 0 0 1 1.438-1.393zM52.135 78.9v10.172a1.416 1.416 0 0 1-1.435 1.393H39.191a1.416 1.416 0 0 1-1.438-1.393V77.929a1.416 1.416 0 0 1 1.438-1.393h11.256l2.035-2.3 2.183 1.81zm0 0" class="prefix__cls-1" data-name="Path 34" transform="translate(-26.247 -52.857)"/>
+</svg>
