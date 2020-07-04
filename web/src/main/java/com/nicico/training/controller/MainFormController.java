@@ -151,6 +151,11 @@ public class MainFormController {
         return "report/categoriesPerformanceReport";
     }
 
+    @RequestMapping("/continuousStatusReport")
+    public String showcontinuousStatusReportForm() {
+        return "report/continuousStatusReport";
+    }
+
     @RequestMapping("/presenceReport")
     public String showPresenceReport() {
         return "report/presenceReport";
