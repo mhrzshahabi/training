@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="62.4" height="78" viewBox="0 0 62.4 78">
+    <defs>
+        <style>
+            .prefix__cls-1{fill:#aab5b9}
+        </style>
+    </defs>
+    <g id="prefix__search" transform="translate(-6)">
+        <path id="prefix__Path_99" d="M58 16.9V0H6v67.6h3.9V3.9H45z" class="prefix__cls-1" data-name="Path 99"/>
+        <path id="prefix__Path_100" d="M63.632 67.793L47.744 51.906a15.411 15.411 0 1 0-1.838 1.838l15.887 15.888a1.3 1.3 0 1 0 1.838-1.838zM23.225 42A12.776 12.776 0 1 1 36 54.778 12.791 12.791 0 0 1 23.225 42z" class="prefix__cls-1" data-name="Path 100" transform="translate(4.388 7.988)"/>
+        <path id="prefix__Path_101" d="M15.6 0H1.3a1.3 1.3 0 0 0 0 2.6h14.3a1.3 1.3 0 0 0 0-2.6z" class="prefix__cls-1" data-name="Path 101" transform="rotate(-90 50.45 7.4)"/>
+        <path id="prefix__Path_102" d="M1.3 2.6h7.8a1.3 1.3 0 1 0 0-2.6H1.3a1.3 1.3 0 0 0 0 2.6z" class="prefix__cls-1" data-name="Path 102" transform="rotate(-90 47.85 10)"/>
+        <path id="prefix__Path_104" d="M.977 2.6h5.864c.54 0 .977-.581.977-1.3S7.381 0 6.841 0H.977C.437 0 0 .581 0 1.3s.437 1.3.977 1.3z" class="prefix__cls-1" data-name="Path 104" transform="rotate(-90 45.25 12.6)"/>
+        <path id="prefix__Path_103" d="M38.889 66.465a18.034 18.034 0 1 1 15.15-8.341L63 67.085V25.262L42.738 5H11v67.6h46.485l-8.961-8.961a17.84 17.84 0 0 1-9.635 2.826zM40.9 7.974a.155.155 0 0 1 .265-.109l18.97 18.971a.155.155 0 0 1-.109.264H40.9z" class="prefix__cls-1" data-name="Path 103" transform="translate(1.5 1.5)"/>
+    </g>
+</svg>
