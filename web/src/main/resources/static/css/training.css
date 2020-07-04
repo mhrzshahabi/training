@@ -85,6 +85,11 @@ span {
     padding: 7px !important;
 }
 
+.gridSelectionOver{
+    left:auto !important;
+    right:0 !important;
+}
+
 
 
 

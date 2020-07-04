@@ -13,6 +13,7 @@
     var naJob_JobGroup = null;
     var personnelJob_JobGroup = null;
     var postJob_JobGroup = null;
+    var jobsSelection=false;
 
     <%--if(Window_NeedsAssessment_Edit === undefined) {--%>
         <%--var Window_NeedsAssessment_Edit = isc.Window.create({--%>
@@ -109,16 +110,9 @@
                         });
                     } else {
 
-                        // RestDataSource_All_Jobs.fetchDataURL = jobGroupUrl + record.id + "/unAttachJobs";
-                        // RestDataSource_All_Jobs.invalidateCache();
-                        // RestDataSource_All_Jobs.fetchData();
-                        ListGrid_AllJobs.fetchData();
-                        ListGrid_AllJobs.invalidateCache();
-
-
                         RestDataSource_ForThisJobGroup_GetJobs.fetchDataURL = jobGroupUrl + record.id + "/getJobs"
-                        // RestDataSource_ForThisJobGroup_GetJobs.invalidateCache();
-                        // RestDataSource_ForThisJobGroup_GetJobs.fetchData();
+
+                        jobsSelection=true;
                         ListGrid_ForThisJobGroup_GetJobs.invalidateCache();
                         ListGrid_ForThisJobGroup_GetJobs.fetchData();
                         DynamicForm_thisJobGroupHeader_Jsp.setValue("sgTitle", getFormulaMessage(record.titleFa, "2", "red", "B"));
@@ -205,9 +199,7 @@
     var ListGrid_AllJobs = isc.TrLG.create({
         //title:"تمام شغل ها",
         width: "100%",
-        height: "100%", canDragResize: true,
-        canDragRecordsOut: true,
-        canAcceptDroppedRecords: true,
+        height: "100%",
         autoFetchData: false,
         dataSource: RestDataSource_All_Jobs,
         fields: [
@@ -220,6 +212,7 @@
             {name: "titleFa", title: "نام شغل", align: "center", width: "60%"},
             {name: "titleEn", title: "نام لاتین شغل", align: "center", hidden: true},
             {name: "description", title: "توضیحات", align: "center", hidden: true},
+            {name: "OnAdd", title: " ", align: "center",canSort:false,canFilter:false},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         sortField: 1,
@@ -227,37 +220,83 @@
         dataPageSize: 22,
         showFilterEditor: true,
         filterOnKeypress: true,
-        dragTrackerMode: "title",
-        canDrag: true,
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
         selectionAppearance: "checkbox",
         selectionType: "simple",
-        recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
-            let jobGroupRecord = ListGrid_Job_Group_Jsp.getSelectedRecord();
-            let jobGroupId = jobGroupRecord.id;
-            let jobIds = [];
-            for (let i = 0; i < dropRecords.getLength(); i++) {
-                jobIds.add(dropRecords[i].id);
-            }
-            let JSONObj = {"ids": jobIds};
-            wait.show();
-            isc.RPCManager.sendRequest({
-                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                actionURL: jobGroupUrl + "removeJobs/" + jobGroupId + "/" + jobIds,
-                httpMethod: "DELETE",
-                data: JSON.stringify(JSONObj),
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    wait.close();
-                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                        ListGrid_ForThisJobGroup_GetJobs.invalidateCache();
-                        ListGrid_AllJobs.invalidateCache();
-                    } else {
-                        isc.say("خطا");
-                    }
-                }
+        dataArrived:function(startRow, endRow){
+            let lgIds = ListGrid_ForThisJobGroup_GetJobs.data.getAllCachedRows().map(function(item) {
+                return item.id;
             });
+
+            let findRows=ListGrid_AllJobs.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:lgIds}]});
+            ListGrid_AllJobs.setSelectedState(findRows);
+            findRows.setProperty("enabled", false);
+        },
+        createRecordComponent: function (record, colNum) {
+            var fieldName = this.getFieldName(colNum);
+            if (fieldName == "OnAdd") {
+                var recordCanvas = isc.HLayout.create({
+                    height: 20,
+                    width: "100%",
+                    layoutMargin: 5,
+                    membersMargin: 10,
+                    align: "center"
+                });
+                var addIcon = isc.ImgButton.create({
+                    showDown: false,
+                    showRollOver: false,
+                    layoutAlign: "center",
+                    src: "[SKIN]/actions/add.png",
+                    prompt: "add",
+                    height: 16,
+                    width: 16,
+                    grid: this,
+                    click: function () {
+                        let current = record;
+                        let selected=ListGrid_ForThisJobGroup_GetJobs.data.getAllCachedRows().map(function(item) {return item.id;});
+
+                        let jobIds = [];
+
+                        if ($.inArray(current.id, selected) === -1){
+                            jobIds.push(current.id);
+                        }
+
+                        if(jobIds.length!=0){
+                            let findRows=ListGrid_AllJobs.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"equals",value:current.id}]});
+                            ListGrid_AllJobs.selectRecord(findRows);
+                            findRows.setProperty("enabled", false);
+
+                            let jobGroupRecord = ListGrid_Job_Group_Jsp.getSelectedRecord();
+                            let jobGroupId = jobGroupRecord.id;
+
+                            let JSONObj = {"ids": jobIds};
+                            wait.show();
+                            isc.RPCManager.sendRequest({
+                                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                useSimpleHttp: true,
+                                contentType: "application/json; charset=utf-8",
+                                actionURL: jobGroupUrl + "addJobs/" + jobGroupId + "/" + jobIds,
+                                httpMethod: "POST",
+                                data: JSON.stringify(JSONObj),
+                                serverOutputAsString: false,
+                                callback: function (resp) {
+                                    wait.close();
+                                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                        ListGrid_ForThisJobGroup_GetJobs.invalidateCache();
+                                        ListGrid_ForThisJobGroup_GetJobs.fetchData();
+                                    } else {
+                                        isc.say("خطا");
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+                recordCanvas.addMember(addIcon);
+                return recordCanvas;
+            } else
+                return null;
         }
 
     });
@@ -265,8 +304,6 @@
         //title:"تمام شغل ها",
         width: "100%",
         height: "100%",
-        canDragRecordsOut: true,
-        canAcceptDroppedRecords: true,
         //showRowNumbers: true,
         showRecordComponents: true,
         showRecordComponentsByCell: true,
@@ -281,8 +318,15 @@
                 }
             },
             {name: "titleFa", title: "نام شغل", align: "center", width: "70%"},
-            {name: "OnDelete", title: "حذف", align: "center"}
+            {name: "OnDelete", title: " ", align: "center",canSort:false,canFilter:false}
         ],
+        dataArrived:function(){
+            if(jobsSelection) {
+                ListGrid_AllJobs.invalidateCache();
+                ListGrid_AllJobs.fetchData();
+                jobsSelection=false;
+            }
+        },
         createRecordComponent: function (record, colNum) {
             var fieldName = this.getFieldName(colNum);
 
@@ -319,9 +363,15 @@
                             callback: function (resp) {
                                 if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
 
-                                    // RestDataSource_ForThisJobGroup_GetJobs.removeRecord(activeJob);
-                                    ListGrid_AllJobs.invalidateCache();
                                     ListGrid_ForThisJobGroup_GetJobs.invalidateCache();
+
+                                    let findRows=ListGrid_AllJobs.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:[activeJobId]}]});
+
+                                    if(typeof (findRows)!='undefined' && findRows.length>0){
+                                        findRows.setProperty("enabled", true);
+                                        ListGrid_AllJobs.deselectRecord(findRows[0]);
+                                    }
+
                                 } else {
                                     isc.say("خطا در پاسخ سرویس دهنده");
                                 }
@@ -333,34 +383,6 @@
                 return recordCanvas;
             } else
                 return null;
-        },
-        recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
-            let jobGroupRecord = ListGrid_Job_Group_Jsp.getSelectedRecord();
-            let jobGroupId = jobGroupRecord.id;
-            let jobIds = [];
-            for (let i = 0; i < dropRecords.getLength(); i++) {
-                jobIds.add(dropRecords[i].id);
-            }
-            let JSONObj = {"ids": jobIds};
-            wait.show();
-            isc.RPCManager.sendRequest({
-                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                actionURL: jobGroupUrl + "addJobs/" + jobGroupId + "/" + jobIds,
-                httpMethod: "POST",
-                data: JSON.stringify(JSONObj),
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    wait.close();
-                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                        ListGrid_ForThisJobGroup_GetJobs.invalidateCache();
-                        ListGrid_AllJobs.invalidateCache();
-                    } else {
-                        isc.say("خطا");
-                    }
-                }
-            });
         },
 
         sortField: 1,
@@ -381,7 +403,52 @@
                 canCollapse: false,
                 align: "center",
                 items: [
-                    ListGrid_AllJobs
+                    ListGrid_AllJobs,
+                    isc.ToolStripButtonAdd.create({
+                        width:"100%",
+                        height:25,
+                        title:"اضافه کردن گروهی",
+                        click: function () {
+                            let dialog = createDialog('ask', "<spring:message code="msg.record.adds.ask"/>");
+                            dialog.addProperties({
+                                buttonClick: function (button, index) {
+                                    this.close();
+                                    if (index == 0) {
+                                        var jobIds = ListGrid_AllJobs.getSelection().filter(function(x){return x.enabled!=false}).map(function(item) {return item.id;});
+                                        var activeJobGroup = ListGrid_Job_Group_Jsp.getSelectedRecord();
+                                        var activeJobGroupId = activeJobGroup.id;
+                                        let JSONObj = {"ids": jobIds};
+                                        isc.RPCManager.sendRequest({
+                                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                            useSimpleHttp: true,
+                                            contentType: "application/json; charset=utf-8",
+                                            actionURL: jobGroupUrl + "addJobs/" + activeJobGroupId + "/" + jobIds,
+                                            httpMethod: "POST",
+                                            data: JSON.stringify(JSONObj),
+                                            serverOutputAsString: false,
+                                            callback: function (resp) {
+                                                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                                    ListGrid_ForThisJobGroup_GetJobs.invalidateCache();
+
+                                                    let findRows=ListGrid_AllJobs.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:jobIds}]});
+
+                                                    if(typeof (findRows)!='undefined' && findRows.length>0){
+                                                        findRows.setProperty("enabled", false);
+                                                        ListGrid_AllJobs.redraw();
+                                                    }
+                                                    isc.say("عملیات با موفقیت انجام شد.");
+
+                                                } else {
+                                                    isc.say("خطا در پاسخ سرویس دهنده");
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            })
+
+                        }
+                    })
                 ]
             }
         ]
@@ -397,7 +464,52 @@
                 canCollapse: false,
                 align: "center",
                 items: [
-                    ListGrid_ForThisJobGroup_GetJobs
+                    ListGrid_ForThisJobGroup_GetJobs,
+                    isc.ToolStripButtonRemove.create({
+                        width:"100%",
+                        height:25,
+                        title:"حذف گروهی",
+                        click: function () {
+                            let dialog = createDialog('ask', "<spring:message code="msg.record.remove.ask"/>");
+                            dialog.addProperties({
+                                buttonClick: function (button, index) {
+                                    this.close();
+                                    if (index == 0) {
+                                        var jobIds = ListGrid_ForThisJobGroup_GetJobs.getSelection().map(function(item) {return item.id;});
+                                        var activeJobGroup = ListGrid_Job_Group_Jsp.getSelectedRecord();
+                                        var activeJobGroupId = activeJobGroup.id;
+                                        let JSONObj = {"ids": jobIds};
+                                        isc.RPCManager.sendRequest({
+                                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                            useSimpleHttp: true,
+                                            contentType: "application/json; charset=utf-8",
+                                            actionURL: jobGroupUrl + "removeJobs/" + activeJobGroupId + "/" + jobIds,
+                                            httpMethod: "DELETE",
+                                            data: JSON.stringify(JSONObj),
+                                            serverOutputAsString: false,
+                                            callback: function (resp) {
+                                                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+
+                                                    ListGrid_ForThisJobGroup_GetJobs.invalidateCache();
+                                                    let findRows=ListGrid_AllJobs.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:jobIds}]});
+
+                                                    if(typeof (findRows)!='undefined' && findRows.length>0){
+                                                        findRows.setProperty("enabled", true);
+                                                        ListGrid_AllJobs.deselectRecord(findRows);
+                                                        ListGrid_AllJobs.redraw();
+                                                    }
+                                                    isc.say("عملیات با موفقیت انجام شد.");
+                                                } else {
+                                                    isc.say("خطا در پاسخ سرویس دهنده");
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            })
+
+                        }
+                    })
                 ]
             }
         ]
@@ -702,20 +814,15 @@
                 });
 
             } else {
-                // RestDataSource_All_Jobs.fetchDataURL = jobGroupUrl + record.id + "/unAttachJobs";
-                // RestDataSource_All_Jobs.fetchDataURL = jobUrl + "/iscList";
-                ListGrid_AllJobs.fetchData();
-                ListGrid_AllJobs.invalidateCache();
 
                 RestDataSource_ForThisJobGroup_GetJobs.fetchDataURL = jobGroupUrl + record.id + "/getJobs";
+
+                jobsSelection=true;
                 ListGrid_ForThisJobGroup_GetJobs.invalidateCache();
                 ListGrid_ForThisJobGroup_GetJobs.fetchData();
                 DynamicForm_thisJobGroupHeader_Jsp.setValue("sgTitle", getFormulaMessage(record.titleFa, "2", "red", "B"));
+
                 Window_Add_Job_to_JobGroup.show();
-
-
-                //Window_Add_Job_to_JobGroup.
-                //   Window_Add_Job_to_JobGroup.show();
 
             }
         }
