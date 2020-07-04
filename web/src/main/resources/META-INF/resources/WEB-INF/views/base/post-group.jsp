@@ -13,7 +13,7 @@
     var naPostGroup_Post_Group_Jsp = null;
     var PersonnelPostGroup_Post_Group_Jsp = null;
     var wait_PostGroup = null;
-
+    var postsSelection=false;
 
     PostDS_PostGroup = isc.TrDS.create({
         fields: [
@@ -192,8 +192,7 @@
                             }
                         });
                     } else {
-                        ListGrid_AllPosts.fetchData();
-                        ListGrid_AllPosts.invalidateCache();
+                        postsSelection=true;
                         RestDataSource_ForThisPostGroup_GetPosts.fetchDataURL = postGroupUrl + "/" + record.id + "/getPosts";
                         ListGrid_ForThisPostGroup_GetPosts.invalidateCache();
                         ListGrid_ForThisPostGroup_GetPosts.fetchData();
@@ -326,73 +325,15 @@
     Lable_AllPosts = isc.LgLabel.create({contents:"لیست تمامی پست ها", customEdges: ["R","L","T", "B"]});
     var ListGrid_AllPosts = isc.TrLG.create({
         height: "45%",
-        canDragResize: true,
-        canDragRecordsOut: true,
-        canAcceptDroppedRecords: true,
         dataSource: RestDataSource_All_Posts,
         selectionAppearance: "checkbox",
         selectionType: "simple",
         sortField: 1,
-        dragTrackerMode: "title",
-        canDrag: true,
-        gridComponents: [Lable_AllPosts, "filterEditor", "header", "body"],
-        fields: [
-            {name: "code", filterEditorProperties: {
-                    keyPressFilter: "[0-9/]"
-                }},
-            {name: "titleFa"},
-            {name: "area"},
-            {name: "assistance"},
-            {name: "affairs"},
-            {name: "section"},
-            {name: "unit"}
-        ],
-        recordDrop: function (dropRecords) {
-            let postGroupRecord = ListGrid_Post_Group_Jsp.getSelectedRecord();
-            let postGroupId = postGroupRecord.id;
-            let postIds = [];
-            for (let i = 0; i < dropRecords.getLength(); i++) {
-                postIds.add(dropRecords[i].id);
-            }
-            wait.show();
-            let JSONObj = {"ids": postIds};
-            isc.RPCManager.sendRequest({
-                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                actionURL: postGroupUrl + "/removePosts/" + postGroupId + "/" + postIds,
-                httpMethod: "DELETE",
-                data: JSON.stringify(JSONObj),
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    wait.close();
-                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                        ListGrid_ForThisPostGroup_GetPosts.invalidateCache();
-                        ListGrid_AllPosts.invalidateCache();
-                    } else {
-                        isc.say("خطا");
-                    }
-                }
-            });
-        }
-    });
-
-    Lable_ForThisPostGroup_GetPosts = isc.LgLabel.create({contents:"لیست پست های این گروه پست", customEdges: ["R","L","T", "B"]});
-    var ListGrid_ForThisPostGroup_GetPosts = isc.TrLG.create({
-        height: "45%",
-        canDragRecordsOut: true,
-        canAcceptDroppedRecords: true,
         showRecordComponents: true,
         showRecordComponentsByCell: true,
-        gridComponents: [Lable_ForThisPostGroup_GetPosts, "filterEditor", "header", "body"],
-        dataSource: RestDataSource_ForThisPostGroup_GetPosts,
-        sortField: 1,
-        // selectionAppearance: "checkbox",
-        selectionType: "simple",
-        canDragResize: true,
-        dragTrackerMode: "title",
-        canDrag: true,
+        gridComponents: [Lable_AllPosts, "filterEditor", "header", "body"],
         fields: [
+            {name: "id", hidden:true},
             {name: "code", filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
                 }},
@@ -402,44 +343,163 @@
             {name: "affairs"},
             {name: "section"},
             {name: "unit"},
-            {name: "OnDelete", title: "حذف", align: "center", autoFitWidth: true, autoFitWidthApproach: "both"}
+            {name: "OnAdd", title: " ",canSort:false,canFilter:false, width:30}
         ],
+        dataArrived:function(startRow, endRow){
+            let lgIds = ListGrid_ForThisPostGroup_GetPosts.data.getAllCachedRows().map(function(item) {
+                return item.id;
+            });
+
+            let findRows=ListGrid_AllPosts.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:lgIds}]});
+            ListGrid_AllPosts.setSelectedState(findRows);
+            findRows.setProperty("enabled", false);
+        },
         createRecordComponent: function (record, colNum) {
-            let fieldName = this.getFieldName(colNum);
-            if (fieldName === "OnDelete") {
-                let recordCanvas = isc.HLayout.create({
+            var fieldName = this.getFieldName(colNum);
+            if (fieldName == "OnAdd") {
+                var recordCanvas = isc.HLayout.create({
                     height: 20,
                     width: "100%",
                     layoutMargin: 5,
                     membersMargin: 10,
                     align: "center"
                 });
-                let removeIcon = isc.ImgButton.create({
+                var addIcon = isc.ImgButton.create({
                     showDown: false,
                     showRollOver: false,
                     layoutAlign: "center",
-                    src: "[SKIN]/actions/remove.png",
-                    prompt: "remove",
+                    src: "[SKIN]/actions/add.png",
+                    prompt: "اضافه کردن",
                     height: 16,
                     width: 16,
                     grid: this,
                     click: function () {
-                        let activePostId = record.id;
-                        let activePostGroup = ListGrid_Post_Group_Jsp.getSelectedRecord();
-                        let activePostGroupId = activePostGroup.id;
-                        wait.show();
+                        let current = record;
+                        let selected=ListGrid_ForThisPostGroup_GetPosts.data.getAllCachedRows().map(function(item) {return item.id;});
+
+                        let ids = [];
+
+                        if ($.inArray(current.id, selected) === -1){
+                            ids.push(current.id);
+                        }
+
+                        if(ids.length!=0){
+                            let findRows=ListGrid_AllPosts.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"equals",value:current.id}]});
+
+                            let groupRecord = ListGrid_Post_Group_Jsp.getSelectedRecord();
+                            let groupId = groupRecord.id;
+
+                            let JSONObj = {"ids": ids};
+                            wait.show();
+
+                            isc.RPCManager.sendRequest({
+                                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                useSimpleHttp: true,
+                                contentType: "application/json; charset=utf-8",
+                                actionURL: postGroupUrl + "/addPosts/" + groupId + "/" + ids,
+                                httpMethod: "POST",
+                                data: JSON.stringify(JSONObj),
+                                serverOutputAsString: false,
+                                callback: function (resp) {
+                                    wait.close();
+                                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                        ListGrid_AllPosts.selectRecord(findRows);
+                                        findRows.setProperty("enabled", false);
+                                        ListGrid_AllPosts.redraw();
+
+                                        ListGrid_ForThisPostGroup_GetPosts.invalidateCache();
+                                        ListGrid_ForThisPostGroup_GetPosts.fetchData();
+                                    } else {
+                                        isc.say("خطا");
+                                    }
+                                }
+                            });
+
+                        }
+                    }
+                });
+                recordCanvas.addMember(addIcon);
+                return recordCanvas;
+            } else
+                return null;
+        }
+    });
+
+    Lable_ForThisPostGroup_GetPosts = isc.LgLabel.create({contents:"لیست پست های این گروه پست", customEdges: ["R","L","T", "B"]});
+    var ListGrid_ForThisPostGroup_GetPosts = isc.TrLG.create({
+        height: "45%",
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
+        gridComponents: [Lable_ForThisPostGroup_GetPosts, "filterEditor", "header", "body"],
+        dataSource: RestDataSource_ForThisPostGroup_GetPosts,
+        sortField: 1,
+        selectionAppearance: "checkbox",
+        selectionType: "simple",
+        fields: [
+            {name: "id", hidden:true},
+            {name: "code", filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }},
+            {name: "titleFa"},
+            {name: "area"},
+            {name: "assistance"},
+            {name: "affairs"},
+            {name: "section"},
+            {name: "unit"},
+            {name: "OnDelete", title: " ", align: "center", width:30}
+        ],
+        dataArrived:function(){
+            if(postsSelection) {
+                ListGrid_AllPosts.invalidateCache();
+                ListGrid_AllPosts.fetchData();
+                postsSelection=false;
+            }
+        },
+        createRecordComponent: function (record, colNum) {
+            var fieldName = this.getFieldName(colNum);
+
+            if (fieldName == "OnDelete") {
+                var recordCanvas = isc.HLayout.create({
+                    height: 20,
+                    width: "100%",
+                    layoutMargin: 5,
+                    membersMargin: 10,
+                    align: "center"
+                });
+
+                var removeIcon = isc.ImgButton.create({
+                    showDown: false,
+                    showRollOver: false,
+                    layoutAlign: "center",
+                    src: "[SKIN]/actions/remove.png",
+                    prompt: "حذف کردن",
+                    height: 16,
+                    width: 16,
+                    grid: this,
+                    click: function () {
+                        var active = record;
+                        var activeId = active.id;
+                        var activeGroup = ListGrid_Post_Group_Jsp.getSelectedRecord();
+                        var activeGroupId = activeGroup.id;
                         isc.RPCManager.sendRequest({
                             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
-                            actionURL: postGroupUrl + "/removePost/" + activePostGroupId + "/" + activePostId,
+                            actionURL:  postGroupUrl + "/removePost/" + activeGroupId + "/" + activeId,
                             httpMethod: "DELETE",
                             serverOutputAsString: false,
                             callback: function (resp) {
-                                wait.close();
-                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                                    ListGrid_AllPosts.invalidateCache();
+                                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+
                                     ListGrid_ForThisPostGroup_GetPosts.invalidateCache();
+
+                                    let findRows=ListGrid_AllPosts.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:[activeId]}]});
+
+                                    if(typeof (findRows)!='undefined' && findRows.length>0){
+                                        findRows.setProperty("enabled", true);
+                                        ListGrid_AllPosts.deselectRecord(findRows[0]);
+                                    }
+
                                 } else {
                                     isc.say("خطا در پاسخ سرویس دهنده");
                                 }
@@ -451,36 +511,7 @@
                 return recordCanvas;
             } else
                 return null;
-        },
-        recordDrop: function (dropRecords) {
-            let postGroupRecord = ListGrid_Post_Group_Jsp.getSelectedRecord();
-            let postGroupId = postGroupRecord.id;
-            let postIds = [];
-            for (let i = 0; i < dropRecords.getLength(); i++) {
-                postIds.add(dropRecords[i].id);
-            }
-            let JSONObj = {"ids": postIds};
-            TrDSRequest();
-            wait.show();
-            isc.RPCManager.sendRequest({
-                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                actionURL: postGroupUrl + "/addPosts/" + postGroupId + "/" + postIds,
-                httpMethod: "POST",
-                data: JSON.stringify(JSONObj),
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    wait.close();
-                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                        ListGrid_ForThisPostGroup_GetPosts.invalidateCache();
-                        ListGrid_AllPosts.invalidateCache();
-                    } else {
-                        isc.say("خطا");
-                    }
-                }
-            });
-        },
+        }
     });
 
     var VLayOut_PostGroup_Posts_Jsp = isc.VLayout.create({
@@ -490,8 +521,98 @@
         members: [
             DynamicForm_thisPostGroupHeader_Jsp,
             ListGrid_AllPosts,
+            isc.ToolStripButtonAdd.create({
+                width:"100%",
+                height:25,
+                title:"اضافه کردن گروهی",
+                click: function () {
+                    let dialog = createDialog('ask', "<spring:message code="msg.record.adds.ask"/>");
+                    dialog.addProperties({
+                        buttonClick: function (button, index) {
+                            this.close();
+                            if (index == 0) {
+                                var ids = ListGrid_AllPosts.getSelection().filter(function(x){return x.enabled!=false}).map(function(item) {return item.id;});
+                                var activeGroup = ListGrid_Post_Group_Jsp.getSelectedRecord();
+                                var activeGroupId = activeGroup.id;
+                                let JSONObj = {"ids": ids};
+                                isc.RPCManager.sendRequest({
+                                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                    useSimpleHttp: true,
+                                    contentType: "application/json; charset=utf-8",
+                                    actionURL: postGroupUrl + "/addPosts/" + activeGroupId + "/" + ids,
+                                    httpMethod: "POST",
+                                    data: JSON.stringify(JSONObj),
+                                    serverOutputAsString: false,
+                                    callback: function (resp) {
+                                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                            ListGrid_ForThisPostGroup_GetPosts.invalidateCache();
+
+                                            let findRows=ListGrid_AllPosts.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:ids}]});
+
+                                            if(typeof (findRows)!='undefined' && findRows.length>0){
+                                                findRows.setProperty("enabled", false);
+                                                ListGrid_AllPosts.redraw();
+                                            }
+                                            isc.say("عملیات با موفقیت انجام شد.");
+
+                                        } else {
+                                            isc.say("خطا در پاسخ سرویس دهنده");
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    })
+
+                }
+            }),
             isc.LayoutSpacer.create({ID: "spacer", height: "5%"}),
-            ListGrid_ForThisPostGroup_GetPosts
+            ListGrid_ForThisPostGroup_GetPosts,
+            isc.ToolStripButtonRemove.create({
+                width:"100%",
+                height:25,
+                title:"حذف گروهی",
+                click: function () {
+                    let dialog = createDialog('ask', "<spring:message code="msg.record.remove.ask"/>");
+                    dialog.addProperties({
+                        buttonClick: function (button, index) {
+                            this.close();
+                            if (index == 0) {
+                                var ids = ListGrid_ForThisPostGroup_GetPosts.getSelection().map(function(item) {return item.id;});
+                                var activeGroup = ListGrid_Post_Group_Jsp.getSelectedRecord();
+                                var activeGroupId = activeGroup.id;
+                                let JSONObj = {"ids": ids};
+                                isc.RPCManager.sendRequest({
+                                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                    useSimpleHttp: true,
+                                    contentType: "application/json; charset=utf-8",
+                                    actionURL: postGroupUrl + "/removePosts/" + activeGroupId + "/" + ids,
+                                    httpMethod: "DELETE",
+                                    data: JSON.stringify(JSONObj),
+                                    serverOutputAsString: false,
+                                    callback: function (resp) {
+                                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+
+                                            ListGrid_ForThisPostGroup_GetPosts.invalidateCache();
+                                            let findRows=ListGrid_AllPosts.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:ids}]});
+
+                                            if(typeof (findRows)!='undefined' && findRows.length>0){
+                                                findRows.setProperty("enabled", true);
+                                                ListGrid_AllPosts.deselectRecord(findRows);
+                                                ListGrid_AllPosts.redraw();
+                                            }
+                                            isc.say("عملیات با موفقیت انجام شد.");
+                                        } else {
+                                            isc.say("خطا در پاسخ سرویس دهنده");
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    })
+
+                }
+            })
         ]
     });
 
@@ -806,8 +927,7 @@
                 });
 
             } else {
-                ListGrid_AllPosts.fetchData();
-                ListGrid_AllPosts.invalidateCache();
+                postsSelection=true;
                 RestDataSource_ForThisPostGroup_GetPosts.fetchDataURL = postGroupUrl + "/" + record.id + "/getPosts";
                 ListGrid_ForThisPostGroup_GetPosts.invalidateCache();
                 ListGrid_ForThisPostGroup_GetPosts.fetchData();
