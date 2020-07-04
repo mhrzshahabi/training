@@ -388,7 +388,7 @@
                 name: "applicantCompanyName",
                 title: "<spring:message code="company.applicant"/>",
                 textAlign: "center",
-                //canEdit: true,
+                canEdit: true,
                 width: "*",
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
