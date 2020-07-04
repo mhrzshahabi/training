@@ -472,7 +472,7 @@
                 align: "right",
                 startRow: false,
                 click: function () {
-                    if(Object.keys(FilterDF_PCNR.getValuesAsCriteria()).length <= 1) {
+                    if(!hasFilters()) {
                         createDialog("info","فیلتری انتخاب نشده است.");
                     } else{
                         var criteria = FilterDF_PCNR.getValuesAsAdvancedCriteria();
@@ -620,5 +620,17 @@
             CourseLG_MinPCNR,
         ]
     });
+
+
+    //##--------------------#Functions#---------------------------------##
+
+    function hasFilters(){
+        if(Object.keys(FilterDF_PCNR.getValuesAsCriteria()).length < 2 && FilterDF_PCNR.getValuesAsCriteria().criteria === undefined)
+            return false;
+        else if(FilterDF_PCNR.getValuesAsCriteria().criteria !== undefined && Object.keys(FilterDF_PCNR.getValuesAsCriteria().criteria).length < 3)
+            return false
+        else
+            return true;
+    }
 
     //</script>
