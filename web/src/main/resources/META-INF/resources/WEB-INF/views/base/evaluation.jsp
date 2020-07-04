@@ -8,6 +8,7 @@
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
+    var evalWait;
     var localQuestions;
     {
         var evaluation_method = "POST";
@@ -1654,8 +1655,8 @@
                 Detail_Tab_Evaluation.enableTab(2);
                 Detail_Tab_Evaluation.enableTab(3);
             }
-            if(!classRecord.preCourseTest)
-                Detail_Tab_Evaluation.disableTab(1);
+            // if(!classRecord.preCourseTest)
+            //     Detail_Tab_Evaluation.disableTab(1);
 
             VLayout_Body_evaluation.enable();
 
@@ -2119,7 +2120,6 @@
 
                         isc.IButtonCancel.create({
                             click: function () {
-                                ListGrid_evaluation_class.invalidateCache();
                                 Window_Questions_JspEvaluation.close();
                             }
                         })]
@@ -2316,7 +2316,7 @@
         DynamicForm_Questions_Title_JspEvaluation.setValue("user", "<%= SecurityUtil.getFullName()%>");
         let itemList = [];
         let eeid;
-
+        evalWait = createDialog("wait");
         Window_Questions_JspEvaluation.show();
 
         function requestEvaluationQuestions(criteria, criteriaEdit, type = 0) {
@@ -2471,8 +2471,9 @@
                         requestEvaluationQuestionsEdit(criteriaEdit);
                     }
                 }
-
+                evalWait.close();
             }));
+
         }
 
         function requestEvaluationQuestionsEdit(criteria) {
@@ -2916,7 +2917,6 @@
                             IButton_Questions_Save,
                             isc.IButtonCancel.create({
                                 click: function () {
-                                    ListGrid_evaluation_student.invalidateCache();
                                     Window_Questions_JspEvaluation.close();
                                 }
                             })]
@@ -2945,6 +2945,7 @@
         criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":154},'+
             '{"fieldName":"evaluatorId","operator":"equals","value":' + studentIdJspEvaluation + '}' ;
 
+        evalWait = createDialog("wait");
         requestEvaluationQuestions(criteria, criteriaEdit, 1);
         Window_Questions_JspEvaluation.show();
 
@@ -3102,7 +3103,7 @@
                             requestEvaluationQuestionsEdit(criteriaEdit);
                         }
                     }
-
+                    evalWait.close();
                 }));
             }
 
@@ -3396,7 +3397,6 @@
                         IButton_Questions_Save,
                         isc.IButtonCancel.create({
                             click: function () {
-                                ListGrid_evaluation_student.invalidateCache();
                                 Window_Questions_JspEvaluation.close();
                             }
                         })]
@@ -3445,6 +3445,7 @@
         let itemList = [];
         let eeid;
 
+        evalWait = createDialog("wait");
         Window_Questions_JspEvaluation.show();
         DynamicForm_Questions_Title_JspEvaluation.getItem("code").setValue(LGRecord.code);
         DynamicForm_Questions_Title_JspEvaluation.getItem("titleClass").setValue(LGRecord.titleClass);
@@ -3605,8 +3606,9 @@
                         requestEvaluationQuestionsEdit(criteriaEdit);
                     }
                 }
-
+                evalWait.close();
             }));
+
         }
 
         function requestEvaluationQuestionsEdit(criteria) {
