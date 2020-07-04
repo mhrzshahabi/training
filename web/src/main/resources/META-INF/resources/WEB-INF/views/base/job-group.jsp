@@ -248,7 +248,7 @@
                     showRollOver: false,
                     layoutAlign: "center",
                     src: "[SKIN]/actions/add.png",
-                    prompt: "add",
+                    prompt: "اضافه کردن",
                     height: 16,
                     width: 16,
                     grid: this,
@@ -264,8 +264,6 @@
 
                         if(jobIds.length!=0){
                             let findRows=ListGrid_AllJobs.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"equals",value:current.id}]});
-                            ListGrid_AllJobs.selectRecord(findRows);
-                            findRows.setProperty("enabled", false);
 
                             let jobGroupRecord = ListGrid_Job_Group_Jsp.getSelectedRecord();
                             let jobGroupId = jobGroupRecord.id;
@@ -283,6 +281,10 @@
                                 callback: function (resp) {
                                     wait.close();
                                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                        ListGrid_AllJobs.selectRecord(findRows);
+                                        findRows.setProperty("enabled", false);
+                                        ListGrid_AllJobs.redraw();
+
                                         ListGrid_ForThisJobGroup_GetJobs.invalidateCache();
                                         ListGrid_ForThisJobGroup_GetJobs.fetchData();
                                     } else {
@@ -344,7 +346,7 @@
                     showRollOver: false,
                     layoutAlign: "center",
                     src: "[SKIN]/actions/remove.png",
-                    prompt: "remove",
+                    prompt: "حذف کردن",
                     height: 16,
                     width: 16,
                     grid: this,
