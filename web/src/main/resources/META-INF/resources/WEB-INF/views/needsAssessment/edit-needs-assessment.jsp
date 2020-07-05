@@ -8,6 +8,7 @@
     const yellow ="#d6d216";
     const red = "#ff8abc";
     const green = "#5dd851";
+    var selectedRecord = {};
     var editing = false;
     var isChanged = false;
     var priorityList = {
@@ -147,6 +148,26 @@
         fetchDataURL: skillUrl + "/WFC/spec-list"
 
     });
+    var RestDataSource_AddCourse_JspENA = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "scoringMethod"},
+            {name: "acceptancelimit"},
+            {name: "startEvaluation"},
+            {
+                name: "code",
+                title: "<spring:message code="course.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {name: "titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
+            {name: "createdBy", title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},
+            {name: "theoryDuration"},
+            {name: "categoryId"},
+            {name: "subCategoryId"},
+        ],
+        fetchDataURL: courseUrl + "spec-list"
+    });
     var RestDataSource_category_JspCourse = isc.TrDS.create({
         ID: "categoryDS",
         fields: [
@@ -198,8 +219,8 @@
                 canEdit: false,
                 hoverWidth: 250,
                     hoverHTML(record) {
-                    return record.course ? "نام مهارت: " + record.titleFa + "<br>" + "نام دوره: " + record.course.titleFa + "<br>" + "کد دوره: " + record.course.code : "نام مهارت: " + record.titleFa;
-                },
+                        return record.course ? "نام مهارت: " + record.titleFa + "<br>" + "نام دوره: " + record.course.titleFa + "<br>" + "کد دوره: " + record.course.code : "نام مهارت: " + record.titleFa;
+                    },
             },
             {name: "needsAssessmentPriorityId", title: "<spring:message code="priority"/>", filterOperator: "iContains", autoFitWidth:true},
             {name: "needsAssessmentDomainId", filterOperator: "iContains", hidden:true},
@@ -303,15 +324,15 @@
         // autoSize: false,
         autoSize: false,
         show(criteria){
-            ListGrid_Course_JspENA.invalidateCache();
-            ListGrid_Course_JspENA.fetchData(criteria);
+            ListGrid_CourseDetail_JspENA.invalidateCache();
+            ListGrid_CourseDetail_JspENA.fetchData(criteria);
             this.Super("show", arguments);
         },
         items: [
             isc.TrHLayout.create({
                 members: [
                     isc.TrLG.create({
-                        ID: "ListGrid_Course_JspENA",
+                        ID: "ListGrid_CourseDetail_JspENA",
                         dataSource: RestDataSource_Course_JspENA,
                         // selectionType: "none",
                         filterOnKeypress: true,
@@ -429,6 +450,271 @@
         click(){
             showWindowDiffNeedsAssessment(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"))
         }
+    });
+
+    var Menu_ListGrid_JspENA = isc.Menu.create({
+        data: [
+            {
+                title: "جزییات دوره",
+                click: function () {
+                    if(selectedRecord.course !== undefined) {
+                        let id = selectedRecord.course.id;
+                        isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "spec-list?id=" + id, "GET", null, (resp) => {
+                            if (resp.httpResponseCode !== 200) {
+                                createDialog("info", "<spring:message code='error'/>");
+                            }
+                            let fields = [
+                                {
+                                    name: "code", title: "<spring:message code="corse_code"/>",
+                                    align: "center",
+                                    autoFitWidth: true,
+                                    filterOperator: "iContains"
+                                },
+                                {
+                                    name: "titleFa",
+                                    title: "<spring:message code="course_fa_name"/>",
+                                    align: "center",
+                                    autoFitWidth: true,
+                                    filterOperator: "iContains",
+                                },
+                                {
+                                    name: "titleEn",
+                                    title: "<spring:message code="course_en_name"/>",
+                                    align: "center",
+                                    filterOperator: "iContains",
+                                    hidden: true
+                                },
+                                {
+                                    name: "categoryId",
+                                    title: "<spring:message code="course_category"/>",
+                                    align: "center",
+                                    filterOperator: "equals",
+                                    optionDataSource: RestDataSource_category_JspCourse,
+                                    displayField: "titleFa",
+                                    valueField: "id"
+                                    // sortNormalizer: function (record) {
+                                    //     return record.category.titleFa;
+                                    // }
+                                },
+                                {
+                                    name: "subCategory.titleFa",
+                                    title: "<spring:message
+        code="course_subcategory"/>",
+                                    align: "center",
+                                    filterOperator: "iContains",
+                                    sortNormalizer: function (record) {
+                                        return record.subCategory.titleFa;
+                                    }
+                                },
+                                {
+                                    name: "erunType.titleFa",
+                                    title: "<spring:message code="course_eruntype"/>",
+                                    align: "center",
+                                    filterOperator: "iContains",
+                                    // allowFilterOperators: false,
+                                    canFilter: false,
+                                    canSort: false,
+                                },
+                                {
+                                    name: "elevelType.titleFa", title: "<spring:message
+        code="cousre_elevelType"/>", align: "center", filterOperator: "iContains",
+                                    canFilter: false,
+                                    canSort: false
+                                },
+                                {
+                                    name: "etheoType.titleFa", title: "<spring:message
+        code="course_etheoType"/>", align: "center", filterOperator: "iContains",
+                                    canFilter: false,
+                                    canSort: false
+                                },
+                                {
+                                    name: "theoryDuration", title: "<spring:message
+                code="course_theoryDuration"/>", align: "center", filterOperator: "equals",
+                                    filterEditorProperties: {
+                                        keyPressFilter: "[0-9]"
+                                    }
+                                },
+                                {
+                                    name: "etechnicalType.titleFa", title: "<spring:message
+                 code="course_etechnicalType"/>", align: "center", filterOperator: "iContains",
+                                    canSort: false,
+                                    canFilter: false
+                                },
+                                {
+                                    name: "minTeacherDegree", title: "<spring:message
+        code="course_minTeacherDegree"/>", align: "center", filterOperator: "iContains", hidden: true
+                                },
+                                {
+                                    name: "minTeacherExpYears", title: "<spring:message
+        code="course_minTeacherExpYears"/>", align: "center", filterOperator: "iContains", hidden: true
+                                },
+                                {
+                                    name: "minTeacherEvalScore", title: "<spring:message
+        code="course_minTeacherEvalScore"/>", align: "center", filterOperator: "iContains", hidden: true
+                                },
+                                // {
+                                //     name: "knowledge",
+                                //     title: "دانشی",
+                                //     align: "center",
+                                //     filterOperator: "greaterThan",
+                                //     format: "%",
+                                //     width: "50"
+                                //     // formatCellValue: function (value, record) {
+                                //     //     // if (!isc.isA.Number(record.gdp) || !isc.isA.Number(record.population)) return "N/A";
+                                //     //     var gdpPerCapita = Math.round(record.theoryDuration/10);
+                                //     //     return isc.NumberUtil.format(gdpPerCapita, "%");
+                                //     // }
+                                // },
+                                // {name: "skill", title: "مهارتی", align: "center", filterOperator: "greaterThan", format: "%", width: "50"},
+                                // {
+                                //     name: "attitude",
+                                //     title: "نگرشی",
+                                //     align: "center",
+                                //     filterOperator: "greaterThan",
+                                //     format: "%",
+                                //     width: "50"
+                                // },
+                                {name: "needText", title: "شرح", hidden: true},
+                                {name: "description", title: "توضیحات", hidden: true},
+                                {
+                                    name: "workflowStatus",
+                                    title: "<spring:message code="status"/>",
+                                    align: "center",
+                                    autoFitWidth: true,
+                                    filterOperator: "iContains"
+                                },
+                                {
+                                    name: "behavioralLevel", title: "سطح رفتاری",
+                                    // hidden:true,
+                                    valueMap: {
+                                        "1": "مشاهده",
+                                        "2": "مصاحبه",
+                                        "3": "کار پروژه ای"
+                                    }
+                                },
+                                {
+                                    name: "evaluation", title: "<spring:message code="evaluation.level"/>",
+                                    valueMap: {
+                                        "1": "واکنشی",
+                                        "2": "یادگیری",
+                                        "3": "رفتاری",
+                                        "4": "نتایج"
+                                    }
+                                },
+                                <%--{--%>
+                                <%--name: "workflowStatusCode",--%>
+                                <%--title: "<spring:message code="status"/>",--%>
+                                <%--align: "center",--%>
+                                <%--autoFitWidth: true,--%>
+                                <%--filterOperator: "iContains",--%>
+                                <%--hidden: true--%>
+                                <%--},--%>
+                                // {name: "hasGoal", type: "boolean", title: "بدون هدف", hidden: true, canFilter: false},
+                                // {name: "hasSkill", type: "boolean", title: "بدون مهارت", hidden: true, canFilter: false}
+                            ];
+                            showDetailViewer("جزئیات دوره", fields, JSON.parse(resp.data).response.data);
+                        }));
+                    }
+                    else{
+
+                    }
+                }
+            },
+            {isSeparator: true},
+            {
+                title: "ویرایش دوره",
+                click: function () {
+                    if(selectedRecord.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")) {
+                        let Window_AddCourse_JspENA = isc.Window.create({
+                            title: "<spring:message code="course.plural.list"/>",
+                            placement: "fillScreen",
+                            minWidth: 1024,
+                            keepInParentRect: true,
+                            autoSize: false,
+
+                            show() {
+                                ListGrid_AddCourse_JspENA.invalidateCache();
+                                ListGrid_AddCourse_JspENA.fetchData();
+                                if(selectedRecord.course !== undefined){
+                                    ListGrid_AddCourse_JspENA.setCriteria({id: selectedRecord.course.id});
+                                }
+                                this.Super("show", arguments);
+                            },
+                            items: [
+                                isc.TrHLayout.create({
+                                    members: [
+                                        isc.TrLG.create({
+                                            ID: "ListGrid_AddCourse_JspENA",
+                                            dataSource: RestDataSource_AddCourse_JspENA,
+                                            selectionType: "single",
+                                            filterOnKeypress: false,
+                                            // autoFetchData:true,
+                                            fields: [
+                                                {
+                                                    name: "code",
+                                                    title: "<spring:message code="course.code"/>",
+                                                    filterOperator: "iContains",
+                                                    autoFitWidth: true
+                                                },
+                                                {
+                                                    name: "titleFa",
+                                                    title: "<spring:message code="course.title"/>",
+                                                    filterOperator: "iContains",
+                                                    autoFitWidth: true
+                                                },
+                                                {
+                                                    name: "createdBy",
+                                                    title: "<spring:message code="created.by.user"/>",
+                                                    filterOperator: "iContains"
+                                                },
+                                                {
+                                                    name: "theoryDuration",
+                                                    title: "<spring:message code="course_Running_time"/>",
+                                                    filterOperator: "equals",
+                                                },
+                                                {
+                                                    name: "categoryId",
+                                                    title: "<spring:message code="category"/> ",
+                                                    optionDataSource: RestDataSource_category_JspCourse,
+                                                    filterOnKeypress: true,
+                                                    valueField: "id",
+                                                    displayField: "titleFa",
+                                                    filterOperator: "equals",
+                                                },
+                                                {
+                                                    name: "subCategoryId",
+                                                    title: "<spring:message code="subcategory"/> ",
+                                                    optionDataSource: RestDataSource_subCategory_JspCourse,
+                                                    filterOnKeypress: true,
+                                                    valueField: "id",
+                                                    displayField: "titleFa",
+                                                    filterOperator: "equals",
+                                                },
+                                            ],
+                                            gridComponents: ["filterEditor", "header", "body"],
+                                            recordDoubleClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
+                                                let url = skillUrl + "/add-course/" + record.id + "/" + selectedRecord.skillId
+                                                isc.RPCManager.sendRequest(TrDSRequest(url, "POST", null, (resp) => {
+                                                    if (resp.httpResponseCode !== 200) {
+                                                        createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                                    }
+                                                    editNeedsAssessmentRecord(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"));
+                                                    Window_AddCourse_JspENA.close()
+                                                }))
+
+                                            }
+                                        }),
+                                    ]
+                                })]
+                        })
+                        Window_AddCourse_JspENA.show()
+                    }
+                    else{
+                        createDialog("info","فقط نیازسنجی های مرتبط با "+priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")]+" قابل تغییر است.")
+                    }
+                }
+            },
+        ]
     });
 
     var ListGrid_AllCompetence_JspNeedsAssessment = isc.TrLG.create({
@@ -578,11 +864,11 @@
         selectionType:"single",
         autoSaveEdits:false,
         implicitCriteria:{"needsAssessmentDomainId":108},
+        contextMenu: Menu_ListGrid_JspENA,
         fields: [
             {name: "titleFa"},
             {name: "objectType"},
             {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
-
             // {
             //     name: "needsAssessmentPriorityId",
             //     canEdit:true,
@@ -647,6 +933,11 @@
         },
         recordDoubleClick(viewer, record){
             updatePriority_JspEditNeedsAssessment(viewer, record);
+        },
+        selectionChanged(record, state){
+            if(state){
+                selectedRecord = record;
+            }
         }
     });
     var ListGrid_Ability_JspNeedsAssessment = isc.TrLG.create({
@@ -654,6 +945,7 @@
         dataSource: DataSource_Skill_JspNeedsAssessment,
         autoFetchData:false,
         showRowNumbers: false,
+        contextMenu: Menu_ListGrid_JspENA,
         selectionType:"single",
         fields: [
             {name: "titleFa"},
@@ -725,8 +1017,12 @@
         },
         recordDoubleClick(viewer, record){
             updatePriority_JspEditNeedsAssessment(viewer, record);
-        }
-    });
+        },
+        selectionChanged(record, state){
+            if(state){
+                selectedRecord = record;
+            }
+        }});
     var ListGrid_Attitude_JspNeedsAssessment = isc.TrLG.create({
         ID: "ListGrid_Attitude_JspNeedsAssessment",
         dataSource: DataSource_Skill_JspNeedsAssessment,
@@ -803,8 +1099,12 @@
         },
         recordDoubleClick(viewer, record){
             updatePriority_JspEditNeedsAssessment(viewer, record);
-        }
-    });
+        },
+        selectionChanged(record, state){
+            if(state){
+                selectedRecord = record;
+            }
+        }});
     <%--let ListGrid_Personnel_JspNeedsAssessment = isc.TrLG.create({--%>
         <%--width: "100%",--%>
         <%--dataSource: RestDataSource_Personnel_JspNeedsAssessment,--%>
