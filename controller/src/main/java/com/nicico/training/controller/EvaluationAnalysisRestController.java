@@ -279,19 +279,26 @@ public class EvaluationAnalysisRestController {
             if(classStudent.getScore() != null || classStudent.getValence() != null)
                 resultSet.setHavePostTest("true");
 
-            if(classStudent.getPreTestScore() != null && scoringMethod.equalsIgnoreCase("1") && classStudent.getValence()!=null) {
+            if(scoringMethod.equalsIgnoreCase("1") && classStudent.getValence()!=null) {
+                if(classStudent.getPreTestScore() != null)
+                    preScores.add(Double.valueOf(classStudent.getPreTestScore()));
+                else
+                    preScores.add(0.0);
                 postScores.add(Double.valueOf(map.get(classStudent.getValence())));
-                preScores.add(Double.valueOf(classStudent.getPreTestScore()));
                 studentCount++;
             }
-            else if(classStudent.getPreTestScore() != null && scoringMethod.equalsIgnoreCase("3") && classStudent.getScore()!=null) {
+            else if(scoringMethod.equalsIgnoreCase("3") && classStudent.getScore()!=null) {
                 postScores.add(Double.valueOf(classStudent.getScore()) * 5);
-                preScores.add(Double.valueOf(classStudent.getPreTestScore()));
+                if(classStudent.getPreTestScore() != null)
+                    preScores.add(Double.valueOf(classStudent.getPreTestScore()));
+                else preScores.add(0.0);
                 studentCount++;
             }
-            else if(classStudent.getPreTestScore() != null && classStudent.getScore() != null) {
+            else if(classStudent.getScore() != null) {
                 postScores.add(Double.valueOf(classStudent.getScore()));
-                preScores.add(Double.valueOf(classStudent.getPreTestScore()));
+                if(classStudent.getPreTestScore() != null)
+                    preScores.add(Double.valueOf(classStudent.getPreTestScore()));
+                else  preScores.add(0.0);
                 studentCount++;
             }
         }
