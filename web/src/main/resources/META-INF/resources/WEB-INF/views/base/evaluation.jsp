@@ -768,9 +768,18 @@
                     },
                     filterOnKeypress:true
                 },
-                {name: "evaluationAudienceTypeId",title: "<spring:message code="evaluation.audience.type"/>", hidden:true},
-                {name: "sendForm", title: " ", align: "center", canSort: false, canFilter: false,autoFithWidth: true},
-                {name: "saveResults", title: " ", align: "center", canSort: false, canFilter: false,autoFithWidth: true}
+                {name: "evaluationAudienceTypeId",title: "<spring:message code="evaluation.audience.type"/>",
+                    hidden: true
+                },
+                {name: "sendForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true},
+                {
+                    name: "saveResults",
+                    title: " ",
+                    align: "center",
+                    canSort: false,
+                    canFilter: false,
+                    autoFithWidth: true
+                }
             ],
             getCellCSSText: function (record, rowNum, colNum) {
                 if ((!ListGrid_evaluation_student.getFieldByName("evaluationStatusReaction").hidden && record.evaluationStatusReaction === 1)
@@ -781,7 +790,7 @@
 
                 if ((!ListGrid_evaluation_student.getFieldByName("evaluationStatusReaction").hidden && (record.evaluationStatusReaction === 3 || record.evaluationStatusReaction === 2))
                     || (!ListGrid_evaluation_student.getFieldByName("evaluationStatusLearning").hidden && (record.evaluationStatusLearning === 3 || record.evaluationStatusLearning === 2))
-                    || (!ListGrid_evaluation_student.getFieldByName("evaluationStatusBehavior").hidden && (record.evaluationStatusBehavior === 3 || record.evaluationStatusBehavior === 2 ))
+                    || (!ListGrid_evaluation_student.getFieldByName("evaluationStatusBehavior").hidden && (record.evaluationStatusBehavior === 3 || record.evaluationStatusBehavior === 2))
                     || (!ListGrid_evaluation_student.getFieldByName("evaluationStatusResults").hidden && (record.evaluationStatusResults === 3 || record.evaluationStatusResults === 2)))
                     return "background-color : #b7dee8";
             },
@@ -794,33 +803,29 @@
                         width: "120",
                         baseStyle: "registerFile",
                         click: function () {
-                            if(record.evaluationStatusReaction == "0")
-                                createDialog("info", "فرمی صادر نشده است");
-                            else
-                                register_evaluation_result_reaction_student(record);
+                            if (Detail_Tab_Evaluation.getSelectedTab().id == "TabPane_Reaction") {
+                                if (record.evaluationStatusReaction == "0")
+                                    createDialog("info", "فرمی صادر نشده است");
+                                else
+                                    register_evaluation_result_reaction_student(record);
+                            } else if (Detail_Tab_Evaluation.getSelectedTab().id == "TabPane_Behavior") {
+                                register_evaluation_result_behavioral_student(record);
+                            }
                         }
                     });
-                    if(Detail_Tab_Evaluation.getSelectedTab().id == "TabPane_Behavior"){
-                        button.disabled = true;
-                    }
-                    else if(Detail_Tab_Evaluation.getSelectedTab().id == "TabPane_Reaction"){
-                        button.disabled = false;
-                    }
                     return button;
-                }
-                else  if (fieldName == "sendForm") {
+                } else if (fieldName == "sendForm") {
                     var button = isc.IButton.create({
                         layoutAlign: "center",
                         baseStyle: "sendFile",
                         title: "صدور فرم",
                         width: "120",
                         click: function () {
-                            set_print_Status("single",record);
+                            set_print_Status("single", record);
                         }
                     });
                     return button;
-                }
-                else {
+                } else {
                     return null;
                 }
             },
@@ -828,23 +833,23 @@
 
 
     }
-    // ---------------------------------------- Create - RestDataSource & ListGrid -------------------------->>
-    // <<-------------------------------------- Create - ToolStripButton --------------------------------------
-    {
-        //*****class toolStrip*****
-        var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
-            title: "<spring:message code="refresh"/>",
-            click: function () {
-                ListGrid_evaluation_class.invalidateCache();
-            }
-        });
+// ---------------------------------------- Create - RestDataSource & ListGrid -------------------------->>
+// <<-------------------------------------- Create - ToolStripButton --------------------------------------
+{
+    //*****class toolStrip*****
+    var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
+        title: "<spring:message code="refresh"/>",
+        click: function () {
+            ListGrid_evaluation_class.invalidateCache();
+        }
+    });
 
 
-        var ToolStrip_operational = isc.ToolStrip.create({
-            width: "100%",
-            membersMargin: 5,
-            members: [
-                <sec:authorize access="hasAuthority('Evaluation_R')">
+    var ToolStrip_operational = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            <sec:authorize access="hasAuthority('Evaluation_R')">
                 DynamicForm_Evalution_Term_Filter,
                 isc.ToolStrip.create({
                     width: "5%",
@@ -855,7 +860,6 @@
                     ]
                 })
                 </sec:authorize>
-
             ]
         });
 
@@ -1164,11 +1168,12 @@
                 membersMargin: 5,
                 members: [
                     isc.IButton.create({
-                        title: "<spring:message code="select" />",
+                        title: "صدور و چاپ",
                         click: function () {
                             if (EvaluationListGrid_PeronalLIst.getSelectedRecord() !== null && (evaluation_Audience_Type.getValue("audiencePost") !== null && evaluation_Audience_Type.getValue("audiencePost") !== undefined)) {
                                 evaluation_Audience = EvaluationListGrid_PeronalLIst.getSelectedRecord().firstName + " " + EvaluationListGrid_PeronalLIst.getSelectedRecord().lastName;
                                 print_Student_FormIssuance("pdf", ealuation_numberOfStudents,record);
+                                create_Student_BehavioralForm(ealuation_numberOfStudents,record,EvaluationListGrid_PeronalLIst.getSelectedRecord(),evaluation_Audience_Type.getValue("audiencePost"));
                                 EvaluationWin_PersonList.close();
                             } else if(evaluation_Audience_Type.getValue("audiencePost") === null || evaluation_Audience_Type.getValue("audiencePost") === undefined){
                                 createDialog('info', "<spring:message code="select.audience.post.ask"/>", "<spring:message code="global.message"/>");
@@ -1183,6 +1188,11 @@
                                     }
                                 });
                             }
+                        }
+                    }),
+                    isc.IButton.create({
+                        title: "ارسال از طریق پیامک",
+                        click: function () {
                         }
                     }),
                     isc.IButton.create({
@@ -1256,6 +1266,67 @@
             }
         }
 
+        function create_Student_BehavioralForm(numberOfStudents,record,evaluatorRecord,evaluatorType){
+            if (ListGrid_evaluation_student.getTotalRows() > 0) {
+                let selectedClass = ListGrid_evaluation_class.getSelectedRecord();
+                let selectedStudent = record;
+                let selectedTab = Detail_Tab_Evaluation.getSelectedTab();
+
+                if (numberOfStudents === "single" && selectedStudent !== null && selectedStudent !== undefined) {
+
+                    let studentId = selectedStudent.student.id;
+                    let data = {};
+                    data.questionnaireTypeId = 230;
+                    data.evaluationLevelId = 156;
+                    data.evaluatedId = studentId;
+                    data.classId = selectedClass.id;
+                    data.evaluatorId = evaluatorRecord.id;
+                    data.evaluatorTypeId = evaluatorType;
+                    data.evaluatedTypeId = null;
+                    data.status = false;
+
+                    isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl, "POST", JSON.stringify(data), function (resp) {
+                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                            const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                            setTimeout(() => {
+                                msg.close();
+                        }, 3000);
+                        }
+                        else if(resp.httpResponseCode === 406){
+                            createDialog("info", "فرم ارزیابی قبلا برای این فرد صادر شده است.");
+                        }
+                        else {
+                            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                        }
+                    }));
+
+                    evaluation_Audience = null;
+                }
+                else if (numberOfStudents === "all") {
+
+                } else {
+                    isc.Dialog.create({
+                        message: "<spring:message code="msg.no.records.selected"/>",
+                        icon: "[SKIN]ask.png",
+                        title: "<spring:message code="global.message"/>",
+                        buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
+                        buttonClick: function (button, index) {
+                            this.close();
+                        }
+                    });
+                }
+            } else {
+                isc.Dialog.create({
+                    message: "<spring:message code="no.student.class"/>",
+                    icon: "[SKIN]ask.png",
+                    title: "<spring:message code="global.message"/>",
+                    buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
+                    buttonClick: function (button, index) {
+                        this.close();
+                    }
+                });
+            }
+        }
         //*****print student form issuance*****
         function print_Student_FormIssuance(type, numberOfStudents,record) {
             if (ListGrid_evaluation_student.getTotalRows() > 0) {
@@ -3655,3 +3726,142 @@
             }
         }
 }
+
+
+function register_evaluation_result_behavioral_student(StdRecord){
+    let LGRecord = ListGrid_evaluation_class.getSelectedRecord();
+    let RestDataSource_BehavioralRegisteration_JSPEvaluation = isc.TrDS.create({
+        fields: [
+            {name: "evaluatorTypeId"},
+            {name: "evaluatorName"}
+        ]
+    });
+    let Listgrid_BehavioralRegisteration_JSPEvaluation = isc.TrLG.create({
+        width: "100%",
+        height: "100%",
+        dataSource: RestDataSource_BehavioralRegisteration_JSPEvaluation,
+        sortField: 0,
+        sortDirection: "Descending",
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
+        fields: [
+            {
+                name: "evaluatorTypeId",
+                title: "نوع مخاطب",
+                sortNormalizer: function (record) {
+                    return record.personality.firstNameFa;
+                },
+                width: "45%"
+            },
+            {
+                name: "evaluatorName",
+                title: "نام مخاطب",
+                width: "45%"
+            },
+            {name: "editForm",title: " ", align: "center",canSort:false,canFilter:false, width: "10%"},
+            {name: "removeForm",title: " ", align: "center",canSort:false,canFilter:false, width: "10%"},
+            {name: "printForm",title: " ", align: "center",canSort:false,canFilter:false, width: "10%"}
+        ],
+        createRecordComponent: function (record, colNum) {
+            var fieldName = this.getFieldName(colNum);
+            if (fieldName == "editForm") {
+                let recordCanvas = isc.HLayout.create({
+                    height: "100%",
+                    width: "100%",
+                    layoutMargin: 5,
+                    membersMargin: 10,
+                    align: "center"
+                });
+                let addIcon = isc.ImgButton.create({
+                    showDown: false,
+                    showRollOver: false,
+                    layoutAlign: "center",
+                    src: "[SKIN]/actions/edit.png",
+                    prompt: "ویرایش فرم",
+                    height: 16,
+                    width: 16,
+                    grid: this,
+                    click: function () {
+                    }
+                });
+                recordCanvas.addMember(addIcon);
+                return recordCanvas;
+            }
+            else if (fieldName == "removeForm") {
+                let recordCanvas = isc.HLayout.create({
+                    height: "100%",
+                    width: "100%",
+                    layoutMargin: 5,
+                    membersMargin: 10,
+                    align: "center"
+                });
+                let addIcon = isc.ImgButton.create({
+                    showDown: false,
+                    showRollOver: false,
+                    layoutAlign: "center",
+                    src: "[SKIN]/actions/remove.png",
+                    prompt: "حذف فرم",
+                    height: 16,
+                    width: 16,
+                    grid: this,
+                    click: function () {
+                    }
+                });
+                recordCanvas.addMember(addIcon);
+                return recordCanvas;
+            }
+            else if (fieldName == "printForm") {
+                let recordCanvas = isc.HLayout.create({
+                    height: "100%",
+                    width: "100%",
+                    layoutMargin: 5,
+                    membersMargin: 10,
+                    align: "center"
+                });
+                let addIcon = isc.ImgButton.create({
+                    showDown: false,
+                    showRollOver: false,
+                    layoutAlign: "center",
+                    src: "[SKIN]/actions/print.png",
+                    prompt: "چاپ فرم",
+                    height: 16,
+                    width: 16,
+                    grid: this,
+                    click: function () {
+                    }
+                });
+                recordCanvas.addMember(addIcon);
+                return recordCanvas;
+            }else
+                return null;
+        },
+        cellHeight: 43,
+        filterOperator: "iContains",
+        filterOnKeypress: false,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        selectionType: "single",
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>"
+    });
+    let Window_BehavioralRegisteration_JSPEvaluation = isc.Window.create({
+        placement: "fillScreen",
+        title: "ثبت نتایج ارزیابی",
+        canDragReposition: true,
+        align: "center",
+        autoDraw: true,
+        // width: 550,
+        // height: 500,
+        border: "1px solid gray",
+        items: [isc.TrVLayout.create({
+            members: [
+                Listgrid_BehavioralRegisteration_JSPEvaluation
+            ]
+        })]
+    });
+    // RestDataSource_BehavioralRegisteration_JSPEvaluation.fetchDataUrl = evaluationUrl + "/getBehavioralForms/" + StdRecord.id + "/" + LGRecord.id;
+    // Listgrid_BehavioralRegisteration_JSPEvaluation.fetchData();
+    Window_BehavioralRegisteration_JSPEvaluation.show();
+}
+

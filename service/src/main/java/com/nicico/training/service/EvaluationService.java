@@ -98,21 +98,30 @@ public class EvaluationService implements IEvaluationService {
 
     // ------------------------------
     private EvaluationDTO.Info save(Evaluation evaluation) {
+        Evaluation duplicateEvaluation =  evaluationDAO.findFirstByQuestionnaireTypeIdAndClassIdAndEvaluatorIdAndEvaluatorTypeIdAndEvaluatedIdAndEvaluatedTypeIdAndEvaluationLevelId(
+                evaluation.getQuestionnaireTypeId(), evaluation.getClassId(), evaluation.getEvaluatorId(), evaluation.getEvaluatorTypeId(), evaluation.getEvaluatedId(),
+                evaluation.getEvaluatedTypeId(), evaluation.getEvaluationLevelId());
 
-        List<EvaluationAnswer> evaluationAnswers = evaluation.getEvaluationAnswerList();
-
-        evaluation.setEvaluationAnswerList(null);
-        final Evaluation saved = evaluationDAO.saveAndFlush(evaluation);
-
-        Long evaluationId = saved.getId();
-        for (EvaluationAnswer evaluationAnswer : evaluationAnswers) {
-            evaluationAnswer.setEvaluationId(evaluationId);
+        if(duplicateEvaluation != null){
+            return null;
         }
+        else{
+            List<EvaluationAnswer> evaluationAnswers = evaluation.getEvaluationAnswerList();
 
-        evaluationAnswerDAO.saveAll(evaluationAnswers);
-        studentEvaluationRegister(evaluation);
+            evaluation.setEvaluationAnswerList(null);
+            final Evaluation saved = evaluationDAO.saveAndFlush(evaluation);
 
-        return modelMapper.map(saved, EvaluationDTO.Info.class);
+            Long evaluationId = saved.getId();
+            if(evaluationAnswers != null) {
+                for (EvaluationAnswer evaluationAnswer : evaluationAnswers) {
+                    evaluationAnswer.setEvaluationId(evaluationId);
+                }
+                evaluationAnswerDAO.saveAll(evaluationAnswers);
+            }
+            studentEvaluationRegister(evaluation);
+
+            return modelMapper.map(saved, EvaluationDTO.Info.class);
+        }
     }
 
     @Override
