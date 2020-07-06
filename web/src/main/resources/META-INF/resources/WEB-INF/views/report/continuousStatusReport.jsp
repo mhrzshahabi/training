@@ -363,7 +363,7 @@
             filterOnKeypress: true,
             selectionType: "single",
             showGridSummary: true,
-            autoFetchData : true,
+            autoFetchData : false,
             initialSort: [
                 {property: "", direction: "ascending"}
             ],
