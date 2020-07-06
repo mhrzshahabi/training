@@ -10,11 +10,9 @@ import com.nicico.training.dto.AttendanceDTO;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.TclassDTO;
-import com.nicico.training.model.ClassSession;
-import com.nicico.training.model.ClassStudent;
-import com.nicico.training.model.Student;
-import com.nicico.training.model.Tclass;
+import com.nicico.training.model.*;
 import com.nicico.training.repository.AttendanceDAO;
+import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.StudentDAO;
 import com.nicico.training.service.ControlReportService;
 import com.nicico.training.service.TclassService;
@@ -49,6 +47,7 @@ public class ControlFormController {
     private final AttendanceDAO attendanceDOA;
     private final ControlReportService controlReportService;
     private final MessageSource messageSource;
+    private final PersonnelDAO personnelDAO;
 
     @Transactional(readOnly = true)
     @PostMapping(value = {"/clear-print/{type}"})
@@ -81,6 +80,14 @@ public class ControlFormController {
             Optional<Student> byId = studentDAO.findById(studentId);
             Student student = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.StudentNotFound));
             StudentDTO.clearAttendanceWithState st = modelMapper.map(student, StudentDTO.clearAttendanceWithState.class);
+
+            Personnel personnel=null;
+
+            if (student!=null && student.getNationalCode()!=null)
+            personnel=personnelDAO.findByNationalCodeAndPersonnelNo(student.getNationalCode().trim(),student.getPersonnelNo().trim());
+
+            st.setCcpAffairs(personnel!=null ? (personnel.getCcpAffairs() != null ? personnel.getCcpAffairs() : "") : "");
+
             st.setFullName(st.getFirstName() + " " + st.getLastName());
 
             String dayDate = sessionList.get(0).getSessionDate() != null ? sessionList.get(0).getSessionDate() : "";
@@ -259,6 +266,14 @@ public class ControlFormController {
             Optional<Student> byId = studentDAO.findById(studentId);
             Student student = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.StudentNotFound));
             StudentDTO.controlAttendance st = modelMapper.map(student, StudentDTO.controlAttendance.class);
+
+            Personnel personnel=null;
+
+            if (student!=null && student.getNationalCode()!=null)
+                personnel=personnelDAO.findByNationalCodeAndPersonnelNo(student.getNationalCode().trim(),student.getPersonnelNo().trim());
+
+            st.setCcpAffairs(personnel!=null ? (personnel.getCcpAffairs() != null ? personnel.getCcpAffairs() : "") : "");
+
             st.setFullName(st.getFirstName() + " " + st.getLastName());
             studentArrayList.add(st);
             i++;
@@ -318,8 +333,15 @@ public class ControlFormController {
                 Optional<Student> byId = studentDAO.findById(studentId);
                 Student student = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.StudentNotFound));
                 StudentDTO.clearAttendanceWithState st = modelMapper.map(student, StudentDTO.clearAttendanceWithState.class);
-                st.setFullName(st.getFirstName() + " " + st.getLastName());
 
+                Personnel personnel=null;
+
+                if (student!=null && student.getNationalCode()!=null)
+                    personnel=personnelDAO.findByNationalCodeAndPersonnelNo(student.getNationalCode().trim(),student.getPersonnelNo().trim());
+
+                st.setCcpAffairs(personnel!=null ? (personnel.getCcpAffairs() != null ? personnel.getCcpAffairs() : "") : "");
+
+                st.setFullName(st.getFirstName() + " " + st.getLastName());
 
                     String dayDate = sessionList.get(0).getSessionDate() != null ? sessionList.get(0).getSessionDate() : "";
 
@@ -479,6 +501,13 @@ public class ControlFormController {
                 StudentDTO.controlAttendance st = modelMapper.map(student, StudentDTO.controlAttendance.class);
                 st.setFullName(st.getFirstName() + " " + st.getLastName());
 
+                Personnel personnel=null;
+
+                if (student!=null && student.getNationalCode()!=null)
+                    personnel=personnelDAO.findByNationalCodeAndPersonnelNo(student.getNationalCode().trim(),student.getPersonnelNo().trim());
+
+                st.setCcpAffairs(personnel!=null ? (personnel.getCcpAffairs() != null ? personnel.getCcpAffairs() : "") : "");
+
                 studentArrayList.add(st);
                 i++;
             }//end outer for
@@ -556,6 +585,13 @@ public class ControlFormController {
                 Student student = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.StudentNotFound));
                 StudentDTO.fullAttendance st = modelMapper.map(student, StudentDTO.fullAttendance.class);
                 st.setFullName(st.getFirstName() + " " + st.getLastName());
+
+                Personnel personnel=null;
+
+                if (student!=null && student.getNationalCode()!=null)
+                    personnel=personnelDAO.findByNationalCodeAndPersonnelNo(student.getNationalCode().trim(),student.getPersonnelNo().trim());
+
+                st.setCcpAffairs(personnel!=null ? (personnel.getCcpAffairs() != null ? personnel.getCcpAffairs() : "") : "");
 
                 st.setScoreA(listClassStudents.get(cnt).getScore() != null && dataStatus.equals("true") ? listClassStudents.get(cnt).getScore().toString() : "");
                 st.setScoreB(st.calScoreB(st.getScoreA()));
