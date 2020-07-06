@@ -77,7 +77,7 @@
                 {name: "EvaluationPriority"},
                 {name: "ClassStatus"},
             ],
-        fetchDataURL : continuousStatusReportView + "/iscList",
+        fetchDataURL : continuousStatusReportViewUrl + "/iscList",
         autoFetchData : true
     });
 
