@@ -80,9 +80,8 @@ public class ControlFormController {
         for (Long studentId : studentsId) {
             Optional<Student> byId = studentDAO.findById(studentId);
             Student student = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.StudentNotFound));
-            StudentDTO.clearAttendanceWithStatePDF st = modelMapper.map(student, StudentDTO.clearAttendanceWithStatePDF.class);
+            StudentDTO.clearAttendanceWithState st = modelMapper.map(student, StudentDTO.clearAttendanceWithState.class);
             st.setFullName(st.getFirstName() + " " + st.getLastName());
-
 
             String dayDate = sessionList.get(0).getSessionDate() != null ? sessionList.get(0).getSessionDate() : "";
 
@@ -184,7 +183,6 @@ public class ControlFormController {
         return params;
 
     }
-
 
     @Transactional(readOnly = true)
     @PostMapping(value = {"/score-print/{type}"})
