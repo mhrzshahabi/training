@@ -12,7 +12,6 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonnelCourseNotPassedReportViewService;
-import com.nicico.training.iservice.IPersonnelCoursePassedNAReportViewService;
 import com.nicico.training.iservice.IStudentService;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.repository.CourseDAO;
@@ -31,7 +30,6 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -65,7 +63,6 @@ public class ExportToFileController {
     private final TrainingOverTimeService trainingOverTimeService;
     private final AttendanceReportService attendanceReportService;
     private final ViewEvaluationStaticalReportService viewEvaluationStaticalReportService;
-    private final IPersonnelCoursePassedNAReportViewService personnelCoursePassedNAReportViewService;
 
     private final StudentClassReportViewDAO studentClassReportViewDAO;
     private final PersonnelDAO personnelDAO;
@@ -448,17 +445,6 @@ public class ExportToFileController {
                     ObjectMapper mapper = new ObjectMapper();
                     jsonString = mapper.writeValueAsString(list12);
                     count = list12.size();
-                }
-                break;
-            case "personnelCourseNAReportV2Min":
-                SearchDTO.SearchRs<PersonnelCoursePassedNAReportViewDTO.MinInfo> list13 = personnelCoursePassedNAReportViewService.search(searchRq, r -> modelMapper.map(r, PersonnelCoursePassedNAReportViewDTO.MinInfo.class));
-
-                if (list13.getList() == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list13.getList());
-                    count = list13.getList().size();
                 }
                 break;
 
