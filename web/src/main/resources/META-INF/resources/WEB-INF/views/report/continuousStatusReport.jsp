@@ -77,6 +77,8 @@
                 {name: "EvaluationPriority"},
                 {name: "ClassStatus"},
             ],
+        fetchDataURL : continuousStatusReportView + "/iscList",
+        autoFetchData : true
     });
 
 
@@ -144,7 +146,7 @@
                     hint: "----/--/--",
                     keyPressFilter: "[0-9/]",
                     showHintInField: true,
-                    required: true,
+                    required: false,
                     wrapTitle : false,
                     icons: [{
                         src: "<spring:url value="calendar.png"/>",
@@ -168,7 +170,7 @@
                     hint: "----/--/--",
                     keyPressFilter: "[0-9/]",
                     showHintInField: true,
-                    required: true,
+                    required: false,
                     icons: [{
                         src: "<spring:url value="calendar.png"/>",
                         click: function (form) {
@@ -313,6 +315,19 @@
                     ],
                     filterFields: [""]
                 },
+                {
+                    name: "searchBtn",
+                    ID: "searchBtnJspCPReport",
+                    type: "ButtonItem",
+                    colSpan: 4,
+                    width:"*",
+                    startRow:false,
+                    endRow:false,
+                    title: "<spring:message code="reporting"/>",
+                    click: function () {
+                        searchResult();
+                    }
+                }
             ]
         });
         // ----------------------------------- Create - DynamicForm & Window --------------------------->>
@@ -329,6 +344,7 @@
             filterOnKeypress: true,
             selectionType: "single",
             showGridSummary: true,
+            autoFetchData : true,
             initialSort: [
                 {property: "", direction: "ascending"}
             ],
@@ -554,6 +570,14 @@
             checkUndefinedDate("secondStartDate");
             CPReport_check_date("firstStartDate","secondStartDate");
             CPReport_check_date("firstFinishDate","secondFinishDate");
+
+
+            if (DynamicForm_CPReport.hasErrors())
+                return;
+
+            // RestDataSource_CRReport.fetchDataURL = classPerformanceReport + "list" + "/" + JSON.stringify(reportParameters);
+            // ListGrid_ClPReport.invalidateCache();
+            // ListGrid_ClPReport.fetchData();
 
         }
 

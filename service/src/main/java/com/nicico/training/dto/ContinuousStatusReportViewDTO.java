@@ -78,7 +78,7 @@ public class ContinuousStatusReportViewDTO implements Serializable {
     private String Year;
 
     @ApiModelProperty
-    private String RegestryState;
+    private String RegistryState;
 
     @ApiModelProperty
     private String EvaluationState;

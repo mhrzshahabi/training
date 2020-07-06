@@ -16,7 +16,7 @@ import javax.persistence.Id;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Subselect("select * VIEW_CONTINUOUS_STATUS_REPORT")
+@Subselect("SELECT * VIEW_CONTINUOUS_STATUS_REPORT")
 
 public class ContinuousStatusReportView {
 
@@ -24,76 +24,76 @@ public class ContinuousStatusReportView {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "")
+    @Column(name = "EMP_NO")
     private String EmpNo;
 
-    @Column(name = "")
+    @Column(name = "PERSONNEL_NO")
     private String PersonnelNo;
 
-    @Column(name = "")
+    @Column(name = "NATIONAL_CODE")
     private String NationalCode;
 
-    @Column(name = "")
+    @Column(name = "FIRST_NAME")
     private String FirstName;
 
-    @Column(name = "")
+    @Column(name = "LAST_NAME")
     private String LastName;
 
-    @Column(name = "")
+    @Column(name = "C_CODE")
     private String ClassCode;
 
-    @Column(name = "")
+    @Column(name = "C_CODE1")
     private String CourseCode;
 
-    @Column(name = "")
+    @Column(name = "C_TITLE_FA")
     private Integer CourseTitle;
 
-    @Column(name = "")
+    @Column(name = "COMPLEX_TITLE")
     private String ComplexTitle;
 
-    @Column(name = "")
+    @Column(name = "COMPANY_NAME")
     private String CompanyName;
 
-    @Column(name = "")
+    @Column(name = "CCP_AREA")
     private String Area;
 
-    @Column(name = "")
+    @Column(name = "CCP_ASSISTANT")
     private String Assistant;
 
-    @Column(name = "")
+    @Column(name = "CCP_AFFAIRS")
     private Integer Affairs;
 
-    @Column(name = "")
+    @Column(name = "CCP_UNIT")
     private String Unit;
 
-    @Column(name = "")
+    @Column(name = "POST_TITLE")
     private String PostTitle;
 
-    @Column(name = "")
+    @Column(name = "POST_CODE")
     private String PostCode;
 
-    @Column(name = "", nullable = false)
+    @Column(name = "C_START_DATE", nullable = false)
     private String StartDate;
 
-    @Column(name = "", nullable = false)
+    @Column(name = "C_END_DATE", nullable = false)
     private String EndDate;
 
-    @Column(name = "")
+    @Column(name = "C_CODE2")
     private Long TermId;
 
-    @Column(name = "")
+    @Column(name = "YEAR")
     private String Year;
 
-    @Column(name = "")
-    private String RegestryState;
+    @Column(name = "REGISTRY")
+    private String RegistryState;
 
-    @Column(name = "")
+    @Column(name = "EVALUATIONSTATE")
     private String EvaluationState;
 
-    @Column(name = "")
+    @Column(name = "NA_PRIORITY_ID")
     private String EvaluationPriority;
 
-    @Column(name = "")
+    @Column(name = "C_STATUS")
     private String ClassStatus;
 
 }
