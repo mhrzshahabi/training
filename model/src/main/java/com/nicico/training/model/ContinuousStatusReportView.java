@@ -1,5 +1,6 @@
 package com.nicico.training.model;
 
+import com.nicico.training.model.compositeKey.PersonnelCourseKey;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
@@ -20,80 +21,83 @@ import javax.persistence.Id;
 
 public class ContinuousStatusReportView {
 
-    @Id
-    @Column(name = "id", nullable = false)
-    private Long id;
+//    @Id
+//    @Column(name = "id", nullable = false)
+//    private Long id;
 
-    @Column(name = "EMP_NO")
-    private String EmpNo;
+    @EmbeddedId
+    private PersonnelCourseKey id;
 
-    @Column(name = "PERSONNEL_NO")
-    private String PersonnelNo;
+    @Column(name = "emp_no")
+    private String empNo;
 
-    @Column(name = "NATIONAL_CODE")
-    private String NationalCode;
+    @Column(name = "personnel_no")
+    private String personnelNo;
 
-    @Column(name = "FIRST_NAME")
-    private String FirstName;
+    @Column(name = "national_code")
+    private String nationalCode;
 
-    @Column(name = "LAST_NAME")
-    private String LastName;
+    @Column(name = "first_name")
+    private String firstName;
 
-    @Column(name = "C_CODE")
-    private String ClassCode;
+    @Column(name = "last_name")
+    private String lastName;
 
-    @Column(name = "C_CODE1")
-    private String CourseCode;
+    @Column(name = "c_code")
+    private String classCode;
 
-    @Column(name = "C_TITLE_FA")
-    private Integer CourseTitle;
+    @Column(name = "c_code1")
+    private String courseCode;
 
-    @Column(name = "COMPLEX_TITLE")
-    private String ComplexTitle;
+    @Column(name = "c_title_fa")
+    private Integer courseTitle;
 
-    @Column(name = "COMPANY_NAME")
-    private String CompanyName;
+    @Column(name = "complex_title")
+    private String complexTitle;
 
-    @Column(name = "CCP_AREA")
-    private String Area;
+    @Column(name = "company_name")
+    private String companyName;
 
-    @Column(name = "CCP_ASSISTANT")
-    private String Assistant;
+    @Column(name = "ccp_area")
+    private String area;
 
-    @Column(name = "CCP_AFFAIRS")
-    private Integer Affairs;
+    @Column(name = "ccp_assistant")
+    private String assistant;
 
-    @Column(name = "CCP_UNIT")
-    private String Unit;
+    @Column(name = "ccp_affairs")
+    private Integer affairs;
 
-    @Column(name = "POST_TITLE")
-    private String PostTitle;
+    @Column(name = "ccp_unit")
+    private String unit;
 
-    @Column(name = "POST_CODE")
-    private String PostCode;
+    @Column(name = "post_title")
+    private String postTitle;
 
-    @Column(name = "C_START_DATE", nullable = false)
-    private String StartDate;
+    @Column(name = "post_code")
+    private String postCode;
 
-    @Column(name = "C_END_DATE", nullable = false)
-    private String EndDate;
+    @Column(name = "c_start_date", nullable = false)
+    private String startDate;
 
-    @Column(name = "C_CODE2")
-    private Long TermId;
+    @Column(name = "c_end_date", nullable = false)
+    private String endDate;
 
-    @Column(name = "YEAR")
-    private String Year;
+    @Column(name = "c_code2")
+    private Long termId;
 
-    @Column(name = "REGISTRY")
-    private String RegistryState;
+    @Column(name = "year")
+    private String year;
 
-    @Column(name = "EVALUATIONSTATE")
-    private String EvaluationState;
+    @Column(name = "registry")
+    private String registryState;
 
-    @Column(name = "NA_PRIORITY_ID")
-    private String EvaluationPriority;
+    @Column(name = "evaluationstate")
+    private String evaluationState;
 
-    @Column(name = "C_STATUS")
-    private String ClassStatus;
+    @Column(name = "na_priority_id")
+    private String evaluationPriority;
+
+    @Column(name = "c_status")
+    private String classStatus;
 
 }

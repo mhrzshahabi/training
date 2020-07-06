@@ -52,9 +52,6 @@
         },
         rowClick: function (_1,_2,_3) {
             if(batch){
-                if(_1.isFolder === undefined){
-                    console.log(_1);
-                }
                 if(_1.isFolder === true || _1.isFolder === false){
                     _1.isOpen = true;
                     let childeren = [];
@@ -64,6 +61,11 @@
                     });
                     getchilderen(childeren);
                 }
+            }
+        },
+        rowDoubleClick: function(_1){
+            if(_1.isFolder === undefined){
+                console.log(_1);
             }
         },
         openFolder:function () {}

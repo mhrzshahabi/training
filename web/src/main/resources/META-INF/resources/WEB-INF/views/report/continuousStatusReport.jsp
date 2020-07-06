@@ -90,6 +90,7 @@
         // numCols: 10,
         // padding: 10,
         // margin:0,
+        numCols: 9,
         titleAlign:"left",
         wrapItemTitles: true,
         fields: [
@@ -104,12 +105,12 @@
                 valueField: "personnelNo",
                 displayField: "personnelNo",
                 endRow: false,
-                colSpan: 3,
-                // comboBoxWidth: 200,
+                colSpan: 1,
+                comboBoxWidth: 200,
                 layoutStyle: "horizontal",
                 comboBoxProperties: {
                     hint: "",
-                    pickListWidth: 550,
+                    // pickListWidth: 550,
                     pickListFields: [
                         {name: "personnelNo2"},
                         {name: "firstName"},
@@ -120,6 +121,24 @@
                     filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
                     pickListProperties: {sortField: "personnelNo"},
                     textMatchStyle: "substring",
+                },
+            },
+            {
+                name: "classStudentNo",
+                colSpan: 2,
+                type: "SelectItem",
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                multiple: false,
+                hidden: false,
+                textAlign: "center",
+                title: "وضعیت فراگیران کلاس:",
+                wrapTitle: false,
+                defaultValue: "0",
+                valueMap: {
+                    "0": "فاقد فراگیر",
+                    "1": "دارای فراگیر",
                 },
             },
         ],
