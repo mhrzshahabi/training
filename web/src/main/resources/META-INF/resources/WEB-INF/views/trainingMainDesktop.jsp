@@ -2103,6 +2103,7 @@
             align: "center",
             vAlign: "center",
             membersMargin: 20,
+            styleName: "landingPage",
             defaultLayoutAlign: "center",
         });
         mainTabSet.addTab(
@@ -2120,7 +2121,7 @@
         for( shortcut of shortcuts){
             if(index == 0 || index%3 == 0){
                 hLayoutShortcut = isc.HLayout.create({
-                    height: 200,
+                    height: 160,
                     align: "center",
                     vAlign: "center",
                     defaultLayoutAlign: "center",
@@ -2129,10 +2130,10 @@
             }
             hLayoutShortcut.addMembers(
                 htmlPanShortcut = isc.HTMLPane.create({
-                    width:200, height:200,
+                    width:160, height:160,
                     showEdges:false,
                     styleName:"shortcut-box",
-                    contents: "<div class='sh-item' onclick=\"openShortcutTab('"+shortcut.title+","+shortcut.url+"')\" id='shortcutLink' ><img  class='sh-icon' onload=\"SVGInject(this)\"  src='"+shortcut.icon+"'> <h2>"+shortcut.title+"</h2></div>",
+                    contents: "<div class='sh-item' onclick=\"openShortcutTab('"+shortcut.title+","+shortcut.url+"')\" id='shortcutLink' ><img  class='sh-icon' onload=\"SVGInject(this)\"  src='"+shortcut.icon+"'> <h3>"+shortcut.title+"</h3></div>",
                     selectContentOnSelectAll:true
                 })
             )
