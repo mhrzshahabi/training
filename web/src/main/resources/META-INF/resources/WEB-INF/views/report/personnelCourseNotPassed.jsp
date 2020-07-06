@@ -135,7 +135,7 @@
         wrapItemTitles: true,
         fields: [
             {
-                name: "postGrade",
+                name: "personnelPostGradeCode",
                 title: "انتخاب رده پستي",
                 optionDataSource: PostGradeDS_PCNP,
                 autoFetchData: false,
@@ -510,9 +510,9 @@
                         return;
                     }
 
-                    let indexOf=tmp.criteria.indexOf(tmp.criteria.filter(p=>p.fieldName=="postGrade")[0]);
+                    /*let indexOf=tmp.criteria.indexOf(tmp.criteria.filter(p=>p.fieldName=="postGrade")[0]);
                     if(indexOf>=0)
-                        tmp.criteria.splice(indexOf,1);
+                        tmp.criteria.splice(indexOf,1);*/
 
                     if (tmp.criteria.length === 0) {
                         createDialog("info", "فیلتری انتخاب نشده است.");
