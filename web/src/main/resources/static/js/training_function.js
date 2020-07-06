@@ -177,3 +177,35 @@ function showDetailViewer(title, field, record) {
     Window_DetailViewer_Main.show();
 }
 
+function showOrganizationalChart() {
+    recordChartId = null;
+    let Window_OrganizationalChart = isc.Window.create({
+        ID: "Window_OrganizationalChart",
+        title: "درخت نیازسنجی",
+        placement: "fillScreen",
+        headerControls: ["headerLabel", "closeButton"],
+        canDragReposition: false,
+        visibility : "hidden",
+        minWidth: 1024,
+        items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/organizationalChart/"})],
+    });
+    Window_OrganizationalChart.show();
+    let interval = setInterval(()=>{
+        if(searchTree !== undefined && organizationalTree !== undefined) {
+            searchTree.addProperties({
+                rowDoubleClick(record){
+                    Window_OrganizationalChart.close();
+                    recordChartId = record.id;
+                }
+            })
+            organizationalTree.addProperties({
+                rowDoubleClick(record){
+                    Window_OrganizationalChart.close();
+                    recordChartId = record.id;
+                }
+            })
+            clearInterval(interval);
+        }
+    },50)
+}
+

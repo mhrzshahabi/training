@@ -125,4 +125,15 @@ public class EvaluationDTO implements Serializable {
         private String tstudent;
         private Float studentCount;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("BehavioralForms")
+    public static class BehavioralForms {
+        private Long evaluatorTypeId;
+        private String evaluatorName;
+        private Boolean status;
+        private Long id;
+    }
 }

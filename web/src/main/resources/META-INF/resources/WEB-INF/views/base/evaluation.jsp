@@ -1274,7 +1274,7 @@
 
                 if (numberOfStudents === "single" && selectedStudent !== null && selectedStudent !== undefined) {
 
-                    let studentId = selectedStudent.student.id;
+                    let studentId = selectedStudent.id;
                     let data = {};
                     data.questionnaireTypeId = 230;
                     data.evaluationLevelId = 156;
@@ -1328,7 +1328,8 @@
             }
         }
         //*****print student form issuance*****
-        function print_Student_FormIssuance(type, numberOfStudents,record) {
+        // roya
+        function print_Student_FormIssuance(type, numberOfStudents,record, audienceName, audienceType) {
             if (ListGrid_evaluation_student.getTotalRows() > 0) {
                 let selectedClass = ListGrid_evaluation_class.getSelectedRecord();
                 let selectedStudent = record;
@@ -1339,14 +1340,18 @@
                     let studentId = (numberOfStudents === "single" ? selectedStudent.student.id : -1);
                     let returnDate = evaluation_ReturnDate._value !== undefined ? evaluation_ReturnDate._value.replaceAll("/", "-") : "noDate";
                     let evaluationType = (evaluation_Audience_Type.getValue("audiencePost") === null || evaluation_Audience_Type.getValue("audiencePost") === undefined ? "" : evaluation_Audience_Type.getField("audiencePost").getDisplayValue());
+                    if(audienceType == null)
+                        audienceType = evaluationType;
+                    if(audienceName == null)
+                        audienceName = evaluation_Audience;
 
                     var myObj = {
-                        evaluationAudienceType: evaluationType,
+                        evaluationAudienceType: audienceType,
                         courseId: selectedClass.course.id,
                         studentId: studentId,
                         evaluationType: selectedTab.id,
                         evaluationReturnDate: returnDate,
-                        evaluationAudience: evaluation_Audience
+                        evaluationAudience: audienceName
                     };
 
                     //*****print*****
@@ -3727,141 +3732,155 @@
         }
 }
 
-
-function register_evaluation_result_behavioral_student(StdRecord){
-    let LGRecord = ListGrid_evaluation_class.getSelectedRecord();
-    let RestDataSource_BehavioralRegisteration_JSPEvaluation = isc.TrDS.create({
-        fields: [
-            {name: "evaluatorTypeId"},
-            {name: "evaluatorName"}
-        ]
-    });
-    let Listgrid_BehavioralRegisteration_JSPEvaluation = isc.TrLG.create({
-        width: "100%",
-        height: "100%",
-        dataSource: RestDataSource_BehavioralRegisteration_JSPEvaluation,
-        sortField: 0,
-        sortDirection: "Descending",
-        showRecordComponents: true,
-        showRecordComponentsByCell: true,
-        fields: [
-            {
-                name: "evaluatorTypeId",
-                title: "نوع مخاطب",
-                sortNormalizer: function (record) {
-                    return record.personality.firstNameFa;
+    function register_evaluation_result_behavioral_student(StdRecord){
+        let LGRecord = ListGrid_evaluation_class.getSelectedRecord();
+        var RestDataSource_BehavioralRegisteration_JSPEvaluation = isc.TrDS.create({
+            fields: [
+                {name: "evaluatorTypeId"},
+                {name: "evaluatorName"},
+                {name: "status"},
+                {name: "id"}
+            ],
+            fetchDataURL : evaluationUrl + "/getBehavioralForms/" + StdRecord.id + "/" + LGRecord.id
+        });
+        let Listgrid_BehavioralRegisteration_JSPEvaluation = isc.TrLG.create({
+            width: "100%",
+            height: "100%",
+            dataSource: RestDataSource_BehavioralRegisteration_JSPEvaluation,
+            sortField: 0,
+            sortDirection: "Descending",
+            showRecordComponents: true,
+            showRecordComponentsByCell: true,
+            fields: [
+                {
+                    //roya
+                    name: "evaluatorTypeId",
+                    title: "نوع مخاطب",
+                    width: "45%",
+                    type: "SelectItem",
+                    optionDataSource: AudienceTypeDS,
+                    filterEditorProperties:{
+                        pickListProperties: {
+                            showFilterEditor: false
+                        }
+                    },
+                    canFilter: false,
+                    valueField: "id",
+                    displayField: "title"
                 },
-                width: "45%"
+                {
+                    name: "evaluatorName",
+                    title: "نام مخاطب",
+                    canFilter: false,
+                    width: "45%"
+                },
+                {name: "status", hidden: true},
+                {name: "id", hidden: true},
+                {name: "editForm",title: " ", align: "center",canSort:false,canFilter:false, width: "10%"},
+                {name: "removeForm",title: " ", align: "center",canSort:false,canFilter:false, width: "10%"},
+                {name: "printForm",title: " ", align: "center",canSort:false,canFilter:false, width: "10%"}
+            ],
+            createRecordComponent: function (record, colNum) {
+                var fieldName = this.getFieldName(colNum);
+                if (fieldName == "editForm") {
+                    let recordCanvas = isc.HLayout.create({
+                        height: "100%",
+                        width: "100%",
+                        layoutMargin: 5,
+                        membersMargin: 10,
+                        align: "center"
+                    });
+                    let addIcon = isc.ImgButton.create({
+                        showDown: false,
+                        showRollOver: false,
+                        layoutAlign: "center",
+                        src: "[SKIN]/actions/edit.png",
+                        prompt: "ویرایش فرم",
+                        height: 16,
+                        width: 16,
+                        grid: this,
+                        click: function () {
+                        }
+                    });
+                    recordCanvas.addMember(addIcon);
+                    return recordCanvas;
+                }
+                else if (fieldName == "removeForm") {
+                    let recordCanvas = isc.HLayout.create({
+                        height: "100%",
+                        width: "100%",
+                        layoutMargin: 5,
+                        membersMargin: 10,
+                        align: "center"
+                    });
+                    let addIcon = isc.ImgButton.create({
+                        showDown: false,
+                        showRollOver: false,
+                        layoutAlign: "center",
+                        src: "[SKIN]/actions/remove.png",
+                        prompt: "حذف فرم",
+                        height: 16,
+                        width: 16,
+                        grid: this,
+                        click: function () {
+                            isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + record.id , "DELETE", null, function (resp) {
+                                Listgrid_BehavioralRegisteration_JSPEvaluation.invalidateCache();
+                            }));
+                        }
+                    });
+                    recordCanvas.addMember(addIcon);
+                    return recordCanvas;
+                }
+                else if (fieldName == "printForm") {
+                    let recordCanvas = isc.HLayout.create({
+                        height: "100%",
+                        width: "100%",
+                        layoutMargin: 5,
+                        membersMargin: 10,
+                        align: "center"
+                    });
+                    let addIcon = isc.ImgButton.create({
+                        showDown: false,
+                        showRollOver: false,
+                        layoutAlign: "center",
+                        src: "[SKIN]/actions/print.png",
+                        prompt: "چاپ فرم",
+                        height: 16,
+                        width: 16,
+                        grid: this,
+                        click: function () {
+                            print_Student_FormIssuance("pdf","single",StdRecord,record.evaluatorName, record.evaluatorTypeId);
+                            console.log(record.evaluatorTypeId)
+                        }
+                    });
+                    recordCanvas.addMember(addIcon);
+                    return recordCanvas;
+                }else
+                    return null;
             },
-            {
-                name: "evaluatorName",
-                title: "نام مخاطب",
-                width: "45%"
-            },
-            {name: "editForm",title: " ", align: "center",canSort:false,canFilter:false, width: "10%"},
-            {name: "removeForm",title: " ", align: "center",canSort:false,canFilter:false, width: "10%"},
-            {name: "printForm",title: " ", align: "center",canSort:false,canFilter:false, width: "10%"}
-        ],
-        createRecordComponent: function (record, colNum) {
-            var fieldName = this.getFieldName(colNum);
-            if (fieldName == "editForm") {
-                let recordCanvas = isc.HLayout.create({
-                    height: "100%",
-                    width: "100%",
-                    layoutMargin: 5,
-                    membersMargin: 10,
-                    align: "center"
-                });
-                let addIcon = isc.ImgButton.create({
-                    showDown: false,
-                    showRollOver: false,
-                    layoutAlign: "center",
-                    src: "[SKIN]/actions/edit.png",
-                    prompt: "ویرایش فرم",
-                    height: 16,
-                    width: 16,
-                    grid: this,
-                    click: function () {
-                    }
-                });
-                recordCanvas.addMember(addIcon);
-                return recordCanvas;
-            }
-            else if (fieldName == "removeForm") {
-                let recordCanvas = isc.HLayout.create({
-                    height: "100%",
-                    width: "100%",
-                    layoutMargin: 5,
-                    membersMargin: 10,
-                    align: "center"
-                });
-                let addIcon = isc.ImgButton.create({
-                    showDown: false,
-                    showRollOver: false,
-                    layoutAlign: "center",
-                    src: "[SKIN]/actions/remove.png",
-                    prompt: "حذف فرم",
-                    height: 16,
-                    width: 16,
-                    grid: this,
-                    click: function () {
-                    }
-                });
-                recordCanvas.addMember(addIcon);
-                return recordCanvas;
-            }
-            else if (fieldName == "printForm") {
-                let recordCanvas = isc.HLayout.create({
-                    height: "100%",
-                    width: "100%",
-                    layoutMargin: 5,
-                    membersMargin: 10,
-                    align: "center"
-                });
-                let addIcon = isc.ImgButton.create({
-                    showDown: false,
-                    showRollOver: false,
-                    layoutAlign: "center",
-                    src: "[SKIN]/actions/print.png",
-                    prompt: "چاپ فرم",
-                    height: 16,
-                    width: 16,
-                    grid: this,
-                    click: function () {
-                    }
-                });
-                recordCanvas.addMember(addIcon);
-                return recordCanvas;
-            }else
-                return null;
-        },
-        cellHeight: 43,
-        filterOperator: "iContains",
-        filterOnKeypress: false,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        selectionType: "single",
-        filterUsingText: "<spring:message code='filterUsingText'/>",
-        groupByText: "<spring:message code='groupByText'/>",
-        freezeFieldText: "<spring:message code='freezeFieldText'/>"
-    });
-    let Window_BehavioralRegisteration_JSPEvaluation = isc.Window.create({
-        placement: "fillScreen",
-        title: "ثبت نتایج ارزیابی",
-        canDragReposition: true,
-        align: "center",
-        autoDraw: true,
-        // width: 550,
-        // height: 500,
-        border: "1px solid gray",
-        items: [isc.TrVLayout.create({
-            members: [
-                Listgrid_BehavioralRegisteration_JSPEvaluation
-            ]
-        })]
-    });
-    // RestDataSource_BehavioralRegisteration_JSPEvaluation.fetchDataUrl = evaluationUrl + "/getBehavioralForms/" + StdRecord.id + "/" + LGRecord.id;
-    // Listgrid_BehavioralRegisteration_JSPEvaluation.fetchData();
-    Window_BehavioralRegisteration_JSPEvaluation.show();
-}
-
+            cellHeight: 43,
+            filterOperator: "iContains",
+            filterOnKeypress: false,
+            allowAdvancedCriteria: true,
+            allowFilterExpressions: true,
+            selectionType: "single",
+            autoFetchData: true,
+            filterUsingText: "<spring:message code='filterUsingText'/>",
+            groupByText: "<spring:message code='groupByText'/>",
+            freezeFieldText: "<spring:message code='freezeFieldText'/>"
+        });
+        let Window_BehavioralRegisteration_JSPEvaluation = isc.Window.create({
+            placement: "fillScreen",
+            title: "لیست فرم های صادر شده",
+            canDragReposition: true,
+            align: "center",
+            autoDraw: true,
+            border: "1px solid gray",
+            items: [isc.TrVLayout.create({
+                members: [
+                    Listgrid_BehavioralRegisteration_JSPEvaluation
+                ]
+            })]
+        });
+        Window_BehavioralRegisteration_JSPEvaluation.show();
+    }
