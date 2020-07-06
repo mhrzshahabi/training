@@ -6,6 +6,7 @@
 // <script>
 
     let batch = true;
+    var departments = [];
 
     var searchTree = isc.TreeGrid.create({
         ID: "searchTree",
@@ -66,6 +67,7 @@
         rowDoubleClick: function(_1){
             if(_1.isFolder === undefined){
                 console.log(_1);
+                deparmentsDS.addData({"id":_1.id,"title":_1.title});
             }
         },
         openFolder:function () {}
@@ -99,6 +101,38 @@
     // ---------------------------------------- Create - ToolStripButton ------------------------------------>>
 
     // <<-------------------------------------- Create - RestDataSource & ListGrid ----------------------------
+
+    var deparmentsDS = isc.DataSource.create({
+        clientOnly: true,
+        testData: departments,
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title:"title", filterOperator: "iContains", autoFitWidth: true},
+        ]
+    });
+
+    var chosenDepartments = isc.TrLG.create({
+        // dynamicTitle: true,
+        autoFetchData: true,
+        // allowAdvancedCriteria: true,
+        autoSaveEdits:false,
+        dataSource: deparmentsDS,
+        // filterOnKeypress: false,
+        // showFilterEditor: true,
+        // showRecordComponents: true,
+        // showRecordComponentsByCell: true,
+        // useClientFiltering: true,
+        canRemoveRecords :true,
+        fields:[
+            {name: "title"},
+        ],
+        removeRecordClick:function(rowNum){
+            alert(1);
+            console.log("remove");
+            console.log(rowNum);
+            // deparmentsDS.removeData(this.getRecord(rowNum));
+        }
+    });
 
     // ---------------------------------------- Create - RestDataSource & ListGrid -------------------------->>
 
@@ -200,6 +234,10 @@
         members: [search_bar, VLayout_searchTree, VLayout_organizationalTree]
     });
 
+    var HLayout_Tree_Grid = isc.TrHLayout.create({
+        members: [VLayout_Tree_Data, chosenDepartments]
+    });
+
     // ---------------------------------------------- Create - Layout ---------------------------------------->>
 
     // <<----------------------------------------------- Functions --------------------------------------------
@@ -219,7 +257,6 @@
                 return false;
             } else {
                 let data = JSON.parse(resp.data);
-                console.log(data);
                 var Treedata = isc.Tree.create({
                     modelType: "parent",
                     nameProperty: "title",
