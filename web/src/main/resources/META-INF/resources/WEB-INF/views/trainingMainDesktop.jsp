@@ -1998,6 +1998,7 @@
                     this.close();
                     if (index === 0) {
                         mainTabSet.removeTabs(mainTabSet.tabs);
+                        initShortcuts();
                     }
                 }
             });
