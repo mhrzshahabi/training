@@ -2453,6 +2453,8 @@
             DynamicForm_Class_JspClass.setValue("planner", userPersonInfo.id);
         }
         autoTimeActivation(true);
+        DataSource_TargetSociety_List.testData.forEach(function(currentValue, index, arr){DataSource_TargetSociety_List.removeData(currentValue)});
+        DynamicForm_Class_JspClass.getItem("targetSocieties").clearValue();
         etcTargetSociety = [];
         getSocietiesList();
         getOrganizers();
@@ -2949,6 +2951,7 @@
     }
 
     function getTargetSocieties(id) {
+        DataSource_TargetSociety_List.testData.forEach(function(currentValue, index, arr){DataSource_TargetSociety_List.removeData(currentValue)});
         wait.show()
         isc.RPCManager.sendRequest(
             TrDSRequest(targetSocietyUrl + "getListById/" + id, "GET", null, function (resp) {

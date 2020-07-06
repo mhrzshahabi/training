@@ -755,6 +755,7 @@
     const attendancePerformanceReportUrl = rootUrl + "/attendancePerformance/";
     const controlReportUrl = rootUrl + "/controlReport";
     const presenceReportUrl = rootUrl + "/presence-report";
+    const continuousStatusReportViewUrl = rootUrl + "/continuous-status-report-view";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -1819,14 +1820,14 @@
                             {isSeparator: true},
                             </sec:authorize>
 
-                            <sec:authorize access="hasAuthority('Menu_continuous_Status_Report')">
-                            {
-                                title: "<spring:message code="course.performance.report"/>",
-                                click: function () {
-                                    createTab(this.title, "<spring:url value="web/categoriesPerformanceReport"/>");
-                                }
-                            },
-                            </sec:authorize>
+                            <%--<sec:authorize access="hasAuthority('Menu_continuous_Status_Report')">--%>
+                            <%--{--%>
+                                <%--title: "<spring:message code="continuous.status.report"/>",--%>
+                                <%--click: function () {--%>
+                                    <%--createTab(this.title, "<spring:url value="web/continuousStatusReport"/>");--%>
+                                <%--}--%>
+                            <%--},--%>
+                            <%--</sec:authorize>--%>
                         ]
                 },
                 </sec:authorize>
@@ -2101,6 +2102,7 @@
             align: "center",
             vAlign: "center",
             membersMargin: 20,
+            styleName: "landingPage",
             defaultLayoutAlign: "center",
         });
         mainTabSet.addTab(
@@ -2118,7 +2120,7 @@
         for( shortcut of shortcuts){
             if(index == 0 || index%3 == 0){
                 hLayoutShortcut = isc.HLayout.create({
-                    height: 200,
+                    height: 160,
                     align: "center",
                     vAlign: "center",
                     defaultLayoutAlign: "center",
@@ -2127,10 +2129,10 @@
             }
             hLayoutShortcut.addMembers(
                 htmlPanShortcut = isc.HTMLPane.create({
-                    width:200, height:200,
+                    width:160, height:160,
                     showEdges:false,
                     styleName:"shortcut-box",
-                    contents: "<div class='sh-item' onclick=\"openShortcutTab('"+shortcut.title+","+shortcut.url+"')\" id='shortcutLink' ><img  class='sh-icon' onload=\"SVGInject(this)\"  src='"+shortcut.icon+"'> <h2>"+shortcut.title+"</h2></div>",
+                    contents: "<div class='sh-item' onclick=\"openShortcutTab('"+shortcut.title+","+shortcut.url+"')\" id='shortcutLink' ><img  class='sh-icon' onload=\"SVGInject(this)\"  src='"+shortcut.icon+"'> <h3>"+shortcut.title+"</h3></div>",
                     selectContentOnSelectAll:true
                 })
             )
