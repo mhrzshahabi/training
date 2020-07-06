@@ -380,4 +380,23 @@
     <!--        <addNotNullConstraint columnDataType="number(19,0)" columnName="scores_state_id" tableName="tbl_class_student"/>-->
     <!--    </changeSet>-->
 
+    <changeSet author="razmnoosh (generated)" id="1593940576949-442">
+        <addColumn tableName="tbl_class_student">
+            <column name="behavioral_forwarded_forms" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1593940576949-443">
+        <addColumn tableName="tbl_class_student">
+            <column name="behavioral_registered_forms" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1593940576949-441">
+        <addColumn tableName="tbl_evaluation">
+            <column name="b_status" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="mostafa-001">
+        <dropUniqueConstraint constraintName="UC_TBL_JOBC_CODE_COL" tableName="TBL_JOB"/>
+    </changeSet>
+
 </databaseChangeLog>

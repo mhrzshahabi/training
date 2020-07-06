@@ -755,6 +755,7 @@
     const attendancePerformanceReportUrl = rootUrl + "/attendancePerformance/";
     const controlReportUrl = rootUrl + "/controlReport";
     const presenceReportUrl = rootUrl + "/presence-report";
+    const continuousStatusReportViewUrl = rootUrl + "/continuous-status-report-view";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -1819,14 +1820,14 @@
                             {isSeparator: true},
                             </sec:authorize>
 
-                            <sec:authorize access="hasAuthority('Menu_continuous_Status_Report')">
-                            {
-                                title: "<spring:message code="course.performance.report"/>",
-                                click: function () {
-                                    createTab(this.title, "<spring:url value="web/categoriesPerformanceReport"/>");
-                                }
-                            },
-                            </sec:authorize>
+                            <%--<sec:authorize access="hasAuthority('Menu_continuous_Status_Report')">--%>
+                            <%--{--%>
+                                <%--title: "<spring:message code="continuous.status.report"/>",--%>
+                                <%--click: function () {--%>
+                                    <%--createTab(this.title, "<spring:url value="web/continuousStatusReport"/>");--%>
+                                <%--}--%>
+                            <%--},--%>
+                            <%--</sec:authorize>--%>
                         ]
                 },
                 </sec:authorize>

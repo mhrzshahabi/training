@@ -51,6 +51,24 @@
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
+    var Button2 = isc.IButton.create({
+        title: "فعال/غیرفعال",
+        width: "30%",
+        click: function () {
+            let record = QuestionnaireLG_questionnaire.getSelectedRecord();
+            if (record == null)
+            {
+               createDialog("info",'<spring:message code="global.grid.record.not.selected"/>' );
+
+            }
+            else {
+                let questionnaireSaveUrl = questionnaireUrl;
+                isc.RPCManager.sendRequest( TrDSRequest(questionnaireSaveUrl +"/list","GET",null, "callback: ListResponse(rpcResponse,'"+JSON.stringify(record)+"')"));
+            }
+
+        }
+
+    })
     isc.ToolStrip.create({
         ID: "QuestionnaireTS_questionnaire",
         members: [
@@ -68,6 +86,10 @@
 
             <sec:authorize access="hasAuthority('Questionnaire_D')">
             isc.ToolStripButtonRemove.create({click: function () { removeQuestionnaire_questionnaire(); }}),
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Questionnaire_C')">
+            Button2,
             </sec:authorize>
 
             isc.LayoutSpacer.create({width: "*"}),
@@ -93,7 +115,7 @@
             </sec:authorize>
 
             <sec:authorize access="hasAuthority('QuestionnaireQuestion_D')">
-            isc.ToolStripButtonRemove.create({click: function () { removeQuestionnaireQuestion_questionnaire(); }}),
+            isc.ToolStripButtonRemove.create({click: function () {removeQuestionnaireQuestion_questionnaire(); }}),
             </sec:authorize>
             isc.LayoutSpacer.create({width: "*"}),
 
@@ -143,8 +165,14 @@
         recordDoubleClick: function () { editQuestionnaire_questionnaire(); },
         </sec:authorize>
         <sec:authorize access="hasAuthority('QuestionnaireQuestion_R')">
-        selectionUpdated: function (record) { refreshQuestionnaireQuestionLG_questionnaire(); }
+        selectionUpdated: function (record) { refreshQuestionnaireQuestionLG_questionnaire(); },
         </sec:authorize>
+        getCellCSSText: function (record) {
+            if (record.eenabled == 74)
+                return "color:gray; font-size: 13px;";
+            else
+                return "color:#153560; font-size: 13px;";
+        },
     });
 
     QuestionnaireQuestionDS_questionnaire = isc.TrDS.create({
@@ -170,8 +198,11 @@
         contextMenu: QuestionnaireQuestionMenu_questionnaire,
         dataChanged: function () { updateCountLabel(this, QuestionnaireQuestionLGCount_questionnaire)},
         <sec:authorize access="hasAuthority('QuestionnaireQuestion_U')">
-        recordDoubleClick: function () { editQuestionnaireQuestion_questionnaire(); }
+        recordDoubleClick: function () { editQuestionnaireQuestion_questionnaire(); },
         </sec:authorize>
+
+
+
     });
 
     EvaluationQuestionDS_questionnaire = isc.TrDS.create({
@@ -344,16 +375,109 @@
         }
         let data = QuestionnaireQuestionDF_questionnaire.getValues();
         isc.RPCManager.sendRequest(
-            TrDSRequest(questionnaireQuestionSaveUrl, questionnaireQuestionMethod_questionnaire, JSON.stringify(data), "callback: studyResponse(rpcResponse, '" + action + "','" + "<spring:message code="question"/>" +
-                "', QuestionnaireQuestionWin_questionnaire, QuestionnaireQuestionLG_questionnaire)")
+            TrDSRequest(questionnaireQuestionSaveUrl, questionnaireQuestionMethod_questionnaire, JSON.stringify(data), "callback: answerResponce(rpcResponse, '" + action + "','" + "<spring:message code="question"/>" + " " + QuestionnaireQuestionDF_questionnaire.getItem('evaluationQuestionId').getSelectedRecord().question +
+        "', QuestionnaireQuestionWin_questionnaire, QuestionnaireQuestionLG_questionnaire)")
         );
     }
 
+
+    function answerResponce(resp, action, entityType, winToClose, gridToRefresh, entityTitle) {
+        let msg;
+        let selectedState;
+        if (resp == null) {
+            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>");
+        } else {
+            let respCode = resp.httpResponseCode;
+            if (respCode === 200 || respCode === 201) {
+                selectedState = "[{id:" + JSON.parse(resp.data).id + "}]";
+                let entityTitle = JSON.parse(resp.httpResponseText).title;
+                console.log(JSON.parse(resp.httpResponseText))
+                msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + '</b>\' &nbsp;' + "<spring:message code="msg.successfully.done"/>";
+
+                if (gridToRefresh !== undefined) {
+                    QuestionnaireQuestionLG_questionnaire.invalidateCache()
+                }
+
+                let dialog = createDialog("info", msg);
+                Timer.setTimeout(function () {
+                    dialog.close();
+                }, dialogShowTime);
+            } else {
+                if (respCode === 409) {
+                    msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + '</b>\' &nbsp;' + "<spring:message code="msg.is.not.possible"/>";
+                } else if (respCode === 401) {
+                    msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + '</b>\' &nbsp;' + JSON.parse(resp.httpResponseText).message;
+                } else {
+                    msg = "<spring:message code='msg.operation.error'/>";
+                }
+                createDialog("info", msg);
+            }
+            if (winToClose !== undefined) {
+                QuestionnaireQuestionWin_questionnaire.close();
+            }
+        }
+    }
+
+    function ListResponse(resp,record) {
+        let respCode = resp.httpResponseCode;
+        if (respCode === 200 || respCode === 201) {
+           let rec=JSON.parse(record)
+           let questionnaireTypeId =rec.questionnaireTypeId
+           let arr=JSON.parse(resp.data)
+           let newArray=new Array();
+            arr.forEach(x=>{const{id,eenabled,questionnaireTypeId}=x; newArray.push({id,eenabled,questionnaireTypeId})})
+            let thisRecord=newArray.filter(function (el) {return el.id == rec.id})
+           if(thisRecord[0].eenabled == 494)
+           {
+               //غیر فعال شود
+               let questionnaireSaveUrl = questionnaireUrl;
+               rec.eEnabled=74
+               questionnaireSaveUrl+="/"+rec.id
+               isc.RPCManager.sendRequest( TrDSRequest(questionnaireSaveUrl ,"PUT",JSON.stringify(rec), "callback: EnabledResponse(rpcResponse)"))
+           }
+           else {
+               let removethiseRecord =newArray.map(function(item) {return item.id}).indexOf(rec.id);
+               newArray.removeItem(removethiseRecord)
+               let  enabledArray=newArray.filter(function (el) {return el.questionnaireTypeId == questionnaireTypeId && el.eenabled ==494})
+                if(enabledArray.length >0)
+                {
+                    createDialog("info", "کاربر گرامی فقط یک رکورد از هر  نوع می تواند فعال باشد", "پیغام");
+                }else{
+                    //رکورد فعال شود
+                    let questionnaireSaveUrl = questionnaireUrl;
+                    rec.eEnabled=494
+                    questionnaireSaveUrl+="/"+rec.id
+                    isc.RPCManager.sendRequest( TrDSRequest(questionnaireSaveUrl ,"PUT",JSON.stringify(rec), "callback: EnabledResponse(rpcResponse)"))
+                }
+           }
+        }
+    }
+
+    function EnabledResponse(resp) {
+        let respCode = resp.httpResponseCode;
+        if (respCode === 200 || respCode === 201) {
+            QuestionnaireLG_questionnaire.invalidateCache()
+        }
+    }
 
     function removeQuestionnaireQuestion_questionnaire() {
         let record = QuestionnaireQuestionLG_questionnaire.getSelectedRecord();
         var entityType = '<spring:message code="questions"/>';
         if (checkRecordAsSelected(record, true, entityType)) {
-            removeRecord(questionnaireQuestionUrl + "/" + record.id, entityType, record.title, 'QuestionnaireQuestionLG_questionnaire');
+            //removeRecord(questionnaireQuestionUrl + "/" + record.id, entityType, record.title, 'QuestionnaireQuestionLG_questionnaire');
+            isc.RPCManager.sendRequest( TrDSRequest(questionnaireQuestionUrl + "/" + record.id, "DELETE",null, "callback: removeResponse(rpcResponse)"))
+
+        }
+    }
+
+    function  removeResponse(resp) {
+        let respCode = resp.httpResponseCode;
+        if (respCode === 200 || respCode === 201) {
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+                "<spring:message code="msg.command.done"/>");
+            setTimeout(function () {
+                OK.close();
+            }, 2000);
+            QuestionnaireQuestionLG_questionnaire.invalidateCache()
         }
     }

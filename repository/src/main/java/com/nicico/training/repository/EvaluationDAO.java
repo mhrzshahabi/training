@@ -29,4 +29,7 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
                                                                                                        Long questionnaireTypeId);
 
     List<Evaluation>  findEvaluationByClassIdAndEvaluatorTypeIdAndEvaluatedIdAndEvaluatedTypeId(Long classId,Long evaluatorTypeId, Long EvaluatedId, Long EvaluatedTypeId);
+
+    List<Evaluation> findByClassIdAndEvaluatedIdAndEvaluationLevelIdAndQuestionnaireTypeId(Long classId,Long evaluatedId, Long evaluationLevelId, Long questionnaireTypeId);
+
 }

@@ -64,6 +64,13 @@ public class EvaluationAnalysistLearningService implements IEvaluationAnalysistL
                     sumPreScore += score.getPreTestScore();
                 }
 
+                else  if(score.getValence() != null && score.getPreTestScore() == null)
+                {
+                    ScoreEvaluation = ScoreEvaluation + map.get(score.getValence());
+                    scoreEvaluationVariable++;
+                    sumValence += map.get(score.getValence());
+                }
+
             }
             if(scoreEvaluationVariable != 0) {
                 ans[0] = Float.valueOf(df.format(sumValence / scoreEvaluationVariable));
@@ -94,7 +101,11 @@ public class EvaluationAnalysistLearningService implements IEvaluationAnalysistL
                     sumScore += score.getScore();
                     sumPreScore += score.getPreTestScore();
                 }
-
+                else if(score.getScore() != null && score.getPreTestScore() == null){
+                    ScoreEvaluation += Math.abs(score.getScore());
+                    scoreEvaluationVariable++;
+                    sumScore += score.getScore();
+                }
 
                }
 
@@ -121,6 +132,12 @@ public class EvaluationAnalysistLearningService implements IEvaluationAnalysistL
                     sumScore += (score.getScore()*5);
                     sumPreScore += score.getPreTestScore();
                 }
+                else  if(score.getScore() != null && score.getPreTestScore() == null)
+                {
+                    ScoreEvaluation = ScoreEvaluation + ((score.getScore()*5));
+                    scoreEvaluationVariable++;
+                    sumScore += (score.getScore()*5);
+                }
             }
             if(scoreEvaluationVariable != 0) {
                 ans[0] = Float.valueOf(df.format(sumScore / scoreEvaluationVariable));
@@ -142,6 +159,9 @@ public class EvaluationAnalysistLearningService implements IEvaluationAnalysistL
 
                 if(score.getPreTestScore() != null) {
                     sumPreScore += score.getPreTestScore();
+                    scoreEvaluationVariable++;
+                }
+                else  if(score.getPreTestScore() == null) {
                     scoreEvaluationVariable++;
                 }
             }
