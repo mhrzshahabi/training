@@ -6,7 +6,6 @@
 // <script>
 
     let batch = true;
-    var departments = [];
 
     var searchTree = isc.TreeGrid.create({
         ID: "searchTree",
@@ -66,8 +65,9 @@
         },
         rowDoubleClick: function(_1){
             if(_1.isFolder === undefined){
-                console.log(_1);
-                deparmentsDS.addData({"id":_1.id,"title":_1.title});
+                // console.log(_1);
+                chosenDepartments_JspOC.addData({"id":_1.id,"title":_1.title});
+                // chosenDepartments_JspOC.transferSelectedData(organizationalTree);
             }
         },
         openFolder:function () {}
@@ -102,35 +102,39 @@
 
     // <<-------------------------------------- Create - RestDataSource & ListGrid ----------------------------
 
-    var deparmentsDS = isc.DataSource.create({
-        clientOnly: true,
-        testData: departments,
-        fields: [
-            {name: "id", primaryKey: true, hidden: true},
-            {name: "title", title:"title", filterOperator: "iContains", autoFitWidth: true},
-        ]
-    });
+    // var deparmentsDS_JspOC = isc.DataSource.create({
+    //     clientOnly: true,
+    //     testData: departments,
+    //     fields: [
+    //         {name: "id", primaryKey: true, hidden: true},
+    //         {name: "title", title:"عنوان", filterOperator: "iContains", autoFitWidth: true},
+    //     ]
+    // });
 
-    var chosenDepartments = isc.TrLG.create({
+    var chosenDepartments_JspOC = isc.TrLG.create({
         // dynamicTitle: true,
         autoFetchData: true,
         // allowAdvancedCriteria: true,
-        autoSaveEdits:false,
-        dataSource: deparmentsDS,
+        selectionType:"none",
+        showFilterEditor:false,
+        showHeaderContextMenu: false,
+        sortField: 0,
+        // dataSource: deparmentsDS_JspOC,
         // filterOnKeypress: false,
         // showFilterEditor: true,
         // showRecordComponents: true,
         // showRecordComponentsByCell: true,
         // useClientFiltering: true,
-        canRemoveRecords :true,
+        canRemoveRecords:true,
         fields:[
-            {name: "title"},
+            {name: "id", primaryKey: true, hidden:true},
+            {name: "title", title: "عنوان"},
         ],
-        removeRecordClick:function(rowNum){
-            alert(1);
-            console.log("remove");
-            console.log(rowNum);
-            // deparmentsDS.removeData(this.getRecord(rowNum));
+        removeRecordClick(rowNum){
+
+            // console.log("remove");
+            // console.log(rowNum);
+            this.removeData(this.getRecord(rowNum));
         }
     });
 
@@ -235,7 +239,7 @@
     });
 
     var HLayout_Tree_Grid = isc.TrHLayout.create({
-        members: [VLayout_Tree_Data, chosenDepartments]
+        members: [VLayout_Tree_Data, chosenDepartments_JspOC]
     });
 
     // ---------------------------------------------- Create - Layout ---------------------------------------->>
