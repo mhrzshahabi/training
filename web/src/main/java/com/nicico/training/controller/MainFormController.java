@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("/web")
@@ -323,9 +324,18 @@ public class MainFormController {
 
     }
 
-    @GetMapping("/personnel-information-details")
-    public String showPersonnelInformationDetailsForm() {
+    @GetMapping(value="/personnel-information-details")
+    public String showPersonnelInformationDetailsForm(HttpServletResponse response)
+    {
+        //response.setContentType("application/javascript");
         return "basic/personnelInformationDetails";
+    }
+
+    @GetMapping(value="/test")
+    public String showTestForm(HttpServletResponse response)
+    {
+        //response.setContentType("application/javascript");
+        return "basic/test";
     }
 
 }
