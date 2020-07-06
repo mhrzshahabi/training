@@ -96,4 +96,10 @@ public class ClassStudent extends Auditable {
 
     @OneToMany(mappedBy = "classStudent", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<Alarm> alarms;
+
+    @Column(name = "behavioral_forwarded_forms")
+    private Integer numberOfBehavioralForwardedForms;
+
+    @Column(name = "behavioral_registered_forms")
+    private Integer numberOfBehavioralRegisteredForms;
 }

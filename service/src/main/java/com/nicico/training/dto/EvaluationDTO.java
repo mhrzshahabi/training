@@ -39,6 +39,7 @@ public class EvaluationDTO implements Serializable {
 
     private String description;
     private Boolean evaluationFull;
+    private Boolean status;
 
     @Getter
     @Setter
@@ -66,6 +67,7 @@ public class EvaluationDTO implements Serializable {
 //        private Integer version;
         private Boolean evaluationFull;
         private String description;
+        private Boolean status;
         private List<EvaluationAnswerDTO.Create> evaluationAnswerList;
     }
 
