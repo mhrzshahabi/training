@@ -1231,6 +1231,10 @@
                 optionDataSource: DataSource_TargetSociety_List,
                 displayField: "title",
                 valueField: "societyId",
+                click: function(){
+                    console.log("click");
+                    showOrganizationalChart();
+                }
             },
             {
                 name: "addtargetSociety",
@@ -3000,6 +3004,11 @@
                     );
                 }
             }));
+    }
+
+
+    function setSocieties(){
+        chosenDepartments_JspOC.data.forEach(function (currentValue, index, arr) {DataSource_TargetSociety_List.addData({societyId: currentValue.id, title: currentValue.title});});
     }
 
     function autoTimeActivation(active = true) {
