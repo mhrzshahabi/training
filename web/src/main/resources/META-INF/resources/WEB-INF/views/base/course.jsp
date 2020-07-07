@@ -1337,17 +1337,19 @@
                 },
                 change: function (form, item, value, oldValue) {
                     if (value === "3") {
+                        DynamicForm_course_MainTab.getItem("startEvaluation").required = true
                         DynamicForm_course_MainTab.getItem("behavioralLevel").setDisabled(false);
                         DynamicForm_course_MainTab.getItem("startEvaluation").setDisabled(false);
                         DynamicForm_course_MainTab.getItem("startEvaluation").enable();
                         //DynamicForm_course_MainTab.getItem("startEvaluation").setRequired(true);
                         DynamicForm_course_MainTab.getItem("startEvaluation").setValue("3");
                     } else {
+                        DynamicForm_course_MainTab.getItem("startEvaluation").required = false;
                         DynamicForm_course_MainTab.getItem("behavioralLevel").setDisabled(true);
                         DynamicForm_course_MainTab.getItem("startEvaluation").setDisabled(true);
                         //DynamicForm_course_MainTab.getItem("startEvaluation").setRequired(false);
                         //DynamicForm_course_MainTab.getItem("startEvaluation").clearErrors();
-                        DynamicForm_course_MainTab.getItem("startEvaluation").setValue()
+                        DynamicForm_course_MainTab.getItem("startEvaluation").setValue();
                     }
                 }
             },
@@ -1355,7 +1357,7 @@
                 name: "startEvaluation",
                 title: "<spring:message code="start.evaluation"/>",
                 // validateOnChange: true,
-               // required: false,
+                required : false,
                 defaultValue:"",
                 textAlign: "center",
                 width: 60,
@@ -1746,6 +1748,7 @@
                 title: "<spring:message code="course_en_name"/>",
                 colSpan: 3,
                 // keyPressFilter: "[a-z|A-Z|0-9-|' '|'_']",
+                hidden:true,
                 width: "*",
                 validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber,],
                 changed: function (_1, _2, _3) {

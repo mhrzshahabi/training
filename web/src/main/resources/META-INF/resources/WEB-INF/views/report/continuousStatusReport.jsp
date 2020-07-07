@@ -6,19 +6,147 @@
 // <script>
 
     // <<-------------------------------------- Create - RestDataSource  ----------------------------
-        var RestDataSource_CTReport = isc.TrDS.create({
-            fields:
-                [
+    var PersonnelDS_PCNR_DF = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+        ],
+        fetchDataURL: personnelUrl + "/iscList",
+        implicitCriteria: {
+            _constructor:"AdvancedCriteria",
+            operator:"and",
+            criteria:[{ fieldName: "active", operator: "equals", value: 1}]
+        },
+    });
 
-                ],
-        });
+    var RestDataSource_Course = isc.TrDS.create({
+        fields: [
+            {name: "id"},
+            {name: "titleFa"}
+        ],
+        fetchDataURL: courseUrl + "iscTupleList"
+    });
+
+    var RestDataSource_Term = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa"},
+        ],
+        fetchDataURL: termUrl + "spec-list",
+        autoFetchData: true
+    });
+
+
+    var RestDataSource_CRReport = isc.TrDS.create({
+        fields:
+            [
+                {name: "EmpNo"},
+                {name: "PersonnelNo"},
+                {name: "NationalCode"},
+                {name: "FirstName"},
+                {name: "LastName"},
+                {name: "ClassCode"},
+                {name: "CourseCode"},
+                {name: "CourseTitle"},
+                {name: "ComplexTitle"},
+                {name: "CompanyName"},
+                {name: "Area"},
+                {name: "Assistant"},
+                {name: "Affairs"},
+                {name: "Unit"},
+                {name: "PostTitle"},
+                {name: "PostCode"},
+                {name: "StartDate"},
+                {name: "EndDate"},
+                {name: "TermId"},
+                {name: "Year"},
+                {name: "RegestryState"},
+                {name: "EvaluationState"},
+                {name: "EvaluationPriority"},
+                {name: "ClassStatus"},
+            ],
+        fetchDataURL : continuousStatusReportViewUrl + "/iscList",
+        autoFetchData : true
+    });
 
 
     // ---------------------------------------- Create - RestDataSource -------------------------->>
 
     // <<--------------------------------- Create - DynamicForm & Window & Layout -----------------------------
+    var FilterCSR_PCNR = isc.DynamicForm.create({
+        // border: "1px solid black",
+        // numCols: 10,
+        // padding: 10,
+        // margin:0,
+        numCols: 9,
+        titleAlign:"left",
+        wrapItemTitles: true,
+        fields: [
+            {
+                name: "personnelPersonnelNo",
+                title:"انتخاب پرسنل",
+                operator: "inSet",
+                textAlign: "center",
+                optionDataSource: PersonnelDS_PCNR_DF,
+                autoFetchData: false,
+                type: "MultiComboBoxItem",
+                valueField: "personnelNo",
+                displayField: "personnelNo",
+                endRow: false,
+                colSpan: 1,
+                comboBoxWidth: 200,
+                layoutStyle: "horizontal",
+                comboBoxProperties: {
+                    hint: "",
+                    // pickListWidth: 550,
+                    pickListFields: [
+                        {name: "personnelNo2"},
+                        {name: "firstName"},
+                        {name: "lastName"},
+                        {name: "nationalCode"},
+                        {name: "personnelNo"}
+                    ],
+                    filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
+                    pickListProperties: {sortField: "personnelNo"},
+                    textMatchStyle: "substring",
+                },
+            },
+            {
+                name: "classStudentNo",
+                colSpan: 2,
+                type: "SelectItem",
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                multiple: false,
+                hidden: false,
+                textAlign: "center",
+                title: "وضعیت فراگیران کلاس:",
+                wrapTitle: false,
+                defaultValue: "0",
+                valueMap: {
+                    "0": "فاقد فراگیر",
+                    "1": "دارای فراگیر",
+                },
+            },
+        ],
+    });
+    
+    
         //*****report main dynamic form*****
-        var DynamicForm_CPReport = isc.DynamicForm.create({
+        var DynamicForm_CSReport = isc.DynamicForm.create({
             numCols: 16,
             padding: 10,
             readOnlyDisplay: "readOnly",
@@ -37,7 +165,7 @@
                     hint: "----/--/--",
                     keyPressFilter: "[0-9/]",
                     showHintInField: true,
-                    required: true,
+                    required: false,
                     wrapTitle : false,
                     icons: [{
                         src: "<spring:url value="calendar.png"/>",
@@ -48,7 +176,7 @@
                     }],
                     textAlign: "center",
                     blur: function (form, item, value) {
-                         checkUndefinedDate("firstStartDate");
+                        checkNullableDate("firstStartDate");
                         CPReport_check_date("firstStartDate","secondStartDate");
                     }
                 },
@@ -61,7 +189,7 @@
                     hint: "----/--/--",
                     keyPressFilter: "[0-9/]",
                     showHintInField: true,
-                    required: true,
+                    required: false,
                     icons: [{
                         src: "<spring:url value="calendar.png"/>",
                         click: function (form) {
@@ -71,7 +199,7 @@
                     }],
                     textAlign: "center",
                     blur: function (form, item, value) {
-                        checkUndefinedDate("secondStartDate");
+                        checkNullableDate("secondStartDate");
                         CPReport_check_date("secondStartDate","firstFinishDate");
                     }
                 },
@@ -124,62 +252,41 @@
                     }
 
                 },
-                /*{
-                    name: "institute",
-                    ID: "institute",
+                {
+                    name: "class",
+                    ID: "class",
                     emptyDisplayValue: "همه",
                     multiple: false,
-                    required: true,
-                    title: "<spring:message code="institute"/>",
+                    title: "<spring:message code="class"/>",
                     colSpan: 3,
                     width: "*",
                     autoFetchData: false,
                     useClientFiltering: true,
-                    optionDataSource: RestDataSource_Institute,
-                    displayField: "titleFa",
-                    valueField: "id",
+                    // optionDataSource: ,
+                    // displayField: "titleFa",
+                    // valueField: "id",
                     textAlign: "center",
-                    textMatchStyle: "substring",
                     pickListFields: [
-                        {name: "titleFa", filterOperator: "iContains"},
+                        // {name: "titleFa", filterOperator: "iContains"},
                     ],
                     filterFields: [""]
                 },
                 {
-                    name: "category",
-                    ID: "category",
+                    name: "year",
+                    ID: "year",
                     emptyDisplayValue: "همه",
                     multiple: false,
-                    title: "<spring:message code="course_category"/>",
+                    title: "<spring:message code="year"/>",
                     colSpan: 3,
                     width: "*",
                     autoFetchData: false,
                     useClientFiltering: true,
-                    optionDataSource: RestDataSource_Category,
-                    displayField: "titleFa",
-                    valueField: "id",
+                    // optionDataSource: ,
+                    // displayField: "titleFa",
+                    // valueField: "id",
                     textAlign: "center",
                     pickListFields: [
-                        {name: "titleFa", filterOperator: "iContains"},
-                    ],
-                    filterFields: [""]
-                },
-                {
-                    name: "subcategory",
-                    ID: "subcategory",
-                    emptyDisplayValue: "همه",
-                    multiple: false,
-                    title: "<spring:message code="course_subcategory"/>",
-                    colSpan: 3,
-                    width: "*",
-                    autoFetchData: false,
-                    useClientFiltering: true,
-                    optionDataSource: RestDataSource_Sub_Category,
-                    displayField: "titleFa",
-                    valueField: "id",
-                    textAlign: "center",
-                    pickListFields: [
-                        {name: "titleFa", filterOperator: "iContains"},
+                        // {name: "titleFa", filterOperator: "iContains"},
                     ],
                     filterFields: [""]
                 },
@@ -228,38 +335,6 @@
                     filterFields: [""]
                 },
                 {
-                    ID: "reportType",
-                    name: "reportType",
-                    colSpan: 4,
-                    // rowSpan: 1,
-                    title: "نوع گزارش :",
-                    wrapTitle: false,
-                    type: "radioGroup",
-                    vertical: false,
-                    endRow: true,
-                    fillHorizontalSpace: true,
-                    defaultValue: "1",
-                    valueMap: {
-                        "1": "کلاسی",
-                        "2": "حضور و غیابی",
-                    },
-                    change: function (form, item, value, oldValue) {
-
-
-                        if (value === "1"){
-                            Vlayout_Body_CPReport.addMember(ListGrid_ClPReport);
-                            Vlayout_Body_CPReport.removeMember(ListGrid_atPReport);
-                        }
-                        else if(value === "2"){
-                            Vlayout_Body_CPReport.removeMember(ListGrid_ClPReport);
-                            Vlayout_Body_CPReport.addMember(ListGrid_atPReport);
-                        }
-                        else
-                            return false;
-
-                    }
-                },
-                {
                     name: "searchBtn",
                     ID: "searchBtnJspCPReport",
                     type: "ButtonItem",
@@ -271,16 +346,16 @@
                     click: function () {
                         searchResult();
                     }
-                }*/
+                }
             ]
         });
         // ----------------------------------- Create - DynamicForm & Window --------------------------->>
         // <<----------------------------------------------- List Grid --------------------------------------------
 
-        var ListGrid_CTReport = isc.TrLG.create({
+        var ListGrid_CRReport = isc.TrLG.create({
             width: "100%",
             height: "100%",
-            dataSource: RestDataSource_CTReport,
+            dataSource: RestDataSource_CRReport,
             canAddFormulaFields: false,
             showFilterEditor: true,
             allowAdvancedCriteria: true,
@@ -288,21 +363,166 @@
             filterOnKeypress: true,
             selectionType: "single",
             showGridSummary: true,
+            autoFetchData : false,
             initialSort: [
                 {property: "", direction: "ascending"}
             ],
             gridComponents: [
-                DynamicForm_CPReport,
+                FilterCSR_PCNR,
+                DynamicForm_CSReport,
                 // isc.ToolStripButtonExcel.create({
                 //     margin:5,
                 //     click: function() {
-                //         ExportToFile.showDialog(null, ListGrid_ClPReport, 'categoriesPerformanceReport', 0, null, '',  "عملکرد واحدهای آموزشی", DynamicForm_CPReport.getValuesAsAdvancedCriteria(), null);
+                //         ExportToFile.showDialog(null, ListGrid_ClPReport, 'categoriesPerformanceReport', 0, null, '',  "عملکرد واحدهای آموزشی", DynamicForm_CSReport.getValuesAsAdvancedCriteria(), null);
                 //     }
                 // })
                 , "header", "filterEditor", "body", "summaryRow"
             ],
             fields: [
-
+                {
+                    name: "EmpNo",
+                    title: "<spring:message code="personnel.no.6.digits"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "PersonnelNo",
+                    title: "<spring:message code="personnel.no"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "NationalCode",
+                    title: "<spring:message code="national.code"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "FirstName",
+                    title: "<spring:message code="firstName"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "LastName",
+                    title: "<spring:message code="lastName"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "ClassCode",
+                    title: "<spring:message code="class.code"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "CourseCode",
+                    title: "<spring:message code="course.code"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "CourseTitle",
+                    title: "<spring:message code="course.title"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "ComplexTitle",
+                    title: "<spring:message code="complex"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "CompanyName",
+                    title: "<spring:message code="company"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "Area",
+                    title: "<spring:message code="area"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "Assistant",
+                    title: "<spring:message code="assistance"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "Affairs",
+                    title: "<spring:message code="affairs"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "Unit",
+                    title: "<spring:message code="unit"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "PostTitle",
+                    title: "<spring:message code="post"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "PostCode",
+                    title: "<spring:message code="post.code"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "StartDate",
+                    title: "<spring:message code="start.date"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "EndDate",
+                    title: "<spring:message code="end.date"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "TermId",
+                    title: "<spring:message code="term"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "Year",
+                    title: "<spring:message code="year"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "RegestryState",
+                    title: "<spring:message code="register.status"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "EvaluationState",
+                    title: "<spring:message code="evaluation.status"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "EvaluationPriority",
+                    title: "<spring:message code="evaluation.level"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "ClassStatus",
+                    title: "<spring:message code="class.status"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                },
             ]
         });
 
@@ -312,7 +532,7 @@
             width: "100%",
             height: "100%",
             overflow: "visible",
-            members: [ListGrid_CTReport]
+            members: [ListGrid_CRReport]
         })
 
     // <<----------------------------------------------- Layout --------------------------------------------
@@ -321,38 +541,38 @@
         //*****check date is valid*****
         function  checkUndefinedDate(id) {
 
-            DynamicForm_CPReport.clearFieldErrors(id, true);
+            DynamicForm_CSReport.clearFieldErrors(id, true);
 
-            if (DynamicForm_CPReport.getValue(id) === undefined || !checkDate(DynamicForm_CPReport.getValue(id))) {
-                DynamicForm_CPReport.addFieldErrors(id, "<spring:message code='msg.correct.date'/>", true);
+            if (DynamicForm_CSReport.getValue(id) === undefined || !checkDate(DynamicForm_CSReport.getValue(id))) {
+                DynamicForm_CSReport.addFieldErrors(id, "<spring:message code='msg.correct.date'/>", true);
             } else {
-                DynamicForm_CPReport.clearFieldErrors(id, true);
+                DynamicForm_CSReport.clearFieldErrors(id, true);
             }
         }
 
         function   checkNullableDate(id) {
 
-            DynamicForm_CPReport.clearFieldErrors(id, true);
+            DynamicForm_CSReport.clearFieldErrors(id, true);
 
-            if (DynamicForm_CPReport.getValue(id) === undefined){
-                DynamicForm_CPReport.getField(id)._value = " ";
+            if (DynamicForm_CSReport.getValue(id) === undefined){
+                DynamicForm_CSReport.getField(id)._value = " ";
             }
-            else if (!checkDate(DynamicForm_CPReport.getValue(id))) {
-                DynamicForm_CPReport.addFieldErrors(id, "<spring:message code='msg.correct.date'/>", true);
+            else if (!checkDate(DynamicForm_CSReport.getValue(id))) {
+                DynamicForm_CSReport.addFieldErrors(id, "<spring:message code='msg.correct.date'/>", true);
             } else {
-                DynamicForm_CPReport.clearFieldErrors(id, true);
+                DynamicForm_CSReport.clearFieldErrors(id, true);
             }
         }
 
         function CPReport_check_date(id1,id2) {
 
-            if (DynamicForm_CPReport.getValue(id1) !== undefined && DynamicForm_CPReport.getValue(id2) !== undefined) {
-                if (DynamicForm_CPReport.getValue(id1) > DynamicForm_CPReport.getValue(id2)) {
-                    DynamicForm_CPReport.addFieldErrors(id1, "<spring:message code="start.date.must.be.shorter.than.end.date"/>");
-                    DynamicForm_CPReport.addFieldErrors(id2, "<spring:message code="start.date.must.be.shorter.than.end.date"/> ");
+            if (DynamicForm_CSReport.getValue(id1) !== undefined && DynamicForm_CSReport.getValue(id2) !== undefined) {
+                if (DynamicForm_CSReport.getValue(id1) > DynamicForm_CSReport.getValue(id2)) {
+                    DynamicForm_CSReport.addFieldErrors(id1, "<spring:message code="start.date.must.be.shorter.than.end.date"/>");
+                    DynamicForm_CSReport.addFieldErrors(id2, "<spring:message code="start.date.must.be.shorter.than.end.date"/> ");
                 } else {
-                    DynamicForm_CPReport.clearFieldErrors(id1, true);
-                    DynamicForm_CPReport.clearFieldErrors(id2, true);
+                    DynamicForm_CSReport.clearFieldErrors(id1, true);
+                    DynamicForm_CSReport.clearFieldErrors(id2, true);
                 }
             }
 
@@ -369,6 +589,14 @@
             checkUndefinedDate("secondStartDate");
             CPReport_check_date("firstStartDate","secondStartDate");
             CPReport_check_date("firstFinishDate","secondFinishDate");
+
+
+            if (DynamicForm_CPReport.hasErrors())
+                return;
+
+            // RestDataSource_CRReport.fetchDataURL = classPerformanceReport + "list" + "/" + JSON.stringify(reportParameters);
+            // ListGrid_ClPReport.invalidateCache();
+            // ListGrid_ClPReport.fetchData();
 
         }
 

@@ -135,5 +135,6 @@ public class EvaluationDTO implements Serializable {
         private String evaluatorName;
         private Boolean status;
         private Long id;
+        private Long evaluatorId;
     }
 }

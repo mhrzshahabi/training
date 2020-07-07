@@ -299,7 +299,8 @@
             {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-        ]
+            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},]
         , fetchDataURL: postUrl + "/iscList"
     });
     var RestDataSource_ForThisPostGroup_GetPosts = isc.TrDS.create({
@@ -314,7 +315,9 @@
             {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-        ]
+            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true}
+            ]
     });
     var DynamicForm_thisPostGroupHeader_Jsp = isc.DynamicForm.create({
         height: "5%",
@@ -333,7 +336,6 @@
         showRecordComponentsByCell: true,
         gridComponents: [Lable_AllPosts, "filterEditor", "header", "body"],
         fields: [
-            {name: "id", hidden:true},
             {name: "code", filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
                 }},
@@ -343,6 +345,8 @@
             {name: "affairs"},
             {name: "section"},
             {name: "unit"},
+            {name: "costCenterCode"},
+            {name: "costCenterTitleFa"},
             {name: "OnAdd", title: " ",canSort:false,canFilter:false, width:30}
         ],
         dataArrived:function(startRow, endRow){
@@ -446,6 +450,8 @@
             {name: "affairs"},
             {name: "section"},
             {name: "unit"},
+            {name: "costCenterCode"},
+            {name: "costCenterTitleFa"},
             {name: "OnDelete", title: " ", align: "center", width:30}
         ],
         dataArrived:function(){

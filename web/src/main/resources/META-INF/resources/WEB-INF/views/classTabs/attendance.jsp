@@ -19,6 +19,7 @@
     var filterValues = [];
     var filterValues1 = [];
     var sessionDateData;
+    let classRecord = null;
     var attendanceState = {
         "0": "نامشخص",
         "1": "حاضر",
@@ -391,7 +392,7 @@
                       form.getItem("sessionDate").valueField = "sessionDate";
                       form.getItem("sessionDate").optionDataSource = RestData_SessionDate_AttendanceJSP;
                       form.getItem("sessionDate").pickListWidth = 250;
-                      isAttendanceDate=true;
+                      isAttendanceDate=false;//true
                   }
                   if(value == 2){
                       form.getItem("sessionDate").pickListFields = [
@@ -1138,7 +1139,7 @@
                         data: JSON.stringify([sessionInOneDate, causeOfAbsence]),
                         serverOutputAsString: false,
                         callback: function (resp) {
-                            ListGrid_Attendance_AttendanceJSP.invalidateCache();
+                            loadPage_Attendance();
                             wait.close();
                             if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                                 simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
@@ -1161,7 +1162,7 @@
                         data: JSON.stringify([sessionsForStudent, causeOfAbsence]),
                         serverOutputAsString: false,
                         callback: function (resp) {
-                            ListGrid_Attendance_AttendanceJSP.invalidateCache();
+                            loadPage_Attendance();
                             wait.close();
                             if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                                 simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
@@ -1213,6 +1214,7 @@
     }
 
     function refreshDate() {
+        let oldValue =  DynamicForm_Attendance.getValue("sessionDate");
         if (isAttendanceDate)
         {
             wait.show();
@@ -1235,6 +1237,9 @@
                     wait.close();
                 }
             });
+        }else{
+            DynamicForm_Attendance.getItem("sessionDate").changed(DynamicForm_Attendance, DynamicForm_Attendance.getItem("sessionDate"), oldValue);
+            DynamicForm_Attendance.setValue("sessionDate", oldValue);
         }
     }
 
@@ -1291,10 +1296,13 @@
     }
 
     function loadPage_Attendance() {
-
+        if(classRecord === null || classRecord !== ListGrid_Class_JspClass.getSelectedRecord()){
+            classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+            isAttendanceDate = true;
+        }
         refreshDate();
         checkAttendanceListGrid();
-
+        isAttendanceDate = false;
     }
 
 
@@ -1303,26 +1311,34 @@
         form.getItem("filterType").changed(form, form.getItem("filterType"), form.getValue("filterType"));
         form.getItem("sessionDate").click(form, form.getItem("sessionDate"));
         if(form.getValue("filterType") == 2) {
-            setTimeout(function () {
-                for (let i = 0; i < sessionDateData.allRows.length; i++) {
-                    if (sessionDateData.allRows[i].sessionDate == oldValue) {
-                        form.setValue("sessionDate", oldValue);
-                        form.getItem("sessionDate").changed(form, form.getItem("sessionDate"), form.getValue("sessionDate"));
-                        return;
+            let myInterval = setInterval(function () {
+                if(sessionDateData.allRows !== null && sessionDateData.allRows !== undefined){
+                    for (let i = 0; i < sessionDateData.allRows.length; i++) {
+                        if (sessionDateData.allRows[i].sessionDate == oldValue) {
+                            form.setValue("sessionDate", oldValue);
+                            form.getItem("sessionDate").changed(form, form.getItem("sessionDate"), form.getValue("sessionDate"));
+                            clearInterval(myInterval)
+                        }
                     }
+                    clearInterval(myInterval);
                 }
-            }, 700)
+                form.setValue("sessionDate", oldValue);
+            }, 250);
         }
         else{
-            setTimeout(function () {
-                for (let i = 0; i < sessionDateData.allRows.length; i++) {
-                    if (sessionDateData.allRows[i].sessionDate == oldValue) {
-                        form.setValue("sessionDate", oldValue);
-                        form.getItem("sessionDate").changed(form, form.getItem("sessionDate"), form.getValue("sessionDate"));
-                        return;
+            let myInterval = setInterval(function () {
+                if(sessionDateData.allRows !== null && sessionDateData.allRows !== undefined){
+                    for (let i = 0; i < sessionDateData.allRows.length; i++) {
+                        if (sessionDateData.allRows[i].sessionDate === oldValue) {
+                            form.setValue("sessionDate", oldValue);
+                            form.getItem("sessionDate").changed(form, form.getItem("sessionDate"), form.getValue("sessionDate"));
+                            clearInterval(myInterval);
+                        }
                     }
+                    clearInterval(myInterval);
                 }
-            }, 500)
+                form.setValue("sessionDate", oldValue);
+            }, 250)
         }
     }
 

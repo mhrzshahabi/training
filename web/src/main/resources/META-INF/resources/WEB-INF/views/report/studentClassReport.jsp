@@ -594,10 +594,10 @@
             },
             {name: "studentFirstName"},
             {name: "studentLastName"},
-            {name: "studentCcpAffairs"},
+            {name: "studentCcpAffairs", filterOperator: "equals", autoFitWidth: true},
             {name: "studentCcpUnit"},
             {name: "studentPostCode"},
-            {name: "studentPostTitle"},
+            {name: "studentPostTitle", filterOperator: "equals", autoFitWidth: true},
             {name: "courseCode"},
             {name: "courseTitleFa"},
             {name: "classHDuration"},
@@ -609,12 +609,13 @@
                 optionDataSource: ScoresStateDS_SCRV,
                 filterEditorProperties:{
                     pickListProperties: {
-                        showFilterEditor: false
+                        showFilterEditor: false,
                     },
                 },
+                filterEditorType : "TextItem",
                 displayField: "title",
                 valueField: "id",
-                multiple: true
+                // multiple: true
             },
         ]
     });

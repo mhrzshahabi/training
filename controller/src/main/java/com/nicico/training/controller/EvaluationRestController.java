@@ -548,6 +548,7 @@ public class EvaluationRestController {
             Personnel personnel = personnelDAO.findById(evaluation.getEvaluatorId());
             behavioralForms.setEvaluatorName(personnel.getFirstName() + " " + personnel.getLastName());
             behavioralForms.setId(evaluation.getId());
+            behavioralForms.setEvaluatorId(personnel.getId());
             finalList.add(behavioralForms);
         }
         searchRs.setList(finalList);
