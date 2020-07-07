@@ -48,9 +48,9 @@ public class TargetSocietyRestController {
                 TargetSocietyDTO.Info info = infoIterator.next();
                 if(type.equals(info.getTargetSocietyTypeId())) {
                     criteria += info.getSocietyId().toString();
+                    count++;
                     if(infoIterator.hasNext()) {
                         criteria += ",";
-                        count++;
                     }
                 }else{
                     infoList.add(info);
