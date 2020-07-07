@@ -398,5 +398,10 @@
     <changeSet author="poursalehi_mos (generated)" id="mostafa-001">
         <dropUniqueConstraint constraintName="UC_TBL_JOBC_CODE_COL" tableName="TBL_JOB"/>
     </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1594115333049-437">
+        <addColumn tableName="tbl_evaluation">
+            <column name="c_return_date" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
