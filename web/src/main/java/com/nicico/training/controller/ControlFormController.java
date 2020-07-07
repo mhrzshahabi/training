@@ -33,6 +33,7 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
 @Controller
@@ -134,6 +135,12 @@ public class ControlFormController {
             studentArrayList.add(st);
         }//end outer for
 
+        final int threshold=24;
+        int remainSize=threshold-studentArrayList.size();
+
+        for (int i=0;i<remainSize;i++)
+            studentArrayList.add(new StudentDTO.clearAttendanceWithState());
+
         int pages = (int)Math.ceil(sessionList.stream().map(ClassSession::getSessionDate).collect(Collectors.toSet()).size() / 5)+1;
         Set<String> daysOnClass = sessionList.stream().map(ClassSession::getDayName).collect(Collectors.toSet());
 
@@ -144,6 +151,7 @@ public class ControlFormController {
         params.put("startDate", tclassDTO.getStartDate());
         params.put("endDate", tclassDTO.getEndDate());
         params.put("teacher", tclassDTO.getTeacher());
+        params.put("hduration", tclassDTO.getHDuration()!=null ? tclassDTO.getHDuration().toString()+" ساعت " : "");
         params.put("page", page);
         params.put("pages", String.valueOf(pages));
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(studentArrayList) + "}";
@@ -156,13 +164,29 @@ public class ControlFormController {
 
     protected HashMap<String, Object> print(List<ClassSessionDTO.AttendanceClearForm> sessionList) {
         final HashMap<String, Object> params = new HashMap<>();
+
         String date = sessionList.get(0).getSessionDate();
         int d = 1;
         int se = 1;
         int seTemp=1;
         params.put("d" + d, date);
+        boolean checkFirst=true;
         for (ClassSessionDTO.AttendanceClearForm session : sessionList) {
             if (session.getSessionDate().equals(date)) {
+
+                if (checkFirst) {
+                    IntStream.rangeClosed(1, 5).forEach(i -> {
+                        String strSe = "";
+                        if (i <= 9)
+                            strSe = "0" + i;
+                        else
+                            strSe = i + "";
+
+                        params.put("se" + strSe, "فاقد جلسه");
+                    });
+                    checkFirst=!checkFirst;
+                }
+
                 String strSe="";
                 if (se<=9)
                     strSe="0"+se;
@@ -171,6 +195,7 @@ public class ControlFormController {
 
                 params.put("se" +  strSe, session.getSessionStartHour() + " - " + session.getSessionEndHour());
             } else {
+                checkFirst=false;
                 date = session.getSessionDate();
                 d++;
                 params.put("d" + d, date);
@@ -184,11 +209,20 @@ public class ControlFormController {
                     strSe=se+"";
 
                 params.put("se" + strSe, session.getSessionStartHour() + " - " + session.getSessionEndHour());
+
+                IntStream.rangeClosed(se+1, se+4).forEach(i -> {
+                        String strSe1 = "";
+                        if (i <= 9)
+                            strSe1 = "0" + i;
+                        else
+                            strSe1 = i + "";
+
+                        params.put("se" + strSe1, "فاقد جلسه");
+                    });
             }
             se++;
         }
         return params;
-
     }
 
     @Transactional(readOnly = true)
@@ -223,6 +257,12 @@ public class ControlFormController {
             i++;
         }
 
+        final int threshold=23;
+        int remainSize=threshold-studentArrayList.size();
+
+        for (int l=0;l<remainSize;l++)
+            studentArrayList.add(new StudentDTO.scoreAttendance());
+
         Set<ClassSession> sessions = tClass.getClassSessions();
         List<ClassSession> sessionList = sessions.stream().sorted(Comparator.comparing(ClassSession::getSessionDate)
                 .thenComparing(ClassSession::getSessionStartHour))
@@ -236,7 +276,7 @@ public class ControlFormController {
         params.put("startDate", tclassDTO.getStartDate());
         params.put("endDate", tclassDTO.getEndDate());
         params.put("teacher", tclassDTO.getTeacher());
-
+        params.put("hduration", tclassDTO.getHDuration()!=null ? tclassDTO.getHDuration().toString()+" ساعت " : "");
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(studentArrayList) + "}";
         params.put("today", DateUtil.todayDate());
         params.put(ConstantVARs.REPORT_TYPE, type);
@@ -279,6 +319,12 @@ public class ControlFormController {
             i++;
         }
 
+        final int threshold=23;
+        int remainSize=threshold-studentArrayList.size();
+
+        for (int l=0;l<remainSize;l++)
+            studentArrayList.add(new StudentDTO.controlAttendance());
+
         Set<ClassSession> sessions = tClass.getClassSessions();
         List<ClassSession> sessionList = sessions.stream().sorted(Comparator.comparing(ClassSession::getSessionDate)
                 .thenComparing(ClassSession::getSessionStartHour))
@@ -292,7 +338,7 @@ public class ControlFormController {
         params.put("startDate", tclassDTO.getStartDate());
         params.put("endDate", tclassDTO.getEndDate());
         params.put("teacher", tclassDTO.getTeacher());
-
+        params.put("hduration", tclassDTO.getHDuration()!=null ? tclassDTO.getHDuration().toString()+" ساعت " : "");
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(studentArrayList) + "}";
         params.put("today", DateUtil.todayDate());
         params.put(ConstantVARs.REPORT_TYPE, type);
@@ -390,6 +436,7 @@ public class ControlFormController {
             params.put("startDate", tclassDTO.getStartDate());
             params.put("endDate", tclassDTO.getEndDate());
             params.put("teacher", tclassDTO.getTeacher());
+            params.put("hduration", tclassDTO.getHDuration()!=null ? tclassDTO.getHDuration().toString()+"ساعت" : "");
 
             listMaps.add(params);
         }
@@ -457,6 +504,7 @@ public class ControlFormController {
             params.put("startDate", tclassDTO.getStartDate());
             params.put("endDate", tclassDTO.getEndDate());
             params.put("teacher", tclassDTO.getTeacher());
+            params.put("hduration", tclassDTO.getHDuration()!=null ? tclassDTO.getHDuration().toString()+"ساعت" : "");
 
             listMaps.add(params);
         }
@@ -529,6 +577,7 @@ public class ControlFormController {
             params.put("startDate", tclassDTO.getStartDate());
             params.put("endDate", tclassDTO.getEndDate());
             params.put("teacher", tclassDTO.getTeacher());
+            params.put("hduration", tclassDTO.getHDuration()!=null ? tclassDTO.getHDuration().toString()+"ساعت" : "");
 
             listMaps.add(params);
         }
@@ -648,7 +697,7 @@ public class ControlFormController {
             params.put("startDate", tclassDTO.getStartDate());
             params.put("endDate", tclassDTO.getEndDate());
             params.put("teacher", tclassDTO.getTeacher());
-
+            params.put("hduration", tclassDTO.getHDuration()!=null ? tclassDTO.getHDuration().toString()+"ساعت" : "");
             listMaps.add(params);
         }
 
