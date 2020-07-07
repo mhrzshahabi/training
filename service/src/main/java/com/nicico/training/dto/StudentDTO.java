@@ -79,6 +79,10 @@ public class StudentDTO {
     @ApiModel("Student - Info")
     public static class Info extends StudentDTO {
         private Long id;
+
+        public String getFullName() {
+            return (getFirstName() + " " + getLastName()).compareTo("null null")==0?null:getFirstName() + " " + getLastName();
+        }
     }
 
     @Getter

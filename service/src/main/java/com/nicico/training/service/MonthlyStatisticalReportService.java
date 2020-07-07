@@ -1,16 +1,23 @@
 package com.nicico.training.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.MonthlyStatisticalReportDTO;
 import com.nicico.training.iservice.IMonthlyStatisticalReportService;
 import lombok.RequiredArgsConstructor;
+import org.activiti.engine.impl.util.json.JSONArray;
 import org.activiti.engine.impl.util.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -20,58 +27,97 @@ public class MonthlyStatisticalReportService implements IMonthlyStatisticalRepor
     @Autowired
     protected EntityManager entityManager;
     private final ModelMapper modelMapper;
+    private final ObjectMapper objectMapper;
 
     @Override
-    public List<MonthlyStatisticalReportDTO> monthlyStatisticalList(String reportParameter) {
+    public List<MonthlyStatisticalReportDTO> monthlyStatisticalList(String reportParameter) throws IOException {
 
         JSONObject jsonObject = new JSONObject(reportParameter);
 
-        String firstDate = jsonObject.get("firstDate").toString().replace("^","/");
-        String secondDate = jsonObject.get("secondDate").toString().replace("^","/");
+        String firstDate = jsonObject.get("firstDate").toString().replace("^", "/");
+        String secondDate = jsonObject.get("secondDate").toString().replace("^", "/");
         String complex_title = jsonObject.get("complex_title").toString();
         String assistant = jsonObject.get("assistant").toString();
         String affairs = jsonObject.get("affairs").toString();
         String section = jsonObject.get("section").toString();
         String unit = jsonObject.get("unit").toString();
+        List<Integer> Technical = objectMapper.readValue(jsonObject.get("technical").toString().replace("*", "[").replace("@", "]"), new TypeReference<List<Integer>>() {
+        });
+        List<Long> Course = objectMapper.readValue(jsonObject.get("course").toString().replace("*", "[").replace("@", "]"), new TypeReference<List<Long>>() {
+        });
+        List<Long> Class = objectMapper.readValue(jsonObject.get("class").toString().replace("*", "[").replace("@", "]"), new TypeReference<List<Long>>() {
+        });
+        List<String> PostGrade = objectMapper.readValue(jsonObject.get("postGrade").toString().replace("*", "[").replace("@", "]"), new TypeReference<List<String>>() {
+        });
+        List<Long> Personnel = objectMapper.readValue(jsonObject.get("personnel").toString().replace("*", "[").replace("@", "]"), new TypeReference<List<Long>>() {
+        });
 
 
         ////*** Wildcard ***
         List<?> MSReportList = null;
         List<MonthlyStatisticalReportDTO> monthlyStatisticalDTO = null;
 
-        String reportScript = " SELECT (CASE WHEN ccp_unit IS NULL THEN '-' ELSE ccp_unit END) ccp_unit,(CASE WHEN present IS NULL THEN '0' ELSE TO_CHAR(FLOOR(present/60)) || ':' || TO_CHAR(MOD(present,60)) END) present,  " +
-                " (CASE WHEN overtime IS NULL THEN '0' ELSE TO_CHAR(FLOOR(overtime/60)) || ':' || TO_CHAR(MOD(overtime,60)) END) overtime,  " +
-                " (CASE WHEN unjustifiedAbsence IS NULL THEN '0' ELSE TO_CHAR(FLOOR(unjustifiedAbsence/60)) || ':' || TO_CHAR(MOD(unjustifiedAbsence,60)) END) unjustifiedAbsence, " +
-                " (CASE WHEN acceptableAbsence IS NULL THEN '0' ELSE TO_CHAR(FLOOR(acceptableAbsence/60)) || ':' || TO_CHAR(MOD(acceptableAbsence,60)) END) acceptableAbsence " +
-                " FROM " +
-                " (SELECT     " +
-                "    P.ccp_unit, " +
-                "    A.c_state, " +
-                "    SUM(round(to_number(TO_DATE((CASE WHEN SUBSTR(S.c_session_end_hour,1,2) > 23 THEN '23:59' ELSE S.c_session_end_hour END),'HH24:MI') - TO_DATE((CASE WHEN SUBSTR(S.c_session_start_hour,1,2) > 23 THEN '23:59' ELSE S.c_session_start_hour END),'HH24:MI') ) * 24 * 60)) AS session_time " +
-                " FROM " +
-                "    tbl_attendance A " +
-                "    INNER JOIN tbl_student ON tbl_student.id = A.f_student " +
-                "    INNER JOIN tbl_personnel P ON P.national_code = tbl_student.national_code " +
-                "    INNER JOIN tbl_session S ON S.id = A.f_session " +
-                " WHERE S.c_session_date >= :firstDate AND S.c_session_date <= :secondDate AND A.c_state <> 0 " +
-                " AND (CASE WHEN :complex_title = 'همه' THEN 1 WHEN P.complex_title = :complex_title THEN 1 END) IS NOT NULL " +
-                " AND (CASE WHEN :assistant = 'همه' THEN 1 WHEN P.ccp_assistant = :assistant THEN 1 END) IS NOT NULL " +
-                " AND (CASE WHEN :affairs = 'همه' THEN 1 WHEN P.ccp_affairs = :affairs THEN 1 END) IS NOT NULL " +
-                " AND (CASE WHEN :section = 'همه' THEN 1 WHEN P.ccp_section = :section THEN 1 END) IS NOT NULL " +
-                " AND (CASE WHEN :unit = 'همه' THEN 1 WHEN P.ccp_unit = :unit THEN 1 END) IS NOT NULL " +
-                " GROUP BY A.c_state, P.ccp_unit) " +
-                " PIVOT( " +
-                "    SUM(session_time) " +
-                "    FOR c_state " +
-                "    IN (  " +
-                "        '1' as present, " +
-                "        '2' as overtime, " +
-                "        '3' as unjustifiedAbsence, " +
-                "        '4' as acceptableAbsence " +
-                "    ) " +
-                " ) " +
-                " ORDER BY ccp_unit ";
+        String reportScript = " SELECT           (CASE WHEN ccp_unit IS NULL THEN '-' ELSE ccp_unit END) ccp_unit, " +
+                "                 (CASE WHEN ccp_assistant IS NULL THEN '-' ELSE ccp_assistant END) ccp_assistant, " +
+                "                 (CASE WHEN ccp_affairs IS NULL THEN '-' ELSE ccp_affairs END) ccp_affairs, " +
+                "                 (CASE WHEN ccp_section IS NULL THEN '-' ELSE ccp_section END) ccp_section, " +
+                "                 (CASE WHEN complex_title IS NULL THEN '-' ELSE complex_title END) complex_title, " +
+                "                 (CASE WHEN present IS NULL THEN '0' ELSE TO_CHAR(FLOOR(present/60)) || ':' || TO_CHAR(MOD(present,60)) END) present,   " +
+                "                 (CASE WHEN overtime IS NULL THEN '0' ELSE TO_CHAR(FLOOR(overtime/60)) || ':' || TO_CHAR(MOD(overtime,60)) END) overtime,   " +
+                "                 (CASE WHEN unjustifiedAbsence IS NULL THEN '0' ELSE TO_CHAR(FLOOR(unjustifiedAbsence/60)) || ':' || TO_CHAR(MOD(unjustifiedAbsence,60)) END) unjustifiedAbsence,  " +
+                "                 (CASE WHEN acceptableAbsence IS NULL THEN '0' ELSE TO_CHAR(FLOOR(acceptableAbsence/60)) || ':' || TO_CHAR(MOD(acceptableAbsence,60)) END) acceptableAbsence " +
+                "                 FROM  " +
+                "                 (SELECT      " +
+                "                    ST.ccp_unit,  " +
+                "                    A.c_state,  " +
+                "                    ST.complex_title, " +
+                "                    ST.ccp_assistant, " +
+                "                    ST.ccp_affairs, " +
+                "                    ST.ccp_section, " +
+                "                    CO.E_TECHNICAL_TYPE, " +
+                "                    ST.POST_GRADE_CODE, " +
+                "                    CO.C_TITLE_FA, " +
+                "                    C.C_CODE, " +
+                "                    SUM(round(to_number(TO_DATE((CASE WHEN SUBSTR(S.c_session_end_hour,1,2) > 23 THEN '23:59' ELSE S.c_session_end_hour END),'HH24:MI') - TO_DATE((CASE WHEN SUBSTR(S.c_session_start_hour,1,2) > 23 THEN '23:59' ELSE S.c_session_start_hour END),'HH24:MI') ) * 24 * 60)) AS session_time  " +
+                "                 FROM  " +
+                "                    tbl_attendance A  " +
+                "                    INNER JOIN tbl_student ST ON ST.id = A.f_student  " +
+                "                    INNER JOIN tbl_session S ON S.id = A.f_session  " +
+                "                    INNER JOIN tbl_class C ON S.f_class_id = C.id  " +
+                "                    INNER JOIN tbl_course CO ON C.f_course = CO.id  " +
+                "                    LEFT JOIN tbl_post_grade PG ON ST.POST_GRADE_CODE = PG.c_code " +
+                "                 WHERE S.c_session_date >= :firstDate AND S.c_session_date <= :secondDate AND A.c_state <> 0  " +
+                "                 AND (CASE WHEN :complex_title = 'همه' THEN 1 WHEN ST.complex_title = :complex_title THEN 1 END) IS NOT NULL  " +
+                "                 AND (CASE WHEN :assistant = 'همه' THEN 1 WHEN ST.ccp_assistant = :assistant THEN 1 END) IS NOT NULL  " +
+                "                 AND (CASE WHEN :affairs = 'همه' THEN 1 WHEN ST.ccp_affairs = :affairs THEN 1 END) IS NOT NULL  " +
+                "                 AND (CASE WHEN :section = 'همه' THEN 1 WHEN ST.ccp_section = :section THEN 1 END) IS NOT NULL  " +
+                "                 AND (CASE WHEN :unit = 'همه' THEN 1 WHEN ST.ccp_unit = :unit THEN 1 END) IS NOT NULL  ";
+        if ((Technical.size() != 0))
+            reportScript += "                 AND CO.E_TECHNICAL_TYPE in (" + StringUtils.join(Technical, ",") + ")";
 
+        if ((Course.size() != 0))
+            reportScript += "                 AND CO.id in(" + StringUtils.join(Course, ",") + ")";
+
+        if ((Class.size() != 0))
+            reportScript += "                 AND C.id in(" + StringUtils.join(Class, ",") + ")";
+
+        if ((PostGrade.size() != 0))
+            reportScript += "                 AND PG.id in(" + StringUtils.join(PostGrade, ",") + ")";
+
+        if ((Personnel.size() != 0))
+            reportScript += "                 AND ST.id in(" + StringUtils.join(Personnel, ",") + ")";
+
+        reportScript += "                 GROUP BY A.c_state, ST.ccp_unit, ST.complex_title, ST.ccp_assistant, ST.ccp_affairs, ST.ccp_section,CO.E_TECHNICAL_TYPE,ST.POST_GRADE_CODE,CO.C_TITLE_FA,C.C_CODE)  " +
+                "                 PIVOT(  " +
+                "                    SUM(session_time)  " +
+                "                    FOR c_state  " +
+                "                    IN (   " +
+                "                        '1' as present,  " +
+                "                        '2' as overtime,  " +
+                "                        '3' as unjustifiedAbsence,  " +
+                "                        '4' as acceptableAbsence  " +
+                "                    ) " +
+                "                 )  ";
 
         MSReportList = (List<?>) entityManager.createNativeQuery(reportScript)
                 .setParameter("firstDate", firstDate)
@@ -80,7 +126,9 @@ public class MonthlyStatisticalReportService implements IMonthlyStatisticalRepor
                 .setParameter("assistant", assistant)
                 .setParameter("affairs", affairs)
                 .setParameter("section", section)
-                .setParameter("unit", unit).getResultList();
+                .setParameter("unit", unit)
+
+                .getResultList();
 
 
         if (MSReportList != null) {
@@ -88,7 +136,7 @@ public class MonthlyStatisticalReportService implements IMonthlyStatisticalRepor
 
             for (int i = 0; i < MSReportList.size(); i++) {
                 Object[] msReport = (Object[]) MSReportList.get(i);
-                monthlyStatisticalDTO.add(new MonthlyStatisticalReportDTO(msReport[0].toString(), msReport[1].toString(), msReport[2].toString(), msReport[3].toString(), msReport[4].toString()));
+                monthlyStatisticalDTO.add(new MonthlyStatisticalReportDTO(msReport[0].toString(), msReport[1].toString(), msReport[2].toString(), msReport[3].toString(), msReport[4].toString(), msReport[5].toString(), msReport[6].toString(), msReport[7].toString(), msReport[8].toString()));
 
             }
         }
