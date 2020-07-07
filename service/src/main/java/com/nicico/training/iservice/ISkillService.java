@@ -6,6 +6,7 @@ import com.nicico.training.dto.*;
 import com.nicico.training.model.Skill;
 import org.springframework.data.domain.Pageable;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface ISkillService {
@@ -17,7 +18,7 @@ public interface ISkillService {
 
     List<SkillDTO.Info> listCourseIsNull();
 
-    SkillDTO.Info create(SkillDTO.Create request);
+    SkillDTO.Info create(SkillDTO.Create request, HttpServletResponse response);
 
     SkillDTO.Info update(Long id, Object request);
 

@@ -549,6 +549,7 @@ public class EvaluationRestController {
             behavioralForms.setEvaluatorName(personnel.getFirstName() + " " + personnel.getLastName());
             behavioralForms.setId(evaluation.getId());
             behavioralForms.setEvaluatorId(personnel.getId());
+            behavioralForms.setReturnDate(evaluation.getReturnDate());
             finalList.add(behavioralForms);
         }
         searchRs.setList(finalList);
