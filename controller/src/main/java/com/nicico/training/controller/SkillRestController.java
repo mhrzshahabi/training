@@ -459,10 +459,6 @@ public class SkillRestController {
         reportUtil.export("/reports/Skill_Report.jasper", params, jsonDataSource, response);
     }
 
-
-
-
-
     @Loggable
     @GetMapping(value = "/skillthisCourse")
     public ResponseEntity<ISC<SkillDTO.Info>> spectListAllClass(HttpServletRequest iscRq, @RequestParam Long categoryId) throws IOException {
@@ -485,5 +481,4 @@ public class SkillRestController {
         SearchDTO.SearchRs<T> searchRs = skillService.search(searchRq, infoType);
         return new ResponseEntity<ISC<T>>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
-
 }

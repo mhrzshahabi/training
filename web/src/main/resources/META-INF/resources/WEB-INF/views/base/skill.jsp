@@ -89,8 +89,8 @@
             {name: "code", title: "<spring:message code='skill.code'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "titleFa", title: "<spring:message code='skill.title'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "titleEn", title: "<spring:message code='title.en'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "category.titleFa", title: "<spring:message code='category'/>", filterOperator: "iContains",autoFitWidthApproach: "both"},
-            {name: "subCategory.titleFa", title: "<spring:message code='subcategory'/>", filterOperator: "iContains",autoFitWidthApproach: "both"},
+            {name: "category.titleFa", title: "<spring:message code='category'/>", filterOperator: "iContains",autoFitWidthApproach: "both", autoFitWidth: true,},
+            {name: "subCategory.titleFa", title: "<spring:message code='subcategory'/>", filterOperator: "iContains",autoFitWidthApproach: "both", autoFitWidth: true,},
             {name: "skillLevel.titleFa", title: "<spring:message code='skill.level'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "categoryId", hidden: true},
@@ -112,6 +112,7 @@
         layoutMargin: 5,
         autoFetchData: false,
         dataSource: CourseDS_Skill,
+        emptyMessage:"دوره مرتبطی وجود ندارد",
         fields: [
             {name: "code"},
             {name: "titleFa"},
@@ -502,7 +503,8 @@
             {name: "subCategory.titleFa"},
             {name: "skillLevel.titleFa"},
             {name: "course.code"},
-            {name: "course.titleFa"}
+            {name: "course.titleFa"},
+            {name: "description"}
         ],
         rowHover: function(){
             changeDirection();
