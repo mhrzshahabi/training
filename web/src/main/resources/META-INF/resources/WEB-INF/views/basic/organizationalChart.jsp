@@ -70,7 +70,21 @@
                 chosenDepartments_JspOC.addData({"id":_1.id,"title":_1.title});
             }
         },
-        openFolder:function () {}
+        openFolder:function () {
+            this.Super("openFolder",arguments);
+            console.log(this);
+            // if(batch){
+            //     if(_1.isFolder === true || _1.isFolder === false){
+            //         _1.isOpen = true;
+            //         let childeren = [];
+            //         _1.children.forEach(function (currentValue, index, arr) {
+            //             if(currentValue.isFolder == undefined)
+            //                 childeren.add(currentValue.id);
+            //         });
+            //         getchilderen(childeren);
+            //     }
+            // }
+        },
     });
 
     // <<-------------------------------------- Create - ToolStripButton --------------------------------------
@@ -252,6 +266,7 @@
                 return false;
             } else {
                 let data = JSON.parse(resp.data);
+                console.log(data);
                 var Treedata = isc.Tree.create({
                     modelType: "parent",
                     nameProperty: "title",
