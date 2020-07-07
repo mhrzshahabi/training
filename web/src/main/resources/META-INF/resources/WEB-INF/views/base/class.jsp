@@ -1233,7 +1233,7 @@
                 valueField: "societyId",
                 click: function(){
                     console.log("click");
-                    showOrganizationalChart();
+                    showOrganizationalChart(setSocieties);
                 }
             },
             {

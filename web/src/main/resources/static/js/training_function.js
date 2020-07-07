@@ -189,6 +189,7 @@ function showOrganizationalChart(func) {
         items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/organizationalChart/"})],
         close() {
             func();
+            this.Super("close", arguments)
         }
     });
     Window_OrganizationalChart.show();
