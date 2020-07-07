@@ -38,6 +38,7 @@
     <script src="<spring:url value='/js/jquery.min.js' />"></script>
     <script src="<spring:url value='/js/langConverter.js' />"></script>
     <script src="<spring:url value='/js/xlsx.full.min.js' />"></script>
+    <script src="<spring:url value='/js/svg-inject.min.js' />"></script>
 
     <script>
         String.prototype.toEnglishDigit = function() {
@@ -754,6 +755,7 @@
     const attendancePerformanceReportUrl = rootUrl + "/attendancePerformance/";
     const controlReportUrl = rootUrl + "/controlReport";
     const presenceReportUrl = rootUrl + "/presence-report";
+    const continuousStatusReportViewUrl = rootUrl + "/continuous-status-report-view";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -1808,14 +1810,24 @@
                             {isSeparator: true},
                             </sec:authorize>
 
-                            <sec:authorize access="hasAuthority('Menu_Report_ReportsManagment_ReportMonthlyStatistical')">
+                            <sec:authorize access="hasAuthority('Menu_Categories_performance')">
                             {
                                 title: "<spring:message code="course.performance.report"/>",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/categoriesPerformanceReport"/>");
                                 }
                             },
+                            {isSeparator: true},
                             </sec:authorize>
+
+                            <%--<sec:authorize access="hasAuthority('Menu_continuous_Status_Report')">--%>
+                            <%--{--%>
+                                <%--title: "<spring:message code="continuous.status.report"/>",--%>
+                                <%--click: function () {--%>
+                                    <%--createTab(this.title, "<spring:url value="web/continuousStatusReport"/>");--%>
+                                <%--}--%>
+                            <%--},--%>
+                            <%--</sec:authorize>--%>
                         ]
                 },
                 </sec:authorize>
@@ -1986,18 +1998,152 @@
                     this.close();
                     if (index === 0) {
                         mainTabSet.removeTabs(mainTabSet.tabs);
+                        initShortcuts();
                     }
                 }
             });
         }
     });
+    <%--setTimeout(function(){--%>
+        <%--createTab(this.title, "<spring:url value="web/parameter/"/>");--%>
+    <%--}, 2000)--%>
+
+
+
 
     mainTabSet = isc.TabSet.create({
         minWidth: 1024,
-        tabs: [],
+        height: "100%",
+        tabs: [
+            ],
         tabBarControls: [closeAllButton],
     });
 
+
+
+
+
+
+    function openShortcutTab(titleUrl){
+       createTab( titleUrl.split(',')[0], titleUrl.split(',')[1]);
+    }
+
+    function initShortcuts() {
+        shortcuts = [
+            <sec:authorize access="hasAuthority('Menu_BasicInfo_Personnel')">
+            {
+                title: "<spring:message code="personnel.information"/>",
+                url: "<spring:url value="personnelInformation/show-form"/>",
+                icon: "static/img/shortcutMenu/personal.svg",
+
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Menu_Run_Class')">
+            {
+                title: "<spring:message code="class"/>",
+                url: "<spring:url value="/tclass/show-form"/>",
+                icon: "static/img/shortcutMenu/classroom.svg"
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Menu_Designing_Course')">
+            {
+                title: "<spring:message code="course"/>",
+                url: "<spring:url value="/course/show-form"/>",
+                icon: "static/img/shortcutMenu/periods.svg"
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Menu_Evaluation_Evaluation')">
+            {
+                title: "<spring:message code="evaluation"/>",
+                url:"<spring:url value="/evaluation/show-form"/>",
+                icon: "static/img/shortcutMenu/evaluation.svg"
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Menu_NeedAssessment_PostGroup')">
+            {
+                title: "<spring:message code="post.group"/>",
+                url:"<spring:url value="web/post-group/"/>",
+                icon: "static/img/shortcutMenu/needs.svg"
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingFile')">
+            {
+                title: "<spring:message code="training.file"/>",
+                url:"<spring:url value="web/trainingFile/"/>",
+                icon: "static/img/shortcutMenu/report.svg"
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_PassedPersonnel')">
+            {
+                title: "<spring:message code="personnel.courses"/>",
+                url:"<spring:url value="web/studentClassReport/"/>",
+                icon: "static/img/shortcutMenu/periodReport.svg"
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_PersonnelCoursesNotPassed')">
+            {
+                title: "<spring:message code="personnel.courses.not.passed"/>",
+                url:"<spring:url value="web/personnelCourseNotPassed/"/>",
+                icon: "static/img/shortcutMenu/trainingReport.svg"
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Menu_Report_ReportsNeedsAssessment_ReportsNeedsAssessment')">
+            {
+                title: "<spring:message code="reports.need.assessment"/>",
+                url:"<spring:url value="web/needsAssessment-reports"/>",
+                icon: "static/img/shortcutMenu/needReports.svg"
+            }
+            </sec:authorize>
+
+        ];
+
+        vLayoutShortcuts = isc.VLayout.create({
+            width: "100%",
+            height: "100%",
+            align: "center",
+            vAlign: "center",
+            membersMargin: 20,
+            styleName: "landingPage",
+            defaultLayoutAlign: "center",
+        });
+        mainTabSet.addTab(
+            {
+                title: 'خانه',
+                pane:vLayoutShortcuts
+            }
+        )
+
+
+        let shortcut;
+        let index = 0;
+        let hLayoutShortcut;
+        let htmlPanShortcut;
+        for( shortcut of shortcuts){
+            if(index == 0 || index%3 == 0){
+                hLayoutShortcut = isc.HLayout.create({
+                    height: 160,
+                    align: "center",
+                    vAlign: "center",
+                    defaultLayoutAlign: "center",
+                    membersMargin: 20,
+                })
+            }
+            hLayoutShortcut.addMembers(
+                htmlPanShortcut = isc.HTMLPane.create({
+                    width:160, height:160,
+                    showEdges:false,
+                    styleName:"shortcut-box",
+                    contents: "<div class='sh-item' onclick=\"openShortcutTab('"+shortcut.title+","+shortcut.url+"')\" id='shortcutLink' ><img  class='sh-icon' onload=\"SVGInject(this)\"  src='"+shortcut.icon+"'> <h3>"+shortcut.title+"</h3></div>",
+                    selectContentOnSelectAll:true
+                })
+            )
+            if(index%3 == 0 )
+                vLayoutShortcuts.addMembers(hLayoutShortcut)
+            index++;
+        }
+
+    }
+    initShortcuts();
     // -------------------------------------------  Page UI -----------------------------------------------
 
     var headerExitHLayout = isc.HLayout.create({
@@ -2211,7 +2357,6 @@
                 if (gridToRefresh !== undefined) {
                     refreshLG(gridToRefresh);
                 }
-
                 let dialog = createDialog("info", msg);
                 Timer.setTimeout(function () {
                     dialog.close();
@@ -2220,7 +2365,7 @@
                 if (respCode === 409) {
                     msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\' &nbsp;' + "<spring:message code="msg.is.not.possible"/>";
                 } else if (respCode === 401) {
-                    msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\' &nbsp;' + JSON.parse(resp.httpResponseText).message;
+                    msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\' &nbsp;' + resp.httpResponseText;
                 } else {
                     msg = "<spring:message code='msg.operation.error'/>";
                 }
@@ -2243,7 +2388,7 @@
     }
 
     function removeRecord(actionURL, entityType, entityTitle, gridToRefresh) {
-        var callback = "callback: studyResponse(rpcResponse, '" + "<spring:message code="remove"/>" + "', '" + entityType +
+        let callback = "callback: studyResponse(rpcResponse, '" + "<spring:message code="remove"/>" + "', '" + entityType +
             "'," + undefined + "," + gridToRefresh + ",'" + entityTitle + "')";
         let dialog = createDialog('ask', "<spring:message code="msg.record.remove.ask"/>");
         dialog.addProperties({
@@ -2472,6 +2617,7 @@
     //     defaultTimeout: 60000,
     //     willHandleError: true,
     //     handleError: function (response, request) {
+    //         alert('ViewLoader Error');
     //         console.log(response);
     //         // if (response.httpResponseCode == 401) {
     //         //     logout();

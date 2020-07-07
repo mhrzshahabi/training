@@ -87,6 +87,20 @@
         fetchDataURL: categoryUrl + "spec-list"
     });
 
+    PostGradeDS_PCNP = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {
+                name: "code",
+                title: "<spring:message code="post.grade.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
+        ],
+        fetchDataURL: viewPostGradeUrl + "/iscList"
+    });
+
     PersonnelDS_PCNP = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -120,6 +134,48 @@
         titleAlign: "left",
         wrapItemTitles: true,
         fields: [
+            {
+                name: "personnelPostGradeCode",
+                title: "انتخاب رده پستي",
+                optionDataSource: PostGradeDS_PCNP,
+                autoFetchData: false,
+                //filterFields: ["value", "value"],
+                pickListWidth: 300,
+                type: "ComboBoxItem",
+                textMatchStyle: "substring",
+                /*pickListProperties: {
+                    showFilterEditor: false,
+                    showClippedValuesOnHover: true,
+                },*/
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+
+                            PersonnelDS_PCNP.fetchDataURL = personnelUrl + "/iscList";
+                            FilterDF_PCNP.getItem("personnelPersonnelNo").setValue();
+                            FilterDF_PCNP.getItem("personnelPersonnelNo").comboBox.fetchData();
+                        }
+                    }
+                ],
+                valueField: "code",
+                displayField: "titleFa",
+                //specialValues: { "**emptyValue**": ""},
+                //separateSpecialValues: true
+                changed: function (form, item, value) {
+                    let criteria= '{"fieldName":"postGradeCode","operator":"equals","value":"' + value + '"}';
+                    PersonnelDS_PCNP.fetchDataURL = personnelUrl + "/iscList?criteria=" + criteria;
+                    FilterDF_PCNP.getItem("personnelPersonnelNo").setValue();
+                    FilterDF_PCNP.getItem("personnelPersonnelNo").comboBox.fetchData();
+                },
+            },
             {
                 name: "personnelPersonnelNo",
                 title:"انتخاب پرسنل",
@@ -345,10 +401,18 @@
                 title: "<spring:message code="unitName"/>",
                 filterFields: ["value", "value"],
                 pickListWidth: 300,
-                type: "ComboBoxItem",
+                multiple: true,
+                type: "SelectItem",
                 textMatchStyle: "substring",
+                pickListFields: [
+                    {
+                        name: "value",
+                        title: "<spring:message code="unit"/>",
+                        filterOperator: "iContains",
+                    }
+                ],
                 pickListProperties: {
-                    showFilterEditor: false,
+                    showFilterEditor: true,
                     showClippedValuesOnHover: true,
                 },
                 optionDataSource: UnitDS_PCNP,
@@ -363,11 +427,20 @@
                 title: "<spring:message code="affairs"/>",
                 optionDataSource: AffairsDS_PCNP,
                 autoFetchData: false,
+                operator: "inSet",
+                multiple: true,
                 filterFields: ["value", "value"],
-                type: "ComboBoxItem",
+                type: "SelectItem",
                 textMatchStyle: "substring",
+                pickListFields: [
+                    {
+                        name: "value",
+                        title: "<spring:message code="affairs"/>",
+                        filterOperator: "iContains",
+                    }
+                ],
                 pickListProperties: {
-                    showFilterEditor: false,
+                    showFilterEditor: true,
                     showClippedValuesOnHover: true,
                 },
                 valueField: "value",
@@ -428,10 +501,25 @@
                 align: "right",
                 startRow: false,
                 click: function () {
-                    if (Object.keys(FilterDF_PCNP.getValuesAsCriteria()).length === 0) {
+                    let tmp=FilterDF_PCNP.getValuesAsAdvancedCriteria();
+
+                    if(tmp==null)
+                    {
+                        createDialog("info", "فیلتری انتخاب نشده است.");
+                        return;
+                    }
+
+                    /*let indexOf=tmp.criteria.indexOf(tmp.criteria.filter(p=>p.fieldName=="postGrade")[0]);
+                    if(indexOf>=0)
+                        tmp.criteria.splice(indexOf,1);*/
+
+                    if (tmp.criteria.length === 0) {
                         createDialog("info", "فیلتری انتخاب نشده است.");
                     } else {
-                        PersonnelCourseLG_PCNP.implicitCriteria = FilterDF_PCNP.getValuesAsAdvancedCriteria();
+
+
+                        PersonnelCourseLG_PCNP.implicitCriteria = tmp;
+
                         PersonnelCourseLG_PCNP.invalidateCache();
                         PersonnelCourseLG_PCNP.fetchData();
                     }
@@ -467,7 +555,7 @@
             },
             {name: "personnelFirstName"},
             {name: "personnelLastName"},
-            {name: "personnelCcpUnit"},
+            {name: "personnelCcpUnit",filterOperator: "inSet"},
             {name: "personnelCcpSection"},
             {name: "personnelCcpAssistant"},
             {name: "personnelCcpArea"},

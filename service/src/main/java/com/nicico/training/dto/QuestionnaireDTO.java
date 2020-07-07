@@ -31,6 +31,7 @@ public class QuestionnaireDTO implements Serializable {
         private Long id;
         private Integer version;
         private ParameterValueDTO.MinInfo questionnaireType;
+        private  Long eEnabled;
 //        private List<QuestionnaireQuestion> questionnaireQuestionList;
     }
 
@@ -48,6 +49,7 @@ public class QuestionnaireDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("Questionnaire - Create")
     public static class Create extends QuestionnaireDTO {
+        private  Long eEnabled=74L;
     }
 
     @Getter
@@ -56,6 +58,7 @@ public class QuestionnaireDTO implements Serializable {
     @ApiModel("Questionnaire - Update")
     public static class Update extends QuestionnaireDTO {
         private Integer version;
+        private  Long eEnabled;
     }
 
     @Getter

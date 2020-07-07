@@ -20,14 +20,17 @@
         showDropIcons:false,
         showSelectedIcons:false,
         showConnectors: true,
-        // baseStyle: "noBorderCell",
         dataProperties:{
             dataArrived:function (parentNode) {
                 this.openAll();
             },
         },
         rowClick: function (_1,_2,_3) {
-            console.log(_1);
+        },
+        rowDoubleClick: function(_1){
+            if(_1.isFolder === undefined){
+                chosenDepartments_JspOC.addData({"id":_1.id,"title":_1.title});
+            }
         },
     });
 
@@ -44,7 +47,6 @@
         showDropIcons:false,
         showSelectedIcons:false,
         showConnectors: true,
-        // baseStyle: "noBorderCell",
         dataProperties:{
             dataArrived:function (parentNode) {
                 this.openAll();
@@ -52,9 +54,6 @@
         },
         rowClick: function (_1,_2,_3) {
             if(batch){
-                if(_1.isFolder === undefined){
-                    console.log(_1);
-                }
                 if(_1.isFolder === true || _1.isFolder === false){
                     _1.isOpen = true;
                     let childeren = [];
@@ -66,7 +65,26 @@
                 }
             }
         },
-        openFolder:function () {}
+        rowDoubleClick: function(_1){
+            if(_1.isFolder === undefined){
+                chosenDepartments_JspOC.addData({"id":_1.id,"title":_1.title});
+            }
+        },
+        openFolder:function () {
+            this.Super("openFolder",arguments);
+            console.log(this);
+            // if(batch){
+            //     if(_1.isFolder === true || _1.isFolder === false){
+            //         _1.isOpen = true;
+            //         let childeren = [];
+            //         _1.children.forEach(function (currentValue, index, arr) {
+            //             if(currentValue.isFolder == undefined)
+            //                 childeren.add(currentValue.id);
+            //         });
+            //         getchilderen(childeren);
+            //     }
+            // }
+        },
     });
 
     // <<-------------------------------------- Create - ToolStripButton --------------------------------------
@@ -74,7 +92,20 @@
     var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
         title: "<spring:message code="refresh"/>",
         click: function () {
+            // search_bar.getField("search").getIcon("clear").click(search_bar,search_bar.getField("search"));
+            // searchTree.setData([]);
+            // organizationalTree.setData([]);
             // getRootTreeData();
+        }
+    });
+
+    var confirm_Deparments =  isc.IButton.create({
+        top:250,
+        width: "33%",
+        title:"<spring:message code="verify"/>",
+        align: "center",
+        click: function () {
+            Window_OrganizationalChart.close();
         }
     });
 
@@ -83,20 +114,33 @@
         membersMargin: 5,
         members: [
             ToolStripButton_Refresh,
-            // isc.ToolStrip.create({
-            //     width: "100%",
-            //     align: "left",
-            //     border: '0px',
-            //     members: [
-            //         ToolStripButton_Refresh,
-            //     ]
-            // })
         ]
     });
 
     // ---------------------------------------- Create - ToolStripButton ------------------------------------>>
 
     // <<-------------------------------------- Create - RestDataSource & ListGrid ----------------------------
+
+    var chosenDepartments_JspOC = isc.TrLG.create({
+        autoFetchData: true,
+        selectionType:"none",
+        showFilterEditor:false,
+        showHeaderContextMenu: false,
+        sortField: 0,
+        canRemoveRecords:true,
+        gridComponents: [
+            "filterEditor", "header", "body",
+            // confirm_Deparments
+        ],
+        align: "center",
+        fields:[
+            {name: "id", primaryKey: true, hidden:true},
+            {name: "title", title: "موارد انتخاب شده"},
+        ],
+        removeRecordClick(rowNum){
+            this.removeData(this.getRecord(rowNum));
+        }
+    });
 
     // ---------------------------------------- Create - RestDataSource & ListGrid -------------------------->>
 
@@ -166,36 +210,41 @@
 
     // <<------------------------------------------- Create - Layout ------------------------------------------
     var HLayout_Tree_Data = isc.TrHLayout.create({
-        ID: "HLayoutCenter_JspEditNeedsAssessment",
         height: "70%",
-        // showResizeBar: true,
-        // overflow: "scroll",
         members: [
             ToolStripButton_Refresh,
             search_bar,
         ]
     });
     var VLayout_organizationalTree = isc.VLayout.create({
-        // width: "100%",
-        // height: "100%",
         showResizeBar: true,
-        // overflow: "scroll",
         members: [organizationalTree]
     });
     var VLayout_searchTree = isc.VLayout.create({
-        // width: "100%",
-        // height: "100%",
         showResizeBar: true,
-        // overflow: "scroll",
         members: [searchTree]
     });
 
     var VLayout_Tree_Data = isc.VLayout.create({
-        // width: "100%",
-        // height: "100%",
-        // showResizeBar: true,
-        // overflow: "scroll",
         members: [search_bar, VLayout_searchTree, VLayout_organizationalTree]
+    });
+
+    var HLayout_Confirm_Deparments = isc.TrHLayout.create({
+        height: "4%",
+        width: "40%",
+        align: "center",
+        defaultLayoutAlign : "center",
+        members: [confirm_Deparments]
+    });
+
+    var VLayout_chosen_Departments = isc.VLayout.create({
+        defaultLayoutAlign : "center",
+        showResizeBar: true,
+        members: [chosenDepartments_JspOC, HLayout_Confirm_Deparments]
+    });
+
+    var HLayout_Tree_Grid = isc.TrHLayout.create({
+        members: [VLayout_Tree_Data, VLayout_chosen_Departments]
     });
 
     // ---------------------------------------------- Create - Layout ---------------------------------------->>
@@ -227,7 +276,6 @@
                     openProperty: "isOpen",
                 });
                 organizationalTree.setData(Treedata);
-                //organizationalTree.getData().openAll();
             }
         }));
     }
@@ -250,7 +298,6 @@
                     openProperty: "isOpen",
                 });
                 organizationalTree.setData(Treedata);
-                //organizationalTree.getData().openAll();
             }
         }))
     }
@@ -273,7 +320,6 @@
                     openProperty: "isOpen",
                 });
                 organizationalTree.setData(Treedata);
-                //organizationalTree.getData().openAll();
             }
         }));
     }

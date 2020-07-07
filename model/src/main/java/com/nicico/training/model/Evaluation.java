@@ -74,4 +74,10 @@ public class Evaluation extends Auditable {
     @OneToMany(mappedBy = "evaluation", cascade = CascadeType.ALL)
     private List<EvaluationAnswer> evaluationAnswerList;
 
+    @Column(name = "b_status")
+    private Boolean status;
+
+    @Column(name = "c_return_date")
+    private String returnDate;
+
 }

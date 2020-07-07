@@ -56,6 +56,7 @@
 .sendFileSelectedOpened,
 .sendFileSelectedDownOpened,
 .sendFileSelectedOverOpened {
+    border: solid #324458 1px;
     color: #000000;
     font-size: 11px;
     background-color: #f3f3f3 !important;
@@ -85,9 +86,38 @@
 .registerFileSelectedOpened,
 .registerFileSelectedDownOpened,
 .registerFileSelectedOverOpened {
+    border: solid #324458 1px;
     color: #000000;
     font-size: 11px;
     background-color: #fe9d2a !important;
+    font-size: 12px !important;
+    width: 100px
+}
+
+.gridHint,
+.gridHintOver,
+.gridHintFocused,
+.gridHintFocusedOver,
+.gridHintDown,
+.gridHintFocusedDown,
+.gridHintSelected,
+.gridHintSelectedFocused,
+.gridHintSelectedDown,
+.gridHintSelectedFocusedDown,
+.gridHintSelectedOver,
+.gridHintSelectedFocusedOver,
+.gridHintDisabled,
+.gridHintSelectedDisabled,
+.gridHintOpened,
+.gridHintOverOpened,
+.gridHintDownOpened,
+.gridHintFocusedOpened,
+.gridHintFocusedDownOpened,
+.gridHintFocusedOverOpened,
+.gridHintSelectedOpened,
+.gridHintSelectedDownOpened,
+.gridHintSelectedOverOpened {
+    color: #000000;
     font-size: 12px !important;
 }
 

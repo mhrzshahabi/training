@@ -211,12 +211,12 @@
                 hoverHTML(record) {
                     return "نام: " + record.objectName + "<br>" + "کد:" + record.objectCode;
                 },
-                sortNormalizer(record){
-                    if(record.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")){
-                        return 0;
-                    }
-                    return 1;
-                }
+                // sortNormalizer(record){
+                //     if(record.objectType === type){
+                //         return 0;
+                //     }
+                //     return 1;
+                // }
             },
             {name: "objectName"},
             {name: "objectCode"},
@@ -258,12 +258,12 @@
                 hoverHTML(record) {
                     return "نام: " + record.objectName + "<br>" + "کد:" + record.objectCode;
                 },
-                sortNormalizer(record){
-                    if(record.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")){
-                        return 0;
-                    }
-                    return 1;
-                }
+                // sortNormalizer(record){
+                //     if(record.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")){
+                //         return 0;
+                //     }
+                //     return 1;
+                // }
             },
             {name: "objectName"},
             {name: "objectCode"},

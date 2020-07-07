@@ -597,7 +597,7 @@
 
             checkNullableDate("firstFinishDate");
             checkNullableDate("secondFinishDate");
-             checkUndefinedDate("firstStartDate");
+            checkUndefinedDate("firstStartDate");
             checkUndefinedDate("secondStartDate");
             CPReport_check_date("firstStartDate","secondStartDate");
             CPReport_check_date("firstFinishDate","secondFinishDate");

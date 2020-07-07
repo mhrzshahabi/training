@@ -39,6 +39,8 @@ public class EvaluationDTO implements Serializable {
 
     private String description;
     private Boolean evaluationFull;
+    private Boolean status;
+    private String returnDate;
 
     @Getter
     @Setter
@@ -62,10 +64,10 @@ public class EvaluationDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("Evaluation - Update")
     public static class Update {
-        //        private Long id;
-//        private Integer version;
         private Boolean evaluationFull;
         private String description;
+        private Boolean status;
+        private String returnDate;
         private List<EvaluationAnswerDTO.Create> evaluationAnswerList;
     }
 
@@ -122,5 +124,19 @@ public class EvaluationDTO implements Serializable {
         private String feclpass;
         private String tstudent;
         private Float studentCount;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("BehavioralForms")
+    public static class BehavioralForms {
+        private Long evaluatorTypeId;
+        private String evaluatorName;
+        private Boolean status;
+        private Long id;
+        private Long evaluatorId;
+        private String returnDate;
+        private String evaluatorTypeTitle;
     }
 }

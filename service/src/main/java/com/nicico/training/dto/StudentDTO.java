@@ -79,6 +79,10 @@ public class StudentDTO {
     @ApiModel("Student - Info")
     public static class Info extends StudentDTO {
         private Long id;
+
+        public String getFullName() {
+            return (getFirstName() + " " + getLastName()).compareTo("null null")==0?null:getFirstName() + " " + getLastName();
+        }
     }
 
     @Getter
@@ -226,6 +230,7 @@ public class StudentDTO {
         private String jobTitle;
         private String educationMajorTitle;
         private String ccpAffairs;
+        private String nationalCode;
 
         @Getter(AccessLevel.NONE)
         private String fullName;
@@ -240,17 +245,8 @@ public class StudentDTO {
     @Setter
     @Accessors
     @ApiModel("Clear With Attendance")
-    public static class clearAttendanceWithState extends clearAttendance {
-        private Map<Integer,String> states;
-    }
-
-    //Amin HK
-    @Getter
-    @Setter
-    @Accessors
-    @ApiModel("Clear With Attendance PDF")
-    public static class clearAttendanceWithStatePDF extends clearAttendance {
-        private Map<String,String> states;
+    public static class clearAttendanceWithState<T> extends clearAttendance {
+        private Map<T,String> states;
     }
 
     //Amin HK
@@ -304,6 +300,7 @@ public class StudentDTO {
         private String personnelNo2;
         private String ccpAffairs;
         private String fullName;
+        private String nationalCode;
     }
 
     //Amin HK

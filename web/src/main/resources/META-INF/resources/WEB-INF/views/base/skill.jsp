@@ -14,6 +14,7 @@
     var skillChanged_Skill = false;
     var skill_SkillLevelUrl = rootUrl + "/skill-level/spec-list";
     var skillLevelSymbol_Skill = "";
+    var temp;
 
     /////////////////////////////////////////////////TrDS/////////////////////////////////////////////////////////////////
 
@@ -89,8 +90,8 @@
             {name: "code", title: "<spring:message code='skill.code'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "titleFa", title: "<spring:message code='skill.title'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "titleEn", title: "<spring:message code='title.en'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "category.titleFa", title: "<spring:message code='category'/>", filterOperator: "iContains",autoFitWidthApproach: "both"},
-            {name: "subCategory.titleFa", title: "<spring:message code='subcategory'/>", filterOperator: "iContains",autoFitWidthApproach: "both"},
+            {name: "category.titleFa", title: "<spring:message code='category'/>", filterOperator: "iContains",autoFitWidthApproach: "both", autoFitWidth: true,},
+            {name: "subCategory.titleFa", title: "<spring:message code='subcategory'/>", filterOperator: "iContains",autoFitWidthApproach: "both", autoFitWidth: true,},
             {name: "skillLevel.titleFa", title: "<spring:message code='skill.level'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "categoryId", hidden: true},
@@ -112,6 +113,7 @@
         layoutMargin: 5,
         autoFetchData: false,
         dataSource: CourseDS_Skill,
+        emptyMessage:"دوره مرتبطی وجود ندارد",
         fields: [
             {name: "code"},
             {name: "titleFa"},
@@ -208,9 +210,10 @@
                 title: "<spring:message code='skill.title'/>",
                 required: true,
                 default: "125",
+                validateOnExit:true,
                 readonly: true,
               //  keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                width: "300"
+                width: "300",
             },
             {
                 name: "titleEn",
@@ -502,7 +505,8 @@
             {name: "subCategory.titleFa"},
             {name: "skillLevel.titleFa"},
             {name: "course.code"},
-            {name: "course.titleFa"}
+            {name: "course.titleFa"},
+            {name: "description"}
         ],
         rowHover: function(){
             changeDirection();
@@ -701,7 +705,7 @@
     }
 
     function Result_SaveSkill_Skill(resp){
-        wait_Skill.close();
+            wait_Skill.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
             setTimeout(function () {
@@ -710,7 +714,28 @@
             refreshLG(SkillLG_Skill);
             PostLG_Skill.setData([]);
             SkillWindow_Skill.close();
-        } else {
+        }else if(resp.httpResponseCode === 406){
+
+            console.log(resp.httpHeaders.skillname)
+            console.log(resp)
+
+            var OK = isc.Dialog.create({
+                message:("info", "اطلاعات این مهارت با اطلاعات مهارت"+"&nbsp;" +"&nbsp;"+getFormulaMessage(decodeURIComponent(resp.httpHeaders.skillname.replace(/\+/g,' ')), 2, "red", "I")+"&nbsp;"+"  با کد "+ "&nbsp;" +getFormulaMessage(resp.httpHeaders.skillcode, 2, "red", "I") + "&nbsp;"+ " برابر است"),
+                icon: "[SKIN]say.png",
+                title: "<spring:message code="warning"/>",
+            });
+            setTimeout(function () {
+                OK.close();
+            }, 8000);
+
+            //
+            // let OK = createDialog("info", "اطلاعات این مهارت با اطلاعات مهارت "+"&nbsp;&nbsp;" +"&nbsp;"+getFormulaMessage(resp.httpHeaders.skillname, 2, "red", "I")+"&nbsp;"+"  با کد "+ "&nbsp;&nbsp;" +getFormulaMessage(resp.httpHeaders.skillcode, 2, "red", "I") + "&nbsp;&nbsp;"+ " برابر است");
+            // setTimeout(function () {
+            //     OK.close();
+            // }, 15000);
+        }
+        else {
+
             let ERROR = createDialog("info", "<spring:message code="msg.operation.error"/>");
             setTimeout(function () {
                 ERROR.close();

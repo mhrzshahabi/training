@@ -20,6 +20,14 @@ public class MonthlyStatisticalReportDTO implements Serializable {
 
     private String ccp_unit;
 
+    private String ccp_assistant;
+
+    private String ccp_affairs;
+
+    private String ccp_section;
+
+    private String complex_title;
+
     private String Present;
 
     private String Overtime;

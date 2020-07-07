@@ -67,6 +67,8 @@ function defineWindowsEditNeedsAssessment(grid) {
         title: "ویرایش نیازسنجی",
         minWidth: 1024,
         visibility : "hidden",
+        headerControls: ["headerLabel", "closeButton"],
+        canDragReposition: false,
         items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],
         // items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/diff-needs-assessment/"})],
         placement: "fillScreen",
@@ -84,20 +86,20 @@ function defineWindowsEditNeedsAssessment(grid) {
                     title: "پیغام",
                     message: "تغییراتی در پنجره ویرایش نیازسنجی ثبت شده است لطفا یکی از گزینه های زیر را با توجه به تغییرات اعمال شده انتخاب کنید.",
                     buttons : [
-                        isc.Button.create({ title:"ارسال به گردش کار"}),
+                        // isc.Button.create({ title:"ارسال به گردش کار"}),
                         isc.Button.create({ title:"لغو تغییرات"}),
                         isc.Button.create({ title:"خروج از نیازسنجی"}),
                     ],
                     buttonClick : function (button, index) {
                         dialog.close();
                         switch(index){
+                            // case 0:
+                                // sendNeedsAssessmentToWorkflow();
+                                // break;
                             case 0:
-
-                                break;
-                            case 1:
                                 CancelChange_JspENA.click();
                                 break;
-                            case 2:
+                            case 1:
                                 Window_NeedsAssessment_Edit.Super("close", arguments);
                                 grid.invalidateCache();
                                 break;
@@ -114,10 +116,12 @@ function defineWindowsEditNeedsAssessment(grid) {
 }
 
 function defineWindowTreeNeedsAssessment() {
-    const Window_NeedsAssessment_Tree = isc.Window.create({
+    let Window_NeedsAssessment_Tree = isc.Window.create({
         ID: "Window_NeedsAssessment_Tree",
         title: "درخت نیازسنجی",
         placement: "fillScreen",
+        headerControls: ["headerLabel", "closeButton"],
+        canDragReposition: false,
         visibility : "hidden",
         minWidth: 1024,
         items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/tree-needs-assessment/"})],
@@ -134,6 +138,8 @@ function showWindowDiffNeedsAssessment(objectId, objectType) {
         title: "اختلاف نیازسنجی",
         placement: "fillScreen",
         visibility : "hidden",
+        headerControls: ["headerLabel", "closeButton"],
+        canDragReposition: false,
         minWidth: 1024,
         items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/diff-needs-assessment/"})],
         showUs(id, type) {
@@ -150,5 +156,58 @@ function showWindowDiffNeedsAssessment(objectId, objectType) {
             clearInterval(interval);
         }
     },50)
+}
+
+function showDetailViewer(title, field, record) {
+    let Window_DetailViewer_Main = isc.Window.create({
+        ID: "Window_DetailViewer_Main",
+        title: title,
+        // placement: "fillScreen",
+        visibility : "hidden",
+        headerControls: ["headerLabel", "closeButton"],
+        // canDragReposition: false,
+        // minWidth: 1024,
+        items: [isc.DetailViewer.create({
+            fields: field,
+            data: record,
+            autoFetchData: true,
+            // width: 700
+        })],
+    });
+    Window_DetailViewer_Main.show();
+}
+
+function showOrganizationalChart(func) {
+    let Window_OrganizationalChart = isc.Window.create({
+        ID: "Window_OrganizationalChart",
+        title: "درخت نیازسنجی",
+        placement: "fillScreen",
+        headerControls: ["headerLabel", "closeButton"],
+        canDragReposition: false,
+        visibility : "hidden",
+        minWidth: 1024,
+        items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/organizationalChart/"})],
+        close() {
+            func();
+            this.Super("close", arguments)
+        }
+    });
+    Window_OrganizationalChart.show();
+    // let interval = setInterval(()=>{
+    //     if(searchTree !== undefined && organizationalTree !== undefined) {
+    //         searchTree.addProperties({
+    //             rowDoubleClick(record){
+    //                 Window_OrganizationalChart.close();
+    //             }
+    //         })
+    //         organizationalTree.addProperties({
+    //             rowDoubleClick(record){
+    //                 Window_OrganizationalChart.close();
+    //                 recordChartId = record.id;
+    //             }
+    //         })
+    //         clearInterval(interval);
+    //     }
+    // },50)
 }
 

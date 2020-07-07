@@ -306,9 +306,7 @@ public class TclassService implements ITclassService {
             } else
                 request.setCriteria(criteriaRq);
         }
-
         return SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.Info.class));
-
     }
 
     // ------------------------------

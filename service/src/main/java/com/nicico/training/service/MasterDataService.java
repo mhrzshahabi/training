@@ -42,10 +42,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -1255,6 +1252,193 @@ public class MasterDataService implements IMasterDataService {
 
             return null;
 
+    }
+
+    public List<CompetenceWebserviceDTO> getDepartmentsByParams(String convertedCriteriaStr, String count, String operator, String startIndex, String sortBy) throws IOException {
+
+//        String count = countOpt.isPresent() ? countOpt.get() : "0";
+//        String operator = operatorOpt.isPresent() ? operatorOpt.get() : "and";
+//        String startIndex = startIndexOpt.isPresent() ? startIndexOpt.get() : "0";
+//        String sortBy = startIndexOpt.isPresent() ? sortByOpt.get() : "";
+
+        if (token == "") {
+            authorize();
+        }
+
+
+        if (token == "") {
+
+            return new ArrayList<CompetenceWebserviceDTO>(0);
+
+        } else {
+
+            int index = 0;
+
+            while (index <= 1) {
+                index++;
+                int startRow = 0;
+
+                ObjectMapper objectMapper = new ObjectMapper();
+
+                String criteriaStr = "";
+
+                List<String> criteriaList = new ArrayList<>();
+
+                if (criteriaStr != null && criteriaStr.compareTo("{}") != 0 && criteriaStr.compareTo("") != 0) {
+
+                    JsonNode jsonNode = objectMapper.readTree(criteriaStr);
+
+                    if (jsonNode.isArray()) {
+                        for (final JsonNode objNode : jsonNode) {
+                            criteriaList.add(objNode.toString());
+                        }
+                    } else {
+                        criteriaList.add(jsonNode.toString());
+                    }
+
+                    convertedCriteriaStr = criteriaList.get(0);
+                    for (int i = 1; i < criteriaList.size(); i++) {
+                        convertedCriteriaStr += "," + criteriaList.get(i);
+                    }
+                }
+
+                final String POST_PARAMS = convertedCriteriaStr != "" ? "{\n" +
+                        "  \"count\": " + count + ",\n" +
+                        "  \"criteria\": {\n" +
+                        "    \"criteria\": [\n" +
+                        convertedCriteriaStr +
+                        "    ],\n" +
+                        "    \"operator\": \"" + operator + "\"\n" +
+                        "  },\n" +
+                        "  \"distinct\": false,\n" +
+                        sortBy +
+                        "  \"startIndex\": " + startIndex + "\n" +
+                        "}" : "{}";
+
+                URL obj = new URL("http://devapp01.icico.net.ir/master-data/api/v1/department/get/all");
+                HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
+                postConnection.setDoOutput(true);
+                postConnection.setDoInput(true);
+
+                postConnection.setRequestMethod("POST");
+                postConnection.setRequestProperty("Content-Type", "application/json; charset=utf8");
+                postConnection.setRequestProperty("Accept", "application/json");
+                postConnection.setRequestProperty("authorization", "Bearer " + token);
+
+                OutputStream os = postConnection.getOutputStream();
+                os.write(POST_PARAMS.getBytes());
+                os.flush();
+                os.close();
+
+                int responseCode = postConnection.getResponseCode();
+
+                List<CompetenceWebserviceDTO> result = new ArrayList<>();
+
+                if (responseCode == HttpURLConnection.HTTP_OK) { //success
+                    BufferedReader in = new BufferedReader(new InputStreamReader(
+                            postConnection.getInputStream()));
+                    String inputLine;
+                    StringBuffer response = new StringBuffer();
+
+                    while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                    }
+                    in.close();
+
+
+                    CompetenceWebserviceDTO tmp = null;
+
+                    JsonNode jsonNode = objectMapper.readTree(response.toString());
+
+                    jsonNode = jsonNode.get("list");
+
+                    if (jsonNode.isArray()) {
+                        for (int i = 0; i < jsonNode.size(); i++) {
+                            tmp = new CompetenceWebserviceDTO();
+
+                            tmp.setId(Long.parseLong(jsonNode.get(i).get("id").asText()));
+                            tmp.setCode(jsonNode.get(i).get("code").asText());
+                            tmp.setLatinTitle(jsonNode.get(i).get("latinTitle").asText());
+                            tmp.setTitle(jsonNode.get(i).get("title").asText());
+                            tmp.setType(jsonNode.get(i).get("type").asText());
+                            tmp.setNature(jsonNode.get(i).get("nature").asText());
+
+                            if (jsonNode.get(i).get("startDate").asText() == null)
+                                tmp.setStartDate("");
+                            else {
+                                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+                                try {
+                                    tmp.setStartDate(DateUtil.convertMiToKh(ft.format(new Date(jsonNode.get(i).get("startDate").asLong()))));
+
+                                } catch (Exception ex) {
+
+                                }
+                            }
+
+                            if (jsonNode.get(i).get("endDate").asText() == null)
+                                tmp.setEndDate("");
+                            else {
+                                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+                                try {
+                                    tmp.setEndDate(DateUtil.convertMiToKh(ft.format(new Date(jsonNode.get(i).get("endDate").asLong()))));
+
+                                } catch (Exception ex) {
+
+                                }
+                            }
+
+                            if (jsonNode.get(i).get("legacyCreateDate").asText() == null)
+                                tmp.setLegacyCreateDate("");
+                            else {
+                                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+                                try {
+                                    tmp.setLegacyCreateDate(DateUtil.convertMiToKh(ft.format(new Date(jsonNode.get(i).get("legacyCreateDate").asLong()))));
+
+                                } catch (Exception ex) {
+
+                                }
+                            }
+
+                            if (jsonNode.get(i).get("legacyChangeDate").asText() == null)
+                                tmp.setLegacyChangeDate("");
+                            else {
+                                SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+                                try {
+                                    tmp.setLegacyChangeDate(DateUtil.convertMiToKh(ft.format(new Date(jsonNode.get(i).get("legacyChangeDate").asLong()))));
+
+                                } catch (Exception ex) {
+
+                                }
+                            }
+
+                            tmp.setActive(jsonNode.get(i).get("active").asText());
+                            tmp.setOldCode(jsonNode.get(i).get("oldCode").asText());
+                            tmp.setNewCode(jsonNode.get(i).get("newCode").asText());
+                            tmp.setUser(jsonNode.get(i).get("user").asText());
+                            tmp.setIssuable(jsonNode.get(i).get("issuable").asText());
+                            tmp.setComment(jsonNode.get(i).get("comment").asText());
+                            tmp.setCorrection(jsonNode.get(i).get("correction").asText());
+                            tmp.setAlignment(jsonNode.get(i).get("alignment").asText());
+                            tmp.setParentId(Long.parseLong(jsonNode.get(i).get("parentId").asText() == "null" ? "-1" : jsonNode.get(i).get("parentId").asText()));
+
+                            result.add(tmp);
+                        }
+                    }
+
+                    return result;
+
+                } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                    if (StringUtils.isNotEmpty(authorize())) {
+                        return new ArrayList<CompetenceWebserviceDTO>(0);
+                    }
+                } else {
+                    return new ArrayList<CompetenceWebserviceDTO>(0);
+                }
+            }
+
+            return new ArrayList<CompetenceWebserviceDTO>(0);
+
+        }
     }
 
 }

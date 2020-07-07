@@ -10,11 +10,9 @@ import com.nicico.training.dto.AttendanceDTO;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.TclassDTO;
-import com.nicico.training.model.ClassSession;
-import com.nicico.training.model.ClassStudent;
-import com.nicico.training.model.Student;
-import com.nicico.training.model.Tclass;
+import com.nicico.training.model.*;
 import com.nicico.training.repository.AttendanceDAO;
+import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.StudentDAO;
 import com.nicico.training.service.ControlReportService;
 import com.nicico.training.service.TclassService;
@@ -35,6 +33,7 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
 @Controller
@@ -49,6 +48,7 @@ public class ControlFormController {
     private final AttendanceDAO attendanceDOA;
     private final ControlReportService controlReportService;
     private final MessageSource messageSource;
+    private final PersonnelDAO personnelDAO;
 
     @Transactional(readOnly = true)
     @PostMapping(value = {"/clear-print/{type}"})
@@ -80,9 +80,16 @@ public class ControlFormController {
         for (Long studentId : studentsId) {
             Optional<Student> byId = studentDAO.findById(studentId);
             Student student = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.StudentNotFound));
-            StudentDTO.clearAttendanceWithStatePDF st = modelMapper.map(student, StudentDTO.clearAttendanceWithStatePDF.class);
-            st.setFullName(st.getFirstName() + " " + st.getLastName());
+            StudentDTO.clearAttendanceWithState st = modelMapper.map(student, StudentDTO.clearAttendanceWithState.class);
 
+            Personnel personnel=null;
+
+            if (student!=null && student.getNationalCode()!=null)
+            personnel=personnelDAO.findByNationalCodeAndPersonnelNo(student.getNationalCode().trim(),student.getPersonnelNo().trim());
+
+            st.setCcpAffairs(personnel!=null ? (personnel.getCcpAffairs() != null ? personnel.getCcpAffairs() : "") : "");
+
+            st.setFullName(st.getFirstName() + " " + st.getLastName());
 
             String dayDate = sessionList.get(0).getSessionDate() != null ? sessionList.get(0).getSessionDate() : "";
 
@@ -128,6 +135,12 @@ public class ControlFormController {
             studentArrayList.add(st);
         }//end outer for
 
+        final int threshold=24;
+        int remainSize=threshold-studentArrayList.size();
+
+        for (int i=0;i<remainSize;i++)
+            studentArrayList.add(new StudentDTO.clearAttendanceWithState());
+
         int pages = (int)Math.ceil(sessionList.stream().map(ClassSession::getSessionDate).collect(Collectors.toSet()).size() / 5)+1;
         Set<String> daysOnClass = sessionList.stream().map(ClassSession::getDayName).collect(Collectors.toSet());
 
@@ -138,6 +151,7 @@ public class ControlFormController {
         params.put("startDate", tclassDTO.getStartDate());
         params.put("endDate", tclassDTO.getEndDate());
         params.put("teacher", tclassDTO.getTeacher());
+        params.put("hduration", tclassDTO.getHDuration()!=null ? tclassDTO.getHDuration().toString()+" ساعت " : "");
         params.put("page", page);
         params.put("pages", String.valueOf(pages));
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(studentArrayList) + "}";
@@ -150,13 +164,29 @@ public class ControlFormController {
 
     protected HashMap<String, Object> print(List<ClassSessionDTO.AttendanceClearForm> sessionList) {
         final HashMap<String, Object> params = new HashMap<>();
+
         String date = sessionList.get(0).getSessionDate();
         int d = 1;
         int se = 1;
         int seTemp=1;
         params.put("d" + d, date);
+        boolean checkFirst=true;
         for (ClassSessionDTO.AttendanceClearForm session : sessionList) {
             if (session.getSessionDate().equals(date)) {
+
+                if (checkFirst) {
+                    IntStream.rangeClosed(1, 5).forEach(i -> {
+                        String strSe = "";
+                        if (i <= 9)
+                            strSe = "0" + i;
+                        else
+                            strSe = i + "";
+
+                        params.put("se" + strSe, "فاقد جلسه");
+                    });
+                    checkFirst=!checkFirst;
+                }
+
                 String strSe="";
                 if (se<=9)
                     strSe="0"+se;
@@ -165,6 +195,7 @@ public class ControlFormController {
 
                 params.put("se" +  strSe, session.getSessionStartHour() + " - " + session.getSessionEndHour());
             } else {
+                checkFirst=false;
                 date = session.getSessionDate();
                 d++;
                 params.put("d" + d, date);
@@ -178,13 +209,21 @@ public class ControlFormController {
                     strSe=se+"";
 
                 params.put("se" + strSe, session.getSessionStartHour() + " - " + session.getSessionEndHour());
+
+                IntStream.rangeClosed(se+1, se+4).forEach(i -> {
+                        String strSe1 = "";
+                        if (i <= 9)
+                            strSe1 = "0" + i;
+                        else
+                            strSe1 = i + "";
+
+                        params.put("se" + strSe1, "فاقد جلسه");
+                    });
             }
             se++;
         }
         return params;
-
     }
-
 
     @Transactional(readOnly = true)
     @PostMapping(value = {"/score-print/{type}"})
@@ -218,6 +257,12 @@ public class ControlFormController {
             i++;
         }
 
+        final int threshold=23;
+        int remainSize=threshold-studentArrayList.size();
+
+        for (int l=0;l<remainSize;l++)
+            studentArrayList.add(new StudentDTO.scoreAttendance());
+
         Set<ClassSession> sessions = tClass.getClassSessions();
         List<ClassSession> sessionList = sessions.stream().sorted(Comparator.comparing(ClassSession::getSessionDate)
                 .thenComparing(ClassSession::getSessionStartHour))
@@ -231,7 +276,7 @@ public class ControlFormController {
         params.put("startDate", tclassDTO.getStartDate());
         params.put("endDate", tclassDTO.getEndDate());
         params.put("teacher", tclassDTO.getTeacher());
-
+        params.put("hduration", tclassDTO.getHDuration()!=null ? tclassDTO.getHDuration().toString()+" ساعت " : "");
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(studentArrayList) + "}";
         params.put("today", DateUtil.todayDate());
         params.put(ConstantVARs.REPORT_TYPE, type);
@@ -261,10 +306,24 @@ public class ControlFormController {
             Optional<Student> byId = studentDAO.findById(studentId);
             Student student = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.StudentNotFound));
             StudentDTO.controlAttendance st = modelMapper.map(student, StudentDTO.controlAttendance.class);
+
+            Personnel personnel=null;
+
+            if (student!=null && student.getNationalCode()!=null)
+                personnel=personnelDAO.findByNationalCodeAndPersonnelNo(student.getNationalCode().trim(),student.getPersonnelNo().trim());
+
+            st.setCcpAffairs(personnel!=null ? (personnel.getCcpAffairs() != null ? personnel.getCcpAffairs() : "") : "");
+
             st.setFullName(st.getFirstName() + " " + st.getLastName());
             studentArrayList.add(st);
             i++;
         }
+
+        final int threshold=23;
+        int remainSize=threshold-studentArrayList.size();
+
+        for (int l=0;l<remainSize;l++)
+            studentArrayList.add(new StudentDTO.controlAttendance());
 
         Set<ClassSession> sessions = tClass.getClassSessions();
         List<ClassSession> sessionList = sessions.stream().sorted(Comparator.comparing(ClassSession::getSessionDate)
@@ -279,7 +338,7 @@ public class ControlFormController {
         params.put("startDate", tclassDTO.getStartDate());
         params.put("endDate", tclassDTO.getEndDate());
         params.put("teacher", tclassDTO.getTeacher());
-
+        params.put("hduration", tclassDTO.getHDuration()!=null ? tclassDTO.getHDuration().toString()+" ساعت " : "");
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(studentArrayList) + "}";
         params.put("today", DateUtil.todayDate());
         params.put(ConstantVARs.REPORT_TYPE, type);
@@ -320,8 +379,15 @@ public class ControlFormController {
                 Optional<Student> byId = studentDAO.findById(studentId);
                 Student student = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.StudentNotFound));
                 StudentDTO.clearAttendanceWithState st = modelMapper.map(student, StudentDTO.clearAttendanceWithState.class);
-                st.setFullName(st.getFirstName() + " " + st.getLastName());
 
+                Personnel personnel=null;
+
+                if (student!=null && student.getNationalCode()!=null)
+                    personnel=personnelDAO.findByNationalCodeAndPersonnelNo(student.getNationalCode().trim(),student.getPersonnelNo().trim());
+
+                st.setCcpAffairs(personnel!=null ? (personnel.getCcpAffairs() != null ? personnel.getCcpAffairs() : "") : "");
+
+                st.setFullName(st.getFirstName() + " " + st.getLastName());
 
                     String dayDate = sessionList.get(0).getSessionDate() != null ? sessionList.get(0).getSessionDate() : "";
 
@@ -370,6 +436,7 @@ public class ControlFormController {
             params.put("startDate", tclassDTO.getStartDate());
             params.put("endDate", tclassDTO.getEndDate());
             params.put("teacher", tclassDTO.getTeacher());
+            params.put("hduration", tclassDTO.getHDuration()!=null ? tclassDTO.getHDuration().toString()+"ساعت" : "");
 
             listMaps.add(params);
         }
@@ -437,6 +504,7 @@ public class ControlFormController {
             params.put("startDate", tclassDTO.getStartDate());
             params.put("endDate", tclassDTO.getEndDate());
             params.put("teacher", tclassDTO.getTeacher());
+            params.put("hduration", tclassDTO.getHDuration()!=null ? tclassDTO.getHDuration().toString()+"ساعت" : "");
 
             listMaps.add(params);
         }
@@ -481,6 +549,13 @@ public class ControlFormController {
                 StudentDTO.controlAttendance st = modelMapper.map(student, StudentDTO.controlAttendance.class);
                 st.setFullName(st.getFirstName() + " " + st.getLastName());
 
+                Personnel personnel=null;
+
+                if (student!=null && student.getNationalCode()!=null)
+                    personnel=personnelDAO.findByNationalCodeAndPersonnelNo(student.getNationalCode().trim(),student.getPersonnelNo().trim());
+
+                st.setCcpAffairs(personnel!=null ? (personnel.getCcpAffairs() != null ? personnel.getCcpAffairs() : "") : "");
+
                 studentArrayList.add(st);
                 i++;
             }//end outer for
@@ -502,6 +577,7 @@ public class ControlFormController {
             params.put("startDate", tclassDTO.getStartDate());
             params.put("endDate", tclassDTO.getEndDate());
             params.put("teacher", tclassDTO.getTeacher());
+            params.put("hduration", tclassDTO.getHDuration()!=null ? tclassDTO.getHDuration().toString()+"ساعت" : "");
 
             listMaps.add(params);
         }
@@ -559,6 +635,13 @@ public class ControlFormController {
                 StudentDTO.fullAttendance st = modelMapper.map(student, StudentDTO.fullAttendance.class);
                 st.setFullName(st.getFirstName() + " " + st.getLastName());
 
+                Personnel personnel=null;
+
+                if (student!=null && student.getNationalCode()!=null)
+                    personnel=personnelDAO.findByNationalCodeAndPersonnelNo(student.getNationalCode().trim(),student.getPersonnelNo().trim());
+
+                st.setCcpAffairs(personnel!=null ? (personnel.getCcpAffairs() != null ? personnel.getCcpAffairs() : "") : "");
+
                 st.setScoreA(listClassStudents.get(cnt).getScore() != null && dataStatus.equals("true") ? listClassStudents.get(cnt).getScore().toString() : "");
                 st.setScoreB(st.calScoreB(st.getScoreA()));
 
@@ -614,7 +697,7 @@ public class ControlFormController {
             params.put("startDate", tclassDTO.getStartDate());
             params.put("endDate", tclassDTO.getEndDate());
             params.put("teacher", tclassDTO.getTeacher());
-
+            params.put("hduration", tclassDTO.getHDuration()!=null ? tclassDTO.getHDuration().toString()+"ساعت" : "");
             listMaps.add(params);
         }
 

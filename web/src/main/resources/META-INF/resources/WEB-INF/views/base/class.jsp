@@ -10,6 +10,7 @@
 // <script>
     wait.show()
     var etcTargetSociety = [];
+    var singleTargetScoiety = [];
     var classMethod = "POST";
     var autoValid = false;
     var classWait;
@@ -1165,7 +1166,7 @@
             },
             {
                 name: "acceptancelimit_a",
-                colSpan: 2,
+                colSpan: 1,
                 required: true,
                 hidden: true,
                 textAlign: "center",
@@ -1196,18 +1197,17 @@
 
 
                     if (value === "371"){
-                        form.getItem("addtargetSociety").hide();
+                        // form.getItem("addtargetSociety").hide();
                         DataSource_TargetSociety_List.testData.forEach(function(currentValue, index, arr){DataSource_TargetSociety_List.removeData(currentValue)});
-                        getSocietiesList();
                         form.getItem("targetSocieties").valueField = "societyId";
                         form.getItem("targetSocieties").clearValue();
+                        singleTargetScoiety.forEach(function (currentValue, index, arr) {DataSource_TargetSociety_List.addData(currentValue);});
                     }
                     else if(value === "372"){
-                        form.getItem("addtargetSociety").show();
+                        // form.getItem("addtargetSociety").show();
                         DataSource_TargetSociety_List.testData.forEach(function(currentValue, index, arr){DataSource_TargetSociety_List.removeData(currentValue)});
                         form.getItem("targetSocieties").valueField = "title";
                         form.getItem("targetSocieties").clearValue();
-                        // form.getItem("targetSocieties").setValue(etcTargetSociety);
                         etcTargetSociety.forEach(function (currentValue, index, arr) {DataSource_TargetSociety_List.addData({societyId: index, title: currentValue});});
                     }
                     else
@@ -1237,17 +1237,24 @@
                 title: "افزودن",
                 type: "button",
                 colSpan: 1,
-                hidden: true,
+                hidden: false,//true
                 endRow: false, startRow: false,
                 i:0,
                 click: function() {
-                    isc.askForValue("لطفا جامعه هدف مورد نظر را وارد کنید",
-                        function (value) {
-                            DataSource_TargetSociety_List.addData({societyId:i, title: value});
-                            etcTargetSociety.add(value);
-                            DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(etcTargetSociety);
-                            i +=1;
-                        });
+                    if(DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").getValue() === "372"){
+                        isc.askForValue("لطفا جامعه هدف مورد نظر را وارد کنید",
+                            function (value) {
+                                if(value !== "" && value !== null && value !== undefined){
+                                    DataSource_TargetSociety_List.addData({societyId:i, title: value});
+                                    etcTargetSociety.add(value);
+                                    DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(etcTargetSociety);
+                                    i +=1;
+                                }
+                            });
+                    }else if(DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").getValue() === "371"){
+                        showOrganizationalChart(setSocieties);
+
+                    }
                 }
             },
             {
@@ -2372,8 +2379,8 @@
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
+            singleTargetScoiety = [];
             etcTargetSociety = [];
-            getSocietiesList();
             getTargetSocieties(record.id);
             RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list";
             RestDataSource_Teacher_JspClass.invalidateCache();
@@ -2453,8 +2460,10 @@
             DynamicForm_Class_JspClass.setValue("planner", userPersonInfo.id);
         }
         autoTimeActivation(true);
+        DataSource_TargetSociety_List.testData.forEach(function(currentValue, index, arr){DataSource_TargetSociety_List.removeData(currentValue)});
+        DynamicForm_Class_JspClass.getItem("targetSocieties").clearValue();
+        singleTargetScoiety = [];
         etcTargetSociety = [];
-        getSocietiesList();
         getOrganizers();
     }
 
@@ -2949,6 +2958,7 @@
     }
 
     function getTargetSocieties(id) {
+        DataSource_TargetSociety_List.testData.forEach(function(currentValue, index, arr){DataSource_TargetSociety_List.removeData(currentValue)});
         wait.show()
         isc.RPCManager.sendRequest(
             TrDSRequest(targetSocietyUrl + "getListById/" + id, "GET", null, function (resp) {
@@ -2957,23 +2967,25 @@
                     var societies = [];
                     var item = 0;
                     DataSource_TargetSociety_List.testData.forEach(function(currentValue, index, arr){DataSource_TargetSociety_List.removeData(currentValue)});
-                    DynamicForm_Class_JspClass.getItem("addtargetSociety").hide();
-                    DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(371);
+                    // DynamicForm_Class_JspClass.getItem("addtargetSociety").hide();
+                    DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue("371");
                     JSON.parse(resp.data).forEach(
                         function (currentValue, index, arr) {
                             if (currentValue.targetSocietyTypeId === 371) {
                                 societies.add(currentValue.societyId);
                                 DynamicForm_Class_JspClass.getItem("targetSocieties").valueField = "societyId";
-                                DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(currentValue.targetSocietyTypeId);
-                                DynamicForm_Class_JspClass.getItem("addtargetSociety").hide();
+                                DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(currentValue.targetSocietyTypeId.toString());
+                                DataSource_TargetSociety_List.addData(currentValue);
+                                singleTargetScoiety.add(currentValue);
+                                //DynamicForm_Class_JspClass.getItem("addtargetSociety").hide();
                             } else if (currentValue.targetSocietyTypeId === 372) {
                                 societies.add(currentValue.title);
                                 DynamicForm_Class_JspClass.getItem("targetSocieties").valueField = "title";
                                 DataSource_TargetSociety_List.addData({societyId: item, title: currentValue.title});
                                 etcTargetSociety.add(currentValue.title);
-                                item += 1;
-                                DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(currentValue.targetSocietyTypeId);
-                                DynamicForm_Class_JspClass.getItem("addtargetSociety").show();
+                                item -= 1;
+                                DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(currentValue.targetSocietyTypeId.toString());
+                                // DynamicForm_Class_JspClass.getItem("addtargetSociety").show();
                             }
                         });
                     DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(societies);
@@ -2981,22 +2993,17 @@
             })
         );
     }
-    
-    function getSocietiesList() {
-        wait.show()
-        isc.RPCManager.sendRequest(
-            TrDSRequest(targetSocietyUrl + "getList", "GET", null, function (resp) {
-                wait.close()
-                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                    DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(371);
-                    DynamicForm_Class_JspClass.getItem("addtargetSociety").hide();
-                    JSON.parse(resp.data).forEach(
-                        function (currentValue, index, arr) {
-                            DataSource_TargetSociety_List.addData(currentValue);
-                        }
-                    );
-                }
-            }));
+
+
+    function setSocieties(){
+        var selectedSocieties = [];
+        chosenDepartments_JspOC.data.forEach(function (currentValue, index, arr) {
+            DataSource_TargetSociety_List.addData({societyId: currentValue.id, title: currentValue.title});
+            singleTargetScoiety.add({societyId: currentValue.id, title: currentValue.title});
+            selectedSocieties.add(currentValue.id);
+        });
+        // singleTargetScoiety.forEach(function (currentValue, index, arr) {selectedSocieties.add(currentValue.societyId);});
+        DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(selectedSocieties);
     }
 
     function autoTimeActivation(active = true) {

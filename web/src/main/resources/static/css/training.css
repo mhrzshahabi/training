@@ -65,6 +65,45 @@ span {
 {
     color: #003580 !important;
 }
+.shortcuts{
+    width: 100%;
+    height: 100%;
+}
+.shortcut-box{
+    background-color: #f5f6f7;
+    border-radius: 10px;
+    border: 2px solid #dadbdf;
+}
+
+.sh-item{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+.sh-item svg{
+    width: 50%;
+    height: 50%;
+}
+.sh-item:hover h3{
+    color: #717070;
+}
+.sh-item:hover svg path:not([fill="none"]), .sh-item:hover svg circle:not([fill="none"]){
+    fill: #fe9d2a;
+    pointer-events: none;
+}
+
+.sh-item:hover svg circle:not([stroke="none"]){
+    stroke: #fe9d2a;
+}
+
+.sh-item h3{
+    color: #fe9d2a;
+//margin-top: 23px;
+}
 
 
 .inputRTL input{
@@ -85,7 +124,14 @@ span {
     padding: 7px !important;
 }
 
+.gridSelectionOver{
+    left:auto !important;
+    right:0 !important;
+}
 
-
-
-
+.landingPage{
+    background: url("../static/img/shortcutMenu/landing-bg.png") no-repeat center bottom fixed;
+    background-size: cover;
+    display: block;
+    height: 50%
+}

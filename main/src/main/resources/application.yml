@@ -73,7 +73,7 @@ nicico:
     update:
       mode: false
   training:
-    version: '1.21'
+    version: '1.22'
   sms:
     magfa:
       username: 'maaden_81794'

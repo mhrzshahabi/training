@@ -55,6 +55,8 @@ public class ClassStudentDTO implements Serializable {
         private ParameterValueDTO.TupleInfo evaluationAudienceType;
         private Long evaluationAudienceTypeId;
         private Long evaluationAudienceId;
+        private Integer numberOfBehavioralForwardedForms;
+        private Integer numberOfBehavioralRegisteredForms;
 
         public String getFullName(){
             return student.getFirstName()+" "+student.getLastName();

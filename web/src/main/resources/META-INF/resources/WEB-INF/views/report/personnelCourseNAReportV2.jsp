@@ -470,9 +470,9 @@
                 title: "گزارش گیری",
                 type: "ButtonItem",
                 align: "right",
-                startRow: false,
+                endRow: false,
                 click: function () {
-                    if(Object.keys(FilterDF_PCNR.getValuesAsCriteria()).length <= 1) {
+                    if(!hasFilters()) {
                         createDialog("info","فیلتری انتخاب نشده است.");
                     } else{
                         var criteria = FilterDF_PCNR.getValuesAsAdvancedCriteria();
@@ -486,6 +486,30 @@
                         CourseLG_MinPCNR.invalidateCache();
                         CourseLG_MinPCNR.fetchData();
                     }
+                }
+            },
+            {
+                title: "<spring:message code="global.form.print.excel"/>",
+                type: "ButtonItem",
+                startRow: false,
+                click: function () {
+                    if(!hasFilters()) {
+                        createDialog("info","فیلتری انتخاب نشده است.");
+                    } else{
+                        var criteria = FilterDF_PCNR.getValuesAsAdvancedCriteria();
+                        criteria.criteria.remove(criteria.criteria.find({fieldName: "reportType"}));
+
+
+                        if (FilterDF_PCNR.getItem("reportType").getValue() === "1"){
+                            ExportToFile.downloadExcelFromClient(CourseLG_PCNR,null,"","آمار دوره های نیازسنجی افراد - آماری");
+                        }
+                        else if(FilterDF_PCNR.getItem("reportType").getValue() === "2"){
+                            ExportToFile.showDialog(null, CourseLG_MinPCNR, 'personnelCourseNAReportV2Min', 0, null, '',  "آمار دوره های نیازسنجی افراد - لیستی", criteria, null);
+                        }
+                    }
+
+
+
                 }
             }
         ],
@@ -620,5 +644,17 @@
             CourseLG_MinPCNR,
         ]
     });
+
+
+    //##--------------------#Functions#---------------------------------##
+
+    function hasFilters(){
+        if(Object.keys(FilterDF_PCNR.getValuesAsCriteria()).length < 2 && FilterDF_PCNR.getValuesAsCriteria().criteria === undefined)
+            return false;
+        else if(FilterDF_PCNR.getValuesAsCriteria().criteria !== undefined && Object.keys(FilterDF_PCNR.getValuesAsCriteria().criteria).length < 3)
+            return false
+        else
+            return true;
+    }
 
     //</script>
