@@ -32,7 +32,7 @@ public class ControlReportService {
             Sheet sheet = workbook.createSheet("گزارش حضور و غیاب");
             sheet.setColumnWidth(0,1000);
             sheet.setColumnWidth(1,5200);
-            sheet.setColumnWidth(2,3000);
+            sheet.setColumnWidth(2,4200);
             sheet.setColumnWidth(3,3500);
             sheet.setColumnWidth(4,5200);
             sheet.setColumnWidth(5,5200);
@@ -168,7 +168,7 @@ public class ControlReportService {
 
                 XSSFCellStyle rCellStyleLeft = (XSSFCellStyle) workbook.createCellStyle();
                 rCellStyleLeft.setFont(rFont2);
-                rCellStyleLeft.setAlignment(CellStyle.ALIGN_LEFT);
+                rCellStyleLeft.setAlignment(CellStyle.ALIGN_CENTER);
                 rCellStyleLeft.setBorderRight(CellStyle.BORDER_MEDIUM);
                 rCellStyleLeft.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
                 rCellStyleLeft.setFillForegroundColor(IndexedColors.ORANGE.getIndex());
@@ -223,7 +223,7 @@ public class ControlReportService {
                 //sixth row
                 CellRangeAddress cellRangeAddress3 = CellRangeAddress.valueOf("C"+(cnt+6)+":D"+(cnt+6));
                 rCellStyle2.setFont(rFont2);
-                sheet.addMergedRegion(cellRangeAddress3);
+               // sheet.addMergedRegion(cellRangeAddress3);
                 row = sheet.createRow(cnt+5);
                 cellOfRow = row.createCell(1);
                 row.setHeight((short) 475);
@@ -240,7 +240,15 @@ public class ControlReportService {
                 rCellStyle3.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
                 cellOfRow.setCellStyle(rCellStyle3);
 
+                rCellStyle3.setFont(rFont2);
+                cellOfRow = row.createCell(3);
+                cellOfRow.setCellValue("مدت زمان:");
+                rCellStyle3.setAlignment(CellStyle.ALIGN_CENTER);
+                rCellStyle3.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+                cellOfRow.setCellStyle(rCellStyle3);
+
                 cellOfRow = row.createCell(4);
+                cellOfRow.setCellValue(masterHeader.get(m).get("hduration"));
                 cellOfRow.setCellStyle(rCellStyleLeft);
                 //end sixth row
 
@@ -361,7 +369,7 @@ public class ControlReportService {
                 for (int i = 0; i < dates.length; i++) {
                     for (int j = 0; j <= 4; j++) {
                         cellOfRow = row.createCell(factor + j);
-
+                        cellOfRow.setCellValue("فاقد جلسه");
                         rCellStyle7.setBorderBottom(CellStyle.BORDER_MEDIUM);
                         rCellStyle7.setBorderTop(CellStyle.BORDER_MEDIUM);
                         rCellStyle7.setBorderLeft(CellStyle.BORDER_MEDIUM);
@@ -529,7 +537,7 @@ public class ControlReportService {
             Sheet sheet = workbook.createSheet("گزارش نمرات");
             sheet.setColumnWidth(0,1000);
             sheet.setColumnWidth(1,5200);
-            sheet.setColumnWidth(2,3000);
+            sheet.setColumnWidth(2,4200);
             sheet.setColumnWidth(3,3500);
             sheet.setColumnWidth(4,5200);
             sheet.setColumnWidth(5,5200);
@@ -663,7 +671,7 @@ public class ControlReportService {
 
                 XSSFCellStyle rCellStyleLeft = (XSSFCellStyle) workbook.createCellStyle();
                 rCellStyleLeft.setFont(rFont2);
-                rCellStyleLeft.setAlignment(CellStyle.ALIGN_LEFT);
+                rCellStyleLeft.setAlignment(CellStyle.ALIGN_CENTER);
                 rCellStyleLeft.setBorderRight(CellStyle.BORDER_MEDIUM);
                 rCellStyleLeft.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
                 rCellStyleLeft.setFillForegroundColor(IndexedColors.ORANGE.getIndex());
@@ -718,7 +726,7 @@ public class ControlReportService {
                 //sixth row
                 CellRangeAddress cellRangeAddress3 = CellRangeAddress.valueOf("C"+(cnt+6)+":D"+(cnt+6));
                 rCellStyle2.setFont(rFont2);
-                sheet.addMergedRegion(cellRangeAddress3);
+               // sheet.addMergedRegion(cellRangeAddress3);
                 row = sheet.createRow(cnt+5);
                 cellOfRow = row.createCell(1);
                 row.setHeight((short) 475);
@@ -735,7 +743,15 @@ public class ControlReportService {
                 rCellStyle3.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
                 cellOfRow.setCellStyle(rCellStyle3);
 
+                rCellStyle3.setFont(rFont2);
+                cellOfRow = row.createCell(3);
+                cellOfRow.setCellValue("مدت زمان:");
+                rCellStyle3.setAlignment(CellStyle.ALIGN_CENTER);
+                rCellStyle3.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+                cellOfRow.setCellStyle(rCellStyle3);
+
                 cellOfRow = row.createCell(4);
+                cellOfRow.setCellValue(masterHeader.get(m).get("hduration"));
                 cellOfRow.setCellStyle(rCellStyleLeft);
                 //end sixth row
 
@@ -919,7 +935,7 @@ public class ControlReportService {
             Sheet sheet = workbook.createSheet("گزارش کنترل");
             sheet.setColumnWidth(0,1000);
             sheet.setColumnWidth(1,5200);
-            sheet.setColumnWidth(2,3000);
+            sheet.setColumnWidth(2,4200);
             sheet.setColumnWidth(3,3500);
             sheet.setColumnWidth(4,5200);
             sheet.setColumnWidth(5,5200);
@@ -1053,7 +1069,7 @@ public class ControlReportService {
 
                 XSSFCellStyle rCellStyleLeft = (XSSFCellStyle) workbook.createCellStyle();
                 rCellStyleLeft.setFont(rFont2);
-                rCellStyleLeft.setAlignment(CellStyle.ALIGN_LEFT);
+                rCellStyleLeft.setAlignment(CellStyle.ALIGN_CENTER);
                 rCellStyleLeft.setBorderRight(CellStyle.BORDER_MEDIUM);
                 rCellStyleLeft.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
                 rCellStyleLeft.setFillForegroundColor(IndexedColors.ORANGE.getIndex());
@@ -1108,7 +1124,7 @@ public class ControlReportService {
                 //sixth row
                 CellRangeAddress cellRangeAddress3 = CellRangeAddress.valueOf("C"+(cnt+6)+":D"+(cnt+6));
                 rCellStyle2.setFont(rFont2);
-                sheet.addMergedRegion(cellRangeAddress3);
+                //sheet.addMergedRegion(cellRangeAddress3);
                 row = sheet.createRow(cnt+5);
                 cellOfRow = row.createCell(1);
                 row.setHeight((short) 475);
@@ -1125,7 +1141,15 @@ public class ControlReportService {
                 rCellStyle3.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
                 cellOfRow.setCellStyle(rCellStyle3);
 
+                rCellStyle3.setFont(rFont2);
+                cellOfRow = row.createCell(3);
+                cellOfRow.setCellValue("مدت زمان:");
+                rCellStyle3.setAlignment(CellStyle.ALIGN_CENTER);
+                rCellStyle3.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+                cellOfRow.setCellStyle(rCellStyle3);
+
                 cellOfRow = row.createCell(4);
+                cellOfRow.setCellValue(masterHeader.get(m).get("hduration"));
                 cellOfRow.setCellStyle(rCellStyleLeft);
                 //end sixth row
 
@@ -1309,7 +1333,7 @@ public class ControlReportService {
             Sheet sheet = workbook.createSheet("گزارش نمرات");
             sheet.setColumnWidth(0,1000);
             sheet.setColumnWidth(1,5200);
-            sheet.setColumnWidth(2,3000);
+            sheet.setColumnWidth(2,4200);
             sheet.setColumnWidth(3,3500);
             sheet.setColumnWidth(4,5200);
             sheet.setColumnWidth(5,5200);
@@ -1443,7 +1467,7 @@ public class ControlReportService {
 
                 XSSFCellStyle rCellStyleLeft = (XSSFCellStyle) workbook.createCellStyle();
                 rCellStyleLeft.setFont(rFont2);
-                rCellStyleLeft.setAlignment(CellStyle.ALIGN_LEFT);
+                rCellStyleLeft.setAlignment(CellStyle.ALIGN_CENTER);
                 rCellStyleLeft.setBorderRight(CellStyle.BORDER_MEDIUM);
                 rCellStyleLeft.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
                 rCellStyleLeft.setFillForegroundColor(IndexedColors.ORANGE.getIndex());
@@ -1498,7 +1522,7 @@ public class ControlReportService {
                 //sixth row
                 CellRangeAddress cellRangeAddress3 = CellRangeAddress.valueOf("C"+(cnt+6)+":D"+(cnt+6));
                 rCellStyle2.setFont(rFont2);
-                sheet.addMergedRegion(cellRangeAddress3);
+                //sheet.addMergedRegion(cellRangeAddress3);
                 row = sheet.createRow(cnt+5);
                 cellOfRow = row.createCell(1);
                 row.setHeight((short) 475);
@@ -1515,7 +1539,15 @@ public class ControlReportService {
                 rCellStyle3.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
                 cellOfRow.setCellStyle(rCellStyle3);
 
+                rCellStyle3.setFont(rFont2);
+                cellOfRow = row.createCell(3);
+                cellOfRow.setCellValue("مدت زمان:");
+                rCellStyle3.setAlignment(CellStyle.ALIGN_CENTER);
+                rCellStyle3.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+                cellOfRow.setCellStyle(rCellStyle3);
+
                 cellOfRow = row.createCell(4);
+                cellOfRow.setCellValue(masterHeader.get(m).get("hduration"));
                 cellOfRow.setCellStyle(rCellStyleLeft);
                 //end sixth row
 
@@ -1678,7 +1710,7 @@ public class ControlReportService {
                 sheet = workbook.createSheet("گزارش حضور و غیاب");
                 sheet.setColumnWidth(0,1000);
                 sheet.setColumnWidth(1,5200);
-                sheet.setColumnWidth(2,3000);
+                sheet.setColumnWidth(2,4200);
                 sheet.setColumnWidth(3,3500);
                 sheet.setColumnWidth(4,5200);
                 sheet.setColumnWidth(5,5200);
@@ -1805,7 +1837,7 @@ public class ControlReportService {
 
                     XSSFCellStyle rCellStyleLeft = (XSSFCellStyle) workbook.createCellStyle();
                     rCellStyleLeft.setFont(rFont2);
-                    rCellStyleLeft.setAlignment(CellStyle.ALIGN_LEFT);
+                    rCellStyleLeft.setAlignment(CellStyle.ALIGN_CENTER);
                     rCellStyleLeft.setBorderRight(CellStyle.BORDER_MEDIUM);
                     rCellStyleLeft.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
                     rCellStyleLeft.setFillForegroundColor(IndexedColors.ORANGE.getIndex());
@@ -1860,7 +1892,7 @@ public class ControlReportService {
                     //sixth row
                     CellRangeAddress cellRangeAddress3 = CellRangeAddress.valueOf("C"+(cnt+6)+":D"+(cnt+6));
                     rCellStyle2.setFont(rFont2);
-                    sheet.addMergedRegion(cellRangeAddress3);
+                   // sheet.addMergedRegion(cellRangeAddress3);
                     row = sheet.createRow(cnt+5);
                     cellOfRow = row.createCell(1);
                     row.setHeight((short) 475);
@@ -1877,7 +1909,15 @@ public class ControlReportService {
                     rCellStyle3.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
                     cellOfRow.setCellStyle(rCellStyle3);
 
+                    rCellStyle3.setFont(rFont2);
+                    cellOfRow = row.createCell(3);
+                    cellOfRow.setCellValue("مدت زمان:");
+                    rCellStyle3.setAlignment(CellStyle.ALIGN_CENTER);
+                    rCellStyle3.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+                    cellOfRow.setCellStyle(rCellStyle3);
+
                     cellOfRow = row.createCell(4);
+                    cellOfRow.setCellValue(masterHeader.get(m).get("hduration"));
                     cellOfRow.setCellStyle(rCellStyleLeft);
                     //end sixth row
 
@@ -1998,7 +2038,7 @@ public class ControlReportService {
                     for (int i = 0; i < dates.length; i++) {
                         for (int j = 0; j <= 4; j++) {
                             cellOfRow = row.createCell(factor + j);
-
+                            cellOfRow.setCellValue("فاقد جلسه");
                             rCellStyle7.setBorderBottom(CellStyle.BORDER_MEDIUM);
                             rCellStyle7.setBorderTop(CellStyle.BORDER_MEDIUM);
                             rCellStyle7.setBorderLeft(CellStyle.BORDER_MEDIUM);
@@ -2267,7 +2307,7 @@ public class ControlReportService {
 
                 XSSFCellStyle rCellStyleLeft = (XSSFCellStyle) workbook.createCellStyle();
                 rCellStyleLeft.setFont(rFont2);
-                rCellStyleLeft.setAlignment(CellStyle.ALIGN_LEFT);
+                rCellStyleLeft.setAlignment(CellStyle.ALIGN_CENTER);
                 rCellStyleLeft.setBorderRight(CellStyle.BORDER_MEDIUM);
                 rCellStyleLeft.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
                 rCellStyleLeft.setFillForegroundColor(IndexedColors.ORANGE.getIndex());
@@ -2322,7 +2362,7 @@ public class ControlReportService {
                 //sixth row
                 CellRangeAddress cellRangeAddress3 = CellRangeAddress.valueOf("C"+(cnt+6)+":D"+(cnt+6));
                 rCellStyle2.setFont(rFont2);
-                sheet.addMergedRegion(cellRangeAddress3);
+                //sheet.addMergedRegion(cellRangeAddress3);
                 row = sheet.createRow(cnt+5);
                 cellOfRow = row.createCell(1);
                 row.setHeight((short) 475);
@@ -2339,7 +2379,15 @@ public class ControlReportService {
                 rCellStyle3.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
                 cellOfRow.setCellStyle(rCellStyle3);
 
+                rCellStyle3.setFont(rFont2);
+                cellOfRow = row.createCell(3);
+                cellOfRow.setCellValue("مدت زمان:");
+                rCellStyle3.setAlignment(CellStyle.ALIGN_CENTER);
+                rCellStyle3.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+                cellOfRow.setCellStyle(rCellStyle3);
+
                 cellOfRow = row.createCell(4);
+                cellOfRow.setCellValue(masterHeader.get(m).get("hduration"));
                 cellOfRow.setCellStyle(rCellStyleLeft);
                 //end sixth row
 

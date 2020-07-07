@@ -395,5 +395,22 @@
             <column name="b_status" type="number(1, 0)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="mostafa-001">
+        <dropUniqueConstraint constraintName="UC_TBL_JOBC_CODE_COL" tableName="TBL_JOB"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="mostafa-002">
+        <dropUniqueConstraint constraintName="UC_TBL_POST_GRADEC_CODE_COL" tableName="TBL_POST_GRADE"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="mostafa-003">
+        <dropUniqueConstraint constraintName="UC_TBL_POSTC_CODE_COL" tableName="TBL_POST"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="mostafa-004">
+        <dropUniqueConstraint constraintName="UC_TBL_TRAINING_POSTC_CODE_COL" tableName="TBL_TRAINING_POST"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1594115333049-437">
+        <addColumn tableName="tbl_evaluation">
+            <column name="c_return_date" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

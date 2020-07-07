@@ -9,10 +9,9 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
-import com.nicico.training.model.ClassStudent;
-import com.nicico.training.model.Goal;
-import com.nicico.training.model.QuestionnaireQuestion;
-import com.nicico.training.model.Skill;
+import com.nicico.training.model.*;
+import com.nicico.training.repository.EvaluationDAO;
+import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -50,6 +50,8 @@ public class EvaluationRestController {
     private final ClassStudentService classStudentService;
     private final TclassService tclassService;
     private final QuestionnaireQuestionService questionnaireQuestionService;
+    private final EvaluationDAO evaluationDAO;
+    private final PersonnelDAO personnelDAO;
 
     //*********************************
 
@@ -532,5 +534,26 @@ public class EvaluationRestController {
 
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/EvaluationReactionTraining.jasper", params, jsonDataSource, response);
+    }
+
+    @GetMapping(value = "/getBehavioralForms/{stdId}/{classId}")
+    public ResponseEntity<ISC<EvaluationDTO.BehavioralForms>> getBehavioralForms(HttpServletRequest iscRq, @PathVariable Long stdId, @PathVariable Long classId) throws IOException {
+        SearchDTO.SearchRs<EvaluationDTO.BehavioralForms> searchRs = new SearchDTO.SearchRs<>();
+        List<Evaluation> list =  evaluationDAO.findByClassIdAndEvaluatedIdAndEvaluationLevelIdAndQuestionnaireTypeId(classId,stdId,156L, 230L);
+        List<EvaluationDTO.BehavioralForms> finalList = new ArrayList<>();
+        for (Evaluation evaluation : list) {
+            EvaluationDTO.BehavioralForms behavioralForms = new EvaluationDTO.BehavioralForms();
+            behavioralForms.setEvaluatorTypeId(evaluation.getEvaluatorTypeId());
+            behavioralForms.setStatus(evaluation.getStatus());
+            Personnel personnel = personnelDAO.findById(evaluation.getEvaluatorId());
+            behavioralForms.setEvaluatorName(personnel.getFirstName() + " " + personnel.getLastName());
+            behavioralForms.setId(evaluation.getId());
+            behavioralForms.setEvaluatorId(personnel.getId());
+            behavioralForms.setReturnDate(evaluation.getReturnDate());
+            finalList.add(behavioralForms);
+        }
+        searchRs.setList(finalList);
+        searchRs.setTotalCount(Long.parseLong(finalList.size()+""));
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
     }
 }

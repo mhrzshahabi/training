@@ -77,4 +77,7 @@ public class Evaluation extends Auditable {
     @Column(name = "b_status")
     private Boolean status;
 
+    @Column(name = "c_return_date")
+    private String returnDate;
+
 }

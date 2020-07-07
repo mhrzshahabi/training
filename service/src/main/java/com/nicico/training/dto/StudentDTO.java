@@ -226,6 +226,7 @@ public class StudentDTO {
         private String jobTitle;
         private String educationMajorTitle;
         private String ccpAffairs;
+        private String nationalCode;
 
         @Getter(AccessLevel.NONE)
         private String fullName;
@@ -295,6 +296,7 @@ public class StudentDTO {
         private String personnelNo2;
         private String ccpAffairs;
         private String fullName;
+        private String nationalCode;
     }
 
     //Amin HK

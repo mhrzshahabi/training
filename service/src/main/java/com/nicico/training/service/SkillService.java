@@ -20,10 +20,15 @@ import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,6 +43,7 @@ public class SkillService implements ISkillService {
     private final CourseDAO courseDAO;
     private final IWorkGroupService workGroupService;
     private final ICourseService courseService;
+    private final ResourceBundleMessageSource messageSource;
 
     @Transactional(readOnly = true)
     @Override
@@ -70,7 +76,7 @@ public class SkillService implements ISkillService {
 
     @Transactional
     @Override
-    public SkillDTO.Info create(SkillDTO.Create request) {
+    public SkillDTO.Info create(SkillDTO.Create request, HttpServletResponse response) {
         final Skill skill = modelMapper.map(request, Skill.class);
 
 //        Optional.ofNullable(courseIds)
@@ -89,6 +95,21 @@ public class SkillService implements ISkillService {
 //
 //        final Optional<Subcategory> subCategoryById = subCategoryDAO.findById(skill.getSubCategoryId());
 //        final Subcategory subCategory = subCategoryById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SubCategoryNotFound));
+
+        if(skillDAO.findByTitleFaAndCategoryIdAndSubCategoryIdAndSkillLevelId(request.getTitleFa(),request.getCategoryId(),request.getSubCategoryId(),request.getSkillLevelId()) != null)
+        {
+            try {
+                Locale locale = LocaleContextHolder.getLocale();
+                Skill duplicateSkill1=skillDAO.findByTitleFaAndCategoryIdAndSubCategoryIdAndSkillLevelId(request.getTitleFa(),request.getCategoryId(),request.getSubCategoryId(),request.getSkillLevelId());
+                SkillDTO.Info skillinfo = modelMapper.map(duplicateSkill1,SkillDTO.Info.class);
+                response.addHeader("skillCode",skillinfo.getCode());
+                response.addHeader("skillName", URLEncoder.encode(skillinfo.getTitleFa(), "UTF-8"));
+                response.sendError(406, messageSource.getMessage("skill.duplicate" , null, locale));
+                return null;
+            } catch (IOException e) {
+                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+            }
+        }
 
         final Skill saved = skillDAO.saveAndFlush(skill);
         if (saved.getCourseId() != null)
