@@ -20,14 +20,17 @@
         showDropIcons:false,
         showSelectedIcons:false,
         showConnectors: true,
-        // baseStyle: "noBorderCell",
         dataProperties:{
             dataArrived:function (parentNode) {
                 this.openAll();
             },
         },
         rowClick: function (_1,_2,_3) {
-            console.log(_1);
+        },
+        rowDoubleClick: function(_1){
+            if(_1.isFolder === undefined){
+                chosenDepartments_JspOC.addData({"id":_1.id,"title":_1.title});
+            }
         },
     });
 
@@ -44,7 +47,6 @@
         showDropIcons:false,
         showSelectedIcons:false,
         showConnectors: true,
-        // baseStyle: "noBorderCell",
         dataProperties:{
             dataArrived:function (parentNode) {
                 this.openAll();
@@ -65,9 +67,7 @@
         },
         rowDoubleClick: function(_1){
             if(_1.isFolder === undefined){
-                // console.log(_1);
                 chosenDepartments_JspOC.addData({"id":_1.id,"title":_1.title});
-                // chosenDepartments_JspOC.transferSelectedData(organizationalTree);
             }
         },
         openFolder:function () {}
@@ -78,6 +78,9 @@
     var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
         title: "<spring:message code="refresh"/>",
         click: function () {
+            // search_bar.getField("search").getIcon("clear").click(search_bar,search_bar.getField("search"));
+            // searchTree.setData([]);
+            // organizationalTree.setData([]);
             // getRootTreeData();
         }
     });
@@ -87,14 +90,6 @@
         membersMargin: 5,
         members: [
             ToolStripButton_Refresh,
-            // isc.ToolStrip.create({
-            //     width: "100%",
-            //     align: "left",
-            //     border: '0px',
-            //     members: [
-            //         ToolStripButton_Refresh,
-            //     ]
-            // })
         ]
     });
 
@@ -102,38 +97,18 @@
 
     // <<-------------------------------------- Create - RestDataSource & ListGrid ----------------------------
 
-    // var deparmentsDS_JspOC = isc.DataSource.create({
-    //     clientOnly: true,
-    //     testData: departments,
-    //     fields: [
-    //         {name: "id", primaryKey: true, hidden: true},
-    //         {name: "title", title:"عنوان", filterOperator: "iContains", autoFitWidth: true},
-    //     ]
-    // });
-
     var chosenDepartments_JspOC = isc.TrLG.create({
-        // dynamicTitle: true,
         autoFetchData: true,
-        // allowAdvancedCriteria: true,
         selectionType:"none",
         showFilterEditor:false,
         showHeaderContextMenu: false,
         sortField: 0,
-        // dataSource: deparmentsDS_JspOC,
-        // filterOnKeypress: false,
-        // showFilterEditor: true,
-        // showRecordComponents: true,
-        // showRecordComponentsByCell: true,
-        // useClientFiltering: true,
         canRemoveRecords:true,
         fields:[
             {name: "id", primaryKey: true, hidden:true},
-            {name: "title", title: "عنوان"},
+            {name: "title", title: "موارد انتخاب شده"},
         ],
         removeRecordClick(rowNum){
-
-            // console.log("remove");
-            // console.log(rowNum);
             this.removeData(this.getRecord(rowNum));
         }
     });
@@ -208,33 +183,21 @@
     var HLayout_Tree_Data = isc.TrHLayout.create({
         ID: "HLayoutCenter_JspEditNeedsAssessment",
         height: "70%",
-        // showResizeBar: true,
-        // overflow: "scroll",
         members: [
             ToolStripButton_Refresh,
             search_bar,
         ]
     });
     var VLayout_organizationalTree = isc.VLayout.create({
-        // width: "100%",
-        // height: "100%",
         showResizeBar: true,
-        // overflow: "scroll",
         members: [organizationalTree]
     });
     var VLayout_searchTree = isc.VLayout.create({
-        // width: "100%",
-        // height: "100%",
         showResizeBar: true,
-        // overflow: "scroll",
         members: [searchTree]
     });
 
     var VLayout_Tree_Data = isc.VLayout.create({
-        // width: "100%",
-        // height: "100%",
-        // showResizeBar: true,
-        // overflow: "scroll",
         members: [search_bar, VLayout_searchTree, VLayout_organizationalTree]
     });
 
@@ -270,7 +233,6 @@
                     openProperty: "isOpen",
                 });
                 organizationalTree.setData(Treedata);
-                //organizationalTree.getData().openAll();
             }
         }));
     }
@@ -293,7 +255,6 @@
                     openProperty: "isOpen",
                 });
                 organizationalTree.setData(Treedata);
-                //organizationalTree.getData().openAll();
             }
         }))
     }
@@ -316,7 +277,6 @@
                     openProperty: "isOpen",
                 });
                 organizationalTree.setData(Treedata);
-                //organizationalTree.getData().openAll();
             }
         }));
     }
