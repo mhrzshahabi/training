@@ -21,23 +21,23 @@ public class TargetSocietyService extends BaseService<TargetSociety, Long, Targe
         super(new TargetSociety(), targetSocietyDAO);
     }
 
-    @Transactional
-    public List<TargetSocietyDTO.Info> coustomListCreate(List<Object> societies, Long typeId, Long tclassId){
-        List<TargetSocietyDTO.Info> result = new ArrayList<>();
-
-        for(Object society : societies){
-            TargetSocietyDTO.Create create = new TargetSocietyDTO.Create();
-            if(typeId == 1)
-                create.setSocietyId(((Integer) society).longValue());
-            else if(typeId == 2)
-                create.setTitle((String) society);
-            create.setTargetSocietyTypeId(new Long(214));
-            create.setTclassId(tclassId);
-            result.add(super.create(create));
-        }
-
-        return result;
-    }
+//    @Transactional
+//    public List<TargetSocietyDTO.Info> coustomListCreate(List<Object> societies, Long typeId, Long tclassId){
+//        List<TargetSocietyDTO.Info> result = new ArrayList<>();
+//
+//        for(Object society : societies){
+//            TargetSocietyDTO.Create create = new TargetSocietyDTO.Create();
+//            if(typeId == 1)
+//                create.setSocietyId(((Integer) society).longValue());
+//            else if(typeId == 2)
+//                create.setTitle((String) society);
+//            create.setTargetSocietyTypeId(new Long(214));
+//            create.setTclassId(tclassId);
+//            result.add(super.create(create));
+//        }
+//
+//        return result;
+//    }
 
     @Transactional
     public List<TargetSocietyDTO.Info> getListById(Long id){

@@ -2357,7 +2357,6 @@
                 if (gridToRefresh !== undefined) {
                     refreshLG(gridToRefresh);
                 }
-
                 let dialog = createDialog("info", msg);
                 Timer.setTimeout(function () {
                     dialog.close();
@@ -2366,7 +2365,7 @@
                 if (respCode === 409) {
                     msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\' &nbsp;' + "<spring:message code="msg.is.not.possible"/>";
                 } else if (respCode === 401) {
-                    msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\' &nbsp;' + JSON.parse(resp.httpResponseText).message;
+                    msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\' &nbsp;' + resp.httpResponseText;
                 } else {
                     msg = "<spring:message code='msg.operation.error'/>";
                 }
@@ -2389,7 +2388,7 @@
     }
 
     function removeRecord(actionURL, entityType, entityTitle, gridToRefresh) {
-        var callback = "callback: studyResponse(rpcResponse, '" + "<spring:message code="remove"/>" + "', '" + entityType +
+        let callback = "callback: studyResponse(rpcResponse, '" + "<spring:message code="remove"/>" + "', '" + entityType +
             "'," + undefined + "," + gridToRefresh + ",'" + entityTitle + "')";
         let dialog = createDialog('ask', "<spring:message code="msg.record.remove.ask"/>");
         dialog.addProperties({
