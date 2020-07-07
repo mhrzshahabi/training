@@ -76,11 +76,12 @@ public class SkillRestController {
     @Loggable
     @PostMapping
 //    @PreAuthorize("hasAuthority('c_skill')")
-    public ResponseEntity<SkillDTO.Info> create(@RequestBody Object request) {
+    public ResponseEntity<SkillDTO.Info> create(@RequestBody Object request,HttpServletResponse response) {
         SkillDTO.Create create = (new ModelMapper()).map(request, SkillDTO.Create.class);
         try {
             create.setCode(skillService.getMaxSkillCode(create.getCode()));
-            return new ResponseEntity<>(skillService.create(create), HttpStatus.CREATED);
+            return new ResponseEntity<>(skillService.create(create,response), HttpStatus.CREATED);
+
 
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

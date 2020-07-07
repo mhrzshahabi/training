@@ -85,6 +85,16 @@
         }
     });
 
+    var confirm_Deparments =  isc.IButton.create({
+        top:250,
+        width: "33%",
+        title:"<spring:message code="verify"/>",
+        align: "center",
+        click: function () {
+            Window_OrganizationalChart.close();
+        }
+    });
+
     var ToolStrip_Tree = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -104,6 +114,11 @@
         showHeaderContextMenu: false,
         sortField: 0,
         canRemoveRecords:true,
+        gridComponents: [
+            "filterEditor", "header", "body",
+            // confirm_Deparments
+        ],
+        align: "center",
         fields:[
             {name: "id", primaryKey: true, hidden:true},
             {name: "title", title: "موارد انتخاب شده"},
@@ -181,7 +196,6 @@
 
     // <<------------------------------------------- Create - Layout ------------------------------------------
     var HLayout_Tree_Data = isc.TrHLayout.create({
-        ID: "HLayoutCenter_JspEditNeedsAssessment",
         height: "70%",
         members: [
             ToolStripButton_Refresh,
@@ -201,8 +215,22 @@
         members: [search_bar, VLayout_searchTree, VLayout_organizationalTree]
     });
 
+    var HLayout_Confirm_Deparments = isc.TrHLayout.create({
+        height: "4%",
+        width: "40%",
+        align: "center",
+        defaultLayoutAlign : "center",
+        members: [confirm_Deparments]
+    });
+
+    var VLayout_chosen_Departments = isc.VLayout.create({
+        defaultLayoutAlign : "center",
+        showResizeBar: true,
+        members: [chosenDepartments_JspOC, HLayout_Confirm_Deparments]
+    });
+
     var HLayout_Tree_Grid = isc.TrHLayout.create({
-        members: [VLayout_Tree_Data, chosenDepartments_JspOC]
+        members: [VLayout_Tree_Data, VLayout_chosen_Departments]
     });
 
     // ---------------------------------------------- Create - Layout ---------------------------------------->>

@@ -1139,7 +1139,7 @@
                         data: JSON.stringify([sessionInOneDate, causeOfAbsence]),
                         serverOutputAsString: false,
                         callback: function (resp) {
-                            ListGrid_Attendance_AttendanceJSP.invalidateCache();
+                            loadPage_Attendance();
                             wait.close();
                             if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                                 simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
@@ -1162,7 +1162,7 @@
                         data: JSON.stringify([sessionsForStudent, causeOfAbsence]),
                         serverOutputAsString: false,
                         callback: function (resp) {
-                            ListGrid_Attendance_AttendanceJSP.invalidateCache();
+                            loadPage_Attendance();
                             wait.close();
                             if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                                 simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
