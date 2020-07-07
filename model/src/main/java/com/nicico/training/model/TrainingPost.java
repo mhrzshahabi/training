@@ -23,7 +23,7 @@ public class TrainingPost extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "c_code", nullable = false, unique = true)
+    @Column(name = "c_code", nullable = false)
     private String code;
 
     @Column(name = "c_title_fa", nullable = false)
