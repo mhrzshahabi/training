@@ -1683,12 +1683,16 @@
     function updateLabelEditNeedsAssessment(objectId) {
         Label_PlusData_JspNeedsAssessment.setContents("");
         if(DynamicForm_JspEditNeedsAssessment.getValue("objectType") === "Post") {
+            console.log(objectId);
             Label_PlusData_JspNeedsAssessment.setContents(
-                "عنوان پست: " + objectId.titleFa
+                (objectId.titleFa !== undefined ? "<b>عنوان پست: </b>" +  objectId.titleFa : "")
                 // + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + objectId.postGrade.titleFa
-                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "حوزه: " + objectId.area
-                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "معاونت: " + objectId.assistance
-                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "امور: " + objectId.affairs
+                + "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                (objectId.area !== undefined ? "<b>حوزه: </b>" + objectId.area : "")
+                + "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                (objectId.assistance !== undefined ? "<b>معاونت: </b>" + objectId.assistance : "")
+                + "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                (objectId.affairs !== undefined ? "<b>واحد: </b>" + objectId.affairs : "")
             );
         }
     }
