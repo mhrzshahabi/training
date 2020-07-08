@@ -1278,7 +1278,6 @@
                     wait.show();
                     isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null,(resp)=>{
                         wait.close();
-                        console.log(resp.data);
                         if(resp.data === "true"){
                             editNeedsAssessmentRecord(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"))
                             isChanged = true;
@@ -1683,7 +1682,6 @@
     function updateLabelEditNeedsAssessment(objectId) {
         Label_PlusData_JspNeedsAssessment.setContents("");
         if(DynamicForm_JspEditNeedsAssessment.getValue("objectType") === "Post") {
-            console.log(objectId);
             Label_PlusData_JspNeedsAssessment.setContents(
                 (objectId.titleFa !== undefined ? "<b>عنوان پست: </b>" +  objectId.titleFa : "")
                 // + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + objectId.postGrade.titleFa
