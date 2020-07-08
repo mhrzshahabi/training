@@ -1043,8 +1043,9 @@
 // return {category:category};
                 },
             validate: function(){
-                if(this.form.getItem("trainingPlaceIds")._value.length <= 0)
-                    this.form.getItem("trainingPlaceIds")._value = null;
+                if(this._value === null || this._value.length <= 0){
+                    return false;
+                    }
                 return this.Super("validate",arguments);
                 }
             },
@@ -1219,6 +1220,7 @@
                 name: "targetSocieties",
                 colSpan: 2,
                 rowSpan: 1,
+                required : true,
                 type: "SelectItem",
                 pickListProperties: {
                     showFilterEditor: false
@@ -1231,6 +1233,11 @@
                 optionDataSource: DataSource_TargetSociety_List,
                 displayField: "title",
                 valueField: "societyId",
+                validate: function(){
+                    if(this._value === null || this._value.length <= 0)
+                        return false;
+                    return this.Super("validate",arguments);
+                }
             },
             {
                 name: "addtargetSociety",
