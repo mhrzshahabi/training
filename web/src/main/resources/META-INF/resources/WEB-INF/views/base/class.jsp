@@ -3033,11 +3033,11 @@
     // ---------------------------------------- Send To Workflow ---------------------------------------->>
     //*****set save button status*****
     function saveButtonStatus() {
-        if ("${username}" === "ahmadi_z") {
-            IButton_Class_Save_JspClass.enable();
-            IButton_Class_Save_JspClass.setOpacity(100);
-            return;
-        }
+        <%--if ("${username}" === "ahmadi_z") {--%>
+            <%--IButton_Class_Save_JspClass.enable();--%>
+            <%--IButton_Class_Save_JspClass.setOpacity(100);--%>
+            <%--return;--%>
+        <%--}--%>
         let sRecord = VM_JspClass.getValues();
         wait.show()
         isc.RPCManager.sendRequest(TrDSRequest(classUrl + "getWorkflowEndingStatusCode/" + sRecord.id, "GET", null, function (resp) {
@@ -3051,7 +3051,8 @@
                 } else {
                     IButton_Class_Save_JspClass.disable();
                     IButton_Class_Save_JspClass.setOpacity(30);
-                }
+                    createDialog("info","بدلیل پایان کلاس امکان ویرایش وجود ندارد", "<spring:message code="message"/>")
+                    }
             } else {
                 IButton_Class_Save_JspClass.enable();
                 IButton_Class_Save_JspClass.setOpacity(100);
