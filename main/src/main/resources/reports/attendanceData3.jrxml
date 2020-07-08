@@ -402,7 +402,7 @@
 					<jr:columnGroup width="66" uuid="c4bc1e83-367a-4aa9-9313-3324c87ed27d">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
-							<textField>
+							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="66" height="30" uuid="f6916693-c01b-49bc-8b43-99df3afb46bc"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="7"/>
@@ -501,7 +501,7 @@
 					<jr:columnGroup width="66" uuid="ee834f73-bfc7-49e2-b3a6-529cb8ca6751">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
-							<textField>
+							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="66" height="30" uuid="5858edf1-ecda-4607-a20f-58c29121deb1"/>
 								<box>
 									<leftPen lineWidth="1.0"/>
@@ -612,7 +612,7 @@
 					<jr:columnGroup width="66" uuid="ed3ced06-6651-4669-af72-d9ac99eb8b39">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
-							<textField>
+							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="66" height="30" uuid="83672c87-e7cf-4437-a7f3-8960ceaabd1a"/>
 								<box>
 									<leftPen lineWidth="1.0"/>
@@ -717,7 +717,7 @@
 					<jr:columnGroup width="66" uuid="fd3666ca-4855-47ba-8cda-d09e3ee8e799">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
-							<textField>
+							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="66" height="30" uuid="e2071ef5-e200-40ab-93a2-5a5776127c3d"/>
 								<box>
 									<leftPen lineWidth="1.0"/>
@@ -828,7 +828,7 @@
 					<jr:columnGroup width="66" uuid="3fd8b8e1-46bd-4100-af6d-1dea2f579a29">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
-							<textField>
+							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="66" height="30" uuid="04ed7e0f-01c2-47d9-85af-eb2d15e51a6f"/>
 								<box>
 									<leftPen lineWidth="1.0"/>

@@ -361,6 +361,26 @@
                 displayField: "year",
                 filterFields: ["year"],
                 filterLocally: true,
+                initialSort: [
+                    {property: "year", direction: "descending", primarySort: true}
+                ],
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            DynamicForm_CriteriaForm_JspControlReport.getField("termId").disable();
+                            DynamicForm_CriteriaForm_JspControlReport.getField("termId").setValue(null);
+                            DynamicForm_CriteriaForm_JspControlReport.getField("classYear").setValue(null);
+                        }
+                    }
+                ],
 
                 changed: function (form, item, value) {
                     console.log(value);
@@ -384,6 +404,21 @@
                 valueField: "id",
                 displayField: "titleFa",
                 filterLocally: true,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            DynamicForm_CriteriaForm_JspControlReport.getField("termId").setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "instituteId",
@@ -423,6 +458,23 @@
                     showFilterEditor: true,
                     filterOperator: "iContains"
                 },
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            DynamicForm_CriteriaForm_JspControlReport.getField("courseSubCategory").disable();
+                            DynamicForm_CriteriaForm_JspControlReport.getField("courseCategory").setValue(null);
+                            DynamicForm_CriteriaForm_JspControlReport.getField("courseSubCategory").setValue(null);
+                        }
+                    }
+                ],
                 changed: function () {
                     isCriteriaCategoriesChanged_JspControlReport = true;
                     var subCategoryField = DynamicForm_CriteriaForm_JspControlReport.getField("courseSubCategory");
@@ -476,7 +528,22 @@
                         }
                         this.fetchData();
                     }
-                }
+                },
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            DynamicForm_CriteriaForm_JspControlReport.getField("courseSubCategory").setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "startDate1",
