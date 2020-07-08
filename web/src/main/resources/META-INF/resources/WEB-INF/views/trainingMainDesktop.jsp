@@ -1734,6 +1734,15 @@
                             },
                             {isSeparator: true},
                             </sec:authorize>
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">
+                            {
+                                title: "گزارش حضور و غياب کلاس های آمورشي",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/presenceReport/"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            </sec:authorize>
                         ]
                 },
                 {isSeparator: true},
