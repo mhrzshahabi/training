@@ -38,7 +38,7 @@ public interface ITclassService {
 
     void delete(TclassDTO.Delete request);
 
-    SearchDTO.SearchRs<TclassDTO.Info> search(SearchDTO.SearchRq request);
+    SearchDTO.SearchRs<TclassDTO.Info> search(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException;
 
     @Transactional(readOnly = true)
     <T> SearchDTO.SearchRs<T> search1(SearchDTO.SearchRq request, Class<T> infoType);
