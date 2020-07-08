@@ -77,6 +77,30 @@ public class ControlFormController {
                 .collect(Collectors.toList());
 
 
+        int maxSessions=0;
+
+        String dayDate = sessionList.get(0).getSessionDate() != null ? sessionList.get(0).getSessionDate() : "";
+
+        int sessionCounter=0;
+
+        for (int i = 0; i < sessionList.size(); i++) {
+            ClassSession classSession = sessionList.get(i);
+
+            if (classSession != null) {
+                if (!sessionList.get(i).getSessionDate().equals(dayDate)) {
+                    dayDate = sessionList.get(i).getSessionDate();
+                    sessionCounter=0;
+                }
+
+                sessionCounter++;
+
+                if (sessionCounter>=maxSessions)
+                    maxSessions=sessionCounter;
+            }//end if
+        }//end inner for
+
+        maxSessions= maxSessions >=5 ? 5 : (maxSessions >=0 && maxSessions <=3 ? 3 : maxSessions);
+
         for (Long studentId : studentsId) {
             Optional<Student> byId = studentDAO.findById(studentId);
             Student student = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.StudentNotFound));
@@ -91,11 +115,12 @@ public class ControlFormController {
 
             st.setFullName(st.getFirstName() + " " + st.getLastName());
 
-            String dayDate = sessionList.get(0).getSessionDate() != null ? sessionList.get(0).getSessionDate() : "";
+            dayDate = sessionList.get(0).getSessionDate() != null ? sessionList.get(0).getSessionDate() : "";
 
             int z = 0;
             int ztemp = 0;
             Map<String, String> statePerStudent = new HashMap<>();
+
 
             for (int i = 0; i < sessionList.size(); i++) {
                 ClassSession classSession = sessionList.get(i);
@@ -103,7 +128,7 @@ public class ControlFormController {
                 if (classSession != null) {
                     if (!sessionList.get(i).getSessionDate().equals(dayDate)) {
                         dayDate = sessionList.get(i).getSessionDate();
-                        ztemp += 5;
+                        ztemp += maxSessions;
                         z = ztemp;
                     }
 
@@ -144,7 +169,7 @@ public class ControlFormController {
         int pages = (int)Math.ceil(sessionList.stream().map(ClassSession::getSessionDate).collect(Collectors.toSet()).size() / 5)+1;
         Set<String> daysOnClass = sessionList.stream().map(ClassSession::getDayName).collect(Collectors.toSet());
 
-        final Map<String, Object> params = print(allData);
+        final Map<String, Object> params = print(allData,maxSessions);
         params.put("days", "روزهای تشکیل کلاس: " + daysOnClass.toString());
         params.put("titleClass", tclassDTO.getTitleClass());
         params.put("code", tclassDTO.getCode());
@@ -159,10 +184,18 @@ public class ControlFormController {
         params.put(ConstantVARs.REPORT_TYPE, type);
 
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
-        reportUtil.export("/reports/attendanceData.jasper", params, jsonDataSource, response);
+
+        if (maxSessions>=1 && maxSessions<=3)
+            reportUtil.export("/reports/attendanceData3.jasper", params, jsonDataSource, response);
+
+        else if (maxSessions==4)
+            reportUtil.export("/reports/attendanceData4.jasper", params, jsonDataSource, response);
+
+        else
+            reportUtil.export("/reports/attendanceData.jasper", params, jsonDataSource, response);
     }
 
-    protected HashMap<String, Object> print(List<ClassSessionDTO.AttendanceClearForm> sessionList) {
+    protected HashMap<String, Object> print(List<ClassSessionDTO.AttendanceClearForm> sessionList,int maxSessions) {
         final HashMap<String, Object> params = new HashMap<>();
 
         String date = sessionList.get(0).getSessionDate();
@@ -175,7 +208,7 @@ public class ControlFormController {
             if (session.getSessionDate().equals(date)) {
 
                 if (checkFirst) {
-                    IntStream.rangeClosed(1, 5).forEach(i -> {
+                    IntStream.rangeClosed(1, maxSessions).forEach(i -> {
                         String strSe = "";
                         if (i <= 9)
                             strSe = "0" + i;
@@ -199,7 +232,7 @@ public class ControlFormController {
                 date = session.getSessionDate();
                 d++;
                 params.put("d" + d, date);
-                seTemp+=5;
+                seTemp+=maxSessions;
                 se=seTemp;
 
                 String strSe="";
@@ -210,7 +243,7 @@ public class ControlFormController {
 
                 params.put("se" + strSe, session.getSessionStartHour() + " - " + session.getSessionEndHour());
 
-                IntStream.rangeClosed(se+1, se+4).forEach(i -> {
+                IntStream.rangeClosed(se+1, se+maxSessions-1).forEach(i -> {
                         String strSe1 = "";
                         if (i <= 9)
                             strSe1 = "0" + i;
