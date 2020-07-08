@@ -137,5 +137,6 @@ public class EvaluationDTO implements Serializable {
         private Long id;
         private Long evaluatorId;
         private String returnDate;
+        private String evaluatorTypeTitle;
     }
 }

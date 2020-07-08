@@ -1166,7 +1166,7 @@
             },
             {
                 name: "acceptancelimit_a",
-                colSpan: 2,
+                colSpan: 1,
                 required: true,
                 hidden: true,
                 textAlign: "center",
@@ -1188,7 +1188,7 @@
                 type: "radioGroup",
                 vertical: false,
                 fillHorizontalSpace: true,
-                defaultValue: 371,
+                defaultValue: "371",
                 valueMap: {
                     "371": "واحد",
                     "372": "سایر",
@@ -2968,7 +2968,7 @@
                     var item = 0;
                     DataSource_TargetSociety_List.testData.forEach(function(currentValue, index, arr){DataSource_TargetSociety_List.removeData(currentValue)});
                     // DynamicForm_Class_JspClass.getItem("addtargetSociety").hide();
-                    DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(371);
+                    DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue("371");
                     JSON.parse(resp.data).forEach(
                         function (currentValue, index, arr) {
                             if (currentValue.targetSocietyTypeId === 371) {
