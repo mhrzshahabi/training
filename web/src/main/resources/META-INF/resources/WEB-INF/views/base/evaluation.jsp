@@ -750,7 +750,8 @@
                             showFilterEditor: false
                         }
                     },
-                    filterOnKeypress:true
+                    filterOnKeypress:true,
+                    filterOperator: "equals"
                 },
                 {
                     name: "evaluationStatusLearning",
@@ -766,7 +767,8 @@
                             showFilterEditor: false
                         }
                     },
-                    filterOnKeypress:true
+                    filterOnKeypress:true,
+                    filterOperator: "equals"
                 },
                 {
                     name: "evaluationStatusBehavior",
@@ -782,7 +784,8 @@
                             showFilterEditor: false
                         }
                     },
-                    filterOnKeypress:true
+                    filterOnKeypress:true,
+                    filterOperator: "equals"
                 },
                 {
                     name: "evaluationStatusResults",
@@ -798,7 +801,8 @@
                             showFilterEditor: false
                         }
                     },
-                    filterOnKeypress:true
+                    filterOnKeypress:true,
+                    filterOperator: "equals"
                 },
                 {name: "evaluationAudienceTypeId",title: "<spring:message code="evaluation.audience.type"/>",
                     hidden: true
@@ -813,6 +817,9 @@
                     autoFithWidth: true
                 }
             ],
+            filterEditorSubmit: function () {
+                ListGrid_evaluation_student.invalidateCache();
+            },
             getCellCSSText: function (record, rowNum, colNum) {
                 if ((!ListGrid_evaluation_student.getFieldByName("evaluationStatusReaction").hidden && record.evaluationStatusReaction === 1)
                     || (!ListGrid_evaluation_student.getFieldByName("evaluationStatusLearning").hidden && record.evaluationStatusLearning === 1)
@@ -3695,6 +3702,7 @@
                 sortDirection: "Descending",
                 showRecordComponents: true,
                 showRecordComponentsByCell: true,
+                showFilterEditor: false,
                 fields: [
                     {
                         name: "evaluatorTypeId",
@@ -3726,6 +3734,9 @@
                     {name: "removeForm",title: " ", align: "center",canSort:false,canFilter:false, width: "10%"},
                     {name: "printForm",title: " ", align: "center",canSort:false,canFilter:false, width: "10%"}
                 ],
+                filterEditorSubmit: function () {
+                    Listgrid_BehavioralRegisteration_JSPEvaluation.invalidateCache();
+                },
                 createRecordComponent: function (record, colNum) {
                     var fieldName = this.getFieldName(colNum);
                     if (fieldName == "editForm") {
@@ -3771,9 +3782,17 @@
                             width: 16,
                             grid: this,
                             click: function () {
-                                isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + record.id , "DELETE", null, function (resp) {
-                                    Listgrid_BehavioralRegisteration_JSPEvaluation.invalidateCache();
-                                }));
+                                let Dialog_Remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+                                    "<spring:message code="verify.delete"/>");
+                                Dialog_Remove.addProperties({
+                                    buttonClick: function (button, index) {
+                                        this.close();
+                                        if (index === 0) {
+                                            isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + record.id , "DELETE", null, function (resp) {
+                                                Listgrid_BehavioralRegisteration_JSPEvaluation.invalidateCache();}));
+                                        }
+                                    }
+                                });
                             }
                         });
                         recordCanvas.addMember(addIcon);
