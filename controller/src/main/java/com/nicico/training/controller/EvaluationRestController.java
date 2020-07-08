@@ -8,9 +8,11 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.EvaluationDAO;
+import com.nicico.training.repository.ParameterValueDAO;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +54,7 @@ public class EvaluationRestController {
     private final QuestionnaireQuestionService questionnaireQuestionService;
     private final EvaluationDAO evaluationDAO;
     private final PersonnelDAO personnelDAO;
+    private final ParameterValueDAO parameterValueDAO;
 
     //*********************************
 
@@ -549,6 +552,12 @@ public class EvaluationRestController {
             behavioralForms.setEvaluatorName(personnel.getFirstName() + " " + personnel.getLastName());
             behavioralForms.setId(evaluation.getId());
             behavioralForms.setEvaluatorId(personnel.getId());
+            behavioralForms.setReturnDate(evaluation.getReturnDate());
+            final Optional<ParameterValue> optionalParameterValue = parameterValueDAO.findById(evaluation.getEvaluatorTypeId());
+            if(optionalParameterValue.isPresent()) {
+                final ParameterValue parameterValue = optionalParameterValue.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                behavioralForms.setEvaluatorTypeTitle(parameterValue.getTitle());
+            }
             finalList.add(behavioralForms);
         }
         searchRs.setList(finalList);

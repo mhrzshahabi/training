@@ -46,8 +46,7 @@ public class ClassOutsideCurrentTermRestController {
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
     private final ModelMapper modelMapper;
-    private final ITclassService tclassService;
-    private final TclassService tClassService;
+    private final TclassService tclassService;
 
     @Loggable
     @GetMapping(value = "/spec-list")
