@@ -1166,7 +1166,7 @@
             },
             {
                 name: "acceptancelimit_a",
-                colSpan: 2,
+                colSpan: 1,
                 required: true,
                 hidden: true,
                 textAlign: "center",
@@ -1188,7 +1188,7 @@
                 type: "radioGroup",
                 vertical: false,
                 fillHorizontalSpace: true,
-                defaultValue: 371,
+                defaultValue: "371",
                 valueMap: {
                     "371": "واحد",
                     "372": "سایر",
@@ -2968,7 +2968,7 @@
                     var item = 0;
                     DataSource_TargetSociety_List.testData.forEach(function(currentValue, index, arr){DataSource_TargetSociety_List.removeData(currentValue)});
                     // DynamicForm_Class_JspClass.getItem("addtargetSociety").hide();
-                    DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(371);
+                    DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue("371");
                     JSON.parse(resp.data).forEach(
                         function (currentValue, index, arr) {
                             if (currentValue.targetSocietyTypeId === 371) {
@@ -3026,11 +3026,11 @@
     // ---------------------------------------- Send To Workflow ---------------------------------------->>
     //*****set save button status*****
     function saveButtonStatus() {
-        if ("${username}" === "ahmadi_z") {
-            IButton_Class_Save_JspClass.enable();
-            IButton_Class_Save_JspClass.setOpacity(100);
-            return;
-        }
+        <%--if ("${username}" === "ahmadi_z") {--%>
+            <%--IButton_Class_Save_JspClass.enable();--%>
+            <%--IButton_Class_Save_JspClass.setOpacity(100);--%>
+            <%--return;--%>
+        <%--}--%>
         let sRecord = VM_JspClass.getValues();
         wait.show()
         isc.RPCManager.sendRequest(TrDSRequest(classUrl + "getWorkflowEndingStatusCode/" + sRecord.id, "GET", null, function (resp) {
@@ -3044,7 +3044,8 @@
                 } else {
                     IButton_Class_Save_JspClass.disable();
                     IButton_Class_Save_JspClass.setOpacity(30);
-                }
+                    createDialog("info","بدلیل پایان کلاس امکان ویرایش وجود ندارد", "<spring:message code="message"/>")
+                    }
             } else {
                 IButton_Class_Save_JspClass.enable();
                 IButton_Class_Save_JspClass.setOpacity(100);

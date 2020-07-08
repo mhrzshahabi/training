@@ -1582,6 +1582,7 @@
         }
         function loadSelectedTab_data(tab) {
             let classRecord = ListGrid_evaluation_class.getSelectedRecord();
+            DynamicForm_ReturnDate.clearValues();
 
             if (!(classRecord === undefined || classRecord === null)) {
 
@@ -3682,6 +3683,7 @@
                     {name: "id", primaryKey: true},
                     {name: "evaluatorId"},
                     {name: "returnDate"},
+                    {name: "evaluatorTypeTitle"}
                 ],
                 fetchDataURL : evaluationUrl + "/getBehavioralForms/" + StdRecord.id + "/" + LGRecord.id
             });
@@ -3719,6 +3721,7 @@
                     {name: "status", hidden: true},
                     {name: "id", hidden: true},
                     {name: "returnDate", hidden: true},
+                    {name: "evaluatorTypeTitle",hidden: true},
                     {name: "editForm",title: " ", align: "center",canSort:false,canFilter:false, width: "10%"},
                     {name: "removeForm",title: " ", align: "center",canSort:false,canFilter:false, width: "10%"},
                     {name: "printForm",title: " ", align: "center",canSort:false,canFilter:false, width: "10%"}
@@ -3794,7 +3797,7 @@
                             width: 16,
                             grid: this,
                             click: function () {
-                                print_Student_FormIssuance("pdf","single",StdRecord,record.evaluatorName, record.evaluatorTypeId, record.returnDate);
+                                print_Student_FormIssuance("pdf","single",StdRecord,record.evaluatorName, record.evaluatorTypeTitle, record.returnDate);
                             }
                         });
                         recordCanvas.addMember(addIcon);

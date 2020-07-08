@@ -401,7 +401,6 @@
                 title: "<spring:message code="unitName"/>",
                 filterFields: ["value", "value"],
                 pickListWidth: 300,
-                operator: "inSet",
                 multiple: true,
                 type: "SelectItem",
                 textMatchStyle: "substring",
