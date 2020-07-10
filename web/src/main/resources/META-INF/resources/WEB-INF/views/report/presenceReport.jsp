@@ -1,17 +1,17 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 // <script>
-
-    MainGridDS_PresenceReport = isc.TrDS.create({
+    //----------------------------------------------------Rest DataSource-----------------------------------------------
+    RestDataSource_JspAttendanceReport = isc.TrDS.create({
         fields: [
             {name: "presenceHour", title:"حضور بر حسب ساعت", filterOperator: "equals", autoFitWidth: true},
             {name: "presenceMinute", title:"حضور بر حسب دقیقه", filterOperator: "equals", autoFitWidth: true},
             {name: "absenceHour", title:"غیبت بر حسب ساعت", filterOperator: "equals", autoFitWidth: true},
             {name: "absenceMinute", title:"غیبت بر حسب دقیقه", filterOperator: "equals", autoFitWidth: true},
             {name: "classId", hidden: true, filterOperator: "equals", autoFitWidth: true},
-            {name: "classCode", title:"<spring:message code="class.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classCode", title:"<spring:message code="class.code"/>", filterOperator: "inSet", autoFitWidth: true},
             {name: "classStartDate", title:"<spring:message code="start.date"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "classEndDate", title:"<spring:message code="end.date"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "classTeachingType", title:"<spring:message code="teaching.type"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -40,6 +40,36 @@
             {name: "instituteTitleFa", title: "<spring:message code="institute"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         fetchDataURL: presenceReportUrl
+    });
+
+    var RestDataSource_Course_JspAttendanceReport = isc.TrDS.create({
+        ID: "courseDS",
+        fields: [
+            {name: "id", type: "Integer", primaryKey: true},
+            {name: "code"},
+            {name: "titleFa"}
+        ],
+        fetchDataURL: courseUrl + "info-tuple-list"
+    });
+
+    var RestDataSource_Class_JspAttendanceReport = isc.TrDS.create({
+        ID: "classDS",
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleClass"},
+            {name: "code"},
+            {name: "course.titleFa"}
+        ],
+        fetchDataURL: classUrl + "info-tuple-list"
+    });
+
+    CourseDS_PresenceReport = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "code", title: "<spring:message code="corse_code"/>"},
+            {name: "titleFa", title: "<spring:message code="course_fa_name"/>"},
+        ],
+        fetchDataURL: courseUrl + "spec-list"
     });
 
     CompanyDS_PresenceReport = isc.TrDS.create({
@@ -83,35 +113,77 @@
         cacheAllData: true,
         fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpUnit"
     });
-    TermDS_PresenceReport = isc.TrDS.create({
-        fields: [
-            {name: "value", title: "<spring:message code="term.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach:true},
-        ],
-        fetchDataURL: termUrl + "spec-list"
-    });
-    YearDS_PresenceReport = isc.TrDS.create({
-        fields: [
-            {name: "year", title: "<spring:message code="year"/>", filterOperator: "iContains", autoFitWidth: true},
-        ],
-        fetchDataURL: termUrl + "yearList"
-    });
-    CourseDS_PresenceReport = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true},
-            {name: "code", title: "<spring:message code="corse_code"/>"},
-            {name: "titleFa", title: "<spring:message code="course_fa_name"/>"},
-        ],
-        fetchDataURL: courseUrl + "spec-list"
+    //----------------------------------------------------ListGrid Result-----------------------------------------------
+    var ListGrid_JspAttendanceReport = isc.TrLG.create({
+        width: "100%",
+        height: "100%",
+        dataSource : RestDataSource_JspAttendanceReport,
+        cellHeight: 43,
+        sortField: 0,
+        showFilterEditor: false,
+        selectionType: "single",
+        showRecordComponents: true,
+        showRecordComponentsByCell: true
     });
 
-    CriteriaForm_PresenceReport = isc.DynamicForm.create({
-        numCols: 11,
+    IButton_JspAttendanceReport_FullExcel = isc.IButtonSave.create({
+        top: 260,
+        title: "گزارش اکسل",
+        width: 300,
+        click: function () {
+            ExportToFile.downloadExcelFromClient(ListGrid_JspAttendanceReport, null, '', 'گزارش حضور و غياب کلاس های آموزشي')
+        }
+    });
+
+    var HLayOut_CriteriaForm_JspAttendanceReport_Details = isc.TrHLayoutButtons.create({
+        showEdges: false,
+        edgeImage: "",
+        width: "100%",
+        height: "100%",
+        alignLayout: "center",
+        members: [
+            ListGrid_JspAttendanceReport
+        ]
+    });
+
+    var HLayOut_Confirm_JspAttendanceReport_AttendanceExcel = isc.TrHLayoutButtons.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        width: "70%",
+        height: "10%",
+        alignLayout: "center",
         padding: 10,
-        readOnlyDisplay: "readOnly",
-        margin:0,
-        titleAlign:"left",
-        wrapItemTitles: true,
-        colWidths:[50,150,50,150,50,150,50,150, 50, 100, 50],
+        members: [
+            IButton_JspAttendanceReport_FullExcel
+        ]
+    });
+
+    var Window_JspAttendanceReport = isc.Window.create({
+        placement: "fillScreen",
+        title: "گزارش حضور و غیاب کلاسهای آموزشی",
+        canDragReposition: true,
+        align: "center",
+        autoDraw: false,
+        border: "1px solid gray",
+        minWidth: 1024,
+        items: [
+            isc.TrVLayout.create({
+                members: [
+                    HLayOut_CriteriaForm_JspAttendanceReport_Details,HLayOut_Confirm_JspAttendanceReport_AttendanceExcel
+                ]
+            })
+        ]
+    });
+    //----------------------------------------------------Criteria Form------------------------------------------------
+    var DynamicForm_CriteriaForm_JspAttendanceReport = isc.DynamicForm.create({
+        align: "right",
+        titleWidth: 0,
+        titleAlign: "center",
+        showInlineErrors: true,
+        showErrorText: false,
+        numCols: 6,
+        colWidths: ["5%", "25%", "5%", "25%","5%","25%"],
         fields: [
             {
                 name: "studentPersonnelNo2",
@@ -147,25 +219,20 @@
             },
             {
                 name: "studentLastName",
-                colSpan: 2,
                 title:"<spring:message code="lastName"/> ",
                 textAlign: "center",
                 width: "*"
             },
             {
-                name: "studentComplexTitle",
+                name: "personnelComplexTitle",
                 title: "<spring:message code="complex"/>",
                 optionDataSource: ComplexDS_PresenceReport,
-                type: "MultiComboBoxItem",
-                comboBoxWidth: 155,
                 valueField: "value",
                 displayField: "value",
             },
             {
-                name: "studentCompanyName",
+                name: "classStudentApplicantCompanyName",
                 title: "<spring:message code="company"/>",
-                type: "MultiComboBoxItem",
-                comboBoxWidth: 155,
                 valueField: "value",
                 displayField: "value",
                 optionDataSource: CompanyDS_PresenceReport,
@@ -173,8 +240,6 @@
             {
                 name: "studentCcpAssistant",
                 title: "<spring:message code="assistance"/>",
-                type: "MultiComboBoxItem",
-                comboBoxWidth: 155,
                 valueField: "value",
                 displayField: "value",
                 optionDataSource: AssistantDS_PresenceReport,
@@ -182,8 +247,6 @@
             {
                 name: "studentCcpSection",
                 title: "<spring:message code="section.cost"/>",
-                type: "MultiComboBoxItem",
-                comboBoxWidth: 155,
                 valueField: "value",
                 displayField: "value",
                 optionDataSource: SectionDS_PresenceReport,
@@ -192,8 +255,6 @@
                 name: "studentCcpUnit",
                 title: "<spring:message code="unitName"/>",
                 optionDataSource: UnitDS_PresenceReport,
-                type: "MultiComboBoxItem",
-                comboBoxWidth: 155,
                 valueField: "value",
                 displayField: "value",
             },
@@ -201,282 +262,353 @@
                 name: "studentCcpAffairs",
                 title: "<spring:message code="affairs"/>",
                 optionDataSource: AffairsDS_PresenceReport,
-                type: "MultiComboBoxItem",
-                comboBoxWidth: 155,
                 valueField: "value",
                 displayField: "value",
             },
             {
-                name: "courseCode",
-                title: "<spring:message code="course"/>",
-                optionDataSource: CourseDS_PresenceReport,
-                valueField: "code",
-                displayField: "code",
-                type: "MultiComboBoxItem",
-                textMatchStyle: "substring",
-                comboBoxWidth: 155,
-                comboBoxProperties: {
-                    pickListWidth: 400,
-                    useClientFiltering: true,
-                },
+                name: "classCode",
+                title: "کد کلاس",
+                hint: "کدهای کلاس را با , از یکدیگر جدا کنید",
+                prompt: "کدهای کلاس فقط میتوانند شامل حروف انگلیسی بزرگ، اعداد و - باشند",
+                showHintInField: true,
+                icons: [{
+                    src: "[SKIN]/pickers/search_picker.png",
+                    click: function () {
+                        Window_SelectClasses_JspAttendanceReport.show();
+                    }}],
+                keyPressFilter: "[A-Z|0-9|,-]"
             },
             {
-                name: "termTitleFa",
-                title: "<spring:message code="term"/>",
-                type: "SelectItem",
-                pickListProperties: {
-                    showFilterEditor: false,
-                    showClippedValuesOnHover: true,
-                },
-                colSpan: 2,
-                multiple: true,
-                valueField: "titleFa",
-                displayField: "titleFa",
-                initialSort: [
-                    {property: "titleFa", direction: "descending", primarySort: true}
-                ],
-                optionDataSource: TermDS_PresenceReport,
-            },
-            {
-                name: "fromDate",
-                titleColSpan: 3,
-                title: "تاریخ شروع کلاس: از",
-                ID: "startDate_PresenceReport",
+                name: "classStartDate",
+                title: "تاریخ کلاس: از",
+                ID: "startDate_jspAttendanceReport",
                 hint: "--/--/----",
-                criteriaField: "classStartDate",
-                operator: "greaterOrEqual",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
-                    click: function () {
+                    click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('startDate_PresenceReport', this, 'ymd', '/');
+                        displayDatePicker('startDate_jspAttendanceReport', this, 'ymd', '/');
                     }
                 }],
                 textAlign: "center",
                 changed: function (form, item, value) {
-                    let dateCheck;
+                    var dateCheck;
                     dateCheck = checkDate(value);
                     if (dateCheck === false) {
-                        form.addFieldErrors("fromDate", "<spring:message code='msg.correct.date'/>", true);
+                        form.addFieldErrors("classStartDate", "<spring:message code='msg.correct.date'/>", true);
                     } else {
-                        form.clearFieldErrors("fromDate", true);
+                        form.clearFieldErrors("classStartDate", true);
                     }
                 }
             },
             {
-                name: "toDate",
-                titleColSpan: 1,
+                name: "classEndDate",
                 title: "تا",
-                ID: "endDate_PresenceReport",
+                ID: "endDate_jspAttendanceReport",
+                type: 'text',
                 hint: "--/--/----",
-                criteriaField: "classStartDate",
-                operator: "lessOrEqual",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
-                    click: function () {
+                    click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('endDate_PresenceReport', this, 'ymd', '/');
+                        displayDatePicker('endDate_jspAttendanceReport', this, 'ymd', '/');
                     }
                 }],
                 textAlign: "center",
-                // colSpan: 2,
                 changed: function (form, item, value) {
                     let dateCheck;
                     dateCheck = checkDate(value);
                     if (dateCheck === false) {
-                        form.clearFieldErrors("toDate", true);
-                        form.addFieldErrors("toDate", "<spring:message code='msg.correct.date'/>", true);
+                        form.clearFieldErrors("classEndDate", true);
+                        form.addFieldErrors("classEndDate", "<spring:message code='msg.correct.date'/>", true);
                     } else {
-                        form.clearFieldErrors("toDate", true);
-                    }
-                }
-            },
-            {type: "SpacerItem"},
-            {
-                name: "searchBtn",
-                ID: "searchBtn_PresenceReport",
-                title: "<spring:message code="reporting"/>",
-                type: "ButtonItem",
-                colSpan: 1,
-                width:"*",
-                startRow:false,
-                endRow:false,
-                click (form) {
-                    let criteria = form.getValuesAsAdvancedCriteria();
-                    if(criteria === null || Object.keys(form.getValuesAsCriteria()).length === 0) {
-                        MainLG_PresenceReport.setData([]);
-                        createDialog("info","فیلتری انتخاب نشده است.");
-                    }
-                    else{
-                        if(form.getValue("studentPersonnelNo2") !== undefined){
-                            let cr = [];
-                            for (let i = 0; i < criteria.criteria.length; i++) {
-                                if(criteria.criteria[i]["fieldName"] !== "studentPersonnelNo2"){
-                                    cr.push(criteria.criteria[i])
-                                }
-                            }
-                            cr.push({fieldName: "studentPersonnelNo2", operator: "inSet", value: form.getValue("studentPersonnelNo2").split(',').toArray()});
-                            criteria.criteria = cr;
-                        }
-                        MainLG_PresenceReport.invalidateCache();
-                        MainGridDS_PresenceReport.implicitCriteria = criteria;
-                        MainLG_PresenceReport.fetchData(criteria)
+                        form.clearFieldErrors("classEndDate", true);
                     }
                 }
             },
             {
-                name: "clearBtn",
-                title: "<spring:message code="clear"/>",
-                type: "ButtonItem",
-                width:"*",
-                colSpan: 2,
-                startRow:false,
-                endRow:false,
-                click (form) {
-                    form.clearValues();
-                    MainLG_PresenceReport.setData([]);
-                }
-            }
-        ],
-        itemChanged (){
-            MainLG_PresenceReport.setData([]);
-        },
-    });
-
-    CriteriaForm_PresenceReport.getField("courseCode").comboBox.pickListFields = [
-        {name: "code", autoFitWidth: true},
-        {name: "titleFa"},
-    ];
-    CriteriaForm_PresenceReport.getField("courseCode").comboBox.setHint("دوره های مورد نظر را انتخاب کنید");
-    CriteriaForm_PresenceReport.getField("courseCode").comboBox.filterFields = ["titleFa", "code"];
-    CriteriaForm_PresenceReport.getField("courseCode").comboBox.textMatchStyle="substring";
-    CriteriaForm_PresenceReport.getField("courseCode").comboBox.pickListProperties= {
-        showFilterEditor: false,
-        pickListWidth: 400,
-        showClippedValuesOnHover: true,
-    };
-    CriteriaForm_PresenceReport.getField("studentCcpAffairs").comboBox.filterFields = ["value", "value"];
-    CriteriaForm_PresenceReport.getField("studentCcpAffairs").comboBox.textMatchStyle="substring";
-    CriteriaForm_PresenceReport.getField("studentCcpAffairs").comboBox.setHint("امورهای مورد نظر را انتخاب کنید");
-    CriteriaForm_PresenceReport.getField("studentCcpAffairs").comboBox.pickListProperties= {
-        showFilterEditor: false,
-        pickListWidth: 400,
-        showClippedValuesOnHover: true,
-    };
-    CriteriaForm_PresenceReport.getField("studentCcpUnit").comboBox.filterFields = ["value", "value"];
-    CriteriaForm_PresenceReport.getField("studentCcpUnit").comboBox.textMatchStyle="substring";
-    CriteriaForm_PresenceReport.getField("studentCcpUnit").comboBox.setHint("واحدهای مورد نظر را انتخاب کنید");
-    CriteriaForm_PresenceReport.getField("studentCcpUnit").comboBox.pickListProperties= {
-        showFilterEditor: false,
-        pickListWidth: 400,
-        showClippedValuesOnHover: true,
-    };
-    CriteriaForm_PresenceReport.getField("studentCcpSection").comboBox.filterFields = ["value", "value"];
-    CriteriaForm_PresenceReport.getField("studentCcpSection").comboBox.textMatchStyle="substring";
-    CriteriaForm_PresenceReport.getField("studentCcpSection").comboBox.setHint("مرکز هزینه های مورد نظر را انتخاب کنید");
-    CriteriaForm_PresenceReport.getField("studentCcpSection").comboBox.pickListProperties= {
-        showFilterEditor: false,
-        pickListWidth: 400,
-        showClippedValuesOnHover: true,
-    };
-    CriteriaForm_PresenceReport.getField("studentCcpAssistant").comboBox.filterFields = ["value", "value"];
-    CriteriaForm_PresenceReport.getField("studentCcpAssistant").comboBox.textMatchStyle="substring";
-    CriteriaForm_PresenceReport.getField("studentCcpAssistant").comboBox.setHint("معاونت های مورد نظر را انتخاب کنید");
-    CriteriaForm_PresenceReport.getField("studentCcpAssistant").comboBox.pickListProperties= {
-        showFilterEditor: false,
-        showClippedValuesOnHover: true,
-    };
-    CriteriaForm_PresenceReport.getField("studentCompanyName").comboBox.filterFields = ["value", "value"];
-    CriteriaForm_PresenceReport.getField("studentCompanyName").comboBox.textMatchStyle="substring";
-    CriteriaForm_PresenceReport.getField("studentCompanyName").comboBox.pickListProperties= {
-        showFilterEditor: false,
-        showClippedValuesOnHover: true,
-    };
-    CriteriaForm_PresenceReport.getField("studentComplexTitle").comboBox.filterFields = ["value", "value"];
-    CriteriaForm_PresenceReport.getField("studentComplexTitle").comboBox.textMatchStyle="substring";
-    CriteriaForm_PresenceReport.getField("studentComplexTitle").comboBox.pickListProperties= {
-        showFilterEditor: false,
-        showClippedValuesOnHover: true,
-    };
-
-    MainGridMenu_PresenceReport = isc.Menu.create({
-        data: [
+                name: "temp1",
+                title: "",
+                canEdit: false
+            },
             {
-                title: "<spring:message code="global.form.print.excel"/>",
-                click: function () {
-                    // ExportToFile.downloadExcelFromClient(MainLG_PresenceReport,null,"","دوره های گذرانده پرسنل");
+                name: "sessionDate",
+                title: "تاریخ جلسه:",
+                ID: "startDateSession_jspAttendanceReport",
+                hint: "--/--/----",
+                keyPressFilter: "[0-9/]",
+                showHintInField: true,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function (form) {
+                        closeCalendarWindow();
+                        displayDatePicker('startDateSession_jspAttendanceReport', this, 'ymd', '/');
+                    }
+                }],
+                textAlign: "center",
+                changed: function (form, item, value) {
+                    var dateCheck;
+                    dateCheck = checkDate(value);
+                    if (dateCheck === false) {
+                        form.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                    } else {
+                        form.clearFieldErrors("startDate", true);
+                    }
                 }
             }
         ]
     });
-    
-    ExcelButton_PresenceReport = isc.ToolStripButtonExcel.create({
-        margin:5,
-        click: function() {
 
-            let criteria = CriteriaForm_PresenceReport.getValuesAsAdvancedCriteria();
-
-            if(criteria != null && Object.keys(criteria).length !== 0) {
-
-                if(CriteriaForm_PresenceReport.getValue("studentPersonnelNo2") !== undefined){
-                    let cr = [];
-                    for (let i = 0; i < criteria.criteria.length; i++) {
-                        if(criteria.criteria[i]["fieldName"] !== "studentPersonnelNo2"){
-                            cr.push(criteria.criteria[i])
-                        }
-                    }
-                    cr.push({fieldName: "studentPersonnelNo2", operator: "inSet", value: CriteriaForm_PresenceReport.getValue("studentPersonnelNo2").split(',').toArray()});
-                    criteria.criteria = cr;
-                }
-            }else{
-                return ;
+    var initialLayoutStyle = "vertical";
+    var DynamicForm_SelectCourses_JspAttendanceReport = isc.DynamicForm.create({
+        align: "center",
+        titleWidth: 0,
+        titleAlign: "center",
+        width: 500,
+        height: 300,
+        fields: [
+            {
+                name: "course.code",
+                align: "center",
+                title: "",
+                editorType: "MultiComboBoxItem",
+                multiple: true,
+                defaultValue: null,
+                changeOnKeypress: true,
+                showHintInField: true,
+                displayField: "code",
+                comboBoxWidth: 500,
+                valueField: "code",
+                layoutStyle: initialLayoutStyle,
+                optionDataSource: RestDataSource_Course_JspAttendanceReport
             }
+        ]
+    });
+    DynamicForm_SelectCourses_JspAttendanceReport.getField("course.code").comboBox.setHint("دوره های مورد نظر را انتخاب کنید");
+    DynamicForm_SelectCourses_JspAttendanceReport.getField("course.code").comboBox.pickListFields =
+        [{name: "titleFa", title: "نام دوره", width: "30%", filterOperator: "iContains"},
+            {
+                name: "code", title: "کد دوره", width: "30%", filterOperator: "iContains"
+            }];
+    DynamicForm_SelectCourses_JspAttendanceReport.getField("course.code").comboBox.filterFields = ["titleFa", "code"];
 
-            ExportToFile.showDialog(null, MainLG_PresenceReport, 'studentClassReport', 0, null, '',  "دوره هاي گذراننده پرسنل", criteria, null);
+    IButton_ConfirmCourseSelections_JspAttendanceReport = isc.IButtonSave.create({
+        top: 260,
+        title: "تائید",
+        width: 300,
+        click: function () {
+            var criteriaDisplayValues = "";
+            var selectorDisplayValues = DynamicForm_SelectCourses_JspAttendanceReport.getItem("course.code").getValue();
+            if (DynamicForm_CriteriaForm_JspAttendanceReport.getField("courseCode").getValue() != undefined
+                && DynamicForm_CriteriaForm_JspAttendanceReport.getField("courseCode").getValue() != "") {
+                criteriaDisplayValues = DynamicForm_CriteriaForm_JspAttendanceReport.getField("courseCode").getValue();
+                var ALength = criteriaDisplayValues.length;
+                var lastChar = criteriaDisplayValues.charAt(ALength - 1);
+                if (lastChar != ";")
+                    criteriaDisplayValues += ";";
+            }
+            if (selectorDisplayValues != undefined) {
+                for (var i = 0; i < selectorDisplayValues.size() - 1; i++) {
+                    criteriaDisplayValues += selectorDisplayValues [i] + ";";
+                }
+                criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
+            }
+            DynamicForm_CriteriaForm_JspAttendanceReport.getField("courseCode").setValue(criteriaDisplayValues);
+            Window_SelectCourses_JspAttendanceReport.close();
         }
     });
 
-    MainLG_PresenceReport = isc.TrLG.create({
-        ID: "MainLG_PresenceReport",
-        dynamicTitle: true,
-        autoFetchData: false,
-        allowAdvancedCriteria: true,
-        contextMenu: MainGridMenu_PresenceReport,
-        dataSource: MainGridDS_PresenceReport,
-        filterOnKeypress: false,
-        showFilterEditor: true,
-
-        gridComponents: [CriteriaForm_PresenceReport, ExcelButton_PresenceReport, "header", "filterEditor", "body"],
-        <%--fields:[--%>
-        <%--    {--%>
-        <%--        name: "studentPersonnelNo2",--%>
-        <%--    },--%>
-        <%--    {name: "studentNationalCode",--%>
-        <%--        keyPressFilter: "[0-9]"--%>
-        <%--    },--%>
-        <%--    {name: "studentFirstName"},--%>
-        <%--    {name: "studentLastName"},--%>
-        <%--    {name: "studentCcpAffairs"},--%>
-        <%--    {name: "studentCcpUnit"},--%>
-        <%--    {name: "studentPostCode"},--%>
-        <%--    {name: "studentPostTitle"},--%>
-        <%--    {name: "courseCode"},--%>
-        <%--    {name: "courseTitleFa"},--%>
-        <%--    {name: "classHDuration"},--%>
-        <%--    {name: "classStartDate"},--%>
-        <%--    {name: "classEndDate", title:"<spring:message code="end.date"/>", filterOperator: "equals", autoFitWidth: true}--%>
-        <%--]--%>
+    var Window_SelectCourses_JspAttendanceReport = isc.Window.create({
+        placement: "center",
+        title: "انتخاب دوره ها",
+        canDragReposition: true,
+        align: "center",
+        autoDraw: false,
+        border: "2px solid gray",
+        width: 500,
+        height: 300,
+        items: [
+            isc.TrVLayout.create({
+                members: [
+                    DynamicForm_SelectCourses_JspAttendanceReport,
+                    IButton_ConfirmCourseSelections_JspAttendanceReport
+                ]
+            })
+        ]
     });
 
-    isc.VLayout.create({
+    var DynamicForm_SelectClasses_JspAttendanceReport = isc.DynamicForm.create({
+        align: "center",
+        titleWidth: 0,
+        titleAlign: "center",
+        width: 500,
+        height: 300,
+        fields: [
+            {
+                name: "class.code",
+                align: "center",
+                title: "",
+                editorType: "MultiComboBoxItem",
+                multiple: true,
+                defaultValue: null,
+                changeOnKeypress: true,
+                showHintInField: true,
+                displayField: "code",
+                comboBoxWidth: 500,
+                valueField: "code",
+                layoutStyle: initialLayoutStyle,
+                optionDataSource: RestDataSource_Class_JspAttendanceReport
+            }
+        ]
+    });
+
+    DynamicForm_SelectClasses_JspAttendanceReport.getField("class.code").comboBox.setHint("کلاسهای مورد نظر را انتخاب کنید");
+    DynamicForm_SelectClasses_JspAttendanceReport.getField("class.code").comboBox.pickListFields =
+        [
+            {name: "titleClass", title: "نام کلاس", width: "30%", filterOperator: "iContains"},
+            {name: "code", title: "کد کلاس", width: "30%", filterOperator: "iContains"},
+            {name: "course.titleFa", title: "نام دوره", width: "30%", filterOperator: "iContains"}];
+    DynamicForm_SelectClasses_JspAttendanceReport.getField("class.code").comboBox.filterFields = ["titleClass", "code", "course.titleFa"];
+
+    IButton_ConfirmClassesSelections_JspAttendanceReport = isc.IButtonSave.create({
+        top: 260,
+        title: "تائید",
+        width: 300,
+        click: function () {
+            let criteriaDisplayValues = "";
+            let selectorDisplayValues = DynamicForm_SelectClasses_JspAttendanceReport.getItem("class.code").getValue();
+            if (DynamicForm_SelectClasses_JspAttendanceReport.getField("class.code").getValue() != undefined && DynamicForm_SelectClasses_JspAttendanceReport.getField("class.code").getValue() != "") {
+                criteriaDisplayValues = DynamicForm_SelectClasses_JspAttendanceReport.getField("class.code").getValue().join(",");
+                let ALength = criteriaDisplayValues.length;
+                let lastChar = criteriaDisplayValues.charAt(ALength - 1);
+                if (lastChar != ";")
+                    criteriaDisplayValues += ",";
+            }
+            if (selectorDisplayValues != undefined) {
+                for (let i = 0; i < selectorDisplayValues.size() - 1; i++) {
+                    criteriaDisplayValues += selectorDisplayValues [i] + ",";
+                }
+                criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
+            }
+
+            if (typeof criteriaDisplayValues != "undefined") {
+                let uniqueNames = [];
+
+                $.each(criteriaDisplayValues.split(","), function (i, el) {
+                    if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+                });
+                criteriaDisplayValues = uniqueNames.join(",");
+            }
+
+            criteriaDisplayValues = criteriaDisplayValues == ";undefined" ? "" : criteriaDisplayValues;
+
+            DynamicForm_CriteriaForm_JspAttendanceReport.getField("classCode").setValue(criteriaDisplayValues);
+            Window_SelectClasses_JspAttendanceReport.close();
+        }
+    });
+
+    var Window_SelectClasses_JspAttendanceReport = isc.Window.create({
+        placement: "center",
+        title: "انتخاب کلاس ها",
+        canDragReposition: true,
+        align: "center",
+        autoDraw: false,
+        border: "2px solid gray",
+        width: 500,
+        height: 300,
+        items: [
+            isc.TrVLayout.create({
+                members: [
+                    DynamicForm_SelectClasses_JspAttendanceReport,
+                    IButton_ConfirmClassesSelections_JspAttendanceReport,
+                ]
+            })
+        ]
+    });
+
+    IButton_JspAttendanceReport = isc.IButtonSave.create({
+        top: 260,
+        title: "چاپ گزارش",
+        width: 300,
+        click: function () {
+            DynamicForm_CriteriaForm_JspAttendanceReport.validate();
+            if (DynamicForm_CriteriaForm_JspAttendanceReport.hasErrors())
+                return;
+
+            let criteria = DynamicForm_CriteriaForm_JspAttendanceReport.getValuesAsAdvancedCriteria();
+            if(criteria === null || Object.keys(DynamicForm_CriteriaForm_JspAttendanceReport.getValuesAsCriteria()).length === 0) {
+                ListGrid_JspAttendanceReport.setData([]);
+                createDialog("info","فیلتری انتخاب نشده است.");
+            }
+            else{
+                let cr = [];
+
+                if(DynamicForm_CriteriaForm_JspAttendanceReport.getValue("classCode") !== undefined){
+
+                    for (let i = 0; i < criteria.criteria.length; i++) {
+                        if(criteria.criteria[i]["fieldName"] !== "classCode"){
+                            cr.push(criteria.criteria[i])
+                        }
+                    }
+                    cr.push({fieldName: "classCode", operator: "inSet", value: DynamicForm_CriteriaForm_JspAttendanceReport.getValue("classCode").split(',').toArray()});
+                    criteria.criteria = cr;
+                }
+
+                ListGrid_JspAttendanceReport.invalidateCache();
+                RestDataSource_JspAttendanceReport.implicitCriteria = criteria;
+                ListGrid_JspAttendanceReport.fetchData(criteria);
+                Window_JspAttendanceReport.show();
+            }
+        }
+    });
+
+    //----------------------------------- functions --------------------------------------------------------------------
+    let Window_CriteriaForm_JspAttendanceReport = isc.Window.create({
+        placement: "fillScreen",
+        title: "",
+        showCloseButton: false,
+        showMaximizeButton: false,
+        canDragReposition: false,
+        showMinimizeButton: false,
+        canDragResize: false,
+        closeClick: false,
+        minimize: false,
+        items: [DynamicForm_CriteriaForm_JspAttendanceReport]
+    });
+    //----------------------------------- layOut -----------------------------------------------------------------------
+    var HLayOut_CriteriaForm_JspAttendanceReport = isc.TrHLayoutButtons.create({
+        showEdges: false,
+        edgeImage: "",
         width: "100%",
         height: "100%",
-        overflow: "visible",
-        members: [MainLG_PresenceReport]
+        alignLayout: "center",
+        members: [
+            Window_CriteriaForm_JspAttendanceReport
+        ]
     });
 
-    //</script>
+    var HLayOut_Confirm_JspAttendanceReport = isc.TrHLayoutButtons.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        width: "70%",
+        height: "10%",
+        alignLayout: "center",
+        padding: 10,
+        members: [
+            IButton_JspAttendanceReport
+        ]
+    });
+
+    var VLayout_Body_JspAttendanceReport = isc.TrVLayout.create({
+        members: [
+            HLayOut_CriteriaForm_JspAttendanceReport,
+            HLayOut_Confirm_JspAttendanceReport
+        ]
+    });
+    //----------------------------------------------------End-----------------------------------------------------------
+    Window_JspAttendanceReport.hide();

@@ -25,12 +25,8 @@
                 this.openAll();
             },
         },
-        rowClick: function (_1,_2,_3) {
-        },
         rowDoubleClick: function(_1){
-            if(_1.isFolder === undefined){
-                chosenDepartments_JspOC.addData({"id":_1.id,"title":_1.title});
-            }
+            rowDClick(_1);
         },
     });
 
@@ -53,37 +49,14 @@
             },
         },
         rowClick: function (_1,_2,_3) {
-            if(batch){
-                if(_1.isFolder === true || _1.isFolder === false){
-                    _1.isOpen = true;
-                    let childeren = [];
-                    _1.children.forEach(function (currentValue, index, arr) {
-                        if(currentValue.isFolder == undefined)
-                            childeren.add(currentValue.id);
-                    });
-                    getchilderen(childeren);
-                }
-            }
+            rowClick(_1);
         },
         rowDoubleClick: function(_1){
-            if(_1.isFolder === undefined){
-                chosenDepartments_JspOC.addData({"id":_1.id,"title":_1.title});
-            }
+            rowDClick(_1);
         },
         openFolder:function () {
+            openFolder(this);
             this.Super("openFolder",arguments);
-            console.log(this);
-            // if(batch){
-            //     if(_1.isFolder === true || _1.isFolder === false){
-            //         _1.isOpen = true;
-            //         let childeren = [];
-            //         _1.children.forEach(function (currentValue, index, arr) {
-            //             if(currentValue.isFolder == undefined)
-            //                 childeren.add(currentValue.id);
-            //         });
-            //         getchilderen(childeren);
-            //     }
-            // }
         },
     });
 
@@ -137,7 +110,7 @@
             {name: "id", primaryKey: true, hidden:true},
             {name: "title", title: "موارد انتخاب شده"},
         ],
-        removeRecordClick(rowNum){
+        removeRecordClick: function(rowNum){
             this.removeData(this.getRecord(rowNum));
         }
     });
@@ -369,6 +342,41 @@
                 searchTree.getData().openAll();
             }
         }));
+    }
+
+    function rowClick(_1){
+        if(batch){
+            if(_1.isFolder === true || _1.isFolder === false){
+                _1.isOpen = true;
+                let childeren = [];
+                _1.children.forEach(function (currentValue, index, arr) {
+                    if(currentValue.isFolder == undefined)
+                        childeren.add(currentValue.id);
+                });
+                getchilderen(childeren);
+            }
+        }
+    }
+
+    function rowDClick(_1) {
+        if(_1.isFolder === undefined){
+            var item = chosenDepartments_JspOC.data.filter(function (i) {
+                return i.id === _1.id;
+            });
+            if(item.length < 1)
+                chosenDepartments_JspOC.addData({"id":_1.id,"title":_1.title});
+        }
+    }
+
+    function openFolder(tree) {
+        if(batch){
+            let childeren = [];
+            tree.getDropFolder().children.forEach(function (currentValue, index, arr) {
+                if(currentValue.isFolder == undefined)
+                    childeren.add(currentValue.id);
+            });
+            getchilderen(childeren);
+        }
     }
     // ------------------------------------------------- Functions ------------------------------------------>>
 

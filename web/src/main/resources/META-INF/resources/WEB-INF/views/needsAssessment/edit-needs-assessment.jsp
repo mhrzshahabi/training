@@ -1278,7 +1278,6 @@
                     wait.show();
                     isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null,(resp)=>{
                         wait.close();
-                        console.log(resp.data);
                         if(resp.data === "true"){
                             editNeedsAssessmentRecord(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"))
                             isChanged = true;
@@ -1684,11 +1683,14 @@
         Label_PlusData_JspNeedsAssessment.setContents("");
         if(DynamicForm_JspEditNeedsAssessment.getValue("objectType") === "Post") {
             Label_PlusData_JspNeedsAssessment.setContents(
-                "عنوان پست: " + objectId.titleFa
+                (objectId.titleFa !== undefined ? "<b>عنوان پست: </b>" +  objectId.titleFa : "")
                 // + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + objectId.postGrade.titleFa
-                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "حوزه: " + objectId.area
-                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "معاونت: " + objectId.assistance
-                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "امور: " + objectId.affairs
+                + "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                (objectId.area !== undefined ? "<b>حوزه: </b>" + objectId.area : "")
+                + "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                (objectId.assistance !== undefined ? "<b>معاونت: </b>" + objectId.assistance : "")
+                + "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                (objectId.affairs !== undefined ? "<b>واحد: </b>" + objectId.affairs : "")
             );
         }
     }
