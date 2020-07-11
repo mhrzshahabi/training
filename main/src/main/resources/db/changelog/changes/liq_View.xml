@@ -1866,7 +1866,7 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_TEACHER_REPORT-001">
+    <changeSet author="NICICO" id="VIEW_TEACHER_REPORT-002">
         <createView viewName="VIEW_TEACHER_REPORT" replaceIfExists="true">
             <![CDATA[
            SELECT
@@ -1893,7 +1893,11 @@ FROM
         address.F_CITY as address_city,
         address.F_STATE as address_state,
         lastClassess.titleClass as lastclassTitle,
-        lastClassess.reactionGrade as reactionGrade
+        lastClassess.reactionGrade as reactionGrade,
+        tCategories.categories as teacher_categories,
+        tSubCategories.subCategories as teacher_sub_categories,
+        tTeachingCategories.tcategories as teaching_history_cats,
+        tTeachingSubCategories.tsubCategories as teaching_history_subCats
 
         FROM TBL_TEACHER teacher
         LEFT JOIN (SELECT
@@ -1942,6 +1946,22 @@ WHERE  rn = 1) s left join  tbl_evaluation_analysis evaluation ON evaluation.F_T
         ON contactinfo.ID = personalinfo.F_CONTACT_INFO
         LEFT JOIN TBL_ADDRESS address
         ON address.ID = contactinfo.F_HOME_ADDRESS
+
+        LEFT JOIN (select f_teacher, LISTAGG(f_category, ',') within group (order by F_TEACHER) as categories
+        from tbl_teacher_category
+        group by f_teacher) tCategories on tCategories.f_teacher = teacher.ID
+
+        LEFT JOIN (select f_teacher, LISTAGG(f_subcategory, ',') within group (order by F_TEACHER) as subCategories
+        from tbl_teacher_subcategory
+        group by f_teacher) tSubCategories on tSubCategories.f_teacher = teacher.ID
+
+        LEFT JOIN ( select teacherId, LISTAGG(catId,',') within group (order by teacherId) as tcategories
+      from (select distinct te.id as teacherId, co.category_id as catId from tbl_teacher te left join tbl_class tc on te.id = tc.f_teacher left join tbl_course co on co.id = tc.f_course)
+        group by teacherId) tTeachingCategories on tTeachingCategories.teacherId = teacher.ID
+
+        LEFT JOIN (  select teacherId, LISTAGG(subcatId,',') within group (order by teacherId) as tsubCategories
+      from (select distinct te.id as teacherId, co.subcategory_id as subcatId from tbl_teacher te left join tbl_class tc on te.id = tc.f_teacher left join tbl_course co on co.id = tc.f_course)
+        group by teacherId) tTeachingSubCategories on tTeachingSubCategories.teacherId = teacher.ID
     			]]>
         </createView>
     </changeSet>
