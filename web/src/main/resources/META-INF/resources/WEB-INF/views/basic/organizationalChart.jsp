@@ -11,7 +11,7 @@
         ID: "searchTree",
         data:[],
         fields: [
-            {name: "title", title: " ", width:"10%"},
+            {name: "title", title: "موارد جستجو شده", width:"10%"},
         ],
         width: "100%",
         height: "30%",
@@ -36,7 +36,7 @@
         ID: "organizationalTree",
         data:[],
         fields: [
-            {name: "title", title: " ", width:"10%", },
+            {name: "title", title: "درخت کامل", width:"10%", },
         ],
         width: "100%",
         height: "70%",

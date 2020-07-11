@@ -3012,9 +3012,9 @@
         chosenDepartments_JspOC.data.forEach(function (currentValue, index, arr) {
             DataSource_TargetSociety_List.addData({societyId: currentValue.id, title: currentValue.title});
             singleTargetScoiety.add({societyId: currentValue.id, title: currentValue.title});
-            selectedSocieties.add(currentValue.id);
+            // selectedSocieties.add(currentValue.id);//don't delet !!!!
         });
-        // singleTargetScoiety.forEach(function (currentValue, index, arr) {selectedSocieties.add(currentValue.societyId);});
+        singleTargetScoiety.forEach(function (currentValue, index, arr) {selectedSocieties.add(currentValue.societyId);});
         DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(selectedSocieties);
     }
 
