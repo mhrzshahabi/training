@@ -243,5 +243,8 @@
     <changeSet author="poursalehi_mos (generated)" id="1593510287630-431">
         <createSequence sequenceName="seq_training_post_id"/>
     </changeSet>
+    <changeSet author="golrokhi (generated)" id="1594445089907-437">
+        <createSequence sequenceName="seq_generic_permission_id"/>
+    </changeSet>
 
 </databaseChangeLog>
