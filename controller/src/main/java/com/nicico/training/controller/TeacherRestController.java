@@ -345,7 +345,8 @@ public class TeacherRestController {
             List<?> result3 = null;
             String classCount = null;
 
-            String sql1 = "select f_course,id from tbl_class where c_start_date = (select MAX(c_start_date) from tbl_class where f_teacher =" +  tId + ") AND ROWNUM = 1";
+//            String sql1 = "select f_course,id from tbl_class where c_start_date = (select MAX(c_start_date) from tbl_class where f_teacher =" +  tId + ") AND ROWNUM = 1";
+            String sql1 = "select * from (select f_course,id from tbl_class where  f_teacher =" +  tId + "GROUP BY id,f_course ORDER by max(c_start_date) desc) where rownum =1";
             result1 = (List<?>) entityManager.createNativeQuery(sql1).getResultList();
             if(result1.size() > 0) {
                 res1 = (Object[]) result1.get(0);
@@ -504,6 +505,33 @@ public class TeacherRestController {
                                                                                @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 
         SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
+
+        SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> response = teacherService.fullNameSearch(request);
+
+        final TeacherDTO.FullNameSpecRs specResponse = new TeacherDTO.FullNameSpecRs();
+        final TeacherDTO.TeacherFullNameSpecRs specRs = new TeacherDTO.TeacherFullNameSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/fullName")
+    //@PreAuthorize("hasAuthority('r_teacher')")
+    public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> fullNameListTeacher(
+                                                                         @RequestParam("_startRow") Integer startRow,
+                                                                         @RequestParam("_endRow") Integer endRow,
+                                                                         @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                         @RequestParam(value = "operator", required = false) String operator,
+                                                                         @RequestParam(value = "criteria", required = false) String criteria,
+                                                                         @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
+        SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, null, sortBy);
 
         SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> response = teacherService.fullNameSearch(request);
 

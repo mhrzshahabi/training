@@ -1278,7 +1278,6 @@
                     wait.show();
                     isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null,(resp)=>{
                         wait.close();
-                        console.log(resp.data);
                         if(resp.data === "true"){
                             editNeedsAssessmentRecord(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"))
                             isChanged = true;
@@ -1684,11 +1683,14 @@
         Label_PlusData_JspNeedsAssessment.setContents("");
         if(DynamicForm_JspEditNeedsAssessment.getValue("objectType") === "Post") {
             Label_PlusData_JspNeedsAssessment.setContents(
-                "عنوان پست: " + objectId.titleFa
+                (objectId.titleFa !== undefined ? "<b>عنوان پست: </b>" +  objectId.titleFa : "")
                 // + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + objectId.postGrade.titleFa
-                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "حوزه: " + objectId.area
-                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "معاونت: " + objectId.assistance
-                + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "امور: " + objectId.affairs
+                + "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                (objectId.area !== undefined ? "<b>حوزه: </b>" + objectId.area : "")
+                + "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                (objectId.assistance !== undefined ? "<b>معاونت: </b>" + objectId.assistance : "")
+                + "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                (objectId.affairs !== undefined ? "<b>واحد: </b>" + objectId.affairs : "")
             );
         }
     }
@@ -1793,19 +1795,8 @@
         }))
     }
 
-
     // <<---------------------------------------- Send To Workflow ----------------------------------------
     function sendNeedsAssessmentToWorkflow() {
-
-        // let sRecord = ListGrid_Course.getSelectedRecord();
-
-        <%--if (courseRecord === null || courseRecord.id === null) {--%>
-        <%--    createDialog("info", "<spring:message code='msg.no.records.selected'/>");--%>
-        <%--} else if (courseRecord.workflowStatusCode === "2") {--%>
-        <%--    createDialog("info", "<spring:message code='course.workflow.confirm'/>");--%>
-        <%--} else if (courseRecord.workflowStatusCode !== "0" && courseRecord.workflowStatusCode !== "-3") {--%>
-        <%--    createDialog("info", "<spring:message code='course.sent.to.workflow'/>");--%>
-        <%--} else {--%>
 
             isc.MyYesNoDialog.create({
                 message: "<spring:message code="needs.assessment.sent.to.workflow.ask"/>",
@@ -1835,14 +1826,13 @@
                     }
                 }
             });
-        // }
 
     }
 
     function startProcess_callback(resp) {
         if (resp.httpResponseCode === 200) {
             simpleDialog("<spring:message code="message"/>", "<spring:message code='course.set.on.workflow.engine'/>", 3000, "say");
-            ListGrid_Course_refresh()
+
 
         } else if (resp.httpResponseCode === 404) {
             simpleDialog("<spring:message code="message"/>", "<spring:message code='workflow.bpmn.not.uploaded'/>", 3000, "stop");
@@ -1850,82 +1840,6 @@
             simpleDialog("<spring:message code="message"/>", "<spring:message code='msg.send.to.workflow.problem'/>", 3000, "stop");
         }
     }
-
-    // let course_workflowParameters = null;
-
-    // function selectWorkflowRecord() {
-    //
-    //     if (workflowRecordId !== null) {
-    //
-    //         course_workflowParameters = workflowParameters;
-    //
-    //         let gridState = "[{id:" + workflowRecordId + "}]";
-    //
-    //         ListGrid_Course.setSelectedState(gridState);
-    //
-    //         ListGrid_Course.scrollToRow(ListGrid_Course.getRecordIndex(ListGrid_Course.getSelectedRecord()), 0);
-    //
-    //         workflowRecordId = null;
-    //         workflowParameters = null;
-    //
-    //         ListGrid_Course_Edit();
-    //         taskConfirmationWindow.maximize();
-    //     }
-    // }
-
-    <%--function sendToWorkflowAfterUpdate(selectedRecord) {--%>
-
-    <%--    let sRecord = selectedRecord;--%>
-
-    <%--    if (sRecord !== null && sRecord.id !== null && course_workflowParameters !== null) {--%>
-
-    <%--        if (sRecord.workflowStatusCode === "-1" || sRecord.workflowStatusCode === "-2") {--%>
-
-    <%--            course_workflowParameters.workflowdata["REJECT"] = "N";--%>
-    <%--            course_workflowParameters.workflowdata["REJECTVAL"] = " ";--%>
-    <%--            course_workflowParameters.workflowdata["mainObjective"] = sRecord.mainObjective;--%>
-    <%--            course_workflowParameters.workflowdata["titleFa"] = sRecord.titleFa;--%>
-    <%--            course_workflowParameters.workflowdata["theoryDuration"] = sRecord.theoryDuration.toString();--%>
-    <%--            course_workflowParameters.workflowdata["courseCreatorId"] = "${username}";--%>
-    <%--            course_workflowParameters.workflowdata["courseCreator"] = userFullName;--%>
-    <%--            course_workflowParameters.workflowdata["workflowStatus"] = "اصلاح دوره";--%>
-    <%--            course_workflowParameters.workflowdata["workflowStatusCode"] = "20";--%>
-    <%--            let ndat = course_workflowParameters.workflowdata;--%>
-    <%--            isc.RPCManager.sendRequest({--%>
-    <%--                actionURL: workflowUrl + "/doUserTask",--%>
-    <%--                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},--%>
-    <%--                httpMethod: "POST",--%>
-    <%--                useSimpleHttp: true,--%>
-    <%--                contentType: "application/json; charset=utf-8",--%>
-    <%--                showPrompt: false,--%>
-    <%--                data: JSON.stringify(ndat),--%>
-    <%--                params: {"taskId": course_workflowParameters.taskId, "usr": course_workflowParameters.usr},--%>
-    <%--                serverOutputAsString: false,--%>
-    <%--                callback: function (RpcResponse_o) {--%>
-    <%--                    if (RpcResponse_o.data === 'success') {--%>
-
-    <%--                        ListGrid_Course_refresh();--%>
-
-    <%--                        let responseID = sRecord.id;--%>
-
-    <%--                        let gridState = "[{id:" + responseID + "}]";--%>
-
-    <%--                        ListGrid_Course.setSelectedState(gridState);--%>
-
-    <%--                        ListGrid_Course.scrollToRow(ListGrid_Course.getRecordIndex(ListGrid_Course.getSelectedRecord()), 0);--%>
-
-    <%--                        isc.say("دوره ویرایش و به گردش کار ارسال شد");--%>
-    <%--                        taskConfirmationWindow.hide();--%>
-    <%--                        taskConfirmationWindow.maximize();--%>
-    <%--                        ListGrid_UserTaskList.invalidateCache();--%>
-    <%--                    }--%>
-    <%--                }--%>
-    <%--            });--%>
-    <%--        }--%>
-    <%--    }--%>
-
-
-    <%--}--%>
 
     // ---------------------------------------- Send To Workflow ---------------------------------------->>
 

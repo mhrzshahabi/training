@@ -49,7 +49,6 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 @RequestMapping(value = "/api/tclass")
 public class TclassRestController {
 
-    private final ITclassService tclassService;
     private final TclassService tClassService;
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
@@ -67,14 +66,14 @@ public class TclassRestController {
     @GetMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('r_tclass')")
     public ResponseEntity<TclassDTO.Info> get(@PathVariable Long id) {
-        return new ResponseEntity<>(tclassService.get(id), HttpStatus.OK);
+        return new ResponseEntity<>(tClassService.get(id), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/list")
 //    @PreAuthorize("hasAuthority('r_tclass')")
     public ResponseEntity<List<TclassDTO.Info>> list() {
-        return new ResponseEntity<>(tclassService.list(), HttpStatus.OK);
+        return new ResponseEntity<>(tClassService.list(), HttpStatus.OK);
     }
 
     @Loggable
@@ -82,7 +81,7 @@ public class TclassRestController {
 //    @PreAuthorize("hasAuthority('c_tclass')")
     public ResponseEntity<TclassDTO.Info> create(@Validated @RequestBody TclassDTO.Create request) {
 
-        ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tclassService.create(request), HttpStatus.CREATED);
+        ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.create(request), HttpStatus.CREATED);
 
         //*****check alarms*****
         if (infoResponseEntity.getStatusCodeValue() == 201) {
@@ -132,7 +131,7 @@ public class TclassRestController {
 //    @PreAuthorize("hasAuthority('u_tclass')")
     public ResponseEntity<TclassDTO.Info> update(@PathVariable Long id, @RequestBody TclassDTO.Update request) {
 
-        ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tclassService.update(id, request), HttpStatus.OK);
+        ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.update(id, request), HttpStatus.OK);
 
         //*****check alarms*****
         if (infoResponseEntity.getStatusCodeValue() == 200) {
@@ -148,7 +147,7 @@ public class TclassRestController {
 //    @PreAuthorize("hasAuthority('d_tclass')")
     public ResponseEntity delete(@PathVariable Long id) {
         try {
-            tclassService.delete(id);
+            tClassService.delete(id);
             return new ResponseEntity(HttpStatus.OK);
         } catch (DataIntegrityViolationException e) {
             return new ResponseEntity<>(
@@ -161,7 +160,7 @@ public class TclassRestController {
     @DeleteMapping(value = "/list")
 //    @PreAuthorize("hasAuthority('d_tclass')")
     public ResponseEntity delete(@Validated @RequestBody TclassDTO.Delete request) {
-        tclassService.delete(request);
+        tClassService.delete(request);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -195,7 +194,7 @@ public class TclassRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        SearchDTO.SearchRs<TclassDTO.Info> response = tclassService.search(request);
+        SearchDTO.SearchRs<TclassDTO.Info> response = tClassService.search(request);
 
         //*********************************
         //******old code for alarms********
@@ -249,7 +248,7 @@ public class TclassRestController {
         request.setStartIndex(startRow).setCount(endRow - startRow);
         request.setDistinct(true);
 
-        SearchDTO.SearchRs<TclassDTO.Info> response = tclassService.search(request);
+        SearchDTO.SearchRs<TclassDTO.Info> response = tClassService.search(request);
         final TclassDTO.SpecRs specResponse = new TclassDTO.SpecRs();
         final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();
         specResponse.setData(response.getList())
@@ -289,7 +288,7 @@ public class TclassRestController {
         request.setStartIndex(startRow).setCount(endRow - startRow);
         request.setDistinct(true);
 
-        SearchDTO.SearchRs<TclassDTO.InfoTuple> response = tclassService.searchInfoTuple(request);
+        SearchDTO.SearchRs<TclassDTO.InfoTuple> response = tClassService.searchInfoTuple(request);
         final TclassDTO.InfoTupleSpecRs specResponse = new TclassDTO.InfoTupleSpecRs();
         final TclassDTO.TclassInfoTupleSpecRs specRs = new TclassDTO.TclassInfoTupleSpecRs();
         specResponse.setData(response.getList())
@@ -331,7 +330,7 @@ public class TclassRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        SearchDTO.SearchRs<TclassDTO.EvaluatedInfoGrid> response = tclassService.evaluatedSearch(request);
+        SearchDTO.SearchRs<TclassDTO.EvaluatedInfoGrid> response = tClassService.evaluatedSearch(request);
 
         final TclassDTO.EvaluatedSpecRs specResponse = new TclassDTO.EvaluatedSpecRs();
         final TclassDTO.TclassEvaluatedSpecRs specRs = new TclassDTO.TclassEvaluatedSpecRs();
@@ -349,7 +348,7 @@ public class TclassRestController {
     @PostMapping(value = "/search")
 //    @PreAuthorize("hasAuthority('r_tclass')")
     public ResponseEntity<SearchDTO.SearchRs<TclassDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException {
-        return new ResponseEntity<>(tclassService.search(request), HttpStatus.OK);
+        return new ResponseEntity<>(tClassService.search(request), HttpStatus.OK);
     }
 
     @Loggable
@@ -366,7 +365,7 @@ public class TclassRestController {
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
 
-        final SearchDTO.SearchRs<TclassDTO.Info> searchRs = tclassService.search(searchRq);
+        final SearchDTO.SearchRs<TclassDTO.Info> searchRs = tClassService.search(searchRq);
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", DateUtil.todayDate());
 
@@ -382,7 +381,7 @@ public class TclassRestController {
     @GetMapping(value = "/end_group/{courseId}/{termId}")
 //    @PreAuthorize("hasAuthority('r_tclass')")
     public ResponseEntity<Long> getEndGroup(@PathVariable Long courseId, @PathVariable Long termId) {
-        return new ResponseEntity<>(tclassService.getEndGroup(courseId, termId), HttpStatus.OK);
+        return new ResponseEntity<>(tClassService.getEndGroup(courseId, termId), HttpStatus.OK);
     }
 
     @Loggable
@@ -414,32 +413,32 @@ public class TclassRestController {
     @Loggable
     @GetMapping(value = "/getWorkflowEndingStatusCode/{classId}")
     public Integer getWorkflowEndingStatusCode(@PathVariable Long classId) {
-        return tclassService.getWorkflowEndingStatusCode(classId);
+        return tClassService.getWorkflowEndingStatusCode(classId);
     }
 
     @Loggable
     @GetMapping(value = "/reactionEvaluationResult/{classId}/{userId}")
     public ResponseEntity<TclassDTO.ReactionEvaluationResult> getReactionEvaluationResult(@PathVariable Long classId, @PathVariable Long userId) {
-        return new ResponseEntity<TclassDTO.ReactionEvaluationResult>(tclassService.getReactionEvaluationResult(classId, userId), HttpStatus.OK);
+        return new ResponseEntity<TclassDTO.ReactionEvaluationResult>(tClassService.getReactionEvaluationResult(classId, userId), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/behavioralEvaluationResult/{classId}")
     public ResponseEntity<TclassDTO.BehavioralEvaluationResult> getBehavioralEvaluationResult(@PathVariable Long classId) {
-        return new ResponseEntity<TclassDTO.BehavioralEvaluationResult>(tclassService.getBehavioralEvaluationResult(classId), HttpStatus.OK);
+        return new ResponseEntity<TclassDTO.BehavioralEvaluationResult>(tClassService.getBehavioralEvaluationResult(classId), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/preCourse-test-questions/{classId}")
     public ResponseEntity<List<String>> getPreCourseTestQuestions(@PathVariable Long classId) {
-        return new ResponseEntity<>(tclassService.getPreCourseTestQuestions(classId), HttpStatus.OK);
+        return new ResponseEntity<>(tClassService.getPreCourseTestQuestions(classId), HttpStatus.OK);
     }
 
     @Loggable
     @PutMapping(value = "/preCourse-test-questions/{classId}")
     public ResponseEntity updatePreCourseTestQuestions(@PathVariable Long classId, @RequestBody List<String> request) {
         try {
-            tclassService.updatePreCourseTestQuestions(classId, request);
+            tClassService.updatePreCourseTestQuestions(classId, request);
             classAlarmService.alarmPreCourseTestQuestion(classId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException ex) {
@@ -491,7 +490,7 @@ public class TclassRestController {
             request.setCriteria(criteriaRq);
         }
 
-        SearchDTO.SearchRs<TclassDTO.TeachingHistory> response = tclassService.searchByTeachingHistory(request, teacherId);
+        SearchDTO.SearchRs<TclassDTO.TeachingHistory> response = tClassService.searchByTeachingHistory(request, teacherId);
 
         final TclassDTO.TeachingHistorySpecRs specResponse = new TclassDTO.TeachingHistorySpecRs();
         final TclassDTO.TclassTeachingHistorySpecRs specRs = new TclassDTO.TclassTeachingHistorySpecRs();
@@ -655,7 +654,7 @@ public class TclassRestController {
 //            request.getCriteria().getCriteria().remove(removedObject);
 //        }
 //
-//        SearchDTO.SearchRs<TclassDTO.TClassReport> response = tclassService.reportSearch(request);
+//        SearchDTO.SearchRs<TclassDTO.TClassReport> response = tClassService.reportSearch(request);
 //
 //        List<TclassDTO.TClassReport> listRemovedObjects = new ArrayList<>();
 //        if (courseStatus != null && !courseStatus.equals("3")) {
@@ -682,7 +681,7 @@ public class TclassRestController {
 //        if (reactionEvaluationOperator != null && reactionEvaluationGrade != null) {
 //            double grade = Double.parseDouble(reactionEvaluationGrade.toString());
 //            for (TclassDTO.TClassReport datum : response.getList()) {
-//                double classReactionGrade = tclassService.getClassReactionEvaluationGrade(datum.getId(), datum.getTeacherId());
+//                double classReactionGrade = tClassService.getClassReactionEvaluationGrade(datum.getId(), datum.getTeacherId());
 //                if (reactionEvaluationOperator.equals("1")) {
 //                    if (classReactionGrade >= grade)
 //                        listRemovedObjects.add(datum);
@@ -700,7 +699,7 @@ public class TclassRestController {
 //        if (behavioralEvaluationOperator != null && behavioralEvaluationGrade != null) {
 //            double grade = Double.parseDouble(behavioralEvaluationGrade.toString());
 //            for (TclassDTO.TClassReport datum : response.getList()) {
-//                double classBehavioralGrade = tclassService.getBehavioralEvaluationResult(datum.getId()).getFEBGrade();
+//                double classBehavioralGrade = tClassService.getBehavioralEvaluationResult(datum.getId()).getFEBGrade();
 //                if (behavioralEvaluationOperator.equals("1")) {
 //                    if (classBehavioralGrade >= grade)
 //                        listRemovedObjects.add(datum);
@@ -736,7 +735,7 @@ public class TclassRestController {
 //        if (evaluationOperator != null && evaluationGrade != null) {
 //            double grade = Double.parseDouble(evaluationGrade.toString());
 //            for (TclassDTO.TClassReport datum : response.getList()) {
-//                double classEvaluationGrade = tclassService.getBehavioralEvaluationResult(datum.getId()).getFECBGrade();
+//                double classEvaluationGrade = tClassService.getBehavioralEvaluationResult(datum.getId()).getFECBGrade();
 //                if (evaluationOperator.equals("1")) {
 //                    if (classEvaluationGrade >= grade)
 //                        listRemovedObjects.add(datum);

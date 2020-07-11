@@ -1442,11 +1442,14 @@
                 if(resp.httpResponseCode === 200){
                     let record = JSON.parse(resp.data).response.data[0];
                     Label_PlusData_JspDiffNeedsAssessment.setContents(
-                        "عنوان پست: " + record.titleFa
+                        (record.titleFa !== undefined ? "<b>عنوان پست: </b>" +  record.titleFa : "")
                         // + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + objectId.postGrade.titleFa
-                        + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "حوزه: " + record.area
-                        + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "معاونت: " + record.assistance
-                        + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "امور: " + record.affairs
+                        + "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                        (record.area !== undefined ? "<b>حوزه: </b>" + record.area : "")
+                        + "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                        (record.assistance !== undefined ? "<b>معاونت: </b>" + record.assistance : "")
+                        + "&nbsp;&nbsp;&nbsp;&nbsp;" +
+                        (record.affairs !== undefined ? "<b>واحد: </b>" + record.affairs : "")
                     );
                 }
 

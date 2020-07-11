@@ -3023,10 +3023,10 @@
                         }];
 
                         wait.show()
-                        isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), (resp)=>{
-                            wait.close()
-                            startProcess_callback
-                        }));
+                        ///// //disable until set permission to verify course//  isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), (resp)=>{
+                        ///// //disable until set permission to verify course//     wait.close()
+                        ///// //disable until set permission to verify course//     startProcess_callback
+                        ///// //disable until set permission to verify course// }));
 
                     }
                 }
