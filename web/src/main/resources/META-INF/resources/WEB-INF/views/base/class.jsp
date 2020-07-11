@@ -1368,17 +1368,9 @@
                 }
             },
             {
-                name: "autoValid",
-                type: "checkbox",
-                defaultValue: true,
-                title: "<spring:message code='auto.session.made'/>",
-                endRow: true,
-// titleOrientation:"top",
-                labelAsTitle: true,
+                type: "BlurbItem",
+                value: " ",
                 colSpan: 2,
-                changed : function () {
-                    weekDateActivation(this._value);
-                }
             },
             {
                 name: "startDate",
@@ -1565,6 +1557,20 @@
                     } else {
                         form.clearFieldErrors("endDate", true);
                     }
+                }
+            },
+            {
+                name: "autoValid",
+                type: "boolean",
+                defaultValue: true,
+                title: "<spring:message code='auto.session.made'/>" + " : ",
+                endRow: true,
+                titleOrientation:"top",
+                align:"right",
+                labelAsTitle: true,
+                colSpan: 2,
+                changed : function () {
+                    weekDateActivation(this._value);
                 }
             },
             {
@@ -3039,7 +3045,7 @@
             "first", "second", "third", "fourth", "fifth",
             "saturday", "sunday", "monday", "tuesday" ,"wednesday", "thursday", "friday"];
 
-        if(active){
+        if(active && DynamicForm1_Class_JspClass.getField("autoValid")._value){
             times.forEach(
                 function (currentValue, index, arr) {
                     DynamicForm1_Class_JspClass.getField(currentValue).enable();
