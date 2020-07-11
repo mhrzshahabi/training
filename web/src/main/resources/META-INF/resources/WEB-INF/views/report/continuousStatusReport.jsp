@@ -48,8 +48,15 @@
         autoFetchData: true
     });
 
+    var RestDataSource_Year = isc.TrDS.create({
+        fields: [
+            {name: "year"}
+        ],
+        fetchDataURL: termUrl + "years",
+        autoFetchData: true
+    });
 
-    var RestDataSource_CRReport = isc.TrDS.create({
+    var RestDataSource_CSReport = isc.TrDS.create({
         fields:
             [
                 {name: "EmpNo"},
@@ -279,16 +286,29 @@
                     title: "<spring:message code="year"/>",
                     colSpan: 3,
                     width: "*",
-                    autoFetchData: false,
-                    useClientFiltering: true,
-                    // optionDataSource: ,
-                    // displayField: "titleFa",
-                    // valueField: "id",
                     textAlign: "center",
+                    editorType: "ComboBoxItem",
+                    displayField: "year",
+                    valueField: "year",
+                    optionDataSource: RestDataSource_Year,
+                    filterFields: ["year"],
+                    sortField: ["year"],
+                    sortDirection: "descending",
+                    defaultToFirstOption: true,
+                    useClientFiltering: true,
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9]"
+                    },
                     pickListFields: [
-                        // {name: "titleFa", filterOperator: "iContains"},
+                        {
+                            name: "year",
+                            title: "<spring:message code='year'/>",
+                            filterOperator: "iContains",
+                            filterEditorProperties: {
+                                keyPressFilter: "[0-9]"
+                            }
+                        }
                     ],
-                    filterFields: [""]
                 },
                 {
                     name: "course",
@@ -336,7 +356,7 @@
                 },
                 {
                     name: "searchBtn",
-                    ID: "searchBtnJspCPReport",
+                    ID: "searchBtnJspCSReport",
                     type: "ButtonItem",
                     colSpan: 4,
                     width:"*",
@@ -352,10 +372,10 @@
         // ----------------------------------- Create - DynamicForm & Window --------------------------->>
         // <<----------------------------------------------- List Grid --------------------------------------------
 
-        var ListGrid_CRReport = isc.TrLG.create({
+        var ListGrid_CSReport = isc.TrLG.create({
             width: "100%",
             height: "100%",
-            dataSource: RestDataSource_CRReport,
+            dataSource: RestDataSource_CSReport,
             canAddFormulaFields: false,
             showFilterEditor: true,
             allowAdvancedCriteria: true,
@@ -363,7 +383,7 @@
             filterOnKeypress: true,
             selectionType: "single",
             showGridSummary: true,
-            autoFetchData : false,
+            autoFetchData : true,
             initialSort: [
                 {property: "", direction: "ascending"}
             ],
@@ -532,7 +552,7 @@
             width: "100%",
             height: "100%",
             overflow: "visible",
-            members: [ListGrid_CRReport]
+            members: [ListGrid_CSReport]
         })
 
     // <<----------------------------------------------- Layout --------------------------------------------
@@ -585,18 +605,30 @@
 
             checkNullableDate("firstFinishDate");
             checkNullableDate("secondFinishDate");
-            checkUndefinedDate("firstStartDate");
-            checkUndefinedDate("secondStartDate");
+            checkNullableDate("firstStartDate");
+            checkNullableDate("secondStartDate");
             CPReport_check_date("firstStartDate","secondStartDate");
             CPReport_check_date("firstFinishDate","secondFinishDate");
 
 
-            if (DynamicForm_CPReport.hasErrors())
+            if (DynamicForm_CSReport.hasErrors())
                 return;
 
-            // RestDataSource_CRReport.fetchDataURL = classPerformanceReport + "list" + "/" + JSON.stringify(reportParameters);
-            // ListGrid_ClPReport.invalidateCache();
-            // ListGrid_ClPReport.fetchData();
+            var reportParameters = {
+                firstStartDate: firstStartDate._value.replace(/\//g, "^"),
+                secondStartDate: secondStartDate._value.replace(/\//g, "^"),
+                firstFinishDate: firstFinishDate._value.replace(/\//g, "^"),
+                secondFinishDate: secondFinishDate._value.replace(/\//g, "^"),
+                class: DynamicForm_CSReport.getValue("class") !== undefined ? DynamicForm_CSReport.getValue("class") : "همه",
+                year: DynamicForm_CSReport.getValue("year") !== undefined ? DynamicForm_CSReport.getValue("year") : "همه",
+                course: DynamicForm_CSReport.getValue("course") !== undefined ? DynamicForm_CSReport.getValue("course") : "همه",
+                term: DynamicForm_CSReport.getValue("term") !== undefined ? DynamicForm_CSReport.getValue("term") : "همه",
+                // course: DynamicForm_CSReport.getValue("course") !== undefined ? DynamicForm_CSReport.getValue("course") : "همه"
+            };
+
+            RestDataSource_CSReport.fetchDataURL = continuousStatusReportViewUrl + "/iscList" + "/" + JSON.stringify(reportParameters);
+            ListGrid_CSReport.invalidateCache();
+            ListGrid_CSReport.fetchData();
 
         }
 
