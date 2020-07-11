@@ -57,7 +57,7 @@ public class ClassOutsideCurrentTermRestController {
                                                        @RequestParam(value = "startDate",required = false) String startDate,
                                                        @RequestParam(value = "term_id",required = false) String termId,
                                                        @RequestParam(value = "criteria", required = false) String criteria,
-                                                       @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException, ParseException {
+                                                       @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException, ParseException, NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         SearchDTO.CriteriaRq criteriaRq;
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
