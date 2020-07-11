@@ -1515,7 +1515,7 @@ public class MasterDataService implements IMasterDataService {
         return new PersonnelDTO.Info();
     }//end getParentEmployee
 
-    public List<PersonnelDTO.Info> getSiblingsEmployee(Long id) throws IOException {
+    public List<PersonnelDTO.Info> getChildrenEmployee(Long id) throws IOException {
         if (token == "") {
             authorize();
         }
@@ -1529,7 +1529,7 @@ public class MasterDataService implements IMasterDataService {
                 index++;
                 ObjectMapper objectMapper = new ObjectMapper();
 
-                URL obj = new URL("http://devapp01.icico.net.ir/master-data/api/v1/employees/siblingsEmployee/" +id);
+                URL obj = new URL("http://devapp01.icico.net.ir/master-data/api/v1/employees/childrenEmployee/" +id);
                 HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
                 postConnection.setDoOutput(true);
                 postConnection.setDoInput(true);
@@ -1597,5 +1597,5 @@ public class MasterDataService implements IMasterDataService {
             }//end while
         }//end else
         return new ArrayList<>(0);
-    }//end getSiblingsEmployeeV1
+    }//end getChildrenEmployee
 }
