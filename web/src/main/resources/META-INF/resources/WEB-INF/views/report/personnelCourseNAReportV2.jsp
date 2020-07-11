@@ -43,6 +43,7 @@
             {name: "personnelCcpSection", title: "<spring:message code='section'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelCcpUnit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "priorityId", title: "<spring:message code='priority'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "personnelPostGradeLvlTitle", title: "<spring:message code='post.grade'/>", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
         ],
         fetchDataURL: personnelCourseNAReportUrl + "/personnel-list"
     });
@@ -83,6 +84,7 @@
                 ],
             },
             {name: "personnelPostTitle"},
+            {name: "personnelPostGradeLvlTitle"},
             {name: "personnelCcpAffairs"},
             {name: "personnelCcpSection"},
             {name: "personnelCcpUnit"},
@@ -140,6 +142,7 @@
             {name: "personnelCcpUnit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "priorityId", title: "<spring:message code='priority'/>", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "isPassed", title: "<spring:message code='status'/>", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelPostGradeLvlTitle", title: "<spring:message code='post.grade'/>", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
         ],
         fetchDataURL: personnelCourseNAReportUrl + "/minList"
     });
@@ -245,6 +248,20 @@
         },
     });
 
+    var RestDataSource_PostGradeLvl_PCNR = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {
+                name: "code",
+                title: "<spring:message code="post.grade.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
+        ],
+        fetchDataURL: viewPostGradeUrl + "/iscList"
+    });
+
     FilterDF_PCNR = isc.DynamicForm.create({
         border: "1px solid black",
         numCols: 10,
@@ -283,36 +300,31 @@
                 },
             },
             {
-                ID: "reportType",
-                name: "reportType",
-                colSpan: 1,
-                // rowSpan: 1,
-                title: "نوع گزارش :",
-                wrapTitle: false,
-                type: "radioGroup",
-                vertical: false,
-                endRow: true,
-                fillHorizontalSpace: true,
-                defaultValue: "2",
-                valueMap: {
-                    "1": "آماری",
-                    "2": "لیستی",
+                name: "personnelPostGradeLvlTitle",
+                title:"<spring:message code='post.grade'/>",
+                operator: "inSet",
+                textAlign: "center",
+                optionDataSource: RestDataSource_PostGradeLvl_PCNR,
+                autoFetchData: false,
+                type: "MultiComboBoxItem",
+                valueField: "titleFa",
+                displayField: "titleFa",
+                endRow: false,
+                colSpan: 4,
+                width: 300,
+                layoutStyle: "horizontal",
+                comboBoxProperties: {
+                    hint: "",
+                    pickListWidth: 300,
+                    pickListFields: [
+                        {name: "titleFa"},
+                    ],
+                    filterFields: ["titleFa"],
+                    pickListProperties: {
+                        sortField: 1,
+                        showFilterEditor: true},
+                    textMatchStyle: "substring",
                 },
-                change: function (form, item, value, oldValue) {
-
-
-                    if (value === "1"){
-                        VLayout_Body_PCNR.addMember(CourseLG_PCNR);
-                        VLayout_Body_PCNR.removeMember(CourseLG_MinPCNR);
-                    }
-                    else if(value === "2"){
-                        VLayout_Body_PCNR.removeMember(CourseLG_PCNR);
-                        VLayout_Body_PCNR.addMember(CourseLG_MinPCNR);
-                    }
-                    else
-                        return false;
-
-                }
             },
             {
                 name: "personnelComplexTitle",
@@ -464,6 +476,38 @@
                     textMatchStyle: "substring",
                 },
             },
+            {
+                ID: "reportType",
+                name: "reportType",
+                colSpan: 1,
+                // rowSpan: 1,
+                title: "نوع گزارش :",
+                wrapTitle: false,
+                type: "radioGroup",
+                vertical: false,
+                endRow: true,
+                fillHorizontalSpace: true,
+                defaultValue: "2",
+                valueMap: {
+                    "1": "آماری",
+                    "2": "لیستی",
+                },
+                change: function (form, item, value, oldValue) {
+
+
+                    if (value === "1"){
+                        VLayout_Body_PCNR.addMember(CourseLG_PCNR);
+                        VLayout_Body_PCNR.removeMember(CourseLG_MinPCNR);
+                    }
+                    else if(value === "2"){
+                        VLayout_Body_PCNR.removeMember(CourseLG_PCNR);
+                        VLayout_Body_PCNR.addMember(CourseLG_MinPCNR);
+                    }
+                    else
+                        return false;
+
+                }
+            },
             {type: "SpacerItem"},
             {
                 name: "reportBottom",
@@ -504,7 +548,7 @@
                             ExportToFile.downloadExcelFromClient(CourseLG_PCNR,null,"","آمار دوره های نیازسنجی افراد - آماری");
                         }
                         else if(FilterDF_PCNR.getItem("reportType").getValue() === "2"){
-                            ExportToFile.showDialog(null, CourseLG_MinPCNR, 'personnelCourseNAReportV2Min', 0, null, '',  "آمار دوره های نیازسنجی افراد - لیستی", criteria, null);
+                            ExportToFile.downloadExcelFromClient(CourseLG_MinPCNR,null,"","آمار دوره های نیازسنجی افراد - لیستی");
                         }
                     }
 
@@ -633,6 +677,7 @@
             {name: "personnelCcpAffairs"},
             {name: "personnelCcpSection"},
             {name: "personnelCcpUnit"},
+            {name: "personnelPostGradeLvlTitle"},
         ],
     });
 

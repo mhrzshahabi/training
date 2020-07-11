@@ -1867,4 +1867,85 @@ FROM
     </changeSet>
 
 
+    <changeSet author="NICICO" id="VIEW_ATTENDANCE_PERFORMANCE-001">
+        <createView viewName="VIEW_ATTENDANCE_PERFORMANCE" replaceIfExists="true">
+            <![CDATA[
+    SELECT
+    ins.c_title_fa,
+    ca.c_title_fa AS category_title,
+    cl.f_institute_organizer,
+    co.category_id,
+    co.subcategory_id,
+    at.c_state,
+    cl.c_start_date,
+    cl.c_end_date,
+    cl.f_term,
+    co.id AS course_id,
+    se.c_session_end_hour,
+    se.c_session_start_hour
+FROM
+    tbl_class cl
+    INNER JOIN tbl_course co ON co.id = cl.f_course
+    INNER JOIN tbl_institute ins ON ins.id = cl.f_institute_organizer
+    INNER JOIN tbl_category ca ON ca.id = co.category_id
+    INNER JOIN tbl_session se ON cl.id = se.f_class_id
+    INNER JOIN tbl_attendance at ON se.id = at.f_session
+    ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="NICICO" id="from view_personnel_course_passed_na_report_v2-001">
+        <createView viewName="from view_personnel_course_passed_na_report_v2" replaceIfExists="true">
+            <![CDATA[
+    SELECT
+    na.na_priority_id,
+    na.course_id,
+    na.course_code,
+    na.course_title_fa,
+    na.personnel_personnel_no,
+    na.personnel_cpp_affairs,
+    na.personnel_cpp_area,
+    na.personnel_cpp_assistant,
+    na.personnel_cpp_code,
+    na.personnel_cpp_section,
+    na.personnel_cpp_title,
+    na.personnel_cpp_unit,
+    na.personnel_company_name,
+    na.personnel_complex_title,
+    na.personnel_education_level_title,
+    na.personnel_first_name,
+    na.personnel_id,
+    na.personnel_job_no,
+    na.personnel_job_title,
+    na.personnel_last_name,
+    na.personnel_national_code,
+    na.personnel_emp_no,
+    na.personnel_post_code,
+    na.personnel_post_grade_code,
+    na.personnel_post_grade_title,
+    na.personnel_post_title,
+    CASE
+            WHEN passed.class_student_scores_state_id IN (
+                400,
+                401
+            ) THEN 216
+            ELSE 399
+        END
+    AS is_passed,
+    tbl_post_grade.c_title_fa,
+    tbl_post_grade.c_code
+FROM
+    view_personnel_course_na_report na
+    LEFT JOIN view_student_classstudent_class_term_course passed ON na.personnel_national_code = passed.student_national_code
+                                                                    AND na.course_id = passed.course_id
+                                                                    AND passed.class_student_scores_state_id IN (
+        400,
+        401
+    )
+    LEFT JOIN tbl_post_grade ON passed.personnel_post_grade_code = tbl_post_grade.c_code
+    ]]>
+        </createView>
+    </changeSet>
+
+
 </databaseChangeLog>
