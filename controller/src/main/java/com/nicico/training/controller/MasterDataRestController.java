@@ -123,9 +123,9 @@ public class MasterDataRestController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping(value = "siblingsEmployee/{peopleId}")
-    public ResponseEntity<List<PersonnelDTO.Info>> getSiblingsEmployee(@PathVariable Long peopleId) throws IOException {
-        List<PersonnelDTO.Info> results=modelMapper.map(masterDataService.getSiblingsEmployee(peopleId), new TypeToken<List<PersonnelDTO.Info>>(){}.getType());
+    @GetMapping(value = "childrenEmployee/{peopleId}")
+    public ResponseEntity<List<PersonnelDTO.Info>> getChildrenEmployee(@PathVariable Long peopleId) throws IOException {
+        List<PersonnelDTO.Info> results=modelMapper.map(masterDataService.getChildrenEmployee(peopleId), new TypeToken<List<PersonnelDTO.Info>>(){}.getType());
         return new ResponseEntity<>(results , HttpStatus.OK);
     }
 }

@@ -538,8 +538,11 @@
 
     var VM_JspClass = isc.ValuesManager.create({
         validate : function () {
-            DynamicForm_Class_JspClass.getField("trainingPlaceIds").validate();
-            return this.Super("validate", arguments);
+            let place = DynamicForm_Class_JspClass.getField("trainingPlaceIds").validate();
+            let targets = DynamicForm_Class_JspClass.getField("targetSocieties").validate();
+            if(place && targets)
+                return this.Super("validate", arguments);
+            return false;
         }
     });
 
@@ -1044,8 +1047,10 @@
                 },
             validate: function(){
                 if(this._value === null || this._value.length <= 0){
+                    DynamicForm_Class_JspClass.addFieldErrors("trainingPlaceIds", "<spring:message code="validator.field.is.required"/>", true);
                     return false;
                     }
+                DynamicForm_Class_JspClass.clearFieldErrors("trainingPlaceIds", true);
                 return this.Super("validate",arguments);
                 }
             },
@@ -1234,8 +1239,11 @@
                 displayField: "title",
                 valueField: "societyId",
                 validate: function(){
-                    if(this._value === null || this._value.length <= 0)
+                    if(this._value === null || this._value.length <= 0){
+                        DynamicForm_Class_JspClass.addFieldErrors("targetSocieties", "<spring:message code="validator.field.is.required"/>", true);
                         return false;
+                    }
+                    DynamicForm_Class_JspClass.clearFieldErrors("targetSocieties", true);
                     return this.Super("validate",arguments);
                 }
             },
@@ -1360,14 +1368,9 @@
                 }
             },
             {
-                name: "autoValid",
-                type: "checkbox",
-                defaultValue: true,
-                title: "<spring:message code='auto.session.made'/>",
-                endRow: true,
-// titleOrientation:"top",
-                labelAsTitle: true,
-                colSpan: 2
+                type: "BlurbItem",
+                value: " ",
+                colSpan: 2,
             },
             {
                 name: "startDate",
@@ -1554,6 +1557,20 @@
                     } else {
                         form.clearFieldErrors("endDate", true);
                     }
+                }
+            },
+            {
+                name: "autoValid",
+                type: "boolean",
+                defaultValue: true,
+                title: "<spring:message code='auto.session.made'/>" + " : ",
+                endRow: true,
+                titleOrientation:"top",
+                align:"right",
+                labelAsTitle: true,
+                colSpan: 2,
+                changed : function () {
+                    weekDateActivation(this._value);
                 }
             },
             {
@@ -2976,6 +2993,7 @@
                     DataSource_TargetSociety_List.testData.forEach(function(currentValue, index, arr){DataSource_TargetSociety_List.removeData(currentValue)});
                     // DynamicForm_Class_JspClass.getItem("addtargetSociety").hide();
                     DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue("371");
+                    DynamicForm_Class_JspClass.getItem("targetSocieties")._value = undefined;
                     JSON.parse(resp.data).forEach(
                         function (currentValue, index, arr) {
                             if (currentValue.targetSocietyTypeId === 371) {
@@ -3007,17 +3025,27 @@
         chosenDepartments_JspOC.data.forEach(function (currentValue, index, arr) {
             DataSource_TargetSociety_List.addData({societyId: currentValue.id, title: currentValue.title});
             singleTargetScoiety.add({societyId: currentValue.id, title: currentValue.title});
-            selectedSocieties.add(currentValue.id);
+            // selectedSocieties.add(currentValue.id);//don't delet !!!!
         });
-        // singleTargetScoiety.forEach(function (currentValue, index, arr) {selectedSocieties.add(currentValue.societyId);});
+        singleTargetScoiety.forEach(function (currentValue, index, arr) {selectedSocieties.add(currentValue.societyId);});
         DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(selectedSocieties);
     }
 
     function autoTimeActivation(active = true) {
-        var times = ["autoValid",
+        if(active){
+            DynamicForm1_Class_JspClass.getField("autoValid").enable();
+        }else if(!active){
+            DynamicForm1_Class_JspClass.getField("autoValid").disable();
+        }
+        weekDateActivation(active);
+    }
+
+    function weekDateActivation(active = true){
+        var times = [
             "first", "second", "third", "fourth", "fifth",
             "saturday", "sunday", "monday", "tuesday" ,"wednesday", "thursday", "friday"];
-        if(active){
+
+        if(active && DynamicForm1_Class_JspClass.getField("autoValid")._value){
             times.forEach(
                 function (currentValue, index, arr) {
                     DynamicForm1_Class_JspClass.getField(currentValue).enable();
