@@ -25,6 +25,8 @@
                 this.openAll();
             },
         },
+        rowClick: function (_1,_2,_3) {
+        },
         rowDoubleClick: function(_1){
             rowDClick(_1);
         },
@@ -239,38 +241,21 @@
                 return false;
             } else {
                 let data = JSON.parse(resp.data);
-                console.log(data);
-                var Treedata = isc.Tree.create({
-                    modelType: "parent",
-                    nameProperty: "title",
-                    idField: "id",
-                    parentIdField: "parentId",
-                    data: data,
-                    openProperty: "isOpen",
-                });
-                organizationalTree.setData(Treedata);
+                setTreeData(organizationalTree, data, false);
             }
         }));
     }
 
-    function getchilderen(data) {
+    function getchilderen(childeren) {
         let url = masterDataUrl + "/department/getDepartmentsChilderen";
         wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(data),function(resp){
+        isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(childeren),function(resp){
             wait.close();
             if (resp.httpResponseCode != 200){
                 return;
             } else {
                 let data = organizationalTree.getData().data.concat(JSON.parse(resp.data));
-                var Treedata = isc.Tree.create({
-                    modelType: "parent",
-                    nameProperty: "title",
-                    idField: "id",
-                    parentIdField: "parentId",
-                    data: data,
-                    openProperty: "isOpen",
-                });
-                organizationalTree.setData(Treedata);
+                setTreeData(organizationalTree, data, false);
             }
         }))
     }
@@ -284,15 +269,7 @@
                 return false;
             } else {
                 let data = organizationalTree.getData().data.concat(JSON.parse(resp.data));
-                var Treedata = isc.Tree.create({
-                    modelType: "parent",
-                    nameProperty: "title",
-                    idField: "id",
-                    parentIdField: "parentId",
-                    data: data,
-                    openProperty: "isOpen",
-                });
-                organizationalTree.setData(Treedata);
+                setTreeData(organizationalTree, data, false);
             }
         }));
     }
@@ -306,17 +283,9 @@
                 return false;
             } else {
                 let data = JSON.parse(resp.data);
-                var Treedata = isc.Tree.create({
-                    modelType: "parent",
-                    nameProperty: "title",
-                    idField: "id",
-                    parentIdField: "parentId",
-                    data: JSON.parse(resp.data)
-                });
-                organizationalTree.setData(Treedata);
+                var Treedata = setTreeData(organizationalTree, data, false);
                 Treedata.data[0]["isOpen"] = false;
                 getTreeData(Treedata.data[0].id);
-                //organizationalTree.getData().openAll();
             }
         }));
     }
@@ -330,16 +299,21 @@
                 return false;
             } else {
                 let data = JSON.parse(resp.data);
-                var Treedata = isc.Tree.create({
-                    modelType: "parent",
-                    nameProperty: "title",
-                    idField: "id",
-                    parentIdField: "parentId",
-                    data: data,
-                    openProperty: "isOpen",
-                });
-                searchTree.setData(Treedata);
-                searchTree.getData().openAll();
+
+                // let difference = data.filter(x => !organizationalTree.data.data.find(y => x.id == y.id));
+                //
+                // let difference2 = organizationalTree.data.data.filter(x => (x.isFolder === undefined  && (x.isFetched === undefined || x.isFetched === false)));
+                //
+                // let result = difference.concat(difference2);
+                //
+                // let childs = [];
+                // result.forEach(function (currentValue, index, array) {
+                //     if (currentValue.isFolder === undefined  && (currentValue.isFetched === undefined || currentValue.isFetched === false))
+                //         childs.add(currentValue.id);
+                // });
+                // getchilderen(childs);
+
+                setTreeData(searchTree, data, true);
             }
         }));
     }
@@ -350,8 +324,10 @@
                 _1.isOpen = true;
                 let childeren = [];
                 _1.children.forEach(function (currentValue, index, arr) {
-                    if(currentValue.isFolder == undefined)
+                    if(currentValue.isFolder === undefined  && (currentValue.isFetched === undefined || currentValue.isFetched === false)){
                         childeren.add(currentValue.id);
+                        currentValue.isFetched = true;
+                        }
                 });
                 getchilderen(childeren);
             }
@@ -372,11 +348,28 @@
         if(batch){
             let childeren = [];
             tree.getDropFolder().children.forEach(function (currentValue, index, arr) {
-                if(currentValue.isFolder == undefined)
+                if(currentValue.isFolder === undefined  && (currentValue.isFetched === undefined || currentValue.isFetched === false)){
                     childeren.add(currentValue.id);
+                    currentValue.isFetched = true;
+                }
             });
             getchilderen(childeren);
         }
+    }
+
+    function setTreeData(tree, data, open = false,) {
+        var Treedata = isc.Tree.create({
+            modelType: "parent",
+            nameProperty: "title",
+            idField: "id",
+            parentIdField: "parentId",
+            data: data,
+            openProperty: "isOpen",
+        });
+        tree.setData(Treedata);
+        if(open)
+            searchTree.getData().openAll();
+        return Treedata;
     }
     // ------------------------------------------------- Functions ------------------------------------------>>
 

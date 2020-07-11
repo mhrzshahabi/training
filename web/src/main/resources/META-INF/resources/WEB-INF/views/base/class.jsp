@@ -538,8 +538,11 @@
 
     var VM_JspClass = isc.ValuesManager.create({
         validate : function () {
-            DynamicForm_Class_JspClass.getField("trainingPlaceIds").validate();
-            return this.Super("validate", arguments);
+            let place = DynamicForm_Class_JspClass.getField("trainingPlaceIds").validate();
+            let targets = DynamicForm_Class_JspClass.getField("targetSocieties").validate();
+            if(place && targets)
+                return this.Super("validate", arguments);
+            return false;
         }
     });
 
@@ -1234,8 +1237,9 @@
                 displayField: "title",
                 valueField: "societyId",
                 validate: function(){
-                    if(this._value === null || this._value.length <= 0)
+                    if(this._value === null || this._value.length <= 0){
                         return false;
+                    }
                     return this.Super("validate",arguments);
                 }
             },
@@ -2976,6 +2980,7 @@
                     DataSource_TargetSociety_List.testData.forEach(function(currentValue, index, arr){DataSource_TargetSociety_List.removeData(currentValue)});
                     // DynamicForm_Class_JspClass.getItem("addtargetSociety").hide();
                     DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue("371");
+                    DynamicForm_Class_JspClass.getItem("targetSocieties")._value = undefined;
                     JSON.parse(resp.data).forEach(
                         function (currentValue, index, arr) {
                             if (currentValue.targetSocietyTypeId === 371) {
