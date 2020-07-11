@@ -48,7 +48,7 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 @RestController
 @RequestMapping(value = "/api/tclass")
 public class TclassRestController {
-    
+
     private final TclassService tClassService;
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
@@ -172,7 +172,7 @@ public class TclassRestController {
                                                        @RequestParam(value = "_constructor", required = false) String constructor,
                                                        @RequestParam(value = "operator", required = false) String operator,
                                                        @RequestParam(value = "criteria", required = false) String criteria,
-                                                       @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException {
+                                                       @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException, NoSuchFieldException, IllegalAccessException {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
@@ -226,7 +226,7 @@ public class TclassRestController {
                                                             @RequestParam(value = "_constructor", required = false) String constructor,
                                                             @RequestParam(value = "operator", required = false) String operator,
                                                             @RequestParam(value = "criteria", required = false) String criteria,
-                                                            @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException {
+                                                            @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException, NoSuchFieldException, IllegalAccessException {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
@@ -347,7 +347,7 @@ public class TclassRestController {
     @Loggable
     @PostMapping(value = "/search")
 //    @PreAuthorize("hasAuthority('r_tclass')")
-    public ResponseEntity<SearchDTO.SearchRs<TclassDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
+    public ResponseEntity<SearchDTO.SearchRs<TclassDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException {
         return new ResponseEntity<>(tClassService.search(request), HttpStatus.OK);
     }
 

@@ -504,7 +504,7 @@
             if (this.isSelected(record)) {
                 return "background-color: #fe9d2a;";
             }
-            else if(record.workflowEndingStatusCode === "2")
+            else if(record.workflowEndingStatusCode === 2)
             {
                 return "background-color: #bef5b8;";
             }
@@ -2559,7 +2559,7 @@
             }]
             if (classMethod.localeCompare("POST") === 0) {
                 wait.show()
-                isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(VarParams), "callback:startProcess(rpcResponse)"));
+                ///// //disable until set permission to ending class//  isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(VarParams), "callback:startProcess(rpcResponse)"));
             }
 
             var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
@@ -2864,7 +2864,7 @@
                 }];
 
                 wait.show()
-                isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
+              ///// //disable until set permission to ending class// isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
             }
 
         }));
@@ -3080,12 +3080,20 @@
         if(value !== undefined) {
             ////*****this criteria is for OR two condition (term.id and classStatus)
             ////*****this criteria is And with user criteria
+            //old criteria
+            // let criteria = {
+            //     _constructor:"AdvancedCriteria",
+            //     operator:"or",
+            //     criteria:[
+            //         { fieldName:"term.id", operator:"inSet", value: value},
+            //         { fieldName:"classStatus", operator:"notEqual", value: "3"}
+            //     ]
+            // };
             let criteria = {
                 _constructor:"AdvancedCriteria",
-                operator:"or",
+                operator:"and",
                 criteria:[
-                    { fieldName:"term.id", operator:"inSet", value: value},
-                    { fieldName:"classStatus", operator:"notEqual", value: "3"}
+                    { fieldName:"term.id", operator:"inSet", value: value}
                 ]
             };
             RestDataSource_Class_JspClass.fetchDataURL = classUrl + "spec-list";
