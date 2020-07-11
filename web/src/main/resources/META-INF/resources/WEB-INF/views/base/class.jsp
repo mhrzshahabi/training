@@ -1375,7 +1375,10 @@
                 endRow: true,
 // titleOrientation:"top",
                 labelAsTitle: true,
-                colSpan: 2
+                colSpan: 2,
+                changed : function () {
+                    weekDateActivation(this._value);
+                }
             },
             {
                 name: "startDate",
@@ -3023,9 +3026,19 @@
     }
 
     function autoTimeActivation(active = true) {
-        var times = ["autoValid",
+        if(active){
+            DynamicForm1_Class_JspClass.getField("autoValid").enable();
+        }else if(!active){
+            DynamicForm1_Class_JspClass.getField("autoValid").disable();
+        }
+        weekDateActivation(active);
+    }
+
+    function weekDateActivation(active = true){
+        var times = [
             "first", "second", "third", "fourth", "fifth",
             "saturday", "sunday", "monday", "tuesday" ,"wednesday", "thursday", "friday"];
+
         if(active){
             times.forEach(
                 function (currentValue, index, arr) {
