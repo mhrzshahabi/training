@@ -9,13 +9,11 @@ package com.nicico.training.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonObject;
 import com.nicico.copper.common.dto.grid.GridResponse;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
-import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CompetenceDTO;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.ViewPostDTO;
@@ -30,15 +28,12 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -51,7 +46,7 @@ public class MasterDataService implements IMasterDataService {
     @Getter
     @Setter
     @Accessors(chain = true)
-    public class CompetenceWebserviceDTO extends MasterDataService{
+    public class CompetenceWebserviceDTO extends MasterDataService {
 
         public Long id;
         public String code;
@@ -77,7 +72,7 @@ public class MasterDataService implements IMasterDataService {
     @Getter
     @Setter
     @ApiModel("CompetenceWebserviceDTOInfoTuple")
-    public static class CompetenceWebserviceDTOInfoTuple extends MasterDataService{
+    public static class CompetenceWebserviceDTOInfoTuple extends MasterDataService {
         private Long id;
         public String title;
         public Long parentId;
@@ -96,7 +91,6 @@ public class MasterDataService implements IMasterDataService {
             return (this.getId().equals(((MasterDataService.CompetenceWebserviceDTOInfoTuple) obj).getId()));
         }
     }
-
 
     private static String token = "";
 
@@ -164,7 +158,6 @@ public class MasterDataService implements IMasterDataService {
             return token;
         }
     }
-
 
     @Override
     public TotalResponse<PersonnelDTO.Info> getPeople(HttpServletRequest iscRq, HttpServletResponse resp) throws IOException {
@@ -970,7 +963,8 @@ public class MasterDataService implements IMasterDataService {
                                 try {
                                     tmp.setStartDate(DateUtil.convertMiToKh(ft.format(new Date(jsonNode.get(i).get("startDate").asLong()))));
 
-                                } catch (Exception ex) { }
+                                } catch (Exception ex) {
+                                }
                             }
 
                             if (jsonNode.get(i).get("endDate").asText() == null)
@@ -980,7 +974,8 @@ public class MasterDataService implements IMasterDataService {
                                 try {
                                     tmp.setEndDate(DateUtil.convertMiToKh(ft.format(new Date(jsonNode.get(i).get("endDate").asLong()))));
 
-                                } catch (Exception ex) { }
+                                } catch (Exception ex) {
+                                }
                             }
 
                             if (jsonNode.get(i).get("legacyCreateDate").asText() == null)
@@ -990,7 +985,8 @@ public class MasterDataService implements IMasterDataService {
                                 try {
                                     tmp.setLegacyCreateDate(DateUtil.convertMiToKh(ft.format(new Date(jsonNode.get(i).get("legacyCreateDate").asLong()))));
 
-                                } catch (Exception ex) { }
+                                } catch (Exception ex) {
+                                }
                             }
 
                             if (jsonNode.get(i).get("legacyChangeDate").asText() == null)
@@ -1000,7 +996,8 @@ public class MasterDataService implements IMasterDataService {
                                 try {
                                     tmp.setLegacyChangeDate(DateUtil.convertMiToKh(ft.format(new Date(jsonNode.get(i).get("legacyChangeDate").asLong()))));
 
-                                } catch (Exception ex) { }
+                                } catch (Exception ex) {
+                                }
                             }
 
                             tmp.setActive(jsonNode.get(i).get("active").asText());
@@ -1020,9 +1017,7 @@ public class MasterDataService implements IMasterDataService {
 
                     return list;
 
-                }
-
-                else {
+                } else {
 
                     return null;
                 }
@@ -1050,7 +1045,7 @@ public class MasterDataService implements IMasterDataService {
                 ObjectMapper objectMapper = new ObjectMapper();
                 List<CompetenceWebserviceDTO> result = new ArrayList<>();
 
-                for (Long id : xUrl){
+                for (Long id : xUrl) {
                     URL obj = new URL("http://devapp01.icico.net.ir/master-data/api/v1/department/get/ParentId?parentId=" + id.toString());
                     HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
                     postConnection.setDoOutput(true);
@@ -1098,7 +1093,8 @@ public class MasterDataService implements IMasterDataService {
                                     try {
                                         tmp.setStartDate(DateUtil.convertMiToKh(ft.format(new Date(jsonNode.get(i).get("startDate").asLong()))));
 
-                                    } catch (Exception ex) { }
+                                    } catch (Exception ex) {
+                                    }
                                 }
 
                                 if (jsonNode.get(i).get("endDate").asText() == null)
@@ -1108,7 +1104,8 @@ public class MasterDataService implements IMasterDataService {
                                     try {
                                         tmp.setEndDate(DateUtil.convertMiToKh(ft.format(new Date(jsonNode.get(i).get("endDate").asLong()))));
 
-                                    } catch (Exception ex) { }
+                                    } catch (Exception ex) {
+                                    }
                                 }
 
                                 if (jsonNode.get(i).get("legacyCreateDate").asText() == null)
@@ -1118,7 +1115,8 @@ public class MasterDataService implements IMasterDataService {
                                     try {
                                         tmp.setLegacyCreateDate(DateUtil.convertMiToKh(ft.format(new Date(jsonNode.get(i).get("legacyCreateDate").asLong()))));
 
-                                    } catch (Exception ex) { }
+                                    } catch (Exception ex) {
+                                    }
                                 }
 
                                 if (jsonNode.get(i).get("legacyChangeDate").asText() == null)
@@ -1128,7 +1126,8 @@ public class MasterDataService implements IMasterDataService {
                                     try {
                                         tmp.setLegacyChangeDate(DateUtil.convertMiToKh(ft.format(new Date(jsonNode.get(i).get("legacyChangeDate").asLong()))));
 
-                                    } catch (Exception ex) { }
+                                    } catch (Exception ex) {
+                                    }
                                 }
 
                                 tmp.setActive(jsonNode.get(i).get("active").asText());
@@ -1145,10 +1144,8 @@ public class MasterDataService implements IMasterDataService {
                             }
                             result.addAll(list);
                         }
-                    }
-
-                    else {
-                            continue;
+                    } else {
+                        continue;
 //                        return null;
                     }
                 }
@@ -1208,7 +1205,8 @@ public class MasterDataService implements IMasterDataService {
                         SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
                         try {
                             tmp.setStartDate(DateUtil.convertMiToKh(ft.format(new Date(jsonNode.get("startDate").asLong()))));
-                        } catch (Exception ex) { }
+                        } catch (Exception ex) {
+                        }
                     }
                     if (jsonNode.get("endDate").asText() == null)
                         tmp.setEndDate("");
@@ -1216,7 +1214,8 @@ public class MasterDataService implements IMasterDataService {
                         SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
                         try {
                             tmp.setEndDate(DateUtil.convertMiToKh(ft.format(new Date(jsonNode.get("endDate").asLong()))));
-                        } catch (Exception ex) { }
+                        } catch (Exception ex) {
+                        }
                     }
                     if (jsonNode.get("legacyCreateDate").asText() == null)
                         tmp.setLegacyCreateDate("");
@@ -1224,7 +1223,8 @@ public class MasterDataService implements IMasterDataService {
                         SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
                         try {
                             tmp.setLegacyCreateDate(DateUtil.convertMiToKh(ft.format(new Date(jsonNode.get("legacyCreateDate").asLong()))));
-                        } catch (Exception ex) { }
+                        } catch (Exception ex) {
+                        }
                     }
                     if (jsonNode.get("legacyChangeDate").asText() == null)
                         tmp.setLegacyChangeDate("");
@@ -1232,7 +1232,8 @@ public class MasterDataService implements IMasterDataService {
                         SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
                         try {
                             tmp.setLegacyChangeDate(DateUtil.convertMiToKh(ft.format(new Date(jsonNode.get("legacyChangeDate").asLong()))));
-                        } catch (Exception ex) { }
+                        } catch (Exception ex) {
+                        }
                     }
                     tmp.setActive(jsonNode.get("active").asText());
                     tmp.setOldCode(jsonNode.get("oldCode").asText());
@@ -1245,12 +1246,12 @@ public class MasterDataService implements IMasterDataService {
                     tmp.setParentId(Long.parseLong(jsonNode.get("parentId").asText() == "null" ? "-1" : jsonNode.get("parentId").asText()));
 
                     return tmp;
-                }else
+                } else
                     return null;
             }
         }
 
-            return null;
+        return null;
 
     }
 
@@ -1441,4 +1442,160 @@ public class MasterDataService implements IMasterDataService {
         }
     }
 
+    public PersonnelDTO.Info getParentEmployee(Long id) throws IOException {
+        if (token == "") {
+            authorize();
+        }
+
+        if (token == "") {
+            return null;
+        } else {
+            int index = 0;
+
+            while (index <= 1) {
+                index++;
+                ObjectMapper objectMapper = new ObjectMapper();
+
+                URL obj = new URL("http://devapp01.icico.net.ir/master-data/api/v1/employees/parentEmployee/" +id);
+                HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
+                postConnection.setDoOutput(true);
+                postConnection.setDoInput(true);
+
+                postConnection.setRequestMethod("GET");
+                postConnection.setRequestProperty("Accept", "application/json");
+                postConnection.setRequestProperty("authorization", "Bearer " + token);
+
+                int responseCode = postConnection.getResponseCode();
+
+                if (responseCode == HttpURLConnection.HTTP_OK) { //success
+                    BufferedReader in = new BufferedReader(new InputStreamReader(
+                            postConnection.getInputStream()));
+                    String inputLine;
+                    StringBuffer response = new StringBuffer();
+
+                    while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                    }
+                    in.close();
+
+                    JsonNode jsonNode = objectMapper.readTree(response.toString());
+
+                    PersonnelDTO.Info person = new PersonnelDTO.Info();
+
+                    person.setId(jsonNode.get("id").asLong());
+
+                    if (jsonNode.get("people") != null) {
+                        person.setFirstName(jsonNode.get("people").get("firstName").asText());
+                        person.setLastName(jsonNode.get("people").get("lastName").asText());
+                        person.setNationalCode(jsonNode.get("people").get("nationalCode").asText());
+                        person.setFatherName(jsonNode.get("people").get("fatherName").asText());
+                    }
+
+                    person.setPersonnelNo(jsonNode.get("emNum10").asText());
+                    person.setPersonnelNo2(jsonNode.get("emNum").asText());
+
+                    if (jsonNode.get("post") != null) {
+                        person.setPostTitle(jsonNode.get("post").get("title").asText());
+                        person.setPostCode(jsonNode.get("post").get("code").asText());
+                    }
+
+                    if (jsonNode.get("department") != null) {
+                        person.setCcpTitle(jsonNode.get("department").get("title").asText());
+                        person.setCcpAffairs(jsonNode.get("department").get("omorTitle").asText());
+                        person.setCcpSection(jsonNode.get("department").get("ghesmatTitle").asText());
+                        person.setCcpAssistant(jsonNode.get("department").get("moavenatTitle").asText());
+                        person.setCcpArea(jsonNode.get("department").get("hozeTitle").asText());
+                        person.setCcpUnit(jsonNode.get("department").get("vahedTitle").asText());
+                    }
+
+                    return person;
+                }//end if success
+            }//end while
+        }//end else
+        return new PersonnelDTO.Info();
+    }//end getParentEmployee
+
+    public List<PersonnelDTO.Info> getChildrenEmployee(Long id) throws IOException {
+        if (token == "") {
+            authorize();
+        }
+
+        if (token == "") {
+            return null;
+        } else {
+            int index = 0;
+
+            while (index <= 1) {
+                index++;
+                ObjectMapper objectMapper = new ObjectMapper();
+
+                URL obj = new URL("http://devapp01.icico.net.ir/master-data/api/v1/employees/childrenEmployee/" +id);
+                HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
+                postConnection.setDoOutput(true);
+                postConnection.setDoInput(true);
+
+                postConnection.setRequestMethod("GET");
+                postConnection.setRequestProperty("Accept", "application/json");
+                postConnection.setRequestProperty("authorization", "Bearer " + token);
+
+                int responseCode = postConnection.getResponseCode();
+
+                if (responseCode == HttpURLConnection.HTTP_OK) { //success
+                    BufferedReader in = new BufferedReader(new InputStreamReader(
+                            postConnection.getInputStream()));
+                    String inputLine;
+
+                    StringBuffer response = new StringBuffer();
+
+                    while ((inputLine = in.readLine()) != null)
+                        response.append(inputLine);
+
+                    in.close();
+
+                    PersonnelDTO.Info tmp = null;
+
+                    JsonNode jsonNode = objectMapper.readTree(response.toString());
+
+                    List<PersonnelDTO.Info> list = new ArrayList<>();
+
+                    if (jsonNode.isArray()) {
+                        for (int i = 0; i < jsonNode.size(); i++) {
+                            tmp = new PersonnelDTO.Info();
+
+                            tmp.setId(jsonNode.get(i).get("id").asLong());
+
+                            if (jsonNode.get(i).get("people") != null) {
+                                tmp.setFirstName(jsonNode.get(i).get("people").get("firstName").asText());
+                                tmp.setLastName(jsonNode.get(i).get("people").get("lastName").asText());
+                                tmp.setNationalCode(jsonNode.get(i).get("people").get("nationalCode").asText());
+                                tmp.setFatherName(jsonNode.get(i).get("people").get("fatherName").asText());
+                            }
+
+                            tmp.setPersonnelNo(jsonNode.get(i).get("emNum10").asText());
+                            tmp.setPersonnelNo2(jsonNode.get(i).get("emNum").asText());
+
+                            if (jsonNode.get(i).get("post") != null) {
+                                tmp.setPostTitle(jsonNode.get(i).get("post").get("title").asText());
+                                tmp.setPostCode(jsonNode.get(i).get("post").get("code").asText());
+                            }
+
+                            if (jsonNode.get(i).get("department") != null) {
+                                tmp.setCcpTitle(jsonNode.get(i).get("department").get("title").asText());
+                                tmp.setCcpAffairs(jsonNode.get(i).get("department").get("omorTitle").asText());
+                                tmp.setCcpSection(jsonNode.get(i).get("department").get("ghesmatTitle").asText());
+                                tmp.setCcpAssistant(jsonNode.get(i).get("department").get("moavenatTitle").asText());
+                                tmp.setCcpArea(jsonNode.get(i).get("department").get("hozeTitle").asText());
+                                tmp.setCcpUnit(jsonNode.get(i).get("department").get("vahedTitle").asText());
+                            }
+
+                            list.add(tmp);
+                        }
+                    }
+
+                    return list;
+                }//end if success
+            }//end while
+        }//end else
+        return new ArrayList<>(0);
+    }//end getChildrenEmployee
 }

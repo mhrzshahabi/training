@@ -291,7 +291,7 @@
                     pickListFields: [
                         {
                             name: "titleFa",
-                            title: "<spring:message code='term.code'/>",
+                            title: "<spring:message code="term.code"/>",
                             filterOperator: "iContains"
                         },
                     ],
@@ -556,7 +556,7 @@
             DynamicForm_CPReport.clearFieldErrors(id, true);
 
             if (DynamicForm_CPReport.getValue(id) === undefined || !checkDate(DynamicForm_CPReport.getValue(id))) {
-                DynamicForm_CPReport.addFieldErrors(id, "<spring:message code='msg.correct.date'/>", true);
+                DynamicForm_CPReport.addFieldErrors(id, "<spring:message code="msg.correct.date"/>", true);
             } else {
                 DynamicForm_CPReport.clearFieldErrors(id, true);
             }
@@ -570,7 +570,7 @@
                 DynamicForm_CPReport.getField(id)._value = " ";
             }
             else if (!checkDate(DynamicForm_CPReport.getValue(id))) {
-                DynamicForm_CPReport.addFieldErrors(id, "<spring:message code='msg.correct.date'/>", true);
+                DynamicForm_CPReport.addFieldErrors(id, "<spring:message code="msg.correct.date"/>", true);
             } else {
                 DynamicForm_CPReport.clearFieldErrors(id, true);
             }
