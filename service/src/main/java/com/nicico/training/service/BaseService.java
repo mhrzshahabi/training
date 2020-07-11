@@ -1,6 +1,8 @@
 package com.nicico.training.service;
 
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
+import com.nicico.copper.common.domain.criteria.NICICOPageable;
+import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
@@ -13,13 +15,17 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 @Transactional
 @RequiredArgsConstructor
@@ -72,6 +78,58 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
     @Transactional(readOnly = true)
     public SearchDTO.SearchRs<INFO> search(SearchDTO.SearchRq rq) {
         return SearchUtil.search(dao, rq, e -> modelMapper.map(e, infoType));
+    }
+
+    public static <E, INFO, DAO extends JpaSpecificationExecutor<E>> SearchDTO.SearchRs<INFO> optimizedSearch(DAO dao, Function<E, INFO> converter, SearchDTO.SearchRq rq) throws NoSuchFieldException, IllegalAccessException {
+
+
+        Page<E> all = dao.findAll(NICICOSpecification.of(rq), NICICOPageable.of(rq));
+        List<E> list = all.getContent();
+
+
+        Long totalCount = all.getTotalElements();
+        SearchDTO.SearchRs<INFO> searchRs = null;
+
+        if (totalCount == 0) {
+
+            searchRs = new SearchDTO.SearchRs<>();
+            searchRs.setList(new ArrayList<INFO>());
+
+        } else {
+            List<Long> ids = new ArrayList<>();
+            int len = list.size();
+            Field field = null;
+
+            for (int i = 0; i < len; i++) {
+
+                field = list.get(i).getClass().getDeclaredField("id");
+
+                field.setAccessible(true);
+
+                Object value = field.get(list.get(i));
+                ids.add((Long) value);
+            }
+
+            rq.setCriteria(makeNewCriteria("", null, EOperator.or, null));
+            List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+            SearchDTO.CriteriaRq tmpcriteria = null;
+            int page = 0;
+
+            while (page * 1000 < ids.size()) {
+                page++;
+                criteriaRqList.add(makeNewCriteria("id", ids.subList((page - 1) * 1000, Math.min((page * 1000), ids.size())), EOperator.inSet, null));
+
+            }
+
+            rq.setCriteria(makeNewCriteria("", null, EOperator.or, criteriaRqList));
+            rq.setStartIndex(null);
+
+            searchRs = SearchUtil.search(dao, rq, converter);
+        }
+
+        searchRs.setTotalCount(totalCount);
+
+        return searchRs;
     }
 
     @Override

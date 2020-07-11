@@ -41,4 +41,5 @@ public interface TeacherDAO extends JpaRepository<Teacher, Long>, JpaSpecificati
     @Override
     List<Teacher> findAll(@Nullable Specification<Teacher> var1);
 
+
 }

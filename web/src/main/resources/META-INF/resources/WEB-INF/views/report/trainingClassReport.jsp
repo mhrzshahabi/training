@@ -107,10 +107,12 @@
     var RestDataSource_Teacher_JspTClassReport = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "fullNameFa"},
-            {name: "personality.nationalCode"}
+            {name: "personality.firstNameFa", filterOperator: "iContains"},
+            {name: "personality.lastNameFa", filterOperator: "iContains"},
+            {name: "personality.nationalCode", filterOperator: "iContains"},
+            {name: "fullNameFa"}
         ],
-        fetchDataURL: teacherUrl + "fullName-list"
+        fetchDataURL: teacherUrl + "fullName"
     });
 
     var RestDataSource_Institute_JspTClassReport = isc.TrDS.create({
@@ -758,19 +760,18 @@
             {
                 name: "teacherId",
                 title: "مدرس",
-                type: "SelectItem",
-                filterOperator: "equals",
-                allowEmptyValue: true,
+                type: "ComboBoxItem",
+                autoFetchData: false,
                 optionDataSource: RestDataSource_Teacher_JspTClassReport,
                 valueField: "id",
                 displayField: "fullNameFa",
-                filterFields: ["fullNameFa", "personality.nationalCode"],
-                filterLocally: true,
-                pickListFields: [{name: "fullNameFa", title: "نام و نام خانوادگی"},
+                filterFields: ["personality.firstNameFa", "personality.lastNameFa", "personality.nationalCode"],
+                pickListFields: [
+                                {name: "personality.firstNameFa", title: "نام"},
+                                {name: "personality.lastNameFa", title: "نام خانوادگی"},
                                 {name: "personality.nationalCode", title: "کد ملی"}],
                 pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains"
+                    showFilterEditor: true
                 }
             },
             // {
