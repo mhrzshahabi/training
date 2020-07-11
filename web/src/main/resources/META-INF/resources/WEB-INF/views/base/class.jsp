@@ -1047,8 +1047,10 @@
                 },
             validate: function(){
                 if(this._value === null || this._value.length <= 0){
+                    DynamicForm_Class_JspClass.addFieldErrors("trainingPlaceIds", "<spring:message code="validator.field.is.required"/>", true);
                     return false;
                     }
+                DynamicForm_Class_JspClass.clearFieldErrors("trainingPlaceIds", true);
                 return this.Super("validate",arguments);
                 }
             },
@@ -1238,8 +1240,10 @@
                 valueField: "societyId",
                 validate: function(){
                     if(this._value === null || this._value.length <= 0){
+                        DynamicForm_Class_JspClass.addFieldErrors("targetSocieties", "<spring:message code="validator.field.is.required"/>", true);
                         return false;
                     }
+                    DynamicForm_Class_JspClass.clearFieldErrors("targetSocieties", true);
                     return this.Super("validate",arguments);
                 }
             },

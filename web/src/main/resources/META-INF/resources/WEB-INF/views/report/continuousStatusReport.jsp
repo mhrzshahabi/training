@@ -302,7 +302,7 @@
                     pickListFields: [
                         {
                             name: "year",
-                            title: "<spring:message code='year'/>",
+                            title: "<spring:message code="year"/>",
                             filterOperator: "iContains",
                             filterEditorProperties: {
                                 keyPressFilter: "[0-9]"
@@ -348,7 +348,7 @@
                     pickListFields: [
                         {
                             name: "titleFa",
-                            title: "<spring:message code='term.code'/>",
+                            title: "<spring:message code="term.code"/>",
                             filterOperator: "iContains"
                         },
                     ],
@@ -564,7 +564,7 @@
             DynamicForm_CSReport.clearFieldErrors(id, true);
 
             if (DynamicForm_CSReport.getValue(id) === undefined || !checkDate(DynamicForm_CSReport.getValue(id))) {
-                DynamicForm_CSReport.addFieldErrors(id, "<spring:message code='msg.correct.date'/>", true);
+                DynamicForm_CSReport.addFieldErrors(id, "<spring:message code="msg.correct.date"/>", true);
             } else {
                 DynamicForm_CSReport.clearFieldErrors(id, true);
             }
@@ -578,7 +578,7 @@
                 DynamicForm_CSReport.getField(id)._value = " ";
             }
             else if (!checkDate(DynamicForm_CSReport.getValue(id))) {
-                DynamicForm_CSReport.addFieldErrors(id, "<spring:message code='msg.correct.date'/>", true);
+                DynamicForm_CSReport.addFieldErrors(id, "<spring:message code="msg.correct.date"/>", true);
             } else {
                 DynamicForm_CSReport.clearFieldErrors(id, true);
             }
