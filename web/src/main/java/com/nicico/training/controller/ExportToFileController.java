@@ -14,6 +14,7 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonnelCourseNotPassedReportViewService;
 import com.nicico.training.iservice.IStudentService;
 import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.model.*;
 import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.PersonnelRegisteredDAO;
@@ -63,6 +64,18 @@ public class ExportToFileController {
     private final TrainingOverTimeService trainingOverTimeService;
     private final AttendanceReportService attendanceReportService;
     private final ViewEvaluationStaticalReportService viewEvaluationStaticalReportService;
+    private final CategoryService categoryService;
+    private final SubcategoryService subcategoryService;
+    private final EducationOrientationService educationOrientationService;
+    private final EducationMajorService educationMajorService;
+    private final EducationLevelService educationLevelService;
+    private final EquipmentService equipmentService;
+    private final CompetenceService competenceService;
+    private final SkillService skillService;
+    private final NeedsAssessmentReportsService needsAssessmentReportsService;
+    private final ViewJobService viewJobService;
+    private final PersonnelService personnelService;
+    private final ViewPostService viewPostService;
 
     private final StudentClassReportViewDAO studentClassReportViewDAO;
     private final PersonnelDAO personnelDAO;
@@ -448,6 +461,183 @@ public class ExportToFileController {
                 }
                 break;
 
+            case "Category":
+
+                SearchDTO.SearchRs<CategoryDTO.Info> list14 = categoryService.search(searchRq);
+
+                if (list14.getList() == null) {
+                    count = 0;
+                } else {
+                    ObjectMapper mapper = new ObjectMapper();
+                    jsonString = mapper.writeValueAsString(list14.getList());
+                    count = list14.getList().size();
+                }
+                break;
+
+            case "SubCategory":
+
+                SearchDTO.SearchRs<SubcategoryDTO.Info> list13 = subcategoryService.search(searchRq);
+
+                if (list13.getList() == null) {
+                    count = 0;
+                } else {
+                    ObjectMapper mapper = new ObjectMapper();
+                    jsonString = mapper.writeValueAsString(list13.getList());
+                    count = list13.getList().size();
+                }
+                break;
+
+            case "EducationOrientation":
+
+                SearchDTO.SearchRs<EducationOrientationDTO.Info> list15 = educationOrientationService.search(searchRq);
+
+                if (list15.getList() == null) {
+                    count = 0;
+                } else {
+                    ObjectMapper mapper = new ObjectMapper();
+                    jsonString = mapper.writeValueAsString(list15.getList());
+                    count = list15.getList().size();
+                }
+                break;
+
+            case "EducationMajor":
+
+                SearchDTO.SearchRs<EducationMajorDTO.Info> list16 = educationMajorService.search(searchRq);
+
+                if (list16.getList() == null) {
+                    count = 0;
+                } else {
+                    ObjectMapper mapper = new ObjectMapper();
+                    jsonString = mapper.writeValueAsString(list16.getList());
+                    count = list16.getList().size();
+                }
+                break;
+
+            case "EducationLevel":
+
+                SearchDTO.SearchRs<EducationLevelDTO.Info> list17 = educationLevelService.search(searchRq);
+
+                if (list17.getList() == null) {
+                    count = 0;
+                } else {
+                    ObjectMapper mapper = new ObjectMapper();
+                    jsonString = mapper.writeValueAsString(list17.getList());
+                    count = list17.getList().size();
+                }
+                break;
+
+            case "Equipment":
+
+                SearchDTO.SearchRs<EquipmentDTO.Info> list18 = equipmentService.search(searchRq);
+
+                if (list18.getList() == null) {
+                    count = 0;
+                } else {
+                    ObjectMapper mapper = new ObjectMapper();
+                    jsonString = mapper.writeValueAsString(list18.getList());
+                    count = list18.getList().size();
+                }
+                break;
+
+            case "Competence":
+
+                SearchDTO.SearchRs<CompetenceDTO.Info> list19 = competenceService.search(searchRq);
+
+                if (list19.getList() == null) {
+                    count = 0;
+                } else {
+                    ObjectMapper mapper = new ObjectMapper();
+                    jsonString = mapper.writeValueAsString(list19.getList());
+                    count = list19.getList().size();
+                }
+                break;
+
+            case "Skill":
+
+                SearchDTO.SearchRs<SkillDTO.Info> list20 = skillService.searchGeneric(searchRq, SkillDTO.Info.class);
+
+                if (list20.getList() == null) {
+                    count = 0;
+                } else {
+                    ObjectMapper mapper = new ObjectMapper();
+                    jsonString = mapper.writeValueAsString(list20.getList());
+                    count = list20.getList().size();
+                }
+                break;
+
+            case "Skill_Post":
+
+                Long skillId = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                searchRq.getCriteria().getCriteria().remove(0);
+
+                SearchDTO.SearchRs<PostDTO.Info> list21 = needsAssessmentReportsService.getSkillNAPostList(searchRq, skillId);
+
+                if (list21.getList() == null) {
+                    count = 0;
+                } else {
+                    ObjectMapper mapper = new ObjectMapper();
+                    jsonString = mapper.writeValueAsString(list21.getList());
+                    count = list21.getList().size();
+                }
+                break;
+
+            case "Job":
+
+                SearchDTO.SearchRs<ViewjobDTO.Info> list22 = viewJobService.search(searchRq);
+
+                if (list22.getList() == null) {
+                    count = 0;
+                } else {
+                    ObjectMapper mapper = new ObjectMapper();
+                    jsonString = mapper.writeValueAsString(list22.getList());
+                    count = list22.getList().size();
+                }
+                break;
+
+            case "Job_Personnel":
+
+                SearchDTO.SearchRs<PersonnelDTO.Info> list23 = personnelService.search(searchRq);
+
+                if (list23.getList() == null) {
+                    count = 0;
+                } else {
+                    ObjectMapper mapper = new ObjectMapper();
+                    jsonString = mapper.writeValueAsString(list23.getList());
+                    count = list23.getList().size();
+                }
+                break;
+
+            case "Job_NA":
+
+                Long objectId = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                String objectType = searchRq.getCriteria().getCriteria().get(1).getValue().get(0).toString();
+                String personnelNo = searchRq.getCriteria().getCriteria().get(2).getValue().get(0) == null ? null : searchRq.getCriteria().getCriteria().get(2).getValue().get(0).toString();
+
+                searchRq.getCriteria().getCriteria().remove(0);searchRq.getCriteria().getCriteria().remove(0);searchRq.getCriteria().getCriteria().remove(0);
+
+                SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> list24 = needsAssessmentReportsService.search(searchRq, objectId, objectType, personnelNo);
+
+                if (list24.getList() == null) {
+                    count = 0;
+                } else {
+                    ObjectMapper mapper = new ObjectMapper();
+                    jsonString = mapper.writeValueAsString(list24.getList());
+                    count = list24.getList().size();
+                }
+                break;
+
+            case "Job_Post":
+
+                SearchDTO.SearchRs<ViewPostDTO.Info> list25 = viewPostService.search(searchRq);
+
+                if (list25.getList() == null) {
+                    count = 0;
+                } else {
+                    ObjectMapper mapper = new ObjectMapper();
+                    jsonString = mapper.writeValueAsString(list25.getList());
+                    count = list25.getList().size();
+                }
+                break;
         }
 
         //End Of Query

@@ -563,6 +563,20 @@
 
         }
     });
+
+    let ToolStrip_Skill_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = SkillLG_Skill.getCriteria();
+                    ExportToFile.showDialog(null, SkillLG_Skill , "Skill", 0, null, '',"لیست مهارت ها - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
     CourseTSB_Skill = isc.ToolStripButton.create({
         top: 260,
         align: "center",
@@ -580,6 +594,7 @@
             RemoveTSB_Skill,
             PrintTSB_Skill,
             CourseTSB_Skill,
+            ToolStrip_Skill_Export2EXcel,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -591,10 +606,44 @@
 
     //////////////////////////////////////////////////Post/////////////////////////////////////////////////////
 
+
+    let ToolStrip_Skill_Post_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = PostLG_Skill.getCriteria();
+
+                    if(typeof(criteria.operator)=='undefined'){
+                        criteria._constructor="AdvancedCriteria";
+                        criteria.operator="and";
+                    }
+
+                    if(typeof(criteria.criteria)=='undefined'){
+                        criteria.criteria=[];
+                    }
+                    criteria.criteria.push({fieldName:'skillId',operator:'equals',value:SkillLG_Skill.getSelectedRecord().id});
+
+                    ExportToFile.showDialog(null, PostLG_Skill , "Skill_Post", 0, null, '',"لیست پست - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
+
+    let ActionsTS_Post_Skill = isc.ToolStrip.create({
+        width: "100%",
+        members: [
+            ToolStrip_Skill_Post_Export2EXcel
+        ]
+    });
+
     PostLG_Skill = isc.TrLG.create({
         dataSource: PostDS_Skill,
         selectionType: "none",
         autoFetchData: false,
+        gridComponents: [ActionsTS_Post_Skill, "header", "filterEditor", "body",],
         fields: [
             {name: "code",
                 filterEditorProperties: {
