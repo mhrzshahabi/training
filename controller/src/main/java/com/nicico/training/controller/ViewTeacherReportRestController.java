@@ -30,14 +30,6 @@ public class ViewTeacherReportRestController {
         if (iscRq.getParameter("_startRow") != null)
             startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        if(searchRq.getCriteria() != null && searchRq.getCriteria().getCriteria() != null){
-            for (SearchDTO.CriteriaRq criterion : searchRq.getCriteria().getCriteria()) {
-                if(criterion.getValue().get(0).equals("true"))
-                    criterion.setValue(true);
-                if(criterion.getValue().get(0).equals("false"))
-                    criterion.setValue(false);
-            }
-        }
         SearchDTO.SearchRs<ViewTeacherReportDTO.Info> searchRs = viewTeacherReportService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }

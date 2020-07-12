@@ -787,6 +787,9 @@
                     || data_values.criteria[i].fieldName == "teacherCategories"){
                         let trecord = data_values.criteria[i];
                         let tsize = trecord.value.size();
+                        let mainCriteria = new Object();
+                        mainCriteria.operator = "or";
+                        mainCriteria.criteria = [];
                         for(let j=0;j<tsize;j++){
                             let tvalue = ',' + trecord.value[j] + ',';
                             let tname = data_values.criteria[i].fieldName;
@@ -795,8 +798,9 @@
                             crecord.fieldName = tname;
                             crecord.value = tvalue;
                             crecord.operator = toperator;
-                            addedObjects.add(crecord);
+                            mainCriteria.criteria[j] = crecord;
                         }
+                    addedObjects.add(mainCriteria);
                     removedObjects.add(trecord);
                 }
                 }

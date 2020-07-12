@@ -329,14 +329,6 @@ public class ExportToFileController {
                 }
                 break;
             case "teacherReport":
-                if(searchRq.getCriteria() != null && searchRq.getCriteria().getCriteria() != null){
-                    for (SearchDTO.CriteriaRq criterion : searchRq.getCriteria().getCriteria()) {
-                        if(criterion.getValue().get(0).equals("true"))
-                            criterion.setValue(true);
-                        if(criterion.getValue().get(0).equals("false"))
-                            criterion.setValue(false);
-                    }
-                }
                 SearchDTO.SearchRs<ViewTeacherReportDTO.Info> list13 = viewTeacherReportService.search(searchRq);
 
                 if (list13.getList() == null) {
