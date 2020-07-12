@@ -1,6 +1,7 @@
 package com.nicico.training.controller;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -127,8 +128,8 @@ public class ExportToFileController {
 
         //Start Of Query
         net.minidev.json.parser.JSONParser parser = new JSONParser(DEFAULT_PERMISSIVE_MODE);
-        String jsonString = null;
-        int count = 0;
+        String[] jsonString = {null};
+        int count[] = {0};
 
         switch (fileName) {
             /*case "tclass-personnel-training":
@@ -256,62 +257,39 @@ public class ExportToFileController {
                         datum.setLastCourseEvaluationGrade("" + tclassService.getClassReactionEvaluationGrade(Long.parseLong(classId), tId));
                 }
 
-                if (tmpresponse.getList() == null || tmpresponse.getList().size() == 0) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(tmpresponse.getList());
-                    count = tmpresponse.getList().size();
-                }
+                setExcelValues(jsonString, count, tmpresponse.getList());
 
                 break;
             case "trainingFile":
 
                 SearchDTO.SearchRs<ClassStudentDTO.CoursesOfStudent> list2 = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class));//SearchUtil.search(classStudentDAO, searchRq, c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class)).getList();
 
-                if (list2.getList() == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list2.getList());
-                    count = list2.getList().size();
-                }
+                setExcelValues(jsonString, count, list2.getList());
+
                 break;
             case "studentClassReport":
 
                 List<StudentClassReportViewDTO.Info> list3 = SearchUtil.search(studentClassReportViewDAO, searchRq, student -> modelMapper.map(student, StudentClassReportViewDTO.Info.class)).getList();
-                if (list3 == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list3);
-                    count = list3.size();
-                }
+
+                setExcelValues(jsonString, count, list3);
+
                 break;
 
             case "personnelInformationReport":
 
 
                 List<PersonnelDTO.Info> list4 = SearchUtil.search(personnelDAO, searchRq, personnel -> modelMapper.map(personnel, PersonnelDTO.Info.class)).getList();
-                if (list4 == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list4);
-                    count = list4.size();
-                }
+
+                setExcelValues(jsonString, count, list4);
+
                 break;
             case "registeredPersonnelInformationReport":
 
 
                 List<PersonnelRegisteredDTO.Info> list11 = SearchUtil.search(personnelRegisteredDAO, searchRq, personnelRegistered -> modelMapper.map(personnelRegistered, PersonnelRegisteredDTO.Info.class)).getList();
-                if (list11 == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list11);
-                    count = list11.size();
-                }
+
+                setExcelValues(jsonString, count, list11);
+
                 break;
             case "personnelCourseNotPassed":
 
@@ -319,13 +297,8 @@ public class ExportToFileController {
                 SearchDTO.SearchRs<PersonnelCourseNotPassedReportViewDTO.Info> list5 = personnelCourseNotPassedReportViewService.search(searchRq, p -> modelMapper.map(p, PersonnelCourseNotPassedReportViewDTO.Info.class));
                 List<PersonnelCourseNotPassedReportViewDTO.Info> list51 = list5.getList();
 
-                if (list51 == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list51);
-                    count = list51.size();
-                }
+                setExcelValues(jsonString, count, list51);
+
                 break;
 
             case "classOutsideCurrentTerm":
@@ -344,13 +317,8 @@ public class ExportToFileController {
                 list6.getList().removeAll(infoList);
 
 
-                if (list61 == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list61);
-                    count = list61.size();
-                }
+                setExcelValues(jsonString, count, list61);
+
                 break;
             case "weeklyTrainingSchedule":
 
@@ -360,14 +328,8 @@ public class ExportToFileController {
                 SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> list7 = classSessionService.searchWeeklyTrainingSchedule(searchRq, userNationalCode);
                 List<ClassSessionDTO.WeeklySchedule> list71 = list7.getList();
 
+                setExcelValues(jsonString, count, list71);
 
-                if (list71 == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list71);
-                    count = list71.size();
-                }
                 break;
             case "trainingClassReport":
 
@@ -392,26 +354,15 @@ public class ExportToFileController {
                 }
                 SearchDTO.SearchRs<ViewEvaluationStaticalReportDTO.Info> list8 = viewEvaluationStaticalReportService.search(request);
 
-                if (list8.getList() == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list8.getList());
-                    count = list8.getList().size();
-                }
+                setExcelValues(jsonString, count, list8.getList());
+
                 break;
             case "unfinishedClassesReport":
 
                 List<UnfinishedClassesReportDTO> list9 = unfinishedClassesReportService.UnfinishedClassesList();
 
+                setExcelValues(jsonString, count, list9);
 
-                if (list9 == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list9);
-                    count = list9.size();
-                }
                 break;
             case "trainingOverTime":
 
@@ -422,14 +373,8 @@ public class ExportToFileController {
 
                 List<TrainingOverTimeDTO.Info> list10 = trainingOverTimeService.getTrainingOverTimeReportList(startDate, endDate);
 
+                setExcelValues(jsonString, count, list10);
 
-                if (list10 == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list10);
-                    count = list10.size();
-                }
                 break;
 
             case "attendanceReport":
@@ -452,117 +397,72 @@ public class ExportToFileController {
                         }
                 );
 
-                if (list12 == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list12);
-                    count = list12.size();
-                }
+                setExcelValues(jsonString, count, list12);
+
                 break;
 
             case "Category":
 
                 SearchDTO.SearchRs<CategoryDTO.Info> list14 = categoryService.search(searchRq);
 
-                if (list14.getList() == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list14.getList());
-                    count = list14.getList().size();
-                }
+                setExcelValues(jsonString, count, list14.getList());
+
                 break;
 
             case "SubCategory":
 
                 SearchDTO.SearchRs<SubcategoryDTO.Info> list13 = subcategoryService.search(searchRq);
 
-                if (list13.getList() == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list13.getList());
-                    count = list13.getList().size();
-                }
+                setExcelValues(jsonString, count, list13.getList());
+
                 break;
 
             case "EducationOrientation":
 
                 SearchDTO.SearchRs<EducationOrientationDTO.Info> list15 = educationOrientationService.search(searchRq);
 
-                if (list15.getList() == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list15.getList());
-                    count = list15.getList().size();
-                }
+                setExcelValues(jsonString, count, list15.getList());
+
                 break;
 
             case "EducationMajor":
 
                 SearchDTO.SearchRs<EducationMajorDTO.Info> list16 = educationMajorService.search(searchRq);
 
-                if (list16.getList() == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list16.getList());
-                    count = list16.getList().size();
-                }
+                setExcelValues(jsonString, count, list16.getList());
+
                 break;
 
             case "EducationLevel":
 
                 SearchDTO.SearchRs<EducationLevelDTO.Info> list17 = educationLevelService.search(searchRq);
 
-                if (list17.getList() == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list17.getList());
-                    count = list17.getList().size();
-                }
+                setExcelValues(jsonString, count, list17.getList());
+
                 break;
 
             case "Equipment":
 
                 SearchDTO.SearchRs<EquipmentDTO.Info> list18 = equipmentService.search(searchRq);
 
-                if (list18.getList() == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list18.getList());
-                    count = list18.getList().size();
-                }
+                setExcelValues(jsonString, count, list18.getList());
+
                 break;
 
             case "Competence":
 
                 SearchDTO.SearchRs<CompetenceDTO.Info> list19 = competenceService.search(searchRq);
 
-                if (list19.getList() == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list19.getList());
-                    count = list19.getList().size();
-                }
+                setExcelValues(jsonString, count, list19.getList());
+
                 break;
 
             case "Skill":
 
                 SearchDTO.SearchRs<SkillDTO.Info> list20 = skillService.searchGeneric(searchRq, SkillDTO.Info.class);
 
-                if (list20.getList() == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list20.getList());
-                    count = list20.getList().size();
-                }
+                setExcelValues(jsonString, count, list20.getList());
+
                 break;
 
             case "Skill_Post":
@@ -572,39 +472,24 @@ public class ExportToFileController {
 
                 SearchDTO.SearchRs<PostDTO.Info> list21 = needsAssessmentReportsService.getSkillNAPostList(searchRq, skillId);
 
-                if (list21.getList() == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list21.getList());
-                    count = list21.getList().size();
-                }
+                setExcelValues(jsonString, count, list21.getList());
+
                 break;
 
             case "Job":
 
                 SearchDTO.SearchRs<ViewjobDTO.Info> list22 = viewJobService.search(searchRq);
 
-                if (list22.getList() == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list22.getList());
-                    count = list22.getList().size();
-                }
+                setExcelValues(jsonString, count, list22.getList());
+
                 break;
 
             case "Job_Personnel":
 
                 SearchDTO.SearchRs<PersonnelDTO.Info> list23 = personnelService.search(searchRq);
 
-                if (list23.getList() == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list23.getList());
-                    count = list23.getList().size();
-                }
+                setExcelValues(jsonString, count, list23.getList());
+
                 break;
 
             case "Job_NA":
@@ -617,38 +502,28 @@ public class ExportToFileController {
 
                 SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> list24 = needsAssessmentReportsService.search(searchRq, objectId, objectType, personnelNo);
 
-                if (list24.getList() == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list24.getList());
-                    count = list24.getList().size();
-                }
+                setExcelValues(jsonString, count, list24.getList());
+
                 break;
 
             case "Job_Post":
 
                 SearchDTO.SearchRs<ViewPostDTO.Info> list25 = viewPostService.search(searchRq);
 
-                if (list25.getList() == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list25.getList());
-                    count = list25.getList().size();
-                }
+                setExcelValues(jsonString, count, list25.getList());
+
                 break;
         }
 
         //End Of Query
         //Start Parse
-        net.minidev.json.JSONArray jsonArray = (JSONArray) parser.parse(jsonString);
+        net.minidev.json.JSONArray jsonArray = (JSONArray) parser.parse(jsonString[0]);
         net.minidev.json.JSONObject jsonObject = null;
         int sizeOfFields = fields1.size();
         String tmpName = "";
         List<HashMap<String, String>> allData = new ArrayList<HashMap<String, String>>();
 
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < count[0]; i++) {
             jsonObject = (JSONObject) jsonArray.get(i);
 
             HashMap<String, String> tmpData = new HashMap<String, String>();
@@ -760,6 +635,15 @@ public class ExportToFileController {
         }
 
         return searchRq;
+    }
+
+    private <T> void setExcelValues(String jsonStringRef[], int countRef[],   List<T> list)throws JsonProcessingException {
+        if (list == null) {
+            countRef[0] = 0;
+        } else {
+            jsonStringRef[0] = objectMapper.writeValueAsString(list);
+            countRef[0] = list.size();
+        }
     }
 
 }
