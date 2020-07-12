@@ -14,6 +14,7 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonnelCourseNotPassedReportViewService;
 import com.nicico.training.iservice.IStudentService;
 import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.model.ViewTeacherReport;
 import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.PersonnelRegisteredDAO;
@@ -63,6 +64,7 @@ public class ExportToFileController {
     private final TrainingOverTimeService trainingOverTimeService;
     private final AttendanceReportService attendanceReportService;
     private final ViewEvaluationStaticalReportService viewEvaluationStaticalReportService;
+    private final ViewTeacherReportService viewTeacherReportService;
 
     private final StudentClassReportViewDAO studentClassReportViewDAO;
     private final PersonnelDAO personnelDAO;
@@ -131,127 +133,6 @@ public class ExportToFileController {
                 }
                 break;*/
 
-
-            case "teacherReport":
-                String id = req.getParameter("id");
-
-                if (id != null) {
-
-                    searchRq.setCriteria(makeNewCriteria("id", id, EOperator.equals, new ArrayList<>()));
-                    searchRq.setStartIndex(0);
-                    searchRq.setCount(1);
-                }
-
-                searchRq.setDistinct(true);
-
-                List<Object> removedObjects = new ArrayList<>();
-                Object evaluationCategory = null;
-                Object evaluationSubCategory = null;
-                Object evaluationGrade = null;
-                Object teachingCategories = null;
-                Object teachingSubCategories = null;
-                Object term = null;
-                for (SearchDTO.CriteriaRq criterion : searchRq.getCriteria().getCriteria()) {
-                    if (criterion.getFieldName().equalsIgnoreCase("evaluationCategory")) {
-                        evaluationCategory = criterion.getValue().get(0);
-                        removedObjects.add(criterion);
-                    }
-                    if (criterion.getFieldName().equalsIgnoreCase("evaluationSubCategory")) {
-                        evaluationSubCategory = criterion.getValue().get(0);
-                        removedObjects.add(criterion);
-                    }
-                    if (criterion.getFieldName().equalsIgnoreCase("evaluationGrade")) {
-                        evaluationGrade = criterion.getValue().get(0);
-                        removedObjects.add(criterion);
-                    }
-                    if (criterion.getFieldName().equalsIgnoreCase("teachingCategories")) {
-                        teachingCategories = criterion.getValue();
-                        removedObjects.add(criterion);
-                    }
-                    if (criterion.getFieldName().equalsIgnoreCase("teachingSubCategories")) {
-                        teachingSubCategories = criterion.getValue();
-                        removedObjects.add(criterion);
-                    }
-
-                    if (criterion.getFieldName().equalsIgnoreCase("termId")) {
-                        criterion.setFieldName("tclasse.term.id");
-                        criterion.setOperator(EOperator.inSet);
-                    }
-                }
-
-                for (Object removedObject : removedObjects) {
-                    searchRq.getCriteria().getCriteria().remove(removedObject);
-                }
-
-                Set<TeacherDTO.Report> set = new HashSet<>();
-                SearchDTO.SearchRs<TeacherDTO.Report> tmpresponse = teacherService.deepSearchReport(searchRq);
-
-
-                List<TeacherDTO.Report> listRemovedObjects = new ArrayList<>();
-
-                Float min_evalGrade = null;
-                if (evaluationGrade != null)
-                    min_evalGrade = Float.parseFloat(evaluationGrade.toString());
-
-                if (evaluationGrade != null && evaluationCategory != null && evaluationSubCategory != null) {
-                    for (TeacherDTO.Report datum : tmpresponse.getList()) {
-                        if (evaluationGrade != null) {
-                            Float teacher_evalGrade = (Float) teacherService.evaluateTeacher(datum.getId(), evaluationCategory.toString(), evaluationSubCategory.toString()).get("evaluationGrade");
-                            datum.setEvaluationGrade("" + teacher_evalGrade);
-                            if (teacher_evalGrade < min_evalGrade)
-                                listRemovedObjects.add(datum);
-                        }
-                    }
-                }
-
-                for (TeacherDTO.Report listRemovedObject : listRemovedObjects)
-                    tmpresponse.getList().remove(listRemovedObject);
-                listRemovedObjects.clear();
-
-                for (TeacherDTO.Report datum : tmpresponse.getList()) {
-                    Long tId = datum.getId();
-                    List<?> result1 = null;
-                    Object[] res1 = null;
-                    String courseId = null;
-                    String classId = null;
-                    List<?> result2 = null;
-                    String courseTitle = null;
-                    List<?> result3 = null;
-                    String classCount = null;
-
-                    String sql1 = "select f_course,id from tbl_class where c_start_date = (select MAX(c_start_date) from tbl_class where f_teacher =" + tId + ") AND ROWNUM = 1";
-                    result1 = (List<?>) entityManager.createNativeQuery(sql1).getResultList();
-                    if (result1.size() > 0) {
-                        res1 = (Object[]) result1.get(0);
-                        courseId = res1[0].toString();
-                        classId = res1[1].toString();
-                    }
-
-                    if (courseId != null) {
-                        String sql2 = "select c_title_fa from tbl_course where id =" + courseId;
-                        result2 = (List<?>) entityManager.createNativeQuery(sql2).getResultList();
-                        courseTitle = (String) result2.get(0);
-                    }
-
-                    String sql3 = "select count(id) from tbl_class where f_teacher =" + tId;
-                    result3 = (List<?>) entityManager.createNativeQuery(sql3).getResultList();
-                    classCount = ((BigDecimal) result3.get(0)).toString();
-
-                    datum.setLastCourse(courseTitle);
-                    datum.setNumberOfCourses(classCount);
-                    if (datum.getLastCourse() != null)
-                        datum.setLastCourseEvaluationGrade("" + tclassService.getClassReactionEvaluationGrade(Long.parseLong(classId), tId));
-                }
-
-                if (tmpresponse.getList() == null || tmpresponse.getList().size() == 0) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(tmpresponse.getList());
-                    count = tmpresponse.getList().size();
-                }
-
-                break;
             case "trainingFile":
 
                 SearchDTO.SearchRs<ClassStudentDTO.CoursesOfStudent> list2 = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class));//SearchUtil.search(classStudentDAO, searchRq, c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class)).getList();
@@ -446,6 +327,26 @@ public class ExportToFileController {
                     jsonString = mapper.writeValueAsString(list12);
                     count = list12.size();
                 }
+                break;
+            case "teacherReport":
+                if(searchRq.getCriteria() != null && searchRq.getCriteria().getCriteria() != null){
+                    for (SearchDTO.CriteriaRq criterion : searchRq.getCriteria().getCriteria()) {
+                        if(criterion.getValue().get(0).equals("true"))
+                            criterion.setValue(true);
+                        if(criterion.getValue().get(0).equals("false"))
+                            criterion.setValue(false);
+                    }
+                }
+                SearchDTO.SearchRs<ViewTeacherReportDTO.Info> list13 = viewTeacherReportService.search(searchRq);
+
+                if (list13.getList() == null) {
+                    count = 0;
+                } else {
+                    ObjectMapper mapper = new ObjectMapper();
+                    jsonString = mapper.writeValueAsString(list13.getList());
+                    count = list13.getList().size();
+                }
+
                 break;
 
         }
