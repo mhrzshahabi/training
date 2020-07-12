@@ -347,6 +347,17 @@
         },//end getCellCSSText
         cellClick: function (record, rowNum, colNum) {
             if (colNum === 6) {
+                selectedRecord_addStudent_class= {
+                    firstName: record.student.firstName,
+                    lastName: record.student.lastName,
+                    postTitle: record.student.postTitle,
+                    ccpArea: record.student.ccpArea,
+                    ccpAffairs: record.student.ccpAffairs,
+                    personnelNo: record.student.personnelNo,
+                    nationalCode: record.student.nationalCode,
+                    postCode: record.student.postCode
+                };
+
                  let window_class_Information = isc.Window.create({
                      title: "<spring:message code="personnel.information"/>",
                     width: "70%",
@@ -361,8 +372,6 @@
                 });
 
                 window_class_Information.show();
-
-
             }
         }
     });

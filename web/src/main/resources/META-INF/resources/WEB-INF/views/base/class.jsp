@@ -1368,14 +1368,9 @@
                 }
             },
             {
-                name: "autoValid",
-                type: "checkbox",
-                defaultValue: true,
-                title: "<spring:message code='auto.session.made'/>",
-                endRow: true,
-// titleOrientation:"top",
-                labelAsTitle: true,
-                colSpan: 2
+                type: "BlurbItem",
+                value: " ",
+                colSpan: 2,
             },
             {
                 name: "startDate",
@@ -1562,6 +1557,20 @@
                     } else {
                         form.clearFieldErrors("endDate", true);
                     }
+                }
+            },
+            {
+                name: "autoValid",
+                type: "boolean",
+                defaultValue: true,
+                title: "<spring:message code='auto.session.made'/>" + " : ",
+                endRow: true,
+                titleOrientation:"top",
+                align:"right",
+                labelAsTitle: true,
+                colSpan: 2,
+                changed : function () {
+                    weekDateActivation(this._value);
                 }
             },
             {
@@ -3023,10 +3032,20 @@
     }
 
     function autoTimeActivation(active = true) {
-        var times = ["autoValid",
+        if(active){
+            DynamicForm1_Class_JspClass.getField("autoValid").enable();
+        }else if(!active){
+            DynamicForm1_Class_JspClass.getField("autoValid").disable();
+        }
+        weekDateActivation(active);
+    }
+
+    function weekDateActivation(active = true){
+        var times = [
             "first", "second", "third", "fourth", "fifth",
             "saturday", "sunday", "monday", "tuesday" ,"wednesday", "thursday", "friday"];
-        if(active){
+
+        if(active && DynamicForm1_Class_JspClass.getField("autoValid")._value){
             times.forEach(
                 function (currentValue, index, arr) {
                     DynamicForm1_Class_JspClass.getField(currentValue).enable();

@@ -54,5 +54,18 @@ public class ViewTeacherReport extends Auditable {
     private String lastClass;
     @Column(name = "REACTIONGRADE")
     private String lastClassGrade;
-
+    @Column(name="TEACHER_CATEGORIES")
+    private String teacherCategories;
+    @Column(name="TEACHER_SUB_CATEGORIES")
+    private String teacherSubCategories;
+    @Column(name="TEACHING_HISTORY_CATS")
+    private String teachingHistoryCats;
+    @Column(name="TEACHING_HISTORY_SUBCATS")
+    private String teachingHistorySubCats;
+    @Column(name="TEACHER_TERM_IDS")
+    private String teacherTermIds;
+    @Column(name="TEACHER_TERM_TITLES")
+    private String teacherTermTitles;
+    @Column(name="PERSONALINFO_EDUCATION_MAJOR_TITLE")
+    private String educationMajorTitle;
 }

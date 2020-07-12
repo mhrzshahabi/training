@@ -1866,10 +1866,10 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_TEACHER_REPORT-001">
+    <changeSet author="NICICO" id="VIEW_TEACHER_REPORT-005">
         <createView viewName="VIEW_TEACHER_REPORT" replaceIfExists="true">
             <![CDATA[
-           SELECT
+  SELECT
         rowNum as id,
         teacher.c_created_by as c_created_by ,
         teacher.d_created_date as d_created_date,
@@ -1893,7 +1893,14 @@ FROM
         address.F_CITY as address_city,
         address.F_STATE as address_state,
         lastClassess.titleClass as lastclassTitle,
-        lastClassess.reactionGrade as reactionGrade
+        lastClassess.reactionGrade as reactionGrade,
+        CONCAT(CONCAT(',',tCategories.categories),',')  as teacher_categories,
+        CONCAT(CONCAT(',',tSubCategories.subCategories),',')  as teacher_sub_categories,
+        CONCAT(CONCAT(',',tTeachingCategories.tcategories),',')  as teaching_history_cats,
+        CONCAT(CONCAT(',',tTeachingSubCategories.tsubCategories),',')  as teaching_history_subCats,
+        CONCAT(CONCAT(',',tTerms.termIDs),',')  as teacher_term_ids,
+        CONCAT(CONCAT(',',tTerms.termTitles),',')  as teacher_term_titles,
+        educationMajor.C_TITLE_FA as PERSONALINFO_EDUCATION_MAJOR_TITLE
 
         FROM TBL_TEACHER teacher
         LEFT JOIN (SELECT
@@ -1938,10 +1945,32 @@ WHERE  rn = 1) s left join  tbl_evaluation_analysis evaluation ON evaluation.F_T
 
         LEFT JOIN TBL_PERSONAL_INFO personalinfo
         ON personalinfo.ID = teacher.F_PERSONALITY
+        LEFT JOIN tbl_education_major educationMajor
+        ON personalinfo.F_EDU_MAJOR = educationMajor.ID
         LEFT JOIN TBL_CONTACT_INFO contactinfo
         ON contactinfo.ID = personalinfo.F_CONTACT_INFO
         LEFT JOIN TBL_ADDRESS address
         ON address.ID = contactinfo.F_HOME_ADDRESS
+
+        LEFT JOIN (select f_teacher, LISTAGG(f_category, ',') within group (order by F_TEACHER) as categories
+        from tbl_teacher_category
+        group by f_teacher) tCategories on tCategories.f_teacher = teacher.ID
+
+        LEFT JOIN (select f_teacher, LISTAGG(f_subcategory, ',') within group (order by F_TEACHER) as subCategories
+        from tbl_teacher_subcategory
+        group by f_teacher) tSubCategories on tSubCategories.f_teacher = teacher.ID
+
+        LEFT JOIN ( select teacherId, LISTAGG(catId,',') within group (order by teacherId) as tcategories
+      from (select distinct te.id as teacherId, co.category_id as catId from tbl_teacher te left join tbl_class tc on te.id = tc.f_teacher left join tbl_course co on co.id = tc.f_course)
+        group by teacherId) tTeachingCategories on tTeachingCategories.teacherId = teacher.ID
+
+        LEFT JOIN (select teacherId, LISTAGG(subcatId,',') within group (order by teacherId) as tsubCategories
+      from (select distinct te.id as teacherId, co.subcategory_id as subcatId from tbl_teacher te left join tbl_class tc on te.id = tc.f_teacher left join tbl_course co on co.id = tc.f_course)
+        group by teacherId) tTeachingSubCategories on tTeachingSubCategories.teacherId = teacher.ID
+
+        LEFT JOIN (select teacherId, LISTAGG(termID,',') within group (order by teacherId) as termIDs,LISTAGG(termTitle,',') within group (order by teacherId) as termTitles
+      from (select distinct te.id as teacherId, tm.id as termID, tm.c_title_fa as termTitle from tbl_teacher te left join tbl_class tc on te.id = tc.f_teacher left join tbl_term tm on tm.id = tc.f_term)
+        group by teacherId) tTerms on tTerms.teacherId = teacher.ID
     			]]>
         </createView>
     </changeSet>

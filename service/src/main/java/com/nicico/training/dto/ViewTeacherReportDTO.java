@@ -35,6 +35,13 @@ public class ViewTeacherReportDTO implements Serializable {
         private Long city;
         private String lastClass;
         private String lastClassGrade;
+        private String teacherCategories;
+        private String teacherSubCategories;
+        private String teachingHistoryCats;
+        private String teachingHistorySubCats;
+        private String teacherTermIds;
+        private String teacherTermTitles;
+        private String educationMajorTitle;
     }
 
 
