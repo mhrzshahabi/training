@@ -523,7 +523,8 @@
     var VLayOut_PostGroup_Posts_Jsp = isc.VLayout.create({
         width: "100%",
         height: "100%",
-        border: "3px solid gray", layoutMargin: 5,
+        border: "3px solid gray",
+        layoutMargin: 5,
         members: [
             DynamicForm_thisPostGroupHeader_Jsp,
             ListGrid_AllPosts,
