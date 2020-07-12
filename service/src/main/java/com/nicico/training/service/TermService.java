@@ -20,9 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -157,6 +155,7 @@ public class TermService implements ITermService {
             newYear.setYear(year);
             response.getResponse().getData().add(newYear);
         }
+        response.getResponse().getData().sort(Comparator.comparing(TermDTO.Year::getYear).reversed());
         return response;
     }
 
