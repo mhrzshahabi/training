@@ -1,6 +1,5 @@
 package com.nicico.training.controller;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -10,20 +9,15 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
-import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonnelCourseNotPassedReportViewService;
-import com.nicico.training.iservice.IStudentService;
 import com.nicico.training.iservice.ITclassService;
-import com.nicico.training.model.*;
-import com.nicico.training.model.ViewTeacherReport;
 import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.PersonnelRegisteredDAO;
 import com.nicico.training.repository.StudentClassReportViewDAO;
 import com.nicico.training.service.*;
 import lombok.*;
-import lombok.experimental.Accessors;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
@@ -33,18 +27,15 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -61,7 +52,6 @@ public class ExportToFileController {
     private final ITclassService tclassService;
     private final IPersonnelCourseNotPassedReportViewService personnelCourseNotPassedReportViewService;
     private final ClassSessionService classSessionService;
-    private final EvaluationAnalysistLearningService evaluationAnalysistLearningService;
     private final UnfinishedClassesReportService unfinishedClassesReportService;
     private final TrainingOverTimeService trainingOverTimeService;
     private final AttendanceReportService attendanceReportService;
@@ -91,7 +81,6 @@ public class ExportToFileController {
 
     private final StudentClassReportViewDAO studentClassReportViewDAO;
     private final PersonnelDAO personnelDAO;
-    private final CourseDAO courseDAO;
     private final PersonnelRegisteredDAO personnelRegisteredDAO;
 
     private final ExportToFileService exportToFileService;
@@ -143,18 +132,6 @@ public class ExportToFileController {
         int count[] = {0};
 
         switch (fileName) {
-            /*case "tclass-personnel-training":
-
-                List<TclassDTO.PersonnelClassInfo> list = tClassService.findAllPersonnelClass(searchRq.getCriteria().getCriteria().get(0).getValue().get(0).toString());
-
-                if (list == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list);
-                    count = list.size();
-                }
-                break;*/
 
             case "trainingFile":
 
@@ -173,7 +150,6 @@ public class ExportToFileController {
 
             case "personnelInformationReport":
 
-
                 List<PersonnelDTO.Info> list4 = SearchUtil.search(personnelDAO, searchRq, personnel -> modelMapper.map(personnel, PersonnelDTO.Info.class)).getList();
 
                 setExcelValues(jsonString, count, list4);
@@ -181,14 +157,12 @@ public class ExportToFileController {
                 break;
             case "registeredPersonnelInformationReport":
 
-
                 List<PersonnelRegisteredDTO.Info> list11 = SearchUtil.search(personnelRegisteredDAO, searchRq, personnelRegistered -> modelMapper.map(personnelRegistered, PersonnelRegisteredDTO.Info.class)).getList();
 
                 setExcelValues(jsonString, count, list11);
 
                 break;
             case "personnelCourseNotPassed":
-
 
                 SearchDTO.SearchRs<PersonnelCourseNotPassedReportViewDTO.Info> list5 = personnelCourseNotPassedReportViewService.search(searchRq, p -> modelMapper.map(p, PersonnelCourseNotPassedReportViewDTO.Info.class));
                 List<PersonnelCourseNotPassedReportViewDTO.Info> list51 = list5.getList();
@@ -579,8 +553,7 @@ public class ExportToFileController {
 
 
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            String data = mapper.writeValueAsString(allData);
+            String data = objectMapper.writeValueAsString(allData);
 
             exportToFileService.exportToExcel(response, fields, data, titr, pageName);
         } catch (Exception ex) {
