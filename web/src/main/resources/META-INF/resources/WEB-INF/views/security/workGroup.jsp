@@ -6,15 +6,15 @@
 
     var entityList_Permission = [
         // "Post",
-        "Job",
-        "PostGrade",
+        //"Job",
+        //"PostGrade",
         // "Skill",
-        "PostGroup",
-        "JobGroup",
-        "PostGradeGroup",
-        "Category",
-        "Subcategory",
-        "Tclass"
+        //"PostGroup",
+        //"JobGroup",
+        //"PostGradeGroup",
+        //"Category",
+        //"Subcategory",
+        //"Tclass"
     ];
     var isFormDataListArrived = false;
     var formDataList_Permission;
@@ -141,6 +141,39 @@
     });
 
 
+    CategoryDS_JspWorkGroup = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa", title: "<spring:message code="category"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true}
+        ],
+        cacheAllData: true,
+        fetchDataURL: categoryUrl + "iscList"
+    });
+
+    ParameterValueDS_JspWorkGroup = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "type", title: "<spring:message code="type"/>", filterOperator: "iContains"},
+            {name: "value", title: "<spring:message code="value"/>", filterOperator: "iContains"},
+            {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
+        ],
+        fetchDataURL: parameterValueUrl + "/iscList/358"
+    });
+
+    DepartmentDS_JspWorkGroup = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "code", title: "<spring:message code="department.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "parentDepartment.departmentName", title: "<spring:message code="department"/>", filterOperator: "iContains"},
+            {name: "departmentName", title: "<spring:message code="department"/>", filterOperator: "iContains"}
+        ],
+        fetchDataURL: departmentUrl + "spec-list"
+    });
+
+
     //--------------------------------------------------------------------------------------------------------------------//
     //*Unassigned*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -224,6 +257,64 @@
         tabBarPosition: "right",
         tabBarThickness: 100,
         titleEditorTopOffset: 2,
+        tabs: [
+            {title: "<spring:message code='group'/>",pane:isc.DynamicForm.create({
+                    height: "6%",
+                    width:"100%",
+                    left:0,
+                    align:"left",
+                    numCols: 5,
+                    colWidths: ["0%","50%","10%","30%"],
+                    fields: [
+                        {
+                            ID:"DynamicForm_GroupInsert_Textbox_JspStudent",
+                            title:"",
+                            /*direction:""*/
+
+                        },
+                        {
+                            type: "button",
+                            title: "اضافه کردن به لیست",
+                            startRow: false,
+                            click:function () {
+                                let value=DynamicForm_GroupInsert_Textbox_JspStudent.getValue();
+                                if(value != null&& value != "" && typeof(value) != "undefined")
+                                {
+                                    value=value.toEnglishDigit();
+                                    let personnels=(value.indexOf('،')>-1)?value.split('،'):value.split(',');
+                                    let records=[];
+                                    let len=personnels.size();
+
+                                    for (let i=0;i<len;i++){
+                                        if(isNaN(personnels[i])){
+                                            continue;
+                                        }
+                                        else if(GroupSelectedPersonnelsLG_student.data.filter(function (item) {
+                                            return item.personnelNo==personnels[i];
+                                        }).length==0){
+
+                                            let current={personnelNo:personnels[i]};
+                                            records.push(current);
+                                        }
+                                    }
+
+                                    GroupSelectedPersonnelsLG_student.setData(GroupSelectedPersonnelsLG_student.data.concat(records));
+
+                                    GroupSelectedPersonnelsLG_student.invalidateCache();
+                                    GroupSelectedPersonnelsLG_student.fetchData();
+
+                                    if(records.length > 0 && isCheck){
+                                        func(inputURL,records.map(function(item) {return item.personnelNo;}));
+                                    }
+
+                                    DynamicForm_GroupInsert_Textbox_JspStudent.setValue('');
+                                    createDialog("info", "کدهای پرسنلی به لیست اضافه شدند.");
+                                }
+                            }
+                        }
+                    ]
+                })}
+        ],
         tabSelected: function () {
             DynamicForm_Permission = (TabSet_Permission.getSelectedTab().pane);
         }
@@ -278,6 +369,149 @@
         border: "1px solid gray",
         minWidth: 1024,
         items: [VLayout_Permission]
+    });
+
+
+    var DynamicForm_Permissions_JspWorkGroup = isc.DynamicForm.create({
+        numCols: 10,
+        padding: 10,
+        margin: 0,
+        height:"100%",
+        titleAlign: "left",
+        wrapItemTitles: true,
+        fields: [
+            {
+                name: "categories",
+                title:"<spring:message code="category"/>",
+                operator: "inSet",
+                textAlign: "center",
+                optionDataSource: CategoryDS_JspWorkGroup,
+                autoFetchData: false,
+                type: "MultiComboBoxItem",
+                valueField: "id",
+                displayField: "titleFa",
+                endRow: true,
+                colSpan: 10,
+                // comboBoxWidth: 200,
+                layoutStyle: "horizontal",
+                comboBoxProperties: {
+                    hint: "",
+                    pickListWidth: 550,
+                    pickListFields: [
+                        {name: "titleFa"},
+                        {name: "code"}
+                    ],
+                    filterFields: ["titleFa", "code"],
+                    pickListProperties: {sortField: "titleFa"},
+                    textMatchStyle: "substring",
+                },
+            },
+            {
+                name: "parameterValues",
+                title:"حوزه دسترسی",
+                operator: "inSet",
+                textAlign: "center",
+                optionDataSource: ParameterValueDS_JspWorkGroup,
+                autoFetchData: false,
+                type: "MultiComboBoxItem",
+                valueField: "id",
+                displayField: "title",
+                endRow: true,
+                colSpan: 10,
+                // comboBoxWidth: 200,
+                layoutStyle: "horizontal",
+                comboBoxProperties: {
+                    hint: "",
+                    pickListWidth: 100,
+                    pickListFields: [
+                        {name: "title"}
+                    ],
+                    filterFields: ["title"],
+                    pickListProperties: {sortField: "title"},
+                    textMatchStyle: "substring",
+                },
+            },
+            {
+                name: "departments",
+                title:"<spring:message code="department"/>",
+                operator: "inSet",
+                textAlign: "center",
+                optionDataSource: DepartmentDS_JspWorkGroup,
+                autoFetchData: false,
+                type: "MultiComboBoxItem",
+                valueField: "id",
+                displayField: "parentDepartment.departmentName",
+                endRow: true,
+                colSpan: 10,
+                // comboBoxWidth: 200,
+                layoutStyle: "horizontal",
+                comboBoxProperties: {
+                    hint: "",
+                    pickListWidth: 550,
+                    pickListFields: [
+                        {name: "code"},
+                        {name: "departmentName"},
+                        //{name: "parentDepartment.departmentName"}
+                    ],
+                    filterFields: ["code", "parentDepartment.departmentName", "departmentName"],
+                    pickListProperties: {sortField: "departmentName"},
+                    textMatchStyle: "substring",
+                },
+            },
+
+        ],
+    });
+
+    Windows_Generic_Permissions_WorkGroup = isc.Window.create({
+        width: "800",
+        height: "250",
+        minWidth: "800",
+        minHeight: "250",
+        autoSize: false,
+        title: "<spring:message code="permissions"/>",
+        canDragReposition: true,
+        align: "center",
+        autoDraw: false,
+        items: [
+            DynamicForm_Permissions_JspWorkGroup,
+            isc.TrHLayoutButtons.create({
+            layoutMargin: 5,
+            showEdges: false,
+            edgeImage: "",
+            padding: 10,
+            members: [
+                isc.IButtonSave.create({
+                    top: 260,
+                    click: function () {
+                        var data = DynamicForm_Permissions_JspWorkGroup.getValues();
+                        let record = ListGrid_JspWorkGroup.getSelectedRecord();
+
+                        isc.RPCManager.sendRequest(TrDSRequest(workGroupUrl+"/edit-generic-permission-list/"+ record.id, "PUT", JSON.stringify(data),
+                            function (resp) {
+                                if(generalGetResp(resp)){
+                                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                        let dialog = createDialog("info", "<spring:message code="msg.successfully.done"/>");
+                                        Windows_Generic_Permissions_WorkGroup.close();
+
+                                    }else{
+                                        createDialog("info", "خطا در سرور ...", "<spring:message code="error"/>");
+                                    }
+                                }
+                            }
+                        ));
+
+
+                        //DynamicForm_WorkGroup_edit();
+                    }
+                }),
+                isc.IButtonCancel.create({
+                    click: function () {
+                        Windows_Generic_Permissions_WorkGroup.close();
+                    }
+                })
+            ]
+        })
+        ]
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -516,7 +750,52 @@
     ToolStripButton_Add_Permission_To_WorkGroup_Jsp = isc.ToolStripButton.create({
         title: "<spring:message code='permissions'/>",
         click: function () {
-            Add_Permission_To_WorkGroup_Jsp();
+            DynamicForm_Permissions_JspWorkGroup.getItem("departments").setValue();
+            DynamicForm_Permissions_JspWorkGroup.getItem("categories").setValue();
+            DynamicForm_Permissions_JspWorkGroup.getItem("parameterValues").setValue();
+
+            var record = ListGrid_JspWorkGroup.getSelectedRecord();
+            isc.RPCManager.sendRequest(TrDSRequest(workGroupUrl+"/generic-form-data/"+ record.id, "GET", null,
+                function (resp) {
+                    if(generalGetResp(resp)){
+                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+                            let data=JSON.parse(resp.data);
+                            let tmpdata=[];
+
+                            data.filter(p=>p.objectType=='department').forEach(function(entry) {
+                                tmpdata.push(entry.objectId);
+                            });
+
+
+                            DynamicForm_Permissions_JspWorkGroup.getItem("departments").setValue(tmpdata);
+
+                            tmpdata=[];
+                            data.filter(p=>p.objectType=='Category').forEach(function(entry) {
+                                tmpdata.push(entry.objectId);
+                            });
+
+                            DynamicForm_Permissions_JspWorkGroup.getItem("categories").setValue(tmpdata);
+
+                            tmpdata=[];
+                            data.filter(p=>p.objectType=='ParameterValue').forEach(function(entry) {
+                                tmpdata.push(entry.objectId);
+                            });
+
+                            DynamicForm_Permissions_JspWorkGroup.getItem("parameterValues").setValue(tmpdata);
+
+                            Windows_Generic_Permissions_WorkGroup.show();
+
+                        }else{
+                            createDialog("info", "خطا در سرور ...", "<spring:message code="error"/>");
+                        }
+                    }
+                }
+            ));
+
+
+            //Add_Permission_To_WorkGroup_Jsp();
+
         }
     });
     ToolStripButton_Unassigned_Jsp = isc.ToolStripButton.create({

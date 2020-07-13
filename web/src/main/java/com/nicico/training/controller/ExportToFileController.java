@@ -16,6 +16,7 @@ import com.nicico.training.iservice.IPersonnelCourseNotPassedReportViewService;
 import com.nicico.training.iservice.IStudentService;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.*;
+import com.nicico.training.model.ViewTeacherReport;
 import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.PersonnelRegisteredDAO;
@@ -77,6 +78,7 @@ public class ExportToFileController {
     private final ViewJobService viewJobService;
     private final PersonnelService personnelService;
     private final ViewPostService viewPostService;
+    private final ViewTeacherReportService viewTeacherReportService;
 
     private final StudentClassReportViewDAO studentClassReportViewDAO;
     private final PersonnelDAO personnelDAO;
@@ -446,6 +448,12 @@ public class ExportToFileController {
                 SearchDTO.SearchRs<EquipmentDTO.Info> list18 = equipmentService.search(searchRq);
 
                 setExcelValues(jsonString, count, list18.getList());
+
+                break;
+            case "teacherReport":
+                SearchDTO.SearchRs<ViewTeacherReportDTO.Info> list25 = viewTeacherReportService.search(searchRq);
+
+                setExcelValues(jsonString, count, list25.getList());
 
                 break;
 
