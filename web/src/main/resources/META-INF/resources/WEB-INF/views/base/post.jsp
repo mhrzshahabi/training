@@ -93,6 +93,20 @@
             Window_NeedsAssessment_Tree.showUs(PostLG_post.getSelectedRecord(), "Post");
         }
     });
+
+    let ToolStrip_Post_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = PostLG_post.getCriteria();
+                    ExportToFile.showDialog(null, PostLG_post , "View_Post", 0, null, '',"لیست پست ها- آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
     ToolStrip_NA_POST = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -100,7 +114,8 @@
             ToolStripButton_unGroupedPosts_POST,
             ToolStripButton_newPosts_POST,
             ToolStripButton_EditNA_POST,
-            ToolStripButton_TreeNA_JspPost
+            ToolStripButton_TreeNA_JspPost,
+            ToolStrip_Post_Export2EXcel
         ]
     });
 
@@ -664,12 +679,46 @@
         fetchDataURL: null
     });
 
+    let ToolStrip_Course_Post_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = CoursesLG_POST.getCriteria();
+
+                    if(typeof(criteria.operator)=='undefined'){
+                        criteria._constructor="AdvancedCriteria";
+                        criteria.operator="and";
+                    }
+
+                    if(typeof(criteria.criteria)=='undefined'){
+                        criteria.criteria=[];
+                    }
+                    criteria.criteria.push({fieldName: "objectId", operator: "equals", value: PostLG_post.getSelectedRecord().id});
+                    criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "Post"});
+                    criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
+
+                    ExportToFile.showDialog(null, CoursesLG_POST , "NeedsAssessment", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
+    let ActionsTS_Course_Post = isc.ToolStrip.create({
+        width: "100%",
+        members: [
+            ToolStrip_Course_Post_Export2EXcel
+        ]
+    });
+
     CoursesLG_POST = isc.TrLG.create({
         dataSource: CourseDS_POST,
         selectionType: "none",
         autoFetchData: false,
         alternateRecordStyles: true,
         showAllRecords: true,
+        gridComponents: [ActionsTS_Course_Post, "header", "filterEditor", "body",],
         fields: [
             {name: "competence.title"},
             {

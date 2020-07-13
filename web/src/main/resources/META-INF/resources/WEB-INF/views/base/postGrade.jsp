@@ -41,10 +41,24 @@
             Window_NeedsAssessment_Tree.showUs(PostGradeLG_postGrade.getSelectedRecord(), "PostGrade");
         }
     });
+
+    let ToolStrip_Post_Grade_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = PostGradeLG_postGrade.getCriteria();
+                    ExportToFile.showDialog(null, PostGradeLG_postGrade , "View_Post_Grade", 0, null, '',"لیست رده های پستی - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
     ToolStrip_NA_PostGrade = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
-        members: [ToolStripButton_EditNA_PostGrade, ToolStripButton_TreeNA_PostGrade]
+        members: [ToolStripButton_EditNA_PostGrade, ToolStripButton_TreeNA_PostGrade, ToolStrip_Post_Grade_Export2EXcel]
     });
     
     PostGradeTS_postGrade = isc.ToolStrip.create({
@@ -166,10 +180,45 @@
         fetchDataURL: personnelUrl + "/iscList",
     });
 
+    let ToolStrip_Post_Grade_Personnel_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = PersonnelLG_PostGrade.getCriteria();
+
+                    if(typeof(criteria.operator)=='undefined'){
+                        criteria._constructor="AdvancedCriteria";
+                        criteria.operator="and";
+                    }
+
+                    if(typeof(criteria.criteria)=='undefined'){
+                        criteria.criteria=[];
+                    }
+
+                    criteria.criteria.push({fieldName: "postGradeCode", operator: "equals", value: PostGradeLG_postGrade.getSelectedRecord().code});
+                    criteria.criteria.push({fieldName: "active", operator: "equals", value: 1});
+                    criteria.criteria.push({fieldName: "employmentStatusId", operator: "equals", value: 5});
+
+                    ExportToFile.showDialog(null, PersonnelLG_PostGrade , "Personnel", 0, null, '',"لیست پرسنل - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
+    let ActionsTS_Personnel_Post_Grade = isc.ToolStrip.create({
+        width: "100%",
+        members: [
+            ToolStrip_Post_Grade_Personnel_Export2EXcel
+        ]
+    });
+
     PersonnelLG_PostGrade = isc.TrLG.create({
         dataSource: PersonnelDS_PostGrade,
         selectionType: "single",
         alternateRecordStyles: true,
+        gridComponents: [ActionsTS_Personnel_Post_Grade, "header", "filterEditor", "body",],
         sortField: 1,
         fields: [
             {name: "firstName"},
@@ -252,12 +301,46 @@
         fetchDataURL: null
     });
 
+    let ToolStrip_NA_Post_Grade_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = NALG_PostGrade.getCriteria();
+
+                    if(typeof(criteria.operator)=='undefined'){
+                        criteria._constructor="AdvancedCriteria";
+                        criteria.operator="and";
+                    }
+
+                    if(typeof(criteria.criteria)=='undefined'){
+                        criteria.criteria=[];
+                    }
+                    criteria.criteria.push({fieldName: "objectId", operator: "equals", value: PostGradeLG_postGrade.getSelectedRecord().id});
+                    criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "PostGrade"});
+                    criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
+
+                    ExportToFile.showDialog(null, NALG_PostGrade , "NeedsAssessment", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
+    let ActionsTS_NA_Post_Grade_Job = isc.ToolStrip.create({
+        width: "100%",
+        members: [
+            ToolStrip_NA_Post_Grade_Export2EXcel
+        ]
+    });
+
     NALG_PostGrade = isc.TrLG.create({
         dataSource: NADS_PostGrade,
         selectionType: "none",
         autoFetchData: false,
         alternateRecordStyles: true,
         showAllRecords: true,
+        gridComponents: [ActionsTS_NA_Post_Grade_Job, "header", "filterEditor", "body",],
         fields: [
             {name: "competence.title"},
             {
@@ -330,11 +413,43 @@
         fetchDataURL: postUrl + "/iscList"
     });
 
+    let ToolStrip_Post_Grade_Post_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = PostLG_PostGrade.getCriteria();
+
+                    if(typeof(criteria.operator)=='undefined'){
+                        criteria._constructor="AdvancedCriteria";
+                        criteria.operator="and";
+                    }
+
+                    if(typeof(criteria.criteria)=='undefined'){
+                        criteria.criteria=[];
+                    }
+                    criteria.criteria.push({fieldName: "postGrade", operator: "equals", value: PostGradeLG_postGrade.getSelectedRecord().id});
+
+                    ExportToFile.showDialog(null, PostLG_PostGrade , "Post", 0, null, '',"لیست پست - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
+    let ActionsTS_Post_Post_Grade = isc.ToolStrip.create({
+        width: "100%",
+        members: [
+            ToolStrip_Post_Grade_Post_Export2EXcel
+        ]
+    });
+
     PostLG_PostGrade = isc.TrLG.create({
         dataSource: PostDS_PostGrade,
         autoFetchData: false,
         showResizeBar: true,
         sortField: 0,
+        gridComponents: [ActionsTS_Post_Post_Grade, "header", "filterEditor", "body",],
         fields: [
             {name: "code",
                 filterEditorProperties: {

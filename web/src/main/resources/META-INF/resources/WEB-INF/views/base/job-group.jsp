@@ -561,6 +561,37 @@
             VLayOut_JobGroup_Jobs_Jsp
         ]
     });
+
+    let ToolStrip_Job_Grpup_Job_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = ListGrid_Job_Group_Jobs.getCriteria();
+
+                    if(typeof(criteria.operator)=='undefined'){
+                        criteria._constructor="AdvancedCriteria";
+                        criteria.operator="and";
+                    }
+
+                    if(typeof(criteria.criteria)=='undefined'){
+                        criteria.criteria=[];
+                    }
+                    criteria.criteria.push({fieldName: "jobGroupSet", operator: "equals", value: ListGrid_Job_Group_Jsp.getSelectedRecord().id});
+
+                    ExportToFile.showDialog(null, ListGrid_Job_Group_Jobs , "View_Job", 0, null, '',"لیست شغل ها - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
+    let ActionsTS_Job_Group_Job = isc.ToolStrip.create({
+        width: "100%",
+        members: [
+            ToolStrip_Job_Grpup_Job_Export2EXcel
+        ]
+    });
     
     var ListGrid_Job_Group_Jobs = isc.TrLG.create({
         width: "100%",
@@ -570,6 +601,7 @@
         showResizeBars: true,
         dataSource: RestDataSource_Job_Group_Jobs_Jsp,
         contextMenu: Menu_ListGrid_Job_Group_Jobs,
+        gridComponents: [ActionsTS_Job_Group_Job, "header", "filterEditor", "body",],
         fields: [{name: "code",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
@@ -830,6 +862,19 @@
         }
     });
 
+    let ToolStrip_Job_Group_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = ListGrid_Job_Group_Jsp.getCriteria();
+                    ExportToFile.showDialog(null, ListGrid_Job_Group_Jsp , "View_Job_Group", 0, null, '',"لیست پست ها- آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
     var ToolStrip_Actions_Job_Group_Jsp = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -844,6 +889,7 @@
             ToolStripButton_Remove_Job_Group_Jsp,
             // ToolStripButton_Print_Job_Group_Jsp,
             ToolStripButton_Add_Job_Group_AddJob_Jsp,
+            ToolStrip_Job_Group_Export2EXcel,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -895,11 +941,43 @@
         fetchDataURL: personnelUrl + "/iscList",
     });
 
+    let ToolStrip_Job_Group_Personnel_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = PersonnelLG_JobGroup.getCriteria();
+
+                    if(typeof(criteria.operator)=='undefined'){
+                        criteria._constructor="AdvancedCriteria";
+                        criteria.operator="and";
+                    }
+
+                    if(typeof(criteria.criteria)=='undefined'){
+                        criteria.criteria=[];
+                    }
+                    criteria.criteria.push({fieldName: "jobGroupId", operator: "equals", value: ListGrid_Job_Group_Jsp.getSelectedRecord().id});
+
+                    ExportToFile.showDialog(null, PersonnelLG_JobGroup , "Job_Group_Personnel", 0, null, '',"لیست پرسنل - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
+    let ActionsTS_Personnel_Job_Group = isc.ToolStrip.create({
+        width: "100%",
+        members: [
+            ToolStrip_Job_Group_Personnel_Export2EXcel
+        ]
+    });
+
     PersonnelLG_JobGroup = isc.TrLG.create({
         dataSource: PersonnelDS_JobGroup,
         selectionType: "single",
         alternateRecordStyles: true,
         // groupByField: "jobTitle",
+        gridComponents: [ActionsTS_Personnel_Job_Group, "header", "filterEditor", "body",],
         fields: [
             {name: "firstName"},
             {name: "lastName"},
@@ -981,12 +1059,46 @@
         fetchDataURL: null
     });
 
+    let ToolStrip_Job_Group_NA_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = NALG_JobGroup.getCriteria();
+
+                    if(typeof(criteria.operator)=='undefined'){
+                        criteria._constructor="AdvancedCriteria";
+                        criteria.operator="and";
+                    }
+
+                    if(typeof(criteria.criteria)=='undefined'){
+                        criteria.criteria=[];
+                    }
+                    criteria.criteria.push({fieldName: "objectId", operator: "equals", value: ListGrid_Job_Group_Jsp.getSelectedRecord().id});
+                    criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "JobGroup"});
+                    criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
+
+                    ExportToFile.showDialog(null, NALG_JobGroup , "NeedsAssessment", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
+    let ActionsTS_NA_Job_Group = isc.ToolStrip.create({
+        width: "100%",
+        members: [
+            ToolStrip_Job_Group_NA_Export2EXcel
+        ]
+    });
+
     NALG_JobGroup = isc.TrLG.create({
         dataSource: NADS_JobGroup,
         selectionType: "none",
         autoFetchData: false,
         alternateRecordStyles: true,
         showAllRecords: true,
+        gridComponents: [ActionsTS_NA_Job_Group, "header", "filterEditor", "body",],
         fields: [
             {name: "competence.title"},
             {
@@ -1059,11 +1171,43 @@
         fetchDataURL: postUrl + "/iscList"
     });
 
+    let ToolStrip_Job_Group_Post_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = PostLG_JobGroup.getCriteria();
+
+                    if(typeof(criteria.operator)=='undefined'){
+                        criteria._constructor="AdvancedCriteria";
+                        criteria.operator="and";
+                    }
+
+                    if(typeof(criteria.criteria)=='undefined'){
+                        criteria.criteria=[];
+                    }
+                    criteria.criteria.push({fieldName: "jobGroup", operator: "equals", value: ListGrid_Job_Group_Jsp.getSelectedRecord().id});
+
+                    ExportToFile.showDialog(null, PostLG_JobGroup , "Job_Group_Post", 0, null, '',"لیست پست - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
+    let ActionsTS_Post_Job_Group = isc.ToolStrip.create({
+        width: "100%",
+        members: [
+            ToolStrip_Job_Group_Post_Export2EXcel
+        ]
+    });
+
     PostLG_JobGroup = isc.TrLG.create({
         dataSource: PostDS_JobGroup,
         autoFetchData: false,
         showResizeBar: true,
         sortField: 0,
+        gridComponents: [ActionsTS_Post_Job_Group, "header", "filterEditor", "body",],
         // groupByField: "job.titleFa",
         fields: [
             {name: "code",

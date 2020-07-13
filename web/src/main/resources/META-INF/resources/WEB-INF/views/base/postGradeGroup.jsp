@@ -481,9 +481,41 @@
         ]
     });
 
+    let ToolStrip_Post_Grade_Group_Grades_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = ListGrid_Grades_Post_Grade_Group_Jsp.getCriteria();
+
+                    if(typeof(criteria.operator)=='undefined'){
+                        criteria._constructor="AdvancedCriteria";
+                        criteria.operator="and";
+                    }
+
+                    if(typeof(criteria.criteria)=='undefined'){
+                        criteria.criteria=[];
+                    }
+                    criteria.criteria.push({fieldName: "postGradeGroup", operator: "equals", value: ListGrid_Post_Grade_Group_Jsp.getSelectedRecord().id});
+
+                    ExportToFile.showDialog(null, ListGrid_Grades_Post_Grade_Group_Jsp , "View_Post_Grade_Group", 0, null, '',"لیست رده پستی - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
+    let ActionsTS_Post_Grade_Group_Grades = isc.ToolStrip.create({
+        width: "100%",
+        members: [
+            ToolStrip_Post_Grade_Group_Grades_Export2EXcel
+        ]
+    });
+
     var ListGrid_Grades_Post_Grade_Group_Jsp = isc.TrLG.create({
         dataSource: RestDataSource_Post_Grade_Group_PostGradeGroup_Jsp,
         autoFetchData: false,
+        gridComponents: [ActionsTS_Post_Grade_Group_Grades, "header", "filterEditor", "body",],
         fields: [
             {
                 name: "code",
@@ -637,6 +669,19 @@
         }
     });
 
+    let ToolStrip_Post_Grade_Group_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = ListGrid_Post_Grade_Group_Jsp.getCriteria();
+                    ExportToFile.showDialog(null, ListGrid_Post_Grade_Group_Jsp , "View_Post_Grade_Group", 0, null, '',"لیست پست ها- آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
     /////////////////////////////////////////////////////////////////////////////////////////////
 
     var ToolStrip_Actions_Post_Grade_Group_Jsp = isc.ToolStrip.create({
@@ -647,6 +692,7 @@
             ToolStripButton_Edit_Post_Grade_Group_Jsp,
             ToolStripButton_Remove_Post_Grade_Group_Jsp,
             ToolStripButton_Add_Post_Grade_Group_AddPostGrade_Jsp,
+            ToolStrip_Post_Grade_Group_Export2EXcel,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -699,11 +745,43 @@
         fetchDataURL: personnelUrl + "/iscList",
     });
 
+    let ToolStrip_Post_Grade_Group_Personnel_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = PersonnelLG_PGG.getCriteria();
+
+                    if(typeof(criteria.operator)=='undefined'){
+                        criteria._constructor="AdvancedCriteria";
+                        criteria.operator="and";
+                    }
+
+                    if(typeof(criteria.criteria)=='undefined'){
+                        criteria.criteria=[];
+                    }
+                    criteria.criteria.push({fieldName: "PostGradeGroupId", operator: "equals", value:ListGrid_Post_Grade_Group_Jsp.getSelectedRecord().id});
+
+                    ExportToFile.showDialog(null, PersonnelLG_PGG , "Post_Grade_Group_Personnel", 0, null, '',"لیست پرسنل - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
+    let ActionsTS_Personnel_Post_Grade_Group = isc.ToolStrip.create({
+        width: "100%",
+        members: [
+            ToolStrip_Post_Grade_Group_Personnel_Export2EXcel
+        ]
+    });
+
     PersonnelLG_PGG = isc.TrLG.create({
         dataSource: PersonnelDS_PGG,
         selectionType: "single",
         alternateRecordStyles: true,
         // groupByField: "postGradeTitle",
+        gridComponents: [ActionsTS_Personnel_Post_Grade_Group, "header", "filterEditor", "body",],
         fields: [
             {name: "firstName"},
             {name: "lastName"},
@@ -786,12 +864,46 @@
         fetchDataURL: null
     });
 
+    let ToolStrip_Post_Grade_Group_NA_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = NALG_PGG.getCriteria();
+
+                    if(typeof(criteria.operator)=='undefined'){
+                        criteria._constructor="AdvancedCriteria";
+                        criteria.operator="and";
+                    }
+
+                    if(typeof(criteria.criteria)=='undefined'){
+                        criteria.criteria=[];
+                    }
+                    criteria.criteria.push({fieldName: "objectId", operator: "equals", value: ListGrid_Post_Grade_Group_Jsp.getSelectedRecord().id});
+                    criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "PostGradeGroup"});
+                    criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
+
+                    ExportToFile.showDialog(null, NALG_PGG , "NeedsAssessment", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
+    let ActionsTS_NA_Post_Grade_Group = isc.ToolStrip.create({
+        width: "100%",
+        members: [
+            ToolStrip_Post_Grade_Group_NA_Export2EXcel
+        ]
+    });
+
     NALG_PGG = isc.TrLG.create({
         dataSource: NADS_PGG,
         selectionType: "none",
         autoFetchData: false,
         alternateRecordStyles: true,
         showAllRecords: true,
+        gridComponents: [ActionsTS_NA_Post_Grade_Group, "header", "filterEditor", "body",],
         fields: [
             {name: "competence.title"},
             {
@@ -864,12 +976,44 @@
         fetchDataURL: postUrl + "/iscList"
     });
 
+    let ToolStrip_Post_Grade_Group_Post_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = PostLG_PGG.getCriteria();
+
+                    if(typeof(criteria.operator)=='undefined'){
+                        criteria._constructor="AdvancedCriteria";
+                        criteria.operator="and";
+                    }
+
+                    if(typeof(criteria.criteria)=='undefined'){
+                        criteria.criteria=[];
+                    }
+                    criteria.criteria.push({fieldName: "PostGradeGroup", operator: "equals", value: ListGrid_Post_Grade_Group_Jsp.getSelectedRecord().id});
+
+                    ExportToFile.showDialog(null, PostLG_PGG , "Post_Grade_Group_Post", 0, null, '',"لیست پست ها - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
+    let ActionsTS_Post_Post_Grade_Group = isc.ToolStrip.create({
+        width: "100%",
+        members: [
+            ToolStrip_Post_Grade_Group_Post_Export2EXcel
+        ]
+    });
+
     PostLG_PGG = isc.TrLG.create({
         dataSource: PostDS_PGG,
         autoFetchData: false,
         showResizeBar: true,
         sortField: 0,
         // groupByField: "postGrade.titleFa",
+        gridComponents: [ActionsTS_Post_Post_Grade_Group, "header", "filterEditor", "body",],
         fields: [
             {name: "code",
                 filterEditorProperties: {

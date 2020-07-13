@@ -79,6 +79,15 @@ public class ExportToFileController {
     private final PersonnelService personnelService;
     private final ViewPostService viewPostService;
     private final ViewTeacherReportService viewTeacherReportService;
+    private final ViewPostGradeService viewPostGradeService;
+    private final PostGradeService postGradeService;
+    private final PostService postService;
+    private final ViewJobGroupService viewJobGroupService;
+    private final JobGroupService jobGroupService;
+    private final ViewPostGradeGroupService viewPostGradeGroupService;
+    private final PostGradeGroupService postGradeGroupService;
+    private final ViewPostGroupService viewPostGroupService;
+    private final PostGroupService postGroupService;
 
     private final StudentClassReportViewDAO studentClassReportViewDAO;
     private final PersonnelDAO personnelDAO;
@@ -147,121 +156,6 @@ public class ExportToFileController {
                 }
                 break;*/
 
-
-            case "teacherReport":
-                String id = req.getParameter("id");
-
-                if (id != null) {
-
-                    searchRq.setCriteria(makeNewCriteria("id", id, EOperator.equals, new ArrayList<>()));
-                    searchRq.setStartIndex(0);
-                    searchRq.setCount(1);
-                }
-
-                searchRq.setDistinct(true);
-
-                List<Object> removedObjects = new ArrayList<>();
-                Object evaluationCategory = null;
-                Object evaluationSubCategory = null;
-                Object evaluationGrade = null;
-                Object teachingCategories = null;
-                Object teachingSubCategories = null;
-                Object term = null;
-                for (SearchDTO.CriteriaRq criterion : searchRq.getCriteria().getCriteria()) {
-                    if (criterion.getFieldName().equalsIgnoreCase("evaluationCategory")) {
-                        evaluationCategory = criterion.getValue().get(0);
-                        removedObjects.add(criterion);
-                    }
-                    if (criterion.getFieldName().equalsIgnoreCase("evaluationSubCategory")) {
-                        evaluationSubCategory = criterion.getValue().get(0);
-                        removedObjects.add(criterion);
-                    }
-                    if (criterion.getFieldName().equalsIgnoreCase("evaluationGrade")) {
-                        evaluationGrade = criterion.getValue().get(0);
-                        removedObjects.add(criterion);
-                    }
-                    if (criterion.getFieldName().equalsIgnoreCase("teachingCategories")) {
-                        teachingCategories = criterion.getValue();
-                        removedObjects.add(criterion);
-                    }
-                    if (criterion.getFieldName().equalsIgnoreCase("teachingSubCategories")) {
-                        teachingSubCategories = criterion.getValue();
-                        removedObjects.add(criterion);
-                    }
-
-                    if (criterion.getFieldName().equalsIgnoreCase("termId")) {
-                        criterion.setFieldName("tclasse.term.id");
-                        criterion.setOperator(EOperator.inSet);
-                    }
-                }
-
-                for (Object removedObject : removedObjects) {
-                    searchRq.getCriteria().getCriteria().remove(removedObject);
-                }
-
-                Set<TeacherDTO.Report> set = new HashSet<>();
-                SearchDTO.SearchRs<TeacherDTO.Report> tmpresponse = teacherService.deepSearchReport(searchRq);
-
-
-                List<TeacherDTO.Report> listRemovedObjects = new ArrayList<>();
-
-                Float min_evalGrade = null;
-                if (evaluationGrade != null)
-                    min_evalGrade = Float.parseFloat(evaluationGrade.toString());
-
-                if (evaluationGrade != null && evaluationCategory != null && evaluationSubCategory != null) {
-                    for (TeacherDTO.Report datum : tmpresponse.getList()) {
-                        if (evaluationGrade != null) {
-                            Float teacher_evalGrade = (Float) teacherService.evaluateTeacher(datum.getId(), evaluationCategory.toString(), evaluationSubCategory.toString()).get("evaluationGrade");
-                            datum.setEvaluationGrade("" + teacher_evalGrade);
-                            if (teacher_evalGrade < min_evalGrade)
-                                listRemovedObjects.add(datum);
-                        }
-                    }
-                }
-
-                for (TeacherDTO.Report listRemovedObject : listRemovedObjects)
-                    tmpresponse.getList().remove(listRemovedObject);
-                listRemovedObjects.clear();
-
-                for (TeacherDTO.Report datum : tmpresponse.getList()) {
-                    Long tId = datum.getId();
-                    List<?> result1 = null;
-                    Object[] res1 = null;
-                    String courseId = null;
-                    String classId = null;
-                    List<?> result2 = null;
-                    String courseTitle = null;
-                    List<?> result3 = null;
-                    String classCount = null;
-
-                    String sql1 = "select f_course,id from tbl_class where c_start_date = (select MAX(c_start_date) from tbl_class where f_teacher =" + tId + ") AND ROWNUM = 1";
-                    result1 = (List<?>) entityManager.createNativeQuery(sql1).getResultList();
-                    if (result1.size() > 0) {
-                        res1 = (Object[]) result1.get(0);
-                        courseId = res1[0].toString();
-                        classId = res1[1].toString();
-                    }
-
-                    if (courseId != null) {
-                        String sql2 = "select c_title_fa from tbl_course where id =" + courseId;
-                        result2 = (List<?>) entityManager.createNativeQuery(sql2).getResultList();
-                        courseTitle = (String) result2.get(0);
-                    }
-
-                    String sql3 = "select count(id) from tbl_class where f_teacher =" + tId;
-                    result3 = (List<?>) entityManager.createNativeQuery(sql3).getResultList();
-                    classCount = ((BigDecimal) result3.get(0)).toString();
-
-                    datum.setLastCourse(courseTitle);
-                    datum.setNumberOfCourses(classCount);
-                    if (datum.getLastCourse() != null)
-                        datum.setLastCourseEvaluationGrade("" + tclassService.getClassReactionEvaluationGrade(Long.parseLong(classId), tId));
-                }
-
-                setExcelValues(jsonString, count, tmpresponse.getList());
-
-                break;
             case "trainingFile":
 
                 SearchDTO.SearchRs<ClassStudentDTO.CoursesOfStudent> list2 = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class));//SearchUtil.search(classStudentDAO, searchRq, c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class)).getList();
@@ -450,6 +344,7 @@ public class ExportToFileController {
                 setExcelValues(jsonString, count, list18.getList());
 
                 break;
+
             case "teacherReport":
                 SearchDTO.SearchRs<ViewTeacherReportDTO.Info> list25 = viewTeacherReportService.search(searchRq);
 
@@ -484,7 +379,7 @@ public class ExportToFileController {
 
                 break;
 
-            case "Job":
+            case "View_Job":
 
                 SearchDTO.SearchRs<ViewjobDTO.Info> list22 = viewJobService.search(searchRq);
 
@@ -492,7 +387,7 @@ public class ExportToFileController {
 
                 break;
 
-            case "Job_Personnel":
+            case "Personnel":
 
                 SearchDTO.SearchRs<PersonnelDTO.Info> list23 = personnelService.search(searchRq);
 
@@ -500,7 +395,7 @@ public class ExportToFileController {
 
                 break;
 
-            case "Job_NA":
+            case "NeedsAssessment":
 
                 Long objectId = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
                 String objectType = searchRq.getCriteria().getCriteria().get(1).getValue().get(0).toString();
@@ -514,11 +409,134 @@ public class ExportToFileController {
 
                 break;
 
-            case "Job_Post":
+            case "View_Post":
 
-                SearchDTO.SearchRs<ViewPostDTO.Info> list25 = viewPostService.search(searchRq);
+                SearchDTO.SearchRs<ViewPostDTO.Info> list26 = viewPostService.search(searchRq);
 
-                setExcelValues(jsonString, count, list25.getList());
+                setExcelValues(jsonString, count, list26.getList());
+
+                break;
+
+            case "Post":
+
+                SearchDTO.SearchRs<PostDTO.Info> list27 = postService.searchWithoutPermission(searchRq);
+
+                setExcelValues(jsonString, count, list27.getList());
+
+                break;
+
+            case "View_Post_Grade":
+
+                SearchDTO.SearchRs<ViewPostGradeDTO.Info> list28 = viewPostGradeService.search(searchRq);
+
+                setExcelValues(jsonString, count, list28.getList());
+
+                break;
+
+            case "Post_Grade":
+
+                SearchDTO.SearchRs<PostGradeDTO.Info> list35 = postGradeService.search(searchRq);
+
+                setExcelValues(jsonString, count, list35.getList());
+
+                break;
+
+            case "View_Job_Group":
+
+                SearchDTO.SearchRs<ViewJobGroupDTO.Info> list29 = viewJobGroupService.search(searchRq);
+
+                setExcelValues(jsonString, count, list29.getList());
+
+                break;
+
+            case "Job_Group_Personnel":
+
+                Long jobGroup = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                searchRq.getCriteria().getCriteria().remove(0);
+
+                List<JobDTO.Info> jobs = jobGroupService.getJobs(jobGroup);
+                SearchDTO.SearchRq coustomSearchRq = ISC.convertToSearchRq(req, jobs.stream().map(JobDTO.Info::getCode).collect(Collectors.toList()), "jobNo", EOperator.inSet);
+                coustomSearchRq.getCriteria().getCriteria().add(makeNewCriteria("active", 1, EOperator.equals, null));
+                coustomSearchRq.getCriteria().getCriteria().add(makeNewCriteria("employmentStatusId", 5, EOperator.equals, null));
+                SearchDTO.SearchRs<PersonnelDTO.Info> list30 = personnelService.search(coustomSearchRq);
+
+                setExcelValues(jsonString, count, list30.getList());
+
+                break;
+
+            case "Job_Group_Post":
+
+                Long jobGroup1 = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                searchRq.getCriteria().getCriteria().remove(0);
+
+                List<JobDTO.Info> jobs1 = jobGroupService.getJobs(jobGroup1);
+                SearchDTO.SearchRq coustomSearchRq1 = ISC.convertToSearchRq(req, jobs1.stream().map(JobDTO.Info::getId).collect(Collectors.toList()), "job", EOperator.inSet);
+                SearchDTO.SearchRs<PostDTO.Info> list31 = postService.searchWithoutPermission(coustomSearchRq1);
+
+                setExcelValues(jsonString, count, list31.getList());
+
+                break;
+
+            case "View_Post_Grade_Group":
+
+                SearchDTO.SearchRs<ViewPostGradeGroupDTO.Info> list32 = viewPostGradeGroupService.search(searchRq);
+
+                setExcelValues(jsonString, count, list32.getList());
+
+                break;
+
+            case "Post_Grade_Group_Personnel":
+
+                Long PostGradeGroup = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                searchRq.getCriteria().getCriteria().remove(0);
+
+                List<PostGradeDTO.Info> postGrades = postGradeGroupService.getPostGrades(PostGradeGroup);
+                SearchDTO.SearchRq coustomSearchRq2 = ISC.convertToSearchRq(req, postGrades.stream().map(PostGradeDTO.Info::getCode).collect(Collectors.toList()), "postGradeCode", EOperator.inSet);
+                coustomSearchRq2.getCriteria().getCriteria().add(makeNewCriteria("active", 1, EOperator.equals, null));
+                coustomSearchRq2.getCriteria().getCriteria().add(makeNewCriteria("employmentStatusId", 5, EOperator.equals, null));
+                SearchDTO.SearchRs<PersonnelDTO.Info> list33 = personnelService.search(coustomSearchRq2);
+
+                setExcelValues(jsonString, count, list33.getList());
+
+                break;
+
+            case "Post_Grade_Group_Post":
+
+                Long PostGradeGroup2 = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                searchRq.getCriteria().getCriteria().remove(0);
+
+                List<PostGradeDTO.Info> postGrades1 = postGradeGroupService.getPostGrades(PostGradeGroup2);
+                SearchDTO.SearchRq coustomSearchRq3 = ISC.convertToSearchRq(req, postGrades1.stream().map(PostGradeDTO.Info::getId).collect(Collectors.toList()), "postGrade", EOperator.inSet);
+                SearchDTO.SearchRs<PostDTO.Info> list34 = postService.searchWithoutPermission(coustomSearchRq3);
+
+                setExcelValues(jsonString, count, list34.getList());
+
+                break;
+
+            case "View_Post_Group":
+
+                SearchDTO.SearchRs<ViewPostGroupDTO.Info> list36 = viewPostGroupService.search(searchRq);
+
+                setExcelValues(jsonString, count, list36.getList());
+
+                break;
+
+            case "Post_Group":
+
+                SearchDTO.SearchRs<PostGroupDTO.Info> list37 = postGroupService.search(searchRq);
+
+                setExcelValues(jsonString, count, list37.getList());
+
+                break;
+
+            case "Post_Group_Post":
+
+                Long postGroup = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                searchRq.getCriteria().getCriteria().remove(0);
+
+                List<PostDTO.Info> list38 = postGroupService.getPosts(postGroup);
+
+                setExcelValues(jsonString, count, list38);
 
                 break;
         }

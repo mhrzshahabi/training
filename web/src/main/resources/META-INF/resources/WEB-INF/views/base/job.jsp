@@ -62,7 +62,7 @@
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     let criteria = JobLG_job.getCriteria();
-                    ExportToFile.showDialog(null, JobLG_job , "Job", 0, null, '',"لیست شغل ها - آموزش"  , criteria, null);
+                    ExportToFile.showDialog(null, JobLG_job , "View_Job", 0, null, '',"لیست شغل ها - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -207,7 +207,7 @@
                     criteria.criteria.push({fieldName: "active", operator: "equals", value: 1});
                     criteria.criteria.push({fieldName: "employmentStatusId", operator: "equals", value: 5});
 
-                    ExportToFile.showDialog(null, PersonnelLG_Job , "Job_Personnel", 0, null, '',"لیست پرسنل - آموزش"  , criteria, null);
+                    ExportToFile.showDialog(null, PersonnelLG_Job , "Personnel", 0, null, '',"لیست پرسنل - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -325,7 +325,7 @@
                     criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "Job"});
                     criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
 
-                    ExportToFile.showDialog(null, NALG_Job , "Job_NA", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
+                    ExportToFile.showDialog(null, NALG_Job , "NeedsAssessment", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -436,7 +436,7 @@
                     }
                     criteria.criteria.push({fieldName: "jobCode", operator: "equals", value: JobLG_job.getSelectedRecord().code});
 
-                    ExportToFile.showDialog(null, PostLG_Job , "Job_Post", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
+                    ExportToFile.showDialog(null, PostLG_Job , "View_Post", 0, null, '',"لیست پست - آموزش"  , criteria, null);
                 }
             })
         ]
