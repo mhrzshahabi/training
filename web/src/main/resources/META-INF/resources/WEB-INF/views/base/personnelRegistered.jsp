@@ -1267,6 +1267,8 @@
                 return;
             }
             else {
+                if (typeof DynamicForm_PersonnelReg_BaseInfo.getItem('personnelNo').getValue() == "undefined")
+                { DynamicForm_PersonnelReg_BaseInfo.setValue('personnelNo',DynamicForm_PersonnelReg_BaseInfo.getItem('nationalCode').getValue())}
                 var data = PersonnelReg_vm.getValues();
                 var personnelRegSaveUrl = personnelRegUrl;
                 personnelRegWait = createDialog("wait");
