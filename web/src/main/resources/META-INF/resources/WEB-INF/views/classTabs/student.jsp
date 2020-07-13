@@ -1095,7 +1095,7 @@
                 invalMessage = "<spring:message code="for"/>" + " " + "<spring:message code="student.plural"/>" + " " + messages.names + " " + "<spring:message code="message.define.applicant.company"/>";
                 timeOut = 15000
             }
-
+wait.close();
             var OK = createDialog("info", messages.accepted + " " + "<spring:message code="message.students.added.successfully"/>"
                 + "<br/>" + invalMessage,
 
@@ -1105,6 +1105,7 @@
                 OK.close();
             }, timeOut);
         } else {
+            const wait = createDialog("wait");
             var OK = createDialog("info", "<spring:message code="msg.operation.error"/>",
                 "<spring:message code="error"/>");
             setTimeout(function () {
@@ -1331,12 +1332,12 @@
         }
     }
 
-    function checkPersonnelNosResponse(url,result){
+    function checkPersonnelNosResponse(url,result,addStudentsInGroupInsert){
         isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(result)
-            , "callback: checkPersonnelNos(rpcResponse)"));
+            , "callback: checkPersonnelNos(rpcResponse,'"+url+"',"+addStudentsInGroupInsert+")"));
     }
 
-    function checkPersonnelNos(resp) {
+    function checkPersonnelNos(resp,url,insert) {
         if(generalGetResp(resp)){
             if (resp.httpResponseCode === 200) {
                 //------------------------------------*/
@@ -1344,6 +1345,12 @@
                 let list=GroupSelectedPersonnelsLG_student.data;
                 let data=JSON.parse(resp.data);
                 let allRowsOK=true;
+                var students = [];
+                function checkIfAlreadyExist(currentVal) {
+                    return SelectedPersonnelsLG_student.data.some(function (item) {
+                        return (item.nationalCode === currentVal.nationalCode);
+                    });
+                }
 
                 for (let i = 0; i < len; i++) {
                     let personnelNo=list[i].personnelNo;
@@ -1399,15 +1406,24 @@
                                 list[i].error=false;
                                 list[i].hasWarning="check";
                                 list[i].description="";
+
+                                if (!checkIfAlreadyExist(person)) {
+
+                                    students.add({
+                                        "personnelNo": person.personnelNo,
+                                        "applicantCompanyName": person.companyName,
+                                        "presenceTypeId": studentDefaultPresenceId,
+                                        "registerTypeId": url.indexOf(personnelUrl)>-1 ? 1 : 2
+                                    });
+                                }
                             }
                         }
                     }
                 }
-
-                if(allRowsOK){
+                if(students.getLength() > 0/*allRowsOK*/ && insert ){
                     var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
-                    var students = [];
-                    for (var i=0;i<data.length;i++) {
+
+                    /*for (var i=0;i<data.length;i++) {
                         let current = data[i];
 
                         if (!checkIfAlreadyExist(current)) {
@@ -1418,45 +1434,15 @@
                                 "registerTypeId": 1
                             });
                         }
-                    }
-
-
-                    function checkIfAlreadyExist(currentVal) {
-                        return SelectedPersonnelsLG_student.data.some(function (item) {
-                            return (item.nationalCode === currentVal.nationalCode);
-                        });
-                    }
-                    if (students.getLength() > 0)
+                    }*/
+                    //if (students.getLength() > 0)
+                    wait.show()
                         isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST", JSON.stringify(students),class_add_students_result));
 
-                    SelectedPersonnelsLG_student.data.clearAll();
+                        SelectedPersonnelsLG_student.data.clearAll();
 
-
-                    /*//Add Result To SelectedListGrid
-                    for (var person in data) {
-                        let current = data[person];
-                        if(!nationalCodeExists(current.nationalCode))
-                        {
-
-                            if (!checkIfAlreadyExist(current)) {
-
-                                current.applicantCompanyName = current.companyName;
-                                current.presenceTypeId = studentDefaultPresenceId;
-                                current.registerTypeId = 1;
-
-                                SelectedPersonnelsLG_student.setData(SelectedPersonnelsLG_student.data.concat([current]));
-                            }
-
-                            function checkIfAlreadyExist(currentVal) {
-                                return SelectedPersonnelsLG_student.data.some(function (item) {
-                                    return (item.nationalCode === currentVal.nationalCode);
-                                });
-                            }
-                        }
-                    }*/
-
-                    //Close Window
-                    ClassStudentWin_student_GroupInsert.close();
+                        //Close Window
+                        ClassStudentWin_student_GroupInsert.close();
                 }else{
                     GroupSelectedPersonnelsLG_student.invalidateCache();
                     GroupSelectedPersonnelsLG_student.fetchData();
