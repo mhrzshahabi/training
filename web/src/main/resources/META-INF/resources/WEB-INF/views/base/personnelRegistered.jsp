@@ -14,6 +14,7 @@
     var mailCheckPerReg = true;
     var cellPhoneCheckPerReg = true;
     var duplicateCodePerReg = false;
+    var tempNationalCode="";
 
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -1228,7 +1229,6 @@
         align: "center",
         icon: "[SKIN]/actions/save.png",
         click: function () {
-
             if (codeMeliCheckPerReg === false) {
                 DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("nationalCode", "<spring:message  code='msg.national.code.validation'/>", true);
                 return;
@@ -1267,6 +1267,8 @@
                 return;
             }
             else {
+                if (typeof DynamicForm_PersonnelReg_BaseInfo.getItem('personnelNo').getValue() == "undefined")
+                { DynamicForm_PersonnelReg_BaseInfo.setValue('personnelNo',DynamicForm_PersonnelReg_BaseInfo.getItem('nationalCode').getValue())}
                 var data = PersonnelReg_vm.getValues();
                 var personnelRegSaveUrl = personnelRegUrl;
                 personnelRegWait = createDialog("wait");
@@ -1538,6 +1540,7 @@
         DynamicForm_PersonnelReg_EmployEdu.clearValues();
         DynamicForm_PersonnelReg_OperationalUnit.clearValues();
         DynamicForm_PersonnelReg_ContactInfo.clearValues();
+        duplicateCodePerReg=false;
         var record = ListGrid_PersonnelReg_JspPersonnelReg.getSelectedRecord();
         if (record == null || record.id == null) {
             isc.Dialog.create({
@@ -1554,6 +1557,7 @@
             PersonnelReg_vm.editRecord(record);
             // DynamicForm_PersonnelReg_BaseInfo.getField("nationalCode").disabled = true;
             personnelRegTabs.selectTab(0);
+            tempNationalCode=DynamicForm_PersonnelReg_BaseInfo.getValue("nationalCode");
             Window_PersonnelReg_JspPersonnelReg.show();
         }
     };
@@ -1572,6 +1576,7 @@
         DynamicForm_PersonnelReg_ContactInfo.clearValues();
         // DynamicForm_PersonnelReg_BaseInfo.getField("nationalCode").disabled = false;
         personnelRegTabs.selectTab(0);
+        tempNationalCode="";
         Window_PersonnelReg_JspPersonnelReg.show();
     };
 
@@ -1694,6 +1699,11 @@
     };
 
     function checkPersonalRegNationalCode(nationalCode) {
+        if (DynamicForm_PersonnelReg_BaseInfo.getItem("nationalCode").getValue() == tempNationalCode) {
+            DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("nationalCode", true);
+            return;
+        }
+
         isc.RPCManager.sendRequest(TrDSRequest(personnelRegByNationalCodeUrl + "getOneByNationalCode/" + nationalCode, "GET", null, "callback: personalReg_findOne_result(rpcResponse)"));
     };
 
