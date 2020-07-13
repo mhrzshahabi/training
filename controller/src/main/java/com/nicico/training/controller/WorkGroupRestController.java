@@ -3,10 +3,12 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.GenericPermissionDTO;
 import com.nicico.training.dto.PermissionDTO;
 import com.nicico.training.dto.WorkGroupDTO;
 import com.nicico.training.iservice.IWorkGroupService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -23,6 +26,7 @@ import java.util.List;
 public class WorkGroupRestController {
 
     private final IWorkGroupService workGroupService;
+    private final ModelMapper modelMapper;
 
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<WorkGroupDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
@@ -80,6 +84,18 @@ public class WorkGroupRestController {
     @PutMapping(value = "/edit-permission-list/{workGroupId}")
     public ResponseEntity<List<PermissionDTO.Info>> editConfigList(@Validated @RequestBody PermissionDTO.CreateOrUpdate[] rq, @PathVariable Long workGroupId) {
         return new ResponseEntity<>(workGroupService.editPermissionList(rq, workGroupId), HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping("/generic-form-data/{workGroupId}")
+    public ResponseEntity<List<GenericPermissionDTO.Info>> genericformData(@PathVariable Long workGroupId) {
+        return new ResponseEntity<>(workGroupService.getAllGenericPermissions(workGroupId), HttpStatus.OK);
+    }
+
+    @Loggable
+    @PutMapping(value = "/edit-generic-permission-list/{workGroupId}")
+    public ResponseEntity<List<GenericPermissionDTO.Info>> editGenericPermissionList(@Validated @RequestBody GenericPermissionDTO.Update rq, @PathVariable Long workGroupId) {
+        return new ResponseEntity<>(workGroupService.editGenericPermissionList(rq, workGroupId), HttpStatus.OK);
     }
 
 }

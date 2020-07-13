@@ -54,7 +54,7 @@
             return replaceString;
         };
 
-        function groupFilter(title,inputURL,func,isCheck=false){
+        function groupFilter(title,inputURL,func,isCheck=false,addStudentsInGroupInsert=false){
             TabSet_GroupInsert_JspStudent=isc.TabSet.create({
                 ID:"leftTabSet",
                 autoDraw:false,
@@ -117,7 +117,7 @@
                                             GroupSelectedPersonnelsLG_student.fetchData();
 
                                             if(records.length > 0 && isCheck){
-                                                func(inputURL,records.map(function(item) {return item.personnelNo;}));
+                                                func(inputURL,records.map(function(item) {return item.personnelNo;}),addStudentsInGroupInsert);
                                             }
 
                                             DynamicForm_GroupInsert_Textbox_JspStudent.setValue('');
@@ -362,7 +362,7 @@
                                     }
 
                                     if (func) {
-                                        func(inputURL,result);
+                                        func(inputURL,result,true);
                                     }
                                 }
                             }), isc.IButtonCancel.create({
@@ -757,6 +757,7 @@
     const controlReportUrl = rootUrl + "/controlReport";
     const presenceReportUrl = rootUrl + "/presence-report";
     const continuousStatusReportViewUrl = rootUrl + "/continuous-status-report-view";
+    const departmentUrl = rootUrl + "/department";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";

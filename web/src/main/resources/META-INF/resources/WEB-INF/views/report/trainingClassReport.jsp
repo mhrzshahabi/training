@@ -236,7 +236,7 @@
             {name: "unitId", title: "حوزه"},
             <%--{name: "tclassPlanner",  title: "<spring:message code="planner"/>"},--%>
             <%--{name: "tclassSupervisor",  title: "<spring:message code="supervisor"/>"},--%>
-            {name: "tclassStudentsCount", title: "تعداد فراگیران"},
+            {name: "tclassStudentsCount", title: "تعداد فراگیران" , filterOperator: "equals"},
             {name: "tclassStatus", title: "وضعیت کلاس",
                 type: "SelectItem",
                 valueMap: {
@@ -257,7 +257,7 @@
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         selectionType: "single",
-        sortField: 6,
+        sortField: 5,
         sortDirection: "descending",
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
@@ -288,6 +288,21 @@
                         click: function() {
                             // ListGrid_Result_JspTClassReport.sortFieldNum=6;
                             ExportToFile.showDialog(null, ListGrid_Result_JspTClassReport, 'trainingClassReport', 0, null, '',  "گزارش کلاس هاي آموزشي", ListGrid_Result_JspTClassReport.data.criteria, null);
+                        }
+                    }),
+                    isc.ToolStripButtonPrint.create({
+                        margin:5,
+                        title: "چاپ گزارش",
+                        click: function() {
+                            Reporting();
+
+                            var dataParams = new Object();
+                            dataParams.courseInfo = courseInfo_print;
+                            dataParams.classTimeInfo = classTimeInfo_print;
+                            dataParams.executionInfo = executionInfo_print;
+                            dataParams.evaluationInfo = evaluationInfo_print;
+
+                            trPrintWithCriteria("<spring:url value="/tclass/reportPrint/"/>" + "pdf", ListGrid_Result_JspTClassReport.getCriteria(),JSON.stringify(dataParams));
                         }
                     }),
                     ListGrid_Result_JspTClassReport
@@ -1226,80 +1241,80 @@
         }
     });
 
-    IButton_Print_JspTClassReport = isc.IButtonSave.create({
-        top: 260,
-        title: "چاپ گزارش",
-        width: 300,
-        icon: "<spring:url value="pdf.png"/>",
-        click: function () {
-            DynamicForm_CriteriaForm_JspTClassReport.validate();
-            if (DynamicForm_CriteriaForm_JspTClassReport.hasErrors())
-                return;
-            var startDuratiorn = DynamicForm_CriteriaForm_JspTClassReport.getValue("hDurationStart");
-            var endDuratiorn = DynamicForm_CriteriaForm_JspTClassReport.getValue("hDurationEnd");
-            if (startDuratiorn != undefined && endDuratiorn != undefined &&  parseFloat(startDuratiorn) > parseFloat(endDuratiorn)){
-                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("hDurationEnd", true);
-                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("hDurationStart", true);
-                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("hDurationEnd", "حداکثر مدت کلاس باید بیشتر از حداقل مدت کلاس باشد", true);
-                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("hDurationStart", "حداکثر مدت کلاس باید بیشتر از حداقل مدت کلاس باشد", true);
-                return;
-            }
-            if (!DynamicForm_CriteriaForm_JspTClassReport.validate() ||
-                startDateCheck_Order_JspTClassReport == false ||
-                startDate2Check_JspTClassReport == false ||
-                startDate1Check_JspTClassReport == false ||
-                endDateCheck_Order_JspTClassReport == false ||
-                endDate2Check_JspTClassReport == false ||
-                endDate1Check_JspTClassReport == false) {
+    <%--IButton_Print_JspTClassReport = isc.IButtonSave.create({--%>
+    <%--    top: 260,--%>
+    <%--    title: "چاپ گزارش",--%>
+    <%--    width: 300,--%>
+    <%--    icon: "<spring:url value="pdf.png"/>",--%>
+    <%--    click: function () {--%>
+    <%--        DynamicForm_CriteriaForm_JspTClassReport.validate();--%>
+    <%--        if (DynamicForm_CriteriaForm_JspTClassReport.hasErrors())--%>
+    <%--            return;--%>
+    <%--        var startDuratiorn = DynamicForm_CriteriaForm_JspTClassReport.getValue("hDurationStart");--%>
+    <%--        var endDuratiorn = DynamicForm_CriteriaForm_JspTClassReport.getValue("hDurationEnd");--%>
+    <%--        if (startDuratiorn != undefined && endDuratiorn != undefined &&  parseFloat(startDuratiorn) > parseFloat(endDuratiorn)){--%>
+    <%--            DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("hDurationEnd", true);--%>
+    <%--            DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("hDurationStart", true);--%>
+    <%--            DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("hDurationEnd", "حداکثر مدت کلاس باید بیشتر از حداقل مدت کلاس باشد", true);--%>
+    <%--            DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("hDurationStart", "حداکثر مدت کلاس باید بیشتر از حداقل مدت کلاس باشد", true);--%>
+    <%--            return;--%>
+    <%--        }--%>
+    <%--        if (!DynamicForm_CriteriaForm_JspTClassReport.validate() ||--%>
+    <%--            startDateCheck_Order_JspTClassReport == false ||--%>
+    <%--            startDate2Check_JspTClassReport == false ||--%>
+    <%--            startDate1Check_JspTClassReport == false ||--%>
+    <%--            endDateCheck_Order_JspTClassReport == false ||--%>
+    <%--            endDate2Check_JspTClassReport == false ||--%>
+    <%--            endDate1Check_JspTClassReport == false) {--%>
 
-                if (startDateCheck_Order_JspTClassReport == false) {
-                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate2", true);
-                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
-                }
-                if (startDateCheck_Order_JspTClassReport == false) {
-                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate1", true);
-                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
-                }
-                if (startDate2Check_JspTClassReport == false) {
-                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate2", true);
-                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate2", "<spring:message
-        code='msg.correct.date'/>", true);
-                }
-                if (startDate1Check_JspTClassReport == false) {
-                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate1", true);
-                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate1", "<spring:message
-        code='msg.correct.date'/>", true);
-                }
+    <%--            if (startDateCheck_Order_JspTClassReport == false) {--%>
+    <%--                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate2", true);--%>
+    <%--                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);--%>
+    <%--            }--%>
+    <%--            if (startDateCheck_Order_JspTClassReport == false) {--%>
+    <%--                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate1", true);--%>
+    <%--                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);--%>
+    <%--            }--%>
+    <%--            if (startDate2Check_JspTClassReport == false) {--%>
+    <%--                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate2", true);--%>
+    <%--                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate2", "<spring:message--%>
+    <%--    code='msg.correct.date'/>", true);--%>
+    <%--            }--%>
+    <%--            if (startDate1Check_JspTClassReport == false) {--%>
+    <%--                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate1", true);--%>
+    <%--                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate1", "<spring:message--%>
+    <%--    code='msg.correct.date'/>", true);--%>
+    <%--            }--%>
 
-                if (endDateCheck_Order_JspTClassReport == false) {
-                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate2", true);
-                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
-                }
-                if (endDateCheck_Order_JspTClassReport == false) {
-                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate1", true);
-                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
-                }
-                if (endDate2Check_JspTClassReport == false) {
-                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate2", true);
-                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate2", "<spring:message code='msg.correct.date'/>", true);
-                }
-                if (endDate1Check_JspTClassReport == false) {
-                    DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate1", true);
-                    DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate1", "<spring:message code='msg.correct.date'/>", true);
-                }
-                return;
-            }
-            Reporting();
+    <%--            if (endDateCheck_Order_JspTClassReport == false) {--%>
+    <%--                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate2", true);--%>
+    <%--                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);--%>
+    <%--            }--%>
+    <%--            if (endDateCheck_Order_JspTClassReport == false) {--%>
+    <%--                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate1", true);--%>
+    <%--                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);--%>
+    <%--            }--%>
+    <%--            if (endDate2Check_JspTClassReport == false) {--%>
+    <%--                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate2", true);--%>
+    <%--                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate2", "<spring:message code='msg.correct.date'/>", true);--%>
+    <%--            }--%>
+    <%--            if (endDate1Check_JspTClassReport == false) {--%>
+    <%--                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate1", true);--%>
+    <%--                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate1", "<spring:message code='msg.correct.date'/>", true);--%>
+    <%--            }--%>
+    <%--            return;--%>
+    <%--        }--%>
+    <%--        Reporting();--%>
 
-            var dataParams = new Object();
-            dataParams.courseInfo = courseInfo_print;
-            dataParams.classTimeInfo = classTimeInfo_print;
-            dataParams.executionInfo = executionInfo_print;
-            dataParams.evaluationInfo = evaluationInfo_print;
+    <%--        var dataParams = new Object();--%>
+    <%--        dataParams.courseInfo = courseInfo_print;--%>
+    <%--        dataParams.classTimeInfo = classTimeInfo_print;--%>
+    <%--        dataParams.executionInfo = executionInfo_print;--%>
+    <%--        dataParams.evaluationInfo = evaluationInfo_print;--%>
 
-            trPrintWithCriteria("<spring:url value="/tclass/reportPrint/"/>" + "pdf", data_values,JSON.stringify(dataParams));
-        }
-    });
+    <%--        trPrintWithCriteria("<spring:url value="/tclass/reportPrint/"/>" + "pdf", data_values,JSON.stringify(dataParams));--%>
+    <%--    }--%>
+    <%--});--%>
     //----------------------------------- functions --------------------------------------------------------------------
     function Reporting(){
         data_values = null;
@@ -1711,7 +1726,7 @@
         padding: 10,
         members: [
             IButton_Confirm_JspTClassReport,
-            IButton_Print_JspTClassReport
+            // IButton_Print_JspTClassReport
         ]
     });
 

@@ -31,6 +31,9 @@ public class WorkGroup extends Auditable {
     @OneToMany(mappedBy = "workGroup", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Permission> permissions;
 
+    @OneToMany(mappedBy = "workGroup", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<GenericPermission> genericPermissions;
+
     @ElementCollection
     @CollectionTable(name = "tbl_work_group_user_ids", joinColumns = @JoinColumn(name = "f_work_group"))
     @Column(name = "user_ids")
