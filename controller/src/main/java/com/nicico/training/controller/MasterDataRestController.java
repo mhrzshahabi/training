@@ -126,11 +126,11 @@ public class MasterDataRestController {
         return new ResponseEntity<>(results , HttpStatus.OK);
     }
 
-    @GetMapping(value = "parentEmployeeById/{peopleId}")
+    /*@GetMapping(value = "parentEmployeeById/{peopleId}")
     public ResponseEntity<PersonnelDTO.Info> getParentEmployeeById(@PathVariable Long peopleId) throws IOException {
         PersonnelDTO.Info result= modelMapper.map(masterDataService.getParentEmployee(peopleId), new TypeToken<PersonnelDTO.Info>(){}.getType());
         return new ResponseEntity<>(result, HttpStatus.OK);
-    }
+    }*/
 
     @GetMapping(value = "parentEmployee/{nationalCode}")
     public ResponseEntity<PersonnelDTO.Info> getParentEmployee(@PathVariable String nationalCode) throws IOException {
@@ -140,11 +140,11 @@ public class MasterDataRestController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping(value = "siblingsEmployeeById/{peopleId}")
+    /*@GetMapping(value = "siblingsEmployeeById/{peopleId}")
     public ResponseEntity<List<PersonnelDTO.Info>> getSiblingsEmployeeById(@PathVariable Long peopleId) throws IOException {
         List<PersonnelDTO.Info> results=modelMapper.map(masterDataService.getSiblingsEmployee(peopleId), new TypeToken<List<PersonnelDTO.Info>>(){}.getType());
         return new ResponseEntity<>(results , HttpStatus.OK);
-    }
+    }*/
 
     @GetMapping(value = "siblingsEmployee/{nationalCode}")
     public ResponseEntity<List<PersonnelDTO.Info>> getSiblingsEmployee(@PathVariable String nationalCode) throws IOException {
