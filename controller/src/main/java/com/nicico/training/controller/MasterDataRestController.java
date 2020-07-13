@@ -117,15 +117,40 @@ public class MasterDataRestController {
         return parents;
     }
 
-    @GetMapping(value = "parentEmployee/{peopleId}")
-    public ResponseEntity<PersonnelDTO.Info> getParentEmployee(@PathVariable Long peopleId) throws IOException {
+    ////////////////////////////////////////////////////
+    //Amin HK
+
+    @GetMapping(value = "getIDPersonByNationalCode/{nationalCode}")
+    public ResponseEntity<List<PersonnelDTO.Info>> getIDPersonByNationalCode(@PathVariable String nationalCode) throws IOException {
+        List<PersonnelDTO.Info> results=modelMapper.map(masterDataService.getPersonByNationalCode(nationalCode), new TypeToken<List<PersonnelDTO.Info>>(){}.getType());
+        return new ResponseEntity<>(results , HttpStatus.OK);
+    }
+
+    /*@GetMapping(value = "parentEmployeeById/{peopleId}")
+    public ResponseEntity<PersonnelDTO.Info> getParentEmployeeById(@PathVariable Long peopleId) throws IOException {
         PersonnelDTO.Info result= modelMapper.map(masterDataService.getParentEmployee(peopleId), new TypeToken<PersonnelDTO.Info>(){}.getType());
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }*/
+
+    @GetMapping(value = "parentEmployee/{nationalCode}")
+    public ResponseEntity<PersonnelDTO.Info> getParentEmployee(@PathVariable String nationalCode) throws IOException {
+        List<PersonnelDTO.Info> tempResult=modelMapper.map(masterDataService.getPersonByNationalCode(nationalCode), new TypeToken<List<PersonnelDTO.Info>>(){}.getType());
+
+        PersonnelDTO.Info result= modelMapper.map(masterDataService.getParentEmployee(tempResult.get(0).getId()), new TypeToken<PersonnelDTO.Info>(){}.getType());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping(value = "childrenEmployee/{peopleId}")
-    public ResponseEntity<List<PersonnelDTO.Info>> getChildrenEmployee(@PathVariable Long peopleId) throws IOException {
-        List<PersonnelDTO.Info> results=modelMapper.map(masterDataService.getChildrenEmployee(peopleId), new TypeToken<List<PersonnelDTO.Info>>(){}.getType());
+    /*@GetMapping(value = "siblingsEmployeeById/{peopleId}")
+    public ResponseEntity<List<PersonnelDTO.Info>> getSiblingsEmployeeById(@PathVariable Long peopleId) throws IOException {
+        List<PersonnelDTO.Info> results=modelMapper.map(masterDataService.getSiblingsEmployee(peopleId), new TypeToken<List<PersonnelDTO.Info>>(){}.getType());
+        return new ResponseEntity<>(results , HttpStatus.OK);
+    }*/
+
+    @GetMapping(value = "siblingsEmployee/{nationalCode}")
+    public ResponseEntity<List<PersonnelDTO.Info>> getSiblingsEmployee(@PathVariable String nationalCode) throws IOException {
+        List<PersonnelDTO.Info> tempResult=modelMapper.map(masterDataService.getPersonByNationalCode(nationalCode), new TypeToken<List<PersonnelDTO.Info>>(){}.getType());
+
+        List<PersonnelDTO.Info> results=modelMapper.map(masterDataService.getSiblingsEmployee(tempResult.get(0).getId()), new TypeToken<List<PersonnelDTO.Info>>(){}.getType());
         return new ResponseEntity<>(results , HttpStatus.OK);
     }
 }
