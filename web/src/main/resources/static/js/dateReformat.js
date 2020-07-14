@@ -43,3 +43,112 @@ const reformat = (input) => {
         }//end if
     }//end if
 };
+
+const arrangeDate = date => {
+    if (!date)
+        return;
+
+    if (!date.includes(":")) {
+        if (date.length == 1) {
+            if (parseInt(date) == 0)
+                return "01:00";
+            else
+                return "0" + date + ":00";
+        }
+
+        else if (date.length == 2) {
+            if (date=="00"){
+                return "01:00";
+            } else if (parseInt(date) >= 24) {
+                return "01:00";
+            } else {
+                return date + ":00";
+            }
+        }
+
+        else if (date.length == 3) {
+            if (date=="000"){
+                return "01:00";
+            }
+
+            let hour=date.substring(0,1);
+            let minute= date.substring(1,3);
+
+            if (parseInt(hour)==0)
+                hour="1";
+
+            if (parseInt(minute) >= 60) {
+                return "0"+hour+":59";
+            } else {
+                return "0"+hour+":"+minute;
+            }
+        }
+
+        else if (date.length == 4) {
+            if (date=="0000"){
+                return "01:00";
+            }
+
+            let hour=date.substring(0,2);
+            let minute= date.substring(2,4);
+
+            if (hour=="00")
+                hour="01";
+
+            if (parseInt(hour)>=24)
+                hour="23";
+
+            if (parseInt(minute) >= 60) {
+                return hour+":59";
+            } else {
+                return hour+":"+minute;
+            }
+        }
+
+        else
+            return "01:00";
+    }//end :
+
+    else {
+        let sections = date.split(":");
+
+        if (sections != null) {
+            let hour = sections[0];
+            let minute = sections[1];
+
+            //arrange hour
+            if (hour.length == 1) {
+
+                if (hour==0){
+                    hour="1";
+                }
+
+                hour = "0" + hour;
+            } else {
+                if (hour=="00")
+                    hour="01";
+
+                if (parseInt(hour) >= 23) {
+                    hour="23";
+                }
+            }
+
+            //arrange minute
+            if (minute.length==0) {
+                return hour + ":00";
+            }
+
+            else if (minute.length == 1) {
+                minute = "0" + minute;
+            } else {
+                if (parseInt(minute) >= 60) {
+                    minute = 59;
+                }
+            }
+
+            return hour +":"+minute;
+        }
+
+        return date;
+    }//end else
+}//end arrangeDate
