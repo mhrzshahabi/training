@@ -170,7 +170,9 @@
             {name: "parentDepartment.departmentName", title: "<spring:message code="department"/>", filterOperator: "iContains"},
             {name: "departmentName", title: "<spring:message code="department"/>", filterOperator: "iContains"}
         ],
-        fetchDataURL: departmentUrl + "spec-list"
+        autoFetchData: false,
+        autoCacheAllData: true,
+        fetchDataURL: departmentUrl + "/spec-list"
     });
 
 
@@ -440,7 +442,7 @@
                 autoFetchData: false,
                 type: "MultiComboBoxItem",
                 valueField: "id",
-                displayField: "parentDepartment.departmentName",
+                displayField: "departmentName",
                 endRow: true,
                 colSpan: 10,
                 // comboBoxWidth: 200,
@@ -453,7 +455,7 @@
                         {name: "departmentName"},
                         //{name: "parentDepartment.departmentName"}
                     ],
-                    filterFields: ["code", "parentDepartment.departmentName", "departmentName"],
+                    filterFields: ["code"/*, "parentDepartment.departmentName"*/, "departmentName"],
                     pickListProperties: {sortField: "departmentName"},
                     textMatchStyle: "substring",
                 },
@@ -763,7 +765,7 @@
                             let data=JSON.parse(resp.data);
                             let tmpdata=[];
 
-                            data.filter(p=>p.objectType=='department').forEach(function(entry) {
+                            data.filter(p=>p.objectType=='Department').forEach(function(entry) {
                                 tmpdata.push(entry.objectId);
                             });
 

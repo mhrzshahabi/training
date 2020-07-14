@@ -16,6 +16,7 @@ import com.nicico.training.model.enums.ETheoType;
 import com.nicico.training.repository.SkillDAO;
 import com.nicico.training.service.CourseService;
 import com.nicico.training.service.GoalService;
+import com.nicico.training.service.WorkGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
@@ -54,6 +55,7 @@ public class CourseRestController {
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
     private final SkillDAO skillDAO;
+    private final WorkGroupService workGroupService;
 
     // ---------------------------------
     @Loggable
@@ -196,6 +198,9 @@ public class CourseRestController {
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
+
+        request.setCriteria(workGroupService.addPermissionToCriteria("Course", request.getCriteria()));
+
         SearchDTO.SearchRs<CourseDTO.Info> response = courseService.search(request);
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(response.getList())

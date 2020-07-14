@@ -31,12 +31,17 @@ public interface GenericPermissionDAO extends JpaRepository<GenericPermission, L
 
     @Transactional
     List<GenericPermission> findByObjectIdNotInAndAndWorkGroupIdAndObjectType(@Param("ids") List<Long> ids,
-                                                                @Param("workGroupId") Long workGroupId,String ObjectType);
+                                                                @Param("workGroupId") Long workGroupId,@Param("objectType") String ObjectType);
 
     @Transactional
     List<GenericPermission> findByObjectIdInAndAndWorkGroupIdAndObjectType(@Param("ids") List<Long> ids,
-                                                                 @Param("workGroupId") Long workGroupId,String ObjectType);
+                                                                 @Param("workGroupId") Long workGroupId,@Param("objectType") String ObjectType);
 
     @Transactional
     List<GenericPermission> findAllByWorkGroupId(@Param("workGroupId") Long workGroupId);
+
+    @Transactional
+    List<GenericPermission> findByObjectTypeAndAndWorkGroupUserIds(@Param("objectType") String ObjectType,@Param("userId") Long UserId);
+
+
 }
