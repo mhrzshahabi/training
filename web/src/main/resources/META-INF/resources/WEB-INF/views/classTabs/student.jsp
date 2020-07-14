@@ -1189,10 +1189,12 @@ wait.close();
             updating.applicantCompanyName = record.applicantCompanyName;
             updating.presenceTypeId = newValue;
         }
+        wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + record.id, "PUT", JSON.stringify(updating), class_student_update_student_result));
     }
 
     function class_student_update_student_result(resp) {
+        wait.close();
         var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
         if (resp.httpResponseCode === 200) {
             refreshLG(StudentsLG_student);
