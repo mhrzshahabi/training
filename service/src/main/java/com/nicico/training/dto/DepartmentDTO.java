@@ -48,7 +48,7 @@ public class DepartmentDTO implements Serializable {
         private String code;
         private String treeVersion;
         private String parentCode;
-        private DepartmentDTO.Info parentDepartment;
+        //private DepartmentDTO.Info parentDepartment;
     }
 
     // ------------------------------

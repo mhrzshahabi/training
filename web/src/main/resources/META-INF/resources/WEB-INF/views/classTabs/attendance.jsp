@@ -41,8 +41,16 @@
         testData: sessionInOneDate,
         fields: [
             {name: "studentId", hidden: true, primaryKey: true},
-            {name: "studentName", type: "text", title: "نام"},
-            {name: "studentFamily", type: "text", title: "نام خانوادگی"},
+            {name: "studentName", type: "text", title: "نام",
+                pickListProperties: {
+                    showFilterEditor: false
+                }
+            },
+            {name: "studentFamily", type: "text", title: "نام خانوادگی",
+                pickListProperties: {
+                    showFilterEditor: false
+                }
+            },
             {name: "personalNum", type: "text", title: "شماره پرسنلی"},
             {name: "nationalCode", type: "text", title: "کد ملی",
                 filterEditorProperties: {
@@ -63,8 +71,13 @@
             {name: "studentState", hidden:true, type: "text", title: "وضعیت"},
             {name: "sessionType", title:"نوع جلسه"},
             {name: "sessionDate", type: "text", title: "تاریخ",
+                valueMap: filterValuesUnique,
+                multiple: true,
                 filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
+                },
+                pickListProperties: {
+                    showFilterEditor: false
                 }
             },
             {name: "startHour", type: "text", title: "ساعت شروع",
@@ -77,7 +90,13 @@
                     keyPressFilter: "[0-9:]"
                 }
             },
-            {name: "state", type: "text", title: "وضعیت"},
+            {name: "state", type: "text", title: "وضعیت",
+                valueMap:attendanceState,
+                multiple: true,
+                pickListProperties: {
+                    showFilterEditor: false
+                }
+            },
         ],
     });
     var RestData_SessionDate_AttendanceJSP = isc.TrDS.create({
@@ -722,13 +741,26 @@
                                         {name: "sessionType", title: "نوع جلسه"},
                                         {
                                             name: "sessionDate",
-                                            title: "تاریخ",
-                                            valueMap: filterValuesUnique,
-                                            multiple: true
+                                            filterEditorProperties:{
+                                                click:function () {
+                                                    setTimeout(()=> {
+                                                        $('.comboBoxItemPickerrtl').eq(9).remove();
+                                                    },0);
+                                                }
+                                            },
                                         },
                                         {name: "startHour", title: "ساعت شروع"},
                                         {name: "endHour", title: "ساعت پایان"},
-                                        {name: "state", title: "وضعیت", valueMap:attendanceState},
+                                        {
+                                            name: "state",
+                                            filterEditorProperties:{
+                                                click:function () {
+                                                    setTimeout(()=> {
+                                                        $('.comboBoxItemPickerrtl').eq(9).remove();
+                                                    },0);
+                                                }
+                                            },
+                                        },
                                     ];
                                     if (attendanceGrid.originalFields.size() != 0) {
                                         attendanceGrid.originalFields = [];

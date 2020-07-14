@@ -1,6 +1,6 @@
 package com.nicico.training.controller;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,19 +9,15 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
-import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonnelCourseNotPassedReportViewService;
-import com.nicico.training.iservice.IStudentService;
 import com.nicico.training.iservice.ITclassService;
-import com.nicico.training.model.ViewTeacherReport;
 import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.PersonnelRegisteredDAO;
 import com.nicico.training.repository.StudentClassReportViewDAO;
 import com.nicico.training.service.*;
 import lombok.*;
-import lombok.experimental.Accessors;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
@@ -31,18 +27,15 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -59,16 +52,36 @@ public class ExportToFileController {
     private final ITclassService tclassService;
     private final IPersonnelCourseNotPassedReportViewService personnelCourseNotPassedReportViewService;
     private final ClassSessionService classSessionService;
-    private final EvaluationAnalysistLearningService evaluationAnalysistLearningService;
     private final UnfinishedClassesReportService unfinishedClassesReportService;
     private final TrainingOverTimeService trainingOverTimeService;
     private final AttendanceReportService attendanceReportService;
     private final ViewEvaluationStaticalReportService viewEvaluationStaticalReportService;
+    private final CategoryService categoryService;
+    private final SubcategoryService subcategoryService;
+    private final EducationOrientationService educationOrientationService;
+    private final EducationMajorService educationMajorService;
+    private final EducationLevelService educationLevelService;
+    private final EquipmentService equipmentService;
+    private final CompetenceService competenceService;
+    private final SkillService skillService;
+    private final NeedsAssessmentReportsService needsAssessmentReportsService;
+    private final ViewJobService viewJobService;
+    private final PersonnelService personnelService;
+    private final ViewPostService viewPostService;
     private final ViewTeacherReportService viewTeacherReportService;
+    private final ViewPostGradeService viewPostGradeService;
+    private final PostGradeService postGradeService;
+    private final PostService postService;
+    private final ViewJobGroupService viewJobGroupService;
+    private final JobGroupService jobGroupService;
+    private final ViewPostGradeGroupService viewPostGradeGroupService;
+    private final PostGradeGroupService postGradeGroupService;
+    private final ViewPostGroupService viewPostGroupService;
+    private final PostGroupService postGroupService;
+    private final WorkGroupService workGroupService;
 
     private final StudentClassReportViewDAO studentClassReportViewDAO;
     private final PersonnelDAO personnelDAO;
-    private final CourseDAO courseDAO;
     private final PersonnelRegisteredDAO personnelRegisteredDAO;
 
     private final ExportToFileService exportToFileService;
@@ -116,202 +129,72 @@ public class ExportToFileController {
 
         //Start Of Query
         net.minidev.json.parser.JSONParser parser = new JSONParser(DEFAULT_PERMISSIVE_MODE);
-        String jsonString = null;
-        int count = 0;
+        String[] jsonString = {null};
+        int count[] = {0};
+        List<Object> generalList = null;
 
         switch (fileName) {
-            /*case "tclass-personnel-training":
-
-                List<TclassDTO.PersonnelClassInfo> list = tClassService.findAllPersonnelClass(searchRq.getCriteria().getCriteria().get(0).getValue().get(0).toString());
-
-                if (list == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list);
-                    count = list.size();
-                }
-                break;*/
 
             case "trainingFile":
-
-                SearchDTO.SearchRs<ClassStudentDTO.CoursesOfStudent> list2 = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class));//SearchUtil.search(classStudentDAO, searchRq, c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class)).getList();
-
-                if (list2.getList() == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list2.getList());
-                    count = list2.getList().size();
-                }
+                generalList = (List<Object>)((Object) classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class)).getList());
                 break;
-            case "studentClassReport":
 
-                List<StudentClassReportViewDTO.Info> list3 = SearchUtil.search(studentClassReportViewDAO, searchRq, student -> modelMapper.map(student, StudentClassReportViewDTO.Info.class)).getList();
-                if (list3 == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list3);
-                    count = list3.size();
-                }
+            case "studentClassReport":
+                generalList = (List<Object>)((Object) SearchUtil.search(studentClassReportViewDAO, searchRq, student -> modelMapper.map(student, StudentClassReportViewDTO.Info.class)).getList());
                 break;
 
             case "personnelInformationReport":
-
-
-                List<PersonnelDTO.Info> list4 = SearchUtil.search(personnelDAO, searchRq, personnel -> modelMapper.map(personnel, PersonnelDTO.Info.class)).getList();
-                if (list4 == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list4);
-                    count = list4.size();
-                }
+                generalList = (List<Object>)((Object) SearchUtil.search(personnelDAO, searchRq, personnel -> modelMapper.map(personnel, PersonnelDTO.Info.class)).getList());
                 break;
             case "registeredPersonnelInformationReport":
-
-
-                List<PersonnelRegisteredDTO.Info> list11 = SearchUtil.search(personnelRegisteredDAO, searchRq, personnelRegistered -> modelMapper.map(personnelRegistered, PersonnelRegisteredDTO.Info.class)).getList();
-                if (list11 == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list11);
-                    count = list11.size();
-                }
+                generalList = (List<Object>)((Object) SearchUtil.search(personnelRegisteredDAO, searchRq, personnelRegistered -> modelMapper.map(personnelRegistered, PersonnelRegisteredDTO.Info.class)).getList());
                 break;
+
             case "personnelCourseNotPassed":
-
-
-                SearchDTO.SearchRs<PersonnelCourseNotPassedReportViewDTO.Info> list5 = personnelCourseNotPassedReportViewService.search(searchRq, p -> modelMapper.map(p, PersonnelCourseNotPassedReportViewDTO.Info.class));
-                List<PersonnelCourseNotPassedReportViewDTO.Info> list51 = list5.getList();
-
-                if (list51 == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list51);
-                    count = list51.size();
-                }
+                generalList = (List<Object>)((Object) personnelCourseNotPassedReportViewService.search(searchRq, p -> modelMapper.map(p, PersonnelCourseNotPassedReportViewDTO.Info.class)).getList());
                 break;
 
             case "classOutsideCurrentTerm":
-
                 String str = DateUtil.convertKhToMi1(((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim()).replaceAll("[\\s\\-]", "");
                 searchRq.getCriteria().getCriteria().remove(0);
-
-                SearchDTO.SearchRs<TclassDTO.Info> list6 = tclassService.search(searchRq);
-                List<TclassDTO.Info> list61 = list6.getList();
-
-                List<Long> longList = list61.stream().filter(x -> Long.valueOf(String.valueOf(x.getCreatedDate()).substring(0, 10).replaceAll("[\\s\\-]", "")) > Long.valueOf(str))
+                SearchDTO.SearchRs<TclassDTO.Info> classInfoSearchRs = tclassService.search(searchRq);
+                List<TclassDTO.Info> classInfoSearchRsList = classInfoSearchRs.getList();
+                List<Long> longList = classInfoSearchRsList.stream().filter(x -> Long.valueOf(String.valueOf(x.getCreatedDate()).substring(0, 10).replaceAll("[\\s\\-]", "")) > Long.valueOf(str))
                         .map(x -> x.getId()).collect(Collectors.toList());
-
-
-                List<TclassDTO.Info> infoList = list61.stream().filter(x -> !longList.contains(x.getId())).collect(Collectors.toList());
-                list6.getList().removeAll(infoList);
-
-
-                if (list61 == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list61);
-                    count = list61.size();
-                }
+                List<TclassDTO.Info> infoList = classInfoSearchRsList.stream().filter(x -> !longList.contains(x.getId())).collect(Collectors.toList());
+                classInfoSearchRs.getList().removeAll(infoList);
+                generalList = (List<Object>)((Object) classInfoSearchRsList);
                 break;
-            case "weeklyTrainingSchedule":
 
+            case "weeklyTrainingSchedule":
                 String userNationalCode = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
                 searchRq.getCriteria().getCriteria().remove(0);
-
-                SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> list7 = classSessionService.searchWeeklyTrainingSchedule(searchRq, userNationalCode);
-                List<ClassSessionDTO.WeeklySchedule> list71 = list7.getList();
-
-
-                if (list71 == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list71);
-                    count = list71.size();
-                }
+                generalList = (List<Object>)((Object) classSessionService.searchWeeklyTrainingSchedule(searchRq, userNationalCode).getList());
                 break;
             case "trainingClassReport":
-
-                searchRq.setStartIndex(0)
-                        .setCount(100000);
-
-                SearchDTO.CriteriaRq criteriaRq = null;
-                SearchDTO.SearchRq request = null;
-                if (criteriaStr.equalsIgnoreCase("{}")) {
-                    request = new SearchDTO.SearchRq();
-                } else {
-                    criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
-                    request = new SearchDTO.SearchRq().setCriteria(criteriaRq).setSortBy("-tclassStartDate");
-                }
-                if(request.getCriteria() != null && request.getCriteria().getCriteria() != null){
-                    for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
-                        if(criterion.getValue().get(0).equals("true"))
-                            criterion.setValue(true);
-                        if(criterion.getValue().get(0).equals("false"))
-                            criterion.setValue(false);
-                    }
-                }
-                SearchDTO.SearchRs<ViewEvaluationStaticalReportDTO.Info> list8 = viewEvaluationStaticalReportService.search(request);
-
-                if (list8.getList() == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list8.getList());
-                    count = list8.getList().size();
-                }
+                generalList = (List<Object>)((Object) viewEvaluationStaticalReportService.search(searchRq).getList());
                 break;
+
             case "unfinishedClassesReport":
-
-                List<UnfinishedClassesReportDTO> list9 = unfinishedClassesReportService.UnfinishedClassesList();
-
-
-                if (list9 == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list9);
-                    count = list9.size();
-                }
+                generalList = (List<Object>)((Object) unfinishedClassesReportService.UnfinishedClassesList());
                 break;
             case "trainingOverTime":
-
                 String startDate = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
                 searchRq.getCriteria().getCriteria().remove(0);
                 String endDate = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
                 searchRq.getCriteria().getCriteria().remove(0);
-
-                List<TrainingOverTimeDTO.Info> list10 = trainingOverTimeService.getTrainingOverTimeReportList(startDate, endDate);
-
-
-                if (list10 == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list10);
-                    count = list10.size();
-                }
+                generalList = (List<Object>)((Object) trainingOverTimeService.getTrainingOverTimeReportList(startDate, endDate));
                 break;
 
             case "attendanceReport":
-
                 String startDate2 = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
                 searchRq.getCriteria().getCriteria().remove(0);
                 String endDate2 = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
                 searchRq.getCriteria().getCriteria().remove(0);
                 int absentType = Integer.parseInt(searchRq.getCriteria().getCriteria().get(0).getValue().get(0)+"");
                 searchRq.getCriteria().getCriteria().remove(0);
-
-                List<AttendanceReportDTO.Info> list12 = attendanceReportService.getAbsentList(startDate2, endDate2,absentType+"");
-
-                list12.forEach(x->
+                List<AttendanceReportDTO.Info> attendanceReportServiceAbsentList = attendanceReportService.getAbsentList(startDate2, endDate2,absentType+"");
+                attendanceReportServiceAbsentList.forEach(x->
                         {
                             if (x.getAttendanceStatus().equals("3"))
                                 x.setAttendanceStatus("غیر موجه");
@@ -319,39 +202,155 @@ public class ExportToFileController {
                                 x.setAttendanceStatus("موجه");
                         }
                 );
-
-                if (list12 == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list12);
-                    count = list12.size();
-                }
+                generalList = (List<Object>)((Object) attendanceReportServiceAbsentList);
                 break;
+
+            case "Category":
+                generalList = (List<Object>)((Object)categoryService.search(searchRq).getList());
+                break;
+
+            case "SubCategory":
+                generalList = (List<Object>)((Object) subcategoryService.search(searchRq).getList());
+                break;
+
+            case "EducationOrientation":
+                generalList = (List<Object>)((Object) educationOrientationService.search(searchRq).getList());
+                break;
+
+            case "EducationMajor":
+                generalList = (List<Object>)((Object) educationMajorService.search(searchRq).getClass());
+                break;
+
+            case "EducationLevel":
+                generalList = (List<Object>)((Object) educationLevelService.search(searchRq).getList());
+                break;
+
+            case "Equipment":
+                generalList = (List<Object>)((Object) equipmentService.search(searchRq).getList());
+                break;
+
             case "teacherReport":
-                SearchDTO.SearchRs<ViewTeacherReportDTO.Info> list13 = viewTeacherReportService.search(searchRq);
+                generalList = (List<Object>)((Object) viewTeacherReportService.search(searchRq).getList());
+                break;
 
-                if (list13.getList() == null) {
-                    count = 0;
-                } else {
-                    ObjectMapper mapper = new ObjectMapper();
-                    jsonString = mapper.writeValueAsString(list13.getList());
-                    count = list13.getList().size();
-                }
+            case "Competence":
+                generalList = (List<Object>)((Object) competenceService.search(searchRq).getList());
+                break;
+
+            case "Skill":
+                searchRq.setCriteria(workGroupService.addPermissionToCriteria("Skill", searchRq.getCriteria()));
+                generalList = (List<Object>)((Object) skillService.searchGeneric(searchRq, SkillDTO.Info.class).getList());
+                break;
+
+            case "Skill_Post":
+                Long skillId = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                searchRq.getCriteria().getCriteria().remove(0);
+                generalList = (List<Object>)((Object) needsAssessmentReportsService.getSkillNAPostList(searchRq, skillId).getList());
+                break;
+
+            case "View_Job":
+                generalList = (List<Object>)((Object) viewJobService.search(searchRq).getList());
+                break;
+
+            case "Personnel":
+                generalList = (List<Object>)((Object) personnelService.search(searchRq).getList());
+                break;
+
+            case "NeedsAssessment":
+                Long objectId = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                String objectType = searchRq.getCriteria().getCriteria().get(1).getValue().get(0).toString();
+                String personnelNo = searchRq.getCriteria().getCriteria().get(2).getValue().get(0) == null ? null : searchRq.getCriteria().getCriteria().get(2).getValue().get(0).toString();
+                searchRq.getCriteria().getCriteria().remove(0);searchRq.getCriteria().getCriteria().remove(0);searchRq.getCriteria().getCriteria().remove(0);
+                generalList = (List<Object>)((Object) needsAssessmentReportsService.search(searchRq, objectId, objectType, personnelNo).getList());
+                break;
+
+            case "View_Post":
+                generalList = (List<Object>)((Object) viewPostService.search(searchRq).getList());
+                break;
+
+            case "Post":
+                generalList = (List<Object>)((Object) postService.searchWithoutPermission(searchRq).getList());
+                break;
+
+            case "View_Post_Grade":
+                generalList = (List<Object>)((Object) viewPostGradeService.search(searchRq).getList());
+                setExcelValues(jsonString, count, generalList);
+                break;
+
+            case "Post_Grade_Without_Permission":
+                generalList = (List<Object>)((Object) postGradeService.searchWithoutPermission(searchRq).getList());
+                break;
+
+            case "View_Job_Group":
+                generalList = (List<Object>)((Object) viewJobGroupService.search(searchRq).getList());
+                break;
+
+            case "Job_Group_Personnel":
+                Long jobGroup = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                searchRq.getCriteria().getCriteria().remove(0);
+                List<JobDTO.Info> jobs = jobGroupService.getJobs(jobGroup);
+                SearchDTO.SearchRq coustomSearchRq = ISC.convertToSearchRq(req, jobs.stream().map(JobDTO.Info::getCode).collect(Collectors.toList()), "jobNo", EOperator.inSet);
+                coustomSearchRq.getCriteria().getCriteria().add(makeNewCriteria("active", 1, EOperator.equals, null));
+                coustomSearchRq.getCriteria().getCriteria().add(makeNewCriteria("employmentStatusId", 5, EOperator.equals, null));
+                generalList = (List<Object>)((Object) personnelService.search(coustomSearchRq).getList());
+                break;
+
+            case "Job_Group_Post":
+                Long jobGroup1 = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                searchRq.getCriteria().getCriteria().remove(0);
+                List<JobDTO.Info> jobs1 = jobGroupService.getJobs(jobGroup1);
+                SearchDTO.SearchRq coustomSearchRq1 = ISC.convertToSearchRq(req, jobs1.stream().map(JobDTO.Info::getId).collect(Collectors.toList()), "job", EOperator.inSet);
+                generalList = (List<Object>)((Object) postService.searchWithoutPermission(coustomSearchRq1).getList());
+                break;
+
+            case "View_Post_Grade_Group":
+                generalList = (List<Object>)((Object) viewPostGradeGroupService.search(searchRq).getList());
+                break;
+
+            case "Post_Grade_Group_Personnel":
+                Long PostGradeGroup = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                searchRq.getCriteria().getCriteria().remove(0);
+                List<PostGradeDTO.Info> postGrades = postGradeGroupService.getPostGrades(PostGradeGroup);
+                SearchDTO.SearchRq coustomSearchRq2 = ISC.convertToSearchRq(req, postGrades.stream().map(PostGradeDTO.Info::getCode).collect(Collectors.toList()), "postGradeCode", EOperator.inSet);
+                coustomSearchRq2.getCriteria().getCriteria().add(makeNewCriteria("active", 1, EOperator.equals, null));
+                coustomSearchRq2.getCriteria().getCriteria().add(makeNewCriteria("employmentStatusId", 5, EOperator.equals, null));
+                generalList = (List<Object>)((Object) personnelService.search(coustomSearchRq2).getList());
 
                 break;
 
+            case "Post_Grade_Group_Post":
+                Long PostGradeGroup2 = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                searchRq.getCriteria().getCriteria().remove(0);
+                List<PostGradeDTO.Info> postGrades1 = postGradeGroupService.getPostGrades(PostGradeGroup2);
+                SearchDTO.SearchRq coustomSearchRq3 = ISC.convertToSearchRq(req, postGrades1.stream().map(PostGradeDTO.Info::getId).collect(Collectors.toList()), "postGrade", EOperator.inSet);
+                generalList = (List<Object>)((Object) postService.searchWithoutPermission(coustomSearchRq3).getList());
+                break;
+
+            case "View_Post_Group":
+                generalList = (List<Object>)((Object) viewPostGroupService.search(searchRq).getList());
+                break;
+
+            case "Post_Group":
+                generalList = (List<Object>)((Object) postGroupService.search(searchRq).getList());
+                break;
+
+            case "Post_Group_Post":
+                Long postGroup = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                searchRq.getCriteria().getCriteria().remove(0);
+                generalList = (List<Object>)((Object) postGroupService.getPosts(postGroup));
+                break;
         }
 
         //End Of Query
         //Start Parse
-        net.minidev.json.JSONArray jsonArray = (JSONArray) parser.parse(jsonString);
+        setExcelValues(jsonString, count, generalList);
+        net.minidev.json.JSONArray jsonArray = (JSONArray) parser.parse(jsonString[0]);
         net.minidev.json.JSONObject jsonObject = null;
         int sizeOfFields = fields1.size();
         String tmpName = "";
         List<HashMap<String, String>> allData = new ArrayList<HashMap<String, String>>();
 
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < count[0]; i++) {
             jsonObject = (JSONObject) jsonArray.get(i);
 
             HashMap<String, String> tmpData = new HashMap<String, String>();
@@ -381,8 +380,7 @@ public class ExportToFileController {
 
 
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            String data = mapper.writeValueAsString(allData);
+            String data = objectMapper.writeValueAsString(allData);
 
             exportToFileService.exportToExcel(response, fields, data, titr, pageName);
         } catch (Exception ex) {
@@ -463,6 +461,15 @@ public class ExportToFileController {
         }
 
         return searchRq;
+    }
+
+    private <T> void setExcelValues(String jsonStringRef[], int countRef[],   List<T> list)throws JsonProcessingException {
+        if (list == null) {
+            countRef[0] = 0;
+        } else {
+            jsonStringRef[0] = objectMapper.writeValueAsString(list);
+            countRef[0] = list.size();
+        }
     }
 
 }

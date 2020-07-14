@@ -41,6 +41,20 @@
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
+
+    let ToolStrip_Competence_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = CompetenceLG_competence.getCriteria();
+                    ExportToFile.showDialog(null, CompetenceLG_competence , "Competence", 0, null, '',"لیست شایستگی ها - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
     CompetenceTS_competence = isc.ToolStrip.create({
         members: [
             isc.ToolStripButtonRefresh.create({
@@ -63,6 +77,9 @@
                     showRemoveForm_competence();
                 }
             }),
+
+            ToolStrip_Competence_Export2EXcel,
+
             /*isc.TrPrintBtnCommon.create({
                 click: function () {
                     printCompetence_competence();

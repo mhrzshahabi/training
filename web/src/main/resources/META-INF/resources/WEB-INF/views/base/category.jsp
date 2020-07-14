@@ -408,6 +408,20 @@
             ListGrid_Category_Remove();
         }
     });
+
+    let ToolStrip_Category_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = ListGrid_Category.getCriteria();
+                    ExportToFile.showDialog(null, ListGrid_Category , "Category", 0, null, '',"لیست گروه ها - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
     var ToolStrip_Actions_Category = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -415,6 +429,7 @@
             ToolStripButton_Category_Add,
             ToolStripButton_Category_Edit,
             ToolStripButton_Category_Remove,
+            ToolStrip_Category_Export2EXcel,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -886,6 +901,30 @@
             ListGrid_Sub_Category_Remove();
         }
     });
+
+    let ToolStrip_Sub_Category_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = ListGrid_Sub_Category.getCriteria();
+
+                    if(typeof(criteria.operator)=='undefined'){
+                        criteria._constructor="AdvancedCriteria";
+                        criteria.operator="and";
+                    }
+
+                    if(typeof(criteria.criteria)=='undefined'){
+                        criteria.criteria=[];
+                    }
+                    criteria.criteria.push({fieldName:'categoryId',operator:'equals',value:ListGrid_Category.getSelectedRecord().id});
+                    ExportToFile.showDialog(null, ListGrid_Sub_Category , "SubCategory", 0, null, '',"لیست زیر گروه ها - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
     var ToolStrip_Actions_Sub_Category = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -893,6 +932,7 @@
             ToolStripButton_Sub_Category_Add,
             ToolStripButton_Sub_Category_Edit,
             ToolStripButton_Sub_Category_Remove,
+            ToolStrip_Sub_Category_Export2EXcel,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
