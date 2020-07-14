@@ -78,6 +78,7 @@ public class ExportToFileController {
     private final PostGradeGroupService postGradeGroupService;
     private final ViewPostGroupService viewPostGroupService;
     private final PostGroupService postGroupService;
+    private final WorkGroupService workGroupService;
 
     private final StudentClassReportViewDAO studentClassReportViewDAO;
     private final PersonnelDAO personnelDAO;
@@ -316,7 +317,7 @@ public class ExportToFileController {
                 break;
 
             case "Skill":
-
+                searchRq.setCriteria(workGroupService.addPermissionToCriteria("Skill", searchRq.getCriteria()));
                 SearchDTO.SearchRs<SkillDTO.Info> list20 = skillService.searchGeneric(searchRq, SkillDTO.Info.class);
 
                 setExcelValues(jsonString, count, list20.getList());

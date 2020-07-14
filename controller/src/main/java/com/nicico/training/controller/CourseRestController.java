@@ -413,6 +413,9 @@ public class CourseRestController {
     @GetMapping(value = {"/printTest/{courseId}"})
     //@PreAuthorize("hasAuthority('Course_P')")
     public void printGoalsAndSyllabus(HttpServletResponse response, @PathVariable Long courseId) throws Exception {
+        if(!workGroupService.isAllowUseId("Course",courseId)){
+            return;
+        }
         final Map<String, Object> params = new HashMap<>();
         String domain = courseService.getDomain(courseId);
         List<CourseDTO.Info> preCourseList = courseService.preCourseList(courseId);
@@ -508,6 +511,10 @@ public class CourseRestController {
     //@PreAuthorize("hasAuthority('Course_WF')")
     public String getCourseMainObjective(@PathVariable Long courseId, HttpServletResponse response) throws IOException {
 
+        if(!workGroupService.isAllowUseId("Course",courseId)) {
+
+            return "";
+        }
         StringBuilder mainObjective = new StringBuilder();
         List<Skill> skillList = skillDAO.findByCourseMainObjectiveId(courseId);
 

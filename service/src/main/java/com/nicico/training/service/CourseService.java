@@ -15,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +43,7 @@ public class CourseService implements ICourseService {
     private final PostDAO postDAO;
     private final CategoryDAO categoryDAO;
     private final SubcategoryDAO subCategoryDAO;
+    private final WorkGroupService workGroupService;
     private final TclassService tclassService;
     private final TeacherService teacherService;
     private final ParameterService parameterService;
@@ -528,6 +530,9 @@ public class CourseService implements ICourseService {
     @Transactional
     @Override
     public boolean checkForDelete(Long id) {
+        if(!workGroupService.isAllowUseId("Course",id)){
+            return false;
+        }
         Optional<Course> one = courseDAO.findById(id);
         final Course course = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
 //        Set<Skill> skillSet = course.getSkillSet();
