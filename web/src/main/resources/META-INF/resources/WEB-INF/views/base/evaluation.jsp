@@ -12,10 +12,8 @@
     {
         var evalWait;
         var localQuestions;
-        var evaluation_method = "POST";
         var evaluation_Audience = null;
         var ealuation_numberOfStudents = null;
-        var MyOkDialog_Operational;
     }
     //----------------------------------------- DataSources ------------------------------------------------------------
     {
@@ -41,7 +39,12 @@
                 {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
             ],
             cacheAllData: true,
-            fetchDataURL: parameterUrl + "/iscList/EvaluatorType"
+            fetchDataURL: parameterUrl + "/iscList/EvaluatorType",
+            implicitCriteria: {
+                _constructor:"AdvancedCriteria",
+                operator:"and",
+                criteria:[{ fieldName: "code", operator: "inSet", value: ["21","32","42","4"]}]
+            }
         });
         var EvaluationDS_PersonList = isc.TrDS.create({
             fields: [
@@ -246,35 +249,6 @@
     }
     //----------------------------------------- DynamicForms -----------------------------------------------------------
     {
-        var evaluation_Audience_Type = isc.DynamicForm.create({
-            fields: [
-                {
-                    name: "audiencePost",
-                    type: "SelectItem",
-                    optionDataSource: AudienceTypeDS,
-                    title: "نوع مخاطب : ",
-                    pickListProperties: {
-                        showFilterEditor: false
-                    },
-                    pickListFields: [
-                        {name: "title"}
-                    ],
-                    valueField: "id",
-                    displayField: "title",
-                    changed: function (form, item, value) {
-                        // roya
-                        if(value == 190)
-                            EvaluationDS_PersonList.fetchDataURL =  personnelUrl + "/getParentEmployee/" + ListGrid_evaluation_student.getSelectedRecord().student.nationalCode;
-                        else
-                            EvaluationDS_PersonList.fetchDataURL =  personnelUrl + "/iscList";
-                        EvaluationListGrid_PeronalLIst.dataSource = EvaluationDS_PersonList;
-                        EvaluationListGrid_PeronalLIst.fetchData();
-                        EvaluationListGrid_PeronalLIst.invalidateCache();
-                    }
-                },
-            ]
-        });
-        evaluation_Audience_Type.setValues(null);
         var DynamicForm_Evalution_Term_Filter = isc.DynamicForm.create({
             width: "85%",
             height: "100%",
@@ -526,15 +500,12 @@
             <sec:authorize access="hasAuthority('Evaluation_R')">
             dataSource: RestDataSource_evaluation_class,
             </sec:authorize>
-            // contextMenu: Menu_ListGrid_evaluation_class,
             canAddFormulaFields: false,
             autoFetchData: true,
             showFilterEditor: true,
             allowAdvancedCriteria: true,
             allowFilterExpressions: true,
-            filterOnKeypress: true,
-            // showRecordComponents: true,
-            // showRecordComponentsByCell: true,
+            filterOnKeypress: false,
             initialSort: [
                 {property: "startDate", direction: "descending", primarySort: true}
             ],
@@ -634,12 +605,12 @@
                         pickListProperties: {
                             showFilterEditor: false
                         },
-                     click:function () {
-                         setTimeout(()=> {
-                             $('.comboBoxItemPickerrtl').eq(4).remove();
-                             $('.comboBoxItemPickerrtl').eq(5).remove();
-                         },0);
-                     }
+                        click:function () {
+                            setTimeout(()=> {
+                                $('.comboBoxItemPickerrtl').eq(4).remove();
+                            $('.comboBoxItemPickerrtl').eq(5).remove();
+                        },0);
+                        }
                     },
                     valueMap: {
                         "1": "واکنشی",
@@ -658,8 +629,8 @@
                         click:function () {
                             setTimeout(()=> {
                                 $('.comboBoxItemPickerrtl').eq(5).remove();
-                                $('.comboBoxItemPickerrtl').eq(4).remove();
-                            },0);
+                            $('.comboBoxItemPickerrtl').eq(4).remove();
+                        },0);
                         }
                     },
                     valueMap: {
@@ -684,28 +655,9 @@
                     filterOperator: "iContains",
                     autoFithWidth: true
                 },
-                // {name: "hasWarning", title: " ", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"},
                 {name: "scoringMethod", hidden: true},
-                // {name: "saveResults", title: " ", align: "center", canSort: false, canFilter: false,autoFithWidth: true},
                 {name: "preCourseTest", hidden: true}
             ],
-
-            // createRecordComponent: function (record, colNum) {
-            //     var fieldName = this.getFieldName(colNum);
-            //     if (fieldName == "saveResults") {
-            //         var button = isc.IButton.create({
-            //             layoutAlign: "center",
-            //             title: "ثبت نتایج ارزیابی",
-            //             width: "100%",
-            //             click: function () {
-            //                 register_evaluation_result(record);
-            //             }
-            //         });
-            //         return button;
-            //     } else {
-            //         return null;
-            //     }
-            // },
             selectionUpdated: function () {
                 let classRecord = ListGrid_evaluation_class.getSelectedRecord();
                 loadSelectedTab_data(Detail_Tab_Evaluation.getSelectedTab());
@@ -883,16 +835,16 @@
     //----------------------------------------- ToolStrips -------------------------------------------------------------
     {
         var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
-        title: "<spring:message code="refresh"/>",
-        click: function () {
-            ListGrid_evaluation_class.invalidateCache();
-        }
-    });
+            title: "<spring:message code="refresh"/>",
+            click: function () {
+                ListGrid_evaluation_class.invalidateCache();
+            }
+        });
         var ToolStrip_operational = isc.ToolStrip.create({
-        width: "100%",
-        membersMargin: 5,
-        members: [
-            <sec:authorize access="hasAuthority('Evaluation_R')">
+            width: "100%",
+            membersMargin: 5,
+            members: [
+                <sec:authorize access="hasAuthority('Evaluation_R')">
                 DynamicForm_Evalution_Term_Filter,
                 isc.ToolStrip.create({
                     width: "5%",
@@ -965,38 +917,38 @@
             membersMargin: 10,
             members: [
                 <sec:authorize access="hasAuthority('Evaluation_PrintPreTest')">
-                                isc.VLayout.create({
-                                    membersMargin: 5,
-                                    layoutAlign: "center",
-                                    defaultLayoutAlign: "center",
-                                    members: [
-                                        ToolStripButton_FormIssuance_Teacher,
-                                        ToolStripButton_RegisterForm_Teacher
-                                    ]
-                                }),
-                                isc.VLayout.create({
-                                    membersMargin: 5,
-                                    layoutAlign: "center",
-                                    defaultLayoutAlign: "center",
-                                    members: [
-                                        ToolStripButton_FormIssuance_Training,
-                                        ToolStripButton_RegisterForm_Training
-                                    ]
-                                }),
-                                isc.VLayout.create({
-                                    members: [
-                                        ToolStripButton_FormIssuanceForAll,
-                                        isc.LayoutSpacer.create({height: "22"})
-                                    ]
-                                }),
-                                isc.ToolStrip.create({
-                                    width: "100%",
-                                    align: "left",
-                                    border: '0px',
-                                    members: [
-                                        ToolStripButton_RefreshIssuance
-                                    ]
-                                })
+                isc.VLayout.create({
+                    membersMargin: 5,
+                    layoutAlign: "center",
+                    defaultLayoutAlign: "center",
+                    members: [
+                        ToolStripButton_FormIssuance_Teacher,
+                        ToolStripButton_RegisterForm_Teacher
+                    ]
+                }),
+                isc.VLayout.create({
+                    membersMargin: 5,
+                    layoutAlign: "center",
+                    defaultLayoutAlign: "center",
+                    members: [
+                        ToolStripButton_FormIssuance_Training,
+                        ToolStripButton_RegisterForm_Training
+                    ]
+                }),
+                isc.VLayout.create({
+                    members: [
+                        ToolStripButton_FormIssuanceForAll,
+                        isc.LayoutSpacer.create({height: "22"})
+                    ]
+                }),
+                isc.ToolStrip.create({
+                    width: "100%",
+                    align: "left",
+                    border: '0px',
+                    members: [
+                        ToolStripButton_RefreshIssuance
+                    ]
+                })
                 </sec:authorize>
 
             ]
@@ -1020,32 +972,32 @@
                 DynamicForm_ReturnDate,
                 isc.LayoutSpacer.create({width: "80%"}),
                 isc.RibbonGroup.create({
-                ID: "fileGroup",
-                title: "راهنمای رنگ بندی لیست",
-                numRows: 1,
-                colWidths: [ 40, "*" ],
-                height: "10px",
-                titleAlign: "center",
-                titleStyle : "gridHint",
-                controls: [
-                    isc.IconButton.create(isc.addProperties({
-                        title: "صادر نشده",
-                        baseStyle: "gridHint",
-                        backgroundColor: '#fffff'
-                    })),
-                    isc.IconButton.create(isc.addProperties({
-                        title: "صادر شده",
-                        baseStyle: "gridHint",
-                        backgroundColor: '#d8e4bc'
-                    })),
-                    isc.IconButton.create(isc.addProperties({
-                        title: "تکمیل شده",
-                        baseStyle: "gridHint",
-                        backgroundColor: '#b7dee8'
-                    }))
-                ],
-                autoDraw: false
-            })]
+                    ID: "fileGroup",
+                    title: "راهنمای رنگ بندی لیست",
+                    numRows: 1,
+                    colWidths: [ 40, "*" ],
+                    height: "10px",
+                    titleAlign: "center",
+                    titleStyle : "gridHint",
+                    controls: [
+                        isc.IconButton.create(isc.addProperties({
+                            title: "صادر نشده",
+                            baseStyle: "gridHint",
+                            backgroundColor: '#fffff'
+                        })),
+                        isc.IconButton.create(isc.addProperties({
+                            title: "صادر شده",
+                            baseStyle: "gridHint",
+                            backgroundColor: '#d8e4bc'
+                        })),
+                        isc.IconButton.create(isc.addProperties({
+                            title: "تکمیل شده",
+                            baseStyle: "gridHint",
+                            backgroundColor: '#b7dee8'
+                        }))
+                    ],
+                    autoDraw: false
+                })]
         });
         var VLayout_Body_evaluation = isc.VLayout.create({
             width: "100%",
@@ -1134,13 +1086,41 @@
                 DynamicForm_ReturnDate.clearFieldErrors("evaluationReturnDate", true);
             }
         }
-        function close_MyOkDialog_Operational() {
-            setTimeout(function () {
-                MyOkDialog_Operational.close();
-            }, 3000);
-        }
         function print_Student_Behavioral_Form_Inssuance(record){
-            var Buttons_List_HLayout = isc.HLayout.create({
+            let evaluation_Audience_Type = isc.DynamicForm.create({
+                fields: [
+                    {
+                        name: "audiencePost",
+                        type: "SelectItem",
+                        optionDataSource: AudienceTypeDS,
+                        title: "نوع مخاطب : ",
+                        pickListProperties: {
+                            showFilterEditor: false
+                        },
+                        pickListFields: [
+                            {name: "title"}
+                        ],
+                        valueField: "id",
+                        displayField: "title",
+                        changed: function (form, item, value) {
+                            if(value == 190)
+                                EvaluationDS_PersonList.fetchDataURL =  personnelUrl + "/getParentEmployee/" + record.student.nationalCode;
+                            else if(value == 189)
+                                EvaluationDS_PersonList.fetchDataURL =  personnelUrl + "/getSiblingsEmployee/" + record.student.nationalCode;
+                            else if(value == 454)
+                                EvaluationDS_PersonList.fetchDataURL =  personnelUrl + "/getTraining/" +  "<%= SecurityUtil.getNationalCode()%>";
+                            else if(value == 188)
+                                EvaluationDS_PersonList.fetchDataURL =  personnelUrl + "/getStudent/" + record.student.nationalCode;
+                            else
+                                EvaluationDS_PersonList.fetchDataURL =  personnelUrl + "/iscList";
+                            EvaluationListGrid_PeronalLIst.dataSource = EvaluationDS_PersonList;
+                            EvaluationListGrid_PeronalLIst.fetchData();
+                            EvaluationListGrid_PeronalLIst.invalidateCache();
+                        }
+                    },
+                ]
+            });
+            let Buttons_List_HLayout = isc.HLayout.create({
                 width: "100%",
                 height: "30px",
                 autoDraw: false,
@@ -1153,7 +1133,8 @@
                         click: function () {
                             if (EvaluationListGrid_PeronalLIst.getSelectedRecord() !== null && (evaluation_Audience_Type.getValue("audiencePost") !== null && evaluation_Audience_Type.getValue("audiencePost") !== undefined)) {
                                 evaluation_Audience = EvaluationListGrid_PeronalLIst.getSelectedRecord().firstName + " " + EvaluationListGrid_PeronalLIst.getSelectedRecord().lastName;
-                                print_Student_FormIssuance("pdf", ealuation_numberOfStudents,record);
+                                let evaluationType = (evaluation_Audience_Type.getValue("audiencePost") === null || evaluation_Audience_Type.getValue("audiencePost") === undefined ? "" : evaluation_Audience_Type.getField("audiencePost").getDisplayValue());
+                                print_Student_FormIssuance("pdf", ealuation_numberOfStudents,record,null,evaluationType);
                                 create_Student_BehavioralForm(ealuation_numberOfStudents,record,EvaluationListGrid_PeronalLIst.getSelectedRecord(),evaluation_Audience_Type.getValue("audiencePost"));
                                 EvaluationWin_PersonList.close();
                             } else if(evaluation_Audience_Type.getValue("audiencePost") === null || evaluation_Audience_Type.getValue("audiencePost") === undefined){
@@ -1186,8 +1167,7 @@
                     })
                 ]
             });
-
-            var evaluation_personnel_List_VLayout = isc.VLayout.create({
+            let evaluation_personnel_List_VLayout = isc.VLayout.create({
                 width: "100%",
                 height: "100%",
                 autoDraw: false,
@@ -1197,8 +1177,8 @@
                     Buttons_List_HLayout
                 ]
             });
-
-            var EvaluationWin_PersonList = isc.Window.create({
+            evaluation_Audience_Type.setValues(null);
+            let EvaluationWin_PersonList = isc.Window.create({
                 title: "<spring:message code="select.audience"/>",
                 width: 600,
                 height: 400,
@@ -1214,7 +1194,8 @@
                     this.Super("close",arguments);
                 }
             });
-            // roya
+            EvaluationDS_PersonList.fetchDataURL =  "";
+            EvaluationListGrid_PeronalLIst.dataSource = EvaluationDS_PersonList;
             EvaluationWin_PersonList.show();
             EvaluationListGrid_PeronalLIst.invalidateCache();
             EvaluationListGrid_PeronalLIst.fetchData();
@@ -1318,9 +1299,9 @@
 
                     let studentId = (numberOfStudents === "single" ? selectedStudent.student.id : -1);
                     let returnDate = evaluation_ReturnDate._value !== undefined ? evaluation_ReturnDate._value.replaceAll("/", "-") : "noDate";
-                    let evaluationType = (evaluation_Audience_Type.getValue("audiencePost") === null || evaluation_Audience_Type.getValue("audiencePost") === undefined ? "" : evaluation_Audience_Type.getField("audiencePost").getDisplayValue());
-                    if(audienceType == null)
-                        audienceType = evaluationType;
+                    // let evaluationType = (evaluation_Audience_Type.getValue("audiencePost") === null || evaluation_Audience_Type.getValue("audiencePost") === undefined ? "" : evaluation_Audience_Type.getField("audiencePost").getDisplayValue());
+                    // if(audienceType == null)
+                    //     audienceType = evaluationType;
                     if(audienceName == null)
                         audienceName = evaluation_Audience;
                     if(formReturnDate == null)
@@ -1357,7 +1338,7 @@
                     criteriaForm_operational.setValue("printData", JSON.stringify(myObj));
                     criteriaForm_operational.show();
                     criteriaForm_operational.submit();
-                    criteriaForm_operational.submit(set_evaluation_status(numberOfStudents,record));
+                    criteriaForm_operational.submit(set_evaluation_status(numberOfStudents,record,audienceName, audienceType));
 
                     evaluation_Audience = null;
 
@@ -1392,32 +1373,32 @@
                 let returnDate = evaluation_ReturnDate._value !== undefined ? evaluation_ReturnDate._value.replaceAll("/", "-") : "noDate";
                 let evaluationType = (evaluation_Audience_Type.getValue("audiencePost") === null || evaluation_Audience_Type.getValue("audiencePost") === undefined ? "" : evaluation_Audience_Type.getField("audiencePost").getDisplayValue());
 
-                    var myObj = {
-                        classId: selectedClass.id,
-                        evaluationType: selectedTab.id,
-                        evaluationReturnDate: returnDate
-                    };
+                var myObj = {
+                    classId: selectedClass.id,
+                    evaluationType: selectedTab.id,
+                    evaluationReturnDate: returnDate
+                };
 
-                    var criteriaForm_operational = isc.DynamicForm.create({
-                        method: "POST",
-                        action: "<spring:url value="/evaluation/printTeacherReactionForm/"/>" + "pdf" + "/" + selectedClass.id,
-                        target: "_Blank",
-                        canSubmit: true,
-                        fields:
-                            [
-                                {name: "CriteriaStr", type: "hidden"},
-                                {name: "myToken", type: "hidden"},
-                                {name: "printData", type: "hidden"}
-                            ],
-                        show: function () {
-                            this.Super("show", arguments);
-                        }
-                    });
+                var criteriaForm_operational = isc.DynamicForm.create({
+                    method: "POST",
+                    action: "<spring:url value="/evaluation/printTeacherReactionForm/"/>" + "pdf" + "/" + selectedClass.id,
+                    target: "_Blank",
+                    canSubmit: true,
+                    fields:
+                        [
+                            {name: "CriteriaStr", type: "hidden"},
+                            {name: "myToken", type: "hidden"},
+                            {name: "printData", type: "hidden"}
+                        ],
+                    show: function () {
+                        this.Super("show", arguments);
+                    }
+                });
 
-                    criteriaForm_operational.setValue("myToken", "<%=accessToken%>");
-                    criteriaForm_operational.setValue("printData", JSON.stringify(myObj));
-                    criteriaForm_operational.show();
-                    criteriaForm_operational.submit();
+                criteriaForm_operational.setValue("myToken", "<%=accessToken%>");
+                criteriaForm_operational.setValue("printData", JSON.stringify(myObj));
+                criteriaForm_operational.show();
+                criteriaForm_operational.submit();
 
             } else {
                 isc.Dialog.create({
@@ -1479,7 +1460,7 @@
                 });
             }
         }
-        function set_evaluation_status(numberOfStudents,record) {
+        function set_evaluation_status(numberOfStudents,record,audienceName, audienceType) {
 
 
             var listOfStudent = [];
@@ -1543,7 +1524,7 @@
                         case "TabPane_Behavior": {
 
                             evaluationData = {
-                                "evaluationAudienceType": evaluation_Audience_Type.values.audiencePost,
+                                "evaluationAudienceType": audienceType,
                                 "evaluationAudienceId": EvaluationListGrid_PeronalLIst.getSelectedRecord().id,
                                 "idClassStudent": selectedStudent.id,
                                 "reaction": selectedStudent.evaluationStatusReaction || 0,
@@ -1705,29 +1686,7 @@
             VLayout_Body_evaluation.enable();
 
         }
-        function print_Question(questions) {
-
-            var criteriaForm = isc.DynamicForm.create({
-                method: "POST",
-                action: "<spring:url value="/questionnaireReport/questionnaire/"/>" + "pdf",
-                target: "_Blank",
-                canSubmit: true,
-                fields:
-                    [
-                        {name: "token", type: "hidden"},
-                        {name: "questionnaire", type: "hidden"},
-                        {name: "title", type: "hidden"}
-                    ]
-
-            });
-            criteriaForm.setValue("token", "<%= accessToken %>");
-            criteriaForm.setValue("questionnaire", JSON.stringify(questions));
-            criteriaForm.setValue("title", JSON.stringify(DynamicForm_Questions_Title_JspEvaluation.getValues()));
-            criteriaForm.show();
-            criteriaForm.submitForm();
-        }
-        function load_term_by_year(value)
-        {
+        function load_term_by_year(value) {
             let criteria= '{"fieldName":"startDate","operator":"iStartsWith","value":"' + value + '"}';
             RestDataSource_Term_Filter.fetchDataURL = termUrl + "spec-list?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria;
             DynamicForm_Evalution_Term_Filter.getItem("termFilter").fetchData();
@@ -1743,817 +1702,13 @@
                     ]
                 };
                 RestDataSource_evaluation_class.fetchDataURL = evaluationUrl + "/class-spec-list";
-               ListGrid_evaluation_class.implicitCriteria = criteria;
-               ListGrid_evaluation_class.invalidateCache();
-               ListGrid_evaluation_class.fetchData();
+                ListGrid_evaluation_class.implicitCriteria = criteria;
+                ListGrid_evaluation_class.invalidateCache();
+                ListGrid_evaluation_class.fetchData();
             }
             else
             {
                 createDialog("info", "<spring:message code="msg.select.term.ask"/>", "<spring:message code="message"/>")
-            }
-        }
-        function register_evaluation_result(LGRecord){
-            let studentIdJspEvaluation;
-            let teacherIdJspEvaluation = LGRecord.teacherId;
-            let evaluationLevelId;
-            let saveMethod;
-            let saveUrl = evaluationUrl;
-            let valueMapAnswer = {209: "خیلی ضعیف", 208: "ضعیف", 207: "متوسط", 206: "خوب", 205: "عالی"};
-            let RestData_EvaluationType_JspEvaluation = isc.TrDS.create({
-                fields: [
-                    {name: "id", primaryKey: true, hidden: true},
-                    {
-                        name: "title",
-                        title: "<spring:message code="title"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "code",
-                        title: "<spring:message code="code"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "type",
-                        title: "<spring:message code="type"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "value",
-                        title: "<spring:message code="value"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "description",
-                        title: "<spring:message code="description"/>",
-                        filterOperator: "iContains"
-                    }
-                ],
-                fetchDataURL: parameterValueUrl + "/iscList/143"
-            });
-            let RestData_EvaluationLevel_JspEvaluation = isc.TrDS.create({
-                fields: [
-                    {name: "id", primaryKey: true, hidden: true},
-                    {
-                        name: "title",
-                        title: "<spring:message code="title"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "code",
-                        title: "<spring:message code="code"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "type",
-                        title: "<spring:message code="type"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "value",
-                        title: "<spring:message code="value"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "description",
-                        title: "<spring:message code="description"/>",
-                        filterOperator: "iContains"
-                    }
-                ],
-                fetchDataURL: parameterValueUrl + "/iscList/163"
-            });
-            let RestData_Students_JspEvaluation = isc.TrDS.create({
-                fields: [
-                    {name: "id", primaryKey: true, hidden: true},
-                    {name: "student.id", hidden: true},
-                    {
-                        name: "student.firstName",
-                        title: "<spring:message code="firstName"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "student.lastName",
-                        title: "<spring:message code="lastName"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "student.nationalCode",
-                        title: "<spring:message code="national.code"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "applicantCompanyName",
-                        title: "<spring:message code="company.applicant"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "presenceTypeId",
-                        title: "<spring:message code="class.presence.type"/>",
-                        filterOperator: "equals",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "student.companyName",
-                        title: "<spring:message code="company.name"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "student.personnelNo",
-                        title: "<spring:message code="personnel.no"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "student.personnelNo2",
-                        title: "<spring:message code="personnel.no.6.digits"/>",
-                        filterOperator: "iContains"
-                    },
-                    {
-                        name: "student.postTitle",
-                        title: "<spring:message code="post"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "student.ccpArea",
-                        title: "<spring:message code="reward.cost.center.area"/>",
-                        filterOperator: "iContains"
-                    },
-                    {
-                        name: "student.ccpAssistant",
-                        title: "<spring:message code="reward.cost.center.assistant"/>",
-                        filterOperator: "iContains"
-                    },
-                    {
-                        name: "student.ccpAffairs",
-                        title: "<spring:message code="reward.cost.center.affairs"/>",
-                        filterOperator: "iContains"
-                    },
-                    {
-                        name: "student.ccpSection",
-                        title: "<spring:message code="reward.cost.center.section"/>",
-                        filterOperator: "iContains"
-                    },
-                    {
-                        name: "student.ccpUnit",
-                        title: "<spring:message code="reward.cost.center.unit"/>",
-                        filterOperator: "iContains"
-                    },
-                    {
-                        name: "evaluationAudienceId"
-                    }
-                ],
-                fetchDataURL: tclassStudentUrl + "/students-iscList/"
-            });
-            let RestData_StudentPresenceType_JspEvaluation = isc.TrDS.create({
-                fields: [
-                    {name: "id", primaryKey: true, hidden: true},
-                    {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
-                    {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
-                ],
-                fetchDataURL: parameterValueUrl + "/iscList/98"
-            });
-            let vm_JspEvaluation = isc.ValuesManager.create({});
-
-            let DynamicForm_Questions_Title_JspEvaluation = isc.DynamicForm.create({
-                ID: "DynamicForm_Questions_Title_JspEvaluation",
-                validateOnChange: true,
-                // height: "10%",
-                numCols: 6,
-                valuesManager: vm_JspEvaluation,
-                // colWidths:["29%","68%"],
-                width: "100%",
-                borderRadius: "10px 10px 0px 0px",
-                border: "2px solid black",
-                titleAlign: "left",
-                margin: 10,
-                padding: 10,
-                fields: [
-                    {name: "code", title: "<spring:message code="class.code"/>:", canEdit: false},
-                    {
-                        name: "titleClass",
-                        title: "<spring:message code='class.title'/>:",
-                        canEdit: false
-                    },
-                    {
-                        name: "startDate",
-                        title: "<spring:message code='start.date'/>:",
-                        canEdit: false
-                    },
-                    {name: "teacher", title: "<spring:message code='teacher'/>:", canEdit: false},
-                    {
-                        name: "institute.titleFa",
-                        title: "<spring:message code='institute'/>:",
-                        canEdit: false
-                    },
-                    {name: "user", title: "<spring:message code='user'/>:", canEdit: false},
-                    {
-                        name: "evaluationLevel",
-                        title: "<spring:message code="evaluation.level"/>",
-                        type: "SelectItem",
-                        pickListProperties: {showFilterEditor: false},
-                        optionDataSource: RestData_EvaluationLevel_JspEvaluation,
-                        valueField: "code",
-                        displayField: "title",
-                        required: true,
-                        changed: function (form, item, value) {
-                            DynamicForm_Questions_Body_JspEvaluation.clearValues();
-                            DynamicForm_Description_JspEvaluation.clearValues();
-                            var criteria = '{"fieldName":"questionnaireType.code","operator":"equals","value":""}';
-                            var criteriaEdit =
-                                '{"fieldName":"classId","operator":"equals","value":' + LGRecord.id + '},' +
-                                '{"fieldName":"questionnaireTypeId","operator":"equals","value":139},' +
-                                '{"fieldName":"evaluatorId","operator":"equals","value":' + studentIdJspEvaluation + '},' +
-                                '{"fieldName":"evaluatorTypeId","operator":"equals","value":188},';
-                            DynamicForm_Questions_Body_JspEvaluation.setFields([]);
-                            // requestEvaluationQuestions(criteria, 1);
-                            switch (value) {
-                                case "Behavioral":
-                                    form.getItem("evaluationType").clearValue();
-                                    form.getItem("evaluator").clearValue();
-                                    form.getItem("evaluated").clearValue();
-                                    DynamicForm_Description_JspEvaluation.clearValues();
-                                    RestData_Students_JspEvaluation.fetchDataURL = tclassStudentUrl + "/students-iscList/" + LGRecord.id;
-                                    Window_AddStudent_JspEvaluation.show();
-                                    form.getItem("evaluationType").setValue("OEFS");
-                                    form.getItem("evaluationType").disable();
-                                    break;
-                                case "Results":
-                                    // criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":157}';
-                                    // evaluationLevelId = 157;
-                                    // requestEvaluationQuestions(criteria, criteriaEdit, 1);
-                                    form.getItem("evaluationType").clearValue();
-                                    form.getItem("evaluator").clearValue();
-                                    form.getItem("evaluated").clearValue();
-                                    form.getItem("evaluationType").disable();
-                                    DynamicForm_Description_JspEvaluation.clearValues();
-                                    DynamicForm_Description_JspEvaluation.hide();
-                                    break;
-                                case "Reactive":
-                                    form.getItem("evaluationType").clearValue();
-                                    form.getItem("evaluator").clearValue();
-                                    form.getItem("evaluated").clearValue();
-                                    form.getItem("evaluationType").enable();
-                                    DynamicForm_Description_JspEvaluation.clearValues();
-                                    DynamicForm_Description_JspEvaluation.hide();
-                                    break;
-                                case "Learning":
-                                    // evaluationLevelId = 155;
-                                    // criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":155}';
-                                    // requestEvaluationQuestions(criteria, criteriaEdit, 1);
-                                    form.getItem("evaluationType").clearValue();
-                                    form.getItem("evaluator").clearValue();
-                                    form.getItem("evaluated").clearValue();
-                                    form.getItem("evaluationType").disable();
-                                    DynamicForm_Description_JspEvaluation.clearValues();
-                                    DynamicForm_Description_JspEvaluation.hide();
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                    },
-                    {
-                        name: "evaluationType",
-                        title: "<spring:message code="evaluation.type"/>",
-                        type: "SelectItem",
-                        optionDataSource: RestData_EvaluationType_JspEvaluation,
-                        pickListProperties: {showFilterEditor: false},
-                        valueField: "code",
-                        required: true,
-                        disabled: true,
-                        displayField: "title",
-                        endRow: true,
-                        changed: function (form, item, value) {
-                            DynamicForm_Questions_Body_JspEvaluation.clearValues();
-                            DynamicForm_Description_JspEvaluation.clearValues();
-                            form.clearErrors(true);
-                            // form.clearValue("evaluationLevel");
-                            // form.clearValue("evaluator");
-                            // form.clearValue("evaluated");
-                            var criteria = '{"fieldName":"questionnaireType.code","operator":"equals","value":""}';
-                            DynamicForm_Questions_Body_JspEvaluation.setFields([]);
-                            form.getItem("evaluationLevel").disable();
-                            var criteriaEdit =
-                                '{"fieldName":"classId","operator":"equals","value":' + LGRecord.id + '},';
-                            // '{"fieldName":"questionnaireTypeId","operator":"equals","value":139},' +
-                            // '{"fieldName":"evaluatorId","operator":"equals","value":'+studentIdJspEvaluation+'},' +
-                            // '{"fieldName":"evaluatorTypeId","operator":"equals","value":188},';
-                            switch (value) {
-                                // requestEvaluationQuestions(criteria, criteriaEdit, 1);
-                                case "SEFT":
-                                    DynamicForm_Description_JspEvaluation.show();
-                                    criteria = '{"fieldName":"questionnaireType.code","operator":"equals","value":"SEFT"}';
-                                    criteriaEdit +=
-                                        '{"fieldName":"questionnaireTypeId","operator":"equals","value":141},' +
-                                        '{"fieldName":"evaluatorId","operator":"equals","value":<%= SecurityUtil.getUserId()%>},' +
-                                        '{"fieldName":"evaluatorTypeId","operator":"equals","value":189},' +
-                                        '{"fieldName":"evaluatedId","operator":"equals","value":' + teacherIdJspEvaluation + '},' +
-                                        '{"fieldName":"evaluatedTypeId","operator":"equals","value":187}';
-                                    form.setValue("evaluator", form.getValue("user"));
-                                    form.setValue("evaluated", form.getValue("teacher"));
-                                    form.getItem("evaluationLevel").setRequired(false);
-                                    // requestEvaluationQuestions(criteria, criteriaEdit, 1);
-                                    break;
-                                case "SEFC":
-                                    DynamicForm_Description_JspEvaluation.show();
-                                    // criteria= '{"fieldName":"domain.code","operator":"equals","value":"SAT"}';
-                                    RestData_Students_JspEvaluation.fetchDataURL = tclassStudentUrl + "/students-iscList/" + LGRecord.id;
-                                    Window_AddStudent_JspEvaluation.show();
-                                    evaluationLevelId = 154;
-                                    return;
-                                case "TEFC":
-                                    DynamicForm_Description_JspEvaluation.show();
-                                    criteria = '{"fieldName":"questionnaireType.code","operator":"equals","value":"TEFC"}';
-                                    criteriaEdit +=
-                                        '{"fieldName":"questionnaireTypeId","operator":"equals","value":140},' +
-                                        '{"fieldName":"evaluatorId","operator":"equals","value":' + teacherIdJspEvaluation + '},' +
-                                        '{"fieldName":"evaluatorTypeId","operator":"equals","value":187}';
-                                    form.setValue("evaluator", form.getValue("teacher"));
-                                    form.setValue("evaluated", form.getValue("titleClass"));
-                                    form.getItem("evaluationLevel").setRequired(false);
-                                    break;
-                                case "OEFS":
-                                    criteria = '{"fieldName":"questionnaireType.code","operator":"equals","value":"OEFS"}';
-                                    criteriaEdit +=
-                                        '{"fieldName":"questionnaireTypeId","operator":"equals","value":230},' +
-                                        '{"fieldName":"evaluatorId","operator":"equals","value":' + studentIdJspEvaluation + '},' +
-                                        '{"fieldName":"evaluatorTypeId","operator":"equals","value":188}';
-                                    form.getItem("evaluationLevel").setValue("Behavioral");
-                                    criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":156}';
-                                    evaluationLevelId = 156;
-                                    requestEvaluationQuestions(criteria, criteriaEdit, 1);
-                                    break;
-                            }
-                            requestEvaluationQuestions(criteria, criteriaEdit);
-                        }
-                    },
-                    {
-                        name: "evaluator",
-                        title: "<spring:message code="evaluator"/>",
-                        required: true,
-                        disabled: true
-                    },
-                    {
-                        name: "evaluated",
-                        title: "<spring:message code="evaluation.evaluated"/>",
-                        required: true,
-                        disabled: true
-                    }
-                ]
-            });
-            let DynamicForm_Questions_Body_JspEvaluation = isc.DynamicForm.create({
-                ID: "DynamicForm_Questions_Body_JspEvaluation",
-                validateOnExit: true,
-                valuesManager: vm_JspEvaluation,
-                colWidths: ["45%", "50%"],
-                cellBorder: 1,
-                width: "100%",
-                padding: 10,
-                fields: []
-            });
-
-            let DynamicForm_Description_JspEvaluation = isc.DynamicForm.create({
-                ID: "DynamicForm_Description_JspEvaluation",
-                validateOnExit: true,
-                valuesManager: vm_JspEvaluation,
-                width: "100%",
-                fields: [
-                    {
-                        name: "description",
-                        title: "<spring:message code='description'/>",
-                        type: 'textArea'
-                    }
-                ]
-            });
-            let Window_Questions_JspEvaluation = isc.Window.create({
-                width: 1024,
-                height: 768,
-                keepInParentRect: true,
-                title: "<spring:message code="record.evaluation.results"/>",
-                items: [
-                    DynamicForm_Questions_Title_JspEvaluation,
-                    DynamicForm_Questions_Body_JspEvaluation,
-                    DynamicForm_Description_JspEvaluation,
-                    isc.TrHLayoutButtons.create({
-                        members: [
-                            IButton_Questions_Save,
-                            <sec:authorize access="hasAuthority('Evaluation_P')">
-                            <%--                        IButton_Questions_Print,--%>
-                            </sec:authorize>
-
-                            isc.IButtonCancel.create({
-                                click: function () {
-                                    Window_Questions_JspEvaluation.close();
-                                }
-                            })]
-                    })
-                ],
-                minWidth: 1024
-            });
-
-            let IButton_Questions_Save = isc.IButtonSave.create({
-                click: function () {
-                    if (!DynamicForm_Questions_Title_JspEvaluation.validate()) {
-                        return;
-                    }
-                    let evaluationAnswerList = [];
-                    let data = {};
-                    let evaluationFull = true;
-                    let questions = DynamicForm_Questions_Body_JspEvaluation.getFields();
-                    for (let i = 0; i < questions.length; i++) {
-                        if (DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name) === undefined) {
-                            evaluationFull = false;
-                        }
-                        let evaluationAnswer = {};
-                        evaluationAnswer.answerID = DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name);
-                        evaluationAnswer.evaluationQuestionId = questions[i].name.substring(1);
-                        evaluationAnswer.questionSourceId = questionSourceConvert(questions[i].name);
-                        evaluationAnswerList.push(evaluationAnswer);
-                    }
-                    data.evaluationAnswerList = evaluationAnswerList;
-                    data.evaluationFull = evaluationFull;
-                    data.description = DynamicForm_Description_JspEvaluation.getField("description").getValue();
-                    switch (DynamicForm_Questions_Title_JspEvaluation.getValue("evaluationType")) {
-                        case "SEFT":
-                            data.evaluatorId = "<%= SecurityUtil.getUserId()%>";
-                            data.evaluatedId = LGRecord.teacherId;
-                            data.evaluatorTypeId = 189;
-                            data.evaluatedTypeId = 187;
-                            data.questionnaireTypeId = 141;
-                            break;
-                        case "TEFC":
-                            data.evaluatorId = LGRecord.teacherId;
-                            data.evaluatedId = null;
-                            data.evaluatorTypeId = 187;
-                            data.evaluatedTypeId = null;
-                            data.questionnaireTypeId = 140;
-                            break;
-                        case "SEFC":
-                            data.evaluatorId = studentIdJspEvaluation;
-                            data.evaluatedId = null;
-                            data.evaluatorTypeId = 188;
-                            data.evaluatedTypeId = null;
-                            data.evaluationLevelId = evaluationLevelId;
-                            data.questionnaireTypeId = 139;
-                            break;
-                        case "OEFS":
-                            data.questionnaireTypeId = 230;
-                            data.evaluatorId = eeid;
-                            data.evaluatedId = studentIdJspEvaluation;
-                            // data.evaluatorTypeId = 188;
-                            // data.evaluatedTypeId = null;
-                            data.evaluationLevelId = evaluationLevelId;
-                            break;
-                    }
-                    data.classId = LGRecord.id;
-                    isc.RPCManager.sendRequest(TrDSRequest(saveUrl, saveMethod, JSON.stringify(data), function (resp) {
-                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                            Window_Questions_JspEvaluation.close();
-                            ListGrid_evaluation_student.invalidateCache();
-                            isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
-                                LGRecord.id,
-                                "GET", null, null));
-                            const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                            setTimeout(() => {
-                                msg.close();
-                        }, 3000);
-                        } else {
-                            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
-                        }
-                    }))
-                }
-            });
-            let IButton_Questions_Print = isc.IButtonSave.create({
-                title: "چاپ",
-                click: function () {
-                    if (!DynamicForm_Questions_Title_JspEvaluation.validate()) {
-                        return;
-                    }
-                    let fields = DynamicForm_Questions_Body_JspEvaluation.getFields();
-                    let questions = [];
-                    for (let i = 0; i < fields.length; i++) {
-                        let record = {};
-                        record.title = fields[i].title;
-                        questions.push(record);
-                    }
-                    print_Question(questions)
-                }
-            });
-
-            let Window_AddStudent_JspEvaluation = isc.Window.create({
-                title: "<spring:message code="students.list"/>",
-                width: "50%",
-                height: "50%",
-                keepInParentRect: true,
-                autoSize: false,
-                items: [
-                    isc.TrHLayout.create({
-                        members: [
-                            isc.TrLG.create({
-                                ID: "ListGrid_Students_JspEvaluation",
-                                dataSource: RestData_Students_JspEvaluation,
-                                selectionType: "single",
-                                filterOnKeypress: true,
-                                autoFetchData: true,
-                                fields: [
-                                    {
-                                        name: "student.firstName",
-                                        title: "<spring:message code="firstName"/>"
-                                    },
-                                    {name: "student.lastName", title: "<spring:message code="lastName"/>"},
-                                    {
-                                        name: "student.nationalCode",
-                                        title: "<spring:message code="national.code"/>",
-                                        filterEditorProperties: {
-                                            keyPressFilter: "[0-9]"
-                                        }
-                                    },
-                                    {
-                                        name: "student.personnelNo",
-                                        filterEditorProperties: {
-                                            keyPressFilter: "[0-9]"
-                                        }
-                                    },
-                                    {
-                                        name: "student.personnelNo2",
-                                        filterEditorProperties: {
-                                            keyPressFilter: "[0-9]"
-                                        }
-                                    },
-                                    {name: "student.postTitle"},
-                                    {
-                                        name: "presenceTypeId",
-                                        type: "selectItem",
-                                        valueField: "id",
-                                        displayField: "title",
-                                        optionDataSource: RestData_StudentPresenceType_JspEvaluation
-                                    },
-                                    {
-                                        name: "evaluationAudienceId",
-                                        hidden: true
-                                    }
-                                ],
-                                gridComponents: ["filterEditor", "header", "body"],
-                                recordDoubleClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
-                                    studentIdJspEvaluation = record.id;
-                                    if (DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationLevel").getValue() === "Behavioral") {
-                                        DynamicForm_Questions_Title_JspEvaluation.setValue("evaluated", record.student.firstName + " " + record.student.lastName);
-                                        if (record.evaluationAudienceId != undefined) {
-                                            isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byId/" + record.evaluationAudienceId, "GET", null, function (resp) {
-                                                DynamicForm_Questions_Title_JspEvaluation.setValue("evaluator",
-                                                    JSON.parse(resp.httpResponseText).firstName + " " + JSON.parse(resp.httpResponseText).lastName);
-                                                eeid = JSON.parse(resp.httpResponseText).id;
-                                            }));
-                                        }
-                                        let criteriaEdit = '';
-                                        let criteria = '{"fieldName":"questionnaireType.code","operator":"equals","value":"OEFS"}';
-                                        DynamicForm_Description_JspEvaluation.show();
-                                        criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":156},'+
-                                            '{"fieldName":"evaluatedId","operator":"equals","value":' + studentIdJspEvaluation + '}' ;
-                                        evaluationLevelId = 156;
-                                        requestEvaluationQuestions(criteria, criteriaEdit, 1);
-                                    }
-                                    else if (DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationLevel").getValue() === "Reactive") {
-                                        let criteriaEdit = '';
-                                        DynamicForm_Questions_Title_JspEvaluation.setValue("evaluator", record.student.firstName + " " + record.student.lastName);
-                                        let criteria = '{"fieldName":"questionnaireType.code","operator":"equals","value":"SEFC"}';
-                                        criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":154},'+
-                                            '{"fieldName":"evaluatorId","operator":"equals","value":' + studentIdJspEvaluation + '}' ;
-                                        DynamicForm_Questions_Title_JspEvaluation.setValue("evaluated", DynamicForm_Questions_Title_JspEvaluation.getValue("titleClass"));
-                                        DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationLevel").setRequired(true);
-                                        requestEvaluationQuestions(criteria, criteriaEdit, 1);
-                                    }
-                                    Window_AddStudent_JspEvaluation.close();
-                                }
-                            })
-                        ]
-                    })]
-            });
-
-            DynamicForm_Questions_Title_JspEvaluation.clearValues();
-            DynamicForm_Description_JspEvaluation.clearValues();
-            DynamicForm_Description_JspEvaluation.hide();
-            DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationType").disable();
-
-            DynamicForm_Questions_Title_JspEvaluation.editRecord(LGRecord);
-            DynamicForm_Questions_Title_JspEvaluation.setValue("user", "<%= SecurityUtil.getFullName()%>");
-            let itemList = [];
-            let eeid;
-            evalWait = createDialog("wait");
-            Window_Questions_JspEvaluation.show();
-
-            function requestEvaluationQuestions(criteria, criteriaEdit, type = 0) {
-                isc.RPCManager.sendRequest(TrDSRequest(questionnaireUrl + "/iscList?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria, "GET", null, function (resp) {
-                    if (JSON.parse(resp.data).response.data.length > 0) {
-                        let criteria = '{"fieldName":"questionnaireId","operator":"equals","value":' + JSON.parse(resp.data).response.data[0].id + '}';
-                        isc.RPCManager.sendRequest(TrDSRequest(questionnaireQuestionUrl + "/iscList?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria, "GET", null, function (resp) {
-                            localQuestions = JSON.parse(resp.data).response.data;
-                            for (let i = 0; i < localQuestions.length; i++) {
-                                let item = {};
-                                switch (localQuestions[i].evaluationQuestion.domain.code) {
-                                    case "EQP":
-                                        item.name = "Q" + localQuestions[i].id;
-                                        item.title = "امکانات: " + localQuestions[i].evaluationQuestion.question;
-                                        break;
-                                    case "CLASS":
-                                        item.name = "Q" + localQuestions[i].id;
-                                        item.title = "کلاس: " + localQuestions[i].evaluationQuestion.question;
-                                        break;
-                                    case "SAT":
-                                        item.name = "Q" + localQuestions[i].id;
-                                        item.title = "مدرس: " + localQuestions[i].evaluationQuestion.question;
-                                        break;
-                                    case "TRAINING":
-                                        item.name = "Q" + localQuestions[i].id;
-                                        item.title = "مدرس: " + localQuestions[i].evaluationQuestion.question;
-                                        break;
-                                    case "Content":
-                                        item.name = "Q" + localQuestions[i].id;
-                                        item.title = "محتواي کلاس: " + localQuestions[i].evaluationQuestion.question;
-                                        break;
-                                    default:
-                                        item.name = "Q" + localQuestions[i].id;
-                                        item.title = localQuestions[i].evaluationQuestion.question;
-                                }
-
-                                item.type = "radioGroup";
-                                item.vertical = false;
-                                // item.required = true;
-                                item.fillHorizontalSpace = true;
-                                item.valueMap = valueMapAnswer;
-                                // item.colSpan = ,
-                                item.icons = [
-                                    {
-                                        name: "clear",
-                                        src: "[SKIN]actions/remove.png",
-                                        width: 15,
-                                        height: 15,
-                                        inline: true,
-                                        prompt: "پاک کردن",
-                                        click : function (form, item, icon) {
-                                            item.clearValue();
-                                            item.focusInItem();
-                                        }
-                                    }
-                                ];
-                                itemList.add(item);
-                            }
-                            ;
-                            if (type !== 0) {
-                                isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "goal-mainObjective/" + LGRecord.course.id, "GET", null, function (resp) {
-                                    localQuestions = JSON.parse(resp.data);
-                                    for (let i = 0; i < localQuestions.length; i++) {
-                                        let item = {};
-                                        switch (localQuestions[i].type) {
-                                            case "goal":
-                                                item.name = "G" + localQuestions[i].id;
-                                                item.title = "هدف: " + localQuestions[i].title;
-                                                break;
-                                            case "skill":
-                                                item.name = "M" + localQuestions[i].id;
-                                                item.title = "هدف اصلي: " + localQuestions[i].title;
-                                                break;
-                                            // default:
-                                            //     return;
-                                        }
-                                        item.type = "radioGroup";
-                                        item.vertical = false;
-                                        // item.required = true;
-                                        item.fillHorizontalSpace = true;
-                                        item.valueMap = valueMapAnswer;
-                                        // item.colSpan = ,
-                                        item.icons = [
-                                            {
-                                                name: "clear",
-                                                src: "[SKIN]actions/remove.png",
-                                                width: 15,
-                                                height: 15,
-                                                inline: true,
-                                                prompt: "پاک کردن",
-                                                click : function (form, item, icon) {
-                                                    item.clearValue();
-                                                    item.focusInItem();
-                                                }
-                                            }
-                                        ];
-                                        itemList.add(item);
-                                    }
-                                    DynamicForm_Questions_Body_JspEvaluation.setItems(itemList);
-                                    requestEvaluationQuestionsEdit(criteriaEdit);
-                                }));
-                            } else {
-                                DynamicForm_Questions_Body_JspEvaluation.setItems(itemList);
-                                requestEvaluationQuestionsEdit(criteriaEdit);
-                            }
-                        }));
-                    } else {
-                        if (type !== 0) {
-                            isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "goal-mainObjective/" + LGRecord.course.id, "GET", null, function (resp) {
-                                localQuestions = JSON.parse(resp.data);
-                                for (let i = 0; i < localQuestions.length; i++) {
-                                    let item = {};
-                                    switch (localQuestions[i].type) {
-                                        case "goal":
-                                            item.name = "G" + localQuestions[i].id;
-                                            item.title = "هدف: " + (i + 1).toString() + "- " + localQuestions[i].title;
-                                            break;
-                                        case "skill":
-                                            item.name = "M" + localQuestions[i].id;
-                                            item.title = "هدف اصلي: " + (i + 1).toString() + "- " + localQuestions[i].title;
-                                            break;
-                                        // default:
-                                        //     return;
-                                    }
-                                    item.type = "radioGroup";
-                                    item.vertical = false;
-                                    // item.required = true;
-                                    item.fillHorizontalSpace = true;
-                                    item.valueMap = valueMapAnswer;
-                                    // item.colSpan = ,
-                                    item.icons = [
-                                        {
-                                            name: "clear",
-                                            src: "[SKIN]actions/remove.png",
-                                            width: 15,
-                                            height: 15,
-                                            inline: true,
-                                            prompt: "پاک کردن",
-                                            click : function (form, item, icon) {
-                                                item.clearValue();
-                                                item.focusInItem();
-                                            }
-                                        }
-                                    ];
-                                    itemList.add(item);
-                                }
-                                DynamicForm_Questions_Body_JspEvaluation.setItems(itemList);
-                                requestEvaluationQuestionsEdit(criteriaEdit);
-                            }));
-                        } else {
-                            DynamicForm_Questions_Body_JspEvaluation.setItems(itemList);
-                            requestEvaluationQuestionsEdit(criteriaEdit);
-                        }
-                    }
-                    evalWait.close();
-                }));
-
-            }
-
-            function requestEvaluationQuestionsEdit(criteria) {
-                isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/spec-list?operator=and&_constructor=AdvancedCriteria&criteria=" + criteria, "GET", null, function (resp) {
-                    if (resp.httpResponseCode == 201 || resp.httpResponseCode == 200) {
-                        let data = JSON.parse(resp.data).response.data;
-                        let record = {};
-                        if (!data.isEmpty()) {
-                            let answer = data[0].evaluationAnswerList;
-                            let description = data[0].description;
-                            for (let i = 0; i < answer.length; i++) {
-                                switch (answer[i].questionSourceId) {
-                                    case 199:
-                                        record["Q" + answer[i].evaluationQuestionId] = answer[i].answerId;
-                                        break;
-                                    case 200:
-                                        record["M" + answer[i].evaluationQuestionId] = answer[i].answerId;
-                                        break;
-                                    case 201:
-                                        record["G" + answer[i].evaluationQuestionId] = answer[i].answerId;
-                                        break;
-                                }
-                            }
-                            DynamicForm_Questions_Body_JspEvaluation.setValues(record);
-                            DynamicForm_Description_JspEvaluation.getField("description").setValue(description);
-                            saveMethod = "PUT";
-                            saveUrl = evaluationUrl + "/" + data[0].id;
-                            return;
-                        }
-                        saveMethod = "POST";
-                        saveUrl = evaluationUrl;
-                    }
-                }))
-            }
-
-            function questionSourceConvert(s) {
-                switch (s.charAt(0)) {
-                    case "G":
-                        return 201;
-                    case "M":
-                        return 200;
-                    case "Q":
-                        return 199;
-                }
             }
         }
         function register_evaluation_result_reaction_student(StdRecord){
@@ -4120,7 +3275,7 @@
                 '{"fieldName":"questionnaireTypeId","operator":"equals","value":230},' +
                 '{"fieldName":"evaluatorId","operator":"equals","value":' + EvaluatorId + '},' +
                 '{"fieldName":"evaluatedId","operator":"equals","value":' + StdRecord.id + '},' +
-            '{"fieldName":"evaluatorTypeId","operator":"equals","value":' + EvaluatorTypeId + '},';
+                '{"fieldName":"evaluatorTypeId","operator":"equals","value":' + EvaluatorTypeId + '},';
             criteriaEdit += '{"fieldName":"evaluationLevelId","operator":"equals","value":156}';
             evaluationLevelId = 156;
             requestEvaluationQuestions(criteria, criteriaEdit, 1);

@@ -237,7 +237,7 @@
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: true,
+        filterOnKeypress: false,
         initialSort: [
             {property: "startDate", direction: "descending", primarySort: true}
         ],

@@ -127,4 +127,14 @@ public class EvaluationFormController {
             return null;
     }
 
+    @RequestMapping("/reaction-evaluation-form")
+    public String loadPageReactionEvaluation() {
+        return "evaluation/reactionEvaluation";
+    }
+
+    @RequestMapping("/behavioral-evaluation-form")
+    public String loadPageBehavioralEvaluation() {
+        return "evaluation/behavioralEvaluation";
+    }
+
 }
