@@ -203,26 +203,7 @@ public class ExportToFileController {
                 break;
             case "trainingClassReport":
 
-                searchRq.setStartIndex(0)
-                        .setCount(100000);
-
-                SearchDTO.CriteriaRq criteriaRq = null;
-                SearchDTO.SearchRq request = null;
-                if (criteriaStr.equalsIgnoreCase("{}")) {
-                    request = new SearchDTO.SearchRq();
-                } else {
-                    criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
-                    request = new SearchDTO.SearchRq().setCriteria(criteriaRq).setSortBy("-tclassStartDate");
-                }
-                if(request.getCriteria() != null && request.getCriteria().getCriteria() != null){
-                    for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
-                        if(criterion.getValue().get(0).equals("true"))
-                            criterion.setValue(true);
-                        if(criterion.getValue().get(0).equals("false"))
-                            criterion.setValue(false);
-                    }
-                }
-                SearchDTO.SearchRs<ViewEvaluationStaticalReportDTO.Info> list8 = viewEvaluationStaticalReportService.search(request);
+                SearchDTO.SearchRs<ViewEvaluationStaticalReportDTO.Info> list8 = viewEvaluationStaticalReportService.search(searchRq);
 
                 setExcelValues(jsonString, count, list8.getList());
 
