@@ -1797,8 +1797,8 @@
 
     // <<---------------------------------------- Send To Workflow ----------------------------------------
     function sendNeedsAssessmentToWorkflow() {
-
-            isc.MyYesNoDialog.create({
+            if(isChanged){
+                isc.MyYesNoDialog.create({
                 message: "<spring:message code="needs.assessment.sent.to.workflow.ask"/>",
                 title: "<spring:message code="message"/>",
                 buttonClick: function (button, index) {
@@ -1826,7 +1826,10 @@
                     }
                 }
             });
-
+            }
+            else{
+                createDialog("info","تغییری صورت نگرفته است")
+            }
     }
 
     function startProcess_callback(resp) {
