@@ -718,7 +718,9 @@
         autoFetchData: false,
         alternateRecordStyles: true,
         showAllRecords: true,
-        gridComponents: [ActionsTS_Course_Post, "header", "filterEditor", "body",],
+        gridComponents: [
+            // ActionsTS_Course_Post,
+            "header", "filterEditor", "body",],
         fields: [
             {name: "competence.title"},
             {

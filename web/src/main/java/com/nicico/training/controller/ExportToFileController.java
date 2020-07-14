@@ -388,9 +388,9 @@ public class ExportToFileController {
 
                 break;
 
-            case "Post_Grade":
+            case "Post_Grade_Without_Permission":
 
-                SearchDTO.SearchRs<PostGradeDTO.Info> list35 = postGradeService.search(searchRq);
+                SearchDTO.SearchRs<PostGradeDTO.Info> list35 = postGradeService.searchWithoutPermission(searchRq);
 
                 setExcelValues(jsonString, count, list35.getList());
 

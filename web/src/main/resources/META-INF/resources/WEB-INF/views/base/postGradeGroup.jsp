@@ -497,9 +497,9 @@
                     if(typeof(criteria.criteria)=='undefined'){
                         criteria.criteria=[];
                     }
-                    criteria.criteria.push({fieldName: "postGradeGroup", operator: "equals", value: ListGrid_Post_Grade_Group_Jsp.getSelectedRecord().id});
+                    criteria.criteria.push({fieldName: "postGradeGroup", operator: "inSet", value: [ListGrid_Post_Grade_Group_Jsp.getSelectedRecord().id]});
 
-                    ExportToFile.showDialog(null, ListGrid_Grades_Post_Grade_Group_Jsp , "View_Post_Grade_Group", 0, null, '',"لیست رده پستی - آموزش"  , criteria, null);
+                    ExportToFile.showDialog(null, ListGrid_Grades_Post_Grade_Group_Jsp , "Post_Grade_Without_Permission", 0, null, '',"لیست رده پستی - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -903,7 +903,9 @@
         autoFetchData: false,
         alternateRecordStyles: true,
         showAllRecords: true,
-        gridComponents: [ActionsTS_NA_Post_Grade_Group, "header", "filterEditor", "body",],
+        gridComponents: [
+            // ActionsTS_NA_Post_Grade_Group,
+            "header", "filterEditor", "body",],
         fields: [
             {name: "competence.title"},
             {

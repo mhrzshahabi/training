@@ -1098,7 +1098,9 @@
         autoFetchData: false,
         alternateRecordStyles: true,
         showAllRecords: true,
-        gridComponents: [ActionsTS_NA_Job_Group, "header", "filterEditor", "body",],
+        gridComponents: [
+            // ActionsTS_NA_Job_Group,
+            "header", "filterEditor", "body",],
         fields: [
             {name: "competence.title"},
             {
