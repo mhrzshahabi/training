@@ -466,14 +466,7 @@
                         keyPressFilter: "[0-9:]",
                         showHintInField: true,
                         textAlign: "center",
-                        /*blur: function () {
-                            let val=DynamicForm_Session.getValue("sessionStartHour");
-                            if(val!=null && val!='' && typeof (val) != 'undefined'&& !val.match(/^[0-9]{2}:[0-9]{2}$/)){
-                                DynamicForm_Session.addFieldErrors("sessionStartHour", "<spring:message code="session.hour.invalid"/>", true);
-                            }else{
-                                DynamicForm_Session.clearFieldErrors("sessionStartHour", true);
-                            }
-                        },*/
+                        validateOnChange: true,
                         editorExit:function(){
                             let val=DynamicForm_Session.getValue("sessionStartHour");
 
@@ -530,14 +523,7 @@
                         keyPressFilter: "[0-9:]",
                         showHintInField: true,
                         textAlign: "center",
-                        /*blur: function () {
-                            let val=DynamicForm_Session.getValue("sessionEndHour");
-                            if(val!=null && val!='' && typeof (val) != 'undefined'&& !val.match(/^[0-9]{2}:[0-9]{2}$/)){
-                                DynamicForm_Session.addFieldErrors("sessionEndHour", "<spring:message code="session.hour.invalid"/>", true);
-                            }else{
-                                DynamicForm_Session.clearFieldErrors("sessionEndHour", true);
-                            }
-                        },*/
+                        validateOnChange: true,
                         editorExit:function(){
                             let val=DynamicForm_Session.getValue("sessionEndHour");
                             if(val===null || val==='' || typeof (val) === 'undefined'|| !val.match(/^(([0-1][0-9]|2[0-3]):([0-5][0-9]))$/)){
@@ -959,7 +945,7 @@
                 let totalSizes=parseInt(dataTemp.totalSizes);
                 let failures = totalSizes-success;
 
-                if (success!=0 && failures!=0)
+                if (success!=0 && failures!=0 && !isNaN(success) && !isNaN(failures))
                 {
                     MyOkDialog_Session= isc.Dialog.create({
                         message: getFormulaMessage(failures.toString()+" ", 2, "red", "B") + "<spring:message code="attendance.meeting.none.nums"/>"+"<br/>"+
@@ -968,7 +954,7 @@
                         title: "<spring:message code="warning"/>",
                     });
                 }
-                else if (success!=0)
+                else if (success!=0 && !isNaN(success))
                 {
                     MyOkDialog_Session= isc.Dialog.create({
                         message: getFormulaMessage(success.toString()+" ", 2, "green", "B") + "<spring:message code="attendance.meeting.ok.nums"/>",
