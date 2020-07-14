@@ -521,7 +521,7 @@ public class TclassService implements ITclassService {
                             Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
                             if (question.isPresent())
                                 questionnaireQuestion = question.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-                            if (answer.getQuestionSource().getCode().equals("2") && question.isPresent()) {
+                            if (answer.getQuestionSource().getCode().equals("3") && question.isPresent()) {
                                 weight = questionnaireQuestion.getWeight();
                             }
                             grade = Double.parseDouble(answer.getAnswer().getValue());

@@ -78,38 +78,43 @@ function defineWindowsEditNeedsAssessment(grid) {
             isChanged = false;
             this.Super("show", arguments);
         },
-        close(){
-            if(isChanged){
-                const dialog = isc.Dialog.create({
-                    ID: "dialog",
-                    icon:  'info.png',
-                    title: "پیغام",
-                    message: "تغییراتی در پنجره ویرایش نیازسنجی ثبت شده است لطفا یکی از گزینه های زیر را با توجه به تغییرات اعمال شده انتخاب کنید.",
-                    buttons : [
-                        // isc.Button.create({ title:"ارسال به گردش کار"}),
-                        isc.Button.create({ title:"لغو تغییرات"}),
-                        isc.Button.create({ title:"خروج از نیازسنجی"}),
-                    ],
-                    buttonClick : function (button, index) {
-                        dialog.close();
-                        switch(index){
-                            // case 0:
-                                // sendNeedsAssessmentToWorkflow();
-                                // break;
-                            case 0:
-                                CancelChange_JspENA.click();
-                                break;
-                            case 1:
-                                Window_NeedsAssessment_Edit.Super("close", arguments);
-                                grid.invalidateCache();
-                                break;
+        close(x = 1){
+            if(x===1) {
+                if (isChanged) {
+                    const dialog = isc.Dialog.create({
+                        ID: "dialog",
+                        icon: 'info.png',
+                        title: "پیغام",
+                        message: "تغییراتی در پنجره ویرایش نیازسنجی ثبت شده است لطفا یکی از گزینه های زیر را با توجه به تغییرات اعمال شده انتخاب کنید.",
+                        buttons: [
+                            isc.Button.create({ title:"ارسال به گردش کار"}),
+                            isc.Button.create({title: "لغو تغییرات"}),
+                            isc.Button.create({title: "خروج از نیازسنجی"}),
+                        ],
+                        buttonClick: function (button, index) {
+                            dialog.close();
+                            switch (index) {
+                                case 0:
+                                    sendNeedsAssessmentToWorkflow();
+                                    break;
+                                case 1:
+                                    CancelChange_JspENA.click();
+                                    break;
+                                case 2:
+                                    Window_NeedsAssessment_Edit.Super("close", arguments);
+                                    grid.invalidateCache();
+                                    break;
+                            }
                         }
-                    }
-                });
+                    });
+                } else {
+                    Window_NeedsAssessment_Edit.Super("close", arguments);
+                    grid.invalidateCache();
+                }
             }
-            else {
-                Window_NeedsAssessment_Edit.Super("close", arguments);
+            else{
                 grid.invalidateCache();
+                this.Super("close",arguments);
             }
         },
     });
@@ -177,7 +182,7 @@ function showDetailViewer(title, field, record) {
     Window_DetailViewer_Main.show();
 }
 
-function showOrganizationalChart(func) {
+function showOrganizationalChart(func, x = "show") {
     let Window_OrganizationalChart = isc.Window.create({
         ID: "Window_OrganizationalChart",
         title: "درخت نیازسنجی",
@@ -189,25 +194,22 @@ function showOrganizationalChart(func) {
         items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/organizationalChart/"})],
         close() {
             func();
+            VLayout_chosen_Departments.hide();
             this.Super("close", arguments)
         }
     });
     Window_OrganizationalChart.show();
-    // let interval = setInterval(()=>{
-    //     if(searchTree !== undefined && organizationalTree !== undefined) {
-    //         searchTree.addProperties({
-    //             rowDoubleClick(record){
-    //                 Window_OrganizationalChart.close();
-    //             }
-    //         })
-    //         organizationalTree.addProperties({
-    //             rowDoubleClick(record){
-    //                 Window_OrganizationalChart.close();
-    //                 recordChartId = record.id;
-    //             }
-    //         })
-    //         clearInterval(interval);
-    //     }
-    // },50)
+
+    const interval = setInterval(()=>{
+        if(VLayout_chosen_Departments !== undefined) {
+            if(x !== "show") {
+                VLayout_chosen_Departments.hide();
+            }
+            else {
+                VLayout_chosen_Departments.show();
+            }
+            clearInterval(interval);
+        }
+    },100)
 }
 

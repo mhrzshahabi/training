@@ -15,13 +15,17 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PersonnelRegisteredDTO;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
+import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.model.Personnel;
 
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.service.CourseService;
+import com.nicico.training.service.MasterDataService;
 import com.nicico.training.service.PersonnelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
@@ -29,8 +33,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
@@ -49,6 +53,8 @@ public class PersonnelRestController {
     private final PersonnelService personnelService;
     private final PersonnelDAO personnelDAO;
     private final IPersonnelRegisteredService personnelRegisteredService;
+    private final MasterDataService masterDataService;
+    private final ModelMapper modelMapper;
 
     @GetMapping("list")
     public ResponseEntity<List<PersonnelDTO.Info>> list() {
@@ -183,4 +189,26 @@ public class PersonnelRestController {
             return new ResponseEntity<>(messageSource.getMessage("person.not.found", null, LocaleContextHolder.getLocale()), HttpStatus.NOT_FOUND);
         return getOneByNationalCode(SecurityUtil.getNationalCode());
     }
+
+    @GetMapping(value = "getParentEmployee/{personnelNationalCode}")
+    public ResponseEntity<ISC<PersonnelDTO.Info>> getParentEmployee(@RequestParam MultiValueMap<String, String> criteria, @PathVariable String personnelNationalCode) throws IOException {
+        List<PersonnelDTO.Info> tempResult1 = modelMapper.map(masterDataService.getPersonByNationalCode(personnelNationalCode), new TypeToken<List<PersonnelDTO.Info>>(){}.getType());
+        if(tempResult1 != null && tempResult1.size() != 0) {
+            PersonnelDTO.Info tempResult2 = modelMapper.map(masterDataService.getParentEmployee(tempResult1.get(0).getId()), new TypeToken<PersonnelDTO.Info>() {
+            }.getType());
+            if(tempResult2 != null && tempResult2.getNationalCode()!=null) {
+                PersonnelDTO.Info result = modelMapper.map(personnelDAO.findByNationalCode(tempResult2.getNationalCode())[0], PersonnelDTO.Info.class);
+                SearchDTO.SearchRs<PersonnelDTO.Info> searchRs = new SearchDTO.SearchRs<>();
+                searchRs.setList(new ArrayList<>());
+                searchRs.getList().add(result);
+                searchRs.setTotalCount((long) 1);
+                return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
+            }
+            else
+                return new ResponseEntity<>(null, HttpStatus.OK);
+        }
+        else
+            return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
 }
