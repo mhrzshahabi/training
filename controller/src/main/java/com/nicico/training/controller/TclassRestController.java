@@ -59,6 +59,7 @@ public class TclassRestController {
     private final ParameterService parameterService;
     private final IInstituteService instituteService;
     private final TclassDAO tclassDAO;
+    private final WorkGroupService workGroupService;
     private final ViewEvaluationStaticalReportService viewEvaluationStaticalReportService;
 
 
@@ -147,8 +148,14 @@ public class TclassRestController {
 //    @PreAuthorize("hasAuthority('d_tclass')")
     public ResponseEntity delete(@PathVariable Long id) {
         try {
-            tClassService.delete(id);
-            return new ResponseEntity(HttpStatus.OK);
+            if(workGroupService.isAllowUseId("Tclass",id)){
+                tClassService.delete(id);
+                return new ResponseEntity(HttpStatus.OK);
+            }else{
+                tClassService.delete(id);
+                return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            }
+
         } catch (DataIntegrityViolationException e) {
             return new ResponseEntity<>(
                     new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(),
@@ -193,6 +200,8 @@ public class TclassRestController {
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
+
+        request.setCriteria(workGroupService.addPermissionToCriteria("Tclass", request.getCriteria()));
 
         SearchDTO.SearchRs<TclassDTO.Info> response = tClassService.search(request);
 

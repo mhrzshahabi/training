@@ -40,6 +40,7 @@ public class ExportController {
     private final TclassService tclassService;
     private final SkillService skillService;
     private final CourseService courseService;
+    private final WorkGroupService workGroupService;
 
     @PostMapping(value = {"/excel"})
     public void getAttach(final HttpServletResponse response, @RequestParam(value = "fields") String fields,
@@ -191,10 +192,12 @@ public class ExportController {
                 list = searchTC.getList();
                 break;
             case "Skill_Report.jasper":
+                searchRq.setCriteria(workGroupService.addPermissionToCriteria("Skill", searchRq.getCriteria()));
                 SearchDTO.SearchRs<SkillDTO.Info> searchSkill = skillService.searchWithoutPermission(searchRq);
                 list = searchSkill.getList();
                 break;
             case "CourseByCriteria.jasper":
+                searchRq.setCriteria(workGroupService.addPermissionToCriteria("Course", searchRq.getCriteria()));
                 SearchDTO.SearchRs<CourseDTO.Info> searchCourse = courseService.search(searchRq);
                 list = searchCourse.getList();
                 break;
