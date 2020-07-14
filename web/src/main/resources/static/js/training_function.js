@@ -78,38 +78,43 @@ function defineWindowsEditNeedsAssessment(grid) {
             isChanged = false;
             this.Super("show", arguments);
         },
-        close(){
-            if(isChanged){
-                const dialog = isc.Dialog.create({
-                    ID: "dialog",
-                    icon:  'info.png',
-                    title: "پیغام",
-                    message: "تغییراتی در پنجره ویرایش نیازسنجی ثبت شده است لطفا یکی از گزینه های زیر را با توجه به تغییرات اعمال شده انتخاب کنید.",
-                    buttons : [
-                        // isc.Button.create({ title:"ارسال به گردش کار"}),
-                        isc.Button.create({ title:"لغو تغییرات"}),
-                        isc.Button.create({ title:"خروج از نیازسنجی"}),
-                    ],
-                    buttonClick : function (button, index) {
-                        dialog.close();
-                        switch(index){
-                            // case 0:
-                                // sendNeedsAssessmentToWorkflow();
-                                // break;
-                            case 0:
-                                CancelChange_JspENA.click();
-                                break;
-                            case 1:
-                                Window_NeedsAssessment_Edit.Super("close", arguments);
-                                grid.invalidateCache();
-                                break;
+        close(x = 1){
+            if(x===1) {
+                if (isChanged) {
+                    const dialog = isc.Dialog.create({
+                        ID: "dialog",
+                        icon: 'info.png',
+                        title: "پیغام",
+                        message: "تغییراتی در پنجره ویرایش نیازسنجی ثبت شده است لطفا یکی از گزینه های زیر را با توجه به تغییرات اعمال شده انتخاب کنید.",
+                        buttons: [
+                            isc.Button.create({ title:"ارسال به گردش کار"}),
+                            isc.Button.create({title: "لغو تغییرات"}),
+                            isc.Button.create({title: "خروج از نیازسنجی"}),
+                        ],
+                        buttonClick: function (button, index) {
+                            dialog.close();
+                            switch (index) {
+                                case 0:
+                                    sendNeedsAssessmentToWorkflow();
+                                    break;
+                                case 1:
+                                    CancelChange_JspENA.click();
+                                    break;
+                                case 2:
+                                    Window_NeedsAssessment_Edit.Super("close", arguments);
+                                    grid.invalidateCache();
+                                    break;
+                            }
                         }
-                    }
-                });
+                    });
+                } else {
+                    Window_NeedsAssessment_Edit.Super("close", arguments);
+                    grid.invalidateCache();
+                }
             }
-            else {
-                Window_NeedsAssessment_Edit.Super("close", arguments);
+            else{
                 grid.invalidateCache();
+                this.Super("close",arguments);
             }
         },
     });
