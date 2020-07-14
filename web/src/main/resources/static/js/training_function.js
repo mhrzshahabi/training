@@ -182,7 +182,7 @@ function showDetailViewer(title, field, record) {
     Window_DetailViewer_Main.show();
 }
 
-function showOrganizationalChart(func) {
+function showOrganizationalChart(func, x = "show") {
     let Window_OrganizationalChart = isc.Window.create({
         ID: "Window_OrganizationalChart",
         title: "درخت نیازسنجی",
@@ -194,25 +194,22 @@ function showOrganizationalChart(func) {
         items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/organizationalChart/"})],
         close() {
             func();
+            VLayout_chosen_Departments.hide();
             this.Super("close", arguments)
         }
     });
     Window_OrganizationalChart.show();
-    // let interval = setInterval(()=>{
-    //     if(searchTree !== undefined && organizationalTree !== undefined) {
-    //         searchTree.addProperties({
-    //             rowDoubleClick(record){
-    //                 Window_OrganizationalChart.close();
-    //             }
-    //         })
-    //         organizationalTree.addProperties({
-    //             rowDoubleClick(record){
-    //                 Window_OrganizationalChart.close();
-    //                 recordChartId = record.id;
-    //             }
-    //         })
-    //         clearInterval(interval);
-    //     }
-    // },50)
+
+    const interval = setInterval(()=>{
+        if(VLayout_chosen_Departments !== undefined) {
+            if(x !== "show") {
+                VLayout_chosen_Departments.hide();
+            }
+            else {
+                VLayout_chosen_Departments.show();
+            }
+            clearInterval(interval);
+        }
+    },100)
 }
 

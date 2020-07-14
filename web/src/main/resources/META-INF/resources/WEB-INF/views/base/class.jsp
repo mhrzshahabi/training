@@ -1268,7 +1268,6 @@
                             });
                     }else if(DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").getValue() === "371"){
                         showOrganizationalChart(setSocieties);
-
                     }
                 }
             },
