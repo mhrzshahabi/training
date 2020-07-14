@@ -1493,12 +1493,12 @@ public class MasterDataService implements IMasterDataService {
                     person.setPersonnelNo(jsonNode.get("emNum10").asText());
                     person.setPersonnelNo2(jsonNode.get("emNum").asText());
 
-                    if (jsonNode.get("post") != null) {
+                    if (!jsonNode.get("post").asText().equals("null")) {
                         person.setPostTitle(jsonNode.get("post").get("title").asText());
                         person.setPostCode(jsonNode.get("post").get("code").asText());
                     }
 
-                    if (jsonNode.get("department") != null) {
+                    if (!jsonNode.get("department").asText().equals("null")) {
                         person.setCcpTitle(jsonNode.get("department").get("title").asText());
                         person.setCcpAffairs(jsonNode.get("department").get("omorTitle").asText());
                         person.setCcpSection(jsonNode.get("department").get("ghesmatTitle").asText());
@@ -1572,12 +1572,12 @@ public class MasterDataService implements IMasterDataService {
                             tmp.setPersonnelNo(jsonNode.get(i).get("emNum10").asText());
                             tmp.setPersonnelNo2(jsonNode.get(i).get("emNum").asText());
 
-                            if (jsonNode.get(i).get("post") != null) {
+                            if (!jsonNode.get(i).get("post").asText().equals("null")) {
                                 tmp.setPostTitle(jsonNode.get(i).get("post").get("title").asText());
                                 tmp.setPostCode(jsonNode.get(i).get("post").get("code").asText());
                             }
 
-                            if (jsonNode.get(i).get("department") != null) {
+                            if (!jsonNode.get(i).get("department").asText().equals("null")) {
                                 tmp.setCcpTitle(jsonNode.get(i).get("department").get("title").asText());
                                 tmp.setCcpAffairs(jsonNode.get(i).get("department").get("omorTitle").asText());
                                 tmp.setCcpSection(jsonNode.get(i).get("department").get("ghesmatTitle").asText());
@@ -1655,12 +1655,12 @@ public class MasterDataService implements IMasterDataService {
                             tmp.setPersonnelNo(jsonNode.get(i).get("emNum10").asText());
                             tmp.setPersonnelNo2(jsonNode.get(i).get("emNum").asText());
 
-                            if (jsonNode.get(i).get("post") != null) {
+                            if (!jsonNode.get(i).get("post").asText().equals("null")) {
                                 tmp.setPostTitle(jsonNode.get(i).get("post").get("title").asText());
                                 tmp.setPostCode(jsonNode.get(i).get("post").get("code").asText());
                             }
 
-                            if (jsonNode.get(i).get("department") != null) {
+                            if (!jsonNode.get(i).get("department").asText().equals("null")) {
                                 tmp.setCcpTitle(jsonNode.get(i).get("department").get("title").asText());
                                 tmp.setCcpAffairs(jsonNode.get(i).get("department").get("omorTitle").asText());
                                 tmp.setCcpSection(jsonNode.get(i).get("department").get("ghesmatTitle").asText());
@@ -1738,12 +1738,12 @@ public class MasterDataService implements IMasterDataService {
                             tmp.setPersonnelNo(jsonNode.get(i).get("emNum10").asText());
                             tmp.setPersonnelNo2(jsonNode.get(i).get("emNum").asText());
 
-                            if (jsonNode.get(i).get("post") != null) {
+                            if (!jsonNode.get(i).get("post").asText().equals("null")) {
                                 tmp.setPostTitle(jsonNode.get(i).get("post").get("title").asText());
                                 tmp.setPostCode(jsonNode.get(i).get("post").get("code").asText());
                             }
 
-                            if (jsonNode.get(i).get("department") != null) {
+                            if (!jsonNode.get(i).get("department").asText().equals("null")) {
                                 tmp.setCcpTitle(jsonNode.get(i).get("department").get("title").asText());
                                 tmp.setCcpAffairs(jsonNode.get(i).get("department").get("omorTitle").asText());
                                 tmp.setCcpSection(jsonNode.get(i).get("department").get("ghesmatTitle").asText());

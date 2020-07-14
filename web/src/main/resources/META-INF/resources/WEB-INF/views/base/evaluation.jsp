@@ -113,7 +113,7 @@
                     filterOperator: "iContains"
                 }
             ],
-            fetchDataURL: personnelUrl + "/iscList"
+            // fetchDataURL: personnelUrl + "/iscList"
         });
         var RestDataSource_evaluation_class = isc.TrDS.create({
             fields: [
@@ -260,8 +260,18 @@
                         {name: "title"}
                     ],
                     valueField: "id",
-                    displayField: "title"
-                }
+                    displayField: "title",
+                    changed: function (form, item, value) {
+                        // roya
+                        if(value == 190)
+                            EvaluationDS_PersonList.fetchDataURL =  personnelUrl + "/getParentEmployee/" + ListGrid_evaluation_student.getSelectedRecord().student.nationalCode;
+                        else
+                            EvaluationDS_PersonList.fetchDataURL =  personnelUrl + "/iscList";
+                        EvaluationListGrid_PeronalLIst.dataSource = EvaluationDS_PersonList;
+                        EvaluationListGrid_PeronalLIst.fetchData();
+                        EvaluationListGrid_PeronalLIst.invalidateCache();
+                    }
+                },
             ]
         });
         evaluation_Audience_Type.setValues(null);
@@ -1204,6 +1214,7 @@
                     this.Super("close",arguments);
                 }
             });
+            // roya
             EvaluationWin_PersonList.show();
             EvaluationListGrid_PeronalLIst.invalidateCache();
             EvaluationListGrid_PeronalLIst.fetchData();

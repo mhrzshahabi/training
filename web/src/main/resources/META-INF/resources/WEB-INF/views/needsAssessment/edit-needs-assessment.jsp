@@ -1832,7 +1832,7 @@
     function startProcess_callback(resp) {
         if (resp.httpResponseCode === 200) {
             simpleDialog("<spring:message code="message"/>", "<spring:message code='course.set.on.workflow.engine'/>", 3000, "say");
-
+            Window_NeedsAssessment_Edit.close(2);
 
         } else if (resp.httpResponseCode === 404) {
             simpleDialog("<spring:message code="message"/>", "<spring:message code='workflow.bpmn.not.uploaded'/>", 3000, "stop");

@@ -94,7 +94,7 @@
         showClippedValuesOnHover: true,
         dataSource: DataSource_JspTreeNeedsAssessment,
         gridComponents: [ToolStrip_NeedsAssessmentTree_JspTreeNeedAssessment, Label_Title_JspTreeNeedsAssessment ,"header", "body"],
-        groupStartOpen: "all",
+        groupStartOpen: "none",
         getCellCSSText: function (record, rowNum, colNum) {
             if (record.skill == undefined) {
                 return "color:black; font-size: 12px;";
