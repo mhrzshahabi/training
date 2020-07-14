@@ -929,6 +929,11 @@
         title: "چاپ گزارش",
         width: 300,
         click: function () {
+            if(Object.keys(DynamicForm_CriteriaForm_JspControlReport.getValuesAsCriteria()).length <= 2) {
+                createDialog("info","فیلتری انتخاب نشده است.");
+                return;
+            }
+
             DynamicForm_CriteriaForm_JspControlReport.validate();
             if (DynamicForm_CriteriaForm_JspControlReport.hasErrors())
                 return;
