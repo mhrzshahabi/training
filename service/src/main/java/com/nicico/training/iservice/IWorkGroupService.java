@@ -38,4 +38,8 @@ public interface IWorkGroupService {
 
 
     SearchDTO.CriteriaRq applyPermissions(Class entity, Long userId);
+
+    SearchDTO.CriteriaRq addPermissionToCriteria(String entity, SearchDTO.CriteriaRq criteriaRq);
+
+    boolean isAllowUseId(String entity,Long Id);
 }

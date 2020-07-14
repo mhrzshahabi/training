@@ -83,6 +83,10 @@
                                     ID:"DynamicForm_GroupInsert_Textbox_JspStudent",
                                     title:"",
                                     /*direction:""*/
+                                    transformPastedValue:function(item, form, pastedValue)
+                                    {
+                                        item.setValue(pastedValue.split('\n').filter(p=>p!='').join(',')) ;
+                                    }
 
                                 },
                                 {
@@ -94,7 +98,9 @@
                                         if(value != null&& value != "" && typeof(value) != "undefined")
                                         {
                                             value=value.toEnglishDigit();
-                                            let personnels=(value.indexOf('،')>-1)?value.split('،'):value.split(',');
+                                            value=value.replace(/،/g,',');
+
+                                            let personnels=value.split(',');
                                             let records=[];
                                             let len=personnels.size();
 

@@ -1,19 +1,17 @@
 package com.nicico.training.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.GenericPermissionDTO;
-import com.nicico.training.dto.PermissionDTO;
-import com.nicico.training.dto.WorkGroupDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.GenericPermission;
 import com.nicico.training.model.Permission;
 import com.nicico.training.model.WorkGroup;
-import com.nicico.training.repository.GenericPermissionDAO;
-import com.nicico.training.repository.PermissionDAO;
-import com.nicico.training.repository.WorkGroupDAO;
+import com.nicico.training.repository.*;
 import lombok.*;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
@@ -38,6 +36,9 @@ public class WorkGroupService implements IWorkGroupService {
     private final WorkGroupDAO workGroupDAO;
     private final PermissionDAO permissionDAO;
     private final GenericPermissionDAO genericPermissionDAO;
+    private final SkillDAO skillDAO;
+    private final CourseDAO courseDAO;
+    private final TclassDAO tclassDAO;
 
     @Transactional(readOnly = true)
     @Override
@@ -89,7 +90,7 @@ public class WorkGroupService implements IWorkGroupService {
 
         if (rq.getCategories() != null) {
             for (Long id : rq.getCategories()) {
-                if (existIds.stream().filter(p -> p.getObjectId().longValue() ==id.longValue()).count() == 0) {
+                if (existIds.stream().filter(p -> p.getObjectId().longValue() == id.longValue()).count() == 0) {
                     insertIds.add(id);
                 }
             }
@@ -280,7 +281,8 @@ public class WorkGroupService implements IWorkGroupService {
     @Override
     public List<GenericPermissionDTO.Info> getAllGenericPermissions(Long workGroupId) {
 
-        return modelMapper.map(genericPermissionDAO.findAllByWorkGroupId(workGroupId), new TypeToken<List<GenericPermissionDTO.Info>>() {}.getType());
+        return modelMapper.map(genericPermissionDAO.findAllByWorkGroupId(workGroupId), new TypeToken<List<GenericPermissionDTO.Info>>() {
+        }.getType());
     }
 
     @Transactional(readOnly = true)
@@ -330,5 +332,190 @@ public class WorkGroupService implements IWorkGroupService {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean isAllowUseId(String entity,Long Id){
+        Long userId = SecurityUtil.getUserId();
+        final List<Long> ids  = new ArrayList<>();
+        SearchDTO.SearchRq searchRq=new SearchDTO.SearchRq();
+
+        switch (entity) {
+            case "Skill": {
+                ids.clear();
+
+                genericPermissionDAO.findByObjectTypeAndAndWorkGroupUserIds("Category", userId).stream().forEach(p -> ids.add(p.getObjectId()));
+                searchRq.setCount(1);
+                searchRq.setStartIndex(0);
+                searchRq.setCriteria(new SearchDTO.CriteriaRq());
+                searchRq.getCriteria().setOperator(EOperator.and);
+                searchRq.getCriteria().setCriteria(new ArrayList<>());
+                searchRq.getCriteria().getCriteria().add(new SearchDTO.CriteriaRq());
+                searchRq.getCriteria().getCriteria().get(0).setOperator(EOperator.equals);
+                searchRq.getCriteria().getCriteria().get(0).setValue(Id);
+                searchRq.getCriteria().getCriteria().get(0).setFieldName("id");
+
+                searchRq.getCriteria().getCriteria().add(new SearchDTO.CriteriaRq());
+                searchRq.getCriteria().getCriteria().get(1).setOperator(EOperator.inSet);
+                searchRq.getCriteria().getCriteria().get(1).setValue(ids);
+                searchRq.getCriteria().getCriteria().get(1).setFieldName("categoryId");
+
+                SearchDTO.SearchRs<SkillDTO.Info> result = SearchUtil.search(skillDAO, searchRq, skill -> modelMapper.map(skill, SkillDTO.Info.class));
+
+                if (result.getTotalCount() == 0) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+            case "Course": {
+                ids.clear();
+
+                genericPermissionDAO.findByObjectTypeAndAndWorkGroupUserIds("Category", userId).stream().forEach(p -> ids.add(p.getObjectId()));
+                searchRq.setCount(1);
+                searchRq.setStartIndex(0);
+                searchRq.setCriteria(new SearchDTO.CriteriaRq());
+                searchRq.getCriteria().setOperator(EOperator.and);
+                searchRq.getCriteria().setCriteria(new ArrayList<>());
+                searchRq.getCriteria().getCriteria().add(new SearchDTO.CriteriaRq());
+                searchRq.getCriteria().getCriteria().get(0).setOperator(EOperator.equals);
+                searchRq.getCriteria().getCriteria().get(0).setValue(Id);
+                searchRq.getCriteria().getCriteria().get(0).setFieldName("id");
+
+                searchRq.getCriteria().getCriteria().add(new SearchDTO.CriteriaRq());
+                searchRq.getCriteria().getCriteria().get(1).setOperator(EOperator.inSet);
+                searchRq.getCriteria().getCriteria().get(1).setValue(ids);
+                searchRq.getCriteria().getCriteria().get(1).setFieldName("categoryId");
+
+                SearchDTO.SearchRs<CourseDTO.Info> result = SearchUtil.search(courseDAO, searchRq, p -> modelMapper.map(p, CourseDTO.Info.class));
+
+                if (result.getTotalCount() == 0) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+
+            case "Tclass": {
+                ids.clear();
+
+                genericPermissionDAO.findByObjectTypeAndAndWorkGroupUserIds("Category", userId).stream().forEach(p -> ids.add(p.getObjectId()));
+                searchRq.setCount(1);
+                searchRq.setStartIndex(0);
+                searchRq.setCriteria(new SearchDTO.CriteriaRq());
+                searchRq.getCriteria().setOperator(EOperator.and);
+                searchRq.getCriteria().setCriteria(new ArrayList<>());
+                searchRq.getCriteria().getCriteria().add(new SearchDTO.CriteriaRq());
+                searchRq.getCriteria().getCriteria().get(0).setOperator(EOperator.equals);
+                searchRq.getCriteria().getCriteria().get(0).setValue(Id);
+                searchRq.getCriteria().getCriteria().get(0).setFieldName("id");
+
+                searchRq.getCriteria().getCriteria().add(new SearchDTO.CriteriaRq());
+                searchRq.getCriteria().getCriteria().get(1).setOperator(EOperator.inSet);
+                searchRq.getCriteria().getCriteria().get(1).setValue(ids);
+                searchRq.getCriteria().getCriteria().get(1).setFieldName("course.categoryId");
+
+                SearchDTO.SearchRs<TclassDTO.Info> result = SearchUtil.search(tclassDAO, searchRq, p -> modelMapper.map(p, TclassDTO.Info.class));
+
+                if (result.getTotalCount() == 0) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+
+        }
+
+        return false;
+    }
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.CriteriaRq addPermissionToCriteria(String entity, SearchDTO.CriteriaRq criteriaRq) {
+
+        Long userId = SecurityUtil.getUserId();
+
+        SearchDTO.CriteriaRq tmpCriteria = null;
+        List<SearchDTO.CriteriaRq> listCriteria=new ArrayList<>();
+
+        SearchDTO.CriteriaRq result = new SearchDTO.CriteriaRq();
+        result.setOperator(EOperator.and);
+
+        if(criteriaRq!=null){
+            listCriteria.add(criteriaRq);
+        }
+
+        List<Long> ids = new ArrayList<>();
+
+        switch (entity) {
+            case "Skill":
+            case "Course":
+                ids.clear();
+
+                genericPermissionDAO.findByObjectTypeAndAndWorkGroupUserIds("Category", userId).stream().forEach(p->ids.add(p.getObjectId()));
+
+                tmpCriteria=new SearchDTO.CriteriaRq();
+
+                tmpCriteria.setOperator(EOperator.inSet);
+                tmpCriteria.setFieldName("categoryId");
+
+                if(ids.size()==0){
+                    ids.add(-1L);
+                    tmpCriteria.setValue(ids);
+                }else{
+                    tmpCriteria.setValue(ids);
+                }
+
+                listCriteria.add(tmpCriteria);
+
+                break;
+
+            case "Category":
+                ids.clear();
+
+                genericPermissionDAO.findByObjectTypeAndAndWorkGroupUserIds("Category", userId).stream().forEach(p->ids.add(p.getObjectId()));
+
+                tmpCriteria=new SearchDTO.CriteriaRq();
+
+                tmpCriteria.setOperator(EOperator.inSet);
+                tmpCriteria.setFieldName("id");
+
+                if(ids.size()==0){
+                    ids.add(-1L);
+                    tmpCriteria.setValue(ids);
+                }else{
+                    tmpCriteria.setValue(ids);
+                }
+
+                listCriteria.add(tmpCriteria);
+
+                break;
+            case "Tclass":
+                ids.clear();
+
+                genericPermissionDAO.findByObjectTypeAndAndWorkGroupUserIds("Category", userId).stream().forEach(p->ids.add(p.getObjectId()));
+
+                tmpCriteria=new SearchDTO.CriteriaRq();
+
+                tmpCriteria.setOperator(EOperator.inSet);
+                tmpCriteria.setFieldName("course.categoryId");
+
+                if(ids.size()==0){
+                    ids.add(-1L);
+                    tmpCriteria.setValue(ids);
+                }else{
+                    tmpCriteria.setValue(ids);
+                }
+
+                listCriteria.add(tmpCriteria);
+
+                break;
+        }
+
+        result.setCriteria(listCriteria);
+
+        return result;
     }
 }

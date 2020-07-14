@@ -219,6 +219,20 @@
                 ListGrid_EducationOrientation.getCriteria());
         }
     });
+
+    let ToolStrip_EducationOrientation_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = ListGrid_EducationOrientation.getCriteria();
+                    ExportToFile.showDialog(null, ListGrid_EducationOrientation , "EducationOrientation", 0, null, '',"لیست مقاطع تحصیلی - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
     var ToolStrip_Actions_EducationOrientation = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -227,6 +241,7 @@
             ToolStripButton_Edit_EducationOrientation,
             ToolStripButton_Remove_EducationOrientation,
             ToolStripButton_Print_EducationOrientation,
+            ToolStrip_EducationOrientation_Export2EXcel,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -434,6 +449,20 @@
                 ListGrid_EducationMajor.getCriteria());
         }
     });
+
+    let ToolStrip_EducationMajor_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = ListGrid_EducationMajor.getCriteria();
+                    ExportToFile.showDialog(null, ListGrid_EducationMajor , "EducationMajor", 0, null, '',"لیست رشته های تحصیلی - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
     var ToolStrip_Actions_EducationMajor = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -442,6 +471,7 @@
             ToolStripButton_Edit_EducationMajor,
             ToolStripButton_Remove_EducationMajor,
             ToolStripButton_Print_EducationMajor,
+            ToolStrip_EducationMajor_Export2EXcel,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -665,6 +695,20 @@
                 ListGrid_EducationLevel.getCriteria());
         }
     });
+
+    let ToolStrip_EducationLevel_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = ListGrid_EducationLevel.getCriteria();
+                    ExportToFile.showDialog(null, ListGrid_EducationLevel , "EducationLevel", 0, null, '',"لیست گرایش های تحصیلی - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
     var ToolStrip_Actions_EducationLevel = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -673,6 +717,7 @@
             ToolStripButton_Edit_EducationLevel,
             ToolStripButton_Remove_EducationLevel,
             ToolStripButton_Print_EducationLevel,
+            ToolStrip_EducationLevel_Export2EXcel,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",

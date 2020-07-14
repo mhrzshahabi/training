@@ -17,6 +17,19 @@
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
+    let ToolStrip_Competence_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = CompetenceLG_competence.getCriteria();
+                    ExportToFile.showDialog(null, CompetenceLG_competence , "Competence", 0, null, '',"لیست شایستگی ها - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
     isc.ToolStrip.create({
         ID: "CompetenceTS_competence",
         members: [
@@ -32,6 +45,7 @@
             isc.ToolStripButtonCreate.create({click: function () { createCompetence_competence(); }}),
             isc.ToolStripButtonEdit.create({click: function () { editCompetence_competence(); }}),
             isc.ToolStripButtonRemove.create({click: function () { removeCompetence_competence(); }}),
+            ToolStrip_Competence_Export2EXcel,
             isc.LayoutSpacer.create({width: "*"}),
             isc.Label.create({ID: "CompetenceLGCountLabel_competence"}),
         ]
@@ -75,7 +89,7 @@
         autoFetchData: true,
         fields: [{name: "title"}, {name: "competenceType.title"}, {name: "description"},],
         gridComponents: [
-            CompetenceTS_competence, "filterEditor", "header", "body"
+            CompetenceTS_competence, , "filterEditor", "header", "body"
         ],
         contextMenu: CompetenceMenu_competence,
         dataChanged: function () { updateCountLabel(this, CompetenceLGCountLabel_competence)},

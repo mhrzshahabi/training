@@ -1268,7 +1268,6 @@
                             });
                     }else if(DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").getValue() === "371"){
                         showOrganizationalChart(setSocieties);
-
                     }
                 }
             },
@@ -3050,7 +3049,7 @@
                 function (currentValue, index, arr) {
                     DynamicForm1_Class_JspClass.getField(currentValue).enable();
                 });
-        }else if(!active){
+        }else if(!active || !DynamicForm1_Class_JspClass.getField("autoValid")._value){
             times.forEach(
                 function (currentValue, index, arr) {
                     DynamicForm1_Class_JspClass.getField(currentValue).disable();

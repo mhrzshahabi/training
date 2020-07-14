@@ -1797,8 +1797,8 @@
 
     // <<---------------------------------------- Send To Workflow ----------------------------------------
     function sendNeedsAssessmentToWorkflow() {
-
-            isc.MyYesNoDialog.create({
+            if(isChanged){
+                isc.MyYesNoDialog.create({
                 message: "<spring:message code="needs.assessment.sent.to.workflow.ask"/>",
                 title: "<spring:message code="message"/>",
                 buttonClick: function (button, index) {
@@ -1826,13 +1826,16 @@
                     }
                 }
             });
-
+            }
+            else{
+                createDialog("info","تغییری صورت نگرفته است")
+            }
     }
 
     function startProcess_callback(resp) {
         if (resp.httpResponseCode === 200) {
             simpleDialog("<spring:message code="message"/>", "<spring:message code='course.set.on.workflow.engine'/>", 3000, "say");
-
+            Window_NeedsAssessment_Edit.close(2);
 
         } else if (resp.httpResponseCode === 404) {
             simpleDialog("<spring:message code="message"/>", "<spring:message code='workflow.bpmn.not.uploaded'/>", 3000, "stop");
