@@ -4,11 +4,14 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.GenericPermissionDTO;
 import com.nicico.training.dto.PermissionDTO;
 import com.nicico.training.dto.WorkGroupDTO;
 import com.nicico.training.iservice.IWorkGroupService;
+import com.nicico.training.model.GenericPermission;
 import com.nicico.training.model.Permission;
 import com.nicico.training.model.WorkGroup;
+import com.nicico.training.repository.GenericPermissionDAO;
 import com.nicico.training.repository.PermissionDAO;
 import com.nicico.training.repository.WorkGroupDAO;
 import lombok.*;
@@ -34,6 +37,7 @@ public class WorkGroupService implements IWorkGroupService {
     private final ModelMapper modelMapper;
     private final WorkGroupDAO workGroupDAO;
     private final PermissionDAO permissionDAO;
+    private final GenericPermissionDAO genericPermissionDAO;
 
     @Transactional(readOnly = true)
     @Override
@@ -66,6 +70,110 @@ public class WorkGroupService implements IWorkGroupService {
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
+    }
+
+    @Transactional
+    @Override
+    public List<GenericPermissionDTO.Info> editGenericPermissionList(GenericPermissionDTO.Update rq, Long workGroupId) {
+
+        List<GenericPermissionDTO.Info> response;
+
+        List<GenericPermission> deleteIds = genericPermissionDAO.findByObjectIdNotInAndAndWorkGroupIdAndObjectType(rq.getCategories() == null ? new ArrayList<>() : rq.getCategories(), workGroupId, "Category");
+        List<GenericPermission> existIds = new ArrayList<>();
+
+        if (rq.getCategories() != null) {
+            existIds = genericPermissionDAO.findByObjectIdInAndAndWorkGroupIdAndObjectType(rq.getCategories(), workGroupId, "Category");
+        }
+
+        List<Long> insertIds = new ArrayList<Long>();
+
+        if (rq.getCategories() != null) {
+            for (Long id : rq.getCategories()) {
+                if (existIds.stream().filter(p -> p.getObjectId().longValue() ==id.longValue()).count() == 0) {
+                    insertIds.add(id);
+                }
+            }
+        }
+
+        for (GenericPermission genericPermission : deleteIds) {
+            genericPermissionDAO.deleteById(genericPermission.getId());
+        }
+
+        for (Long id : insertIds) {
+            GenericPermission genericPermission = new GenericPermission();
+
+            genericPermission.setWorkGroupId(workGroupId);
+            genericPermission.setObjectId(id);
+            genericPermission.setObjectType("Category");
+
+            genericPermissionDAO.saveAndFlush(genericPermission);
+        }
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        deleteIds = genericPermissionDAO.findByObjectIdNotInAndAndWorkGroupIdAndObjectType(rq.getDepartments() == null ? new ArrayList<>() : rq.getDepartments(), workGroupId, "Department");
+        existIds = new ArrayList<>();
+
+        if (rq.getDepartments() != null) {
+            existIds = genericPermissionDAO.findByObjectIdInAndAndWorkGroupIdAndObjectType(rq.getDepartments(), workGroupId, "Department");
+        }
+        insertIds = new ArrayList<Long>();
+
+        if (rq.getDepartments() != null) {
+            for (Long id : rq.getDepartments()) {
+                if (existIds.stream().filter(p -> p.getObjectId().longValue() == id.longValue()).count() == 0) {
+                    insertIds.add(id);
+                }
+            }
+        }
+
+
+        for (GenericPermission genericPermission : deleteIds) {
+            genericPermissionDAO.deleteById(genericPermission.getId());
+        }
+
+        for (Long id : insertIds) {
+            GenericPermission genericPermission = new GenericPermission();
+
+            genericPermission.setWorkGroupId(workGroupId);
+            genericPermission.setObjectId(id);
+            genericPermission.setObjectType("Department");
+
+            genericPermissionDAO.saveAndFlush(genericPermission);
+        }
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        deleteIds = genericPermissionDAO.findByObjectIdNotInAndAndWorkGroupIdAndObjectType(rq.getParameterValues() == null ? new ArrayList<>() : rq.getParameterValues(), workGroupId, "ParameterValue");
+        existIds = new ArrayList<>();
+
+        if (rq.getParameterValues() != null) {
+            existIds = genericPermissionDAO.findByObjectIdInAndAndWorkGroupIdAndObjectType(rq.getParameterValues(), workGroupId, "ParameterValue");
+        }
+        insertIds = new ArrayList<Long>();
+
+        if (rq.getParameterValues() != null) {
+            for (Long id : rq.getParameterValues()) {
+                if (existIds.stream().filter(p -> p.getObjectId().longValue() == id.longValue()).count() == 0) {
+                    insertIds.add(id);
+                }
+            }
+        }
+
+        for (GenericPermission genericPermission : deleteIds) {
+            genericPermissionDAO.deleteById(genericPermission.getId());
+        }
+
+        for (Long id : insertIds) {
+            GenericPermission genericPermission = new GenericPermission();
+
+            genericPermission.setWorkGroupId(workGroupId);
+            genericPermission.setObjectId(id);
+            genericPermission.setObjectType("ParameterValue");
+
+            genericPermissionDAO.saveAndFlush(genericPermission);
+        }
+
+        response = modelMapper.map(genericPermissionDAO.findAllByWorkGroupId(workGroupId), new TypeToken<List<GenericPermissionDTO.Info>>() {
+        }.getType());
+
+        return response;
     }
 
     @Transactional
@@ -166,6 +274,13 @@ public class WorkGroupService implements IWorkGroupService {
             permissionFormData.add(new PermissionDTO.PermissionFormData(entityType.getSimpleName(), columnDataList));
         }
         return permissionFormData;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<GenericPermissionDTO.Info> getAllGenericPermissions(Long workGroupId) {
+
+        return modelMapper.map(genericPermissionDAO.findAllByWorkGroupId(workGroupId), new TypeToken<List<GenericPermissionDTO.Info>>() {}.getType());
     }
 
     @Transactional(readOnly = true)

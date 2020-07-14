@@ -39,6 +39,9 @@ public class ViewTeacherReportDTO implements Serializable {
         private String teacherSubCategories;
         private String teachingHistoryCats;
         private String teachingHistorySubCats;
+        private String teacherTermIds;
+        private String teacherTermTitles;
+        private String educationMajorTitle;
     }
 
 

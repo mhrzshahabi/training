@@ -1482,9 +1482,8 @@ public class MasterDataService implements IMasterDataService {
 
                     PersonnelDTO.Info person = new PersonnelDTO.Info();
 
-                    person.setId(jsonNode.get("id").asLong());
-
                     if (jsonNode.get("people") != null) {
+                        person.setId(jsonNode.get("people").get("id").asLong());
                         person.setFirstName(jsonNode.get("people").get("firstName").asText());
                         person.setLastName(jsonNode.get("people").get("lastName").asText());
                         person.setNationalCode(jsonNode.get("people").get("nationalCode").asText());
@@ -1494,12 +1493,12 @@ public class MasterDataService implements IMasterDataService {
                     person.setPersonnelNo(jsonNode.get("emNum10").asText());
                     person.setPersonnelNo2(jsonNode.get("emNum").asText());
 
-                    if (jsonNode.get("post") != null) {
+                    if (!jsonNode.get("post").asText().equals("null")) {
                         person.setPostTitle(jsonNode.get("post").get("title").asText());
                         person.setPostCode(jsonNode.get("post").get("code").asText());
                     }
 
-                    if (jsonNode.get("department") != null) {
+                    if (!jsonNode.get("department").asText().equals("null")) {
                         person.setCcpTitle(jsonNode.get("department").get("title").asText());
                         person.setCcpAffairs(jsonNode.get("department").get("omorTitle").asText());
                         person.setCcpSection(jsonNode.get("department").get("ghesmatTitle").asText());
@@ -1562,9 +1561,8 @@ public class MasterDataService implements IMasterDataService {
                         for (int i = 0; i < jsonNode.size(); i++) {
                             tmp = new PersonnelDTO.Info();
 
-                            tmp.setId(jsonNode.get(i).get("id").asLong());
-
                             if (jsonNode.get(i).get("people") != null) {
+                                tmp.setId(jsonNode.get(i).get("people").get("id").asLong());
                                 tmp.setFirstName(jsonNode.get(i).get("people").get("firstName").asText());
                                 tmp.setLastName(jsonNode.get(i).get("people").get("lastName").asText());
                                 tmp.setNationalCode(jsonNode.get(i).get("people").get("nationalCode").asText());
@@ -1574,12 +1572,12 @@ public class MasterDataService implements IMasterDataService {
                             tmp.setPersonnelNo(jsonNode.get(i).get("emNum10").asText());
                             tmp.setPersonnelNo2(jsonNode.get(i).get("emNum").asText());
 
-                            if (jsonNode.get(i).get("post") != null) {
+                            if (!jsonNode.get(i).get("post").asText().equals("null")) {
                                 tmp.setPostTitle(jsonNode.get(i).get("post").get("title").asText());
                                 tmp.setPostCode(jsonNode.get(i).get("post").get("code").asText());
                             }
 
-                            if (jsonNode.get(i).get("department") != null) {
+                            if (!jsonNode.get(i).get("department").asText().equals("null")) {
                                 tmp.setCcpTitle(jsonNode.get(i).get("department").get("title").asText());
                                 tmp.setCcpAffairs(jsonNode.get(i).get("department").get("omorTitle").asText());
                                 tmp.setCcpSection(jsonNode.get(i).get("department").get("ghesmatTitle").asText());
@@ -1598,4 +1596,170 @@ public class MasterDataService implements IMasterDataService {
         }//end else
         return new ArrayList<>(0);
     }//end getChildrenEmployee
+
+    public List<PersonnelDTO.Info> getSiblingsEmployee(Long id) throws IOException {
+        if (token == "") {
+            authorize();
+        }
+
+        if (token == "") {
+            return null;
+        } else {
+            int index = 0;
+
+            while (index <= 1) {
+                index++;
+                ObjectMapper objectMapper = new ObjectMapper();
+
+                URL obj = new URL("http://devapp01.icico.net.ir/master-data/api/v1/employees/siblingsEmployee/" +id);
+                HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
+                postConnection.setDoOutput(true);
+                postConnection.setDoInput(true);
+
+                postConnection.setRequestMethod("GET");
+                postConnection.setRequestProperty("Accept", "application/json");
+                postConnection.setRequestProperty("authorization", "Bearer " + token);
+
+                int responseCode = postConnection.getResponseCode();
+
+                if (responseCode == HttpURLConnection.HTTP_OK) { //success
+                    BufferedReader in = new BufferedReader(new InputStreamReader(
+                            postConnection.getInputStream()));
+                    String inputLine;
+
+                    StringBuffer response = new StringBuffer();
+
+                    while ((inputLine = in.readLine()) != null)
+                        response.append(inputLine);
+
+                    in.close();
+
+                    PersonnelDTO.Info tmp = null;
+
+                    JsonNode jsonNode = objectMapper.readTree(response.toString());
+
+                    List<PersonnelDTO.Info> list = new ArrayList<>();
+
+                    if (jsonNode.isArray()) {
+                        for (int i = 0; i < jsonNode.size(); i++) {
+                            tmp = new PersonnelDTO.Info();
+
+                            if (jsonNode.get(i).get("people") != null) {
+                                tmp.setId(jsonNode.get(i).get("people").get("id").asLong());
+                                tmp.setFirstName(jsonNode.get(i).get("people").get("firstName").asText());
+                                tmp.setLastName(jsonNode.get(i).get("people").get("lastName").asText());
+                                tmp.setNationalCode(jsonNode.get(i).get("people").get("nationalCode").asText());
+                                tmp.setFatherName(jsonNode.get(i).get("people").get("fatherName").asText());
+                            }
+
+                            tmp.setPersonnelNo(jsonNode.get(i).get("emNum10").asText());
+                            tmp.setPersonnelNo2(jsonNode.get(i).get("emNum").asText());
+
+                            if (!jsonNode.get(i).get("post").asText().equals("null")) {
+                                tmp.setPostTitle(jsonNode.get(i).get("post").get("title").asText());
+                                tmp.setPostCode(jsonNode.get(i).get("post").get("code").asText());
+                            }
+
+                            if (!jsonNode.get(i).get("department").asText().equals("null")) {
+                                tmp.setCcpTitle(jsonNode.get(i).get("department").get("title").asText());
+                                tmp.setCcpAffairs(jsonNode.get(i).get("department").get("omorTitle").asText());
+                                tmp.setCcpSection(jsonNode.get(i).get("department").get("ghesmatTitle").asText());
+                                tmp.setCcpAssistant(jsonNode.get(i).get("department").get("moavenatTitle").asText());
+                                tmp.setCcpArea(jsonNode.get(i).get("department").get("hozeTitle").asText());
+                                tmp.setCcpUnit(jsonNode.get(i).get("department").get("vahedTitle").asText());
+                            }
+
+                            list.add(tmp);
+                        }
+                    }
+
+                    return list;
+                }//end if success
+            }//end while
+        }//end else
+        return new ArrayList<>(0);
+    }//end getSiblingsEmployee
+
+    public List<PersonnelDTO.Info> getPersonByNationalCode(String nationalCode) throws IOException {
+        if (token == "") {
+            authorize();
+        }
+
+        if (token == "") {
+            return null;
+        } else {
+            int index = 0;
+
+            while (index <= 1) {
+                index++;
+                ObjectMapper objectMapper = new ObjectMapper();
+
+                URL obj = new URL("http://devapp01.icico.net.ir/master-data/api/v1/employees/get/byNationalCode/" +nationalCode);
+                HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
+                postConnection.setDoOutput(true);
+                postConnection.setDoInput(true);
+
+                postConnection.setRequestMethod("GET");
+                postConnection.setRequestProperty("Accept", "application/json");
+                postConnection.setRequestProperty("authorization", "Bearer " + token);
+
+                int responseCode = postConnection.getResponseCode();
+
+                if (responseCode == HttpURLConnection.HTTP_OK) { //success
+                    BufferedReader in = new BufferedReader(new InputStreamReader(
+                            postConnection.getInputStream()));
+                    String inputLine;
+
+                    StringBuffer response = new StringBuffer();
+
+                    while ((inputLine = in.readLine()) != null)
+                        response.append(inputLine);
+
+                    in.close();
+
+                    PersonnelDTO.Info tmp = null;
+
+                    JsonNode jsonNode = objectMapper.readTree(response.toString());
+
+                    List<PersonnelDTO.Info> list = new ArrayList<>();
+
+                    if (jsonNode.isArray()) {
+                        for (int i = 0; i < jsonNode.size(); i++) {
+                            tmp = new PersonnelDTO.Info();
+
+                            if (jsonNode.get(i).get("people") != null) {
+                                tmp.setId(jsonNode.get(i).get("people").get("id").asLong());
+                                tmp.setFirstName(jsonNode.get(i).get("people").get("firstName").asText());
+                                tmp.setLastName(jsonNode.get(i).get("people").get("lastName").asText());
+                                tmp.setNationalCode(jsonNode.get(i).get("people").get("nationalCode").asText());
+                                tmp.setFatherName(jsonNode.get(i).get("people").get("fatherName").asText());
+                            }
+
+                            tmp.setPersonnelNo(jsonNode.get(i).get("emNum10").asText());
+                            tmp.setPersonnelNo2(jsonNode.get(i).get("emNum").asText());
+
+                            if (!jsonNode.get(i).get("post").asText().equals("null")) {
+                                tmp.setPostTitle(jsonNode.get(i).get("post").get("title").asText());
+                                tmp.setPostCode(jsonNode.get(i).get("post").get("code").asText());
+                            }
+
+                            if (!jsonNode.get(i).get("department").asText().equals("null")) {
+                                tmp.setCcpTitle(jsonNode.get(i).get("department").get("title").asText());
+                                tmp.setCcpAffairs(jsonNode.get(i).get("department").get("omorTitle").asText());
+                                tmp.setCcpSection(jsonNode.get(i).get("department").get("ghesmatTitle").asText());
+                                tmp.setCcpAssistant(jsonNode.get(i).get("department").get("moavenatTitle").asText());
+                                tmp.setCcpArea(jsonNode.get(i).get("department").get("hozeTitle").asText());
+                                tmp.setCcpUnit(jsonNode.get(i).get("department").get("vahedTitle").asText());
+                            }
+
+                            list.add(tmp);
+                        }
+                    }
+
+                    return list;
+                }//end if success
+            }//end while
+        }//end else
+        return new ArrayList<>(0);
+    }//end getIDPersonByNationalCode
 }
