@@ -131,116 +131,70 @@ public class ExportToFileController {
         net.minidev.json.parser.JSONParser parser = new JSONParser(DEFAULT_PERMISSIVE_MODE);
         String[] jsonString = {null};
         int count[] = {0};
+        List<Object> generalList = null;
 
         switch (fileName) {
 
             case "trainingFile":
-
-                SearchDTO.SearchRs<ClassStudentDTO.CoursesOfStudent> list2 = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class));//SearchUtil.search(classStudentDAO, searchRq, c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class)).getList();
-
-                setExcelValues(jsonString, count, list2.getList());
-
+                generalList = (List<Object>)((Object) classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class)).getList());
                 break;
+
             case "studentClassReport":
-
-                List<StudentClassReportViewDTO.Info> list3 = SearchUtil.search(studentClassReportViewDAO, searchRq, student -> modelMapper.map(student, StudentClassReportViewDTO.Info.class)).getList();
-
-                setExcelValues(jsonString, count, list3);
-
+                generalList = (List<Object>)((Object) SearchUtil.search(studentClassReportViewDAO, searchRq, student -> modelMapper.map(student, StudentClassReportViewDTO.Info.class)).getList());
                 break;
 
             case "personnelInformationReport":
-
-                List<PersonnelDTO.Info> list4 = SearchUtil.search(personnelDAO, searchRq, personnel -> modelMapper.map(personnel, PersonnelDTO.Info.class)).getList();
-
-                setExcelValues(jsonString, count, list4);
-
+                generalList = (List<Object>)((Object) SearchUtil.search(personnelDAO, searchRq, personnel -> modelMapper.map(personnel, PersonnelDTO.Info.class)).getList());
                 break;
             case "registeredPersonnelInformationReport":
-
-                List<PersonnelRegisteredDTO.Info> list11 = SearchUtil.search(personnelRegisteredDAO, searchRq, personnelRegistered -> modelMapper.map(personnelRegistered, PersonnelRegisteredDTO.Info.class)).getList();
-
-                setExcelValues(jsonString, count, list11);
-
+                generalList = (List<Object>)((Object) SearchUtil.search(personnelRegisteredDAO, searchRq, personnelRegistered -> modelMapper.map(personnelRegistered, PersonnelRegisteredDTO.Info.class)).getList());
                 break;
+
             case "personnelCourseNotPassed":
-
-                SearchDTO.SearchRs<PersonnelCourseNotPassedReportViewDTO.Info> list5 = personnelCourseNotPassedReportViewService.search(searchRq, p -> modelMapper.map(p, PersonnelCourseNotPassedReportViewDTO.Info.class));
-                List<PersonnelCourseNotPassedReportViewDTO.Info> list51 = list5.getList();
-
-                setExcelValues(jsonString, count, list51);
-
+                generalList = (List<Object>)((Object) personnelCourseNotPassedReportViewService.search(searchRq, p -> modelMapper.map(p, PersonnelCourseNotPassedReportViewDTO.Info.class)).getList());
                 break;
 
             case "classOutsideCurrentTerm":
-
                 String str = DateUtil.convertKhToMi1(((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim()).replaceAll("[\\s\\-]", "");
                 searchRq.getCriteria().getCriteria().remove(0);
-
-                SearchDTO.SearchRs<TclassDTO.Info> list6 = tclassService.search(searchRq);
-                List<TclassDTO.Info> list61 = list6.getList();
-
-                List<Long> longList = list61.stream().filter(x -> Long.valueOf(String.valueOf(x.getCreatedDate()).substring(0, 10).replaceAll("[\\s\\-]", "")) > Long.valueOf(str))
+                SearchDTO.SearchRs<TclassDTO.Info> classInfoSearchRs = tclassService.search(searchRq);
+                List<TclassDTO.Info> classInfoSearchRsList = classInfoSearchRs.getList();
+                List<Long> longList = classInfoSearchRsList.stream().filter(x -> Long.valueOf(String.valueOf(x.getCreatedDate()).substring(0, 10).replaceAll("[\\s\\-]", "")) > Long.valueOf(str))
                         .map(x -> x.getId()).collect(Collectors.toList());
-
-
-                List<TclassDTO.Info> infoList = list61.stream().filter(x -> !longList.contains(x.getId())).collect(Collectors.toList());
-                list6.getList().removeAll(infoList);
-
-
-                setExcelValues(jsonString, count, list61);
-
+                List<TclassDTO.Info> infoList = classInfoSearchRsList.stream().filter(x -> !longList.contains(x.getId())).collect(Collectors.toList());
+                classInfoSearchRs.getList().removeAll(infoList);
+                generalList = (List<Object>)((Object) classInfoSearchRsList);
                 break;
-            case "weeklyTrainingSchedule":
 
+            case "weeklyTrainingSchedule":
                 String userNationalCode = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
                 searchRq.getCriteria().getCriteria().remove(0);
-
-                SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> list7 = classSessionService.searchWeeklyTrainingSchedule(searchRq, userNationalCode);
-                List<ClassSessionDTO.WeeklySchedule> list71 = list7.getList();
-
-                setExcelValues(jsonString, count, list71);
-
+                generalList = (List<Object>)((Object) classSessionService.searchWeeklyTrainingSchedule(searchRq, userNationalCode).getList());
                 break;
             case "trainingClassReport":
-
-                SearchDTO.SearchRs<ViewEvaluationStaticalReportDTO.Info> list8 = viewEvaluationStaticalReportService.search(searchRq);
-
-                setExcelValues(jsonString, count, list8.getList());
-
+                generalList = (List<Object>)((Object) viewEvaluationStaticalReportService.search(searchRq).getList());
                 break;
+
             case "unfinishedClassesReport":
-
-                List<UnfinishedClassesReportDTO> list9 = unfinishedClassesReportService.UnfinishedClassesList();
-
-                setExcelValues(jsonString, count, list9);
-
+                generalList = (List<Object>)((Object) unfinishedClassesReportService.UnfinishedClassesList());
                 break;
             case "trainingOverTime":
-
                 String startDate = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
                 searchRq.getCriteria().getCriteria().remove(0);
                 String endDate = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
                 searchRq.getCriteria().getCriteria().remove(0);
-
-                List<TrainingOverTimeDTO.Info> list10 = trainingOverTimeService.getTrainingOverTimeReportList(startDate, endDate);
-
-                setExcelValues(jsonString, count, list10);
-
+                generalList = (List<Object>)((Object) trainingOverTimeService.getTrainingOverTimeReportList(startDate, endDate));
                 break;
 
             case "attendanceReport":
-
                 String startDate2 = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
                 searchRq.getCriteria().getCriteria().remove(0);
                 String endDate2 = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
                 searchRq.getCriteria().getCriteria().remove(0);
                 int absentType = Integer.parseInt(searchRq.getCriteria().getCriteria().get(0).getValue().get(0)+"");
                 searchRq.getCriteria().getCriteria().remove(0);
-
-                List<AttendanceReportDTO.Info> list12 = attendanceReportService.getAbsentList(startDate2, endDate2,absentType+"");
-
-                list12.forEach(x->
+                List<AttendanceReportDTO.Info> attendanceReportServiceAbsentList = attendanceReportService.getAbsentList(startDate2, endDate2,absentType+"");
+                attendanceReportServiceAbsentList.forEach(x->
                         {
                             if (x.getAttendanceStatus().equals("3"))
                                 x.setAttendanceStatus("غیر موجه");
@@ -248,257 +202,148 @@ public class ExportToFileController {
                                 x.setAttendanceStatus("موجه");
                         }
                 );
-
-                setExcelValues(jsonString, count, list12);
-
+                generalList = (List<Object>)((Object) attendanceReportServiceAbsentList);
                 break;
 
             case "Category":
-
-                SearchDTO.SearchRs<CategoryDTO.Info> list14 = categoryService.search(searchRq);
-
-                setExcelValues(jsonString, count, list14.getList());
-
+                generalList = (List<Object>)((Object)categoryService.search(searchRq).getList());
                 break;
 
             case "SubCategory":
-
-                SearchDTO.SearchRs<SubcategoryDTO.Info> list13 = subcategoryService.search(searchRq);
-
-                setExcelValues(jsonString, count, list13.getList());
-
+                generalList = (List<Object>)((Object) subcategoryService.search(searchRq).getList());
                 break;
 
             case "EducationOrientation":
-
-                SearchDTO.SearchRs<EducationOrientationDTO.Info> list15 = educationOrientationService.search(searchRq);
-
-                setExcelValues(jsonString, count, list15.getList());
-
+                generalList = (List<Object>)((Object) educationOrientationService.search(searchRq).getList());
                 break;
 
             case "EducationMajor":
-
-                SearchDTO.SearchRs<EducationMajorDTO.Info> list16 = educationMajorService.search(searchRq);
-
-                setExcelValues(jsonString, count, list16.getList());
-
+                generalList = (List<Object>)((Object) educationMajorService.search(searchRq).getClass());
                 break;
 
             case "EducationLevel":
-
-                SearchDTO.SearchRs<EducationLevelDTO.Info> list17 = educationLevelService.search(searchRq);
-
-                setExcelValues(jsonString, count, list17.getList());
-
+                generalList = (List<Object>)((Object) educationLevelService.search(searchRq).getList());
                 break;
 
             case "Equipment":
-
-                SearchDTO.SearchRs<EquipmentDTO.Info> list18 = equipmentService.search(searchRq);
-
-                setExcelValues(jsonString, count, list18.getList());
-
+                generalList = (List<Object>)((Object) equipmentService.search(searchRq).getList());
                 break;
 
             case "teacherReport":
-                SearchDTO.SearchRs<ViewTeacherReportDTO.Info> list25 = viewTeacherReportService.search(searchRq);
-
-                setExcelValues(jsonString, count, list25.getList());
-
+                generalList = (List<Object>)((Object) viewTeacherReportService.search(searchRq).getList());
                 break;
 
             case "Competence":
-
-                SearchDTO.SearchRs<CompetenceDTO.Info> list19 = competenceService.search(searchRq);
-
-                setExcelValues(jsonString, count, list19.getList());
-
+                generalList = (List<Object>)((Object) competenceService.search(searchRq).getList());
                 break;
 
             case "Skill":
                 searchRq.setCriteria(workGroupService.addPermissionToCriteria("Skill", searchRq.getCriteria()));
-                SearchDTO.SearchRs<SkillDTO.Info> list20 = skillService.searchGeneric(searchRq, SkillDTO.Info.class);
-
-                setExcelValues(jsonString, count, list20.getList());
-
+                generalList = (List<Object>)((Object) skillService.searchGeneric(searchRq, SkillDTO.Info.class).getList());
                 break;
 
             case "Skill_Post":
-
                 Long skillId = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
                 searchRq.getCriteria().getCriteria().remove(0);
-
-                SearchDTO.SearchRs<PostDTO.Info> list21 = needsAssessmentReportsService.getSkillNAPostList(searchRq, skillId);
-
-                setExcelValues(jsonString, count, list21.getList());
-
+                generalList = (List<Object>)((Object) needsAssessmentReportsService.getSkillNAPostList(searchRq, skillId).getList());
                 break;
 
             case "View_Job":
-
-                SearchDTO.SearchRs<ViewjobDTO.Info> list22 = viewJobService.search(searchRq);
-
-                setExcelValues(jsonString, count, list22.getList());
-
+                generalList = (List<Object>)((Object) viewJobService.search(searchRq).getList());
                 break;
 
             case "Personnel":
-
-                SearchDTO.SearchRs<PersonnelDTO.Info> list23 = personnelService.search(searchRq);
-
-                setExcelValues(jsonString, count, list23.getList());
-
+                generalList = (List<Object>)((Object) personnelService.search(searchRq).getList());
                 break;
 
             case "NeedsAssessment":
-
                 Long objectId = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
                 String objectType = searchRq.getCriteria().getCriteria().get(1).getValue().get(0).toString();
                 String personnelNo = searchRq.getCriteria().getCriteria().get(2).getValue().get(0) == null ? null : searchRq.getCriteria().getCriteria().get(2).getValue().get(0).toString();
-
                 searchRq.getCriteria().getCriteria().remove(0);searchRq.getCriteria().getCriteria().remove(0);searchRq.getCriteria().getCriteria().remove(0);
-
-                SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> list24 = needsAssessmentReportsService.search(searchRq, objectId, objectType, personnelNo);
-
-                setExcelValues(jsonString, count, list24.getList());
-
+                generalList = (List<Object>)((Object) needsAssessmentReportsService.search(searchRq, objectId, objectType, personnelNo).getList());
                 break;
 
             case "View_Post":
-
-                SearchDTO.SearchRs<ViewPostDTO.Info> list26 = viewPostService.search(searchRq);
-
-                setExcelValues(jsonString, count, list26.getList());
-
+                generalList = (List<Object>)((Object) viewPostService.search(searchRq).getList());
                 break;
 
             case "Post":
-
-                SearchDTO.SearchRs<PostDTO.Info> list27 = postService.searchWithoutPermission(searchRq);
-
-                setExcelValues(jsonString, count, list27.getList());
-
+                generalList = (List<Object>)((Object) postService.searchWithoutPermission(searchRq).getList());
                 break;
 
             case "View_Post_Grade":
-
-                SearchDTO.SearchRs<ViewPostGradeDTO.Info> list28 = viewPostGradeService.search(searchRq);
-
-                setExcelValues(jsonString, count, list28.getList());
-
+                generalList = (List<Object>)((Object) viewPostGradeService.search(searchRq).getList());
+                setExcelValues(jsonString, count, generalList);
                 break;
 
             case "Post_Grade_Without_Permission":
-
-                SearchDTO.SearchRs<PostGradeDTO.Info> list35 = postGradeService.searchWithoutPermission(searchRq);
-
-                setExcelValues(jsonString, count, list35.getList());
-
+                generalList = (List<Object>)((Object) postGradeService.searchWithoutPermission(searchRq).getList());
                 break;
 
             case "View_Job_Group":
-
-                SearchDTO.SearchRs<ViewJobGroupDTO.Info> list29 = viewJobGroupService.search(searchRq);
-
-                setExcelValues(jsonString, count, list29.getList());
-
+                generalList = (List<Object>)((Object) viewJobGroupService.search(searchRq).getList());
                 break;
 
             case "Job_Group_Personnel":
-
                 Long jobGroup = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
                 searchRq.getCriteria().getCriteria().remove(0);
-
                 List<JobDTO.Info> jobs = jobGroupService.getJobs(jobGroup);
                 SearchDTO.SearchRq coustomSearchRq = ISC.convertToSearchRq(req, jobs.stream().map(JobDTO.Info::getCode).collect(Collectors.toList()), "jobNo", EOperator.inSet);
                 coustomSearchRq.getCriteria().getCriteria().add(makeNewCriteria("active", 1, EOperator.equals, null));
                 coustomSearchRq.getCriteria().getCriteria().add(makeNewCriteria("employmentStatusId", 5, EOperator.equals, null));
-                SearchDTO.SearchRs<PersonnelDTO.Info> list30 = personnelService.search(coustomSearchRq);
-
-                setExcelValues(jsonString, count, list30.getList());
-
+                generalList = (List<Object>)((Object) personnelService.search(coustomSearchRq).getList());
                 break;
 
             case "Job_Group_Post":
-
                 Long jobGroup1 = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
                 searchRq.getCriteria().getCriteria().remove(0);
-
                 List<JobDTO.Info> jobs1 = jobGroupService.getJobs(jobGroup1);
                 SearchDTO.SearchRq coustomSearchRq1 = ISC.convertToSearchRq(req, jobs1.stream().map(JobDTO.Info::getId).collect(Collectors.toList()), "job", EOperator.inSet);
-                SearchDTO.SearchRs<PostDTO.Info> list31 = postService.searchWithoutPermission(coustomSearchRq1);
-
-                setExcelValues(jsonString, count, list31.getList());
-
+                generalList = (List<Object>)((Object) postService.searchWithoutPermission(coustomSearchRq1).getList());
                 break;
 
             case "View_Post_Grade_Group":
-
-                SearchDTO.SearchRs<ViewPostGradeGroupDTO.Info> list32 = viewPostGradeGroupService.search(searchRq);
-
-                setExcelValues(jsonString, count, list32.getList());
-
+                generalList = (List<Object>)((Object) viewPostGradeGroupService.search(searchRq).getList());
                 break;
 
             case "Post_Grade_Group_Personnel":
-
                 Long PostGradeGroup = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
                 searchRq.getCriteria().getCriteria().remove(0);
-
                 List<PostGradeDTO.Info> postGrades = postGradeGroupService.getPostGrades(PostGradeGroup);
                 SearchDTO.SearchRq coustomSearchRq2 = ISC.convertToSearchRq(req, postGrades.stream().map(PostGradeDTO.Info::getCode).collect(Collectors.toList()), "postGradeCode", EOperator.inSet);
                 coustomSearchRq2.getCriteria().getCriteria().add(makeNewCriteria("active", 1, EOperator.equals, null));
                 coustomSearchRq2.getCriteria().getCriteria().add(makeNewCriteria("employmentStatusId", 5, EOperator.equals, null));
-                SearchDTO.SearchRs<PersonnelDTO.Info> list33 = personnelService.search(coustomSearchRq2);
-
-                setExcelValues(jsonString, count, list33.getList());
+                generalList = (List<Object>)((Object) personnelService.search(coustomSearchRq2).getList());
 
                 break;
 
             case "Post_Grade_Group_Post":
-
                 Long PostGradeGroup2 = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
                 searchRq.getCriteria().getCriteria().remove(0);
-
                 List<PostGradeDTO.Info> postGrades1 = postGradeGroupService.getPostGrades(PostGradeGroup2);
                 SearchDTO.SearchRq coustomSearchRq3 = ISC.convertToSearchRq(req, postGrades1.stream().map(PostGradeDTO.Info::getId).collect(Collectors.toList()), "postGrade", EOperator.inSet);
-                SearchDTO.SearchRs<PostDTO.Info> list34 = postService.searchWithoutPermission(coustomSearchRq3);
-
-                setExcelValues(jsonString, count, list34.getList());
-
+                generalList = (List<Object>)((Object) postService.searchWithoutPermission(coustomSearchRq3).getList());
                 break;
 
             case "View_Post_Group":
-
-                SearchDTO.SearchRs<ViewPostGroupDTO.Info> list36 = viewPostGroupService.search(searchRq);
-
-                setExcelValues(jsonString, count, list36.getList());
-
+                generalList = (List<Object>)((Object) viewPostGroupService.search(searchRq).getList());
                 break;
 
             case "Post_Group":
-
-                SearchDTO.SearchRs<PostGroupDTO.Info> list37 = postGroupService.search(searchRq);
-
-                setExcelValues(jsonString, count, list37.getList());
-
+                generalList = (List<Object>)((Object) postGroupService.search(searchRq).getList());
                 break;
 
             case "Post_Group_Post":
-
                 Long postGroup = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
                 searchRq.getCriteria().getCriteria().remove(0);
-
-                List<PostDTO.Info> list38 = postGroupService.getPosts(postGroup);
-
-                setExcelValues(jsonString, count, list38);
-
+                generalList = (List<Object>)((Object) postGroupService.getPosts(postGroup));
                 break;
         }
 
         //End Of Query
         //Start Parse
+        setExcelValues(jsonString, count, generalList);
         net.minidev.json.JSONArray jsonArray = (JSONArray) parser.parse(jsonString[0]);
         net.minidev.json.JSONObject jsonObject = null;
         int sizeOfFields = fields1.size();
