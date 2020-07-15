@@ -796,6 +796,8 @@
 
             deleteRecord=false;
 
+            wait.show();
+
             isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl, session_method, JSON.stringify(sessionData), show_SessionActionResult));
         }
 
@@ -860,6 +862,8 @@
 
             sessionData["sessionType"] = DynamicForm_Session.getItem("sessionTypeId").getDisplayValue();
             //sessionData["sessionStateFa"] = DynamicForm_Session.getItem("sessionState").getDisplayValue();
+
+            wait.show();
 
             isc.RPCManager.sendRequest(TrDSRequest(sessionEditUrl, session_method, JSON.stringify(sessionData), show_SessionActionResult));
         }
@@ -977,10 +981,6 @@
                 setTimeout(function () {
 
                     close_MyOkDialog_Session();
-
-                    ListGrid_session.setSelectedState(gridState);
-
-                    ListGrid_session.scrollToRow(ListGrid_session.getRecordIndex(ListGrid_session.getSelectedRecord()), 0);
 
                 },6000);
 

@@ -573,40 +573,46 @@
                     }else if (DynamicForm_Evaluation_Coefficient.getItem("minScoreEL").getValue() == null) {
                         var str = DynamicForm_Evaluation_Coefficient.getItem("minScoreEL").title
                         createDialog("info", "فیلد ' " + str + " ' خالی می باشد", "<spring:message code="message"/>")
-                        createDialog("info", "فیلد مشخص شده خالی می باشد", "<spring:message code="message"/>")
+
                         DynamicForm_Evaluation_Coefficient.getItem("minScoreEL").focusInItem()
                         return;
                     } else if (DynamicForm_Evaluation_Coefficient.getItem("minPasTestEL").getValue() == null) {
                         var str = DynamicForm_Evaluation_Coefficient.getItem("minPasTestEL").title
                         createDialog("info", "فیلد ' " + str + " ' خالی می باشد", "<spring:message code="message"/>")
-                        createDialog("info", "فیلد مشخص شده خالی می باشد", "<spring:message code="message"/>")
+
                         DynamicForm_Evaluation_Coefficient.getItem("minPasTestEL").focusInItem()
                         return;
                     } else if (DynamicForm_Evaluation_Coefficient.getItem("minQusEL").getValue() == null) {
                         var str = DynamicForm_Evaluation_Coefficient.getItem("minQusEL").title
                         createDialog("info", "فیلد ' " + str + " ' خالی می باشد", "<spring:message code="message"/>")
-                        createDialog("info", "فیلد مشخص شده خالی می باشد", "<spring:message code="message"/>")
+
                         DynamicForm_Evaluation_Coefficient.getItem("minQusEL").focusInItem()
                         return;
                     } else if (DynamicForm_Evaluation_Coefficient.getItem("minScoreEB").getValue() == null) {
                         var str = DynamicForm_Evaluation_Coefficient.getItem("minScoreEB").title
                         createDialog("info", "فیلد ' " + str + " ' خالی می باشد", "<spring:message code="message"/>")
-                        createDialog("info", "فیلد مشخص شده خالی می باشد", "<spring:message code="message"/>")
+
                         DynamicForm_Evaluation_Coefficient.getItem("minScoreEB").focusInItem()
                         return;
                     } else if (DynamicForm_Evaluation_Coefficient.getItem("minScorePreTestEB").getValue() == null) {
                         var str = DynamicForm_Evaluation_Coefficient.getItem("minScorePreTestEB").title
                         createDialog("info", "فیلد ' " + str + " ' خالی می باشد", "<spring:message code="message"/>")
-                        createDialog("info", "فیلد مشخص شده خالی می باشد", "<spring:message code="message"/>")
+
                         DynamicForm_Evaluation_Coefficient.getItem("minScorePreTestEB").focusInItem()
                         return;
                     } else if (DynamicForm_Evaluation_Coefficient.getItem("minQusEB").getValue() == null) {
                         var str = DynamicForm_Evaluation_Coefficient.getItem("minQusEB").title
                         createDialog("info", "فیلد ' " + str + " ' خالی می باشد", "<spring:message code="message"/>")
-                        createDialog("info", "فیلد مشخص شده خالی می باشد", "<spring:message code="message"/>")
+
                         DynamicForm_Evaluation_Coefficient.getItem("minQusEB").focusInItem()
                         return;
-                    } else {
+                    }else if (DynamicForm_Evaluation_Coefficient.getItem("minScoreFECR").getValue() == null) {
+                        var str = DynamicForm_Evaluation_Coefficient.getItem("minScoreFECR").title
+                        createDialog("info", "فیلد ' " + str + " ' خالی می باشد", "<spring:message code="message"/>")
+                        DynamicForm_Evaluation_Coefficient.getItem("minScoreFECR").focusInItem()
+                        return;
+                    }
+                    else {
                         var parameterValue = parameterValueUrl + "/edit-config-list"
                         isc.RPCManager.sendRequest(TrDSRequest(parameterValue, "PUT", JSON.stringify(toUpdate), "callback:show_Result(rpcResponse)"));
                         DynamicForm_Evaluation_Coefficient.refreshFields();
@@ -616,7 +622,7 @@
             }), isc.IButtonCancel.create({
                 title: "بستن",
                 click: function () {
-                    trainingTabSet.removeTab(trainingTabSet.getSelectedTab())
+                    mainTabSet.removeTab(mainTabSet.getSelectedTab())
 
                 }
             })],
