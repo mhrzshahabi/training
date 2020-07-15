@@ -116,6 +116,20 @@
         fetchDataURL: parameterValueUrl + "/iscList/100",
     });
 
+    let RestDataSource_category_JspCompetence = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa", type: "text"}
+        ],
+        fetchDataURL: categoryUrl + "spec-list",
+    });
+    let RestDataSource_SubCategory_JspCompetence = isc.TrDS.create({
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa"}, {name: "code"}
+        ],
+        fetchDataURL: subCategoryUrl + "spec-list?id=-1",
+    });
+
+
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
     CompetenceDF_competence = isc.DynamicForm.create({
         ID: "CompetenceDF_competence",
@@ -124,7 +138,62 @@
             {name: "title", title: "<spring:message code="title"/>", required: true, validators: [TrValidators.NotEmpty],},
             {
                 name: "competenceTypeId", title: "<spring:message code='type'/>", required: true, type: "select", optionDataSource: CompetenceTypeDS_competence,
+                textAlign: "center",
                 valueField: "id", displayField: "title", filterFields: ["title"], pickListProperties: {showFilterEditor: true,},
+            },
+            {
+                name: "categoryId",
+                colSpan: 1,
+                title: "<spring:message code="category"/>",
+                textAlign: "center",
+                // autoFetchData: true,
+                required: true,
+                // titleOrientation: "top",
+                // height: "30",
+                width: "*",
+                // editorType: "TrComboBoxItem",
+                // changeOnKeypress: true,
+                // filterOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_category_JspCompetence,
+                filterFields: ["titleFa"],
+                pickListProperties:{
+                    showFilterEditor: false
+                },
+                sortField: ["id"],
+                changed: function (form, item, value) {
+                    form.clearValue("subCategoryId");
+                },
+            },
+            {
+                name: "subCategoryId",
+                colSpan: 1,
+                title: "<spring:message code="subcategory"/>",
+                prompt: "ابتدا گروه را انتخاب کنید",
+                textAlign: "center",
+                required: true,
+                autoFetchData: false,
+                // titleOrientation: "top",
+                // height: "30",
+                width: "*",
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_SubCategory_JspCompetence,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                pickListProperties:{
+                    showFilterEditor: false,
+                },
+                click: function (form, item, value) {
+                    if(form.getValue("categoryId") === undefined) {
+                        RestDataSource_SubCategory_JspCompetence.fetchDataURL = subCategoryUrl + "spec-list?id=-1";
+                    }
+                    else{
+                        RestDataSource_SubCategory_JspCompetence.fetchDataURL = subCategoryUrl + "spec-list?categoryId=" + form.getValue("categoryId");
+                    }
+                    item.fetchData()
+                }
             },
             {name: "description", title: "<spring:message code="description"/>", type: "TextAreaItem",},
         ]
