@@ -147,7 +147,7 @@ public class TclassService implements ITclassService {
             modelMapper.map(request, updating);
             updating.setTrainingPlaceSet(set);
             Tclass save = tclassDAO.save(updating);
-            updateTargetSocieties(save.getTargetSocietyList(), request.getTargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
+           //updateTargetSocieties(save.getTargetSocietyList(), request.getTargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
             return modelMapper.map(save, TclassDTO.Info.class);
         } else {
             try {

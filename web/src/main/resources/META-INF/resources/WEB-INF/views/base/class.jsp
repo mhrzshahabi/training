@@ -1220,7 +1220,7 @@
                 name: "targetSocieties",
                 colSpan: 2,
                 rowSpan: 1,
-                required : true,
+                required : false,
                 type: "SelectItem",
                 pickListProperties: {
                     showFilterEditor: false
@@ -1232,12 +1232,13 @@
                 wrapTitle: false,
                 optionDataSource: DataSource_TargetSociety_List,
                 displayField: "title",
-                valueField: "societyId",
-                validate: function(){
-                    if(this._value === null || this._value.length <= 0)
-                        return false;
-                    return this.Super("validate",arguments);
-                }
+                valueField: "societyId"
+                // ,
+                // validate: function(){
+                //     if(this._value === null || this._value.length <= 0)
+                //         return false;
+                //     return this.Super("validate",arguments);
+                // }
             },
             {
                 name: "addtargetSociety",
