@@ -76,11 +76,12 @@ public class MasterDataService implements IMasterDataService {
         private Long id;
         public String title;
         public Long parentId;
+        public String code;
 
         @Override
         public int hashCode() {
             return new HashCodeBuilder(17, 31).
-                    append(title).
+                    append(code).
                     toHashCode();
         }
 
@@ -540,6 +541,9 @@ public class MasterDataService implements IMasterDataService {
 
                 ObjectMapper objectMapper = new ObjectMapper();
 
+                String operator = iscRq.getParameter("operator");
+                operator = operator == null || operator.trim() == "" ? "and" : operator;
+
                 String criteriaStr = iscRq.getParameter("criteria");
 
                 List<String> criteriaList = new ArrayList<>();
@@ -571,7 +575,7 @@ public class MasterDataService implements IMasterDataService {
                         "    \"criteria\": [\n" +
                         convertedCriteriaStr +
                         "    ],\n" +
-                        "    \"operator\": \"and\"\n" +
+                        "    \"operator\": \"" + operator + "\"\n" +
                         "  },\n" +
                         "  \"distinct\": false,\n" +
                         sortBy +
