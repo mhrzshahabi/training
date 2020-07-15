@@ -37,4 +37,21 @@ public class Competence extends Auditable {
 
     @Column(name = "f_parameter_value")
     private Long competenceTypeId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", insertable = false, updatable = false)
+    private Category category;
+
+    @Column(name = "category_id")
+    private Long categoryId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subcategory_id", insertable = false, updatable = false)
+    private Subcategory subCategory;
+
+    @Column(name = "subcategory_id")
+    private Long subCategoryId;
+
+    @Column(name = "c_code")
+    private String code;
 }

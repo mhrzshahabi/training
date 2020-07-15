@@ -290,4 +290,9 @@ public class ClassSessionRestController {
                 .collect(Collectors.toList());
         return new ResponseEntity<>(sessionList , HttpStatus.OK);
     }
+
+    @GetMapping(value = "/classHasAnySession/{classId}")
+    public ResponseEntity<String> classHasAnySession(@PathVariable Long classId) {
+        return new ResponseEntity<>(classSessionService.loadSessions(classId).stream().collect(Collectors.toList()).size() > 0 ? Boolean.TRUE.toString() : Boolean.FALSE.toString() , HttpStatus.OK);
+    }
 }
