@@ -59,6 +59,25 @@
     });
 
     // ------------------------------------------- DataSource & ListGrid -------------------------------------------
+
+    let RestDataSource_category_JspCompetence = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa", type: "text"}
+        ],
+        fetchDataURL: categoryUrl + "spec-list",
+    });
+    let RestDataSource_SubCategory_JspCompetence = isc.TrDS.create({
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa"}, {name: "code"}
+        ],
+        fetchDataURL: subCategoryUrl + "spec-list",
+    });
+    // let RestDataSourceLG_SubCategory_JspCompetence = isc.TrDS.create({
+    //     fields: [{name: "id", primaryKey: true}, {name: "titleFa"}, {name: "code"}
+    //     ],
+    //     fetchDataURL: subCategoryUrl + "spec-list",
+    // });
+
     CompetenceDS_competence = isc.TrDS.create({
         ID: "CompetenceDS_competence",
         fields: [
@@ -66,6 +85,35 @@
             {name: "title", title: "<spring:message code="title"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
             {name: "competenceTypeId", hidden: true},
             {name: "competenceType.title", title: "<spring:message code="type"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "categoryId",
+                title: "<spring:message code="category"/>",
+
+                align: "center",
+                filterOperator: "equals",
+                optionDataSource: RestDataSource_category_JspCompetence,
+                displayField: "titleFa",
+                filterOnKeypress: true,
+                valueField: "id",
+                // sortNormalizer: function (record) {
+                //     return record.category.titleFa;
+                // }
+                // autoFitWidth: true
+            },
+            {
+                name: "subCategoryId",
+                title: "<spring:message code="subcategory"/>",
+                align: "center",
+                filterOperator: "equals",
+                optionDataSource: RestDataSource_SubCategory_JspCompetence,
+                displayField: "titleFa",
+                filterOnKeypress: true,
+                valueField: "id",
+                // sortNormalizer: function (record) {
+                //     return record.category.titleFa;
+                // }
+                // autoFitWidth: true
+            },
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: competenceUrl + "/iscList",
@@ -87,7 +135,7 @@
         ID: "CompetenceLG_competence",
         dataSource: CompetenceDS_competence,
         autoFetchData: true,
-        fields: [{name: "title"}, {name: "competenceType.title"}, {name: "description"},],
+        fields: [{name: "title"}, {name: "competenceType.title"},{name: "categoryId"},{name:"subCategoryId"}, {name: "description"}],
         gridComponents: [
             CompetenceTS_competence, , "filterEditor", "header", "body"
         ],
@@ -116,18 +164,6 @@
         fetchDataURL: parameterValueUrl + "/iscList/100",
     });
 
-    let RestDataSource_category_JspCompetence = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true},
-            {name: "titleFa", type: "text"}
-        ],
-        fetchDataURL: categoryUrl + "spec-list",
-    });
-    let RestDataSource_SubCategory_JspCompetence = isc.TrDS.create({
-        fields: [{name: "id", primaryKey: true}, {name: "titleFa"}, {name: "code"}
-        ],
-        fetchDataURL: subCategoryUrl + "spec-list?id=-1",
-    });
 
 
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
@@ -135,7 +171,7 @@
         ID: "CompetenceDF_competence",
         fields: [
             {name: "id", hidden: true},
-            {name: "title", title: "<spring:message code="title"/>", required: true, validators: [TrValidators.NotEmpty],},
+            {name: "title", title: "<spring:message code="title"/>", required: true, validators: [TrValidators.NotEmpty], textAlign: "center"},
             {
                 name: "competenceTypeId", title: "<spring:message code='type'/>", required: true, type: "select", optionDataSource: CompetenceTypeDS_competence,
                 textAlign: "center",
@@ -195,7 +231,7 @@
                     item.fetchData()
                 }
             },
-            {name: "description", title: "<spring:message code="description"/>", type: "TextAreaItem",},
+            {name: "description", title: "<spring:message code="description"/>", type: "TextAreaItem"},
         ]
     });
 
