@@ -54,10 +54,24 @@
             Window_NeedsAssessment_Tree.showUs(JobLG_job.getSelectedRecord(), "Job");
         }
     });
+
+    let ToolStrip_Job_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = JobLG_job.getCriteria();
+                    ExportToFile.showDialog(null, JobLG_job , "View_Job", 0, null, '',"لیست شغل ها - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
     ToolStrip_NA_Job = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
-        members: [ToolStripButton_EditNA_Job, ToolStripButton_TreeNA_JspJob]
+        members: [ToolStripButton_EditNA_Job, ToolStripButton_TreeNA_JspJob, ToolStrip_Job_Export2EXcel]
     });
     
     JobTS_job = isc.ToolStrip.create({
@@ -173,10 +187,44 @@
         fetchDataURL: personnelUrl + "/iscList",
     });
 
+    let ToolStrip_Job_Personnel_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = PersonnelLG_Job.getCriteria();
+
+                    if(typeof(criteria.operator)=='undefined'){
+                        criteria._constructor="AdvancedCriteria";
+                        criteria.operator="and";
+                    }
+
+                    if(typeof(criteria.criteria)=='undefined'){
+                        criteria.criteria=[];
+                    }
+                    criteria.criteria.push({fieldName: "jobNo", operator: "equals", value: JobLG_job.getSelectedRecord().code});
+                    criteria.criteria.push({fieldName: "active", operator: "equals", value: 1});
+                    criteria.criteria.push({fieldName: "employmentStatusId", operator: "equals", value: 5});
+
+                    ExportToFile.showDialog(null, PersonnelLG_Job , "Personnel", 0, null, '',"لیست پرسنل - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
+    let ActionsTS_Personnel_Job = isc.ToolStrip.create({
+        width: "100%",
+        members: [
+            ToolStrip_Job_Personnel_Export2EXcel
+        ]
+    });
+
     PersonnelLG_Job = isc.TrLG.create({
         dataSource: PersonnelDS_Job,
         selectionType: "single",
         alternateRecordStyles: true,
+        gridComponents: [ActionsTS_Personnel_Job, "header", "filterEditor", "body",],
         fields: [
             {name: "firstName"},
             {name: "lastName"},
@@ -257,12 +305,48 @@
         fetchDataURL: null
     });
 
+    let ToolStrip_Job_NA_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = NALG_Job.getCriteria();
+
+                    if(typeof(criteria.operator)=='undefined'){
+                        criteria._constructor="AdvancedCriteria";
+                        criteria.operator="and";
+                    }
+
+                    if(typeof(criteria.criteria)=='undefined'){
+                        criteria.criteria=[];
+                    }
+                    criteria.criteria.push({fieldName: "objectId", operator: "equals", value: JobLG_job.getSelectedRecord().id});
+                    criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "Job"});
+                    criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
+
+                    ExportToFile.showDialog(null, NALG_Job , "NeedsAssessment", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
+    let ActionsTS_NA_Job = isc.ToolStrip.create({
+        width: "100%",
+        members: [
+            ToolStrip_Job_NA_Export2EXcel
+        ]
+    });
+
     NALG_Job = isc.TrLG.create({
         dataSource: NADS_Job,
         selectionType: "none",
         autoFetchData: false,
         alternateRecordStyles: true,
         showAllRecords: true,
+        gridComponents: [
+            // ActionsTS_NA_Job,
+            "header", "filterEditor", "body",],
         fields: [
             {name: "competence.title"},
             {
@@ -336,8 +420,40 @@
         fetchDataURL: viewPostUrl + "/iscList"
     });
 
+    let ToolStrip_Job_Post_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = PostLG_Job.getCriteria();
+
+                    if(typeof(criteria.operator)=='undefined'){
+                        criteria._constructor="AdvancedCriteria";
+                        criteria.operator="and";
+                    }
+
+                    if(typeof(criteria.criteria)=='undefined'){
+                        criteria.criteria=[];
+                    }
+                    criteria.criteria.push({fieldName: "jobCode", operator: "equals", value: JobLG_job.getSelectedRecord().code});
+
+                    ExportToFile.showDialog(null, PostLG_Job , "View_Post", 0, null, '',"لیست پست - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
+    let ActionsTS_Post_Job = isc.ToolStrip.create({
+        width: "100%",
+        members: [
+            ToolStrip_Job_Post_Export2EXcel
+        ]
+    });
+
     PostLG_Job = isc.TrLG.create({
         dataSource: PostDS_Job,
+        gridComponents: [ActionsTS_Post_Job, "header", "filterEditor", "body",],
         fields: [
             {name: "code",
                 filterEditorProperties: {

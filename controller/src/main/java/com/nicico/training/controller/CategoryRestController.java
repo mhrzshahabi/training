@@ -13,6 +13,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.SubcategoryDTO;
 import com.nicico.training.iservice.ICategoryService;
+import com.nicico.training.service.WorkGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -37,6 +38,7 @@ public class CategoryRestController {
     private final ICategoryService categoryService;
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
+    private final WorkGroupService workGroupService;
 
     // ------------------------------
 
@@ -144,6 +146,8 @@ public class CategoryRestController {
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
         }
+
+        request.setCriteria(workGroupService.addPermissionToCriteria("Category", request.getCriteria()));
 
         SearchDTO.SearchRs<CategoryDTO.Info> response = categoryService.search(request);
 

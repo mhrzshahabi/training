@@ -79,10 +79,10 @@ public class DepartmentRestController {
                     departmentList = departmentService.findByParentId(parentId);
                 }
                 if (departmentList != null && departmentList.size() > 0) {
-                    for (int i = 0; i < departmentList.size(); i++) {
-                        if (departmentList.get(i).getParentDepartment() != null)
+                    /*for (int i = 0; i < departmentList.size(); i++) {
+                        if (departmentList.get(i).getDepParrentId() != null)
                             departmentList.get(i).setDepParrentId(departmentList.get(i).getParentDepartment().getId());
-                    }
+                    }*/
                 }
                 response.setList(departmentList);
             } else if (criteria != null && !criteria.contains("null")) {
@@ -90,10 +90,10 @@ public class DepartmentRestController {
                 Long parentId = new Long(temp[1].substring(10, 22).toString());
                 departmentList = departmentService.findByParentId(parentId);
                 if (departmentList != null && departmentList.size() > 0) {
-                    for (int i = 0; i < departmentList.size(); i++) {
+                    /*for (int i = 0; i < departmentList.size(); i++) {
                         if (departmentList.get(i).getParentDepartment() != null)
                             departmentList.get(i).setDepParrentId(departmentList.get(i).getParentDepartment().getId());
-                    }
+                    }*/
                 }
                 response.setList(departmentList);
             }

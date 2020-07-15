@@ -479,12 +479,23 @@
 
     // <<------------------------------------------- Create - Layout ------------------------------------------
     {
+        var btnRemoveCriteria = isc.ToolStripButtonRemove.create({
+            title: 'حذف فیلتر گروهي',
+            enabled: false,
+            click: function () {
+                PersonnelInfoListGrid_PersonnelList.fetchData();
+                PersonnelInfoListGrid_RegisteredPersonnelList.fetchData();
+
+                btnRemoveCriteria.disable();
+            }
+        })
         //*****class HLayout & VLayout*****
         var HLayout_Actions_PI = isc.HLayout.create({
             width: "100%",
             height: "1%",
             membersMargin: 5,
             members: [
+                btnRemoveCriteria,
                 isc.ToolStripButtonAdd.create({
                     title: 'فیلتر گروهي',
                     click: function () {
@@ -555,6 +566,7 @@
             };
             PersonnelInfoListGrid_PersonnelList.fetchData(advancedCriteriaPersonnelInformation);
             ClassStudentWin_student_GroupInsert.close();
+            btnRemoveCriteria.enable()
         }
 
         function checkRegisterPersonnelNosResponse(url, result) {
@@ -567,6 +579,7 @@
             };
             PersonnelInfoListGrid_RegisteredPersonnelList.fetchData(advancedCriteriaPersonnelInformation);
             ClassStudentWin_student_GroupInsert.close();
+            btnRemoveCriteria.enable()
         }
     }
     // ------------------------------------------------- Functions ------------------------------------------>>

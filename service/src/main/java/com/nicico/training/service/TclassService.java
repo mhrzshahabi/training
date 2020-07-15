@@ -138,7 +138,7 @@ public class TclassService implements ITclassService {
     public TclassDTO.Info safeUpdate(Long id, TclassDTO.Update request, HttpServletResponse response) {
         final Optional<Tclass> cById = tclassDAO.findById(id);
         final Tclass tclass = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
-        if (checkDuration(tclass)) {
+//        if (checkDuration(tclass)) {
             List<Long> trainingPlaceIds = request.getTrainingPlaceIds();
             List<TrainingPlace> allById = trainingPlaceDAO.findAllById(trainingPlaceIds);
             Set<TrainingPlace> set = new HashSet<>(allById);
@@ -149,15 +149,15 @@ public class TclassService implements ITclassService {
             Tclass save = tclassDAO.save(updating);
 //            updateTargetSocieties(save.getTargetSocietyList(), request.getTargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
             return modelMapper.map(save, TclassDTO.Info.class);
-        } else {
-            try {
-                Locale locale = LocaleContextHolder.getLocale();
-                response.sendError(405, messageSource.getMessage("msg.invalid.data", null, locale));
-            } catch (IOException e) {
-                throw new TrainingException(TrainingException.ErrorType.InvalidData);
-            }
-        }
-        return null;
+//        } else {
+//            try {
+//                Locale locale = LocaleContextHolder.getLocale();
+//                response.sendError(405, messageSource.getMessage("msg.invalid.data", null, locale));
+//            } catch (IOException e) {
+//                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+//            }
+//        }
+//        return null;
     }
 
     @Transactional

@@ -376,6 +376,20 @@
             ListGrid_Equipment_remove();
         }
     });
+
+    let ToolStrip_Equipment_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = ListGrid_Equipment.getCriteria();
+                    ExportToFile.showDialog(null, ListGrid_Equipment , "Equipment", 0, null, '',"لیست تجهیزات کمک آموزشی - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
+
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -383,6 +397,7 @@
             ToolStripButton_Add,
             ToolStripButton_Edit,
             ToolStripButton_Remove,
+            ToolStrip_Equipment_Export2EXcel,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",

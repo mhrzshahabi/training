@@ -1268,7 +1268,6 @@
                             });
                     }else if(DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").getValue() === "371"){
                         showOrganizationalChart(setSocieties);
-
                     }
                 }
             },
@@ -1562,7 +1561,8 @@
             {
                 name: "autoValid",
                 type: "boolean",
-                defaultValue: true,
+                defaultValue: false,
+                enabled:false,
                 title: "<spring:message code='auto.session.made'/>" + " : ",
                 endRow: true,
                 titleOrientation:"top",
@@ -2433,7 +2433,12 @@
                     DynamicForm_Class_JspClass.getItem("preCourseTest").hide();
                 } else
                     DynamicForm_Class_JspClass.getItem("preCourseTest").show();
-                autoTimeActivation(ListGrid_session.getData().localData.length > 0 ? false : true);
+
+                isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "classHasAnySession/" + record.id, "GET", null, (resp)=>{;
+                    let result=resp.httpResponseText==Boolean(true).toString() ? true : false;
+                    autoTimeActivation(result ? false : true);
+                }));
+
             } else {
                 classMethod = "POST";
                 url = classUrl;
@@ -3050,7 +3055,7 @@
                 function (currentValue, index, arr) {
                     DynamicForm1_Class_JspClass.getField(currentValue).enable();
                 });
-        }else if(!active){
+        }else if(!active || !DynamicForm1_Class_JspClass.getField("autoValid")._value){
             times.forEach(
                 function (currentValue, index, arr) {
                     DynamicForm1_Class_JspClass.getField(currentValue).disable();

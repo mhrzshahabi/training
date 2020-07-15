@@ -412,5 +412,20 @@
             <column name="c_return_date" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="jafari-h (generated)" id="1594795925846-441">
+        <addColumn tableName="tbl_competence">
+            <column name="c_code" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1594795925846-442">
+        <addColumn tableName="tbl_competence">
+            <column name="category_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1594795925846-443">
+        <addColumn tableName="tbl_competence">
+            <column name="subcategory_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

@@ -13,6 +13,7 @@
         fields: [
             {name: "title", title: "موارد جستجو شده", width:"10%"},
         ],
+        canDragRecordsOut: true,
         width: "100%",
         height: "30%",
         autoDraw: false,
@@ -38,6 +39,7 @@
         fields: [
             {name: "title", title: "درخت کامل", width:"10%", },
         ],
+        canDragRecordsOut: true,
         width: "100%",
         height: "70%",
         autoDraw: false,
@@ -102,6 +104,7 @@
         showFilterEditor:false,
         showHeaderContextMenu: false,
         sortField: 0,
+        canAcceptDroppedRecords: true,
         canRemoveRecords:true,
         gridComponents: [
             "filterEditor", "header", "body",
@@ -114,6 +117,11 @@
         ],
         removeRecordClick: function(rowNum){
             this.removeData(this.getRecord(rowNum));
+        },
+        recordDrop (dropRecords, targetRecord, index, sourceWidget){
+            dropRecords.forEach(function (currentValue,index,array) {
+                rowDClick(currentValue);
+            })
         }
     });
 
@@ -217,6 +225,7 @@
         showResizeBar: true,
         members: [chosenDepartments_JspOC, HLayout_Confirm_Deparments]
     });
+    VLayout_chosen_Departments.hide();
 
     var HLayout_Tree_Grid = isc.TrHLayout.create({
         members: [VLayout_Tree_Data, VLayout_chosen_Departments]

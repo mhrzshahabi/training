@@ -12,6 +12,7 @@
     // <<========== Global - Variables ==========
     {
         var session_method = "POST";
+        var deleteRecord=false;
 
     }
     // ============ Global - Variables ========>>
@@ -466,17 +467,10 @@
                         keyPressFilter: "[0-9:]",
                         showHintInField: true,
                         textAlign: "center",
-                        /*blur: function () {
-                            let val=DynamicForm_Session.getValue("sessionStartHour");
-                            if(val!=null && val!='' && typeof (val) != 'undefined'&& !val.match(/^[0-9]{2}:[0-9]{2}$/)){
-                                DynamicForm_Session.addFieldErrors("sessionStartHour", "<spring:message code="session.hour.invalid"/>", true);
-                            }else{
-                                DynamicForm_Session.clearFieldErrors("sessionStartHour", true);
-                            }
-                        },*/
+                        validateOnChange: true,
                         editorExit:function(){
+                            DynamicForm_Session.setValue("sessionStartHour",arrangeDate(DynamicForm_Session.getValue("sessionStartHour")));
                             let val=DynamicForm_Session.getValue("sessionStartHour");
-
                             if(val===null || val==='' || typeof (val) === 'undefined'|| !val.match(/^(([0-1][0-9]|2[0-3]):([0-5][0-9]))$/)){
                                 DynamicForm_Session.addFieldErrors("sessionStartHour", "<spring:message code="session.hour.invalid"/>", true);
                             }else{
@@ -530,15 +524,9 @@
                         keyPressFilter: "[0-9:]",
                         showHintInField: true,
                         textAlign: "center",
-                        /*blur: function () {
-                            let val=DynamicForm_Session.getValue("sessionEndHour");
-                            if(val!=null && val!='' && typeof (val) != 'undefined'&& !val.match(/^[0-9]{2}:[0-9]{2}$/)){
-                                DynamicForm_Session.addFieldErrors("sessionEndHour", "<spring:message code="session.hour.invalid"/>", true);
-                            }else{
-                                DynamicForm_Session.clearFieldErrors("sessionEndHour", true);
-                            }
-                        },*/
+                        validateOnChange: true,
                         editorExit:function(){
+                            DynamicForm_Session.setValue("sessionEndHour",arrangeDate(DynamicForm_Session.getValue("sessionEndHour")));
                             let val=DynamicForm_Session.getValue("sessionEndHour");
                             if(val===null || val==='' || typeof (val) === 'undefined'|| !val.match(/^(([0-1][0-9]|2[0-3]):([0-5][0-9]))$/)){
                                 DynamicForm_Session.addFieldErrors("sessionEndHour", "<spring:message code="session.hour.invalid"/>", true);
@@ -806,6 +794,10 @@
             sessionData["classId"] = classId;
             sessionData["sessionType"] = DynamicForm_Session.getItem("sessionTypeId").getDisplayValue();
 
+            deleteRecord=false;
+
+            wait.show();
+
             isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl, session_method, JSON.stringify(sessionData), show_SessionActionResult));
         }
 
@@ -854,7 +846,7 @@
 
             DynamicForm_Session.validate();
 
-
+            deleteRecord=false;
 
             check_valid_date();
 
@@ -870,6 +862,8 @@
 
             sessionData["sessionType"] = DynamicForm_Session.getItem("sessionTypeId").getDisplayValue();
             //sessionData["sessionStateFa"] = DynamicForm_Session.getItem("sessionState").getDisplayValue();
+
+            wait.show();
 
             isc.RPCManager.sendRequest(TrDSRequest(sessionEditUrl, session_method, JSON.stringify(sessionData), show_SessionActionResult));
         }
@@ -907,6 +901,7 @@
 
             let sessionIds=[];
             let records = ListGrid_session.getSelectedRecords();
+            deleteRecord=true;
 
             if (records.length == 0) {
                 isc.Dialog.create({
@@ -959,22 +954,21 @@
                 let totalSizes=parseInt(dataTemp.totalSizes);
                 let failures = totalSizes-success;
 
-                if (success!=0 && failures!=0)
-                {
-                    MyOkDialog_Session= isc.Dialog.create({
-                        message: getFormulaMessage(failures.toString()+" ", 2, "red", "B") + "<spring:message code="attendance.meeting.none.nums"/>"+"<br/>"+
-                            getFormulaMessage(success.toString()+" ", 2, "green", "B") + "<spring:message code="attendance.meeting.ok.nums"/>",
-                        icon: "[SKIN]say.png",
-                        title: "<spring:message code="warning"/>",
-                    });
-                }
-                else if (success!=0)
-                {
-                    MyOkDialog_Session= isc.Dialog.create({
-                        message: getFormulaMessage(success.toString()+" ", 2, "green", "B") + "<spring:message code="attendance.meeting.ok.nums"/>",
-                        icon: "[SKIN]say.png",
-                        title: "<spring:message code="warning"/>",
-                    });
+                if (deleteRecord) {
+                    if (success != 0 && failures != 0) {
+                        MyOkDialog_Session = isc.Dialog.create({
+                            message: getFormulaMessage(failures.toString() + " ", 2, "red", "B") + "<spring:message code="attendance.meeting.none.nums"/>" + "<br/>" +
+                                getFormulaMessage(success.toString() + " ", 2, "green", "B") + "<spring:message code="attendance.meeting.ok.nums"/>",
+                            icon: "[SKIN]say.png",
+                            title: "<spring:message code="warning"/>",
+                        });
+                    } else if (success != 0) {
+                        MyOkDialog_Session = isc.Dialog.create({
+                            message: getFormulaMessage(success.toString() + " ", 2, "green", "B") + "<spring:message code="attendance.meeting.ok.nums"/>",
+                            icon: "[SKIN]say.png",
+                            title: "<spring:message code="warning"/>",
+                        });
+                    }
                 }
                 else {
                     MyOkDialog_Session= isc.Dialog.create({
@@ -987,10 +981,6 @@
                 setTimeout(function () {
 
                     close_MyOkDialog_Session();
-
-                    ListGrid_session.setSelectedState(gridState);
-
-                    ListGrid_session.scrollToRow(ListGrid_session.getRecordIndex(ListGrid_session.getSelectedRecord()), 0);
 
                 },6000);
 
