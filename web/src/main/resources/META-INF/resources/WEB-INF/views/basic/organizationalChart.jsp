@@ -307,7 +307,7 @@
     }
 
     function getSearchData(criteria) {
-        var url = masterDataUrl + "/department/getDepartmentsChilderenAndParents" + "?operator=or&_constructor=AdvancedCriteria&criteria="+ criteria;
+        var url = masterDataUrl + "/department/getDepartmentsChilderenAndParents" + "?operator=and&_constructor=AdvancedCriteria&criteria="+ JSON.stringify(criteria);
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
             wait.close();
@@ -389,8 +389,11 @@
     }
 
     function searchWithCriteria(value) {
-        let AdvanceCriteria = isNaN(value) ? '{"fieldName":"title","operator":"iContains","value":"' + value + '"}' : '{"fieldName":"code","operator":"startWith","value":"' + value + '"}';
-        // let AdvanceCriteria = '[{"fieldName":"title","operator":"iContains","value":"' + value + '"}, {"fieldName":"code","operator":"startWith","value":"' + value + '"}]';
+        let AdvanceCriteria = [{"fieldName":"active","operator":"equals","value":true},
+            {"operator":"or",
+                "criteria":[ isNaN(value) ? {"fieldName":"title","operator":"iContains","value": value} : {"fieldName":"code","operator":"startsWith","value": value}]
+
+            }];
         getSearchData(AdvanceCriteria);
     }
     // ------------------------------------------------- Functions ------------------------------------------>>

@@ -874,7 +874,7 @@ public class MasterDataService implements IMasterDataService {
         String endRowStr = rq.getParameter("_endRow");
         String constructor = rq.getParameter("_constructor");
         String sortBy = rq.getParameter("_sortBy");
-        String[] criteriaList = rq.getParameterValues("criteria");
+        //String[] criteriaList = rq.getParameterValues("criteria");
         String operator = rq.getParameter("operator");
 
         Integer startRow = (startRowStr != null) ? Integer.parseInt(startRowStr) : 0;
@@ -887,7 +887,7 @@ public class MasterDataService implements IMasterDataService {
             searchRq.setSortBy(sortBy);
         }
 
-        ObjectMapper objectMapper = new ObjectMapper();
+        /*ObjectMapper objectMapper = new ObjectMapper();
 
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
             StringBuilder criteria = new StringBuilder("[" + criteriaList[0]);
@@ -900,7 +900,7 @@ public class MasterDataService implements IMasterDataService {
                     .setCriteria(objectMapper.readValue(criteria.toString(), new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
             searchRq.setCriteria(criteriaRq);
-        }
+        }*/
         return searchRq;
     }
 
