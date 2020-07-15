@@ -112,11 +112,11 @@ public class TclassRestController {
     }
 
     @Loggable
-    @PutMapping(value = "/safeUpdate/{id}")
+    @PutMapping(value = "/update/{id}")
 //    @PreAuthorize("hasAuthority('u_tclass')")
-    public ResponseEntity<TclassDTO.Info> safeUpdate(@PathVariable Long id, @RequestBody TclassDTO.Update request, HttpServletResponse response) {
+    public ResponseEntity<TclassDTO.Info> safeUpdate(@PathVariable Long id, @RequestBody TclassDTO.Update request) {
 
-        ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.safeUpdate(id, request, response), HttpStatus.OK);
+        ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.update(id, request), HttpStatus.OK);
 
         //*****check alarms*****
         if (infoResponseEntity.getStatusCodeValue() == 200) {

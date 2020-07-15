@@ -135,32 +135,6 @@ public class TclassService implements ITclassService {
 
 
     @Transactional
-    public TclassDTO.Info safeUpdate(Long id, TclassDTO.Update request, HttpServletResponse response) {
-        final Optional<Tclass> cById = tclassDAO.findById(id);
-        final Tclass tclass = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
-//        if (checkDuration(tclass)) {
-            List<Long> trainingPlaceIds = request.getTrainingPlaceIds();
-            List<TrainingPlace> allById = trainingPlaceDAO.findAllById(trainingPlaceIds);
-            Set<TrainingPlace> set = new HashSet<>(allById);
-            Tclass updating = new Tclass();
-            modelMapper.map(tclass, updating);
-            modelMapper.map(request, updating);
-            updating.setTrainingPlaceSet(set);
-            Tclass save = tclassDAO.save(updating);
-            updateTargetSocieties(save.getTargetSocietyList(), request.getTargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
-            return modelMapper.map(save, TclassDTO.Info.class);
-//        } else {
-//            try {
-//                Locale locale = LocaleContextHolder.getLocale();
-//                response.sendError(405, messageSource.getMessage("msg.invalid.data", null, locale));
-//            } catch (IOException e) {
-//                throw new TrainingException(TrainingException.ErrorType.InvalidData);
-//            }
-//        }
-//        return null;
-    }
-
-    @Transactional
     @Override
     public TclassDTO.Info update(Long id, TclassDTO.Update request) {
         final Optional<Tclass> cById = tclassDAO.findById(id);
@@ -172,7 +146,9 @@ public class TclassService implements ITclassService {
         modelMapper.map(tclass, updating);
         modelMapper.map(request, updating);
         updating.setTrainingPlaceSet(set);
-        return save(updating);
+        Tclass save = tclassDAO.save(updating);
+        updateTargetSocieties(save.getTargetSocietyList(), request.getTargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
+        return modelMapper.map(save, TclassDTO.Info.class);
     }
 
     @Transactional
