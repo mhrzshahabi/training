@@ -1561,7 +1561,8 @@
             {
                 name: "autoValid",
                 type: "boolean",
-                defaultValue: true,
+                defaultValue: false,
+                enabled:false,
                 title: "<spring:message code='auto.session.made'/>" + " : ",
                 endRow: true,
                 titleOrientation:"top",
@@ -2432,7 +2433,12 @@
                     DynamicForm_Class_JspClass.getItem("preCourseTest").hide();
                 } else
                     DynamicForm_Class_JspClass.getItem("preCourseTest").show();
-                autoTimeActivation(ListGrid_session.getData().localData.length > 0 ? false : true);
+
+                isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "classHasAnySession/" + record.id, "GET", null, (resp)=>{;
+                    let result=resp.httpResponseText==Boolean(true).toString() ? true : false;
+                    autoTimeActivation(result ? false : true);
+                }));
+
             } else {
                 classMethod = "POST";
                 url = classUrl;
