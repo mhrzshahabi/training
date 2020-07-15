@@ -6,18 +6,12 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.GenericPermissionDTO;
-import com.nicico.training.dto.PermissionDTO;
-import com.nicico.training.dto.SkillDTO;
-import com.nicico.training.dto.WorkGroupDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.GenericPermission;
 import com.nicico.training.model.Permission;
 import com.nicico.training.model.WorkGroup;
-import com.nicico.training.repository.GenericPermissionDAO;
-import com.nicico.training.repository.PermissionDAO;
-import com.nicico.training.repository.SkillDAO;
-import com.nicico.training.repository.WorkGroupDAO;
+import com.nicico.training.repository.*;
 import lombok.*;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
@@ -43,6 +37,8 @@ public class WorkGroupService implements IWorkGroupService {
     private final PermissionDAO permissionDAO;
     private final GenericPermissionDAO genericPermissionDAO;
     private final SkillDAO skillDAO;
+    private final CourseDAO courseDAO;
+    private final TclassDAO tclassDAO;
 
     @Transactional(readOnly = true)
     @Override
@@ -346,10 +342,10 @@ public class WorkGroupService implements IWorkGroupService {
         SearchDTO.SearchRq searchRq=new SearchDTO.SearchRq();
 
         switch (entity) {
-            case "Skill":
+            case "Skill": {
                 ids.clear();
 
-                genericPermissionDAO.findByObjectTypeAndAndWorkGroupUserIds("Category", userId).stream().forEach(p->ids.add(p.getObjectId()));
+                genericPermissionDAO.findByObjectTypeAndAndWorkGroupUserIds("Category", userId).stream().forEach(p -> ids.add(p.getObjectId()));
                 searchRq.setCount(1);
                 searchRq.setStartIndex(0);
                 searchRq.setCriteria(new SearchDTO.CriteriaRq());
@@ -365,13 +361,69 @@ public class WorkGroupService implements IWorkGroupService {
                 searchRq.getCriteria().getCriteria().get(1).setValue(ids);
                 searchRq.getCriteria().getCriteria().get(1).setFieldName("categoryId");
 
-                SearchDTO.SearchRs<SkillDTO.Info> result=SearchUtil.search(skillDAO, searchRq, skill -> modelMapper.map(skill, SkillDTO.Info.class));
+                SearchDTO.SearchRs<SkillDTO.Info> result = SearchUtil.search(skillDAO, searchRq, skill -> modelMapper.map(skill, SkillDTO.Info.class));
 
-                if(result.getTotalCount()==0){
+                if (result.getTotalCount() == 0) {
                     return false;
-                }else{
+                } else {
                     return true;
                 }
+            }
+            case "Course": {
+                ids.clear();
+
+                genericPermissionDAO.findByObjectTypeAndAndWorkGroupUserIds("Category", userId).stream().forEach(p -> ids.add(p.getObjectId()));
+                searchRq.setCount(1);
+                searchRq.setStartIndex(0);
+                searchRq.setCriteria(new SearchDTO.CriteriaRq());
+                searchRq.getCriteria().setOperator(EOperator.and);
+                searchRq.getCriteria().setCriteria(new ArrayList<>());
+                searchRq.getCriteria().getCriteria().add(new SearchDTO.CriteriaRq());
+                searchRq.getCriteria().getCriteria().get(0).setOperator(EOperator.equals);
+                searchRq.getCriteria().getCriteria().get(0).setValue(Id);
+                searchRq.getCriteria().getCriteria().get(0).setFieldName("id");
+
+                searchRq.getCriteria().getCriteria().add(new SearchDTO.CriteriaRq());
+                searchRq.getCriteria().getCriteria().get(1).setOperator(EOperator.inSet);
+                searchRq.getCriteria().getCriteria().get(1).setValue(ids);
+                searchRq.getCriteria().getCriteria().get(1).setFieldName("categoryId");
+
+                SearchDTO.SearchRs<CourseDTO.Info> result = SearchUtil.search(courseDAO, searchRq, p -> modelMapper.map(p, CourseDTO.Info.class));
+
+                if (result.getTotalCount() == 0) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+
+            case "Tclass": {
+                ids.clear();
+
+                genericPermissionDAO.findByObjectTypeAndAndWorkGroupUserIds("Category", userId).stream().forEach(p -> ids.add(p.getObjectId()));
+                searchRq.setCount(1);
+                searchRq.setStartIndex(0);
+                searchRq.setCriteria(new SearchDTO.CriteriaRq());
+                searchRq.getCriteria().setOperator(EOperator.and);
+                searchRq.getCriteria().setCriteria(new ArrayList<>());
+                searchRq.getCriteria().getCriteria().add(new SearchDTO.CriteriaRq());
+                searchRq.getCriteria().getCriteria().get(0).setOperator(EOperator.equals);
+                searchRq.getCriteria().getCriteria().get(0).setValue(Id);
+                searchRq.getCriteria().getCriteria().get(0).setFieldName("id");
+
+                searchRq.getCriteria().getCriteria().add(new SearchDTO.CriteriaRq());
+                searchRq.getCriteria().getCriteria().get(1).setOperator(EOperator.inSet);
+                searchRq.getCriteria().getCriteria().get(1).setValue(ids);
+                searchRq.getCriteria().getCriteria().get(1).setFieldName("course.categoryId");
+
+                SearchDTO.SearchRs<TclassDTO.Info> result = SearchUtil.search(tclassDAO, searchRq, p -> modelMapper.map(p, TclassDTO.Info.class));
+
+                if (result.getTotalCount() == 0) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
 
         }
 
@@ -395,24 +447,25 @@ public class WorkGroupService implements IWorkGroupService {
             listCriteria.add(criteriaRq);
         }
 
+        List<Long> ids = new ArrayList<>();
 
         switch (entity) {
             case "Skill":
             case "Course":
-                List<Long> categoryIds = new ArrayList<>();
+                ids.clear();
 
-                genericPermissionDAO.findByObjectTypeAndAndWorkGroupUserIds("Category", userId).stream().forEach(p->categoryIds.add(p.getObjectId()));
+                genericPermissionDAO.findByObjectTypeAndAndWorkGroupUserIds("Category", userId).stream().forEach(p->ids.add(p.getObjectId()));
 
                 tmpCriteria=new SearchDTO.CriteriaRq();
 
                 tmpCriteria.setOperator(EOperator.inSet);
                 tmpCriteria.setFieldName("categoryId");
 
-                if(categoryIds.size()==0){
-                    categoryIds.add(-1L);
-                    tmpCriteria.setValue(categoryIds);
+                if(ids.size()==0){
+                    ids.add(-1L);
+                    tmpCriteria.setValue(ids);
                 }else{
-                    tmpCriteria.setValue(categoryIds);
+                    tmpCriteria.setValue(ids);
                 }
 
                 listCriteria.add(tmpCriteria);
@@ -420,7 +473,7 @@ public class WorkGroupService implements IWorkGroupService {
                 break;
 
             case "Category":
-                List<Long> ids = new ArrayList<>();
+                ids.clear();
 
                 genericPermissionDAO.findByObjectTypeAndAndWorkGroupUserIds("Category", userId).stream().forEach(p->ids.add(p.getObjectId()));
 
@@ -428,6 +481,26 @@ public class WorkGroupService implements IWorkGroupService {
 
                 tmpCriteria.setOperator(EOperator.inSet);
                 tmpCriteria.setFieldName("id");
+
+                if(ids.size()==0){
+                    ids.add(-1L);
+                    tmpCriteria.setValue(ids);
+                }else{
+                    tmpCriteria.setValue(ids);
+                }
+
+                listCriteria.add(tmpCriteria);
+
+                break;
+            case "Tclass":
+                ids.clear();
+
+                genericPermissionDAO.findByObjectTypeAndAndWorkGroupUserIds("Category", userId).stream().forEach(p->ids.add(p.getObjectId()));
+
+                tmpCriteria=new SearchDTO.CriteriaRq();
+
+                tmpCriteria.setOperator(EOperator.inSet);
+                tmpCriteria.setFieldName("course.categoryId");
 
                 if(ids.size()==0){
                     ids.add(-1L);
