@@ -90,6 +90,7 @@ public class TclassRestController {
             classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
             classAlarmService.alarmCheckListConflict(infoResponseEntity.getBody().getId());
             classAlarmService.alarmPreCourseTestQuestion(infoResponseEntity.getBody().getId());
+            classAlarmService.saveAlarms();
         }
         return infoResponseEntity;
     }
@@ -107,6 +108,7 @@ public class TclassRestController {
             classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
             classAlarmService.alarmCheckListConflict(infoResponseEntity.getBody().getId());
             classAlarmService.alarmPreCourseTestQuestion(infoResponseEntity.getBody().getId());
+            classAlarmService.saveAlarms();
         }
         return infoResponseEntity;
     }
@@ -122,6 +124,7 @@ public class TclassRestController {
         if (infoResponseEntity.getStatusCodeValue() == 200) {
             classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
             classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
+            classAlarmService.saveAlarms();
         }
 
         return infoResponseEntity;
@@ -138,6 +141,7 @@ public class TclassRestController {
         if (infoResponseEntity.getStatusCodeValue() == 200) {
             classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
             classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
+            classAlarmService.saveAlarms();
         }
 
         return infoResponseEntity;
@@ -449,6 +453,7 @@ public class TclassRestController {
         try {
             tClassService.updatePreCourseTestQuestions(classId, request);
             classAlarmService.alarmPreCourseTestQuestion(classId);
+            classAlarmService.saveAlarms();
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);

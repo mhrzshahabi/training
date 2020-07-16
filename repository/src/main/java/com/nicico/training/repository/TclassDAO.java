@@ -86,9 +86,9 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
             "    case when tbl_alarm.f_class_id is null and tbl_alarm.f_class_id_conflict is null then null else 'alarm' end as alarmStatus " +
             " FROM " +
             "    tbl_alarm  " +
-            " WHERE tbl_class.id = tbl_alarm.f_class_id or tbl_class.id = tbl_alarm.f_class_id_conflict) " +
-            " where tbl_class.c_status <> 3 ", nativeQuery = true)
-    int updateAllClassHasWarning();
+            " WHERE tbl_class.id = :class_id and  (tbl_class.id = tbl_alarm.f_class_id or tbl_class.id = tbl_alarm.f_class_id_conflict)) " +
+            " where tbl_class.id = :class_id and tbl_class.c_status <> 3 ", nativeQuery = true)
+    int updateAllClassHasWarning(Long class_id);
 
     @Query(value = "select max(f_term) from tbl_class where id = :classId", nativeQuery = true)
     Long getTermIdByClassId(Long classId);

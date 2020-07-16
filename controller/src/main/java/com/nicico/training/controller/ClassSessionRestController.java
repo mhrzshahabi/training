@@ -62,6 +62,7 @@ public class ClassSessionRestController {
         classAlarmService.alarmSumSessionsTimes(classId);
         classAlarmService.alarmTeacherConflict(classId);
         classAlarmService.alarmTrainingPlaceConflict(classId);
+        classAlarmService.saveAlarms();
     }
 
     //*********************************
@@ -93,6 +94,7 @@ public class ClassSessionRestController {
             classAlarmService.alarmTeacherConflict(infoResponseEntity.getBody().getClassId());
             classAlarmService.alarmStudentConflict(infoResponseEntity.getBody().getClassId());
             classAlarmService.alarmTrainingPlaceConflict(infoResponseEntity.getBody().getClassId());
+            classAlarmService.saveAlarms();
         }
 
         return infoResponseEntity;
@@ -111,6 +113,7 @@ public class ClassSessionRestController {
             classAlarmService.alarmTeacherConflict(infoResponseEntity.getBody().getClassId());
             classAlarmService.alarmStudentConflict(infoResponseEntity.getBody().getClassId());
             classAlarmService.alarmTrainingPlaceConflict(infoResponseEntity.getBody().getClassId());
+            classAlarmService.saveAlarms();
         }
         return infoResponseEntity;
     }
@@ -126,6 +129,7 @@ public class ClassSessionRestController {
         classAlarmService.alarmTeacherConflict(classId);
         classAlarmService.alarmStudentConflict(classId);
         classAlarmService.alarmTrainingPlaceConflict(classId);
+        classAlarmService.saveAlarms();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -155,6 +159,7 @@ public class ClassSessionRestController {
         ////// classAlarmService.alarmTeacherConflict(classId);
         ////// classAlarmService.alarmStudentConflict(classId);
         ////// classAlarmService.alarmTrainingPlaceConflict(classId);
+        ////// classAlarmService.saveAlarms();
         classSessionService.delete(request);
         return new ResponseEntity<>(HttpStatus.OK);
     }

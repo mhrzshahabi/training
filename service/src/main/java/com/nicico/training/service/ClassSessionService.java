@@ -142,8 +142,7 @@ public class ClassSessionService implements IClassSession {
             } else if (!request.getSessionStartHour().matches("^([0-1][0-9]|2[0-4]):([0-5][0-9])$") || !request.getSessionEndHour().matches("^([0-1][0-9]|2[0-4]):([0-5][0-9])$")) {
                 Locale locale = LocaleContextHolder.getLocale();
                 response.sendError(503, messageSource.getMessage("session.hour.invalid", null, locale));
-            }
-            else if (classSessionDAO.checkHour(request.getClassId(),
+            } else if (classSessionDAO.checkHour(request.getClassId(),
                     request.getSessionDate(),
                     request.getSessionStartHour(),
                     request.getSessionEndHour(),
@@ -152,7 +151,7 @@ public class ClassSessionService implements IClassSession {
                 Locale locale = LocaleContextHolder.getLocale();
                 response.sendError(409, messageSource.getMessage("session.time.interval.conflict", null, locale));
 
-            } else  if (!classSessionDAO.existsByClassIdAndSessionDateAndSessionStartHourAndSessionEndHour(
+            } else if (!classSessionDAO.existsByClassIdAndSessionDateAndSessionStartHourAndSessionEndHour(
                     request.getClassId(),
                     request.getSessionDate(),
                     request.getSessionStartHour(),
@@ -307,25 +306,32 @@ public class ClassSessionService implements IClassSession {
         int totalSize = sessionIds.size();
         int successes = 0;
         Long kh = parameterValueService.getId("kh");
+        Long classId = -1l;
+        for (int i = 0; i < sessionIds.size(); i++) {
+            Long sessionId = sessionIds.get(i);
 
-        for (int i=0;i<sessionIds.size();i++) {
-             Long sessionId=sessionIds.get(i);
+            if (attendanceDAO.checkSessionIdAndState(sessionId, "0", kh) <= 0) {
 
-             if (attendanceDAO.checkSessionIdAndState(sessionId, "0", kh) <= 0) {
-                 Long classId = getClassIdBySessionId(sessionId);
-                 attendanceDAO.deleteAllBySessionId(sessionId);
-                 classSessionDAO.deleteById(sessionId);
-                 classAlarmService.alarmSumSessionsTimes(classId);
-                 classAlarmService.alarmTeacherConflict(classId);
-                 classAlarmService.alarmStudentConflict(classId);
-                 classAlarmService.alarmTrainingPlaceConflict(classId);
-                 successes++;
-             }
+                if (classId == -1)
+                    classId = getClassIdBySessionId(sessionId);
+
+                attendanceDAO.deleteAllBySessionId(sessionId);
+                classSessionDAO.deleteById(sessionId);
+                successes++;
+            }
         }
 
-        ClassSessionDTO.DeleteStatus deleteStatus=new ClassSessionDTO.DeleteStatus();
+        ClassSessionDTO.DeleteStatus deleteStatus = new ClassSessionDTO.DeleteStatus();
         deleteStatus.setSucesses(successes);
         deleteStatus.setTotalSizes(totalSize);
+
+        if (successes > 0) {
+            classAlarmService.alarmSumSessionsTimes(classId);
+            classAlarmService.alarmTeacherConflict(classId);
+            classAlarmService.alarmStudentConflict(classId);
+            classAlarmService.alarmTrainingPlaceConflict(classId);
+            classAlarmService.saveAlarms();
+        }
 
         return deleteStatus;
     }
@@ -423,14 +429,14 @@ public class ClassSessionService implements IClassSession {
         Optional<Tclass> tclassExist = tclassDAO.findById(classId);
         final Tclass tclass = tclassExist.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
-        int numStudents=tclass.getClassStudents().size();
+        int numStudents = tclass.getClassStudents().size();
 
-        int idx=0;
+        int idx = 0;
 
         for (IClassSessionDTO sessionDate : dateByClassId) {
             List<ClassSession> sessions = classSessionDAO.findBySessionDateAndClassId(sessionDate.getSessionDate(), classId);
-            boolean outerCheck=true;
-            ClassSessionDTO.ClassSessionsDateForOneClass classSessionsDateForOneClass= new ClassSessionDTO.ClassSessionsDateForOneClass();
+            boolean outerCheck = true;
+            ClassSessionDTO.ClassSessionsDateForOneClass classSessionsDateForOneClass = new ClassSessionDTO.ClassSessionsDateForOneClass();
             classSessionsDateForOneClass.setDayName(sessionDate.getDayName());
             classSessionsDateForOneClass.setSessionDate(sessionDate.getSessionDate());
             exitList.add(classSessionsDateForOneClass);
@@ -444,14 +450,14 @@ public class ClassSessionService implements IClassSession {
                 List<Attendance> attendanceList = attendanceDAO.findBySessionId(session.getId());
 
                 if (numStudents == 0 || attendanceList.size() == 0 || attendanceList.size() != numStudents) {
-                    exitList.get(idx-1).setHasWarning("alarm");
+                    exitList.get(idx - 1).setHasWarning("alarm");
                     break;
                 }
 
                 for (Attendance attendance : attendanceList) {
                     if (attendance.getState().equals("0")) {
-                        exitList.get(idx-1).setHasWarning("alarm");
-                        outerCheck=false;
+                        exitList.get(idx - 1).setHasWarning("alarm");
+                        outerCheck = false;
                         break;
                     }//end if
                 }//end for
@@ -607,8 +613,8 @@ public class ClassSessionService implements IClassSession {
         LocalDate inputDate = LocalDate.now();
         LocalDate prevSat = inputDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.SATURDAY));
         LocalDate nextFri = inputDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY));
-        String prevSaturday = getPersianDate(prevSat.getYear(),prevSat.getMonthValue(),prevSat.getDayOfMonth());
-        String nextFriday = getPersianDate(nextFri.getYear(),nextFri.getMonthValue(),nextFri.getDayOfMonth());
+        String prevSaturday = getPersianDate(prevSat.getYear(), prevSat.getMonthValue(), prevSat.getDayOfMonth());
+        String nextFriday = getPersianDate(nextFri.getYear(), nextFri.getMonthValue(), nextFri.getDayOfMonth());
 
         request = (request != null) ? request : new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
@@ -624,18 +630,18 @@ public class ClassSessionService implements IClassSession {
             request.setCriteria(criteriaRq);
 
         Long studentId = null;
-         SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> resp =  SearchUtil.search(classSessionDAO, request, classStudent -> modelMapper.map(classStudent, ClassSessionDTO.WeeklySchedule.class));
-         if(!userNationalCode.equalsIgnoreCase("null")){
-            for ( ClassSessionDTO.WeeklySchedule classSession : resp.getList()) {
+        SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> resp = SearchUtil.search(classSessionDAO, request, classStudent -> modelMapper.map(classStudent, ClassSessionDTO.WeeklySchedule.class));
+        if (!userNationalCode.equalsIgnoreCase("null")) {
+            for (ClassSessionDTO.WeeklySchedule classSession : resp.getList()) {
                 classSession.setStudentStatus("ثبت نام نشده");
                 for (ClassStudentDTO.WeeklySchedule attendanceInfo : classSession.getTclass().getClassStudents()) {
-                    if(attendanceInfo.getNationalCodeStudent() != null && attendanceInfo.getNationalCodeStudent().equalsIgnoreCase(userNationalCode)){
-                            studentId = attendanceInfo.getStudent().getId();
-                            classSession.setStudentStatus("ثبت نام شده");
+                    if (attendanceInfo.getNationalCodeStudent() != null && attendanceInfo.getNationalCodeStudent().equalsIgnoreCase(userNationalCode)) {
+                        studentId = attendanceInfo.getStudent().getId();
+                        classSession.setStudentStatus("ثبت نام شده");
                     }
                 }
                 List<Attendance> attendance = null;
-                if(studentId != null)
+                if (studentId != null)
                     attendance = attendanceDAO.findBySessionIdAndStudentId(classSession.getId(), studentId);
                 if (attendance != null && attendance.size() != 0)
                     classSession.setStudentPresentStatus(attendance.get(0).getState());
@@ -645,38 +651,36 @@ public class ClassSessionService implements IClassSession {
         return resp;
     }
 
-    private class StudentStatusSorter implements Comparator<ClassSessionDTO.WeeklySchedule>
-    {
+    private class StudentStatusSorter implements Comparator<ClassSessionDTO.WeeklySchedule> {
         @Override
         public int compare(ClassSessionDTO.WeeklySchedule o1, ClassSessionDTO.WeeklySchedule o2) {
-            if(o1.getStudentStatus() != null && o2.getStudentStatus() != null)
+            if (o1.getStudentStatus() != null && o2.getStudentStatus() != null)
                 return o1.getStudentStatus().compareToIgnoreCase(o2.getStudentStatus());
             else
                 return 0;
         }
     }
 
-    private class DateSorter implements Comparator<ClassSessionDTO.WeeklySchedule>
-    {
+    private class DateSorter implements Comparator<ClassSessionDTO.WeeklySchedule> {
         @Override
         public int compare(ClassSessionDTO.WeeklySchedule o1, ClassSessionDTO.WeeklySchedule o2) {
-            if(o1.getSessionDate() != null && o2.getSessionDate() != null)
+            if (o1.getSessionDate() != null && o2.getSessionDate() != null)
                 return o1.getSessionDate().compareToIgnoreCase(o2.getSessionDate());
             else
                 return 0;
         }
     }
 
-    private class HourSorter implements Comparator<ClassSessionDTO.WeeklySchedule>
-    {
+    private class HourSorter implements Comparator<ClassSessionDTO.WeeklySchedule> {
         @Override
         public int compare(ClassSessionDTO.WeeklySchedule o1, ClassSessionDTO.WeeklySchedule o2) {
-            if(o1.getSessionStartHour() != null && o2.getSessionStartHour() != null)
+            if (o1.getSessionStartHour() != null && o2.getSessionStartHour() != null)
                 return o1.getSessionStartHour().compareToIgnoreCase(o2.getSessionStartHour());
             else
                 return 0;
         }
     }
+
     //--------------------------------------------- Calender -----------------------------------------------------------
     private static double greg_len = 365.2425;
     private static double greg_origin_from_jalali_base = 629964;
@@ -705,13 +709,13 @@ public class ClassSessionService implements IClassSession {
 
         StringBuffer result = new StringBuffer();
 
-        if(month(j_days_of_year) < 10 && dayOfMonth(j_days_of_year) < 10)
+        if (month(j_days_of_year) < 10 && dayOfMonth(j_days_of_year) < 10)
             result.append((int) j_y + "/0" + (int) month(j_days_of_year) + "/0"
-                + (int) dayOfMonth(j_days_of_year));
-        else if(month(j_days_of_year) >= 10 && dayOfMonth(j_days_of_year) < 10)
+                    + (int) dayOfMonth(j_days_of_year));
+        else if (month(j_days_of_year) >= 10 && dayOfMonth(j_days_of_year) < 10)
             result.append((int) j_y + "/" + (int) month(j_days_of_year) + "/0"
                     + (int) dayOfMonth(j_days_of_year));
-        else if(month(j_days_of_year) < 10 && dayOfMonth(j_days_of_year) >= 10)
+        else if (month(j_days_of_year) < 10 && dayOfMonth(j_days_of_year) >= 10)
             result.append((int) j_y + "/0" + (int) month(j_days_of_year) + "/"
                     + (int) dayOfMonth(j_days_of_year));
         else

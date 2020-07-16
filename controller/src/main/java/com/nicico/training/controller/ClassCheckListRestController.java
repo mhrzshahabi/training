@@ -151,6 +151,7 @@ public class ClassCheckListRestController {
         //*****check alarms*****
         if (infoResponseEntity.getStatusCodeValue() == 200) {
             classAlarmService.alarmCheckListConflict(infoResponseEntity.getBody().getTclassId());
+            classAlarmService.saveAlarms();
         }
 
         return infoResponseEntity;
