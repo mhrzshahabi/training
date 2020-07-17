@@ -189,18 +189,20 @@ public class TclassDTO {
         private List<Object> targetSocieties;
 
         public List<Object> gettargetSocieties() {
-            if (targetSocieties == null)
-                return new ArrayList<>(0);
-            boolean accept = true;
-            for (Object society : targetSocieties) {
-                if (targetSocietyTypeId == 371 && society instanceof Integer)
-                    continue;
-                else if (targetSocietyTypeId == 372 && society instanceof String)
-                    continue;
-                accept = false;
-                break;
-            }
-            return accept ? targetSocieties : new ArrayList<>(0);
+            ////disable targetSociety
+//            if (targetSocieties == null)
+//                return new ArrayList<>(0);
+//            boolean accept = true;
+//            for (Object society : targetSocieties) {
+//                if (targetSocietyTypeId == 371 && society instanceof Integer)
+//                    continue;
+//                else if (targetSocietyTypeId == 372 && society instanceof String)
+//                    continue;
+//                accept = false;
+//                break;
+//            }
+//            return accept ? targetSocieties : new ArrayList<>(0);
+            return new ArrayList<>(0);
         }
     }
 
@@ -251,18 +253,20 @@ public class TclassDTO {
         private List<Object> targetSocieties;
 
         public List<Object> getTargetSocieties() {
-            if (targetSocieties == null)
-                return new ArrayList<>(0);
-            boolean accept = true;
-            for (Object society : targetSocieties) {
-                if (targetSocietyTypeId == 371 && society instanceof Integer)
-                    continue;
-                else if (targetSocietyTypeId == 372 && society instanceof String)
-                    continue;
-                accept = false;
-                break;
-            }
-            return accept ? targetSocieties : new ArrayList<>(0);
+            ////disable targetSociety
+//            if (targetSocieties == null)
+//                return new ArrayList<>(0);
+//            boolean accept = true;
+//            for (Object society : targetSocieties) {
+//                if (targetSocietyTypeId == 371 && society instanceof Integer)
+//                    continue;
+//                else if (targetSocietyTypeId == 372 && society instanceof String)
+//                    continue;
+//                accept = false;
+//                break;
+//            }
+//            return accept ? targetSocieties : new ArrayList<>(0);
+            return new ArrayList<>(0);
         }
     }
 
@@ -628,7 +632,6 @@ public class TclassDTO {
     }
 
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -643,12 +646,14 @@ public class TclassDTO {
         private CourseDTO.CourseInfoTuple course;
         private InstituteDTO.InstituteInfoTuple institute;
         private Set<ClassStudentDTO.AttendanceInfo> classStudents;
+
         public Integer getStudentCount() {
             if (classStudents != null)
                 return classStudents.size();
             else
                 return 0;
         }
+
         private String classStatus;
         private List<Long> trainingPlaceIds;
         private Long instituteId;
@@ -686,7 +691,7 @@ public class TclassDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("TclassInfoTuple")
-    public static class InfoTuple{
+    public static class InfoTuple {
         private Long id;
         private String titleClass;
         private String code;
@@ -714,4 +719,4 @@ public class TclassDTO {
         private Integer totalRows;
     }
 
-    }
+}

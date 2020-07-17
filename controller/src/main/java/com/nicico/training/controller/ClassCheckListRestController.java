@@ -149,10 +149,11 @@ public class ClassCheckListRestController {
         ResponseEntity<ClassCheckListDTO.Info> infoResponseEntity = new ResponseEntity(classCheckListService.updateDescriptionCheck(body), HttpStatus.OK);
 
         //*****check alarms*****
-        if (infoResponseEntity.getStatusCodeValue() == 200) {
-            classAlarmService.alarmCheckListConflict(infoResponseEntity.getBody().getTclassId());
-            classAlarmService.saveAlarms();
-        }
+        ////disable all alarms
+//        if (infoResponseEntity.getStatusCodeValue() == 200) {
+//            classAlarmService.alarmCheckListConflict(infoResponseEntity.getBody().getTclassId());
+//            classAlarmService.saveAlarms();
+//        }
 
         return infoResponseEntity;
     }
