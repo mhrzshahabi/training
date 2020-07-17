@@ -1866,5 +1866,195 @@ FROM
         </createView>
     </changeSet>
 
+    <changeSet author="NICICO" id="VIEW_TEACHER_REPORT-005">
+        <createView viewName="VIEW_TEACHER_REPORT" replaceIfExists="true">
+            <![CDATA[
+  SELECT
+        rowNum as id,
+        teacher.c_created_by as c_created_by ,
+        teacher.d_created_date as d_created_date,
+        teacher.e_deleted as e_deleted,
+        teacher.e_enabled as e_enabled,
+        teacher.c_last_modified_by as c_last_modified_by,
+        teacher.d_last_modified_date as d_last_modified_date,
+        teacher.n_version as n_version,
+        teacher.id  as teacher_id ,
+        personalinfo.C_FIRST_NAME_FA as personalinfo_first_name,
+        personalinfo.C_LAST_NAME_FA as personalinfo_last_name,
+        personalinfo.C_NATIONAL_CODE as personalinfo_national_code,
+        contactinfo.C_MOBILE as contactinfo_mobile,
+        CASE WHEN classess.counts IS NULL THEN 0 ELSE classess.counts END AS class_counts,
+        teacher.B_ENABLED as teacher_enable_status,
+        teacher.B_PERSONNEL as personnel_enable_status,
+        teacher.C_TEACHER_CODE as teacher_code,
+        teacher.C_PERSONNEL_CODE as teacher_personnel_cod,
+        personalinfo.F_EDU_MAJOR as personalinfo_education_major,
+        personalinfo.F_EDU_LEVEL as personalinfo_education_level,
+        address.F_CITY as address_city,
+        address.F_STATE as address_state,
+        lastClassess.titleClass as lastclassTitle,
+        lastClassess.reactionGrade as reactionGrade,
+        CONCAT(CONCAT(',',tCategories.categories),',')  as teacher_categories,
+        CONCAT(CONCAT(',',tSubCategories.subCategories),',')  as teacher_sub_categories,
+        CONCAT(CONCAT(',',tTeachingCategories.tcategories),',')  as teaching_history_cats,
+        CONCAT(CONCAT(',',tTeachingSubCategories.tsubCategories),',')  as teaching_history_subCats,
+        CONCAT(CONCAT(',',tTerms.termIDs),',')  as teacher_term_ids,
+        CONCAT(CONCAT(',',tTerms.termTitles),',')  as teacher_term_titles,
+        educationMajor.C_TITLE_FA as PERSONALINFO_EDUCATION_MAJOR_TITLE
+
+        FROM TBL_TEACHER teacher
+        LEFT JOIN (SELECT
+            TBL_CLASS.F_TEACHER,
+            count(TBL_CLASS.ID) as counts
+        FROM
+            TBL_CLASS
+            GROUP BY TBL_CLASS.F_TEACHER) classess ON classess.F_TEACHER = teacher.ID
+            LEFT JOIN
+            ( select s.tID as tId,s.cID as id,s.titleClass as titleClass,evaluation.C_REACTION_GRADE as reactionGrade from
+(SELECT tID,
+       startDate,
+       cID,
+       titleClass
+FROM   (SELECT tID,
+               startDate,
+               cID,
+               titleClass,
+               Row_number() OVER(PARTITION BY tID ORDER BY cID) rn
+        FROM   (SELECT
+        tbl_class.c_title_class as titleClass,
+    tblastcourse.f_teacher as tID,
+    tbl_class.id as cID,
+    tbl_class.c_start_date as startDate
+FROM
+    tbl_class
+    INNER JOIN (
+        SELECT
+            MAX(tbl_class.c_start_date) AS max_c_start_date,
+            tbl_class.f_teacher
+        FROM
+            tbl_class
+        GROUP BY
+            tbl_class.f_teacher
+        HAVING
+            tbl_class.f_teacher IS NOT NULL
+    ) tblastcourse ON tblastcourse.f_teacher = tbl_class.f_teacher
+                      AND tblastcourse.max_c_start_date = tbl_class.c_start_date)) t
+WHERE  rn = 1) s left join  tbl_evaluation_analysis evaluation ON evaluation.F_TCLASS = s.cID)
+            lastClassess
+            ON lastClassess.tId = teacher.ID
+
+        LEFT JOIN TBL_PERSONAL_INFO personalinfo
+        ON personalinfo.ID = teacher.F_PERSONALITY
+        LEFT JOIN tbl_education_major educationMajor
+        ON personalinfo.F_EDU_MAJOR = educationMajor.ID
+        LEFT JOIN TBL_CONTACT_INFO contactinfo
+        ON contactinfo.ID = personalinfo.F_CONTACT_INFO
+        LEFT JOIN TBL_ADDRESS address
+        ON address.ID = contactinfo.F_HOME_ADDRESS
+
+        LEFT JOIN (select f_teacher, LISTAGG(f_category, ',') within group (order by F_TEACHER) as categories
+        from tbl_teacher_category
+        group by f_teacher) tCategories on tCategories.f_teacher = teacher.ID
+
+        LEFT JOIN (select f_teacher, LISTAGG(f_subcategory, ',') within group (order by F_TEACHER) as subCategories
+        from tbl_teacher_subcategory
+        group by f_teacher) tSubCategories on tSubCategories.f_teacher = teacher.ID
+
+        LEFT JOIN ( select teacherId, LISTAGG(catId,',') within group (order by teacherId) as tcategories
+      from (select distinct te.id as teacherId, co.category_id as catId from tbl_teacher te left join tbl_class tc on te.id = tc.f_teacher left join tbl_course co on co.id = tc.f_course)
+        group by teacherId) tTeachingCategories on tTeachingCategories.teacherId = teacher.ID
+
+        LEFT JOIN (select teacherId, LISTAGG(subcatId,',') within group (order by teacherId) as tsubCategories
+      from (select distinct te.id as teacherId, co.subcategory_id as subcatId from tbl_teacher te left join tbl_class tc on te.id = tc.f_teacher left join tbl_course co on co.id = tc.f_course)
+        group by teacherId) tTeachingSubCategories on tTeachingSubCategories.teacherId = teacher.ID
+
+        LEFT JOIN (select teacherId, LISTAGG(termID,',') within group (order by teacherId) as termIDs,LISTAGG(termTitle,',') within group (order by teacherId) as termTitles
+      from (select distinct te.id as teacherId, tm.id as termID, tm.c_title_fa as termTitle from tbl_teacher te left join tbl_class tc on te.id = tc.f_teacher left join tbl_term tm on tm.id = tc.f_term)
+        group by teacherId) tTerms on tTerms.teacherId = teacher.ID
+    			]]>
+        </createView>
+    </changeSet>
+
+
+    <changeSet author="NICICO" id="VIEW_ATTENDANCE_PERFORMANCE-001">
+        <createView viewName="VIEW_ATTENDANCE_PERFORMANCE" replaceIfExists="true">
+            <![CDATA[
+    SELECT
+    ins.c_title_fa,
+    ca.c_title_fa AS category_title,
+    cl.f_institute_organizer,
+    co.category_id,
+    co.subcategory_id,
+    at.c_state,
+    cl.c_start_date,
+    cl.c_end_date,
+    cl.f_term,
+    co.id AS course_id,
+    se.c_session_end_hour,
+    se.c_session_start_hour
+FROM
+    tbl_class cl
+    INNER JOIN tbl_course co ON co.id = cl.f_course
+    INNER JOIN tbl_institute ins ON ins.id = cl.f_institute_organizer
+    INNER JOIN tbl_category ca ON ca.id = co.category_id
+    INNER JOIN tbl_session se ON cl.id = se.f_class_id
+    INNER JOIN tbl_attendance at ON se.id = at.f_session
+    ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="NICICO" id="from view_personnel_course_passed_na_report_v2-001">
+        <createView viewName="from view_personnel_course_passed_na_report_v2" replaceIfExists="true">
+            <![CDATA[
+    SELECT
+    na.na_priority_id,
+    na.course_id,
+    na.course_code,
+    na.course_title_fa,
+    na.personnel_personnel_no,
+    na.personnel_cpp_affairs,
+    na.personnel_cpp_area,
+    na.personnel_cpp_assistant,
+    na.personnel_cpp_code,
+    na.personnel_cpp_section,
+    na.personnel_cpp_title,
+    na.personnel_cpp_unit,
+    na.personnel_company_name,
+    na.personnel_complex_title,
+    na.personnel_education_level_title,
+    na.personnel_first_name,
+    na.personnel_id,
+    na.personnel_job_no,
+    na.personnel_job_title,
+    na.personnel_last_name,
+    na.personnel_national_code,
+    na.personnel_emp_no,
+    na.personnel_post_code,
+    na.personnel_post_grade_code,
+    na.personnel_post_grade_title,
+    na.personnel_post_title,
+    CASE
+            WHEN passed.class_student_scores_state_id IN (
+                400,
+                401
+            ) THEN 216
+            ELSE 399
+        END
+    AS is_passed,
+    tbl_post_grade.c_title_fa,
+    tbl_post_grade.c_code
+FROM
+    view_personnel_course_na_report na
+    LEFT JOIN view_student_classstudent_class_term_course passed ON na.personnel_national_code = passed.student_national_code
+                                                                    AND na.course_id = passed.course_id
+                                                                    AND passed.class_student_scores_state_id IN (
+        400,
+        401
+    )
+    LEFT JOIN tbl_post_grade ON passed.personnel_post_grade_code = tbl_post_grade.c_code
+    ]]>
+        </createView>
+    </changeSet>
+
 
 </databaseChangeLog>

@@ -1055,4 +1055,15 @@
     <changeSet author="poursalehi_mos (generated)" id="1593510287630-453">
         <addForeignKeyConstraint baseColumnNames="f_post_id" baseTableName="tbl_post_training_post" constraintName="FKt0mrby132jl6o8dm1nie0q18v" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_post" validate="true"/>
     </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1594445089907-449">
+        <addForeignKeyConstraint baseColumnNames="f_work_group" baseTableName="tbl_generic_permission" constraintName="FK7ub7vs3l7q9tyx1h4yrd50iac" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_work_group" validate="true"/>
+    </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1594445089907-450">
+        <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_generic_permission" constraintName="FKhskwfgwsnjgxqbrhcb6rxr5p9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1594445089907-451">
+        <addForeignKeyConstraint baseColumnNames="e_enabled" baseTableName="tbl_generic_permission" constraintName="FKre7ps1qeoktyia8lkj6l83qu3" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

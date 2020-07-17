@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Subselect("select * from view_personnel_course_passed_na_report")
+@Subselect("select * from view_personnel_course_passed_na_report_v2")
 public class PersonnelCoursePassedNAReportView implements Serializable {
 
     @EmbeddedId
@@ -96,6 +96,12 @@ public class PersonnelCoursePassedNAReportView implements Serializable {
 
     @Column(name = "personnel_cpp_title")
     private String personnelCcpTitle;
+
+    @Column(name = "C_CODE")
+    private String personnelPostGradeLvlCode;
+
+    @Column(name = "C_TITLE_FA")
+    private String personnelPostGradeLvlTitle;
 
     ///////////////////////////////////////////////////course///////////////////////////////////////
 

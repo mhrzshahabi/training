@@ -604,7 +604,7 @@
             DynamicForm_MSReport.clearFieldErrors("firstDate_MSReport", true);
 
             if (DynamicForm_MSReport.getValue("firstDate_MSReport") === undefined || !checkDate(DynamicForm_MSReport.getValue("firstDate_MSReport"))) {
-                DynamicForm_MSReport.addFieldErrors("firstDate_MSReport", "<spring:message code='msg.correct.date'/>", true);
+                DynamicForm_MSReport.addFieldErrors("firstDate_MSReport", "<spring:message code="msg.correct.date"/>", true);
             } else {
                 DynamicForm_MSReport.clearFieldErrors("firstDate_MSReport", true);
             }
@@ -615,7 +615,7 @@
             DynamicForm_MSReport.clearFieldErrors("secondDate_MSReport", true);
 
             if (DynamicForm_MSReport.getValue("secondDate_MSReport") === undefined || !checkDate(DynamicForm_MSReport.getValue("secondDate_MSReport"))) {
-                DynamicForm_MSReport.addFieldErrors("secondDate_MSReport", "<spring:message code='msg.correct.date'/>", true);
+                DynamicForm_MSReport.addFieldErrors("secondDate_MSReport", "<spring:message code="msg.correct.date"/>", true);
             } else {
                 DynamicForm_MSReport.clearFieldErrors("secondDate_MSReport", true);
             }

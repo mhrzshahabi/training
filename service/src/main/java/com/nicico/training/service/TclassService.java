@@ -120,7 +120,8 @@ public class TclassService implements ITclassService {
             Set<TrainingPlace> set = new HashSet<>(allById);
             tclass.setTrainingPlaceSet(set);
             Tclass save = tclassDAO.save(tclass);
-            saveTargetSocieties(request.gettargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
+            ////disable targetSociety
+           // saveTargetSocieties(request.gettargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
             return modelMapper.map(save, TclassDTO.Info.class);
         } else {
             try {
@@ -138,7 +139,7 @@ public class TclassService implements ITclassService {
     public TclassDTO.Info safeUpdate(Long id, TclassDTO.Update request, HttpServletResponse response) {
         final Optional<Tclass> cById = tclassDAO.findById(id);
         final Tclass tclass = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
-        if (checkDuration(tclass)) {
+//        if (checkDuration(tclass)) {
             List<Long> trainingPlaceIds = request.getTrainingPlaceIds();
             List<TrainingPlace> allById = trainingPlaceDAO.findAllById(trainingPlaceIds);
             Set<TrainingPlace> set = new HashSet<>(allById);
@@ -147,17 +148,17 @@ public class TclassService implements ITclassService {
             modelMapper.map(request, updating);
             updating.setTrainingPlaceSet(set);
             Tclass save = tclassDAO.save(updating);
-           //updateTargetSocieties(save.getTargetSocietyList(), request.getTargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
+//            updateTargetSocieties(save.getTargetSocietyList(), request.getTargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
             return modelMapper.map(save, TclassDTO.Info.class);
-        } else {
-            try {
-                Locale locale = LocaleContextHolder.getLocale();
-                response.sendError(405, messageSource.getMessage("msg.invalid.data", null, locale));
-            } catch (IOException e) {
-                throw new TrainingException(TrainingException.ErrorType.InvalidData);
-            }
-        }
-        return null;
+//        } else {
+//            try {
+//                Locale locale = LocaleContextHolder.getLocale();
+//                response.sendError(405, messageSource.getMessage("msg.invalid.data", null, locale));
+//            } catch (IOException e) {
+//                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+//            }
+//        }
+//        return null;
     }
 
     @Transactional
@@ -193,59 +194,10 @@ public class TclassService implements ITclassService {
 
     @Transactional(readOnly = true)
     @Override
-    public SearchDTO.SearchRs<TclassDTO.Info> search(SearchDTO.SearchRq request) {
+    public SearchDTO.SearchRs<TclassDTO.Info> search(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException {
 
-        long start = System.nanoTime();
-
-        Page<Tclass> all = tclassDAO.findAll(NICICOSpecification.of(request), NICICOPageable.of(request));
-        List<Tclass> list = all.getContent();
-
-        Long totalCount = all.getTotalElements();
-        SearchDTO.SearchRs<TclassDTO.Info> searchRs = null;
-
-        if (totalCount == 0) {
-
-            searchRs = new SearchDTO.SearchRs<>();
-            searchRs.setList(new ArrayList<TclassDTO.Info>());
-
-        } else {
-            List<Long> ids = new ArrayList<>();
-            int len = list.size();
-
-            for (int i = 0; i < len; i++) {
-                ids.add(list.get(i).getId());
-            }
-
-            request.setCriteria(makeNewCriteria("", null, EOperator.or, null));
-            List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
-            SearchDTO.CriteriaRq tmpcriteria = null;
-            int page = 0;
-
-            while (page * 1000 < ids.size()) {
-                page++;
-                criteriaRqList.add(makeNewCriteria("id", ids.subList((page - 1) * 1000, Math.min((page * 1000), ids.size())), EOperator.inSet, null));
-
-            }
-
-            request.setCriteria(makeNewCriteria("", null, EOperator.or, criteriaRqList));
-            request.setStartIndex(null);
-
-
-            searchRs = SearchUtil.search(tclassDAO, request, tclassDAO -> modelMapper.map(tclassDAO,
-                    TclassDTO.Info.class));
-        }
-
-        searchRs.setTotalCount(totalCount);
-
-        long finish = System.nanoTime();
-        long timeElapsed = finish - start;
-
-
-        return searchRs;
-
-
-        //return SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.Info.class));
-    }
+        return BaseService.<Tclass, TclassDTO.Info, TclassDAO>optimizedSearch(tclassDAO, p->modelMapper.map(p, TclassDTO.Info.class), request);
+   }
 
     @Transactional(readOnly = true)
     @Override
@@ -570,7 +522,7 @@ public class TclassService implements ITclassService {
                             Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
                             if (question.isPresent())
                                 questionnaireQuestion = question.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-                            if (answer.getQuestionSource().getCode().equals("2") && question.isPresent()) {
+                            if (answer.getQuestionSource().getCode().equals("3") && question.isPresent()) {
                                 weight = questionnaireQuestion.getWeight();
                             }
                             grade = Double.parseDouble(answer.getAnswer().getValue());

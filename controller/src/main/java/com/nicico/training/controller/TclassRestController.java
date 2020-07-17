@@ -48,7 +48,7 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 @RestController
 @RequestMapping(value = "/api/tclass")
 public class TclassRestController {
-    
+
     private final TclassService tClassService;
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
@@ -59,6 +59,7 @@ public class TclassRestController {
     private final ParameterService parameterService;
     private final IInstituteService instituteService;
     private final TclassDAO tclassDAO;
+    private final WorkGroupService workGroupService;
     private final ViewEvaluationStaticalReportService viewEvaluationStaticalReportService;
 
 
@@ -84,12 +85,14 @@ public class TclassRestController {
         ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.create(request), HttpStatus.CREATED);
 
         //*****check alarms*****
-        if (infoResponseEntity.getStatusCodeValue() == 201) {
-            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
-            classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
-            classAlarmService.alarmCheckListConflict(infoResponseEntity.getBody().getId());
-            classAlarmService.alarmPreCourseTestQuestion(infoResponseEntity.getBody().getId());
-        }
+        ////disable all alarms
+//        if (infoResponseEntity.getStatusCodeValue() == 201) {
+//            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
+//            classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
+//            classAlarmService.alarmCheckListConflict(infoResponseEntity.getBody().getId());
+//            classAlarmService.alarmPreCourseTestQuestion(infoResponseEntity.getBody().getId());
+//            classAlarmService.saveAlarms();
+//        }
         return infoResponseEntity;
     }
 
@@ -101,12 +104,14 @@ public class TclassRestController {
         ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.safeCreate(request, response), HttpStatus.CREATED);
 
         //*****check alarms*****
-        if (infoResponseEntity.getStatusCodeValue() == 201) {
-            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
-            classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
-            classAlarmService.alarmCheckListConflict(infoResponseEntity.getBody().getId());
-            classAlarmService.alarmPreCourseTestQuestion(infoResponseEntity.getBody().getId());
-        }
+        ////disable all alarms
+//        if (infoResponseEntity.getStatusCodeValue() == 201) {
+//            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
+//            classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
+//            classAlarmService.alarmCheckListConflict(infoResponseEntity.getBody().getId());
+//            classAlarmService.alarmPreCourseTestQuestion(infoResponseEntity.getBody().getId());
+//            classAlarmService.saveAlarms();
+//        }
         return infoResponseEntity;
     }
 
@@ -118,10 +123,12 @@ public class TclassRestController {
         ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.safeUpdate(id, request, response), HttpStatus.OK);
 
         //*****check alarms*****
-        if (infoResponseEntity.getStatusCodeValue() == 200) {
-            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
-            classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
-        }
+        ////disable all alarms
+//        if (infoResponseEntity.getStatusCodeValue() == 200) {
+//            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
+//            classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
+//            classAlarmService.saveAlarms();
+//        }
 
         return infoResponseEntity;
     }
@@ -134,10 +141,12 @@ public class TclassRestController {
         ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.update(id, request), HttpStatus.OK);
 
         //*****check alarms*****
-        if (infoResponseEntity.getStatusCodeValue() == 200) {
-            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
-            classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
-        }
+        ////disable all alarms
+//        if (infoResponseEntity.getStatusCodeValue() == 200) {
+//            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
+//            classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
+//            classAlarmService.saveAlarms();
+//        }
 
         return infoResponseEntity;
     }
@@ -147,8 +156,14 @@ public class TclassRestController {
 //    @PreAuthorize("hasAuthority('d_tclass')")
     public ResponseEntity delete(@PathVariable Long id) {
         try {
-            tClassService.delete(id);
-            return new ResponseEntity(HttpStatus.OK);
+            if(workGroupService.isAllowUseId("Tclass",id)){
+                tClassService.delete(id);
+                return new ResponseEntity(HttpStatus.OK);
+            }else{
+                tClassService.delete(id);
+                return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            }
+
         } catch (DataIntegrityViolationException e) {
             return new ResponseEntity<>(
                     new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(),
@@ -172,7 +187,7 @@ public class TclassRestController {
                                                        @RequestParam(value = "_constructor", required = false) String constructor,
                                                        @RequestParam(value = "operator", required = false) String operator,
                                                        @RequestParam(value = "criteria", required = false) String criteria,
-                                                       @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException {
+                                                       @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException, NoSuchFieldException, IllegalAccessException {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
@@ -193,6 +208,8 @@ public class TclassRestController {
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
+
+        request.setCriteria(workGroupService.addPermissionToCriteria("Tclass", request.getCriteria()));
 
         SearchDTO.SearchRs<TclassDTO.Info> response = tClassService.search(request);
 
@@ -226,7 +243,7 @@ public class TclassRestController {
                                                             @RequestParam(value = "_constructor", required = false) String constructor,
                                                             @RequestParam(value = "operator", required = false) String operator,
                                                             @RequestParam(value = "criteria", required = false) String criteria,
-                                                            @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException {
+                                                            @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException, NoSuchFieldException, IllegalAccessException {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
@@ -347,7 +364,7 @@ public class TclassRestController {
     @Loggable
     @PostMapping(value = "/search")
 //    @PreAuthorize("hasAuthority('r_tclass')")
-    public ResponseEntity<SearchDTO.SearchRs<TclassDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
+    public ResponseEntity<SearchDTO.SearchRs<TclassDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException {
         return new ResponseEntity<>(tClassService.search(request), HttpStatus.OK);
     }
 
@@ -439,7 +456,9 @@ public class TclassRestController {
     public ResponseEntity updatePreCourseTestQuestions(@PathVariable Long classId, @RequestBody List<String> request) {
         try {
             tClassService.updatePreCourseTestQuestions(classId, request);
-            classAlarmService.alarmPreCourseTestQuestion(classId);
+            ////disable all alarms
+//            classAlarmService.alarmPreCourseTestQuestion(classId);
+//            classAlarmService.saveAlarms();
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);

@@ -17,6 +17,7 @@ import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.SkillDTO;
 import com.nicico.training.service.SkillService;
 
+import com.nicico.training.service.WorkGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
@@ -53,6 +54,7 @@ public class SkillRestController {
 
     private final ReportUtil reportUtil;
     private final SkillService skillService;
+    private final WorkGroupService workGroupService;
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
 
@@ -76,11 +78,11 @@ public class SkillRestController {
     @Loggable
     @PostMapping
 //    @PreAuthorize("hasAuthority('c_skill')")
-    public ResponseEntity<SkillDTO.Info> create(@RequestBody Object request,HttpServletResponse response) {
+    public ResponseEntity<SkillDTO.Info> create(@RequestBody Object request, HttpServletResponse response) {
         SkillDTO.Create create = (new ModelMapper()).map(request, SkillDTO.Create.class);
         try {
             create.setCode(skillService.getMaxSkillCode(create.getCode()));
-            return new ResponseEntity<>(skillService.create(create,response), HttpStatus.CREATED);
+            return new ResponseEntity<>(skillService.create(create, response), HttpStatus.CREATED);
 
 
         } catch (Exception e) {
@@ -114,7 +116,14 @@ public class SkillRestController {
         try {
 //            flag = skillService.isSkillDeletable(id);
 //            if (flag)
-            skillService.delete(id);
+
+            if(workGroupService.isAllowUseId("Skill",id)){
+                skillService.delete(id);
+            }else{
+                flag = false;
+                httpStatus = HttpStatus.UNAUTHORIZED;
+            }
+
         } catch (Exception e) {
             flag = false;
             httpStatus = HttpStatus.NO_CONTENT;
@@ -179,6 +188,8 @@ public class SkillRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
+        request.setCriteria(workGroupService.addPermissionToCriteria("Skill", request.getCriteria()));
+
         SearchDTO.SearchRs<SkillDTO.Info> response = skillService.searchWithoutPermission(request);
 
         final SkillDTO.SpecRs specResponse = new SkillDTO.SpecRs();
@@ -238,8 +249,6 @@ public class SkillRestController {
     }
 
     // ------------------------------
-
-
 
 
     @Loggable
@@ -420,7 +429,7 @@ public class SkillRestController {
 
 
     @Loggable
-   // @GetMapping(value = {"/print-all/{type}"})
+    // @GetMapping(value = {"/print-all/{type}"})
     public void print(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
         Map<String, Object> params = new HashMap<>();
         params.put(ConstantVARs.REPORT_TYPE, type);
@@ -447,10 +456,12 @@ public class SkillRestController {
         JSONObject jsonObject = new JSONObject(sortBy);
         String field = jsonObject.getString("property");
         String direction = jsonObject.getString("direction");
-        if(direction.equals("descending")){
+        if (direction.equals("descending")) {
             field = "-" + field;
         }
         searchRq.setSortBy(field);
+
+        searchRq.setCriteria(workGroupService.addPermissionToCriteria("Skill", searchRq.getCriteria()));
         SearchDTO.SearchRs<SkillDTO.Info> searchSkill = skillService.searchWithoutPermission(searchRq);
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", dateUtil.todayDate());

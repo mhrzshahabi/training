@@ -1,6 +1,7 @@
 package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.GenericPermissionDTO;
 import com.nicico.training.dto.PermissionDTO;
 import com.nicico.training.dto.WorkGroupDTO;
 import com.nicico.training.model.WorkGroup;
@@ -18,8 +19,9 @@ public interface IWorkGroupService {
     WorkGroupDTO.Info update(Long id, WorkGroupDTO.Update request);
 
 
-    List<PermissionDTO.Info> editPermissionList(PermissionDTO.CreateOrUpdate[] rq, Long workGroupId);
+    List<GenericPermissionDTO.Info> editGenericPermissionList(GenericPermissionDTO.Update rq, Long workGroupId);
 
+    List<PermissionDTO.Info> editPermissionList(PermissionDTO.CreateOrUpdate[] rq, Long workGroupId);
 
     void deleteAll(List<Long> request);
 
@@ -32,6 +34,12 @@ public interface IWorkGroupService {
 
     List<PermissionDTO.PermissionFormData> getEntityAttributesList(List<String> entityList);
 
+    List<GenericPermissionDTO.Info> getAllGenericPermissions(Long workGroupId);
+
 
     SearchDTO.CriteriaRq applyPermissions(Class entity, Long userId);
+
+    SearchDTO.CriteriaRq addPermissionToCriteria(String entity, SearchDTO.CriteriaRq criteriaRq);
+
+    boolean isAllowUseId(String entity,Long Id);
 }

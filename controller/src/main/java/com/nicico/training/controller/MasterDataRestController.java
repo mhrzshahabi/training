@@ -7,22 +7,13 @@
 
 package com.nicico.training.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonObject;
-import com.nicico.copper.common.dto.grid.GridResponse;
 import com.nicico.copper.common.dto.grid.TotalResponse;
-import com.nicico.copper.common.dto.search.EOperator;
-import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CompetenceDTO;
 import com.nicico.training.dto.PersonnelDTO;
-import com.nicico.training.dto.PostDTO;
 import com.nicico.training.dto.ViewPostDTO;
 import com.nicico.training.service.MasterDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
@@ -31,13 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -130,5 +115,42 @@ public class MasterDataRestController {
             parents.addAll(findDeparmentAnccestor(anccestorId, parent.getParentId()));
         }
         return parents;
+    }
+
+    ////////////////////////////////////////////////////
+    //Amin HK
+
+    @GetMapping(value = "getIDPersonByNationalCode/{nationalCode}")
+    public ResponseEntity<List<PersonnelDTO.Info>> getIDPersonByNationalCode(@PathVariable String nationalCode) throws IOException {
+        List<PersonnelDTO.Info> results=modelMapper.map(masterDataService.getPersonByNationalCode(nationalCode), new TypeToken<List<PersonnelDTO.Info>>(){}.getType());
+        return new ResponseEntity<>(results , HttpStatus.OK);
+    }
+
+    /*@GetMapping(value = "parentEmployeeById/{peopleId}")
+    public ResponseEntity<PersonnelDTO.Info> getParentEmployeeById(@PathVariable Long peopleId) throws IOException {
+        PersonnelDTO.Info result= modelMapper.map(masterDataService.getParentEmployee(peopleId), new TypeToken<PersonnelDTO.Info>(){}.getType());
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }*/
+
+    @GetMapping(value = "parentEmployee/{nationalCode}")
+    public ResponseEntity<PersonnelDTO.Info> getParentEmployee(@PathVariable String nationalCode) throws IOException {
+        List<PersonnelDTO.Info> tempResult=modelMapper.map(masterDataService.getPersonByNationalCode(nationalCode), new TypeToken<List<PersonnelDTO.Info>>(){}.getType());
+
+        PersonnelDTO.Info result= modelMapper.map(masterDataService.getParentEmployee(tempResult.get(0).getId()), new TypeToken<PersonnelDTO.Info>(){}.getType());
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    /*@GetMapping(value = "siblingsEmployeeById/{peopleId}")
+    public ResponseEntity<List<PersonnelDTO.Info>> getSiblingsEmployeeById(@PathVariable Long peopleId) throws IOException {
+        List<PersonnelDTO.Info> results=modelMapper.map(masterDataService.getSiblingsEmployee(peopleId), new TypeToken<List<PersonnelDTO.Info>>(){}.getType());
+        return new ResponseEntity<>(results , HttpStatus.OK);
+    }*/
+
+    @GetMapping(value = "siblingsEmployee/{nationalCode}")
+    public ResponseEntity<List<PersonnelDTO.Info>> getSiblingsEmployee(@PathVariable String nationalCode) throws IOException {
+        List<PersonnelDTO.Info> tempResult=modelMapper.map(masterDataService.getPersonByNationalCode(nationalCode), new TypeToken<List<PersonnelDTO.Info>>(){}.getType());
+
+        List<PersonnelDTO.Info> results=modelMapper.map(masterDataService.getSiblingsEmployee(tempResult.get(0).getId()), new TypeToken<List<PersonnelDTO.Info>>(){}.getType());
+        return new ResponseEntity<>(results , HttpStatus.OK);
     }
 }

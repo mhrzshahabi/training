@@ -54,7 +54,7 @@
             return replaceString;
         };
 
-        function groupFilter(title,inputURL,func,isCheck=false){
+        function groupFilter(title,inputURL,func,isCheck=false,addStudentsInGroupInsert=false){
             TabSet_GroupInsert_JspStudent=isc.TabSet.create({
                 ID:"leftTabSet",
                 autoDraw:false,
@@ -83,6 +83,10 @@
                                     ID:"DynamicForm_GroupInsert_Textbox_JspStudent",
                                     title:"",
                                     /*direction:""*/
+                                    transformPastedValue:function(item, form, pastedValue)
+                                    {
+                                        item.setValue(pastedValue.split('\n').filter(p=>p!='').join(',')) ;
+                                    }
 
                                 },
                                 {
@@ -94,7 +98,9 @@
                                         if(value != null&& value != "" && typeof(value) != "undefined")
                                         {
                                             value=value.toEnglishDigit();
-                                            let personnels=(value.indexOf('،')>-1)?value.split('،'):value.split(',');
+                                            value=value.replace(/،/g,',');
+
+                                            let personnels=value.split(',');
                                             let records=[];
                                             let len=personnels.size();
 
@@ -117,7 +123,7 @@
                                             GroupSelectedPersonnelsLG_student.fetchData();
 
                                             if(records.length > 0 && isCheck){
-                                                func(inputURL,records.map(function(item) {return item.personnelNo;}));
+                                                func(inputURL,records.map(function(item) {return item.personnelNo;}),addStudentsInGroupInsert);
                                             }
 
                                             DynamicForm_GroupInsert_Textbox_JspStudent.setValue('');
@@ -362,7 +368,7 @@
                                     }
 
                                     if (func) {
-                                        func(inputURL,result);
+                                        func(inputURL,result,true);
                                     }
                                 }
                             }), isc.IButtonCancel.create({
@@ -749,6 +755,7 @@
     const viewPostGradeGroupUrl = rootUrl + "/view-post-grade-group";
     const masterDataUrl = rootUrl + "/masterData";
     const viewEvaluationStaticalReportUrl = rootUrl + "/view-evaluation-statical-report";
+    const viewTeacherReportUrl = rootUrl + "/view-teacher-report/"
     const sendMessageUrl = rootUrl + "/sendMessage";
     const attendanceReportUrl = rootUrl + "/attendanceReport";
     const classPerformanceReport = rootUrl + "/classPerformance/";
@@ -756,6 +763,7 @@
     const controlReportUrl = rootUrl + "/controlReport";
     const presenceReportUrl = rootUrl + "/presence-report";
     const continuousStatusReportViewUrl = rootUrl + "/continuous-status-report-view";
+    const departmentUrl = rootUrl + "/department";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -1183,15 +1191,15 @@
                 {isSeparator: true},
                 </sec:authorize>
 
-
-                <sec:authorize access="hasAuthority('Menu_Organizational_chart')">
-                {
-                    title: "<spring:message code="organizational.chart"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/organizationalChart"/>");
-                    }
-                },
-                </sec:authorize>
+////disable targetSociety
+<%--                <sec:authorize access="hasAuthority('Menu_Organizational_chart')">--%>
+<%--                {--%>
+<%--                    title: "<spring:message code="organizational.chart"/>",--%>
+<%--                    click: function () {--%>
+<%--                        createTab(this.title, "<spring:url value="web/organizationalChart"/>");--%>
+<%--                    }--%>
+<%--                },--%>
+<%--                </sec:authorize>--%>
             ]
         }),
     });

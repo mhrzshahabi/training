@@ -538,8 +538,11 @@
 
     var VM_JspClass = isc.ValuesManager.create({
         validate : function () {
-            DynamicForm_Class_JspClass.getField("trainingPlaceIds").validate();
-            return this.Super("validate", arguments);
+            let place = DynamicForm_Class_JspClass.getField("trainingPlaceIds").validate();
+            let targets = DynamicForm_Class_JspClass.getField("targetSocieties").validate();
+            if(place && targets)
+                return this.Super("validate", arguments);
+            return false;
         }
     });
 
@@ -1044,8 +1047,10 @@
                 },
             validate: function(){
                 if(this._value === null || this._value.length <= 0){
+                    DynamicForm_Class_JspClass.addFieldErrors("trainingPlaceIds", "<spring:message code="validator.field.is.required"/>", true);
                     return false;
                     }
+                DynamicForm_Class_JspClass.clearFieldErrors("trainingPlaceIds", true);
                 return this.Super("validate",arguments);
                 }
             },
@@ -1189,9 +1194,10 @@
                 type: "radioGroup",
                 vertical: false,
                 fillHorizontalSpace: true,
-                defaultValue: "371",
+                defaultValue: "372",
                 valueMap: {
-                    "371": "واحد",
+                    ////disable targetSociety
+                    // "371": "واحد",
                     "372": "سایر",
                 },
                 change: function (form, item, value, oldValue) {
@@ -1220,7 +1226,8 @@
                 name: "targetSocieties",
                 colSpan: 2,
                 rowSpan: 1,
-                required : false,
+                ////disable targetSociety
+                required :false,
                 type: "SelectItem",
                 pickListProperties: {
                     showFilterEditor: false
@@ -1232,13 +1239,16 @@
                 wrapTitle: false,
                 optionDataSource: DataSource_TargetSociety_List,
                 displayField: "title",
-                valueField: "societyId"
-                // ,
-                // validate: function(){
-                //     if(this._value === null || this._value.length <= 0)
-                //         return false;
-                //     return this.Super("validate",arguments);
-                // }
+                valueField: "societyId",
+                ////disable targetSociety
+                <%--validate: function(){--%>
+                <%--    if(this._value === null || this._value.length <= 0){--%>
+                <%--        DynamicForm_Class_JspClass.addFieldErrors("targetSocieties", "<spring:message code="validator.field.is.required"/>", true);--%>
+                <%--        return false;--%>
+                <%--    }--%>
+                <%--    DynamicForm_Class_JspClass.clearFieldErrors("targetSocieties", true);--%>
+                <%--    return this.Super("validate",arguments);--%>
+                <%--}--%>
             },
             {
                 name: "addtargetSociety",
@@ -1261,7 +1271,6 @@
                             });
                     }else if(DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").getValue() === "371"){
                         showOrganizationalChart(setSocieties);
-
                     }
                 }
             },
@@ -1361,14 +1370,9 @@
                 }
             },
             {
-                name: "autoValid",
-                type: "checkbox",
-                defaultValue: true,
-                title: "<spring:message code='auto.session.made'/>",
-                endRow: true,
-// titleOrientation:"top",
-                labelAsTitle: true,
-                colSpan: 2
+                type: "BlurbItem",
+                value: " ",
+                colSpan: 2,
             },
             {
                 name: "startDate",
@@ -1555,6 +1559,21 @@
                     } else {
                         form.clearFieldErrors("endDate", true);
                     }
+                }
+            },
+            {
+                name: "autoValid",
+                type: "boolean",
+                defaultValue: false,
+                enabled:false,
+                title: "<spring:message code='auto.session.made'/>" + " : ",
+                endRow: true,
+                titleOrientation:"top",
+                align:"right",
+                labelAsTitle: true,
+                colSpan: 2,
+                changed : function () {
+                    weekDateActivation(this._value);
                 }
             },
             {
@@ -2389,7 +2408,8 @@
         } else {
             singleTargetScoiety = [];
             etcTargetSociety = [];
-            getTargetSocieties(record.id);
+            ////disable targetSociety
+            //getTargetSocieties(record.id);
             RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list";
             RestDataSource_Teacher_JspClass.invalidateCache();
             RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + record.instituteId + "/trainingPlaces";
@@ -2417,7 +2437,12 @@
                     DynamicForm_Class_JspClass.getItem("preCourseTest").hide();
                 } else
                     DynamicForm_Class_JspClass.getItem("preCourseTest").show();
-                autoTimeActivation(ListGrid_session.getData().localData.length > 0 ? false : true);
+
+                isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "classHasAnySession/" + record.id, "GET", null, (resp)=>{;
+                    let result=resp.httpResponseText==Boolean(true).toString() ? true : false;
+                    autoTimeActivation(result ? false : true);
+                }));
+
             } else {
                 classMethod = "POST";
                 url = classUrl;
@@ -2977,6 +3002,7 @@
                     DataSource_TargetSociety_List.testData.forEach(function(currentValue, index, arr){DataSource_TargetSociety_List.removeData(currentValue)});
                     // DynamicForm_Class_JspClass.getItem("addtargetSociety").hide();
                     DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue("371");
+                    DynamicForm_Class_JspClass.getItem("targetSocieties")._value = undefined;
                     JSON.parse(resp.data).forEach(
                         function (currentValue, index, arr) {
                             if (currentValue.targetSocietyTypeId === 371) {
@@ -3008,22 +3034,32 @@
         chosenDepartments_JspOC.data.forEach(function (currentValue, index, arr) {
             DataSource_TargetSociety_List.addData({societyId: currentValue.id, title: currentValue.title});
             singleTargetScoiety.add({societyId: currentValue.id, title: currentValue.title});
-            selectedSocieties.add(currentValue.id);
+            // selectedSocieties.add(currentValue.id);//don't delet !!!!
         });
-        // singleTargetScoiety.forEach(function (currentValue, index, arr) {selectedSocieties.add(currentValue.societyId);});
+        singleTargetScoiety.forEach(function (currentValue, index, arr) {selectedSocieties.add(currentValue.societyId);});
         DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(selectedSocieties);
     }
 
     function autoTimeActivation(active = true) {
-        var times = ["autoValid",
+        if(active){
+            DynamicForm1_Class_JspClass.getField("autoValid").enable();
+        }else if(!active){
+            DynamicForm1_Class_JspClass.getField("autoValid").disable();
+        }
+        weekDateActivation(active);
+    }
+
+    function weekDateActivation(active = true){
+        var times = [
             "first", "second", "third", "fourth", "fifth",
             "saturday", "sunday", "monday", "tuesday" ,"wednesday", "thursday", "friday"];
-        if(active){
+
+        if(active && DynamicForm1_Class_JspClass.getField("autoValid")._value){
             times.forEach(
                 function (currentValue, index, arr) {
                     DynamicForm1_Class_JspClass.getField(currentValue).enable();
                 });
-        }else if(!active){
+        }else if(!active || !DynamicForm1_Class_JspClass.getField("autoValid")._value){
             times.forEach(
                 function (currentValue, index, arr) {
                     DynamicForm1_Class_JspClass.getField(currentValue).disable();
