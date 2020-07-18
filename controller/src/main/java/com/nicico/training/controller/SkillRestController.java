@@ -97,12 +97,18 @@ public class SkillRestController {
         return skillService.getMaxSkillCode(code);
     }
 
+    @Loggable
+    @GetMapping(value = "/editSkill/{id}")
+    public boolean editSkill(@PathVariable Long id) throws Exception {
+        return skillService.editSkill(id);
+    }
+
 
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_skill')")
-    public ResponseEntity<SkillDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
-        return new ResponseEntity<>(skillService.update(id, request), HttpStatus.OK);
+    public ResponseEntity<SkillDTO.Info> update(@PathVariable Long id, @RequestBody Object request,HttpServletResponse response) {
+        return new ResponseEntity<>(skillService.update(id, request,response), HttpStatus.OK);
     }
 
     @Loggable

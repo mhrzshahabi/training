@@ -55,6 +55,7 @@ public class CheckListItemRestController {
         ////because is to long , I disabled this part, if you want to use this part you must use for update and delete to
         ////if (infoResponseEntity.getStatusCodeValue() == 201) {
         ////    classAlarmService.alarmCheckListConflict(0L);
+        ////    classAlarmService.saveAlarms();
         ////}
         return infoResponseEntity;
     }

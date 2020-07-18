@@ -9,8 +9,10 @@ import com.nicico.training.repository.AlarmDAO;
 import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.TclassDAO;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.formula.ptg.MissingArgPtg;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.omg.CORBA.PRIVATE_MEMBER;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -22,10 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +37,11 @@ public class ClassAlarmService implements IClassAlarm {
     private final TclassDAO tclassDAO;
     private final ClassStudentDAO classStudentDAO;
     private MessageSource messageSource;
+    private final List<ClassAlarmDTO> alarmQueue;
+    private final List<ClassAlarmDTO> alarmQueueType;
+    private Long classIdQueue;
+    private final Map<String, Long> alarmQueueDelete;
+    private final Map<String, Long> alarmConflictQueueDelete;
 
 //////  '' AS alarmTypeTitleFa, '' AS alarmTypeTitleEn, tb1.f_class_id AS classId, tb1.id AS sessionId, null AS teacherId, tb1.classStudentId AS studentId
 //////  null AS instituteId, null AS trainingPlaceId, null AS reservationId, tb1.f_class_id AS targetRecordId,'' AS tabName, '' AS pageAddress,
@@ -89,10 +93,9 @@ public class ClassAlarmService implements IClassAlarm {
                 }
 
                 if (alarmList.size() > 0) {
-                    saveAlarms(alarmList, class_id);
+                    addAlarmsToQueue(alarmList, class_id);
                 } else {
-                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("SumSessionsTimes", class_id);
-                    setClassHasWarningStatus(class_id);
+                    addAlarmsToDeleteQueue("SumSessionsTimes", class_id);
                 }
             }
         } catch (Exception ex) {
@@ -151,10 +154,9 @@ public class ClassAlarmService implements IClassAlarm {
                 }
 
                 if (alarmList.size() > 0) {
-                    saveAlarms(alarmList, class_id);
+                    addAlarmsToQueue(alarmList, class_id);
                 } else {
-                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("ClassCapacity", class_id);
-                    setClassHasWarningStatus(class_id);
+                    addAlarmsToDeleteQueue("ClassCapacity", class_id);
                 }
             }
         } catch (Exception ex) {
@@ -243,13 +245,12 @@ public class ClassAlarmService implements IClassAlarm {
                 }
 
                 if (alarmList.size() > 0) {
-                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("TeacherConflict", class_id);
-                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict("TeacherConflict", class_id);
-                    saveAlarms(alarmList, class_id);
+                    addAlarmsToDeleteQueue("TeacherConflict", class_id);
+                    addAlarmsToDeleteConflictQueue("TeacherConflict", class_id);
+                    addAlarmsToQueue(alarmList, class_id);
                 } else {
-                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("TeacherConflict", class_id);
-                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict("TeacherConflict", class_id);
-                    setClassHasWarningStatus(class_id);
+                    addAlarmsToDeleteQueue("TeacherConflict", class_id);
+                    addAlarmsToDeleteConflictQueue("TeacherConflict", class_id);
                 }
             }
         } catch (Exception ex) {
@@ -391,13 +392,12 @@ public class ClassAlarmService implements IClassAlarm {
                 }
 
                 if (alarmList.size() > 0) {
-                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("StudentConflict", class_id);
-                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict("StudentConflict", class_id);
-                    saveAlarms(alarmList, class_id);
+                    addAlarmsToDeleteQueue("StudentConflict", class_id);
+                    addAlarmsToDeleteConflictQueue("StudentConflict", class_id);
+                    addAlarmsToQueue(alarmList, class_id);
                 } else {
-                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("StudentConflict", class_id);
-                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict("StudentConflict", class_id);
-                    setClassHasWarningStatus(class_id);
+                    addAlarmsToDeleteQueue("StudentConflict", class_id);
+                    addAlarmsToDeleteConflictQueue("StudentConflict", class_id);
                 }
             }
         } catch (Exception ex) {
@@ -492,13 +492,12 @@ public class ClassAlarmService implements IClassAlarm {
                 }
 
                 if (alarmList.size() > 0) {
-                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("TrainingPlaceConflict", class_id);
-                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict("TrainingPlaceConflict", class_id);
-                    saveAlarms(alarmList, class_id);
+                    addAlarmsToDeleteQueue("TrainingPlaceConflict", class_id);
+                    addAlarmsToDeleteConflictQueue("TrainingPlaceConflict", class_id);
+                    addAlarmsToQueue(alarmList, class_id);
                 } else {
-                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("TrainingPlaceConflict", class_id);
-                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict("TrainingPlaceConflict", class_id);
-                    setClassHasWarningStatus(class_id);
+                    addAlarmsToDeleteQueue("TrainingPlaceConflict", class_id);
+                    addAlarmsToDeleteConflictQueue("TrainingPlaceConflict", class_id);
                 }
             }
         } catch (Exception ex) {
@@ -568,10 +567,9 @@ public class ClassAlarmService implements IClassAlarm {
 //                ////}
 //
 //                if (alarmList.size() > 0) {
-//                    saveAlarms(alarmList, class_id);
+//                    addAlarmsToQueue(alarmList, class_id);
 //                } else {
-//                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("CheckListConflict", class_id);
-//                    setClassHasWarningStatus(class_id);
+//                    addAlarmsToDeleteQueue("CheckListConflict", class_id);
 //                }
 //            }
 //        } catch (Exception ex) {
@@ -607,10 +605,10 @@ public class ClassAlarmService implements IClassAlarm {
                 }
 
                 if (alarmList.size() > 0) {
-                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("PreCourseTestQuestion", class_id);
-                    saveAlarms(alarmList, class_id);
+                    addAlarmsToDeleteQueue("PreCourseTestQuestion", class_id);
+                    addAlarmsToQueue(alarmList, class_id);
                 } else {
-                    alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId("PreCourseTestQuestion", class_id);
+                    addAlarmsToDeleteQueue("PreCourseTestQuestion", class_id);
                     setClassHasWarningStatus(class_id);
                 }
             }
@@ -764,15 +762,63 @@ public class ClassAlarmService implements IClassAlarm {
     //*********************************
 
     //****************save created alarms*****************
+
     @Transactional
-    public void saveAlarms(List<ClassAlarmDTO> alarmList, Long class_id) {
+    public void addAlarmsToQueue(List<ClassAlarmDTO> alarmList, Long class_id) {
 
-        alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdAndSessionIdAndTeacherIdAndStudentIdAndInstituteIdAndTrainingPlaceIdAndReservationIdAndClassIdConflictAndSessionIdConflictAndInstituteIdConflictAndTrainingPlaceIdConflictAndReservationIdConflict(alarmList.get(0).getAlarmTypeTitleEn(), alarmList.get(0).getClassId(), alarmList.get(0).getSessionId(), alarmList.get(0).getTeacherId(), alarmList.get(0).getStudentId(), alarmList.get(0).getInstituteId(), alarmList.get(0).getTrainingPlaceId(), alarmList.get(0).getReservationId(), alarmList.get(0).getClassIdConflict(), alarmList.get(0).getSessionIdConflict(), alarmList.get(0).getInstituteIdConflict(), alarmList.get(0).getTrainingPlaceIdConflict(), alarmList.get(0).getReservationIdConflict());
+        if (alarmList.size() > 0) {
+            alarmQueue.addAll(alarmList);
+            alarmQueueType.add(alarmList.get(0));
+            classIdQueue = class_id;
+        }
+    }
 
-        alarmDAO.saveAll(modelMapper.map(alarmList, new TypeToken<List<Alarm>>() {
-        }.getType()));
+    @Transactional
+    public void addAlarmsToDeleteQueue(String alarmType, Long class_id) {
+        alarmQueueDelete.put(alarmType, class_id);
+    }
 
-        setClassHasWarningStatus(class_id);
+    @Transactional
+    public void addAlarmsToDeleteConflictQueue(String alarmType, Long class_id) {
+        alarmConflictQueueDelete.put(alarmType, class_id);
+    }
+
+
+    @Transactional
+    public void saveAlarms() {
+
+        Boolean alarmChanged = false;
+
+        for (Map.Entry<String, Long> alarmForDelete : alarmQueueDelete.entrySet()) {
+            alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId(alarmForDelete.getKey(), alarmForDelete.getValue());
+            alarmChanged =true;
+        }
+
+        for (Map.Entry<String, Long> alarmConflictForDelete : alarmConflictQueueDelete.entrySet()) {
+            alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict(alarmConflictForDelete.getKey(), alarmConflictForDelete.getValue());
+            alarmChanged =true;
+        }
+
+        if (alarmQueue.size() > 0 || alarmQueueType.size() > 0) {
+            for (ClassAlarmDTO classAlarmDTO : alarmQueueType)
+                alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdAndSessionIdAndTeacherIdAndStudentIdAndInstituteIdAndTrainingPlaceIdAndReservationIdAndClassIdConflictAndSessionIdConflictAndInstituteIdConflictAndTrainingPlaceIdConflictAndReservationIdConflict(classAlarmDTO.getAlarmTypeTitleEn(), classAlarmDTO.getClassId(), classAlarmDTO.getSessionId(), classAlarmDTO.getTeacherId(), classAlarmDTO.getStudentId(), classAlarmDTO.getInstituteId(), classAlarmDTO.getTrainingPlaceId(), classAlarmDTO.getReservationId(), classAlarmDTO.getClassIdConflict(), classAlarmDTO.getSessionIdConflict(), classAlarmDTO.getInstituteIdConflict(), classAlarmDTO.getTrainingPlaceIdConflict(), classAlarmDTO.getReservationIdConflict());
+
+            alarmDAO.saveAll(modelMapper.map(alarmQueue, new TypeToken<List<Alarm>>() {
+            }.getType()));
+
+            alarmChanged =true;
+        }
+
+        if(alarmChanged)
+        {
+            setClassHasWarningStatus(classIdQueue);
+
+            alarmQueueDelete.clear();
+            alarmConflictQueueDelete.clear();
+            alarmQueue.clear();
+            alarmQueueType.clear();
+            classIdQueue = null;
+        }
     }
     //*********************************
 
@@ -780,7 +826,7 @@ public class ClassAlarmService implements IClassAlarm {
     public void setClassHasWarningStatus(Long class_id) {
 
         //*****this method check all not ended class and set alarm status for them*****
-        tclassDAO.updateAllClassHasWarning();
+        tclassDAO.updateAllClassHasWarning(class_id);
 //        if (class_id == 0L) {
 //            //*****this method check all not ended class and set alarm status for them*****
 //            tclassDAO.updateAllClassHasWarning();
@@ -1785,7 +1831,7 @@ public class ClassAlarmService implements IClassAlarm {
             if (classStudentDAO.countClassStudentsByTclassId(class_id) == 0)
                 endingClassAlarm.append("در کلاس هیچ فراگیری وجود ندارد.<br />");
 
-                endingClassAlarm.append(AlarmList.length() > 0 ? "قبل از پایان کلاس " + AlarmList.toString() + " را بررسی و تکمیل نمایید." : "");
+            endingClassAlarm.append(AlarmList.length() > 0 ? "قبل از پایان کلاس " + AlarmList.toString() + " را بررسی و تکمیل نمایید." : "");
 
 
             //*****score alarm*****

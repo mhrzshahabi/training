@@ -1194,9 +1194,10 @@
                 type: "radioGroup",
                 vertical: false,
                 fillHorizontalSpace: true,
-                defaultValue: "371",
+                defaultValue: "372",
                 valueMap: {
-                    "371": "واحد",
+                    ////disable targetSociety
+                    // "371": "واحد",
                     "372": "سایر",
                 },
                 change: function (form, item, value, oldValue) {
@@ -1225,7 +1226,8 @@
                 name: "targetSocieties",
                 colSpan: 2,
                 rowSpan: 1,
-                required : true,
+                ////disable targetSociety
+                required :false,
                 type: "SelectItem",
                 pickListProperties: {
                     showFilterEditor: false
@@ -1238,14 +1240,15 @@
                 optionDataSource: DataSource_TargetSociety_List,
                 displayField: "title",
                 valueField: "societyId",
-                validate: function(){
-                    if(this._value === null || this._value.length <= 0){
-                        DynamicForm_Class_JspClass.addFieldErrors("targetSocieties", "<spring:message code="validator.field.is.required"/>", true);
-                        return false;
-                    }
-                    DynamicForm_Class_JspClass.clearFieldErrors("targetSocieties", true);
-                    return this.Super("validate",arguments);
-                }
+                ////disable targetSociety
+                <%--validate: function(){--%>
+                <%--    if(this._value === null || this._value.length <= 0){--%>
+                <%--        DynamicForm_Class_JspClass.addFieldErrors("targetSocieties", "<spring:message code="validator.field.is.required"/>", true);--%>
+                <%--        return false;--%>
+                <%--    }--%>
+                <%--    DynamicForm_Class_JspClass.clearFieldErrors("targetSocieties", true);--%>
+                <%--    return this.Super("validate",arguments);--%>
+                <%--}--%>
             },
             {
                 name: "addtargetSociety",
@@ -2405,7 +2408,8 @@
         } else {
             singleTargetScoiety = [];
             etcTargetSociety = [];
-            getTargetSocieties(record.id);
+            ////disable targetSociety
+            //getTargetSocieties(record.id);
             RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list";
             RestDataSource_Teacher_JspClass.invalidateCache();
             RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + record.instituteId + "/trainingPlaces";

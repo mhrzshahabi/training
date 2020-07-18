@@ -59,9 +59,11 @@ public class ClassSessionRestController {
     @PostMapping(value = "/generateSessions/{classId}")
     public void generateSessions(@PathVariable Long classId, @Validated @RequestBody TclassDTO.Create autoSessionsRequirement, HttpServletResponse response) {
         classSessionService.generateSessions(classId, autoSessionsRequirement, response);
-        classAlarmService.alarmSumSessionsTimes(classId);
-        classAlarmService.alarmTeacherConflict(classId);
-        classAlarmService.alarmTrainingPlaceConflict(classId);
+        ////disable all alarms
+//        classAlarmService.alarmSumSessionsTimes(classId);
+//        classAlarmService.alarmTeacherConflict(classId);
+//        classAlarmService.alarmTrainingPlaceConflict(classId);
+//        classAlarmService.saveAlarms();
     }
 
     //*********************************
@@ -88,12 +90,14 @@ public class ClassSessionRestController {
         ClassSessionDTO.ManualSession create = modelMapper.map(req, ClassSessionDTO.ManualSession.class);
         ResponseEntity<ClassSessionDTO.Info> infoResponseEntity = new ResponseEntity<>(classSessionService.create(create, response), HttpStatus.CREATED);
         //*****check alarms*****
-        if (infoResponseEntity.getStatusCodeValue() == 201) {
-            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getClassId());
-            classAlarmService.alarmTeacherConflict(infoResponseEntity.getBody().getClassId());
-            classAlarmService.alarmStudentConflict(infoResponseEntity.getBody().getClassId());
-            classAlarmService.alarmTrainingPlaceConflict(infoResponseEntity.getBody().getClassId());
-        }
+        ////disable all alarms
+//        if (infoResponseEntity.getStatusCodeValue() == 201) {
+//            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getClassId());
+//            classAlarmService.alarmTeacherConflict(infoResponseEntity.getBody().getClassId());
+//            classAlarmService.alarmStudentConflict(infoResponseEntity.getBody().getClassId());
+//            classAlarmService.alarmTrainingPlaceConflict(infoResponseEntity.getBody().getClassId());
+//            classAlarmService.saveAlarms();
+//        }
 
         return infoResponseEntity;
     }
@@ -106,12 +110,14 @@ public class ClassSessionRestController {
         ClassSessionDTO.Update update = modelMapper.map(request, ClassSessionDTO.Update.class);
         ResponseEntity<ClassSessionDTO.Info> infoResponseEntity = new ResponseEntity<>(classSessionService.update(id, update, response), HttpStatus.OK);
         //*****check alarms*****
-        if (infoResponseEntity.getStatusCodeValue() == 200) {
-            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getClassId());
-            classAlarmService.alarmTeacherConflict(infoResponseEntity.getBody().getClassId());
-            classAlarmService.alarmStudentConflict(infoResponseEntity.getBody().getClassId());
-            classAlarmService.alarmTrainingPlaceConflict(infoResponseEntity.getBody().getClassId());
-        }
+        ////disable all alarms
+//        if (infoResponseEntity.getStatusCodeValue() == 200) {
+//            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getClassId());
+//            classAlarmService.alarmTeacherConflict(infoResponseEntity.getBody().getClassId());
+//            classAlarmService.alarmStudentConflict(infoResponseEntity.getBody().getClassId());
+//            classAlarmService.alarmTrainingPlaceConflict(infoResponseEntity.getBody().getClassId());
+//            classAlarmService.saveAlarms();
+//        }
         return infoResponseEntity;
     }
 
@@ -122,10 +128,13 @@ public class ClassSessionRestController {
     public ResponseEntity<Void> delete(@PathVariable Long id, HttpServletResponse response) {
         Long classId = classSessionService.getClassIdBySessionId(id);
         classSessionService.delete(id, response);
-        classAlarmService.alarmSumSessionsTimes(classId);
-        classAlarmService.alarmTeacherConflict(classId);
-        classAlarmService.alarmStudentConflict(classId);
-        classAlarmService.alarmTrainingPlaceConflict(classId);
+        //*****check alarms*****
+        ////disable all alarms
+//        classAlarmService.alarmSumSessionsTimes(classId);
+//        classAlarmService.alarmTeacherConflict(classId);
+//        classAlarmService.alarmStudentConflict(classId);
+//        classAlarmService.alarmTrainingPlaceConflict(classId);
+//        classAlarmService.saveAlarms();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -155,6 +164,7 @@ public class ClassSessionRestController {
         ////// classAlarmService.alarmTeacherConflict(classId);
         ////// classAlarmService.alarmStudentConflict(classId);
         ////// classAlarmService.alarmTrainingPlaceConflict(classId);
+        ////// classAlarmService.saveAlarms();
         classSessionService.delete(request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
