@@ -714,9 +714,23 @@
     <changeSet author="poursalehi_mos (generated)" id="1595043204072-409">
         <addNotNullConstraint columnDataType="number(10,0)" columnName="n_version" tableName="tbl_department"/>
     </changeSet>
-
     <changeSet author="jafari-h (generated)" id="1595043444667-471">
         <dropUniqueConstraint constraintName="UC_TBL_COMPETENCEC_TITLE_COL" tableName="TBL_COMPETENCE"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595049229600-450">
+        <addColumn tableName="tbl_personnel">
+            <column name="f_geo_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595049229600-451">
+        <addColumn tableName="tbl_personnel_registered">
+            <column name="f_geo_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595049229600-452">
+        <addColumn tableName="tbl_student">
+            <column name="f_geo_id" type="number(19, 0)"/>
+        </addColumn>
     </changeSet>
 
 </databaseChangeLog>

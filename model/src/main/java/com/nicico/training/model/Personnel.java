@@ -185,4 +185,11 @@ public class Personnel {
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "f_department_id", insertable = false, updatable = false)
 //    private Department department;
+
+    @Column(name = "f_geo_id")
+    private Long geoWorkId;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "f_geo_id", insertable = false, updatable = false)
+//    private GeoWork geoWork;
 }
