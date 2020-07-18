@@ -13,7 +13,8 @@ import java.util.Set;
 @Entity
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
-@Table(name = "tbl_training_post")
+@Table(name = "tbl_training_post",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"c_code", "c_people_type"})})
 @DiscriminatorValue("TrainingPost")
 public class TrainingPost extends Auditable {
 
@@ -23,10 +24,10 @@ public class TrainingPost extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "c_code", nullable = false)
+    @Column(name = "c_code")
     private String code;
 
-    @Column(name = "c_title_fa", nullable = false)
+    @Column(name = "c_title_fa")
     private String titleFa;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -66,4 +67,14 @@ public class TrainingPost extends Auditable {
 
     @ManyToMany(mappedBy = "postSet")
     private Set<PostGroup> postGroupSet;
+
+    @Column(name = "c_people_type", length = 50)
+    private String peopleType;
+
+    @Column(name = "f_department_id")
+    private Long departmentId;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "f_department_id", insertable = false, updatable = false)
+//    private Department department;
 }

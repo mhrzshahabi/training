@@ -9,6 +9,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import javax.validation.Constraint;
 
 @Getter
 @Setter
@@ -17,7 +18,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
-@Table(name = "tbl_competence")
+@Table(name = "tbl_competence",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"c_title", "category_id", "subcategory_id"})})
 public class Competence extends Auditable {
 
     @Id
@@ -25,7 +27,7 @@ public class Competence extends Auditable {
     @SequenceGenerator(name = "seq_competence_id", sequenceName = "seq_competence_id", allocationSize = 1)
     private Long id;
 
-    @Column(name = "c_title", nullable = true, unique = true)
+    @Column(name = "c_title")
     private String title;
 
     @Column(name = "c_description")
@@ -52,6 +54,6 @@ public class Competence extends Auditable {
     @Column(name = "subcategory_id")
     private Long subCategoryId;
 
-    @Column(name = "c_code")
+    @Column(name = "c_code", unique = true)
     private String code;
 }

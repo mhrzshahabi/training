@@ -79,6 +79,7 @@ public class ExportToFileController {
     private final ViewPostGroupService viewPostGroupService;
     private final PostGroupService postGroupService;
     private final WorkGroupService workGroupService;
+    private final CourseService courseService;
 
     private final StudentClassReportViewDAO studentClassReportViewDAO;
     private final PersonnelDAO personnelDAO;
@@ -134,6 +135,15 @@ public class ExportToFileController {
         List<Object> generalList = null;
 
         switch (fileName) {
+            case "class":
+                searchRq.setCriteria(workGroupService.addPermissionToCriteria("Tclass", searchRq.getCriteria()));
+                generalList = (List<Object>)((Object) tclassService.search(searchRq).getList());
+                break;
+
+            case "course":
+                searchRq.setCriteria(workGroupService.addPermissionToCriteria("Course", searchRq.getCriteria()));
+                generalList = (List<Object>)((Object) courseService.search(searchRq, c -> modelMapper.map(c, CourseDTO.Info.class)).getList());
+                break;
 
             case "trainingFile":
                 generalList = (List<Object>)((Object) classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class)).getList());
