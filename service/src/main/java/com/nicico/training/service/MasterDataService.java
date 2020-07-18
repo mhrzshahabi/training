@@ -76,11 +76,12 @@ public class MasterDataService implements IMasterDataService {
         private Long id;
         public String title;
         public Long parentId;
+        public String code;
 
         @Override
         public int hashCode() {
             return new HashCodeBuilder(17, 31).
-                    append(title).
+                    append(code).
                     toHashCode();
         }
 
@@ -540,6 +541,9 @@ public class MasterDataService implements IMasterDataService {
 
                 ObjectMapper objectMapper = new ObjectMapper();
 
+                String operator = iscRq.getParameter("operator");
+                operator = operator == null || operator.trim() == "" ? "and" : operator;
+
                 String criteriaStr = iscRq.getParameter("criteria");
 
                 List<String> criteriaList = new ArrayList<>();
@@ -571,7 +575,7 @@ public class MasterDataService implements IMasterDataService {
                         "    \"criteria\": [\n" +
                         convertedCriteriaStr +
                         "    ],\n" +
-                        "    \"operator\": \"and\"\n" +
+                        "    \"operator\": \"" + operator + "\"\n" +
                         "  },\n" +
                         "  \"distinct\": false,\n" +
                         sortBy +
@@ -870,7 +874,7 @@ public class MasterDataService implements IMasterDataService {
         String endRowStr = rq.getParameter("_endRow");
         String constructor = rq.getParameter("_constructor");
         String sortBy = rq.getParameter("_sortBy");
-        String[] criteriaList = rq.getParameterValues("criteria");
+        //String[] criteriaList = rq.getParameterValues("criteria");
         String operator = rq.getParameter("operator");
 
         Integer startRow = (startRowStr != null) ? Integer.parseInt(startRowStr) : 0;
@@ -883,7 +887,7 @@ public class MasterDataService implements IMasterDataService {
             searchRq.setSortBy(sortBy);
         }
 
-        ObjectMapper objectMapper = new ObjectMapper();
+        /*ObjectMapper objectMapper = new ObjectMapper();
 
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
             StringBuilder criteria = new StringBuilder("[" + criteriaList[0]);
@@ -896,7 +900,7 @@ public class MasterDataService implements IMasterDataService {
                     .setCriteria(objectMapper.readValue(criteria.toString(), new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
             searchRq.setCriteria(criteriaRq);
-        }
+        }*/
         return searchRq;
     }
 
