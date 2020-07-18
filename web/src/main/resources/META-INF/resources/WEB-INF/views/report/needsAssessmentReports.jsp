@@ -758,7 +758,7 @@
                             }
                         }
                     }
-                    ExportToFile.exportToExcelFromClient(result.fields, data, '', "نمره پیش تست بیشتر از حد قبول");
+                    ExportToFile.exportToExcelFromClient(result.fields, data, '', ReportTypeDF_NABOP.getField("reportType").valueMap[reportType_NABOP]);
                 }
             })
         ]
