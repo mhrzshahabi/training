@@ -2207,9 +2207,30 @@
 
     var ToolStrip_Excel_JspClass = isc.ToolStripButtonExcel.create({
         click: function () {
-            ExportToFile.downloadExcelFromClient(ListGrid_Class_JspClass, null, '', "اجرا - کلاس");
+
+            let criteria = ListGrid_Class_JspClass.getCriteria();
+
+            if(typeof(criteria._constructor) !='undefined'){
+                if(criteria.criteria==null){
+                    criteria.criteria=[];
+                }
+                criteria.criteria.add({...ListGrid_Class_JspClass.implicitCriteria.criteria.filter(p=>p.fieldName=="term.id")[0]});
+            }
+            else
+            {
+                criteria={
+                    _constructor: "AdvancedCriteria",
+                    criteria:
+                        [
+                            {...ListGrid_Class_JspClass.implicitCriteria.criteria.filter(p=>p.fieldName=="term.id")[0]}
+                        ],
+                    operator: "and"
+                };
+            }
+
+            ExportToFile.showDialog(null, ListGrid_Class_JspClass , "class", 0, null, '',"اجرا - کلاس"  , criteria, null);
         }
-    });
+    })
 
     var ToolStrip_Actions_JspClass = isc.ToolStrip.create({
         width: "100%",
