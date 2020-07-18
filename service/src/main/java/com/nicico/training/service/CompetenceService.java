@@ -36,6 +36,9 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
     private ParameterValueService parameterValueService;
 
     @Autowired
+    private CompetenceDAO competenceDAO;
+
+    @Autowired
     CompetenceService(CompetenceDAO competenceDAO) {
         super(new Competence(), competenceDAO);
     }
@@ -85,6 +88,15 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
         return null;
+    }
+
+    @Transactional
+    public String codeCompute(String code){
+        Optional<Competence> top = competenceDAO.findTopByCodeStartsWithOrderByCodeDesc(code);
+        if(top.isPresent()){
+            return top.get().getCode();
+        }
+        return "1";
     }
 
 }
