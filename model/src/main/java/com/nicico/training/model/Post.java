@@ -14,7 +14,8 @@ import java.util.Set;
 @Entity
 @Immutable
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
-@Table(name = "tbl_post")
+@Table(name = "tbl_post",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"c_code", "c_people_type"})})
 @DiscriminatorValue("Post")
 public class Post extends Auditable {
 
@@ -22,10 +23,10 @@ public class Post extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "c_code", nullable = false)
+    @Column(name = "c_code")
     private String code;
 
-    @Column(name = "c_title_fa", nullable = false)
+    @Column(name = "c_title_fa")
     private String titleFa;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -35,10 +36,6 @@ public class Post extends Auditable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_post_grade_id")
     private PostGrade postGrade;
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "f_department_id", nullable = false)
-//    private Department department;
 
     @ManyToMany(mappedBy = "postSet")
     private Set<PostGroup> postGroupSet;
@@ -63,5 +60,15 @@ public class Post extends Auditable {
 
     @Column(name = "c_cost_center_title_fa")
     private String costCenterTitleFa;
+
+    @Column(name = "c_people_type", length = 50)
+    private String peopleType;
+
+    @Column(name = "f_department_id")
+    private Long departmentId;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "f_department_id", insertable = false, updatable = false)
+//    private Department department;
 
 }

@@ -151,5 +151,20 @@
     <changeSet author="poursalehi_mos (generated)" id="1593510287630-445">
         <addUniqueConstraint columnNames="c_code" constraintName="UC_TBL_TRAINING_POSTC_CODE_COL" tableName="tbl_training_post"/>
     </changeSet>
+<!--    <changeSet author="poursalehi_mos (generated)" id="1595043204072-504">-->
+<!--        <addUniqueConstraint columnNames="c_code, c_people_type" constraintName="UKe3rusy6xm1caqg2sm6pfedb0f" tableName="tbl_post_grade"/>-->
+<!--    </changeSet>-->
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-505">
+        <addUniqueConstraint columnNames="c_code, c_people_type" constraintName="UKj8957s4l36quv2b73mqbea9ls" tableName="tbl_geo_work"/>
+    </changeSet>
+<!--    <changeSet author="poursalehi_mos (generated)" id="1595043204072-506">-->
+<!--        <addUniqueConstraint columnNames="c_code, c_people_type" constraintName="UKl510mju1kvw507elbxl8yaqnq" tableName="tbl_post"/>-->
+<!--    </changeSet>-->
+<!--    <changeSet author="poursalehi_mos (generated)" id="1595043204072-507">-->
+<!--        <addUniqueConstraint columnNames="c_code, c_people_type" constraintName="UKolpe97n1acilulf3ohgr61xt0" tableName="tbl_job"/>-->
+<!--    </changeSet>-->
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-508">
+        <addUniqueConstraint columnNames="c_code, c_people_type" constraintName="UKphkswn2nhen84o2ku7na6rn3d" tableName="tbl_training_post"/>
+    </changeSet>
     
 </databaseChangeLog>

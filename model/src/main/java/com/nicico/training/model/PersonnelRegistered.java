@@ -197,4 +197,14 @@ public class PersonnelRegistered extends Auditable {
     @Column(name = "account_number")
     private String accountNumber;
 
+    @Column(name = "p_type", length = 50)
+    private String peopleType;
+
+    @Column(name = "f_department_id")
+    private Long departmentId;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "f_department_id", insertable = false, updatable = false)
+//    private Department department;
+
 }

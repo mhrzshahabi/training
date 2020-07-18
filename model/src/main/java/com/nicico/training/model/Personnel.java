@@ -175,4 +175,14 @@ public class Personnel {
 
     @Column(name = "email")
     private String email;
+
+    @Column(name = "p_type", length = 50)
+    private String peopleType;
+
+    @Column(name = "f_department_id")
+    private Long departmentId;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "f_department_id", insertable = false, updatable = false)
+//    private Department department;
 }
