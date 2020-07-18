@@ -4,6 +4,14 @@
 // <script>
 
     let competenceMethod_competence;
+    var priorityList = {
+        "Post": "پست",
+        "PostGroup": "گروه پستی",
+        "Job": "شغل",
+        "JobGroup": "گروه شغلی",
+        "PostGrade": "رده پستی",
+        "PostGradeGroup": "گروه رده پستی",
+    };
 
     // ------------------------------------------- Menu -------------------------------------------
     isc.Menu.create({
@@ -332,8 +340,19 @@
         }
         let data = CompetenceDF_competence.getValues();
         let entityTitle = data.title
+        wait.show();
         isc.RPCManager.sendRequest(
-            TrDSRequest(competenceSaveUrl, competenceMethod_competence, JSON.stringify(data), "callback: studyResponse(rpcResponse, '" + action + "','<spring:message code="competence"/>', CompetenceWin_competence, CompetenceLG_competence,'" + entityTitle + "')")
+            TrDSRequest(competenceSaveUrl, competenceMethod_competence, JSON.stringify(data), (resp)=>{
+                wait.close();
+                if(resp.httpResponseCode !== 226) {
+                    studyResponse(resp, "action", '<spring:message code="competence"/>', CompetenceWin_competence, CompetenceLG_competence, "entityTitle")
+                }
+                else{
+                    let list = JSON.parse(resp.data);
+                    console.log(JSON.parse(resp.data))
+                    createDialog("info", "شایستگی فوق در " + priorityList[list[0].objectType] + " " + getFormulaMessage(list[0].objectName, ) + " استفاده شده است. و قابل ویرایش نمیباشد.")
+                }
+            })
         );
     }
 
