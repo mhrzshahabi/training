@@ -12,8 +12,7 @@ import java.util.List;
 @Repository
 public interface DepartmentDAO extends JpaRepository<Department, Long>, JpaSpecificationExecutor<Department> {
 
-    @Query("FROM Department d  WHERE d.depParrentId = :parentId"/* and d.treeVersion = 'MID-001'*/)
-    List<Department> getByDepParrentId(@Param("parentId") Long parentId);
+    List<Department> findAllByParentId(@Param("parentId") Long parentId);
 
     @Query("FROM Department d  WHERE d.parentDepartment is null"/* and d.treeVersion = 'MID-001'*/)
     List<Department> findRootNode();
