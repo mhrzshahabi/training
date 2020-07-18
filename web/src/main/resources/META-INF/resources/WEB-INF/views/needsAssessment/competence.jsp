@@ -180,8 +180,8 @@
                 textAlign: "center",
                 valueField: "id", displayField: "title", filterFields: ["title"], pickListProperties: {showFilterEditor: true,},
                 changed(){
-                    createCompetenceCode()
                     actionCompetenceType()
+                    createCompetenceCode()
                 }
             },
             {
@@ -207,8 +207,8 @@
                 },
                 sortField: ["id"],
                 changed: function (form, item, value) {
-                    createCompetenceCode()
                     form.clearValue("subCategoryId");
+                    createCompetenceCode()
                 },
             },
             {
@@ -375,10 +375,10 @@
                 code.setValue("T" + cat + subCat)
                 break
             case "عمومی":
-                code.setValue("O")
+                code.setValue("O00000")
                 break
             case "مدیریتی":
-                code.setValue("M")
+                code.setValue("M00000")
                 break
         }
     }

@@ -715,4 +715,8 @@
         <addNotNullConstraint columnDataType="number(10,0)" columnName="n_version" tableName="tbl_department"/>
     </changeSet>
 
+    <changeSet author="jafari-h (generated)" id="1595043444667-471">
+        <dropUniqueConstraint constraintName="UC_TBL_COMPETENCEC_TITLE_COL" tableName="TBL_COMPETENCE"/>
+    </changeSet>
+
 </databaseChangeLog>

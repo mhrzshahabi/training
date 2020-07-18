@@ -575,6 +575,7 @@
                 textAlign: "center",
                 pickListWidth: "600",
                 validateOnChange: true,
+                validateOnExit: true,
                 optionDataSource: RestDataSource_Course_JspClass,
                 canEdit: false,
                 autoFetchData: false,

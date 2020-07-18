@@ -48,6 +48,7 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
         try {
             Long competenceTypeId = rq.getCompetenceTypeId();
             if (parameterValueService.isExist(competenceTypeId) && !dao.existsByTitle(rq.getTitle())) {
+                rq.setCode(codeCompute(rq.getCode()));
                 return create(rq);
             } else if (dao.existsByTitle(rq.getTitle())) {
                 Locale locale = LocaleContextHolder.getLocale();
@@ -93,10 +94,7 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
     @Transactional
     public String codeCompute(String code){
         Optional<Competence> top = competenceDAO.findTopByCodeStartsWithOrderByCodeDesc(code);
-        if(top.isPresent()){
-            return top.get().getCode();
-        }
-        return "1";
+        return top.map(competence -> (code + (Integer.valueOf(competence.getCode().substring(6)) + 1))).orElse(code + "1");
     }
 
 }
