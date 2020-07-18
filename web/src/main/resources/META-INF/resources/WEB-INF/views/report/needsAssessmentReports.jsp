@@ -729,6 +729,43 @@
             print_NABOP("pdf");
         }
     });
+
+    let ToolStrip_NA_Report_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let result = ExportToFile.getAllFields(CoursesLG_NABOP);
+                    let fields = result.fields;
+                    fields.splice(1, 0, { title: "نوع نیازسنجی", name: "needsAssessmentPriorityId" });
+                    let isValueMaps = result.isValueMap;
+                    isValueMaps.splice(1, 0, false);
+                    let rows = CourseDS_NABOP.getCacheData();
+                    rows.sort(function(a, b){return b.needsAssessmentPriorityId - a.needsAssessmentPriorityId});
+                    let pi = PriorityDS_NABOP.getCacheData();
+                    let data = [];
+                    for (let i = 0; i < rows.length; i++) {
+                        data[i] = {};
+                        for (let j = 0; j < fields.length; j++) {
+                            if (fields[j].name == 'rowNum') {
+                                data[i][fields[j].name] = (i + 1).toString();
+                            }else if(fields[j].name == 'needsAssessmentPriorityId'){
+                                data[i][fields[j].name] = pi.find(x => x.id === rows[i].needsAssessmentPriorityId).title;
+                            } else {
+                                let tmpStr = ExportToFile.getData(rows[i], fields[j].name.split('.'), 0);
+                                data[i][fields[j].name] = typeof (tmpStr) == 'undefined' ? '' : ((!isValueMaps[j]) ? tmpStr : CoursesLG_NABOP.getDisplayValue(fields[j].name, tmpStr));
+                            }
+                        }
+                    }
+                    ExportToFile.exportToExcelFromClient(result.fields, data, '', "نمره پیش تست بیشتر از حد قبول");
+                }
+            })
+        ]
+    });
+
+
+
     ToolStrip_Actions_NABOP = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -736,6 +773,7 @@
             [
                 ToolStripButton_ShowChart_NABOP,
                 ToolStripButton_Print_NABOP,
+                ToolStrip_NA_Report_Export2EXcel,
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
