@@ -1191,15 +1191,15 @@
                 {isSeparator: true},
                 </sec:authorize>
 
-
-                <sec:authorize access="hasAuthority('Menu_Organizational_chart')">
-                {
-                    title: "<spring:message code="organizational.chart"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/organizationalChart"/>");
-                    }
-                },
-                </sec:authorize>
+////disable targetSociety
+<%--                <sec:authorize access="hasAuthority('Menu_Organizational_chart')">--%>
+<%--                {--%>
+<%--                    title: "<spring:message code="organizational.chart"/>",--%>
+<%--                    click: function () {--%>
+<%--                        createTab(this.title, "<spring:url value="web/organizationalChart"/>");--%>
+<%--                    }--%>
+<%--                },--%>
+<%--                </sec:authorize>--%>
             ]
         }),
     });

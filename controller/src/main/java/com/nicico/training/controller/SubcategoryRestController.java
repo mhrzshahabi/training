@@ -138,6 +138,7 @@ public class SubcategoryRestController {
                                                                  @RequestParam(value = "operator", required = false) String operator,
                                                                  @RequestParam(value = "criteria", required = false) String criteria,
                                                                  @RequestParam(value = "id", required = false) Long id,
+                                                                 @RequestParam(value = "categoryId", required = false) Long categoryId,
                                                                  @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
@@ -158,6 +159,14 @@ public class SubcategoryRestController {
             criteriaRq.setOperator(EOperator.equals)
                     .setFieldName("id")
                     .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }if (categoryId != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("categoryId")
+                    .setValue(categoryId);
             request.setCriteria(criteriaRq);
             startRow = 0;
             endRow = 1;

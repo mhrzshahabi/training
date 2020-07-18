@@ -28,8 +28,12 @@ public class CompetenceDTO implements Serializable {
     @ApiModelProperty(required = true)
     private Long competenceTypeId;
     private String description;
+    private Long categoryId;
+    private Long subCategoryId;
+    private String code;
 
-    @Getter
+
+@Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("CompetenceDTO - Info")

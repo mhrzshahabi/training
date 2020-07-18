@@ -377,7 +377,9 @@
     });
 
     SkillIBSave_Skill = isc.IButtonSave.create({
+
         click: function () {
+
             if (!SkillDF_Skill.validate()) {
                 return;
             }
@@ -391,7 +393,9 @@
                     sub_cat_code = SkillDF_Skill.getItem('subCategoryId').getSelectedRecord().code;
                 SkillDF_Skill.getItem('code').setValue(sub_cat_code + skillLevelSymbol_Skill);
             }
+
             wait_Skill = createDialog("wait");
+
             isc.RPCManager.sendRequest(TrDSRequest(url_Skill, method_Skill, JSON.stringify(SkillDF_Skill.getValues()), Result_SaveSkill_Skill));
         }
     });
@@ -715,12 +719,17 @@
             setTimeout(function () {
                 OK.close();
             }, 3000);
-        } else {
-            let ERROR = createDialog("info", "<spring:message code="msg.operation.error"/>");
+        } else if (resp.httpResponseCode == 401) {
+            let ERROR = createDialog("info", "شما مجوز دسترسی برای حذف را ندارید");
             setTimeout(function () {
                 ERROR.close();
             }, 3000);
         }
+        else if(resp.httpResponseCode == 204)
+        { let ERROR = createDialog("info", "<spring:message code="msg.record.cannot.deleted"/>");
+            setTimeout(function () {
+                ERROR.close();
+            }, 3000);}
     }
 
     function EditSkill_Skill() {
@@ -728,20 +737,45 @@
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.not.selected.record'/>");
         } else {
-            let id = record.categoryId;
-            SkillDF_Skill.clearValues();
-            SubCategoryDS_Skill.fetchDataURL = categoryUrl + id + "/sub-categories";
-            SkillDF_Skill.getItem("subCategoryId").fetchData();
-            method_Skill = "PUT";
-            url_Skill = skillUrl + "/" + record.id;
-            SkillDF_Skill.editRecord(record);
-            SkillDF_Skill.getItem("categoryId").setDisabled(true);
-            SkillDF_Skill.getItem("subCategoryId").setDisabled(true);
-            SkillDF_Skill.getItem("skillLevelId").setDisabled(true);
-            SkillDF_Skill.getItem("code").visible = true;
-            SkillWindow_Skill.show();
+            isc.RPCManager.sendRequest(TrDSRequest(skillUrl + "/editSkill/" +record.id, "GET", null, Result_EditSkill));
+
         }
     }
+        function  Result_EditSkill(resp) {
+
+            let record = SkillLG_Skill.getSelectedRecord();
+            if (resp.data == 'true')
+            {
+
+                let id = record.categoryId;
+                SkillDF_Skill.clearValues();
+                SubCategoryDS_Skill.fetchDataURL = categoryUrl + id + "/sub-categories";
+                SkillDF_Skill.getItem("subCategoryId").fetchData();
+                method_Skill = "PUT";
+                url_Skill = skillUrl + "/" + record.id;
+                SkillDF_Skill.editRecord(record);
+                SkillDF_Skill.getItem("categoryId").setDisabled(true);
+                SkillDF_Skill.getItem("subCategoryId").setDisabled(true);
+                SkillDF_Skill.getItem("skillLevelId").setDisabled(true);
+                SkillDF_Skill.getItem("code").visible = true;
+                SkillWindow_Skill.show();
+            }
+            else {
+
+                let id = record.categoryId;
+                SkillDF_Skill.clearValues();
+                SubCategoryDS_Skill.fetchDataURL = categoryUrl + id + "/sub-categories";
+                SkillDF_Skill.getItem("subCategoryId").fetchData();
+                method_Skill = "PUT";
+                url_Skill = skillUrl + "/" + record.id;
+                SkillDF_Skill.editRecord(record);
+                SkillDF_Skill.getItem("categoryId").setDisabled(false);
+                SkillDF_Skill.getItem("subCategoryId").setDisabled(false);
+                SkillDF_Skill.getItem("skillLevelId").setDisabled(false);
+                SkillDF_Skill.getItem("code").visible = true;
+                SkillWindow_Skill.show();
+            }
+        }
 
     function CreateSkill_Skill() {
         method_Skill = "POST";
@@ -764,11 +798,7 @@
             PostLG_Skill.setData([]);
             SkillWindow_Skill.close();
         }else if(resp.httpResponseCode === 406){
-
-            console.log(resp.httpHeaders.skillname)
-            console.log(resp)
-
-            var OK = isc.Dialog.create({
+                var OK = isc.Dialog.create({
                 message:("info", "اطلاعات این مهارت با اطلاعات مهارت"+"&nbsp;" +"&nbsp;"+getFormulaMessage(decodeURIComponent(resp.httpHeaders.skillname.replace(/\+/g,' ')), 2, "red", "I")+"&nbsp;"+"  با کد "+ "&nbsp;" +getFormulaMessage(resp.httpHeaders.skillcode, 2, "red", "I") + "&nbsp;"+ " برابر است"),
                 icon: "[SKIN]say.png",
                 title: "<spring:message code="warning"/>",
