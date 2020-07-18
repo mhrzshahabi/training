@@ -5,6 +5,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
 import com.nicico.training.model.Skill;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -20,7 +21,7 @@ public interface ISkillService {
 
     SkillDTO.Info create(SkillDTO.Create request, HttpServletResponse response);
 
-    SkillDTO.Info update(Long id, Object request);
+    SkillDTO.Info update(Long id, Object request, HttpServletResponse response);
 
     void delete(Long id);
 
@@ -46,6 +47,9 @@ public interface ISkillService {
     boolean isSkillDeletable(Long skillId);
 
     void removeCourse(Long courseId, Long skillId);
+
+    @Transactional
+    boolean editSkill(Long id);
 
     void removeCourses(List<Long> courseIds, Long skillId);
 

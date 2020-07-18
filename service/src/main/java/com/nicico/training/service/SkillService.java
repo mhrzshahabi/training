@@ -119,11 +119,26 @@ public class SkillService implements ISkillService {
 
     @Transactional
     @Override
-    public SkillDTO.Info update(Long id, Object request) {
+    public SkillDTO.Info update(Long id, Object request,HttpServletResponse response) {
+
         final Optional<Skill> optionalSkill = skillDAO.findById(id);
         final Skill currentSkill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
-
         SkillDTO.Update requestSkill = modelMapper.map(request, SkillDTO.Update.class);
+        if(skillDAO.findByTitleFaAndCategoryIdAndSubCategoryIdAndSkillLevelId(requestSkill.getTitleFa(),requestSkill.getCategoryId(),requestSkill.getSubCategoryId(),requestSkill.getSkillLevelId()) != null)
+        {
+            try {
+
+                Locale locale = LocaleContextHolder.getLocale();
+                Skill duplicateSkill1=skillDAO.findByTitleFaAndCategoryIdAndSubCategoryIdAndSkillLevelId(requestSkill.getTitleFa(),requestSkill.getCategoryId(),requestSkill.getSubCategoryId(),requestSkill.getSkillLevelId());
+                SkillDTO.Info skillinfo = modelMapper.map(duplicateSkill1,SkillDTO.Info.class);
+                response.addHeader("skillCode",skillinfo.getCode());
+                response.addHeader("skillName", URLEncoder.encode(skillinfo.getTitleFa(), "UTF-8"));
+                response.sendError(406, messageSource.getMessage("skill.duplicate" , null, locale));
+                return null;
+            } catch (IOException e) {
+                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+            }
+        }
         Skill updating = new Skill();
         modelMapper.map(currentSkill, updating);
         modelMapper.map(requestSkill, updating);
@@ -313,7 +328,19 @@ public class SkillService implements ISkillService {
         skillDAO.saveAndFlush(skill);
         courseService.updateHasSkill(courseId, null);
     }
+    @Transactional
+    @Override
+    public boolean editSkill(Long id)
+    {
+        final Optional<Skill> optionalSkill=skillDAO.findById(id);
+        final Skill skill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
+        if(skill.getCourseId() !=null || skill.getNeedsAssessments().size() >0)
+        {
+            return true;
+        }
+        return false;
 
+    }
     @Transactional
     @Override
     public void removeCourses(List<Long> courseIds, Long skillId) {

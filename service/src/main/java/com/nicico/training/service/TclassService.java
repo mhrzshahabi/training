@@ -120,7 +120,8 @@ public class TclassService implements ITclassService {
             Set<TrainingPlace> set = new HashSet<>(allById);
             tclass.setTrainingPlaceSet(set);
             Tclass save = tclassDAO.save(tclass);
-            saveTargetSocieties(request.gettargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
+            ////disable targetSociety
+           // saveTargetSocieties(request.gettargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
             return modelMapper.map(save, TclassDTO.Info.class);
         } else {
             try {
@@ -147,7 +148,7 @@ public class TclassService implements ITclassService {
             modelMapper.map(request, updating);
             updating.setTrainingPlaceSet(set);
             Tclass save = tclassDAO.save(updating);
-            updateTargetSocieties(save.getTargetSocietyList(), request.getTargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
+//            updateTargetSocieties(save.getTargetSocietyList(), request.getTargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
             return modelMapper.map(save, TclassDTO.Info.class);
 //        } else {
 //            try {
