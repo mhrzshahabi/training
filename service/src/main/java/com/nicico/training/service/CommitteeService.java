@@ -94,16 +94,16 @@ public class CommitteeService implements ICommitteeService {
         final Optional<Committee> optionalCommittee = committeeDAO.findById(committeeId);
         final Committee committee = optionalCommittee.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CommitteeNotFound));
 
-        Set<Personnel> personalSet = committee.getCommitteeMmembers();
+//        Set<Personnel> personalSet = committee.getCommitteeMmembers();
 
         for (String personId : personInfoIds) {
 
-            final Optional<Personnel> optionalPersonnel = personnelDAO.findById(personId);
+            final Optional<Personnel> optionalPersonnel = personnelDAO.findOneByPersonnelNo(personId);
             final Personnel personnel = optionalPersonnel.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PersonnelNotFound));
-            personalSet.add(personnel);
+//            personalSet.add(personnel);
         }
 
-        committee.setCommitteeMmembers(personalSet);
+//        committee.setCommitteeMmembers(personalSet);
     }
 
     @Transactional
@@ -113,10 +113,10 @@ public class CommitteeService implements ICommitteeService {
         final Optional<Committee> optionalCommittee = committeeDAO.findById(committeeId);
         final Committee committee = optionalCommittee.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CommitteeNotFound));
 
-        final Optional<Personnel> optionalPersonnel = personnelDAO.findById(personInfiId);
+        final Optional<Personnel> optionalPersonnel = personnelDAO.findOneByPersonnelNo(personInfiId);
         final Personnel personalInfo = optionalPersonnel.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PersonnelNotFound));
 
-        committee.getCommitteeMmembers().remove(personalInfo);
+//        committee.getCommitteeMmembers().remove(personalInfo);
 
 
     }
@@ -135,9 +135,9 @@ public class CommitteeService implements ICommitteeService {
         final Optional<Committee> optionalCommittee = committeeDAO.findById(committeeId);
         final Committee committee = optionalCommittee.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CommitteeNotFound));
 
-        Optional<Personnel> byId = personnelDAO.findById(personnelNo);
+        Optional<Personnel> byId = personnelDAO.findOneByPersonnelNo(personnelNo);
         final Personnel personnel = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PersonnelNotFound));
-        committee.getCommitteeMmembers().add(personnel);
+//        committee.getCommitteeMmembers().add(personnel);
     }
 
     @Transactional
@@ -146,8 +146,9 @@ public class CommitteeService implements ICommitteeService {
         final Optional<Committee> optionalCommittee = committeeDAO.findById(committeeId);
         final Committee committee = optionalCommittee.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CommitteeNotFound));
 
-        return mapper.map(committee.getCommitteeMmembers(), new TypeToken<List<PersonnelDTO.Info>>() {
-        }.getType());
+//        return mapper.map(committee.getCommitteeMmembers(), new TypeToken<List<PersonnelDTO.Info>>() {
+//        }.getType());
+        return null;
     }
 
 //end add members functions
@@ -183,8 +184,9 @@ public class CommitteeService implements ICommitteeService {
     public boolean checkForDelete(Long CommitteeId) {
         Optional<Committee> committee = committeeDAO.findById(CommitteeId);
         final Committee committee1 = committee.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CommitteeNotFound));
-        Set<Personnel> personalInfoSet = committee1.getCommitteeMmembers();
-        return ((personalInfoSet != null && personalInfoSet.size() > 0 ? false : true));
+//        Set<Personnel> personalInfoSet = committee1.getCommitteeMmembers();
+//        return ((personalInfoSet != null && personalInfoSet.size() > 0 ? false : true));
+        return false;
     }
 
     @Override

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PersonnelDAO extends JpaRepository<Personnel, String>, JpaSpecificationExecutor<Personnel> {
+public interface PersonnelDAO extends JpaRepository<Personnel, Long>, JpaSpecificationExecutor<Personnel> {
 
     Optional<Personnel> findOneByPersonnelNo(String personnelNo);
 
@@ -49,7 +49,7 @@ public interface PersonnelDAO extends JpaRepository<Personnel, String>, JpaSpeci
 
     Personnel findPersonnelByPersonnelNo(String personnelNo);
 
-    Personnel findById(Long Id);
+    Optional<Personnel> findById(Long Id);
 
     @Query(value = "SELECT complex_title FROM tbl_personnel where national_code = :national_code AND active = 1 AND employment_status_id=5 AND ROWNUM < 2", nativeQuery = true)
     String getComplexTitleByNationalCode(String national_code);

@@ -214,4 +214,14 @@ public class Student extends Auditable {
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "f_geo_id", insertable = false, updatable = false)
 //    private GeoWork geoWork;
+
+    @Column(name = "f_post_id")
+    private Long postId;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "f_post_id", insertable = false, updatable = false)
+//    private Post post;
+
+    @Column(name = "c_username")
+    private String userName;
 }

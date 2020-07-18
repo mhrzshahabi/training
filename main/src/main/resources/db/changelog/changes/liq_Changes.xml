@@ -732,5 +732,92 @@
             <column name="f_geo_id" type="number(19, 0)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595054165426-450">
+        <addColumn tableName="tbl_personnel">
+            <column name="f_post_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595054165426-451">
+        <addColumn tableName="tbl_personnel_registered">
+            <column name="f_post_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595054165426-452">
+        <addColumn tableName="tbl_student">
+            <column name="f_post_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595056114956-452">
+        <addColumn tableName="tbl_personnel">
+            <column name="c_username" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595056114956-453">
+        <addColumn tableName="tbl_personnel_registered">
+            <column name="c_username" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595056114956-454">
+        <addColumn tableName="tbl_student">
+            <column name="c_username" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+
+
+    <changeSet author="poursalehi_mos (generated)" id="1595059040994-475">
+        <dropForeignKeyConstraint baseTableName="TBL_COMMITTEE_PERSONNEL" constraintName="FK65EHY840FG2DJ3E1QYKLVR0X6"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595059040994-476">
+        <dropForeignKeyConstraint baseTableName="TBL_COMMITTEE_PERSONNEL" constraintName="FK7WMQNNKYQAYTKI3IMC2GQU6M7"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595056114956-196">
+        <dropForeignKeyConstraint baseTableName="tbl_class_contract" constraintName="FKihwfaifcmcci1efmafvm6iwj8"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595059040994-551">
+        <dropColumn columnName="F_ACCOUNTABLE_ID" tableName="TBL_CLASS_CONTRACT"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595059040994-544">
+        <dropTable tableName="TBL_COMMITTEE_PERSONNEL"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595056114956-406">
+        <dropNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="personnel_no" tableName="tbl_personnel"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595056114956-405">
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="id" tableName="tbl_personnel"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595070690461-405">
+        <dropPrimaryKey tableName="tbl_personnel"/>
+        <createIndex indexName="IX_tbl_personnelPK" tableName="tbl_personnel" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_personnelPK" forIndexName="IX_tbl_personnelPK" tableName="tbl_personnel"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595070690461-449">
+        <createTable tableName="tbl_committee_personnel">
+            <column name="f_committee_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_personnel_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595070690461-462">
+        <addForeignKeyConstraint baseColumnNames="f_committee_id" baseTableName="tbl_committee_personnel" constraintName="FK65ehy840fg2dj3e1qyklvr0x6" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_committee" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595070690461-463">
+        <addForeignKeyConstraint baseColumnNames="f_personnel_id" baseTableName="tbl_committee_personnel" constraintName="FK7wmqnnkyqaytki3imc2gqu6m7" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_personnel" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595070690461-450">
+        <addColumn tableName="tbl_class_contract">
+            <column name="f_accountable_id" type="number(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595070690461-464">
+        <addForeignKeyConstraint baseColumnNames="f_accountable_id" baseTableName="tbl_class_contract" constraintName="FKihwfaifcmcci1efmafvm6iwj8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_personnel" validate="true"/>
+    </changeSet>
 
 </databaseChangeLog>
