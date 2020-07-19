@@ -1,5 +1,3 @@
-<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
-<%@ page import="com.nicico.copper.core.SecurityUtil" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -24,28 +22,32 @@
         });
         var RestDataSource_class_Evaluation = isc.TrDS.create({
             fields: [
-                {name: "id", primaryKey: true},
-                {name: "titleClass"},
-                {name: "startDate"},
-                {name: "endDate"},
-                {name: "code"},
-                {name: "term.titleFa"},
-                {name: "course.titleFa"},
-                {name: "course.id"},
-                {name: "course.code"},
-                {name: "course.evaluation"},
-                {name: "institute.titleFa"},
-                {name: "studentCount",canFilter:false,canSort:false},
-                {name: "numberOfStudentEvaluation"},
-                {name: "classStatus"},
-                {name: "trainingPlaceIds"},
+                {name: "id"},
+                {name: "termId"},
                 {name: "instituteId"},
-                {name: "workflowEndingStatusCode"},
-                {name: "workflowEndingStatus"},
-                {name: "scoringMethod"},
-                {name: "preCourseTest"}
+                {name: "teacherId"},
+                {name: "tclassStudentsCount"},
+                {name: "tclassCode"},
+                {name: "tclassStartDate"},
+                {name: "tclassEndDate"},
+                {name: "tclassYear"},
+                {name: "courseCode"},
+                {name: "courseCategory"},
+                {name: "courseSubCategory"},
+                {name: "courseTitleFa"},
+                {name: "courseEvaluationType"},
+                {name: "tclassDuration"},
+                {name: "tclassOrganizerId"},
+                {name: "tclassStatus"},
+                {name: "tclassEndingStatus"},
+                {name: "tclassPlanner"},
+                {name: "tclassSupervisor"},
+                {name: "termTitleFa"},
+                {name: "instituteTitleFa"},
+                {name: "classScoringMethod"},
+                {name: "classPreCourseTest"}
             ],
-            fetchDataURL: evaluationUrl + "/class-spec-list"
+            fetchDataURL: viewClassDetailUrl + "/iscList"
         });
     //----------------------------------------- DynamicForms -----------------------------------------------------------
         var DynamicForm_Term_Filter_Evaluation = isc.DynamicForm.create({
@@ -207,11 +209,11 @@
                                 _constructor:"AdvancedCriteria",
                                 operator:"and",
                                 criteria:[
-                                    {fieldName:"endDate", operator:"equals", value: todayDate},
-                                    {fieldName:"course.evaluation", operator:"equals", value: "1"}
+                                    {fieldName:"tclassEndDate", operator:"equals", value: todayDate},
+                                    {fieldName:"courseEvaluationType", operator:"equals", value: "1"}
                                 ]
                             };
-                            RestDataSource_class_Evaluation.fetchDataURL = evaluationUrl + "/class-spec-list";
+                            RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
                             ListGrid_class_Evaluation.invalidateCache();
                             ListGrid_class_Evaluation.fetchData(criteria);
                         }
@@ -220,16 +222,16 @@
                                 _constructor:"AdvancedCriteria",
                                 operator:"and",
                                 criteria:[
-                                    {fieldName:"startDate", operator:"equals", value: todayDate},
-                                    {fieldName:"course.evaluation", operator:"equals", value: "2"}
+                                    {fieldName:"tclassStartDate", operator:"equals", value: todayDate},
+                                    {fieldName:"courseEvaluationType", operator:"equals", value: "2"}
                                 ]
                             };
-                            RestDataSource_class_Evaluation.fetchDataURL = evaluationUrl + "/class-spec-list";
+                            RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
                             ListGrid_class_Evaluation.invalidateCache();
                             ListGrid_class_Evaluation.fetchData(criteria);
                         }
                         if(value == "3"){
-                            RestDataSource_class_Evaluation.fetchDataURL = evaluationUrl + "/class-spec-list";
+                            RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
                             ListGrid_class_Evaluation.invalidateCache();
                             ListGrid_class_Evaluation.fetchData();
                         }
@@ -251,51 +253,40 @@
             allowFilterExpressions: true,
             filterOnKeypress: false,
             initialSort: [
-                {property: "startDate", direction: "descending", primarySort: true}
+                {property: "tclassStartDate", direction: "descending", primarySort: true}
             ],
             fields: [
                 {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
                 {
-                    name: "code",
+                    name: "tclassCode",
                     title: "<spring:message code='class.code'/>",
                     align: "center",
                     filterOperator: "iContains",
                     autoFitWidth: true
                 },
                 {
-                    name: "titleClass",
-                    title: "titleClass",
-                    align: "center",
-                    filterOperator: "iContains",
-                    autoFitWidth: true,
-                    hidden: true
-                },
-                {
-                    name: "course.code",
+                    name: "courseCode",
                     title: "<spring:message code='course.code'/>",
                     align: "center",
                     filterOperator: "iContains",
                     autoFithWidth: true
                 },
                 {
-                    name: "course.titleFa",
+                    name: "courseTitleFa",
                     title: "<spring:message code='course.title'/>",
                     align: "center",
                     filterOperator: "iContains",
                     autoFitWidth: true,
-                    sortNormalizer: function (record) {
-                        return record.course.titleFa;
-                    }
                 },
                 {
-                    name: "term.titleFa",
+                    name: "termTitleFa",
                     title: "term",
                     align: "center",
                     filterOperator: "iContains",
                     hidden: true
                 },
                 {
-                    name: "startDate",
+                    name: "tclassStartDate",
                     title: "<spring:message code='start.date'/>",
                     align: "center",
                     filterOperator: "iContains",
@@ -305,7 +296,7 @@
                     autoFithWidth: true
                 },
                 {
-                    name: "endDate",
+                    name: "tclassEndDate",
                     title: "<spring:message code='end.date'/>",
                     align: "center",
                     filterOperator: "iContains",
@@ -315,24 +306,16 @@
                     autoFithWidth: true
                 },
                 {
-                    name: "studentCount",
+                    name: "tclassStudentsCount",
                     title: "<spring:message code='student.count'/>",
-                    filterOperator: "iContains",
+                    filterOperator: "equals",
                     autoFitWidth: true,
                     filterEditorProperties: {
                         keyPressFilter: "[0-9]"
                     }
                 },
                 {
-                    name: "numberOfStudentEvaluation",
-                    title: "<spring:message code='evaluated'/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true,
-                    canFilter: false,
-                    canSort: false
-                },
-                {
-                    name: "institute.titleFa",
+                    name: "instituteTitleFa",
                     title: "<spring:message code='presenter'/>",
                     align: "center",
                     filterOperator: "iContains",
@@ -340,7 +323,7 @@
                     hidden: true
                 },
                 {
-                    name: "course.evaluation",
+                    name: "courseEvaluationType",
                     title: "<spring:message code='evaluation.type'/>",
                     align: "center",
                     filterOperator: "iContains",
@@ -364,7 +347,7 @@
                     },
                 },
                 {
-                    name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
+                    name: "tclassStatus", title: "<spring:message code='class.status'/>", align: "center",
                     autoFithWidth: true,
                     filterEditorProperties:{
                         pickListProperties: {
@@ -383,27 +366,17 @@
                         "3": "پایان یافته"
                     }
                 },
-                {name: "createdBy", hidden: true},
-                {name: "createdDate", hidden: true},
                 {
-                    name: "workflowEndingStatusCode",
-                    title: "workflowCode",
-                    align: "center",
-                    filterOperator: "iContains",
-                    hidden: true
-                },
-                {
-                    name: "workflowEndingStatus",
+                    name: "tclassEndingStatus",
                     title: "<spring:message code="ending.class.status"/>",
                     align: "center",
                     filterOperator: "iContains",
                     autoFithWidth: true
                 },
-                {name: "scoringMethod", hidden: true},
-                {name: "preCourseTest", hidden: true}
+                {name: "classScoringMethod", hidden: true},
+                {name: "classPreCourseTest", hidden: true}
             ],
             selectionUpdated: function () {
-                let classRecord = ListGrid_class_Evaluation.getSelectedRecord();
                 loadSelectedTab_data(Detail_Tab_Evaluation.getSelectedTab());
                 set_Evaluation_Tabset_status();
             }
@@ -510,12 +483,11 @@
 
                 switch (tab.id) {
                     case "TabPane_Reaction": {
-                        RestDataSource_evaluation_student.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
-                        ListGrid_evaluation_student.invalidateCache();
-                        ListGrid_evaluation_student.fetchData();
-                        DynamicForm_ReturnDate.clearValues();
-                        ToolStripButton_FormIssuanceForAll.setTitle("<spring:message code="students.form.issuance.Reaction"/>");
-                        classRecord_Revaluation = classRecord;
+                        RestDataSource_student_RE.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
+                        ListGrid_student_RE.invalidateCache();
+                        ListGrid_student_RE.fetchData();
+                        DynamicForm_ReturnDate_RE.clearValues();
+                        classRecord_RE = classRecord;
                         break;
                     }
                     case "TabPane_Learning": {
@@ -525,16 +497,11 @@
                         break;
                     }
                     case "TabPane_Behavior": {
-                        ListGrid_evaluation_student.hideField("evaluationStatusReaction");
-                        ListGrid_evaluation_student.hideField("evaluationStatusLearning");
-                        ListGrid_evaluation_student.hideField("evaluationStatusResults");
-                        ListGrid_evaluation_student.showField("evaluationStatusBehavior");
-
-                        RestDataSource_evaluation_student.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
-                        ListGrid_evaluation_student.invalidateCache();
-                        ListGrid_evaluation_student.fetchData();
-
-                        ToolStripButton_FormIssuanceForAll.setTitle("<spring:message code="students.form.issuance.Behavioral"/>");
+                        RestDataSource_student_BE.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
+                        ListGrid_student_BE.invalidateCache();
+                        ListGrid_student_BE.fetchData();
+                        DynamicForm_ReturnDate_BE.clearValues();
+                        classRecord_BE = classRecord;
                         break;
                     }
                     case "TabPane_Results": {
@@ -547,7 +514,6 @@
             }
         }
         function set_Evaluation_Tabset_status() {
-
             let classRecord = ListGrid_class_Evaluation.getSelectedRecord();
             let evaluationType = classRecord.course.evaluation;
 
@@ -583,13 +549,13 @@
             if(value !== undefined) {
                 let criteria = {
                     _constructor:"AdvancedCriteria",
-                    operator:"or",
+                    operator:"and",
                     criteria:[
-                        { fieldName:"term.id", operator:"inSet", value: value},
-                        { fieldName:"classStatus", operator:"notEqual", value: "3"}
+                        { fieldName:"termId", operator:"inSet", value: value},
+                        { fieldName:"tclassStatus", operator:"notEqual", value: "3"}
                     ]
                 };
-                RestDataSource_class_Evaluation.fetchDataURL = evaluationUrl + "/class-spec-list";
+                RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
                 ListGrid_class_Evaluation.implicitCriteria = criteria;
                 ListGrid_class_Evaluation.invalidateCache();
                 ListGrid_class_Evaluation.fetchData();
@@ -599,4 +565,14 @@
                 createDialog("info", "<spring:message code="msg.select.term.ask"/>", "<spring:message code="message"/>")
             }
         }
+        function questionSourceConvert(s) {
+        switch (s.charAt(0)) {
+            case "G":
+                return 201;
+            case "M":
+                return 200;
+            case "Q":
+                return 199;
+        }
+    }
 
