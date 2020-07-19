@@ -108,7 +108,10 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
     @Transactional
     public String codeCompute(String code){
         Optional<Competence> top = competenceDAO.findTopByCodeStartsWithOrderByCodeDesc(code);
-        return top.map(competence -> (code + (Integer.valueOf(competence.getCode().substring(6)) + 1))).orElse(code + "1");
+        if(top.isPresent()){
+            return code + (Integer.valueOf((top.get().getCode().length()<7) ? "0" : top.get().getCode().substring(6))+1);
+        }
+        return code + "1";
     }
 
     @Transactional

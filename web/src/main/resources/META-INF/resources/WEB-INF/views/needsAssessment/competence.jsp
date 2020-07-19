@@ -360,11 +360,19 @@
         let record = CompetenceLG_competence.getSelectedRecord();
         let entityType = '<spring:message code="competence"/>';
         if (checkRecordAsSelected(record, true, entityType)) {
-            removeRecord(competenceUrl + "/" + record.id, entityType, record.title, 'CompetenceLG_competence');
+            isc.RPCManager.sendRequest(TrDSRequest(competenceUrl + "/" + record.id, "GET", null, (resp)=>{
+                wait.close();
+                if(resp.httpResponseCode !== 226){
+                    removeRecord(competenceUrl + "/" + record.id, entityType, record.title, 'CompetenceLG_competence');
+                }
+                else{
+                    createDialog("info", "بدلیل استفاده شدن شایستگی در نیازسنجی قابل حذف نمیباشد.");
+                }
+            }))
         }
     }
 
-    function actionCompetenceType(){
+    function actionCompetenceType() {
         let item = CompetenceDF_competence.getItem("competenceTypeId");
         let form = CompetenceDF_competence;
         if(item.getSelectedRecord().title === "تخصصی"){

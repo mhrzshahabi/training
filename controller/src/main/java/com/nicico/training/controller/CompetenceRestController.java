@@ -82,4 +82,13 @@ public class CompetenceRestController {
         }
     }
 
+    @Loggable
+    @GetMapping("/{id}")
+    public ResponseEntity checkUsed(@PathVariable Long id) {
+        final List<NeedsAssessmentDTO.Info> list = competenceService.checkUsed(id);
+        if(!list.isEmpty()){
+            return new ResponseEntity<>(list, HttpStatus.IM_USED);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
