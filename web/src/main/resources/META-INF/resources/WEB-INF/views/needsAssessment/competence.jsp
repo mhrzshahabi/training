@@ -227,7 +227,7 @@
                 textAlign: "center",
                 hidden: true,
                 // required: true,
-                autoFetchData: false,
+                // autoFetchData: false,
                 // titleOrientation: "top",
                 // height: "30",
                 width: "*",
@@ -349,7 +349,7 @@
                 }
                 else{
                     let list = JSON.parse(resp.data);
-                    console.log(JSON.parse(resp.data))
+                    CompetenceWin_competence.close();
                     createDialog("info", "شایستگی فوق در " + priorityList[list[0].objectType] + " " + getFormulaMessage(list[0].objectName, ) + " استفاده شده است. و قابل ویرایش نمیباشد.")
                 }
             })
@@ -360,11 +360,19 @@
         let record = CompetenceLG_competence.getSelectedRecord();
         let entityType = '<spring:message code="competence"/>';
         if (checkRecordAsSelected(record, true, entityType)) {
-            removeRecord(competenceUrl + "/" + record.id, entityType, record.title, 'CompetenceLG_competence');
+            isc.RPCManager.sendRequest(TrDSRequest(competenceUrl + "/" + record.id, "GET", null, (resp)=>{
+                wait.close();
+                if(resp.httpResponseCode !== 226){
+                    removeRecord(competenceUrl + "/" + record.id, entityType, record.title, 'CompetenceLG_competence');
+                }
+                else{
+                    createDialog("info", "بدلیل استفاده شدن شایستگی در نیازسنجی قابل حذف نمیباشد.");
+                }
+            }))
         }
     }
 
-    function actionCompetenceType(){
+    function actionCompetenceType() {
         let item = CompetenceDF_competence.getItem("competenceTypeId");
         let form = CompetenceDF_competence;
         if(item.getSelectedRecord().title === "تخصصی"){
@@ -391,14 +399,14 @@
         let subCat = (form.getField("subCategoryId").getSelectedRecord()) ? (form.getField("subCategoryId").getSelectedRecord().code) : "";
         switch (title) {
             case "تخصصی":
-                code.setValue("T" + cat + subCat)
-                break
+                code.setValue("T" + cat + subCat);
+                break;
             case "عمومی":
-                code.setValue("O00000")
-                break
+                code.setValue("O00000");
+                break;
             case "مدیریتی":
-                code.setValue("M00000")
-                break
+                code.setValue("M00000");
+                break;
         }
     }
 
