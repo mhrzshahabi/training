@@ -118,7 +118,8 @@ public class ExportToFileController {
                                       @RequestParam(value = "titr") String titr,
                                       @RequestParam(value = "pageName") String pageName,
                                       @RequestParam(value = "fileName") String fileName,
-                                      @RequestParam(value = "criteriaStr") String criteriaStr) throws Exception {
+                                      @RequestParam(value = "criteriaStr") String criteriaStr,
+                                      @RequestParam(value = "parameters") String parameters) throws Exception {
 
 
         SearchDTO.SearchRq searchRq = convertToSearchRq(req);
@@ -127,6 +128,8 @@ public class ExportToFileController {
         Type resultType = new TypeToken<List<HashMap<String, String>>>() {
         }.getType();
         List<HashMap<String, String>> fields1 = gson.fromJson(fields, resultType);
+
+        String [] parametersList = parameters.split(",");
 
         //Start Of Query
         net.minidev.json.parser.JSONParser parser = new JSONParser(DEFAULT_PERMISSIVE_MODE);
@@ -284,7 +287,6 @@ public class ExportToFileController {
 
             case "View_Post_Grade":
                 generalList = (List<Object>)((Object) viewPostGradeService.search(searchRq).getList());
-                setExcelValues(jsonString, count, generalList);
                 break;
 
             case "Post_Grade_Without_Permission":

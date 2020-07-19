@@ -504,7 +504,7 @@
                 downloadForm.submitForm();
             }
 
-            static exportToExcelFromServer(fields, fileName, criteriaStr, sortBy, len, titr, pageName) {
+            static exportToExcelFromServer(fields, fileName, criteriaStr, sortBy, len, titr, pageName, parameters) {
 
                 let downloadForm = isc.DynamicForm.create({
                     method: "POST",
@@ -520,7 +520,8 @@
                             {name: "pageName", type: "hidden"},
                             {name: "_sortBy", type: "hidden"},
                             {name: "_len", type: "hidden"},
-                            {name: "criteriaStr", type: "hidden"}
+                            {name: "criteriaStr", type: "hidden"},
+                            {name: "parameters", type: "hidden"}
                         ]
                 });
 
@@ -532,6 +533,7 @@
                 downloadForm.setValue("_sortBy", sortBy);
                 downloadForm.setValue("_len", len);
                 downloadForm.setValue("criteriaStr", criteriaStr);
+                downloadForm.setValue("parameters", parameters);
                 downloadForm.show();
                 downloadForm.submitForm();
             }
@@ -568,6 +570,17 @@
                 let sort = listGrid.getSort();
                 let sortStr='';
 
+                let valueMaps =[];
+
+                for (var v = 0; v <fields.isValueMap.length ; v++) {
+                    if(fields.isValueMap[v]){
+                        let field = listGrid.getField(fields.fields[v].name).optionDataSource;
+                        let parameter = field.fetchDataURL.split("/").last()
+                        if(field.autoCacheAllData)
+                            valueMaps.add(parameter);
+                    }
+                }
+
                 if (sort != null && sort.size() != 0){
 
                     if(sort.size() == 1){
@@ -582,7 +595,7 @@
                     }
                 }
 
-                this.exportToExcelFromServer(fields.fields, fileName, criteria, sortStr , len, tmptitr, pageName);
+                this.exportToExcelFromServer(fields.fields, fileName, criteria, sortStr , len, tmptitr, pageName, valueMaps);
             }
 
             static showDialog(title, listgrid, fileName, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate){
