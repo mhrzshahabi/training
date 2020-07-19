@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.Set;
 
 @Getter
@@ -40,4 +41,10 @@ public class JobGroup extends Auditable {
             joinColumns = {@JoinColumn(name = "f_jobgroup_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_job_id", referencedColumnName = "id")})
     private Set<Job> jobSet;
+
+    @Column(name = "d_last_modified_date_na")
+    private Date lastModifiedDateNA;
+
+    @Column(name = "c_modified_by_na")
+    private String modifiedByNA;
 }
