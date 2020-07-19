@@ -52,7 +52,7 @@ public class ClassContract extends Auditable {
     private Personnel accountable;
 
     @Column(name = "f_accountable_id", nullable = false)
-    private String accountableId;
+    private Long accountableId;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "f_first_party_company_id", nullable = false, insertable = false, updatable = false)

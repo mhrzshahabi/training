@@ -15,6 +15,8 @@
     var skill_SkillLevelUrl = rootUrl + "/skill-level/spec-list";
     var skillLevelSymbol_Skill = "";
     var temp;
+    var chanched_courseId;
+    var chanched_titleFa;
 
     /////////////////////////////////////////////////TrDS/////////////////////////////////////////////////////////////////
 
@@ -221,7 +223,10 @@
                 type: 'text',
                 keyPressFilter: "[a-z|A-Z|0-9| ]",
                 showHintInField: true,
-                width: "300"
+                width: "300",
+                changed:function () {
+                    chanched_titleFa=true
+                }
             },
             {
                 name: "categoryId",
@@ -339,6 +344,7 @@
                         click : function (form, item, icon) {
                             item.clearValue();
                             item.focusInItem();
+                            chanched_courseId=true
                         }
                     }
                 ],
@@ -365,6 +371,9 @@
                     alternateRecordStyles: true,
                     autoFitWidthApproach: "both",
                 },
+                changed:function (item) {
+                    chanched_courseId=true;
+                }
             },
             {
                 name: "description",
@@ -396,7 +405,10 @@
 
             wait_Skill = createDialog("wait");
 
-            isc.RPCManager.sendRequest(TrDSRequest(url_Skill, method_Skill, JSON.stringify(SkillDF_Skill.getValues()), Result_SaveSkill_Skill));
+            isc.RPCManager.sendRequest(TrDSRequest(url_Skill+"?chanched_courseId="+chanched_courseId+"&chanched_titleFa="+chanched_titleFa, method_Skill, JSON.stringify(SkillDF_Skill.getValues()), Result_SaveSkill_Skill));
+            chanched_courseId=false
+            chanched_titleFa=false
+
         }
     });
 

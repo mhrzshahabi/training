@@ -1,50 +1,107 @@
 package com.nicico.training.model;
 
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Getter
 @Entity
 @Immutable
 @Table(name = "tbl_department")
-public class Department {
+public class Department extends Auditable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "department_seq")
-    @SequenceGenerator(name = "department_seq", sequenceName = "seq_department_id", allocationSize = 1)
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Setter(AccessLevel.NONE)
+    @Column(name = "c_title_l")
+    private String titleL;
+
+    @Column(name = "c_title")
+    private String title;
+
+    @Column(name = "c_type")
+    private String type;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dep_parent_id",
-            foreignKey = @ForeignKey(name = "fk_department2Department"),
-            insertable = false, updatable = false)
+    @JoinColumn(name = "f_parent", insertable = false, updatable = false)
     private Department parentDepartment;
 
-    @Column(name = "dep_parent_id")
-    private Long depParrentId;
+    @Column(name = "f_parent")
+    private Long parentId;
 
-    @Column(name = "dep_departmentname", nullable = false, length = 255)
-    private String departmentName;
+    @Column(name = "c_nature")
+    private String nature;
 
-    @Column(name = "dep_deactive")
-    private String deactive;
+    @Column(name = "c_start_date")
+    private Date startDate;
 
-    @Column(name = "parent_code")
-    private String parentCode;
+    @Column(name = "c_end_date")
+    private Date endDate;
+
+    @Column(name = "c_legacy_create_date")
+    private Date legacyCreateDate;
+
+    @Column(name = "c_legacy_change_date")
+    private Date legacyChangeDate;
+
+    @Column(name = "c_user")
+    private String user;
+
+    @Column(name = "c_issuable")
+    private Boolean issuable;
+
+    @Column(name = "c_correction")
+    private Boolean correction;
+
+    @Column(name = "c_alignment")
+    private Boolean alignment;
+
+    @Column(name = "c_people_type", length = 50)
+    private String peopleType;
 
     @Column(name = "c_code")
     private String code;
 
-    @Version
-    @Column(name = "n_version")
-    private Integer version;
+    @Column(name = "c_old_code")
+    private String oldCode;
 
-    @Column(name = "n_tree_version")
-    private String treeVersion;
+    @Column(name = "c_new_code")
+    private String newCode;
+
+    @Column(name = "c_parent_code", length = 50)
+    private String parentCode;
+
+    @Column(name = "c_hoze_code")
+    private String hozeCode;
+
+    @Column(name = "c_hoze_title")
+    private String hozeTitle;
+
+    @Column(name = "c_moavenat_code")
+    private String moavenatCode;
+
+    @Column(name = "c_moavenat_title")
+    private String moavenatTitle;
+
+    @Column(name = "c_omor_code")
+    private String omorCode;
+
+    @Column(name = "c_omor_title")
+    private String omorTitle;
+
+    @Column(name = "c_ghesmat_code")
+    private String ghesmatCode;
+
+    @Column(name = "c_ghesmat_title")
+    private String ghesmatTitle;
+
+    @Column(name = "c_vahed_code")
+    private String vahedCode;
+
+    @Column(name = "c_vahed_title")
+    private String vahedTitle;
+
 }

@@ -575,6 +575,7 @@
                 textAlign: "center",
                 pickListWidth: "600",
                 validateOnChange: true,
+                validateOnExit: true,
                 optionDataSource: RestDataSource_Course_JspClass,
                 canEdit: false,
                 autoFetchData: false,
@@ -1749,7 +1750,7 @@
             }
             let classSaveUrl = classUrl;
             if (classMethod.localeCompare("PUT") === 0) {
-                classSaveUrl += "safeUpdate/" + classRecord.id;
+                classSaveUrl += "update/" + classRecord.id;
             } else if (classMethod.localeCompare("POST") === 0)
             {
                 classSaveUrl += "safeCreate";

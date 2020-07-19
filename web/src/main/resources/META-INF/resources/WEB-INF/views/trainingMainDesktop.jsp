@@ -2314,6 +2314,10 @@
                 isc.IButtonSave.create({title: "<spring:message code="ok"/>",}),
                 isc.IButtonCancel.create({title: "<spring:message code="cancel"/>",})
             ]);
+        } else if (type === 'wait'){
+            dialog.setProperties({
+                showCloseButton: false
+            })
         }
         return dialog;
     }
