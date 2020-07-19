@@ -11,7 +11,8 @@
         ID: "searchTree",
         data:[],
         fields: [
-            {name: "title", title: "موارد جستجو شده", width:"10%"},
+            {name: "title", title: "موارد جستجو شده", width:"90%"},
+            {name: "code", title: "کد", width:"10%"},
         ],
         canDragRecordsOut: true,
         width: "100%",
@@ -37,7 +38,8 @@
         ID: "organizationalTree",
         data:[],
         fields: [
-            {name: "title", title: "درخت کامل", width:"10%", },
+            {name: "title", title: "درخت کامل", width:"90%", },
+            {name: "code", title: "کد", width:"10%"},
         ],
         canDragRecordsOut: true,
         width: "100%",
@@ -146,8 +148,9 @@
                 showRTL: true,
                 tabIndex: -1,
                 click: function () {
-                    let AdvanceCriteria = '{"fieldName":"title","operator":"iContains","value":"' + search_bar.getValues().search + '"}';
-                    getSearchData(AdvanceCriteria);
+                    // let AdvanceCriteria = '{"fieldName":"title","operator":"iContains","value":"' + search_bar.getValues().search + '"}';
+                    // getSearchData(AdvanceCriteria);
+                    searchWithCriteria(search_bar.getValues().search);
                 },
             }, {
                 name: "clear",
@@ -179,8 +182,12 @@
         ],
         itemKeyPress: function (item, keyName) {
             if (keyName == "Enter") {
-                let AdvanceCriteria = '{"fieldName":"title","operator":"iContains","value":"' + search_bar.getValues().search + '"}';
-                getSearchData(AdvanceCriteria);
+                // let AdvanceCriteria = '['+
+                //     '{"fieldName":"title","operator":"iContains","value":"' + search_bar.getValues().search + '"}, '+
+                //     '{"fieldName":"code","operator":"iContains","value":"' + search_bar.getValues().search + '"}'+
+                // ']';
+                // getSearchData(AdvanceCriteria);
+                searchWithCriteria(search_bar.getValues().search);
             }
         },
     });
@@ -300,7 +307,7 @@
     }
 
     function getSearchData(criteria) {
-        var url = masterDataUrl + "/department/getDepartmentsChilderenAndParents" + "?operator=or&_constructor=AdvancedCriteria&criteria="+ criteria;
+        var url = masterDataUrl + "/department/getDepartmentsChilderenAndParents" + "?operator=and&_constructor=AdvancedCriteria&criteria="+ JSON.stringify(criteria);
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
             wait.close();
@@ -379,6 +386,15 @@
         if(open)
             searchTree.getData().openAll();
         return Treedata;
+    }
+
+    function searchWithCriteria(value) {
+        let AdvanceCriteria = [{"fieldName":"active","operator":"equals","value":true},
+            {"operator":"or",
+                "criteria":[ isNaN(value) ? {"fieldName":"title","operator":"iContains","value": value} : {"fieldName":"code","operator":"startsWith","value": value}]
+
+            }];
+        getSearchData(AdvanceCriteria);
     }
     // ------------------------------------------------- Functions ------------------------------------------>>
 

@@ -1131,7 +1131,7 @@
     <%--});--%>
 
     var Window_AddCompetence = isc.Window.create({
-        title: "<spring:message code="skill.plural.list"/>",
+        title: "<spring:message code="competence.list"/>",
         width: "40%",
         height: "50%",
         keepInParentRect: true,

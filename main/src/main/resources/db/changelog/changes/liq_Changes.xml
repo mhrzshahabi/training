@@ -427,5 +427,397 @@
             <column name="subcategory_id" type="number(19, 0)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-448">
+        <createTable tableName="tbl_geo_work">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_geo_workPK"/>
+            </column>
+            <column name="c_code" type="NUMBER(19, 0)"/>
+            <column name="c_people_type" type="VARCHAR2(50 CHAR)"/>
+            <column name="c_title" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-449">
+        <addColumn tableName="tbl_department">
+            <column name="c_alignment" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-450">
+        <addColumn tableName="tbl_department">
+            <column name="c_correction" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-451">
+        <addColumn tableName="tbl_department">
+            <column name="c_created_by" type="varchar2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-452">
+        <addColumn tableName="tbl_department">
+            <column name="c_end_date" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-453">
+        <addColumn tableName="tbl_department">
+            <column name="c_ghesmat_code" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-454">
+        <addColumn tableName="tbl_department">
+            <column name="c_ghesmat_title" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-455">
+        <addColumn tableName="tbl_department">
+            <column name="c_hoze_code" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-456">
+        <addColumn tableName="tbl_department">
+            <column name="c_hoze_title" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-457">
+        <addColumn tableName="tbl_department">
+            <column name="c_issuable" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-458">
+        <addColumn tableName="tbl_department">
+            <column name="c_last_modified_by" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-459">
+        <addColumn tableName="tbl_department">
+            <column name="c_legacy_change_date" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-460">
+        <addColumn tableName="tbl_department">
+            <column name="c_legacy_create_date" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-461">
+        <addColumn tableName="tbl_department">
+            <column name="c_moavenat_code" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-462">
+        <addColumn tableName="tbl_department">
+            <column name="c_moavenat_title" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-463">
+        <addColumn tableName="tbl_department">
+            <column name="c_nature" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-464">
+        <addColumn tableName="tbl_department">
+            <column name="c_new_code" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-465">
+        <addColumn tableName="tbl_department">
+            <column name="c_old_code" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-466">
+        <addColumn tableName="tbl_department">
+            <column name="c_omor_code" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-467">
+        <addColumn tableName="tbl_department">
+            <column name="c_omor_title" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-468">
+        <addColumn tableName="tbl_department">
+            <column name="c_parent_code" type="varchar2(50 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-469">
+        <addColumn tableName="tbl_department">
+            <column name="c_people_type" type="varchar2(50 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-470">
+        <addColumn tableName="tbl_job">
+            <column name="c_people_type" type="varchar2(50 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-471">
+        <addColumn tableName="tbl_post">
+            <column name="c_people_type" type="varchar2(50 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-472">
+        <addColumn tableName="tbl_post_grade">
+            <column name="c_people_type" type="varchar2(50 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-473">
+        <addColumn tableName="tbl_training_post">
+            <column name="c_people_type" type="varchar2(50 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-474">
+        <addColumn tableName="tbl_department">
+            <column name="c_start_date" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-475">
+        <addColumn tableName="tbl_department">
+            <column name="c_title" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-476">
+        <addColumn tableName="tbl_department">
+            <column name="c_title_l" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-477">
+        <addColumn tableName="tbl_department">
+            <column name="c_type" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-478">
+        <addColumn tableName="tbl_department">
+            <column name="c_user" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-479">
+        <addColumn tableName="tbl_department">
+            <column name="c_vahed_code" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-480">
+        <addColumn tableName="tbl_department">
+            <column name="c_vahed_title" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-481">
+        <addColumn tableName="tbl_department">
+            <column name="d_created_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-482">
+        <addColumn tableName="tbl_department">
+            <column name="d_last_modified_date" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-483">
+        <addColumn tableName="tbl_department">
+            <column name="e_deleted" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-484">
+        <addColumn tableName="tbl_department">
+            <column name="e_enabled" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-485">
+        <addColumn tableName="tbl_personnel">
+            <column name="f_department_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-486">
+        <addColumn tableName="tbl_personnel_registered">
+            <column name="f_department_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-487">
+        <addColumn tableName="tbl_post">
+            <column name="f_department_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-488">
+        <addColumn tableName="tbl_student">
+            <column name="f_department_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-489">
+        <addColumn tableName="tbl_training_post">
+            <column name="f_department_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-490">
+        <addColumn tableName="tbl_department">
+            <column name="f_parent" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-491">
+        <addColumn tableName="tbl_personnel">
+            <column name="p_type" type="varchar2(50 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-492">
+        <addColumn tableName="tbl_personnel_registered">
+            <column name="p_type" type="varchar2(50 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-493">
+        <addColumn tableName="tbl_student">
+            <column name="p_type" type="varchar2(50 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-529">
+        <dropForeignKeyConstraint baseTableName="TBL_DEPARTMENT" constraintName="FK_DEPARTMENT2DEPARTMENT"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-602">
+        <dropColumn columnName="DEP_DEACTIVE" tableName="TBL_DEPARTMENT"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-603">
+        <dropColumn columnName="DEP_DEPARTMENTNAME" tableName="TBL_DEPARTMENT"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-604">
+        <dropColumn columnName="DEP_PARENT_ID" tableName="TBL_DEPARTMENT"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-605">
+        <dropColumn columnName="N_TREE_VERSION" tableName="TBL_DEPARTMENT"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-606">
+        <dropColumn columnName="PARENT_CODE" tableName="TBL_DEPARTMENT"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-608">
+        <dropSequence sequenceName="SEQ_DEPARTMENT_ID"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-401">
+        <dropNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_code" tableName="tbl_job"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-402">
+        <dropNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_code" tableName="tbl_post"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-403">
+        <dropNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_code" tableName="tbl_post_grade"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-404">
+        <dropNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_code" tableName="tbl_training_post"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-405">
+        <dropNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_title_fa" tableName="tbl_job"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-406">
+        <dropNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_title_fa" tableName="tbl_post"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-407">
+        <dropNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_title_fa" tableName="tbl_post_grade"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-408">
+        <dropNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_title_fa" tableName="tbl_training_post"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595043204072-409">
+        <addNotNullConstraint columnDataType="number(10,0)" columnName="n_version" tableName="tbl_department"/>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1595043444667-471">
+        <dropUniqueConstraint constraintName="UC_TBL_COMPETENCEC_TITLE_COL" tableName="TBL_COMPETENCE"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595049229600-450">
+        <addColumn tableName="tbl_personnel">
+            <column name="f_geo_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595049229600-451">
+        <addColumn tableName="tbl_personnel_registered">
+            <column name="f_geo_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595049229600-452">
+        <addColumn tableName="tbl_student">
+            <column name="f_geo_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595054165426-450">
+        <addColumn tableName="tbl_personnel">
+            <column name="f_post_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595054165426-451">
+        <addColumn tableName="tbl_personnel_registered">
+            <column name="f_post_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595054165426-452">
+        <addColumn tableName="tbl_student">
+            <column name="f_post_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595056114956-452">
+        <addColumn tableName="tbl_personnel">
+            <column name="c_username" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595056114956-453">
+        <addColumn tableName="tbl_personnel_registered">
+            <column name="c_username" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595056114956-454">
+        <addColumn tableName="tbl_student">
+            <column name="c_username" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+
+
+    <changeSet author="poursalehi_mos (generated)" id="1595059040994-475">
+        <dropForeignKeyConstraint baseTableName="TBL_COMMITTEE_PERSONNEL" constraintName="FK65EHY840FG2DJ3E1QYKLVR0X6"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595059040994-476">
+        <dropForeignKeyConstraint baseTableName="TBL_COMMITTEE_PERSONNEL" constraintName="FK7WMQNNKYQAYTKI3IMC2GQU6M7"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595056114956-196">
+        <dropForeignKeyConstraint baseTableName="tbl_class_contract" constraintName="FKihwfaifcmcci1efmafvm6iwj8"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595059040994-551">
+        <dropColumn columnName="F_ACCOUNTABLE_ID" tableName="TBL_CLASS_CONTRACT"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595059040994-544">
+        <dropTable tableName="TBL_COMMITTEE_PERSONNEL"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595056114956-406">
+        <dropNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="personnel_no" tableName="tbl_personnel"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595056114956-405">
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="id" tableName="tbl_personnel"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595070690461-405">
+        <dropPrimaryKey tableName="tbl_personnel"/>
+        <createIndex indexName="IX_tbl_personnelPK" tableName="tbl_personnel" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_personnelPK" forIndexName="IX_tbl_personnelPK" tableName="tbl_personnel"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595070690461-449">
+        <createTable tableName="tbl_committee_personnel">
+            <column name="f_committee_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_personnel_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595070690461-462">
+        <addForeignKeyConstraint baseColumnNames="f_committee_id" baseTableName="tbl_committee_personnel" constraintName="FK65ehy840fg2dj3e1qyklvr0x6" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_committee" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595070690461-463">
+        <addForeignKeyConstraint baseColumnNames="f_personnel_id" baseTableName="tbl_committee_personnel" constraintName="FK7wmqnnkyqaytki3imc2gqu6m7" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_personnel" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595070690461-450">
+        <addColumn tableName="tbl_class_contract">
+            <column name="f_accountable_id" type="number(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595070690461-464">
+        <addForeignKeyConstraint baseColumnNames="f_accountable_id" baseTableName="tbl_class_contract" constraintName="FKihwfaifcmcci1efmafvm6iwj8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_personnel" validate="true"/>
+    </changeSet>
 
 </databaseChangeLog>

@@ -2,6 +2,7 @@ package com.nicico.training.repository;
 
 import com.nicico.training.model.NeedsAssessmentTemp;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface NeedsAssessmentTempDAO extends BaseDAO<NeedsAssessmentTemp, Long> {
@@ -11,6 +12,7 @@ public interface NeedsAssessmentTempDAO extends BaseDAO<NeedsAssessmentTemp, Lon
 
     void deleteAllByObjectIdAndObjectType(Long objectId, String objectType);
 
+    Optional<NeedsAssessmentTemp> findFirstByCompetenceId(Long competenceId);
 }
 
 

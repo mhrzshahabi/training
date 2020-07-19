@@ -548,7 +548,7 @@ public class EvaluationRestController {
             EvaluationDTO.BehavioralForms behavioralForms = new EvaluationDTO.BehavioralForms();
             behavioralForms.setEvaluatorTypeId(evaluation.getEvaluatorTypeId());
             behavioralForms.setStatus(evaluation.getStatus());
-            Personnel personnel = personnelDAO.findById(evaluation.getEvaluatorId());
+            Personnel personnel = personnelDAO.findById(evaluation.getEvaluatorId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
             behavioralForms.setEvaluatorName(personnel.getFirstName() + " " + personnel.getLastName());
             behavioralForms.setId(evaluation.getId());
             behavioralForms.setEvaluatorId(personnel.getId());
