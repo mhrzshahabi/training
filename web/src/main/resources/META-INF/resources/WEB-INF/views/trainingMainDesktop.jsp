@@ -39,8 +39,19 @@
     <script src="<spring:url value='/js/langConverter.js' />"></script>
     <script src="<spring:url value='/js/xlsx.full.min.js' />"></script>
     <script src="<spring:url value='/js/svg-inject.min.js' />"></script>
+    <script src="<spring:url value='/js/loadjs.min.js' />"></script>
 
     <script>
+
+       /* jQuery.loadScript = function (url, callback) {
+            jQuery.ajax({
+                url: url,
+                dataType: 'script',
+                success: callback,
+                async: false
+            });
+        }*/
+
         String.prototype.toEnglishDigit = function() {
             var find = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
             var replace = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
