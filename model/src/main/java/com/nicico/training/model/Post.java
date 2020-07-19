@@ -8,6 +8,7 @@ import lombok.Getter;
 import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.Set;
 
 @Getter
@@ -66,6 +67,12 @@ public class Post extends Auditable {
 
     @Column(name = "f_department_id")
     private Long departmentId;
+
+    @Column(name = "d_last_modified_date_na")
+    private Date lastModifiedDateNA;
+
+    @Column(name = "c_modified_by_na")
+    private String modifiedByNA;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "f_department_id", insertable = false, updatable = false)
