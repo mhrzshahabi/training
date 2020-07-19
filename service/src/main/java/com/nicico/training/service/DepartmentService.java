@@ -35,7 +35,7 @@ public class DepartmentService extends GenericService<Department, Long, Departme
     @PreAuthorize("hasAuthority('Department_R')")
     public List<DepartmentDTO.Info> findByParentId(Long parentId) {
 
-        final List<Department> mainForm = departmentDAO.getByDepParrentId(parentId);
+        final List<Department> mainForm = departmentDAO.findAllByParentId(parentId);
         return modelMapper.map(mainForm, new TypeToken<List<DepartmentDTO.Info>>() {
         }.getType());
     }

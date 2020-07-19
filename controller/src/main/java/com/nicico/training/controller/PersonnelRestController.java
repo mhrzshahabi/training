@@ -12,6 +12,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PersonnelRegisteredDTO;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
@@ -133,7 +134,7 @@ public class PersonnelRestController {
     @Loggable
     @GetMapping(value = "/byId/{id}")
     public ResponseEntity<Personnel> findPersonnelById(@PathVariable Long id) {
-        Personnel personalInfo = personnelDAO.findById(id);
+        Personnel personalInfo = personnelDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         return new ResponseEntity<>(personalInfo, HttpStatus.OK);
     }
 

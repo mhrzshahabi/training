@@ -119,12 +119,13 @@ public class SkillService implements ISkillService {
 
     @Transactional
     @Override
-    public SkillDTO.Info update(Long id, Object request,HttpServletResponse response) {
+    public SkillDTO.Info update(Long id, Object request, HttpServletResponse response) {
 
         final Optional<Skill> optionalSkill = skillDAO.findById(id);
         final Skill currentSkill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
         SkillDTO.Update requestSkill = modelMapper.map(request, SkillDTO.Update.class);
-        if(skillDAO.findByTitleFaAndCategoryIdAndSubCategoryIdAndSkillLevelId(requestSkill.getTitleFa(),requestSkill.getCategoryId(),requestSkill.getSubCategoryId(),requestSkill.getSkillLevelId()) != null)
+        Skill skills=skillDAO.findByTitleFaAndCategoryIdAndSubCategoryIdAndSkillLevelId(requestSkill.getTitleFa(), requestSkill.getCategoryId(), requestSkill.getSubCategoryId(), requestSkill.getSkillLevelId());
+        if ( skills != null && skills.getId() != id )
         {
             try {
 

@@ -10,6 +10,7 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CompetenceDTO;
+import com.nicico.training.dto.NeedsAssessmentDTO;
 import com.nicico.training.service.CompetenceService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -55,7 +56,11 @@ public class CompetenceRestController {
 
     @Loggable
     @PutMapping("/{id}")
-    public ResponseEntity<CompetenceDTO.Info> update(@PathVariable Long id, @RequestBody Object rq, HttpServletResponse response) {
+    public ResponseEntity update(@PathVariable Long id, @RequestBody Object rq, HttpServletResponse response) {
+        final List<NeedsAssessmentDTO.Info> list = competenceService.checkUsed(id);
+        if(!list.isEmpty()){
+            return new ResponseEntity<>(list, HttpStatus.IM_USED);
+        }
         CompetenceDTO.Update update = modelMapper.map(rq, CompetenceDTO.Update.class);
         return new ResponseEntity<>(competenceService.checkAndUpdate(id, update, response), HttpStatus.OK);
     }
@@ -63,6 +68,10 @@ public class CompetenceRestController {
     @Loggable
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
+        final List<NeedsAssessmentDTO.Info> list = competenceService.checkUsed(id);
+        if(!list.isEmpty()){
+            return new ResponseEntity<>(list, HttpStatus.IM_USED);
+        }
         try {
             return new ResponseEntity<>(competenceService.delete(id), HttpStatus.OK);
         } catch (TrainingException ex) {
@@ -73,4 +82,13 @@ public class CompetenceRestController {
         }
     }
 
+    @Loggable
+    @GetMapping("/{id}")
+    public ResponseEntity checkUsed(@PathVariable Long id) {
+        final List<NeedsAssessmentDTO.Info> list = competenceService.checkUsed(id);
+        if(!list.isEmpty()){
+            return new ResponseEntity<>(list, HttpStatus.IM_USED);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

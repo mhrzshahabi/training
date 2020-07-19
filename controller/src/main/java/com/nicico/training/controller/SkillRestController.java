@@ -108,7 +108,7 @@ public class SkillRestController {
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_skill')")
     public ResponseEntity<SkillDTO.Info> update(@PathVariable Long id, @RequestBody Object request,HttpServletResponse response) {
-        return new ResponseEntity<>(skillService.update(id, request,response), HttpStatus.OK);
+        return new ResponseEntity<>(skillService.update(id,request,response), HttpStatus.OK);
     }
 
     @Loggable

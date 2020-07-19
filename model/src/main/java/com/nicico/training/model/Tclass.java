@@ -151,6 +151,7 @@ public class Tclass extends Auditable {
 
     @Column(name = "c_workflow_ending_status")
     private String workflowEndingStatus;
+
     @Column(name = "c_workflow_ending_status_code")
     private Integer workflowEndingStatusCode;
 

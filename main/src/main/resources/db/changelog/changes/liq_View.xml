@@ -2056,5 +2056,55 @@ FROM
         </createView>
     </changeSet>
 
+    <changeSet author="NICICO" id="from view_class_detail-003">
+        <createView viewName="from view_class_detail" replaceIfExists="true">
+            <![CDATA[
+    SELECT
+        tclass.ID as id,
+        tclass.c_created_by as c_created_by ,
+        tclass.d_created_date as d_created_date,
+        tclass.e_deleted as e_deleted,
+        tclass.e_enabled as e_enabled,
+        tclass.c_last_modified_by as c_last_modified_by,
+        tclass.d_last_modified_date as d_last_modified_date,
+        tclass.n_version as n_version,
+        tclass.C_SCORING_METHOD as tclass_scoring_method,
+        tclass.PRE_COURSE_TEST as tclass_has_pre_test,
+        tclass.N_H_DURATION as tclass_n_duration,
+        tclass.F_INSTITUTE_ORGANIZER as tclass_organizer,
+        tclass.C_STATUS as tclass_status,
+        tclass.F_PLANNER as tclass_planner,
+        tclass.F_SUPERVISOR as tclass_supervisor,
+        tclass.C_CODE as tclass_c_code,
+        tclass.F_INSTITUTE as institute_id,
+        tclass.F_TEACHER as teacher_id,
+        tclass.F_TERM as term_id,
+        tclass.C_START_DATE as tclass_c_start_date,
+        tclass.C_WORKFLOW_ENDING_STATUS as tclass_ending_status,
+        tclass.C_END_DATE as tclass_c_end_date,
+        SUBSTR(tclass.C_START_DATE,1,4) as tclass_year,
+        course.C_CODE as course_c_code,
+        course.CATEGORY_ID as course_category_id,
+        course.SUBCATEGORY_ID as course_subcategory_id,
+        course.C_TITLE_FA as course_c_title_fa,
+        course.C_EVALUATION as course_c_evaluation,
+        CASE WHEN students.counts IS NULL THEN 0 ELSE students.counts END AS tclass_students_count,
+        term.C_TITLE_FA as term_TitleFa,
+        institute.C_TITLE_FA as tclass_institute
+
+        FROM TBL_CLASS tclass LEFT JOIN TBL_COURSE course
+        ON tclass.F_COURSE = course.ID
+        LEFT JOIN (SELECT
+            TBL_CLASS_STUDENT.CLASS_ID,
+            count(TBL_CLASS_STUDENT.ID) as counts
+        FROM
+            TBL_CLASS_STUDENT
+            GROUP BY TBL_CLASS_STUDENT.CLASS_ID) students ON students.CLASS_ID = tclass.ID
+        LEFT JOIN TBL_TERM term ON tclass.F_TERM = term.ID
+        LEFT JOIN TBL_INSTITUTE institute ON institute.id = tclass.F_INSTITUTE
+
+            ]]>
+        </createView>
+    </changeSet>
 
 </databaseChangeLog>

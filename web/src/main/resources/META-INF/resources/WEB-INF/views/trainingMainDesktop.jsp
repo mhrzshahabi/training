@@ -775,6 +775,7 @@
     const presenceReportUrl = rootUrl + "/presence-report";
     const continuousStatusReportViewUrl = rootUrl + "/continuous-status-report-view";
     const departmentUrl = rootUrl + "/department";
+    const viewClassDetailUrl = rootUrl + "/view-class-detail";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -2324,6 +2325,10 @@
                 isc.IButtonSave.create({title: "<spring:message code="ok"/>",}),
                 isc.IButtonCancel.create({title: "<spring:message code="cancel"/>",})
             ]);
+        } else if (type === 'wait'){
+            dialog.setProperties({
+                showCloseButton: false
+            })
         }
         return dialog;
     }
