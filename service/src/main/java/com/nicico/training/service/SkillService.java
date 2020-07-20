@@ -40,10 +40,44 @@ import static com.nicico.training.service.BaseService.setCriteria;
 public class SkillService implements ISkillService {
     private final ModelMapper modelMapper;
     private final SkillDAO skillDAO;
+    private final SkillLevelDAO skillLevelDAO;
     private final CourseDAO courseDAO;
     private final IWorkGroupService workGroupService;
     private final ICourseService courseService;
     private final ResourceBundleMessageSource messageSource;
+
+    @Transactional(readOnly = true)
+    @Override
+    public String getQuestion(Long id) {
+        Skill skill = getSkill(id);
+        String skillLevel = skill.getSkillLevel().getTitleFa();
+        String question = "";
+
+
+        switch(skillLevel){
+            case "آشنایی":
+                skillLevel+=" با";
+                break;
+            case "توانایی":
+                //skillLevel+=" بر";
+                break;
+            case "تسلط":
+                skillLevel+=" بر";
+                break;
+        }
+        question=skill.getTitleFa().trim();
+        question=question.replace("آشنائی","آشنایی");
+
+        if (!question.startsWith(skillLevel)) {
+            question = "میزان " + skillLevel + " " + question;
+        } else {
+            question = "میزان " + question;
+        }
+
+        return question;
+
+    }
+
 
     @Transactional(readOnly = true)
     @Override
@@ -96,15 +130,14 @@ public class SkillService implements ISkillService {
 //        final Optional<Subcategory> subCategoryById = subCategoryDAO.findById(skill.getSubCategoryId());
 //        final Subcategory subCategory = subCategoryById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SubCategoryNotFound));
 
-        if(skillDAO.findByTitleFaAndCategoryIdAndSubCategoryIdAndSkillLevelId(request.getTitleFa(),request.getCategoryId(),request.getSubCategoryId(),request.getSkillLevelId()) != null)
-        {
+        if (skillDAO.findByTitleFaAndCategoryIdAndSubCategoryIdAndSkillLevelId(request.getTitleFa(), request.getCategoryId(), request.getSubCategoryId(), request.getSkillLevelId()) != null) {
             try {
                 Locale locale = LocaleContextHolder.getLocale();
-                Skill duplicateSkill1=skillDAO.findByTitleFaAndCategoryIdAndSubCategoryIdAndSkillLevelId(request.getTitleFa(),request.getCategoryId(),request.getSubCategoryId(),request.getSkillLevelId());
-                SkillDTO.Info skillinfo = modelMapper.map(duplicateSkill1,SkillDTO.Info.class);
-                response.addHeader("skillCode",skillinfo.getCode());
+                Skill duplicateSkill1 = skillDAO.findByTitleFaAndCategoryIdAndSubCategoryIdAndSkillLevelId(request.getTitleFa(), request.getCategoryId(), request.getSubCategoryId(), request.getSkillLevelId());
+                SkillDTO.Info skillinfo = modelMapper.map(duplicateSkill1, SkillDTO.Info.class);
+                response.addHeader("skillCode", skillinfo.getCode());
                 response.addHeader("skillName", URLEncoder.encode(skillinfo.getTitleFa(), "UTF-8"));
-                response.sendError(406, messageSource.getMessage("skill.duplicate" , null, locale));
+                response.sendError(406, messageSource.getMessage("skill.duplicate", null, locale));
                 return null;
             } catch (IOException e) {
                 throw new TrainingException(TrainingException.ErrorType.InvalidData);
@@ -124,17 +157,16 @@ public class SkillService implements ISkillService {
         final Optional<Skill> optionalSkill = skillDAO.findById(id);
         final Skill currentSkill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
         SkillDTO.Update requestSkill = modelMapper.map(request, SkillDTO.Update.class);
-        Skill skills=skillDAO.findByTitleFaAndCategoryIdAndSubCategoryIdAndSkillLevelId(requestSkill.getTitleFa(), requestSkill.getCategoryId(), requestSkill.getSubCategoryId(), requestSkill.getSkillLevelId());
-        if ( skills != null && skills.getId() != id )
-        {
+        Skill skills = skillDAO.findByTitleFaAndCategoryIdAndSubCategoryIdAndSkillLevelId(requestSkill.getTitleFa(), requestSkill.getCategoryId(), requestSkill.getSubCategoryId(), requestSkill.getSkillLevelId());
+        if (skills != null && skills.getId() != id) {
             try {
 
                 Locale locale = LocaleContextHolder.getLocale();
-                Skill duplicateSkill1=skillDAO.findByTitleFaAndCategoryIdAndSubCategoryIdAndSkillLevelId(requestSkill.getTitleFa(),requestSkill.getCategoryId(),requestSkill.getSubCategoryId(),requestSkill.getSkillLevelId());
-                SkillDTO.Info skillinfo = modelMapper.map(duplicateSkill1,SkillDTO.Info.class);
-                response.addHeader("skillCode",skillinfo.getCode());
+                Skill duplicateSkill1 = skillDAO.findByTitleFaAndCategoryIdAndSubCategoryIdAndSkillLevelId(requestSkill.getTitleFa(), requestSkill.getCategoryId(), requestSkill.getSubCategoryId(), requestSkill.getSkillLevelId());
+                SkillDTO.Info skillinfo = modelMapper.map(duplicateSkill1, SkillDTO.Info.class);
+                response.addHeader("skillCode", skillinfo.getCode());
                 response.addHeader("skillName", URLEncoder.encode(skillinfo.getTitleFa(), "UTF-8"));
-                response.sendError(406, messageSource.getMessage("skill.duplicate" , null, locale));
+                response.sendError(406, messageSource.getMessage("skill.duplicate", null, locale));
                 return null;
             } catch (IOException e) {
                 throw new TrainingException(TrainingException.ErrorType.InvalidData);
@@ -143,7 +175,7 @@ public class SkillService implements ISkillService {
         Skill updating = new Skill();
         modelMapper.map(currentSkill, updating);
         modelMapper.map(requestSkill, updating);
-        if (  requestSkill.getCourseId() == null || !requestSkill.getCourseId().equals(currentSkill.getCourseId())) {
+        if (requestSkill.getCourseId() == null || !requestSkill.getCourseId().equals(currentSkill.getCourseId())) {
             updating.setCourseMainObjectiveId(null);
         }
         Skill skill = skillDAO.saveAndFlush(updating);
@@ -329,19 +361,19 @@ public class SkillService implements ISkillService {
         skillDAO.saveAndFlush(skill);
         courseService.updateHasSkill(courseId, null);
     }
+
     @Transactional
     @Override
-    public boolean editSkill(Long id)
-    {
-        final Optional<Skill> optionalSkill=skillDAO.findById(id);
+    public boolean editSkill(Long id) {
+        final Optional<Skill> optionalSkill = skillDAO.findById(id);
         final Skill skill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
-        if(skill.getCourseId() !=null || skill.getNeedsAssessments().size() >0)
-        {
+        if (skill.getCourseId() != null || skill.getNeedsAssessments().size() > 0) {
             return true;
         }
         return false;
 
     }
+
     @Transactional
     @Override
     public void removeCourses(List<Long> courseIds, Long skillId) {
