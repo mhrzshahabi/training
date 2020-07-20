@@ -190,19 +190,18 @@ public class TclassDTO {
 
         public List<Object> gettargetSocieties() {
             ////disable targetSociety
-//            if (targetSocieties == null)
-//                return new ArrayList<>(0);
-//            boolean accept = true;
-//            for (Object society : targetSocieties) {
-//                if (targetSocietyTypeId == 371 && society instanceof Integer)
-//                    continue;
-//                else if (targetSocietyTypeId == 372 && society instanceof String)
-//                    continue;
-//                accept = false;
-//                break;
-//            }
-//            return accept ? targetSocieties : new ArrayList<>(0);
-            return new ArrayList<>(0);
+            if (targetSocieties == null)
+                return new ArrayList<>(0);
+            boolean accept = true;
+            for (Object society : targetSocieties) {
+                if (targetSocietyTypeId == 371 && society instanceof Integer)
+                    continue;
+                else if (targetSocietyTypeId == 372 && society instanceof String)
+                    continue;
+                accept = false;
+                break;
+            }
+            return accept ? targetSocieties : new ArrayList<>(0);
         }
     }
 
@@ -254,19 +253,18 @@ public class TclassDTO {
 
         public List<Object> getTargetSocieties() {
             ////disable targetSociety
-//            if (targetSocieties == null)
-//                return new ArrayList<>(0);
-//            boolean accept = true;
-//            for (Object society : targetSocieties) {
-//                if (targetSocietyTypeId == 371 && society instanceof Integer)
-//                    continue;
-//                else if (targetSocietyTypeId == 372 && society instanceof String)
-//                    continue;
-//                accept = false;
-//                break;
-//            }
-//            return accept ? targetSocieties : new ArrayList<>(0);
-            return new ArrayList<>(0);
+            if (targetSocieties == null)
+                return new ArrayList<>(0);
+            boolean accept = true;
+            for (Object society : targetSocieties) {
+                if (targetSocietyTypeId == 371 && society instanceof Integer)
+                    continue;
+                else if (targetSocietyTypeId == 372 && society instanceof String)
+                    continue;
+                accept = false;
+                break;
+            }
+            return accept ? targetSocieties : new ArrayList<>(0);
         }
     }
 
