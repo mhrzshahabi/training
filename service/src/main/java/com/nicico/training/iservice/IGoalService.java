@@ -14,6 +14,8 @@ import java.util.List;
 
 public interface IGoalService {
 
+    String getQuestion(Long id);
+
     GoalDTO.Info get(Long id);
 
     List<GoalDTO.Info> list();
