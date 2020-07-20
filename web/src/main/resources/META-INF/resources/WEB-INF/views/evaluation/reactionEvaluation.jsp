@@ -192,7 +192,9 @@
                     canSort: false,
                     canFilter: false,
                     autoFithWidth: true
-                }
+                },
+                {name: "removeForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true},
+                {name: "printForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true}
             ],
             filterEditorSubmit: function () {
                 ListGrid_student_RE.invalidateCache();
@@ -220,7 +222,8 @@
                         }
                     });
                     return button;
-                } else if (fieldName == "sendForm") {
+                }
+                else if (fieldName == "sendForm") {
                     let button = isc.IButton.create({
                         layoutAlign: "center",
                         baseStyle: "sendFile",
@@ -231,7 +234,55 @@
                         }
                     });
                     return button;
-                } else {
+                }
+                else if (fieldName == "removeForm") {
+                    let recordCanvas = isc.HLayout.create({
+                        height: "100%",
+                        width: "100%",
+                        layoutMargin: 5,
+                        membersMargin: 10,
+                        align: "center"
+                    });
+                    let removeIcon = isc.ImgButton.create({
+                        showDown: false,
+                        showRollOver: false,
+                        layoutAlign: "center",
+                        src: "[SKIN]/actions/remove.png",
+                        prompt: "حذف فرم",
+                        height: 16,
+                        width: 16,
+                        grid: this,
+                        click: function () {
+                        }
+                    });
+                    recordCanvas.addMember(removeIcon);
+                    return recordCanvas;
+                }
+                else if (fieldName == "printForm") {
+                    let recordCanvas = isc.HLayout.create({
+                        height: "100%",
+                        width: "100%",
+                        layoutMargin: 5,
+                        membersMargin: 10,
+                        align: "center"
+                    });
+                    let printIcon = isc.ImgButton.create({
+                        showDown: false,
+                        showRollOver: false,
+                        layoutAlign: "center",
+                        src: "[SKIN]/actions/print.png",
+                        prompt: "چاپ فرم",
+                        height: 16,
+                        width: 16,
+                        grid: this,
+                        click: function () {
+                        }
+                    });
+                    recordCanvas.addMember(printIcon);
+                    return recordCanvas;
+                }
+                else
+                    {
                     return null;
                 }
             },

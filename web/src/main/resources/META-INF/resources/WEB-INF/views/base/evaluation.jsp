@@ -3,7 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 // <script>
-    //----------------------------------------- Variables --------------------------------------------------------------
     //----------------------------------------- DataSources ------------------------------------------------------------
         var RestDataSource_Year_Filter_Evaluation = isc.TrDS.create({
             fields: [
@@ -12,6 +11,7 @@
             fetchDataURL: termUrl + "years",
             autoFetchData: true
         });
+
         var RestDataSource_Term_Filter_Evaluation = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true},
@@ -20,6 +20,7 @@
                 {name: "endDate"}
             ]
         });
+
         var RestDataSource_class_Evaluation = isc.TrDS.create({
             fields: [
                 {name: "id"},
@@ -49,6 +50,7 @@
             ],
             fetchDataURL: viewClassDetailUrl + "/iscList"
         });
+
     //----------------------------------------- DynamicForms -----------------------------------------------------------
         var DynamicForm_Term_Filter_Evaluation = isc.DynamicForm.create({
             width: "85%",
@@ -239,13 +241,12 @@
                 }
             ]
         });
+
     //----------------------------------------- ListGrids --------------------------------------------------------------
         var ListGrid_class_Evaluation = isc.TrLG.create({
             width: "100%",
             height: "100%",
-            <sec:authorize access="hasAuthority('Evaluation_R')">
             dataSource: RestDataSource_class_Evaluation,
-            </sec:authorize>
             canAddFormulaFields: false,
             autoFetchData: true,
             showFilterEditor: true,
@@ -381,6 +382,7 @@
                 set_Evaluation_Tabset_status();
             }
         });
+
     //----------------------------------------- ToolStrips -------------------------------------------------------------
         var ToolStripButton_Refresh_Evaluation = isc.ToolStripButtonRefresh.create({
             title: "<spring:message code="refresh"/>",
@@ -388,6 +390,7 @@
                 ListGrid_class_Evaluation.invalidateCache();
             }
         });
+
         var ToolStrip_Evaluation = isc.ToolStrip.create({
             width: "100%",
             membersMargin: 5,
@@ -405,6 +408,7 @@
                 </sec:authorize>
             ]
         });
+
     //----------------------------------------- LayOut -----------------------------------------------------------------
         var Detail_Tab_Evaluation = isc.TabSet.create({
             ID: "tabSetEvaluation",
@@ -450,17 +454,20 @@
             }
 
         });
+
         var HLayout_Actions_Evaluation = isc.HLayout.create({
             width: "100%",
             height: "1%",
             members: [ToolStrip_Evaluation]
         });
+
         var Hlayout_Grid_Evaluation = isc.HLayout.create({
             width: "100%",
             height: "50%",
             showResizeBar: true,
             members: [ListGrid_class_Evaluation]
         });
+
         var Hlayout_Tab_Evaluation = isc.HLayout.create({
             width: "100%",
             height: "45%",
@@ -468,11 +475,13 @@
                 Detail_Tab_Evaluation
             ]
         });
+
         var VLayout_Body_Evaluation = isc.VLayout.create({
             width: "100%",
             height: "100%",
             members: [HLayout_Actions_Evaluation, Hlayout_Grid_Evaluation, Hlayout_Tab_Evaluation]
         });
+
     //----------------------------------------- Functions --------------------------------------------------------------
         function loadSelectedTab_data(tab) {
             let classRecord = ListGrid_class_Evaluation.getSelectedRecord();
@@ -513,6 +522,7 @@
                 Detail_Tab_Evaluation.disable();
             }
         }
+
         function set_Evaluation_Tabset_status() {
             let classRecord = ListGrid_class_Evaluation.getSelectedRecord();
             let evaluationType = classRecord.course.evaluation;
@@ -540,11 +550,13 @@
             }
 
         }
+
         function load_term_by_year(value) {
             let criteria= '{"fieldName":"startDate","operator":"iStartsWith","value":"' + value + '"}';
             RestDataSource_Term_Filter_Evaluation.fetchDataURL = termUrl + "spec-list?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria;
             DynamicForm_Term_Filter_Evaluation.getItem("termFilter").fetchData();
         }
+
         function load_classes_by_term(value) {
             if(value !== undefined) {
                 let criteria = {
@@ -565,6 +577,7 @@
                 createDialog("info", "<spring:message code="msg.select.term.ask"/>", "<spring:message code="message"/>")
             }
         }
+
         function questionSourceConvert(s) {
         switch (s.charAt(0)) {
             case "G":

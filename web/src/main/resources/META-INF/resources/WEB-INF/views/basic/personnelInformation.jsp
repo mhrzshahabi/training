@@ -244,7 +244,7 @@
                     {name: "ccpUnit"}
                 ],
                 recordClick: function () {
-                    if (typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
+                    if (oPersonnelInformationDetails!=null && typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
                         oPersonnelInformationDetails.set_PersonnelInfo_Details(this.getSelectedRecord());
                     }
                 }
@@ -296,7 +296,7 @@
                     {name: "ccpUnit"}
                 ],
                 recordClick: function () {
-                    if (typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
+                    if (oPersonnelInformationDetails!=null && typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
                         oPersonnelInformationDetails.set_PersonnelInfo_Details(this.getSelectedRecord());
                     }
                 }
@@ -406,7 +406,7 @@
                     {name: "ccpUnit", hidden: true}
                 ],
                 recordClick: function () {
-                    if (typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
+                    if (oPersonnelInformationDetails!=null && typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
                         oPersonnelInformationDetails.set_PersonnelInfo_Details(this.getSelectedRecord());
                     }
                 }
@@ -468,7 +468,7 @@
                 }
             ],
             tabSelected: function () {
-                if (typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
+                if (oPersonnelInformationDetails!=null && typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
                     oPersonnelInformationDetails.set_PersonnelInfo_Details(this.getSelectedTab().id === "PersonnelList_Tab_Personnel" ? PersonnelInfoListGrid_PersonnelList.getSelectedRecord() : PersonnelInfoListGrid_RegisteredPersonnelList.getSelectedRecord());
                 }
             }
