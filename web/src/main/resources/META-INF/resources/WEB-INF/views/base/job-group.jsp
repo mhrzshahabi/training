@@ -1099,7 +1099,7 @@
         alternateRecordStyles: true,
         showAllRecords: true,
         gridComponents: [
-            // ActionsTS_NA_Job_Group,
+            ActionsTS_NA_Job_Group,
             "header", "filterEditor", "body",],
         fields: [
             {name: "competence.title"},

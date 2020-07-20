@@ -504,7 +504,7 @@
                 downloadForm.submitForm();
             }
 
-            static exportToExcelFromServer(fields, fileName, criteriaStr, sortBy, len, titr, pageName, parameters) {
+            static exportToExcelFromServer(fields, fileName, criteriaStr, sortBy, len, titr, pageName, valueMaps) {
 
                 let downloadForm = isc.DynamicForm.create({
                     method: "POST",
@@ -521,7 +521,7 @@
                             {name: "_sortBy", type: "hidden"},
                             {name: "_len", type: "hidden"},
                             {name: "criteriaStr", type: "hidden"},
-                            {name: "parameters", type: "hidden"}
+                            {name: "valueMaps", type: "hidden"}
                         ]
                 });
 
@@ -533,7 +533,7 @@
                 downloadForm.setValue("_sortBy", sortBy);
                 downloadForm.setValue("_len", len);
                 downloadForm.setValue("criteriaStr", criteriaStr);
-                downloadForm.setValue("parameters", parameters);
+                downloadForm.setValue("valueMaps", JSON.stringify(valueMaps));
                 downloadForm.show();
                 downloadForm.submitForm();
             }
@@ -574,12 +574,12 @@
 
                 for (var v = 0; v <fields.isValueMap.length ; v++) {
                     if(fields.isValueMap[v]){
-                        let field = listGrid.getField(fields.fields[v].name).optionDataSource;
-                        let parameter = field.fetchDataURL.split("/").last()
-                        if(field.autoCacheAllData)
-                            valueMaps.add(parameter);
+                        let parameter = fields.fields[v].name;
+                        valueMaps.add({value : parameter, map : listGrid.getField(parameter).valueMap});
                     }
                 }
+
+                console.log(valueMaps);
 
                 if (sort != null && sort.size() != 0){
 

@@ -904,7 +904,7 @@
         alternateRecordStyles: true,
         showAllRecords: true,
         gridComponents: [
-            // ActionsTS_NA_Post_Grade_Group,
+            ActionsTS_NA_Post_Grade_Group,
             "header", "filterEditor", "body",],
         fields: [
             {name: "competence.title"},

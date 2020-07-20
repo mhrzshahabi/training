@@ -341,7 +341,7 @@
         alternateRecordStyles: true,
         showAllRecords: true,
         gridComponents: [
-            // ActionsTS_NA_Post_Grade_Job,
+            ActionsTS_NA_Post_Grade_Job,
             "header", "filterEditor", "body",],
         fields: [
             {name: "competence.title"},

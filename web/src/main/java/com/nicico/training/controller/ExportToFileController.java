@@ -119,7 +119,7 @@ public class ExportToFileController {
                                       @RequestParam(value = "pageName") String pageName,
                                       @RequestParam(value = "fileName") String fileName,
                                       @RequestParam(value = "criteriaStr") String criteriaStr,
-                                      @RequestParam(value = "parameters") String parameters) throws Exception {
+                                      @RequestParam(value = "valueMaps") String valueMaps) throws Exception {
 
 
         SearchDTO.SearchRq searchRq = convertToSearchRq(req);
@@ -129,10 +129,11 @@ public class ExportToFileController {
         }.getType();
         List<HashMap<String, String>> fields1 = gson.fromJson(fields, resultType);
 
-        String [] parametersList = parameters.split(",");
-
         //Start Of Query
         net.minidev.json.parser.JSONParser parser = new JSONParser(DEFAULT_PERMISSIVE_MODE);
+
+        Map<String, Map<String, String>> parameters = creatValueMap((List<Map<String,String>>)parser.parse(valueMaps));
+
         String[] jsonString = {null};
         int count[] = {0};
         List<Object> generalList = null;
@@ -368,7 +369,8 @@ public class ExportToFileController {
             HashMap<String, String> tmpData = new HashMap<String, String>();
 
             for (int j = 0; j < sizeOfFields; j++) {
-                String[] list = fields1.get(j).get("name").split("\\.");
+                String fieldName = fields1.get(j).get("name");
+                String[] list = fieldName.split("\\.");
 
                 List<String> aList = null;
 
@@ -380,6 +382,10 @@ public class ExportToFileController {
                 }
 
                 tmpName = getData(jsonObject, aList, 0);
+
+                if(parameters.containsKey(fieldName)){
+                    tmpName = parameters.get(fieldName).get(tmpName);
+                }
 
                 tmpData.put(fields1.get(j).get("name"), tmpName);
             }
@@ -473,6 +479,14 @@ public class ExportToFileController {
         }
 
         return searchRq;
+    }
+
+    private Map<String, Map<String, String>> creatValueMap(List<Map<String, String>> parameters){
+        Map<String,  Map<String, String>> map = new HashMap<>();
+        for (Map<String, String> value : parameters){
+            map.put(value.get("value"),(Map<String, String>)(Object)value.get("map"));
+        }
+        return map;
     }
 
     private <T> void setExcelValues(String jsonStringRef[], int countRef[],   List<T> list)throws JsonProcessingException {
