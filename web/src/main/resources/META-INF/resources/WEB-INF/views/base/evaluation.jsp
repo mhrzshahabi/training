@@ -525,7 +525,7 @@
 
         function set_Evaluation_Tabset_status() {
             let classRecord = ListGrid_class_Evaluation.getSelectedRecord();
-            let evaluationType = classRecord.course.evaluation;
+            let evaluationType = classRecord.courseEvaluationType;
 
             if (evaluationType === "1") {
                 Detail_Tab_Evaluation.enableTab(0);
