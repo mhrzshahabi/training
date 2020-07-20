@@ -82,11 +82,11 @@ public class PersonnelService implements IPersonnelService {
 
         for (String personnelNo : personnelNos) {
 
-            if (list.stream().filter(p -> p.getPersonnelNo().equals(personnelNo) || p.getPersonnelNo2().equals(personnelNo)).collect(Collectors.toList()).size() == 0) {
+            if (list.stream().filter(p -> (p.getPersonnelNo() != null && p.getPersonnelNo().equals(personnelNo)) || (p.getPersonnelNo2() != null && p.getPersonnelNo2().equals(personnelNo))).collect(Collectors.toList()).size() == 0) {
                 result.add(new PersonnelDTO.Info());
 
             } else {
-                prs = list.stream().filter(p -> p.getPersonnelNo().equals(personnelNo) || p.getPersonnelNo2().equals(personnelNo)).collect(Collectors.toList()).get(0);
+                prs = list.stream().filter(p -> (p.getPersonnelNo() != null && p.getPersonnelNo().equals(personnelNo)) || (p.getPersonnelNo2() != null && p.getPersonnelNo2().equals(personnelNo))).collect(Collectors.toList()).get(0);
                 result.add(modelMapper.map(prs, PersonnelDTO.Info.class));
             }
         }
