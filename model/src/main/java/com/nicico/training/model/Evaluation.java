@@ -80,4 +80,14 @@ public class Evaluation extends Auditable {
     @Column(name = "c_return_date")
     private String returnDate;
 
+    @Column(name = "c_send_date")
+    private String sendDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_questionnaire_id", insertable = false, updatable = false)
+    private Questionnaire questionnaire;
+
+    @Column(name = "f_questionnaire_id")
+    private Long questionnaireId;
+
 }

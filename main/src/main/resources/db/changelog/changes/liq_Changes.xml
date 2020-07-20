@@ -888,5 +888,30 @@
             <column name="d_last_modified_date_na" type="timestamp"/>
         </addColumn>
     </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595217836877-452">
+        <addColumn tableName="tbl_class_student">
+            <column name="behavioral_completed_forms" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595217836877-454">
+        <addColumn tableName="tbl_evaluation">
+            <column name="f_questionnaire_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595217836877-453">
+        <addColumn tableName="tbl_evaluation">
+            <column name="c_send_date" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595230443489-455">
+        <addColumn tableName="tbl_evaluation_question">
+            <column name="lock_status" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595230839534-456">
+        <addColumn tableName="tbl_questionnaire">
+            <column name="lock_status" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
