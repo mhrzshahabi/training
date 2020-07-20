@@ -1,0 +1,95 @@
+package com.nicico.training.model;
+
+
+import lombok.*;
+import lombok.experimental.Accessors;
+import org.hibernate.annotations.Subselect;
+
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Accessors(chain = true)
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
+@Entity
+@Subselect("select * from view_class_detail")
+@DiscriminatorValue("ViewClassDetail")
+public class ViewClassDetail extends Auditable {
+    @Id
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "TERM_ID")
+    private Long termId;
+
+    @Column(name = "INSTITUTE_ID")
+    private Long instituteId;
+
+    @Column(name = "TEACHER_ID")
+    private Long teacherId;
+
+    @Column(name = "TCLASS_STUDENTS_COUNT")
+    private Integer tclassStudentsCount;
+
+    @Column(name = "TCLASS_C_CODE")
+    private String tclassCode;
+
+    @Column(name = "TCLASS_C_START_DATE")
+    private String tclassStartDate;
+
+    @Column(name = "TCLASS_C_END_DATE")
+    private String tclassEndDate;
+
+    @Column(name = "TCLASS_YEAR")
+    private String tclassYear;
+
+    @Column(name = "COURSE_C_CODE")
+    private String courseCode;
+
+    @Column(name = "COURSE_CATEGORY_ID")
+    private Long courseCategory;
+
+    @Column(name = "COURSE_SUBCATEGORY_ID")
+    private Long courseSubCategory;
+
+    @Column(name = "COURSE_C_TITLE_FA")
+    private String courseTitleFa;
+
+    @Column(name = "COURSE_C_EVALUATION")
+    private String courseEvaluationType;
+
+    @Column(name = "tclass_n_duration")
+    private Long tclassDuration;
+
+   @Column(name = "tclass_organizer")
+   private Long tclassOrganizerId;
+
+   @Column(name = "tclass_status")
+   private String tclassStatus;
+
+    @Column(name = "tclass_ending_status")
+    private String tclassEndingStatus;
+
+    @Column(name = "tclass_planner")
+   private Long tclassPlanner;
+
+   @Column(name = "tclass_supervisor")
+   private Long tclassSupervisor;
+
+   @Column(name = "TERM_TITLEFA")
+   private String termTitleFa;
+
+   @Column(name = "tclass_institute")
+   private String instituteTitleFa;
+
+   @Column(name = "tclass_scoring_method")
+   private String classScoringMethod;
+
+   @Column(name = "tclass_has_pre_test")
+   private Boolean classPreCourseTest;
+}

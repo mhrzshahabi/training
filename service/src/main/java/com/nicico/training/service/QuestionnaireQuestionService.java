@@ -52,7 +52,6 @@ public class QuestionnaireQuestionService extends BaseService<QuestionnaireQuest
 //    }
 
     public List<QuestionnaireQuestion> getEvaluationQuestion(Long domainId) {
-        return questionnaireQuestionDAO.findQuestionnaireQuestionByQuestionnaireVersionAndEvaluationQuestionDomainId(0, domainId);
-//        return questionnaireQuestionDAO.findQuestionnaireQuestionByQuestionnaireeEnabledAndEvaluationQuestionDomainId(Long.parseLong(494+""), domainId);
+        return questionnaireQuestionDAO.findActiveQuestionnaries(domainId);
     }
 }

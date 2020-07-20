@@ -298,18 +298,18 @@
     {
         //*****report main dynamic form*****
         var DynamicForm_MSReport = isc.DynamicForm.create({
-            width: "230px",
+            width: "280px",
             height: "100%",
+            overflow:"auto",
             padding: 5,
             cellPadding: 5,
             numCols: 2,
-            colWidths: ["1%", "99%"],
+            colWidths: ["30%", "69%","1%"],
             fields: [
                 {
                     name: "firstDate_MSReport",
                     title: "<spring:message code="start.date"/>",
                     ID: "firstDate_MSReport",
-                    width: "100px",
                     hint: "----/--/--",
                     keyPressFilter: "[0-9/]",
                     showHintInField: true,
@@ -331,7 +331,6 @@
                     name: "secondDate_MSReport",
                     title: "<spring:message code="end.date"/>",
                     ID: "secondDate_MSReport",
-                    width: "100px",
                     hint: "----/--/--",
                     keyPressFilter: "[0-9/]",
                     showHintInField: true,
@@ -575,7 +574,7 @@
 
 
         var VLayout_DynamicForm_MSReport = isc.VLayout.create({
-            width: "230px",
+            width: "280px",
             height: "100%",
             members: [DynamicForm_MSReport]
         });
