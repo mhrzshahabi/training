@@ -102,4 +102,7 @@ public class ClassStudent extends Auditable {
 
     @Column(name = "behavioral_registered_forms")
     private Integer numberOfBehavioralRegisteredForms;
+
+    @Column(name = "behavioral_completed_forms")
+    private Integer numberOfBehavioralCompletedForms;
 }

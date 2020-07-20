@@ -30,7 +30,7 @@ public class EvaluationAnswer extends Auditable {
     @Column(name = "f_evaluation_id")
     private Long evaluationId;
 
-    ////it can be SkillId, GoalId and QuestionnaireQuestionId
+    ////it can be DynamicQuestionId and QuestionnaireQuestionId
     @NotNull
     @Column(name = "f_evaluation_question_id")
     private Long evaluationQuestionId;

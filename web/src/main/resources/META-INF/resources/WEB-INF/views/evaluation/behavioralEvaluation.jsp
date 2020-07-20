@@ -1007,7 +1007,8 @@
                         });
                         recordCanvas.addMember(addIcon);
                         return recordCanvas;
-                    }else
+                    }
+                    else
                         return null;
                 },
                 cellHeight: 43,

@@ -41,5 +41,8 @@ public class Questionnaire extends Auditable {
 
     @OneToMany(mappedBy = "questionnaire", fetch = FetchType.EAGER)
     private List<QuestionnaireQuestion> questionnaireQuestionList;
+
+    @Column(name = "lock_status")
+    private Boolean lockStatus;
 }
 
