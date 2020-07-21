@@ -15,8 +15,6 @@
     var skill_SkillLevelUrl = rootUrl + "/skill-level/spec-list";
     var skillLevelSymbol_Skill = "";
     var temp;
-    var chanched_courseId;
-    var chanched_titleFa;
 
     /////////////////////////////////////////////////TrDS/////////////////////////////////////////////////////////////////
 
@@ -224,9 +222,7 @@
                 keyPressFilter: "[a-z|A-Z|0-9| ]",
                 showHintInField: true,
                 width: "300",
-                changed:function () {
-                    chanched_titleFa=true
-                }
+
             },
             {
                 name: "categoryId",
@@ -344,7 +340,7 @@
                         click : function (form, item, icon) {
                             item.clearValue();
                             item.focusInItem();
-                            chanched_courseId=true
+
                         }
                     }
                 ],
@@ -357,9 +353,9 @@
                 addUnknownValues: false,
                 changeOnKeypress: false,
                 filterOnKeypress: true,
-                autoFetchData: false,
+                autoFetchData: true,
                 textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
+                // generateExactMatchCriteria: true,
                 filterFields: ["titleFa", "code", "createdBy"],
                 pickListFields: [
                     {name: "code"},
@@ -371,8 +367,25 @@
                     alternateRecordStyles: true,
                     autoFitWidthApproach: "both",
                 },
-                changed:function (item) {
-                    chanched_courseId=true;
+                click(form, item){
+                    if(form.getValue("categoryId") === undefined || form.getValue("subCategoryId") === undefined){
+                        CourseDS_Skill.fetchDataURL = courseUrl + "spec-list?id=-1";
+                    }
+                    else{
+                        CourseDS_Skill.fetchDataURL = courseUrl + "spec-list";
+                        // let categoryId = form.getValue("categoryId");
+                        // let subCategoryId = form.getValue("subCategoryId");
+                        let criteria = {
+                            _constructor:"AdvancedCriteria",
+                            operator:"and",
+                            criteria:[
+                                {fieldName:"categoryId", operator:"equals", value: form.getValue("categoryId")},
+                                {fieldName:"subCategoryId", operator:"equals", value: form.getValue("subCategoryId")}
+                            ]
+                        };
+                        item.pickListCriteria = criteria;
+                    }
+                    item.fetchData();
                 }
             },
             {
@@ -405,9 +418,8 @@
 
             wait_Skill = createDialog("wait");
 
-            isc.RPCManager.sendRequest(TrDSRequest(url_Skill+"?chanched_courseId="+chanched_courseId+"&chanched_titleFa="+chanched_titleFa, method_Skill, JSON.stringify(SkillDF_Skill.getValues()), Result_SaveSkill_Skill));
-            chanched_courseId=false
-            chanched_titleFa=false
+            isc.RPCManager.sendRequest(TrDSRequest(url_Skill, method_Skill, JSON.stringify(SkillDF_Skill.getValues()), Result_SaveSkill_Skill));
+
 
         }
     });

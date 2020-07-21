@@ -1244,9 +1244,9 @@
         });
 
         ClassStudentWin_student = isc.Window.create({
-            width: 1024,
+            width: 1000,
             height: 768,
-            minWidth: 1024,
+            minWidth: 1000,
             minHeight: 600,
             autoSize: false,
             items: [
@@ -1597,10 +1597,10 @@
 
         function checkPersonnelNosResponse(url, result, addStudentsInGroupInsert) {
             isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(result)
-                , "callback: checkPersonnelNos(rpcResponse,'" + url + "'," + addStudentsInGroupInsert + ")"));
+                , "callback: checkPersonnelNos(rpcResponse," + JSON.stringify(result) + ",'" + url + "'," + addStudentsInGroupInsert + ")"));
         }
 
-        function checkPersonnelNos(resp, url, insert) {
+        function checkPersonnelNos(resp, result, url, insert) {
             if (generalGetResp(resp)) {
                 if (resp.httpResponseCode === 200) {
                     //------------------------------------*/
@@ -1618,6 +1618,10 @@
 
                     for (let i = 0; i < len; i++) {
                         let personnelNo = list[i].personnelNo;
+
+                        if(!result.includes(personnelNo)){
+                            continue;
+                        }
 
                         if (personnelNo != "" && personnelNo != null && typeof (personnelNo) != "undefined") {
                             let person = data.filter(function (item) {

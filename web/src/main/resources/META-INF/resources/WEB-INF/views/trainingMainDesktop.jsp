@@ -138,7 +138,13 @@
                                             }
 
                                             DynamicForm_GroupInsert_Textbox_JspStudent.setValue('');
-                                            createDialog("info", "کدهای پرسنلی به لیست اضافه شدند.");
+                                            if(records.length > 0){
+                                                createDialog("info", "کدهای پرسنلی به لیست اضافه شدند.");
+                                            }
+                                            else{
+                                                createDialog("info", "پرسنل جدیدی برای اضافه کردن وجود ندارد.");
+                                            }
+
                                         }
                                     }
                                 }
@@ -179,6 +185,7 @@
                                                         var workbook = XLSX.read(data, {
                                                             type: 'binary'
                                                         });
+                                                        var isEmpty=true;
 
                                                         workbook.SheetNames.forEach(function(sheetName) {
                                                             // Here is your object
@@ -194,10 +201,13 @@
                                                                 }).length==0){
                                                                     let current={personnelNo:Object.values(XL_row_object[i])[0]};
                                                                     records.add(current);
+                                                                    isEmpty=false;
 
                                                                     continue;
                                                                 }
                                                                 else{
+                                                                    isEmpty=false;
+
                                                                     continue;
                                                                 }
                                                             }
@@ -217,7 +227,12 @@
 
                                                             createDialog("info", "فایل به لیست اضافه شد.");
                                                         }else{
-                                                            createDialog("info", "خطا در محتویات فایل");
+                                                            if(isEmpty){
+                                                                createDialog("info", "خطا در محتویات فایل");
+                                                            }else{
+                                                                createDialog("info", "پرسنل جدیدی برای اضافه کردن وجود ندارد.");
+                                                            }
+
                                                         }
 
                                                     };
@@ -297,7 +312,6 @@
                                                 }).length==0){
 
                                                     if(isCheck){
-                                                        console.log(isCheck);
                                                         func(inputURL,[newValue]);
                                                     }
                                                     return true;
