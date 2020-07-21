@@ -199,7 +199,7 @@ public class CourseRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        request.setCriteria(workGroupService.addPermissionToCriteria("Course", request.getCriteria()));
+        request.setCriteria(workGroupService.addPermissionToCriteria("categoryId", request.getCriteria()));
 
         SearchDTO.SearchRs<CourseDTO.Info> response = courseService.search(request);
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();

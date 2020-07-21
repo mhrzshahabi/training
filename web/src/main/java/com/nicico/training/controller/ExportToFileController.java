@@ -140,12 +140,12 @@ public class ExportToFileController {
 
         switch (fileName) {
             case "class":
-                searchRq.setCriteria(workGroupService.addPermissionToCriteria("Tclass", searchRq.getCriteria()));
+                searchRq.setCriteria(workGroupService.addPermissionToCriteria("course.categoryId", searchRq.getCriteria()));
                 generalList = (List<Object>)((Object) tclassService.search(searchRq).getList());
                 break;
 
             case "course":
-                searchRq.setCriteria(workGroupService.addPermissionToCriteria("Course", searchRq.getCriteria()));
+                searchRq.setCriteria(workGroupService.addPermissionToCriteria("categoryId", searchRq.getCriteria()));
                 generalList = (List<Object>)((Object) courseService.search(searchRq, c -> modelMapper.map(c, CourseDTO.Info.class)).getList());
                 break;
 
@@ -252,7 +252,7 @@ public class ExportToFileController {
                 break;
 
             case "Skill":
-                searchRq.setCriteria(workGroupService.addPermissionToCriteria("Skill", searchRq.getCriteria()));
+                searchRq.setCriteria(workGroupService.addPermissionToCriteria("categoryId", searchRq.getCriteria()));
                 generalList = (List<Object>)((Object) skillService.searchGeneric(searchRq, SkillDTO.Info.class).getList());
                 break;
 
