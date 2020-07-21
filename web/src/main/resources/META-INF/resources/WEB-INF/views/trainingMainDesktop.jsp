@@ -793,7 +793,7 @@
     const viewPostGradeGroupUrl = rootUrl + "/view-post-grade-group";
     const masterDataUrl = rootUrl + "/masterData";
     const viewEvaluationStaticalReportUrl = rootUrl + "/view-evaluation-statical-report";
-    const viewTeacherReportUrl = rootUrl + "/view-teacher-report/"
+    const viewTeacherReportUrl = rootUrl + "/view-teacher-report/";
     const sendMessageUrl = rootUrl + "/sendMessage";
     const attendanceReportUrl = rootUrl + "/attendanceReport";
     const classPerformanceReport = rootUrl + "/classPerformance/";

@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -33,7 +34,7 @@ public class Personnel {
     private String birthCertificateNo;
 
     @Column(name = "birth_date")
-    private String birthDate;
+    private Date birthDate;
 
     @Column(name = "age")
     private Integer age;
@@ -51,7 +52,7 @@ public class Personnel {
     private Integer deleted;
 
     @Column(name = "employment_date")
-    private String employmentDate;
+    private Date employmentDate;
 
     @Column(name = "post_title")
     private String postTitle;
@@ -60,7 +61,7 @@ public class Personnel {
     private String postCode;
 
     @Column(name = "post_assignment_date")
-    private String postAssignmentDate;
+    private Date postAssignmentDate;
 
     @Column(name = "complex_title")
     private String complexTitle;
