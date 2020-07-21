@@ -2107,4 +2107,9 @@ FROM
         </createView>
     </changeSet>
 
+    <changeSet author="NICICO" id="view_personnel_course_passed_na_report_v2-002">
+        <dropView
+                viewName="view_personnel_course_passed_na_report_v2"/>
+    </changeSet>
+
 </databaseChangeLog>
