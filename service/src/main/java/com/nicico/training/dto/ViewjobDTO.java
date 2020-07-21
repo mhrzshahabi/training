@@ -39,16 +39,13 @@ public class ViewjobDTO implements Serializable {
     private Integer personnelCount;
 
     @ApiModelProperty
+    @Getter(AccessLevel.NONE)
     private Date lastModifiedDateNA;
 
     @ApiModelProperty
     private String modifiedByNA;
 
-    @ApiModelProperty
-    @Getter(AccessLevel.NONE)
-    private String modifiedDateNA;
-
-    public String getModifiedDateNA(){
+    public String getLastModifiedDateNA(){
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         if(lastModifiedDateNA != null)
             return DateUtil.convertMiToKh(formatter.format(lastModifiedDateNA));
