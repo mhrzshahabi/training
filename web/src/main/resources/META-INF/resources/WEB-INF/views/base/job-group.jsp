@@ -37,6 +37,8 @@
             {name: "description", title: "توضیحات", align: "center"},
             {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "modifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         fetchDataURL: viewJobGroupUrl + "/iscList"
@@ -606,7 +608,11 @@
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
                 }
-            }, {name: "titleFa"}, {name: "competenceCount"}, {name: "personnelCount"}],
+            },
+            {name: "titleFa"},
+            {name: "competenceCount"},
+            {name: "personnelCount"},
+        ],
         sortField: 1,
         sortDirection: "descending",
         autoFetchData: false,

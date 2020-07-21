@@ -198,7 +198,8 @@
             {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
-
+            {name: "modifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
         ],
         fetchDataURL: viewPostUrl + "/iscList"
     });
@@ -333,7 +334,9 @@
             },
             {name: "costCenterTitleFa"},
             {name: "competenceCount"},
-            {name: "personnelCount"}
+            {name: "personnelCount"},
+            {name: "modifiedDateNA"},
+            {name: "modifiedByNA"}
         ],
         autoFetchData: true,
         gridComponents: [PostTS_post, ToolStrip_NA_POST, "filterEditor", "header", "body",],

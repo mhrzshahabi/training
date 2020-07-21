@@ -1413,7 +1413,7 @@ FROM
     </changeSet>
 
 
-    <changeSet author="NICICO" id="VIEW_POST-003">
+    <changeSet author="NICICO" id="VIEW_POST-004">
         <createView viewName="VIEW_POST" replaceIfExists="true">
             <![CDATA[
 SELECT
