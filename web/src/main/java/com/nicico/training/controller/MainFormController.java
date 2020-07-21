@@ -162,6 +162,9 @@ public class MainFormController {
         return "report/presenceReport";
     }
 
+    @RequestMapping("/statisticsUnitReport")
+    public String showStatisticsUnitReport() { return "report/statisticsUnitReport"; }
+
     @RequestMapping("class-contract")
     public String showClassContractForm() {
         return "run/class-contract";
