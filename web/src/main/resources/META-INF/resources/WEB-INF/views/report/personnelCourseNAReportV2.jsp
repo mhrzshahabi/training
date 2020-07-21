@@ -43,7 +43,7 @@
             {name: "personnelCcpSection", title: "<spring:message code='section'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelCcpUnit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "priorityId", title: "<spring:message code='priority'/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "personnelPostGradeLvlTitle", title: "<spring:message code='post.grade'/>", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelPostGradeTitle", title: "<spring:message code='post.grade'/>", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
         ],
         fetchDataURL: personnelCourseNAReportUrl + "/personnel-list"
     });
@@ -84,7 +84,7 @@
                 ],
             },
             {name: "personnelPostTitle"},
-            {name: "personnelPostGradeLvlTitle"},
+            {name: "personnelPostGradeTitle"},
             {name: "personnelCcpAffairs"},
             {name: "personnelCcpSection"},
             {name: "personnelCcpUnit"},
@@ -142,7 +142,7 @@
             {name: "personnelCcpUnit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "priorityId", title: "<spring:message code='priority'/>", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "isPassed", title: "<spring:message code='status'/>", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "personnelPostGradeLvlTitle", title: "<spring:message code='post.grade'/>", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelPostGradeTitle", title: "<spring:message code='post.grade'/>", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
         ],
         fetchDataURL: personnelCourseNAReportUrl + "/minList"
     });
@@ -300,7 +300,7 @@
                 },
             },
             {
-                name: "personnelPostGradeLvlTitle",
+                name: "personnelPostGradeTitle",
                 title:"<spring:message code='post.grade'/>",
                 operator: "inSet",
                 textAlign: "center",
@@ -677,7 +677,7 @@
             {name: "personnelCcpAffairs"},
             {name: "personnelCcpSection"},
             {name: "personnelCcpUnit"},
-            {name: "personnelPostGradeLvlTitle"},
+            {name: "personnelPostGradeTitle"},
         ],
     });
 
