@@ -26,7 +26,14 @@ public class DynamicQuestion extends Auditable {
     @Column(name = "n_order", nullable = false)
     private Integer order;
 
-    @Column(name = "c_question", nullable = false, unique = true)
+    @Column(name = "c_question", nullable = false)
     private String question;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="f_type",nullable = false,insertable = false,updatable = false)
+    private ParameterValue type;
+
+    @Column(name="f_type")
+    private Long typeId;
 }
 

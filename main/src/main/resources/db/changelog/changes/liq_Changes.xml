@@ -913,5 +913,25 @@
             <column name="lock_status" type="number(1, 0)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595309679428-455">
+        <addColumn tableName="tbl_dynamic_question">
+            <column name="f_type" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595315738742-553">
+        <dropColumn columnName="BEHAVIORAL_COMPLETED_FORMS" tableName="TBL_CLASS_STUDENT"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595315738742-554">
+        <dropColumn columnName="BEHAVIORAL_FORWARDED_FORMS" tableName="TBL_CLASS_STUDENT"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595315738742-555">
+        <dropColumn columnName="BEHAVIORAL_REGISTERED_FORMS" tableName="TBL_CLASS_STUDENT"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595315738742-556">
+        <dropColumn columnName="EVALUATION_AUDIENCE_ID" tableName="TBL_CLASS_STUDENT"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595315738742-557">
+        <dropColumn columnName="EVALUATION_AUDIENCE_TYPE_ID" tableName="TBL_CLASS_STUDENT"/>
+    </changeSet>
 
 </databaseChangeLog>

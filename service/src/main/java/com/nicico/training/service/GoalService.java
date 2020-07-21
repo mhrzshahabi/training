@@ -38,26 +38,6 @@ public class GoalService implements IGoalService {
 
     @Transactional(readOnly = true)
     @Override
-    public String getQuestion(Long id) {
-        final Optional<Goal> gById = goalDAO.findById(id);
-        final Goal goal = gById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.GoalNotFound));
-
-        String question = "";
-
-        if (goal.getTitleFa().trim().indexOf("همایش")>-1||goal.getTitleFa().trim().indexOf("کنگره")>-1||goal.getTitleFa().trim().indexOf("هم اندیشی")>-1||goal.getTitleFa().trim().indexOf("کارگاه")>-1||goal.getTitleFa().trim().indexOf("سمینار")>-1) {
-            question = "میزان تسلط بر مفاهیم " + goal.getTitleFa();
-        } else if (goal.getTitleFa().trim().indexOf("مناقصات")>-1) {
-            question = "میزان آشنایی با " +  goal.getTitleFa();
-        }else{
-            question = "میزان آشنایی با " + goal.getTitleFa();
-        }
-
-        return question;
-
-    }
-
-    @Transactional(readOnly = true)
-    @Override
     public GoalDTO.Info get(Long id) {
         final Optional<Goal> gById = goalDAO.findById(id);
         final Goal goal = gById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.GoalNotFound));

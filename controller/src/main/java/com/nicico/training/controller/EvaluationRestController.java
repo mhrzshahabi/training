@@ -177,10 +177,7 @@ public class EvaluationRestController {
     public ResponseEntity<EvaluationDTO.Info> create(@RequestBody Object req) {
         EvaluationDTO.Create create = modelMapper.map(req, EvaluationDTO.Create.class);
         EvaluationDTO.Info info = evaluationService.create(create);
-        if(info == null)
-            return new ResponseEntity<>(null,HttpStatus.NOT_ACCEPTABLE);
-        else
-            return new ResponseEntity<>(info, HttpStatus.CREATED);
+        return new ResponseEntity<>(info, HttpStatus.CREATED);
     }
 
     @Loggable
