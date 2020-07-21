@@ -380,6 +380,7 @@
                 {name: "classScoringMethod", hidden: true},
                 {name: "classPreCourseTest", hidden: true},
                 {name: "courseId", hidden: true},
+                {name: "teacherId", hidden: true},
                 {name: "teacherEvalStatus", hidden: true},
                 {name: "trainingEvalStatus", hidden: true}
             ],
