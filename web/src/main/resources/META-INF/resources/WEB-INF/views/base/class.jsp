@@ -1305,6 +1305,18 @@
                 },
             },
         ],
+        itemChanged:function () {
+           if (DynamicForm_Class_JspClass.getField('teachingType').getValue() =="غیر حضوری" || DynamicForm_Class_JspClass.getField('teachingType').getValue() == "مجازی")
+           {
+               DynamicForm_Class_JspClass.getField('instituteId').setDisabled(true)
+               DynamicForm_Class_JspClass.getField('trainingPlaceIds').setDisabled(true)
+           }
+           else
+           {
+               DynamicForm_Class_JspClass.getField('instituteId').setDisabled(false)
+               DynamicForm_Class_JspClass.getField('trainingPlaceIds').setDisabled(false)
+           }
+        }
     });
 
     var DynamicForm1_Class_JspClass = isc.DynamicForm.create({
@@ -2441,7 +2453,10 @@
                 Window_Class_JspClass.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="class"/>");
                 Window_Class_JspClass.show();
                 //=========================
+                DynamicForm_Class_JspClass.getField("classStatus").getItem(1).enable();
+                DynamicForm_Class_JspClass.getField("classStatus").getItem(2).enable();
                 DynamicForm_Class_JspClass.getItem("scoringMethod").change(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("scoringMethod"), DynamicForm_Class_JspClass.getValue("scoringMethod"));
+                DynamicForm_Class_JspClass.itemChanged();
                 if (ListGrid_Class_JspClass.getSelectedRecord().scoringMethod === "1") {
 
                     DynamicForm_Class_JspClass.setValue("acceptancelimit_a", ListGrid_Class_JspClass.getSelectedRecord().acceptancelimit);
@@ -2516,6 +2531,8 @@
         singleTargetScoiety = [];
         etcTargetSociety = [];
         getOrganizers();
+        DynamicForm_Class_JspClass.getField("classStatus").getItem(1).disable();
+        DynamicForm_Class_JspClass.getField("classStatus").getItem(2).disable();
     }
 
     function ListGrid_class_print(type) {

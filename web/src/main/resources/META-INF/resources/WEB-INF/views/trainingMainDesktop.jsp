@@ -803,6 +803,7 @@
     const continuousStatusReportViewUrl = rootUrl + "/continuous-status-report-view";
     const departmentUrl = rootUrl + "/department";
     const viewClassDetailUrl = rootUrl + "/view-class-detail";
+    const statisticsUnitReportUrl = rootUrl + "/ViewStatisticsUnitReport";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -1785,6 +1786,16 @@
                                 title: "گزارش حضور و غياب کلاس های آمورشي",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/presenceReport/"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            </sec:authorize>
+                            {isSeparator: true},
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">
+                            {
+                                title: "گزارش واحد آمار",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/statisticsUnitReport/"/>");
                                 }
                             },
                             {isSeparator: true},
