@@ -2068,10 +2068,10 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="from view_class_detail-003">
-        <createView viewName="from view_class_detail" replaceIfExists="true">
+    <changeSet author="NICICO" id="VIEW-CLASS-DETAIL-001">
+        <createView viewName="view_class_detail" replaceIfExists="true">
             <![CDATA[
-    SELECT
+   SELECT
         tclass.ID as id,
         tclass.c_created_by as c_created_by ,
         tclass.d_created_date as d_created_date,
@@ -2094,7 +2094,10 @@ FROM
         tclass.C_START_DATE as tclass_c_start_date,
         tclass.C_WORKFLOW_ENDING_STATUS as tclass_ending_status,
         tclass.C_END_DATE as tclass_c_end_date,
+        tclass.EVALUATION_REACTION_TEACHER as teacher_eval_status,
+        tclass.EVALUATION_REACTION_TRAINING as training_eval_status,
         SUBSTR(tclass.C_START_DATE,1,4) as tclass_year,
+        course.ID as course_id,
         course.C_CODE as course_c_code,
         course.CATEGORY_ID as course_category_id,
         course.SUBCATEGORY_ID as course_subcategory_id,

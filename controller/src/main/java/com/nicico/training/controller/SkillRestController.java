@@ -194,7 +194,7 @@ public class SkillRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        request.setCriteria(workGroupService.addPermissionToCriteria("Skill", request.getCriteria()));
+        request.setCriteria(workGroupService.addPermissionToCriteria("categoryId", request.getCriteria()));
 
         SearchDTO.SearchRs<SkillDTO.Info> response = skillService.searchWithoutPermission(request);
 
@@ -467,7 +467,7 @@ public class SkillRestController {
         }
         searchRq.setSortBy(field);
 
-        searchRq.setCriteria(workGroupService.addPermissionToCriteria("Skill", searchRq.getCriteria()));
+        searchRq.setCriteria(workGroupService.addPermissionToCriteria("categoryId", searchRq.getCriteria()));
         SearchDTO.SearchRs<SkillDTO.Info> searchSkill = skillService.searchWithoutPermission(searchRq);
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", dateUtil.todayDate());

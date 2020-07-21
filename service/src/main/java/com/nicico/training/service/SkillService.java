@@ -48,39 +48,6 @@ public class SkillService implements ISkillService {
 
     @Transactional(readOnly = true)
     @Override
-    public String getQuestion(Long id) {
-        Skill skill = getSkill(id);
-        String skillLevel = skill.getSkillLevel().getTitleFa();
-        String question = "";
-
-
-        switch(skillLevel){
-            case "آشنایی":
-                skillLevel+=" با";
-                break;
-            case "توانایی":
-                //skillLevel+=" بر";
-                break;
-            case "تسلط":
-                skillLevel+=" بر";
-                break;
-        }
-        question=skill.getTitleFa().trim();
-        question=question.replace("آشنائی","آشنایی");
-
-        if (!question.startsWith(skillLevel)) {
-            question = "میزان " + skillLevel + " " + question;
-        } else {
-            question = "میزان " + question;
-        }
-
-        return question;
-
-    }
-
-
-    @Transactional(readOnly = true)
-    @Override
     public SkillDTO.Info get(Long id) {
         return modelMapper.map(getSkill(id), SkillDTO.Info.class);
     }

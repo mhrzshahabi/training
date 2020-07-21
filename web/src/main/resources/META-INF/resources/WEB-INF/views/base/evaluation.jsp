@@ -46,7 +46,10 @@
                 {name: "termTitleFa"},
                 {name: "instituteTitleFa"},
                 {name: "classScoringMethod"},
-                {name: "classPreCourseTest"}
+                {name: "classPreCourseTest"},
+                {name: "courseId"},
+                {name: "teacherEvalStatus"},
+                {name: "trainingEvalStatus"}
             ],
             fetchDataURL: viewClassDetailUrl + "/iscList"
         });
@@ -375,7 +378,10 @@
                     autoFithWidth: true
                 },
                 {name: "classScoringMethod", hidden: true},
-                {name: "classPreCourseTest", hidden: true}
+                {name: "classPreCourseTest", hidden: true},
+                {name: "courseId", hidden: true},
+                {name: "teacherEvalStatus", hidden: true},
+                {name: "trainingEvalStatus", hidden: true}
             ],
             selectionUpdated: function () {
                 loadSelectedTab_data(Detail_Tab_Evaluation.getSelectedTab());

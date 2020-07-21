@@ -209,7 +209,7 @@ public class TclassRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        request.setCriteria(workGroupService.addPermissionToCriteria("Tclass", request.getCriteria()));
+        request.setCriteria(workGroupService.addPermissionToCriteria("course.categoryId", request.getCriteria()));
 
         SearchDTO.SearchRs<TclassDTO.Info> response = tClassService.search(request);
 

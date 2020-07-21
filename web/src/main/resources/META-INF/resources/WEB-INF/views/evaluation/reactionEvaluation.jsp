@@ -15,6 +15,8 @@
 
         var classRecord_RE;
 
+        var studentRecord_RE;
+
     //----------------------------------------- DataSources ------------------------------------------------------------
         var RestDataSource_student_RE = isc.TrDS.create({
             fields: [
@@ -231,7 +233,10 @@
                         title: "صدور فرم",
                         width: "120",
                         click: function () {
-                            Student_Reaction_Form_Inssurance_RE(record);
+                            if(record.evaluationStatusReaction != "0" && record.evaluationStatusReaction != null)
+                                createDialog("info", "قبلا فرم ارزیابی واکنشی برای این فراگیر صادر شده است");
+                            else
+                                Student_Reaction_Form_Inssurance_RE(record);
                         }
                     });
                     return button;
@@ -462,12 +467,12 @@
                         })
                     ]
                 }),
-                isc.VLayout.create({
-                    members: [
-                        ToolStripButton_FormIssuanceForAll_RE,
-                        isc.LayoutSpacer.create({height: "22"})
-                    ]
-                }),
+                // isc.VLayout.create({
+                //     members: [
+                //         ToolStripButton_FormIssuanceForAll_RE,
+                //         isc.LayoutSpacer.create({height: "22"})
+                //     ]
+                // }),
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
@@ -483,10 +488,6 @@
         ToolStrip_SendForms_RE.getField("sendButtonTeacher").disableIcon("ok");
 
         ToolStrip_SendForms_RE.getField("sendButtonTraining").disableIcon("ok");
-
-    //--------------------------------- Select Questionnarie -----------------------------------------------------------
-
-
 
     //----------------------------------------- LayOut -----------------------------------------------------------------
         var HLayout_Actions_RE = isc.HLayout.create({
@@ -1879,98 +1880,22 @@
             }
     }
 
-        function print_Student_FormIssuance_RE(type, numberOfStudents,record, audienceName, audienceType, formReturnDate) {
-            if (ListGrid_student_RE.getTotalRows() > 0) {
-                let selectedClass = classRecord_RE;
-                let selectedStudent = record;
-                let selectedTab = Detail_Tab_Evaluation.getSelectedTab();
-
-                if (numberOfStudents === "all" || (numberOfStudents === "single" && selectedStudent !== null && selectedStudent !== undefined)) {
-
-                    let studentId = (numberOfStudents === "single" ? selectedStudent.student.id : -1);
-                    let returnDate = ReturnDate_RE._value !== undefined ? ReturnDate_RE._value.replaceAll("/", "-") : "noDate";
-                    // if(audienceName == null)
-                    //     audienceName = evaluation_Audience;
-                    if(formReturnDate == null)
-                        formReturnDate = returnDate;
-
-                    let myObj = {
-                        evaluationAudienceType: audienceType,
-                        courseId: selectedClass.course.id,
-                        studentId: studentId,
-                        evaluationType: selectedTab.id,
-                        evaluationReturnDate: formReturnDate,
-                        evaluationAudience: audienceName
-                    };
-
-                    let advancedCriteria_unit = ListGrid_student_RE.getCriteria();
-                    let criteriaForm_operational = isc.DynamicForm.create({
-                        method: "POST",
-                        action: "<spring:url value="/evaluation/printWithCriteria/"/>" + type + "/" + selectedClass.id,
-                        target: "_Blank",
-                        canSubmit: true,
-                        fields:
-                            [
-                                {name: "CriteriaStr", type: "hidden"},
-                                {name: "myToken", type: "hidden"},
-                                {name: "printData", type: "hidden"}
-                            ],
-                        show: function () {
-                            this.Super("show", arguments);
-                        }
-                    });
-
-                    criteriaForm_operational.setValue("CriteriaStr", JSON.stringify(advancedCriteria_unit));
-                    criteriaForm_operational.setValue("myToken", "<%=accessToken%>");
-                    criteriaForm_operational.setValue("printData", JSON.stringify(myObj));
-                    criteriaForm_operational.show();
-                    criteriaForm_operational.submit();
-                    criteriaForm_operational.submit(set_evaluation_status_RE(numberOfStudents,record,audienceName, audienceType));
-
-                } else {
-                    isc.Dialog.create({
-                        message: "<spring:message code="msg.no.records.selected"/>",
-                        icon: "[SKIN]ask.png",
-                        title: "<spring:message code="global.message"/>",
-                        buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
-                        buttonClick: function (button, index) {
-                            this.close();
-                        }
-                    });
-                }
-            } else {
-                isc.Dialog.create({
-                    message: "<spring:message code="no.student.class"/>",
-                    icon: "[SKIN]ask.png",
-                    title: "<spring:message code="global.message"/>",
-                    buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
-                    buttonClick: function (button, index) {
-                        this.close();
-                    }
-                });
-            }
-    }
-
     //----------------------------------- new Funsctions ---------------------------------------------------------------
-    function print_Student_Reaction_Form_RE() {
+    function print_Student_Reaction_Form_RE(questionnarieId, evaluatorId, evaluatorTypeId, evaluatedId, evaluatedTypeId,
+                                            questionnarieTypeId, evaluationLevel) {
     }
-
-    function create_Student_Reaction_Form_RE(studentRecordId,QuestionnarieId){
-
-    }
-
 
 
     function Student_Reaction_Form_Inssurance_RE(studentRecord){
         let IButtonSave_SelectQuestionnarie_RE = isc.IButtonSave.create({
-                title: "انتخاب",
+                title: "صدور و چاپ",
                 click: function () {
                     if(ListGrid_SelectQuestionnarie_RE.getSelectedRecord() == null || ListGrid_SelectQuestionnarie_RE.getSelectedRecord() == undefined){
                         createDialog("info", "پرسشنامه ای انتخاب نشده است.");
                     }
                     else{
                         Window_SelectQuestionnarie_RE.close();
-                        create_Student_Reaction_Form_RE(studentRecord.id,ListGrid_SelectQuestionnarie_RE.getSelectedRecord().id);
+                        createOrUpdate_evaluation_form(null,ListGrid_SelectQuestionnarie_RE.getSelectedRecord().id, studentRecord.id, 188, classRecord_RE.id, 504, 139, 154);
                     }
                 }
             });
@@ -2011,7 +1936,13 @@
                                 click: function () {
                                     Window_SelectQuestionnarie_RE.close();
                                 }
-                            })]
+                            }),
+                            isc.IButtonSave.create({
+                                title: "ارسال از طریق پیامک",
+                                click: function () {
+                                }
+                            }),
+                        ]
                     })
                 ],
                 minWidth: 1024
@@ -2030,20 +1961,24 @@
     }
 
     //--------------------- global functions ----------------------
-    function create_evaluation_form(classId,status,returnDate,sendDate,questionnarieId, evaluatorId,
+    function createOrUpdate_evaluation_form(id,questionnarieId, evaluatorId,
                                     evaluatorTypeId, evaluatedId, evaluatedTypeId, questionnarieTypeId,
-                                    evaluationLevel,evaluationFull,evaluationAnsweres){
-        let studentId = selectedStudent.id;
+                                    evaluationLevel){
         let data = {};
-        data.questionnaireTypeId = 230;
-        data.evaluationLevelId = 156;
-        data.evaluatedId = studentId;
-        data.classId = selectedClass.id;
-        data.evaluatorId = evaluatorRecord.id;
-        data.evaluatorTypeId = evaluatorType;
-        data.evaluatedTypeId = null;
+        data.classId = classRecord_RE.id;
         data.status = false;
-        data.returnDate = ReturnDate_BE._value !== undefined ? ReturnDate_BE._value.replaceAll("/", "-") : "noDate";
+        if(ReturnDate_BE._value != undefined )
+            data.returnDate =  ReturnDate_BE._value;
+        data.sendDate = todayDate;
+        data.evaluatorId = evaluatorId;
+        data.evaluatorTypeId = evaluatorTypeId;
+        data.evaluatedId = evaluatedId;
+        data.evaluatedTypeId = evaluatedTypeId;
+        data.questionnarieId =questionnarieId;
+        data.questionnarieTypeId = questionnarieTypeId;
+        data.evaluationLevel = evaluationLevel;
+        data.evaluationFull = false;
+        data.description = null;
 
         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl, "POST", JSON.stringify(data), function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
@@ -2051,50 +1986,17 @@
                 setTimeout(() => {
                     msg.close();
                 }, 3000);
-            }
-            else if(resp.httpResponseCode === 406){
-                createDialog("info", "فرم ارزیابی قبلا برای این فرد صادر شده است.");
+                print_Student_Reaction_Form_RE(questionnarieId, evaluatorId,
+                    evaluatorTypeId, evaluatedId, evaluatedTypeId, questionnarieTypeId,
+                    evaluationLevel);
+                ListGrid_student_RE.invalidateCache();
             }
             else {
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
             }
         }));
     }
-    function edit_evaluation_form(id,classId,status,returnDate,sendDate,questionnarieId, evaluatorId,
-                                    evaluatorTypeId, evaluatedId, evaluatedTypeId, questionnarieTypeId,
-                                    evaluationLevel,evaluationFull){
-        let studentId = selectedStudent.id;
-        let data = {};
-        data.questionnaireTypeId = 230;
-        data.evaluationLevelId = 156;
-        data.evaluatedId = studentId;
-        data.classId = selectedClass.id;
-        data.evaluatorId = evaluatorRecord.id;
-        data.evaluatorTypeId = evaluatorType;
-        data.evaluatedTypeId = null;
-        data.status = false;
-        data.returnDate = ReturnDate_BE._value !== undefined ? ReturnDate_BE._value.replaceAll("/", "-") : "noDate";
 
-        isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl, "POST", JSON.stringify(data), function (resp) {
-            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                setTimeout(() => {
-                    msg.close();
-                }, 3000);
-            }
-            else if(resp.httpResponseCode === 406){
-                createDialog("info", "فرم ارزیابی قبلا برای این فرد صادر شده است.");
-            }
-            else {
-                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
-            }
-        }));
-    }
-    function update_tclass_info(){}
-    function update_classStudent_info(){}
-    function update_questionnarie(){}
-    function update_evaluation_questionnarie(){}
-    function create_dynamic_question(){}
 
 
 
