@@ -5,6 +5,7 @@ import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.Set;
 
 @Getter
@@ -74,4 +75,10 @@ public class ViewPost extends Auditable {
 
     @ManyToMany(mappedBy = "postSet", fetch = FetchType.LAZY)
     private Set<PostGroup> postGroupSet;
+
+    @Column(name = "d_last_modified_date_na")
+    private Date lastModifiedDateNA;
+
+    @Column(name = "c_modified_by_na")
+    private String modifiedByNA;
 }
