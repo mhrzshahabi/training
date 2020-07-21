@@ -28,6 +28,7 @@ public class ViewClassDetailDTO implements Serializable {
         private String tclassStartDate;
         private String tclassEndDate;
         private String tclassYear;
+        private Long courseId;
         private String courseCode;
         private Long courseCategory;
         private Long courseSubCategory;
@@ -43,5 +44,7 @@ public class ViewClassDetailDTO implements Serializable {
         private String instituteTitleFa;
         private String classScoringMethod;
         private Boolean classPreCourseTest;
+        private Integer teacherEvalStatus;
+        private Integer trainingEvalStatus;
     }
 }

@@ -14,6 +14,9 @@
         var evaluation_numberOfStudents_RE = null;
 
         var classRecord_RE;
+
+        var studentRecord_RE;
+
     //----------------------------------------- DataSources ------------------------------------------------------------
         var RestDataSource_student_RE = isc.TrDS.create({
             fields: [
@@ -192,7 +195,9 @@
                     canSort: false,
                     canFilter: false,
                     autoFithWidth: true
-                }
+                },
+                {name: "removeForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true},
+                {name: "printForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true}
             ],
             filterEditorSubmit: function () {
                 ListGrid_student_RE.invalidateCache();
@@ -220,18 +225,69 @@
                         }
                     });
                     return button;
-                } else if (fieldName == "sendForm") {
+                }
+                else if (fieldName == "sendForm") {
                     let button = isc.IButton.create({
                         layoutAlign: "center",
                         baseStyle: "sendFile",
                         title: "صدور فرم",
                         width: "120",
                         click: function () {
-                            set_print_Status_RE("single", record);
+                            if(record.evaluationStatusReaction != "0" && record.evaluationStatusReaction != null)
+                                createDialog("info", "قبلا فرم ارزیابی واکنشی برای این فراگیر صادر شده است");
+                            else
+                                Student_Reaction_Form_Inssurance_RE(record);
                         }
                     });
                     return button;
-                } else {
+                }
+                else if (fieldName == "removeForm") {
+                    let recordCanvas = isc.HLayout.create({
+                        height: "100%",
+                        width: "100%",
+                        layoutMargin: 5,
+                        membersMargin: 10,
+                        align: "center"
+                    });
+                    let removeIcon = isc.ImgButton.create({
+                        showDown: false,
+                        showRollOver: false,
+                        layoutAlign: "center",
+                        src: "[SKIN]/actions/remove.png",
+                        prompt: "حذف فرم",
+                        height: 16,
+                        width: 16,
+                        grid: this,
+                        click: function () {
+                        }
+                    });
+                    recordCanvas.addMember(removeIcon);
+                    return recordCanvas;
+                }
+                else if (fieldName == "printForm") {
+                    let recordCanvas = isc.HLayout.create({
+                        height: "100%",
+                        width: "100%",
+                        layoutMargin: 5,
+                        membersMargin: 10,
+                        align: "center"
+                    });
+                    let printIcon = isc.ImgButton.create({
+                        showDown: false,
+                        showRollOver: false,
+                        layoutAlign: "center",
+                        src: "[SKIN]/actions/print.png",
+                        prompt: "چاپ فرم",
+                        height: 16,
+                        width: 16,
+                        grid: this,
+                        click: function () {
+                        }
+                    });
+                    recordCanvas.addMember(printIcon);
+                    return recordCanvas;
+                }
+                else {
                     return null;
                 }
             },
@@ -411,12 +467,12 @@
                         })
                     ]
                 }),
-                isc.VLayout.create({
-                    members: [
-                        ToolStripButton_FormIssuanceForAll_RE,
-                        isc.LayoutSpacer.create({height: "22"})
-                    ]
-                }),
+                // isc.VLayout.create({
+                //     members: [
+                //         ToolStripButton_FormIssuanceForAll_RE,
+                //         isc.LayoutSpacer.create({height: "22"})
+                //     ]
+                // }),
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
@@ -1706,27 +1762,7 @@
             evaluation_check_date_RE();
             if (DynamicForm_ReturnDate_RE.hasErrors())
                 return;
-
-            if (Detail_Tab_Evaluation.getSelectedTab().id === "TabPane_Behavior") {
-                evaluation_numberOfStudents_RE = numberOfStudents;
-                let selectedStudent = record;
-                if (numberOfStudents === "all" || (numberOfStudents === "single" && selectedStudent !== null && selectedStudent !== undefined)) {
-                    print_Student_Behavioral_Form_Inssuance(record);
-                } else {
-                    isc.Dialog.create({
-                        message: "<spring:message code="msg.no.records.selected"/>",
-                        icon: "[SKIN]ask.png",
-                        title: "<spring:message code="global.message"/>",
-                        buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
-                        buttonClick: function (button, index) {
-                            this.close();
-                        }
-                    });
-                }
-
-            } else {
-                print_Student_FormIssuance_RE("pdf", numberOfStudents,record);
-            }
+            print_Student_FormIssuance_RE("pdf", numberOfStudents,record);
         }
 
         function show_EvaluationActionResult_RE(resp) {
@@ -1844,79 +1880,124 @@
             }
     }
 
-        function print_Student_FormIssuance_RE(type, numberOfStudents,record, audienceName, audienceType, formReturnDate) {
-        if (ListGrid_student_RE.getTotalRows() > 0) {
-            let selectedClass = classRecord_RE;
-            let selectedStudent = record;
-            let selectedTab = Detail_Tab_Evaluation.getSelectedTab();
+    //----------------------------------- new Funsctions ---------------------------------------------------------------
+    function print_Student_Reaction_Form_RE(questionnarieId, evaluatorId, evaluatorTypeId, evaluatedId, evaluatedTypeId,
+                                            questionnarieTypeId, evaluationLevel) {
+    }
 
-            if (numberOfStudents === "all" || (numberOfStudents === "single" && selectedStudent !== null && selectedStudent !== undefined)) {
 
-                let studentId = (numberOfStudents === "single" ? selectedStudent.student.id : -1);
-                let returnDate = ReturnDate_RE._value !== undefined ? ReturnDate_RE._value.replaceAll("/", "-") : "noDate";
-                // if(audienceName == null)
-                //     audienceName = evaluation_Audience;
-                if(formReturnDate == null)
-                    formReturnDate = returnDate;
-
-                let myObj = {
-                    evaluationAudienceType: audienceType,
-                    courseId: selectedClass.course.id,
-                    studentId: studentId,
-                    evaluationType: selectedTab.id,
-                    evaluationReturnDate: formReturnDate,
-                    evaluationAudience: audienceName
-                };
-
-                let advancedCriteria_unit = ListGrid_student_RE.getCriteria();
-                let criteriaForm_operational = isc.DynamicForm.create({
-                    method: "POST",
-                    action: "<spring:url value="/evaluation/printWithCriteria/"/>" + type + "/" + selectedClass.id,
-                    target: "_Blank",
-                    canSubmit: true,
-                    fields:
-                        [
-                            {name: "CriteriaStr", type: "hidden"},
-                            {name: "myToken", type: "hidden"},
-                            {name: "printData", type: "hidden"}
-                        ],
-                    show: function () {
-                        this.Super("show", arguments);
+    function Student_Reaction_Form_Inssurance_RE(studentRecord){
+        let IButtonSave_SelectQuestionnarie_RE = isc.IButtonSave.create({
+                title: "صدور و چاپ",
+                click: function () {
+                    if(ListGrid_SelectQuestionnarie_RE.getSelectedRecord() == null || ListGrid_SelectQuestionnarie_RE.getSelectedRecord() == undefined){
+                        createDialog("info", "پرسشنامه ای انتخاب نشده است.");
                     }
-                });
-
-                criteriaForm_operational.setValue("CriteriaStr", JSON.stringify(advancedCriteria_unit));
-                criteriaForm_operational.setValue("myToken", "<%=accessToken%>");
-                criteriaForm_operational.setValue("printData", JSON.stringify(myObj));
-                criteriaForm_operational.show();
-                criteriaForm_operational.submit();
-                criteriaForm_operational.submit(set_evaluation_status_RE(numberOfStudents,record,audienceName, audienceType));
-
-                // evaluation_Audience = null;
-
-            } else {
-                isc.Dialog.create({
-                    message: "<spring:message code="msg.no.records.selected"/>",
-                    icon: "[SKIN]ask.png",
-                    title: "<spring:message code="global.message"/>",
-                    buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
-                    buttonClick: function (button, index) {
-                        this.close();
+                    else{
+                        Window_SelectQuestionnarie_RE.close();
+                        createOrUpdate_evaluation_form(null,ListGrid_SelectQuestionnarie_RE.getSelectedRecord().id, studentRecord.id, 188, classRecord_RE.id, 504, 139, 154);
                     }
-                });
-            }
-        } else {
-            isc.Dialog.create({
-                message: "<spring:message code="no.student.class"/>",
-                icon: "[SKIN]ask.png",
-                title: "<spring:message code="global.message"/>",
-                buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
-                buttonClick: function (button, index) {
-                    this.close();
                 }
             });
-        }
+        let RestDataSource_Questionnarie_RE = isc.TrDS.create({
+                fields: [
+                    {name: "id", primaryKey: true, hidden: true},
+                    {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
+                    {name:"questionnaireTypeId",hidden:true},
+                    {name:"questionnaireType.title",title:"<spring:message code="type"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
+                    {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
+                ],
+                fetchDataURL: questionnaireUrl + "/iscList"
+            });
+        let ListGrid_SelectQuestionnarie_RE = isc.TrLG.create({
+                width: "100%",
+                dataSource: RestDataSource_Questionnarie_RE,
+                selectionType: "single",
+                selectionAppearance: "checkbox",
+                fields: [{name: "title"},{name:"questionnaireType.title"},{name: "description"},{name: "id", hidden:true}]
+            });
+        let Window_SelectQuestionnarie_RE = isc.Window.create({
+                width: 1024,
+                placement: "fillScreen",
+                keepInParentRect: true,
+                title: "انتخاب پرسشنامه",
+                items: [
+                    isc.HLayout.create({
+                        width: "100%",
+                        height: "90%",
+                        members: [ListGrid_SelectQuestionnarie_RE]
+                    }),
+                    isc.TrHLayoutButtons.create({
+                        width: "100%",
+                        height: "5%",
+                        members: [
+                            IButtonSave_SelectQuestionnarie_RE,
+                            isc.IButtonCancel.create({
+                                click: function () {
+                                    Window_SelectQuestionnarie_RE.close();
+                                }
+                            }),
+                            isc.IButtonSave.create({
+                                title: "ارسال از طریق پیامک",
+                                click: function () {
+                                }
+                            }),
+                        ]
+                    })
+                ],
+                minWidth: 1024
+            });
+        let criteria = {
+                _constructor:"AdvancedCriteria",
+                operator:"and",
+                criteria:[
+                    {fieldName:"eEnabled", operator:"equals", value: 494},
+                    {fieldName:"questionnaireTypeId", operator:"equals", value: 139}
+                ]
+            };
+        ListGrid_SelectQuestionnarie_RE.fetchData(criteria);
+        ListGrid_SelectQuestionnarie_RE.invalidateCache();
+        Window_SelectQuestionnarie_RE.show();
     }
+
+    //--------------------- global functions ----------------------
+    function createOrUpdate_evaluation_form(id,questionnarieId, evaluatorId,
+                                    evaluatorTypeId, evaluatedId, evaluatedTypeId, questionnarieTypeId,
+                                    evaluationLevel){
+        let data = {};
+        data.classId = classRecord_RE.id;
+        data.status = false;
+        if(ReturnDate_BE._value != undefined )
+            data.returnDate =  ReturnDate_BE._value;
+        data.sendDate = todayDate;
+        data.evaluatorId = evaluatorId;
+        data.evaluatorTypeId = evaluatorTypeId;
+        data.evaluatedId = evaluatedId;
+        data.evaluatedTypeId = evaluatedTypeId;
+        data.questionnarieId =questionnarieId;
+        data.questionnarieTypeId = questionnarieTypeId;
+        data.evaluationLevel = evaluationLevel;
+        data.evaluationFull = false;
+        data.description = null;
+
+        isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl, "POST", JSON.stringify(data), function (resp) {
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                setTimeout(() => {
+                    msg.close();
+                }, 3000);
+                print_Student_Reaction_Form_RE(questionnarieId, evaluatorId,
+                    evaluatorTypeId, evaluatedId, evaluatedTypeId, questionnarieTypeId,
+                    evaluationLevel);
+                ListGrid_student_RE.invalidateCache();
+            }
+            else {
+                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+            }
+        }));
+    }
+
+
 
 
 

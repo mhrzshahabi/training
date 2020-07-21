@@ -52,11 +52,6 @@ public class ClassStudentDTO implements Serializable {
         private Integer evaluationStatusBehavior;
         @Getter(AccessLevel.NONE)
         private Integer evaluationStatusResults;
-        private ParameterValueDTO.TupleInfo evaluationAudienceType;
-        private Long evaluationAudienceTypeId;
-        private Long evaluationAudienceId;
-        private Integer numberOfBehavioralForwardedForms;
-        private Integer numberOfBehavioralRegisteredForms;
 
         public String getFullName(){
             return student.getFirstName()+" "+student.getLastName();
@@ -134,17 +129,6 @@ public class ClassStudentDTO implements Serializable {
         @ApiModelProperty(required = true)
         private List<Long> ids;
     }
-
-//    @Getter
-//    @Setter
-//    @Accessors(chain = true)
-//    @ApiModel("ClassStudent - Attendance")
-//    public static class AttendanceInfo {
-//        private Long id;
-//        private StudentDTO.AttendanceInfo student;
-//        private String applicantCompanyName;
-//        private Long presenceTypeId;
-//    }
 
     @Getter
     @Setter

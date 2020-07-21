@@ -35,6 +35,7 @@ public class GoalService implements IGoalService {
     private final CourseDAO courseDAO;
     private final SyllabusDAO syllabusDAO;
 
+
     @Transactional(readOnly = true)
     @Override
     public GoalDTO.Info get(Long id) {

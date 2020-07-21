@@ -11,8 +11,8 @@
         ID: "searchTree",
         data:[],
         fields: [
-            {name: "title", title: "موارد جستجو شده", width:"90%"},
-            {name: "code", title: "کد", width:"10%"},
+            {name: "title", title: "موارد جستجو شده", width:"75%"},
+            {name: "code", title: "کد", width:"25%"},
         ],
         canDragRecordsOut: true,
         width: "100%",
@@ -38,8 +38,8 @@
         ID: "organizationalTree",
         data:[],
         fields: [
-            {name: "title", title: "درخت کامل", width:"90%", },
-            {name: "code", title: "کد", width:"10%"},
+            {name: "title", title: "درخت کامل", width:"75%", },
+            {name: "code", title: "کد", width:"25%"},
         ],
         canDragRecordsOut: true,
         width: "100%",

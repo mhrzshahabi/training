@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface ISkillService {
+
     SkillDTO.Info get(Long id);
 
     Skill getSkill(Long id);

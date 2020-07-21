@@ -345,7 +345,7 @@
         alternateRecordStyles: true,
         showAllRecords: true,
         gridComponents: [
-            // ActionsTS_NA_Job,
+            ActionsTS_NA_Job,
             "header", "filterEditor", "body",],
         fields: [
             {name: "competence.title"},

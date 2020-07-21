@@ -246,5 +246,7 @@
     <changeSet author="golrokhi (generated)" id="1594445089907-437">
         <createSequence sequenceName="seq_generic_permission_id"/>
     </changeSet>
-
+    <changeSet author="razmnoosh (generated)" id="1595217836877-450">
+        <createSequence sequenceName="seq_dynamic_question_id"/>
+    </changeSet>
 </databaseChangeLog>

@@ -1075,11 +1075,22 @@
     <changeSet author="poursalehi_mos (generated)" id="1595043204072-509">
         <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_department" constraintName="FK6nee56wqmofujxoj3xio3ccdf" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
-
     <changeSet author="jafari-h (generated)" id="1595043444667-452">
         <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="tbl_competence" constraintName="FKksd2e8794363iqt4e7by4gtsd" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_category" validate="true"/>
     </changeSet>
     <changeSet author="jafari-h (generated)" id="1595043444667-453">
         <addForeignKeyConstraint baseColumnNames="subcategory_id" baseTableName="tbl_competence" constraintName="FKlsgd6vgo0sxqsjeqlrrec8tyc" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_sub_category" validate="true"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595217836877-467">
+        <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_dynamic_question" constraintName="FKfiaeoebydek3nsnrnpapsvyyk" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595217836877-468">
+        <addForeignKeyConstraint baseColumnNames="e_enabled" baseTableName="tbl_dynamic_question" constraintName="FKlvc8w5cdrpx7ftaepb5bcqqwe" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595217836877-466">
+        <addForeignKeyConstraint baseColumnNames="f_questionnaire_id" baseTableName="tbl_evaluation" constraintName="FK1hacideok49n77vxqr0ctk7td" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_questionnaire" validate="true"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595309679428-466">
+        <addForeignKeyConstraint baseColumnNames="f_type" baseTableName="tbl_dynamic_question" constraintName="FKd9b54lbsrl16uh3mabxrj16i0" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
 </databaseChangeLog>

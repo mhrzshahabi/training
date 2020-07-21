@@ -30,6 +30,9 @@ public class ViewClassDetail extends Auditable {
     @Column(name = "INSTITUTE_ID")
     private Long instituteId;
 
+    @Column(name = "COURSE_ID")
+    private Long courseId;
+
     @Column(name = "TEACHER_ID")
     private Long teacherId;
 
@@ -92,4 +95,10 @@ public class ViewClassDetail extends Auditable {
 
    @Column(name = "tclass_has_pre_test")
    private Boolean classPreCourseTest;
+
+    @Column(name = "TEACHER_EVAL_STATUS")
+    private Integer teacherEvalStatus;
+
+    @Column(name = "TRAINING_EVAL_STATUS")
+    private Integer trainingEvalStatus;
 }

@@ -23,10 +23,8 @@ public class MainFormController {
     }
 
     ////disable targetSociety
-//    @RequestMapping("/organizationalChart")
-//    public String showOrganizationalChartForm() {
-//        return "basic/organizationalChart";
-//    }
+    @RequestMapping("/organizationalChart")
+    public String showOrganizationalChartForm() { return "basic/organizationalChart"; }
 
     @RequestMapping("/trainingFile")
     public String showTrainingFileForm() {

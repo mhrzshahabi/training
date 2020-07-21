@@ -138,7 +138,13 @@
                                             }
 
                                             DynamicForm_GroupInsert_Textbox_JspStudent.setValue('');
-                                            createDialog("info", "کدهای پرسنلی به لیست اضافه شدند.");
+                                            if(records.length > 0){
+                                                createDialog("info", "کدهای پرسنلی به لیست اضافه شدند.");
+                                            }
+                                            else{
+                                                createDialog("info", "پرسنل جدیدی برای اضافه کردن وجود ندارد.");
+                                            }
+
                                         }
                                     }
                                 }
@@ -179,6 +185,7 @@
                                                         var workbook = XLSX.read(data, {
                                                             type: 'binary'
                                                         });
+                                                        var isEmpty=true;
 
                                                         workbook.SheetNames.forEach(function(sheetName) {
                                                             // Here is your object
@@ -194,10 +201,13 @@
                                                                 }).length==0){
                                                                     let current={personnelNo:Object.values(XL_row_object[i])[0]};
                                                                     records.add(current);
+                                                                    isEmpty=false;
 
                                                                     continue;
                                                                 }
                                                                 else{
+                                                                    isEmpty=false;
+
                                                                     continue;
                                                                 }
                                                             }
@@ -217,7 +227,12 @@
 
                                                             createDialog("info", "فایل به لیست اضافه شد.");
                                                         }else{
-                                                            createDialog("info", "خطا در محتویات فایل");
+                                                            if(isEmpty){
+                                                                createDialog("info", "خطا در محتویات فایل");
+                                                            }else{
+                                                                createDialog("info", "پرسنل جدیدی برای اضافه کردن وجود ندارد.");
+                                                            }
+
                                                         }
 
                                                     };
@@ -297,7 +312,6 @@
                                                 }).length==0){
 
                                                     if(isCheck){
-                                                        console.log(isCheck);
                                                         func(inputURL,[newValue]);
                                                     }
                                                     return true;
@@ -515,7 +529,7 @@
                 downloadForm.submitForm();
             }
 
-            static exportToExcelFromServer(fields, fileName, criteriaStr, sortBy, len, titr, pageName) {
+            static exportToExcelFromServer(fields, fileName, criteriaStr, sortBy, len, titr, pageName, valueMaps) {
 
                 let downloadForm = isc.DynamicForm.create({
                     method: "POST",
@@ -531,7 +545,8 @@
                             {name: "pageName", type: "hidden"},
                             {name: "_sortBy", type: "hidden"},
                             {name: "_len", type: "hidden"},
-                            {name: "criteriaStr", type: "hidden"}
+                            {name: "criteriaStr", type: "hidden"},
+                            {name: "valueMaps", type: "hidden"}
                         ]
                 });
 
@@ -543,6 +558,7 @@
                 downloadForm.setValue("_sortBy", sortBy);
                 downloadForm.setValue("_len", len);
                 downloadForm.setValue("criteriaStr", criteriaStr);
+                downloadForm.setValue("valueMaps", JSON.stringify(valueMaps));
                 downloadForm.show();
                 downloadForm.submitForm();
             }
@@ -579,6 +595,17 @@
                 let sort = listGrid.getSort();
                 let sortStr='';
 
+                let valueMaps =[];
+
+                for (var v = 0; v <fields.isValueMap.length ; v++) {
+                    if(fields.isValueMap[v]){
+                        let parameter = fields.fields[v].name;
+                        valueMaps.add({value : parameter, map : listGrid.getField(parameter).valueMap});
+                    }
+                }
+
+                console.log(valueMaps);
+
                 if (sort != null && sort.size() != 0){
 
                     if(sort.size() == 1){
@@ -593,7 +620,7 @@
                     }
                 }
 
-                this.exportToExcelFromServer(fields.fields, fileName, criteria, sortStr , len, tmptitr, pageName);
+                this.exportToExcelFromServer(fields.fields, fileName, criteria, sortStr , len, tmptitr, pageName, valueMaps);
             }
 
             static showDialog(title, listgrid, fileName, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate){
@@ -766,7 +793,7 @@
     const viewPostGradeGroupUrl = rootUrl + "/view-post-grade-group";
     const masterDataUrl = rootUrl + "/masterData";
     const viewEvaluationStaticalReportUrl = rootUrl + "/view-evaluation-statical-report";
-    const viewTeacherReportUrl = rootUrl + "/view-teacher-report/"
+    const viewTeacherReportUrl = rootUrl + "/view-teacher-report/";
     const sendMessageUrl = rootUrl + "/sendMessage";
     const attendanceReportUrl = rootUrl + "/attendanceReport";
     const classPerformanceReport = rootUrl + "/classPerformance/";
@@ -1204,15 +1231,14 @@
                 {isSeparator: true},
                 </sec:authorize>
 
-////disable targetSociety
-<%--                <sec:authorize access="hasAuthority('Menu_Organizational_chart')">--%>
-<%--                {--%>
-<%--                    title: "<spring:message code="organizational.chart"/>",--%>
-<%--                    click: function () {--%>
-<%--                        createTab(this.title, "<spring:url value="web/organizationalChart"/>");--%>
-<%--                    }--%>
-<%--                },--%>
-<%--                </sec:authorize>--%>
+                <sec:authorize access="hasAuthority('Menu_Organizational_chart')">
+                {
+                    title: "<spring:message code="organizational.chart"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/organizationalChart"/>");
+                    }
+                },
+                </sec:authorize>
             ]
         }),
     });
