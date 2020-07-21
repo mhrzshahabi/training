@@ -168,58 +168,58 @@ public class ViewStatisticsUnitReport implements Serializable {
     @Column(name = "evaluationanalysis_id", insertable = false, updatable = false)
     private Long evaluationAnalysisId;
 
-    @Column(name = "EVALUATIONANALYSIS_C_BEHAVIORAL_GRADE")
+    @Column(name = "evaluationanalysis_c_behavioral_grade")
     private String evaluationBehavioralGrade;
 
-    @Column(name = "EVALUATIONANALYSIS_C_BEHAVIORAL_PASS")
+    @Column(name = "evaluationanalysis_c_behavioral_pass")
     private Boolean evaluationBehavioralPass;
 
-    @Column(name = "EVALUATIONANALYSIS_B_BEHAVIORAL_STATUS")
+    @Column(name = "evaluationanalysis_b_behavioral_status")
     private Boolean evaluationBehavioralStatus;
 
-    @Column(name = "EVALUATIONANALYSIS_B_EFFECTIVENESS_STATUS")
+    @Column(name = "evaluationanalysis_b_effectiveness_status")
     private Boolean evaluationEffectivenessStatus;
 
-    @Column(name = "EVALUATIONANALYSIS_C_EFFECTIVENESS_GRADE")
+    @Column(name = "evaluationanalysis_c_effectiveness_grade")
     private String evaluationEffectivenessGrade;
 
-    @Column(name = "EVALUATIONANALYSIS_C_EFFECTIVENESS_PASS")
+    @Column(name = "evaluationanalysis_c_effectiveness_pass")
     private Boolean evaluationEffectivenessPass;
 
-    @Column(name = "EVALUATIONANALYSIS_C_LEARNING_GRADE")
+    @Column(name = "evaluationanalysis_c_learning_grade")
     private String evaluationLearningGrade;
 
-    @Column(name = "EVALUATIONANALYSIS_C_LEARNING_PASS")
+    @Column(name = "evaluationanalysis_c_learning_pass")
     private Boolean evaluationLearningPass;
 
-    @Column(name = "EVALUATIONANALYSIS_B_LEARNING_STATUS")
+    @Column(name = "evaluationanalysis_b_learning_status")
     private Boolean evaluationLearningStatus;
 
-    @Column(name = "EVALUATIONANALYSIS_C_REACTION_GRADE")
+    @Column(name = "evaluationanalysis_c_reaction_grade")
     private String evaluationReactionGrade;
 
-    @Column(name = "EVALUATIONANALYSIS_C_REACTION_PASS")
+    @Column(name = "evaluationanalysis_c_reaction_pass")
     private Boolean evaluationReactionPass;
 
-    @Column(name = "EVALUATIONANALYSIS_B_REACTION_STATUS")
+    @Column(name = "evaluationanalysis_b_reaction_status")
     private Boolean evaluationReactionStatus;
 
-    @Column(name = "EVALUATIONANALYSIS_C_RESULTS_GRADE")
+    @Column(name = "evaluationanalysis_c_results_grade")
     private String evaluationResultsGrade;
 
-    @Column(name = "EVALUATIONANALYSIS_C_RESULTS_PASS")
+    @Column(name = "evaluationanalysis_c_results_pass")
     private Boolean evaluationResultsPass;
 
-    @Column(name = "EVALUATIONANALYSIS_B_RESULTS_STATUS")
+    @Column(name = "evaluationanalysis_b_results_status")
     private Boolean evaluationResultsStatus;
 
-    @Column(name = "EVALUATIONANALYSIS_C_TEACHER_GRADE")
+    @Column(name = "evaluationanalysis_c_teacher_grade")
     private String evaluationTeacherGrade;
 
-    @Column(name = "EVALUATIONANALYSIS_C_TEACHER_PASS")
+    @Column(name = "evaluationanalysis_c_teacher_pass")
     private Boolean evaluationTeacherPass;
 
-    @Column(name = "EVALUATIONANALYSIS_B_TEACHER_STATUS")
+    @Column(name = "evaluationanalysis_b_teacher_status")
     private Boolean evaluationTeacherStatus;
     //////////////////////////////////////////
 }
