@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 import javax.persistence.Column;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -28,6 +29,12 @@ public class ViewjobDTO implements Serializable {
 
     @ApiModelProperty()
     private Integer personnelCount;
+
+    @ApiModelProperty
+    private Date lastModifiedDateNA;
+
+    @ApiModelProperty
+    private String modifiedByNA;
 
     @Getter
     @Setter

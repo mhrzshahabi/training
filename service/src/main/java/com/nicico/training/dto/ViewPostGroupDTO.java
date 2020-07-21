@@ -8,6 +8,7 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -33,6 +34,12 @@ public class ViewPostGroupDTO implements Serializable {
 
     @ApiModelProperty()
     private Integer personnelCount;
+
+    @ApiModelProperty
+    private Date lastModifiedDateNA;
+
+    @ApiModelProperty
+    private String modifiedByNA;
 
 
     @Getter
