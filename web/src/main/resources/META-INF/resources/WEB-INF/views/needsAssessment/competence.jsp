@@ -350,7 +350,7 @@
                 else{
                     let list = JSON.parse(resp.data);
                     CompetenceWin_competence.close();
-                    createDialog("info", "شایستگی فوق در " + priorityList[list[0].objectType] + " " + getFormulaMessage(list[0].objectName, ) + " استفاده شده است. و قابل ویرایش نمیباشد.")
+                    createDialog("warning", "شایستگی فوق در " + priorityList[list[0].objectType] + " " + getFormulaMessage(list[0].objectName, ) + " استفاده شده است. و قابل ویرایش نمیباشد.", "اخطار")
                 }
             })
         );
@@ -366,7 +366,7 @@
                     removeRecord(competenceUrl + "/" + record.id, entityType, record.title, 'CompetenceLG_competence');
                 }
                 else{
-                    createDialog("info", "بدلیل استفاده شدن شایستگی در نیازسنجی قابل حذف نمیباشد.");
+                    createDialog("warning", "بدلیل اینکه شایستگی در نیازسنجی استفاده شده است، این شایستگی قابل حذف نمیباشد.", "اخطار");
                 }
             }))
         }

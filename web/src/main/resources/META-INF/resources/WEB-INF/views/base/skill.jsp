@@ -353,9 +353,9 @@
                 addUnknownValues: false,
                 changeOnKeypress: false,
                 filterOnKeypress: true,
-                autoFetchData: false,
+                autoFetchData: true,
                 textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
+                // generateExactMatchCriteria: true,
                 filterFields: ["titleFa", "code", "createdBy"],
                 pickListFields: [
                     {name: "code"},
@@ -367,7 +367,26 @@
                     alternateRecordStyles: true,
                     autoFitWidthApproach: "both",
                 },
-
+                click(form, item){
+                    if(form.getValue("categoryId") === undefined || form.getValue("subCategoryId") === undefined){
+                        CourseDS_Skill.fetchDataURL = courseUrl + "spec-list?id=-1";
+                    }
+                    else{
+                        CourseDS_Skill.fetchDataURL = courseUrl + "spec-list";
+                        // let categoryId = form.getValue("categoryId");
+                        // let subCategoryId = form.getValue("subCategoryId");
+                        let criteria = {
+                            _constructor:"AdvancedCriteria",
+                            operator:"and",
+                            criteria:[
+                                {fieldName:"categoryId", operator:"equals", value: form.getValue("categoryId")},
+                                {fieldName:"subCategoryId", operator:"equals", value: form.getValue("subCategoryId")}
+                            ]
+                        };
+                        item.pickListCriteria = criteria;
+                    }
+                    item.fetchData();
+                }
             },
             {
                 name: "description",

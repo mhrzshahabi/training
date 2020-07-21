@@ -719,7 +719,7 @@
         alternateRecordStyles: true,
         showAllRecords: true,
         gridComponents: [
-            // ActionsTS_Course_Post,
+            ActionsTS_Course_Post,
             "header", "filterEditor", "body",],
         fields: [
             {name: "competence.title"},
