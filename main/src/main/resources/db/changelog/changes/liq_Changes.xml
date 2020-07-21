@@ -958,4 +958,26 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="golrokhi (generated)" id="1595321086188-461">
+        <addColumn tableName="tbl_question_bank">
+            <column name="n_multiple_choice_answer" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1595321086188-560">
+        <dropColumn columnName="C_MULTIPLE_CHOICE_ANSWER" tableName="TBL_QUESTION_BANK"/>
+    </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1595323156709-461">
+        <addColumn tableName="tbl_question_bank">
+            <column name="n_code_id" type="number(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1595323156709-560">
+        <dropColumn columnName="C_CODE_ID" tableName="TBL_QUESTION_BANK"/>
+    </changeSet>
+
 </databaseChangeLog>

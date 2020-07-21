@@ -1,0 +1,81 @@
+package com.nicico.training.model;
+
+import com.nicico.training.model.enums.EPublicationSubjectType;
+import lombok.*;
+import lombok.experimental.Accessors;
+
+import javax.persistence.*;
+import java.util.Set;
+
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Accessors(chain = true)
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
+@Entity
+@Table(name = "tbl_question_bank")
+public class QuestionBank extends Auditable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "question_bank_seq")
+    @SequenceGenerator(name = "question_bank_seq", sequenceName = "seq_question_bank_id", allocationSize = 1)
+    @Column(name = "id", precision = 10)
+    private Long id;
+
+    @Column(name = "c_code", nullable = false)
+    private String code;
+
+    @Column(name = "n_code_id", nullable = false)
+    private Integer codeId;
+
+    @Column(name = "c_question", nullable = false)
+    private String question;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_parameter_value_question_type", nullable = false, insertable = false, updatable = false)
+    private ParameterValue questionType;
+
+    @Column(name = "f_parameter_value_question_type", nullable = false)
+    private Long questionTypeId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_parameter_value_question_display_type", nullable = false, insertable = false, updatable = false)
+    private ParameterValue displayType;
+
+    @Column(name = "f_parameter_value_question_display_type", nullable = false)
+    private Long displayTypeId;
+
+    @Column(name = "c_option1")
+    private String option1;
+
+    @Column(name = "c_option2")
+    private String option2;
+
+    @Column(name = "c_option3")
+    private String option3;
+
+    @Column(name = "c_option4")
+    private String option4;
+
+    @Column(name = "c_descriptive_answer")
+    private String descriptiveAnswer;
+
+    @Column(name = "n_multiple_choice_answer")
+    private Integer multipleChoiceAnswer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_category_id", insertable = false, updatable = false)
+    private Category category;
+
+    @Column(name = "f_category_id")
+    private Long categoryId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_subcategory_id", insertable = false, updatable = false)
+    private Subcategory subCategory;
+
+    @Column(name = "f_subcategory_id")
+    private Long subCategoryId;
+
+}
+
