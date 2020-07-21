@@ -56,7 +56,7 @@ public interface ISkillService {
 
     void removeCourses(List<Long> courseIds, Long skillId);
 
-    void addCourse(Long courseId, Long skillId);
+//    void addCourse(Long courseId, Long skillId);
 
     void addCourses(List<Long> ids, Long skillId);
 

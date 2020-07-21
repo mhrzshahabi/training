@@ -2655,8 +2655,8 @@
             } else if (JSON.parse(response.httpResponseText).errors[0].message !== undefined && JSON.parse(response.httpResponseText).errors[0].message.length > 0) {
                 userErrorMessage = JSON.parse(response.httpResponseText).errors[0].message;
             }
-
-            createDialog("info", userErrorMessage);
+            wait.close();
+            createDialog("warning", userErrorMessage, "اخطار");
 
 
             <%--if (JSON.parse(response.httpResponseText).message !== "No message available" && response.httpResponseText.length > 0) {--%>

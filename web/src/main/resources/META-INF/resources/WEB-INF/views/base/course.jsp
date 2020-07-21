@@ -30,6 +30,13 @@
         ],
         fetchDataURL: categoryUrl + "spec-list",
     });
+    var RestDataSource_SubCategory = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa", type: "text"}
+        ],
+        fetchDataURL: subCategoryUrl + "spec-list",
+    });
     var RestDataSource_Skill_JspCourse = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -39,6 +46,15 @@
                 name: "categoryId",
                 title: "گروه",
                 optionDataSource: RestDataSource_category,
+                displayField: "titleFa",
+                valueField: "id",
+                filterOperator: "equals",
+                autoFitWidth: true,
+            },
+            {
+                name: "subCategoryId",
+                title: "زیر گروه",
+                optionDataSource: RestDataSource_SubCategory,
                 displayField: "titleFa",
                 valueField: "id",
                 filterOperator: "equals",
@@ -732,7 +748,8 @@
                             },
                             {
                                 name: "categoryId",
-                            }
+                            },
+                            {name: "subCategoryId"}
                         ],
                         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
                             if (ListGridOwnSkill_JspCourse.getSelectedRecord() == null) {
@@ -859,7 +876,7 @@
                                     serverOutputAsString: false,
                                     callback: function (resp) {
                                         wait.close()
-                                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                             <%--createDialog("info", "<spring:message code='msg.operation.successful'/>", "<spring:message code="msg.command.done"/>");--%>
                                             skillsListBtnListGridCourse.click();
                                         }
@@ -1158,13 +1175,19 @@
                 icon: "[SKIN]/actions/add.png",
                 prompt: "<spring:message code='add'/>",
                 click: function () {
+                    if(DynamicForm_course_GroupTab.getValue("categoryId") === undefined || DynamicForm_course_GroupTab.getValue("subCategory.id") === undefined){
+                        createDialog("warning", "ابتدا گروه و زیر گروه را انتخاب نمایید", "اخطار")
+                        return;
+                    }
                     let advancedCriteriaJspCourse1 = {};
-                    if (course_method == "POST") {
+                    if (course_method === "POST") {
                         advancedCriteriaJspCourse1 = {
                             _constructor: "AdvancedCriteria",
                             operator: "and",
                             criteria: [
                                 {fieldName: "courseId", operator: "isNull"},
+                                {fieldName: "categoryId", operator: "equals", value: DynamicForm_course_GroupTab.getValue("categoryId")},
+                                {fieldName: "subCategoryId", operator: "equals", value: DynamicForm_course_GroupTab.getValue("subCategory.id")},
                                 // {fieldName: "code", operator: "notInSet", value: mainObjectiveList.getProperty("code") },
                             ]
                         };
@@ -1174,6 +1197,8 @@
                             operator: "and",
                             criteria: [
                                 {fieldName: "courseMainObjectiveId", operator: "isNull"},
+                                {fieldName: "categoryId", operator: "equals", value: DynamicForm_course_GroupTab.getValue("categoryId")},
+                                {fieldName: "subCategoryId", operator: "equals", value: DynamicForm_course_GroupTab.getValue("subCategory.id")},
                                 // {fieldName: "code", operator: "notInSet", value: mainObjectiveList.getProperty("code") },
                                 {
                                     operator: "or", criteria: [

@@ -160,7 +160,7 @@ public class TclassRestController {
                 tClassService.delete(id);
                 return new ResponseEntity(HttpStatus.OK);
             }else{
-                tClassService.delete(id);
+//                tClassService.delete(id);
                 return new ResponseEntity(HttpStatus.UNAUTHORIZED);
             }
 

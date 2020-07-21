@@ -392,10 +392,20 @@ public class SkillService implements ISkillService {
     }
 
     @Transactional
-    @Override
-    public void addCourse(Long courseId, Long skillId) {
+//    @Override
+    public void addCourse(Long courseId, Long skillId, HttpServletResponse response) throws IOException {
         final Optional<Skill> optionalSkill = skillDAO.findById(skillId);
+        final Optional<Course> optionalCourse = courseDAO.findById(courseId);
         final Skill skill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
+        final Course course = optionalCourse.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
+        if(!course.getCategoryId().equals(skill.getCategoryId())){
+            response.sendError(409, messageSource.getMessage("گروه مهارت با دوره یکسان نیست", null, LocaleContextHolder.getLocale()));
+            return;
+        }
+        if(!course.getSubCategoryId().equals(skill.getSubCategoryId())){
+            response.sendError(409, messageSource.getMessage("زیر گروه مهارت با دوره یکسان نیست", null, LocaleContextHolder.getLocale()));
+            return;
+        }
         skill.setCourseId(courseId);
         skillDAO.save(skill);
         courseService.updateHasSkill(courseId, true);
