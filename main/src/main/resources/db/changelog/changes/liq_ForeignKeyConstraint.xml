@@ -1090,4 +1090,7 @@
     <changeSet author="razmnoosh (generated)" id="1595217836877-466">
         <addForeignKeyConstraint baseColumnNames="f_questionnaire_id" baseTableName="tbl_evaluation" constraintName="FK1hacideok49n77vxqr0ctk7td" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_questionnaire" validate="true"/>
     </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595309679428-466">
+        <addForeignKeyConstraint baseColumnNames="f_type" baseTableName="tbl_dynamic_question" constraintName="FKd9b54lbsrl16uh3mabxrj16i0" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

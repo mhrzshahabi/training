@@ -913,5 +913,49 @@
             <column name="lock_status" type="number(1, 0)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595309679428-455">
+        <addColumn tableName="tbl_dynamic_question">
+            <column name="f_type" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595315738742-553">
+        <dropColumn columnName="BEHAVIORAL_COMPLETED_FORMS" tableName="TBL_CLASS_STUDENT"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595315738742-554">
+        <dropColumn columnName="BEHAVIORAL_FORWARDED_FORMS" tableName="TBL_CLASS_STUDENT"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595315738742-555">
+        <dropColumn columnName="BEHAVIORAL_REGISTERED_FORMS" tableName="TBL_CLASS_STUDENT"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595315738742-556">
+        <dropColumn columnName="EVALUATION_AUDIENCE_ID" tableName="TBL_CLASS_STUDENT"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595315738742-557">
+        <dropColumn columnName="EVALUATION_AUDIENCE_TYPE_ID" tableName="TBL_CLASS_STUDENT"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595313855848-553">
+        <dropColumn columnName="BIRTH_DATE" tableName="TBL_PERSONNEL"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595313855848-554">
+        <dropColumn columnName="EMPLOYMENT_DATE" tableName="TBL_PERSONNEL"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595313855848-556">
+        <dropColumn columnName="POST_ASSIGNMENT_DATE" tableName="TBL_PERSONNEL"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595315013162-455">
+        <addColumn tableName="tbl_personnel">
+            <column name="birth_date" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595315013162-456">
+        <addColumn tableName="tbl_personnel">
+            <column name="employment_date" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1595315013162-457">
+        <addColumn tableName="tbl_personnel">
+            <column name="post_assignment_date" type="timestamp"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
