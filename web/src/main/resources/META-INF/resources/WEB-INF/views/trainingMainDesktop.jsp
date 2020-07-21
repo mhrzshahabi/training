@@ -1216,7 +1216,6 @@
                 {isSeparator: true},
                 </sec:authorize>
 
-////disable targetSociety
                 <sec:authorize access="hasAuthority('Menu_Organizational_chart')">
                 {
                     title: "<spring:message code="organizational.chart"/>",
