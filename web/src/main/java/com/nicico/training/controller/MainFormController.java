@@ -110,6 +110,11 @@ public class MainFormController {
         return "base/post-group";
     }
 
+    @RequestMapping("/training-post")
+    public String showTrainingPostForm() {
+        return "base/training-post";
+    }
+
     @RequestMapping("/needAssessment")
     public String showNeedAssessmentForm() {
         return "base/needAssessmentNew1";
