@@ -83,16 +83,16 @@ public class ViewStatisticsUnitReport implements Serializable {
     @Column(name = "course_theo_type")
     private String courseTheoType;
 
-    @Column(name = "course_category_id")
-    private Long categoryId;
+    @Column(name = "coursecategory")
+    private Long courseCategory;
 
-    @Column(name = "course_sub_category_id")
-    private Long subCategoryId;
+    @Column(name = "coursesubcategory")
+    private Long courseSubCategory;
     /////////////////////////////////////////
 
     ///////////////////////////Student
     @Column(name = "student_id", insertable = false, updatable = false)
-    private long studentId;
+    private Long studentId;
 
     @Column(name = "student_emp_no")
     private String studentPersonnelNo2;
@@ -138,10 +138,10 @@ public class ViewStatisticsUnitReport implements Serializable {
     /////////////////////////////////////////
 
     ///////////////////////////Teacher
-    @Column(name = "teacher_FirstName")
+    @Column(name = "teacher_firstname")
     private String teacherFirstName;
 
-    @Column(name = "teacher_LastName")
+    @Column(name = "teacher_lastname")
     private String teacherLastName;
 
     @Column(name = "course_teacher_status")
@@ -165,9 +165,6 @@ public class ViewStatisticsUnitReport implements Serializable {
     //////////////////////////////////////
 
     ///////////////////////////Evalution
-    @Column(name = "evaluationanalysis_id", insertable = false, updatable = false)
-    private Long evaluationAnalysisId;
-
     @Column(name = "evaluationanalysis_c_behavioral_grade")
     private String evaluationBehavioralGrade;
 
@@ -177,23 +174,23 @@ public class ViewStatisticsUnitReport implements Serializable {
     @Column(name = "evaluationanalysis_b_behavioral_status")
     private Boolean evaluationBehavioralStatus;
 
-    @Column(name = "evaluationanalysis_b_effectiveness_status")
-    private Boolean evaluationEffectivenessStatus;
-
     @Column(name = "evaluationanalysis_c_effectiveness_grade")
     private String evaluationEffectivenessGrade;
 
     @Column(name = "evaluationanalysis_c_effectiveness_pass")
     private Boolean evaluationEffectivenessPass;
 
+    @Column(name = "evaluationanalysis_b_effectiveness_status")
+    private Boolean evaluationEffectivenessStatus;
+
     @Column(name = "evaluationanalysis_c_learning_grade")
     private String evaluationLearningGrade;
 
     @Column(name = "evaluationanalysis_c_learning_pass")
-    private Boolean evaluationLearningPass;
+    private Long evaluationLearningPass;
 
     @Column(name = "evaluationanalysis_b_learning_status")
-    private Boolean evaluationLearningStatus;
+    private Long evaluationLearningStatus;
 
     @Column(name = "evaluationanalysis_c_reaction_grade")
     private String evaluationReactionGrade;

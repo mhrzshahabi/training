@@ -12,7 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode(of = {"classId","studentID", "sessionDate","evaluationAnalysisId"}, callSuper = false)
+@EqualsAndHashCode(of = {"classId","studentId", "sessionDate"}, callSuper = false)
 @Embeddable
 public class ViewStatisticsUnitReportKey implements Serializable {
 
@@ -20,12 +20,9 @@ public class ViewStatisticsUnitReportKey implements Serializable {
     private Long classId;
 
     @Column(name = "student_id")
-    private Long studentID;
+    private Long studentId;
 
     @Column(name = "session_session_date")
     private String sessionDate;
-
-    @Column(name = " evaluationanalysis_id")
-    private String  evaluationAnalysisId;
 }
 
