@@ -6,38 +6,62 @@
     //----------------------------------------------------Rest DataSource-----------------------------------------------
     RestDataSource_JspUnitReport = isc.TrDS.create({
         fields: [
+            {name: "studentPersonnelNo", title:"<spring:message code='personnel.no'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentPersonnelNo2", title:"<spring:message code='personnel.no.6.digits'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentNationalCode", title:"<spring:message code='national.code'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentFirstName", title:"<spring:message code='firstName'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentLastName", title:"<spring:message code='lastName'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelComplexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classStudentApplicantCompanyName", title:"<spring:message code='company.applicant'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentCcpAssistant", title:"<spring:message code='assistance'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentCcpSection", title:"<spring:message code='section'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentCcpUnit", title:"<spring:message code='unit'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentCcpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentWorkPlaceTitle", title: "<spring:message code="geographical.location.of.service"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentPostGradeTitle", title: "<spring:message code="post.grade"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentJobTitle", title: "<spring:message code="job"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classCode", title:"<spring:message code="class.code"/>", autoFitWidth: true},
+            {name: "courseCode", title:"<spring:message code='course.code'/>", autoFitWidth: true},
+            {name: "courseTitleFa", title:"<spring:message code='course'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "courseDuration", title:"<spring:message code='course_theoryDuration'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "courseTheoType", title:"<spring:message code='course_etheoType'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classTeachingType", title: "<spring:message code="teaching.type"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classStartDate", title:"<spring:message code="start.date"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classEndDate", title:"<spring:message code="end.date"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "teacherFirstName", title:"نام استاد", filterOperator: "iContains", autoFitWidth: true},
+            {name: "teacherLastName", title:"نام خانوادگی استاد", filterOperator: "iContains", autoFitWidth: true},
+            {name: "courseTeacherStatus", title:"<spring:message code="teacher.type"/>", filterOperator: "iContains", autoFitWidth: true, valueMap: {
+                    "1" : "<spring:message code='company.staff'/>",
+                    "0" : "<spring:message code='external.teacher'/>"
+                }},
+            {name: "sessionDate", title:"تاریخ جلسه", filterOperator: "iContains", autoFitWidth: true},
             {name: "presenceHour", title:"حضور بر حسب ساعت", filterOperator: "equals", autoFitWidth: true},
             {name: "presenceMinute", title:"حضور بر حسب دقیقه", filterOperator: "equals", autoFitWidth: true},
             {name: "absenceHour", title:"غیبت بر حسب ساعت", filterOperator: "equals", autoFitWidth: true},
             {name: "absenceMinute", title:"غیبت بر حسب دقیقه", filterOperator: "equals", autoFitWidth: true},
-            {name: "classId", hidden: true, filterOperator: "equals", autoFitWidth: true},
-            {name: "classCode", title:"<spring:message code="class.code"/>", filterOperator: "inSet", autoFitWidth: true},
-            {name: "classStartDate", title:"<spring:message code="start.date"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "classEndDate", title:"<spring:message code="end.date"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "classTeachingType", title:"<spring:message code="teaching.type"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "sessionDate", title:"تاریخ جلسه", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentId", hidden: true, filterOperator: "equals", autoFitWidth: true},
-            {name: "studentPersonnelNo", title:"<spring:message code='personnel.no'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentPersonnelNo2", title:"<spring:message code='personnel.no.6.digits'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentFirstName", title:"<spring:message code='firstName'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentLastName", title:"<spring:message code='lastName'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentNationalCode", title:"<spring:message code='national.code'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentCcpAssistant", title:"<spring:message code='assistance'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentCcpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentCcpSection", title:"<spring:message code='section'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentCcpUnit", title:"<spring:message code='unit'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "classStudentApplicantCompanyName", title:"<spring:message code='company.applicant'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelComplexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "courseId", hidden: true, title:"<spring:message code='identity'/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "courseCode", title:"<spring:message code='course.code'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "courseTitleFa", title:"<spring:message code='course'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "categoryId", title:"<spring:message code='category'/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "courseRunType", title:"<spring:message code='course_eruntype'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "courseTheoType", title:"<spring:message code='course_etheoType'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "courseLevelType", title:"<spring:message code='cousre_elevelType'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "courseTechnicalType", title: "<spring:message code="technical.type"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "instituteId", hidden: true, title: "<spring:message code="identity"/>", filterOperator: "equals", autoFitWidth: true},
             {name: "instituteTitleFa", title: "<spring:message code="institute"/>", filterOperator: "iContains", autoFitWidth: true},
+
+            {name: "evaluationReactionStatus",title: "ارزیابی واکنشی", autoFitWidth: true,filterOperator: "equals",valueMap: {true: "انجام شده", false: "انجام نشده"}},
+            {name: "evaluationReactionPass",title: "وضعیت ارزیابی واکنشی", autoFitWidth: true,filterOperator: "equals",valueMap: {true: "تائید شده", false: "تائید نشده"}},
+            {name: "evaluationLearningStatus",title:"ارزیابی یادگیری", autoFitWidth: true,filterOperator: "equals",valueMap: {true: "انجام شده", false: "انجام نشده"}},
+            {name: "evaluationLearningPass",title: "وضعیت ارزیابی یادگیری" , autoFitWidth: true,filterOperator: "equals",valueMap: {true: "تائید شده", false: "تائید نشده"}},
+            {name: "evaluationBehavioralStatus" ,title: "ارزیابی رفتاری", autoFitWidth: true,filterOperator: "equals",valueMap: {true: "انجام شده", false: "انجام نشده"}},
+            {name: "evaluationBehavioralPass", title:"وضعیت ارزیابی رفتاری", autoFitWidth: true,filterOperator: "equals",valueMap: {true: "تائید شده", false: "تائید نشده"}},
+            {name: "evaluationEffectivenessStatus", title: "اثربخشی", autoFitWidth: true,filterOperator: "equals",valueMap: {true: "انجام شده", false: "انجام نشده"}},
+            {name: "evaluationEffectivenessPass",title: "وضعیت اثربخشی", autoFitWidth: true,filterOperator: "equals",valueMap: {true: "تائید شده", false: "تائید نشده"}},
+            {name: "evaluationResultsStatus", title: "ارزیابی نتایج", autoFitWidth: true,filterOperator: "equals",valueMap: {true: "انجام شده", false: "انجام نشده"}},
+            {name: "evaluationResultsPass",title: "وضعیت ارزیابی نتایج", autoFitWidth: true,filterOperator: "equals",valueMap: {true: "تائید شده", false: "تائید نشده"}},
+
+            {name: "classId", hidden: true, filterOperator: "equals"},
+            {name: "studentId", hidden: true, filterOperator: "equals"},
+            {name: "evaluationAnalysisId", hidden: true, filterOperator: "equals"},
+            {name: "termId", hidden: true, filterOperator: "equals"},
+            {name: "courseId", hidden: true, filterOperator: "equals"},
+            {name: "categoryId", hidden: true,filterOperator: "equals"},
+            {name: "subCategoryId", hidden: true,filterOperator: "equals"},
+            {name: "classPlanner", hidden: true, filterOperator: "equals"},
+            {name: "classSupervisor", hidden: true, filterOperator: "equals"},
+
         ],
         fetchDataURL: statisticsUnitReportUrl
     });
@@ -79,6 +103,7 @@
         cacheAllData: true,
         fetchDataURL: personnelUrl + "/all-field-values?fieldName=companyName"
     });
+
     ComplexDS_PresenceReport = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -86,6 +111,7 @@
         cacheAllData: true,
         fetchDataURL: personnelUrl + "/all-field-values?fieldName=complexTitle"
     });
+
     AssistantDS_PresenceReport = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -93,6 +119,7 @@
         cacheAllData: true,
         fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpAssistant"
     });
+
     AffairsDS_PresenceReport = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -100,12 +127,14 @@
         cacheAllData: true,
         fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpAffairs"
     });
+
     SectionDS_PresenceReport = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="term.code"/>", filterOperator: "iContains", autoFitWidth: true, primaryKey: true},
         ],
         fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpSection"
     });
+
     UnitDS_PresenceReport = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -226,7 +255,7 @@
         title: "گزارش اکسل",
         width: 300,
         click: function () {
-            ExportToFile.downloadExcelFromClient(ListGrid_JspUnitReport, null, '', 'گزارش حضور و غياب کلاس های آموزشي')
+            ExportToFile.showDialog(null, ListGrid_JspUnitReport, 'statisticsUnitReport', 0, null, '',  "گزارش واحد آمار", ListGrid_JspUnitReport.data.criteria, null);
         }
     });
 
@@ -364,6 +393,7 @@
                 name: "classStatus",
                 title: "وضعیت کلاس",
                 type: "SelectItem",
+                operator: "inSet",
                 required: true,
                 multiple: true,
                 valueMap: {
@@ -439,7 +469,7 @@
                 canEdit: false
             },
             {
-                name: "teacherId",
+                name: "courseTeacherId",
                 title: "مدرس",
                 type: "ComboBoxItem",
                 autoFetchData: false,
@@ -456,7 +486,7 @@
                 }
             },
             {
-                name: "tclassOrganizerId",
+                name: "instituteId",
                 title: "برگزار کننده",
                 editorType: "TrComboAutoRefresh",
                 optionDataSource: RestDataSource_Institute_JspTClassReport,
@@ -485,7 +515,7 @@
                 canEdit: false
             },
             {
-                name: "tclassYear",
+                name: "classYear",
                 title: "سال کاری",
                 type: "SelectItem",
                 multiple: true,
@@ -602,9 +632,8 @@
                 title: "",
                 canEdit: false
             },
-
             {
-                name: "tclassSupervisor",
+                name: "classSupervisor",
                 title: "<spring:message code="supervisor"/>:",
                 type: "ComboBoxItem",
                 textAlign: "center",
@@ -617,7 +646,7 @@
                 pickListProperties: {sortField: "personnelNo2", showFilterEditor: true}
             },
             {
-                name: "tclassPlanner",
+                name: "classPlanner",
                 wrapTitle: false,
                 title: "<spring:message code="planner"/>:",
                 type: "ComboBoxItem",
@@ -894,31 +923,54 @@
         title: "چاپ گزارش",
         width: 300,
         click: function () {
+
+            if(Object.keys(DynamicForm_CriteriaForm_JspUnitReport.getValuesAsCriteria()).length <= 1) {
+                createDialog("info","فیلتری انتخاب نشده است.");
+                return;
+            }
+
+            let criteria = DynamicForm_CriteriaForm_JspUnitReport.getValuesAsAdvancedCriteria();
+
+           // criteria=criteria.criteria1.criteria.filter(x=>x.fieldName=="classStatus")
+            console.log(criteria);
+
             DynamicForm_CriteriaForm_JspUnitReport.validate();
             if (DynamicForm_CriteriaForm_JspUnitReport.hasErrors())
                 return;
 
-            let criteria = DynamicForm_CriteriaForm_JspUnitReport.getValuesAsAdvancedCriteria();
-            if(criteria === null || Object.keys(DynamicForm_CriteriaForm_JspUnitReport.getValuesAsCriteria()).length === 0) {
-                ListGrid_JspUnitReport.setData([]);
-                createDialog("info","فیلتری انتخاب نشده است.");
-            }
             else{
                 let cr = [];
 
                 if(DynamicForm_CriteriaForm_JspUnitReport.getValue("classCode") !== undefined){
-
-                    for (let i = 0; i < criteria.criteria.length; i++) {
-                        if(criteria.criteria[i]["fieldName"] !== "classCode"){
-                            cr.push(criteria.criteria[i])
-                        }
-                    }
-                    cr.push({fieldName: "classCode", operator: "inSet", value: DynamicForm_CriteriaForm_JspUnitReport.getValue("classCode").split(',').toArray()});
-                    criteria.criteria = cr;
+                    criteria.criteria=criteria.criteria.splice(criteria.criteria.findIndex(x=>x.fieldName=="classCode" && x.operator=="inContains"),1);
+                    criteria.criteria.push({fieldName: "classCode", operator: "inSet", value: DynamicForm_CriteriaForm_JspUnitReport.getValue("classCode").split(',').toArray()});
                 }
 
+                if(DynamicForm_CriteriaForm_JspUnitReport.getValue("courseCode") !== undefined){
+                    criteria.criteria=criteria.criteria.splice(criteria.criteria.findIndex(x=>x.fieldName=="courseCode" && x.operator=="inContains"),1);
+                    criteria.criteria.push({fieldName: "courseCode", operator: "inSet", value: DynamicForm_CriteriaForm_JspUnitReport.getValue("courseCode").split(',').toArray()});
+                }
+
+                // if(DynamicForm_CriteriaForm_JspUnitReport.getValue("classStatus") !== undefined){
+                //     criteria.criteria=criteria.criteria.splice(criteria.criteria.findIndex(x=>x.fieldName=="classStatus" && x.operator=="inSet"),1);
+                //     criteria.criteria.push({fieldName: "classStatus", operator: "inSet", value: DynamicForm_CriteriaForm_JspUnitReport.getValue("classStatus")});
+                // }
+
+                if(DynamicForm_CriteriaForm_JspUnitReport.getValue("instituteId") !== undefined){
+
+                    criteria.criteria.push({fieldName: "instituteId", operator: "equals", value: DynamicForm_CriteriaForm_JspUnitReport.getValue("instituteId")});
+                }
+
+                criteria.criteria.push({fieldName: "studentLastName", operator: "iContains", value: "بازدار"});
+
+                //if (cr.length!=0)
+                //criteria.criteria = cr;
+
+                console.log(criteria);
+
                 ListGrid_JspUnitReport.invalidateCache();
-                RestDataSource_JspUnitReport.implicitCriteria = criteria;
+                //RestDataSource_JspUnitReport.implicitCriteria=[];
+                //RestDataSource_JspUnitReport.implicitCriteria = criteria;
                 ListGrid_JspUnitReport.fetchData(criteria);
                 Window_JspUnitReport.show();
             }

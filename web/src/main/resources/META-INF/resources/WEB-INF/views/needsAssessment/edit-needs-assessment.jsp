@@ -114,10 +114,13 @@
     var RestDataSource_Competence_JspNeedsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
+            {name : "code"},
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains",},
+            {name: "categoryId", title: "گروه"},
+            {name: "subCategoryId", title: "زیر گروه"}
         ],
-        fetchDataURL: competenceUrl + "/iscList",
+        fetchDataURL: competenceUrl + "/spec-list",
     });
     var RestDataSource_Course_JspENA = isc.TrDS.create({
         fields: [
@@ -728,8 +731,11 @@
         dragDataAction: "none",
         canAcceptDroppedRecords: true,
         fields: [
-            {name: "title", title: "<spring:message code="title"/>"},
-            {name: "competenceType.title", title: "<spring:message code="type"/>"}
+            {name: "code", title: "کد شایستگی", autoFitData: true, autoFitWidthApproach: true},
+            {name: "title", title: "نام شایستگی"},
+            {name: "competenceType.title", title: "نوع شایستگی"},
+            {name: "categoryId", title: "گروه", optionDataSource: RestDataSource_category_JspCourse, displayField: "titleFa", valueField:"id"},
+            {name: "subCategoryId", title: "زیر گروه" , optionDataSource: RestDataSource_subCategory_JspCourse, displayField: "titleFa", valueField:"id"}
         ],
         gridComponents: ["filterEditor", "header", "body"],
         // selectionUpdated: "ListGrid_Competence_JspNeedsAssessment.setData(this.getSelection())"

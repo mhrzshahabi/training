@@ -62,7 +62,6 @@ public class TclassRestController {
     private final WorkGroupService workGroupService;
     private final ViewEvaluationStaticalReportService viewEvaluationStaticalReportService;
 
-
     @Loggable
     @GetMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('r_tclass')")
@@ -154,13 +153,13 @@ public class TclassRestController {
     @Loggable
     @DeleteMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('d_tclass')")
-    public ResponseEntity delete(@PathVariable Long id) {
+    public ResponseEntity delete(@PathVariable Long id, HttpServletResponse resp) throws IOException {
         try {
             if(workGroupService.isAllowUseId("Tclass",id)){
-                tClassService.delete(id);
+                tClassService.delete(id, resp);
                 return new ResponseEntity(HttpStatus.OK);
             }else{
-                tClassService.delete(id);
+//                tClassService.delete(id);
                 return new ResponseEntity(HttpStatus.UNAUTHORIZED);
             }
 
@@ -174,8 +173,8 @@ public class TclassRestController {
     @Loggable
     @DeleteMapping(value = "/list")
 //    @PreAuthorize("hasAuthority('d_tclass')")
-    public ResponseEntity delete(@Validated @RequestBody TclassDTO.Delete request) {
-        tClassService.delete(request);
+    public ResponseEntity delete(@Validated @RequestBody TclassDTO.Delete request, HttpServletResponse resp) throws IOException {
+        tClassService.delete(request, resp);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -859,5 +858,13 @@ public class TclassRestController {
             return new ResponseEntity<>(0, HttpStatus.OK);
     }
 
+    @Loggable
+    @GetMapping("/hasSessions/{classId}")
+    public ResponseEntity<Boolean> hasSessions(@PathVariable Long classId) {
+        return new ResponseEntity<>(tClassService.hasSessions(classId),HttpStatus.OK);
+    }
 
-}
+
+
+
+    }

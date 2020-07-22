@@ -870,6 +870,7 @@
     isc.defineClass("TrVLayout", VLayout);
     isc.TrVLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
     TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
+        wait.show();
         return {
             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             contentType: "application/json; charset=utf-8",
@@ -2666,8 +2667,8 @@
             } else if (JSON.parse(response.httpResponseText).errors[0].message !== undefined && JSON.parse(response.httpResponseText).errors[0].message.length > 0) {
                 userErrorMessage = JSON.parse(response.httpResponseText).errors[0].message;
             }
-
-            createDialog("info", userErrorMessage);
+            wait.close();
+            createDialog("warning", userErrorMessage, "اخطار");
 
 
             <%--if (JSON.parse(response.httpResponseText).message !== "No message available" && response.httpResponseText.length > 0) {--%>
