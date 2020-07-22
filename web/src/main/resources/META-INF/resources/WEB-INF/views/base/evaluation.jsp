@@ -556,6 +556,10 @@
                 Detail_Tab_Evaluation.enableTab(3);
             }
 
+            Detail_Tab_Evaluation.disableTab(1);
+            Detail_Tab_Evaluation.disableTab(2);
+            Detail_Tab_Evaluation.disableTab(3);
+
         }
 
         function load_term_by_year(value) {

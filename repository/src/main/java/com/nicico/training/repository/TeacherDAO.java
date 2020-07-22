@@ -42,4 +42,10 @@ public interface TeacherDAO extends JpaRepository<Teacher, Long>, JpaSpecificati
     List<Teacher> findAll(@Nullable Specification<Teacher> var1);
 
 
+    @Transactional
+    @Query(value = "select CONCAT(CONCAT(C_FIRST_NAME_FA, ' '), C_LAST_NAME_FA) from TBL_TEACHER t LEFT JOIN TBL_PERSONAL_INFO p ON t.F_PERSONALITY = p.ID where t.ID = ?", nativeQuery = true)
+    String getTeacherFullName(Long teacherID);
+
+
+
 }

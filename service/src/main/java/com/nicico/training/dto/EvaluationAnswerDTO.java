@@ -49,9 +49,9 @@ public class EvaluationAnswerDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("EvaluationAnswer - Update")
-    public static class Update extends Create {
+    public static class Update {
         private Long id;
-        private Integer version;
+        private Long answerId;
     }
 
     @Getter
@@ -90,4 +90,22 @@ public class EvaluationAnswerDTO implements Serializable {
     }
 
     //-----------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("EvaluationAnswerFullData")
+    public static class EvaluationAnswerFullData extends EvaluationAnswerDTO {
+        private Long id;
+        private Long evaluationId;
+        private Long evaluationQuestionId;
+        private Long questionSourceId;
+        private Long answerId;
+
+        private Integer order;
+        private Integer weight;
+        private String question;
+        private Long domainId;
+        private String description;
+    }
 }
