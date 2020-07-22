@@ -1305,6 +1305,18 @@
                 },
             },
         ],
+        itemChanged:function () {
+           if (DynamicForm_Class_JspClass.getField('teachingType').getValue() =="غیر حضوری" || DynamicForm_Class_JspClass.getField('teachingType').getValue() == "مجازی")
+           {
+               DynamicForm_Class_JspClass.getField('instituteId').setDisabled(true)
+               DynamicForm_Class_JspClass.getField('trainingPlaceIds').setDisabled(true)
+           }
+           else
+           {
+               DynamicForm_Class_JspClass.getField('instituteId').setDisabled(false)
+               DynamicForm_Class_JspClass.getField('trainingPlaceIds').setDisabled(false)
+           }
+        }
     });
 
     var DynamicForm1_Class_JspClass = isc.DynamicForm.create({
@@ -2402,18 +2414,21 @@
     //--------------------------------------------------------------------------------------------------------------------//
 
     function ListGrid_class_remove() {
-        var record = ListGrid_Class_JspClass.getSelectedRecord();
+        let record = ListGrid_Class_JspClass.getSelectedRecord();
         if (record == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            var Dialog_Class_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+            let Dialog_Class_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
                 "<spring:message code="verify.delete"/>");
             Dialog_Class_remove.addProperties({
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
                         wait.show()
-                        isc.RPCManager.sendRequest(TrDSRequest(classUrl + record.id, "DELETE", null, "callback: class_delete_result(rpcResponse)"));
+                        isc.RPCManager.sendRequest(TrDSRequest(classUrl + record.id, "DELETE", null, (resp)=>{
+                            wait.close()
+                            class_delete_result(resp);
+                        }));
                     }
                 }
             });
@@ -2425,60 +2440,78 @@
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            singleTargetScoiety = [];
-            etcTargetSociety = [];
-            getTargetSocieties(record.id);
-            RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list";
-            RestDataSource_Teacher_JspClass.invalidateCache();
-            RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + record.instituteId + "/trainingPlaces";
-            VM_JspClass.clearErrors(true);
-            VM_JspClass.clearValues();
-            if (a === 0) {
-                VM_JspClass.editRecord(record);
-                saveButtonStatus();
-                classMethod = "PUT";
-                url = classUrl + record.id;
-                Window_Class_JspClass.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="class"/>");
-                Window_Class_JspClass.show();
-                //=========================
-                DynamicForm_Class_JspClass.getItem("scoringMethod").change(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("scoringMethod"), DynamicForm_Class_JspClass.getValue("scoringMethod"));
-                if (ListGrid_Class_JspClass.getSelectedRecord().scoringMethod === "1") {
+            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "hasSessions/" + record.id, "GET", null, (resp) => {
+               if(resp.httpResponseCode !== 200){
+                   createDialog("warning", "خطا در ارتباط با سرور", "اخطار")
+                   return;
+               }
+               DynamicForm1_Class_JspClass.getItem("termId").enable()
+                DynamicForm1_Class_JspClass.getItem("startDate").enable()
+                DynamicForm1_Class_JspClass.getItem("endDate").enable()
+               if(resp.data === "true"){
+                   DynamicForm1_Class_JspClass.getItem("termId").disable()
+                   DynamicForm1_Class_JspClass.getItem("startDate").disable()
+                   DynamicForm1_Class_JspClass.getItem("endDate").disable()
+               }
 
-                    DynamicForm_Class_JspClass.setValue("acceptancelimit_a", ListGrid_Class_JspClass.getSelectedRecord().acceptancelimit);
+                singleTargetScoiety = [];
+                etcTargetSociety = [];
+                getTargetSocieties(record.id);
+                RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list";
+                RestDataSource_Teacher_JspClass.invalidateCache();
+                RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + record.instituteId + "/trainingPlaces";
+                VM_JspClass.clearErrors(true);
+                VM_JspClass.clearValues();
+                if (a === 0) {
+                    VM_JspClass.editRecord(record);
+                    saveButtonStatus();
+                    classMethod = "PUT";
+                    url = classUrl + record.id;
+                    Window_Class_JspClass.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="class"/>");
+                    Window_Class_JspClass.show();
+                    //=========================
+                    DynamicForm_Class_JspClass.getField("classStatus").getItem(1).enable();
+                    DynamicForm_Class_JspClass.getField("classStatus").getItem(2).enable();
+                    DynamicForm_Class_JspClass.getItem("scoringMethod").change(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("scoringMethod"), DynamicForm_Class_JspClass.getValue("scoringMethod"));
+                    DynamicForm_Class_JspClass.itemChanged();
+                    if (ListGrid_Class_JspClass.getSelectedRecord().scoringMethod === "1") {
+
+                        DynamicForm_Class_JspClass.setValue("acceptancelimit_a", ListGrid_Class_JspClass.getSelectedRecord().acceptancelimit);
+                    } else {
+                        DynamicForm_Class_JspClass.setValue("acceptancelimit", ListGrid_Class_JspClass.getSelectedRecord().acceptancelimit);
+                    }
+                    //================
+                    DynamicForm1_Class_JspClass.setValue("autoValid", false);
+                    if (record.course.evaluation === "1") {
+                        DynamicForm_Class_JspClass.setValue("preCourseTest", false);
+                        DynamicForm_Class_JspClass.getItem("preCourseTest").hide();
+                    } else
+                        DynamicForm_Class_JspClass.getItem("preCourseTest").show();
+
+                    isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "classHasAnySession/" + record.id, "GET", null, (resp)=>{;
+                        let result=resp.httpResponseText==Boolean(true).toString() ? true : false;
+                        autoTimeActivation(result ? false : true);
+                    }));
+
                 } else {
-                    DynamicForm_Class_JspClass.setValue("acceptancelimit", ListGrid_Class_JspClass.getSelectedRecord().acceptancelimit);
+                    classMethod = "POST";
+                    url = classUrl;
+                    DynamicForm1_Class_JspClass.setValue("autoValid", true);
+                    DynamicForm_Class_JspClass.setValue("course.id", record.course.id);
+                    DynamicForm_Class_JspClass.setValue("titleClass", record.titleClass);
+                    DynamicForm_Class_JspClass.setValue("minCapacity", record.minCapacity);
+                    DynamicForm_Class_JspClass.setValue("maxCapacity", record.maxCapacity);
+                    DynamicForm_Class_JspClass.setValue("topology", record.topology);
+                    DynamicForm_Class_JspClass.setValue("hduration", record.hduration);
+                    DynamicForm_Class_JspClass.setValue("scoringMethod", record.scoringMethod);
+                    DynamicForm_Class_JspClass.setValue("acceptancelimit", record.acceptancelimit);
+                    DynamicForm_Class_JspClass.setValue("teachingType", record.teachingType);
+                    DynamicForm1_Class_JspClass.editRecord(record);
+                    Window_Class_JspClass.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="class"/>");
+                    Window_Class_JspClass.show();
+                    autoTimeActivation(true);
                 }
-                //================
-                DynamicForm1_Class_JspClass.setValue("autoValid", false);
-                if (record.course.evaluation === "1") {
-                    DynamicForm_Class_JspClass.setValue("preCourseTest", false);
-                    DynamicForm_Class_JspClass.getItem("preCourseTest").hide();
-                } else
-                    DynamicForm_Class_JspClass.getItem("preCourseTest").show();
-
-                isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "classHasAnySession/" + record.id, "GET", null, (resp)=>{;
-                    let result=resp.httpResponseText==Boolean(true).toString() ? true : false;
-                    autoTimeActivation(result ? false : true);
-                }));
-
-            } else {
-                classMethod = "POST";
-                url = classUrl;
-                DynamicForm1_Class_JspClass.setValue("autoValid", true);
-                DynamicForm_Class_JspClass.setValue("course.id", record.course.id);
-                DynamicForm_Class_JspClass.setValue("titleClass", record.titleClass);
-                DynamicForm_Class_JspClass.setValue("minCapacity", record.minCapacity);
-                DynamicForm_Class_JspClass.setValue("maxCapacity", record.maxCapacity);
-                DynamicForm_Class_JspClass.setValue("topology", record.topology);
-                DynamicForm_Class_JspClass.setValue("hduration", record.hduration);
-                DynamicForm_Class_JspClass.setValue("scoringMethod", record.scoringMethod);
-                DynamicForm_Class_JspClass.setValue("acceptancelimit", record.acceptancelimit);
-                DynamicForm_Class_JspClass.setValue("teachingType", record.teachingType);
-                DynamicForm1_Class_JspClass.editRecord(record);
-                Window_Class_JspClass.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="class"/>");
-                Window_Class_JspClass.show();
-                autoTimeActivation(true);
-            }
+            }));
         }
     }
 
@@ -2516,6 +2549,11 @@
         singleTargetScoiety = [];
         etcTargetSociety = [];
         getOrganizers();
+        DynamicForm_Class_JspClass.getField("classStatus").getItem(1).disable();
+        DynamicForm_Class_JspClass.getField("classStatus").getItem(2).disable();
+        DynamicForm1_Class_JspClass.getItem("termId").enable();
+        DynamicForm1_Class_JspClass.getItem("startDate").enable();
+        DynamicForm1_Class_JspClass.getItem("endDate").enable();
     }
 
     function ListGrid_class_print(type) {
@@ -2644,7 +2682,7 @@
         } else if (resp.httpResponseCode === 406 && resp.httpResponseText === "NotDeletable") {
             createDialog("info", "<spring:message code='global.grid.record.cannot.deleted'/>");
         } else {
-            createDialog("info", "<spring:message code='error'/>");
+            createDialog("warning", (JSON.parse(resp.httpResponseText).message === undefined ? "خطا" : JSON.parse(resp.httpResponseText).message));
         }
     }
 

@@ -102,13 +102,15 @@ public class EvaluationService implements IEvaluationService {
     }
 
     private EvaluationDTO.Info save(Evaluation evaluation) {
-            final Evaluation saved = evaluationDAO.saveAndFlush(evaluation);
+        final Evaluation saved = evaluationDAO.saveAndFlush(evaluation);
+        if(evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(139L)) {
             Long evaluationId = saved.getId();
-            updateClassStudentInfo(saved,true);
-            updateQuestionnarieInfo(true,evaluation.getQuestionnaireId());
+            updateClassStudentInfo(saved, true);
+            updateQuestionnarieInfo(true, evaluation.getQuestionnaireId());
             List<EvaluationAnswer> list = createEvaluationAnswers(saved);
             saved.setEvaluationAnswerList(list);
-            return modelMapper.map(saved, EvaluationDTO.Info.class);
+        }
+        return modelMapper.map(saved, EvaluationDTO.Info.class);
     }
 
     @Override

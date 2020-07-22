@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -35,4 +36,10 @@ public class ViewPostGrade extends Auditable {
 
     @Column(name = "n_personnel_count")
     private Integer personnelCount;
+
+    @Column(name = "d_last_modified_date_na")
+    private Date lastModifiedDateNA;
+
+    @Column(name = "c_modified_by_na")
+    private String modifiedByNA;
 }

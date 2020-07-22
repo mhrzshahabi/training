@@ -395,12 +395,12 @@ public class SkillRestController {
 
     @Loggable
     @PostMapping(value = "/add-course/{courseId}/{skillId}")
-    public ResponseEntity<Boolean> addCourse(@PathVariable Long courseId, @PathVariable Long skillId) {
+    public ResponseEntity<Boolean> addCourse(@PathVariable Long courseId, @PathVariable Long skillId, HttpServletResponse resp) {
         boolean flag = false;
         HttpStatus httpStatus = HttpStatus.OK;
 
         try {
-            skillService.addCourse(courseId, skillId);
+            skillService.addCourse(courseId, skillId, resp);
             flag = true;
         } catch (Exception e) {
             httpStatus = HttpStatus.NO_CONTENT;
