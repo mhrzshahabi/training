@@ -31,12 +31,12 @@ public interface ITclassService {
 
     TclassDTO.Info update(Long id, TclassDTO.Update request);
 
-    void delete(Long id);
+//    void delete(Long id);
 
     @Transactional(readOnly = true)
     List<ClassStudentDTO.AttendanceInfo> getStudents(Long classID);
 
-    void delete(TclassDTO.Delete request);
+//    void delete(TclassDTO.Delete request);
 
     SearchDTO.SearchRs<TclassDTO.Info> search(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException;
 
