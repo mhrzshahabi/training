@@ -380,6 +380,7 @@
                 {name: "classScoringMethod", hidden: true},
                 {name: "classPreCourseTest", hidden: true},
                 {name: "courseId", hidden: true},
+                {name: "teacherId", hidden: true},
                 {name: "teacherEvalStatus", hidden: true},
                 {name: "trainingEvalStatus", hidden: true}
             ],
@@ -554,6 +555,10 @@
                 Detail_Tab_Evaluation.enableTab(2);
                 Detail_Tab_Evaluation.enableTab(3);
             }
+
+            Detail_Tab_Evaluation.disableTab(1);
+            Detail_Tab_Evaluation.disableTab(2);
+            Detail_Tab_Evaluation.disableTab(3);
 
         }
 

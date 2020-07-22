@@ -17,8 +17,10 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +38,7 @@ public class EvaluationService implements IEvaluationService {
     private final SkillDAO skillDAO;
     private final DynamicQuestionService dynamicQuestionService;
     private final DynamicQuestionDAO dynamicQuestionDAO;
-    private final EvaluationAnswerService evaluationAnswerSer;
+    private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
 
 
     @Transactional(readOnly = true)
@@ -73,10 +75,12 @@ public class EvaluationService implements IEvaluationService {
 
         updating.setVersion(evaluation.getVersion());
 
-        for (EvaluationAnswer evaluationAnswer : updating.getEvaluationAnswerList()) {
-            evaluationAnswer.setEvaluationId(id);
+        if(evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(139L)) {
+            if(evaluation.getEvaluationFull())
+                updateClassStudentInfo(updating, 2);
+            else if(!evaluation.getEvaluationFull())
+                updateClassStudentInfo(updating, 3);
         }
-        updateClassStudentInfo(updating,false);
 
         return modelMapper.map(evaluationDAO.save(updating), EvaluationDTO.Info.class);
     }
@@ -102,13 +106,15 @@ public class EvaluationService implements IEvaluationService {
     }
 
     private EvaluationDTO.Info save(Evaluation evaluation) {
-            final Evaluation saved = evaluationDAO.saveAndFlush(evaluation);
+        final Evaluation saved = evaluationDAO.saveAndFlush(evaluation);
+        if(evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(139L)) {
             Long evaluationId = saved.getId();
-            updateClassStudentInfo(saved,true);
-            updateQuestionnarieInfo(true,evaluation.getQuestionnaireId());
+            updateClassStudentInfo(saved, 1);
             List<EvaluationAnswer> list = createEvaluationAnswers(saved);
             saved.setEvaluationAnswerList(list);
-            return modelMapper.map(saved, EvaluationDTO.Info.class);
+            updateQuestionnarieInfo(evaluation.getQuestionnaireId());
+        }
+        return modelMapper.map(saved, EvaluationDTO.Info.class);
     }
 
     @Override
@@ -203,9 +209,68 @@ public class EvaluationService implements IEvaluationService {
             return null;
     }
 
+    @Transactional
     public EvaluationDTO.Info getEvaluationByData(Long questionnaireTypeId, Long classId, Long evaluatorId, Long evaluatorTypeId, Long evaluatedId, Long evaluatedTypeId, Long evaluationLevelId) {
         final Evaluation evaluation = evaluationDAO.findFirstByQuestionnaireTypeIdAndClassIdAndEvaluatorIdAndEvaluatorTypeIdAndEvaluatedIdAndEvaluatedTypeIdAndEvaluationLevelId(questionnaireTypeId, classId, evaluatorId, evaluatorTypeId, evaluatedId, evaluatedTypeId, evaluationLevelId);
-        return modelMapper.map(evaluation, EvaluationDTO.Info.class);
+        return modelMapper.map(evaluation,EvaluationDTO.Info.class);
+    }
+
+    @Transactional
+    public List<EvaluationAnswerDTO.EvaluationAnswerFullData> getEvaluationForm(@RequestBody HashMap req){
+
+        EvaluationDTO.Info evaluation = getEvaluationByData(Long.parseLong(req.get("questionnaireTypeId").toString()),
+                Long.parseLong(req.get("classId").toString()),
+                Long.parseLong(req.get("evaluatorId").toString()),
+                Long.parseLong(req.get("evaluatorTypeId").toString()),
+                Long.parseLong(req.get("evaluatedId").toString()),
+                Long.parseLong(req.get("evaluatedTypeId").toString()),
+                Long.parseLong(req.get("evaluationLevelId").toString()));
+
+        List<EvaluationAnswerDTO.EvaluationAnswerFullData> result = new ArrayList<>();
+
+
+        for (EvaluationAnswerDTO.Info evaluationAnswerDTO : evaluation.getEvaluationAnswerList()) {
+            EvaluationAnswerDTO.EvaluationAnswerFullData evaluationAnswerFullData = new EvaluationAnswerDTO.EvaluationAnswerFullData();
+            evaluationAnswerFullData.setId(evaluationAnswerDTO.getId());
+            evaluationAnswerFullData.setEvaluationId(evaluationAnswerDTO.getEvaluationId());
+            evaluationAnswerFullData.setEvaluationQuestionId(evaluationAnswerDTO.getEvaluationQuestionId());
+            evaluationAnswerFullData.setQuestionSourceId(evaluationAnswerDTO.getQuestionSourceId());
+            evaluationAnswerFullData.setAnswerId(evaluationAnswerDTO.getAnswerId());
+            evaluationAnswerFullData.setDescription(evaluation.getDescription());
+
+            if(evaluationAnswerFullData.getQuestionSourceId().equals(199L)){
+                QuestionnaireQuestion questionnaireQuestion = questionnaireQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
+                evaluationAnswerFullData.setOrder(questionnaireQuestion.getOrder());
+                evaluationAnswerFullData.setWeight(questionnaireQuestion.getWeight());
+                evaluationAnswerFullData.setQuestion(questionnaireQuestion.getEvaluationQuestion().getQuestion());
+                evaluationAnswerFullData.setDomainId(questionnaireQuestion.getEvaluationQuestion().getDomainId());
+            }
+            else  if(evaluationAnswerFullData.getQuestionSourceId().equals(200L) || evaluationAnswerFullData.getQuestionSourceId().equals(201L)){
+                DynamicQuestion dynamicQuestion = dynamicQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
+                evaluationAnswerFullData.setOrder(dynamicQuestion.getOrder());
+                evaluationAnswerFullData.setWeight(dynamicQuestion.getWeight());
+                evaluationAnswerFullData.setQuestion(dynamicQuestion.getQuestion());
+            }
+
+            result.add(evaluationAnswerFullData);
+        }
+        return result;
+    }
+
+    @Transactional
+    public void deleteEvaluation(@RequestBody HashMap req) {
+
+        EvaluationDTO.Info evaluation = getEvaluationByData(Long.parseLong(req.get("questionnaireTypeId").toString()),
+                Long.parseLong(req.get("classId").toString()),
+                Long.parseLong(req.get("evaluatorId").toString()),
+                Long.parseLong(req.get("evaluatorTypeId").toString()),
+                Long.parseLong(req.get("evaluatedId").toString()),
+                Long.parseLong(req.get("evaluatedTypeId").toString()),
+                Long.parseLong(req.get("evaluationLevelId").toString()));
+
+        updateClassStudentInfo(modelMapper.map(evaluation,Evaluation.class),0);
+        evaluationDAO.deleteById(evaluation.getId());
+        updateQuestionnarieInfo(evaluation.getQuestionnaireId());
     }
 
     //----------------------------------------------- evaluation updating ----------------------------------------------
@@ -213,20 +278,22 @@ public class EvaluationService implements IEvaluationService {
 
     }
 
-    public void updateClassStudentInfo(Evaluation evaluation,Boolean create){
-        if(create){
+    public void updateClassStudentInfo(Evaluation evaluation,Integer version){
             if(evaluation.getQuestionnaireTypeId().equals(139L)){
                 Optional<ClassStudent> byId = classStudentDAO.findById(evaluation.getEvaluatorId());
                 ClassStudent classStudent = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TermNotFound));
-                classStudent.setEvaluationStatusReaction(1);
+                classStudent.setEvaluationStatusReaction(version);
             }
-        }
     }
 
-    public void updateQuestionnarieInfo(Boolean lockStatus,Long questionnarieId){
+    public void updateQuestionnarieInfo(Long questionnarieId){
+        List<Evaluation> list = evaluationDAO.findByQuestionnaireId(questionnarieId);
         Optional<Questionnaire> byId = questionnaireDAO.findById(questionnarieId);
         Questionnaire questionnaire = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TermNotFound));
-        questionnaire.setLockStatus(lockStatus);
+        if(list!= null && list.size() != 0)
+            questionnaire.setLockStatus(true);
+        else
+            questionnaire.setLockStatus(false);
     }
 
     public List<EvaluationAnswer> createEvaluationAnswers(Evaluation evaluation){
@@ -255,8 +322,8 @@ public class EvaluationService implements IEvaluationService {
                 evaluationAnswerCreate.setEvaluationId(evaluation.getId());
                 evaluationAnswerCreate.setQuestionSourceId(type);
                 evaluationAnswerCreate.setEvaluationQuestionId(dynamicQuestion.getId());
-                EvaluationAnswerDTO.Info evaluationAnswer = evaluationAnswerSer.create(evaluationAnswerCreate);
-                evaluationAnswers.add(modelMapper.map(evaluationAnswer,EvaluationAnswer.class));
+//                EvaluationAnswerDTO.Info evaluationAnswer = evaluationAnswerSer.create(evaluationAnswerCreate);
+                evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate,EvaluationAnswer.class));
             }
 
             for(Skill skill : tclass.getCourse().getSkillSet()){
@@ -279,8 +346,8 @@ public class EvaluationService implements IEvaluationService {
                 evaluationAnswerCreate.setEvaluationId(evaluation.getId());
                 evaluationAnswerCreate.setQuestionSourceId(type);
                 evaluationAnswerCreate.setEvaluationQuestionId(dynamicQuestion.getId());
-                EvaluationAnswerDTO.Info evaluationAnswer = evaluationAnswerSer.create(evaluationAnswerCreate);
-                evaluationAnswers.add(modelMapper.map(evaluationAnswer,EvaluationAnswer.class));
+//                EvaluationAnswerDTO.Info evaluationAnswer = evaluationAnswerSer.create(evaluationAnswerCreate);
+                evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate,EvaluationAnswer.class));
             }
 
             Optional<Questionnaire> qId = questionnaireDAO.findById(evaluation.getQuestionnaireId());
@@ -290,8 +357,8 @@ public class EvaluationService implements IEvaluationService {
                 evaluationAnswerCreate.setEvaluationId(evaluation.getId());
                 evaluationAnswerCreate.setQuestionSourceId(199L);
                 evaluationAnswerCreate.setEvaluationQuestionId(questionnaireQuestion.getId());
-                EvaluationAnswerDTO.Info evaluationAnswer = evaluationAnswerSer.create(evaluationAnswerCreate);
-                evaluationAnswers.add(modelMapper.map(evaluationAnswer,EvaluationAnswer.class));
+//                EvaluationAnswerDTO.Info evaluationAnswer = evaluationAnswerSer.create(evaluationAnswerCreate);
+                evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate,EvaluationAnswer.class));
             }
         }
 
