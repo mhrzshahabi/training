@@ -17,6 +17,7 @@ import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.EvaluationAnalysisDAO;
 import com.nicico.training.service.ClassAlarmService;
 import com.nicico.training.service.ClassStudentService;
+import com.nicico.training.service.ParameterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -49,6 +50,7 @@ public class ClassStudentRestController {
     private final ClassStudentService classStudentService;
     private final ClassStudentDAO classStudentDAO;
     private final ModelMapper modelMapper;
+    private final ParameterService parameterService;
     private final ClassAlarmService classAlarmService;
     private final IEvaluationAnalysisService evaluationAnalysisService;
 
@@ -64,6 +66,22 @@ public class ClassStudentRestController {
         searchRq.setCriteria(criteriaRq);
         SearchDTO.SearchRs<T> searchRs = classStudentService.search(searchRq, converter);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
+    private <E, T> ResponseEntity<ISC<T>> search1(HttpServletRequest iscRq, SearchDTO.CriteriaRq criteria, Function<E, T> converter) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        criteriaRq.getCriteria().add(criteria);
+        if (searchRq.getCriteria() != null)
+            criteriaRq.getCriteria().add(searchRq.getCriteria());
+        searchRq.setCriteria(criteriaRq);
+        SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> searchRs = classStudentService.search(searchRq, converter);
+       int n= Integer.parseInt(parameterService.getByCode("FEL").getResponse().getData().get(3).getValue());
+        searchRs.getList().forEach(x->{if (x.getPreTestScore() != null && x.getPreTestScore()>=n){x.setWarning("Ok");}else x.setWarning("NotOk");});
+        return new ResponseEntity(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
     private ResponseEntity<ISC<ClassStudentDTO.evaluationAnalysistLearning>> searchEvaluationAnalysistLearning(HttpServletRequest iscRq,Long classId, SearchDTO.CriteriaRq criteria) throws IOException {
@@ -83,7 +101,7 @@ public class ClassStudentRestController {
     @Loggable
     @GetMapping(value = "/students-iscList/{classId}")
     public ResponseEntity<ISC<ClassStudentDTO.ClassStudentInfo>> list(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
-        return search(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
+        return search1(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
     }
 
     @Loggable

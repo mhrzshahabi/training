@@ -37,4 +37,5 @@ public interface ClassSessionDAO extends JpaRepository<ClassSession, Long>, JpaS
 
     List<ClassSession> findBySessionDateAndClassId(String sessionDate,Long classId);
 
+    Boolean existsByClassId(Long classId);
 }

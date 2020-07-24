@@ -44,6 +44,8 @@ public class ClassStudentDTO implements Serializable {
         private StudentDTO.ClassStudentInfo student;
         private String applicantCompanyName;
         private Long presenceTypeId;
+        private Float preTestScore;
+        private String warning;
         @Getter(AccessLevel.NONE)
         private Integer evaluationStatusReaction;
         @Getter(AccessLevel.NONE)
@@ -204,8 +206,8 @@ public class ClassStudentDTO implements Serializable {
         private Long id;
         private StudentDTO.ScoresInfo student;
         private TclassDTO.ScoreInfo tclass;
-        private ParameterValueDTO.TupleInfo scoresState;
-        private ParameterValueDTO.TupleInfo failureReason;
+       // private ParameterValueDTO.TupleInfo scoresState;
+       // private ParameterValueDTO.TupleInfo failureReason;
         Long scoresStateId;
         Long failureReasonId;
         private Float score;

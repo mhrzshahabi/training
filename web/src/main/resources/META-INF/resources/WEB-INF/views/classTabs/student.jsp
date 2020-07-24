@@ -301,7 +301,10 @@
                     name: "student.birthCertificateNo",
                     title: "<spring:message code="birth.certificate.no"/>",
                     filterOperator: "iContains"
-                }
+                },
+                {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".png", canEdit: false},
+                {name: "warning", autoFitWidth: true}
+
             ],
 
             fetchDataURL: tclassStudentUrl + "/students-iscList/"
@@ -400,9 +403,17 @@
                 {name: "student.ccpAssistant", autoFitWidth: true},
                 {name: "student.ccpAffairs", autoFitWidth: true},
                 {name: "student.ccpSection", autoFitWidth: true},
-                {name: "student.ccpUnit", autoFitWidth: true}
+                {name: "student.ccpUnit", autoFitWidth: true},
+                {name: "warning",hidden:true},
+                {name: "hasWarning", title: "قبولی در پیش تست", width: 130, type: "image", imageURLPrefix: "", imageURLSuffix: ".png", canEdit: false}
+
+
             ],
             gridComponents: [StudentTS_student, "filterEditor", "header", "body"],
+            dataArrived:function()
+            {
+                StudentsLG_student.data.localData.filter(p=>p.warning =='Ok').forEach(p=>p.hasWarning='checkBlue');
+            },
             // contextMenu: StudentMenu_student,
             dataChanged: function () {
                 this.Super("dataChanged", arguments);

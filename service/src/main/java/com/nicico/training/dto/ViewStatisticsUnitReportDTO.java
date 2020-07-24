@@ -57,9 +57,9 @@ public class ViewStatisticsUnitReportDTO {
 
         private String courseTheoType;
 
-        private Long categoryId;
+        private Long courseCategory;
 
-        private Long subCategoryId;
+        private Long courseSubCategory;
         /////////////////////////////////////////
 
         ///////////////////////////Student
@@ -115,19 +115,17 @@ public class ViewStatisticsUnitReportDTO {
         //////////////////////////////////////
 
         ///////////////////////////Evalution
-        private Long evaluationAnalysisId;
-
         private String evaluationBehavioralGrade;
 
         private Boolean evaluationBehavioralPass;
 
         private Boolean evaluationBehavioralStatus;
 
-        private Boolean evaluationEffectivenessStatus;
-
         private String evaluationEffectivenessGrade;
 
         private Boolean evaluationEffectivenessPass;
+
+        private Boolean evaluationEffectivenessStatus;
 
         private String evaluationLearningGrade;
 

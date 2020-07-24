@@ -872,6 +872,7 @@
     isc.defineClass("TrVLayout", VLayout);
     isc.TrVLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
     TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
+        wait.show();
         return {
             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             contentType: "application/json; charset=utf-8",
