@@ -1127,11 +1127,7 @@
                     }
                     if(classMethod ==="PUT"){
                         let record = ListGrid_Class_JspClass.getSelectedRecord();
-                        wait.show()
-                        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getScoreState/" + record.id, "GET", null, (resp)=>{
-                            wait.close();
-                            GetScoreState(resp,record.id);
-                        }));
+                        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getScoreState/" + record.id, "GET", null,"callback: GetScoreState(rpcResponse)"));
                     }
                 },
             },
