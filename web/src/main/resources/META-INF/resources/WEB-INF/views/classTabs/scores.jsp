@@ -499,7 +499,7 @@ var mosayeb;
 
                 editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid) {
 
-                    if (failureReason_change == true && record.valence < classRecord_acceptancelimit && typeof record.valence != "undefined")
+                    if (failureReason_change == true && record.valence < classRecord_acceptancelimit && typeof record.valence != "undefined" && record.valence != null)
                     {
                         failureReason_change = false
                         scoresState_value = null
