@@ -360,6 +360,7 @@
         let record = CompetenceLG_competence.getSelectedRecord();
         let entityType = '<spring:message code="competence"/>';
         if (checkRecordAsSelected(record, true, entityType)) {
+            wait.show()
             isc.RPCManager.sendRequest(TrDSRequest(competenceUrl + "/" + record.id, "GET", null, (resp)=>{
                 wait.close();
                 if(resp.httpResponseCode !== 226){

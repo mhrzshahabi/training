@@ -2436,7 +2436,9 @@
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
+            wait.show()
             isc.RPCManager.sendRequest(TrDSRequest(classUrl + "hasSessions/" + record.id, "GET", null, (resp) => {
+                wait.close()
                if(resp.httpResponseCode !== 200){
                    createDialog("warning", "خطا در ارتباط با سرور", "اخطار")
                    return;
@@ -2484,7 +2486,9 @@
                     } else
                         DynamicForm_Class_JspClass.getItem("preCourseTest").show();
 
-                    isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "classHasAnySession/" + record.id, "GET", null, (resp)=>{;
+                    wait.show()
+                    isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "classHasAnySession/" + record.id, "GET", null, (resp)=>{
+                        wait.close()
                         let result=resp.httpResponseText==Boolean(true).toString() ? true : false;
                         autoTimeActivation(result ? false : true);
                     }));
@@ -2591,6 +2595,7 @@
         tid = VM_JspClass.getValue("termId");
         cid = VM_JspClass.getValue("course.id");
         if (tid && cid) {
+            wait.show()
             isc.RPCManager.sendRequest({
                 actionURL: classUrl + "end_group/" + cid + "/" + tid,
                 httpMethod: "GET",
@@ -2600,6 +2605,7 @@
                 showPrompt: false,
                 serverOutputAsString: false,
                 callback: function (resp) {
+                    wait.close()
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                         VM_JspClass.getItem("group").setValue(JSON.parse(resp.data));
                         classCode();

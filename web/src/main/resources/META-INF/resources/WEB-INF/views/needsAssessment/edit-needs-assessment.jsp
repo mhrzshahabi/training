@@ -462,7 +462,9 @@
                 click: function () {
                     if(selectedRecord.course !== undefined) {
                         let id = selectedRecord.course.id;
+                        wait.show()
                         isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "spec-list?id=" + id, "GET", null, (resp) => {
+                            wait.close()
                             if (resp.httpResponseCode !== 200) {
                                 createDialog("info", "<spring:message code='error'/>");
                             }
@@ -697,7 +699,9 @@
                                             gridComponents: ["filterEditor", "header", "body"],
                                             recordDoubleClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
                                                 let url = skillUrl + "/add-course/" + record.id + "/" + selectedRecord.skillId
+                                                wait.show()
                                                 isc.RPCManager.sendRequest(TrDSRequest(url, "POST", null, (resp) => {
+                                                    wait.close()
                                                     if (resp.httpResponseCode !== 200) {
                                                         createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                                                     }
@@ -1827,6 +1831,7 @@
                             "cType": DynamicForm_JspEditNeedsAssessment.getValue("objectType")
                         }];
 
+                        wait.show()
                         isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
 
                     }
@@ -1839,6 +1844,7 @@
     }
 
     function startProcess_callback(resp) {
+        wait.close()
         if (resp.httpResponseCode === 200) {
             simpleDialog("<spring:message code="message"/>", "<spring:message code='course.set.on.workflow.engine'/>", 3000, "say");
             Window_NeedsAssessment_Edit.close(2);
