@@ -1093,4 +1093,11 @@
     <changeSet author="razmnoosh (generated)" id="1595309679428-466">
         <addForeignKeyConstraint baseColumnNames="f_type" baseTableName="tbl_dynamic_question" constraintName="FKd9b54lbsrl16uh3mabxrj16i0" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
+
+    <changeSet author="haeri_am (generated)" id="1595647986202-466">
+        <addForeignKeyConstraint baseColumnNames="subcategory_id" baseTableName="tbl_goal" constraintName="FKfs2r34ufu0ch9vfwva062ax2j" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_sub_category" validate="true"/>
+    </changeSet>
+    <changeSet author="haeri_am (generated)" id="1595647986202-467">
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="tbl_goal" constraintName="FKsblo7wvvkosg6mqxrtuavte16" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_category" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

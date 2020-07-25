@@ -2350,7 +2350,8 @@
             message = message ? message : "<spring:message code='in.operation'/>"
         }
         let dialog = isc.Dialog.create({
-            icon: type + '.png',
+            icon: type + (type === "wait" ? '.gif' : '.png'),
+            iconSize: "20",
             title: title ? title : "<spring:message code="message"/>",
             message: message,
         });

@@ -43,6 +43,24 @@
         jsonPrefix: "",
         jsonSuffix: "",
     });
+
+    let RestDataSource_category = isc.TrDS.create({
+        ID: "categoryDS",
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa", type: "text"}
+        ],
+        fetchDataURL: categoryUrl + "spec-list",
+    });
+
+    let RestDataSourceSubCategory = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa", type: "text"}
+        ],
+        fetchDataURL: subCategoryUrl + "spec-list",
+    });
+
     var DynamicForm_Goal = isc.DynamicForm.create({
         fields: [
             {name: "id", hidden: true},
@@ -58,7 +76,47 @@
                 name: "titleEn",
                 title: "نام لاتین ",
                 keyPressFilter: "[a-z|A-Z|0-9 ]",
-            }
+            },
+            {
+                name: "categoryId",
+                title: "گروه",
+                displayField: "titleFa",
+                valueField: "id",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                optionDataSource: RestDataSource_category,
+                filterFields: ["titleFa"],
+                pickListProperties:{
+                    showFilterEditor: false
+                },
+                sortField: ["id"],
+                changed: function (form, item, value) {
+                    DynamicForm_Goal.getItem("subCategoryId").enable();
+                    DynamicForm_Goal.getItem("subCategoryId").setValue([]);
+                    RestDataSourceSubCategory.fetchDataURL = categoryUrl + value + "/sub-categories";
+                    DynamicForm_Goal.getItem("subCategoryId").fetchData();
+                },
+                click: function (form, item) {
+                    item.fetchData();
+                }
+            },
+            {
+                name: "subCategoryId",
+                title: "<spring:message code="course_subcategory"/>",
+                prompt: "ابتدا گروه را انتخاب کنید",
+                textAlign: "center",
+                required: true,
+                autoFetchData: false,
+                width: "*",
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSourceSubCategory,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                pickListProperties:{
+                    showFilterEditor: false
+                }
+            },
         ],
     });
     var DynamicForm_Syllabus = isc.DynamicForm.create({
@@ -466,6 +524,25 @@
             // {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleFa", title: "<spring:message code="goal.title.fa"/>", align: "center", autoFitWidth: true},
             {name: "titleEn", title: "<spring:message code="goal.title.en"/>", align: "center"},
+            {
+                name: "categoryId",
+                title: "گروه",
+                optionDataSource: RestDataSource_category,
+                displayField: "titleFa",
+                valueField: "id",
+                filterOperator: "equals",
+                canFilter:"none",
+                autoFitWidth: true,
+            },
+            {
+                name: "subCategoryId",
+                title: "زیر گروه",
+                optionDataSource: RestDataSource_SubCategory,
+                displayField: "titleFa",
+                valueField: "id",
+                filterOperator: "equals",
+                autoFitWidth: true,
+            },
             // {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         selectionType: "multiple",
@@ -1017,6 +1094,8 @@
     };
 
     function ListGrid_Goal_Add() {
+        DynamicForm_Goal.getItem("subCategoryId").disable();
+
         if (DynamicForm_course_MainTab.getItem("titleFa")._value == null) {
             isc.Dialog.create({
                 message: "لطفاً ابتدا اطلاعات دوره را وارد کنید.",
