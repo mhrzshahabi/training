@@ -39,8 +39,19 @@
     <script src="<spring:url value='/js/langConverter.js' />"></script>
     <script src="<spring:url value='/js/xlsx.full.min.js' />"></script>
     <script src="<spring:url value='/js/svg-inject.min.js' />"></script>
+    <script src="<spring:url value='/js/loadjs.min.js' />"></script>
 
     <script>
+
+       /* jQuery.loadScript = function (url, callback) {
+            jQuery.ajax({
+                url: url,
+                dataType: 'script',
+                success: callback,
+                async: false
+            });
+        }*/
+
         String.prototype.toEnglishDigit = function() {
             var find = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
             var replace = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
@@ -127,7 +138,13 @@
                                             }
 
                                             DynamicForm_GroupInsert_Textbox_JspStudent.setValue('');
-                                            createDialog("info", "کدهای پرسنلی به لیست اضافه شدند.");
+                                            if(records.length > 0){
+                                                createDialog("info", "کدهای پرسنلی به لیست اضافه شدند.");
+                                            }
+                                            else{
+                                                createDialog("info", "پرسنل جدیدی برای اضافه کردن وجود ندارد.");
+                                            }
+
                                         }
                                     }
                                 }
@@ -168,6 +185,7 @@
                                                         var workbook = XLSX.read(data, {
                                                             type: 'binary'
                                                         });
+                                                        var isEmpty=true;
 
                                                         workbook.SheetNames.forEach(function(sheetName) {
                                                             // Here is your object
@@ -183,10 +201,13 @@
                                                                 }).length==0){
                                                                     let current={personnelNo:Object.values(XL_row_object[i])[0]};
                                                                     records.add(current);
+                                                                    isEmpty=false;
 
                                                                     continue;
                                                                 }
                                                                 else{
+                                                                    isEmpty=false;
+
                                                                     continue;
                                                                 }
                                                             }
@@ -206,7 +227,12 @@
 
                                                             createDialog("info", "فایل به لیست اضافه شد.");
                                                         }else{
-                                                            createDialog("info", "خطا در محتویات فایل");
+                                                            if(isEmpty){
+                                                                createDialog("info", "خطا در محتویات فایل");
+                                                            }else{
+                                                                createDialog("info", "پرسنل جدیدی برای اضافه کردن وجود ندارد.");
+                                                            }
+
                                                         }
 
                                                     };
@@ -286,7 +312,6 @@
                                                 }).length==0){
 
                                                     if(isCheck){
-                                                        console.log(isCheck);
                                                         func(inputURL,[newValue]);
                                                     }
                                                     return true;
@@ -504,7 +529,7 @@
                 downloadForm.submitForm();
             }
 
-            static exportToExcelFromServer(fields, fileName, criteriaStr, sortBy, len, titr, pageName) {
+            static exportToExcelFromServer(fields, fileName, criteriaStr, sortBy, len, titr, pageName, valueMaps) {
 
                 let downloadForm = isc.DynamicForm.create({
                     method: "POST",
@@ -520,7 +545,8 @@
                             {name: "pageName", type: "hidden"},
                             {name: "_sortBy", type: "hidden"},
                             {name: "_len", type: "hidden"},
-                            {name: "criteriaStr", type: "hidden"}
+                            {name: "criteriaStr", type: "hidden"},
+                            {name: "valueMaps", type: "hidden"}
                         ]
                 });
 
@@ -532,6 +558,7 @@
                 downloadForm.setValue("_sortBy", sortBy);
                 downloadForm.setValue("_len", len);
                 downloadForm.setValue("criteriaStr", criteriaStr);
+                downloadForm.setValue("valueMaps", JSON.stringify(valueMaps));
                 downloadForm.show();
                 downloadForm.submitForm();
             }
@@ -568,6 +595,17 @@
                 let sort = listGrid.getSort();
                 let sortStr='';
 
+                let valueMaps =[];
+
+                for (var v = 0; v <fields.isValueMap.length ; v++) {
+                    if(fields.isValueMap[v]){
+                        let parameter = fields.fields[v].name;
+                        valueMaps.add({value : parameter, map : listGrid.getField(parameter).valueMap});
+                    }
+                }
+
+                console.log(valueMaps);
+
                 if (sort != null && sort.size() != 0){
 
                     if(sort.size() == 1){
@@ -582,7 +620,7 @@
                     }
                 }
 
-                this.exportToExcelFromServer(fields.fields, fileName, criteria, sortStr , len, tmptitr, pageName);
+                this.exportToExcelFromServer(fields.fields, fileName, criteria, sortStr , len, tmptitr, pageName, valueMaps);
             }
 
             static showDialog(title, listgrid, fileName, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate){
@@ -711,6 +749,7 @@
     const postGroupUrl = rootUrl + "/post-group";
     const postGradeUrl = rootUrl + "/postGrade";
     const postUrl = rootUrl + "/post";
+    const trainingPostUrl = rootUrl + "/training-post";
     const competenceUrl = rootUrl + "/competence";
     const needAssessmentUrl = rootUrl + "/needAssessment";
     const skillUrl = rootUrl + "/skill";
@@ -753,9 +792,10 @@
     const viewJobGroupUrl = rootUrl + "/view-job-group";
     const viewPostGradeUrl = rootUrl + "/view-post-grade";
     const viewPostGradeGroupUrl = rootUrl + "/view-post-grade-group";
+    const viewTrainingPostUrl = rootUrl + "/view-training-post";
     const masterDataUrl = rootUrl + "/masterData";
     const viewEvaluationStaticalReportUrl = rootUrl + "/view-evaluation-statical-report";
-    const viewTeacherReportUrl = rootUrl + "/view-teacher-report/"
+    const viewTeacherReportUrl = rootUrl + "/view-teacher-report/";
     const sendMessageUrl = rootUrl + "/sendMessage";
     const attendanceReportUrl = rootUrl + "/attendanceReport";
     const classPerformanceReport = rootUrl + "/classPerformance/";
@@ -764,6 +804,8 @@
     const presenceReportUrl = rootUrl + "/presence-report";
     const continuousStatusReportViewUrl = rootUrl + "/continuous-status-report-view";
     const departmentUrl = rootUrl + "/department";
+    const viewClassDetailUrl = rootUrl + "/view-class-detail";
+    const statisticsUnitReportUrl = rootUrl + "/ViewStatisticsUnitReport";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -830,6 +872,7 @@
     isc.defineClass("TrVLayout", VLayout);
     isc.TrVLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
     TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
+       // wait.show();
         return {
             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             contentType: "application/json; charset=utf-8",
@@ -1191,15 +1234,14 @@
                 {isSeparator: true},
                 </sec:authorize>
 
-////disable targetSociety
-<%--                <sec:authorize access="hasAuthority('Menu_Organizational_chart')">--%>
-<%--                {--%>
-<%--                    title: "<spring:message code="organizational.chart"/>",--%>
-<%--                    click: function () {--%>
-<%--                        createTab(this.title, "<spring:url value="web/organizationalChart"/>");--%>
-<%--                    }--%>
-<%--                },--%>
-<%--                </sec:authorize>--%>
+                <sec:authorize access="hasAuthority('Menu_Organizational_chart')">
+                {
+                    title: "<spring:message code="organizational.chart"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/organizationalChart"/>");
+                    }
+                },
+                </sec:authorize>
             ]
         }),
     });
@@ -1303,6 +1345,15 @@
                     }
                 },
                 </sec:authorize>
+
+                <%--<sec:authorize access="hasAuthority('Menu_NeedAssessment_Training_Post')">--%>
+                <%--{--%>
+                    <%--title: "<spring:message code="post"/>",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="web/training-post"/>");--%>
+                    <%--}--%>
+                <%--},--%>
+                <%--</sec:authorize>--%>
 
                 <%--,--%>
                 <%--{--%>
@@ -1747,6 +1798,16 @@
                                 title: "گزارش حضور و غياب کلاس های آمورشي",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/presenceReport/"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            </sec:authorize>
+                            {isSeparator: true},
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">
+                            {
+                                title: "گزارش واحد آمار",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/statisticsUnitReport/"/>");
                                 }
                             },
                             {isSeparator: true},
@@ -2289,7 +2350,8 @@
             message = message ? message : "<spring:message code='in.operation'/>"
         }
         let dialog = isc.Dialog.create({
-            icon: type + '.png',
+            icon: type + (type === "wait" ? '.gif' : '.png'),
+            iconSize: "20",
             title: title ? title : "<spring:message code="message"/>",
             message: message,
         });
@@ -2313,6 +2375,10 @@
                 isc.IButtonSave.create({title: "<spring:message code="ok"/>",}),
                 isc.IButtonCancel.create({title: "<spring:message code="cancel"/>",})
             ]);
+        } else if (type === 'wait'){
+            dialog.setProperties({
+                showCloseButton: false
+            })
         }
         return dialog;
     }
@@ -2613,8 +2679,8 @@
             } else if (JSON.parse(response.httpResponseText).errors[0].message !== undefined && JSON.parse(response.httpResponseText).errors[0].message.length > 0) {
                 userErrorMessage = JSON.parse(response.httpResponseText).errors[0].message;
             }
-
-            createDialog("info", userErrorMessage);
+            wait.close();
+            createDialog("warning", userErrorMessage, "اخطار");
 
 
             <%--if (JSON.parse(response.httpResponseText).message !== "No message available" && response.httpResponseText.length > 0) {--%>

@@ -221,7 +221,8 @@
                 type: 'text',
                 keyPressFilter: "[a-z|A-Z|0-9| ]",
                 showHintInField: true,
-                width: "300"
+                width: "300",
+
             },
             {
                 name: "categoryId",
@@ -339,6 +340,7 @@
                         click : function (form, item, icon) {
                             item.clearValue();
                             item.focusInItem();
+
                         }
                     }
                 ],
@@ -351,9 +353,9 @@
                 addUnknownValues: false,
                 changeOnKeypress: false,
                 filterOnKeypress: true,
-                autoFetchData: false,
+                autoFetchData: true,
                 textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
+                // generateExactMatchCriteria: true,
                 filterFields: ["titleFa", "code", "createdBy"],
                 pickListFields: [
                     {name: "code"},
@@ -365,6 +367,26 @@
                     alternateRecordStyles: true,
                     autoFitWidthApproach: "both",
                 },
+                click(form, item){
+                    if(form.getValue("categoryId") === undefined || form.getValue("subCategoryId") === undefined){
+                        CourseDS_Skill.fetchDataURL = courseUrl + "spec-list?id=-1";
+                    }
+                    else{
+                        CourseDS_Skill.fetchDataURL = courseUrl + "spec-list";
+                        // let categoryId = form.getValue("categoryId");
+                        // let subCategoryId = form.getValue("subCategoryId");
+                        let criteria = {
+                            _constructor:"AdvancedCriteria",
+                            operator:"and",
+                            criteria:[
+                                {fieldName:"categoryId", operator:"equals", value: form.getValue("categoryId")},
+                                {fieldName:"subCategoryId", operator:"equals", value: form.getValue("subCategoryId")}
+                            ]
+                        };
+                        item.pickListCriteria = criteria;
+                    }
+                    item.fetchData();
+                }
             },
             {
                 name: "description",
@@ -377,7 +399,9 @@
     });
 
     SkillIBSave_Skill = isc.IButtonSave.create({
+
         click: function () {
+
             if (!SkillDF_Skill.validate()) {
                 return;
             }
@@ -391,8 +415,12 @@
                     sub_cat_code = SkillDF_Skill.getItem('subCategoryId').getSelectedRecord().code;
                 SkillDF_Skill.getItem('code').setValue(sub_cat_code + skillLevelSymbol_Skill);
             }
-            wait_Skill = createDialog("wait");
+
+
+            wait.show()
             isc.RPCManager.sendRequest(TrDSRequest(url_Skill, method_Skill, JSON.stringify(SkillDF_Skill.getValues()), Result_SaveSkill_Skill));
+
+
         }
     });
 
@@ -698,7 +726,7 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                        wait_Skill = createDialog("wait");
+                        wait.show()
                         isc.RPCManager.sendRequest(TrDSRequest(skillUrl + "/" + record.id, "DELETE", null, Result_RemoveSkill_Skill));
                     }
                 }
@@ -707,7 +735,7 @@
     }
 
     function Result_RemoveSkill_Skill(resp) {
-        wait_Skill.close();
+        wait.close()
         if (resp.data === "true") {
             refreshLG(SkillLG_Skill);
             PostLG_Skill.setData([]);
@@ -715,12 +743,17 @@
             setTimeout(function () {
                 OK.close();
             }, 3000);
-        } else {
-            let ERROR = createDialog("info", "<spring:message code="msg.operation.error"/>");
+        } else if (resp.httpResponseCode == 401) {
+            let ERROR = createDialog("info", "شما مجوز دسترسی برای حذف را ندارید");
             setTimeout(function () {
                 ERROR.close();
             }, 3000);
         }
+        else if(resp.httpResponseCode == 204)
+        { let ERROR = createDialog("info", "<spring:message code="msg.record.cannot.deleted"/>");
+            setTimeout(function () {
+                ERROR.close();
+            }, 3000);}
     }
 
     function EditSkill_Skill() {
@@ -728,20 +761,46 @@
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.not.selected.record'/>");
         } else {
-            let id = record.categoryId;
-            SkillDF_Skill.clearValues();
-            SubCategoryDS_Skill.fetchDataURL = categoryUrl + id + "/sub-categories";
-            SkillDF_Skill.getItem("subCategoryId").fetchData();
-            method_Skill = "PUT";
-            url_Skill = skillUrl + "/" + record.id;
-            SkillDF_Skill.editRecord(record);
-            SkillDF_Skill.getItem("categoryId").setDisabled(true);
-            SkillDF_Skill.getItem("subCategoryId").setDisabled(true);
-            SkillDF_Skill.getItem("skillLevelId").setDisabled(true);
-            SkillDF_Skill.getItem("code").visible = true;
-            SkillWindow_Skill.show();
+            wait.show()
+            isc.RPCManager.sendRequest(TrDSRequest(skillUrl + "/editSkill/" +record.id, "GET", null, Result_EditSkill));
+
         }
     }
+        function  Result_EditSkill(resp) {
+            wait.close()
+            let record = SkillLG_Skill.getSelectedRecord();
+            if (resp.data == 'true')
+            {
+
+                let id = record.categoryId;
+                SkillDF_Skill.clearValues();
+                SubCategoryDS_Skill.fetchDataURL = categoryUrl + id + "/sub-categories";
+                SkillDF_Skill.getItem("subCategoryId").fetchData();
+                method_Skill = "PUT";
+                url_Skill = skillUrl + "/" + record.id;
+                SkillDF_Skill.editRecord(record);
+                SkillDF_Skill.getItem("categoryId").setDisabled(true);
+                SkillDF_Skill.getItem("subCategoryId").setDisabled(true);
+                SkillDF_Skill.getItem("skillLevelId").setDisabled(true);
+                SkillDF_Skill.getItem("code").visible = true;
+                SkillWindow_Skill.show();
+            }
+            else {
+
+                let id = record.categoryId;
+                SkillDF_Skill.clearValues();
+                SubCategoryDS_Skill.fetchDataURL = categoryUrl + id + "/sub-categories";
+                SkillDF_Skill.getItem("subCategoryId").fetchData();
+                method_Skill = "PUT";
+                url_Skill = skillUrl + "/" + record.id;
+                SkillDF_Skill.editRecord(record);
+                SkillDF_Skill.getItem("categoryId").setDisabled(false);
+                SkillDF_Skill.getItem("subCategoryId").setDisabled(false);
+                SkillDF_Skill.getItem("skillLevelId").setDisabled(false);
+                SkillDF_Skill.getItem("code").visible = true;
+                SkillWindow_Skill.show();
+            }
+        }
 
     function CreateSkill_Skill() {
         method_Skill = "POST";
@@ -754,7 +813,7 @@
     }
 
     function Result_SaveSkill_Skill(resp){
-            wait_Skill.close();
+        wait.close()
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
             setTimeout(function () {
@@ -764,11 +823,7 @@
             PostLG_Skill.setData([]);
             SkillWindow_Skill.close();
         }else if(resp.httpResponseCode === 406){
-
-            console.log(resp.httpHeaders.skillname)
-            console.log(resp)
-
-            var OK = isc.Dialog.create({
+                var OK = isc.Dialog.create({
                 message:("info", "اطلاعات این مهارت با اطلاعات مهارت"+"&nbsp;" +"&nbsp;"+getFormulaMessage(decodeURIComponent(resp.httpHeaders.skillname.replace(/\+/g,' ')), 2, "red", "I")+"&nbsp;"+"  با کد "+ "&nbsp;" +getFormulaMessage(resp.httpHeaders.skillcode, 2, "red", "I") + "&nbsp;"+ " برابر است"),
                 icon: "[SKIN]say.png",
                 title: "<spring:message code="warning"/>",
@@ -795,11 +850,13 @@
     function setSkillCode_Skill(){
         if (SkillDF_Skill.getValue("categoryId") != null && SkillDF_Skill.getValue("subCategoryId") != null && SkillDF_Skill.getValue("skillLevelId") != null) {
             let code = SkillDF_Skill.getItem('subCategoryId').getSelectedRecord().code;
+            wait.show()
             isc.RPCManager.sendRequest(TrDSRequest(skillUrl + "/getMaxSkillCode/" + (code + skillLevelSymbol_Skill), "GET", null, Result_SetSkillCode_Skill));
         }
     }
 
     function Result_SetSkillCode_Skill(resp) {
+        wait.close()
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             SkillDF_Skill.getItem('code').setValue(resp.data);
         }

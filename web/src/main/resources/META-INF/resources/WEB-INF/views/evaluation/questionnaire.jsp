@@ -52,8 +52,8 @@
 
     // ------------------------------------------- ToolStrip -------------------------------------------
     var Button2 = isc.IButton.create({
-        title: "فعال/غیرفعال",
-        width: "30%",
+        title: "فعال/غیرفعال کردن پرسشنامه",
+        width: "200",
         click: function () {
             let record = QuestionnaireLG_questionnaire.getSelectedRecord();
             if (record == null)
@@ -68,7 +68,7 @@
 
         }
 
-    })
+    });
     isc.ToolStrip.create({
         ID: "QuestionnaireTS_questionnaire",
         members: [
@@ -391,7 +391,7 @@
             if (respCode === 200 || respCode === 201) {
                 selectedState = "[{id:" + JSON.parse(resp.data).id + "}]";
                 let entityTitle = JSON.parse(resp.httpResponseText).title;
-                console.log(JSON.parse(resp.httpResponseText))
+                console.log(JSON.parse(resp.httpResponseText));
                 msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + '</b>\' &nbsp;' + "<spring:message code="msg.successfully.done"/>";
 
                 if (gridToRefresh !== undefined) {
@@ -421,34 +421,35 @@
     function ListResponse(resp,record) {
         let respCode = resp.httpResponseCode;
         if (respCode === 200 || respCode === 201) {
-           let rec=JSON.parse(record)
-           let questionnaireTypeId =rec.questionnaireTypeId
-           let arr=JSON.parse(resp.data)
+           let rec=JSON.parse(record);
+           let questionnaireTypeId =rec.questionnaireTypeId;
+           let arr=JSON.parse(resp.data);
            let newArray=new Array();
-            arr.forEach(x=>{const{id,eenabled,questionnaireTypeId}=x; newArray.push({id,eenabled,questionnaireTypeId})})
-            let thisRecord=newArray.filter(function (el) {return el.id == rec.id})
+            arr.forEach(x=>{const{id,eenabled,questionnaireTypeId}=x; newArray.push({id,eenabled,questionnaireTypeId})});
+            let thisRecord=newArray.filter(function (el) {return el.id == rec.id});
            if(thisRecord[0].eenabled == 494)
            {
                //غیر فعال شود
                let questionnaireSaveUrl = questionnaireUrl;
-               rec.eEnabled=74
-               questionnaireSaveUrl+="/"+rec.id
+               rec.eEnabled=74;
+               questionnaireSaveUrl+="/"+rec.id;
                isc.RPCManager.sendRequest( TrDSRequest(questionnaireSaveUrl ,"PUT",JSON.stringify(rec), "callback: EnabledResponse(rpcResponse)"))
            }
            else {
                let removethiseRecord =newArray.map(function(item) {return item.id}).indexOf(rec.id);
-               newArray.removeItem(removethiseRecord)
-               let  enabledArray=newArray.filter(function (el) {return el.questionnaireTypeId == questionnaireTypeId && el.eenabled ==494})
-                if(enabledArray.length >0)
-                {
-                    createDialog("info", "کاربر گرامی فقط یک رکورد از هر  نوع می تواند فعال باشد", "پیغام");
-                }else{
+               newArray.removeItem(removethiseRecord);
+               // let  enabledArray=newArray.filter(function (el) {return el.questionnaireTypeId == questionnaireTypeId && el.eenabled ==494});
+               //  if(enabledArray.length >0)
+               //  {
+               //      createDialog("info", "کاربر گرامی فقط یک رکورد از هر  نوع می تواند فعال باشد", "پیغام");
+               //  }
+               //  else{
                     //رکورد فعال شود
                     let questionnaireSaveUrl = questionnaireUrl;
-                    rec.eEnabled=494
-                    questionnaireSaveUrl+="/"+rec.id
+                    rec.eEnabled=494;
+                    questionnaireSaveUrl+="/"+rec.id;
                     isc.RPCManager.sendRequest( TrDSRequest(questionnaireSaveUrl ,"PUT",JSON.stringify(rec), "callback: EnabledResponse(rpcResponse)"))
-                }
+                // }
            }
         }
     }

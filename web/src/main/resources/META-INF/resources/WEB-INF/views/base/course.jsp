@@ -30,6 +30,13 @@
         ],
         fetchDataURL: categoryUrl + "spec-list",
     });
+    var RestDataSource_SubCategory = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa", type: "text"}
+        ],
+        fetchDataURL: subCategoryUrl + "spec-list",
+    });
     var RestDataSource_Skill_JspCourse = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -39,6 +46,15 @@
                 name: "categoryId",
                 title: "گروه",
                 optionDataSource: RestDataSource_category,
+                displayField: "titleFa",
+                valueField: "id",
+                filterOperator: "equals",
+                autoFitWidth: true,
+            },
+            {
+                name: "subCategoryId",
+                title: "زیر گروه",
+                optionDataSource: RestDataSource_SubCategory,
                 displayField: "titleFa",
                 valueField: "id",
                 filterOperator: "equals",
@@ -127,7 +143,10 @@
         fields: [
             {name: "id", primaryKey: true},
             {name: "titleFa"},
-            {name: "titleEn"}],
+            {name: "titleEn"},
+            {name: "categoryId"},
+            {name: "subCategoryId"},
+            ],
         // fetchDataURL: courseUrl + courseRecord.id + "/goal"
     });
     var RestDataSource_CourseSkill = isc.TrDS.create({
@@ -656,7 +675,8 @@
     <sec:authorize access="hasAuthority('Course_P')">
     var ToolStripExcel_JspCourse = isc.ToolStripButtonExcel.create({
         click: function () {
-            ExportToFile.downloadExcelFromClient(ListGrid_Course, null, '', "طراحی و برنامه ریزی - دوره");
+            let criteria = ListGrid_Course.getCriteria();
+            ExportToFile.showDialog(null, ListGrid_Course , "course", 0, null, '',"طراحی و برنامه ریزی - دوره"  , criteria, null);
         }
     });
     </sec:authorize>
@@ -731,7 +751,8 @@
                             },
                             {
                                 name: "categoryId",
-                            }
+                            },
+                            {name: "subCategoryId"}
                         ],
                         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
                             if (ListGridOwnSkill_JspCourse.getSelectedRecord() == null) {
@@ -858,7 +879,7 @@
                                     serverOutputAsString: false,
                                     callback: function (resp) {
                                         wait.close()
-                                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                             <%--createDialog("info", "<spring:message code='msg.operation.successful'/>", "<spring:message code="msg.command.done"/>");--%>
                                             skillsListBtnListGridCourse.click();
                                         }
@@ -1157,13 +1178,19 @@
                 icon: "[SKIN]/actions/add.png",
                 prompt: "<spring:message code='add'/>",
                 click: function () {
+                    if(DynamicForm_course_GroupTab.getValue("categoryId") === undefined || DynamicForm_course_GroupTab.getValue("subCategory.id") === undefined){
+                        createDialog("warning", "ابتدا گروه و زیر گروه را انتخاب نمایید", "اخطار")
+                        return;
+                    }
                     let advancedCriteriaJspCourse1 = {};
-                    if (course_method == "POST") {
+                    if (course_method === "POST") {
                         advancedCriteriaJspCourse1 = {
                             _constructor: "AdvancedCriteria",
                             operator: "and",
                             criteria: [
                                 {fieldName: "courseId", operator: "isNull"},
+                                {fieldName: "categoryId", operator: "equals", value: DynamicForm_course_GroupTab.getValue("categoryId")},
+                                {fieldName: "subCategoryId", operator: "equals", value: DynamicForm_course_GroupTab.getValue("subCategory.id")},
                                 // {fieldName: "code", operator: "notInSet", value: mainObjectiveList.getProperty("code") },
                             ]
                         };
@@ -1173,6 +1200,8 @@
                             operator: "and",
                             criteria: [
                                 {fieldName: "courseMainObjectiveId", operator: "isNull"},
+                                {fieldName: "categoryId", operator: "equals", value: DynamicForm_course_GroupTab.getValue("categoryId")},
+                                {fieldName: "subCategoryId", operator: "equals", value: DynamicForm_course_GroupTab.getValue("subCategory.id")},
                                 // {fieldName: "code", operator: "notInSet", value: mainObjectiveList.getProperty("code") },
                                 {
                                     operator: "or", criteria: [
@@ -1825,7 +1854,7 @@
                     data2.workflowStatusCode = "0";
                     delete data2.subCategory;
                     data2.subCategoryId = DynamicForm_course_GroupTab.getValue("subCategory.id");
-                    // console.log(data2)
+                    wait.show()
                     isc.RPCManager.sendRequest(TrDSRequest(courseUrl, course_method, JSON.stringify(data2), function (resp) {
                         wait.close();
                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
@@ -2781,6 +2810,7 @@
                     for (let i = 0; i < JSON.parse(resp.data).length; i++) {
                         preCourseDS.addData(JSON.parse(resp.data)[i]);
                     }
+                    wait.show()
                     isc.RPCManager.sendRequest({
                         actionURL: courseUrl + "equalCourse/" + courseRecord.id,
                         httpMethod: "GET",
@@ -3022,7 +3052,7 @@
                             "workflowStatusCode": "0"
                         }];
 
-                        wait.show()
+                        // wait.show()
                         ///// //disable until set permission to verify course//  isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), (resp)=>{
                         ///// //disable until set permission to verify course//     wait.close()
                         ///// //disable until set permission to verify course//     startProcess_callback

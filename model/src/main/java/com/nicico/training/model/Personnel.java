@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -13,10 +14,10 @@ import javax.persistence.*;
 @Table(name = "tbl_personnel")
 public class Personnel {
 
+    @Id
     @Column(name = "id")
     private Long id;
 
-    @Id
     @Column(name = "personnel_no")
     private String personnelNo;
 
@@ -33,7 +34,7 @@ public class Personnel {
     private String birthCertificateNo;
 
     @Column(name = "birth_date")
-    private String birthDate;
+    private Date birthDate;
 
     @Column(name = "age")
     private Integer age;
@@ -51,7 +52,7 @@ public class Personnel {
     private Integer deleted;
 
     @Column(name = "employment_date")
-    private String employmentDate;
+    private Date employmentDate;
 
     @Column(name = "post_title")
     private String postTitle;
@@ -60,7 +61,7 @@ public class Personnel {
     private String postCode;
 
     @Column(name = "post_assignment_date")
-    private String postAssignmentDate;
+    private Date postAssignmentDate;
 
     @Column(name = "complex_title")
     private String complexTitle;
@@ -175,4 +176,31 @@ public class Personnel {
 
     @Column(name = "email")
     private String email;
+
+    @Column(name = "p_type", length = 50)
+    private String peopleType;
+
+    @Column(name = "f_department_id")
+    private Long departmentId;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "f_department_id", insertable = false, updatable = false)
+//    private Department department;
+
+    @Column(name = "f_geo_id")
+    private Long geoWorkId;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "f_geo_id", insertable = false, updatable = false)
+//    private GeoWork geoWork;
+
+    @Column(name = "f_post_id")
+    private Long postId;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "f_post_id", insertable = false, updatable = false)
+//    private Post post;
+
+    @Column(name = "c_username")
+    private String userName;
 }

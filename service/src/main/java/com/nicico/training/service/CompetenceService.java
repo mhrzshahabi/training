@@ -8,10 +8,18 @@ package com.nicico.training.service;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CompetenceDTO;
+import com.nicico.training.dto.NeedsAssessmentDTO;
+import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.model.Competence;
+import com.nicico.training.model.NeedsAssessment;
+import com.nicico.training.model.NeedsAssessmentTemp;
 import com.nicico.training.repository.CompetenceDAO;
+import com.nicico.training.repository.NeedsAssessmentDAO;
+import com.nicico.training.repository.NeedsAssessmentTempDAO;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -21,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -36,6 +46,13 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
     private ParameterValueService parameterValueService;
 
     @Autowired
+    private CompetenceDAO competenceDAO;
+    @Autowired
+    private NeedsAssessmentDAO needsAssessmentDAO;
+    @Autowired
+    private NeedsAssessmentTempDAO needsAssessmentTempDAO;
+
+    @Autowired
     CompetenceService(CompetenceDAO competenceDAO) {
         super(new Competence(), competenceDAO);
     }
@@ -45,6 +62,7 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
         try {
             Long competenceTypeId = rq.getCompetenceTypeId();
             if (parameterValueService.isExist(competenceTypeId) && !dao.existsByTitle(rq.getTitle())) {
+                rq.setCode(codeCompute(rq.getCode()));
                 return create(rq);
             } else if (dao.existsByTitle(rq.getTitle())) {
                 Locale locale = LocaleContextHolder.getLocale();
@@ -87,4 +105,26 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
         return null;
     }
 
+    @Transactional
+    public String codeCompute(String code){
+        Optional<Competence> top = competenceDAO.findTopByCodeStartsWithOrderByCodeDesc(code);
+        if(top.isPresent()){
+            return code + (Integer.valueOf((top.get().getCode().length()<7) ? "0" : top.get().getCode().substring(6))+1);
+        }
+        return code + "1";
+    }
+
+    @Transactional
+    public List<NeedsAssessmentDTO.Info> checkUsed(Long competenceId){
+        final ArrayList<NeedsAssessmentDTO.Info> needsAssessmentList = new ArrayList<>();
+        Optional<NeedsAssessment> needsAssessment = needsAssessmentDAO.findFirstByCompetenceId(competenceId);
+        if(needsAssessment.isPresent()){
+            needsAssessmentList.add(modelMapper.map(needsAssessment.get(), NeedsAssessmentDTO.Info.class));
+        }
+        Optional<NeedsAssessmentTemp> needsAssessmentTemp = needsAssessmentTempDAO.findFirstByCompetenceId(competenceId);
+        if(needsAssessmentTemp.isPresent()){
+            needsAssessmentList.add(modelMapper.map(needsAssessmentTemp.get(), NeedsAssessmentDTO.Info.class));
+        }
+        return needsAssessmentList;
+    }
 }

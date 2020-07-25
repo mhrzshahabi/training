@@ -4,6 +4,14 @@
 // <script>
 
     let competenceMethod_competence;
+    var priorityList = {
+        "Post": "پست",
+        "PostGroup": "گروه پستی",
+        "Job": "شغل",
+        "JobGroup": "گروه شغلی",
+        "PostGrade": "رده پستی",
+        "PostGradeGroup": "گروه رده پستی",
+    };
 
     // ------------------------------------------- Menu -------------------------------------------
     isc.Menu.create({
@@ -114,9 +122,10 @@
                 // }
                 // autoFitWidth: true
             },
+            {name: "code", title: "کد", autoFitWidth: true},
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
         ],
-        fetchDataURL: competenceUrl + "/iscList",
+        fetchDataURL: competenceUrl + "/spec-list",
     });
 
     CompetenceDS_competence_Webservice = isc.TrDS.create({
@@ -135,7 +144,7 @@
         ID: "CompetenceLG_competence",
         dataSource: CompetenceDS_competence,
         autoFetchData: true,
-        fields: [{name: "title"}, {name: "competenceType.title"},{name: "categoryId"},{name:"subCategoryId"}, {name: "description"}],
+        fields: [{name: "title"}, {name: "code"}, {name: "competenceType.title"},{name: "categoryId"},{name:"subCategoryId"}, {name: "description"}],
         gridComponents: [
             CompetenceTS_competence, , "filterEditor", "header", "body"
         ],
@@ -167,23 +176,30 @@
 
 
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
-    CompetenceDF_competence = isc.DynamicForm.create({
+    let CompetenceDF_competence = isc.DynamicForm.create({
         ID: "CompetenceDF_competence",
+        readOnlyDisplay: "readOnly",
         fields: [
             {name: "id", hidden: true},
+            {name: "code", title: "کد", canEdit: false, textAlign: "center"},
             {name: "title", title: "<spring:message code="title"/>", required: true, validators: [TrValidators.NotEmpty], textAlign: "center"},
             {
                 name: "competenceTypeId", title: "<spring:message code='type'/>", required: true, type: "select", optionDataSource: CompetenceTypeDS_competence,
                 textAlign: "center",
                 valueField: "id", displayField: "title", filterFields: ["title"], pickListProperties: {showFilterEditor: true,},
+                changed(){
+                    actionCompetenceType()
+                    createCompetenceCode()
+                }
             },
             {
                 name: "categoryId",
                 colSpan: 1,
                 title: "<spring:message code="category"/>",
                 textAlign: "center",
+                hidden: true,
                 // autoFetchData: true,
-                required: true,
+                // required: true,
                 // titleOrientation: "top",
                 // height: "30",
                 width: "*",
@@ -200,6 +216,7 @@
                 sortField: ["id"],
                 changed: function (form, item, value) {
                     form.clearValue("subCategoryId");
+                    createCompetenceCode()
                 },
             },
             {
@@ -208,8 +225,9 @@
                 title: "<spring:message code="subcategory"/>",
                 prompt: "ابتدا گروه را انتخاب کنید",
                 textAlign: "center",
-                required: true,
-                autoFetchData: false,
+                hidden: true,
+                // required: true,
+                // autoFetchData: false,
                 // titleOrientation: "top",
                 // height: "30",
                 width: "*",
@@ -229,13 +247,16 @@
                         RestDataSource_SubCategory_JspCompetence.fetchDataURL = subCategoryUrl + "spec-list?categoryId=" + form.getValue("categoryId");
                     }
                     item.fetchData()
+                },
+                changed(){
+                    createCompetenceCode()
                 }
             },
             {name: "description", title: "<spring:message code="description"/>", type: "TextAreaItem"},
         ]
     });
 
-    CompetenceWin_competence = isc.Window.create({
+    let CompetenceWin_competence = isc.Window.create({
         ID: "CompetenceWin_competence",
         width: 800,
         items: [CompetenceDF_competence, isc.TrHLayoutButtons.create({
@@ -273,7 +294,7 @@
                 ]
             })
 
-        ]
+        ],
     });
 
     // ------------------------------------------- Page UI -------------------------------------------
@@ -296,7 +317,13 @@
             CompetenceDF_competence.clearValues();
             CompetenceDF_competence.editRecord(record);
             CompetenceWin_competence.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="competence"/>");
-            CompetenceWin_competence.show();
+            let inter =setInterval(function () {
+                if(CompetenceDF_competence.getItem("competenceTypeId").getSelectedRecord()!== undefined){
+                    clearInterval(inter)
+                    CompetenceWin_competence.show();
+                    actionCompetenceType();
+                }
+            },100)
         }
     }
 
@@ -313,8 +340,19 @@
         }
         let data = CompetenceDF_competence.getValues();
         let entityTitle = data.title
+        wait.show();
         isc.RPCManager.sendRequest(
-            TrDSRequest(competenceSaveUrl, competenceMethod_competence, JSON.stringify(data), "callback: studyResponse(rpcResponse, '" + action + "','<spring:message code="competence"/>', CompetenceWin_competence, CompetenceLG_competence,'" + entityTitle + "')")
+            TrDSRequest(competenceSaveUrl, competenceMethod_competence, JSON.stringify(data), (resp)=>{
+                wait.close();
+                if(resp.httpResponseCode !== 226) {
+                    studyResponse(resp, "action", '<spring:message code="competence"/>', CompetenceWin_competence, CompetenceLG_competence, "entityTitle")
+                }
+                else{
+                    let list = JSON.parse(resp.data);
+                    CompetenceWin_competence.close();
+                    createDialog("warning", "شایستگی فوق در " + priorityList[list[0].objectType] + " " + getFormulaMessage(list[0].objectName, ) + " استفاده شده است. و قابل ویرایش نمیباشد.", "اخطار")
+                }
+            })
         );
     }
 
@@ -322,7 +360,54 @@
         let record = CompetenceLG_competence.getSelectedRecord();
         let entityType = '<spring:message code="competence"/>';
         if (checkRecordAsSelected(record, true, entityType)) {
-            removeRecord(competenceUrl + "/" + record.id, entityType, record.title, 'CompetenceLG_competence');
+            wait.show()
+            isc.RPCManager.sendRequest(TrDSRequest(competenceUrl + "/" + record.id, "GET", null, (resp)=>{
+                wait.close();
+                if(resp.httpResponseCode !== 226){
+                    removeRecord(competenceUrl + "/" + record.id, entityType, record.title, 'CompetenceLG_competence');
+                }
+                else{
+                    createDialog("warning", "بدلیل اینکه شایستگی در نیازسنجی استفاده شده است، این شایستگی قابل حذف نمیباشد.", "اخطار");
+                }
+            }))
+        }
+    }
+
+    function actionCompetenceType() {
+        let item = CompetenceDF_competence.getItem("competenceTypeId");
+        let form = CompetenceDF_competence;
+        if(item.getSelectedRecord().title === "تخصصی"){
+            form.getItem("categoryId").show();
+            form.getItem("subCategoryId").show();
+            form.getItem("categoryId").setRequired(true);
+            form.getItem("subCategoryId").setRequired(true);
+        }
+        else{
+            form.getItem("categoryId").hide();
+            form.getItem("subCategoryId").hide();
+            form.clearValue("categoryId");
+            form.clearValue("subCategoryId");
+            form.getItem("categoryId").setRequired(false);
+            form.getItem("subCategoryId").setRequired(false);
+        }
+    }
+
+    function createCompetenceCode() {
+        let form = CompetenceDF_competence;
+        let title = (form.getItem("competenceTypeId").getSelectedRecord()) ? (form.getItem("competenceTypeId").getSelectedRecord().title) : "";
+        let code = form.getItem("code");
+        let cat = (form.getField("categoryId").getSelectedRecord()) ? (form.getField("categoryId").getSelectedRecord().code) : "";
+        let subCat = (form.getField("subCategoryId").getSelectedRecord()) ? (form.getField("subCategoryId").getSelectedRecord().code) : "";
+        switch (title) {
+            case "تخصصی":
+                code.setValue("T" + cat + subCat);
+                break;
+            case "عمومی":
+                code.setValue("O00000");
+                break;
+            case "مدیریتی":
+                code.setValue("M00000");
+                break;
         }
     }
 

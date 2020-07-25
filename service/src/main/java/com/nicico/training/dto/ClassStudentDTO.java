@@ -44,6 +44,8 @@ public class ClassStudentDTO implements Serializable {
         private StudentDTO.ClassStudentInfo student;
         private String applicantCompanyName;
         private Long presenceTypeId;
+        private Float preTestScore;
+        private String warning;
         @Getter(AccessLevel.NONE)
         private Integer evaluationStatusReaction;
         @Getter(AccessLevel.NONE)
@@ -52,11 +54,6 @@ public class ClassStudentDTO implements Serializable {
         private Integer evaluationStatusBehavior;
         @Getter(AccessLevel.NONE)
         private Integer evaluationStatusResults;
-        private ParameterValueDTO.TupleInfo evaluationAudienceType;
-        private Long evaluationAudienceTypeId;
-        private Long evaluationAudienceId;
-        private Integer numberOfBehavioralForwardedForms;
-        private Integer numberOfBehavioralRegisteredForms;
 
         public String getFullName(){
             return student.getFirstName()+" "+student.getLastName();
@@ -135,17 +132,6 @@ public class ClassStudentDTO implements Serializable {
         private List<Long> ids;
     }
 
-//    @Getter
-//    @Setter
-//    @Accessors(chain = true)
-//    @ApiModel("ClassStudent - Attendance")
-//    public static class AttendanceInfo {
-//        private Long id;
-//        private StudentDTO.AttendanceInfo student;
-//        private String applicantCompanyName;
-//        private Long presenceTypeId;
-//    }
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -220,8 +206,8 @@ public class ClassStudentDTO implements Serializable {
         private Long id;
         private StudentDTO.ScoresInfo student;
         private TclassDTO.ScoreInfo tclass;
-        private ParameterValueDTO.TupleInfo scoresState;
-        private ParameterValueDTO.TupleInfo failureReason;
+       // private ParameterValueDTO.TupleInfo scoresState;
+       // private ParameterValueDTO.TupleInfo failureReason;
         Long scoresStateId;
         Long failureReasonId;
         private Float score;

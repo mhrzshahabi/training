@@ -7,11 +7,9 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.NeedsAssessmentDTO;
-import com.nicico.training.model.NeedsAssessment;
-import com.nicico.training.model.NeedsAssessmentTemp;
-import com.nicico.training.model.Skill;
-import com.nicico.training.repository.NeedsAssessmentDAO;
-import com.nicico.training.repository.NeedsAssessmentTempDAO;
+import com.nicico.training.model.*;
+import com.nicico.training.repository.*;
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.TypeToken;
@@ -21,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -32,6 +31,20 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
 
     @Autowired
     private NeedsAssessmentDAO needsAssessmentDAO;
+    @Autowired
+    private PostDAO postDAO;
+    @Autowired
+    private PostGroupDAO postGroupDAO;
+    @Autowired
+    private PostGradeDAO postGradeDAO;
+    @Autowired
+    private PostGradeGroupDAO postGradeGroupDAO;
+    @Autowired
+    private JobDAO jobDAO;
+    @Autowired
+    private JobGroupDAO jobGroupDAO;
+    @Autowired
+    private TrainingPostDAO trainingPostDAO;
 
     private Supplier<TrainingException> trainingExceptionSupplier = () -> new TrainingException(TrainingException.ErrorType.NotFound);
 
@@ -79,6 +92,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
     public void verify(String objectType, Long objectId) {
         List<NeedsAssessmentDTO.verify> needsAssessmentTemps = modelMapper.map(dao.findAll(NICICOSpecification.of(getCriteria(objectType, objectId))), new TypeToken<List<NeedsAssessmentDTO.verify>>() {
         }.getType());
+        String createdBy = needsAssessmentTemps.get(0) != null ? needsAssessmentTemps.get(0).getCreatedBy() : "anonymous";
         needsAssessmentTemps.forEach(needsAssessmentTemp -> {
             Optional<NeedsAssessment> optional = needsAssessmentDAO.findById(needsAssessmentTemp.getId());
             if (optional.isPresent()) {
@@ -94,6 +108,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
                 needsAssessmentDAO.saveAndFlush(needsAssessment);
             }
         });
+        saveModificationsDate(objectType, objectId, createdBy);
         dao.deleteAllByObjectIdAndObjectType(objectId, objectType);
     }
 
@@ -163,5 +178,26 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
         criteriaRq.getCriteria().add(makeNewCriteria("objectType", objectType, EOperator.equals, null));
         criteriaRq.getCriteria().add(makeNewCriteria("objectId", objectId, EOperator.equals, null));
         return criteriaRq;
+    }
+
+    public int saveModificationsDate(String objectType, Long objectId, String createdBy){
+        Date today = new Date();
+        switch (objectType) {
+            case "Post":
+                return postDAO.updateModifications(objectId, today, createdBy);
+            case "PostGroup":
+                return postGroupDAO.updateModifications(objectId, today, createdBy);
+            case "PostGrade":
+                return postGradeDAO.updateModifications(objectId, today, createdBy);
+            case "PostGradeGroup":
+                return postGradeGroupDAO.updateModifications(objectId, today, createdBy);
+            case "Job":
+                return jobDAO.updateModifications(objectId, today, createdBy);
+            case "JobGroup":
+                return jobGroupDAO.updateModifications(objectId, today, createdBy);
+            case "TrainingPost":
+                return trainingPostDAO.updateModifications(objectId, today, createdBy);
+        }
+        return -1;
     }
 }

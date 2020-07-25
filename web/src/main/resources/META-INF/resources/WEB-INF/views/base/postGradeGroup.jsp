@@ -38,7 +38,9 @@
             {name: "titleEn", title: "<spring:message code='post.grade.group.titleEn'/>", filterOperator: "iContains"},
             {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains"},
             {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"}
+            {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
         ],
         fetchDataURL: viewPostGradeGroupUrl + "/iscList"
     });
@@ -904,7 +906,7 @@
         alternateRecordStyles: true,
         showAllRecords: true,
         gridComponents: [
-            // ActionsTS_NA_Post_Grade_Group,
+            ActionsTS_NA_Post_Grade_Group,
             "header", "filterEditor", "body",],
         fields: [
             {name: "competence.title"},

@@ -6,12 +6,13 @@ import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.*;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -42,50 +43,28 @@ public class ExportToFileService implements IExportToFileService {
                 headers[i] = fields1.get(i).get("title");
                 columns[i] = fields1.get(i).get("name");
             }
-            Workbook workbook = new XSSFWorkbook();
-            CreationHelper createHelper = workbook.getCreationHelper();
-            Sheet sheet = workbook.createSheet("گزارش");
+
+            XSSFWorkbook workbook = new XSSFWorkbook();
+            //CreationHelper createHelper = workbook.getCreationHelper();
+            XSSFSheet sheet = workbook.createSheet("گزارش");
             sheet.setRightToLeft(true);
 
-            Font headerFont = workbook.createFont();
-            headerFont.setFontHeightInPoints((short) 12);
-            headerFont.setFontName("B Titr");
-            headerFont.setColor(IndexedColors.BLACK.getIndex());
+            XSSFCellStyle headerCellStyle = setCellStyle(workbook, "Tahoma", (short) 12, new Color(255, 255, 255), null,VerticalAlignment.CENTER,HorizontalAlignment.CENTER);
 
-            CellStyle headerCellStyle = workbook.createCellStyle();
-            headerCellStyle.setFont(headerFont);
-            // headerCellStyle.setFillBackgroundColor(IndexedColors.BLUE.getIndex());
-            // headerCellStyle.setFillForegroundColor(IndexedColors.BLUE.getIndex());
-
-            Font bodyFont = workbook.createFont();
-            bodyFont.setFontHeightInPoints((short) 12);
-            bodyFont.setFontName("B Nazanin");
-
-            CellStyle bodyCellStyle = workbook.createCellStyle();
-            bodyCellStyle.setFont(bodyFont);
+            XSSFCellStyle bodyCellStyle = setCellStyle(workbook, "Tahoma", (short) 12, null, null,VerticalAlignment.CENTER,HorizontalAlignment.CENTER);
 
             //first row
-            Font rFont = workbook.createFont();
-            rFont.setFontHeightInPoints((short) 16);
-            rFont.setFontName("B Titr");
-
-            CellStyle rCellStyle = workbook.createCellStyle();
-            rCellStyle.setFont(rFont);
+            XSSFCellStyle rCellStyle = setCellStyle(workbook, "Tahoma", (short) 16, new Color(255, 255, 255), null,VerticalAlignment.CENTER,HorizontalAlignment.CENTER);
 
             CellReference cellAddress = new CellReference(0, fields1.size() - 1);
             sheet.addMergedRegion(CellRangeAddress.valueOf("A1:" + cellAddress.formatAsString()));
-            Row row = sheet.createRow(0);
-            Cell cellOfRow = row.createCell(0);
+            XSSFRow row = sheet.createRow(0);
+            XSSFCell cellOfRow = row.createCell(0);
             cellOfRow.setCellValue("شركت ملي صنايع مس ايران- امور آموزش و تجهيز نيروي انساني");
             cellOfRow.setCellStyle(rCellStyle);
 
             //second row
-            rFont = workbook.createFont();
-            rFont.setFontHeightInPoints((short) 14);
-            rFont.setFontName("B Titr");
-
-            rCellStyle = workbook.createCellStyle();
-            rCellStyle.setFont(rFont);
+            rCellStyle = setCellStyle(workbook, "Tahoma", (short) 14, new Color(255, 255, 255), null,VerticalAlignment.CENTER,HorizontalAlignment.CENTER);
 
             cellAddress = new CellReference(1, fields1.size() - 1);
             sheet.addMergedRegion(CellRangeAddress.valueOf("A2:" + cellAddress.formatAsString()));
@@ -95,14 +74,9 @@ public class ExportToFileService implements IExportToFileService {
             cellOfRow.setCellStyle(rCellStyle);
 
             //third row
-            rFont = workbook.createFont();
-            rFont.setFontHeightInPoints((short) 12);
-            rFont.setFontName("B Nazanin");
+            rCellStyle = setCellStyle(workbook, "Tahoma", (short) 12, new Color(255, 255, 255), null,VerticalAlignment.CENTER,HorizontalAlignment.CENTER);
 
-            rCellStyle = workbook.createCellStyle();
-            rCellStyle.setFont(rFont);
-
-            if(columns.length>3){
+            if (columns.length > 3) {
                 cellAddress = new CellReference(2, fields1.size() - 1);
                 sheet.addMergedRegion(CellRangeAddress.valueOf("D3:" + cellAddress.formatAsString()));
             }
@@ -115,10 +89,10 @@ public class ExportToFileService implements IExportToFileService {
             cellOfRow.setCellStyle(rCellStyle);
 
 
-            Row headerRow = sheet.createRow(3);
+            XSSFRow headerRow = sheet.createRow(3);
 
             for (int i = 0; i < columns.length; i++) {
-                Cell cell = headerRow.createCell(i);
+                XSSFCell cell = headerRow.createCell(i);
                 cell.setCellValue(headers[i]);
                 cell.setCellStyle(headerCellStyle);
 
@@ -128,14 +102,14 @@ public class ExportToFileService implements IExportToFileService {
             dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));*/
 
             int rowNum = 3;
-            String tmpCell="";
+            String tmpCell = "";
             for (HashMap<String, String> map : allData) {
-                Row tempRow = sheet.createRow(++rowNum);
+                XSSFRow tempRow = sheet.createRow(++rowNum);
                 for (int i = 0; i < columns.length; i++) {
-                    Cell cell = tempRow.createCell(i);
-                    tmpCell=map.get(columns[i])==null?"":map.get(columns[i]);
+                    XSSFCell cell = tempRow.createCell(i);
+                    tmpCell = map.get(columns[i]) == null ? "" : map.get(columns[i]);
 
-                    cell.setCellValue(tmpCell.replaceAll("(<a)([^>href]+)(href)([ ])(=)([ ])\"([^\"])\"([^>]+)(>)([^<])(<\\/a>)","[link href=$7]$10[/link]").replaceAll("<[^>]*>",""));
+                    cell.setCellValue(tmpCell.replaceAll("(<a)([^>href]+)(href)([ ])(=)([ ])\"([^\"])\"([^>]+)(>)([^<])(<\\/a>)", "[link href=$7]$10[/link]").replaceAll("<[^>]*>", ""));
                     cell.setCellStyle(bodyCellStyle);
                 }
             }
@@ -165,5 +139,43 @@ public class ExportToFileService implements IExportToFileService {
         } catch (Exception ex) {
             throw new Exception("خطا در سرور");
         }
+    }
+
+
+    private XSSFFont setFont(XSSFWorkbook workbook, String fontFamily, Short size, Color color) {
+
+        XSSFFont font = workbook.createFont();
+        font.setFontHeightInPoints(size);
+        font.setFontName(fontFamily);
+
+        if (color != null) {
+            font.setColor(new XSSFColor(color));
+        }
+
+
+        return font;
+    }
+
+    private XSSFCellStyle setCellStyle(XSSFWorkbook workbook, String fontFamily, Short size, Color color, Color foregroundColor, VerticalAlignment verticalAlignment, HorizontalAlignment horizontalAlignment) {
+
+        XSSFFont font = setFont(workbook, fontFamily, size, color);
+
+        XSSFCellStyle cellStyle = workbook.createCellStyle();
+        cellStyle.setFont(font);
+
+        if (foregroundColor != null) {
+            cellStyle.setFillForegroundColor(new XSSFColor(foregroundColor));
+            cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        }
+
+        if (verticalAlignment != null) {
+            cellStyle.setVerticalAlignment(verticalAlignment);
+        }
+
+        if (horizontalAlignment != null) {
+            cellStyle.setAlignment(horizontalAlignment);
+        }
+
+        return cellStyle;
     }
 }

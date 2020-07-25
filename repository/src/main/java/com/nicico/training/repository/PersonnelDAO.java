@@ -6,11 +6,12 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PersonnelDAO extends JpaRepository<Personnel, String>, JpaSpecificationExecutor<Personnel> {
+public interface PersonnelDAO extends JpaRepository<Personnel, Long>, JpaSpecificationExecutor<Personnel> {
 
     Optional<Personnel> findOneByPersonnelNo(String personnelNo);
 
@@ -49,9 +50,16 @@ public interface PersonnelDAO extends JpaRepository<Personnel, String>, JpaSpeci
 
     Personnel findPersonnelByPersonnelNo(String personnelNo);
 
-    Personnel findById(Long Id);
+    Personnel findPersonnelById(Long personnelId);
+
+    Optional<Personnel> findById(Long Id);
 
     @Query(value = "SELECT complex_title FROM tbl_personnel where national_code = :national_code AND active = 1 AND employment_status_id=5 AND ROWNUM < 2", nativeQuery = true)
     String getComplexTitleByNationalCode(String national_code);
+
+    @Transactional
+    @Query(value = "select CONCAT(CONCAT(first_name, ' '), last_name) from tbl_personnel p where p.ID = ?", nativeQuery = true)
+    String getPersonnelFullName(Long personnelID);
+
 
 }

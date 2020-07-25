@@ -147,7 +147,7 @@ public class CategoryRestController {
             request.setSortBy(sortBy);
         }
 
-        request.setCriteria(workGroupService.addPermissionToCriteria("Category", request.getCriteria()));
+        request.setCriteria(workGroupService.addPermissionToCriteria("id", request.getCriteria()));
 
         SearchDTO.SearchRs<CategoryDTO.Info> response = categoryService.search(request);
 

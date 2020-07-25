@@ -4,6 +4,7 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.dto.QuestionnaireDTO;
+import com.nicico.training.model.Questionnaire;
 import com.nicico.training.service.QuestionnaireService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -59,4 +60,14 @@ public class QuestionnaireRestController {
         }
     }
 
+
+    @GetMapping("/getLastQuestionnarieId")
+    public ResponseEntity<Long> getLastQuestionnarieId(@RequestParam MultiValueMap<String, String> criteria) {
+        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
+        List<QuestionnaireDTO.Info> result = questionnaireService.search(nicicoCriteria).getResponse().getData();
+        Long res = null;
+        if(result.size() > 0)
+            res = result.get(0).getId();
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
 }

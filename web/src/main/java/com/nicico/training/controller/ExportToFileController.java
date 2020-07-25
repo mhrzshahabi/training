@@ -12,6 +12,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonnelCourseNotPassedReportViewService;
 import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.model.ViewStatisticsUnitReport;
 import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.PersonnelRegisteredDAO;
@@ -79,6 +80,8 @@ public class ExportToFileController {
     private final ViewPostGroupService viewPostGroupService;
     private final PostGroupService postGroupService;
     private final WorkGroupService workGroupService;
+    private final CourseService courseService;
+    private final ViewStatisticsUnitReportService viewStatisticsUnitReportService;
 
     private final StudentClassReportViewDAO studentClassReportViewDAO;
     private final PersonnelDAO personnelDAO;
@@ -117,7 +120,8 @@ public class ExportToFileController {
                                       @RequestParam(value = "titr") String titr,
                                       @RequestParam(value = "pageName") String pageName,
                                       @RequestParam(value = "fileName") String fileName,
-                                      @RequestParam(value = "criteriaStr") String criteriaStr) throws Exception {
+                                      @RequestParam(value = "criteriaStr") String criteriaStr,
+                                      @RequestParam(value = "valueMaps") String valueMaps) throws Exception {
 
 
         SearchDTO.SearchRq searchRq = convertToSearchRq(req);
@@ -129,11 +133,23 @@ public class ExportToFileController {
 
         //Start Of Query
         net.minidev.json.parser.JSONParser parser = new JSONParser(DEFAULT_PERMISSIVE_MODE);
+
+        Map<String, Map<String, String>> parameters = creatValueMap((List<Map<String,String>>)parser.parse(valueMaps));
+
         String[] jsonString = {null};
         int count[] = {0};
         List<Object> generalList = null;
 
         switch (fileName) {
+            case "class":
+                searchRq.setCriteria(workGroupService.addPermissionToCriteria("course.categoryId", searchRq.getCriteria()));
+                generalList = (List<Object>)((Object) tclassService.search(searchRq).getList());
+                break;
+
+            case "course":
+                searchRq.setCriteria(workGroupService.addPermissionToCriteria("categoryId", searchRq.getCriteria()));
+                generalList = (List<Object>)((Object) courseService.search(searchRq, c -> modelMapper.map(c, CourseDTO.Info.class)).getList());
+                break;
 
             case "trainingFile":
                 generalList = (List<Object>)((Object) classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class)).getList());
@@ -238,7 +254,7 @@ public class ExportToFileController {
                 break;
 
             case "Skill":
-                searchRq.setCriteria(workGroupService.addPermissionToCriteria("Skill", searchRq.getCriteria()));
+                searchRq.setCriteria(workGroupService.addPermissionToCriteria("categoryId", searchRq.getCriteria()));
                 generalList = (List<Object>)((Object) skillService.searchGeneric(searchRq, SkillDTO.Info.class).getList());
                 break;
 
@@ -274,7 +290,6 @@ public class ExportToFileController {
 
             case "View_Post_Grade":
                 generalList = (List<Object>)((Object) viewPostGradeService.search(searchRq).getList());
-                setExcelValues(jsonString, count, generalList);
                 break;
 
             case "Post_Grade_Without_Permission":
@@ -305,6 +320,11 @@ public class ExportToFileController {
 
             case "View_Post_Grade_Group":
                 generalList = (List<Object>)((Object) viewPostGradeGroupService.search(searchRq).getList());
+                break;
+
+            case "statisticsUnitReport":
+                searchRq.setSortBy("id");
+                generalList = (List<Object>)((Object) viewStatisticsUnitReportService.search(searchRq,o -> modelMapper.map(o, ViewStatisticsUnitReportDTO.Grid.class)).getList());
                 break;
 
             case "Post_Grade_Group_Personnel":
@@ -356,7 +376,8 @@ public class ExportToFileController {
             HashMap<String, String> tmpData = new HashMap<String, String>();
 
             for (int j = 0; j < sizeOfFields; j++) {
-                String[] list = fields1.get(j).get("name").split("\\.");
+                String fieldName = fields1.get(j).get("name");
+                String[] list = fieldName.split("\\.");
 
                 List<String> aList = null;
 
@@ -368,6 +389,10 @@ public class ExportToFileController {
                 }
 
                 tmpName = getData(jsonObject, aList, 0);
+
+                if(parameters.containsKey(fieldName)){
+                    tmpName = parameters.get(fieldName).get(tmpName);
+                }
 
                 tmpData.put(fields1.get(j).get("name"), tmpName);
             }
@@ -461,6 +486,14 @@ public class ExportToFileController {
         }
 
         return searchRq;
+    }
+
+    private Map<String, Map<String, String>> creatValueMap(List<Map<String, String>> parameters){
+        Map<String,  Map<String, String>> map = new HashMap<>();
+        for (Map<String, String> value : parameters){
+            map.put(value.get("value"),(Map<String, String>)(Object)value.get("map"));
+        }
+        return map;
     }
 
     private <T> void setExcelValues(String jsonStringRef[], int countRef[],   List<T> list)throws JsonProcessingException {

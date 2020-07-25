@@ -23,10 +23,8 @@ public class MainFormController {
     }
 
     ////disable targetSociety
-//    @RequestMapping("/organizationalChart")
-//    public String showOrganizationalChartForm() {
-//        return "basic/organizationalChart";
-//    }
+    @RequestMapping("/organizationalChart")
+    public String showOrganizationalChartForm() { return "basic/organizationalChart"; }
 
     @RequestMapping("/trainingFile")
     public String showTrainingFileForm() {
@@ -112,6 +110,11 @@ public class MainFormController {
         return "base/post-group";
     }
 
+    @RequestMapping("/training-post")
+    public String showTrainingPostForm() {
+        return "base/training-post";
+    }
+
     @RequestMapping("/needAssessment")
     public String showNeedAssessmentForm() {
         return "base/needAssessmentNew1";
@@ -161,6 +164,9 @@ public class MainFormController {
     public String showPresenceReport() {
         return "report/presenceReport";
     }
+
+    @RequestMapping("/statisticsUnitReport")
+    public String showStatisticsUnitReport() { return "report/statisticsUnitReport"; }
 
     @RequestMapping("class-contract")
     public String showClassContractForm() {

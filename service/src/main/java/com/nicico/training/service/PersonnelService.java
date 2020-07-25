@@ -56,7 +56,7 @@ public class PersonnelService implements IPersonnelService {
     @Transactional(readOnly = true)
     @Override
     public Personnel getPersonnel(String personnelNo) {
-        Optional<Personnel> optPersonnel = personnelDAO.findById(personnelNo);
+        Optional<Personnel> optPersonnel = personnelDAO.findOneByPersonnelNo(personnelNo);
         return optPersonnel.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
     }
 
@@ -82,11 +82,11 @@ public class PersonnelService implements IPersonnelService {
 
         for (String personnelNo : personnelNos) {
 
-            if (list.stream().filter(p -> p.getPersonnelNo().equals(personnelNo) || p.getPersonnelNo2().equals(personnelNo)).collect(Collectors.toList()).size() == 0) {
+            if (list.stream().filter(p -> (p.getPersonnelNo() != null && p.getPersonnelNo().equals(personnelNo)) || (p.getPersonnelNo2() != null && p.getPersonnelNo2().equals(personnelNo))).collect(Collectors.toList()).size() == 0) {
                 result.add(new PersonnelDTO.Info());
 
             } else {
-                prs = list.stream().filter(p -> p.getPersonnelNo().equals(personnelNo) || p.getPersonnelNo2().equals(personnelNo)).collect(Collectors.toList()).get(0);
+                prs = list.stream().filter(p -> (p.getPersonnelNo() != null && p.getPersonnelNo().equals(personnelNo)) || (p.getPersonnelNo2() != null && p.getPersonnelNo2().equals(personnelNo))).collect(Collectors.toList()).get(0);
                 result.add(modelMapper.map(prs, PersonnelDTO.Info.class));
             }
         }
@@ -212,10 +212,10 @@ public class PersonnelService implements IPersonnelService {
 
     @Override
     @Transactional
-    public Personnel findPersonnelByPersonnelNo(String personnelNo) {
+    public Personnel findPersonnelByPersonnelId(Long personnelId, String personnelNo) {
 
         PersonnelRegistered personnelRegistered = new PersonnelRegistered();
-        Personnel personnel = personnelDAO.findPersonnelByPersonnelNo(personnelNo);
+        Personnel personnel = personnelDAO.findPersonnelById(personnelId);
 
         if (personnel != null) {
 
@@ -224,7 +224,7 @@ public class PersonnelService implements IPersonnelService {
 
         } else {
 
-            personnelRegistered = personnelRegisteredDAO.findPersonnelRegisteredByPersonnelNo(personnelNo);
+            personnelRegistered = personnelRegisteredDAO.findPersonnelRegisteredByPersonnelNo(personnelId.toString());
             Long trainingTime = tclassDAO.getStudentTrainingTime(personnelRegistered.getNationalCode(), personnelNo, DateUtil.getYear());
             personnelRegistered.setWorkYears(trainingTime == null ? "عدم آموزش در سال " + DateUtil.getYear() : trainingTime.toString() + " ساعت آموزش در سال " + DateUtil.getYear());
 
@@ -270,7 +270,7 @@ public class PersonnelService implements IPersonnelService {
     @Transactional(readOnly = true)
     @Override
     public <R> R getPOrRegisteredP(String personnelNo, Function<Object, R> converter) {
-        Optional<Personnel> optPersonnel = personnelDAO.findById(personnelNo);
+        Optional<Personnel> optPersonnel = personnelDAO.findOneByPersonnelNo(personnelNo);
         return optPersonnel.map(converter).orElse(personnelRegisteredDAO.findOneByPersonnelNo(personnelNo).map(converter).orElse(null));
     }
 

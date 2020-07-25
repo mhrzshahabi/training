@@ -111,6 +111,8 @@
             {name: "description", title: "توضیحات", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         fetchDataURL: viewPostGroupUrl + "/iscList"
@@ -1209,7 +1211,7 @@
         alternateRecordStyles: true,
         showAllRecords: true,
         gridComponents: [
-            // ActionsTS_NA_Post_Group,
+            ActionsTS_NA_Post_Group,
             "header", "filterEditor", "body",],
         fields: [
             {name: "competence.title"},

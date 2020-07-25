@@ -192,12 +192,12 @@ public class ExportController {
                 list = searchTC.getList();
                 break;
             case "Skill_Report.jasper":
-                searchRq.setCriteria(workGroupService.addPermissionToCriteria("Skill", searchRq.getCriteria()));
+                searchRq.setCriteria(workGroupService.addPermissionToCriteria("categoryId", searchRq.getCriteria()));
                 SearchDTO.SearchRs<SkillDTO.Info> searchSkill = skillService.searchWithoutPermission(searchRq);
                 list = searchSkill.getList();
                 break;
             case "CourseByCriteria.jasper":
-                searchRq.setCriteria(workGroupService.addPermissionToCriteria("Course", searchRq.getCriteria()));
+                searchRq.setCriteria(workGroupService.addPermissionToCriteria("categoryId", searchRq.getCriteria()));
                 SearchDTO.SearchRs<CourseDTO.Info> searchCourse = courseService.search(searchRq);
                 list = searchCourse.getList();
                 break;

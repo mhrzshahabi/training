@@ -97,12 +97,18 @@ public class SkillRestController {
         return skillService.getMaxSkillCode(code);
     }
 
+    @Loggable
+    @GetMapping(value = "/editSkill/{id}")
+    public boolean editSkill(@PathVariable Long id) throws Exception {
+        return skillService.editSkill(id);
+    }
+
 
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_skill')")
-    public ResponseEntity<SkillDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
-        return new ResponseEntity<>(skillService.update(id, request), HttpStatus.OK);
+    public ResponseEntity<SkillDTO.Info> update(@PathVariable Long id, @RequestBody Object request,HttpServletResponse response) {
+        return new ResponseEntity<>(skillService.update(id,request,response), HttpStatus.OK);
     }
 
     @Loggable
@@ -188,7 +194,7 @@ public class SkillRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        request.setCriteria(workGroupService.addPermissionToCriteria("Skill", request.getCriteria()));
+        request.setCriteria(workGroupService.addPermissionToCriteria("categoryId", request.getCriteria()));
 
         SearchDTO.SearchRs<SkillDTO.Info> response = skillService.searchWithoutPermission(request);
 
@@ -389,12 +395,12 @@ public class SkillRestController {
 
     @Loggable
     @PostMapping(value = "/add-course/{courseId}/{skillId}")
-    public ResponseEntity<Boolean> addCourse(@PathVariable Long courseId, @PathVariable Long skillId) {
+    public ResponseEntity<Boolean> addCourse(@PathVariable Long courseId, @PathVariable Long skillId, HttpServletResponse resp) {
         boolean flag = false;
         HttpStatus httpStatus = HttpStatus.OK;
 
         try {
-            skillService.addCourse(courseId, skillId);
+            skillService.addCourse(courseId, skillId, resp);
             flag = true;
         } catch (Exception e) {
             httpStatus = HttpStatus.NO_CONTENT;
@@ -461,7 +467,7 @@ public class SkillRestController {
         }
         searchRq.setSortBy(field);
 
-        searchRq.setCriteria(workGroupService.addPermissionToCriteria("Skill", searchRq.getCriteria()));
+        searchRq.setCriteria(workGroupService.addPermissionToCriteria("categoryId", searchRq.getCriteria()));
         SearchDTO.SearchRs<SkillDTO.Info> searchSkill = skillService.searchWithoutPermission(searchRq);
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", dateUtil.todayDate());

@@ -40,6 +40,7 @@ public class TclassService implements ITclassService {
 
     private final ModelMapper modelMapper;
     private final TclassDAO tclassDAO;
+    private final ClassSessionDAO classSessionDAO;
     private final ClassSessionService classSessionService;
     private final TrainingPlaceDAO trainingPlaceDAO;
     private final AttachmentService attachmentService;
@@ -52,6 +53,7 @@ public class TclassService implements ITclassService {
     private final MessageSource messageSource;
     private final TargetSocietyService societyService;
     private final TargetSocietyDAO societyDAO;
+    private final AttendanceDAO attendanceDAO;
 
     @Transactional(readOnly = true)
     @Override
@@ -121,7 +123,7 @@ public class TclassService implements ITclassService {
             tclass.setTrainingPlaceSet(set);
             Tclass save = tclassDAO.save(tclass);
             ////disable targetSociety
-           // saveTargetSocieties(request.gettargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
+            saveTargetSocieties(request.gettargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
             return modelMapper.map(save, TclassDTO.Info.class);
         } else {
             try {
@@ -136,32 +138,6 @@ public class TclassService implements ITclassService {
 
 
     @Transactional
-    public TclassDTO.Info safeUpdate(Long id, TclassDTO.Update request, HttpServletResponse response) {
-        final Optional<Tclass> cById = tclassDAO.findById(id);
-        final Tclass tclass = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
-//        if (checkDuration(tclass)) {
-            List<Long> trainingPlaceIds = request.getTrainingPlaceIds();
-            List<TrainingPlace> allById = trainingPlaceDAO.findAllById(trainingPlaceIds);
-            Set<TrainingPlace> set = new HashSet<>(allById);
-            Tclass updating = new Tclass();
-            modelMapper.map(tclass, updating);
-            modelMapper.map(request, updating);
-            updating.setTrainingPlaceSet(set);
-            Tclass save = tclassDAO.save(updating);
-//            updateTargetSocieties(save.getTargetSocietyList(), request.getTargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
-            return modelMapper.map(save, TclassDTO.Info.class);
-//        } else {
-//            try {
-//                Locale locale = LocaleContextHolder.getLocale();
-//                response.sendError(405, messageSource.getMessage("msg.invalid.data", null, locale));
-//            } catch (IOException e) {
-//                throw new TrainingException(TrainingException.ErrorType.InvalidData);
-//            }
-//        }
-//        return null;
-    }
-
-    @Transactional
     @Override
     public TclassDTO.Info update(Long id, TclassDTO.Update request) {
         final Optional<Tclass> cById = tclassDAO.findById(id);
@@ -173,13 +149,35 @@ public class TclassService implements ITclassService {
         modelMapper.map(tclass, updating);
         modelMapper.map(request, updating);
         updating.setTrainingPlaceSet(set);
-        return save(updating);
+        Tclass save = tclassDAO.save(updating);
+        updateTargetSocieties(save.getTargetSocietyList(), request.getTargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
+        return modelMapper.map(save, TclassDTO.Info.class);
     }
 
     @Transactional
-    @Override
-    public void delete(Long id) {
+//    @Override
+    public void delete(Long id, HttpServletResponse resp) throws IOException {
+        Optional<Tclass> byId = tclassDAO.findById(id);
+        Tclass tclass = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        List<Attendance> attendances = attendanceDAO.findBySessionIn(tclass.getClassSessions());
+        if(!attendances.isEmpty()){
+            for (Attendance a : attendances) {
+                if(!a.getState().equals("0")){
+                    resp.sendError(409, messageSource.getMessage("کلاس فوق بدلیل داشتن حضور و غیاب قابل حذف نیست. ", null, LocaleContextHolder.getLocale()));
+                    return;
+                }
+            }
+        }
+        if(!tclass.getClassSessions().isEmpty()){
+            resp.sendError(409, messageSource.getMessage("کلاس فوق بدلیل داشتن جلسه قابل حذف نیست. ", null, LocaleContextHolder.getLocale()));
+            return;
+        }
+        if(!tclass.getClassStudents().isEmpty()){
+            resp.sendError(409, messageSource.getMessage("کلاس فوق بدلیل داشتن فراگیر قابل حذف نیست. ", null, LocaleContextHolder.getLocale()));
+            return;
+        }
         tclassDAO.deleteById(id);
+        attendanceDAO.deleteAll(attendances);
         List<AttachmentDTO.Info> attachmentInfoList = attachmentService.search(null, "Tclass", id).getList();
         for (AttachmentDTO.Info attachment : attachmentInfoList) {
             attachmentService.delete(attachment.getId());
@@ -328,11 +326,11 @@ public class TclassService implements ITclassService {
 
 
     @Transactional
-    @Override
-    public void delete(TclassDTO.Delete request) {
+//    @Override
+    public void delete(TclassDTO.Delete request, HttpServletResponse resp) throws IOException {
         final List<Tclass> gAllById = tclassDAO.findAllById(request.getIds());
         for (Tclass tclass : gAllById) {
-            delete(tclass.getId());
+            delete(tclass.getId(), resp);
         }
     }
 
@@ -1315,6 +1313,10 @@ public class TclassService implements ITclassService {
         searchRs.setTotalCount(totalCount);
 
         return searchRs;
+    }
 
+    @Transactional(readOnly = true)
+    public Boolean hasSessions(Long id){
+        return classSessionDAO.existsByClassId(id);
     }
 }

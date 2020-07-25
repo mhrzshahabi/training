@@ -39,14 +39,15 @@
 
             {
                 type: "BlurbItem",
-                value: "1- فرمول ارزیابی مدرس بعد از تدریس دوره = (نمره ارزیابی فراگیران به مدرس) * Z2 + (نمره ارزیابی مسئول آموزش به مدرس) * Z1 "
+                value:"<span style='font-size:14px;color:blue'>1- فرمول ارزیابی مدرس بعد از تدریس دوره = (نمره ارزیابی فراگیران به مدرس) * Z2 + (نمره ارزیابی مسئول آموزش به مدرس) * Z1</span>"
             },
             {
                 width: "200",
-                hint: "%",
+              //  hint: "%",
+              //  showHintInField:true,
                 mask: "###",
                 name: "z1",
-                title: "ضریب نمره ارزیابی مسئول آموزش به مدرس &nbsp;(Z1)",
+                title: "ضریب نمره ارزیابی مسئول آموزش به مدرس &nbsp;(Z1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%",
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -56,10 +57,10 @@
             },
             , {
                 width: "200",
-                hint: "%",
+               //// hint: "%",
                 mask: "###",
                 name: "z2",
-                title: "ضریب نمره ارزیابی فراگیران به مدرس &nbsp;(Z2)",
+                title: "ضریب نمره ارزیابی فراگیران به مدرس &nbsp;(Z2)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%",
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -68,7 +69,7 @@
             },
             {
                 width: "200",
-                hint: "%",
+               // hint: "%",
                 mask: "###",
                 name: "minScoreET",
                 title: "حد قبولی نمره ارزیابی مدرس",
@@ -80,10 +81,10 @@
             },
             {
                 width: "200",
-                hint: "%",
+               //// hint: "%",
                 mask: "###",
                 name: "minQusET",
-                title: "حداقل تعداد پرسشنامه های تکمیل شده",
+                title: "حداقل تعداد پرسشنامه های تکمیل شده&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%",
                 change: function (item, value) {
 
                     if (value > 100) {
@@ -95,14 +96,14 @@
             {type: "RowSpacerItem"},
             {
                 type: "BlurbItem",
-                value: "2- فرمول ارزیابی واکنشی کلاس = (نمره ارزیابی فراگیران به امکانات و سازماندهی)* Z4+(نمره ارزیابی دوره توسط مدرس)*Z3 +(نمره ارزیابی فراگیران به مدرس)*Z2 +(نمره ارزیابی فراگیران به محتوای دوره)*Z1"
+                value: "<p style='font-size:14px;color:blue'>2- فرمول ارزیابی واکنشی کلاس = (نمره ارزیابی فراگیران به امکانات و سازماندهی)* Z4+(نمره ارزیابی دوره توسط مدرس)*Z3 +(نمره ارزیابی فراگیران به مدرس)*Z2 +(نمره ارزیابی فراگیران به محتوای دوره)*Z1</p>"
             },
             {
                 width: "200",
-                hint: "%",
+               //// hint: "%",
                 mask: "###",
                 name: "z3",
-                title: "ضریب نمره ارزیابی فراگیران به محتوای دوره &nbsp;(Z1)",
+                title: "ضریب نمره ارزیابی فراگیران به محتوای دوره &nbsp;(Z1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%",
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -111,10 +112,10 @@
             },
             {
                 width: "200",
-                hint: "%",
+               //// hint: "%",
                 mask: "###",
                 name: "z4",
-                title: "ضریب نمره ارزیابی فراگیران به مدرس&nbsp;(Z2)",
+                title: "ضریب نمره ارزیابی فراگیران به مدرس&nbsp;(Z2)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%",
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -123,10 +124,10 @@
             },
             {
                 width: "200",
-                hint: "%",
+               //// hint: "%",
                 mask: "###",
                 name: "z5",
-                title: "ضریب نمره ارزیابی دوره توسط مدرس&nbsp;(Z3)",
+                title: "ضریب نمره ارزیابی دوره توسط مدرس&nbsp;(Z3)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%",
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -135,10 +136,10 @@
             },
             {
                 width: "200",
-                hint: "%",
+               //// hint: "%",
                 mask: "###",
                 name: "z6",
-                title: "ضریب نمره ارزیابی فراگیران به امکانات و سازماندهی&nbsp;(Z4)",
+                title: "ضریب نمره ارزیابی فراگیران به امکانات و سازماندهی&nbsp;(Z4)&nbsp;%",
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -148,7 +149,7 @@
             {
                 width: "200",
                 type: "integer",
-                hint: "%",
+               // hint: "%",
                 mask: "###",
                 name: "minScoreER",
                 title: "حد قبولی نمره واکنشی",
@@ -160,10 +161,10 @@
             },
             {
                 width: "200",
-                hint: "%",
+              ////  hint: "%",
                 mask: "###",
                 name: "minQusER",
-                title: "حداقل تعداد پرسشنامه های تکمیل شده",
+                title: "حداقل تعداد پرسشنامه های تکمیل شده&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%",
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -172,10 +173,12 @@
             },
 //=================================================================================================
             {type: "RowSpacerItem"},
-            {type: "BlurbItem", value: "3- فرمول ارزیابی یادگیری کلاس "},
+            {type: "BlurbItem",
+                value:"<p style='font-size:14px;color:blue'> 3- فرمول ارزیابی یادگیری کلاس</p>"
+            },
 
             {
-                hint: "%",
+               // hint: "%",
                 width: "200",
                 mask: "###",
                 name: "minPreTestEL",
@@ -188,7 +191,7 @@
             },
 
             {
-                hint: "%",
+               // hint: "%",
                 width: "200",
                  mask: "###",
                 name: "minPasTestEL",
@@ -201,7 +204,7 @@
                 }
             },
             {
-                hint: "%",
+               // hint: "%",
                 width: "200",
                  mask: "###",
                 name: "minScoreEL",
@@ -214,10 +217,10 @@
             },
             {
                 width: "200",
-                hint: "%",
+               //// hint: "%",
                 mask: "###",
                 name: "minQusEL",
-                title: "حداقل تعداد پرسشنامه های تکمیل شده",
+                title: "حداقل تعداد پرسشنامه های تکمیل شده&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%",
 
                 change: function (form, item, value) {
                     if (value > 100) {
@@ -229,14 +232,14 @@
             {type: "RowSpacerItem"},
             {
                 type: "BlurbItem",
-                value: "4- فرمول ارزیابی تغییر رفتار= ( نمره ارزیابی فراگیران)*Z2 + ( نمره ارزیابی بالا دست)*Z1"
+                value: "<p style='font-size:14px;color:blue'>4- فرمول ارزیابی تغییر رفتار= ( نمره ارزیابی فراگیران)*Z2 + ( نمره ارزیابی بالا دست)*Z1</p>"
             },
             {
                 width: "200",
-                hint: "%",
+               //// hint: "%",
                 mask: "###",
                 name: "z7",
-                title: "(ضریب نمره ارزیابی بالا دست)Z1",
+                title: "(ضریب نمره ارزیابی بالا دست)Z1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%",
 
                 change: function (form, item, value) {
                     if (value > 100) {
@@ -246,10 +249,10 @@
             },
             {
                 width: "200",
-                hint: "%",
+               //// hint: "%",
                  mask: "###",
                 name: "z8",
-                title: "(ضریب نمره ارزیابی فراگیران)Z2",
+                title: "(ضریب نمره ارزیابی فراگیران)Z2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%",
 
                 change: function (form, item, value) {
                     if (value > 100) {
@@ -259,7 +262,7 @@
             },
             {
                 width: "200",
-                hint: "%",
+               // hint: "%",
                 mask: "###",
                 name: "minScoreEB",
                 title: "حدقبولی نمره ارزیابی رفتاری",
@@ -272,7 +275,7 @@
             },
             {
                 width: "200",
-                hint: "%",
+               // hint: "%",
                 mask: "###",
                 name: "minScorePreTestEB",
                 title: "حد قبولی نمره پیش آزمون",
@@ -286,10 +289,10 @@
 
             {
                 width: "200",
-                hint: "%",
+                ////hint: "%",
                 mask: "###",
                 name: "minQusEB",
-                title: "حداقل تعداد پرسشنامه های تکمیل شده",
+                title: "حداقل تعداد پرسشنامه های تکمیل شده&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%",
 
                 change: function (form, item, value) {
                     if (value > 100) {
@@ -299,13 +302,13 @@
             },
 //==================================================================================================
             {type: "RowSpacerItem"},
-            {type: "BlurbItem", value: "5- فرمول اثربخشی کلاس _ واکنشی=( نمره ارزیابی واکنشی کلاس)*Z1"},
+            {type: "BlurbItem", value: "<p style='font-size:14px;color:blue'>5- فرمول اثربخشی کلاس _ واکنشی=( نمره ارزیابی واکنشی کلاس)*Z1</p>"},
             {
                 width: "200",
-                hint: "%",
+              ////  hint: "%",
                 mask: "###",
                 name: "FECRZ",
-                title: "ضریب نمره ارزیابی واکنشی کلاس(Z1)",
+                title: "ضریب نمره ارزیابی واکنشی کلاس(Z1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%",
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -314,7 +317,7 @@
                 }
             }, {
                 width: "200",
-                hint: "%",
+               // hint: "%",
                 mask: "###",
                 name: "minScoreFECR",
                 title: "حد قبولی نمره اثر بخشی",
@@ -329,14 +332,15 @@
             {type: "RowSpacerItem"},
             {
                 type: "BlurbItem",
-                value: "6- فرمول اثربخشی کلاس _ یادگیری=( نمره ارزیابی یادگیری)*Z2 +( نمره ارزیابی واکنشی دوره)*Z1 "
+               value: "<p style='font-size:14px;color:blue'>6- فرمول اثربخشی کلاس _ یادگیری=( نمره ارزیابی یادگیری)*Z2 +( نمره ارزیابی واکنشی دوره)*Z1 </p>"
+
             },
             {
                 width: "200",
-                hint: "%",
+               //// hint: "%",
                 mask: "###",
                 name: "FECLZ1",
-                title: "ضریب نمره ارزیابی واکنشی دوره(Z1)",
+                title: "ضریب نمره ارزیابی واکنشی دوره(Z1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%",
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -345,10 +349,10 @@
             },
             {
                 width: "200",
-                hint: "%",
+               //// hint: "%",
                 mask: "###",
                 name: "FECLZ2",
-                title: "ضریب نمره ارزیابی یادگیری(Z2)",
+                title: "ضریب نمره ارزیابی یادگیری(Z2)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%",
 
                 change: function (form, item, value) {
                     if (value > 100) {
@@ -360,14 +364,14 @@
             {type: "RowSpacerItem"},
             {
                 type: "BlurbItem",
-                value: "7- فرمول اثربخشی کلاس _ رفتاری= ( نمره رفتار)*Z3 + ( نمره ارزیابی یادگیری)*Z2 + ( نمره ارزیابی واکنشی دوره)*Z1"
+                value: "<p style='font-size:14px;color:blue'>7- فرمول اثربخشی کلاس _ رفتاری= ( نمره رفتار)*Z3 + ( نمره ارزیابی یادگیری)*Z2 + ( نمره ارزیابی واکنشی دوره)*Z1</p>"
             },
             {
                 width: "200",
-                hint: "%",
+               //// hint: "%",
                 mask: "###",
                 name: "FECBZ1",
-                title: "ضریب نمره ارزیابی واکنشی دوره(Z1)",
+                title: "ضریب نمره ارزیابی واکنشی دوره(Z1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%",
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -376,10 +380,10 @@
             },
             {
                 width: "200",
-                hint: "%",
+                ////hint: "%",
                 mask: "###",
                 name: "FECBZ2",
-                title: "ضریب نمره ارزیابی یادگیری(Z2)",
+                title: "ضریب نمره ارزیابی یادگیری(Z2)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%",
 
                 change: function (form, item, value) {
                     if (value > 100) {
@@ -389,10 +393,10 @@
             },
             {
                 width: "200",
-                hint: "%",
+               //// hint: "%",
                 mask: "###",
                 name: "FECBZ3",
-                title: "ضریب نمره رفتار(Z3)",
+                title: "ضریب نمره رفتار(Z3)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%",
 
                 change: function (form, item, value) {
                     if (value > 100) {
@@ -444,12 +448,12 @@
                          if (DynamicForm_Evaluation_Coefficient.getItem("z1").getValue() == null)
                          {
                              DynamicForm_Evaluation_Coefficient.getItem("z1").focusInItem()
-                             createDialog("info", "فیلد ' " + str1 + " ' خالی می باشد", "<spring:message code="message"/>")
+                             createDialog("info", "فیلد ' " + str1.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
                           }
                          else if (DynamicForm_Evaluation_Coefficient.getItem("z2").getValue() == null)
                           {
                              DynamicForm_Evaluation_Coefficient.getItem("z2").focusInItem()
-                             createDialog("info", "فیلد ' " + str2 + " ' خالی می باشد", "<spring:message code="message"/>")
+                             createDialog("info", "فیلد ' " + str2.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
                           }
                           else{
                            createDialog("info", "جمع ضرایب فرمول یک باید 100 شود", "<spring:message code="message"/>")
@@ -465,21 +469,21 @@
                          if (DynamicForm_Evaluation_Coefficient.getItem("z3").getValue() == null)
                          {
                              DynamicForm_Evaluation_Coefficient.getItem("z3").focusInItem()
-                             createDialog("info", "فیلد ' " + str3 + " ' خالی می باشد", "<spring:message code="message"/>")
+                             createDialog("info", "فیلد ' " + str3.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
                           }
                          else if (DynamicForm_Evaluation_Coefficient.getItem("z4").getValue() == null)
                           {
                              DynamicForm_Evaluation_Coefficient.getItem("z4").focusInItem()
-                             createDialog("info", "فیلد ' " + str4 + " ' خالی می باشد", "<spring:message code="message"/>")
+                             createDialog("info", "فیلد ' " + str4.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
                           }
                            else if (DynamicForm_Evaluation_Coefficient.getItem("z5").getValue() == null)
                           {
                              DynamicForm_Evaluation_Coefficient.getItem("z5").focusInItem()
-                             createDialog("info", "فیلد ' " + str5 + " ' خالی می باشد", "<spring:message code="message"/>")
+                             createDialog("info", "فیلد ' " + str5.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
                           } else if (DynamicForm_Evaluation_Coefficient.getItem("z6").getValue() == null)
                           {
                              DynamicForm_Evaluation_Coefficient.getItem("z6").focusInItem()
-                             createDialog("info", "فیلد ' " + str6 + " ' خالی می باشد", "<spring:message code="message"/>")
+                             createDialog("info", "فیلد ' " + str6.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
                           }
                           else{
                            createDialog("info", "جمع ضرایب فرمول دو باید 100 شود", "<spring:message code="message"/>")
@@ -491,11 +495,11 @@
                         if (DynamicForm_Evaluation_Coefficient.getItem("z7").getValue() == null)
                           {
                              DynamicForm_Evaluation_Coefficient.getItem("z7").focusInItem()
-                             createDialog("info", "فیلد ' " + str7 + " ' خالی می باشد", "<spring:message code="message"/>")
+                             createDialog("info", "فیلد ' " + str7.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
                           } else if (DynamicForm_Evaluation_Coefficient.getItem("z8").getValue() == null)
                           {
                              DynamicForm_Evaluation_Coefficient.getItem("z8").focusInItem()
-                             createDialog("info", "فیلد ' " + str8 + " ' خالی می باشد", "<spring:message code="message"/>")
+                             createDialog("info", "فیلد ' " + str8.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
                           }
                           else{
                              createDialog("info", "جمع ضرایب فرمول چهارباید 100 شود", "<spring:message code="message"/>")
@@ -507,11 +511,11 @@
                          if (DynamicForm_Evaluation_Coefficient.getItem("FECLZ1").getValue() == null)
                           {
                              DynamicForm_Evaluation_Coefficient.getItem("FECLZ1").focusInItem()
-                             createDialog("info", "فیلد ' " + strFECLZ1 + " ' خالی می باشد", "<spring:message code="message"/>")
+                             createDialog("info", "فیلد ' " + strFECLZ1.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
                           } else if (DynamicForm_Evaluation_Coefficient.getItem("FECLZ2").getValue() == null)
                           {
                              DynamicForm_Evaluation_Coefficient.getItem("FECLZ2").focusInItem()
-                             createDialog("info", "فیلد ' " + strFECLZ2 + " ' خالی می باشد", "<spring:message code="message"/>")
+                             createDialog("info", "فیلد ' " + strFECLZ2.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
                           }
                           else{
                             createDialog("info", "جمع ضرایب فرمول شش باید 100 شود", "<spring:message code="message"/>")
@@ -524,16 +528,16 @@
                        if (DynamicForm_Evaluation_Coefficient.getItem("FECBZ1").getValue() == null)
                           {
                              DynamicForm_Evaluation_Coefficient.getItem("FECBZ1").focusInItem()
-                             createDialog("info", "فیلد ' " + strFECBZ1 + " ' خالی می باشد", "<spring:message code="message"/>")
+                             createDialog("info", "فیلد ' " + strFECBZ1.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
                           } else if (DynamicForm_Evaluation_Coefficient.getItem("FECBZ2").getValue() == null)
                           {
                              DynamicForm_Evaluation_Coefficient.getItem("FECBZ2").focusInItem()
-                             createDialog("info", "فیلد ' " + strFECBZ2 + " ' خالی می باشد", "<spring:message code="message"/>")
+                             createDialog("info", "فیلد ' " + strFECBZ2.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
                           }
                           else if (DynamicForm_Evaluation_Coefficient.getItem("FECBZ3").getValue() == null)
                           {
                              DynamicForm_Evaluation_Coefficient.getItem("FECBZ3").focusInItem()
-                             createDialog("info", "فیلد ' " + strFECBZ3 + " ' خالی می باشد", "<spring:message code="message"/>")
+                             createDialog("info", "فیلد ' " + strFECBZ3.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
                           }
                           else{
                             createDialog("info", "جمع ضرایب فرمول هفت باید 100 شود", "<spring:message code="message"/>")
@@ -541,74 +545,74 @@
                           }
                             } else if (DynamicForm_Evaluation_Coefficient.getItem("minQusET").getValue() == null) {
                         var str = DynamicForm_Evaluation_Coefficient.getItem("minQusET").title
-                        createDialog("info", "فیلد ' " + str + " ' خالی می باشد", "<spring:message code="message"/>")
+                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
                         DynamicForm_Evaluation_Coefficient.getItem("minQusET").focusInItem();
                         return;
                     } else if (DynamicForm_Evaluation_Coefficient.getItem("FECRZ").getValue() == null) {
                         var str = DynamicForm_Evaluation_Coefficient.getItem("FECRZ").title
-                        createDialog("info", "فیلد ' " + str + " ' خالی می باشد", "<spring:message code="message"/>")
+                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
                         createDialog("info", "فیلد مشخص شده خالی می باشد", "<spring:message code="message"/>")
                         DynamicForm_Evaluation_Coefficient.getItem("FECRZ").focusInItem()
                         return;
                     } else if (DynamicForm_Evaluation_Coefficient.getItem("minScoreET").getValue() == null) {
                         var str = DynamicForm_Evaluation_Coefficient.getItem("minScoreET").title
-                        createDialog("info", "فیلد ' " + str + " ' خالی می باشد", "<spring:message code="message"/>")
+                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
                         DynamicForm_Evaluation_Coefficient.getItem("minScoreET").focusInItem()
                         return;
                     } else if (DynamicForm_Evaluation_Coefficient.getItem("minScoreER").getValue() == null) {
                         var str = DynamicForm_Evaluation_Coefficient.getItem("minScoreER").title
-                        createDialog("info", "فیلد ' " + str + " ' خالی می باشد", "<spring:message code="message"/>")
+                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
                         DynamicForm_Evaluation_Coefficient.getItem("minScoreER").focusInItem()
                         return;
                     } else if (DynamicForm_Evaluation_Coefficient.getItem("minQusER").getValue() == null) {
                         var str = DynamicForm_Evaluation_Coefficient.getItem("minQusER").title
-                        createDialog("info", "فیلد ' " + str + " ' خالی می باشد", "<spring:message code="message"/>")
+                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
                         DynamicForm_Evaluation_Coefficient.getItem("minQusER").focusInItem()
                         return;
                     } else if (DynamicForm_Evaluation_Coefficient.getItem("minPreTestEL").getValue() == null) {
                         var str = DynamicForm_Evaluation_Coefficient.getItem("minPreTestEL").title
-                        createDialog("info", "فیلد ' " + str + " ' خالی می باشد", "<spring:message code="message"/>")
+                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
                         DynamicForm_Evaluation_Coefficient.getItem("minPreTestEL").focusInItem()
                         return;
                     }else if (DynamicForm_Evaluation_Coefficient.getItem("minScoreEL").getValue() == null) {
                         var str = DynamicForm_Evaluation_Coefficient.getItem("minScoreEL").title
-                        createDialog("info", "فیلد ' " + str + " ' خالی می باشد", "<spring:message code="message"/>")
+                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
 
                         DynamicForm_Evaluation_Coefficient.getItem("minScoreEL").focusInItem()
                         return;
                     } else if (DynamicForm_Evaluation_Coefficient.getItem("minPasTestEL").getValue() == null) {
                         var str = DynamicForm_Evaluation_Coefficient.getItem("minPasTestEL").title
-                        createDialog("info", "فیلد ' " + str + " ' خالی می باشد", "<spring:message code="message"/>")
+                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
 
                         DynamicForm_Evaluation_Coefficient.getItem("minPasTestEL").focusInItem()
                         return;
                     } else if (DynamicForm_Evaluation_Coefficient.getItem("minQusEL").getValue() == null) {
                         var str = DynamicForm_Evaluation_Coefficient.getItem("minQusEL").title
-                        createDialog("info", "فیلد ' " + str + " ' خالی می باشد", "<spring:message code="message"/>")
+                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
 
                         DynamicForm_Evaluation_Coefficient.getItem("minQusEL").focusInItem()
                         return;
                     } else if (DynamicForm_Evaluation_Coefficient.getItem("minScoreEB").getValue() == null) {
                         var str = DynamicForm_Evaluation_Coefficient.getItem("minScoreEB").title
-                        createDialog("info", "فیلد ' " + str + " ' خالی می باشد", "<spring:message code="message"/>")
+                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
 
                         DynamicForm_Evaluation_Coefficient.getItem("minScoreEB").focusInItem()
                         return;
                     } else if (DynamicForm_Evaluation_Coefficient.getItem("minScorePreTestEB").getValue() == null) {
                         var str = DynamicForm_Evaluation_Coefficient.getItem("minScorePreTestEB").title
-                        createDialog("info", "فیلد ' " + str + " ' خالی می باشد", "<spring:message code="message"/>")
+                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
 
                         DynamicForm_Evaluation_Coefficient.getItem("minScorePreTestEB").focusInItem()
                         return;
                     } else if (DynamicForm_Evaluation_Coefficient.getItem("minQusEB").getValue() == null) {
                         var str = DynamicForm_Evaluation_Coefficient.getItem("minQusEB").title
-                        createDialog("info", "فیلد ' " + str + " ' خالی می باشد", "<spring:message code="message"/>")
+                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
 
                         DynamicForm_Evaluation_Coefficient.getItem("minQusEB").focusInItem()
                         return;
                     }else if (DynamicForm_Evaluation_Coefficient.getItem("minScoreFECR").getValue() == null) {
                         var str = DynamicForm_Evaluation_Coefficient.getItem("minScoreFECR").title
-                        createDialog("info", "فیلد ' " + str + " ' خالی می باشد", "<spring:message code="message"/>")
+                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
                         DynamicForm_Evaluation_Coefficient.getItem("minScoreFECR").focusInItem()
                         return;
                     }

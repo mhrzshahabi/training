@@ -37,6 +37,8 @@
             {name: "description", title: "توضیحات", align: "center"},
             {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         fetchDataURL: viewJobGroupUrl + "/iscList"
@@ -606,7 +608,11 @@
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
                 }
-            }, {name: "titleFa"}, {name: "competenceCount"}, {name: "personnelCount"}],
+            },
+            {name: "titleFa"},
+            {name: "competenceCount"},
+            {name: "personnelCount"},
+        ],
         sortField: 1,
         sortDirection: "descending",
         autoFetchData: false,
@@ -696,7 +702,7 @@
             if (DynamicForm_Job_Group_Jsp.hasErrors()) {
                 return;
             }
-            var data = DynamicForm_Job_Group_Jsp.getValues();
+            let data = DynamicForm_Job_Group_Jsp.getValues();
 
             isc.RPCManager.sendRequest({
                 actionURL: url,
@@ -708,8 +714,8 @@
                 data: JSON.stringify(data),
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                        var OK = isc.Dialog.create({
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                        let OK = isc.Dialog.create({
                             message: "عملیات با موفقیت انجام شد.",
                             icon: "[SKIN]say.png",
                             title: "انجام فرمان"
@@ -720,7 +726,7 @@
                         ListGrid_Job_Group_refresh();
                         Window_Job_Group_Jsp.close();
                     } else {
-                        var ERROR = isc.Dialog.create({
+                        let ERROR = isc.Dialog.create({
                             message: ("اجرای عملیات با مشکل مواجه شده است!"),
                             icon: "[SKIN]stop.png",
                             title: "پیغام"
@@ -1099,7 +1105,7 @@
         alternateRecordStyles: true,
         showAllRecords: true,
         gridComponents: [
-            // ActionsTS_NA_Job_Group,
+            ActionsTS_NA_Job_Group,
             "header", "filterEditor", "body",],
         fields: [
             {name: "competence.title"},

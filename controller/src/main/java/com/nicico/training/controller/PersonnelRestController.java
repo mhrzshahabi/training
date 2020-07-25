@@ -12,6 +12,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PersonnelRegisteredDTO;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
@@ -133,7 +134,7 @@ public class PersonnelRestController {
     @Loggable
     @GetMapping(value = "/byId/{id}")
     public ResponseEntity<Personnel> findPersonnelById(@PathVariable Long id) {
-        Personnel personalInfo = personnelDAO.findById(id);
+        Personnel personalInfo = personnelDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         return new ResponseEntity<>(personalInfo, HttpStatus.OK);
     }
 
@@ -155,9 +156,9 @@ public class PersonnelRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/byPersonnelNo/{personnelNo}")
-    public ResponseEntity<Personnel> findPersonnelByPersonnelId(@PathVariable String personnelNo) {
-        return new ResponseEntity<>(personnelService.findPersonnelByPersonnelNo(personnelNo), HttpStatus.OK);
+    @GetMapping(value = "/byPersonnelNo/{personnelId}/{personnelNo}")
+    public ResponseEntity<Personnel> findPersonnelByPersonnelId(@PathVariable Long personnelId, @PathVariable String personnelNo) {
+        return new ResponseEntity<>(personnelService.findPersonnelByPersonnelId(personnelId, personnelNo), HttpStatus.OK);
     }
 
     @GetMapping("/all-field-values")
@@ -263,6 +264,13 @@ public class PersonnelRestController {
         }
         else
             return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/personnelFullName/{id}")
+    public ResponseEntity<String> personnelFullName(@PathVariable Long id){
+        String result =  personnelDAO.getPersonnelFullName(id);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 }

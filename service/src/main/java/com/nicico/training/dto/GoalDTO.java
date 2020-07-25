@@ -24,8 +24,10 @@ public class GoalDTO {
     @ApiModelProperty(required = true)
     private String titleFa;
 
-
     private String titleEn;
+
+    private Long categoryId;
+    private Long subCategoryId;
 
     // ------------------------------
 

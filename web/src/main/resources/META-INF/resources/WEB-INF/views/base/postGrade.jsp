@@ -99,7 +99,9 @@
             },
             {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
             {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"}
+            {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
         ],
         fetchDataURL: viewPostGradeUrl + "/iscList"
     });
@@ -114,7 +116,9 @@
             },
             {name: "titleFa"},
             {name: "competenceCount"},
-            {name: "personnelCount"}
+            {name: "personnelCount"},
+            {name: "lastModifiedDateNA"},
+            {name: "modifiedByNA"}
         ],
         autoFetchData: true,
         gridComponents: [PostGradeTS_postGrade, ToolStrip_NA_PostGrade, "filterEditor", "header", "body",],
@@ -341,7 +345,7 @@
         alternateRecordStyles: true,
         showAllRecords: true,
         gridComponents: [
-            // ActionsTS_NA_Post_Grade_Job,
+            ActionsTS_NA_Post_Grade_Job,
             "header", "filterEditor", "body",],
         fields: [
             {name: "competence.title"},

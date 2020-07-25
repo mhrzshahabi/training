@@ -9,6 +9,9 @@ import com.nicico.training.model.NeedsAssessment;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+import java.util.Optional;
+
 public interface NeedsAssessmentDAO extends BaseDAO<NeedsAssessment, Long> {
 
     @Modifying
@@ -22,6 +25,11 @@ public interface NeedsAssessmentDAO extends BaseDAO<NeedsAssessment, Long> {
 
     @Query(value = "select seq_needs_assessment_id.nextval from dual", nativeQuery = true)
     public Long getNextId();
+
+    Optional<NeedsAssessment> findFirstByCompetenceId(Long competenceId);
+
+    Boolean existsByCompetenceId(Long competenceId);
+
 }
 
 

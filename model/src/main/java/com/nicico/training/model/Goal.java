@@ -37,4 +37,18 @@ public class Goal extends Auditable {
 
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, mappedBy = "goalSet")
     private List<Course> courseSet;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", insertable = false, updatable = false)
+    private Category category;
+
+    @Column(name = "category_id")
+    private Long categoryId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subcategory_id", insertable = false, updatable = false)
+    private Subcategory subCategory;
+
+    @Column(name = "subcategory_id")
+    private Long subCategoryId;
 }

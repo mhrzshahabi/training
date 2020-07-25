@@ -96,18 +96,17 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
     public List<PersonnelRegisteredDTO.Info> checkPersonnelNos(List<String> personnelNos) {
         List<PersonnelRegisteredDTO.Info> result = new ArrayList<>();
 
-        List<PersonnelRegistered> list = personnelRegisteredDAO.findByPersonnelNoInOrPersonnelNo2In(personnelNos , personnelNos);
+        List<PersonnelRegistered> list = personnelRegisteredDAO.findByPersonnelNoInOrPersonnelNo2In(personnelNos, personnelNos);
         PersonnelRegistered prs = null;
 
         for (String personnelNo : personnelNos) {
 
-            if (list.stream().filter(p -> p.getPersonnelNo().equals(personnelNo) ||  p.getPersonnelNo2().equals(personnelNo)).collect(Collectors.toList()).size()==0)
-            {
+            if (list.stream().filter(p -> (p.getPersonnelNo() != null && p.getPersonnelNo().equals(personnelNo)) || (p.getPersonnelNo2() != null && p.getPersonnelNo2().equals(personnelNo))).count() == 0) {
                 result.add(new PersonnelRegisteredDTO.Info());
 
             } else {
-                prs =list.stream().filter(p -> p.getPersonnelNo().equals(personnelNo) ||  p.getPersonnelNo2().equals(personnelNo)).collect(Collectors.toList()).get(0);
-                result.add(modelMapper.map(prs,PersonnelRegisteredDTO.Info.class));
+                prs = list.stream().filter(p -> (p.getPersonnelNo() != null && p.getPersonnelNo().equals(personnelNo)) || (p.getPersonnelNo2() != null && p.getPersonnelNo2().equals(personnelNo))).collect(Collectors.toList()).get(0);
+                result.add(modelMapper.map(prs, PersonnelRegisteredDTO.Info.class));
             }
         }
 
