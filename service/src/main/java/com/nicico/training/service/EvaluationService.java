@@ -85,6 +85,13 @@ public class EvaluationService implements IEvaluationService {
                 updateTclassInfo(evaluation.getClassId(),3, -1);
         }
 
+        else  if(evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(140L)) {
+            if(evaluation.getEvaluationFull())
+                updateTclassInfo(evaluation.getClassId(),-1, 2);
+            else if(!evaluation.getEvaluationFull())
+                updateTclassInfo(evaluation.getClassId(),-1, 3);
+        }
+
         return modelMapper.map(evaluationDAO.save(updating), EvaluationDTO.Info.class);
     }
 
@@ -117,11 +124,17 @@ public class EvaluationService implements IEvaluationService {
             saved.setEvaluationAnswerList(list);
             updateQuestionnarieInfo(evaluation.getQuestionnaireId());
         }
-        if(evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(141L)) {
+        else if(evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(141L)) {
             List<EvaluationAnswer> list = createEvaluationAnswers(saved);
             saved.setEvaluationAnswerList(list);
             updateQuestionnarieInfo(evaluation.getQuestionnaireId());
             updateTclassInfo(evaluation.getClassId(),1, -1);
+        }
+        else if(evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(140L)) {
+            List<EvaluationAnswer> list = createEvaluationAnswers(saved);
+            saved.setEvaluationAnswerList(list);
+            updateQuestionnarieInfo(evaluation.getQuestionnaireId());
+            updateTclassInfo(evaluation.getClassId(),-1, 1);
         }
         return modelMapper.map(saved, EvaluationDTO.Info.class);
     }
@@ -277,7 +290,12 @@ public class EvaluationService implements IEvaluationService {
                 Long.parseLong(req.get("evaluatedTypeId").toString()),
                 Long.parseLong(req.get("evaluationLevelId").toString()));
 
-        updateClassStudentInfo(modelMapper.map(evaluation,Evaluation.class),0);
+        if(req.get("questionnaireTypeId").toString().equals("139"))
+            updateClassStudentInfo(modelMapper.map(evaluation,Evaluation.class),0);
+        else if(req.get("questionnaireTypeId").toString().equals("141"))
+            updateTclassInfo(Long.parseLong(req.get("classId").toString()),0, -1);
+        else if(req.get("questionnaireTypeId").toString().equals("140"))
+            updateTclassInfo(Long.parseLong(req.get("classId").toString()),-1, 0);
         evaluationDAO.deleteById(evaluation.getId());
         updateQuestionnarieInfo(evaluation.getQuestionnaireId());
     }

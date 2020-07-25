@@ -3539,12 +3539,12 @@ var dummy;
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 QId = resp.httpResponseText;
                 if(QId != null && classRecord.supervisor != undefined && classRecord.teacherId != undefined)
-                    create_evaluation_form(null,QId, classRecord.supervisor, 454, classRecord.teacherId,187 , 141, 154,classRecord.id);
+                    create_evaluation_form_JspClass(null,QId, classRecord.supervisor, 454, classRecord.teacherId,187 , 141, 154,classRecord.id);
             }
         }));
     }
 
-    function create_evaluation_form(id,questionnarieId, evaluatorId,
+    function create_evaluation_form_JspClass(id,questionnarieId, evaluatorId,
                                     evaluatorTypeId, evaluatedId, evaluatedTypeId, questionnarieTypeId,
                                     evaluationLevel,classId){
         let data = {};
