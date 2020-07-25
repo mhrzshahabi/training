@@ -441,7 +441,7 @@
             },//end getCellCSSText
             cellClick: function (record, rowNum, colNum) {
                 if (colNum === 6) {
-                    console.log(record);
+                    //console.log(record);
                     selectedRecord_addStudent_class = {
                         firstName: record.student.firstName,
                         lastName: record.student.lastName,
@@ -453,7 +453,7 @@
                         postCode: record.student.postCode
                     };
 
-                    console.log(selectedRecord_addStudent_class);
+                    //console.log(selectedRecord_addStudent_class);
 
                     let window_class_Information = isc.Window.create({
                         title: "<spring:message code="personnel.information"/>",
