@@ -1347,12 +1347,12 @@
                 </sec:authorize>
 
                 <%--<sec:authorize access="hasAuthority('Menu_NeedAssessment_Training_Post')">--%>
-                {
-                    title: "<spring:message code="post"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/training-post"/>");
-                    }
-                },
+                <%--{--%>
+                    <%--title: "<spring:message code="post"/>",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="web/training-post"/>");--%>
+                    <%--}--%>
+                <%--},--%>
                 <%--</sec:authorize>--%>
 
                 <%--,--%>
