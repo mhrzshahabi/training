@@ -156,9 +156,9 @@ public class PersonnelRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/byPersonnelNo/{personnelNo}")
-    public ResponseEntity<Personnel> findPersonnelByPersonnelId(@PathVariable String personnelNo) {
-        return new ResponseEntity<>(personnelService.findPersonnelByPersonnelNo(personnelNo), HttpStatus.OK);
+    @GetMapping(value = "/byPersonnelNo/{personnelId}/{personnelNo}")
+    public ResponseEntity<Personnel> findPersonnelByPersonnelId(@PathVariable Long personnelId, @PathVariable String personnelNo) {
+        return new ResponseEntity<>(personnelService.findPersonnelByPersonnelId(personnelId, personnelNo), HttpStatus.OK);
     }
 
     @GetMapping("/all-field-values")

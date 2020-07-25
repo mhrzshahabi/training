@@ -49,6 +49,8 @@ public interface PersonnelDAO extends JpaRepository<Personnel, Long>, JpaSpecifi
 
     Personnel findPersonnelByPersonnelNo(String personnelNo);
 
+    Personnel findPersonnelById(Long personnelId);
+
     Optional<Personnel> findById(Long Id);
 
     @Query(value = "SELECT complex_title FROM tbl_personnel where national_code = :national_code AND active = 1 AND employment_status_id=5 AND ROWNUM < 2", nativeQuery = true)
