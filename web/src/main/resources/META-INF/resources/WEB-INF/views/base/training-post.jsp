@@ -90,7 +90,7 @@
             {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
-        fetchDataURL: viewPostGroupUrl + "/iscList"
+        fetchDataURL: viewTrainingPostUrl + "/iscList"
     });
     var Menu_ListGrid_TrainingPost_Jsp = isc.Menu.create({
         width: 150,
@@ -800,7 +800,7 @@
             loadPostData({
                 _constructor: "AdvancedCriteria",
                 operator: "and",
-                criteria: [{fieldName: "postGroupSet", operator: "isNull"}]
+                criteria: [{fieldName: "trainingPostSet", operator: "isNull"}]
             }, this.title);
         }
     });
@@ -1354,6 +1354,7 @@
         switch (tab.name) {
             case "TabPane_Post_TrainingPost_Jsp":{
                 RestDataSource_TrainingPost_Posts_Jsp.fetchDataURL = trainingPostUrl + "/" + trainingPost.id + "/getPosts";
+                RestDataSource_TrainingPost_Posts_Jsp.fetchDataURL = trainingPostUrl + "/" + trainingPost.id + "/getPosts";
                 if (TrainingPost_PostList_TrainingPost_Jsp == null)
                     refreshLG(ListGrid_TrainingPost_Posts);
                 break;
@@ -1370,14 +1371,15 @@
                 break;
             }
             case "TabPane_NA_TrainingPost_Jsp":{
-                if (naTrainingPost_TrainingPost_Jsp === trainingPost.id)
-                    return;
-                naTrainingPost_TrainingPost_Jsp = trainingPost.id;
-                CourseDS_TrainingPost_Jsp.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + trainingPost.id + "&objectType=TrainingPost";
-                CourseDS_TrainingPost_Jsp.invalidateCache();
-                CourseDS_TrainingPost_Jsp.fetchData();
-                CourseLG_TrainingPost_Jsp.invalidateCache();
-                CourseLG_TrainingPost_Jsp.fetchData();
+                //don't delete this part !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                // if (naTrainingPost_TrainingPost_Jsp === trainingPost.id)
+                //     return;
+                // naTrainingPost_TrainingPost_Jsp = trainingPost.id;
+                // CourseDS_TrainingPost_Jsp.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + trainingPost.id + "&objectType=TrainingPost";
+                // CourseDS_TrainingPost_Jsp.invalidateCache();
+                // CourseDS_TrainingPost_Jsp.fetchData();
+                // CourseLG_TrainingPost_Jsp.invalidateCache();
+                // CourseLG_TrainingPost_Jsp.fetchData();
                 break;
             }
         }
@@ -1393,11 +1395,6 @@
 
         PersonnelDS_TrainingPost_Jsp.fetchDataURL = trainingPostUrl + "/" + ListGrid_TrainingPost_Jsp.getSelectedRecord().id + "/getPersonnel";
 
-    //     PersonnelLG_TrainingPost_Jsp.implicitCriteria = {
-    //         _constructor: "AdvancedCriteria",
-    //         operator: "and",
-    //         criteria: [{fieldName: "postCode", operator: "equals", value: TrainingPost_PostList_TrainingPost_Jsp.map(p => p.code)}]
-    // };
         PersonnelLG_TrainingPost_Jsp.invalidateCache();
         PersonnelLG_TrainingPost_Jsp.fetchData();
     }

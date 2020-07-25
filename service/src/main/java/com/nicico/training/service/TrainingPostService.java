@@ -84,6 +84,7 @@ public class TrainingPostService implements ITrainingPostService {
     public List<PersonnelDTO.Info> getPersonnel(Long trainingPostID) {
         final Optional<TrainingPost> optionalTrainingPost = trainingPostDAO.findById(trainingPostID);
         final TrainingPost trainingPost = optionalTrainingPost.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TrainingPostNotFound));
+        List<PersonnelDTO.Info> infoList = new ArrayList<>();
         Set<Post> posts = trainingPost.getPostSet();
         if(posts.size() > 0)
         {
@@ -96,8 +97,9 @@ public class TrainingPostService implements ITrainingPostService {
             criteria.getCriteria().add(makeNewCriteria("postId", values, EOperator.inSet, null));
             criteria.getCriteria().add(makeNewCriteria("active", 1, EOperator.equals, null));
             criteria.getCriteria().add(makeNewCriteria("employmentStatusId", 5, EOperator.equals, null));
-            return personnelService.search(new SearchDTO.SearchRq().setCriteria(criteria)).getList();
+            infoList = personnelService.search(new SearchDTO.SearchRq().setCriteria(criteria)).getList();
+            return infoList;
         }
-        return null;
+        return infoList;
     }
 }
