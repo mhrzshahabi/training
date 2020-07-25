@@ -34,7 +34,7 @@ public class EvaluationService implements IEvaluationService {
     private final SkillDAO skillDAO;
     private final DynamicQuestionService dynamicQuestionService;
     private final DynamicQuestionDAO dynamicQuestionDAO;
-    private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
+    private final QuestionnaireQuestionDAO questionnaireQuestionDAO;;
 
 
     @Transactional(readOnly = true)
@@ -78,6 +78,13 @@ public class EvaluationService implements IEvaluationService {
                 updateClassStudentInfo(updating, 3);
         }
 
+        else  if(evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(141L)) {
+            if(evaluation.getEvaluationFull())
+                updateTclassInfo(evaluation.getClassId(),2, -1);
+            else if(!evaluation.getEvaluationFull())
+                updateTclassInfo(evaluation.getClassId(),3, -1);
+        }
+
         return modelMapper.map(evaluationDAO.save(updating), EvaluationDTO.Info.class);
     }
 
@@ -103,12 +110,18 @@ public class EvaluationService implements IEvaluationService {
 
     private EvaluationDTO.Info save(Evaluation evaluation) {
         final Evaluation saved = evaluationDAO.saveAndFlush(evaluation);
+        Long evaluationId = saved.getId();
         if(evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(139L)) {
-            Long evaluationId = saved.getId();
             updateClassStudentInfo(saved, 1);
             List<EvaluationAnswer> list = createEvaluationAnswers(saved);
             saved.setEvaluationAnswerList(list);
             updateQuestionnarieInfo(evaluation.getQuestionnaireId());
+        }
+        if(evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(141L)) {
+            List<EvaluationAnswer> list = createEvaluationAnswers(saved);
+            saved.setEvaluationAnswerList(list);
+            updateQuestionnarieInfo(evaluation.getQuestionnaireId());
+            updateTclassInfo(evaluation.getClassId(),1, -1);
         }
         return modelMapper.map(saved, EvaluationDTO.Info.class);
     }
@@ -270,14 +283,19 @@ public class EvaluationService implements IEvaluationService {
     }
 
     //----------------------------------------------- evaluation updating ----------------------------------------------
-    public void updateTclassInfo(){
-
+    public void updateTclassInfo(Long classID,Integer reactionTrainingStatus, Integer reactionTeacherStatus){
+        Optional<Tclass> byId = tclassDAO.findById(classID);
+        Tclass tclass = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        if(reactionTeacherStatus.equals(-1))
+            tclass.setEvaluationStatusReactionTraining(reactionTrainingStatus);
+        else if(reactionTrainingStatus.equals(-1))
+            tclass.setEvaluationStatusReactionTeacher(reactionTeacherStatus);
     }
 
     public void updateClassStudentInfo(Evaluation evaluation,Integer version){
             if(evaluation.getQuestionnaireTypeId().equals(139L)){
                 Optional<ClassStudent> byId = classStudentDAO.findById(evaluation.getEvaluatorId());
-                ClassStudent classStudent = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TermNotFound));
+                ClassStudent classStudent = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                 classStudent.setEvaluationStatusReaction(version);
             }
     }
@@ -285,7 +303,7 @@ public class EvaluationService implements IEvaluationService {
     public void updateQuestionnarieInfo(Long questionnarieId){
         List<Evaluation> list = evaluationDAO.findByQuestionnaireId(questionnarieId);
         Optional<Questionnaire> byId = questionnaireDAO.findById(questionnarieId);
-        Questionnaire questionnaire = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TermNotFound));
+        Questionnaire questionnaire = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         if(list!= null && list.size() != 0)
             questionnaire.setLockStatus(true);
         else
@@ -296,7 +314,7 @@ public class EvaluationService implements IEvaluationService {
         List<EvaluationAnswer> evaluationAnswers = new ArrayList<>();
         if(evaluation.getQuestionnaireTypeId().equals(139L)){
             Optional<Tclass> byId = tclassDAO.findById(evaluation.getClassId());
-            Tclass tclass = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TermNotFound));
+            Tclass tclass = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
             for (Goal goal : tclass.getCourse().getGoalSet()) {
                 String Question = getGoalQuestion(goal.getId());
@@ -357,7 +375,17 @@ public class EvaluationService implements IEvaluationService {
                 evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate,EvaluationAnswer.class));
             }
         }
-
+        else if(evaluation.getQuestionnaireTypeId().equals(141L)){
+            Optional<Questionnaire> qId = questionnaireDAO.findById(evaluation.getQuestionnaireId());
+            Questionnaire questionnaire = qId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+            for (QuestionnaireQuestion questionnaireQuestion : questionnaire.getQuestionnaireQuestionList()) {
+                EvaluationAnswerDTO.Create evaluationAnswerCreate = new EvaluationAnswerDTO.Create();
+                evaluationAnswerCreate.setEvaluationId(evaluation.getId());
+                evaluationAnswerCreate.setQuestionSourceId(199L);
+                evaluationAnswerCreate.setEvaluationQuestionId(questionnaireQuestion.getId());
+                evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate,EvaluationAnswer.class));
+            }
+        }
         return evaluationAnswers;
     }
 

@@ -42,14 +42,14 @@
                 {name: "tclassStatus"},
                 {name: "tclassEndingStatus"},
                 {name: "tclassPlanner"},
-                {name: "tclassSupervisor"},
                 {name: "termTitleFa"},
                 {name: "instituteTitleFa"},
                 {name: "classScoringMethod"},
                 {name: "classPreCourseTest"},
                 {name: "courseId"},
                 {name: "teacherEvalStatus"},
-                {name: "trainingEvalStatus"}
+                {name: "trainingEvalStatus"},
+                {name: "tclassSupervisor"}
             ],
             fetchDataURL: viewClassDetailUrl + "/iscList"
         });
@@ -382,7 +382,8 @@
                 {name: "courseId", hidden: true},
                 {name: "teacherId", hidden: true},
                 {name: "teacherEvalStatus", hidden: true},
-                {name: "trainingEvalStatus", hidden: true}
+                {name: "trainingEvalStatus", hidden: true},
+                {name: "tclassSupervisor", hidden: true}
             ],
             selectionUpdated: function () {
                 loadSelectedTab_data(Detail_Tab_Evaluation.getSelectedTab());

@@ -63,6 +63,7 @@ public class TclassDTO {
     private Integer startEvaluation;
     private Boolean preCourseTest;
     private String hasWarning;
+    private Integer evaluationStatusReactionTraining;
 
 
     @Getter

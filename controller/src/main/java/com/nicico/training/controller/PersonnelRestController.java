@@ -266,4 +266,11 @@ public class PersonnelRestController {
             return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
+    @Loggable
+    @GetMapping(value = "/personnelFullName/{id}")
+    public ResponseEntity<String> personnelFullName(@PathVariable Long id){
+        String result =  personnelDAO.getPersonnelFullName(id);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
 }
