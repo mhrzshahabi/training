@@ -924,54 +924,125 @@
         width: 300,
         click: function () {
 
-            if(Object.keys(DynamicForm_CriteriaForm_JspUnitReport.getValuesAsCriteria()).length <= 1) {
+            if(DynamicForm_CriteriaForm_JspUnitReport.getValuesAsAdvancedCriteria().criteria.size() <= 1) {
                 createDialog("info","فیلتری انتخاب نشده است.");
                 return;
             }
-
-            let criteria = DynamicForm_CriteriaForm_JspUnitReport.getValuesAsAdvancedCriteria();
-
-           // criteria=criteria.criteria1.criteria.filter(x=>x.fieldName=="classStatus")
-            console.log(criteria);
 
             DynamicForm_CriteriaForm_JspUnitReport.validate();
             if (DynamicForm_CriteriaForm_JspUnitReport.hasErrors())
                 return;
 
             else{
-                let cr = [];
+                data_values = DynamicForm_CriteriaForm_JspUnitReport.getValuesAsAdvancedCriteria();
+                for (var i = 0; i < data_values.criteria.size(); i++) {
+                    if (data_values.criteria[i].fieldName == "courseCode") {
+                        var codesString = data_values.criteria[i].value;
+                        var codesArray;
+                        codesArray = codesString.split(",");
+                        for (var j = 0; j < codesArray.length; j++) {
+                            if (codesArray[j] == "" || codesArray[j] == " ") {
+                                codesArray.remove(codesArray[j]);
+                            }
+                        }
+                        data_values.criteria[i].operator = "inSet";
+                        data_values.criteria[i].value = codesArray;
+                    }
 
-                if(DynamicForm_CriteriaForm_JspUnitReport.getValue("classCode") !== undefined){
-                    criteria.criteria=criteria.criteria.splice(criteria.criteria.findIndex(x=>x.fieldName=="classCode" && x.operator=="inContains"),1);
-                    criteria.criteria.push({fieldName: "classCode", operator: "inSet", value: DynamicForm_CriteriaForm_JspUnitReport.getValue("classCode").split(',').toArray()});
+                    else if (data_values.criteria[i].fieldName == "classCode") {
+                        var codesString = data_values.criteria[i].value;
+                        var codesArray;
+                        codesArray = codesString.split(",");
+                        for (var j = 0; j < codesArray.length; j++) {
+                            if (codesArray[j] == "" || codesArray[j] == " ") {
+                                codesArray.remove(codesArray[j]);
+                            }
+                        }
+                        data_values.criteria[i].operator = "inSet";
+                        data_values.criteria[i].value = codesArray;
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "instituteId") {
+                        data_values.criteria[i].fieldName = "instituteId";
+                        data_values.criteria[i].operator = "equals";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "personnelComplexTitle") {
+                        data_values.criteria[i].fieldName = "personnelComplexTitle";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "classStudentApplicantCompanyName") {
+                        data_values.criteria[i].fieldName = "classStudentApplicantCompanyName";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "studentCcpAssistant") {
+                        data_values.criteria[i].fieldName = "studentCcpAssistant";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "studentCcpUnit") {
+                        data_values.criteria[i].fieldName = "studentCcpUnit";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "studentCcpAffairs") {
+                        data_values.criteria[i].fieldName = "studentCcpAffairs";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "studentCcpSection") {
+                        data_values.criteria[i].fieldName = "studentCcpSection";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "courseTitleFa") {
+                        data_values.criteria[i].fieldName = "courseTitleFa";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "classStartDate") {
+                        data_values.criteria[i].fieldName = "classStartDate";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "classEndDate") {
+                        data_values.criteria[i].fieldName = "classEndDate";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "classPlanner") {
+                        data_values.criteria[i].fieldName = "classPlanner";
+                        data_values.criteria[i].operator = "equals";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "classSupervisor") {
+                        data_values.criteria[i].fieldName = "classSupervisor";
+                        data_values.criteria[i].operator = "equals";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "courseTeacherId") {
+                        data_values.criteria[i].fieldName = "courseTeacherId";
+                        data_values.criteria[i].operator = "equals";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "classYear") {
+                        data_values.criteria[i].fieldName = "classYear";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "termId") {
+                        data_values.criteria[i].fieldName = "termId";
+                        data_values.criteria[i].operator = "equals";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "courseCategory") {
+                        data_values.criteria[i].fieldName = "courseCategory";
+                        data_values.criteria[i].operator = "equals";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "courseSubCategory") {
+                        data_values.criteria[i].fieldName = "courseSubCategory";
+                        data_values.criteria[i].operator = "equals";
+                    }
                 }
-
-                if(DynamicForm_CriteriaForm_JspUnitReport.getValue("courseCode") !== undefined){
-                    criteria.criteria=criteria.criteria.splice(criteria.criteria.findIndex(x=>x.fieldName=="courseCode" && x.operator=="inContains"),1);
-                    criteria.criteria.push({fieldName: "courseCode", operator: "inSet", value: DynamicForm_CriteriaForm_JspUnitReport.getValue("courseCode").split(',').toArray()});
-                }
-
-                // if(DynamicForm_CriteriaForm_JspUnitReport.getValue("classStatus") !== undefined){
-                //     criteria.criteria=criteria.criteria.splice(criteria.criteria.findIndex(x=>x.fieldName=="classStatus" && x.operator=="inSet"),1);
-                //     criteria.criteria.push({fieldName: "classStatus", operator: "inSet", value: DynamicForm_CriteriaForm_JspUnitReport.getValue("classStatus")});
-                // }
-
-                if(DynamicForm_CriteriaForm_JspUnitReport.getValue("instituteId") !== undefined){
-
-                    criteria.criteria.push({fieldName: "instituteId", operator: "equals", value: DynamicForm_CriteriaForm_JspUnitReport.getValue("instituteId")});
-                }
-
-                criteria.criteria.push({fieldName: "studentLastName", operator: "iContains", value: "بازدار"});
-
-                //if (cr.length!=0)
-                //criteria.criteria = cr;
-
-                console.log(criteria);
 
                 ListGrid_JspUnitReport.invalidateCache();
-                //RestDataSource_JspUnitReport.implicitCriteria=[];
-                //RestDataSource_JspUnitReport.implicitCriteria = criteria;
-                ListGrid_JspUnitReport.fetchData(criteria);
+                ListGrid_JspUnitReport.fetchData(data_values);
                 Window_JspUnitReport.show();
             }
         }
