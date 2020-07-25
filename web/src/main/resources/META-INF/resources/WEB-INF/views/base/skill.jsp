@@ -416,8 +416,8 @@
                 SkillDF_Skill.getItem('code').setValue(sub_cat_code + skillLevelSymbol_Skill);
             }
 
-            wait_Skill = createDialog("wait");
 
+            wait.show()
             isc.RPCManager.sendRequest(TrDSRequest(url_Skill, method_Skill, JSON.stringify(SkillDF_Skill.getValues()), Result_SaveSkill_Skill));
 
 
@@ -726,7 +726,7 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                        wait_Skill = createDialog("wait");
+                        wait.show()
                         isc.RPCManager.sendRequest(TrDSRequest(skillUrl + "/" + record.id, "DELETE", null, Result_RemoveSkill_Skill));
                     }
                 }
@@ -735,7 +735,7 @@
     }
 
     function Result_RemoveSkill_Skill(resp) {
-        wait_Skill.close();
+        wait.close()
         if (resp.data === "true") {
             refreshLG(SkillLG_Skill);
             PostLG_Skill.setData([]);
@@ -761,12 +761,13 @@
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.not.selected.record'/>");
         } else {
+            wait.show()
             isc.RPCManager.sendRequest(TrDSRequest(skillUrl + "/editSkill/" +record.id, "GET", null, Result_EditSkill));
 
         }
     }
         function  Result_EditSkill(resp) {
-
+            wait.close()
             let record = SkillLG_Skill.getSelectedRecord();
             if (resp.data == 'true')
             {
@@ -812,7 +813,7 @@
     }
 
     function Result_SaveSkill_Skill(resp){
-            wait_Skill.close();
+        wait.close()
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
             setTimeout(function () {
@@ -849,11 +850,13 @@
     function setSkillCode_Skill(){
         if (SkillDF_Skill.getValue("categoryId") != null && SkillDF_Skill.getValue("subCategoryId") != null && SkillDF_Skill.getValue("skillLevelId") != null) {
             let code = SkillDF_Skill.getItem('subCategoryId').getSelectedRecord().code;
+            wait.show()
             isc.RPCManager.sendRequest(TrDSRequest(skillUrl + "/getMaxSkillCode/" + (code + skillLevelSymbol_Skill), "GET", null, Result_SetSkillCode_Skill));
         }
     }
 
     function Result_SetSkillCode_Skill(resp) {
+        wait.close()
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             SkillDF_Skill.getItem('code').setValue(resp.data);
         }
