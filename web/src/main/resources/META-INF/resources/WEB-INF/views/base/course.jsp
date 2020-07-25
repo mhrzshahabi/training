@@ -143,7 +143,10 @@
         fields: [
             {name: "id", primaryKey: true},
             {name: "titleFa"},
-            {name: "titleEn"}],
+            {name: "titleEn"},
+            {name: "categoryId"},
+            {name: "subCategoryId"},
+            ],
         // fetchDataURL: courseUrl + courseRecord.id + "/goal"
     });
     var RestDataSource_CourseSkill = isc.TrDS.create({
