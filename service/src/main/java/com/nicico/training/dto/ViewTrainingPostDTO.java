@@ -16,7 +16,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class ViewPostDTO implements Serializable {
+public class ViewTrainingPostDTO implements Serializable {
 
     @NotEmpty
     @ApiModelProperty(required = true)
@@ -97,7 +97,7 @@ public class ViewPostDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("PostInfo")
-    public static class Info extends ViewPostDTO{
+    public static class Info extends ViewTrainingPostDTO{
         private Long id;
     }
 }

@@ -15,9 +15,9 @@ import java.util.Set;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Subselect("select * from view_post")
-@DiscriminatorValue("ViewPost")
-public class ViewPost extends Auditable {
+@Subselect("select * from view_training_post")
+@DiscriminatorValue("ViewTrainingPost")
+public class ViewTrainingPost extends Auditable {
     @Id
     @Column(name = "id")
     private Long id;
@@ -75,9 +75,6 @@ public class ViewPost extends Auditable {
 
     @ManyToMany(mappedBy = "postSet", fetch = FetchType.LAZY)
     private Set<PostGroup> postGroupSet;
-
-    @ManyToMany(mappedBy = "postSet", fetch = FetchType.LAZY)
-    private Set<PostGroup> trainingPostSet;
 
     @Column(name = "d_last_modified_date_na")
     private Date lastModifiedDateNA;

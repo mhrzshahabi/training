@@ -535,32 +535,99 @@
         title: "چاپ گزارش",
         width: 300,
         click: function () {
+            if(DynamicForm_CriteriaForm_JspAttendanceReport.getValuesAsAdvancedCriteria()==null) {
+                createDialog("info","فیلتری انتخاب نشده است.");
+                return;
+            }
+
             DynamicForm_CriteriaForm_JspAttendanceReport.validate();
             if (DynamicForm_CriteriaForm_JspAttendanceReport.hasErrors())
                 return;
 
-            let criteria = DynamicForm_CriteriaForm_JspAttendanceReport.getValuesAsAdvancedCriteria();
-            if(criteria === null || Object.keys(DynamicForm_CriteriaForm_JspAttendanceReport.getValuesAsCriteria()).length === 0) {
-                ListGrid_JspAttendanceReport.setData([]);
-                createDialog("info","فیلتری انتخاب نشده است.");
-            }
             else{
-                let cr = [];
-
-                if(DynamicForm_CriteriaForm_JspAttendanceReport.getValue("classCode") !== undefined){
-
-                    for (let i = 0; i < criteria.criteria.length; i++) {
-                        if(criteria.criteria[i]["fieldName"] !== "classCode"){
-                            cr.push(criteria.criteria[i])
+                data_values = DynamicForm_CriteriaForm_JspAttendanceReport.getValuesAsAdvancedCriteria();
+                for (let i = 0; i < data_values.criteria.size(); i++) {
+                     if (data_values.criteria[i].fieldName == "classCode") {
+                        let codesString = data_values.criteria[i].value;
+                        let codesArray;
+                        codesArray = codesString.split(",");
+                        for (var j = 0; j < codesArray.length; j++) {
+                            if (codesArray[j] == "" || codesArray[j] == " ") {
+                                codesArray.remove(codesArray[j]);
+                            }
                         }
+                        data_values.criteria[i].operator = "inSet";
+                        data_values.criteria[i].value = codesArray;
                     }
-                    cr.push({fieldName: "classCode", operator: "inSet", value: DynamicForm_CriteriaForm_JspAttendanceReport.getValue("classCode").split(',').toArray()});
-                    criteria.criteria = cr;
+
+                    else if (data_values.criteria[i].fieldName == "personnelComplexTitle") {
+                        data_values.criteria[i].fieldName = "personnelComplexTitle";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "classStudentApplicantCompanyName") {
+                        data_values.criteria[i].fieldName = "classStudentApplicantCompanyName";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "studentCcpAssistant") {
+                        data_values.criteria[i].fieldName = "studentCcpAssistant";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "studentCcpUnit") {
+                        data_values.criteria[i].fieldName = "studentCcpUnit";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "studentCcpAffairs") {
+                        data_values.criteria[i].fieldName = "studentCcpAffairs";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "studentCcpSection") {
+                        data_values.criteria[i].fieldName = "studentCcpSection";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "classStartDate") {
+                        data_values.criteria[i].fieldName = "classStartDate";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "classEndDate") {
+                        data_values.criteria[i].fieldName = "classEndDate";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+
+                     else if (data_values.criteria[i].fieldName == "sessionDate") {
+                         data_values.criteria[i].fieldName = "sessionDate";
+                         data_values.criteria[i].operator = "iContains";
+                     }
+
+                     else if (data_values.criteria[i].fieldName == "studentPersonnelNo") {
+                         data_values.criteria[i].fieldName = "studentPersonnelNo";
+                         data_values.criteria[i].operator = "iContains";
+                     }
+
+                    else if (data_values.criteria[i].fieldName == "studentPersonnelNo2") {
+                        data_values.criteria[i].fieldName = "studentPersonnelNo2";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "studentNationalCode") {
+                        data_values.criteria[i].fieldName = "studentNationalCode";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+
+                     else if (data_values.criteria[i].fieldName == "studentFirstName") {
+                         data_values.criteria[i].fieldName = "studentFirstName";
+                         data_values.criteria[i].operator = "iContains";
+                     }
+
+                     else if (data_values.criteria[i].fieldName == "studentLastName") {
+                         data_values.criteria[i].fieldName = "studentLastName";
+                         data_values.criteria[i].operator = "iContains";
+                     }
                 }
 
                 ListGrid_JspAttendanceReport.invalidateCache();
-                RestDataSource_JspAttendanceReport.implicitCriteria = criteria;
-                ListGrid_JspAttendanceReport.fetchData(criteria);
+                ListGrid_JspAttendanceReport.fetchData(data_values);
                 Window_JspAttendanceReport.show();
             }
         }

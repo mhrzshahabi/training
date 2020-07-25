@@ -958,4 +958,15 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="haeri_am (generated)" id="1595647986202-454">
+        <addColumn tableName="tbl_goal">
+            <column name="category_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="haeri_am (generated)" id="1595647986202-455">
+        <addColumn tableName="tbl_goal">
+            <column name="subcategory_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
