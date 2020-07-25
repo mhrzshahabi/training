@@ -749,6 +749,7 @@
     const postGroupUrl = rootUrl + "/post-group";
     const postGradeUrl = rootUrl + "/postGrade";
     const postUrl = rootUrl + "/post";
+    const trainingPostUrl = rootUrl + "/training-post";
     const competenceUrl = rootUrl + "/competence";
     const needAssessmentUrl = rootUrl + "/needAssessment";
     const skillUrl = rootUrl + "/skill";
@@ -791,6 +792,7 @@
     const viewJobGroupUrl = rootUrl + "/view-job-group";
     const viewPostGradeUrl = rootUrl + "/view-post-grade";
     const viewPostGradeGroupUrl = rootUrl + "/view-post-grade-group";
+    const viewTrainingPostUrl = rootUrl + "/view-training-post";
     const masterDataUrl = rootUrl + "/masterData";
     const viewEvaluationStaticalReportUrl = rootUrl + "/view-evaluation-statical-report";
     const viewTeacherReportUrl = rootUrl + "/view-teacher-report/";
@@ -1343,6 +1345,15 @@
                     }
                 },
                 </sec:authorize>
+
+                <%--<sec:authorize access="hasAuthority('Menu_NeedAssessment_Training_Post')">--%>
+                {
+                    title: "<spring:message code="post"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/training-post"/>");
+                    }
+                },
+                <%--</sec:authorize>--%>
 
                 <%--,--%>
                 <%--{--%>
@@ -2339,7 +2350,8 @@
             message = message ? message : "<spring:message code='in.operation'/>"
         }
         let dialog = isc.Dialog.create({
-            icon: type + '.png',
+            icon: type + (type === "wait" ? '.gif' : '.png'),
+            iconSize: "20",
             title: title ? title : "<spring:message code="message"/>",
             message: message,
         });

@@ -66,7 +66,7 @@ public class TrainingPost extends Auditable {
     @JoinColumn(name = "f_post_grade_id")
     private PostGrade postGrade;
 
-    @ManyToMany(mappedBy = "postSet")
+    @ManyToMany(mappedBy = "trainingPostSet")
     private Set<PostGroup> postGroupSet;
 
     @Column(name = "c_people_type", length = 50)

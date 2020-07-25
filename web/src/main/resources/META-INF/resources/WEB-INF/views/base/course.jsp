@@ -1854,7 +1854,7 @@
                     data2.workflowStatusCode = "0";
                     delete data2.subCategory;
                     data2.subCategoryId = DynamicForm_course_GroupTab.getValue("subCategory.id");
-                    // console.log(data2)
+                    wait.show()
                     isc.RPCManager.sendRequest(TrDSRequest(courseUrl, course_method, JSON.stringify(data2), function (resp) {
                         wait.close();
                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
@@ -2810,6 +2810,7 @@
                     for (let i = 0; i < JSON.parse(resp.data).length; i++) {
                         preCourseDS.addData(JSON.parse(resp.data)[i]);
                     }
+                    wait.show()
                     isc.RPCManager.sendRequest({
                         actionURL: courseUrl + "equalCourse/" + courseRecord.id,
                         httpMethod: "GET",
@@ -3051,7 +3052,7 @@
                             "workflowStatusCode": "0"
                         }];
 
-                        wait.show()
+                        // wait.show()
                         ///// //disable until set permission to verify course//  isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), (resp)=>{
                         ///// //disable until set permission to verify course//     wait.close()
                         ///// //disable until set permission to verify course//     startProcess_callback

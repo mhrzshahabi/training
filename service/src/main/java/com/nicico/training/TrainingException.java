@@ -90,6 +90,7 @@ public class TrainingException extends NICICOException {
         JobGroupNotFound(404),
         DCCNotFound(404),
         PostGroupNotFound(404),
+        TrainingPostNotFound(404),
         OperationalUnitDuplicateRecord(406),
         PersonnelRegisteredNotFound(404),
         WrongPostalCode(404),
