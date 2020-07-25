@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -29,6 +30,7 @@ public class TrainingPostService implements ITrainingPostService {
     private final TrainingPostDAO trainingPostDAO;
     private final PostDAO postDAO;
     private final PersonnelService personnelService;
+    private final PostService postService;
 
     @Transactional
     @Override
@@ -86,15 +88,10 @@ public class TrainingPostService implements ITrainingPostService {
         final TrainingPost trainingPost = optionalTrainingPost.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TrainingPostNotFound));
         List<PersonnelDTO.Info> infoList = new ArrayList<>();
         Set<Post> posts = trainingPost.getPostSet();
-        if(posts.size() > 0)
+        if(posts != null && posts.size() > 0)
         {
-            List<Long> values = new ArrayList<>();
-            for (Post post : posts) {
-                values.add(post.getId());
-            }
-
             SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-            criteria.getCriteria().add(makeNewCriteria("postId", values, EOperator.inSet, null));
+            criteria.getCriteria().add(makeNewCriteria("postId", posts.stream().map(Post::getId).collect(Collectors.toList()), EOperator.inSet, null));
             criteria.getCriteria().add(makeNewCriteria("active", 1, EOperator.equals, null));
             criteria.getCriteria().add(makeNewCriteria("employmentStatusId", 5, EOperator.equals, null));
             infoList = personnelService.search(new SearchDTO.SearchRq().setCriteria(criteria)).getList();

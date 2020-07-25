@@ -81,4 +81,7 @@ public class ViewTrainingPost extends Auditable {
 
     @Column(name = "c_modified_by_na")
     private String modifiedByNA;
+
+    @Column(name = "c_people_type")
+    private String peopleType;
 }
