@@ -14,6 +14,7 @@
     var methodSyllabus = "GET";
     var urlSyllabus = syllabusUrl;
     var selectedRecord = 0;
+    let courseCategory=0;
 
     var RestDataSourceGoalEDomainType = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
@@ -107,7 +108,6 @@
                 textAlign: "center",
                 required: true,
                 autoFetchData: false,
-                width: "*",
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSourceSubCategory,
@@ -636,8 +636,26 @@
         },
         fields: [
             {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "كل اهداف", align: "center"},
+            {name: "titleFa", title: "كل اهداف", align: "center", width:"60%"},
             {name: "titleEn", title: "نام لاتین هدف ", align: "center", hidden: true},
+            {
+                name: "categoryId",
+                title: "گروه",
+                optionDataSource: RestDataSource_category,
+                displayField: "titleFa",
+                valueField: "id",
+                filterOperator: "equals",
+                width:"20%"
+            },
+            {
+                name: "subCategoryId",
+                title: "زیر گروه",
+                optionDataSource: RestDataSource_SubCategory,
+                displayField: "titleFa",
+                valueField: "id",
+                filterOperator: "equals",
+                width:"20%"
+            },
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         selectionType: "multiple",
@@ -811,6 +829,25 @@
             ListGrid_Goal_Add();
         }
     });
+
+    var ToolStripButton_Goal_All = isc.ToolStripButton.create({
+        title: "کل اهداف",
+        prompt: "لیست کل اهداف",
+        hoverWidth: 100,
+        click: function () {
+            ListGrid_Goal_All();
+        }
+    });
+
+    var ToolStripButton_Goal_Category = isc.ToolStripButton.create({
+        title: "اهداف مرتبط با گروه",
+        prompt: "لیست اهداف مرتبط با گروه",
+        hoverWidth: 140,
+        click: function () {
+            ListGrid_Goal_Category();
+        }
+    });
+
     var ToolStripButton_Goal_Remove = isc.ToolStripButtonRemove.create({
 
         title: "حذف",
@@ -869,6 +906,8 @@
         membersMargin: 5,
         members: [
             ToolStripButton_Goal_Add,
+            ToolStripButton_Goal_All,
+            ToolStripButton_Goal_Category
         ]
     });
     var ToolStrip_Actions_Syllabus = isc.ToolStrip.create({
@@ -1113,7 +1152,19 @@
             Window_Goal.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="goal"/>");
             Window_Goal.show();
         }
-    };
+    }
+
+    function ListGrid_Goal_All() {
+        RestDataSource_GoalAll.fetchDataURL = goalUrl + "spec-list";
+        ListGrid_GoalAll.fetchData();
+        ListGrid_GoalAll.invalidateCache();
+    }
+
+    function ListGrid_Goal_Category() {
+        RestDataSource_GoalAll.fetchDataURL = goalUrl + courseRecord.categoryId + "/goal-list";
+        ListGrid_GoalAll.fetchData();
+        ListGrid_GoalAll.invalidateCache();
+    }
 
     function ListGrid_Syllabus_Goal_Remove() {
         let record = ListGrid_Syllabus_Goal.getSelectedRecord();
@@ -1249,6 +1300,7 @@
                     this.close();
                 }
             });
+
         } else {
             let goalRecord = ListGrid_GoalAll.getSelectedRecords();
             if (goalRecord.length == 0) {
@@ -1258,6 +1310,10 @@
                 for (let i = 0; i < goalRecord.length; i++) {
                     goalList.add(goalRecord[i].id);
                 }
+
+
+
+
                 wait.show()
                 isc.RPCManager.sendRequest({
                     actionURL: courseUrl + courseRecord.id + "/" + goalList.toString(),
