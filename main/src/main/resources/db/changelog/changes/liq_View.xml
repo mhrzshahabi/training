@@ -2127,7 +2127,7 @@ FROM
                 viewName="view_personnel_course_passed_na_report_v2"/>
     </changeSet>
 
-    <changeSet author="NICICO" id="view_statistics_unit_report-002">
+    <changeSet author="NICICO" id="view_statistics_unit_report-003">
         <createView viewName="view_statistics_unit_report" replaceIfExists="true">
             <![CDATA[
      SELECT
@@ -2376,7 +2376,7 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="view_presence_report-002">
+    <changeSet author="NICICO" id="view_presence_report-003">
         <createView viewName="view_presence_report" replaceIfExists="true">
             <![CDATA[
   SELECT
@@ -2522,7 +2522,7 @@ FROM
             tbl_personnel_registered.complex_title
         FROM
             tbl_personnel_registered
-              where  tbl_personnel_registered.active=1
+              where   tbl_personnel_registered.active=1
     ) personnel ON std.personnel_no = personnel.personnel_no
     INNER JOIN tbl_session         csession ON att.f_session = csession.id
     INNER JOIN tbl_class           class ON csession.f_class_id = class.id
