@@ -762,7 +762,21 @@
                 title: "کپی نیازسنجی",
                 click: function () {
                     let record = ListGrid_NeedsAssessment_JspENA.getSelectedRecord()
-                    console.log(record)
+                    let url = needsAssessmentUrl + "/copy/" + record.objectType
+                        + "/" + record.objectId + "/" + DynamicForm_JspEditNeedsAssessment.getValue("objectType")
+                        + "/" + DynamicForm_JspEditNeedsAssessment.getValue("objectId")
+                        + "?competenceId=" + record.competenceId;
+                    wait.show();
+                    isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null,(resp)=>{
+                        wait.close();
+                        if(resp.data === "true"){
+                            editNeedsAssessmentRecord(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"))
+                            isChanged = true;
+                        }
+                        else if(resp.data === "false"){
+                            readOnly(true);
+                        }
+                    }));
                     // ListGrid_Competence_JspNeedsAssessment.rowDoubleClick(ListGrid_Competence_JspNeedsAssessment.getSelectedRecord())
                 }
             },

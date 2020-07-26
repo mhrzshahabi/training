@@ -86,9 +86,10 @@ public class NeedsAssessmentRestController {
     @GetMapping("/copy/{typeCopyOf}/{idCopyOf}/{typeCopyTo}/{idCopyTo}")
     public ResponseEntity<Boolean> copyOf(@PathVariable String typeCopyOf,
                                           @PathVariable Long idCopyOf,
+                                          @RequestParam(value = "competenceId", required = false) Long competenceId,
                                           @PathVariable String typeCopyTo,
                                           @PathVariable Long idCopyTo) {
-        return new ResponseEntity<>(needsAssessmentTempService.copyNA(typeCopyOf, idCopyOf, typeCopyTo, idCopyTo), HttpStatus.OK);
+        return new ResponseEntity<>(needsAssessmentTempService.copyNA(typeCopyOf, idCopyOf, competenceId,typeCopyTo, idCopyTo), HttpStatus.OK);
     }
 
     @Loggable

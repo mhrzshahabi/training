@@ -76,7 +76,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
     }
 
     @Transactional
-    public Boolean copyNA(String sourceObjectType, Long sourceObjectId, String objectType, Long objectId) {
+    public Boolean copyNA(String sourceObjectType, Long sourceObjectId, Long sourceCompetenceId, String objectType, Long objectId) {
         switch (readOnlyStatus(objectType, objectId)) {
             case 0:
                 initial(objectType, objectId);
@@ -84,8 +84,12 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
             case 2:
                 return false;
         }
+        SearchDTO.CriteriaRq criteria = getCriteria(sourceObjectType, sourceObjectId);
+        if (sourceCompetenceId != null){
+            criteria.getCriteria().add(makeNewCriteria("competenceId", sourceCompetenceId, EOperator.equals, null));
+        }
         List<Skill> skillList = needsAssessmentDAO.findAll(NICICOSpecification.of(getCriteria(objectType, objectId))).stream().map(NeedsAssessment::getSkill).collect(Collectors.toList());
-        List<NeedsAssessment> sourceNeedsAssessments = needsAssessmentDAO.findAll(NICICOSpecification.of(getCriteria(sourceObjectType, sourceObjectId)));
+        List<NeedsAssessment> sourceNeedsAssessments = needsAssessmentDAO.findAll(NICICOSpecification.of(criteria));
         sourceNeedsAssessments.forEach(sourceNA -> {
             if (!skillList.contains(sourceNA.getSkill())) {
                 NeedsAssessmentDTO.Create newNA = new NeedsAssessmentDTO.Create();
