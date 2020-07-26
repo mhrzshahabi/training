@@ -66,6 +66,11 @@
             {name: "competenceCount"},
             {name: "personnelCount"}
         ],
+        doubleClick: function () {
+            let ids = [];
+            ids.add(PostLG_TrainingPost.getSelectedRecord().id);
+            addPosts(ids, PostLG_TrainingPost, ListGrid_TrainingPost_Jsp, ListGrid_ForThisTrainingPost_GetPosts);
+        }
     });
 
     window_unGroupedPosts_TrainingPost = isc.Window.create({
@@ -250,7 +255,7 @@
             {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},]
-        , fetchDataURL: postUrl + "/iscList"
+        // , fetchDataURL: postUrl + "/iscList"
     });
     var RestDataSource_ForThisTrainingPost_GetPosts = isc.TrDS.create({
         fields: [
@@ -281,7 +286,7 @@
         dataSource: RestDataSource_All_Posts,
         selectionAppearance: "checkbox",
         selectionType: "simple",
-        sortField: 1,
+        sortField: 0,
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         gridComponents: [Lable_AllPosts, "filterEditor", "header", "body"],
@@ -408,6 +413,7 @@
         ],
         dataArrived:function(){
             if(trainingPostsSelection) {
+                RestDataSource_All_Posts.fetchDataURL = trainingPostUrl +  "/getNullPosts";
                 ListGrid_AllPosts.invalidateCache();
                 ListGrid_AllPosts.fetchData();
                 trainingPostsSelection=false;
@@ -461,6 +467,8 @@
                                 } else {
                                     isc.say("خطا در پاسخ سرویس دهنده");
                                 }
+                                trainingPostsSelection = true;
+                                ListGrid_ForThisTrainingPost_GetPosts.dataArrived();
                             }
                         });
                     }
@@ -490,35 +498,8 @@
                         buttonClick: function (button, index) {
                             this.close();
                             if (index == 0) {
-                                var ids = ListGrid_AllPosts.getSelection().filter(function(x){return x.enabled!=false}).map(function(item) {return item.id;});
-                                var activeGroup = ListGrid_TrainingPost_Jsp.getSelectedRecord();
-                                var activeGroupId = activeGroup.id;
-                                let JSONObj = {"ids": ids};
-                                isc.RPCManager.sendRequest({
-                                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                                    useSimpleHttp: true,
-                                    contentType: "application/json; charset=utf-8",
-                                    actionURL: trainingPostUrl + "/addPosts/" + activeGroupId + "/" + ids,
-                                    httpMethod: "POST",
-                                    data: JSON.stringify(JSONObj),
-                                    serverOutputAsString: false,
-                                    callback: function (resp) {
-                                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                                            ListGrid_ForThisTrainingPost_GetPosts.invalidateCache();
-
-                                            let findRows=ListGrid_AllPosts.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:ids}]});
-
-                                            if(typeof (findRows)!='undefined' && findRows.length>0){
-                                                findRows.setProperty("enabled", false);
-                                                ListGrid_AllPosts.redraw();
-                                            }
-                                            isc.say("عملیات با موفقیت انجام شد.");
-
-                                        } else {
-                                            isc.say("خطا در پاسخ سرویس دهنده");
-                                        }
-                                    }
-                                });
+                                let ids = ListGrid_AllPosts.getSelection().filter(function(x){return x.enabled!=false}).map(function(item) {return item.id;});
+                                addPosts(ids, ListGrid_AllPosts, ListGrid_TrainingPost_Jsp, ListGrid_ForThisTrainingPost_GetPosts);
                             }
                         }
                     })
@@ -812,9 +793,10 @@
     });
 
     ToolStripButton_unGroupedPosts_Jsp = isc.ToolStripButton.create({
-        title: "پست های فاقد گروه پستی",
+        title: "پست های دسته بندی نشده",
         click: function () {
-            loadPostData({
+            loadPostData(PostLG_TrainingPost,
+                {
                 _constructor: "AdvancedCriteria",
                 operator: "and",
                 criteria: [{fieldName: "trainingPostSet", operator: "isNull"}]
@@ -824,7 +806,8 @@
     ToolStripButton_newPosts_Jsp = isc.ToolStripButton.create({
         title: "پست های جدید",
         click: function () {
-            loadPostData({
+            loadPostData(PostLG_TrainingPost,
+                {
                 _constructor: "AdvancedCriteria",
                 operator: "or",
                 criteria: [
@@ -867,7 +850,7 @@
         membersMargin: 5,
         members: [
             ToolStripButton_unGroupedPosts_Jsp,
-            ToolStripButton_newPosts_Jsp,
+            // ToolStripButton_newPosts_Jsp,
             ToolStripButton_EditNA_Jsp,
             ToolStripButton_TreeNA_JspTrainingPost
         ]
@@ -1416,12 +1399,44 @@
         PersonnelLG_TrainingPost_Jsp.fetchData();
     }
 
-    function loadPostData(criteria, title){
-        PostLG_TrainingPost.setImplicitCriteria(criteria);
-        PostLG_TrainingPost.invalidateCache();
-        PostLG_TrainingPost.fetchData();
+    function loadPostData(listGrid, criteria, title){
+        listGrid.setImplicitCriteria(criteria);
+        listGrid.invalidateCache();
+        listGrid.fetchData();
         window_unGroupedPosts_TrainingPost.setTitle(title);
         window_unGroupedPosts_TrainingPost.show();
+    }
+
+    function addPosts(ids, listGridAllPosts, listGridTrainingPost, listGridForThisTrainingPost) {
+        var activeGroup = listGridTrainingPost.getSelectedRecord();
+        var activeGroupId = activeGroup.id;
+        let JSONObj = {"ids": ids};
+        wait.show();
+        isc.RPCManager.sendRequest({
+            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+            useSimpleHttp: true,
+            contentType: "application/json; charset=utf-8",
+            actionURL: trainingPostUrl + "/addPosts/" + activeGroupId + "/" + ids,
+            httpMethod: "POST",
+            data: JSON.stringify(JSONObj),
+            serverOutputAsString: false,
+            callback: function (resp) {
+                wait.close();
+                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                    listGridForThisTrainingPost.invalidateCache();
+
+                    let findRows=listGridAllPosts.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:ids}]});
+
+                    if(typeof (findRows)!='undefined' && findRows.length>0){
+                        findRows.setProperty("enabled", false);
+                        listGridAllPosts.redraw();
+                    }
+                    isc.say("عملیات با موفقیت انجام شد.");
+                } else {
+                    isc.say("خطا در پاسخ سرویس دهنده");
+                }
+            }
+        });
     }
 
     // </script>

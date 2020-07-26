@@ -957,14 +957,51 @@
             <column name="post_assignment_date" type="timestamp"/>
         </addColumn>
     </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1595321086188-461">
+        <addColumn tableName="tbl_question_bank">
+            <column name="n_multiple_choice_answer" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+
     <changeSet author="haeri_am (generated)" id="1595647986202-454">
         <addColumn tableName="tbl_goal">
             <column name="category_id" type="number(19, 0)"/>
         </addColumn>
     </changeSet>
-    <changeSet author="haeri_am (generated)" id="1595647986202-455">
-        <addColumn tableName="tbl_goal">
-            <column name="subcategory_id" type="number(19, 0)"/>
+
+    <changeSet author="golrokhi (generated)" id="1595321086188-560">
+        <dropColumn columnName="C_MULTIPLE_CHOICE_ANSWER" tableName="TBL_QUESTION_BANK"/>
+    </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1595323156709-461">
+        <addColumn tableName="tbl_question_bank">
+            <column name="n_code_id" type="number(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1595323156709-560">
+        <dropColumn columnName="C_CODE_ID" tableName="TBL_QUESTION_BANK"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1595387736873-417">
+        <dropNotNullConstraint columnDataType="number(19,0)" columnName="f_parameter_value_question_display_type" tableName="tbl_question_bank"/>
+    </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1595660685513-461">
+        <addColumn tableName="tbl_question_bank">
+            <column name="f_course_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1595660685513-462">
+        <addColumn tableName="tbl_question_bank">
+            <column name="f_tclass_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1595660685513-463">
+        <addColumn tableName="tbl_question_bank">
+            <column name="f_teacher_id" type="number(19, 0)"/>
         </addColumn>
     </changeSet>
     <changeSet author="razmnoosh (generated)" id="1595738283090-456">

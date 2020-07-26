@@ -92,7 +92,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
     public void verify(String objectType, Long objectId) {
         List<NeedsAssessmentDTO.verify> needsAssessmentTemps = modelMapper.map(dao.findAll(NICICOSpecification.of(getCriteria(objectType, objectId))), new TypeToken<List<NeedsAssessmentDTO.verify>>() {
         }.getType());
-        String createdBy = needsAssessmentTemps.get(0) != null ? needsAssessmentTemps.get(0).getCreatedBy() : "anonymous";
+        String createdBy = SecurityUtil.getFullName();
         needsAssessmentTemps.forEach(needsAssessmentTemp -> {
             Optional<NeedsAssessment> optional = needsAssessmentDAO.findById(needsAssessmentTemp.getId());
             if (optional.isPresent()) {

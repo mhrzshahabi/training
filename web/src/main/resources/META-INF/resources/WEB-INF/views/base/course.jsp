@@ -149,6 +149,7 @@
             ],
         // fetchDataURL: courseUrl + courseRecord.id + "/goal"
     });
+
     var RestDataSource_CourseSkill = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true}, {name: "titleFa"}, {name: "titleEn"}
@@ -2797,7 +2798,7 @@
             vm_JspCourse.clearValues();
             vm_JspCourse.clearErrors();
             // DynamicForm_course_GroupTab.clearValues();
-            wait.show()
+            wait.show();
             isc.RPCManager.sendRequest({
                 actionURL: courseUrl + "preCourse/" + courseRecord.id,
                 httpMethod: "GET",

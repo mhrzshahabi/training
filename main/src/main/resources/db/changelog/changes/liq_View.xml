@@ -2015,8 +2015,8 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="from view_personnel_course_passed_na_report_v2-001">
-        <createView viewName="from view_personnel_course_passed_na_report_v2" replaceIfExists="true">
+    <changeSet author="NICICO" id="view_personnel_course_passed_na_report_v2-001">
+        <createView viewName="view_personnel_course_passed_na_report_v2" replaceIfExists="true">
             <![CDATA[
     SELECT
     na.na_priority_id,
@@ -2127,8 +2127,8 @@ FROM
                 viewName="view_personnel_course_passed_na_report_v2"/>
     </changeSet>
 
-    <changeSet author="NICICO" id="view_statistics_unit_report-001">
-        <createView viewName="select * from view_statistics_unit_report" replaceIfExists="true">
+    <changeSet author="NICICO" id="view_statistics_unit_report-002">
+        <createView viewName="view_statistics_unit_report" replaceIfExists="true">
             <![CDATA[
      SELECT
     csession.c_session_date                  AS session_session_date,
@@ -2376,8 +2376,8 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="view_presence_report-001">
-        <createView viewName="select * from view_presence_report" replaceIfExists="true">
+    <changeSet author="NICICO" id="view_presence_report-002">
+        <createView viewName="view_presence_report" replaceIfExists="true">
             <![CDATA[
   SELECT
     SUM(
