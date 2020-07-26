@@ -404,6 +404,17 @@ public class EvaluationService implements IEvaluationService {
                 evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate,EvaluationAnswer.class));
             }
         }
+        else if(evaluation.getQuestionnaireTypeId().equals(140L)){
+            Optional<Questionnaire> qId = questionnaireDAO.findById(evaluation.getQuestionnaireId());
+            Questionnaire questionnaire = qId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+            for (QuestionnaireQuestion questionnaireQuestion : questionnaire.getQuestionnaireQuestionList()) {
+                EvaluationAnswerDTO.Create evaluationAnswerCreate = new EvaluationAnswerDTO.Create();
+                evaluationAnswerCreate.setEvaluationId(evaluation.getId());
+                evaluationAnswerCreate.setQuestionSourceId(199L);
+                evaluationAnswerCreate.setEvaluationQuestionId(questionnaireQuestion.getId());
+                evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate,EvaluationAnswer.class));
+            }
+        }
         return evaluationAnswers;
     }
 
