@@ -1515,7 +1515,7 @@
                         // isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
                         //     LGRecord.id,
                         //     "GET", null, null));
-                        ToolStrip_SendForms_RE.getField("registerButtonTraining").enableIcon("ok");
+                        ToolStrip_SendForms_RE.getField("registerButtonTeacher").enableIcon("ok");
                         const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
                         setTimeout(() => {
                             msg.close();

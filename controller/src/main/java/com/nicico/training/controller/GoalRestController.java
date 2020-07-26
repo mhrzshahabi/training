@@ -11,6 +11,7 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.GoalDTO;
 import com.nicico.training.dto.SyllabusDTO;
+import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.ICourseService;
 import com.nicico.training.iservice.IGoalService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -97,6 +99,17 @@ public class GoalRestController {
     public ResponseEntity<Void> delete(@Validated @RequestBody GoalDTO.Delete request) {
         goalService.delete(request);
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "{categoryId}/goal-list")
+    public ResponseEntity<ISC<GoalDTO.Info>> list(HttpServletRequest iscRq, @PathVariable Long categoryId) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<GoalDTO.Info> searchRs = goalService.getGoalsByCategory(searchRq, categoryId);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
     @Loggable
