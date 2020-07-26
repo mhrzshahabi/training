@@ -303,7 +303,7 @@
             {name: "costCenterCode"},
             {name: "costCenterTitleFa"},
             {name: "peopleType"},
-            {name: "OnAdd", title: " ",canSort:false,canFilter:false, width:30}
+            {name: "OnAdd", title: " ", canSort:false, canFilter:false, width:30}
         ],
         dataArrived:function(startRow, endRow){
             let lgIds = ListGrid_ForThisTrainingPost_GetPosts.data.getAllCachedRows().map(function(item) {
@@ -388,13 +388,13 @@
     Lable_ForThisTrainingPost_GetPosts = isc.LgLabel.create({contents:"لیست پست های این گروه پست", customEdges: ["R","L","T", "B"]});
     var ListGrid_ForThisTrainingPost_GetPosts = isc.TrLG.create({
         height: "45%",
+        dataSource: RestDataSource_ForThisTrainingPost_GetPosts,
+        selectionAppearance: "checkbox",
+        selectionType: "simple",
+        sortField: 0,
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         gridComponents: [Lable_ForThisTrainingPost_GetPosts, "filterEditor", "header", "body"],
-        dataSource: RestDataSource_ForThisTrainingPost_GetPosts,
-        sortField: 1,
-        selectionAppearance: "checkbox",
-        selectionType: "simple",
         fields: [
             {name: "id", hidden:true},
             {name: "code", filterEditorProperties: {
@@ -409,7 +409,7 @@
             {name: "costCenterCode"},
             {name: "costCenterTitleFa"},
             {name: "peopleType"},
-            {name: "OnDelete", title: " ", align: "center", width:30}
+            {name: "OnDelete", title: " ", canSort:false, canFilter:false, width:30}
         ],
         dataArrived:function(){
             if(trainingPostsSelection) {
