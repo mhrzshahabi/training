@@ -14,7 +14,6 @@
     var methodSyllabus = "GET";
     var urlSyllabus = syllabusUrl;
     var selectedRecord = 0;
-    let courseCategory=0;
 
     var RestDataSourceGoalEDomainType = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
@@ -683,7 +682,10 @@
         canAcceptDroppedRecords: true,
         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
             removeAsListGrid();
-        }
+        },
+        getCellCSSText: function (record, rowNum, colNum) {
+            return record.categoryId===courseRecord.categoryId ? "color:black": "color:red";
+        }//end getCellCSSText
     });
     var ListGrid_CourseGoal_Goal = isc.ListGrid.create({
         width: "100%",
@@ -1307,12 +1309,18 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>")
             } else {
                 let goalList = new Array();
+                let categoryIDs=[];
                 for (let i = 0; i < goalRecord.length; i++) {
                     goalList.add(goalRecord[i].id);
+                    categoryIDs=[...categoryIDs,goalRecord[i].categoryId];
                 }
 
-
-
+                if (categoryIDs.find(x=>x!==courseRecord.categoryId) || categoryIDs.some(x=>!x))
+                {
+                    simpleDialog("<spring:message code="message"/>",
+                        "<spring:message code="goal.problem.add1"/>" + "<br/>" + "<spring:message code="goal.problem.add2"/>", 10000, "stop");
+                    return;
+                }
 
                 wait.show()
                 isc.RPCManager.sendRequest({
