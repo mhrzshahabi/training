@@ -2127,7 +2127,7 @@ FROM
                 viewName="view_personnel_course_passed_na_report_v2"/>
     </changeSet>
 
-    <changeSet author="NICICO" id="view_statistics_unit_report-001">
+    <changeSet author="NICICO" id="view_statistics_unit_report-002">
         <createView viewName="view_statistics_unit_report" replaceIfExists="true">
             <![CDATA[
      SELECT
@@ -2376,7 +2376,7 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="view_presence_report-001">
+    <changeSet author="NICICO" id="view_presence_report-002">
         <createView viewName="view_presence_report" replaceIfExists="true">
             <![CDATA[
   SELECT
