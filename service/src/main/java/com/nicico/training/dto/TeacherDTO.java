@@ -47,6 +47,10 @@ public class TeacherDTO {
         private CategoryDTO.CategoryInfoTuple majorCategory;
         private SubcategoryDTO.SubCategoryInfoTuple majorSubCategory;
         private Integer version;
+
+        public String getFullName(){
+            return personality.getFirstNameFa()+" "+personality.getLastNameFa();
+        }
     }
 
 

@@ -39,10 +39,10 @@ public class QuestionBank extends Auditable {
     private Long questionTypeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_parameter_value_question_display_type", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "f_parameter_value_question_display_type", insertable = false, updatable = false)
     private ParameterValue displayType;
 
-    @Column(name = "f_parameter_value_question_display_type", nullable = false)
+    @Column(name = "f_parameter_value_question_display_type")
     private Long displayTypeId;
 
     @Column(name = "c_option1")
@@ -76,6 +76,29 @@ public class QuestionBank extends Auditable {
 
     @Column(name = "f_subcategory_id")
     private Long subCategoryId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_course_id", insertable = false, updatable = false)
+    private Course course;
+
+    @Column(name = "f_course_id")
+    private Long courseId;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_tclass_id", insertable = false, updatable = false)
+    private Tclass tclass;
+
+    @Column(name = "f_tclass_id")
+    private Long tclassId;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_teacher_id", insertable = false, updatable = false)
+    private Teacher teacher;
+
+    @Column(name = "f_teacher_id")
+    private Long teacherId;
 
 }
 
