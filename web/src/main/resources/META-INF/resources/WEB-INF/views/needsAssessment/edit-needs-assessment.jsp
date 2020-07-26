@@ -749,7 +749,7 @@
     let Menu_LG_AllCompetence_JspENA = isc.Menu.create({
         data: [
             {
-                title: "افزودن به نیازسنجی",
+                title: "افزودن شایستگی",
                 click: function () {
                     ListGrid_AllCompetence_JspNeedsAssessment.rowDoubleClick(ListGrid_AllCompetence_JspNeedsAssessment.getSelectedRecord())
                 }
@@ -759,9 +759,10 @@
     let Menu_LG_History_JspENA = isc.Menu.create({
         data: [
             {
-                title: "افزودن شایستگی با همه مهارت هایش به نیازسنجی",
+                title: "کپی نیازسنجی",
                 click: function () {
-                    let record = ListGrid_NeedsAssessment_JspENA.getSelectedRecord();
+                    let record = ListGrid_NeedsAssessment_JspENA.getSelectedRecord()
+                    console.log(record)
                     // ListGrid_Competence_JspNeedsAssessment.rowDoubleClick(ListGrid_Competence_JspNeedsAssessment.getSelectedRecord())
                 }
             },

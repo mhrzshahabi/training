@@ -79,6 +79,7 @@ function defineWindowsEditNeedsAssessment(grid) {
             this.Super("show", arguments);
         },
         close(x = 1){
+            Window_AddCompetence.close();
             if(x===1) {
                 if (isChanged) {
                     const dialog = isc.Dialog.create({
