@@ -22,6 +22,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -91,8 +93,9 @@ public class NeedsAssessmentRestController {
 
     @Loggable
     @PostMapping
-    public ResponseEntity create(@RequestBody Object rq) {
+    public ResponseEntity create(@RequestBody Object rq, HttpServletResponse resp) throws IOException {
         NeedsAssessmentDTO.Create create = modelMapper.map(rq, NeedsAssessmentDTO.Create.class);
+        needsAssessmentTempService.checkCategoryNotEquals(create, resp);
         if (!needsAssessmentTempService.isEditable(create.getObjectType(), create.getObjectId()))
             return new ResponseEntity<>(messageSource.getMessage("read.only.na.message", null, LocaleContextHolder.getLocale()), HttpStatus.CONFLICT);
         return new ResponseEntity<>(needsAssessmentTempService.create(create), HttpStatus.OK);

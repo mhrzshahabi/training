@@ -169,13 +169,16 @@ function showDetailViewer(title, field, record) {
         title: title,
         // placement: "fillScreen",
         visibility : "hidden",
+        // autoCenter: false,
+        // isModal: false,
         headerControls: ["headerLabel", "closeButton"],
         // canDragReposition: false,
         // minWidth: 1024,
         items: [isc.DetailViewer.create({
             fields: field,
+            minWidth: 150,
             data: record,
-            autoFetchData: true,
+            // autoFetchData: true,
             // width: 700
         })],
     });
