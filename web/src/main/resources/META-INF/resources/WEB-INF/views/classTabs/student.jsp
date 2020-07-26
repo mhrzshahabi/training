@@ -47,15 +47,15 @@
                 },
                 </sec:authorize>
 
-                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_E','TclassStudentsTab_classStatus')">
-                {
-                    title: "<spring:message code="evaluation"/>",
-                    icon: "<spring:url value="remove.png"/>",
-                    click: function () {
-                        evaluationStudent_student();
-                    }
-                },
-                </sec:authorize>
+<%--                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_E','TclassStudentsTab_classStatus')">--%>
+<%--                {--%>
+<%--                    title: "<spring:message code="evaluation"/>",--%>
+<%--                    icon: "<spring:url value="remove.png"/>",--%>
+<%--                    click: function () {--%>
+<%--                        evaluationStudent_student();--%>
+<%--                    }--%>
+<%--                },--%>
+<%--                </sec:authorize>--%>
             ]
         });
 
@@ -83,14 +83,14 @@
                 btnRemove_student_class,
                 </sec:authorize>
 
-                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_E','TclassStudentsTab_classStatus')">
-                isc.ToolStripButton.create({
-                    title: "<spring:message code="evaluation"/>",
-                    click: function () {
-                        evaluationStudent_student();
-                    }
-                }),
-                </sec:authorize>
+<%--                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_E','TclassStudentsTab_classStatus')">--%>
+<%--                isc.ToolStripButton.create({--%>
+<%--                    title: "<spring:message code="evaluation"/>",--%>
+<%--                    click: function () {--%>
+<%--                        evaluationStudent_student();--%>
+<%--                    }--%>
+<%--                }),--%>
+<%--                </sec:authorize>--%>
 
                 <sec:authorize access="hasAnyAuthority('TclassStudentsTab_P','TclassStudentsTab_classStatus')">
                 isc.ToolStripButtonExcel.create({
