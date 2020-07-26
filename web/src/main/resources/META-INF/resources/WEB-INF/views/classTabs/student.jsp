@@ -47,15 +47,15 @@
                 },
                 </sec:authorize>
 
-                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_E','TclassStudentsTab_classStatus')">
-                {
-                    title: "<spring:message code="evaluation"/>",
-                    icon: "<spring:url value="remove.png"/>",
-                    click: function () {
-                        evaluationStudent_student();
-                    }
-                },
-                </sec:authorize>
+<%--                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_E','TclassStudentsTab_classStatus')">--%>
+<%--                {--%>
+<%--                    title: "<spring:message code="evaluation"/>",--%>
+<%--                    icon: "<spring:url value="remove.png"/>",--%>
+<%--                    click: function () {--%>
+<%--                        evaluationStudent_student();--%>
+<%--                    }--%>
+<%--                },--%>
+<%--                </sec:authorize>--%>
             ]
         });
 
@@ -83,14 +83,14 @@
                 btnRemove_student_class,
                 </sec:authorize>
 
-                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_E','TclassStudentsTab_classStatus')">
-                isc.ToolStripButton.create({
-                    title: "<spring:message code="evaluation"/>",
-                    click: function () {
-                        evaluationStudent_student();
-                    }
-                }),
-                </sec:authorize>
+<%--                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_E','TclassStudentsTab_classStatus')">--%>
+<%--                isc.ToolStripButton.create({--%>
+<%--                    title: "<spring:message code="evaluation"/>",--%>
+<%--                    click: function () {--%>
+<%--                        evaluationStudent_student();--%>
+<%--                    }--%>
+<%--                }),--%>
+<%--                </sec:authorize>--%>
 
                 <sec:authorize access="hasAnyAuthority('TclassStudentsTab_P','TclassStudentsTab_classStatus')">
                 isc.ToolStripButtonExcel.create({
@@ -301,7 +301,10 @@
                     name: "student.birthCertificateNo",
                     title: "<spring:message code="birth.certificate.no"/>",
                     filterOperator: "iContains"
-                }
+                },
+                {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".png", canEdit: false},
+                {name: "warning", autoFitWidth: true}
+
             ],
 
             fetchDataURL: tclassStudentUrl + "/students-iscList/"
@@ -400,9 +403,17 @@
                 {name: "student.ccpAssistant", autoFitWidth: true},
                 {name: "student.ccpAffairs", autoFitWidth: true},
                 {name: "student.ccpSection", autoFitWidth: true},
-                {name: "student.ccpUnit", autoFitWidth: true}
+                {name: "student.ccpUnit", autoFitWidth: true},
+                {name: "warning",hidden:true},
+                {name: "hasWarning", title: "قبولی در پیش تست", width: 130, type: "image", imageURLPrefix: "", imageURLSuffix: ".png", canEdit: false}
+
+
             ],
             gridComponents: [StudentTS_student, "filterEditor", "header", "body"],
+            dataArrived:function()
+            {
+                StudentsLG_student.data.localData.filter(p=>p.warning =='Ok').forEach(p=>p.hasWarning='checkBlue');
+            },
             // contextMenu: StudentMenu_student,
             dataChanged: function () {
                 this.Super("dataChanged", arguments);

@@ -521,6 +521,14 @@ public class TeacherRestController {
     }
 
     @Loggable
+    @GetMapping(value = "/teacherFullName/{id}")
+    //@PreAuthorize("hasAuthority('r_teacher')")
+    public ResponseEntity<String> teacherFullName(@PathVariable Long id){
+        String result =  teacherDAO.getTeacherFullName(id);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @Loggable
     @GetMapping(value = "/fullName")
     //@PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> fullNameListTeacher(

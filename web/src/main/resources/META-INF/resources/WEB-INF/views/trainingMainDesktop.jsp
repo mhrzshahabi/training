@@ -749,6 +749,7 @@
     const postGroupUrl = rootUrl + "/post-group";
     const postGradeUrl = rootUrl + "/postGrade";
     const postUrl = rootUrl + "/post";
+    const trainingPostUrl = rootUrl + "/training-post";
     const competenceUrl = rootUrl + "/competence";
     const needAssessmentUrl = rootUrl + "/needAssessment";
     const skillUrl = rootUrl + "/skill";
@@ -791,6 +792,7 @@
     const viewJobGroupUrl = rootUrl + "/view-job-group";
     const viewPostGradeUrl = rootUrl + "/view-post-grade";
     const viewPostGradeGroupUrl = rootUrl + "/view-post-grade-group";
+    const viewTrainingPostUrl = rootUrl + "/view-training-post";
     const masterDataUrl = rootUrl + "/masterData";
     const viewEvaluationStaticalReportUrl = rootUrl + "/view-evaluation-statical-report";
     const viewTeacherReportUrl = rootUrl + "/view-teacher-report/";
@@ -870,6 +872,7 @@
     isc.defineClass("TrVLayout", VLayout);
     isc.TrVLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
     TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
+       // wait.show();
         return {
             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             contentType: "application/json; charset=utf-8",
@@ -1327,7 +1330,7 @@
 
                 <sec:authorize access="hasAuthority('Menu_NeedAssessment_Post')">
                 {
-                    title: "<spring:message code="post"/>",
+                    title: "<spring:message code="post.individual"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/post/"/>");
                     }
@@ -1342,6 +1345,15 @@
                     }
                 },
                 </sec:authorize>
+
+                <%--<sec:authorize access="hasAuthority('Menu_NeedAssessment_Training_Post')">--%>
+                {
+                    title: "<spring:message code="post"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/training-post"/>");
+                    }
+                },
+                <%--</sec:authorize>--%>
 
                 <%--,--%>
                 <%--{--%>
@@ -2338,7 +2350,8 @@
             message = message ? message : "<spring:message code='in.operation'/>"
         }
         let dialog = isc.Dialog.create({
-            icon: type + '.png',
+            icon: type + (type === "wait" ? '.gif' : '.png'),
+            iconSize: "20",
             title: title ? title : "<spring:message code="message"/>",
             message: message,
         });
@@ -2666,8 +2679,8 @@
             } else if (JSON.parse(response.httpResponseText).errors[0].message !== undefined && JSON.parse(response.httpResponseText).errors[0].message.length > 0) {
                 userErrorMessage = JSON.parse(response.httpResponseText).errors[0].message;
             }
-
-            createDialog("info", userErrorMessage);
+            wait.close();
+            createDialog("warning", userErrorMessage, "اخطار");
 
 
             <%--if (JSON.parse(response.httpResponseText).message !== "No message available" && response.httpResponseText.length > 0) {--%>

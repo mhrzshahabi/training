@@ -11,9 +11,7 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.model.*;
-import com.nicico.training.repository.EvaluationDAO;
-import com.nicico.training.repository.ParameterValueDAO;
-import com.nicico.training.repository.PersonnelDAO;
+import com.nicico.training.repository.*;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,8 +53,6 @@ public class EvaluationRestController {
     private final EvaluationDAO evaluationDAO;
     private final PersonnelDAO personnelDAO;
     private final ParameterValueDAO parameterValueDAO;
-
-    //*********************************
 
     @Loggable
     @PostMapping(value = {"/{type}/{classId}"})
@@ -156,10 +152,6 @@ public class EvaluationRestController {
         reportUtil.export("/reports/EvaluationReaction.jasper", params, jsonDataSource, response);
     }
 
-    //*********************************
-
-    // ------------------------------
-
     @Loggable
     @GetMapping(value = "/{id}")
     public ResponseEntity<EvaluationDTO.Info> get(@PathVariable Long id) {
@@ -247,7 +239,6 @@ public class EvaluationRestController {
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
-    // ---------------
 
     @Loggable
     @PostMapping(value = "/search")
@@ -255,13 +246,12 @@ public class EvaluationRestController {
         return new ResponseEntity<>(evaluationService.search(request), HttpStatus.OK);
     }
 
-    @Loggable
-    @GetMapping(value = "/{questionnaireTypeId}/{classId}/{evaluatorId}/{evaluatorTypeId}/{evaluatedId}/{evaluatedTypeId}/{evaluationLevelId}")
-    public ResponseEntity<EvaluationDTO.Info> getEvaluationByData(@PathVariable Long questionnaireTypeId, @PathVariable Long classId, @PathVariable Long evaluatorId, @PathVariable Long evaluatorTypeId, @PathVariable Long evaluatedId, @PathVariable Long evaluatedTypeId, @PathVariable Long evaluationLevelId) {
-        return new ResponseEntity<>(evaluationService.getEvaluationByData(questionnaireTypeId, classId, evaluatorId, evaluatorTypeId, evaluatedId, evaluatedTypeId, evaluationLevelId), HttpStatus.OK);
-    }
+//    @Loggable
+//    @GetMapping(value = "/{questionnaireTypeId}/{classId}/{evaluatorId}/{evaluatorTypeId}/{evaluatedId}/{evaluatedTypeId}/{evaluationLevelId}")
+//    public ResponseEntity<EvaluationDTO.Info> getEvaluationByData(@PathVariable Long questionnaireTypeId, @PathVariable Long classId, @PathVariable Long evaluatorId, @PathVariable Long evaluatorTypeId, @PathVariable Long evaluatedId, @PathVariable Long evaluatedTypeId, @PathVariable Long evaluationLevelId) {
+//        return new ResponseEntity<>(evaluationService.getEvaluationByData(questionnaireTypeId, classId, evaluatorId, evaluatorTypeId, evaluatedId, evaluatedTypeId, evaluationLevelId), HttpStatus.OK);
+//    }
 
-    //-------------------------------
 
     private void studentEvaluationRegister(EvaluationDTO.Info evaluation){
         if(evaluation.getQuestionnaireTypeId().equals(139L)){
@@ -349,6 +339,27 @@ public class EvaluationRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
+    @Loggable
+    @PostMapping("/getEvaluationForm")
+    public  ResponseEntity<ISC> getEvaluationForm(@RequestBody HashMap req) {
+        List<EvaluationAnswerDTO.EvaluationAnswerFullData> result = evaluationService.getEvaluationForm(req);
+
+        ISC.Response<EvaluationAnswerDTO.EvaluationAnswerFullData> response = new ISC.Response<>();
+        response.setData(result)
+                .setStartRow(0)
+                .setEndRow(result.size())
+                .setTotalRows(result.size());
+        ISC<Object> objectISC = new ISC<>(response);
+        return new ResponseEntity<>(objectISC, HttpStatus.OK);
+    }
+
+    @Loggable
+    @PostMapping("/deleteEvaluation")
+    public  ResponseEntity deleteEvaluation(@RequestBody HashMap req) {
+        evaluationService.deleteEvaluation(req);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     //--------------------------------------------- Calender -----------------------------------------------------------
     private static double greg_len = 365.2425;
     private static double greg_origin_from_jalali_base = 629964;
@@ -424,7 +435,6 @@ public class EvaluationRestController {
         return sum + day - 2;
     }
     //--------------------------------------------- Calender -----------------------------------------------------------
-
     @Loggable
     @PostMapping(value = {"/printTeacherReactionForm/{type}/{classId}"})
     @Transactional

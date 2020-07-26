@@ -383,15 +383,27 @@ public class WorkGroupService implements IWorkGroupService {
 
         tmpCriteria = new SearchDTO.CriteriaRq();
 
-        tmpCriteria.setOperator(EOperator.inSet);
-        tmpCriteria.setFieldName(fieldName);
-
+        SearchDTO.CriteriaRq criteriaRq1 = new SearchDTO.CriteriaRq();
+        criteriaRq1.setOperator(EOperator.inSet);
+        criteriaRq1.setFieldName(fieldName);
         if (ids.size() == 0) {
             ids.add(-1L);
-            tmpCriteria.setValue(ids);
+            criteriaRq1.setValue(ids);
         } else {
-            tmpCriteria.setValue(ids);
+            criteriaRq1.setValue(ids);
         }
+
+        SearchDTO.CriteriaRq criteriaRq2 = new SearchDTO.CriteriaRq();
+        criteriaRq2.setOperator(EOperator.isNull);
+        criteriaRq2.setFieldName(fieldName);
+
+        ArrayList<SearchDTO.CriteriaRq> criteriaRqs = new ArrayList<>();
+        criteriaRqs.add(criteriaRq1);
+        criteriaRqs.add(criteriaRq2);
+        tmpCriteria.setCriteria(criteriaRqs);
+        tmpCriteria.setOperator(EOperator.or);
+
+
 
         listCriteria.add(tmpCriteria);
 

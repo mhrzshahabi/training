@@ -56,7 +56,6 @@ public class PersonnelCoursePassedNAReportViewDTO {
         private String personnelCcpUnit;
         private String personnelCcpTitle;
         private String personnelPostGradeLvlCode;
-        private String personnelPostGradeLvlTitle;
     }
 
     @Getter
@@ -80,6 +79,6 @@ public class PersonnelCoursePassedNAReportViewDTO {
         private Long priorityId;
         private Long isPassed;
         private String personnelPostGradeLvlCode;
-        private String personnelPostGradeLvlTitle;
+        private String personnelPostGradeTitle;
     }
 }

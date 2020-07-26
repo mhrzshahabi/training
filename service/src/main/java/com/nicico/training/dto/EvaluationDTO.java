@@ -16,38 +16,26 @@ import java.util.List;
 @Accessors(chain = true)
 public class EvaluationDTO implements Serializable {
 
-    @ApiModelProperty(required = true)
-    private Long classId;
-
-    @ApiModelProperty(required = true)
     private Long questionnaireTypeId;
-
-    @ApiModelProperty(required = true)
+    private Long classId;
     private Long evaluatorId;
-
-    @ApiModelProperty(required = true)
     private Long evaluatorTypeId;
-
-    @ApiModelProperty(required = true)
     private Long evaluatedId;
-
-    @ApiModelProperty(required = true)
     private Long evaluatedTypeId;
-
-    @ApiModelProperty(required = true)
     private Long evaluationLevelId;
-
     private String description;
     private Boolean evaluationFull;
     private Boolean status;
     private String returnDate;
+    private String sendDate;
+    private Long questionnaireId;
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("Evaluation - Info")
     public static class Info extends EvaluationDTO {
-        private List<EvaluationAnswerDTO.Create> evaluationAnswerList;
+        private List<EvaluationAnswerDTO.Info> evaluationAnswerList;
         private Long id;
     }
 
@@ -56,7 +44,7 @@ public class EvaluationDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("Evaluation - Create")
     public static class Create extends EvaluationDTO {
-        private List<EvaluationAnswerDTO.Create> evaluationAnswerList;
+        private List<EvaluationAnswerDTO.Info> evaluationAnswerList;
     }
 
     @Getter
@@ -68,7 +56,7 @@ public class EvaluationDTO implements Serializable {
         private String description;
         private Boolean status;
         private String returnDate;
-        private List<EvaluationAnswerDTO.Create> evaluationAnswerList;
+        private List<EvaluationAnswerDTO.Update> evaluationAnswerList;
     }
 
     @Getter

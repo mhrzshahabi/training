@@ -125,7 +125,7 @@
             {name: "code", title: "کد", autoFitWidth: true},
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
         ],
-        fetchDataURL: competenceUrl + "/iscList",
+        fetchDataURL: competenceUrl + "/spec-list",
     });
 
     CompetenceDS_competence_Webservice = isc.TrDS.create({
@@ -176,7 +176,7 @@
 
 
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
-    CompetenceDF_competence = isc.DynamicForm.create({
+    let CompetenceDF_competence = isc.DynamicForm.create({
         ID: "CompetenceDF_competence",
         readOnlyDisplay: "readOnly",
         fields: [
@@ -256,7 +256,7 @@
         ]
     });
 
-    CompetenceWin_competence = isc.Window.create({
+    let CompetenceWin_competence = isc.Window.create({
         ID: "CompetenceWin_competence",
         width: 800,
         items: [CompetenceDF_competence, isc.TrHLayoutButtons.create({
@@ -294,7 +294,7 @@
                 ]
             })
 
-        ]
+        ],
     });
 
     // ------------------------------------------- Page UI -------------------------------------------
@@ -360,6 +360,7 @@
         let record = CompetenceLG_competence.getSelectedRecord();
         let entityType = '<spring:message code="competence"/>';
         if (checkRecordAsSelected(record, true, entityType)) {
+            wait.show()
             isc.RPCManager.sendRequest(TrDSRequest(competenceUrl + "/" + record.id, "GET", null, (resp)=>{
                 wait.close();
                 if(resp.httpResponseCode !== 226){
