@@ -19,6 +19,7 @@
     var endDateCheck = true;
     var isReadOnlyClass = true;
     var societies = [];
+    let OJT = false;
 var dummy;
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
@@ -628,6 +629,7 @@ var dummy;
                         form.getItem("preCourseTest").hide();
                     } else
                         form.getItem("preCourseTest").show();
+                    form.setValue("erunType", item.getSelectedRecord().erunType);
                 },
                 click : function(form){
                     Window_AddCourse_JspClass.show();
@@ -704,7 +706,8 @@ var dummy;
                     "حضوری",
                     "غیر حضوری",
                     "مجازی",
-                    "عملی و کارگاهی"
+                    "عملی و کارگاهی",
+                    "آموزش حین کار(OJT)"
                 ]
 // textBoxStyle:"textItemLite"
             },
@@ -1755,6 +1758,20 @@ var dummy;
                 }
             }
 
+            if(!OJT && DynamicForm_Class_JspClass.getItem("teachingType")._value === "آموزش حین کار(OJT)" && DynamicForm_Class_JspClass.getValue("erunType").id === 5){ // id = 5 -> "حین کار"
+                let dialog_Accept = createDialog("ask", 'نوع اجرا دوره کلاس از "حین کار" می باشد،آیا مایلید که روش آموزش را نیز از نوع "آموزش حین کار (OJT)" انتخاب کنید', "توجه");
+                dialog_Accept.addProperties({
+                    buttonClick: function (button, index) {
+                        this.close();
+                            if(index === 0)
+                                OJT = true;
+                            else
+                                OJT = false;
+                    }
+                });
+                return;
+            }
+
             var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
             VM_JspClass.validate();
             if (VM_JspClass.hasErrors()) {
@@ -2484,6 +2501,7 @@ var dummy;
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
+            DynamicForm_Class_JspClass.setValue("erunType", record.course.erunType);
             wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(classUrl + "hasSessions/" + record.id, "GET", null, (resp) => {
                 wait.close();
@@ -2508,6 +2526,7 @@ var dummy;
                 RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + record.instituteId + "/trainingPlaces";
                 VM_JspClass.clearErrors(true);
                 VM_JspClass.clearValues();
+                OJT = false;
                 if (a === 0) {
                     VM_JspClass.editRecord(record);
                     saveButtonStatus();
@@ -2602,6 +2621,7 @@ var dummy;
         DynamicForm1_Class_JspClass.getItem("termId").enable();
         DynamicForm1_Class_JspClass.getItem("startDate").enable();
         DynamicForm1_Class_JspClass.getItem("endDate").enable();
+        OJT = false;
     }
 
     function ListGrid_class_print(type) {
