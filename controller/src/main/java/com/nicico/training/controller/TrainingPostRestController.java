@@ -49,8 +49,21 @@ public class TrainingPostRestController {
 
     @Loggable
     @GetMapping(value = "/{TrainingPostId}/getPosts")
-    public ResponseEntity<ISC> getPosts(@PathVariable Long TrainingPostId) {
+    public ResponseEntity<ISC> getPosts(@PathVariable Long TrainingPostId) throws IOException {
         List<PostDTO.Info> list = trainingPostService.getPosts(TrainingPostId);
+        ISC.Response<PostDTO.Info> response = new ISC.Response<>();
+        response.setData(list)
+                .setStartRow(0)
+                .setEndRow(list.size())
+                .setTotalRows(list.size());
+        ISC<Object> objectISC = new ISC<>(response);
+        return new ResponseEntity<>(objectISC, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/getNullPosts")
+    public ResponseEntity<ISC> getNullPosts() throws IOException {
+        List<PostDTO.Info> list = trainingPostService.getNullPosts();
         ISC.Response<PostDTO.Info> response = new ISC.Response<>();
         response.setData(list)
                 .setStartRow(0)

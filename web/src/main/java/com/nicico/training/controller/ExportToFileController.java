@@ -12,7 +12,6 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonnelCourseNotPassedReportViewService;
 import com.nicico.training.iservice.ITclassService;
-import com.nicico.training.model.ViewStatisticsUnitReport;
 import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.PersonnelRegisteredDAO;
@@ -81,7 +80,7 @@ public class ExportToFileController {
     private final PostGroupService postGroupService;
     private final WorkGroupService workGroupService;
     private final CourseService courseService;
-    private final ViewStatisticsUnitReportService viewStatisticsUnitReportService;
+    private final QuestionBankService questionBankService;
 
     private final StudentClassReportViewDAO studentClassReportViewDAO;
     private final PersonnelDAO personnelDAO;
@@ -141,6 +140,9 @@ public class ExportToFileController {
         List<Object> generalList = null;
 
         switch (fileName) {
+            case "questionBank":
+                generalList = (List<Object>)((Object) questionBankService.search(searchRq).getList());
+                break;
             case "class":
                 searchRq.setCriteria(workGroupService.addPermissionToCriteria("course.categoryId", searchRq.getCriteria()));
                 generalList = (List<Object>)((Object) tclassService.search(searchRq).getList());
@@ -320,11 +322,6 @@ public class ExportToFileController {
 
             case "View_Post_Grade_Group":
                 generalList = (List<Object>)((Object) viewPostGradeGroupService.search(searchRq).getList());
-                break;
-
-            case "statisticsUnitReport":
-                searchRq.setSortBy("id");
-                generalList = (List<Object>)((Object) viewStatisticsUnitReportService.search(searchRq,o -> modelMapper.map(o, ViewStatisticsUnitReportDTO.Grid.class)).getList());
                 break;
 
             case "Post_Grade_Group_Personnel":

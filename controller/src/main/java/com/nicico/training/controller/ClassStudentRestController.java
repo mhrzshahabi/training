@@ -302,4 +302,20 @@ public class ClassStudentRestController {
 
         reportUtil.export("/reports/trainingFile.jasper", params, jsonDataSource, response);
     }
+
+    @Loggable
+    @GetMapping(value = "/studentEvaluationForms/{nationalCode}")
+    public ResponseEntity<ISC<ClassStudentDTO.EvaluationForm>> studentEvaluationForms(HttpServletRequest iscRq, @PathVariable String nationalCode) throws IOException {
+        SearchDTO.CriteriaRq  criteria1 = makeNewCriteria("student.nationalCode", nationalCode, EOperator.equals, null);
+        SearchDTO.CriteriaRq  criteria2 = makeNewCriteria("evaluationStatusReaction",1, EOperator.equals, null);
+        SearchDTO.CriteriaRq  criteria3 = makeNewCriteria("evaluationStatusBehavior",1, EOperator.equals, null);
+        List<SearchDTO.CriteriaRq> criteriaRqList1 = new ArrayList<>();
+        criteriaRqList1.add(criteria2);
+        criteriaRqList1.add(criteria3);
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null,null,EOperator.or,criteriaRqList1);
+        List<SearchDTO.CriteriaRq> criteriaRqList2 = new ArrayList<>();
+        criteriaRqList2.add(criteriaRq);
+        criteriaRqList2.add(criteria1);
+        return search(iscRq,makeNewCriteria(null,null,EOperator.and,criteriaRqList2), c -> (modelMapper.map(c, ClassStudentDTO.EvaluationForm.class)));
+    }
 }

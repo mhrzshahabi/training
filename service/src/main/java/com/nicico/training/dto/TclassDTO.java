@@ -63,6 +63,7 @@ public class TclassDTO {
     private Integer startEvaluation;
     private Boolean preCourseTest;
     private String hasWarning;
+    private Integer evaluationStatusReactionTraining;
 
 
     @Getter
@@ -189,7 +190,6 @@ public class TclassDTO {
         private List<Object> targetSocieties;
 
         public List<Object> gettargetSocieties() {
-            ////disable targetSociety
             if (targetSocieties == null)
                 return new ArrayList<>(0);
             boolean accept = true;
@@ -252,7 +252,6 @@ public class TclassDTO {
         private List<Object> targetSocieties;
 
         public List<Object> getTargetSocieties() {
-            ////disable targetSociety
             if (targetSocieties == null)
                 return new ArrayList<>(0);
             boolean accept = true;

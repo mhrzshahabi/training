@@ -141,6 +141,7 @@ public class CourseDTO implements Serializable {
         private String code;
         private String titleFa;
         private String evaluation;
+        private ERunType eRunType;
         private CategoryDTO.CategoryInfoTuple category;
         private SubcategoryDTO.SubCategoryInfoTuple subCategory;
     }
