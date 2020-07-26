@@ -19,6 +19,7 @@
 
                 if (selectedPersonnel !== undefined && selectedPersonnel !== null) {
 
+                    let personnelId = selectedPersonnel.id;
                     let personnelNo = selectedPersonnel.personnelNo;
                     let nationalCode = selectedPersonnel.nationalCode;
 
@@ -32,7 +33,7 @@
                             this.nationalCode_Info = nationalCode;
                             this.personnelNo_Info = personnelNo;
                             me=this;
-                            isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byPersonnelNo/" + personnelNo, "GET", null, function (resp) {
+                            isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byPersonnelNo/" + personnelId +"/"+ personnelNo, "GET", null, function (resp) {
 
                                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 

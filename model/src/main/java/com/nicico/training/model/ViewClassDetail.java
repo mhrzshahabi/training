@@ -101,4 +101,5 @@ public class ViewClassDetail extends Auditable {
 
     @Column(name = "TRAINING_EVAL_STATUS")
     private Integer trainingEvalStatus;
+
 }

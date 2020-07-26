@@ -1413,7 +1413,7 @@ FROM
     </changeSet>
 
 
-    <changeSet author="NICICO" id="VIEW_POST-004">
+    <changeSet author="NICICO" id="VIEW_POST-005">
         <createView viewName="VIEW_POST" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1438,6 +1438,7 @@ SELECT
     p.f_job_id,
     p.d_last_modified_date_na,
     p.c_modified_by_na,
+    p.c_people_type,
     j.c_title_fa    AS job_c_title_fa,
     j.c_code        AS job_c_code,
     pg.c_title_fa   AS post_grade_c_title_fa,
@@ -1473,6 +1474,7 @@ GROUP BY
     p.f_job_id,
     p.d_last_modified_date_na,
     p.c_modified_by_na,
+    p.c_people_type,
     j.c_title_fa,
     j.c_code,
     pg.c_title_fa,
@@ -1700,10 +1702,10 @@ GROUP BY
     </changeSet>
 
 
-    <changeSet author="NICICO" id="VIEW_ACTIVE_PERSONNEL-001">
+    <changeSet author="NICICO" id="VIEW_ACTIVE_PERSONNEL-002">
         <createView viewName="VIEW_ACTIVE_PERSONNEL" replaceIfExists="true">
             <![CDATA[
-SELECT "PERSONNEL_NO","ACTIVE","ADDRESS","AGE","BIRTH_CERTIFICATE_NO","BIRTH_DATE","BIRTH_PLACE","CCP_AFFAIRS","CCP_AREA","CCP_ASSISTANT","CCP_CODE","CCP_SECTION","CCP_TITLE","CCP_UNIT","COMPANY_NAME","COMPLEX_TITLE","CONTRACT_DESCRIPTION","CONTRACT_NO","DELETED","DEPARTMENT_CODE","DEPARTMENT_TITLE","EDUCATION_LEVEL_TITLE","EDUCATION_LICENSE_TYPE_TITLE","EDUCATION_FIELD_TITLE","EMAIL","EMPLOYMENT_DATE","EMPLOYMENT_STATUS_TITLE","EMPLOYMENT_STATUS_ID","EMPLOYMENT_TYPE_TITLE","FATHER_NAME","FIRST_NAME","GENDER_TITLE","ID","INSURANCE_CODE","JOB_NO","JOB_TITLE","LAST_NAME","MARITAL_STATUS_TITLE","MILITARY_STATUS_TITLE","MOBILE","NATIONAL_CODE","OPERATIONAL_UNIT_TITLE","EMP_NO","PHONE","POST_ASSIGNMENT_DATE","POST_CODE","POST_GRADE_CODE","POST_GRADE_TITLE","POST_TITLE","WORK_DAYS","WORK_MONTHS","WORK_PLACE_TITLE","WORK_TURN_TITLE","WORK_YEARS"
+SELECT "PERSONNEL_NO","ACTIVE","ADDRESS","AGE","BIRTH_CERTIFICATE_NO","BIRTH_DATE","BIRTH_PLACE","CCP_AFFAIRS","CCP_AREA","CCP_ASSISTANT","CCP_CODE","CCP_SECTION","CCP_TITLE","CCP_UNIT","COMPANY_NAME","COMPLEX_TITLE","CONTRACT_DESCRIPTION","CONTRACT_NO","DELETED","DEPARTMENT_CODE","DEPARTMENT_TITLE","EDUCATION_LEVEL_TITLE","EDUCATION_LICENSE_TYPE_TITLE","EDUCATION_FIELD_TITLE","EMAIL","EMPLOYMENT_DATE","EMPLOYMENT_STATUS_TITLE","EMPLOYMENT_STATUS_ID","EMPLOYMENT_TYPE_TITLE","FATHER_NAME","FIRST_NAME","GENDER_TITLE","ID","INSURANCE_CODE","JOB_NO","JOB_TITLE","LAST_NAME","MARITAL_STATUS_TITLE","MILITARY_STATUS_TITLE","MOBILE","NATIONAL_CODE","OPERATIONAL_UNIT_TITLE","EMP_NO","PHONE","POST_ASSIGNMENT_DATE","POST_CODE","POST_GRADE_CODE","POST_GRADE_TITLE","POST_TITLE","F_POST_ID","WORK_DAYS","WORK_MONTHS","WORK_PLACE_TITLE","WORK_TURN_TITLE","WORK_YEARS"
         FROM
             tbl_personnel
         WHERE
@@ -2013,8 +2015,8 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="from view_personnel_course_passed_na_report_v2-001">
-        <createView viewName="from view_personnel_course_passed_na_report_v2" replaceIfExists="true">
+    <changeSet author="NICICO" id="view_personnel_course_passed_na_report_v2-001">
+        <createView viewName="view_personnel_course_passed_na_report_v2" replaceIfExists="true">
             <![CDATA[
     SELECT
     na.na_priority_id,
@@ -2125,8 +2127,8 @@ FROM
                 viewName="view_personnel_course_passed_na_report_v2"/>
     </changeSet>
 
-    <changeSet author="NICICO" id="view_statistics_unit_report-001">
-        <createView viewName="select * from view_statistics_unit_report" replaceIfExists="true">
+    <changeSet author="NICICO" id="view_statistics_unit_report-002">
+        <createView viewName="view_statistics_unit_report" replaceIfExists="true">
             <![CDATA[
      SELECT
     csession.c_session_date                  AS session_session_date,
@@ -2374,8 +2376,8 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="view_presence_report-001">
-        <createView viewName="select * from view_presence_report" replaceIfExists="true">
+    <changeSet author="NICICO" id="view_presence_report-002">
+        <createView viewName="view_presence_report" replaceIfExists="true">
             <![CDATA[
   SELECT
     SUM(
@@ -2562,7 +2564,7 @@ GROUP BY
     ]]>
         </createView>
     </changeSet>
-    <changeSet author="NICICO" id="VIEW_TRAINING_POST-001">
+    <changeSet author="NICICO" id="VIEW_TRAINING_POST-003">
         <createView viewName="VIEW_TRAINING_POST" replaceIfExists="true">
             <![CDATA[
    SELECT
@@ -2587,6 +2589,7 @@ GROUP BY
     tp.f_job_id,
     tp.d_last_modified_date_na,
     tp.c_modified_by_na,
+    tp.c_people_type,
     j.c_title_fa    AS job_c_title_fa,
     j.c_code        AS job_c_code,
     pg.c_title_fa   AS post_grade_c_title_fa,
@@ -2596,10 +2599,11 @@ GROUP BY
 FROM
     tbl_training_post               tp
     LEFT JOIN tbl_needs_assessment    na ON tp.id = na.f_object
-                                         AND na.c_object_type = 'Post'
-    LEFT JOIN view_active_personnel   prs ON tp.c_code = prs.post_code
-    INNER JOIN tbl_job                 j ON j.id = tp.f_job_id
-    INNER JOIN tbl_post_grade          pg ON pg.id = tp.f_post_grade_id
+                                         AND na.c_object_type = 'TrainingPost'
+    LEFT JOIN TBL_POST_TRAINING_POST ptp ON tp.id = ptp.f_training_post_id
+    LEFT JOIN view_active_personnel   prs ON ptp.f_post_id = prs.f_post_id
+    LEFT JOIN tbl_job                 j ON j.id = tp.f_job_id
+    LEFT JOIN tbl_post_grade          pg ON pg.id = tp.f_post_grade_id
 GROUP BY
     tp.id,
     tp.c_created_by,
@@ -2622,6 +2626,7 @@ GROUP BY
     tp.f_job_id,
     tp.d_last_modified_date_na,
     tp.c_modified_by_na,
+    tp.c_people_type,
     j.c_title_fa,
     j.c_code,
     pg.c_title_fa,

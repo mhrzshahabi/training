@@ -343,7 +343,6 @@
             width: "100%",
             membersMargin: 10,
             members: [
-                <sec:authorize access="hasAuthority('Evaluation_PrintPreTest')">
                 isc.VLayout.create({
                     membersMargin: 5,
                     layoutAlign: "center",
@@ -362,9 +361,14 @@
                                     endRow: false,
                                     baseStyle: "sendFile",
                                     click: function () {
-                                        setReactionStatus(1,10);
-                                        print_Teacher_FormIssuance();
-                                        ToolStrip_SendForms_RE.getField("sendButtonTeacher").enableIcon("ok");
+                                        if(classRecord_RE.teacherEvalStatus != "0" && classRecord_RE.teacherEvalStatus != null)
+                                            createDialog("info", "قبلا فرم ارزیابی واکنشی برای مدرس صادر شده است");
+                                        else{
+                                            if(classRecord_RE.teacherId == undefined)
+                                                createDialog("info", "اطلاعات کلاس ناقص است!");
+                                            else
+                                                Teacher_Reaction_Form_Inssurance_RE();
+                                        }
                                     },
                                     icons:[
                                         {
@@ -381,14 +385,22 @@
                                 },
                                 {name: "registerButtonTeacher",title: "ثبت نتایج ارزیابی مدرس از کلاس", type:"button",startRow: false,baseStyle: "registerFile",
                                     click:function () {
-                                        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "getTeacherReactionStatus/" + classRecord_RE.id , "GET", null, function (resp) {
-                                            if(resp.httpResponseText == "1")
-                                                register_evaluation_result_reaction(0);
-                                            else
-                                                createDialog('info', "برای مدرس فرمی صادر نشده است.");
-                                        }));
+                                        if(classRecord_RE.teacherEvalStatus == "0" || classRecord_RE.teacherEvalStatus == null)
+                                            createDialog("info", "فرم ارزیابی واکنشی برای مسئول آموزش صادر نشده است");
+                                        else
+                                            register_Teacher_Reaction_Form_RE();
                                     },
                                     icons:[
+                                        {
+                                            name: "ok",
+                                            src: "[SKIN]actions/ok.png",
+                                            width: 15,
+                                            height: 15,
+                                            inline: true,
+                                            prompt: "تائید صدور",
+                                            click : function (form, item, icon) {
+                                            }
+                                        },
                                         {
                                             name: "clear",
                                             src: "[SKIN]actions/remove.png",
@@ -397,18 +409,40 @@
                                             inline: true,
                                             prompt: "حذف فرم",
                                             click : function (form, item, icon) {
-                                                alert('حذف فرم');
-                                            }
-                                        },
-                                        {
-                                            name: "edit",
-                                            src: "[SKIN]actions/edit.png",
-                                            width: 15,
-                                            height: 15,
-                                            inline: true,
-                                            prompt: "ویرایش فرم",
-                                            click : function (form, item, icon) {
-                                                alert('ویرایش فرم');
+                                                if (classRecord_RE.teacherEvalStatus == "0" ||classRecord_RE.teacherEvalStatus == null)
+                                                    createDialog("info", "فرم ارزیابی واکنشی برای مدرس صادر نشده است");
+                                                else{
+                                                    let Dialog_remove = createDialog("ask", "آیا از حذف فرم مطمئن هستید؟",
+                                                        "<spring:message code="verify.delete"/>");
+                                                    Dialog_remove.addProperties({
+                                                        buttonClick: function (button, index) {
+                                                            this.close();
+                                                            if (index === 0) {
+                                                                let data = {};
+                                                                data.classId = classRecord_RE.id;
+                                                                data.evaluatorId = classRecord_RE.teacherId;
+                                                                data.evaluatorTypeId = 187;
+                                                                data.evaluatedId = classRecord_RE.id;
+                                                                data.evaluatedTypeId = 504;
+                                                                data.questionnaireTypeId = 140;
+                                                                data.evaluationLevelId = 154;
+                                                                isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/deleteEvaluation" , "POST", JSON.stringify(data), function (resp) {
+                                                                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                                                        const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                                                                        setTimeout(() => {
+                                                                            msg.close();
+                                                                        }, 3000);
+                                                                        classRecord_RE.teacherEvalStatus = 0;
+                                                                        ToolStrip_SendForms_RE.getField("sendButtonTeacher").disableIcon("ok");
+                                                                        ToolStrip_SendForms_RE.getField("registerButtonTeacher").disableIcon("ok");
+                                                                    } else {
+                                                                        createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                                                    }
+                                                                }))
+                                                            }
+                                                        }
+                                                    });
+                                                }
                                             }
                                         },
                                         {
@@ -419,7 +453,6 @@
                                             inline: true,
                                             prompt: "چاپ فرم",
                                             click : function (form, item, icon) {
-                                                alert('چاپ فرم');
                                             }
                                         }
                                     ]},
@@ -431,9 +464,14 @@
                                     endRow: false,
                                     baseStyle: "sendFile",
                                     click: function () {
-                                        setReactionStatus(10,1);
-                                        print_Training_FormIssuance();
-                                        ToolStrip_SendForms_RE.getField("sendButtonTraining").enableIcon("ok");
+                                        if(classRecord_RE.trainingEvalStatus != "0" && classRecord_RE.trainingEvalStatus != null)
+                                            createDialog("info", "قبلا فرم ارزیابی واکنشی برای مسئول آموزش صادر شده است");
+                                        else{
+                                            if(classRecord_RE.tclassSupervisor == undefined || classRecord_RE.teacherId == undefined)
+                                                createDialog("info", "اطلاعات کلاس ناقص است!");
+                                            else
+                                                Training_Reaction_Form_Inssurance_RE();
+                                        }
                                     },
                                     icons:[
                                         {
@@ -444,21 +482,29 @@
                                             inline: true,
                                             prompt: "تائید صدور",
                                             click : function (form, item, icon) {
-                                                alert('تائید صدور');
                                             }
                                         }
                                     ]
                                 },
                                 {name: "registerButtonTraining",title: "ثبت نتایج ارزیابی آموزش از مدرس", type:"button",startRow: false,endRow: false,baseStyle: "registerFile",
                                     click:function () {
-                                        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "getTrainingReactionStatus/" + classRecord_RE.id , "GET", null, function (resp) {
-                                            if(resp.httpResponseText == "1")
-                                                register_evaluation_result_reaction(1);
-                                            else
-                                                createDialog('info', "برای مسئول آموزش فرمی صادر نشده است.");
-                                        }));
+                                        if(classRecord_RE.trainingEvalStatus == "0" || classRecord_RE.trainingEvalStatus == null)
+                                            createDialog("info", "فرم ارزیابی واکنشی برای مسئول آموزش صادر نشده است");
+                                        else
+                                            register_Training_Reaction_Form_RE();
+
                                     },
                                     icons:[
+                                        {
+                                            name: "ok",
+                                            src: "[SKIN]actions/ok.png",
+                                            width: 15,
+                                            height: 15,
+                                            inline: true,
+                                            prompt: "تائید ثبت",
+                                            click : function (form, item, icon) {
+                                            }
+                                        },
                                         {
                                             name: "clear",
                                             src: "[SKIN]actions/remove.png",
@@ -467,18 +513,40 @@
                                             inline: true,
                                             prompt: "حذف فرم",
                                             click : function (form, item, icon) {
-                                                alert('حذف فرم');
-                                            }
-                                        },
-                                        {
-                                            name: "edit",
-                                            src: "[SKIN]actions/edit.png",
-                                            width: 15,
-                                            height: 15,
-                                            inline: true,
-                                            prompt: "ویرایش فرم",
-                                            click : function (form, item, icon) {
-                                                alert('ویرایش فرم');
+                                                if (classRecord_RE.trainingEvalStatus == "0" ||classRecord_RE.trainingEvalStatus == null)
+                                                    createDialog("info", "فرم ارزیابی واکنشی برای مسئول آموزش صادر نشده است");
+                                                else{
+                                                    let Dialog_remove = createDialog("ask", "آیا از حذف فرم مطمئن هستید؟",
+                                                        "<spring:message code="verify.delete"/>");
+                                                    Dialog_remove.addProperties({
+                                                        buttonClick: function (button, index) {
+                                                            this.close();
+                                                            if (index === 0) {
+                                                                let data = {};
+                                                                data.classId = classRecord_RE.id;
+                                                                data.evaluatorId = classRecord_RE.tclassSupervisor;
+                                                                data.evaluatorTypeId = 454;
+                                                                data.evaluatedId = classRecord_RE.teacherId;
+                                                                data.evaluatedTypeId = 187;
+                                                                data.questionnaireTypeId = 141;
+                                                                data.evaluationLevelId = 154;
+                                                                isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/deleteEvaluation" , "POST", JSON.stringify(data), function (resp) {
+                                                                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                                                        const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                                                                        setTimeout(() => {
+                                                                            msg.close();
+                                                                        }, 3000);
+                                                                        classRecord_RE.trainingEvalStatus = 0;
+                                                                        ToolStrip_SendForms_RE.getField("sendButtonTraining").disableIcon("ok");
+                                                                        ToolStrip_SendForms_RE.getField("registerButtonTraining").disableIcon("ok");
+                                                                    } else {
+                                                                        createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                                                    }
+                                                                }))
+                                                            }
+                                                        }
+                                                    });
+                                                }
                                             }
                                         },
                                         {
@@ -489,7 +557,6 @@
                                             inline: true,
                                             prompt: "چاپ فرم",
                                             click : function (form, item, icon) {
-                                                alert('چاپ فرم');
                                             }
                                         }
                                     ]}
@@ -511,13 +578,8 @@
                         ToolStripButton_RefreshIssuance_RE
                     ]
                 })
-                </sec:authorize>
             ]
         });
-
-        ToolStrip_SendForms_RE.getField("sendButtonTeacher").disableIcon("ok");
-
-        ToolStrip_SendForms_RE.getField("sendButtonTraining").disableIcon("ok");
 
     //----------------------------------------- LayOut -----------------------------------------------------------------
         var HLayout_Actions_RE = isc.HLayout.create({
@@ -538,7 +600,7 @@
                 DynamicForm_ReturnDate_RE,
                 isc.LayoutSpacer.create({width: "80%"}),
                 isc.RibbonGroup.create({
-                    ID: "fileGroup",
+                    ID: "fileGroup_RE",
                     title: "راهنمای رنگ بندی لیست",
                     numRows: 1,
                     colWidths: [ 40, "*" ],
@@ -561,8 +623,7 @@
                             baseStyle: "gridHint",
                             backgroundColor: '#b7dee8'
                         }))
-                    ],
-                    autoDraw: false
+                    ]
                 })]
         });
 
@@ -573,20 +634,21 @@
         });
 
     //----------------------------------- New Funsctions ---------------------------------------------------------------
-        function print_Student_Reaction_Form_RE(questionnarieId, evaluatorId, evaluatorTypeId, evaluatedId, evaluatedTypeId,
+        function print_Reaction_Form_RE(questionnarieId, evaluatorId, evaluatorTypeId, evaluatedId, evaluatedTypeId,
                                             questionnarieTypeId, evaluationLevel) {}
 
 
         function Student_Reaction_Form_Inssurance_RE(studentRecord){
         let IButtonSave_SelectQuestionnarie_RE = isc.IButtonSave.create({
-                title: "صدور و چاپ",
+                title: "صدور/ارسال به کارتابل",
+                width: 150,
                 click: function () {
                     if(ListGrid_SelectQuestionnarie_RE.getSelectedRecord() == null || ListGrid_SelectQuestionnarie_RE.getSelectedRecord() == undefined){
                         createDialog("info", "پرسشنامه ای انتخاب نشده است.");
                     }
                     else{
                         Window_SelectQuestionnarie_RE.close();
-                        createOrUpdate_evaluation_form(null,ListGrid_SelectQuestionnarie_RE.getSelectedRecord().id, studentRecord.id, 188, classRecord_RE.id, 504, 139, 154);
+                        create_evaluation_form(null,ListGrid_SelectQuestionnarie_RE.getSelectedRecord().id, studentRecord.id, 188, classRecord_RE.id, 504, 139, 154);
                     }
                 }
             });
@@ -926,8 +988,718 @@
             }
     }
 
+        function Training_Reaction_Form_Inssurance_RE(){
+            let IButtonSave_SelectQuestionnarie_RE = isc.IButtonSave.create({
+                title: "صدور/ارسال به کارتابل",
+                width: 150,
+                click: function () {
+                    if(ListGrid_SelectQuestionnarie_RE.getSelectedRecord() == null || ListGrid_SelectQuestionnarie_RE.getSelectedRecord() == undefined){
+                        createDialog("info", "پرسشنامه ای انتخاب نشده است.");
+                    }
+                    else{
+                        Window_SelectQuestionnarie_RE.close();
+                        create_evaluation_form(null,ListGrid_SelectQuestionnarie_RE.getSelectedRecord().id, classRecord_RE.tclassSupervisor, 454, classRecord_RE.teacherId,187 , 141, 154);
+                    }
+                }
+            });
+            let RestDataSource_Questionnarie_RE = isc.TrDS.create({
+                fields: [
+                    {name: "id", primaryKey: true, hidden: true},
+                    {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
+                    {name:"questionnaireTypeId",hidden:true},
+                    {name:"questionnaireType.title",title:"<spring:message code="type"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
+                    {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
+                ],
+                fetchDataURL: questionnaireUrl + "/iscList"
+            });
+            let ListGrid_SelectQuestionnarie_RE = isc.TrLG.create({
+                width: "100%",
+                dataSource: RestDataSource_Questionnarie_RE,
+                selectionType: "single",
+                selectionAppearance: "checkbox",
+                fields: [{name: "title"},{name:"questionnaireType.title"},{name: "description"},{name: "id", hidden:true}]
+            });
+            let Window_SelectQuestionnarie_RE = isc.Window.create({
+                width: 1024,
+                placement: "fillScreen",
+                keepInParentRect: true,
+                title: "انتخاب پرسشنامه",
+                items: [
+                    isc.HLayout.create({
+                        width: "100%",
+                        height: "90%",
+                        members: [ListGrid_SelectQuestionnarie_RE]
+                    }),
+                    isc.TrHLayoutButtons.create({
+                        width: "100%",
+                        height: "5%",
+                        members: [
+                            IButtonSave_SelectQuestionnarie_RE,
+                            isc.IButtonSave.create({
+                                title: "ارسال از طریق پیامک",
+                                click: function () {
+                                }
+                            }),
+                            isc.IButtonCancel.create({
+                                click: function () {
+                                    Window_SelectQuestionnarie_RE.close();
+                                }
+                            })
+                        ]
+                    })
+                ],
+                minWidth: 1024
+            });
+            let criteria = {
+                _constructor:"AdvancedCriteria",
+                operator:"and",
+                criteria:[
+                    {fieldName:"eEnabled", operator:"equals", value: 494},
+                    {fieldName:"questionnaireTypeId", operator:"equals", value: 141}
+                ]
+            };
+            ListGrid_SelectQuestionnarie_RE.fetchData(criteria);
+            ListGrid_SelectQuestionnarie_RE.invalidateCache();
+            Window_SelectQuestionnarie_RE.show();
+    }
+
+        function register_Training_Reaction_Form_RE(){
+            let evaluationResult_DS = isc.TrDS.create({
+                fields:
+                    [
+                        {name: "id", primaryKey: true, hidden: true},
+                        {name: "title", title: "<spring:message code="title"/>"},
+                        {name: "code", title: "<spring:message code="code"/>"}
+                    ],
+                autoFetchData: false,
+                autoCacheAllData: true,
+                fetchDataURL: parameterUrl + "/iscList/EvaluationResult"
+            });
+
+            let evaluationId;
+
+            let valueMapAnswer = {209: "خیلی ضعیف", 208: "ضعیف", 207: "متوسط", 206: "خوب", 205: "عالی"};
+
+            let DynamicForm_Questions_Title_JspEvaluation = isc.DynamicForm.create({
+                numCols: 6,
+                width: "100%",
+                borderRadius: "10px 10px 0px 0px",
+                border: "2px solid black",
+                titleAlign: "left",
+                margin: 10,
+                padding: 10,
+                fields: [
+                    {name: "code", title: "<spring:message code="class.code"/>:", canEdit: false},
+                    {name: "titleClass", title: "<spring:message code='class.title'/>:", canEdit: false},
+                    {name: "startDate", title: "<spring:message code='start.date'/>:", canEdit: false},
+                    {name: "teacher", title: "<spring:message code='teacher'/>:", canEdit: false},
+                    {name: "institute", title: "<spring:message code='institute'/>:", canEdit: false},
+                    {name: "user", title: "<spring:message code='user'/>:", canEdit: false},
+                    {name: "evaluationLevel", title: "<spring:message code="evaluation.level"/>:", canEdit: false},
+                    {name: "evaluationType", title: "<spring:message code="evaluation.type"/>:", canEdit: false, endRow: true},
+                    {name: "evaluator", title: "<spring:message code="evaluator"/>:", canEdit: false,},
+                    {name: "evaluated", title: "<spring:message code="evaluation.evaluated"/>:", canEdit: false}
+                ]
+            });
+
+            let DynamicForm_Questions_Body_JspEvaluation = isc.DynamicForm.create({
+                validateOnExit: true,
+                colWidths: ["45%", "50%"],
+                cellBorder: 1,
+                width: "100%",
+                padding: 10,
+                styleName: "teacher-form",
+                fields: []
+            });
+
+            let DynamicForm_Description_JspEvaluation = isc.DynamicForm.create({
+                width: "100%",
+                fields: [
+                    {
+                        name: "description",
+                        title: "<spring:message code='description'/>",
+                        type: 'textArea'
+                    }
+                ]
+            });
+
+            let IButton_Questions_Save = isc.IButtonSave.create({
+                click: function () {
+                    let evaluationAnswerList = [];
+                    let data = {};
+                    let evaluationFull = true;
+
+                    let questions = DynamicForm_Questions_Body_JspEvaluation.getFields();
+                    for (let i = 0; i < questions.length; i++) {
+                        if (DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name) === undefined) {
+                            evaluationFull = false;
+                        }
+                        let evaluationAnswer = {};
+                        evaluationAnswer.answerID = DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name);
+                        evaluationAnswer.id = questions[i].name.substring(1);
+                        evaluationAnswerList.push(evaluationAnswer);
+                    }
+                    data.evaluationAnswerList = evaluationAnswerList;
+                    data.evaluationFull = evaluationFull;
+                    data.description = DynamicForm_Description_JspEvaluation.getField("description").getValue();
+                    data.classId = classRecord_RE.id;
+                    data.evaluatorId = classRecord_RE.tclassSupervisor;
+                    data.evaluatorTypeId = 454;
+                    data.evaluatedId = classRecord_RE.teacherId;
+                    data.evaluatedTypeId = 187;
+                    data.questionnaireTypeId = 141;
+                    data.evaluationLevelId = 154;
+                    isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
+                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                            Window_Questions_JspEvaluation.close();
+                            if(evaluationFull == true)
+                                classRecord_RE.trainingEvalStatus = 2;
+                            else
+                                classRecord_RE.trainingEvalStatus = 3;
+                            // isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
+                            //     LGRecord.id,
+                            //     "GET", null, null));
+                            ToolStrip_SendForms_RE.getField("registerButtonTraining").enableIcon("ok");
+                            const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                            setTimeout(() => {
+                                msg.close();
+                            }, 3000);
+                        } else {
+                            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                        }
+                    }))
+                }
+            });
+
+            let Window_Questions_JspEvaluation = isc.Window.create({
+                width: 1024,
+                height: 768,
+                keepInParentRect: true,
+                title: "<spring:message code="record.evaluation.results"/>",
+                items: [
+                    DynamicForm_Questions_Title_JspEvaluation,
+                    DynamicForm_Questions_Body_JspEvaluation,
+                    DynamicForm_Description_JspEvaluation,
+                    isc.TrHLayoutButtons.create({
+                        members: [
+                            IButton_Questions_Save,
+                            isc.IButtonCancel.create({
+                                click: function () {
+                                    Window_Questions_JspEvaluation.close();
+                                }
+                            })]
+                    })
+                ],
+                minWidth: 1024
+            });
+
+            let itemList = [];
+
+            DynamicForm_Questions_Title_JspEvaluation.clearValues();
+            DynamicForm_Description_JspEvaluation.clearValues();
+            DynamicForm_Questions_Body_JspEvaluation.clearValue();
+
+            DynamicForm_Questions_Title_JspEvaluation.getItem("code").setValue(classRecord_RE.tclassCode);
+            DynamicForm_Questions_Title_JspEvaluation.getItem("titleClass").setValue(classRecord_RE.courseTitleFa);
+            DynamicForm_Questions_Title_JspEvaluation.getItem("institute").setValue(classRecord_RE.instituteTitleFa);
+
+            DynamicForm_Questions_Title_JspEvaluation.getItem("startDate").setValue(classRecord_RE.tclassStartDate);
+            DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationType").setValue("ارزیابی مسئول آموزش از مدرس");
+            DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationLevel").setValue("واکنشی");
+            DynamicForm_Questions_Title_JspEvaluation.setValue("user", "<%= SecurityUtil.getFullName()%>");
+            isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "teacherFullName/" + classRecord_RE.teacherId,"GET", null, function (resp1) {
+                DynamicForm_Questions_Title_JspEvaluation.getItem("teacher").setValue(resp1.httpResponseText);
+                DynamicForm_Questions_Title_JspEvaluation.setValue("evaluated", resp1.httpResponseText);
+                isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/personnelFullName/" + classRecord_RE.tclassSupervisor,"GET", null, function (resp2) {
+                    DynamicForm_Questions_Title_JspEvaluation.setValue("evaluator", resp2.httpResponseText);
+                    load_evaluation_form_RTr();
+                }));
+            }));
+
+            Window_Questions_JspEvaluation.show();
+
+            evalWait_RE = createDialog("wait");
+
+            function load_evaluation_form_RTr(criteria, criteriaEdit) {
+
+                let data = {};
+                data.classId = classRecord_RE.id;
+                data.evaluatorId = classRecord_RE.tclassSupervisor;
+                data.evaluatorTypeId = 454;
+                data.evaluatedId = classRecord_RE.teacherId;
+                data.evaluatedTypeId = 187;
+                data.questionnaireTypeId = 141;
+                data.evaluationLevelId = 154;
+
+                let itemList = [];
+                let description;
+                let record = {};
+
+                isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
+                    let result = JSON.parse(resp.httpResponseText).response.data;
+                    description = result[0].description;
+                    evaluationId = result[0].evaluationId;
+                    for(let i=0;i<result.size();i++){
+                        let item = {};
+                        if(result[i].questionSourceId == 199){
+                            switch (result[i].domainId) {
+                                case 54:
+                                    item.name = "Q" + result[i].id;
+                                    item.title = "امکانات: " + result[i].question;
+                                    break;
+                                case 138:
+                                    item.name = "Q" + result[i].id;
+                                    item.title = "کلاس: " + result[i].question;
+                                    break;
+                                case 53:
+                                    item.name = "Q" + result[i].id;
+                                    item.title = "مدرس: " + result[i].question;
+                                    break;
+                                case 1:
+                                    item.name = "Q" + result[i].id;
+                                    item.title = "مدرس: " + result[i].question;
+                                    break;
+                                case 183:
+                                    item.name = "Q" + result[i].id;
+                                    item.title = "محتواي کلاس: " + result[i].question;
+                                    break;
+                                default:
+                                    item.name = "Q" + result[i].id;
+                                    item.title = result[i].question;
+                            }
+
+                            item.type = "radioGroup";
+                            item.vertical = false;
+                            item.fillHorizontalSpace = true;
+                            item.valueMap = valueMapAnswer;
+                            item.icons = [
+                                {
+                                    name: "clear",
+                                    src: "[SKIN]actions/remove.png",
+                                    width: 15,
+                                    height: 15,
+                                    inline: true,
+                                    prompt: "پاک کردن",
+                                    click : function (form, item, icon) {
+                                        item.clearValue();
+                                        item.focusInItem();
+                                    }
+                                }
+                            ];
+                            record["Q" + result[i].id] = result[i].answerId;
+                        }
+                        else if(result[i].questionSourceId == 200){
+                            item.name = "M" + result[i].id;
+                            item.title = "هدف اصلی: " + result[i].question;
+                            item.type = "radioGroup";
+                            item.vertical = false;
+                            item.fillHorizontalSpace = true;
+                            item.valueMap = valueMapAnswer;
+                            item.icons = [
+                                {
+                                    name: "clear",
+                                    src: "[SKIN]actions/remove.png",
+                                    width: 15,
+                                    height: 15,
+                                    inline: true,
+                                    prompt: "پاک کردن",
+                                    click : function (form, item, icon) {
+                                        item.clearValue();
+                                        item.focusInItem();
+                                    }
+                                }
+                            ];
+                            record["M" + result[i].id] = result[i].answerId;
+                        }
+                        else if(result[i].questionSourceId == 201){
+                            item.name = "G" + result[i].id;
+                            item.title = "هدف: " + result[i].question;
+                            item.type = "radioGroup";
+                            item.vertical = false;
+                            item.fillHorizontalSpace = true;
+                            item.valueMap = valueMapAnswer;
+                            item.icons = [
+                                {
+                                    name: "clear",
+                                    src: "[SKIN]actions/remove.png",
+                                    width: 15,
+                                    height: 15,
+                                    inline: true,
+                                    prompt: "پاک کردن",
+                                    click : function (form, item, icon) {
+                                        item.clearValue();
+                                        item.focusInItem();
+                                    }
+                                }
+                            ];
+                            record["G" + result[i].id] = result[i].answerId;
+                        }
+                        itemList.add(item);
+                    }
+                    DynamicForm_Questions_Body_JspEvaluation.setItems(itemList);
+                    DynamicForm_Description_JspEvaluation.getField("description").setValue(description);
+                    DynamicForm_Questions_Body_JspEvaluation.setValues(record);
+                    evalWait_RE.close();
+                }));
+            }
+    }
+
+        function Teacher_Reaction_Form_Inssurance_RE(){
+        let IButtonSave_SelectQuestionnarie_RE = isc.IButtonSave.create({
+            title: "صدور/ارسال به کارتابل",
+            width: 150,
+            click: function () {
+                if(ListGrid_SelectQuestionnarie_RE.getSelectedRecord() == null || ListGrid_SelectQuestionnarie_RE.getSelectedRecord() == undefined){
+                    createDialog("info", "پرسشنامه ای انتخاب نشده است.");
+                }
+                else{
+                    Window_SelectQuestionnarie_RE.close();
+                    create_evaluation_form(null,ListGrid_SelectQuestionnarie_RE.getSelectedRecord().id, classRecord_RE.teacherId, 187, classRecord_RE.id,504 , 140, 154);
+                }
+            }
+        });
+        let RestDataSource_Questionnarie_RE = isc.TrDS.create({
+            fields: [
+                {name: "id", primaryKey: true, hidden: true},
+                {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
+                {name:"questionnaireTypeId",hidden:true},
+                {name:"questionnaireType.title",title:"<spring:message code="type"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
+                {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
+            ],
+            fetchDataURL: questionnaireUrl + "/iscList"
+        });
+        let ListGrid_SelectQuestionnarie_RE = isc.TrLG.create({
+            width: "100%",
+            dataSource: RestDataSource_Questionnarie_RE,
+            selectionType: "single",
+            selectionAppearance: "checkbox",
+            fields: [{name: "title"},{name:"questionnaireType.title"},{name: "description"},{name: "id", hidden:true}]
+        });
+        let Window_SelectQuestionnarie_RE = isc.Window.create({
+            width: 1024,
+            placement: "fillScreen",
+            keepInParentRect: true,
+            title: "انتخاب پرسشنامه",
+            items: [
+                isc.HLayout.create({
+                    width: "100%",
+                    height: "90%",
+                    members: [ListGrid_SelectQuestionnarie_RE]
+                }),
+                isc.TrHLayoutButtons.create({
+                    width: "100%",
+                    height: "5%",
+                    members: [
+                        IButtonSave_SelectQuestionnarie_RE,
+                        isc.IButtonSave.create({
+                            title: "ارسال از طریق پیامک",
+                            click: function () {
+                            }
+                        }),
+                        isc.IButtonCancel.create({
+                            click: function () {
+                                Window_SelectQuestionnarie_RE.close();
+                            }
+                        })
+                    ]
+                })
+            ],
+            minWidth: 1024
+        });
+        let criteria = {
+            _constructor:"AdvancedCriteria",
+            operator:"and",
+            criteria:[
+                {fieldName:"eEnabled", operator:"equals", value: 494},
+                {fieldName:"questionnaireTypeId", operator:"equals", value: 140}
+            ]
+        };
+        ListGrid_SelectQuestionnarie_RE.fetchData(criteria);
+        ListGrid_SelectQuestionnarie_RE.invalidateCache();
+        Window_SelectQuestionnarie_RE.show();
+    }
+
+        function register_Teacher_Reaction_Form_RE(){
+        let evaluationResult_DS = isc.TrDS.create({
+            fields:
+                [
+                    {name: "id", primaryKey: true, hidden: true},
+                    {name: "title", title: "<spring:message code="title"/>"},
+                    {name: "code", title: "<spring:message code="code"/>"}
+                ],
+            autoFetchData: false,
+            autoCacheAllData: true,
+            fetchDataURL: parameterUrl + "/iscList/EvaluationResult"
+        });
+
+        let evaluationId;
+
+        let valueMapAnswer = {209: "خیلی ضعیف", 208: "ضعیف", 207: "متوسط", 206: "خوب", 205: "عالی"};
+
+        let DynamicForm_Questions_Title_JspEvaluation = isc.DynamicForm.create({
+            numCols: 6,
+            width: "100%",
+            borderRadius: "10px 10px 0px 0px",
+            border: "2px solid black",
+            titleAlign: "left",
+            margin: 10,
+            padding: 10,
+            fields: [
+                {name: "code", title: "<spring:message code="class.code"/>:", canEdit: false},
+                {name: "titleClass", title: "<spring:message code='class.title'/>:", canEdit: false},
+                {name: "startDate", title: "<spring:message code='start.date'/>:", canEdit: false},
+                {name: "teacher", title: "<spring:message code='teacher'/>:", canEdit: false},
+                {name: "institute", title: "<spring:message code='institute'/>:", canEdit: false},
+                {name: "user", title: "<spring:message code='user'/>:", canEdit: false},
+                {name: "evaluationLevel", title: "<spring:message code="evaluation.level"/>:", canEdit: false},
+                {name: "evaluationType", title: "<spring:message code="evaluation.type"/>:", canEdit: false, endRow: true},
+                {name: "evaluator", title: "<spring:message code="evaluator"/>:", canEdit: false,},
+                {name: "evaluated", title: "<spring:message code="evaluation.evaluated"/>:", canEdit: false}
+            ]
+        });
+
+        let DynamicForm_Questions_Body_JspEvaluation = isc.DynamicForm.create({
+            validateOnExit: true,
+            colWidths: ["45%", "50%"],
+            cellBorder: 1,
+            width: "100%",
+            padding: 10,
+            styleName: "teacher-form",
+            fields: []
+        });
+
+        let DynamicForm_Description_JspEvaluation = isc.DynamicForm.create({
+            width: "100%",
+            fields: [
+                {
+                    name: "description",
+                    title: "<spring:message code='description'/>",
+                    type: 'textArea'
+                }
+            ]
+        });
+
+        let IButton_Questions_Save = isc.IButtonSave.create({
+            click: function () {
+                let evaluationAnswerList = [];
+                let data = {};
+                let evaluationFull = true;
+
+                let questions = DynamicForm_Questions_Body_JspEvaluation.getFields();
+                for (let i = 0; i < questions.length; i++) {
+                    if (DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name) === undefined) {
+                        evaluationFull = false;
+                    }
+                    let evaluationAnswer = {};
+                    evaluationAnswer.answerID = DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name);
+                    evaluationAnswer.id = questions[i].name.substring(1);
+                    evaluationAnswerList.push(evaluationAnswer);
+                }
+                data.evaluationAnswerList = evaluationAnswerList;
+                data.evaluationFull = evaluationFull;
+                data.description = DynamicForm_Description_JspEvaluation.getField("description").getValue();
+                data.classId = classRecord_RE.id;
+                data.evaluatorId = classRecord_RE.teacherId;
+                data.evaluatorTypeId = 187;
+                data.evaluatedId = classRecord_RE.id;
+                data.evaluatedTypeId = 504;
+                data.questionnaireTypeId = 140;
+                data.evaluationLevelId = 154;
+                isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                        Window_Questions_JspEvaluation.close();
+                        if(evaluationFull == true)
+                            classRecord_RE.teacherEvalStatus = 2;
+                        else
+                            classRecord_RE.teacherEvalStatus = 3;
+                        // isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
+                        //     LGRecord.id,
+                        //     "GET", null, null));
+                        ToolStrip_SendForms_RE.getField("registerButtonTraining").enableIcon("ok");
+                        const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                        setTimeout(() => {
+                            msg.close();
+                        }, 3000);
+                    } else {
+                        createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                    }
+                }))
+            }
+        });
+
+        let Window_Questions_JspEvaluation = isc.Window.create({
+            width: 1024,
+            height: 768,
+            keepInParentRect: true,
+            title: "<spring:message code="record.evaluation.results"/>",
+            items: [
+                DynamicForm_Questions_Title_JspEvaluation,
+                DynamicForm_Questions_Body_JspEvaluation,
+                DynamicForm_Description_JspEvaluation,
+                isc.TrHLayoutButtons.create({
+                    members: [
+                        IButton_Questions_Save,
+                        isc.IButtonCancel.create({
+                            click: function () {
+                                Window_Questions_JspEvaluation.close();
+                            }
+                        })]
+                })
+            ],
+            minWidth: 1024
+        });
+
+        let itemList = [];
+
+        DynamicForm_Questions_Title_JspEvaluation.clearValues();
+        DynamicForm_Description_JspEvaluation.clearValues();
+        DynamicForm_Questions_Body_JspEvaluation.clearValue();
+
+        DynamicForm_Questions_Title_JspEvaluation.getItem("code").setValue(classRecord_RE.tclassCode);
+        DynamicForm_Questions_Title_JspEvaluation.getItem("titleClass").setValue(classRecord_RE.courseTitleFa);
+        DynamicForm_Questions_Title_JspEvaluation.getItem("institute").setValue(classRecord_RE.instituteTitleFa);
+
+        DynamicForm_Questions_Title_JspEvaluation.getItem("startDate").setValue(classRecord_RE.tclassStartDate);
+        DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationType").setValue("ارزیابی استاد از کلاس");
+        DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationLevel").setValue("واکنشی");
+        DynamicForm_Questions_Title_JspEvaluation.setValue("user", "<%= SecurityUtil.getFullName()%>");
+        DynamicForm_Questions_Title_JspEvaluation.setValue("evaluated", classRecord_RE.courseTitleFa);
+        isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "teacherFullName/" + classRecord_RE.teacherId,"GET", null, function (resp1) {
+            DynamicForm_Questions_Title_JspEvaluation.getItem("teacher").setValue(resp1.httpResponseText);
+            DynamicForm_Questions_Title_JspEvaluation.setValue("evaluator", resp1.httpResponseText);
+            load_evaluation_form_RTe();
+        }));
+
+        Window_Questions_JspEvaluation.show();
+
+        evalWait_RE = createDialog("wait");
+
+        function load_evaluation_form_RTe(criteria, criteriaEdit) {
+
+            let data = {};
+            data.classId = classRecord_RE.id;
+            data.evaluatorId = classRecord_RE.teacherId;
+            data.evaluatorTypeId = 187;
+            data.evaluatedId = classRecord_RE.id;
+            data.evaluatedTypeId = 504;
+            data.questionnaireTypeId = 140;
+            data.evaluationLevelId = 154;
+
+            let itemList = [];
+            let description;
+            let record = {};
+
+            isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
+                let result = JSON.parse(resp.httpResponseText).response.data;
+                description = result[0].description;
+                evaluationId = result[0].evaluationId;
+                for(let i=0;i<result.size();i++){
+                    let item = {};
+                    if(result[i].questionSourceId == 199){
+                        switch (result[i].domainId) {
+                            case 54:
+                                item.name = "Q" + result[i].id;
+                                item.title = "امکانات: " + result[i].question;
+                                break;
+                            case 138:
+                                item.name = "Q" + result[i].id;
+                                item.title = "کلاس: " + result[i].question;
+                                break;
+                            case 53:
+                                item.name = "Q" + result[i].id;
+                                item.title = "مدرس: " + result[i].question;
+                                break;
+                            case 1:
+                                item.name = "Q" + result[i].id;
+                                item.title = "مدرس: " + result[i].question;
+                                break;
+                            case 183:
+                                item.name = "Q" + result[i].id;
+                                item.title = "محتواي کلاس: " + result[i].question;
+                                break;
+                            default:
+                                item.name = "Q" + result[i].id;
+                                item.title = result[i].question;
+                        }
+
+                        item.type = "radioGroup";
+                        item.vertical = false;
+                        item.fillHorizontalSpace = true;
+                        item.valueMap = valueMapAnswer;
+                        item.icons = [
+                            {
+                                name: "clear",
+                                src: "[SKIN]actions/remove.png",
+                                width: 15,
+                                height: 15,
+                                inline: true,
+                                prompt: "پاک کردن",
+                                click : function (form, item, icon) {
+                                    item.clearValue();
+                                    item.focusInItem();
+                                }
+                            }
+                        ];
+                        record["Q" + result[i].id] = result[i].answerId;
+                    }
+                    else if(result[i].questionSourceId == 200){
+                        item.name = "M" + result[i].id;
+                        item.title = "هدف اصلی: " + result[i].question;
+                        item.type = "radioGroup";
+                        item.vertical = false;
+                        item.fillHorizontalSpace = true;
+                        item.valueMap = valueMapAnswer;
+                        item.icons = [
+                            {
+                                name: "clear",
+                                src: "[SKIN]actions/remove.png",
+                                width: 15,
+                                height: 15,
+                                inline: true,
+                                prompt: "پاک کردن",
+                                click : function (form, item, icon) {
+                                    item.clearValue();
+                                    item.focusInItem();
+                                }
+                            }
+                        ];
+                        record["M" + result[i].id] = result[i].answerId;
+                    }
+                    else if(result[i].questionSourceId == 201){
+                        item.name = "G" + result[i].id;
+                        item.title = "هدف: " + result[i].question;
+                        item.type = "radioGroup";
+                        item.vertical = false;
+                        item.fillHorizontalSpace = true;
+                        item.valueMap = valueMapAnswer;
+                        item.icons = [
+                            {
+                                name: "clear",
+                                src: "[SKIN]actions/remove.png",
+                                width: 15,
+                                height: 15,
+                                inline: true,
+                                prompt: "پاک کردن",
+                                click : function (form, item, icon) {
+                                    item.clearValue();
+                                    item.focusInItem();
+                                }
+                            }
+                        ];
+                        record["G" + result[i].id] = result[i].answerId;
+                    }
+                    itemList.add(item);
+                }
+                DynamicForm_Questions_Body_JspEvaluation.setItems(itemList);
+                DynamicForm_Description_JspEvaluation.getField("description").setValue(description);
+                DynamicForm_Questions_Body_JspEvaluation.setValues(record);
+                evalWait_RE.close();
+            }));
+        }
+    }
+
     //------------------------------------------------- Global Functions -----------------------------------------------
-        function createOrUpdate_evaluation_form(id,questionnarieId, evaluatorId,
+        function create_evaluation_form(id,questionnarieId, evaluatorId,
                                     evaluatorTypeId, evaluatedId, evaluatedTypeId, questionnarieTypeId,
                                     evaluationLevel){
         let data = {};
@@ -952,16 +1724,21 @@
                 setTimeout(() => {
                     msg.close();
                 }, 3000);
-                print_Student_Reaction_Form_RE(questionnarieId, evaluatorId,
-                    evaluatorTypeId, evaluatedId, evaluatedTypeId, questionnarieTypeId,
-                    evaluationLevel);
-                ListGrid_student_RE.invalidateCache();
-            }
-            else {
+                if(questionnarieTypeId == 139)
+                    ListGrid_student_RE.invalidateCache();
+                else if (questionnarieTypeId == 141) {
+                    classRecord_RE.trainingEvalStatus = 1;
+                    ToolStrip_SendForms_RE.getField("sendButtonTraining").enableIcon("ok");
+                }
+                else if(questionnarieTypeId == 140){
+                    classRecord_RE.teacherEvalStatus = 1;
+                    ToolStrip_SendForms_RE.getField("sendButtonTeacher").enableIcon("ok");
+                }
+            } else {
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
             }
         }));
-    }
+        }
 
         function questionSourceConvert(s) {
         switch (s.charAt(0)) {
@@ -974,4 +1751,5 @@
         }
     }
 
-    // </script>
+
+    //

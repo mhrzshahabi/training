@@ -249,4 +249,8 @@
     <changeSet author="razmnoosh (generated)" id="1595217836877-450">
         <createSequence sequenceName="seq_dynamic_question_id"/>
     </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1595320264747-454">
+        <createSequence sequenceName="seq_question_bank_id"/>
+    </changeSet>
 </databaseChangeLog>
