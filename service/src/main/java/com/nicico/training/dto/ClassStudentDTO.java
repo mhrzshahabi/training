@@ -287,4 +287,11 @@ public class ClassStudentDTO implements Serializable {
 //        private Long presenceTypeId;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("EvaluationForm - Info")
+    public static class EvaluationForm {
+    }
+
 }

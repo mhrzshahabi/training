@@ -957,7 +957,6 @@
             <column name="post_assignment_date" type="timestamp"/>
         </addColumn>
     </changeSet>
-
     <changeSet author="haeri_am (generated)" id="1595647986202-454">
         <addColumn tableName="tbl_goal">
             <column name="category_id" type="number(19, 0)"/>
@@ -967,6 +966,25 @@
         <addColumn tableName="tbl_goal">
             <column name="subcategory_id" type="number(19, 0)"/>
         </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595738283090-456">
+        <addColumn tableName="tbl_class_student">
+            <column name="b_behavioral_filled_by_student" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595738283090-457">
+        <addColumn tableName="tbl_class_student">
+            <column name="b_reaction_filled_by_student" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595743601062-566">
+        <dropColumn columnName="B_BEHAVIORAL_FILLED_BY_STUDENT" tableName="TBL_CLASS_STUDENT"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595743601062-567">
+        <dropColumn columnName="B_REACTION_FILLED_BY_STUDENT" tableName="TBL_CLASS_STUDENT"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595743601062-568">
+        <dropColumn columnName="LOCK_STATUS" tableName="TBL_EVALUATION_QUESTION"/>
     </changeSet>
 
 </databaseChangeLog>
