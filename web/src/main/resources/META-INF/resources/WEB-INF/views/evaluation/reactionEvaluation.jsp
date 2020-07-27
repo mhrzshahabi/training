@@ -9,10 +9,6 @@
     //----------------------------------------- Variables --------------------------------------------------------------
         var evalWait_RE;
 
-        var localQuestions_RE;
-
-        var evaluation_numberOfStudents_RE = null;
-
         var classRecord_RE;
 
     //----------------------------------------- DataSources ------------------------------------------------------------
@@ -312,6 +308,38 @@
                         width: 16,
                         grid: this,
                         click: function () {
+                            if (record.evaluationStatusReaction == "0" ||record.evaluationStatusReaction == null)
+                                createDialog("info", "فرم ارزیابی واکنشی برای این فراگیر صادر نشده است");
+                            <%--else{--%>
+                            <%--    let data = {};--%>
+                            <%--    data.classId = classRecord_RE.id;--%>
+                            <%--    data.evaluatorId = record.id;--%>
+                            <%--    data.evaluatorTypeId = 188;--%>
+                            <%--    data.evaluatedId = classRecord_RE.id;--%>
+                            <%--    data.evaluatedTypeId = 504;--%>
+                            <%--    data.questionnaireTypeId = 139;--%>
+                            <%--    data.evaluationLevelId = 154;--%>
+
+                            <%--    let criteriaForm_operational = isc.DynamicForm.create({--%>
+                            <%--        method: "POST",--%>
+                            <%--        action: "<spring:url value="/evaluation/printWithCriteria"/>",--%>
+                            <%--        target: "_Blank",--%>
+                            <%--        canSubmit: true,--%>
+                            <%--        fields:--%>
+                            <%--            [--%>
+                            <%--                {name: "myToken", type: "hidden"},--%>
+                            <%--                {name: "printData", type: "hidden"}--%>
+                            <%--            ],--%>
+                            <%--        show: function () {--%>
+                            <%--            this.Super("show", arguments);--%>
+                            <%--        }--%>
+                            <%--    });--%>
+
+                            <%--    criteriaForm_operational.setValue("myToken", "<%=accessToken%>");--%>
+                            <%--    criteriaForm_operational.setValue("printData", JSON.stringify(data));--%>
+                            <%--    criteriaForm_operational.show();--%>
+                            <%--    criteriaForm_operational.submit();--%>
+                            <%--}--%>
                         }
                     });
                     recordCanvas.addMember(printIcon);
@@ -1515,7 +1543,7 @@
                         // isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
                         //     LGRecord.id,
                         //     "GET", null, null));
-                        ToolStrip_SendForms_RE.getField("registerButtonTraining").enableIcon("ok");
+                        ToolStrip_SendForms_RE.getField("registerButtonTeacher").enableIcon("ok");
                         const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
                         setTimeout(() => {
                             msg.close();

@@ -22,7 +22,6 @@ public class MainFormController {
         return "basic/parameter";
     }
 
-    ////disable targetSociety
     @RequestMapping("/organizationalChart")
     public String showOrganizationalChartForm() { return "basic/organizationalChart"; }
 

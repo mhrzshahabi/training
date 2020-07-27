@@ -1,5 +1,8 @@
 package com.nicico.training.service;
 
+import com.nicico.copper.common.domain.criteria.NICICOCriteria;
+import com.nicico.copper.common.domain.criteria.SearchUtil;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.EvaluationQuestionDTO;
 import com.nicico.training.model.EvaluationIndex;
@@ -56,5 +59,15 @@ public class EvaluationQuestionService extends BaseService<EvaluationQuestion, L
         return evaluationIndexService.getListByIds(indexIds);
     }
 
+    @Transactional
+    public Integer usedCount(Long id) {
+        return dao.usedCount(id);
+    }
+
+
+    @Transactional(readOnly = true)
+    public TotalResponse<EvaluationQuestionDTO.InfoWithDomain> searchForPickList(NICICOCriteria rq) {
+        return SearchUtil.search(dao, rq, e -> modelMapper.map(e, EvaluationQuestionDTO.InfoWithDomain.class));
+    }
 
 }

@@ -61,6 +61,19 @@ public class TrainingPostRestController {
     }
 
     @Loggable
+    @GetMapping(value = "/getNullPosts")
+    public ResponseEntity<ISC> getNullPosts() throws IOException {
+        List<PostDTO.Info> list = trainingPostService.getNullPosts();
+        ISC.Response<PostDTO.Info> response = new ISC.Response<>();
+        response.setData(list)
+                .setStartRow(0)
+                .setEndRow(list.size())
+                .setTotalRows(list.size());
+        ISC<Object> objectISC = new ISC<>(response);
+        return new ResponseEntity<>(objectISC, HttpStatus.OK);
+    }
+
+    @Loggable
     @GetMapping(value = "/{TrainingPostId}/getPersonnel")
     public ResponseEntity<ISC> getPersonnel(@PathVariable Long TrainingPostId) {
         List<PersonnelDTO.Info> list = trainingPostService.getPersonnel(TrainingPostId);

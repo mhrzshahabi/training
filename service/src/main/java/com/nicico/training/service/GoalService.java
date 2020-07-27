@@ -5,14 +5,18 @@ package com.nicico.training.service;/* com.nicico.training.service
 */
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.GoalDTO;
 import com.nicico.training.dto.SyllabusDTO;
+import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.IGoalService;
 import com.nicico.training.model.Course;
 import com.nicico.training.model.Goal;
+import com.nicico.training.model.Institute;
+import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.repository.GoalDAO;
 import com.nicico.training.repository.SyllabusDAO;
@@ -25,6 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Service
 @RequiredArgsConstructor
@@ -150,5 +157,18 @@ public class GoalService implements IGoalService {
     private GoalDTO.Info save(Goal goal) {
         final Goal saved = goalDAO.saveAndFlush(goal);
         return modelMapper.map(saved, GoalDTO.Info.class);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<GoalDTO.Info> getGoalsByCategory(SearchDTO.SearchRq request, Long categoryID) {
+        SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        criteria.getCriteria().add(makeNewCriteria("categoryId", categoryID, EOperator.equals, null));
+
+        if (request.getCriteria() != null)
+            criteria.getCriteria().add(request.getCriteria());
+        request.setCriteria(criteria);
+
+        return this.search(request);
     }
 }

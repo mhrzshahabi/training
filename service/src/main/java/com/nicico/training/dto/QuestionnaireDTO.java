@@ -58,7 +58,7 @@ public class QuestionnaireDTO implements Serializable {
     @ApiModel("Questionnaire - Update")
     public static class Update extends QuestionnaireDTO {
         private Integer version;
-        private  Long eEnabled;
+        //private  Long eEnabled;
     }
 
     @Getter

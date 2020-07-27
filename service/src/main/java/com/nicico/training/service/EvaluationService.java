@@ -71,25 +71,25 @@ public class EvaluationService implements IEvaluationService {
 
         updating.setVersion(evaluation.getVersion());
 
-        if(evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(139L)) {
-            if(evaluation.getEvaluationFull())
+        if(updating.getQuestionnaireTypeId() != null && updating.getQuestionnaireTypeId().equals(139L)) {
+            if(updating.getEvaluationFull())
                 updateClassStudentInfo(updating, 2);
-            else if(!evaluation.getEvaluationFull())
+            else if(!updating.getEvaluationFull())
                 updateClassStudentInfo(updating, 3);
         }
 
-        else  if(evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(141L)) {
-            if(evaluation.getEvaluationFull())
-                updateTclassInfo(evaluation.getClassId(),2, -1);
-            else if(!evaluation.getEvaluationFull())
-                updateTclassInfo(evaluation.getClassId(),3, -1);
+        else  if(updating.getQuestionnaireTypeId() != null && updating.getQuestionnaireTypeId().equals(141L)) {
+            if(updating.getEvaluationFull())
+                updateTclassInfo(updating.getClassId(),2, -1);
+            else if(!updating.getEvaluationFull())
+                updateTclassInfo(updating.getClassId(),3, -1);
         }
 
-        else  if(evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(140L)) {
-            if(evaluation.getEvaluationFull())
-                updateTclassInfo(evaluation.getClassId(),-1, 2);
-            else if(!evaluation.getEvaluationFull())
-                updateTclassInfo(evaluation.getClassId(),-1, 3);
+        else  if(updating.getQuestionnaireTypeId() != null && updating.getQuestionnaireTypeId().equals(140L)) {
+            if(updating.getEvaluationFull())
+                updateTclassInfo(updating.getClassId(),-1, 2);
+            else if(!updating.getEvaluationFull())
+                updateTclassInfo(updating.getClassId(),-1, 3);
         }
 
         return modelMapper.map(evaluationDAO.save(updating), EvaluationDTO.Info.class);
@@ -394,6 +394,17 @@ public class EvaluationService implements IEvaluationService {
             }
         }
         else if(evaluation.getQuestionnaireTypeId().equals(141L)){
+            Optional<Questionnaire> qId = questionnaireDAO.findById(evaluation.getQuestionnaireId());
+            Questionnaire questionnaire = qId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+            for (QuestionnaireQuestion questionnaireQuestion : questionnaire.getQuestionnaireQuestionList()) {
+                EvaluationAnswerDTO.Create evaluationAnswerCreate = new EvaluationAnswerDTO.Create();
+                evaluationAnswerCreate.setEvaluationId(evaluation.getId());
+                evaluationAnswerCreate.setQuestionSourceId(199L);
+                evaluationAnswerCreate.setEvaluationQuestionId(questionnaireQuestion.getId());
+                evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate,EvaluationAnswer.class));
+            }
+        }
+        else if(evaluation.getQuestionnaireTypeId().equals(140L)){
             Optional<Questionnaire> qId = questionnaireDAO.findById(evaluation.getQuestionnaireId());
             Questionnaire questionnaire = qId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
             for (QuestionnaireQuestion questionnaireQuestion : questionnaire.getQuestionnaireQuestionList()) {
