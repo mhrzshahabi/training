@@ -2127,10 +2127,10 @@ FROM
                 viewName="view_personnel_course_passed_na_report_v2"/>
     </changeSet>
 
-    <changeSet author="NICICO" id="view_statistics_unit_report-003">
+    <changeSet author="NICICO" id="view_statistics_unit_report-004">
         <createView viewName="view_statistics_unit_report" replaceIfExists="true">
             <![CDATA[
-     SELECT
+  SELECT
     csession.c_session_date                  AS session_session_date,
    class.id                                   AS class_id,
    std.id                                     AS student_id,
@@ -2209,12 +2209,14 @@ FROM
         std.national_code                          AS student_national_code,
         std.first_name                             AS student_first_name,
         std.last_name                              AS student_last_name,
-        std.ccp_assistant                          AS student_ccp_assistant,
-        std.ccp_affairs                            AS student_ccp_affairs,
-        std.ccp_section                            AS student_ccp_section,
-        std.ccp_unit                               AS student_ccp_unit,
+
+    department.c_moavenat_title AS student_ccp_assistant,
+    department.c_omor_title   AS student_ccp_affairs,
+    department.c_ghesmat_title AS student_ccp_section,
+    department.c_vahed_title AS student_ccp_unit,
+
         class_std.applicant_company_name           AS class_student_applicant_company_name,
-        personnel.complex_title                    AS personnel_complex_title,
+           department.c_hoze_title            AS personnel_complex_title,
         personnel.work_place_title                 AS student_work_place_title,
         personnel.post_grade_title                 AS student_post_grade_title,
         personnel.job_title                        AS student_job_title,
@@ -2289,21 +2291,24 @@ FROM
                 tbl_personnel.complex_title,
                 tbl_personnel.work_place_title,
                 tbl_personnel.post_grade_title,
-                tbl_personnel.job_title
+                tbl_personnel.job_title,
+                tbl_personnel.f_department_id
             FROM
                 tbl_personnel
-              where   tbl_personnel.EMPLOYMENT_STATUS_ID=5 and tbl_personnel.active=1
+              where   tbl_personnel.deleted=0
             UNION ALL
             SELECT
                 tbl_personnel_registered.personnel_no,
                 tbl_personnel_registered.complex_title,
                 tbl_personnel_registered.work_place_title,
                 tbl_personnel_registered.post_grade_title,
-                tbl_personnel_registered.job_title
+                tbl_personnel_registered.job_title,
+                tbl_personnel_registered.f_department_id
             FROM
                 tbl_personnel_registered
-                 where tbl_personnel_registered.active=1
+                 where tbl_personnel_registered.deleted=0
         ) personnel ON std.personnel_no = personnel.personnel_no
+          INNER JOIN tbl_department department ON department.id=personnel.f_department_id
         INNER JOIN tbl_session               csession ON att.f_session = csession.id
         INNER JOIN tbl_class                 class ON csession.f_class_id = class.id
         INNER JOIN tbl_institute             institute ON class.f_institute_organizer = institute.id
@@ -2328,14 +2333,14 @@ FROM
         std.first_name,
         std.last_name,
         class_std.applicant_company_name,
-        personnel.complex_title,
+         department.c_hoze_title,
         personnel.work_place_title,
         personnel.post_grade_title,
         personnel.job_title,
-        std.ccp_assistant,
-        std.ccp_affairs,
-        std.ccp_section,
-        std.ccp_unit,
+    department.c_moavenat_title,
+    department.c_omor_title,
+    department.c_ghesmat_title,
+    department.c_vahed_title,
         class.c_code,
         course.id,
         course.c_code,
