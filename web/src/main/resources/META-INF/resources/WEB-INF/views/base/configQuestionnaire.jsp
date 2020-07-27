@@ -18,7 +18,7 @@
     RestDataSource_JspConfigQuestionnaire = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "question", filterOperator: "iContains", autoFitWidth: true},
+            {name: "question", filterOperator: "iContains"},
             {name: "domainId", filterOperator: "equals", autoFitWidth: true},
             {name: "domain.id", filterOperator: "equals", autoFitWidth: true},
             {name: "evaluationIndices", filterOperator: "inSet", autoFitWidth: true}
@@ -29,7 +29,7 @@
     RestDataSource_QuestionDomain_JspConfigQuestionnaire = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true}
         ],
         fetchDataURL: parameterUrl + "/iscList/test"
@@ -38,7 +38,7 @@
     RestDataSource_QuestionIndicator_JspConfigQuestionnaire = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "nameFa", title: "<spring:message code="evaluation.index.nameFa"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "nameFa", title: "<spring:message code="evaluation.index.nameFa"/>", filterOperator: "iContains"},
             {name: "evalStatus", title: "<spring:message code="evaluation.index.evalStatus"/>", filterOperator: "iContains", autoFitWidth: true}
         ],
         fetchDataURL: evaluationIndexUrl + "/iscList"
@@ -89,7 +89,7 @@
                     hint: "",
                     filterFields: ["nameFa", "nameFa"],
                     textMatchStyle: "substring",
-                    pickListWidth: 300,
+                    pickListWidth: 500,
                     pickListProperties: {
                         showFilterEditor: false,
                         autoFitWidthApproach: "both"
@@ -339,11 +339,24 @@
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            methodConfigQuestionnaire = "PUT";
-            saveActionUrlConfigQuestionnaire = configQuestionnaireUrl + "/" + record.id;
-            DynamicForm_JspConfigQuestionnaire.clearValues();
-            DynamicForm_JspConfigQuestionnaire.editRecord(record);
-            Window_JspConfigQuestionnaire.show();
+            isc.RPCManager.sendRequest(TrDSRequest(configQuestionnaireUrl +
+                "/usedCount/" +
+                ListGrid_JspConfigQuestionnaire.getSelectedRecord().id,
+                "GET",
+                null,
+                function(resp){
+                    if(resp.data!=0){
+                        createDialog("info", "سوال مورد نظر قابل ویرایش نمی باشد.");
+                        return ;
+                    }
+
+                    methodConfigQuestionnaire = "PUT";
+                    saveActionUrlConfigQuestionnaire = configQuestionnaireUrl + "/" + record.id;
+                    DynamicForm_JspConfigQuestionnaire.clearValues();
+                    DynamicForm_JspConfigQuestionnaire.editRecord(record);
+                    Window_JspConfigQuestionnaire.show();
+                }));
+
         }
     }
 
@@ -352,22 +365,37 @@
         if (record == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            let Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
-                "<spring:message code='verify.delete'/>");
-            Dialog_Delete.addProperties({
-                buttonClick: function (button, index) {
-                    this.close();
-                    if (index === 0) {
-                        waitConfigQuestionnaire = createDialog("wait");
-                        isc.RPCManager.sendRequest(TrDSRequest(configQuestionnaireUrl +
-                            "/" +
-                            ListGrid_JspConfigQuestionnaire.getSelectedRecord().id,
-                            "DELETE",
-                            null,
-                            ConfigQuestionnaire_remove_result));
+
+            isc.RPCManager.sendRequest(TrDSRequest(configQuestionnaireUrl +
+                "/usedCount/" +
+                ListGrid_JspConfigQuestionnaire.getSelectedRecord().id,
+                "GET",
+                null,
+                function(resp){
+                    if(resp.data!=0){
+                        createDialog("info", "سوال مورد نظر قابل حذف نمی باشد.");
+                        return ;
                     }
-                }
-            });
+
+                    let Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+                        "<spring:message code='verify.delete'/>");
+                    Dialog_Delete.addProperties({
+                        buttonClick: function (button, index) {
+                            this.close();
+                            if (index === 0) {
+                                waitConfigQuestionnaire = createDialog("wait");
+                                isc.RPCManager.sendRequest(TrDSRequest(configQuestionnaireUrl +
+                                    "/" +
+                                    ListGrid_JspConfigQuestionnaire.getSelectedRecord().id,
+                                    "DELETE",
+                                    null,
+                                    ConfigQuestionnaire_remove_result));
+                            }
+                        }
+                    });
+                }));
+
+
         }
     }
 
@@ -380,7 +408,10 @@
             setTimeout(function () {
                 OK.close();
             }, 3000);
-        } else {
+        }else if (resp.httpResponseCode === 403) {
+            createDialog("info", "سوال مورد نظر قابل ویرایش نمی باشد.");
+        }else
+        {
             let errors = JSON.parse(resp.httpResponseText).errors;
             let message = "";
             for (let i = 0; i < errors.length; i++) {
@@ -398,6 +429,8 @@
             setTimeout(function () {
                 OK.close();
             }, 3000);
+        }else if (resp.httpResponseCode === 403) {
+            createDialog("info", "سوال مورد نظر قابل حذف نمی باشد.");
         } else {
             if (resp.httpResponseCode === 406) {
                 createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");

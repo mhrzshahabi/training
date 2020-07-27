@@ -56,5 +56,9 @@ public class EvaluationQuestionService extends BaseService<EvaluationQuestion, L
         return evaluationIndexService.getListByIds(indexIds);
     }
 
+    @Transactional
+    public Integer usedCount(Long id) {
+        return dao.usedCount(id);
+    }
 
 }

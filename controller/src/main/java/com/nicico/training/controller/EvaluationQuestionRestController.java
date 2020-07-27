@@ -26,6 +26,12 @@ public class EvaluationQuestionRestController {
     private final ModelMapper modelMapper;
 
     @Loggable
+    @GetMapping("/usedCount/{id}")
+    public ResponseEntity<Integer> usedCount(@PathVariable Long id) {
+        return new ResponseEntity<>(evaluationQuestionService.usedCount(id), HttpStatus.OK);
+    }
+
+    @Loggable
     @GetMapping("/list")
     public ResponseEntity<List<EvaluationQuestionDTO.Info>> list() {
         return new ResponseEntity<>(evaluationQuestionService.list(), HttpStatus.OK);
@@ -58,7 +64,12 @@ public class EvaluationQuestionRestController {
         List<Long> indexIds = setIndexIds(rq);
         try {
             EvaluationQuestionDTO.Update update = modelMapper.map(rq, EvaluationQuestionDTO.Update.class);
-            return new ResponseEntity<>(evaluationQuestionService.update(id, update, indexIds), HttpStatus.OK);
+            if(evaluationQuestionService.usedCount(id)==0){
+                return new ResponseEntity<>(evaluationQuestionService.update(id, update, indexIds), HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>("این سوال در پرسشنامه استفاده شده است.", HttpStatus.FORBIDDEN);
+            }
+
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
@@ -68,7 +79,11 @@ public class EvaluationQuestionRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
         try {
-            return new ResponseEntity<>(evaluationQuestionService.delete(id), HttpStatus.OK);
+            if(evaluationQuestionService.usedCount(id)==0) {
+                return new ResponseEntity<>(evaluationQuestionService.delete(id), HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>("این سوال در پرسشنامه استفاده شده است.", HttpStatus.FORBIDDEN);
+            }
         } catch (Exception ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
