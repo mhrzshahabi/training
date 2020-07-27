@@ -49,7 +49,6 @@ public class NeedsAssessmentReportsService {
     @Transactional(readOnly = true)
 //    @Override
     public SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> search(SearchDTO.SearchRq request, Long objectId, String objectType, String personnelNo) {
-//        getCourseNAList(request, 5679L, true);
         List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = getCourseList(objectId, objectType, personnelNo);
         SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> rs = new SearchDTO.SearchRs<>();
         rs.setTotalCount((long) needsAssessmentReportList.size());
@@ -153,55 +152,75 @@ public class NeedsAssessmentReportsService {
                     }
                     break;
                 case "PostGroup":
-                    ((PostGroup) needsAssessment.getObject()).getPostSet().forEach(post -> {
-                        try {
-                            if (post.getCode() != null && !postCodes.containsValue(post))
-                                postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    });
+                    try {
+                        ((PostGroup) needsAssessment.getObject()).getPostSet().forEach(post -> {
+                            try {
+                                if (post.getCode() != null && !postCodes.containsValue(post))
+                                    postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post);
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        });
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                     break;
                 case "Job":
-                    ((Job) needsAssessment.getObject()).getPostSet().forEach(post -> {
-                        try {
-                            if (post.getCode() != null && !postCodes.containsValue(post))
-                                postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    });
+                    try {
+                        ((Job) needsAssessment.getObject()).getPostSet().forEach(post -> {
+                            try {
+                                if (post.getCode() != null && !postCodes.containsValue(post))
+                                    postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post);
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        });
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                     break;
                 case "JobGroup":
-                    ((JobGroup) needsAssessment.getObject()).getJobSet().forEach(job -> job.getPostSet().forEach(post -> {
-                        try {
-                            if (post.getCode() != null && !postCodes.containsValue(post))
-                                postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    }));
-                    break;
+                    try {
+                        ((JobGroup) needsAssessment.getObject()).getJobSet().forEach(job -> job.getPostSet().forEach(post -> {
+                            try {
+                                if (post.getCode() != null && !postCodes.containsValue(post))
+                                    postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post);
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        }));
+                        break;
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                 case "PostGrade":
-                    ((PostGrade) needsAssessment.getObject()).getPostSet().forEach(post -> {
-                        try {
-                            if (post.getCode() != null && !postCodes.containsValue(post))
-                                postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    });
-                    break;
+                    try {
+                        ((PostGrade) needsAssessment.getObject()).getPostSet().forEach(post -> {
+                            try {
+                                if (post.getCode() != null && !postCodes.containsValue(post))
+                                    postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post);
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        });
+                        break;
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                 case "PostGradeGroup":
-                    ((PostGradeGroup) needsAssessment.getObject()).getPostGradeSet().forEach(postGrade -> postGrade.getPostSet().forEach(post -> {
-                        try {
-                            if (post.getCode() != null && !postCodes.containsValue(post))
-                                postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    }));
-                    break;
+                    try {
+                        ((PostGradeGroup) needsAssessment.getObject()).getPostGradeSet().forEach(postGrade -> postGrade.getPostSet().forEach(post -> {
+                            try {
+                                if (post.getCode() != null && !postCodes.containsValue(post))
+                                    postCodes.put(needsAssessment.getNeedsAssessmentPriorityId(), post);
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        }));
+                        break;
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
             }
         });
         return postCodes;

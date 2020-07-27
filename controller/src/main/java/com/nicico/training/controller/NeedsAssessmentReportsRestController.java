@@ -69,7 +69,7 @@ public class NeedsAssessmentReportsRestController {
     }
 
     @GetMapping(value = "/skillNA")
-    public ResponseEntity courseNA(HttpServletRequest iscRq, @RequestParam Long skillId) throws IOException {
+    public ResponseEntity skillNA(HttpServletRequest iscRq, @RequestParam Long skillId) throws IOException {
         int startRow = 0;
         if (iscRq.getParameter("_startRow") != null)
             startRow = Integer.parseInt(iscRq.getParameter("_startRow"));

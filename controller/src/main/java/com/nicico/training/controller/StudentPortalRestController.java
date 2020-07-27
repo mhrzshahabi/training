@@ -114,4 +114,11 @@ public class StudentPortalRestController {
         response.sendRedirect(restApiUrl + "/api/student/getOneByNationalCode/" + SecurityUtil.getNationalCode() + "?" + iscRq.getQueryString());
     }
 
+
+    @Loggable
+    @GetMapping(value = "/evaluation/getStudentEvaluationForms/{nationalCode}")
+    public void getEvaluationForms(HttpServletRequest iscRq, HttpServletResponse response,@PathVariable String nationalCode) throws IOException {
+        String restApiUrl = iscRq.getRequestURL().toString().replace(iscRq.getServletPath(), "");
+        response.sendRedirect(restApiUrl + "/api/evaluation/studentEvaluationForms/" + nationalCode + "?" + iscRq.getQueryString());
+    }
 }

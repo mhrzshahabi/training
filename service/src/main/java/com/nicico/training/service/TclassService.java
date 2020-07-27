@@ -118,11 +118,12 @@ public class TclassService implements ITclassService {
         final Tclass tclass = modelMapper.map(request, Tclass.class);
         if (checkDuration(tclass)) {
             List<Long> list = request.getTrainingPlaceIds();
-            List<TrainingPlace> allById = trainingPlaceDAO.findAllById(list);
-            Set<TrainingPlace> set = new HashSet<>(allById);
-            tclass.setTrainingPlaceSet(set);
+            if(list != null) {
+                List<TrainingPlace> allById = trainingPlaceDAO.findAllById(list);
+                Set<TrainingPlace> set = new HashSet<>(allById);
+                tclass.setTrainingPlaceSet(set);
+            }
             Tclass save = tclassDAO.save(tclass);
-            ////disable targetSociety
             saveTargetSocieties(request.gettargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
             return modelMapper.map(save, TclassDTO.Info.class);
         } else {
