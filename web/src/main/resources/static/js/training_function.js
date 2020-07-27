@@ -61,7 +61,7 @@ function courseCounterCode(n) {
 
 }
 
-function defineWindowsEditNeedsAssessment(grid) {
+function defineWindowsEditNeedsAssessment(grid = null) {
     const Window_NeedsAssessment_Edit = isc.Window.create({
         ID: "Window_NeedsAssessment_Edit",
         title: "ویرایش نیازسنجی",
@@ -103,18 +103,24 @@ function defineWindowsEditNeedsAssessment(grid) {
                                     break;
                                 case 2:
                                     Window_NeedsAssessment_Edit.Super("close", arguments);
-                                    grid.invalidateCache();
+                                    if(grid != null) {
+                                        grid.invalidateCache();
+                                    }
                                     break;
                             }
                         }
                     });
                 } else {
                     Window_NeedsAssessment_Edit.Super("close", arguments);
-                    grid.invalidateCache();
+                    if(grid != null) {
+                        grid.invalidateCache();
+                    }
                 }
             }
             else{
-                grid.invalidateCache();
+                if(grid != null) {
+                    grid.invalidateCache();
+                }
                 this.Super("close",arguments);
             }
         },
