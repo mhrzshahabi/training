@@ -9,12 +9,6 @@
     //----------------------------------------- Variables --------------------------------------------------------------
         var evalWait_BE;
 
-        var localQuestions_BE;
-
-        var evaluation_Audience_BE = null;
-
-        var evaluation_numberOfStudents_BE = null;
-
         var classRecord_BE;
 
     //----------------------------------------- DataSources ------------------------------------------------------------
@@ -749,7 +743,7 @@
             }
         }
 
-        function set_evaluation_status_BE(numberOfStudents,record,audienceName, audienceType) {
+        function set_evaluation_status_BEset_evaluation_status_BE(numberOfStudents,record,audienceName, audienceType) {
 
 
             let listOfStudent = [];
