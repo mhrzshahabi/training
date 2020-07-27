@@ -20,7 +20,7 @@
     var isReadOnlyClass = true;
     var societies = [];
     let OJT = false;
-var dummy;
+    var dummy;
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -1736,6 +1736,8 @@ var dummy;
             if(DynamicForm_Class_JspClass.getValue("teachingType") === "غیر حضوری" || DynamicForm_Class_JspClass.getValue("teachingType") === "مجازی"){
                 DynamicForm_Class_JspClass.getItem("instituteId").setRequired(false);
                 DynamicForm_Class_JspClass.getItem("trainingPlaceIds").setRequired(false);
+                DynamicForm_Class_JspClass.clearValue("instituteId");
+                DynamicForm_Class_JspClass.clearValue("trainingPlaceIds");
             }
             else{
                 DynamicForm_Class_JspClass.getItem("instituteId").setRequired(true);
