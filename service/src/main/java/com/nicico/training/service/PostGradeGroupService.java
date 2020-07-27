@@ -116,7 +116,7 @@ public class PostGradeGroupService implements IPostGradeGroupService {
     public List<PostGradeDTO.Info> getPostGrades(Long postGradeGroupId) {
         final Optional<PostGradeGroup> optionalPostGradeGroup = postGradeGroupDAO.findById(postGradeGroupId);
         final PostGradeGroup postGradeGroup = optionalPostGradeGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        return postGradeGroup.getPostGradeSet().stream().map(postGrade -> modelMapper.map(postGrade, PostGradeDTO.Info.class)).collect(Collectors.toCollection(ArrayList::new));
+        return postGradeGroup.getPostGradeSet().stream().map(postGrade -> modelMapper.map(postGrade, PostGradeDTO.Info.class)).collect(Collectors.toList());
     }
 
     @Transactional
