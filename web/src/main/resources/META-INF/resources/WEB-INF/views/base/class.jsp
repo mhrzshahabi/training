@@ -1255,7 +1255,7 @@ var dummy;
                 title: "<spring:message code="class.status"/>:",
                 wrapTitle: true,
                 type: "radioGroup",
-                vertical: false,
+                vertical: true,
                 fillHorizontalSpace: true,
                 defaultValue: "1",
 // endRow:true,
