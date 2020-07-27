@@ -310,7 +310,9 @@
             {name: "teacher.fullNameFa",},
             {name: "course.titleFa",},
             {name: "tclass.course.titleFa",},
-
+            {name: "tclass.code",},
+            {name: "tclass.startDate",},
+            {name: "tclass.endDate",},
         ],
         autoFetchData: true,
         gridComponents: [QuestionBankTS_questionBank, "filterEditor", "header", "body",],

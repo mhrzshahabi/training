@@ -20,7 +20,7 @@
     var isReadOnlyClass = true;
     var societies = [];
     let OJT = false;
-    var dummy;
+
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -1168,12 +1168,13 @@
                 },
                 change: function (form, item, value, oldValue) {
 
-                    if(classMethod.localeCompare("PUT") === 0 && value === "3" &&
-                        (ListGrid_Class_JspClass.getSelectedRecord().evaluationStatusReactionTraining == undefined ||
-                        ListGrid_Class_JspClass.getSelectedRecord().evaluationStatusReactionTraining == 0)){
-                            createDialog("info", "مدرس این کلاس هنوز توسط مسئول آموزش ارزیابی نشده است و امکان پایان دادن به کلاس نمی باشد");
-                            return false;
-                    }
+                    //talk to roya
+                    // if(classMethod.localeCompare("PUT") === 0 && value === "3" &&
+                    //     (ListGrid_Class_JspClass.getSelectedRecord().evaluationStatusReactionTraining == undefined ||
+                    //     ListGrid_Class_JspClass.getSelectedRecord().evaluationStatusReactionTraining == 0)){
+                    //         createDialog("info", "مدرس این کلاس هنوز توسط مسئول آموزش ارزیابی نشده است و امکان پایان دادن به کلاس نمی باشد");
+                    //         return false;
+                    // }
 
                     if (classMethod.localeCompare("PUT") === 0 && value === "3")
                         checkEndingClass(oldValue);

@@ -54,6 +54,8 @@ public class ClassStudentDTO implements Serializable {
         private Integer evaluationStatusBehavior;
         @Getter(AccessLevel.NONE)
         private Integer evaluationStatusResults;
+        private Long tclassId;
+        private TclassDTO.CoursesOfStudent tclass;
 
         public String getFullName(){
             return student.getFirstName()+" "+student.getLastName();
@@ -287,11 +289,5 @@ public class ClassStudentDTO implements Serializable {
 //        private Long presenceTypeId;
     }
 
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("EvaluationForm - Info")
-    public static class EvaluationForm {
-    }
 
 }
