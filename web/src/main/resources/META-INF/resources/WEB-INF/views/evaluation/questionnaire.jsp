@@ -231,11 +231,10 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "question", title: "<spring:message code="question"/>", filterOperator: "iContains"},
-            {name: "domainId", title: "<spring:message code='question.domain'/>", filterOperator: "equals", width:100},
-            {name: "domain.id",filterOperator: "equals", autoFitWidth: true},
-            {name: "evaluationIndices", title: "<spring:message code='question.indicator'/>", filterOperator: "inSet", autoFitWidth: true}
+            {name: "domain.id", title: "<spring:message code="question.domain"/>", filterOperator: "equals", hidden: true},
+            {name: "domain.title", title: "<spring:message code="question.domain"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
-        fetchDataURL: configQuestionnaireUrl + "/iscList",
+        fetchDataURL: configQuestionnaireUrl + "/pickList",
     });
 
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
@@ -281,10 +280,11 @@
                 },
                 pickListFields: [
                     {name: "question"},
-                    {name: "domainId"},
+                    {name: "domain.title"},
                 ],
                 pickListWidth: 800,
-                sortField: ["id"],
+                sortField: ["domain.id"],
+                sortDirection: "descending",
             },
             {name: "weight", title: "<spring:message code="weight"/>", required: true, editorType: "SpinnerItem", defaultValue: 1, min: 1},
             {name: "order", title: "<spring:message code="order"/>", required: true, editorType: "SpinnerItem", defaultValue: 1, min: 1},
