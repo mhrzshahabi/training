@@ -69,17 +69,17 @@
     },
     {
       "code": "Menu_NeedAssessment_Post",
-      "title": "منوی نیازسنجی - پست"
+      "title": "منوی نیازسنجی - پست انفرادی"
     },
     {
       "code": "Menu_NeedAssessment_PostGroup",
       "title": "منوی نیازسنجی - گروه پستي"
     },
 
-
-
-
-
+    {
+      "code": "Menu_NeedAssessment_Training_Post",
+      "title": "منوی نیازسنجی - پست"
+    },
 
 
     {
@@ -501,11 +501,16 @@
     {"code": "Personnel_U", "title": "ویرایش پرسنل"},
     {"code": "Personnel_D", "title": "حذف پرسنل"},
     {"code": "Personnel_P", "title": "چاپ پرسنل"},
-    {"code": "Post_C", "title": "ایجاد پست"},
-    {"code": "Post_R", "title": "مشاهده پست"},
-    {"code": "Post_U", "title": "ویرایش پست"},
-    {"code": "Post_D", "title": "حذف پست"},
-    {"code": "Post_P", "title": "چاپ پست"},
+    {"code": "Training_Post_C", "title": "ایجاد پست"},
+    {"code": "Training_Post_U", "title": "ویرایش پست"},
+    {"code": "Training_Post_D", "title": "حذف پست"},
+    {"code": "Training_Post_List_CD", "title": "لیست پست ها"},
+    {"code": "NeedAssessment_Tree_Training_Post_U", "title": "ویرایش نیازسنجی مبتنی پست"},
+    {"code": "Post_C", "title": "ایجاد پست انفرادی"},
+    {"code": "Post_R", "title": "مشاهده پست انفرادی"},
+    {"code": "Post_U", "title": "ویرایش پست انفرادی"},
+    {"code": "Post_D", "title": "حذف پست انفرادی"},
+    {"code": "Post_P", "title": "چاپ پست انفرادی"},
     {"code": "PostGrade_C", "title": "ایجاد رده پستی"},
     {"code": "PostGrade_R", "title": "مشاهده رده پستی"},
     {"code": "PostGrade_U", "title": "ویرایش رده پستی"},
@@ -660,8 +665,7 @@
     {"code": "TclassPreCourseTestQuestionsTab_ShowOption", "title": "کلاس - سوالات پیش آزمون - نمایش گزینه ها"},
     {"code": "Menu_Organizational_chart", "title": "درخت سازمانی"},
     {"code": "Menu_Categories_performance", "title": "گزارش عملکرد سازمانی "},
-    {"code": "Menu_continuous_Status_Report", "title": "گزارش مستمر "},
-    {"code": "Menu_continuous_Training_Post", "title": "پست "}
+    {"code": "Menu_continuous_Status_Report", "title": "گزارش مستمر "}
   ]
 }
 
