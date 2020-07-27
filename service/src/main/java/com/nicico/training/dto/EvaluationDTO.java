@@ -140,7 +140,7 @@ public class EvaluationDTO implements Serializable {
         private String courseCode;
         private String courseTitle;
         private String teacherName;
-        private Boolean hasWarning;
+        private String hasWarning;
         private Long studentId;
         private Long classId;
         private String studentName;

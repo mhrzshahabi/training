@@ -20,7 +20,7 @@
     var isReadOnlyClass = true;
     var societies = [];
     let OJT = false;
-var dummy;
+
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -1057,14 +1057,14 @@ var dummy;
 // VM_JspClass.getField("course.id").getSelectedRecord().category.id;
 // return {category:category};
                 },
-            validate: function(){
-                if(this._value === null || this._value.length <= 0){
-                    DynamicForm_Class_JspClass.addFieldErrors("trainingPlaceIds", "<spring:message code="validator.field.is.required"/>", true);
-                    return false;
-                    }
-                DynamicForm_Class_JspClass.clearFieldErrors("trainingPlaceIds", true);
-                return this.Super("validate",arguments);
-                }
+                <%--validate: function(){--%>
+                <%--if(this._value === null || this._value.length <= 0){--%>
+                    <%--DynamicForm_Class_JspClass.addFieldErrors("trainingPlaceIds", "<spring:message code="validator.field.is.required"/>", true);--%>
+                    <%--return false;--%>
+                    <%--}--%>
+                <%--DynamicForm_Class_JspClass.clearFieldErrors("trainingPlaceIds", true);--%>
+                <%--return this.Super("validate",arguments);--%>
+                <%--}--%>
             },
 
             {
@@ -1214,14 +1214,14 @@ var dummy;
                 optionDataSource: DataSource_TargetSociety_List,
                 displayField: "title",
                 valueField: "societyId",
-                validate: function(){
-                    if(this._value === null || this._value.length <= 0){
-                        DynamicForm_Class_JspClass.addFieldErrors("targetSocieties", "<spring:message code="validator.field.is.required"/>", true);
-                        return false;
-                    }
-                    DynamicForm_Class_JspClass.clearFieldErrors("targetSocieties", true);
-                    return this.Super("validate",arguments);
-                }
+                <%--validate: function(){--%>
+                    <%--if(this._value === null || this._value.length <= 0){--%>
+                        <%--DynamicForm_Class_JspClass.addFieldErrors("targetSocieties", "<spring:message code="validator.field.is.required"/>", true);--%>
+                        <%--return false;--%>
+                    <%--}--%>
+                    <%--DynamicForm_Class_JspClass.clearFieldErrors("targetSocieties", true);--%>
+                    <%--return this.Super("validate",arguments);--%>
+                <%--}--%>
             },
             {
                 name: "addtargetSociety",
@@ -1733,6 +1733,16 @@ var dummy;
     var IButton_Class_Save_JspClass = isc.IButtonSave.create({
         align: "center",
         click: function () {
+            if(DynamicForm_Class_JspClass.getValue("teachingType") === "غیر حضوری" || DynamicForm_Class_JspClass.getValue("teachingType") === "مجازی"){
+                DynamicForm_Class_JspClass.getItem("instituteId").setRequired(false);
+                DynamicForm_Class_JspClass.getItem("trainingPlaceIds").setRequired(false);
+                DynamicForm_Class_JspClass.clearValue("instituteId");
+                DynamicForm_Class_JspClass.clearValue("trainingPlaceIds");
+            }
+            else{
+                DynamicForm_Class_JspClass.getItem("instituteId").setRequired(true);
+                DynamicForm_Class_JspClass.getItem("trainingPlaceIds").setRequired(true);
+            }
             if(DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord() != undefined) {
                 if (!checkValidDate(DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord().startDate, DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord().endDate, DynamicForm1_Class_JspClass.getValue("startDate"), DynamicForm1_Class_JspClass.getValue("endDate"))) {
                     return;
