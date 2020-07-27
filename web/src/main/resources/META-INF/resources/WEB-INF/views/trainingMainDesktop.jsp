@@ -1915,7 +1915,10 @@
     </sec:authorize>
 
 
-    var jasperMenu = isc.Menu.create({
+<%--<sec:authorize access="hasAuthority('Menu_Securityeee')">--%>
+    jasperMenu = isc.ToolStripMenuButton.create({
+            title: "<span>" + isc.Canvas.imgHTML("<spring:url value="/static/img/pieces/report.png" />", 15, 15) + "&nbsp; </span>"+"<spring:message code="training.jasper.soft.server.title"/>",
+    menu: isc.Menu.create({
         autoDraw: false,
         showShadow: true,
         shadowDepth: 10,
@@ -1976,10 +1979,10 @@
                 ]
             }
 <%--            </sec:authorize>--%>
-
-
         ]
+     })
     });
+<%--    </sec:authorize>--%>
 
     <sec:authorize access="hasAuthority('Menu_Security')">
     securityTSMB = isc.ToolStripMenuButton.create({
@@ -2125,7 +2128,7 @@
             </sec:authorize>
 
 <%--            <sec:authorize access="hasAuthority('Menu_Report')">--%>
-            // jasperMenu,
+            jasperMenu,
 <%--            </sec:authorize>--%>
 
             <sec:authorize access="hasAuthority('Menu_Security')">
