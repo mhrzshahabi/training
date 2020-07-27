@@ -403,7 +403,6 @@
             width: "100%",
             membersMargin: 5,
             members: [
-                <sec:authorize access="hasAuthority('Evaluation_R')">
                 DynamicForm_Term_Filter_Evaluation,
                 isc.ToolStrip.create({
                     width: "5%",
@@ -413,7 +412,6 @@
                         ToolStripButton_Refresh_Evaluation
                     ]
                 })
-                </sec:authorize>
             ]
         });
 
@@ -423,38 +421,26 @@
             tabBarPosition: "top",
             enabled: false,
             tabs: [
-                <sec:authorize access="hasAuthority('Evaluation_Reaction')">
                 {
                     id: "TabPane_Reaction",
                     title: "<spring:message code="evaluation.reaction"/>",
                     pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation/reaction-evaluation-form"})
-                }
-                ,
-                </sec:authorize>
-
-                <sec:authorize access="hasAuthority('Evaluation_Learning')">
+                },
                 {
                     id: "TabPane_Learning",
                     title: "یادگیری-ثبت نمرات پیش آزمون",
                     pane: isc.ViewLoader.create({autoDraw: true, viewURL: "registerScorePreTest/show-form"})
                 },
-                </sec:authorize>
-
-                <sec:authorize access="hasAuthority('Evaluation_Behavior')">
                 {
                     id: "TabPane_Behavior",
                     title: "<spring:message code="evaluation.behavioral"/>",
                     pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation/behavioral-evaluation-form"})
                 },
-                </sec:authorize>
-
-                <sec:authorize access="hasAuthority('Evaluation_Results')">
                 {
                     id: "TabPane_Results",
                     title: "<spring:message code="evaluation.results"/>",
                     pane: null
                 }
-                </sec:authorize>
             ],
             tabSelected: function (tabNum, tabPane, ID, tab, name) {
                 if (isc.Page.isLoaded())

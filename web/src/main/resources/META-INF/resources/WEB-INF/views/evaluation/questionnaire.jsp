@@ -165,7 +165,13 @@
         {name:"id",primaryKey:true,hidden:true},
         {name:"title",title:"<spring:message code="title"/>",required:true,filterOperator:"iContains",autoFitWidth: true}
     ],
-     fetchDataURL: parameterValueUrl + "/iscList/143",
+        cacheAllData: true,
+        fetchDataURL: parameterValueUrl + "/iscList/143",
+        implicitCriteria: {
+            _constructor:"AdvancedCriteria",
+            operator:"and",
+            criteria:[{ fieldName: "id", operator: "inSet", value: ["140","139","141"]}]
+        }
     });
 
     QuestionnaireLG_questionnaire = isc.TrLG.create({
