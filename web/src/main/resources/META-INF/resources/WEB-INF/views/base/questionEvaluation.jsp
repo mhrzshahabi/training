@@ -23,6 +23,44 @@
         ]
     });
 
+    var RestData_EvaluationLevel_JspQuestionEvaluation = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {
+                name: "title",
+                title: "<spring:message code="title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "value",
+                title: "<spring:message code="value"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            }
+        ],
+        fetchDataURL: parameterValueUrl + "/iscList/163"
+    });
+
+    var RestData_QuestionnarieType_JspQuestionEvaluation = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {
+                name: "title",
+                title: "<spring:message code="title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "value",
+                title: "<spring:message code="value"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            }
+        ],
+        fetchDataURL: parameterValueUrl + "/iscList/143"
+    });
+
     var ListGrid_Grid_JspQuestionEvaluation = isc.TrLG.create({
         width: "100%",
         height: "100%",
@@ -31,19 +69,45 @@
         allowFilterExpressions: true,
         selectionType: "single",
         autoFetchData: false,
-        initialSort: [ ],
+        initialSort: [],
         doubleClick: function () {
             let record = ListGrid_Grid_JspQuestionEvaluation.getSelectedRecord();
-            if(record.evaluationLevel == 154)
-                register_Student_Reaction_Form_JspQuestionEvaluation(record.classId,record.studentId,188,record.classId,
-                504,139,154,record.teacherName,record.studentName,record.classCode,record.courseTitle,record.classStartDate);
-            else if(record.evaluationLevel == 156)
-                register_Student_Reaction_Form_JspQuestionEvaluation(record.classId,record.studentId,188,record.studentId,
-                    188,230,156,record.teacherName,record.studentName,record.classCode,record.courseTitle,record.classStartDate);
+            if (record.evaluationLevel == 154)
+                register_Student_Reaction_Form_JspQuestionEvaluation(record.classId, record.studentId, 188, record.classId,
+                    504, 139, 154, record.teacherName, record.studentName, record.classCode, record.courseTitle, record.classStartDate);
+            else if (record.evaluationLevel == 156)
+                register_Student_Reaction_Form_JspQuestionEvaluation(record.classId, record.studentId, 188, record.studentId,
+                    188, 230, 156, record.teacherName, record.studentName, record.classCode, record.courseTitle, record.classStartDate);
         },
         fields: [
-            {name: "evaluationLevel", title: "نوع فرم ارزیابی"},
-            {name: "questionnarieType", title: "نام فرم ارزیابی"},
+            {
+                name: "evaluationLevel",
+                title: "نوع فرم ارزیابی",
+                type: "IntegerItem",
+                editorType: "SelectItem",
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: RestData_EvaluationLevel_JspQuestionEvaluation,
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                }
+            },
+            {
+                name: "questionnarieType",
+                title: "نام فرم ارزیابی",
+                type: "IntegerItem",
+                editorType: "SelectItem",
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: RestData_QuestionnarieType_JspQuestionEvaluation,
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                }
+            },
             {name: "classCode", title: "کد کلاس"},
             {name: "courseCode", title: "کد دوره"},
             {name: "courseTitle", title: "عنوان دوره"},
@@ -51,7 +115,7 @@
             {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"},
             {name: "studentId", hidden: true},
             {name: "classId", hidden: true},
-            {name: "classStartDate", hidden:true}
+            {name: "classStartDate", hidden: true}
         ]
     });
 
@@ -61,9 +125,9 @@
         ListGrid_Grid_JspQuestionEvaluation.invalidateCache();
     }
 
-    function register_Student_Reaction_Form_JspQuestionEvaluation(classId,evaluatorId,evaluatorTypeId,evaluatedId,
-                                                                  evaluatedTypeId,questionnaireTypeId,evaluationLevelId,
-                                                                  teacher,student,classCode,courseTitle,classStartDate) {
+    function register_Student_Reaction_Form_JspQuestionEvaluation(classId, evaluatorId, evaluatorTypeId, evaluatedId,
+                                                                  evaluatedTypeId, questionnaireTypeId, evaluationLevelId,
+                                                                  teacher, student, classCode, courseTitle, classStartDate) {
         let evaluationResult_DS = isc.TrDS.create({
             fields:
                 [
@@ -158,8 +222,8 @@
                         Window_Questions_JspEvaluation.close();
                         ListGrid_Grid_JspQuestionEvaluation.invalidateCache();
 // isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
-//     LGRecord.id,
-//     "GET", null, null));
+// LGRecord.id,
+// "GET", null, null));
                         const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
                         setTimeout(() => {
                             msg.close();

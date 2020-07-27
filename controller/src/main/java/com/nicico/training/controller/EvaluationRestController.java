@@ -606,7 +606,7 @@ public class EvaluationRestController {
                 res.setClassStartDate(classStudentInfo.getTclass().getStartDate());
                 res.setEvaluationLevel(154L);
                 res.setQuestionnarieType(139L);
-                res.setHasWarning(true);
+                res.setHasWarning("alarm");
                 result.add(res);
             }
             if(classStudentInfo.getEvaluationStatusBehavior().equals(1)){
@@ -622,7 +622,7 @@ public class EvaluationRestController {
                 res.setClassStartDate(classStudentInfo.getTclass().getStartDate());
                 res.setEvaluationLevel(156L);
                 res.setQuestionnarieType(230L);
-                res.setHasWarning(true);
+                res.setHasWarning("alarm");
                 result.add(res);
             }
         }
