@@ -38,6 +38,14 @@ public class EvaluationQuestionRestController {
     }
 
     @Loggable
+    @GetMapping(value = "/pickList")
+    public ResponseEntity<TotalResponse<EvaluationQuestionDTO.InfoWithDomain>> pickList(@RequestParam MultiValueMap<String, String> criteria) {
+        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
+        nicicoCriteria.setDistinct(true);
+        return new ResponseEntity<>(evaluationQuestionService.searchForPickList(nicicoCriteria), HttpStatus.OK);
+    }
+
+    @Loggable
     @GetMapping(value = "/iscList")
     public ResponseEntity<TotalResponse<EvaluationQuestionDTO.Info>> iscList(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);

@@ -78,7 +78,7 @@
                 name: "evaluationIndices",
                 title: "<spring:message code='question.indicator'/>",
                 type: "MultiComboBoxItem",
-                textAlign: "center",
+                layoutStyle: "horizontal",
                 optionDataSource: RestDataSource_QuestionIndicator_JspConfigQuestionnaire,
                 valueField: "id",
                 displayField: "nameFa",
