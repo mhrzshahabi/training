@@ -3,6 +3,7 @@ package com.nicico.training.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -112,5 +113,15 @@ public class DepartmentDTO implements Serializable {
         private Integer startRow;
         private Integer endRow;
         private Integer totalRows;
+    }
+
+    //Amin HK
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @Accessors(chain = true)
+    @ApiModel("FieldValue")
+    public static class FieldValue {
+        private String value;
     }
 }
