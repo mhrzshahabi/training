@@ -118,4 +118,9 @@ public class DepartmentRestController {
     public ResponseEntity<SearchDTO.SearchRs<DepartmentDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(departmentService.search(request), HttpStatus.OK);
     }
+
+    @GetMapping("/all-field-values")
+    public ResponseEntity<ISC<DepartmentDTO.FieldValue>> findAllValuesOfOneFieldFromDepartment(@RequestParam String fieldName) {
+        return new ResponseEntity<>(ISC.convertToIscRs(departmentService.findAllValuesOfOneFieldFromDepartment(fieldName), 0), HttpStatus.OK);
+    }
 }

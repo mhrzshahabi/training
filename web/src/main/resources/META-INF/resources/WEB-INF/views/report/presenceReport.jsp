@@ -84,34 +84,34 @@
             {name: "value", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=complexTitle"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=complexTitle"
     });
     AssistantDS_PresenceReport = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpAssistant"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAssistant"
     });
     AffairsDS_PresenceReport = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpAffairs"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAffairs"
     });
     SectionDS_PresenceReport = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="term.code"/>", filterOperator: "iContains", autoFitWidth: true, primaryKey: true},
         ],
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpSection"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpSection"
     });
     UnitDS_PresenceReport = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpUnit"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpUnit"
     });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
     var ListGrid_JspAttendanceReport = isc.TrLG.create({

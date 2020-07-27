@@ -1150,42 +1150,6 @@
             },
 
             {
-                ID: "classTypeStatus",
-                name: "classStatus",
-                colSpan: 1,
-                rowSpan: 1,
-                title: "<spring:message code="class.status"/>:",
-                wrapTitle: true,
-                type: "radioGroup",
-                vertical: false,
-                fillHorizontalSpace: true,
-                defaultValue: "1",
-// endRow:true,
-                valueMap: {
-                    "1": "برنامه ریزی",
-                    "2": "در حال اجرا",
-                    "3": "پایان یافته",
-                },
-                change: function (form, item, value, oldValue) {
-
-                    //talk to roya
-                    // if(classMethod.localeCompare("PUT") === 0 && value === "3" &&
-                    //     (ListGrid_Class_JspClass.getSelectedRecord().evaluationStatusReactionTraining == undefined ||
-                    //     ListGrid_Class_JspClass.getSelectedRecord().evaluationStatusReactionTraining == 0)){
-                    //         createDialog("info", "مدرس این کلاس هنوز توسط مسئول آموزش ارزیابی نشده است و امکان پایان دادن به کلاس نمی باشد");
-                    //         return false;
-                    // }
-
-                    if (classMethod.localeCompare("PUT") === 0 && value === "3")
-                        checkEndingClass(oldValue);
-                    else if(classMethod.localeCompare("PUT") === 0 && value === "2")
-                        hasClassStarted(oldValue);
-                    else if (classMethod.localeCompare("POST") === 0 && (value === "3" || value ==="2"))
-                        return false;
-
-                }
-            },
-            {
                 name: "acceptancelimit_a",
                 colSpan: 1,
                 required: true,
@@ -1202,7 +1166,7 @@
             {
                 ID: "targetSocietyTypeId",
                 name: "targetSocietyTypeId",
-                colSpan: 3,
+                colSpan: 1,
                 rowSpan: 1,
                 title: "نوع جامعه هدف :",
                 wrapTitle: false,
@@ -1281,6 +1245,41 @@
                     }else if(DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").getValue() === "371"){
                         showOrganizationalChart(setSocieties);
                     }
+                }
+            },
+            {
+                ID: "classTypeStatus",
+                name: "classStatus",
+                colSpan: 1,
+                rowSpan: 1,
+                title: "<spring:message code="class.status"/>:",
+                wrapTitle: true,
+                type: "radioGroup",
+                vertical: true,
+                fillHorizontalSpace: true,
+                defaultValue: "1",
+// endRow:true,
+                valueMap: {
+                    "1": "برنامه ریزی",
+                    "2": "در حال اجرا",
+                    "3": "پایان یافته",
+                },
+                change: function (form, item, value, oldValue) {
+
+                    if(classMethod.localeCompare("PUT") === 0 && value === "3" &&
+                        (ListGrid_Class_JspClass.getSelectedRecord().evaluationStatusReactionTraining == undefined ||
+                            ListGrid_Class_JspClass.getSelectedRecord().evaluationStatusReactionTraining == 0)){
+                        createDialog("info", "مدرس این کلاس هنوز توسط مسئول آموزش ارزیابی نشده است و امکان پایان دادن به کلاس نمی باشد");
+                        return false;
+                    }
+
+                    if (classMethod.localeCompare("PUT") === 0 && value === "3")
+                        checkEndingClass(oldValue);
+                    else if(classMethod.localeCompare("PUT") === 0 && value === "2")
+                        hasClassStarted(oldValue);
+                    else if (classMethod.localeCompare("POST") === 0 && (value === "3" || value ==="2"))
+                        return false;
+
                 }
             },
             {
@@ -2543,8 +2542,8 @@
                     Window_Class_JspClass.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="class"/>");
                     Window_Class_JspClass.show();
                     //=========================
-                    // DynamicForm_Class_JspClass.getField("classStatus").getItem(1).enable();
-                    // DynamicForm_Class_JspClass.getField("classStatus").getItem(2).enable();
+                    DynamicForm_Class_JspClass.getField("classStatus").getItem(1).enable();
+                    DynamicForm_Class_JspClass.getField("classStatus").getItem(2).enable();
                     DynamicForm_Class_JspClass.getItem("scoringMethod").change(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("scoringMethod"), DynamicForm_Class_JspClass.getValue("scoringMethod"));
                     DynamicForm_Class_JspClass.itemChanged();
                     if (ListGrid_Class_JspClass.getSelectedRecord().scoringMethod === "1") {
@@ -2628,8 +2627,8 @@
         DynamicForm1_Class_JspClass.getItem("startDate").enable();
         DynamicForm1_Class_JspClass.getItem("endDate").enable();
         OJT = false;
-        // DynamicForm_Class_JspClass.getField("classStatus").getItem(1).disable();
-        // DynamicForm_Class_JspClass.getField("classStatus").getItem(2).disable();
+        DynamicForm_Class_JspClass.getField("classStatus").getItem(1).disable();
+        DynamicForm_Class_JspClass.getField("classStatus").getItem(2).disable();
     }
 
     function ListGrid_class_print(type) {
