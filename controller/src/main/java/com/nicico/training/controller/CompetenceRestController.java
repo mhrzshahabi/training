@@ -67,6 +67,7 @@ public class CompetenceRestController {
                                                        @RequestParam(value = "_constructor", required = false) String constructor,
                                                        @RequestParam(value = "operator", required = false) String operator,
                                                        @RequestParam(value = "criteria", required = false) String criteria,
+                                                       @RequestParam(value = "id", required = false) Long id,
                                                        @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException, NoSuchFieldException, IllegalAccessException {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
@@ -82,9 +83,20 @@ public class CompetenceRestController {
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
         }
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }
+        else{
+            request.setCriteria(workGroupService.addPermissionToCriteria("categoryId", request.getCriteria()));
+        }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
-        request.setCriteria(workGroupService.addPermissionToCriteria("categoryId", request.getCriteria()));
         SearchDTO.SearchRs<CompetenceDTO.Info> response = competenceService.search(request);
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs<>();
         final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();

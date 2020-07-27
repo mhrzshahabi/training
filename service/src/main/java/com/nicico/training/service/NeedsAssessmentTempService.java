@@ -14,10 +14,14 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -44,7 +48,13 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
     @Autowired
     private JobGroupDAO jobGroupDAO;
     @Autowired
+    private CompetenceDAO competenceDAO;
+    @Autowired
+    private SkillDAO skillDAO;
+    @Autowired
     private TrainingPostDAO trainingPostDAO;
+    @Autowired
+    private MessageSource messageSource;
 
     private Supplier<TrainingException> trainingExceptionSupplier = () -> new TrainingException(TrainingException.ErrorType.NotFound);
 
@@ -66,7 +76,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
     }
 
     @Transactional
-    public Boolean copyNA(String sourceObjectType, Long sourceObjectId, String objectType, Long objectId) {
+    public Boolean copyNA(String sourceObjectType, Long sourceObjectId, Long sourceCompetenceId, String objectType, Long objectId) {
         switch (readOnlyStatus(objectType, objectId)) {
             case 0:
                 initial(objectType, objectId);
@@ -74,8 +84,12 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
             case 2:
                 return false;
         }
+        SearchDTO.CriteriaRq criteria = getCriteria(sourceObjectType, sourceObjectId);
+        if (sourceCompetenceId != null){
+            criteria.getCriteria().add(makeNewCriteria("competenceId", sourceCompetenceId, EOperator.equals, null));
+        }
         List<Skill> skillList = needsAssessmentDAO.findAll(NICICOSpecification.of(getCriteria(objectType, objectId))).stream().map(NeedsAssessment::getSkill).collect(Collectors.toList());
-        List<NeedsAssessment> sourceNeedsAssessments = needsAssessmentDAO.findAll(NICICOSpecification.of(getCriteria(sourceObjectType, sourceObjectId)));
+        List<NeedsAssessment> sourceNeedsAssessments = needsAssessmentDAO.findAll(NICICOSpecification.of(criteria));
         sourceNeedsAssessments.forEach(sourceNA -> {
             if (!skillList.contains(sourceNA.getSkill())) {
                 NeedsAssessmentDTO.Create newNA = new NeedsAssessmentDTO.Create();
@@ -145,6 +159,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
     @Override
     @Transactional
     public NeedsAssessmentDTO.Info create(NeedsAssessmentDTO.Create rq) {
+
         Optional<NeedsAssessmentTemp> optionalNA = dao.findFirstByObjectIdAndObjectTypeAndCompetenceIdAndSkillIdAndNeedsAssessmentDomainIdAndNeedsAssessmentPriorityId(rq.getObjectId(), rq.getObjectType(), rq.getCompetenceId(), rq.getSkillId(), rq.getNeedsAssessmentDomainId(), rq.getNeedsAssessmentPriorityId());
         if (optionalNA.isPresent()) {
             optionalNA.get().setEDeleted(null);
@@ -199,5 +214,22 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
                 return trainingPostDAO.updateModifications(objectId, today, createdBy);
         }
         return -1;
+    }
+
+    @Transactional(readOnly = true)
+    public void checkCategoryNotEquals(NeedsAssessmentDTO.Create rq, HttpServletResponse resp) throws IOException {
+        Optional<Competence> byId = competenceDAO.findById(rq.getCompetenceId());
+        Competence competence = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
+        if(competence.getCategoryId() == null){
+            return;
+        }
+        Optional<Skill> byId1 = skillDAO.findById(rq.getSkillId());
+        Skill skill = byId1.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
+        if (!(skill.getSubCategoryId().equals(competence.getSubCategoryId()))) {
+            resp.sendError(408, messageSource.getMessage("زیر گروه شایستگی با زیر گروه مهارت یکسان نیست.", null, LocaleContextHolder.getLocale()));
+        }
+        if (!(skill.getCategoryId().equals(competence.getCategoryId()))) {
+            resp.sendError(408, messageSource.getMessage("گروه مهارت با گروه شایستگی یکسان نیست", null, LocaleContextHolder.getLocale()));
+        }
     }
 }
