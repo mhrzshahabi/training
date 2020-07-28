@@ -329,13 +329,17 @@ public class EvaluationRestController {
     public  ResponseEntity<ISC> getEvaluationForm(@RequestBody HashMap req) {
         List<EvaluationAnswerDTO.EvaluationAnswerFullData> result = evaluationService.getEvaluationForm(req);
 
-        ISC.Response<EvaluationAnswerDTO.EvaluationAnswerFullData> response = new ISC.Response<>();
-        response.setData(result)
-                .setStartRow(0)
-                .setEndRow(result.size())
-                .setTotalRows(result.size());
-        ISC<Object> objectISC = new ISC<>(response);
-        return new ResponseEntity<>(objectISC, HttpStatus.OK);
+        if(result != null) {
+            ISC.Response<EvaluationAnswerDTO.EvaluationAnswerFullData> response = new ISC.Response<>();
+            response.setData(result)
+                    .setStartRow(0)
+                    .setEndRow(result.size())
+                    .setTotalRows(result.size());
+            ISC<Object> objectISC = new ISC<>(response);
+            return new ResponseEntity<>(objectISC, HttpStatus.OK);
+        }
+        else
+            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
     }
 
     @Loggable

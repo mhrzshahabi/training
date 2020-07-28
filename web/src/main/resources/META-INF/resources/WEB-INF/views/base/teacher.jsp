@@ -19,6 +19,7 @@
     var selected_record = null;
     var selectedRecordID = null;
     var isFileAttached = false;
+    let oLoadAttachments_Teacher = null;
     var vm = isc.ValuesManager.create({});
 
     //----------------------------------------------------Rest Data Sources---------------------------------------------
@@ -470,9 +471,10 @@
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/jobInfo-tab"})
             },
             {
-                ID: "attachmentsTab",
-                title: "<spring:message code="documents"/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/attachments-tab"})
+                ID: "TeacherAttachmentsTab",
+                name:"TeacherAttachmentsTab",
+                title: "<spring:message code="attachments"/>",
+
             },
             {
                 ID: "otherActivities",
@@ -484,8 +486,8 @@
             var teacherId;
             if (selectedRecordID != null) {
                 teacherId = selectedRecordID;
-                if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == "attachmentsTab")
-                    loadPage_attachment("Teacher", teacherId, "<spring:message code="document"/>", {
+                if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == "TeacherAttachmentsTab" || TabSet_Bottom_JspTeacher.getSelectedTab().name  == "TeacherAttachmentsTab")
+                    oLoadAttachments_Teacher.loadPage_attachment_Job("Teacher", teacherId, "<spring:message code="document"/>", {
                         1: "رزومه",
                         2: "مدرک تحصیلی",
                         3: "گواهینامه"
@@ -725,6 +727,7 @@
     var ToolStripButton_Edit_JspTeacher = isc.ToolStripButtonEdit.create({
         click: function () {
             ListGrid_teacher_edit();
+
         }
     });
 
@@ -919,7 +922,7 @@
     }
 
     function ListGrid_teacher_edit() {
-        var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
+      var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
         selected_record = record;
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
@@ -930,15 +933,11 @@
     }
 
     function Edit_teacher() {
-
         showAttachViewLoader.setView();
         showAttachViewLoader.show();
-
         showAttach(selected_record.personalityId);
-
         vm.clearValues();
         vm.clearErrors(true);
-
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.mobile", true);
         DynamicForm_AddressInfo_JspTeacher.clearFieldErrors("personality.contactInfo.email", true);
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
@@ -1076,10 +1075,21 @@
             DynamicForm_BasicInfo_JspTeacher.getField("updatePersonnelInfo").disabled = true;
             DynamicForm_BasicInfo_JspTeacher.getItem("personnelCode").setRequired(false);
         }
+        if (!loadjs.isDefined('load_Attachments_Teacher')) {
+            loadjs('<spring:url value='tclass/attachments-tab' />', 'load_Attachments_Teacher');
+        }
 
+        loadjs.ready('load_Attachments_Teacher', function () {
+            setTimeout(()=> {
+                oLoadAttachments_Teacher = new loadAttachments();
+                TabSet_Bottom_JspTeacher.updateTab(TeacherAttachmentsTab, oLoadAttachments_Teacher.VLayout_Body_JspAttachment);
+                clearTabFilters(oLoadAttachments_Teacher);
+            },0);
+
+        });
         selectedRecordID = ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
         loadPage_AcademicBK(selectedRecordID);
-        clearTabFilters();
+
         DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
         Window_Teacher_JspTeacher.show();
         Window_Teacher_JspTeacher.bringToFront();
@@ -1534,7 +1544,9 @@
         DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
     }
 
-    function clearTabFilters() {
+
+
+    function clearTabFilters(oLoadAttachments_Teacher) {
         ListGrid_JspAcademicBK.clearFilterValues();
         ListGrid_JspInternalTeachingHistory.clearFilterValues();
         ListGrid_JspEmploymentHistory.clearFilterValues();
@@ -1542,14 +1554,18 @@
         ListGrid_JspTeacherCertification.clearFilterValues();
         ListGrid_JspPublication.clearFilterValues();
         ListGrid_JspForeignLangKnowledge.clearFilterValues();
-        ListGrid_JspAttachment.clearFilterValues();
+        // setTimeout(()=> {
+        if(oLoadAttachments_Teacher)
+        oLoadAttachments_Teacher.ListGrid_JspAttachment.clearFilterValues();
+        // },0);
         ListGrid_JspAcademicBK.filterByEditor();
         ListGrid_JspEmploymentHistory.filterByEditor();
         ListGrid_JspTeachingHistory.filterByEditor();
         ListGrid_JspTeacherCertification.filterByEditor();
         ListGrid_JspPublication.filterByEditor();
         ListGrid_JspForeignLangKnowledge.filterByEditor();
-        ListGrid_JspAttachment.filterByEditor();
+        if(oLoadAttachments_Teacher)
+        oLoadAttachments_Teacher.ListGrid_JspAttachment.filterByEditor();
         ListGrid_JspInternalTeachingHistory.filterByEditor();
 
     }
