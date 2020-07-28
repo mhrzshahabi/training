@@ -49,7 +49,7 @@ public class QuestionnaireDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("Questionnaire - Create")
     public static class Create extends QuestionnaireDTO {
-        private  Long eEnabled=74L;
+        private  Long eEnabled=494L;
     }
 
     @Getter

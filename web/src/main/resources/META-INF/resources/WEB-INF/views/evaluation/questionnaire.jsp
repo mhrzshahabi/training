@@ -7,6 +7,8 @@
     let questionnaireMethod_questionnaire;
     let questionnaireQuestionMethod_questionnaire;
     let waitQuestionnaire;
+    let isDelete=false;
+
     // ------------------------------------------- Menu -------------------------------------------
     isc.Menu.create({
         ID: "QuestionnaireMenu_questionnaire",
@@ -186,7 +188,7 @@
         recordDoubleClick: function () { editQuestionnaire_questionnaire(); },
         </sec:authorize>
         <sec:authorize access="hasAuthority('QuestionnaireQuestion_R')">
-        selectionUpdated: function (record) { refreshQuestionnaireQuestionLG_questionnaire(); },
+        selectionUpdated: function (record) {refreshQuestionnaireQuestionLG_questionnaire(); },
         </sec:authorize>
         getCellCSSText: function (record) {
             if (record.eenabled == 74)
@@ -194,6 +196,13 @@
             else
                 return "color:#153560; font-size: 13px;";
         },
+        dataArrived:function (startRow, endRow, data) {
+
+            if (isDelete){
+                QuestionnaireQuestionLG_questionnaire.setData([]);
+                isDelete=false;
+            }
+        }
     });
 
     QuestionnaireQuestionDS_questionnaire = isc.TrDS.create({
@@ -371,8 +380,10 @@
                         createDialog("info", "پرسشنامه مورد نظر در ارزیابی استفاده شده است. بنابراین قابل تغییر نیست.");
                         return ;
                     }
-
+                    isDelete=true;
                     removeRecord(questionnaireUrl + "/" + record.id, entityType, record.title, 'QuestionnaireLG_questionnaire');
+
+
                 })
             );
 
