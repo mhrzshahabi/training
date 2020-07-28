@@ -38,6 +38,15 @@ public class EvaluationQuestionDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("EvaluationQuestion - InfoWithDomain")
+    public static class InfoWithDomain extends EvaluationQuestionDTO {
+        private Long id;
+        private ParameterValueDTO.TupleInfo domain;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("EvaluationQuestion - Create")
     public static class Create extends EvaluationQuestionDTO {
         private List<EvaluationIndexDTO.Info> evaluationIndices;

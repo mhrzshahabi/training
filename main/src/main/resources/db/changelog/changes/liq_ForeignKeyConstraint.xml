@@ -1093,4 +1093,32 @@
     <changeSet author="razmnoosh (generated)" id="1595309679428-466">
         <addForeignKeyConstraint baseColumnNames="f_type" baseTableName="tbl_dynamic_question" constraintName="FKd9b54lbsrl16uh3mabxrj16i0" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1595320264747-466">
+        <addForeignKeyConstraint baseColumnNames="f_subcategory_id" baseTableName="tbl_question_bank" constraintName="FK8oljq64gt3ufk67d0if4lykn4" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_sub_category" validate="true"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1595320264747-467">
+        <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_question_bank" constraintName="FK8vn57pekkmmjqyrauq54dbasy" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1595320264747-468">
+        <addForeignKeyConstraint baseColumnNames="f_category_id" baseTableName="tbl_question_bank" constraintName="FKa0yap2yaukq0jivnra3v0cn2t" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_category" validate="true"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1595320264747-469">
+        <addForeignKeyConstraint baseColumnNames="e_enabled" baseTableName="tbl_question_bank" constraintName="FKhnmg7skw869fq05krtvkqnihk" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1595320264747-470">
+        <addForeignKeyConstraint baseColumnNames="f_parameter_value_question_type" baseTableName="tbl_question_bank" constraintName="FKjtl87qxkkfvp7tgk4fkkmmxri" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1595320264747-471">
+        <addForeignKeyConstraint baseColumnNames="f_parameter_value_question_display_type" baseTableName="tbl_question_bank" constraintName="FKmc2ko68ps8riok7lxk3m6ka4e" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1595660685513-474">
+        <addForeignKeyConstraint baseColumnNames="f_course_id" baseTableName="tbl_question_bank" constraintName="FKafmfrulns5epqo3rso5qg8x01" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_course" validate="true"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1595660685513-475">
+        <addForeignKeyConstraint baseColumnNames="f_tclass_id" baseTableName="tbl_question_bank" constraintName="FKe4fjtk5dqjcjj0psgpwc9hsqs" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1595660685513-476">
+        <addForeignKeyConstraint baseColumnNames="f_teacher_id" baseTableName="tbl_question_bank" constraintName="FKe9s7e8br1chy3tcax27fmrgcb" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

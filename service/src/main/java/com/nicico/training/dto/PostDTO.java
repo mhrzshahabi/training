@@ -32,7 +32,7 @@ public class PostDTO implements Serializable {
         private String unit;
         private String costCenterCode;
         private String costCenterTitleFa;
-
+        private String peopleType;
 //        private DepartmentDTO.Info department;
     }
 

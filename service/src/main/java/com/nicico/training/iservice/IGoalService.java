@@ -8,6 +8,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.GoalDTO;
 import com.nicico.training.dto.SyllabusDTO;
+import com.nicico.training.model.Goal;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -37,4 +38,8 @@ public interface IGoalService {
 
     @Transactional
     List<CourseDTO.Info> getCourses(Long goalId);
+
+    @Transactional
+    SearchDTO.SearchRs<GoalDTO.Info> getGoalsByCategory(SearchDTO.SearchRq request, Long categoryID);
+
 }

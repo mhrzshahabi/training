@@ -76,6 +76,9 @@ public class JobGroupRestController {
     @GetMapping(value = "/postIscList/{id}")
     public ResponseEntity<ISC<PostDTO.Info>> postList(HttpServletRequest iscRq, @PathVariable(value = "id") Long id) throws IOException {
         List<JobDTO.Info> jobs = jobGroupService.getJobs(id);
+        if (jobs.isEmpty()) {
+            return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
+        }
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq, jobs.stream().map(JobDTO.Info::getId).collect(Collectors.toList()), "job", EOperator.inSet);
         SearchDTO.SearchRs<PostDTO.Info> searchRs = postService.searchWithoutPermission(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
@@ -84,6 +87,9 @@ public class JobGroupRestController {
     @GetMapping(value = "/personnelIscList/{id}")
     public ResponseEntity<ISC<PersonnelDTO.Info>> personnelList(HttpServletRequest iscRq, @PathVariable(value = "id") Long id) throws IOException {
         List<JobDTO.Info> jobs = jobGroupService.getJobs(id);
+        if (jobs.isEmpty()) {
+            return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
+        }
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq, jobs.stream().map(JobDTO.Info::getCode).collect(Collectors.toList()), "jobNo", EOperator.inSet);
         searchRq.getCriteria().getCriteria().add(makeNewCriteria("active", 1, EOperator.equals, null));
         searchRq.getCriteria().getCriteria().add(makeNewCriteria("employmentStatusId", 5, EOperator.equals, null));

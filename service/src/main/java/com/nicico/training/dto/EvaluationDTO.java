@@ -127,4 +127,23 @@ public class EvaluationDTO implements Serializable {
         private String returnDate;
         private String evaluatorTypeTitle;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("StudentEvaluationForm - Info")
+    public static class StudentEvaluationForm {
+        private Long evaluationLevel;
+        private Long questionnarieType;
+        private String classCode;
+        private String classStartDate;
+        private String courseCode;
+        private String courseTitle;
+        private String teacherName;
+        private String hasWarning;
+        private Long studentId;
+        private Long classId;
+        private String studentName;
+    }
+
 }

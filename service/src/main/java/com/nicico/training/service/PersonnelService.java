@@ -212,10 +212,11 @@ public class PersonnelService implements IPersonnelService {
 
     @Override
     @Transactional
-    public Personnel findPersonnelByPersonnelNo(String personnelNo) {
+    public Personnel findPersonnelByPersonnelId(Long personnelId, String personnelNo) {
 
+        Long personnel_Id = personnelId != 0 ? personnelId : personnelDAO.getPersonnelIdByPersonnelNo(personnelNo);
         PersonnelRegistered personnelRegistered = new PersonnelRegistered();
-        Personnel personnel = personnelDAO.findPersonnelByPersonnelNo(personnelNo);
+        Personnel personnel = personnelDAO.findPersonnelById(personnel_Id);
 
         if (personnel != null) {
 

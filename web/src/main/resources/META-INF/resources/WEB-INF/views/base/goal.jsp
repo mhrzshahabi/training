@@ -43,6 +43,24 @@
         jsonPrefix: "",
         jsonSuffix: "",
     });
+
+    let RestDataSource_category = isc.TrDS.create({
+        ID: "categoryDS",
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa", type: "text"}
+        ],
+        fetchDataURL: categoryUrl + "spec-list",
+    });
+
+    let RestDataSourceSubCategory = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa", type: "text"}
+        ],
+        fetchDataURL: subCategoryUrl + "spec-list",
+    });
+
     var DynamicForm_Goal = isc.DynamicForm.create({
         fields: [
             {name: "id", hidden: true},
@@ -58,7 +76,46 @@
                 name: "titleEn",
                 title: "نام لاتین ",
                 keyPressFilter: "[a-z|A-Z|0-9 ]",
-            }
+            },
+            {
+                name: "categoryId",
+                title: "گروه",
+                displayField: "titleFa",
+                valueField: "id",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                optionDataSource: RestDataSource_category,
+                filterFields: ["titleFa"],
+                pickListProperties:{
+                    showFilterEditor: false
+                },
+                sortField: ["id"],
+                changed: function (form, item, value) {
+                    DynamicForm_Goal.getItem("subCategoryId").enable();
+                    DynamicForm_Goal.getItem("subCategoryId").setValue([]);
+                    RestDataSourceSubCategory.fetchDataURL = categoryUrl + value + "/sub-categories";
+                    DynamicForm_Goal.getItem("subCategoryId").fetchData();
+                },
+                click: function (form, item) {
+                    item.fetchData();
+                }
+            },
+            {
+                name: "subCategoryId",
+                title: "<spring:message code="course_subcategory"/>",
+                prompt: "ابتدا گروه را انتخاب کنید",
+                textAlign: "center",
+                required: true,
+                autoFetchData: false,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSourceSubCategory,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                pickListProperties:{
+                    showFilterEditor: false
+                }
+            },
         ],
     });
     var DynamicForm_Syllabus = isc.DynamicForm.create({
@@ -466,6 +523,25 @@
             // {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleFa", title: "<spring:message code="goal.title.fa"/>", align: "center", autoFitWidth: true},
             {name: "titleEn", title: "<spring:message code="goal.title.en"/>", align: "center"},
+            {
+                name: "categoryId",
+                title: "گروه",
+                optionDataSource: RestDataSource_category,
+                displayField: "titleFa",
+                valueField: "id",
+                filterOperator: "equals",
+                canFilter:"none",
+                autoFitWidth: true,
+            },
+            {
+                name: "subCategoryId",
+                title: "زیر گروه",
+                optionDataSource: RestDataSource_SubCategory,
+                displayField: "titleFa",
+                valueField: "id",
+                filterOperator: "equals",
+                autoFitWidth: true,
+            },
             // {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         selectionType: "multiple",
@@ -559,8 +635,26 @@
         },
         fields: [
             {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "كل اهداف", align: "center"},
+            {name: "titleFa", title: "كل اهداف", align: "center", width:"60%"},
             {name: "titleEn", title: "نام لاتین هدف ", align: "center", hidden: true},
+            {
+                name: "categoryId",
+                title: "گروه",
+                optionDataSource: RestDataSource_category,
+                displayField: "titleFa",
+                valueField: "id",
+                filterOperator: "equals",
+                width:"20%"
+            },
+            {
+                name: "subCategoryId",
+                title: "زیر گروه",
+                optionDataSource: RestDataSource_SubCategory,
+                displayField: "titleFa",
+                valueField: "id",
+                filterOperator: "equals",
+                width:"20%"
+            },
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         selectionType: "multiple",
@@ -588,7 +682,10 @@
         canAcceptDroppedRecords: true,
         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
             removeAsListGrid();
-        }
+        },
+        getCellCSSText: function (record, rowNum, colNum) {
+            return record.categoryId===courseRecord.categoryId ? "color:black": "color:red";
+        }//end getCellCSSText
     });
     var ListGrid_CourseGoal_Goal = isc.ListGrid.create({
         width: "100%",
@@ -734,6 +831,25 @@
             ListGrid_Goal_Add();
         }
     });
+
+    var ToolStripButton_Goal_All = isc.ToolStripButton.create({
+        title: "کل اهداف",
+        prompt: "لیست کل اهداف",
+        hoverWidth: 100,
+        click: function () {
+            ListGrid_Goal_All();
+        }
+    });
+
+    var ToolStripButton_Goal_Category = isc.ToolStripButton.create({
+        title: "اهداف مرتبط با گروه",
+        prompt: "لیست اهداف مرتبط با گروه",
+        hoverWidth: 140,
+        click: function () {
+            ListGrid_Goal_Category();
+        }
+    });
+
     var ToolStripButton_Goal_Remove = isc.ToolStripButtonRemove.create({
 
         title: "حذف",
@@ -792,6 +908,8 @@
         membersMargin: 5,
         members: [
             ToolStripButton_Goal_Add,
+            ToolStripButton_Goal_All,
+            ToolStripButton_Goal_Category
         ]
     });
     var ToolStrip_Actions_Syllabus = isc.ToolStrip.create({
@@ -1017,6 +1135,8 @@
     };
 
     function ListGrid_Goal_Add() {
+        DynamicForm_Goal.getItem("subCategoryId").disable();
+
         if (DynamicForm_course_MainTab.getItem("titleFa")._value == null) {
             isc.Dialog.create({
                 message: "لطفاً ابتدا اطلاعات دوره را وارد کنید.",
@@ -1034,7 +1154,19 @@
             Window_Goal.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="goal"/>");
             Window_Goal.show();
         }
-    };
+    }
+
+    function ListGrid_Goal_All() {
+        RestDataSource_GoalAll.fetchDataURL = goalUrl + "spec-list";
+        ListGrid_GoalAll.fetchData();
+        ListGrid_GoalAll.invalidateCache();
+    }
+
+    function ListGrid_Goal_Category() {
+        RestDataSource_GoalAll.fetchDataURL = goalUrl + courseRecord.categoryId + "/goal-list";
+        ListGrid_GoalAll.fetchData();
+        ListGrid_GoalAll.invalidateCache();
+    }
 
     function ListGrid_Syllabus_Goal_Remove() {
         let record = ListGrid_Syllabus_Goal.getSelectedRecord();
@@ -1170,15 +1302,26 @@
                     this.close();
                 }
             });
+
         } else {
             let goalRecord = ListGrid_GoalAll.getSelectedRecords();
             if (goalRecord.length == 0) {
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>")
             } else {
                 let goalList = new Array();
+                let categoryIDs=[];
                 for (let i = 0; i < goalRecord.length; i++) {
                     goalList.add(goalRecord[i].id);
+                    categoryIDs=[...categoryIDs,goalRecord[i].categoryId];
                 }
+
+                if (categoryIDs.find(x=>x!==courseRecord.categoryId) || categoryIDs.some(x=>!x))
+                {
+                    simpleDialog("<spring:message code="message"/>",
+                        "<spring:message code="goal.problem.add1"/>" + "<br/>" + "<spring:message code="goal.problem.add2"/>", 10000, "stop");
+                    return;
+                }
+
                 wait.show()
                 isc.RPCManager.sendRequest({
                     actionURL: courseUrl + courseRecord.id + "/" + goalList.toString(),

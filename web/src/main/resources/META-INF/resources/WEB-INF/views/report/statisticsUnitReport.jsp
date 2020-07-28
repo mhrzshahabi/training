@@ -3,6 +3,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 // <script>
+    var startDate1Check_JspStaticalUnitReport = true;
+    var startDate2Check_JspStaticalUnitReport = true;
+    var startDateCheck_Order_JspStaticalUnitReport = true;
+    var endDate1Check_JspStaticalUnitReport = true;
+    var endDate2Check_JspStaticalUnitReport = true;
+    var endDateCheck_Order_JspStaticalUnitReport = true;
     //----------------------------------------------------Rest DataSource-----------------------------------------------
     RestDataSource_JspUnitReport = isc.TrDS.create({
         fields: [
@@ -109,7 +115,7 @@
             {name: "value", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=complexTitle"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=complexTitle"
     });
 
     AssistantDS_PresenceReport = isc.TrDS.create({
@@ -117,7 +123,7 @@
             {name: "value", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpAssistant"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAssistant"
     });
 
     AffairsDS_PresenceReport = isc.TrDS.create({
@@ -125,14 +131,14 @@
             {name: "value", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpAffairs"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAffairs"
     });
 
     SectionDS_PresenceReport = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="term.code"/>", filterOperator: "iContains", autoFitWidth: true, primaryKey: true},
         ],
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpSection"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpSection"
     });
 
     UnitDS_PresenceReport = isc.TrDS.create({
@@ -140,7 +146,7 @@
             {name: "value", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpUnit"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpUnit"
     });
 
     var RestDataSource_Course_JspUnitReportReport = isc.TrDS.create({
@@ -412,59 +418,197 @@
                 canEdit: false
             },
             {
-                name: "classStartDate",
-                title: "تاریخ کلاس: از",
-                ID: "startDate_jspAttendanceReport",
-                hint: "--/--/----",
+                name: "startDate1",
+                ID: "startDate1_JspStaticalUnitReport",
+                title: "تاریخ شروع کلاس: از",
+                hint: todayDate,
+                keyPressFilter: "[0-9/]",
+                length: 10,
+                showHintInField: true,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('startDate1_JspStaticalUnitReport', this, 'ymd', '/');
+                    }
+                }],
+                editorExit: function (form, item, value) {
+                    if(value == undefined || value ==null){
+                        form.clearFieldErrors("startDate2","تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد" ,true);
+                        form.clearFieldErrors("startDate1", true);
+                        startDateCheck_Order_JspStaticalUnitReport = true;
+                        startDate1Check_JspStaticalUnitReport = true;
+                        return;
+                    }
+
+                    form.getItem("startDate1").setValue(reformat(form.getValue("startDate1")));
+
+                    var dateCheck;
+                    var endDate = form.getValue("startDate2");
+                    dateCheck = checkDate(value);
+                    if (dateCheck === false) {
+                        startDate1Check_JspStaticalUnitReport = false;
+                        startDateCheck_Order_JspStaticalUnitReport = true;
+                        form.clearFieldErrors("startDate1", true);
+                        form.addFieldErrors("startDate1", "<spring:message code='msg.correct.date'/>", true);
+                    } else if (endDate < value) {
+                        startDateCheck_Order_JspStaticalUnitReport = false;
+                        startDate1Check_JspStaticalUnitReport = true;
+                        form.clearFieldErrors("startDate1", true);
+                        form.addFieldErrors("startDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                    }
+                    else {
+                        startDate1Check_JspStaticalUnitReport = true;
+                        startDateCheck_Order_JspStaticalUnitReport = true;
+                        form.clearFieldErrors("startDate1", true);
+                    }
+                }
+            },
+            {
+                name: "startDate2",
+                ID: "startDate2_JspStaticalUnitReport",
+                title: "تا",
+                hint: todayDate,
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
+                length: 10,
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('startDate_jspAttendanceReport', this, 'ymd', '/');
+                        displayDatePicker('startDate2_JspStaticalUnitReport', this, 'ymd', '/');
                     }
                 }],
-                textAlign: "center",
-                changed: function (form, item, value) {
+                editorExit: function (form, item, value) {
+                    if(value == undefined || value ==null){
+                        form.clearFieldErrors("startDate1","تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد" ,true);
+                        form.clearFieldErrors("startDate2", true);
+                        startDateCheck_Order_JspStaticalUnitReport = true;
+                        startDate2Check_JspStaticalUnitReport = true;
+                        return;
+                    }
+
+                    form.getItem("startDate2").setValue(reformat(form.getValue("startDate2")));
+
                     var dateCheck;
                     dateCheck = checkDate(value);
+                    var startDate = form.getValue("startDate1");
                     if (dateCheck === false) {
-                        form.addFieldErrors("classStartDate", "<spring:message code='msg.correct.date'/>", true);
+                        startDate2Check_JspStaticalUnitReport = false;
+                        startDateCheck_Order_JspStaticalUnitReport = true;
+                        form.clearFieldErrors("startDate2", true);
+                        form.addFieldErrors("startDate2", "<spring:message code='msg.correct.date'/>", true);
+                    } else if (startDate != undefined && value < startDate) {
+                        form.clearFieldErrors("startDate2", true);
+                        form.addFieldErrors("startDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                        startDate2Check_JspStaticalUnitReport = true;
+                        startDateCheck_Order_JspStaticalUnitReport = false;
                     } else {
-                        form.clearFieldErrors("classStartDate", true);
+                        form.clearFieldErrors("startDate2", true);
+                        startDate2Check_JspStaticalUnitReport = true;
+                        startDateCheck_Order_JspStaticalUnitReport = true;
                     }
                 }
             },
             {
-                name: "classEndDate",
+                name: "temp41",
+                title: "",
+                canEdit: false
+            },
+            {
+                name: "endDate1",
+                ID: "endDate1_JspStaticalUnitReport",
+                title: "تاریخ پایان کلاس: از",
+                hint: todayDate,
+                keyPressFilter: "[0-9/]",
+                length: 10,
+                showHintInField: true,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('endDate1_JspStaticalUnitReport', this, 'ymd', '/');
+                    }
+                }],
+                editorExit: function (form, item, value) {
+                    if(value == undefined || value ==null){
+                        form.clearFieldErrors("endDate2","تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد" ,true);
+                        form.clearFieldErrors("endDate1", true);
+                        endDateCheck_Order_JspStaticalUnitReport = true;
+                        endDate1Check_JspStaticalUnitReport = true;
+                        return;
+                    }
+
+                    form.getItem("endDate1").setValue(reformat(form.getValue("endDate1")));
+
+                    var dateCheck;
+                    var endDate = form.getValue("endDate2");
+                    dateCheck = checkDate(value);
+                    if (dateCheck === false) {
+                        endDate1Check_JspStaticalUnitReport = false;
+                        endDateCheck_Order_JspStaticalUnitReport = true;
+                        form.clearFieldErrors("endDate1", true);
+                        form.addFieldErrors("endDate1", "<spring:message code='msg.correct.date'/>", true);
+                    } else if (endDate < value) {
+                        endDateCheck_Order_JspStaticalUnitReport = false;
+                        endDate1Check_JspStaticalUnitReport = true;
+                        form.clearFieldErrors("endDate1", true);
+                        form.addFieldErrors("endDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                    } else {
+                        endDate1Check_JspStaticalUnitReport = true;
+                        endDateCheck_Order_JspStaticalUnitReport = true;
+                        form.clearFieldErrors("endDate1", true);
+                    }
+                }
+            },
+            {
+                name: "endDate2",
+                ID: "endDate2_JspStaticalUnitReport",
                 title: "تا",
-                ID: "endDate_jspAttendanceReport",
-                type: 'text',
-                hint: "--/--/----",
+                hint: todayDate,
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
+                length: 10,
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('endDate_jspAttendanceReport', this, 'ymd', '/');
+                        displayDatePicker('endDate2_JspStaticalUnitReport', this, 'ymd', '/');
                     }
                 }],
-                textAlign: "center",
-                changed: function (form, item, value) {
-                    let dateCheck;
+                editorExit: function (form, item, value) {
+                    if(value == undefined || value ==null){
+                        form.clearFieldErrors("endDate1","تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد" ,true);
+                        form.clearFieldErrors("endDate2", true);
+                        endDateCheck_Order_JspStaticalUnitReport = true;
+                        endDate2Check_JspStaticalUnitReport = true;
+                        return;
+                    }
+
+                    form.getItem("endDate2").setValue(reformat(form.getValue("endDate2")));
+
+                    var dateCheck;
                     dateCheck = checkDate(value);
+                    var startDate = form.getValue("endDate1");
                     if (dateCheck === false) {
-                        form.clearFieldErrors("classEndDate", true);
-                        form.addFieldErrors("classEndDate", "<spring:message code='msg.correct.date'/>", true);
+                        endDate2Check_JspStaticalUnitReport = false;
+                        endDateCheck_Order_JspStaticalUnitReport = true;
+                        form.clearFieldErrors("endDate2", true);
+                        form.addFieldErrors("endDate2", "<spring:message code='msg.correct.date'/>", true);
+                    } else if (startDate != undefined && value < startDate) {
+                        form.clearFieldErrors("endDate2", true);
+                        form.addFieldErrors("endDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                        endDate2Check_JspStaticalUnitReport = true;
+                        endDateCheck_Order_JspStaticalUnitReport = false;
                     } else {
-                        form.clearFieldErrors("classEndDate", true);
+                        form.clearFieldErrors("endDate2", true);
+                        endDate2Check_JspStaticalUnitReport = true;
+                        endDateCheck_Order_JspStaticalUnitReport = true;
                     }
                 }
             },
             {
-                name: "temp4",
+                name: "temp42",
                 title: "",
                 canEdit: false
             },
@@ -924,54 +1068,132 @@
         width: 300,
         click: function () {
 
-            if(Object.keys(DynamicForm_CriteriaForm_JspUnitReport.getValuesAsCriteria()).length <= 1) {
+            if(DynamicForm_CriteriaForm_JspUnitReport.getValuesAsAdvancedCriteria().criteria.size() <= 1) {
                 createDialog("info","فیلتری انتخاب نشده است.");
                 return;
             }
-
-            let criteria = DynamicForm_CriteriaForm_JspUnitReport.getValuesAsAdvancedCriteria();
-
-           // criteria=criteria.criteria1.criteria.filter(x=>x.fieldName=="classStatus")
-            console.log(criteria);
 
             DynamicForm_CriteriaForm_JspUnitReport.validate();
             if (DynamicForm_CriteriaForm_JspUnitReport.hasErrors())
                 return;
 
             else{
-                let cr = [];
+                data_values = DynamicForm_CriteriaForm_JspUnitReport.getValuesAsAdvancedCriteria();
+                for (var i = 0; i < data_values.criteria.size(); i++) {
+                    if (data_values.criteria[i].fieldName == "courseCode") {
+                        var codesString = data_values.criteria[i].value;
+                        var codesArray;
+                        codesArray = codesString.split(",");
+                        for (var j = 0; j < codesArray.length; j++) {
+                            if (codesArray[j] == "" || codesArray[j] == " ") {
+                                codesArray.remove(codesArray[j]);
+                            }
+                        }
+                        data_values.criteria[i].operator = "inSet";
+                        data_values.criteria[i].value = codesArray;
+                    }
 
-                if(DynamicForm_CriteriaForm_JspUnitReport.getValue("classCode") !== undefined){
-                    criteria.criteria=criteria.criteria.splice(criteria.criteria.findIndex(x=>x.fieldName=="classCode" && x.operator=="inContains"),1);
-                    criteria.criteria.push({fieldName: "classCode", operator: "inSet", value: DynamicForm_CriteriaForm_JspUnitReport.getValue("classCode").split(',').toArray()});
+                    else if (data_values.criteria[i].fieldName == "classCode") {
+                        var codesString = data_values.criteria[i].value;
+                        var codesArray;
+                        codesArray = codesString.split(",");
+                        for (var j = 0; j < codesArray.length; j++) {
+                            if (codesArray[j] == "" || codesArray[j] == " ") {
+                                codesArray.remove(codesArray[j]);
+                            }
+                        }
+                        data_values.criteria[i].operator = "inSet";
+                        data_values.criteria[i].value = codesArray;
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "instituteId") {
+                        data_values.criteria[i].fieldName = "instituteId";
+                        data_values.criteria[i].operator = "equals";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "personnelComplexTitle") {
+                        data_values.criteria[i].fieldName = "personnelComplexTitle";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "classStudentApplicantCompanyName") {
+                        data_values.criteria[i].fieldName = "classStudentApplicantCompanyName";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "studentCcpAssistant") {
+                        data_values.criteria[i].fieldName = "studentCcpAssistant";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "studentCcpUnit") {
+                        data_values.criteria[i].fieldName = "studentCcpUnit";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "studentCcpAffairs") {
+                        data_values.criteria[i].fieldName = "studentCcpAffairs";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "studentCcpSection") {
+                        data_values.criteria[i].fieldName = "studentCcpSection";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "courseTitleFa") {
+                        data_values.criteria[i].fieldName = "courseTitleFa";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "startDate1") {
+                        data_values.criteria[i].fieldName = "classStartDate";
+                        data_values.criteria[i].operator = "greaterThan";
+                    }
+                    else if (data_values.criteria[i].fieldName == "startDate2") {
+                        data_values.criteria[i].fieldName = "classStartDate";
+                        data_values.criteria[i].operator = "lessThan";
+                    }
+                    else if (data_values.criteria[i].fieldName == "endDate1") {
+                        data_values.criteria[i].fieldName = "classEndDate";
+                        data_values.criteria[i].operator = "greaterThan";
+                    }
+                    else if (data_values.criteria[i].fieldName == "endDate2") {
+                        data_values.criteria[i].fieldName = "classEndDate";
+                        data_values.criteria[i].operator = "lessThan";
+                    }
+                    else if (data_values.criteria[i].fieldName == "classPlanner") {
+                        data_values.criteria[i].fieldName = "classPlanner";
+                        data_values.criteria[i].operator = "equals";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "classSupervisor") {
+                        data_values.criteria[i].fieldName = "classSupervisor";
+                        data_values.criteria[i].operator = "equals";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "courseTeacherId") {
+                        data_values.criteria[i].fieldName = "courseTeacherId";
+                        data_values.criteria[i].operator = "equals";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "classYear") {
+                        data_values.criteria[i].fieldName = "classYear";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "termId") {
+                        data_values.criteria[i].fieldName = "termId";
+                        data_values.criteria[i].operator = "equals";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "courseCategory") {
+                        data_values.criteria[i].fieldName = "courseCategory";
+                        data_values.criteria[i].operator = "equals";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "courseSubCategory") {
+                        data_values.criteria[i].fieldName = "courseSubCategory";
+                        data_values.criteria[i].operator = "equals";
+                    }
                 }
-
-                if(DynamicForm_CriteriaForm_JspUnitReport.getValue("courseCode") !== undefined){
-                    criteria.criteria=criteria.criteria.splice(criteria.criteria.findIndex(x=>x.fieldName=="courseCode" && x.operator=="inContains"),1);
-                    criteria.criteria.push({fieldName: "courseCode", operator: "inSet", value: DynamicForm_CriteriaForm_JspUnitReport.getValue("courseCode").split(',').toArray()});
-                }
-
-                // if(DynamicForm_CriteriaForm_JspUnitReport.getValue("classStatus") !== undefined){
-                //     criteria.criteria=criteria.criteria.splice(criteria.criteria.findIndex(x=>x.fieldName=="classStatus" && x.operator=="inSet"),1);
-                //     criteria.criteria.push({fieldName: "classStatus", operator: "inSet", value: DynamicForm_CriteriaForm_JspUnitReport.getValue("classStatus")});
-                // }
-
-                if(DynamicForm_CriteriaForm_JspUnitReport.getValue("instituteId") !== undefined){
-
-                    criteria.criteria.push({fieldName: "instituteId", operator: "equals", value: DynamicForm_CriteriaForm_JspUnitReport.getValue("instituteId")});
-                }
-
-                criteria.criteria.push({fieldName: "studentLastName", operator: "iContains", value: "بازدار"});
-
-                //if (cr.length!=0)
-                //criteria.criteria = cr;
-
-                console.log(criteria);
 
                 ListGrid_JspUnitReport.invalidateCache();
-                //RestDataSource_JspUnitReport.implicitCriteria=[];
-                //RestDataSource_JspUnitReport.implicitCriteria = criteria;
-                ListGrid_JspUnitReport.fetchData(criteria);
+                ListGrid_JspUnitReport.fetchData(data_values);
                 Window_JspUnitReport.show();
             }
         }

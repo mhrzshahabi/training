@@ -97,6 +97,24 @@ public class MasterDataService implements IMasterDataService {
         }
     }
 
+    private interface PreReqProcess{
+
+        public String preCriteria(String criteria);
+    }
+
+    private class prePeapleProcess implements PreReqProcess{
+
+        @Override
+        public String preCriteria(String criteria) {
+            return  criteria.replace("id", "id")
+                    .replace("firstName", "people.firstName").replace("lastName", "people.lastName").replace("nationalCode", "people.nationalCode")
+                    .replace("personnelNo", "emNum10")
+                    .replace("postTitle", "post.title")
+                    .replace("ccpSection", "depTitle")
+                    .replace("ccpUnit", "incentiveDepTitle");
+        }
+    }
+
     private static String token = "";
 
     @Autowired
@@ -679,7 +697,7 @@ public class MasterDataService implements IMasterDataService {
 
                 ObjectMapper objectMapper = new ObjectMapper();
 
-                Map<String, String> parameters = prepareParameters(iscRq, objectMapper);
+                Map<String, String> parameters = prepareParameters(iscRq, objectMapper, null);
 
                 HttpURLConnection postConnection = createConnection("http://devapp01.icico.net.ir/master-data/api/v1/department/get/all", "POST", searchRq, parameters);
 
@@ -1326,7 +1344,7 @@ public class MasterDataService implements IMasterDataService {
         return tmp;
     }
 
-    private Map<String, String> prepareParameters(HttpServletRequest iscRq, ObjectMapper objectMapper) throws IOException {
+    private Map<String, String> prepareParameters(HttpServletRequest iscRq, ObjectMapper objectMapper, PreReqProcess preReqProcess) throws IOException {
         Map<String, String> map = new HashMap<>();
 
         String operator = iscRq.getParameter("operator");
@@ -1334,7 +1352,7 @@ public class MasterDataService implements IMasterDataService {
 
         String criteriaStr = iscRq.getParameter("criteria");
 
-        map.put("convertedCriteriaStr", convertCriteria(criteriaStr, objectMapper));
+        map.put("convertedCriteriaStr", convertCriteria(criteriaStr, objectMapper, preReqProcess));
 
         String sortBy = iscRq.getParameter("_sortBy") == null ? "" : "  \"sortBy\": \"" + iscRq.getParameter("_sortBy") + "\",\n";
         map.put("sortBy", sortBy);
@@ -1407,11 +1425,14 @@ public class MasterDataService implements IMasterDataService {
         return postConnection;
     }
 
-    private String convertCriteria(String criteriaStr, ObjectMapper objectMapper) throws IOException {
+    private String convertCriteria(String criteriaStr, ObjectMapper objectMapper, PreReqProcess preReqProcess) throws IOException {
         List<String> criteriaList = new ArrayList<>();
         String convertedCriteriaStr = "";
 
         if (criteriaStr != null && criteriaStr.compareTo("{}") != 0 && criteriaStr.compareTo("") != 0) {
+
+            criteriaStr = preReqProcess != null ? preReqProcess.preCriteria(criteriaStr) : criteriaStr;
+
             JsonNode jsonNode = objectMapper.readTree(criteriaStr);
 
             if (jsonNode.isArray()) {

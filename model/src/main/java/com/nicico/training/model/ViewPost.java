@@ -76,9 +76,15 @@ public class ViewPost extends Auditable {
     @ManyToMany(mappedBy = "postSet", fetch = FetchType.LAZY)
     private Set<PostGroup> postGroupSet;
 
+    @ManyToMany(mappedBy = "postSet", fetch = FetchType.LAZY)
+    private Set<TrainingPost> trainingPostSet;
+
     @Column(name = "d_last_modified_date_na")
     private Date lastModifiedDateNA;
 
     @Column(name = "c_modified_by_na")
     private String modifiedByNA;
+
+    @Column(name = "c_people_type")
+    private String peopleType;
 }

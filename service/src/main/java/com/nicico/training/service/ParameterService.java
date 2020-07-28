@@ -35,7 +35,9 @@ public class ParameterService extends BaseService<Parameter, Long, ParameterDTO.
         Parameter parameter = pByCode.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         List<ParameterValueDTO.Info> infos = modelMapper.map(parameter.getParameterValueList(), new TypeToken<List<ParameterValueDTO.Info>>() {
         }.getType());
-        return new TotalResponse<>(new GridResponse<>(infos));
+        GridResponse grid=new GridResponse<>(infos);
+        grid.setTotalRows(infos.size());
+        return new TotalResponse<>(grid);
     }
 
     //////////////////////////////////////////config//////////////////////////////////////////

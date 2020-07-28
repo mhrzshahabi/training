@@ -4,7 +4,9 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.dto.QuestionnaireDTO;
+import com.nicico.training.model.Questionnaire;
 import com.nicico.training.service.QuestionnaireService;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,12 @@ public class QuestionnaireRestController {
 
     private final QuestionnaireService questionnaireService;
     private final ModelMapper modelMapper;
+
+    @Loggable
+    @GetMapping("/isLocked/{id}")
+    public ResponseEntity<Boolean> isLocked(@PathVariable Long id) {
+        return new ResponseEntity<>(questionnaireService.isLocked(id), HttpStatus.OK);
+    }
 
     @Loggable
     @GetMapping("/list")
@@ -50,6 +58,12 @@ public class QuestionnaireRestController {
     }
 
     @Loggable
+    @PutMapping("/enable/{id}")
+    public ResponseEntity<QuestionnaireDTO.Info> updateStatus(@PathVariable Long id) {
+        return new ResponseEntity<>(questionnaireService.updateEnable(id), HttpStatus.OK);
+    }
+
+    @Loggable
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
         try {
@@ -59,4 +73,14 @@ public class QuestionnaireRestController {
         }
     }
 
+
+    @GetMapping("/getLastQuestionnarieId")
+    public ResponseEntity<Long> getLastQuestionnarieId(@RequestParam MultiValueMap<String, String> criteria) {
+        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
+        List<QuestionnaireDTO.Info> result = questionnaireService.search(nicicoCriteria).getResponse().getData();
+        Long res = null;
+        if(result.size() > 0)
+            res = result.get(0).getId();
+        return new ResponseEntity<>(res,HttpStatus.OK);
+    }
 }

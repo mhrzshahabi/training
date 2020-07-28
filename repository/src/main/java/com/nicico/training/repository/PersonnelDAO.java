@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +19,8 @@ public interface PersonnelDAO extends JpaRepository<Personnel, Long>, JpaSpecifi
 
     Personnel[] findByNationalCode(String nationalCode);
 
-    Personnel findByNationalCodeAndPersonnelNo(String nationalCode,String PersonnelNo);
+    @Query(value = "SELECT * FROM tbl_personnel where national_code = :national_code AND Personnel_No = :Personnel_No AND active = 1 AND employment_status_id=5 AND ROWNUM < 2", nativeQuery = true)
+    Personnel findByNationalCodeAndPersonnelNo(String national_code,String Personnel_No);
 
     List<Personnel> findOneByPostCode(String postCode);
 
@@ -49,9 +51,19 @@ public interface PersonnelDAO extends JpaRepository<Personnel, Long>, JpaSpecifi
 
     Personnel findPersonnelByPersonnelNo(String personnelNo);
 
+    Personnel findPersonnelById(Long personnelId);
+
     Optional<Personnel> findById(Long Id);
 
     @Query(value = "SELECT complex_title FROM tbl_personnel where national_code = :national_code AND active = 1 AND employment_status_id=5 AND ROWNUM < 2", nativeQuery = true)
     String getComplexTitleByNationalCode(String national_code);
+
+    @Transactional
+    @Query(value = "select CONCAT(CONCAT(first_name, ' '), last_name) from tbl_personnel p where p.ID = ?", nativeQuery = true)
+    String getPersonnelFullName(Long personnelID);
+
+    @Query(value = "SELECT MAX(ID) FROM tbl_personnel where PERSONNEL_NO = :PERSONNEL_NO AND active = 1 AND employment_status_id=5", nativeQuery = true)
+    Long getPersonnelIdByPersonnelNo(String PERSONNEL_NO);
+
 
 }

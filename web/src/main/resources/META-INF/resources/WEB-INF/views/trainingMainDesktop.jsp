@@ -749,6 +749,7 @@
     const postGroupUrl = rootUrl + "/post-group";
     const postGradeUrl = rootUrl + "/postGrade";
     const postUrl = rootUrl + "/post";
+    const trainingPostUrl = rootUrl + "/training-post";
     const competenceUrl = rootUrl + "/competence";
     const needAssessmentUrl = rootUrl + "/needAssessment";
     const skillUrl = rootUrl + "/skill";
@@ -791,6 +792,7 @@
     const viewJobGroupUrl = rootUrl + "/view-job-group";
     const viewPostGradeUrl = rootUrl + "/view-post-grade";
     const viewPostGradeGroupUrl = rootUrl + "/view-post-grade-group";
+    const viewTrainingPostUrl = rootUrl + "/view-training-post";
     const masterDataUrl = rootUrl + "/masterData";
     const viewEvaluationStaticalReportUrl = rootUrl + "/view-evaluation-statical-report";
     const viewTeacherReportUrl = rootUrl + "/view-teacher-report/";
@@ -804,6 +806,7 @@
     const departmentUrl = rootUrl + "/department";
     const viewClassDetailUrl = rootUrl + "/view-class-detail";
     const statisticsUnitReportUrl = rootUrl + "/ViewStatisticsUnitReport";
+    const questionBankUrl = rootUrl + "/question-bank";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -1328,7 +1331,7 @@
 
                 <sec:authorize access="hasAuthority('Menu_NeedAssessment_Post')">
                 {
-                    title: "<spring:message code="post"/>",
+                    title: "<spring:message code="post.individual"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/post/"/>");
                     }
@@ -1340,6 +1343,15 @@
                     title: "<spring:message code="post.group"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/post-group/"/>");
+                    }
+                },
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_NeedAssessment_Training_Post')">
+                {
+                    title: "<spring:message code="post"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/training-post"/>");
                     }
                 },
                 </sec:authorize>
@@ -1531,6 +1543,13 @@
                     }
                 },
                 </sec:authorize>
+
+                {
+                    title: "<spring:message code="evaluation.question.bank"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/evaluation-question-bank/show-form"/>");
+                    }
+                },
                 <%--{--%>
                 <%--title: "ثبت نتایج",--%>
                 <%--click: function () {--%>
@@ -1903,6 +1922,76 @@
     });
     </sec:authorize>
 
+
+<%--<sec:authorize access="hasAuthority('Menu_Securityeee')">--%>
+    jasperMenu = isc.ToolStripMenuButton.create({
+            title: "<span>" + isc.Canvas.imgHTML("<spring:url value="/static/img/pieces/report.png" />", 15, 15) + "&nbsp; </span>"+"<spring:message code="training.jasper.soft.server.title"/>",
+    menu: isc.Menu.create({
+        autoDraw: false,
+        showShadow: true,
+        shadowDepth: 10,
+        data: [
+<%--            <sec:authorize access="hasAuthority('V_JASPER_ADHOC_SHOW')">--%>
+            {
+                title: "<spring:message code="training.jasper.adhoc.show"/>", icon: "pieces/report.png",
+                click: function () {
+                    createTab("<spring:message code='training.jasper.adhoc.show'/>", "<spring:url value="/jasperSoft/adhocsShow"/>", false);
+                }
+            },
+<%--            </sec:authorize>--%>
+<%--            <sec:authorize access="hasAuthority('C_JASPER_ADHOC_CREATE')">--%>
+            {
+                title: "<spring:message code="training.jasper.adhoc.create"/>", icon: "pieces/report.png",
+                click: function () {
+                    createTab("<spring:message code='training.jasper.adhoc.create'/>", "<spring:url value="/jasperSoft/adhocCreate"/>", false);
+                }
+            },
+<%--            </sec:authorize>--%>
+<%--            <sec:authorize access="hasAuthority('V_JASPER_REPORT_LIST_SHOW')">--%>
+            {
+                title: "<spring:message code='training.jasper.report'/>", icon: "pieces/report.png",
+                click: function () {
+                    createTab("<spring:message code='training.jasper.report'/>", "<spring:url value="/jasperSoft/reports"/>", false);
+                }
+            },
+<%--            </sec:authorize>--%>
+<%--            <sec:authorize access="hasAuthority('V_JASPER_DASHBOARD_SHOW')">--%>
+            {
+                title: "<spring:message code='training.jasper.dashboard'/>", icon: "pieces/report.png",
+                click: function () {
+                    createTab("<spring:message code='training.jasper.dashboard'/>", "<spring:url value="/jasperSoft/dashboards"/>", false);
+                }
+            },
+<%--            </sec:authorize>--%>
+<%--            <sec:authorize access="hasAuthority('V_JASPER_REPORTBUILDER_MANAGEMENT')">--%>
+            {
+                title: "<spring:message code='training.jasper.report.builder.management'/>", icon: "pieces/report.png"
+                , submenu: [
+<%--                    <sec:authorize access="hasAuthority('V_JASPER_DATASOURCE_LINK')">--%>
+
+                    {
+                        title: "<spring:message code='training.jasper.dataSource'/>", icon: "pieces/report.png",
+                        click: function () {
+                            createTab("<spring:message code='training.jasper.dataSource'/>", "<spring:url value="/jasperSoft/dataSources"/>", false);
+                        }
+                    },
+<%--                    </sec:authorize>--%>
+<%--                    <sec:authorize access="hasAuthority('JASPER_DOMAINS_LINK')">--%>
+                    {
+                        title: "<spring:message code='training.jasper.domains'/>", icon: "pieces/report.png",
+                        click: function () {
+                            createTab("<spring:message code='training.jasper.domains'/>", "<spring:url value="/jasperSoft/domains"/>", false);
+                        }
+                    }
+<%--                    </sec:authorize>--%>
+                ]
+            }
+<%--            </sec:authorize>--%>
+        ]
+     })
+    });
+<%--    </sec:authorize>--%>
+
     <sec:authorize access="hasAuthority('Menu_Security')">
     securityTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="security"/>",
@@ -2045,6 +2134,10 @@
             <sec:authorize access="hasAuthority('Menu_Report')">
             reportTSMB,
             </sec:authorize>
+
+<%--            <sec:authorize access="hasAuthority('Menu_Report')">--%>
+            jasperMenu,
+<%--            </sec:authorize>--%>
 
             <sec:authorize access="hasAuthority('Menu_Security')">
             securityTSMB
@@ -2339,7 +2432,8 @@
             message = message ? message : "<spring:message code='in.operation'/>"
         }
         let dialog = isc.Dialog.create({
-            icon: type + '.png',
+            icon: type + (type === "wait" ? '.gif' : '.png'),
+            iconSize: "20",
             title: title ? title : "<spring:message code="message"/>",
             message: message,
         });

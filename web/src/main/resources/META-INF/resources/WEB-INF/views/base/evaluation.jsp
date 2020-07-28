@@ -42,14 +42,14 @@
                 {name: "tclassStatus"},
                 {name: "tclassEndingStatus"},
                 {name: "tclassPlanner"},
-                {name: "tclassSupervisor"},
                 {name: "termTitleFa"},
                 {name: "instituteTitleFa"},
                 {name: "classScoringMethod"},
                 {name: "classPreCourseTest"},
                 {name: "courseId"},
                 {name: "teacherEvalStatus"},
-                {name: "trainingEvalStatus"}
+                {name: "trainingEvalStatus"},
+                {name: "tclassSupervisor"}
             ],
             fetchDataURL: viewClassDetailUrl + "/iscList"
         });
@@ -382,7 +382,8 @@
                 {name: "courseId", hidden: true},
                 {name: "teacherId", hidden: true},
                 {name: "teacherEvalStatus", hidden: true},
-                {name: "trainingEvalStatus", hidden: true}
+                {name: "trainingEvalStatus", hidden: true},
+                {name: "tclassSupervisor", hidden: true}
             ],
             selectionUpdated: function () {
                 loadSelectedTab_data(Detail_Tab_Evaluation.getSelectedTab());
@@ -402,7 +403,6 @@
             width: "100%",
             membersMargin: 5,
             members: [
-                <sec:authorize access="hasAuthority('Evaluation_R')">
                 DynamicForm_Term_Filter_Evaluation,
                 isc.ToolStrip.create({
                     width: "5%",
@@ -412,7 +412,6 @@
                         ToolStripButton_Refresh_Evaluation
                     ]
                 })
-                </sec:authorize>
             ]
         });
 
@@ -422,38 +421,26 @@
             tabBarPosition: "top",
             enabled: false,
             tabs: [
-                <sec:authorize access="hasAuthority('Evaluation_Reaction')">
                 {
                     id: "TabPane_Reaction",
                     title: "<spring:message code="evaluation.reaction"/>",
                     pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation/reaction-evaluation-form"})
-                }
-                ,
-                </sec:authorize>
-
-                <sec:authorize access="hasAuthority('Evaluation_Learning')">
+                },
                 {
                     id: "TabPane_Learning",
                     title: "یادگیری-ثبت نمرات پیش آزمون",
                     pane: isc.ViewLoader.create({autoDraw: true, viewURL: "registerScorePreTest/show-form"})
                 },
-                </sec:authorize>
-
-                <sec:authorize access="hasAuthority('Evaluation_Behavior')">
                 {
                     id: "TabPane_Behavior",
                     title: "<spring:message code="evaluation.behavioral"/>",
                     pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation/behavioral-evaluation-form"})
                 },
-                </sec:authorize>
-
-                <sec:authorize access="hasAuthority('Evaluation_Results')">
                 {
                     id: "TabPane_Results",
                     title: "<spring:message code="evaluation.results"/>",
                     pane: null
                 }
-                </sec:authorize>
             ],
             tabSelected: function (tabNum, tabPane, ID, tab, name) {
                 if (isc.Page.isLoaded())
@@ -504,6 +491,37 @@
                         ListGrid_student_RE.fetchData();
                         DynamicForm_ReturnDate_RE.clearValues();
                         classRecord_RE = classRecord;
+                        if (classRecord.trainingEvalStatus == 0 ||
+                                classRecord.trainingEvalStatus == undefined ||
+                                    classRecord.trainingEvalStatus == null) {
+                            ToolStrip_SendForms_RE.getField("sendButtonTraining").disableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("registerButtonTraining").disableIcon("ok");
+                        }
+                        else if(classRecord.trainingEvalStatus == 1){
+                            ToolStrip_SendForms_RE.getField("sendButtonTraining").enableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("registerButtonTraining").disableIcon("ok");
+                        }
+                        else{
+                            ToolStrip_SendForms_RE.getField("sendButtonTraining").enableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("registerButtonTraining").enableIcon("ok");
+                        }
+
+                        if (classRecord.teacherEvalStatus == 0 ||
+                            classRecord.teacherEvalStatus == undefined ||
+                            classRecord.teacherEvalStatus == null) {
+                            ToolStrip_SendForms_RE.getField("sendButtonTeacher").disableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("registerButtonTeacher").disableIcon("ok");
+                        }
+                        else if(classRecord.teacherEvalStatus == 1){
+                            ToolStrip_SendForms_RE.getField("sendButtonTeacher").enableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("registerButtonTeacher").disableIcon("ok");
+                        }
+                        else{
+                            ToolStrip_SendForms_RE.getField("sendButtonTeacher").enableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("registerButtonTeacher").enableIcon("ok");
+                        }
+                        ToolStrip_SendForms_RE.redraw();
+
                         break;
                     }
                     case "TabPane_Learning": {
@@ -557,9 +575,7 @@
             }
 
             Detail_Tab_Evaluation.disableTab(1);
-            Detail_Tab_Evaluation.disableTab(2);
             Detail_Tab_Evaluation.disableTab(3);
-
         }
 
         function load_term_by_year(value) {

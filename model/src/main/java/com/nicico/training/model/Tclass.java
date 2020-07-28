@@ -173,7 +173,9 @@ public class Tclass extends Auditable {
     @Transient
     public List<Long> getTrainingPlaceIds() {
         List<Long> ids = new ArrayList<>();
-        trainingPlaceSet.forEach(c -> ids.add(c.getId()));
+        if(trainingPlaceSet != null) {
+            trainingPlaceSet.forEach(c -> ids.add(c.getId()));
+        }
         return ids;
     }
 
