@@ -306,18 +306,26 @@ public class ExportToFileController {
                 Long jobGroup = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
                 searchRq.getCriteria().getCriteria().remove(0);
                 List<JobDTO.Info> jobs = jobGroupService.getJobs(jobGroup);
-                SearchDTO.SearchRq coustomSearchRq = ISC.convertToSearchRq(req, jobs.stream().map(JobDTO.Info::getCode).collect(Collectors.toList()), "jobNo", EOperator.inSet);
-                coustomSearchRq.getCriteria().getCriteria().add(makeNewCriteria("active", 1, EOperator.equals, null));
-                coustomSearchRq.getCriteria().getCriteria().add(makeNewCriteria("employmentStatusId", 5, EOperator.equals, null));
-                generalList = (List<Object>)((Object) personnelService.search(coustomSearchRq).getList());
+                if (!jobs.isEmpty()) {
+                    SearchDTO.SearchRq coustomSearchRq = ISC.convertToSearchRq(req, jobs.stream().map(JobDTO.Info::getCode).collect(Collectors.toList()), "jobNo", EOperator.inSet);
+                    coustomSearchRq.getCriteria().getCriteria().add(makeNewCriteria("active", 1, EOperator.equals, null));
+                    coustomSearchRq.getCriteria().getCriteria().add(makeNewCriteria("employmentStatusId", 5, EOperator.equals, null));
+                    coustomSearchRq.setCount(searchRq.getCount());
+                    generalList = (List<Object>)((Object) personnelService.search(coustomSearchRq).getList());
+                }else
+                    generalList = new ArrayList<>(0);
                 break;
 
             case "Job_Group_Post":
                 Long jobGroup1 = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
                 searchRq.getCriteria().getCriteria().remove(0);
                 List<JobDTO.Info> jobs1 = jobGroupService.getJobs(jobGroup1);
-                SearchDTO.SearchRq coustomSearchRq1 = ISC.convertToSearchRq(req, jobs1.stream().map(JobDTO.Info::getId).collect(Collectors.toList()), "job", EOperator.inSet);
-                generalList = (List<Object>)((Object) postService.searchWithoutPermission(coustomSearchRq1).getList());
+                if (!jobs1.isEmpty()) {
+                    SearchDTO.SearchRq coustomSearchRq1 = ISC.convertToSearchRq(req, jobs1.stream().map(JobDTO.Info::getId).collect(Collectors.toList()), "job", EOperator.inSet);
+                    coustomSearchRq1.setCount(searchRq.getCount());
+                    generalList = (List<Object>)((Object) postService.searchWithoutPermission(coustomSearchRq1).getList());
+                }else
+                    generalList = new ArrayList<>(0);
                 break;
 
             case "View_Post_Grade_Group":
