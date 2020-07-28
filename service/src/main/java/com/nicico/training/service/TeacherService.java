@@ -183,7 +183,7 @@ public class TeacherService implements ITeacherService {
 
     @Transactional(readOnly = true)
     @Override
-    public SearchDTO.SearchRs<TeacherDTO.Info> deepSearch(SearchDTO.SearchRq request) {
+    public SearchDTO.SearchRs<TeacherDTO.Info> deepSearch(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException {
 
         SearchDTO.CriteriaRq criteriaRq = makeNewCriteria("inBlackList", false, EOperator.equals, null);
 
@@ -199,8 +199,7 @@ public class TeacherService implements ITeacherService {
             request.setCriteria(criteriaRq);
 
 
-        SearchDTO.SearchRs<TeacherDTO.Info> searchRs = SearchUtil.search(teacherDAO, request, needAssessment -> modelMapper.map(needAssessment,
-                TeacherDTO.Info.class));
+        SearchDTO.SearchRs<TeacherDTO.Info> searchRs = BaseService.<Teacher, TeacherDTO.Info, TeacherDAO>optimizedSearch(teacherDAO, p->modelMapper.map(p, TeacherDTO.Info.class), request);
 
         return searchRs;
     }

@@ -37,7 +37,7 @@ public interface TeacherDAO extends JpaRepository<Teacher, Long>, JpaSpecificati
     List<Teacher> findByCategories_IdAndPersonality_EducationLevel_CodeGreaterThanEqualAndInBlackList(Long id, Integer code, Boolean inBlackList);
 //    List<Teacher> findTeachersBy
 
-    @EntityGraph(attributePaths = {"subCategories","categories","personality","personality.contactInfo","personality.educationLevel","personality.educationMajor"})
+    @EntityGraph(attributePaths = {"subCategories","categories","personality","personality.contactInfo","personality.educationLevel","personality.educationMajor","personality.contactInfo.homeAddress","personality.contactInfo.workAddress"})
     @Override
     List<Teacher> findAll(@Nullable Specification<Teacher> var1);
 

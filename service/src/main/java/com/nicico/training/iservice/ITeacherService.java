@@ -38,7 +38,7 @@ public interface ITeacherService {
     @Transactional(readOnly = true)
     SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> fullNameSearchFilter(SearchDTO.SearchRq request);
 
-    SearchDTO.SearchRs<TeacherDTO.Info> deepSearch(SearchDTO.SearchRq request);
+    SearchDTO.SearchRs<TeacherDTO.Info> deepSearch(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException;
 
     SearchDTO.SearchRs<TeacherDTO.Grid> deepSearchGrid(SearchDTO.SearchRq request);
 

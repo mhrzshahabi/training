@@ -136,6 +136,10 @@ public class EvaluationService implements IEvaluationService {
             updateQuestionnarieInfo(evaluation.getQuestionnaireId());
             updateTclassInfo(evaluation.getClassId(),-1, 1);
         }
+        else if(evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(230L)) {
+            List<EvaluationAnswer> list = createEvaluationAnswers(saved);
+            saved.setEvaluationAnswerList(list);
+        }
         return modelMapper.map(saved, EvaluationDTO.Info.class);
     }
 
@@ -234,7 +238,10 @@ public class EvaluationService implements IEvaluationService {
     @Transactional
     public EvaluationDTO.Info getEvaluationByData(Long questionnaireTypeId, Long classId, Long evaluatorId, Long evaluatorTypeId, Long evaluatedId, Long evaluatedTypeId, Long evaluationLevelId) {
         final Evaluation evaluation = evaluationDAO.findFirstByQuestionnaireTypeIdAndClassIdAndEvaluatorIdAndEvaluatorTypeIdAndEvaluatedIdAndEvaluatedTypeIdAndEvaluationLevelId(questionnaireTypeId, classId, evaluatorId, evaluatorTypeId, evaluatedId, evaluatedTypeId, evaluationLevelId);
-        return modelMapper.map(evaluation,EvaluationDTO.Info.class);
+        if(evaluation == null)
+            return null;
+        else
+            return modelMapper.map(evaluation,EvaluationDTO.Info.class);
     }
 
     @Transactional
@@ -248,35 +255,38 @@ public class EvaluationService implements IEvaluationService {
                 Long.parseLong(req.get("evaluatedTypeId").toString()),
                 Long.parseLong(req.get("evaluationLevelId").toString()));
 
-        List<EvaluationAnswerDTO.EvaluationAnswerFullData> result = new ArrayList<>();
+        if(evaluation != null) {
+            List<EvaluationAnswerDTO.EvaluationAnswerFullData> result = new ArrayList<>();
 
+            for (EvaluationAnswerDTO.Info evaluationAnswerDTO : evaluation.getEvaluationAnswerList()) {
+                EvaluationAnswerDTO.EvaluationAnswerFullData evaluationAnswerFullData = new EvaluationAnswerDTO.EvaluationAnswerFullData();
+                evaluationAnswerFullData.setId(evaluationAnswerDTO.getId());
+                evaluationAnswerFullData.setEvaluationId(evaluationAnswerDTO.getEvaluationId());
+                evaluationAnswerFullData.setEvaluationQuestionId(evaluationAnswerDTO.getEvaluationQuestionId());
+                evaluationAnswerFullData.setQuestionSourceId(evaluationAnswerDTO.getQuestionSourceId());
+                evaluationAnswerFullData.setAnswerId(evaluationAnswerDTO.getAnswerId());
+                evaluationAnswerFullData.setDescription(evaluation.getDescription());
 
-        for (EvaluationAnswerDTO.Info evaluationAnswerDTO : evaluation.getEvaluationAnswerList()) {
-            EvaluationAnswerDTO.EvaluationAnswerFullData evaluationAnswerFullData = new EvaluationAnswerDTO.EvaluationAnswerFullData();
-            evaluationAnswerFullData.setId(evaluationAnswerDTO.getId());
-            evaluationAnswerFullData.setEvaluationId(evaluationAnswerDTO.getEvaluationId());
-            evaluationAnswerFullData.setEvaluationQuestionId(evaluationAnswerDTO.getEvaluationQuestionId());
-            evaluationAnswerFullData.setQuestionSourceId(evaluationAnswerDTO.getQuestionSourceId());
-            evaluationAnswerFullData.setAnswerId(evaluationAnswerDTO.getAnswerId());
-            evaluationAnswerFullData.setDescription(evaluation.getDescription());
+                if (evaluationAnswerFullData.getQuestionSourceId().equals(199L)) {
+                    QuestionnaireQuestion questionnaireQuestion = questionnaireQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
+                    evaluationAnswerFullData.setOrder(questionnaireQuestion.getOrder());
+                    evaluationAnswerFullData.setWeight(questionnaireQuestion.getWeight());
+                    evaluationAnswerFullData.setQuestion(questionnaireQuestion.getEvaluationQuestion().getQuestion());
+                    evaluationAnswerFullData.setDomainId(questionnaireQuestion.getEvaluationQuestion().getDomainId());
+                } else if (evaluationAnswerFullData.getQuestionSourceId().equals(200L) || evaluationAnswerFullData.getQuestionSourceId().equals(201L)) {
+                    DynamicQuestion dynamicQuestion = dynamicQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
+                    evaluationAnswerFullData.setOrder(dynamicQuestion.getOrder());
+                    evaluationAnswerFullData.setWeight(dynamicQuestion.getWeight());
+                    evaluationAnswerFullData.setQuestion(dynamicQuestion.getQuestion());
+                }
 
-            if(evaluationAnswerFullData.getQuestionSourceId().equals(199L)){
-                QuestionnaireQuestion questionnaireQuestion = questionnaireQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
-                evaluationAnswerFullData.setOrder(questionnaireQuestion.getOrder());
-                evaluationAnswerFullData.setWeight(questionnaireQuestion.getWeight());
-                evaluationAnswerFullData.setQuestion(questionnaireQuestion.getEvaluationQuestion().getQuestion());
-                evaluationAnswerFullData.setDomainId(questionnaireQuestion.getEvaluationQuestion().getDomainId());
+                result.add(evaluationAnswerFullData);
             }
-            else  if(evaluationAnswerFullData.getQuestionSourceId().equals(200L) || evaluationAnswerFullData.getQuestionSourceId().equals(201L)){
-                DynamicQuestion dynamicQuestion = dynamicQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
-                evaluationAnswerFullData.setOrder(dynamicQuestion.getOrder());
-                evaluationAnswerFullData.setWeight(dynamicQuestion.getWeight());
-                evaluationAnswerFullData.setQuestion(dynamicQuestion.getQuestion());
-            }
-
-            result.add(evaluationAnswerFullData);
+            return result;
         }
-        return result;
+        else
+            return null;
+
     }
 
     @Transactional
@@ -297,7 +307,8 @@ public class EvaluationService implements IEvaluationService {
         else if(req.get("questionnaireTypeId").toString().equals("140"))
             updateTclassInfo(Long.parseLong(req.get("classId").toString()),-1, 0);
         evaluationDAO.deleteById(evaluation.getId());
-        updateQuestionnarieInfo(evaluation.getQuestionnaireId());
+        if(evaluation.getQuestionnaireId() != null)
+            updateQuestionnarieInfo(evaluation.getQuestionnaireId());
     }
 
     //----------------------------------------------- evaluation updating ----------------------------------------------
@@ -412,6 +423,56 @@ public class EvaluationService implements IEvaluationService {
                 evaluationAnswerCreate.setEvaluationId(evaluation.getId());
                 evaluationAnswerCreate.setQuestionSourceId(199L);
                 evaluationAnswerCreate.setEvaluationQuestionId(questionnaireQuestion.getId());
+                evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate,EvaluationAnswer.class));
+            }
+        }
+        else if(evaluation.getQuestionnaireTypeId().equals(230L)){
+            Optional<Tclass> byId = tclassDAO.findById(evaluation.getClassId());
+            Tclass tclass = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+            for (Goal goal : tclass.getCourse().getGoalSet()) {
+                String Question = getGoalQuestion(goal.getId());
+                Long type = 201L;
+                DynamicQuestionDTO.Info dynamicQuestion;
+                List<DynamicQuestion> list = dynamicQuestionDAO.findByQuestionAndTypeId(Question,type);
+                if(list != null && list.size() >0){
+                    dynamicQuestion = modelMapper.map(list.get(0),DynamicQuestionDTO.Info.class);
+                }
+                else{
+                    DynamicQuestionDTO.Info dynamicQuestionCreate = new DynamicQuestionDTO.Info();
+                    dynamicQuestionCreate.setOrder(1);
+                    dynamicQuestionCreate.setQuestion(Question);
+                    dynamicQuestionCreate.setTypeId(type);
+                    dynamicQuestionCreate.setWeight(1);
+                    dynamicQuestion = dynamicQuestionService.create(dynamicQuestionCreate);
+                }
+                EvaluationAnswerDTO.Create evaluationAnswerCreate = new EvaluationAnswerDTO.Create();
+                evaluationAnswerCreate.setEvaluationId(evaluation.getId());
+                evaluationAnswerCreate.setQuestionSourceId(type);
+                evaluationAnswerCreate.setEvaluationQuestionId(dynamicQuestion.getId());
+                evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate,EvaluationAnswer.class));
+            }
+
+            for(Skill skill : tclass.getCourse().getSkillSet()){
+                String Question = getSkillQuestion(skill.getId());
+                Long type = 200L;
+                DynamicQuestionDTO.Info dynamicQuestion;
+                List<DynamicQuestion> list = dynamicQuestionDAO.findByQuestionAndTypeId(Question,type);
+                if(list != null && list.size() >0){
+                    dynamicQuestion = modelMapper.map(list.get(0),DynamicQuestionDTO.Info.class);
+                }
+                else{
+                    DynamicQuestionDTO.Info dynamicQuestionCreate = new DynamicQuestionDTO.Info();
+                    dynamicQuestionCreate.setOrder(1);
+                    dynamicQuestionCreate.setQuestion(Question);
+                    dynamicQuestionCreate.setTypeId(type);
+                    dynamicQuestionCreate.setWeight(1);
+                    dynamicQuestion = dynamicQuestionService.create(dynamicQuestionCreate);
+                }
+                EvaluationAnswerDTO.Create evaluationAnswerCreate = new EvaluationAnswerDTO.Create();
+                evaluationAnswerCreate.setEvaluationId(evaluation.getId());
+                evaluationAnswerCreate.setQuestionSourceId(type);
+                evaluationAnswerCreate.setEvaluationQuestionId(dynamicQuestion.getId());
                 evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate,EvaluationAnswer.class));
             }
         }

@@ -24,6 +24,7 @@
     <SCRIPT SRC=isomorphic/system/modules/ISC_Charts.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Analytics.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_FileLoader.js></SCRIPT>
+    <script src="isomorphic/system/modules/ISC_RichTextEditor.js"></script>
     <SCRIPT SRC=isomorphic/skins/Nicico/load_skin.js></SCRIPT>
     <SCRIPT SRC=isomorphic/locales/frameworkMessages_fa.properties></SCRIPT>
     <!-- ---------------------------------------- Not Ok - Start ---------------------------------------- -->
@@ -1922,6 +1923,76 @@
     });
     </sec:authorize>
 
+
+<%--<sec:authorize access="hasAuthority('Menu_Securityeee')">--%>
+    jasperMenu = isc.ToolStripMenuButton.create({
+            title: "<span>" + isc.Canvas.imgHTML("<spring:url value="/static/img/pieces/report.png" />", 15, 15) + "&nbsp; </span>"+"<spring:message code="training.jasper.soft.server.title"/>",
+    menu: isc.Menu.create({
+        autoDraw: false,
+        showShadow: true,
+        shadowDepth: 10,
+        data: [
+<%--            <sec:authorize access="hasAuthority('V_JASPER_ADHOC_SHOW')">--%>
+            {
+                title: "<spring:message code="training.jasper.adhoc.show"/>", icon: "pieces/report.png",
+                click: function () {
+                    createTab("<spring:message code='training.jasper.adhoc.show'/>", "<spring:url value="/jasperSoft/adhocsShow"/>", false);
+                }
+            },
+<%--            </sec:authorize>--%>
+<%--            <sec:authorize access="hasAuthority('C_JASPER_ADHOC_CREATE')">--%>
+            {
+                title: "<spring:message code="training.jasper.adhoc.create"/>", icon: "pieces/report.png",
+                click: function () {
+                    createTab("<spring:message code='training.jasper.adhoc.create'/>", "<spring:url value="/jasperSoft/adhocCreate"/>", false);
+                }
+            },
+<%--            </sec:authorize>--%>
+<%--            <sec:authorize access="hasAuthority('V_JASPER_REPORT_LIST_SHOW')">--%>
+            {
+                title: "<spring:message code='training.jasper.report'/>", icon: "pieces/report.png",
+                click: function () {
+                    createTab("<spring:message code='training.jasper.report'/>", "<spring:url value="/jasperSoft/reports"/>", false);
+                }
+            },
+<%--            </sec:authorize>--%>
+<%--            <sec:authorize access="hasAuthority('V_JASPER_DASHBOARD_SHOW')">--%>
+            {
+                title: "<spring:message code='training.jasper.dashboard'/>", icon: "pieces/report.png",
+                click: function () {
+                    createTab("<spring:message code='training.jasper.dashboard'/>", "<spring:url value="/jasperSoft/dashboards"/>", false);
+                }
+            },
+<%--            </sec:authorize>--%>
+<%--            <sec:authorize access="hasAuthority('V_JASPER_REPORTBUILDER_MANAGEMENT')">--%>
+            {
+                title: "<spring:message code='training.jasper.report.builder.management'/>", icon: "pieces/report.png"
+                , submenu: [
+<%--                    <sec:authorize access="hasAuthority('V_JASPER_DATASOURCE_LINK')">--%>
+
+                    {
+                        title: "<spring:message code='training.jasper.dataSource'/>", icon: "pieces/report.png",
+                        click: function () {
+                            createTab("<spring:message code='training.jasper.dataSource'/>", "<spring:url value="/jasperSoft/dataSources"/>", false);
+                        }
+                    },
+<%--                    </sec:authorize>--%>
+<%--                    <sec:authorize access="hasAuthority('JASPER_DOMAINS_LINK')">--%>
+                    {
+                        title: "<spring:message code='training.jasper.domains'/>", icon: "pieces/report.png",
+                        click: function () {
+                            createTab("<spring:message code='training.jasper.domains'/>", "<spring:url value="/jasperSoft/domains"/>", false);
+                        }
+                    }
+<%--                    </sec:authorize>--%>
+                ]
+            }
+<%--            </sec:authorize>--%>
+        ]
+     })
+    });
+<%--    </sec:authorize>--%>
+
     <sec:authorize access="hasAuthority('Menu_Security')">
     securityTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="security"/>",
@@ -2064,6 +2135,10 @@
             <sec:authorize access="hasAuthority('Menu_Report')">
             reportTSMB,
             </sec:authorize>
+
+<%--            <sec:authorize access="hasAuthority('Menu_Report')">--%>
+            jasperMenu,
+<%--            </sec:authorize>--%>
 
             <sec:authorize access="hasAuthority('Menu_Security')">
             securityTSMB
@@ -2441,6 +2516,7 @@
         } else {
             let respCode = resp.httpResponseCode;
             if (respCode === 200 || respCode === 201) {
+                isDelete_questionnaire=true;
                 selectedState = "[{id:" + JSON.parse(resp.data).id + "}]";
                 let entityTitle = JSON.parse(resp.httpResponseText).title;
                 msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\' &nbsp;' + "<spring:message code="msg.successfully.done"/>";

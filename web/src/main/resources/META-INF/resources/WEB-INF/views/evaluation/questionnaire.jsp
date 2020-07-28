@@ -7,6 +7,8 @@
     let questionnaireMethod_questionnaire;
     let questionnaireQuestionMethod_questionnaire;
     let waitQuestionnaire;
+    var isDelete_questionnaire=false;
+
     // ------------------------------------------- Menu -------------------------------------------
     isc.Menu.create({
         ID: "QuestionnaireMenu_questionnaire",
@@ -165,7 +167,13 @@
         {name:"id",primaryKey:true,hidden:true},
         {name:"title",title:"<spring:message code="title"/>",required:true,filterOperator:"iContains",autoFitWidth: true}
     ],
-     fetchDataURL: parameterValueUrl + "/iscList/143",
+        cacheAllData: true,
+        fetchDataURL: parameterValueUrl + "/iscList/143",
+        implicitCriteria: {
+            _constructor:"AdvancedCriteria",
+            operator:"and",
+            criteria:[{ fieldName: "id", operator: "inSet", value: ["140","139","141"]}]
+        }
     });
 
     QuestionnaireLG_questionnaire = isc.TrLG.create({
@@ -186,7 +194,7 @@
         recordDoubleClick: function () { editQuestionnaire_questionnaire(); },
         </sec:authorize>
         <sec:authorize access="hasAuthority('QuestionnaireQuestion_R')">
-        selectionUpdated: function (record) { refreshQuestionnaireQuestionLG_questionnaire(); },
+        selectionUpdated: function (record) {refreshQuestionnaireQuestionLG_questionnaire(); },
         </sec:authorize>
         getCellCSSText: function (record) {
             if (record.eenabled == 74)
@@ -194,6 +202,13 @@
             else
                 return "color:#153560; font-size: 13px;";
         },
+        dataArrived:function (startRow, endRow, data) {
+
+            if (isDelete_questionnaire){
+                QuestionnaireQuestionLG_questionnaire.setData([]);
+                isDelete_questionnaire=false;
+            }
+        }
     });
 
     QuestionnaireQuestionDS_questionnaire = isc.TrDS.create({
@@ -373,6 +388,8 @@
                     }
 
                     removeRecord(questionnaireUrl + "/" + record.id, entityType, record.title, 'QuestionnaireLG_questionnaire');
+
+
                 })
             );
 

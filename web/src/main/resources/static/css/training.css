@@ -135,3 +135,273 @@ span {
     display: block;
     height: 50%
 }
+
+
+
+/*-----------------------------------------------------MESSENGER---------------------------------------------------*/
+
+
+
+
+.MSG-select-icon::after {
+    content: '';
+    position: absolute;
+    display: block;
+    width: 72px;
+    top: 7px;
+    left: 0px;
+    height: 70px;
+    border: solid 5px #fe9d2a;
+    border-radius: 10px;
+    right: 9px;
+    z-index: -1;
+    box-shadow: 1px 1px 2px -1px rgba(140, 140, 140, 0.77);
+}
+
+.MSG-htmlFlow{
+    word-wrap: break-word;
+    text-align: right;
+    padding: 10px;
+    font-size: 12px;
+    color: #324458;
+    background-color: #e8e8e8;
+    font-family: BYekan;
+    font-weight: normal;
+    line-height: 19px;
+    z-index: -1 !important;
+}
+
+/* tool strip button */
+.MSG-btn-orange,
+.MSG-btn-orangeOver,
+.MSG-btn-orangeFocused,
+.MSG-btn-orangeFocusedOver,
+.MSG-btn-orangeDown,
+.MSG-btn-orangeFocusedDown,
+.MSG-btn-orangeSelected,
+.MSG-btn-orangeSelectedFocused,
+.MSG-btn-orangeSelectedDown,
+.MSG-btn-orangeSelectedFocusedDown,
+.MSG-btn-orangeSelectedOver,
+.MSG-btn-orangeSelectedFocusedOver,
+.MSG-btn-orangeDisabled,
+.MSG-btn-orangeSelectedDisabled,
+.MSG-btn-orangeOpened,
+.MSG-btn-orangeOverOpened,
+.MSG-btn-orangeDownOpened,
+.MSG-btn-orangeFocusedOpened,
+.MSG-btn-orangeFocusedDownOpened,
+.MSG-btn-orangeFocusedOverOpened,
+.MSG-btn-orangeSelectedOpened,
+.MSG-btn-orangeSelectedDownOpened,
+.MSG-btn-orangeSelectedOverOpened {
+    border: 1px solid transparent;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    border-radius: 0px;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 3px 4px 3px 4px;
+    border-radius: 5px;
+    background-color: #fe9d2a;
+    border: solid 1px #fe9d2a;
+}
+
+
+.MSG-btn-white,
+.MSG-btn-whiteOver,
+.MSG-btn-whiteFocused,
+.MSG-btn-whiteFocusedOver,
+.MSG-btn-whiteDown,
+.MSG-btn-whiteFocusedDown,
+.MSG-btn-whiteSelected,
+.MSG-btn-whiteSelectedFocused,
+.MSG-btn-whiteSelectedDown,
+.MSG-btn-whiteSelectedFocusedDown,
+.MSG-btn-whiteSelectedOver,
+.MSG-btn-whiteSelectedFocusedOver,
+.MSG-btn-whiteDisabled,
+.MSG-btn-whiteSelectedDisabled,
+.MSG-btn-whiteOpened,
+.MSG-btn-whiteOverOpened,
+.MSG-btn-whiteDownOpened,
+.MSG-btn-whiteFocusedOpened,
+.MSG-btn-whiteFocusedDownOpened,
+.MSG-btn-whiteFocusedOverOpened,
+.MSG-btn-whiteSelectedOpened,
+.MSG-btn-whiteSelectedDownOpened,
+.MSG-btn-whiteSelectedOverOpened {
+    border: 1px solid transparent;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    border-radius: 0px;
+    color: #fe9d2a;
+    font-size: 11px;
+    padding: 3px 4px 3px 4px;
+    border-radius: 5px;
+    font-weight: bold;
+    background-color: white;
+    border: solid 1px #fe9d2a;
+}
+
+
+
+.MSG-sections{
+   // background-color: #cccccc;
+}
+.MSG-sections  div{
+    box-shadow: none !important;
+}
+.MSG-sections > table{
+    border: solid 1px #eaeaea !important;
+}
+.MSG-sections .sectionHeaderclosed{
+    background-color: #ffffff;
+    border-radius: 5px !important;
+}
+.sectionHeaderclosed img , .sectionHeaderopened img{
+    display: none;
+}
+.sectionHeaderclosed div , .sectionHeaderopened div{
+   margin-right: 0px !important;
+}
+.sectionHeaderopened, .sectionHeaderclosed{
+    box-shadow: none !important;
+    border: solid 1px #dadada !important;
+}
+.MSG-attach-container{
+    position: relative;
+    background-color: #324458;
+    border-radius: 5px;
+    padding: 8px 24px;
+    color: white;
+    font-weight: bold;
+    max-width: 100%;
+}
+.MSG-attach-remove{
+    width: 12px;
+    height: 12px;
+    position: absolute;
+    right: 9px;
+}
+.MSG-attach-assign{
+    width: 12px;
+    height: 20px;
+    position: absolute;
+    left: 4px;
+    top: -6px;
+}
+.MSG-uploadButton{
+    text-align: center;
+    display: flex;
+    justify-content: flex-end;
+}
+
+#MSG-file-upload  {
+    display: none;
+}
+.MSG-custom-file-upload {
+    cursor: pointer;
+    font-size: 12px;
+    padding: 0px 18px 7px 6px;
+    border-radius: 3px;
+    //border: solid 1px #fe9d2a;
+    font-weight: bold;
+    color: #fe9d2a;
+    background: none;
+    //box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+}
+.MSG-custom-file-upload img {
+    margin-left: 5px;
+    width: 12px;
+}
+.MSG-type-label{
+    color: #374b71;
+}
+.MSG-btn-send{
+    font-weight: bold;
+}
+.MSG-RichTextEditor{
+    text-align: right;
+    direction: rtl;
+    border: solid 1px #d6d6d6;
+    border-radius: 10px;
+    box-shadow: 0px 0px 4px -1px rgba(0, 0, 0, 0.2);
+}
+.MSG-RichTextEditor iframe #document html body{
+    background-color: red;
+}
+.MSG-type-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    height: 100%;
+}
+.MSG-type-container img {
+    width: 80px;
+    height: 80px;
+}
+.MSG-type-container span {
+    color: #374b71;
+    margin-top: 7px;
+}
+.MSG-type-container:hover span{
+    font-weight: bold;
+    color: #fe9d2a;
+}
+.MSG-select-icon span{
+    color: #fe9d2a;
+    font-weight: bold;
+}
+.MSG_contentEditor iframe html body{
+    text-align: right;
+    direction: rtl;
+}
+.MSG-attach-container span {
+    overflow: auto;
+}
+.selectItemLiteControl,
+.selectItemLiteControlRTL,
+.selectItemLiteControlOver,
+.selectItemLiteControlOverRTL,
+.selectItemLiteControlFocused,
+.selectItemLiteControlFocusedRTL,
+.selectItemLiteControlFocusedOver,
+.selectItemLiteControlFocusedOverRTL,
+.selectItemLiteControlDisabled,
+.selectItemLiteControlDisabledRTL,
+.selectItemLiteControlError,
+.selectItemLiteControlErrorRTL,
+.selectItemLiteControlErrorOver,
+.selectItemLiteControlErrorOverRTL,
+.selectItemLiteControlErrorFocused,
+.selectItemLiteControlErrorFocusedRTL,
+.selectItemLiteControlErrorFocusedOver,
+.selectItemLiteControlErrorFocusedOverRTL,
+.selectItemLiteControlPending,
+.selectItemLiteControlPendingRTL,
+.selectItemLiteControlPendingOver,
+.selectItemLiteControlPendingOverRTL,
+.selectItemLiteControlPendingFocused,
+.selectItemLiteControlPendingFocusedRTL,
+.selectItemLiteControlPendingFocusedOver,
+.selectItemLiteControlPendingFocusedOverRTL,
+.selectItemLiteControlPendingDisabled,
+.selectItemLiteControlPendingDisabledRTL,
+.selectItemLiteControlPendingError,
+.selectItemLiteControlPendingErrorRTL,
+.selectItemLiteControlHint,
+.selectItemLiteControlHintRTL,
+.selectItemLiteControlDisabledHint,
+.selectItemLiteControlDisabledHintRTL{
+    border-radius: 5px;
+}
+

@@ -9,7 +9,8 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 // <script>
-    wait.show();
+    {
+    wait.show()
     var etcTargetSociety = [];
     var singleTargetScoiety = [];
     var classMethod = "POST";
@@ -19,6 +20,7 @@
     var endDateCheck = true;
     var isReadOnlyClass = true;
     var societies = [];
+    let oLoadAttachments_class=null;
     let OJT = false;
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -629,7 +631,6 @@
                         form.getItem("preCourseTest").hide();
                     } else
                         form.getItem("preCourseTest").show();
-                    form.setValue("erunType", item.getSelectedRecord().erunType);
                 },
                 click : function(form){
                     Window_AddCourse_JspClass.show();
@@ -2400,7 +2401,7 @@
             {
                 ID: "classAttachmentsTab",
                 title: "<spring:message code="attachments"/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})
+               // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})
             },
             </sec:authorize>
 
@@ -2461,6 +2462,16 @@
         }
     });
 
+<sec:authorize access="hasAuthority('TclassAttachmentsTab')">
+    if (!loadjs.isDefined('load_Attachments')) {
+        loadjs('<spring:url value='tclass/attachments-tab' />', 'load_Attachments');
+    }
+
+    loadjs.ready('load_Attachments', function() {
+        oLoadAttachments_class=new loadAttachments();
+        TabSet_Class.updateTab(classAttachmentsTab,oLoadAttachments_class.VLayout_Body_JspAttachment)
+    });
+    </sec:authorize>
     let HLayout_Tab_Class = isc.HLayout.create({
         minWidth:"100%",
         width: "100%",
@@ -2799,13 +2810,13 @@
                     break;
                 }
                 case "classAttachmentsTab": {
-                    if (typeof loadPage_attachment !== "undefined")
-                        loadPage_attachment("Tclass", ListGrid_Class_JspClass.getSelectedRecord().id, "<spring:message code="attachment"/>", {
+                    if (typeof oLoadAttachments_class.loadPage_attachment !== "undefined")
+                        oLoadAttachments_class.loadPage_attachment("Tclass",classRecord.id, "<spring:message code="attachment"/>", {
                             1: "جزوه",
                             2: "لیست نمرات",
                             3: "لیست حضور و غیاب",
                             4: "نامه غیبت موجه"
-                        }, isReadOnlyClass);
+                        }, false);
                     break;
                 }
                 case "classScoresTab": {
@@ -3593,4 +3604,5 @@
         }));
     }
 
+    }
     //</script>

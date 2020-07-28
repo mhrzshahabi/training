@@ -214,8 +214,9 @@ public class PersonnelService implements IPersonnelService {
     @Transactional
     public Personnel findPersonnelByPersonnelId(Long personnelId, String personnelNo) {
 
+        Long personnel_Id = personnelId != 0 ? personnelId : personnelDAO.getPersonnelIdByPersonnelNo(personnelNo);
         PersonnelRegistered personnelRegistered = new PersonnelRegistered();
-        Personnel personnel = personnelDAO.findPersonnelById(personnelId);
+        Personnel personnel = personnelDAO.findPersonnelById(personnel_Id);
 
         if (personnel != null) {
 
@@ -224,7 +225,7 @@ public class PersonnelService implements IPersonnelService {
 
         } else {
 
-            personnelRegistered = personnelRegisteredDAO.findPersonnelRegisteredByPersonnelNo(personnelId.toString());
+            personnelRegistered = personnelRegisteredDAO.findPersonnelRegisteredByPersonnelNo(personnelNo);
             Long trainingTime = tclassDAO.getStudentTrainingTime(personnelRegistered.getNationalCode(), personnelNo, DateUtil.getYear());
             personnelRegistered.setWorkYears(trainingTime == null ? "عدم آموزش در سال " + DateUtil.getYear() : trainingTime.toString() + " ساعت آموزش در سال " + DateUtil.getYear());
 
