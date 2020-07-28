@@ -47,6 +47,9 @@ public class ViewTrainingPostDTO implements Serializable {
     @ApiModelProperty
     private String unit;
 
+    @ApiModelProperty()
+    private Long departmentId;
+
     @ApiModelProperty
     private Long postGradeId;
 
