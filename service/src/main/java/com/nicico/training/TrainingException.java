@@ -114,7 +114,9 @@ public class TrainingException extends NICICOException {
         ProvinceNotFound(404),
         InvalidData(405),
         PersonnelNotFound(404),
-        NoChangeEvent(100);
+        NoChangeEvent(100),
+        DepartmentNotFound(404),
+        PostGradeNotFound(404);
 
         private final Integer httpStatusCode;
 

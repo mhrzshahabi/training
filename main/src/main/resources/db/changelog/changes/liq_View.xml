@@ -2572,7 +2572,7 @@ GROUP BY
     ]]>
         </createView>
     </changeSet>
-    <changeSet author="NICICO" id="VIEW_TRAINING_POST-004">
+    <changeSet author="NICICO" id="VIEW_TRAINING_POST-005">
         <createView viewName="VIEW_TRAINING_POST" replaceIfExists="true">
             <![CDATA[
    SELECT
@@ -2593,6 +2593,7 @@ GROUP BY
     tp.c_cost_center_code,
     tp.c_section,
     tp.c_unit,
+    tp.f_department_id,
     tp.f_post_grade_id,
     tp.f_job_id,
     tp.d_last_modified_date_na,
@@ -2630,6 +2631,7 @@ GROUP BY
     tp.c_cost_center_code,
     tp.c_section,
     tp.c_unit,
+    tp.f_department_id,
     tp.f_post_grade_id,
     tp.f_job_id,
     tp.d_last_modified_date_na,
@@ -2639,6 +2641,28 @@ GROUP BY
     j.c_code,
     pg.c_title_fa,
     pg.c_code
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="NICICO" id="VIEW_PERSONNELS-001">
+        <createView viewName="VIEW_PERSONNELS" replaceIfExists="true">
+            <![CDATA[
+   SELECT
+                            tbl_personnel.personnel_no AS personnel_no ,
+                            tbl_personnel.f_department_id AS department_id
+                        FROM
+                            tbl_personnel
+                        WHERE
+                            tbl_personnel.deleted = 0
+                        UNION ALL
+                        SELECT
+                            tbl_personnel_registered.personnel_no AS personnel_no ,
+                            tbl_personnel_registered.f_department_id AS department_id
+                        FROM
+                            tbl_personnel_registered
+                        WHERE
+                            tbl_personnel_registered.deleted = 0
             ]]>
         </createView>
     </changeSet>

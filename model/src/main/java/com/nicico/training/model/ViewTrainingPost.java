@@ -49,6 +49,9 @@ public class ViewTrainingPost extends Auditable {
     @Column(name = "c_unit")
     private String unit;
 
+    @Column(name = "f_department_id")
+    private Long departmentId;
+
     @Column(name = "f_post_grade_id")
     private Long postGradeId;
 

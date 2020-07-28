@@ -2,7 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sprig" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-// <script>
+//<script>
 
     let questionBankMethod_questionBank;
     let oLoadAttachments_questionBank;
@@ -81,7 +81,7 @@
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     let criteria = QuestionBankLG_questionBank.getCriteria();
-                    ExportToFile.showDialog(null, QuestionBankLG_questionBank , "questionBank", 0, null, '',"بانک سوالات"  , criteria, null);
+                    ExportToFile.showDialog(null, QuestionBankLG_questionBank, "questionBank", 0, null, '', "بانک سوالات", criteria, null);
                 }
             }),
 
@@ -249,7 +249,7 @@
             {name: "titleClass"},
             {name: "startDate"},
             {name: "endDate"},
-            {name: "studentCount",canFilter:false,canSort:false},
+            {name: "studentCount", canFilter: false, canSort: false},
             {name: "code"},
             {name: "term.titleFa"},
             {name: "course.titleFa"},
@@ -272,8 +272,8 @@
             {name: "course.code"},
             {name: "course.theoryDuration"},
             {name: "scoringMethod"}
-            ],
-            fetchDataURL: classUrl + "spec-list"
+        ],
+        fetchDataURL: classUrl + "spec-list"
     });
 
     TeacherDS_questionBank = isc.TrDS.create({
@@ -317,7 +317,7 @@
         autoFetchData: true,
         gridComponents: [QuestionBankTS_questionBank, "filterEditor", "header", "body",],
         contextMenu: QuestionBankMenu_questionBank,
-        sortField: 0,
+        sortField: 1,
         dataChanged: function () {
             this.Super("dataChanged", arguments);
             var totalRows = this.data.getLength();
@@ -338,19 +338,19 @@
 
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
     let QuestionBankDF_questionBank = isc.DynamicForm.create({
-        //ID: "QuestionBankDF_questionBank",
+        ID: "QuestionBankDF_questionBank",
         //width: 780,
         overflow: "hidden",
         //autoSize: false,
         numCols: 4,
-        colWidths: ["10%","25%","10%","25%"],
+        colWidths: ["10%", "25%", "10%", "25%"],
         fields: [
             {name: "id", hidden: true},
             {
                 name: "code", title: "<spring:message code="code"/>",
-                type:"staticText",
+                type: "staticText",
                 width: "100%",
-                colSpan:4,
+                colSpan: 4,
                 startRow: true,
             },
             {
@@ -373,11 +373,11 @@
                 valueField: "id",
                 optionDataSource: RestDataSource_category,
                 filterFields: ["titleFa"],
-                pickListProperties:{
+                pickListProperties: {
                     showFilterEditor: false
                 },
                 sortField: ["id"],
-                icons:[
+                icons: [
                     {
                         name: "clear",
                         src: "[SKIN]actions/remove.png",
@@ -385,7 +385,7 @@
                         height: 15,
                         inline: true,
                         prompt: "پاک کردن",
-                        click : function (form, item, icon) {
+                        click: function (form, item, icon) {
                             item.clearValue();
                             item.focusInItem();
                             QuestionBankDF_questionBank.getItem("subCategoryId").disable();
@@ -400,7 +400,7 @@
                     }
                 ],
                 changed: function (form, item, value) {
-                    if(!value){
+                    if (!value) {
                         QuestionBankDF_questionBank.getItem("subCategoryId").setValue();
                         QuestionBankDF_questionBank.getItem("subCategoryId").disable();
                         return;
@@ -433,7 +433,7 @@
                 optionDataSource: RestDataSourceSubCategory,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
-                icons:[
+                icons: [
                     {
                         name: "clear",
                         src: "[SKIN]actions/remove.png",
@@ -441,7 +441,7 @@
                         height: 15,
                         inline: true,
                         prompt: "پاک کردن",
-                        click : function (form, item, icon) {
+                        click: function (form, item, icon) {
                             item.clearValue();
                             item.focusInItem();
 
@@ -456,18 +456,18 @@
                 ],
                 endRow: true,
                 startRow: false,
-                pickListProperties:{
+                pickListProperties: {
                     showFilterEditor: false
                 },
                 changed: function (form, item, value) {
-                    if(!value){
+                    if (!value) {
                         QuestionBankDF_questionBank.getItem("courseId").disable();
                         return;
                     }
 
                     QuestionBankDF_questionBank.getItem("courseId").enable();
                     QuestionBankDF_questionBank.getItem("courseId").setValue();
-                    CourseDS_questionBank.implicitCriteria={
+                    CourseDS_questionBank.implicitCriteria = {
                         _constructor: "AdvancedCriteria",
                         operator: "and",
                         criteria: [{fieldName: "subCategoryId", operator: "equals", value: value}]
@@ -490,7 +490,7 @@
                 optionDataSource: CourseDS_questionBank,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
-                icons:[
+                icons: [
                     {
                         name: "clear",
                         src: "[SKIN]actions/remove.png",
@@ -498,7 +498,7 @@
                         height: 15,
                         inline: true,
                         prompt: "پاک کردن",
-                        click : function (form, item, icon) {
+                        click: function (form, item, icon) {
                             item.clearValue();
                             item.focusInItem();
                             QuestionBankDF_questionBank.getItem("tclassId").disable();
@@ -509,18 +509,18 @@
                 ],
                 endRow: false,
                 startRow: true,
-                pickListProperties:{
+                pickListProperties: {
                     showFilterEditor: false
                 },
                 changed: function (form, item, value) {
-                    if(!value){
+                    if (!value) {
                         QuestionBankDF_questionBank.getItem("tclassId").disable();
                         return;
                     }
 
                     QuestionBankDF_questionBank.getItem("tclassId").enable();
                     QuestionBankDF_questionBank.getItem("tclassId").setValue();
-                    ClassDS_questionBank.implicitCriteria={
+                    ClassDS_questionBank.implicitCriteria = {
                         _constructor: "AdvancedCriteria",
                         operator: "and",
                         criteria: [{fieldName: "courseId", operator: "equals", value: value}]
@@ -576,7 +576,11 @@
                         },
                         autoFitWidth: true
                     },
-                    {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "iContains",
+                    {
+                        name: "endDate",
+                        title: "<spring:message code='end.date'/>",
+                        align: "center",
+                        filterOperator: "iContains",
                         filterEditorProperties: {
                             keyPressFilter: "[0-9/]"
                         },
@@ -588,7 +592,7 @@
                         displayField: "teacher.personality.lastNameFa",
                         displayValueFromRecord: false,
                         type: "TextItem",
-                        sortNormalizer(record){
+                        sortNormalizer(record) {
                             return record.teacher.personality.lastNameFa;
                         },
 
@@ -606,20 +610,20 @@
                             "2": "در حال اجرا",
                             "3": "پایان یافته",
                         },
-                        filterEditorProperties:{
+                        filterEditorProperties: {
                             pickListProperties: {
                                 showFilterEditor: false
                             },
                         },
-                        filterOnKeypress:true,
+                        filterOnKeypress: true,
                         autoFitWidth: true,
                     },
                 ],
-                pickListProperties:{
+                pickListProperties: {
                     showFilterEditor: true
                 },
                 pickListWidth: 800,
-                icons:[
+                icons: [
                     {
                         name: "clear",
                         src: "[SKIN]actions/remove.png",
@@ -627,7 +631,7 @@
                         height: 15,
                         inline: true,
                         prompt: "پاک کردن",
-                        click : function (form, item, icon) {
+                        click: function (form, item, icon) {
                             item.clearValue();
                             item.focusInItem();
 
@@ -646,7 +650,7 @@
                 title: "<spring:message code="teacher"/>",
                 textAlign: "center",
                 autoFetchData: false,
-                colSpan:4,
+                colSpan: 4,
                 width: "100%",
                 displayField: "fullName",
                 valueField: "id",
@@ -655,7 +659,7 @@
                 filterFields: ["id"],
                 //type: "ComboBoxItem",
                 pickListFields: [
-                    {name: "id", title: "id", canEdit: false, hidden: true,filterOperator: "equals"},
+                    {name: "id", title: "id", canEdit: false, hidden: true, filterOperator: "equals"},
                     {
                         name: "teacherCode",
                         title: "<spring:message code='national.code'/>",
@@ -729,11 +733,11 @@
                         type: "boolean"
                     }
                 ],
-                pickListProperties:{
+                pickListProperties: {
                     showFilterEditor: true
                 },
                 pickListWidth: 800,
-                icons:[
+                icons: [
                     {
                         name: "clear",
                         src: "[SKIN]actions/remove.png",
@@ -741,7 +745,7 @@
                         height: 15,
                         inline: true,
                         prompt: "پاک کردن",
-                        click : function (form, item, icon) {
+                        click: function (form, item, icon) {
                             item.clearValue();
                             item.focusInItem();
 
@@ -769,7 +773,7 @@
                 valueField: "id",
                 optionDataSource: AnswerTypeDS_questionBank,
                 filterFields: ["title"],
-                pickListProperties:{
+                pickListProperties: {
                     showFilterEditor: false
                 },
                 pickListFields: [
@@ -777,7 +781,7 @@
                 ],
                 sortField: ["id"],
                 changed: function (form, item, value) {
-                    if(value==520){
+                    if (value == 520) {
                         QuestionBankDF_questionBank.getItem("displayTypeId").enable();
 
                         QuestionBankDF_questionBank.getItem("option1").enable();
@@ -794,7 +798,7 @@
                         QuestionBankDF_questionBank.getItem("displayTypeId").setRequired(true);
                         //QuestionBankDF_questionBank.redraw();
 
-                    }else{
+                    } else {
                         QuestionBankDF_questionBank.getItem("displayTypeId").disable();
 
                         //QuestionBankDF_questionBank.getItem("option1").setRequired(false);
@@ -831,7 +835,7 @@
                 filterFields: ["title"],
                 endRow: true,
                 startRow: false,
-                pickListProperties:{
+                pickListProperties: {
                     showFilterEditor: false
                 },
                 pickListFields: [
@@ -852,8 +856,8 @@
                 title: "<spring:message code="question.bank.option1"/>",
                 //required: true,
                 colSpan: 4,
-                blur:function(){
-                    if(!QuestionBankDF_questionBank.getItem("option1").getValue()){
+                blur: function () {
+                    if (!QuestionBankDF_questionBank.getItem("option1").getValue()) {
                         QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").setValue(0);
                     }
                 }
@@ -864,7 +868,7 @@
                 //required: true,
                 colSpan: 4,
                 focus: function () {
-                    if(QuestionBankDF_questionBank.getItem("option2").getValue()) {
+                    if (QuestionBankDF_questionBank.getItem("option2").getValue()) {
                         return;
                     }
                     let option1Value = QuestionBankDF_questionBank.getItem("option1").getValue();
@@ -876,7 +880,7 @@
                     }
                 },
                 blur: function () {
-                    if(!QuestionBankDF_questionBank.getItem("option2").getValue()){
+                    if (!QuestionBankDF_questionBank.getItem("option2").getValue()) {
                         QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").setValue(0);
                     }
                     let option1Value = QuestionBankDF_questionBank.getItem("option1").getValue();
@@ -895,7 +899,7 @@
                 title: "<spring:message code="question.bank.option3"/>",
                 colSpan: 4,
                 focus: function () {
-                    if(QuestionBankDF_questionBank.getItem("option3").getValue()) {
+                    if (QuestionBankDF_questionBank.getItem("option3").getValue()) {
                         return;
                     }
                     let option1Value = QuestionBankDF_questionBank.getItem("option1").getValue();
@@ -903,7 +907,7 @@
 
                     if (!option1Value || !option1Value2) {
                         createDialog("info", "<spring:message code="question.bank.fill.previous.option"/>");
-                        if(!option1Value)
+                        if (!option1Value)
                             QuestionBankDF_questionBank.getItem("option1").focusInItem();
                         else
                             QuestionBankDF_questionBank.getItem("option2").focusInItem();
@@ -911,12 +915,12 @@
 
                 },
                 blur: function () {
-                    if(!QuestionBankDF_questionBank.getItem("option3").getValue()){
+                    if (!QuestionBankDF_questionBank.getItem("option3").getValue()) {
                         QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").setValue(0);
                     }
                     let option1Value = QuestionBankDF_questionBank.getItem("option1").getValue();
                     let option1Value2 = QuestionBankDF_questionBank.getItem("option2").getValue();
-                    if ((!option1Value || !option1Value2) && QuestionBankDF_questionBank.getItem("option3").getValue() ) {
+                    if ((!option1Value || !option1Value2) && QuestionBankDF_questionBank.getItem("option3").getValue()) {
                         createDialog("info", "<spring:message code="question.bank.fill.previous.options"/>");
                         QuestionBankDF_questionBank.getItem("option3").focusInItem();
                     }
@@ -927,7 +931,7 @@
                 title: "<spring:message code="question.bank.option4"/>",
                 colSpan: 4,
                 focus: function () {
-                    if(QuestionBankDF_questionBank.getItem("option4").getValue()) {
+                    if (QuestionBankDF_questionBank.getItem("option4").getValue()) {
                         return;
                     }
                     let option1Value = QuestionBankDF_questionBank.getItem("option1").getValue();
@@ -946,13 +950,13 @@
                     }
                 },
                 blur: function () {
-                    if(!QuestionBankDF_questionBank.getItem("option4").getValue()){
+                    if (!QuestionBankDF_questionBank.getItem("option4").getValue()) {
                         QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").setValue(0);
                     }
                     let option1Value = QuestionBankDF_questionBank.getItem("option1").getValue();
                     let option1Value2 = QuestionBankDF_questionBank.getItem("option2").getValue();
                     let option1Value3 = QuestionBankDF_questionBank.getItem("option3").getValue();
-                    if ((!option1Value || !option1Value2 || !option1Value3)  && QuestionBankDF_questionBank.getItem("option4").getValue()) {
+                    if ((!option1Value || !option1Value2 || !option1Value3) && QuestionBankDF_questionBank.getItem("option4").getValue()) {
                         createDialog("info", "<spring:message code="question.bank.fill.previous.options"/>");
                         QuestionBankDF_questionBank.getItem("option4").focusInItem();
                     }
@@ -988,9 +992,9 @@
                     "4": "<spring:message code="question.bank.option4"/>"
                 },
                 colSpan: 4,
-                changed:  function (form, item, value) {
+                changed: function (form, item, value) {
 
-                    if ((!QuestionBankDF_questionBank.getItem("option1").getValue() && value == 1) || (!QuestionBankDF_questionBank.getItem("option2").getValue() && value == 2) || (!QuestionBankDF_questionBank.getItem("option3").getValue() && value == 3) || (!QuestionBankDF_questionBank.getItem("option4").getValue() && value == 4) ) {
+                    if ((!QuestionBankDF_questionBank.getItem("option1").getValue() && value == 1) || (!QuestionBankDF_questionBank.getItem("option2").getValue() && value == 2) || (!QuestionBankDF_questionBank.getItem("option3").getValue() && value == 3) || (!QuestionBankDF_questionBank.getItem("option4").getValue() && value == 4)) {
                         createDialog("info", "<spring:message code='question.bank.option.not.exist'/>");
                         QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").setValue(0);
                     }
@@ -1002,7 +1006,7 @@
 
     let QuestionBankWin_questionBank = isc.Window.create({
         width: 800,
-        height:880,
+        height: 880,
         //autoCenter: true,
         overflow: "hidden",
         showMaximizeButton: false,
@@ -1040,10 +1044,9 @@
     });
 
 
-
     // ------------------------------------------- Page UI -------------------------------------------
     let HLayout_Tab_Class = isc.HLayout.create({
-        minWidth:"100%",
+        minWidth: "100%",
         width: "100%",
         height: "39%",
         members: [TabSet_questionBank]
@@ -1051,19 +1054,19 @@
 
 
     isc.TrVLayout.create({
-        members: [QuestionBankTS_questionBank, QuestionBankLG_questionBank,HLayout_Tab_Class],
+        members: [QuestionBankTS_questionBank, QuestionBankLG_questionBank, HLayout_Tab_Class],
     });
 
     if (!loadjs.isDefined('load_Attachments')) {
         loadjs('<spring:url value='tclass/attachments-tab' />', 'load_Attachments');
     }
 
-    setTimeout(function(){
-        loadjs.ready('load_Attachments', function() {
-            oLoadAttachments_questionBank=new loadAttachments();
-            TabSet_questionBank.updateTab("questionBankAttachmentsTab",oLoadAttachments_questionBank.VLayout_Body_JspAttachment)
+    setTimeout(function () {
+        loadjs.ready('load_Attachments', function () {
+            oLoadAttachments_questionBank = new loadAttachments();
+            TabSet_questionBank.updateTab("questionBankAttachmentsTab", oLoadAttachments_questionBank.VLayout_Body_JspAttachment)
         });
-    },0);
+    }, 0);
 
     // ------------------------------------------- Functions -------------------------------------------
     function refresh_questionBank() {
@@ -1083,13 +1086,10 @@
 
             wait.close();
 
-            if(generalGetResp(resp)) {
-                if (resp.httpResponseCode == 200)
-                {
+            if (generalGetResp(resp)) {
+                if (resp.httpResponseCode == 200) {
                     QuestionBankDF_questionBank.getItem("code").setValue(resp.data);
-                }
-                else
-                {
+                } else {
                     createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
                 }
             }
@@ -1132,24 +1132,23 @@
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.not.selected.record'/>");
         } else {
-            isc.RPCManager.sendRequest(TrDSRequest(questionBankUrl + "/" +record.id, "GET", null, result_EditQuestionBank));
+            isc.RPCManager.sendRequest(TrDSRequest(questionBankUrl + "/" + record.id, "GET", null, result_EditQuestionBank));
 
         }
     }
 
 
-    function result_EditQuestionBank(resp){
+    function result_EditQuestionBank(resp) {
 
         wait.close();
 
-        if(generalGetResp(resp)) {
+        if (generalGetResp(resp)) {
             if (resp.httpResponseCode == 200) {
 
-                let record=JSON.parse(resp.data);
+                let record = JSON.parse(resp.data);
 
                 questionBankMethod_questionBank = "PUT";
                 QuestionBankDF_questionBank.clearValues();
-
 
 
                 QuestionBankWin_questionBank.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="question.bank"/>" + '&nbsp;\'' + record.question + '\'');
@@ -1161,10 +1160,10 @@
                 QuestionBankDF_questionBank.getItem("tclassId").enable();
                 QuestionBankDF_questionBank.getItem("teacherId").enable();
 
-                if(record.categoryId){
+                if (record.categoryId) {
                     RestDataSourceSubCategory.fetchDataURL = categoryUrl + record.categoryId + "/sub-categories";
                     QuestionBankDF_questionBank.getItem("subCategoryId").fetchData();
-                }else{
+                } else {
                     QuestionBankDF_questionBank.getItem("subCategoryId").setValue();
 
                     QuestionBankDF_questionBank.getItem("subCategoryId").disable();
@@ -1172,30 +1171,30 @@
                     QuestionBankDF_questionBank.getItem("tclassId").disable();
                 }
 
-                if(record.subCategoryId){
+                if (record.subCategoryId) {
                     QuestionBankDF_questionBank.getItem("courseId").setValue();
-                    CourseDS_questionBank.implicitCriteria={
+                    CourseDS_questionBank.implicitCriteria = {
                         _constructor: "AdvancedCriteria",
                         operator: "and",
                         criteria: [{fieldName: "subCategoryId", operator: "equals", value: record.subCategoryId}]
                     };
                     QuestionBankDF_questionBank.getItem("courseId").fetchData();
-                }else{
+                } else {
                     QuestionBankDF_questionBank.getItem("courseId").setValue();
 
                     QuestionBankDF_questionBank.getItem("courseId").disable();
                     QuestionBankDF_questionBank.getItem("tclassId").disable();
                 }
 
-                if(record.courseId){
+                if (record.courseId) {
                     QuestionBankDF_questionBank.getItem("tclassId").setValue();
-                    ClassDS_questionBank.implicitCriteria={
+                    ClassDS_questionBank.implicitCriteria = {
                         _constructor: "AdvancedCriteria",
                         operator: "and",
                         criteria: [{fieldName: "courseId", operator: "equals", value: record.courseId}]
                     };
                     QuestionBankDF_questionBank.getItem("tclassId").fetchData()
-                }else{
+                } else {
                     QuestionBankDF_questionBank.getItem("tclassId").setValue();
 
                     QuestionBankDF_questionBank.getItem("tclassId").disable();
@@ -1203,7 +1202,7 @@
 
                 QuestionBankDF_questionBank.editRecord(record);
 
-                if(record.questionTypeId==520){
+                if (record.questionTypeId == 520) {
                     QuestionBankDF_questionBank.getItem("displayTypeId").enable();
 
                     QuestionBankDF_questionBank.getItem("option1").enable();
@@ -1219,7 +1218,7 @@
                     QuestionBankDF_questionBank.getItem("displayTypeId").setRequired(true);
                     //QuestionBankDF_questionBank.redraw();
 
-                }else{
+                } else {
                     QuestionBankDF_questionBank.getItem("displayTypeId").disable();
 
                     QuestionBankDF_questionBank.getItem("option1").disable();
@@ -1233,7 +1232,7 @@
                     //QuestionBankDF_questionBank.getItem("option1").setRequired(false);
                     //QuestionBankDF_questionBank.getItem("option2").setRequired(false);
                     QuestionBankDF_questionBank.getItem("displayTypeId").setRequired(false);
-                   // QuestionBankDF_questionBank.redraw();
+                    // QuestionBankDF_questionBank.redraw();
                 }
 
                 QuestionBankWin_questionBank.show();
@@ -1244,51 +1243,74 @@
     }
 
     function saveQuestionBank_questionBank() {
-       if (!QuestionBankDF_questionBank.validate()) {
+        if (!QuestionBankDF_questionBank.validate()) {
             return;
         }
-        /* let option1Value = QuestionBankDF_questionBank.getItem("option1").getValue();
-        let option1Value2 = QuestionBankDF_questionBank.getItem("option2").getValue();
-        let option1Value3 = QuestionBankDF_questionBank.getItem("option3").getValue();
-        let option1Value4 = QuestionBankDF_questionBank.getItem("option4").getValue();
+        console.log(QuestionBankDF_questionBank.getItem("questionTypeId").getValue());
+        console.log(QuestionBankDF_questionBank.getItem("questionTypeId").getValue()==520);
+        if(QuestionBankDF_questionBank.getItem("questionTypeId").getValue()==520){
+            let option1Value = QuestionBankDF_questionBank.getItem("option1").getValue();
+            let option1Value2 = QuestionBankDF_questionBank.getItem("option2").getValue();
+            let option1Value3 = QuestionBankDF_questionBank.getItem("option3").getValue();
+            let option1Value4 = QuestionBankDF_questionBank.getItem("option4").getValue();
 
-        if(option1Value4){
-            if(!option1Value3 || !option1Value2 || !option1Value)
-            {
-                createDialog("info", "<spring:message code="question.bank.fill.previous.option"/>");
-                if(!option1Value)
+            if (option1Value4) {
+                if (!option1Value3 || !option1Value2 || !option1Value) {
+                    createDialog("info", "<spring:message code="question.bank.fill.previous.option"/>");
+                    if (!option1Value) {
+                        QuestionBankDF_questionBank.getItem("option1").focusInItem();
+                    } else if (!option1Value2) {
+                        QuestionBankDF_questionBank.getItem("option2").focusInItem();
+                    } else if (!option1Value3) {
+                        QuestionBankDF_questionBank.getItem("option3").focusInItem();
+                    }
+                    return;
+                }
+
+            }
+
+            if (option1Value3) {
+                if (!option1Value2 || !option1Value) {
+                    createDialog("info", "<spring:message code="question.bank.fill.previous.option"/>");
+
+                    if (!option1Value)
+                        QuestionBankDF_questionBank.getItem("option1").focusInItem();
+                    else if (!option1Value2)
+                        QuestionBankDF_questionBank.getItem("option2").focusInItem();
+
+                    return;
+                }
+
+            }
+
+           if (option1Value2) {
+                if (!option1Value) {
+                    createDialog("info", "<spring:message code="question.bank.fill.previous.option"/>");
                     QuestionBankDF_questionBank.getItem("option1").focusInItem();
-                else if(!option1Value2)
+                    return;
+                }
+
+            }
+
+           if(!option1Value||!option1Value2){
+                createDialog("info", "<spring:message code="question.bank.required.options"/>");
+
+                if (!option1Value) {
+                    QuestionBankDF_questionBank.getItem("option1").focusInItem();
+                }else{
                     QuestionBankDF_questionBank.getItem("option2").focusInItem();
-                else if(option1Value3)
-                    QuestionBankDF_questionBank.getItem("option3").focusInItem();
-            }
-            return;
-        }
-        if(option1Value3){
-            if(!option1Value2 || !option1Value) {
-                createDialog("info", "<spring:message code="question.bank.fill.previous.option"/>");
-                if (!option1Value)
-                    QuestionBankDF_questionBank.getItem("option1").focusInItem();
-                else if (!option1Value2)
-                    QuestionBankDF_questionBank.getItem("option2").focusInItem();
-            }
-            return;
-        }
-        if(option1Value2){
-            if(!option1Value)
-            {
-                createDialog("info", "<spring:message code="question.bank.fill.previous.option"/>");
-                if(!option1Value)
-                    QuestionBankDF_questionBank.getItem("option1").focusInItem();
+                }
 
-            }
-            return;
+                return;
+           }
         }
 
-*/
+
+
         let questionBankSaveUrl = questionBankUrl;
+
         let questionBankAction = '<spring:message code="created"/>';
+
         if (questionBankMethod_questionBank.localeCompare("PUT") == 0) {
             let record = QuestionBankLG_questionBank.getSelectedRecord();
             questionBankSaveUrl += "/" + record.id;
@@ -1310,9 +1332,9 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
-                        isc.RPCManager.sendRequest(TrDSRequest(questionBankUrl + "/" + record.id, "DELETE", null, (resp)=>{
+                        isc.RPCManager.sendRequest(TrDSRequest(questionBankUrl + "/" + record.id, "DELETE", null, (resp) => {
                             wait.close();
-                            if(generalGetResp(resp)) {
+                            if (generalGetResp(resp)) {
                                 if (resp.httpResponseCode == 200) {
                                     let dialog = createDialog("info", "<spring:message code="msg.successfully.done"/>");
                                     Timer.setTimeout(function () {
@@ -1332,7 +1354,7 @@
     };
 
     function rcpResponse(resp, entityType, action, entityName) {
-        if(generalGetResp(resp)){
+        if (generalGetResp(resp)) {
             let respCode = resp.httpResponseCode;
             if (respCode == 200 || respCode == 201) {
                 let name;
@@ -1375,7 +1397,7 @@
         }, 3000);
     };
 
-    function loadAttachment(){
+    function loadAttachment() {
         if (QuestionBankLG_questionBank.getSelectedRecord() === null) {
             TabSet_questionBank.disable();
             oLoadAttachments_questionBank.loadPage_attachment_Job("QuestionBank", 0, "<spring:message code="document"/>", {
@@ -1392,4 +1414,4 @@
         TabSet_questionBank.enable();
     }
 
-//</script>
+    //</script>
