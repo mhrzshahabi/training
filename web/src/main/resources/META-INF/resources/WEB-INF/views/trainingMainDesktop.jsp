@@ -24,6 +24,7 @@
     <SCRIPT SRC=isomorphic/system/modules/ISC_Charts.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Analytics.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_FileLoader.js></SCRIPT>
+    <script src="isomorphic/system/modules/ISC_RichTextEditor.js"></script>
     <SCRIPT SRC=isomorphic/skins/Nicico/load_skin.js></SCRIPT>
     <SCRIPT SRC=isomorphic/locales/frameworkMessages_fa.properties></SCRIPT>
     <!-- ---------------------------------------- Not Ok - Start ---------------------------------------- -->
