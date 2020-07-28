@@ -7,7 +7,7 @@
     let questionnaireMethod_questionnaire;
     let questionnaireQuestionMethod_questionnaire;
     let waitQuestionnaire;
-    let isDelete=false;
+    var isDelete_questionnaire=false;
 
     // ------------------------------------------- Menu -------------------------------------------
     isc.Menu.create({
@@ -204,9 +204,9 @@
         },
         dataArrived:function (startRow, endRow, data) {
 
-            if (isDelete){
+            if (isDelete_questionnaire){
                 QuestionnaireQuestionLG_questionnaire.setData([]);
-                isDelete=false;
+                isDelete_questionnaire=false;
             }
         }
     });
@@ -386,7 +386,7 @@
                         createDialog("info", "پرسشنامه مورد نظر در ارزیابی استفاده شده است. بنابراین قابل تغییر نیست.");
                         return ;
                     }
-                    isDelete=true;
+
                     removeRecord(questionnaireUrl + "/" + record.id, entityType, record.title, 'QuestionnaireLG_questionnaire');
 
 
