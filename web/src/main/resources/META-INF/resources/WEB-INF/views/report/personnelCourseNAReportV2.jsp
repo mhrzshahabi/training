@@ -540,15 +540,16 @@
                     if(!hasFilters()) {
                         createDialog("info","فیلتری انتخاب نشده است.");
                     } else{
-                        var criteria = FilterDF_PCNR.getValuesAsAdvancedCriteria();
+                        let criteria = FilterDF_PCNR.getValuesAsAdvancedCriteria();
                         criteria.criteria.remove(criteria.criteria.find({fieldName: "reportType"}));
 
-
                         if (FilterDF_PCNR.getItem("reportType").getValue() === "1"){
-                            ExportToFile.downloadExcelFromClient(CourseLG_PCNR,null,"","آمار دوره های نیازسنجی افراد - آماری");
+                            ExportToFile.showDialog(null, CourseLG_PCNR, "personnelCourseNAR", 0, null, '',"آمار دوره های نیازسنجی افراد - آماری"  , criteria, null);
+                            // ExportToFile.downloadExcelFromClient(CourseLG_PCNR,null,"","آمار دوره های نیازسنجی افراد - آماری");
                         }
                         else if(FilterDF_PCNR.getItem("reportType").getValue() === "2"){
-                            ExportToFile.downloadExcelFromClient(CourseLG_MinPCNR,null,"","آمار دوره های نیازسنجی افراد - لیستی");
+                            ExportToFile.showDialog(null, CourseLG_MinPCNR, "personnelCourseNAR", 0, null, '',"آمار دوره های نیازسنجی افراد - لیستی"  , criteria, null);
+                            // ExportToFile.downloadExcelFromClient(CourseLG_MinPCNR,null,"","آمار دوره های نیازسنجی افراد - لیستی");
                         }
                     }
 

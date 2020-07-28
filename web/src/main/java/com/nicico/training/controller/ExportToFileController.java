@@ -78,6 +78,7 @@ public class ExportToFileController {
     private final PostGradeGroupService postGradeGroupService;
     private final ViewPostGroupService viewPostGroupService;
     private final PostGroupService postGroupService;
+    private final PersonnelCoursePassedNAReportViewService personnelCoursePassedNAReportViewService;
     private final WorkGroupService workGroupService;
     private final CourseService courseService;
     private final QuestionBankService questionBankService;
@@ -349,6 +350,10 @@ public class ExportToFileController {
 
             case "Post_Group":
                 generalList = (List<Object>)((Object) postGroupService.search(searchRq).getList());
+                break;
+
+            case "personnelCourseNAR":
+                generalList = (List<Object>)((Object) personnelCoursePassedNAReportViewService.search(searchRq, r -> modelMapper.map(r, PersonnelCoursePassedNAReportViewDTO.MinInfo.class)).getList());
                 break;
 
             case "Post_Group_Post":
