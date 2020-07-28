@@ -98,8 +98,8 @@ public class TrainingPostService implements ITrainingPostService {
         {
             SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
             criteria.getCriteria().add(makeNewCriteria("postId", posts.stream().map(Post::getId).collect(Collectors.toList()), EOperator.inSet, null));
-            criteria.getCriteria().add(makeNewCriteria("active", 1, EOperator.equals, null));
-            criteria.getCriteria().add(makeNewCriteria("employmentStatusId", 5, EOperator.equals, null));
+//            criteria.getCriteria().add(makeNewCriteria("active", 1, EOperator.equals, null));
+//            criteria.getCriteria().add(makeNewCriteria("employmentStatusId", 5, EOperator.equals, null));
             infoList = personnelService.search(new SearchDTO.SearchRq().setCriteria(criteria)).getList();
             return infoList;
         }

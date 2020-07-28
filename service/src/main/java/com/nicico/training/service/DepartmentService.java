@@ -1,5 +1,6 @@
 package com.nicico.training.service;
 
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.DepartmentDTO;
 import com.nicico.training.iservice.IDepartmentService;
 import com.nicico.training.model.Department;
@@ -11,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -90,5 +92,43 @@ public class DepartmentService extends GenericService<Department, Long, Departme
     @Override
     public void deleteAll(Object request) {
 
+    }
+
+    //Amin HK
+    @Override
+    @Transactional
+    public SearchDTO.SearchRs<DepartmentDTO.FieldValue> findAllValuesOfOneFieldFromDepartment(String fieldName) {
+        List<String> values = null;
+        switch (fieldName) {
+            case "ccpAffairs":
+                values = departmentDAO.findAllAffairsFromDepartment();
+                break;
+
+             case "ccpUnit":
+                values = departmentDAO.findAllUnitsFromDepartment();
+                break;
+
+            case "ccpAssistant":
+                values = departmentDAO.findAllAssistantsFromDepartment();
+                break;
+
+           case "ccpArea":
+                values = departmentDAO.findAllAreasFromDepartment();
+                break;
+
+            case "complexTitle":
+                values = departmentDAO.findAllComplexsFromDepartment();
+                break;
+
+            case "ccpSection":
+                values = departmentDAO.findAllSectionsFromDepartment();
+                break;
+        }
+
+        SearchDTO.SearchRs<DepartmentDTO.FieldValue> response = new SearchDTO.SearchRs<>();
+        response.setList(new ArrayList<>());
+        values.forEach(value -> response.getList().add(new DepartmentDTO.FieldValue(value)));
+        response.setTotalCount((long) response.getList().size());
+        return response;
     }
 }

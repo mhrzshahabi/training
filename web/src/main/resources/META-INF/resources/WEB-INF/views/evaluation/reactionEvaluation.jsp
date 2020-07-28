@@ -9,10 +9,6 @@
     //----------------------------------------- Variables --------------------------------------------------------------
         var evalWait_RE;
 
-        var localQuestions_RE;
-
-        var evaluation_numberOfStudents_RE = null;
-
         var classRecord_RE;
 
     //----------------------------------------- DataSources ------------------------------------------------------------
@@ -108,7 +104,6 @@
             height: "10px",
             padding: 0,
             fields: [
-                <sec:authorize access="hasAuthority('Evaluation_PrintPreTest')">
                 {
                     name: "evaluationReturnDate",
                     title: "<spring:message code='return.date'/>",
@@ -129,11 +124,9 @@
 
                     },
                     changed: function (form, item, value) {
-
                         evaluation_check_date_RE();
                     }
                 }
-                </sec:authorize>
             ]
         });
 
@@ -312,6 +305,38 @@
                         width: 16,
                         grid: this,
                         click: function () {
+                            if (record.evaluationStatusReaction == "0" ||record.evaluationStatusReaction == null)
+                                createDialog("info", "فرم ارزیابی واکنشی برای این فراگیر صادر نشده است");
+                            <%--else{--%>
+                            <%--    let data = {};--%>
+                            <%--    data.classId = classRecord_RE.id;--%>
+                            <%--    data.evaluatorId = record.id;--%>
+                            <%--    data.evaluatorTypeId = 188;--%>
+                            <%--    data.evaluatedId = classRecord_RE.id;--%>
+                            <%--    data.evaluatedTypeId = 504;--%>
+                            <%--    data.questionnaireTypeId = 139;--%>
+                            <%--    data.evaluationLevelId = 154;--%>
+
+                            <%--    let criteriaForm_operational = isc.DynamicForm.create({--%>
+                            <%--        method: "POST",--%>
+                            <%--        action: "<spring:url value="/evaluation/printWithCriteria"/>",--%>
+                            <%--        target: "_Blank",--%>
+                            <%--        canSubmit: true,--%>
+                            <%--        fields:--%>
+                            <%--            [--%>
+                            <%--                {name: "myToken", type: "hidden"},--%>
+                            <%--                {name: "printData", type: "hidden"}--%>
+                            <%--            ],--%>
+                            <%--        show: function () {--%>
+                            <%--            this.Super("show", arguments);--%>
+                            <%--        }--%>
+                            <%--    });--%>
+
+                            <%--    criteriaForm_operational.setValue("myToken", "<%=accessToken%>");--%>
+                            <%--    criteriaForm_operational.setValue("printData", JSON.stringify(data));--%>
+                            <%--    criteriaForm_operational.show();--%>
+                            <%--    criteriaForm_operational.submit();--%>
+                            <%--}--%>
                         }
                     });
                     recordCanvas.addMember(printIcon);
@@ -648,7 +673,7 @@
                     }
                     else{
                         Window_SelectQuestionnarie_RE.close();
-                        create_evaluation_form(null,ListGrid_SelectQuestionnarie_RE.getSelectedRecord().id, studentRecord.id, 188, classRecord_RE.id, 504, 139, 154);
+                        create_evaluation_form_RE(null,ListGrid_SelectQuestionnarie_RE.getSelectedRecord().id, studentRecord.id, 188, classRecord_RE.id, 504, 139, 154);
                     }
                 }
             });
@@ -998,7 +1023,7 @@
                     }
                     else{
                         Window_SelectQuestionnarie_RE.close();
-                        create_evaluation_form(null,ListGrid_SelectQuestionnarie_RE.getSelectedRecord().id, classRecord_RE.tclassSupervisor, 454, classRecord_RE.teacherId,187 , 141, 154);
+                        create_evaluation_form_RE(null,ListGrid_SelectQuestionnarie_RE.getSelectedRecord().id, classRecord_RE.tclassSupervisor, 454, classRecord_RE.teacherId,187 , 141, 154);
                     }
                 }
             });
@@ -1354,7 +1379,7 @@
                 }
                 else{
                     Window_SelectQuestionnarie_RE.close();
-                    create_evaluation_form(null,ListGrid_SelectQuestionnarie_RE.getSelectedRecord().id, classRecord_RE.teacherId, 187, classRecord_RE.id,504 , 140, 154);
+                    create_evaluation_form_RE(null,ListGrid_SelectQuestionnarie_RE.getSelectedRecord().id, classRecord_RE.teacherId, 187, classRecord_RE.id,504 , 140, 154);
                 }
             }
         });
@@ -1699,14 +1724,14 @@
     }
 
     //------------------------------------------------- Global Functions -----------------------------------------------
-        function create_evaluation_form(id,questionnarieId, evaluatorId,
+        function create_evaluation_form_RE(id,questionnarieId, evaluatorId,
                                     evaluatorTypeId, evaluatedId, evaluatedTypeId, questionnarieTypeId,
                                     evaluationLevel){
         let data = {};
         data.classId = classRecord_RE.id;
         data.status = false;
-        if(ReturnDate_BE._value != undefined )
-            data.returnDate =  ReturnDate_BE._value;
+        if(ReturnDate_RE._value != undefined )
+            data.returnDate =  ReturnDate_RE._value;
         data.sendDate = todayDate;
         data.evaluatorId = evaluatorId;
         data.evaluatorTypeId = evaluatorTypeId;
@@ -1750,6 +1775,18 @@
                 return 199;
         }
     }
+
+        function evaluation_check_date_RE() {
+            DynamicForm_ReturnDate_RE.clearFieldErrors("evaluationReturnDate", true);
+
+            if (DynamicForm_ReturnDate_RE.getValue("evaluationReturnDate") !== undefined && !checkDate(DynamicForm_ReturnDate_RE.getValue("evaluationReturnDate"))) {
+                DynamicForm_ReturnDate_RE.addFieldErrors("evaluationReturnDate", "<spring:message code='msg.correct.date'/>", true);
+            } else if (DynamicForm_ReturnDate_RE.getValue("evaluationReturnDate") < classRecord_RE.startDate) {
+                DynamicForm_ReturnDate_RE.addFieldErrors("evaluationReturnDate", "<spring:message code='return.date.before.class.start.date'/>", true);
+            } else {
+                DynamicForm_ReturnDate_RE.clearFieldErrors("evaluationReturnDate", true);
+            }
+        }
 
 
     //

@@ -1452,14 +1452,17 @@
     function fetchPersonnelData_Post_Group_Jsp() {
         if (Detail_Tab_Post_Group.getSelectedTab().name !== "TabPane_Personnel_Post_Group_Jsp")
             return;
-        if (postGroupPostList_Post_Group_Jsp == null) {
+        if (postGroupPostList_Post_Group_Jsp == null || postGroupPostList_Post_Group_Jsp.isEmpty()) {
             PersonnelLG_Post_Group_Jsp.setData([]);
             return;
         }
         PersonnelLG_Post_Group_Jsp.implicitCriteria = {
             _constructor: "AdvancedCriteria",
             operator: "and",
-            criteria: [{fieldName: "postCode", operator: "equals", value: postGroupPostList_Post_Group_Jsp.map(p => p.code)}]
+            criteria: [
+                {fieldName: "postCode", operator: "equals", value: postGroupPostList_Post_Group_Jsp.map(p => p.code)},
+                {fieldName: "active", operator: "equals", value: 1},
+                {fieldName: "employmentStatusId", operator: "equals", value: 5}]
         };
         PersonnelLG_Post_Group_Jsp.invalidateCache();
         PersonnelLG_Post_Group_Jsp.fetchData();

@@ -46,7 +46,6 @@ public class EvaluationRestController {
     private final ReportUtil reportUtil;
     private final DateUtil dateUtil;
     private final ModelMapper modelMapper;
-    private final CourseService courseService;
     private final SkillService skillService;
     private final EvaluationService evaluationService;
     private final ClassStudentService classStudentService;
@@ -55,103 +54,87 @@ public class EvaluationRestController {
     private final EvaluationDAO evaluationDAO;
     private final PersonnelDAO personnelDAO;
     private final ParameterValueDAO parameterValueDAO;
+    private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
+    private final DynamicQuestionDAO dynamicQuestionDAO;
 
     @Loggable
-    @PostMapping(value = {"/{type}/{classId}"})
+    @PostMapping("/printWithCriteria")
     @Transactional
     public void printWithCriteria(HttpServletResponse response,
-                                  @PathVariable String type,
-                                  @PathVariable Long classId,
                                   @RequestParam(value = "printData") String printData) throws Exception {
 
         JSONObject jsonObject = new JSONObject(printData);
-        Long courseId = Long.parseLong(jsonObject.get("courseId").toString());
-        Long studentId = Long.parseLong(jsonObject.get("studentId").toString());
-        String evaluationType = jsonObject.get("evaluationType").toString();
-        String evaluationReturnDate = jsonObject.get("evaluationReturnDate").toString();
-        String evaluationAudience = jsonObject.get("evaluationAudience").toString();
-        String evaluationAudienceType = jsonObject.get("evaluationAudienceType").toString();
+        Long classId = Long.parseLong(jsonObject.get("classId").toString());
+        Long evaluatorId = Long.parseLong(jsonObject.get("evaluatorId").toString());
+        Long evaluatorTypeId = Long.parseLong(jsonObject.get("evaluatorTypeId").toString());
+        Long evaluatedId = Long.parseLong(jsonObject.get("evaluatedId").toString());
+        Long evaluatedTypeId = Long.parseLong(jsonObject.get("evaluatedTypeId").toString());
+        Long questionnaireTypeId = Long.parseLong(jsonObject.get("questionnaireTypeId").toString());
+        Long evaluationLevelId = Long.parseLong(jsonObject.get("evaluationLevelId").toString());
 
-
-        List<QuestionnaireQuestion> teacherQuestionnaireQuestion = questionnaireQuestionService.getEvaluationQuestion(53L);
-        teacherQuestionnaireQuestion.sort(Comparator.comparing(QuestionnaireQuestion::getOrder));
-
-        List<QuestionnaireQuestion> equipmentQuestionnaireQuestion = questionnaireQuestionService.getEvaluationQuestion(54L);
-        equipmentQuestionnaireQuestion.sort(Comparator.comparing(QuestionnaireQuestion::getOrder));
-
-        CourseDTO.CourseGoals courseGoals = courseService.getCourseGoals(courseId);
-
-        List<Skill> skillList = skillService.skillList(courseId);
-
-        List<EvaluationQuestionDTO.Info> evaluationQuestion = new ArrayList<>();
-        if (!evaluationType.equals("TabPane_Behavior") && !evaluationType.equals("TabPane_Learning"))
-            for (QuestionnaireQuestion questionnaireQuestion : teacherQuestionnaireQuestion) {
-                evaluationQuestion.add(modelMapper.map(questionnaireQuestion.getEvaluationQuestion(), EvaluationQuestionDTO.Info.class));
-            }
-
-        if (!evaluationType.equals("TabPane_Behavior") && !evaluationType.equals("TabPane_Learning"))
-            for (QuestionnaireQuestion questionnaireQuestion : equipmentQuestionnaireQuestion) {
-                evaluationQuestion.add(modelMapper.map(questionnaireQuestion.getEvaluationQuestion(), EvaluationQuestionDTO.Info.class));
-            }
-
-        for (Goal goal : courseGoals.getGoalSet()) {
-
-            EvaluationQuestionDTO.Info evaluationQuestionDTO = new EvaluationQuestionDTO.Info();
-            evaluationQuestionDTO.setQuestion(goal.getTitleFa());
-
-            ParameterValueDTO.Info domain = new ParameterValueDTO.Info();
-            domain.setTitle("اهداف");
-            evaluationQuestionDTO.setDomain(domain);
-            evaluationQuestion.add(evaluationQuestionDTO);
-        }
-
-        for (Skill skill : skillList) {
-
-            EvaluationQuestionDTO.Info evaluationQuestionDTO = new EvaluationQuestionDTO.Info();
-            evaluationQuestionDTO.setQuestion(skill.getTitleFa());
-
-            ParameterValueDTO.Info domain = new ParameterValueDTO.Info();
-            domain.setTitle("هدف کلی");
-            evaluationQuestionDTO.setDomain(domain);
-            evaluationQuestion.add(evaluationQuestionDTO);
-        }
+        EvaluationDTO.Info evaluation = evaluationService.getEvaluationByData(questionnaireTypeId, classId, evaluatorId,
+                                                        evaluatorTypeId, evaluatedId, evaluatedTypeId, evaluationLevelId);
 
         TclassDTO.Info classInfo = tclassService.get(classId);
 
-        if (evaluationReturnDate.equals("noDate")) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = new Date();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            calendar.add(Calendar.MONTH, 1);
-            evaluationReturnDate = DateUtil.convertMiToKh(formatter.format(calendar.getTime()));
+        List<EvaluationAnswerDTO.EvaluationAnswerFullData> result = new ArrayList<>();
+
+
+        for (EvaluationAnswerDTO.Info evaluationAnswerDTO : evaluation.getEvaluationAnswerList()) {
+            EvaluationAnswerDTO.EvaluationAnswerFullData evaluationAnswerFullData = new EvaluationAnswerDTO.EvaluationAnswerFullData();
+            evaluationAnswerFullData.setId(evaluationAnswerDTO.getId());
+            evaluationAnswerFullData.setEvaluationId(evaluationAnswerDTO.getEvaluationId());
+            evaluationAnswerFullData.setEvaluationQuestionId(evaluationAnswerDTO.getEvaluationQuestionId());
+            evaluationAnswerFullData.setQuestionSourceId(evaluationAnswerDTO.getQuestionSourceId());
+            evaluationAnswerFullData.setAnswerId(evaluationAnswerDTO.getAnswerId());
+            evaluationAnswerFullData.setDescription(evaluation.getDescription());
+
+            if(evaluationAnswerFullData.getQuestionSourceId().equals(199L)){
+                QuestionnaireQuestion questionnaireQuestion = questionnaireQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
+                evaluationAnswerFullData.setOrder(questionnaireQuestion.getOrder());
+                evaluationAnswerFullData.setWeight(questionnaireQuestion.getWeight());
+                evaluationAnswerFullData.setQuestion(questionnaireQuestion.getEvaluationQuestion().getQuestion());
+                evaluationAnswerFullData.setDomainId(questionnaireQuestion.getEvaluationQuestion().getDomainId());
+            }
+            else  if(evaluationAnswerFullData.getQuestionSourceId().equals(200L) || evaluationAnswerFullData.getQuestionSourceId().equals(201L)){
+                DynamicQuestion dynamicQuestion = dynamicQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
+                evaluationAnswerFullData.setOrder(dynamicQuestion.getOrder());
+                evaluationAnswerFullData.setWeight(dynamicQuestion.getWeight());
+                evaluationAnswerFullData.setQuestion(dynamicQuestion.getQuestion());
+            }
+
+            result.add(evaluationAnswerFullData);
         }
 
-        final Map<String, Object> params = new HashMap<>();
-        params.put("todayDate", dateUtil.todayDate());
-        params.put("courseCode", classInfo.getCourse().getCode());
-        params.put("courseName", classInfo.getCourse().getTitleFa());
-        params.put("classCode", classInfo.getCode());
-        params.put("startDate", classInfo.getStartDate());
-        params.put("endDate", classInfo.getEndDate());
-        params.put("evaluationAudience", evaluationAudience.equals("null") ? "" : "مخاطب : " + evaluationAudience);
-        params.put("evaluationAudienceType", "("+evaluationAudienceType+")");
-        params.put("returnDate", evaluationReturnDate.replace("-", "/"));
-        params.put("evaluationType", (evaluationType.equals("TabPane_Reaction") ? "(واکنشی)" :
-                evaluationType.equals("TabPane_Learning") ? "(پیش تست)" :
-                        evaluationType.equals("TabPane_Behavior") ? "(رفتاری)" : "(نتایج)"));
+//        final Map<String, Object> params = new HashMap<>();
+//        params.put("todayDate", dateUtil.todayDate());
+//        params.put("courseCode", classInfo.getCourse().getCode());
+//        params.put("courseName", classInfo.getCourse().getTitleFa());
+//        params.put("classCode", classInfo.getCode());
+//        params.put("startDate", classInfo.getStartDate());
+//        params.put("endDate", classInfo.getEndDate());
+//        params.put("evaluationAudience", evaluationAudience.equals("null") ? "" : "مخاطب : " + evaluationAudience);
+//        params.put("evaluationAudienceType", "("+evaluationAudienceType+")");
+//        params.put("returnDate", evaluation.getReturnDate().replace("-", "/"));
+//        params.put("evaluationLevel", (evaluationLevelId.equals(154L) ? "(واکنشی)" :
+//                evaluationLevelId.equals(155L) ? "(یادگیری)" :
+//                        evaluationLevelId.equals(156L) ? "(رفتاری)" : evaluationLevelId.equals(157L) ? "(نتایج)" : "(متفرقه)"));
+//        params.put("questionnaireType", (questionnaireTypeId.equals(140L) ? "(پرسشنامه ارزیابی مدرس از کلاس)" :
+//                questionnaireTypeId.equals(230L) ? "(پرسشنامه ارزیابی دیگری از فراگیر)" :
+//                        questionnaireTypeId.equals(139L) ? "(پرسشنامه ارزیابی فراگیر از کلاس)" :
+//                                questionnaireTypeId.equals(141L) ?  "(پرسشنامه ارزیابی مسئول آموزش از مدرس)" : "متفرقه"));
+//
+//
+//        Set<ClassStudentDTO.AttendanceInfo> classStudent = classInfo.getClassStudentsForEvaluation(studentId);
+//
+//        String data = "{" + "\"dsStudent\": " + objectMapper.writeValueAsString(classStudent) + "," +
+//                "\"dsTeacherQuestion\": " + objectMapper.writeValueAsString(evaluationQuestion) + "}";
 
 
-        Set<ClassStudentDTO.AttendanceInfo> classStudent = classInfo.getClassStudentsForEvaluation(studentId);
-
-        String data = "{" + "\"dsStudent\": " + objectMapper.writeValueAsString(classStudent) + "," +
-                "\"dsTeacherQuestion\": " + objectMapper.writeValueAsString(evaluationQuestion) + "}";
-
-
-        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
-
-        params.put(ConstantVARs.REPORT_TYPE, type);
-        reportUtil.export("/reports/EvaluationReaction.jasper", params, jsonDataSource, response);
+//        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+//
+//        params.put(ConstantVARs.REPORT_TYPE, "pdf");
+//        reportUtil.export("/reports/EvaluationForm.jasper", params, jsonDataSource, response);
     }
 
     @Loggable
@@ -346,13 +329,17 @@ public class EvaluationRestController {
     public  ResponseEntity<ISC> getEvaluationForm(@RequestBody HashMap req) {
         List<EvaluationAnswerDTO.EvaluationAnswerFullData> result = evaluationService.getEvaluationForm(req);
 
-        ISC.Response<EvaluationAnswerDTO.EvaluationAnswerFullData> response = new ISC.Response<>();
-        response.setData(result)
-                .setStartRow(0)
-                .setEndRow(result.size())
-                .setTotalRows(result.size());
-        ISC<Object> objectISC = new ISC<>(response);
-        return new ResponseEntity<>(objectISC, HttpStatus.OK);
+        if(result != null) {
+            ISC.Response<EvaluationAnswerDTO.EvaluationAnswerFullData> response = new ISC.Response<>();
+            response.setData(result)
+                    .setStartRow(0)
+                    .setEndRow(result.size())
+                    .setTotalRows(result.size());
+            ISC<Object> objectISC = new ISC<>(response);
+            return new ResponseEntity<>(objectISC, HttpStatus.OK);
+        }
+        else
+            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
     }
 
     @Loggable

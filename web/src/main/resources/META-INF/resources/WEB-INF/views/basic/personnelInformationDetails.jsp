@@ -16,10 +16,9 @@
 
             this.set_PersonnelInfo_Details  = function set_PersonnelInfo_Details(selectedPersonnel) {
 
-
                 if (selectedPersonnel !== undefined && selectedPersonnel !== null) {
 
-                    let personnelId = selectedPersonnel.id;
+                    let personnelId = selectedPersonnel.id !== undefined ? selectedPersonnel.id : 0;
                     let personnelNo = selectedPersonnel.personnelNo;
                     let nationalCode = selectedPersonnel.nationalCode;
 
