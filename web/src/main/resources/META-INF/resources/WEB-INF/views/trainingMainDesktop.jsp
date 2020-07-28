@@ -2516,6 +2516,7 @@
         } else {
             let respCode = resp.httpResponseCode;
             if (respCode === 200 || respCode === 201) {
+                isDelete_questionnaire=true;
                 selectedState = "[{id:" + JSON.parse(resp.data).id + "}]";
                 let entityTitle = JSON.parse(resp.httpResponseText).title;
                 msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\' &nbsp;' + "<spring:message code="msg.successfully.done"/>";

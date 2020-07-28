@@ -8,12 +8,12 @@
 %>
 
 // <script>
-
     var postGroupPostList_Post_Group_Jsp = null;
     var naPostGroup_Post_Group_Jsp = null;
     var PersonnelPostGroup_Post_Group_Jsp = null;
     var wait_PostGroup = null;
     var postsSelection=false;
+    let LoadAttachments_Post_Group = null;
 
     PostDS_PostGroup = isc.TrDS.create({
         fields: [
@@ -121,6 +121,8 @@
         width: 150,
         data: [{
             title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
+
+                LoadAttachments_Post_Group.ListGrid_JspAttachment.setData([]);
                 ListGrid_Post_Group_refresh();
             }
         }, {
@@ -926,6 +928,8 @@
         // icon: "<spring:url value="refresh.png"/>",
         title: "بازخوانی اطلاعات",
         click: function () {
+
+            LoadAttachments_Post_Group.ListGrid_JspAttachment.setData([]);
             ListGrid_Post_Group_refresh();
         }
     });
@@ -1272,7 +1276,11 @@
         tabs: [
             {name: "TabPane_Post_Post_Group_Jsp", title: "لیست پست ها", pane: ListGrid_Post_Group_Posts},
             {name: "TabPane_Personnel_Post_Group_Jsp", title: "لیست پرسنل", pane: PersonnelLG_Post_Group_Jsp},
-            {name: "TabPane_NA_Post_Group_Jsp", title: "<spring:message code='need.assessment'/>", pane: CourseLG_Post_Group_Jsp}
+            {name: "TabPane_NA_Post_Group_Jsp", title: "<spring:message code='need.assessment'/>", pane: CourseLG_Post_Group_Jsp},
+            {
+                ID: "PostGroup_AttachmentsTab",
+                title: "<spring:message code="attachments"/>",
+            },
         ],
         tabSelected: function (){
             selectionUpdated_Post_Group_Jsp();
@@ -1417,7 +1425,7 @@
             return;
         }
         
-        switch (tab.name) {
+        switch (tab.name || tab.ID) {
             case "TabPane_Post_Post_Group_Jsp":{
                 RestDataSource_Post_Group_Posts_Jsp.fetchDataURL = postGroupUrl + "/" + postGroup.id + "/getPosts";
                 if (postGroupPostList_Post_Group_Jsp == null)
@@ -1446,24 +1454,49 @@
                 CourseLG_Post_Group_Jsp.fetchData();
                 break;
             }
+            case "PostGroup_AttachmentsTab": {
+                if (typeof LoadAttachments_Post_Group.loadPage_attachment_Job !== "undefined")
+                    LoadAttachments_Post_Group.loadPage_attachment_Job("PostGroup", postGroup.id, "<spring:message code="attachment"/>", {
+                        1: "جزوه",
+                        2: "لیست نمرات",
+                        3: "لیست حضور و غیاب",
+                        4: "نامه غیبت موجه"
+                    }, false);
+                break;
+            }
         }
     }
 
     function fetchPersonnelData_Post_Group_Jsp() {
         if (Detail_Tab_Post_Group.getSelectedTab().name !== "TabPane_Personnel_Post_Group_Jsp")
             return;
-        if (postGroupPostList_Post_Group_Jsp == null) {
+        if (postGroupPostList_Post_Group_Jsp == null || postGroupPostList_Post_Group_Jsp.isEmpty()) {
             PersonnelLG_Post_Group_Jsp.setData([]);
             return;
         }
         PersonnelLG_Post_Group_Jsp.implicitCriteria = {
             _constructor: "AdvancedCriteria",
             operator: "and",
-            criteria: [{fieldName: "postCode", operator: "equals", value: postGroupPostList_Post_Group_Jsp.map(p => p.code)}]
+            criteria: [
+                {fieldName: "postCode", operator: "equals", value: postGroupPostList_Post_Group_Jsp.map(p => p.code)},
+                {fieldName: "active", operator: "equals", value: 1},
+                {fieldName: "employmentStatusId", operator: "equals", value: 5}]
         };
         PersonnelLG_Post_Group_Jsp.invalidateCache();
         PersonnelLG_Post_Group_Jsp.fetchData();
     }
+
+    if (!loadjs.isDefined('load_Attachments_post_Group')) {
+        loadjs('<spring:url value='tclass/attachments-tab' />', 'load_Attachments_post_Group');
+    }
+
+    loadjs.ready('load_Attachments_post_Group', function () {
+        setTimeout(()=> {
+            LoadAttachments_Post_Group = new loadAttachments();
+            Detail_Tab_Post_Group.updateTab(PostGroup_AttachmentsTab, LoadAttachments_Post_Group.VLayout_Body_JspAttachment)
+        },0);
+
+    })
 
     function loadPostData(criteria, title){
         PostLG_PostGroup.setImplicitCriteria(criteria);

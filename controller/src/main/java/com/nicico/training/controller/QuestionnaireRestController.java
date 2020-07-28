@@ -5,6 +5,7 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.dto.QuestionnaireDTO;
 import com.nicico.training.model.Questionnaire;
+import com.nicico.training.repository.QuestionnaireQuestionDAO;
 import com.nicico.training.service.QuestionnaireService;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.RequiredArgsConstructor;
@@ -67,7 +68,7 @@ public class QuestionnaireRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
         try {
-            return new ResponseEntity<>(questionnaireService.delete(id), HttpStatus.OK);
+            return new ResponseEntity<>(questionnaireService.deleteWithChildren(id), HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
         }

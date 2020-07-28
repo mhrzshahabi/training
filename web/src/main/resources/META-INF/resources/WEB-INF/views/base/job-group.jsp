@@ -14,6 +14,7 @@
     var personnelJob_JobGroup = null;
     var postJob_JobGroup = null;
     var jobsSelection=false;
+    let oLoadAttachments_Job_Group = null;
 
     <%--if(Window_NeedsAssessment_Edit === undefined) {--%>
         <%--var Window_NeedsAssessment_Edit = isc.Window.create({--%>
@@ -1249,6 +1250,11 @@
             {name: "TabPane_Post_JobGroup", title: "لیست پست ها", pane: PostLG_JobGroup},
             {name: "TabPane_Personnel_JobGroup", title: "لیست پرسنل", pane: PersonnelLG_JobGroup},
             {name: "TabPane_NA_JobGroup", title: "<spring:message code='need.assessment'/>", pane: NALG_JobGroup},
+            {
+                ID: "Job_GroupAttachmentsTab",
+                title: "<spring:message code="attachments"/>",
+                // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})
+            },
         ],
         tabSelected: function (){
             selectionUpdated_JobGroupGroup();
@@ -1369,6 +1375,7 @@
         PostLG_JobGroup.setData([]);
         PersonnelLG_JobGroup.setData([]);
         NALG_JobGroup.setData([]);
+        oLoadAttachments_Job_Group.ListGrid_JspAttachment.setData([]);
         job_JobGroup = null;
         naJob_JobGroup = null;
         personnelJob_JobGroup = null;
@@ -1384,6 +1391,8 @@
         Window_Job_Group_Jsp.show();
     }
 
+
+
     function selectionUpdated_JobGroupGroup(){
         let jobGroup = ListGrid_Job_Group_Jsp.getSelectedRecord();
         let tab = Detail_Tab_Job_Group.getSelectedTab();
@@ -1392,7 +1401,7 @@
             return;
         }
 
-        switch (tab.name) {
+        switch (tab.name || tab.ID) {
             case "TabPane_Job_Group_Job":{
                 if (job_JobGroup === jobGroup.id)
                     return;
@@ -1435,7 +1444,31 @@
                 NALG_JobGroup.fetchData();
                 break;
             }
+            case "Job_GroupAttachmentsTab": {
+
+                if (typeof oLoadAttachments_Job_Group.loadPage_attachment_Job!== "undefined")
+                    oLoadAttachments_Job_Group.loadPage_attachment_Job("JobGroup", jobGroup.id, "<spring:message code="attachment"/>", {
+                        1: "جزوه",
+                        2: "لیست نمرات",
+                        3: "لیست حضور و غیاب",
+                        4: "نامه غیبت موجه"
+                    }, false);
+                break;
+            }
         }
     }
+
+    if (!loadjs.isDefined('load_Attachments_Job_Group')) {
+        loadjs('<spring:url value='tclass/attachments-tab' />', 'load_Attachments_Job_Group');
+    }
+
+    loadjs.ready('load_Attachments_Job_Group', function () {
+        setTimeout(()=> {
+            oLoadAttachments_Job_Group = new loadAttachments();
+            Detail_Tab_Job_Group.updateTab(Job_GroupAttachmentsTab, oLoadAttachments_Job_Group.VLayout_Body_JspAttachment)
+        },0);
+
+    });
+
 
     // </script>
