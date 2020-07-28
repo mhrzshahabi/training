@@ -2,6 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<%@include file="../messenger/MLanding.jsp" %>
 // <script>
     //----------------------------------------- DataSources ------------------------------------------------------------
         var RestDataSource_Year_Filter_Evaluation = isc.TrDS.create({
@@ -245,6 +246,26 @@
             ]
         });
 
+
+    var MSG_Window_MSG_Main = isc.Window.create({
+        placement: "center",
+        title: "پیامرسان",
+        overflow: "auto",
+        width: 900,
+        height: 700,
+        isModal: false,
+        autoDraw: false,
+        autoSize: false,
+        items: [
+              MSG_main_layout
+        ],
+        closeClick: function () {
+            MSG_initMSG()
+            this.clear()
+            this.close();
+        },
+    });
+
     //----------------------------------------- ListGrids --------------------------------------------------------------
         var ListGrid_class_Evaluation = isc.TrLG.create({
             width: "100%",
@@ -392,6 +413,16 @@
         });
 
     //----------------------------------------- ToolStrips -------------------------------------------------------------
+
+         var ToolStripButton_MSG = isc.IButton.create({
+            baseStyle: 'MSG-btn-orange',
+            icon: '../static/img/msg/mail.svg',
+            title:"پیامرسان", width:80,
+            click: function () {
+                MSG_Window_MSG_Main.show();
+            }
+        })
+
         var ToolStripButton_Refresh_Evaluation = isc.ToolStripButtonRefresh.create({
             title: "<spring:message code="refresh"/>",
             click: function () {
@@ -403,15 +434,18 @@
             width: "100%",
             membersMargin: 5,
             members: [
+                <sec:authorize access="hasAuthority('Evaluation_R')">
                 DynamicForm_Term_Filter_Evaluation,
                 isc.ToolStrip.create({
                     width: "5%",
                     align: "left",
                     border: '0px',
                     members: [
+                        ToolStripButton_MSG,
                         ToolStripButton_Refresh_Evaluation
                     ]
                 })
+                </sec:authorize>
             ]
         });
 
@@ -421,26 +455,38 @@
             tabBarPosition: "top",
             enabled: false,
             tabs: [
+                <sec:authorize access="hasAuthority('Evaluation_Reaction')">
                 {
                     id: "TabPane_Reaction",
                     title: "<spring:message code="evaluation.reaction"/>",
                     pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation/reaction-evaluation-form"})
-                },
+                }
+                ,
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Evaluation_Learning')">
                 {
                     id: "TabPane_Learning",
                     title: "یادگیری-ثبت نمرات پیش آزمون",
                     pane: isc.ViewLoader.create({autoDraw: true, viewURL: "registerScorePreTest/show-form"})
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Evaluation_Behavior')">
                 {
                     id: "TabPane_Behavior",
                     title: "<spring:message code="evaluation.behavioral"/>",
                     pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation/behavioral-evaluation-form"})
                 },
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Evaluation_Results')">
                 {
                     id: "TabPane_Results",
                     title: "<spring:message code="evaluation.results"/>",
                     pane: null
                 }
+                </sec:authorize>
             ],
             tabSelected: function (tabNum, tabPane, ID, tab, name) {
                 if (isc.Page.isLoaded())
@@ -615,4 +661,5 @@
                 return 199;
         }
     }
+
 
