@@ -2,7 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 // <script>
-
+    let LoadAttachments_Post = null;
     <%--if(Window_NeedsAssessment_Edit === undefined) {--%>
         <%--var Window_NeedsAssessment_Edit = isc.Window.create({--%>
             <%--ID: "Window_NeedsAssessment_Edit",--%>
@@ -42,6 +42,7 @@
                 title: "<spring:message code="refresh"/>",
                 icon: "<spring:url value="refresh.png"/>",
                 click: function () {
+                    LoadAttachments_Post.ListGrid_JspAttachment.setData([]);
                     closeToShowUnGroupedPosts_POST();
                     refreshLG(PostLG_post);
                 }
@@ -172,6 +173,7 @@
                     }),
                     isc.ToolStripButtonRefresh.create({
                         click: function () {
+                            LoadAttachments_Post.ListGrid_JspAttachment.setData([]);
                             closeToShowUnGroupedPosts_POST();
                             refreshLG(PostLG_post);
                         }
@@ -357,11 +359,7 @@
             }
         },
         selectionUpdated: function (record) {
-            CourseDS_POST.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + record.id + "&objectType=Post";
-            CourseDS_POST.invalidateCache();
-            CourseDS_POST.fetchData();
-            CoursesLG_POST.invalidateCache();
-            CoursesLG_POST.fetchData();
+            selectionUpdated_Post()
         },
         getCellCSSText: function (record) {
             if (record.competenceCount === 0)
@@ -779,8 +777,18 @@
         height: "40%",
         tabBarPosition: "top",
         tabs: [
-            {title: "<spring:message code='need.assessment'/>", pane: CoursesLG_POST}
-        ]
+            {
+                ID:"Post_NeedAssesment",
+                title: "<spring:message code='need.assessment'/>", pane: CoursesLG_POST},
+            {
+                ID: "Post_AttachmentsTab",
+                title: "<spring:message code="attachments"/>",
+            },
+
+        ],
+        tabSelected: function (){
+            selectionUpdated_Post();
+        }
     });
 
     //////////////////////////////////////////////////////////////detailTab/////////////////////////////////////////////
@@ -803,10 +811,51 @@
         PostLG_post.invalidateCache();
         PostLG_post.fetchData();
     }
+   function selectionUpdated_Post() {
+       let post = PostLG_post.getSelectedRecord();
+       let tab = DetailTS_Post.getSelectedTab();
+       if (post == null && tab.pane != null) {
+           tab.pane.setData([]);
+           return;
+       }
 
+       switch (tab.name || tab.ID) {
+           case "Post_NeedAssesment": {
+               CourseDS_POST.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + post.id + "&objectType=Post";
+               CourseDS_POST.invalidateCache();
+               CourseDS_POST.fetchData();
+               CoursesLG_POST.invalidateCache();
+               CoursesLG_POST.fetchData();
+               break;
+           }
+           case "Post_AttachmentsTab": {
+               if (typeof LoadAttachments_Post.loadPage_attachment_Job !== "undefined")
+                   LoadAttachments_Post.loadPage_attachment_Job("Post", post.id, "<spring:message code="attachment"/>", {
+                       1: "جزوه",
+                       2: "لیست نمرات",
+                       3: "لیست حضور و غیاب",
+                       4: "نامه غیبت موجه"
+                   }, false);
+               break;
+           }
+
+
+       }
+   }
     function closeToShowUnGroupedPosts_POST(){
         PostLG_post.setImplicitCriteria(null);
     }
 
+    if (!loadjs.isDefined('load_Attachments_post')) {
+        loadjs('<spring:url value='tclass/attachments-tab' />', 'load_Attachments_post');
+    }
+
+    loadjs.ready('load_Attachments_post', function () {
+        setTimeout(()=> {
+            LoadAttachments_Post = new loadAttachments();
+            DetailTS_Post.updateTab(Post_AttachmentsTab, LoadAttachments_Post.VLayout_Body_JspAttachment)
+        },0);
+
+    })
 
     // </script>

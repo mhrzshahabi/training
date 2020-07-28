@@ -8,12 +8,12 @@
     var method = "POST";
     var url;
     var wait_PostGradeGroup;
-
     var postGrade_PGG = null;
     var naJob_PGG = null;
     var personnelJob_PGG = null;
     var post_PGG = null;
     var postGradesSelection=false;
+    let oLoadAttachments_PostGradeGroup = null;
 
     <%--if(Window_NeedsAssessment_Edit === undefined) {--%>
         <%--var Window_NeedsAssessment_Edit = isc.Window.create({--%>
@@ -1050,6 +1050,11 @@
             {name: "TabPane_Post_PGG", title: "لیست پست ها", pane: PostLG_PGG},
             {name: "TabPane_Personnel_PGG", title: "لیست پرسنل", pane: PersonnelLG_PGG},
             {name: "TabPane_NA_PGG", title: "<spring:message code='need.assessment'/>", pane: NALG_PGG},
+            {
+                ID: "PostGradeGroup_AttachmentsTab",
+                title: "<spring:message code="attachments"/>",
+                // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})
+            },
         ],
         tabSelected: function (){
             selectionUpdated_PostGrade();
@@ -1200,6 +1205,7 @@
         naJob_PGG = null;
         personnelJob_PGG = null;
         post_PGG = null;
+        oLoadAttachments_PostGradeGroup.ListGrid_JspAttachment.setData([]);
     }
 
     function ListGrid_Post_Grade_Group_add() {
@@ -1226,7 +1232,7 @@
             return;
         }
 
-        switch (tab.name) {
+        switch (tab.name || tab.ID) {
             case "TabPane_Post_Grade_PGG":{
                 if (postGrade_PGG === postGradeGroup.id)
                     return;
@@ -1269,9 +1275,31 @@
                 NALG_PGG.fetchData();
                 break;
             }
+            case "PostGradeGroup_AttachmentsTab": {
+
+                if (typeof oLoadAttachments_PostGradeGroup.loadPage_attachment_Job!== "undefined")
+                    oLoadAttachments_PostGradeGroup.loadPage_attachment_Job("PostGradeGroup", postGradeGroup.id, "<spring:message code="attachment"/>", {
+                        1: "جزوه",
+                        2: "لیست نمرات",
+                        3: "لیست حضور و غیاب",
+                        4: "نامه غیبت موجه"
+                    }, false);
+                break;
+            }
         }
     }
 
+    if (!loadjs.isDefined('load_Attachments_postGradeGroup')) {
+        loadjs('<spring:url value='tclass/attachments-tab' />', 'load_Attachments_postGradeGroup');
+    }
+
+    loadjs.ready('load_Attachments_postGradeGroup', function () {
+        setTimeout(()=> {
+            oLoadAttachments_PostGradeGroup = new loadAttachments();
+            Detail_Tab_Post_Grade_Group.updateTab(PostGradeGroup_AttachmentsTab, oLoadAttachments_PostGradeGroup.VLayout_Body_JspAttachment)
+        },0);
+
+    });
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // </script>
