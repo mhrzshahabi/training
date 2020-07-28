@@ -2372,22 +2372,6 @@
         enabled: false,
         tabBarPosition: "top",
         tabs: [
-            <sec:authorize access="hasAuthority('TclassSessionsTab')">
-            {
-                ID: "classSessionsTab",
-                title: "<spring:message code="sessions"/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/sessions-tab"})
-            },
-            </sec:authorize>
-
-            <sec:authorize access="hasAuthority('TclassCheckListTab')">
-            {
-                ID: "classCheckListTab",
-                name: "checkList",
-                title: "<spring:message code="checkList"/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/checkList-tab"})
-            },
-            </sec:authorize>
 
             <sec:authorize access="hasAuthority('TclassStudentsTab')">
             {
@@ -2396,15 +2380,13 @@
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/student"})
             },
             </sec:authorize>
-
-            <sec:authorize access="hasAuthority('TclassAttachmentsTab')">
+            <sec:authorize access="hasAuthority('TclassSessionsTab')">
             {
-                ID: "classAttachmentsTab",
-                title: "<spring:message code="attachments"/>",
-               // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})
+                ID: "classSessionsTab",
+                title: "<spring:message code="sessions"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/sessions-tab"})
             },
             </sec:authorize>
-
             <sec:authorize access="hasAuthority('TclassAttendanceTab')">
             {
                 ID: "classAttendanceTab",
@@ -2412,7 +2394,6 @@
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attendance-tab"})
             },
             </sec:authorize>
-
             <sec:authorize access="hasAuthority('TclassScoresTab')">
             {
                 ID: "classScoresTab",
@@ -2421,28 +2402,12 @@
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/scores-tab"})
             },
             </sec:authorize>
-
-            <sec:authorize access="hasAuthority('TclassAlarmsTab')">
+            <sec:authorize access="hasAuthority('TclassCheckListTab')">
             {
-                ID: "classAlarmsTab",
-                title: "<spring:message code="alarms"/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/alarms-tab"})
-            },
-            </sec:authorize>
-
-            <sec:authorize access="hasAuthority('TclassPreCourseTestQuestionsTab')">
-            {
-                ID: "classPreCourseTestQuestionsTab",
-                title: "<spring:message code='class.preCourseTestQuestion'/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/pre-course-test-questions-tab"})
-            },
-            </sec:authorize>
-
-            <sec:authorize access="hasAuthority('TclassteacherInformationTab')">
-            {
-                ID: "teacherInformationTab",
-                title: "<spring:message code='teacher.information'/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/teacher-information-tab"})
+                ID: "classCheckListTab",
+                name: "checkList",
+                title: "<spring:message code="checkList"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/checkList-tab"})
             },
             </sec:authorize>
             {
@@ -2450,7 +2415,35 @@
                 title: "مستندات کلاس",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/classDocuments-tab"})
             },
-            <%--{--%>
+            <sec:authorize access="hasAuthority('TclassAlarmsTab')">
+            {
+                ID: "classAlarmsTab",
+                title: "<spring:message code="alarms"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/alarms-tab"})
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('TclassteacherInformationTab')">
+            {
+                ID: "teacherInformationTab",
+                title: "<spring:message code='teacher.information'/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/teacher-information-tab"})
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('TclassPreCourseTestQuestionsTab')">
+            {
+                ID: "classPreCourseTestQuestionsTab",
+                title: "<spring:message code='class.preCourseTestQuestion'/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/pre-course-test-questions-tab"})
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('TclassAttachmentsTab')">
+            {
+                ID: "classAttachmentsTab",
+                title: "<spring:message code="attachments"/>",
+                // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})
+            },
+            </sec:authorize>
+           <%--{--%>
                 <%--ID: "costClassTab",--%>
                 <%--title: "<spring:message code='cost.class'/>",--%>
                 <%--pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/cost-class-tab"})--%>
