@@ -123,4 +123,14 @@ public class DepartmentRestController {
     public ResponseEntity<ISC<DepartmentDTO.FieldValue>> findAllValuesOfOneFieldFromDepartment(@RequestParam String fieldName) {
         return new ResponseEntity<>(ISC.convertToIscRs(departmentService.findAllValuesOfOneFieldFromDepartment(fieldName), 0), HttpStatus.OK);
     }
+
+    @GetMapping(value = "iscList")
+    public ResponseEntity<ISC<DepartmentDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<DepartmentDTO.Info> searchRs = departmentService.search(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
 }

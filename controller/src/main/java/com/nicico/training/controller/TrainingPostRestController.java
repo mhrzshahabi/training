@@ -4,14 +4,18 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PostDTO;
+import com.nicico.training.dto.TrainingPostDTO;
+import com.nicico.training.dto.ViewTrainingPostDTO;
 import com.nicico.training.service.TrainingPostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
@@ -23,6 +27,34 @@ import java.util.Set;
 public class TrainingPostRestController {
 
     private final TrainingPostService trainingPostService;
+
+    @Loggable
+    @PostMapping
+    public ResponseEntity<TrainingPostDTO> create(@Validated @RequestBody TrainingPostDTO.Create request, HttpServletResponse response) {
+        try {
+            return new ResponseEntity<>(trainingPostService.create(request, response), HttpStatus.CREATED);
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.valueOf(500));
+        }
+
+    }
+
+    @Loggable
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<TrainingPostDTO> update(@PathVariable Long id, @Validated @RequestBody TrainingPostDTO.Update request, HttpServletResponse response) {
+        try {
+            return new ResponseEntity<>(trainingPostService.update(id, request, response), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.valueOf(500));
+        }
+    }
+
+    @Loggable
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        trainingPostService.delete(id);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
     @Loggable
     @PostMapping(value = "/addPosts/{TrainingPostId}/{postIds}")

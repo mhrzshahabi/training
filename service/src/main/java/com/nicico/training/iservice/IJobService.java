@@ -20,4 +20,6 @@ public interface IJobService {
 
     TotalResponse<JobDTO.Info> search(NICICOCriteria request);
 
+    JobDTO.Info get (Long id);
+
 }
