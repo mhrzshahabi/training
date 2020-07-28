@@ -118,6 +118,11 @@
                         name: "ccpUnit",
                         title: "<spring:message code="reward.cost.center.unit"/>",
                         filterOperator: "iContains"
+                    },
+                    {
+                        name: "mobile",
+                        title: "<spring:message code="mobile"/>",
+                        filterOperator: "iContains"
                     }
                 ],
                 fetchDataURL: personnelUrl + "/iscList"
@@ -241,7 +246,8 @@
                     {name: "ccpAssistant"},
                     {name: "ccpAffairs"},
                     {name: "ccpSection"},
-                    {name: "ccpUnit"}
+                    {name: "ccpUnit"},
+                    {name: "mobile"}
                 ],
                 recordClick: function () {
                     if (oPersonnelInformationDetails!=null && typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
@@ -364,6 +370,11 @@
                     {
                         name: "ccpUnit",
                         title: "<spring:message code="reward.cost.center.unit"/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "mobile",
+                        title: "<spring:message code="mobile"/>",
                         filterOperator: "iContains"
                     }
                 ],

@@ -1,13 +1,19 @@
 package com.nicico.training.service;
 
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.QuestionnaireDTO;
 import com.nicico.training.model.Questionnaire;
+import com.nicico.training.model.QuestionnaireQuestion;
 import com.nicico.training.repository.QuestionnaireDAO;
+import com.nicico.training.repository.QuestionnaireQuestionDAO;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -19,6 +25,9 @@ public class QuestionnaireService extends BaseService<Questionnaire, Long, Quest
         super(new Questionnaire(), QuestionnaireDAO);
     }
 
+    @Autowired
+    private QuestionnaireQuestionDAO questionnaireQuestionDAO;
+
     @Transactional
     public Boolean isLocked(Long id) {
         Integer result = dao.isLocked(id);
@@ -27,27 +36,49 @@ public class QuestionnaireService extends BaseService<Questionnaire, Long, Quest
 
     @Transactional
     public QuestionnaireDTO.Info updateEnable(Long id) {
-        Optional<Questionnaire> model=dao.findById(id);
+        Optional<Questionnaire> model = dao.findById(id);
 
-        Questionnaire oQuestionnaire=model.orElse(null);
+        Questionnaire oQuestionnaire = model.orElse(null);
 
-        if(oQuestionnaire==null)
+        if (oQuestionnaire == null)
             return null;
-        else
-        {
-            Long enable=oQuestionnaire.getEEnabled();
+        else {
+            Long enable = oQuestionnaire.getEEnabled();
 
-            if(enable==null||enable==74){
-                enable=494L;
-            }else{
-                enable=74L;
+            if (enable == null || enable == 74) {
+                enable = 494L;
+            } else {
+                enable = 74L;
             }
 
             oQuestionnaire.setEEnabled(enable);
 
             dao.save(oQuestionnaire);
 
-            return modelMapper.map(oQuestionnaire,QuestionnaireDTO.Info.class);
+            return modelMapper.map(oQuestionnaire, QuestionnaireDTO.Info.class);
+        }
+    }
+
+    @Transactional
+    public QuestionnaireDTO.Info deleteWithChildren(Long id) {
+        final Optional<Questionnaire> optional = dao.findById(id);
+        final Questionnaire entity = optional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        try {
+            Questionnaire model = dao.findById(id).orElse(null);
+
+            if (model == null) {
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
+            } else {
+                List<QuestionnaireQuestion> questionnaireQuestionList=model.getQuestionnaireQuestionList();
+
+                questionnaireQuestionDAO.deleteAll(questionnaireQuestionList);
+
+                dao.deleteById(id);
+                return modelMapper.map(entity, QuestionnaireDTO.Info.class);
+            }
+
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
         }
     }
 

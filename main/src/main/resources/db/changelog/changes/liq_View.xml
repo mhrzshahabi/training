@@ -2572,7 +2572,7 @@ GROUP BY
     ]]>
         </createView>
     </changeSet>
-    <changeSet author="NICICO" id="VIEW_TRAINING_POST-003">
+    <changeSet author="NICICO" id="VIEW_TRAINING_POST-004">
         <createView viewName="VIEW_TRAINING_POST" replaceIfExists="true">
             <![CDATA[
    SELECT
@@ -2605,13 +2605,13 @@ GROUP BY
     COUNT(DISTINCT na.f_competence) AS n_competence_count,
     COUNT(DISTINCT prs.id) AS n_personnel_count
 FROM
-    tbl_training_post               tp
-    LEFT JOIN tbl_needs_assessment    na ON tp.id = na.f_object
+    tbl_training_post        tp
+    LEFT JOIN tbl_needs_assessment     na ON tp.id = na.f_object
                                          AND na.c_object_type = 'TrainingPost'
-    LEFT JOIN TBL_POST_TRAINING_POST ptp ON tp.id = ptp.f_training_post_id
-    LEFT JOIN view_active_personnel   prs ON ptp.f_post_id = prs.f_post_id
-    LEFT JOIN tbl_job                 j ON j.id = tp.f_job_id
-    LEFT JOIN tbl_post_grade          pg ON pg.id = tp.f_post_grade_id
+    LEFT JOIN tbl_post_training_post   ptp ON tp.id = ptp.f_training_post_id
+    LEFT JOIN tbl_personnel            prs ON ptp.f_post_id = prs.f_post_id
+    LEFT JOIN tbl_job                  j ON j.id = tp.f_job_id
+    LEFT JOIN tbl_post_grade           pg ON pg.id = tp.f_post_grade_id
 GROUP BY
     tp.id,
     tp.c_created_by,

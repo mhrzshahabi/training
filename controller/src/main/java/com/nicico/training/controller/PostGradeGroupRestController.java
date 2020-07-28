@@ -59,6 +59,9 @@ public class PostGradeGroupRestController {
     @GetMapping(value = "/postIscList/{id}")
     public ResponseEntity<ISC<PostDTO.Info>> postList(HttpServletRequest iscRq, @PathVariable(value = "id") Long id) throws IOException {
         List<PostGradeDTO.Info> postGrades = postGradeGroupService.getPostGrades(id);
+        if (postGrades.isEmpty()) {
+            return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
+        }
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq, postGrades.stream().map(PostGradeDTO.Info::getId).collect(Collectors.toList()), "postGrade", EOperator.inSet);
         SearchDTO.SearchRs<PostDTO.Info> searchRs = postService.searchWithoutPermission(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
@@ -67,6 +70,9 @@ public class PostGradeGroupRestController {
     @GetMapping(value = "/personnelIscList/{id}")
     public ResponseEntity<ISC<PersonnelDTO.Info>> personnelList(HttpServletRequest iscRq, @PathVariable(value = "id") Long id) throws IOException {
         List<PostGradeDTO.Info> postGrades = postGradeGroupService.getPostGrades(id);
+        if (postGrades.isEmpty()) {
+            return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
+        }
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq, postGrades.stream().map(PostGradeDTO.Info::getCode).collect(Collectors.toList()), "postGradeCode", EOperator.inSet);
         searchRq.getCriteria().getCriteria().add(makeNewCriteria("active", 1, EOperator.equals, null));
         searchRq.getCriteria().getCriteria().add(makeNewCriteria("employmentStatusId", 5, EOperator.equals, null));
