@@ -1196,6 +1196,7 @@
     }
 
     function ListGrid_Post_Grade_Group_refresh() {
+        objectIdAttachment=null
         refreshLG(ListGrid_Post_Grade_Group_Jsp);
         ListGrid_Grades_Post_Grade_Group_Jsp.setData([]);
         PostLG_PGG.setData([]);

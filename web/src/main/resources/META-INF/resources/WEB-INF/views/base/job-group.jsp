@@ -1370,6 +1370,7 @@
     }
 
     function ListGrid_Job_Group_refresh() {
+        objectIdAttachment=null
         refreshLG(ListGrid_Job_Group_Jsp);
         ListGrid_Job_Group_Jobs.setData([]);
         PostLG_JobGroup.setData([]);

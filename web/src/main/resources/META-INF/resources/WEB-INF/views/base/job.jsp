@@ -92,7 +92,7 @@
                         }),
                         isc.ToolStripButtonRefresh.create({
                             click: function () {
-                                refresh_Job();
+                                   refresh_Job();
                             }
                         }),
                     ]
@@ -813,6 +813,7 @@
         });
 
         function refresh_Job() {
+            objectIdAttachment=null
             refreshLG(JobLG_job);
             PostLG_Job.setData([]);
             oLoadAttachments_Job.ListGrid_JspAttachment.setData([]);

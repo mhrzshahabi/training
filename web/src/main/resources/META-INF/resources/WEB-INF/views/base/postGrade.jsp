@@ -504,6 +504,7 @@
 
     // ------------------------------------------- Functions -------------------------------------------
     function refreshPostGradeLG_postGrade() {
+        objectIdAttachment=null
         refreshLG(PostGradeLG_postGrade);
         PostLG_PostGrade.setData([]);
         PersonnelLG_PostGrade.setData([]);
