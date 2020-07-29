@@ -48,7 +48,7 @@ public class SendMessageRestController {
     @PostMapping(value = "/sendSMS")
     public ResponseEntity sendSMS(@RequestBody String data) throws IOException {
 
-        List<Long> personnelInClassIDs = new ArrayList<>();
+        /*List<Long> personnelInClassIDs = new ArrayList<>();
         List<Long> teacherInClassIDs = new ArrayList<>();
         List<Long> topPersonnelInClassIDs = new ArrayList<>();
         List<Long> coWorkerInClassIDs = new ArrayList<>();
@@ -134,9 +134,16 @@ public class SendMessageRestController {
             SearchDTO.SearchRs<PersonnelDTO.Info> searchRs = personnelService.search(searchRq);
 
             searchRs.getList().forEach(p->mobiles.add(p.getMobile()));
-        }
+        }*/
+        ObjectMapper objectMapper = new ObjectMapper();
 
-        sendMessageService.asyncEnqueue(mobiles, oMessage);
+        JsonNode jsonNode = objectMapper.readTree(data);
+        List<String> number=new ArrayList<>();
+        number.add("9137454148");
+        number.add("9103677968");
+
+
+        sendMessageService.asyncEnqueue(number, "test");
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
