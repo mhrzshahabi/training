@@ -31,7 +31,7 @@ public class TrainingOverTimeService implements ITrainingOverTimeService {
 
 
         StringBuilder stringBuilder=new StringBuilder().append(
-                " SELECT\n " +
+                " SELECT distinct\n " +
                 "    std.personnel_no AS personalnum,\n " +
                 "    std.emp_no  AS personalnum2,\n " +
                 "    std.national_code AS nationalcode,\n " +
@@ -49,7 +49,7 @@ public class TrainingOverTimeService implements ITrainingOverTimeService {
                 "        SELECT\n " +
                 "            * from view_personnels\n"+
                 "    ) personnel ON std.personnel_no = personnel.personnel_no\n " +
-                "    INNER JOIN tbl_department dep ON dep.id = personnel.department_id \n " +
+                "    LEFT JOIN tbl_department dep ON dep.id = personnel.department_id \n " +
                 "    INNER JOIN tbl_session csession ON att.f_session = csession.id\n " +
                 "    INNER JOIN tbl_class class ON csession.f_class_id = class.id\n " +
                 " WHERE\n " +
