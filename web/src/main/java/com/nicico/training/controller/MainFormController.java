@@ -159,6 +159,11 @@ public class MainFormController {
         return "report/continuousStatusReport";
     }
 
+    @RequestMapping("/personnelTrainingStatusReport")
+    public String showPersonnemTrainingStatusReportForm() {
+        return "report/personnel-training-status-report";
+    }
+
     @RequestMapping("/presenceReport")
     public String showPresenceReport() {
         return "report/presenceReport";
