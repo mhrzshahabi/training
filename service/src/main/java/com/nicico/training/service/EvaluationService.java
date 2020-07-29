@@ -92,6 +92,10 @@ public class EvaluationService implements IEvaluationService {
                 updateTclassInfo(updating.getClassId(),-1, 3);
         }
 
+        else  if(updating.getQuestionnaireTypeId() != null && updating.getQuestionnaireTypeId().equals(230L)) {
+            updateClassStudentInfo(updating, 2);
+        }
+
         return modelMapper.map(evaluationDAO.save(updating), EvaluationDTO.Info.class);
     }
 
@@ -139,6 +143,7 @@ public class EvaluationService implements IEvaluationService {
         else if(evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(230L)) {
             List<EvaluationAnswer> list = createEvaluationAnswers(saved);
             saved.setEvaluationAnswerList(list);
+            updateClassStudentInfo(saved, 1);
         }
         return modelMapper.map(saved, EvaluationDTO.Info.class);
     }
@@ -306,6 +311,8 @@ public class EvaluationService implements IEvaluationService {
             updateTclassInfo(Long.parseLong(req.get("classId").toString()),0, -1);
         else if(req.get("questionnaireTypeId").toString().equals("140"))
             updateTclassInfo(Long.parseLong(req.get("classId").toString()),-1, 0);
+        else if(req.get("questionnaireTypeId").toString().equals("230"))
+            updateClassStudentInfo(modelMapper.map(evaluation,Evaluation.class),0);
         evaluationDAO.deleteById(evaluation.getId());
         if(evaluation.getQuestionnaireId() != null)
             updateQuestionnarieInfo(evaluation.getQuestionnaireId());
@@ -326,6 +333,26 @@ public class EvaluationService implements IEvaluationService {
                 Optional<ClassStudent> byId = classStudentDAO.findById(evaluation.getEvaluatorId());
                 ClassStudent classStudent = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                 classStudent.setEvaluationStatusReaction(version);
+            }
+            else  if(evaluation.getQuestionnaireTypeId().equals(230L)){
+                Optional<ClassStudent> byId = classStudentDAO.findById(evaluation.getEvaluatedId());
+                ClassStudent classStudent = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                Integer last1 = classStudent.getNumberOfSendedBehavioralForms();
+                Integer last2 = classStudent.getNumberOfRegisteredBehavioralForms();
+                if(version == 1) {
+                    if (last1 == null)
+                        classStudent.setNumberOfSendedBehavioralForms(1);
+                    else
+                        classStudent.setNumberOfSendedBehavioralForms(last1 + 1);
+                }
+                else if(version == 0){
+                    classStudent.setNumberOfSendedBehavioralForms(last1 - 1);
+                    classStudent.setNumberOfRegisteredBehavioralForms(last2 -1);
+                }
+                else if(version == 2){
+                    classStudent.setNumberOfSendedBehavioralForms(last1 - 1);
+                    classStudent.setNumberOfRegisteredBehavioralForms(last2 + 1);
+                }
             }
     }
 
