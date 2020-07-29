@@ -4,7 +4,8 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
-<script>
+
+//<script>
     var evalWait_JspQuestionEvaluation;
 
     var RestDataSource_Grid_JspQuestionEvaluation = isc.TrDS.create({

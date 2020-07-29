@@ -247,24 +247,7 @@
         });
 
 
-    var MSG_Window_MSG_Main = isc.Window.create({
-        placement: "center",
-        title: "پیامرسان",
-        overflow: "auto",
-        width: 900,
-        height: 700,
-        isModal: false,
-        autoDraw: false,
-        autoSize: false,
-        items: [
-              MSG_main_layout
-        ],
-        closeClick: function () {
-            MSG_initMSG()
-            this.clear()
-            this.close();
-        },
-    });
+
 
     //----------------------------------------- ListGrids --------------------------------------------------------------
         var ListGrid_class_Evaluation = isc.TrLG.create({
@@ -414,14 +397,7 @@
 
     //----------------------------------------- ToolStrips -------------------------------------------------------------
 
-         var ToolStripButton_MSG = isc.IButton.create({
-            baseStyle: 'MSG-btn-orange',
-            icon: '../static/img/msg/mail.svg',
-            title:"پیامرسان", width:80,
-            click: function () {
-                MSG_Window_MSG_Main.show();
-            }
-        })
+
 
         var ToolStripButton_Refresh_Evaluation = isc.ToolStripButtonRefresh.create({
             title: "<spring:message code="refresh"/>",
@@ -441,7 +417,6 @@
                     align: "left",
                     border: '0px',
                     members: [
-                        ToolStripButton_MSG,
                         ToolStripButton_Refresh_Evaluation
                     ]
                 })
