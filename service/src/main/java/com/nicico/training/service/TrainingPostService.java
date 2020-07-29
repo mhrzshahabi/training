@@ -17,7 +17,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.UniqueConstraint;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -115,11 +117,7 @@ public class TrainingPostService implements ITrainingPostService {
     public TrainingPostDTO create(TrainingPostDTO.Create create, HttpServletResponse response) throws IOException {
         try {
             return modelMapper.map(trainingPostDAO.save(convertDTO2Obj(create)),TrainingPostDTO.class);
-        }catch (DataIntegrityViolationException e){
-            Locale locale = LocaleContextHolder.getLocale();
-            response.sendError(409, messageSource.getMessage("exception.duplicate.information", null, locale));
-        }
-        catch (TrainingException e){
+        }catch (TrainingException e){
             Locale locale = LocaleContextHolder.getLocale();
             if(e.getErrorCode().equals(TrainingException.ErrorType.DepartmentNotFound))
                 response.sendError(404, messageSource.getMessage("خطا در دپارتمان", null, locale));
@@ -142,13 +140,8 @@ public class TrainingPostService implements ITrainingPostService {
             TrainingPost currentEntity = trainingPostDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
             modelMapper.getConfiguration().setSkipNullEnabled(true);
             modelMapper.map(convertDTO2Obj(update), currentEntity);
-//            currentEntity.setId(id);
             return modelMapper.map(currentEntity,TrainingPostDTO.class);
-        }catch (DataIntegrityViolationException e){
-            Locale locale = LocaleContextHolder.getLocale();
-            response.sendError(409, messageSource.getMessage("exception.duplicate.information", null, locale));
-        }
-        catch (TrainingException e){
+        }catch (TrainingException e){
             Locale locale = LocaleContextHolder.getLocale();
             if(e.getErrorCode().equals(TrainingException.ErrorType.DepartmentNotFound))
                 response.sendError(404, messageSource.getMessage("خطا در دپارتمان", null, locale));
