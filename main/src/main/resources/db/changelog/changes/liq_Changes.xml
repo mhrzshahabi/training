@@ -1024,4 +1024,10 @@
         <dropColumn columnName="LOCK_STATUS" tableName="TBL_EVALUATION_QUESTION"/>
     </changeSet>
 
+    <changeSet author="jafari-h (generated)" id="1595997466734-466">
+        <addColumn tableName="tbl_competence">
+            <column name="n_work_flow_code" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
