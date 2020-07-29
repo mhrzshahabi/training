@@ -44,7 +44,7 @@ public class ViewPersonnelTrainingStatusReportDTO {
     private String personnelCppAffairs;
 
     @ApiModelProperty
-    private String personnelCpp;
+    private String personnelCppArea;
 
     @ApiModelProperty
     private String courseCode;

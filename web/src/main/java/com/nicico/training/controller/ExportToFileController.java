@@ -82,6 +82,7 @@ public class ExportToFileController {
     private final WorkGroupService workGroupService;
     private final CourseService courseService;
     private final QuestionBankService questionBankService;
+    private final ViewPersonnelTrainingStatusReportService viewPersonnelTrainingStatusReportService;
 
     private final StudentClassReportViewDAO studentClassReportViewDAO;
     private final PersonnelDAO personnelDAO;
@@ -368,6 +369,10 @@ public class ExportToFileController {
                 Long postGroup = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
                 searchRq.getCriteria().getCriteria().remove(0);
                 generalList = (List<Object>)((Object) postGroupService.getPosts(postGroup));
+                break;
+
+            case "viewPersonnelTrainingStatusReport":
+                generalList = (List<Object>)((Object) viewPersonnelTrainingStatusReportService.search(searchRq).getList());
                 break;
         }
 

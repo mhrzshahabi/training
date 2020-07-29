@@ -876,7 +876,7 @@
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     let criteria = ListGrid_Job_Group_Jsp.getCriteria();
-                    ExportToFile.showDialog(null, ListGrid_Job_Group_Jsp , "View_Job_Group", 0, null, '',"لیست پست ها- آموزش"  , criteria, null);
+                    ExportToFile.showDialog(null, ListGrid_Job_Group_Jsp , "View_Job_Group", 0, null, '',"لیست گروه شغلی ها- آموزش"  , criteria, null);
                 }
             })
         ]

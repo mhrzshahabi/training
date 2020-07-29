@@ -54,7 +54,7 @@ public class ViewPersonnelTrainingStatusReport {
     private String personnelCppAffairs;
 
     @Column(name = "personnel_cpp_area")
-    private String personnelCpp;
+    private String personnelCppArea;
 
     @Column(name = "course_code")
     private String courseCode;
