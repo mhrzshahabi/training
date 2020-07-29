@@ -1788,6 +1788,3 @@
                 DynamicForm_ReturnDate_RE.clearFieldErrors("evaluationReturnDate", true);
             }
         }
-
-
-    //
