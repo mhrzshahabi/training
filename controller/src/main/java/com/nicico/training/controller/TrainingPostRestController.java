@@ -30,23 +30,14 @@ public class TrainingPostRestController {
 
     @Loggable
     @PostMapping
-    public ResponseEntity<TrainingPostDTO> create(@Validated @RequestBody TrainingPostDTO.Create request, HttpServletResponse response) {
-        try {
-            return new ResponseEntity<>(trainingPostService.create(request, response), HttpStatus.CREATED);
-        }catch (Exception e){
-            return new ResponseEntity<>(null, HttpStatus.valueOf(500));
-        }
-
+    public ResponseEntity<TrainingPostDTO> create(@Validated @RequestBody TrainingPostDTO.Create request, HttpServletResponse response) throws  IOException {
+        return new ResponseEntity<>(trainingPostService.create(request, response), HttpStatus.CREATED);
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
-    public ResponseEntity<TrainingPostDTO> update(@PathVariable Long id, @Validated @RequestBody TrainingPostDTO.Update request, HttpServletResponse response) {
-        try {
-            return new ResponseEntity<>(trainingPostService.update(id, request, response), HttpStatus.OK);
-        }catch (Exception e){
-            return new ResponseEntity<>(null, HttpStatus.valueOf(500));
-        }
+    public ResponseEntity<TrainingPostDTO> update(@PathVariable Long id, @Validated @RequestBody TrainingPostDTO.Update request, HttpServletResponse response) throws  IOException {
+        return new ResponseEntity<>(trainingPostService.update(id, request, response), HttpStatus.OK);
     }
 
     @Loggable

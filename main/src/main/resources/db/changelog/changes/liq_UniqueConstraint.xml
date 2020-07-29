@@ -176,6 +176,17 @@
     <changeSet author="razmnoosh (generated)" id="1595217836877-465">
         <addUniqueConstraint columnNames="c_question" constraintName="UC_TBL_DYNAMIC_QUESTIONC_QUESTION_COL" tableName="tbl_dynamic_question"/>
     </changeSet>
-
+    <changeSet author="matin_ar (generated)" id="1596015939557-423">
+        <addNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_title_fa" tableName="tbl_training_post"/>
+    </changeSet>
+    <changeSet author="matin_ar (generated)" id="1596015939557-422">
+        <addNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_code" tableName="tbl_training_post"/>
+    </changeSet>
+    <!--<changeSet author="matin_ar (generated)" id="1596019535756-477">-->
+        <!--<addUniqueConstraint columnNames="c_title_fa" constraintName="UC_TBL_TRAINING_POSTC_TITLE_FA_COL" tableName="tbl_training_post"/>-->
+    <!--</changeSet>-->
+    <!--<changeSet author="matin_ar (generated)" id="1596019535756-476">-->
+        <!--<addUniqueConstraint columnNames="c_code" constraintName="UC_TBL_TRAINING_POSTC_CODE_COL" tableName="tbl_training_post"/>-->
+    <!--</changeSet>-->
     
 </databaseChangeLog>
