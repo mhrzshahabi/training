@@ -25,7 +25,7 @@
     PostDS_TrainingPost = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "iContains", autoFitWidth: true, valueMap:peopleTypeMap},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -66,7 +66,9 @@
         showResizeBar: true,
         sortField: 1,
         fields: [
-            {name: "peopleType"},
+            {name: "peopleType",
+                filterOnKeypress: true,
+            },
             {
                 name: "code",
                 filterEditorProperties: {
@@ -114,7 +116,8 @@
     var RestDataSource_TrainingPost_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "iContains", autoFitWidth: true, valueMap:peopleTypeMap},
+            {name: "departmentId", title: "departmentId", primaryKey: true, canEdit: false, hidden: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap,filterOnKeypress: true},
             {name: "code", title: "<spring:message code='code'/>", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -266,7 +269,7 @@
     var RestDataSource_TrainingPost_Posts_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "iContains", autoFitWidth: true, valueMap:peopleTypeMap},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -286,7 +289,7 @@
     var RestDataSource_All_Posts = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both", valueMap:peopleTypeMap},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both", valueMap:peopleTypeMap},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "titleEn", title: "<spring:message code="title.en"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -304,7 +307,7 @@
     var RestDataSource_All_Posts_Clone = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both", valueMap:peopleTypeMap},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both", valueMap:peopleTypeMap},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "titleEn", title: "<spring:message code="title.en"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -322,7 +325,7 @@
     var RestDataSource_ForThisTrainingPost_GetPosts = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both", valueMap:peopleTypeMap},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both", valueMap:peopleTypeMap},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "titleEn", title: "<spring:message code="title.en"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -336,6 +339,44 @@
             {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true}
         ]
     });
+
+    var RestDataSource_Job_JspTrainingPost = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa", title: "<spring:message code="job.title"/>"},
+            {name: "code", title: "<spring:message code="job.code"/>"},
+        ],
+        fetchDataURL: jobUrl + "/iscList"
+    });
+
+    var RestDataSource_Department_JspTrainingPost = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="cost.center.title"/>", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "code", title: "<spring:message code="cost.center.code"/>", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "hozeTitle", title: "<spring:message code="area"/>", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "moavenatTitle", title: "<spring:message code="assistance"/>", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "omorTitle", title: "<spring:message code="affairs"/>", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ghesmatCode", title: "<spring:message code="section"/>", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "vahedTitle", title: "<spring:message code="unit"/>", autoFitWidth: true, autoFitWidthApproach: "both"},
+        ],
+        fetchDataURL: departmentUrl + "/iscList"
+    });
+
+    var RestDataSource_PostGradeLvl_PCNR = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {
+                name: "code",
+                title: "<spring:message code="post.grade.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
+        ],
+        fetchDataURL: viewPostGradeUrl + "/iscList"
+    });
+
     var DynamicForm_thisTrainingPostHeader_Jsp = isc.DynamicForm.create({
         height: "5%",
         align: "center",
@@ -353,7 +394,9 @@
         showRecordComponentsByCell: true,
         gridComponents: [Lable_AllPosts, "filterEditor", "header", "body"],
         fields: [
-            {name: "peopleType"},
+            {name: "peopleType",
+                filterOnKeypress: true,
+            },
             {name: "code", filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
                 }},
@@ -429,7 +472,9 @@
         gridComponents: [Lable_ForThisTrainingPost_GetPosts, "filterEditor", "header", "body"],
         fields: [
             {name: "id", hidden:true},
-            {name: "peopleType"},
+            {name: "peopleType",
+                filterOnKeypress: true,
+            },
             {name: "code", filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
                 }},
@@ -553,7 +598,9 @@
 
             "filterEditor", "header", "body"],
         fields: [
-            {name: "peopleType"},
+            {name: "peopleType",
+                filterOnKeypress: true,
+            },
             {name: "code", filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
                 }},
@@ -739,7 +786,9 @@
         sortField: 1,
         gridComponents: [ActionsTS_TrainingPost, "header", "filterEditor", "body",],
         fields: [
-            {name: "peopleType"},
+            {name: "peopleType",
+                filterOnKeypress: true,
+            },
             {name: "code",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
@@ -787,7 +836,7 @@
             {name: "id", hidden: true},
             {
                 name: "titleFa",
-                title: "نام گروه پست",
+                title: "عنوان پست",
                 type: "text",
                 required: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9 ]",
@@ -802,31 +851,89 @@
                 name: "code",
                 title: "<spring:message code='code'/>",
                 type: "text",
+                required: true,
+                requiredMessage: "<spring:message code="msg.field.is.required"/>",
             },
             {
-                name: "titleEn",
-                type: "text",
-                length: "250",
-                width: "*",
-                height: "40",
-                title: "نام لاتین گروه پست ",
-                hint: "English/انگلیسی",
-                showHintInField: true,
-                keyPressFilter: "[a-z|A-Z|0-9 |]",
-                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber],
+                name: "jobId",
+                colSpan: 5,
+                type: "ComboBoxItem",
+                multiple: false,
+                title: "<spring:message code="job"/>",
+                autoFetchData: false,
+                useClientFiltering: true,
+                optionDataSource: RestDataSource_Job_JspTrainingPost,
+                displayField: "titleFa",
+                valueField: "id",
+                textAlign: "center",
+                pickListFields: [
+                    {name: "titleFa", filterOperator: "iContains"},
+                    {name: "code", filterOperator: "iContains"},
+                ],
+                filterFields: ["titleFa", "code"]
             },
             {
-                name: "description",
-                type: "text",
-                length: "250",
-                width: "*",
-                height: "40",
-                title: "توضیحات",
-                hint: "توضیحات",
+                name: "departmentId",
+                colSpan: 5,
+                type: "ComboBoxItem",
+                multiple: false,
+                title: "<spring:message code="department"/>",
+                autoFetchData: false,
+                useClientFiltering: true,
+                optionDataSource: RestDataSource_Department_JspTrainingPost,
+                displayField: "title",
+                valueField: "id",
+                textAlign: "center",
+                pickListFields: [
+                    {name: "id", primaryKey: true, hidden: true},
+                    {name: "title", title: "<spring:message code="cost.center.title"/>"},
+                    {name: "code", title: "<spring:message code="cost.center.code"/>"},
+                    {name: "hozeTitle", title: "<spring:message code="area"/>"},
+                    {name: "moavenatTitle", title: "<spring:message code="assistance"/>"},
+                    {name: "omorTitle", title: "<spring:message code="affairs"/>"},
+                    {name: "ghesmatCode", title: "<spring:message code="section"/>"},
+                    {name: "vahedTitle", title: "<spring:message code="unit"/>"},
+                ],
+                filterFields: ["title", "code","hozeTitle","moavenatTitle","omorTitle","ghesmatCode","vahedTitle"]
+            },
+            {
+                name: "postGradeId",
+                title:"<spring:message code='post.grade'/>",
+                textAlign: "center",
+                optionDataSource: RestDataSource_PostGradeLvl_PCNR,
+                autoFetchData: false,
+                type: "ComboBoxItem",
+                valueField: "id",
+                displayField: "titleFa",
+                endRow: false,
+                colSpan: 4,
+                layoutStyle: "horizontal",
+                comboBoxProperties: {
+                    hint: "",
+                    pickListWidth: 300,
+                    pickListFields: [
+                        {name: "titleFa"},
+                    ],
+                    filterFields: ["titleFa"],
+                    pickListProperties: {
+                        sortField: 1,
+                        showFilterEditor: true},
+                    textMatchStyle: "substring",
+                },
+            },
+            {
+                name: "peopleType",
+                title: "نوع پرسنل",
+                type: "SelectItem",
+                valueMap: peopleTypeMap,
+                textAlign: "center",
+                hint: "شرکتی/پیمان کار",
+                required: true,
                 showHintInField: true,
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9 ]",
-                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber],
-            }
+                pickListProperties: {
+                    showFilterEditor: false
+                }
+            },
         ]
     });
 
@@ -871,6 +978,24 @@
                         }, 3000);
                         ListGrid_TrainingPost_refresh();
                         Window_TrainingPost_Jsp.close();
+                    }else if(resp.httpResponseCode == 409){
+                        var ERROR = isc.Dialog.create({
+                            message: (resp),
+                            icon: "[SKIN]stop.png",
+                            title: "پیغام"
+                        });
+                        setTimeout(function () {
+                        ERROR.close();
+                        }, 3000);
+                    }else if(resp.httpResponseCode == 404){
+                        var ERROR = isc.Dialog.create({
+                            message: (resp),
+                            icon: "[SKIN]stop.png",
+                            title: "پیغام"
+                        });
+                        setTimeout(function () {
+                            ERROR.close();
+                        }, 3000);
                     } else {
                         var ERROR = isc.Dialog.create({
                             message: ("اجرای عملیات با مشکل مواجه شده است!"),
@@ -1424,7 +1549,7 @@
         } else {
             DynamicForm_TrainingPost_Jsp.clearValues();
             method = "PUT";
-            url = postGroupUrl + "/" + record.id;
+            url = trainingPostUrl + "/" + record.id;
             DynamicForm_TrainingPost_Jsp.editRecord(record);
             Window_TrainingPost_Jsp.show();
         }
@@ -1451,7 +1576,7 @@
                             title: "پیام"
                         });
                         isc.RPCManager.sendRequest({
-                            actionURL: postGroupUrl + "/" + record.id,
+                            actionURL: trainingPostUrl + "/" + record.id,
                             httpMethod: "DELETE",
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
@@ -1495,7 +1620,7 @@
 
     function ListGrid_TrainingPost_add() {
         method = "POST";
-        url = postGroupUrl;
+        url = trainingPostUrl;
         DynamicForm_TrainingPost_Jsp.clearValues();
         Window_TrainingPost_Jsp.show();
     }

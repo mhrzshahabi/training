@@ -56,4 +56,7 @@ public class Competence extends Auditable {
 
     @Column(name = "c_code", unique = true)
     private String code;
+
+    @Column(name = "n_work_flow_code")
+    private Integer workFlowStatusCode;
 }

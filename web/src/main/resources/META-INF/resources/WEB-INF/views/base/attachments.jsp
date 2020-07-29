@@ -177,8 +177,11 @@
                 <sec:authorize access="hasAnyAuthority('TclassAttachmentsTab_C','TclassAttachmentsTab_classStatus')">
                 {
                     title: "<spring:message code='create'/>", click: function () {
+                        if (objectIdAttachment == null) {
+                            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                        }else
                         this.ListGrid_Attachments_Add();
-                    }.bind(this)
+                        }.bind(this)
                 },
                 </sec:authorize>
 
@@ -271,6 +274,9 @@
 
         this.ToolStripButton_Add_JspAttachment = isc.ToolStripButtonCreate.create({
             click: function () {
+                if (objectIdAttachment == null) {
+                    createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                }else
                 this.ListGrid_Attachments_Add();
             }.bind(this)
         });
@@ -512,13 +518,12 @@
             this.VLayout_Body_JspAttachment.redraw();
              objectTypeAttachment = inputObjectType;
              objectIdAttachment = inputObjectId;
-
             this.RestDataSource_Attachments_JspAttachments.fetchDataURL = attachmentUrl + "/iscList/";
             if (inputObjectType != null)
             this.RestDataSource_Attachments_JspAttachments.fetchDataURL += inputObjectType;
             this.RestDataSource_Attachments_JspAttachments.fetchDataURL += ",";
             if (inputObjectType != null)
-                this.RestDataSource_Attachments_JspAttachments.fetchDataURL += inputObjectId;
+                this.RestDataSource_Attachments_JspAttachments.fetchDataURL += objectIdAttachment;
             this.ListGrid_JspAttachment.getField("fileTypeId").valueMap = valueMap_EAttachmentType;
             this.DynamicForm_JspAttachments.getField("fileTypeId").valueMap = valueMap_EAttachmentType;
             this.Window_JspAttachments.title = inputTitleAttachment;

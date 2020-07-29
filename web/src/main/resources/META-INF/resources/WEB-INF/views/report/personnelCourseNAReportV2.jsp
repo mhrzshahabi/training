@@ -175,28 +175,28 @@
             {name: "value", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpArea"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpArea"
     });
     ComplexDS_PCNR = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=complexTitle"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=complexTitle"
     });
     AssistantDS_PCNR = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpAssistant"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAssistant"
     });
     AffairsDS_PCNR = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpAffairs"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAffairs"
     });
 
     UnitDS_PCNR = isc.TrDS.create({
@@ -204,14 +204,14 @@
             {name: "value", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpUnit"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpUnit"
     });
     SectionDS_PCNR = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="term.code"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpSection"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpSection"
     });
 
     CourseDS_PCNR = isc.TrDS.create({
@@ -540,20 +540,18 @@
                     if(!hasFilters()) {
                         createDialog("info","فیلتری انتخاب نشده است.");
                     } else{
-                        var criteria = FilterDF_PCNR.getValuesAsAdvancedCriteria();
+                        let criteria = FilterDF_PCNR.getValuesAsAdvancedCriteria();
                         criteria.criteria.remove(criteria.criteria.find({fieldName: "reportType"}));
 
-
                         if (FilterDF_PCNR.getItem("reportType").getValue() === "1"){
+                            // ExportToFile.showDialog(null, CourseLG_PCNR, "personnelCourseNAR", 0, null, '',"آمار دوره های نیازسنجی افراد - آماری"  , criteria, null);
                             ExportToFile.downloadExcelFromClient(CourseLG_PCNR,null,"","آمار دوره های نیازسنجی افراد - آماری");
                         }
                         else if(FilterDF_PCNR.getItem("reportType").getValue() === "2"){
-                            ExportToFile.downloadExcelFromClient(CourseLG_MinPCNR,null,"","آمار دوره های نیازسنجی افراد - لیستی");
+                            ExportToFile.showDialog(null, CourseLG_MinPCNR, "personnelCourseNAR", 0, null, '',"آمار دوره های نیازسنجی افراد - لیستی"  , criteria, null);
+                            // ExportToFile.downloadExcelFromClient(CourseLG_MinPCNR,null,"","آمار دوره های نیازسنجی افراد - لیستی");
                         }
                     }
-
-
-
                 }
             }
         ],
