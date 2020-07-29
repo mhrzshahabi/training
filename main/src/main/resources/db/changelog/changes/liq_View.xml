@@ -789,22 +789,23 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_STUDENT_CLASSSTUDENT_CLASS_TERM_COURSE-005">
+    <changeSet author="NICICO" id="VIEW_STUDENT_CLASSSTUDENT_CLASS_TERM_COURSE-008">
         <createView viewName="VIEW_STUDENT_CLASSSTUDENT_CLASS_TERM_COURSE" replaceIfExists="true">
             <![CDATA[
-    SELECT
+     SELECT DISTINCT
     1 AS is_personnel,
     tbl_student.id                             AS student_id,
     tbl_student.active                         AS student_active,
-    tbl_student.ccp_affairs                    AS student_cpp_affairs,
-    tbl_student.ccp_area                       AS student_cpp_area,
-    tbl_student.ccp_assistant                  AS student_cpp_assistant,
-    tbl_student.ccp_code                       AS student_cpp_code,
-    tbl_student.ccp_section                    AS student_cpp_section,
-    tbl_student.ccp_title                      AS student_cpp_title,
-    tbl_student.ccp_unit                       AS student_cpp_unit,
+        department.c_omor_title                          AS student_cpp_affairs,
+   department.c_hoze_title                              AS student_cpp_area,
+   department.c_moavenat_title                        AS student_cpp_assistant,
+    tbl_student.ccp_code                             AS student_cpp_code,
+     department.c_ghesmat_title                          AS student_cpp_section,
+    tbl_student.ccp_title                            AS student_cpp_title,
+    department.c_vahed_title                             AS student_cpp_unit,
+
     tbl_student.company_name                   AS student_company_name,
-    tbl_student.complex_title                  AS student_complex_title,
+     department.c_hoze_title                 AS student_complex_title,
     tbl_student.education_level_title          AS student_education_level_title,
     tbl_student.first_name                     AS student_first_name,
     tbl_student.job_no                         AS student_job_no,
@@ -819,15 +820,15 @@ GROUP BY
     tbl_student.post_title                     AS student_post_title,
     tbl_personnel.id                           AS personnel_id,
     tbl_personnel.active                       AS personnel_active,
-    tbl_personnel.ccp_affairs                  AS personnel_cpp_affairs,
-    tbl_personnel.ccp_area                     AS personnel_cpp_area,
-    tbl_personnel.ccp_assistant                AS personnel_cpp_assistant,
-    tbl_personnel.ccp_code                     AS personnel_cpp_code,
-    tbl_personnel.ccp_section                  AS personnel_cpp_section,
-    tbl_personnel.ccp_title                    AS personnel_cpp_title,
-    tbl_personnel.ccp_unit                     AS personnel_cpp_unit,
-    tbl_personnel.company_name                 AS personnel_company_name,
-    tbl_personnel.complex_title                AS personnel_complex_title,
+     department.c_omor_title              AS personnel_cpp_affairs,
+   department.c_hoze_title                  AS personnel_cpp_area,
+    department.c_moavenat_title           AS personnel_cpp_assistant,
+    tbl_personnel.ccp_code                AS personnel_cpp_code,
+    department.c_ghesmat_title             AS personnel_cpp_section,
+    tbl_personnel.ccp_title               AS personnel_cpp_title,
+      department.c_vahed_title                 AS personnel_cpp_unit,
+    tbl_personnel.company_name            AS personnel_company_name,
+      department.c_hoze_title             AS personnel_complex_title,
     tbl_personnel.education_level_title        AS personnel_education_level_title,
     tbl_personnel.first_name                   AS personnel_first_name,
     tbl_personnel.job_no                       AS personnel_job_no,
@@ -868,8 +869,7 @@ FROM
     tbl_student
     INNER JOIN tbl_class_student ON tbl_student.id = tbl_class_student.student_id
     INNER JOIN tbl_personnel ON tbl_student.national_code = tbl_personnel.national_code
-                                AND tbl_personnel.active = 1
-                                AND tbl_personnel.employment_status_id = 5
+     LEFT JOIN tbl_department department ON department.id=tbl_personnel.f_department_id
     INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id
     INNER JOIN tbl_term ON tbl_class.f_term = tbl_term.id
     INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id
@@ -879,15 +879,16 @@ SELECT
     0 AS is_personnel,
     tbl_student.id                                   AS student_id,
     tbl_student.active                               AS student_active,
-    tbl_student.ccp_affairs                          AS student_cpp_affairs,
-    tbl_student.ccp_area                             AS student_cpp_area,
-    tbl_student.ccp_assistant                        AS student_cpp_assistant,
+    department.c_omor_title                          AS student_cpp_affairs,
+   department.c_hoze_title                              AS student_cpp_area,
+   department.c_moavenat_title                        AS student_cpp_assistant,
     tbl_student.ccp_code                             AS student_cpp_code,
-    tbl_student.ccp_section                          AS student_cpp_section,
+     department.c_ghesmat_title                          AS student_cpp_section,
     tbl_student.ccp_title                            AS student_cpp_title,
-    tbl_student.ccp_unit                             AS student_cpp_unit,
+    department.c_vahed_title                             AS student_cpp_unit,
+
     tbl_student.company_name                         AS student_company_name,
-    tbl_student.complex_title                        AS student_complex_title,
+     department.c_hoze_title                       AS student_complex_title,
     tbl_student.education_level_title                AS student_education_level_title,
     tbl_student.first_name                           AS student_first_name,
     tbl_student.job_no                               AS student_job_no,
@@ -902,15 +903,15 @@ SELECT
     tbl_student.post_title                           AS student_post_title,
     tbl_personnel_registered.id                      AS personnel_id,
     tbl_personnel_registered.active                  AS personnel_active,
-    tbl_personnel_registered.ccp_affairs             AS personnel_cpp_affairs,
-    tbl_personnel_registered.ccp_area                AS personnel_cpp_area,
-    tbl_personnel_registered.ccp_assistant           AS personnel_cpp_assistant,
+    department.c_omor_title              AS personnel_cpp_affairs,
+   department.c_hoze_title                  AS personnel_cpp_area,
+    department.c_moavenat_title           AS personnel_cpp_assistant,
     tbl_personnel_registered.ccp_code                AS personnel_cpp_code,
-    tbl_personnel_registered.ccp_section             AS personnel_cpp_section,
+    department.c_ghesmat_title             AS personnel_cpp_section,
     tbl_personnel_registered.ccp_title               AS personnel_cpp_title,
-    tbl_personnel_registered.ccp_unit                AS personnel_cpp_unit,
+     department.c_vahed_title                 AS personnel_cpp_unit,
     tbl_personnel_registered.company_name            AS personnel_company_name,
-    tbl_personnel_registered.complex_title           AS personnel_complex_title,
+      department.c_hoze_title             AS personnel_complex_title,
     tbl_personnel_registered.education_level_title   AS personnel_education_level_title,
     tbl_personnel_registered.first_name              AS personnel_first_name,
     tbl_personnel_registered.job_no                  AS personnel_job_no,
@@ -951,8 +952,7 @@ FROM
     tbl_student
     INNER JOIN tbl_class_student ON tbl_student.id = tbl_class_student.student_id
     INNER JOIN tbl_personnel_registered ON tbl_student.national_code = tbl_personnel_registered.national_code
-                                           AND tbl_personnel_registered.active = 1
-                                           AND tbl_personnel_registered.employment_status_id = 5
+    LEFT JOIN tbl_department department ON department.id=tbl_personnel_registered.f_department_id
     INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id
     INNER JOIN tbl_term ON tbl_class.f_term = tbl_term.id
     INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id
@@ -1839,10 +1839,10 @@ FROM
                 viewName="view_personnel_course_passed_na_report_v2"/>
     </changeSet>
 
-    <changeSet author="NICICO" id="view_statistics_unit_report-004">
+    <changeSet author="NICICO" id="view_statistics_unit_report-006">
         <createView viewName="view_statistics_unit_report" replaceIfExists="true">
             <![CDATA[
-  SELECT
+  SELECT distinct
     csession.c_session_date                  AS session_session_date,
    class.id                                   AS class_id,
    std.id                                     AS student_id,
@@ -2020,7 +2020,7 @@ FROM
                 tbl_personnel_registered
                  where tbl_personnel_registered.deleted=0
         ) personnel ON std.personnel_no = personnel.personnel_no
-          INNER JOIN tbl_department department ON department.id=personnel.f_department_id
+          LEFT JOIN tbl_department department ON department.id=personnel.f_department_id
         INNER JOIN tbl_session               csession ON att.f_session = csession.id
         INNER JOIN tbl_class                 class ON csession.f_class_id = class.id
         INNER JOIN tbl_institute             institute ON class.f_institute_organizer = institute.id
@@ -2093,10 +2093,10 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="view_presence_report-004">
+    <changeSet author="NICICO" id="view_presence_report-006">
         <createView viewName="view_presence_report" replaceIfExists="true">
             <![CDATA[
-  SELECT
+  SELECT DISTINCT
     SUM(
         CASE
             WHEN att.c_state IN(
@@ -2243,7 +2243,7 @@ FROM
             tbl_personnel_registered
               where   tbl_personnel_registered.deleted=0
     ) personnel ON std.personnel_no = personnel.personnel_no
-    INNER JOIN tbl_department department ON department.id=personnel.f_department_id
+    LEFT JOIN tbl_department department ON department.id=personnel.f_department_id
     INNER JOIN tbl_session         csession ON att.f_session = csession.id
     INNER JOIN tbl_class           class ON csession.f_class_id = class.id
     INNER JOIN tbl_institute       institute ON class.f_institute_organizer = institute.id
