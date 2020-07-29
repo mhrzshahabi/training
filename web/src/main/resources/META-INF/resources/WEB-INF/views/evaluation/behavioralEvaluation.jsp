@@ -465,7 +465,7 @@
                                 else if(evaluation_Audience_Type.getValue("audiencePost") == 454)
                                     create_evaluation_form_BE(null,null, EvaluationListGrid_PeronalLIst_BE.getSelectedRecord().id, 454, record.id, 188, 230, 156);
                                 else if(evaluation_Audience_Type.getValue("audiencePost") == 188)
-                                    create_evaluation_form_BE(null,null, EvaluationListGrid_PeronalLIst_BE.getSelectedRecord().id, 188, record.id, 188, 230, 156);
+                                    create_evaluation_form_BE(null,null, record.id, 188, record.id, 188, 230, 156);
                                 EvaluationWin_PersonList.close();
                             } else if(evaluation_Audience_Type.getValue("audiencePost") === null || evaluation_Audience_Type.getValue("audiencePost") === undefined){
                                 createDialog('info', "<spring:message code="select.audience.post.ask"/>", "<spring:message code="global.message"/>");
@@ -797,7 +797,10 @@
                     data.evaluationFull = evaluationFull;
                     data.description = DynamicForm_Description_JspEvaluation.getField("description").getValue();
                     data.classId = classRecord_BE.id;
-                    data.evaluatorId = FormRecord.evaluatorId;
+                    if(FormRecord.evaluatorTypeId == 188)
+                        data.evaluatorId = StdRecord.id;
+                    else
+                        data.evaluatorId = FormRecord.evaluatorId;
                     data.evaluatorTypeId = FormRecord.evaluatorTypeId;
                     data.evaluatedId = StdRecord.id;
                     data.evaluatedTypeId = 188;

@@ -566,7 +566,7 @@ public class EvaluationRestController {
     public ResponseEntity<ISC<EvaluationDTO.StudentEvaluationForm>> studentEvaluationForms(HttpServletRequest iscRq, @PathVariable String nationalCode) throws IOException {
         SearchDTO.CriteriaRq  criteria1 = makeNewCriteria("student.nationalCode", nationalCode, EOperator.equals, null);
         SearchDTO.CriteriaRq  criteria2 = makeNewCriteria("evaluationStatusReaction",1, EOperator.equals, null);
-        SearchDTO.CriteriaRq  criteria3 = makeNewCriteria("evaluationStatusBehavior",1, EOperator.equals, null);
+        SearchDTO.CriteriaRq  criteria3 = makeNewCriteria("numberOfSendedBehavioralForms",0, EOperator.greaterThan, null);
         List<SearchDTO.CriteriaRq> criteriaRqList1 = new ArrayList<>();
         criteriaRqList1.add(criteria2);
         criteriaRqList1.add(criteria3);
@@ -578,10 +578,10 @@ public class EvaluationRestController {
         searchRq.setCriteria(makeNewCriteria(null,null,EOperator.and,criteriaRqList2));
         SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> evaluationResult = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
 
+
         List<EvaluationDTO.StudentEvaluationForm> result = new ArrayList<>();
         for (ClassStudentDTO.ClassStudentInfo classStudentInfo : evaluationResult.getList()) {
             if(classStudentInfo.getEvaluationStatusReaction().equals(1)){
-                EvaluationDTO.Info evaluationDTO = evaluationService.getEvaluationByData(139L,classStudentInfo.getTclassId(),classStudentInfo.getId(),188L,classStudentInfo.getTclassId(),504L,154L);
                 EvaluationDTO.StudentEvaluationForm res = new EvaluationDTO.StudentEvaluationForm();
                 res.setClassId(classStudentInfo.getTclassId());
                 res.setStudentId(classStudentInfo.getId());
@@ -596,21 +596,20 @@ public class EvaluationRestController {
                 res.setHasWarning("alarm");
                 result.add(res);
             }
-            if(classStudentInfo.getEvaluationStatusBehavior().equals(1)){
-                EvaluationDTO.Info evaluationDTO = evaluationService.getEvaluationByData(230L,classStudentInfo.getTclassId(),classStudentInfo.getTclassId(),188L,classStudentInfo.getTclassId(),188L,156L);
-                EvaluationDTO.StudentEvaluationForm res = new EvaluationDTO.StudentEvaluationForm();
-                res.setClassId(classStudentInfo.getTclassId());
-                res.setStudentId(classStudentInfo.getId());
-                res.setStudentName(classStudentInfo.getFullName());
-                res.setClassCode(classStudentInfo.getTclass().getCode());
-                res.setCourseCode(classStudentInfo.getTclass().getCourse().getCode());
-                res.setCourseTitle(classStudentInfo.getTclass().getCourse().getTitleFa());
-                res.setTeacherName(classStudentInfo.getTclass().getTeacher());
-                res.setClassStartDate(classStudentInfo.getTclass().getStartDate());
-                res.setEvaluationLevel(156L);
-                res.setQuestionnarieType(230L);
-                res.setHasWarning("alarm");
-                result.add(res);
+            if(classStudentInfo.getNumberOfSendedBehavioralForms() > 0){
+                    EvaluationDTO.StudentEvaluationForm res = new EvaluationDTO.StudentEvaluationForm();
+                    res.setClassId(classStudentInfo.getTclassId());
+                    res.setStudentId(classStudentInfo.getId());
+                    res.setStudentName(classStudentInfo.getFullName());
+                    res.setClassCode(classStudentInfo.getTclass().getCode());
+                    res.setCourseCode(classStudentInfo.getTclass().getCourse().getCode());
+                    res.setCourseTitle(classStudentInfo.getTclass().getCourse().getTitleFa());
+                    res.setTeacherName(classStudentInfo.getTclass().getTeacher());
+                    res.setClassStartDate(classStudentInfo.getTclass().getStartDate());
+                    res.setEvaluationLevel(156L);
+                    res.setQuestionnarieType(230L);
+                    res.setHasWarning("alarm");
+                    result.add(res);
             }
         }
 
