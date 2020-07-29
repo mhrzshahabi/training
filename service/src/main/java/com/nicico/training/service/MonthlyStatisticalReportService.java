@@ -75,8 +75,6 @@ public class MonthlyStatisticalReportService implements IMonthlyStatisticalRepor
                 "                    department.c_moavenat_title as ccp_assistant, " +
                 "                    department.c_omor_title ccp_affairs, " +
                 "                    department.c_ghesmat_title as ccp_section, " +
-                "                    CO.E_TECHNICAL_TYPE, " +
-                "                    ST.POST_GRADE_CODE, " +
                 "                    SUM(round(to_number(TO_DATE((CASE WHEN SUBSTR(S.c_session_end_hour,1,2) > 23 THEN '23:59' ELSE S.c_session_end_hour END),'HH24:MI') - TO_DATE((CASE WHEN SUBSTR(S.c_session_start_hour,1,2) > 23 THEN '23:59' ELSE S.c_session_start_hour END),'HH24:MI') ) * 24 * 60)) AS session_time  " +
                 "                 FROM  " +
                 "                    tbl_attendance A  " +
@@ -111,7 +109,7 @@ public class MonthlyStatisticalReportService implements IMonthlyStatisticalRepor
         if ((Personnel.size() != 0))
             reportScript += "                 AND ST.id in(" + StringUtils.join(Personnel, ",") + ")";
 
-        reportScript += "                 GROUP BY A.c_state, department.c_vahed_title, department.c_hoze_title,department.c_moavenat_title,department.c_omor_title, department.c_ghesmat_title,CO.E_TECHNICAL_TYPE,ST.POST_GRADE_CODE)  " +
+        reportScript += "                 GROUP BY A.c_state, department.c_vahed_title, department.c_hoze_title,department.c_moavenat_title,department.c_omor_title, department.c_ghesmat_title)  " +
                 "                 PIVOT(  " +
                 "                    SUM(session_time)  " +
                 "                    FOR c_state  " +
