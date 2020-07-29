@@ -175,28 +175,28 @@
             {name: "value", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpArea"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpArea"
     });
     ComplexDS_PCNR = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=complexTitle"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=complexTitle"
     });
     AssistantDS_PCNR = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpAssistant"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAssistant"
     });
     AffairsDS_PCNR = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpAffairs"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAffairs"
     });
 
     UnitDS_PCNR = isc.TrDS.create({
@@ -204,14 +204,14 @@
             {name: "value", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpUnit"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpUnit"
     });
     SectionDS_PCNR = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="term.code"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpSection"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpSection"
     });
 
     CourseDS_PCNR = isc.TrDS.create({
