@@ -808,6 +808,7 @@
     const viewClassDetailUrl = rootUrl + "/view-class-detail";
     const statisticsUnitReportUrl = rootUrl + "/ViewStatisticsUnitReport";
     const questionBankUrl = rootUrl + "/question-bank";
+    const viewPersonnelTrainingStatusReportUrl = rootUrl + "/view-personnel-training-status-report";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
