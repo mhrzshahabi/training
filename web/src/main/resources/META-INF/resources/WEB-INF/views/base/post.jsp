@@ -42,6 +42,7 @@
                 title: "<spring:message code="refresh"/>",
                 icon: "<spring:url value="refresh.png"/>",
                 click: function () {
+                    objectIdAttachment=null
                     LoadAttachments_Post.ListGrid_JspAttachment.setData([]);
                     closeToShowUnGroupedPosts_POST();
                     refreshLG(PostLG_post);
@@ -174,6 +175,7 @@
                     isc.ToolStripButtonRefresh.create({
                         click: function () {
                             LoadAttachments_Post.ListGrid_JspAttachment.setData([]);
+                            objectIdAttachment=null
                             closeToShowUnGroupedPosts_POST();
                             refreshLG(PostLG_post);
                         }

@@ -1383,6 +1383,7 @@
     }
 
     function ListGrid_Post_Group_refresh() {
+        objectIdAttachment=null
         postGroupPostList_Post_Group_Jsp = null;
         naPostGroup_Post_Group_Jsp = null;
         PersonnelPostGroup_Post_Group_Jsp = null;

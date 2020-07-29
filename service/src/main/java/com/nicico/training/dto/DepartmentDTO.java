@@ -17,25 +17,12 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DepartmentDTO implements Serializable {
 
-//    @Getter
-//    @Setter
-//    @Accessors(chain = true)
-//    @ApiModel("Department - Info")
-//    public static class Info {
-//        private Long id;
-//        private String assistance;
-//        private String affairs;
-//        private String section;
-//        private String unit;
-//        private String costCenterCode;
-//        private String costCenterTitleFa;
-//    }
-
     @ApiModelProperty
-    private Long depParrentId;
-
-    @ApiModelProperty(required = true)
-    private String departmentName;
+    private Long id;
+    @ApiModelProperty
+    private String title;
+    @ApiModelProperty
+    private String code;
 
     // ------------------------------
 
@@ -45,50 +32,14 @@ public class DepartmentDTO implements Serializable {
     @ApiModel("DepartmentInfo")
     public static class Info extends DepartmentDTO {
 
-        private Long id;
-        private String code;
-        private String treeVersion;
         private String parentCode;
-        //private DepartmentDTO.Info parentDepartment;
+        private String hozeTitle;
+        private String moavenatTitle;
+        private String omorTitle;
+        private String ghesmatCode;
+        private String vahedTitle;
     }
 
-    // ------------------------------
-
-//    @Getter
-//    @Setter
-//    @Accessors(chain = true)
-//    @ApiModel("DepartmentCreateRq")
-//    public static class Create extends DepartmentDTO {
-//        private Integer version;
-//        private String departmentName;
-//        private String parentCode;
-//        private Long depParrentId;
-//        private String code;
-//        private Long sync;
-//        private String treeVersion;
-//    }
-//
-//    // ------------------------------
-//
-//    @Getter
-//    @Setter
-//    @Accessors(chain = true)
-//    @ApiModel("DepartmentUpdateRq")
-//    public static class Update extends DepartmentDTO {
-//        private Long id;
-//    }
-//
-//    // ------------------------------
-//
-//    @Getter
-//    @Setter
-//    @Accessors(chain = true)
-//    @ApiModel("DepartmentDeleteRq")
-//    public static class Delete {
-//        @NotNull
-//        @ApiModelProperty(required = true)
-//        private List<Long> ids;
-//    }
 
     // ------------------------------
 

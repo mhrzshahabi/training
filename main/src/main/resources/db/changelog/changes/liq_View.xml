@@ -1240,6 +1240,7 @@ FROM
         </createView>
     </changeSet>
 
+
     <changeSet author="NICICO" id="VIEW_POST-005">
         <createView viewName="VIEW_POST" replaceIfExists="true">
             <![CDATA[
@@ -1527,6 +1528,7 @@ GROUP BY
             ]]>
         </createView>
     </changeSet>
+
 
     <changeSet author="NICICO" id="VIEW_ACTIVE_PERSONNEL-002">
         <createView viewName="VIEW_ACTIVE_PERSONNEL" replaceIfExists="true">
@@ -2398,8 +2400,7 @@ GROUP BY
     ]]>
         </createView>
     </changeSet>
-
-    <changeSet author="NICICO" id="VIEW_TRAINING_POST-004">
+    <changeSet author="NICICO" id="VIEW_TRAINING_POST-005">
         <createView viewName="VIEW_TRAINING_POST" replaceIfExists="true">
             <![CDATA[
    SELECT
@@ -2420,6 +2421,7 @@ GROUP BY
     tp.c_cost_center_code,
     tp.c_section,
     tp.c_unit,
+    tp.f_department_id,
     tp.f_post_grade_id,
     tp.f_job_id,
     tp.d_last_modified_date_na,
@@ -2457,6 +2459,7 @@ GROUP BY
     tp.c_cost_center_code,
     tp.c_section,
     tp.c_unit,
+    tp.f_department_id,
     tp.f_post_grade_id,
     tp.f_job_id,
     tp.d_last_modified_date_na,
