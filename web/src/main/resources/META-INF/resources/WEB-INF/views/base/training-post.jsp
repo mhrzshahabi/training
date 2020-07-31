@@ -14,6 +14,7 @@
     var TrainingPost_PostList_TrainingPost_Jsp = null;
     var naTrainingPost_TrainingPost_Jsp = null;
     var PersonnelTrainingPost_TrainingPost_Jsp = null;
+    var PostTrainingPost_TrainingPost_Jsp = null;
     var wait_TrainingPost = null;
     var trainingPostsSelection=false;
 
@@ -811,7 +812,6 @@
         ],
         dataArrived: function () {
             TrainingPost_PostList_TrainingPost_Jsp = ListGrid_TrainingPost_Posts.data.localData;
-            fetchPersonnelData_TrainingPost_Jsp();
         },
     });
 
@@ -1307,7 +1307,7 @@
         dataSource: PersonnelDS_TrainingPost_Jsp,
         selectionType: "single",
         alternateRecordStyles: true,
-        gridComponents: [ActionsTS_Personnel_TrainingPost, "header", "filterEditor", "body",],
+        gridComponents: [ActionsTS_Personnel_TrainingPost, "header", "filterEditor", "body"],
         fields: [
             {name: "firstName"},
             {name: "lastName"},
@@ -1612,6 +1612,7 @@
         TrainingPost_PostList_TrainingPost_Jsp = null;
         naTrainingPost_TrainingPost_Jsp = null;
         PersonnelTrainingPost_TrainingPost_Jsp = null;
+        PostTrainingPost_TrainingPost_Jsp = null;
         ListGrid_TrainingPost_Jsp.invalidateCache();
 
         nullPostsRefresh(RestDataSource_All_Posts_Clone, ListGrid_AllPosts_Clone);
@@ -1655,21 +1656,25 @@
         }
         switch (tab.name) {
             case "TabPane_Post_TrainingPost_Jsp": {
-                RestDataSource_TrainingPost_Posts_Jsp.fetchDataURL = trainingPostUrl + "/" + trainingPost.id + "/getPosts";
-                RestDataSource_TrainingPost_Posts_Jsp.fetchDataURL = trainingPostUrl + "/" + trainingPost.id + "/getPosts";
-                if (TrainingPost_PostList_TrainingPost_Jsp == null)
-                    refreshLG(ListGrid_TrainingPost_Posts);
+                if (PostTrainingPost_TrainingPost_Jsp === trainingPost.id)
+                    return;
+                PostTrainingPost_TrainingPost_Jsp = trainingPost.id;
+                ListGrid_TrainingPost_Posts.setImplicitCriteria({
+                    _constructor: "AdvancedCriteria",
+                    operator: "and",
+                    criteria: [{fieldName: "trainingPostSet", operator: "equals", value: trainingPost.id}]
+                });
+                ListGrid_TrainingPost_Posts.invalidateCache();
+                ListGrid_TrainingPost_Posts.fetchData();
                 break;
             }
             case "TabPane_Personnel_TrainingPost_Jsp": {
                 if (PersonnelTrainingPost_TrainingPost_Jsp === trainingPost.id)
                     return;
                 PersonnelTrainingPost_TrainingPost_Jsp = trainingPost.id;
-                RestDataSource_TrainingPost_Posts_Jsp.fetchDataURL = trainingPostUrl + "/" + trainingPost.id + "/getPosts";
-                if (TrainingPost_PostList_TrainingPost_Jsp == null)
-                    refreshLG(ListGrid_TrainingPost_Posts);
-                else
-                    fetchPersonnelData_TrainingPost_Jsp();
+                PersonnelDS_TrainingPost_Jsp.fetchDataURL = trainingPostUrl + "/" + trainingPost.id + "/getPersonnel";
+                PersonnelLG_TrainingPost_Jsp.invalidateCache();
+                PersonnelLG_TrainingPost_Jsp.fetchData();
                 break;
             }
             case "TabPane_NA_TrainingPost_Jsp": {
@@ -1692,20 +1697,6 @@
                 break;
             }
         }
-    }
-
-    function fetchPersonnelData_TrainingPost_Jsp() {
-        if (Detail_Tab_TrainingPost.getSelectedTab().name !== "TabPane_Personnel_TrainingPost_Jsp")
-            return;
-        if (TrainingPost_PostList_TrainingPost_Jsp == null) {
-            PersonnelLG_TrainingPost_Jsp.setData([]);
-            return;
-        }
-
-        PersonnelDS_TrainingPost_Jsp.fetchDataURL = trainingPostUrl + "/" + ListGrid_TrainingPost_Jsp.getSelectedRecord().id + "/getPersonnel";
-
-        PersonnelLG_TrainingPost_Jsp.invalidateCache();
-        PersonnelLG_TrainingPost_Jsp.fetchData();
     }
 
     function loadPostData(listGrid, criteria, title) {

@@ -541,15 +541,7 @@
                 if (personnelJob_PostGrade === postGrade.id)
                     return;
                 personnelJob_PostGrade = postGrade.id;
-                PersonnelLG_PostGrade.setImplicitCriteria({
-                    _constructor: "AdvancedCriteria",
-                    operator: "and",
-                    criteria: [
-                        {fieldName: "postGradeCode", operator: "equals", value: postGrade.code},
-                        {fieldName: "active", operator: "equals", value: 1},
-                        {fieldName: "employmentStatusId", operator: "equals", value: 5}
-                    ]
-                });
+                PersonnelDS_PostGrade.fetchDataURL = postGradeUrl + "/personnelIscList/" + postGrade.id;
                 PersonnelLG_PostGrade.invalidateCache();
                 PersonnelLG_PostGrade.fetchData();
                 break;

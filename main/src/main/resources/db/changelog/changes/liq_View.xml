@@ -1125,7 +1125,7 @@ FROM
     </changeSet>
 
 
-    <changeSet author="NICICO" id="VIEW_POST-005">
+    <changeSet author="NICICO" id="VIEW_POST-006">
         <createView viewName="VIEW_POST" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1159,9 +1159,8 @@ SELECT
     COUNT(DISTINCT prs.id) AS n_personnel_count
 FROM
     tbl_post                p
-    LEFT JOIN tbl_needs_assessment    na ON p.id = na.f_object
-                                         AND na.c_object_type = 'Post'
-    LEFT JOIN view_active_personnel   prs ON p.c_code = prs.post_code
+    LEFT JOIN (select * from  tbl_needs_assessment where c_object_type = 'Post')     na ON p.id = na.f_object
+    LEFT JOIN view_active_personnel   prs ON p.id = prs.f_post_id
     INNER JOIN tbl_job                 j ON j.id = p.f_job_id
     INNER JOIN tbl_post_grade          pg ON pg.id = p.f_post_grade_id
 GROUP BY
@@ -1195,7 +1194,7 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_POST_GROUP-002">
+    <changeSet author="NICICO" id="VIEW_POST_GROUP-003">
         <createView viewName="VIEW_POST_GROUP" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1216,12 +1215,17 @@ SELECT
     COUNT(DISTINCT na.f_competence) AS n_competence_count,
     COUNT(DISTINCT prs.id) AS n_personnel_count
 FROM
-    tbl_post_group         pg
-    LEFT JOIN tbl_needs_assessment   na ON pg.id = na.f_object
-                                                     AND na.c_object_type = 'PostGroup'
+    tbl_post_group          pg
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            tbl_needs_assessment
+        WHERE
+            c_object_type = 'PostGroup'
+    ) na ON pg.id = na.f_object
     LEFT JOIN tbl_post_postgroup ON pg.id = tbl_post_postgroup.f_postgroup_id
-    LEFT JOIN tbl_post               p ON tbl_post_postgroup.f_post_id = p.id
-    LEFT JOIN view_active_personnel          prs ON p.c_code = prs.post_code
+    LEFT JOIN view_active_personnel   prs ON tbl_post_postgroup.f_post_id = prs.f_post_id
 GROUP BY
     pg.id,
     pg.c_created_by,
@@ -1241,7 +1245,7 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_JOB-003">
+    <changeSet author="NICICO" id="VIEW_JOB-004">
         <createView viewName="VIEW_JOB" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1254,16 +1258,23 @@ SELECT
     j.d_last_modified_date,
     j.c_code,
     j.n_version,
-    j.C_TITLE_FA,
+    j.c_title_fa,
     j.d_last_modified_date_na,
     j.c_modified_by_na,
     COUNT(DISTINCT na.f_competence) AS n_competence_count,
     COUNT(DISTINCT prs.id) AS n_personnel_count
 FROM
-    tbl_job j
-    LEFT JOIN tbl_needs_assessment na ON j.id = na.f_object
-                                         AND na.c_object_type = 'Job'
-    LEFT JOIN view_active_personnel prs ON j.c_code = prs.job_no
+    tbl_job                                                     j
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            tbl_needs_assessment
+        WHERE
+            c_object_type = 'Job'
+    ) na ON j.id = na.f_object
+    LEFT JOIN tbl_post                                                    post ON post.f_job_id = j.id
+    LEFT JOIN view_active_personnel                                       prs ON post.id = prs.f_post_id
 GROUP BY
     j.id,
     j.c_created_by,
@@ -1281,7 +1292,7 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_JOB_GROUP-003">
+    <changeSet author="NICICO" id="VIEW_JOB_GROUP-004">
         <createView viewName="VIEW_JOB_GROUP" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1302,12 +1313,19 @@ SELECT
     COUNT(DISTINCT na.f_competence) AS n_competence_count,
     COUNT(DISTINCT prs.id) AS n_personnel_count
 FROM
-    tbl_job_group jg
-    LEFT JOIN tbl_needs_assessment na ON jg.id = na.f_object
-                                         AND na.c_object_type = 'JobGroup'
+    tbl_job_group           jg
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            tbl_needs_assessment
+        WHERE
+            c_object_type = 'JobGroup'
+    ) na ON jg.id = na.f_object
     LEFT JOIN tbl_job_jobgroup ON jg.id = tbl_job_jobgroup.f_jobgroup_id
-    LEFT JOIN tbl_job j ON tbl_job_jobgroup.f_job_id = j.id
-    LEFT JOIN view_active_personnel prs ON j.c_code = prs.job_no
+    LEFT JOIN tbl_job                 j ON tbl_job_jobgroup.f_job_id = j.id
+    LEFT JOIN tbl_post                post ON post.f_job_id = j.id
+    LEFT JOIN view_active_personnel   prs ON post.id = prs.f_post_id
 GROUP BY
     jg.id,
     jg.c_created_by,
@@ -1327,7 +1345,7 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_POST_GRADE-003">
+    <changeSet author="NICICO" id="VIEW_POST_GRADE-004">
         <createView viewName="VIEW_POST_GRADE" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1346,10 +1364,17 @@ SELECT
     COUNT(DISTINCT na.f_competence) AS n_competence_count,
     COUNT(DISTINCT prs.id) AS n_personnel_count
 FROM
-    tbl_post_grade pg
-    LEFT JOIN tbl_needs_assessment na ON pg.id = na.f_object
-                                         AND na.c_object_type = 'PostGrade'
-    LEFT JOIN view_active_personnel prs ON pg.c_code = prs.post_grade_code
+    tbl_post_grade          pg
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            tbl_needs_assessment
+        WHERE
+            c_object_type = 'PostGrade'
+    ) na ON pg.id = na.f_object
+    LEFT JOIN tbl_post                post ON post.f_post_grade_id = pg.id
+    LEFT JOIN view_active_personnel   prs ON post.id = prs.f_post_id
 GROUP BY
     pg.id,
     pg.c_created_by,
@@ -1367,7 +1392,7 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_POST_GRADE_GROUP-003">
+    <changeSet author="NICICO" id="VIEW_POST_GRADE_GROUP-004">
         <createView viewName="VIEW_POST_GRADE_GROUP" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1388,12 +1413,18 @@ SELECT
     COUNT(DISTINCT na.f_competence) AS n_competence_count,
     COUNT(DISTINCT prs.id) AS n_personnel_count
 FROM
-    tbl_post_grade_group pgg
-    LEFT JOIN tbl_needs_assessment na ON pgg.id = na.f_object
-                                         AND na.c_object_type = 'PostGradeGroup'
-    LEFT JOIN tbl_post_grade_post_grade_group ON pgg.id = tbl_post_grade_post_grade_group.f_post_grade_group_id
-    LEFT JOIN tbl_post_grade p ON tbl_post_grade_post_grade_group.f_post_grade_id = p.id
-    LEFT JOIN view_active_personnel prs ON p.c_code = prs.post_grade_code
+    tbl_post_grade_group              pgg
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            tbl_needs_assessment
+        WHERE
+            tbl_needs_assessment.c_object_type = 'PostGradeGroup'
+    ) na ON pgg.id = na.f_object
+    LEFT JOIN tbl_post_grade_post_grade_group   pgpg ON pgg.id = pgpg.f_post_grade_group_id
+    LEFT JOIN tbl_post                          post ON post.f_post_grade_id = pgpg.f_post_grade_id
+    LEFT JOIN view_active_personnel             prs ON post.id = prs.f_post_id
 GROUP BY
     pgg.id,
     pgg.c_created_by,
@@ -2285,10 +2316,10 @@ GROUP BY
     ]]>
         </createView>
     </changeSet>
-    <changeSet author="NICICO" id="VIEW_TRAINING_POST-004">
+    <changeSet author="NICICO" id="VIEW_TRAINING_POST-006">
         <createView viewName="VIEW_TRAINING_POST" replaceIfExists="true">
             <![CDATA[
-   SELECT
+SELECT
     tp.id,
     tp.c_created_by,
     tp.d_created_date,
@@ -2306,6 +2337,7 @@ GROUP BY
     tp.c_cost_center_code,
     tp.c_section,
     tp.c_unit,
+    tp.f_department_id,
     tp.f_post_grade_id,
     tp.f_job_id,
     tp.d_last_modified_date_na,
@@ -2319,10 +2351,16 @@ GROUP BY
     COUNT(DISTINCT prs.id) AS n_personnel_count
 FROM
     tbl_training_post        tp
-    LEFT JOIN tbl_needs_assessment     na ON tp.id = na.f_object
-                                         AND na.c_object_type = 'TrainingPost'
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            tbl_needs_assessment
+        WHERE
+            c_object_type = 'TrainingPost'
+    ) na ON tp.id = na.f_object
     LEFT JOIN tbl_post_training_post   ptp ON tp.id = ptp.f_training_post_id
-    LEFT JOIN tbl_personnel            prs ON ptp.f_post_id = prs.f_post_id
+    LEFT JOIN view_active_personnel    prs ON ptp.f_post_id = prs.f_post_id
     LEFT JOIN tbl_job                  j ON j.id = tp.f_job_id
     LEFT JOIN tbl_post_grade           pg ON pg.id = tp.f_post_grade_id
 GROUP BY
@@ -2343,6 +2381,7 @@ GROUP BY
     tp.c_cost_center_code,
     tp.c_section,
     tp.c_unit,
+    tp.f_department_id,
     tp.f_post_grade_id,
     tp.f_job_id,
     tp.d_last_modified_date_na,

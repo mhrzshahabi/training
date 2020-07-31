@@ -31,6 +31,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -91,7 +92,6 @@ public class ExportToFileController {
     private final ExportToFileService exportToFileService;
 
 
-
     private final ModelMapper modelMapper;
     private final MessageSource messageSource;
     private final ObjectMapper objectMapper;
@@ -135,7 +135,7 @@ public class ExportToFileController {
         //Start Of Query
         net.minidev.json.parser.JSONParser parser = new JSONParser(DEFAULT_PERMISSIVE_MODE);
 
-        Map<String, Map<String, String>> parameters = creatValueMap((List<Map<String,String>>)parser.parse(valueMaps));
+        Map<String, Map<String, String>> parameters = creatValueMap((List<Map<String, String>>) parser.parse(valueMaps));
 
         String[] jsonString = {null};
         int count[] = {0};
@@ -143,35 +143,35 @@ public class ExportToFileController {
 
         switch (fileName) {
             case "questionBank":
-                generalList = (List<Object>)((Object) questionBankService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) questionBankService.search(searchRq).getList());
                 break;
             case "class":
                 searchRq.setCriteria(workGroupService.addPermissionToCriteria("course.categoryId", searchRq.getCriteria()));
-                generalList = (List<Object>)((Object) tclassService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) tclassService.search(searchRq).getList());
                 break;
 
             case "course":
                 searchRq.setCriteria(workGroupService.addPermissionToCriteria("categoryId", searchRq.getCriteria()));
-                generalList = (List<Object>)((Object) courseService.search(searchRq, c -> modelMapper.map(c, CourseDTO.Info.class)).getList());
+                generalList = (List<Object>) ((Object) courseService.search(searchRq, c -> modelMapper.map(c, CourseDTO.Info.class)).getList());
                 break;
 
             case "trainingFile":
-                generalList = (List<Object>)((Object) classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class)).getList());
+                generalList = (List<Object>) ((Object) classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class)).getList());
                 break;
 
             case "studentClassReport":
-                generalList = (List<Object>)((Object) SearchUtil.search(studentClassReportViewDAO, searchRq, student -> modelMapper.map(student, StudentClassReportViewDTO.Info.class)).getList());
+                generalList = (List<Object>) ((Object) SearchUtil.search(studentClassReportViewDAO, searchRq, student -> modelMapper.map(student, StudentClassReportViewDTO.Info.class)).getList());
                 break;
 
             case "personnelInformationReport":
-                generalList = (List<Object>)((Object) SearchUtil.search(personnelDAO, searchRq, personnel -> modelMapper.map(personnel, PersonnelDTO.Info.class)).getList());
+                generalList = (List<Object>) ((Object) SearchUtil.search(personnelDAO, searchRq, personnel -> modelMapper.map(personnel, PersonnelDTO.Info.class)).getList());
                 break;
             case "registeredPersonnelInformationReport":
-                generalList = (List<Object>)((Object) SearchUtil.search(personnelRegisteredDAO, searchRq, personnelRegistered -> modelMapper.map(personnelRegistered, PersonnelRegisteredDTO.Info.class)).getList());
+                generalList = (List<Object>) ((Object) SearchUtil.search(personnelRegisteredDAO, searchRq, personnelRegistered -> modelMapper.map(personnelRegistered, PersonnelRegisteredDTO.Info.class)).getList());
                 break;
 
             case "personnelCourseNotPassed":
-                generalList = (List<Object>)((Object) personnelCourseNotPassedReportViewService.search(searchRq, p -> modelMapper.map(p, PersonnelCourseNotPassedReportViewDTO.Info.class)).getList());
+                generalList = (List<Object>) ((Object) personnelCourseNotPassedReportViewService.search(searchRq, p -> modelMapper.map(p, PersonnelCourseNotPassedReportViewDTO.Info.class)).getList());
                 break;
 
             case "classOutsideCurrentTerm":
@@ -183,27 +183,27 @@ public class ExportToFileController {
                         .map(x -> x.getId()).collect(Collectors.toList());
                 List<TclassDTO.Info> infoList = classInfoSearchRsList.stream().filter(x -> !longList.contains(x.getId())).collect(Collectors.toList());
                 classInfoSearchRs.getList().removeAll(infoList);
-                generalList = (List<Object>)((Object) classInfoSearchRsList);
+                generalList = (List<Object>) ((Object) classInfoSearchRsList);
                 break;
 
             case "weeklyTrainingSchedule":
                 String userNationalCode = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
                 searchRq.getCriteria().getCriteria().remove(0);
-                generalList = (List<Object>)((Object) classSessionService.searchWeeklyTrainingSchedule(searchRq, userNationalCode).getList());
+                generalList = (List<Object>) ((Object) classSessionService.searchWeeklyTrainingSchedule(searchRq, userNationalCode).getList());
                 break;
             case "trainingClassReport":
-                generalList = (List<Object>)((Object) viewEvaluationStaticalReportService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) viewEvaluationStaticalReportService.search(searchRq).getList());
                 break;
 
             case "unfinishedClassesReport":
-                generalList = (List<Object>)((Object) unfinishedClassesReportService.UnfinishedClassesList());
+                generalList = (List<Object>) ((Object) unfinishedClassesReportService.UnfinishedClassesList());
                 break;
             case "trainingOverTime":
                 String startDate = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
                 searchRq.getCriteria().getCriteria().remove(0);
                 String endDate = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
                 searchRq.getCriteria().getCriteria().remove(0);
-                generalList = (List<Object>)((Object) trainingOverTimeService.getTrainingOverTimeReportList(startDate, endDate));
+                generalList = (List<Object>) ((Object) trainingOverTimeService.getTrainingOverTimeReportList(startDate, endDate));
                 break;
 
             case "attendanceReport":
@@ -211,10 +211,10 @@ public class ExportToFileController {
                 searchRq.getCriteria().getCriteria().remove(0);
                 String endDate2 = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
                 searchRq.getCriteria().getCriteria().remove(0);
-                int absentType = Integer.parseInt(searchRq.getCriteria().getCriteria().get(0).getValue().get(0)+"");
+                int absentType = Integer.parseInt(searchRq.getCriteria().getCriteria().get(0).getValue().get(0) + "");
                 searchRq.getCriteria().getCriteria().remove(0);
-                List<AttendanceReportDTO.Info> attendanceReportServiceAbsentList = attendanceReportService.getAbsentList(startDate2, endDate2,absentType+"");
-                attendanceReportServiceAbsentList.forEach(x->
+                List<AttendanceReportDTO.Info> attendanceReportServiceAbsentList = attendanceReportService.getAbsentList(startDate2, endDate2, absentType + "");
+                attendanceReportServiceAbsentList.forEach(x ->
                         {
                             if (x.getAttendanceStatus().equals("3"))
                                 x.setAttendanceStatus("غیر موجه");
@@ -222,86 +222,88 @@ public class ExportToFileController {
                                 x.setAttendanceStatus("موجه");
                         }
                 );
-                generalList = (List<Object>)((Object) attendanceReportServiceAbsentList);
+                generalList = (List<Object>) ((Object) attendanceReportServiceAbsentList);
                 break;
 
             case "Category":
-                generalList = (List<Object>)((Object)categoryService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) categoryService.search(searchRq).getList());
                 break;
 
             case "SubCategory":
-                generalList = (List<Object>)((Object) subcategoryService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) subcategoryService.search(searchRq).getList());
                 break;
 
             case "EducationOrientation":
-                generalList = (List<Object>)((Object) educationOrientationService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) educationOrientationService.search(searchRq).getList());
                 break;
 
             case "EducationMajor":
-                generalList = (List<Object>)((Object) educationMajorService.search(searchRq).getClass());
+                generalList = (List<Object>) ((Object) educationMajorService.search(searchRq).getClass());
                 break;
 
             case "EducationLevel":
-                generalList = (List<Object>)((Object) educationLevelService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) educationLevelService.search(searchRq).getList());
                 break;
 
             case "Equipment":
-                generalList = (List<Object>)((Object) equipmentService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) equipmentService.search(searchRq).getList());
                 break;
 
             case "teacherReport":
-                generalList = (List<Object>)((Object) viewTeacherReportService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) viewTeacherReportService.search(searchRq).getList());
                 break;
 
             case "Competence":
-                generalList = (List<Object>)((Object) competenceService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) competenceService.search(searchRq).getList());
                 break;
 
             case "Skill":
                 searchRq.setCriteria(workGroupService.addPermissionToCriteria("categoryId", searchRq.getCriteria()));
-                generalList = (List<Object>)((Object) skillService.searchGeneric(searchRq, SkillDTO.Info.class).getList());
+                generalList = (List<Object>) ((Object) skillService.searchGeneric(searchRq, SkillDTO.Info.class).getList());
                 break;
 
             case "Skill_Post":
                 Long skillId = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
                 searchRq.getCriteria().getCriteria().remove(0);
-                generalList = (List<Object>)((Object) needsAssessmentReportsService.getSkillNAPostList(searchRq, skillId).getList());
+                generalList = (List<Object>) ((Object) needsAssessmentReportsService.getSkillNAPostList(searchRq, skillId).getList());
                 break;
 
             case "View_Job":
-                generalList = (List<Object>)((Object) viewJobService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) viewJobService.search(searchRq).getList());
                 break;
 
             case "Personnel":
-                generalList = (List<Object>)((Object) personnelService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) personnelService.search(searchRq).getList());
                 break;
 
             case "NeedsAssessment":
                 Long objectId = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
                 String objectType = searchRq.getCriteria().getCriteria().get(1).getValue().get(0).toString();
                 String personnelNo = searchRq.getCriteria().getCriteria().get(2).getValue().get(0) == null ? null : searchRq.getCriteria().getCriteria().get(2).getValue().get(0).toString();
-                searchRq.getCriteria().getCriteria().remove(0);searchRq.getCriteria().getCriteria().remove(0);searchRq.getCriteria().getCriteria().remove(0);
-                generalList = (List<Object>)((Object) needsAssessmentReportsService.search(searchRq, objectId, objectType, personnelNo).getList());
+                searchRq.getCriteria().getCriteria().remove(0);
+                searchRq.getCriteria().getCriteria().remove(0);
+                searchRq.getCriteria().getCriteria().remove(0);
+                generalList = (List<Object>) ((Object) needsAssessmentReportsService.search(searchRq, objectId, objectType, personnelNo).getList());
                 break;
 
             case "View_Post":
-                generalList = (List<Object>)((Object) viewPostService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) viewPostService.search(searchRq).getList());
                 break;
 
             case "Post":
-                generalList = (List<Object>)((Object) postService.searchWithoutPermission(searchRq).getList());
+                generalList = (List<Object>) ((Object) postService.searchWithoutPermission(searchRq, p -> modelMapper.map(p, PostDTO.Info.class)).getList());
                 break;
 
             case "View_Post_Grade":
-                generalList = (List<Object>)((Object) viewPostGradeService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) viewPostGradeService.search(searchRq).getList());
                 break;
 
             case "Post_Grade_Without_Permission":
-                generalList = (List<Object>)((Object) postGradeService.searchWithoutPermission(searchRq).getList());
+                generalList = (List<Object>) ((Object) postGradeService.searchWithoutPermission(searchRq).getList());
                 break;
 
             case "View_Job_Group":
-                generalList = (List<Object>)((Object) viewJobGroupService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) viewJobGroupService.search(searchRq).getList());
                 break;
 
             case "Job_Group_Personnel":
@@ -313,8 +315,8 @@ public class ExportToFileController {
                     coustomSearchRq.getCriteria().getCriteria().add(makeNewCriteria("active", 1, EOperator.equals, null));
                     coustomSearchRq.getCriteria().getCriteria().add(makeNewCriteria("employmentStatusId", 5, EOperator.equals, null));
                     coustomSearchRq.setCount(searchRq.getCount());
-                    generalList = (List<Object>)((Object) personnelService.search(coustomSearchRq).getList());
-                }else
+                    generalList = (List<Object>) ((Object) personnelService.search(coustomSearchRq).getList());
+                } else
                     generalList = new ArrayList<>(0);
                 break;
 
@@ -325,13 +327,13 @@ public class ExportToFileController {
                 if (!jobs1.isEmpty()) {
                     SearchDTO.SearchRq coustomSearchRq1 = ISC.convertToSearchRq(req, jobs1.stream().map(JobDTO.Info::getId).collect(Collectors.toList()), "job", EOperator.inSet);
                     coustomSearchRq1.setCount(searchRq.getCount());
-                    generalList = (List<Object>)((Object) postService.searchWithoutPermission(coustomSearchRq1).getList());
-                }else
+                    generalList = (List<Object>) ((Object) postService.searchWithoutPermission(coustomSearchRq1, p -> modelMapper.map(p, PostDTO.Info.class)).getList());
+                } else
                     generalList = new ArrayList<>(0);
                 break;
 
             case "View_Post_Grade_Group":
-                generalList = (List<Object>)((Object) viewPostGradeGroupService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) viewPostGradeGroupService.search(searchRq).getList());
                 break;
 
             case "Post_Grade_Group_Personnel":
@@ -341,7 +343,7 @@ public class ExportToFileController {
                 SearchDTO.SearchRq coustomSearchRq2 = ISC.convertToSearchRq(req, postGrades.stream().map(PostGradeDTO.Info::getCode).collect(Collectors.toList()), "postGradeCode", EOperator.inSet);
                 coustomSearchRq2.getCriteria().getCriteria().add(makeNewCriteria("active", 1, EOperator.equals, null));
                 coustomSearchRq2.getCriteria().getCriteria().add(makeNewCriteria("employmentStatusId", 5, EOperator.equals, null));
-                generalList = (List<Object>)((Object) personnelService.search(coustomSearchRq2).getList());
+                generalList = (List<Object>) ((Object) personnelService.search(coustomSearchRq2).getList());
 
                 break;
 
@@ -350,29 +352,29 @@ public class ExportToFileController {
                 searchRq.getCriteria().getCriteria().remove(0);
                 List<PostGradeDTO.Info> postGrades1 = postGradeGroupService.getPostGrades(PostGradeGroup2);
                 SearchDTO.SearchRq coustomSearchRq3 = ISC.convertToSearchRq(req, postGrades1.stream().map(PostGradeDTO.Info::getId).collect(Collectors.toList()), "postGrade", EOperator.inSet);
-                generalList = (List<Object>)((Object) postService.searchWithoutPermission(coustomSearchRq3).getList());
+                generalList = (List<Object>) ((Object) postService.searchWithoutPermission(coustomSearchRq3, p -> modelMapper.map(p, PostDTO.Info.class)).getList());
                 break;
 
             case "View_Post_Group":
-                generalList = (List<Object>)((Object) viewPostGroupService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) viewPostGroupService.search(searchRq).getList());
                 break;
 
             case "Post_Group":
-                generalList = (List<Object>)((Object) postGroupService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) postGroupService.search(searchRq).getList());
                 break;
 
             case "personnelCourseNAR":
-                generalList = (List<Object>)((Object) personnelCoursePassedNAReportViewService.search(searchRq, r -> modelMapper.map(r, PersonnelCoursePassedNAReportViewDTO.MinInfo.class)).getList());
+                generalList = (List<Object>) ((Object) personnelCoursePassedNAReportViewService.search(searchRq, r -> modelMapper.map(r, PersonnelCoursePassedNAReportViewDTO.MinInfo.class)).getList());
                 break;
 
             case "Post_Group_Post":
                 Long postGroup = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
                 searchRq.getCriteria().getCriteria().remove(0);
-                generalList = (List<Object>)((Object) postGroupService.getPosts(postGroup));
+                generalList = (List<Object>) ((Object) postGroupService.getPosts(postGroup));
                 break;
 
             case "viewPersonnelTrainingStatusReport":
-                generalList = (List<Object>)((Object) viewPersonnelTrainingStatusReportService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) viewPersonnelTrainingStatusReportService.search(searchRq).getList());
                 break;
         }
 
@@ -405,7 +407,7 @@ public class ExportToFileController {
 
                 tmpName = getData(jsonObject, aList, 0);
 
-                if(parameters.containsKey(fieldName)){
+                if (parameters.containsKey(fieldName)) {
                     tmpName = parameters.get(fieldName).get(tmpName);
                 }
 
@@ -503,15 +505,15 @@ public class ExportToFileController {
         return searchRq;
     }
 
-    private Map<String, Map<String, String>> creatValueMap(List<Map<String, String>> parameters){
-        Map<String,  Map<String, String>> map = new HashMap<>();
-        for (Map<String, String> value : parameters){
-            map.put(value.get("value"),(Map<String, String>)(Object)value.get("map"));
+    private Map<String, Map<String, String>> creatValueMap(List<Map<String, String>> parameters) {
+        Map<String, Map<String, String>> map = new HashMap<>();
+        for (Map<String, String> value : parameters) {
+            map.put(value.get("value"), (Map<String, String>) (Object) value.get("map"));
         }
         return map;
     }
 
-    private <T> void setExcelValues(String jsonStringRef[], int countRef[],   List<T> list)throws JsonProcessingException {
+    private <T> void setExcelValues(String jsonStringRef[], int countRef[], List<T> list) throws JsonProcessingException {
         if (list == null) {
             countRef[0] = 0;
         } else {

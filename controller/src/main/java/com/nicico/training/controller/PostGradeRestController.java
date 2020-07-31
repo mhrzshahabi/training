@@ -9,22 +9,24 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CourseDTO;
+import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.dto.PostGradeDTO;
+import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.service.PostGradeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -34,6 +36,7 @@ public class PostGradeRestController {
 
     private final PostGradeService postGradeService;
     private final ObjectMapper objectMapper;
+    private final IPersonnelService personnelService;
 
     @GetMapping("/list")
     public ResponseEntity<List<PostGradeDTO.Info>> list() {
@@ -54,6 +57,18 @@ public class PostGradeRestController {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.SearchRs<PostGradeDTO.Info> searchRs = postGradeService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/personnelIscList/{id}")
+    public ResponseEntity<ISC<PersonnelDTO.Info>> personnelList(HttpServletRequest iscRq, @PathVariable(value = "id") Long id) throws IOException {
+        List<PostDTO.TupleInfo> postList = postGradeService.getPosts(id);
+        if (postList.isEmpty()) {
+            return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
+        }
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq, postList.stream().map(PostDTO.TupleInfo::getId).collect(Collectors.toList()), "postId", EOperator.inSet);
+        searchRq.getCriteria().getCriteria().add(makeNewCriteria("deleted", 0, EOperator.equals, null));
+        SearchDTO.SearchRs<PersonnelDTO.Info> searchRs = personnelService.search(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 
     @Loggable
@@ -101,6 +116,6 @@ public class PostGradeRestController {
         final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
         specRs.setResponse(specResponse);
 
-        return new ResponseEntity<>( specRs, HttpStatus.OK);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 }
