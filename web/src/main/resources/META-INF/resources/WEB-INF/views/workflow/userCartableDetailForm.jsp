@@ -78,8 +78,7 @@ abaspour 9803
     <c:if test="${taskFormVariable.id =='targetTitleFa'}">
     var targetTitleFa = "${taskFormVariable.value}";
     var targetTitleFaFull = "مشاهده ی " + targetTitleFa;
-    viewDocButton = isc.IButton.create
-    ({
+    viewDocButton = isc.IButton.create({
         ID: "viewDocButton",
         icon: "[SKIN]actions/edit.png",
         title: targetTitleFaFull,
@@ -98,10 +97,18 @@ abaspour 9803
                             createDialog("warning", "ارتباط با سرور برقرار نشد.")
                         }
                         let record = JSON.parse(resp.data).response.data[0];
+                        let valueMap = {
+                            0: "ارسال به گردش کار",
+                            1: "عدم تایید",
+                            2: "تایید نهایی",
+                            3: "حذف گردش کار",
+                            4: "اصلاح شایستگی و ارسال به گردش کار"
+                        }
                         let field = [
                             {name: "code", title: "کد شایستگی", autoFitWidth: true},
                             {name: "title", title: "عنوان شایستگی",autoFitWidth: true},
                             {name: "competenceType.title", title: "نوع شایستگی",autoFitWidth: true},
+                            {name: "workFlowStatusCode", title: "وضعیت",autoFitWidth: true, valueMap: valueMap},
                             {name: "category.titleFa", title: "<spring:message code="category"/>",autoFitWidth: true},
                             {name: "category.code", title: "کد گروه",autoFitWidth: true},
                             {name: "subCategory.titleFa", title: "<spring:message code="subcategory"/>",autoFitWidth: true},
@@ -510,6 +517,7 @@ abaspour 9803
     </c:if>
 
     <c:if test="${taskFormVariable.id =='DELETE'}">
+    alert(23)
     doDeleteTaskButton = isc.IButton.create({
         icon: "[SKIN]actions/edit.png", title: "حذف گردش کار", align: "center", width: "150",
         click: function () {

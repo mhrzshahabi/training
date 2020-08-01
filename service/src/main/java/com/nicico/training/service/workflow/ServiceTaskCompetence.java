@@ -1,8 +1,6 @@
 package com.nicico.training.service.workflow;
 
 import com.nicico.copper.core.SecurityUtil;
-import com.nicico.training.TrainingException;
-import com.nicico.training.model.Competence;
 import com.nicico.training.repository.CompetenceDAO;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.service.NeedsAssessmentService;
@@ -14,8 +12,6 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Component
 @Getter
@@ -35,8 +31,7 @@ public class ServiceTaskCompetence implements JavaDelegate {
         String mainConfirmBoss = "ahmadi_z";
         String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
 
-        if( (complexTitle != null) && (complexTitle.equals("شهر بابک")))
-        {
+        if ((complexTitle != null) && (complexTitle.equals("شهر بابک"))) {
             mainConfirmBoss = "pourfathian_a";
         }
 
@@ -65,16 +60,15 @@ public class ServiceTaskCompetence implements JavaDelegate {
 
 //                needsAssessmentService.updateNeedsAssessmentMainWorkflow(Long.parseLong(exe.getVariable("cId").toString()), -1, "عدم تایید");
                 exe.setVariable("C_WORKFLOW_COMPETENCE_STATUS", "عدم تایید");
-                exe.setVariable("C_WORKFLOW_COMPETENCE_STATUS_CODE", "-1");
-                updateWorkFlow(Long.parseLong(exe.getVariable("cId").toString()), -1);
-
+                exe.setVariable("C_WORKFLOW_COMPETENCE_STATUS_CODE", "1");
+                updateWorkFlow(Long.parseLong(exe.getVariable("cId").toString()), 1);
 
 
             } else if (exe.getVariable("REJECT").toString().equals("N")) {
 //                needsAssessmentService.updateNeedsAssessmentMainWorkflow(Long.parseLong(exe.getVariable("cId").toString()), 1, "تایید نهایی اصلی");
                 exe.setVariable("C_WORKFLOW_COMPETENCE_STATUS", "تایید نهایی ");
-                exe.setVariable("C_WORKFLOW_COMPETENCE_STATUS_CODE", "1");
-                updateWorkFlow(Long.parseLong(exe.getVariable("cId").toString()), 1);
+                exe.setVariable("C_WORKFLOW_COMPETENCE_STATUS_CODE", "2");
+                updateWorkFlow(Long.parseLong(exe.getVariable("cId").toString()), 2);
             }
         }
         //**************************************************
@@ -86,15 +80,15 @@ public class ServiceTaskCompetence implements JavaDelegate {
 
 //                needsAssessmentService.updateNeedsAssessmentMainWorkflow(Long.parseLong(exe.getVariable("cId").toString()), -3, "حذف گردش کار اصلی");
                 exe.setVariable("C_WORKFLOW_COMPETENCE_STATUS", "حذف گردش کار ");
-                exe.setVariable("C_WORKFLOW_COMPETENCE_STATUS_CODE", "-3");
-                updateWorkFlow(Long.parseLong(exe.getVariable("cId").toString()), -3);
+                exe.setVariable("C_WORKFLOW_COMPETENCE_STATUS_CODE", "3");
+                updateWorkFlow(Long.parseLong(exe.getVariable("cId").toString()), 3);
 
             } else if (exe.getVariable("REJECT").toString().equals("N")) {
 
 //                needsAssessmentService.updateNeedsAssessmentMainWorkflow(Long.parseLong(exe.getVariable("cId").toString()), 10, "اصلاح نیازسنجی و ارسال به گردش کار اصلی");
                 exe.setVariable("C_WORKFLOW_COMPETENCE_STATUS", "اصلاح شایستگی و ارسال به گردش کار ");
-                exe.setVariable("C_WORKFLOW_COMPETENCE_STATUS_CODE", "3");
-                updateWorkFlow(Long.parseLong(exe.getVariable("cId").toString()), 3);
+                exe.setVariable("C_WORKFLOW_COMPETENCE_STATUS_CODE", "4");
+                updateWorkFlow(Long.parseLong(exe.getVariable("cId").toString()), 4);
 
             }
         }
@@ -102,10 +96,9 @@ public class ServiceTaskCompetence implements JavaDelegate {
 
 
     }
+
     @Transactional
-    public void updateWorkFlow(Long id, Integer code){
-        Optional<Competence> byId = competenceDAO.findById(id);
-        Competence competence = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        competence.setWorkFlowStatusCode(code);
+    public void updateWorkFlow(Long id, Integer code) {
+        competenceDAO.updateCompetenceState(id, code);
     }
 }

@@ -31,7 +31,7 @@ public class CompetenceDTO implements Serializable {
     private Long categoryId;
     private Long subCategoryId;
     private String code;
-    private Integer workFlowStatusCode;
+    private Long workFlowStatusCode;
 
 
 @Getter

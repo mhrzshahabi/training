@@ -1287,7 +1287,7 @@
         <%--// showDetailFields: true--%>
     <%--});--%>
 
-    let Window_AddCompetence = isc.Window.create({
+    var Window_AddCompetence = isc.Window.create({
         title: "<spring:message code="competence.list"/>",
         width: "80%",
         height: "70%",
