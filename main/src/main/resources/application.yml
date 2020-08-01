@@ -114,18 +114,18 @@ nicico:
     upload-class-deleted: /var/nicico/${spring.application.name}/upload/Tclass/deleted
     upload-teacher: /var/nicico/${spring.application.name}/upload/Teacher
     upload-teacher-deleted: /var/nicico/${spring.application.name}/upload/Teacher/deleted
-    upload-Job: c:/nicico/${spring.application.name}/upload/Job
-    upload-Job-deleted: c:/nicico/${spring.application.name}/upload/Job/deleted
-    upload-JobGroup: c:/nicico/${spring.application.name}/upload/JobGroup
-    upload-JobGroup-deleted: c:/nicico/${spring.application.name}/upload/JobGroup/deleted
-    upload-PostGrade: c:/nicico/${spring.application.name}/upload/PostGrade
-    upload-PostGrade-deleted: c:/nicico/${spring.application.name}/upload/PostGrade/deleted
-    upload-PostGradeGroup: c:/nicico/${spring.application.name}/upload/PostGradeGroup
-    upload-PostGradeGroup-deleted: c:/nicico/${spring.application.name}/upload/PostGradeGroup/deleted
-    upload-PostGroup: c:/nicico/${spring.application.name}/upload/PostGroup
-    upload-PostGroup-deleted: c:/nicico/${spring.application.name}/upload/PostGroup/deleted
-    upload-Post: c:/nicico/${spring.application.name}/upload/Post
-    upload-Post-deleted: c:/nicico/${spring.application.name}/upload/Post/deleted
+    upload-Job: /var/nicico/${spring.application.name}/upload/Job
+    upload-Job-deleted: /var/nicico/${spring.application.name}/upload/Job/deleted
+    upload-JobGroup: /var/nicico/${spring.application.name}/upload/JobGroup
+    upload-JobGroup-deleted: /var/nicico/${spring.application.name}/upload/JobGroup/deleted
+    upload-PostGrade: /var/nicico/${spring.application.name}/upload/PostGrade
+    upload-PostGrade-deleted: /var/nicico/${spring.application.name}/upload/PostGrade/deleted
+    upload-PostGradeGroup: /var/nicico/${spring.application.name}/upload/PostGradeGroup
+    upload-PostGradeGroup-deleted: /var/nicico/${spring.application.name}/upload/PostGradeGroup/deleted
+    upload-PostGroup: /var/nicico/${spring.application.name}/upload/PostGroup
+    upload-PostGroup-deleted: /var/nicico/${spring.application.name}/upload/PostGroup/deleted
+    upload-Post: /var/nicico/${spring.application.name}/upload/Post
+    upload-Post-deleted: /var/nicico/${spring.application.name}/upload/Post/deleted
     upload-person-img: /var/nicico/${spring.application.name}/upload/person/img
     upload-person-tmp: /var/nicico/${spring.application.name}/upload/person/img/tmp
     upload-bpmn: /var/nicico/${spring.application.name}/upload/bpmn
@@ -165,18 +165,18 @@ nicico:
     upload-class-deleted: /var/nicico/${spring.application.name}/upload/Tclass/deleted
     upload-teacher: /var/nicico/${spring.application.name}/upload/Teacher
     upload-teacher-deleted: /var/nicico/${spring.application.name}/upload/Teacher/deleted
-    upload-Job: c:/nicico/${spring.application.name}/upload/Job
-    upload-Job-deleted: c:/nicico/${spring.application.name}/upload/Job/deleted
-    upload-JobGroup: c:/nicico/${spring.application.name}/upload/JobGroup
-    upload-JobGroup-deleted: c:/nicico/${spring.application.name}/upload/JobGroup/deleted
-    upload-PostGrade: c:/nicico/${spring.application.name}/upload/PostGrade
-    upload-PostGrade-deleted: c:/nicico/${spring.application.name}/upload/PostGrade/deleted
-    upload-PostGradeGroup: c:/nicico/${spring.application.name}/upload/PostGradeGroup
-    upload-PostGradeGroup-deleted: c:/nicico/${spring.application.name}/upload/PostGradeGroup/deleted
-    upload-PostGroup: c:/nicico/${spring.application.name}/upload/PostGroup
-    upload-PostGroup-deleted: c:/nicico/${spring.application.name}/upload/PostGroup/deleted
-    upload-Post: c:/nicico/${spring.application.name}/upload/Post
-    upload-Post-deleted: c:/nicico/${spring.application.name}/upload/Post/deleted
+    upload-Job: /var/nicico/${spring.application.name}/upload/Job
+    upload-Job-deleted: /var/nicico/${spring.application.name}/upload/Job/deleted
+    upload-JobGroup: /var/nicico/${spring.application.name}/upload/JobGroup
+    upload-JobGroup-deleted: /var/nicico/${spring.application.name}/upload/JobGroup/deleted
+    upload-PostGrade: /var/nicico/${spring.application.name}/upload/PostGrade
+    upload-PostGrade-deleted: /var/nicico/${spring.application.name}/upload/PostGrade/deleted
+    upload-PostGradeGroup: /var/nicico/${spring.application.name}/upload/PostGradeGroup
+    upload-PostGradeGroup-deleted: /var/nicico/${spring.application.name}/upload/PostGradeGroup/deleted
+    upload-PostGroup: /var/nicico/${spring.application.name}/upload/PostGroup
+    upload-PostGroup-deleted: /var/nicico/${spring.application.name}/upload/PostGroup/deleted
+    upload-Post: /var/nicico/${spring.application.name}/upload/Post
+    upload-Post-deleted: /var/nicico/${spring.application.name}/upload/Post/deleted
     upload-person-img: /var/nicico/${spring.application.name}/upload/person/img
     upload-person-tmp: /var/nicico/${spring.application.name}/upload/person/img/tmp
     upload-bpmn: /var/nicico/${spring.application.name}/upload/bpmn

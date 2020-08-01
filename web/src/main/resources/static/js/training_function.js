@@ -129,6 +129,13 @@ function defineWindowsEditNeedsAssessment(grid = null) {
     });
 }
 
+function setColorForListGrid(record) {
+    if (record.competenceCount === 0)
+        return "color:red";
+    if (record.lastModifiedDateNA !== "آپ دیت نشده")
+        return "color:green";
+}
+
 function defineWindowTreeNeedsAssessment() {
     let Window_NeedsAssessment_Tree = isc.Window.create({
         ID: "Window_NeedsAssessment_Tree",
