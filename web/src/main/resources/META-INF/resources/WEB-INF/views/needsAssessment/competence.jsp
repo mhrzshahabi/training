@@ -345,7 +345,8 @@
             TrDSRequest(competenceSaveUrl, competenceMethod_competence, JSON.stringify(data), (resp)=>{
                 wait.close();
                 if(resp.httpResponseCode !== 226) {
-                    studyResponse(resp, "action", '<spring:message code="competence"/>', CompetenceWin_competence, CompetenceLG_competence, "entityTitle")
+                    sendCompetenceToWorkflow(JSON.parse(resp.data));
+                    studyResponse(resp, "action", '<spring:message code="competence"/>', CompetenceWin_competence, CompetenceLG_competence, "entityTitle");
                 }
                 else{
                     let list = JSON.parse(resp.data);
@@ -409,6 +410,34 @@
                 code.setValue("M00000");
                 break;
         }
+    }
+
+    function sendCompetenceToWorkflow(record){
+        let varParams = [{
+            "processKey": "competenceWorkflow",
+            "cId": record.id,
+            "competenceTitle": "ایجاد شایستگی " + record.title,
+            "competenceCreatorId": "${username}",
+            "competenceCreator": userFullName,
+            "REJECTVAL": "",
+            "REJECT": "",
+            "target": "/web/competence",
+            "targetTitleFa": "شایستگی",
+            "workflowStatus": "ثبت اولیه",
+            "workflowStatusCode": "0",
+            "workFlowName": "Competence",
+        }];
+        wait.show()
+        isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), (resp)=>{
+            wait.close()
+            if (resp.httpResponseCode === 200) {
+                simpleDialog("<spring:message code="message"/>", "<spring:message code='course.set.on.workflow.engine'/>", 3000, "say");
+            } else if (resp.httpResponseCode === 404) {
+                simpleDialog("<spring:message code="message"/>", "<spring:message code='workflow.bpmn.not.uploaded'/>", 3000, "stop");
+            } else {
+                simpleDialog("<spring:message code="message"/>", "<spring:message code='msg.send.to.workflow.problem'/>", 3000, "stop");
+            }
+        }));
     }
 
     //</script>
