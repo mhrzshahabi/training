@@ -6,6 +6,7 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
+    var dummy;
     //----------------------------------------------------Variables-----------------------------------------------------
     var teacherGradeToClass = 0;
     var studentsGradeToTeacher = 0;
@@ -595,7 +596,6 @@
         members: [ToolStrip_Evaluation_Analysis]
     });
 
-
     var Hlayout_Grid_Evaluation_Analysis = isc.HLayout.create({
         width: "100%",
         height: "45%",
@@ -715,24 +715,14 @@
     }
 
     function load_behavioral_evluation_analysis_data(record) {
-        DynamicForm_Behavioral_EvaluationAnalysis_Header.getField("studentCount").setValue(listGrid_record.studentCount);
-        DynamicForm_Behavioral_EvaluationAnalysis_Header.getField("classPassedTime").setValue(record.classPassedTime);
-        DynamicForm_Behavioral_EvaluationAnalysis_Header.getField("numberOfFilledFormsBySuperviosers").setValue(record.numberOfFilledFormsBySuperviosers);
-        DynamicForm_Behavioral_EvaluationAnalysis_Header.getField("numberOfFilledFormsByStudents").setValue(record.numberOfFilledFormsByStudents);
-
-        DynamicForm_Behavioral_EvaluationAnalysis_Footer.getField("studentsMeanGrade").setValue(record.studentsMeanGrade);
-        DynamicForm_Behavioral_EvaluationAnalysis_Footer.getField("supervisorsMeanGrade").setValue(record.supervisorsMeanGrade);
-        DynamicForm_Behavioral_EvaluationAnalysis_Footer.getField("FEBGrade").setValue(record.febgrade);
-        DynamicForm_Behavioral_EvaluationAnalysis_Footer.getField("FEBPass").setValue(record.febpass);
-        DynamicForm_Behavioral_EvaluationAnalysis_Footer.getField("FECBGrade").setValue(record.fecbgrade);
-        DynamicForm_Behavioral_EvaluationAnalysis_Footer.getField("FECBPass").setValue(record.fecbpass);
-
+        dummy= record;
         behavioral_chartData = new Array();
-        for (let i=0;i<record.supervisorsGrade.size();i++) {
-            behavioral_chartData.add({student: record.classStudentsName.get(i), grade: record.studentsGrade.get(i) , evaluator :  "<spring:message code='student'/>"});
-            behavioral_chartData.add({student: record.classStudentsName.get(i), grade: record.supervisorsGrade.get(i), evaluator : "<spring:message code='boss'/>"});
+        for (let i=0;i<record.studentGrade.size();i++) {
+            behavioral_chartData.add({student: record.classStudentsName.get(i), evaluator :  "فراگیر",  grade: record.studentGrade.get(i) });
+            behavioral_chartData.add({student: record.classStudentsName.get(i), evaluator : "بالادست", grade: record.supervisorGrade.get(i)});
+            behavioral_chartData.add({student: record.classStudentsName.get(i), evaluator : "همکاران", grade: record.coWorkersGrade.get(i)});
+            behavioral_chartData.add({student: record.classStudentsName.get(i), evaluator : "آموزش", grade: record.trainingGrade.get(i)});
         }
-
         BehavioralEvaluationChart.setData(behavioral_chartData);
     }
 
@@ -751,7 +741,7 @@
     }
 
     function fill_behavioral_evaluation_result() {
-        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "behavioralEvaluationResult/" + ListGrid_evaluationAnalysis_class.getSelectedRecord().id , "GET", null,
+        isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getBehavioralEvaluationResult/" + ListGrid_evaluationAnalysis_class.getSelectedRecord().id , "GET", null,
             "callback: fill_behavioral_evaluation_result_resp(rpcResponse)"));
     }
 

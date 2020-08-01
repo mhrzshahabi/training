@@ -47,6 +47,45 @@ public class SendMessageRestController {
     @Loggable
     @PostMapping(value = "/sendSMS")
     public ResponseEntity sendSMS(@RequestBody String data) throws IOException {
+        /*List<Long> classStudentIDs = new ArrayList<>();
+        List<String> mobiles = new ArrayList<>();
+        List<String> fullName = new ArrayList<>();
+        String className = "";
+
+        String oMessage = "";
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        JsonNode jsonNode = objectMapper.readTree(data);
+        oMessage = jsonNode.get("message").asText("");
+
+
+        jsonNode = jsonNode.get("classStudent");
+
+        if (jsonNode.isArray()) {
+            for (final JsonNode objNode : jsonNode) {
+                classStudentIDs.add(objNode.get("id").asLong());
+            }
+        }
+
+        if (classStudentIDs.size() == 0) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+
+        if(classStudentIDs.size()>0){
+            SearchDTO.SearchRq searchRq =new SearchDTO.SearchRq();
+            searchRq.setCount(1000);
+            searchRq.setStartIndex(0);
+            searchRq.setSortBy("id");
+            searchRq.setCriteria(makeNewCriteria("id",classStudentIDs, EOperator.inSet,null));
+
+            SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> searchRs = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
+
+            searchRs.getList().forEach(p->{mobiles.add(p.getStudent().getMobile());fullName.add(p.getFullName());});
+            className=searchRs.getList().get(0).getTclass().getCourse().getTitleFa();
+        }
+
 
         /*List<Long> personnelInClassIDs = new ArrayList<>();
         List<Long> teacherInClassIDs = new ArrayList<>();
@@ -135,9 +174,6 @@ public class SendMessageRestController {
 
             searchRs.getList().forEach(p->mobiles.add(p.getMobile()));
         }*/
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        JsonNode jsonNode = objectMapper.readTree(data);
         List<String> number=new ArrayList<>();
         number.add("9137454148");
         number.add("9103677968");
