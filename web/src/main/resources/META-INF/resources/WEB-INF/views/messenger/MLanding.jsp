@@ -27,7 +27,20 @@
 
 
 
-    var MSG_selectDefaultMsgBtn = isc.IButton.create({
+    var ErrorMsg=isc.Label.create({
+        height: 30,
+        padding: 10,
+        width:"100%",
+        align: "center",
+        styleName: 'MSG-type-label-error',
+
+        valign: "center",
+        wrap: false,
+        contents: ""
+    })
+
+
+    var MSG_selectDefaultMsgsBtn = isc.IButton.create({
         autoDraw:false,
         baseStyle: 'MSG-btn-orange',
         title:"استفاده از پیش فرض ها", width:150,
@@ -41,7 +54,24 @@
             this.baseStyle = 'MSG-btn-orange';
         },
 
-    })
+    });
+
+    var MSG_selectDefaultMsgBtn = isc.IButton.create({
+        autoDraw:false,
+        baseStyle: 'MSG-btn-orange',
+        title:"بازیابی متن پیش فرض", width:150,
+        click: function () {
+            MSG_contentEditor.setValue(MSG_textEditorValue);
+        },
+        mouseOver: function(){
+            this.baseStyle = 'MSG-btn-white';
+        },
+        mouseOut: function(){
+            this.baseStyle = 'MSG-btn-orange';
+        },
+
+    });
+
     var MSG_saveDefaultMsgBtn = isc.IButton.create({
         autoDraw:false,
         baseStyle: 'MSG-btn-white',
@@ -53,7 +83,7 @@
         mouseOut: function(){
             this.baseStyle = 'MSG-btn-white';
         },
-    })
+    });
 
 
 
@@ -207,7 +237,8 @@
                 vAlign: "center",
                 layoutTopMargin: 10,
                 members: [
-                    MSG_selectDefaultMsgBtn, MSG_saveDefaultMsgBtn,
+                    MSG_selectDefaultMsgBtn
+                    /*MSG_selectDefaultMsgBtn, MSG_saveDefaultMsgBtn,
                     isc.HLayout.create({
                         width: "80%",
                         height: "100%",
@@ -217,7 +248,7 @@
                         members: [
                             MSG_attachMsgBtn
                         ]
-                    })
+                    })*/
                     ]
             }),
             isc.LayoutSpacer.create({height: 20}),
@@ -265,6 +296,8 @@
                     MSG_selectUsersForm
                     ]
             }),
+            ErrorMsg
+            ,
             isc.LayoutSpacer.create({height: 20}),
             isc.IButton.create({
                 autoDraw:false,
