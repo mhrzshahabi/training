@@ -11,37 +11,36 @@
             fields: [
                 {name: "complexTitle", title: "<spring:message code="telephone"/>"}
             ],
-            fetchDataURL: personnelUrl + "/statisticalReport/complex"
+            fetchDataURL: departmentUrl + "/all-field-values?fieldName=complexTitle"
         });
 
         var RestDataSource_Assistant_MSReport = isc.TrDS.create({
             fields: [
                 {name: "ccpAssistant", title: "<spring:message code="telephone"/>"}
             ],
-            fetchDataURL: personnelUrl + "/statisticalReport/assistant"
+            fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAssistant"
         });
 
         var RestDataSource_Affairs_MSReport = isc.TrDS.create({
             fields: [
                 {name: "ccpAffairs", title: "<spring:message code="telephone"/>"}
             ],
-            fetchDataURL: personnelUrl + "/statisticalReport/affairs"
+            fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAffairs"
         });
 
         var RestDataSource_Section_MSReport = isc.TrDS.create({
             fields: [
                 {name: "ccpSection", title: "<spring:message code="telephone"/>"}
             ],
-            fetchDataURL: personnelUrl + "/statisticalReport/section"
+            fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpSection"
         });
 
         var RestDataSource_Unit_MSReport = isc.TrDS.create({
             fields: [
                 {name: "ccpUnit", title: "<spring:message code="telephone"/>"}
             ],
-            fetchDataURL: personnelUrl + "/statisticalReport/unit"
+            fetchDataURL: departmentUrl +  "/all-field-values?fieldName=ccpUnit"
         });
-
 
         var RestDataSource_MSReport = isc.TrDS.create({
             fields:
@@ -358,13 +357,9 @@
                     autoFetchData: false,
                     useClientFiltering: true,
                     optionDataSource: RestDataSource_Complex_MSReport,
-                    displayField: "complexTitle",
-                    valueField: "complexTitle",
                     textAlign: "center",
-                    pickListFields: [
-                        {name: "complexTitle"}
-                    ],
-                    filterFields: ["complexTitle"]
+                    valueField: "value",
+                    displayField: "value"
                 },
                 {
                     name: "Assistant",
@@ -375,13 +370,9 @@
                     autoFetchData: false,
                     useClientFiltering: true,
                     optionDataSource: RestDataSource_Assistant_MSReport,
-                    displayField: "ccpAssistant",
-                    valueField: "ccpAssistant",
                     textAlign: "center",
-                    pickListFields: [
-                        {name: "ccpAssistant"}
-                    ],
-                    filterFields: ["ccpAssistant"]
+                    valueField: "value",
+                    displayField: "value"
                 },
                 {
                     name: "Affairs",
@@ -392,13 +383,9 @@
                     autoFetchData: false,
                     useClientFiltering: true,
                     optionDataSource: RestDataSource_Affairs_MSReport,
-                    displayField: "ccpAffairs",
-                    valueField: "ccpAffairs",
                     textAlign: "center",
-                    pickListFields: [
-                        {name: "ccpAffairs"}
-                    ],
-                    filterFields: ["ccpAffairs"]
+                    valueField: "value",
+                    displayField: "value"
                 },
                 {
                     name: "Unit",
@@ -409,13 +396,9 @@
                     autoFetchData: false,
                     useClientFiltering: true,
                     optionDataSource: RestDataSource_Unit_MSReport,
-                    displayField: "ccpUnit",
-                    valueField: "ccpUnit",
                     textAlign: "center",
-                    pickListFields: [
-                        {name: "ccpUnit"}
-                    ],
-                    filterFields: ["ccpUnit"]
+                    valueField: "value",
+                    displayField: "value"
                 },
                 {
                     name: "Section",
@@ -426,13 +409,9 @@
                     autoFetchData: false,
                     useClientFiltering: true,
                     optionDataSource: RestDataSource_Section_MSReport,
-                    displayField: "ccpSection",
-                    valueField: "ccpSection",
                     textAlign: "center",
-                    pickListFields: [
-                        {name: "ccpSection"}
-                    ],
-                    filterFields: ["ccpSection"]
+                    valueField: "value",
+                    displayField: "value"
                 },
                 {type: "SpacerItem"},
                 {

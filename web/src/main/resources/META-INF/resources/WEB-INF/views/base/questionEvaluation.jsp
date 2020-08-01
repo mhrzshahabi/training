@@ -73,10 +73,10 @@
         doubleClick: function () {
             let record = ListGrid_Grid_JspQuestionEvaluation.getSelectedRecord();
             if (record.evaluationLevel == 154)
-                register_Student_Reaction_Form_JspQuestionEvaluation(record.classId, record.studentId, 188, record.classId,
+                register_Student_Form_JspQuestionEvaluation(record.classId, record.studentId, 188, record.classId,
                     504, 139, 154, record.teacherName, record.studentName, record.classCode, record.courseTitle, record.classStartDate);
             else if (record.evaluationLevel == 156)
-                register_Student_Reaction_Form_JspQuestionEvaluation(record.classId, record.studentId, 188, record.studentId,
+                register_Student_Form_JspQuestionEvaluation(record.classId, record.studentId, 188, record.studentId,
                     188, 230, 156, record.teacherName, record.studentName, record.classCode, record.courseTitle, record.classStartDate);
         },
         fields: [
@@ -125,7 +125,7 @@
         ListGrid_Grid_JspQuestionEvaluation.invalidateCache();
     }
 
-    function register_Student_Reaction_Form_JspQuestionEvaluation(classId, evaluatorId, evaluatorTypeId, evaluatedId,
+    function register_Student_Form_JspQuestionEvaluation(classId, evaluatorId, evaluatorTypeId, evaluatedId,
                                                                   evaluatedTypeId, questionnaireTypeId, evaluationLevelId,
                                                                   teacher, student, classCode, courseTitle, classStartDate) {
         let evaluationResult_DS = isc.TrDS.create({
@@ -217,6 +217,7 @@
                 data.evaluatedTypeId = evaluatedTypeId;
                 data.questionnaireTypeId = questionnaireTypeId;
                 data.evaluationLevelId = evaluationLevelId;
+                data.status = true;
                 isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                         Window_Questions_JspEvaluation.close();

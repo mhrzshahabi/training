@@ -7,6 +7,7 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.JobDTO;
+import com.nicico.training.dto.PostDTO;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ public interface IJobService {
 
     TotalResponse<JobDTO.Info> search(NICICOCriteria request);
 
-    JobDTO.Info get (Long id);
+    JobDTO.Info get(Long id);
 
+    List<PostDTO.Info> getPosts(Long jobId);
 }

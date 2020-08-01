@@ -23,6 +23,8 @@
         { id: 4, title: '004', text: 'لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است،' },
     ]
 
+    var sendMessageFunc;
+
 
 
     var MSG_selectDefaultMsgBtn = isc.IButton.create({
@@ -129,7 +131,7 @@
             {
                 name: "multipleSelect", title: "افزودن مخاطب", editorType: "SelectItem",
                 displayField: "firstName", valueField: "id",
-                pickListWidth: 600,
+                pickListWidth: 800,
                 autoFetchData: false,
                 filterOnKeypress: true,
                 optionDataSource: OAUserRestDataSource,
@@ -245,11 +247,11 @@
                 vAlign: "center",
                 layoutTopMargin: 5,
                 members: [
-                    MSG_getSelectMessageType('cartable', 'کارتابل'),
-                    MSG_getSelectMessageType('sms', 'sms'),
-                    MSG_getSelectMessageType('email', 'email'),
-                    MSG_getSelectMessageType('whatsapp', 'whatsapp'),
-                    MSG_getSelectMessageType('telegram', 'telegram'),
+                    MSG_getSelectMessageType('cartable', '<spring:message code="send.message.cartable"/>'),
+                    MSG_getSelectMessageType('sms', '<spring:message code="send.message.sms"/>'),
+                    MSG_getSelectMessageType('email', '<spring:message code="send.message.email"/>'),
+                    MSG_getSelectMessageType('whatsapp', '<spring:message code="send.message.whatsapp"/>'),
+                    MSG_getSelectMessageType('telegram', '<spring:message code="send.message.telegram"/>'),
                 ]
             }),
             isc.HLayout.create({
@@ -415,7 +417,7 @@
             });
             setTimeout(function () {
                 ERROR.close();
-            }, 1000);
+            }, 2000);
             return;
         }
 
@@ -427,7 +429,7 @@
             });
             setTimeout(function () {
                 ERROR.close();
-            }, 1000);
+            }, 2000);
             return;
         }
 
@@ -440,7 +442,20 @@
             });
             setTimeout(function () {
                 ERROR.close();
-            }, 1000);
+            }, 2000);
+            return;
+        }
+
+
+        if(!MSG_msgContent.type.some(p=>p=='sms')){
+            var ERROR = isc.Dialog.create({
+                message:"نوع ارسال پیامک انتخاب نشده است",
+                icon: "[SKIN]stop.png",
+                title:  "متن پیام"
+            });
+            setTimeout(function () {
+                ERROR.close();
+            }, 2000);
             return;
         }
 
@@ -450,14 +465,9 @@
         MSG_msgContent.text = stripHtml(html);
         MSG_msgContent.html = html;
 
-        var ERROR = isc.Dialog.create({
-            message:"پیام با موفقیت ارسال شد",
-            icon: "[SKIN]say.png",
-            title:  "متن پیام"
-        });
-        setTimeout(function () {
-            ERROR.close();
-        }, 1000);
+        sendMessageFunc();
+
+
 
     }
 

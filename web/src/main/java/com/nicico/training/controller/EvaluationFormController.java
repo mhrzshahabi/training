@@ -67,8 +67,8 @@ public class EvaluationFormController {
         return "evaluation/results";
     }
 
-    @PostMapping("/printTeacherReactionForm/{type}/{classId}")
-    public ResponseEntity<?> printTeacherReactionForm(final HttpServletRequest request, @PathVariable String type, @PathVariable Long classId) {
+    @PostMapping("/printTeacherReactionForm/{classId}")
+    public ResponseEntity<?> printTeacherReactionForm(final HttpServletRequest request,@PathVariable Long classId) {
 
         String token = request.getParameter("myToken");
 
@@ -81,16 +81,13 @@ public class EvaluationFormController {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-        map.add("printData", request.getParameter("printData"));
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
 
-        if (type.equals("pdf"))
-            return restTemplate.exchange(restApiUrl + "/api/evaluation/printTeacherReactionForm/PDF/" + classId, HttpMethod.POST, entity, byte[].class);
-        else
-            return null;
+        return restTemplate.exchange(restApiUrl + "/api/evaluation/printTeacherReactionForm/" + classId, HttpMethod.POST, entity, byte[].class);
+
     }
 
     @PostMapping("/printTrainingReactionForm/{type}/{classId}")

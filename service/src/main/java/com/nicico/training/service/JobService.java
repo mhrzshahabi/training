@@ -12,6 +12,7 @@ import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.JobGroupDTO;
+import com.nicico.training.dto.PostDTO;
 import com.nicico.training.iservice.IJobGroupService;
 import com.nicico.training.iservice.IJobService;
 import com.nicico.training.iservice.IWorkGroupService;
@@ -78,5 +79,15 @@ public class JobService implements IJobService {
         JobDTO.Info result = modelMapper.map(job, JobDTO.Info.class);
 
         return result;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PostDTO.Info> getPosts(Long jobId) {
+
+        final Optional<Job> jobById = jobDAO.findById(jobId);
+        final Job job = jobById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        return modelMapper.map(job.getPostSet(), new TypeToken<List<PostDTO.Info>>() {
+        }.getType());
     }
 }

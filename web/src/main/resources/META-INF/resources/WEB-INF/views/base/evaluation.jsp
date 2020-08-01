@@ -246,8 +246,7 @@
             ]
         });
 
-
-    var MSG_Window_MSG_Main = isc.Window.create({
+        var MSG_Window_MSG_Main = isc.Window.create({
         placement: "center",
         title: "پیامرسان",
         overflow: "auto",
@@ -260,8 +259,8 @@
               MSG_main_layout
         ],
         closeClick: function () {
-            MSG_initMSG()
-            this.clear()
+            MSG_initMSG();
+            this.clear();
             this.close();
         },
     });
@@ -414,14 +413,14 @@
 
     //----------------------------------------- ToolStrips -------------------------------------------------------------
 
-         var ToolStripButton_MSG = isc.IButton.create({
+        var ToolStripButton_MSG = isc.IButton.create({
             baseStyle: 'MSG-btn-orange',
             icon: '../static/img/msg/mail.svg',
             title:"پیامرسان", width:80,
             click: function () {
                 MSG_Window_MSG_Main.show();
             }
-        })
+        });
 
         var ToolStripButton_Refresh_Evaluation = isc.ToolStripButtonRefresh.create({
             title: "<spring:message code="refresh"/>",

@@ -16,10 +16,7 @@ import org.springframework.data.domain.Page;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
@@ -77,7 +74,14 @@ public class ISC<T> {
         SearchDTO.SearchRq searchRq = convertToSearchRq(rq);
         if (value != null) {
             SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-            criteria.getCriteria().add(makeNewCriteria(fieldName, value, operator, null));
+            if (value instanceof Collection) {
+                criteria.getCriteria().add(makeNewCriteria(null, null, EOperator.or, new ArrayList<>()));
+                for (int i = 0; ((Collection) value).size() > i * 1000; i++) {
+                    criteria.getCriteria().get(0).getCriteria().add(makeNewCriteria(fieldName, ((Collection) value).stream().skip(i * 1000).limit(1000).collect(Collectors.toList()), operator, null));
+                }
+            } else {
+                criteria.getCriteria().add(makeNewCriteria(fieldName, value, operator, null));
+            }
             if (searchRq.getCriteria() != null)
                 criteria.getCriteria().add(searchRq.getCriteria());
             searchRq.setCriteria(criteria);

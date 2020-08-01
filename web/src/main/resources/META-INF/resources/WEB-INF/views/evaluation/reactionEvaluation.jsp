@@ -824,6 +824,7 @@
                     data.evaluatedTypeId = 504;
                     data.questionnaireTypeId = 139;
                     data.evaluationLevelId = 154;
+                    data.status = true;
                     isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                             Window_Questions_JspEvaluation.close();

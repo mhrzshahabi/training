@@ -638,7 +638,7 @@
                 },
 
             ],
-            fetchDataURL: viewPostUrl + "/iscList"
+            fetchDataURL: viewTrainingPostUrl + "/iscList"
         });
 
         let ToolStrip_Job_Post_Export2EXcel = isc.ToolStrip.create({
@@ -753,7 +753,7 @@
                     PostLG_Job.setImplicitCriteria({
                         _constructor: "AdvancedCriteria",
                         operator: "and",
-                        criteria: [{fieldName: "jobCode", operator: "equals", value: job.code}]
+                        criteria: [{fieldName: "jobId", operator: "equals", value: job.id}]
                     });
                     PostLG_Job.invalidateCache();
                     PostLG_Job.fetchData();
@@ -763,15 +763,7 @@
                     if (personnelJob_Job === job.id)
                         return;
                     personnelJob_Job = job.id;
-                    PersonnelLG_Job.setImplicitCriteria({
-                        _constructor: "AdvancedCriteria",
-                        operator: "and",
-                        criteria: [
-                            {fieldName: "jobNo", operator: "equals", value: job.code},
-                            {fieldName: "active", operator: "equals", value: 1},
-                            {fieldName: "employmentStatusId", operator: "equals", value: 5}
-                        ]
-                    });
+                    PersonnelDS_Job.fetchDataURL = jobUrl + "/" + job.id + "/getPersonnel";
                     PersonnelLG_Job.invalidateCache();
                     PersonnelLG_Job.fetchData();
                     break;
@@ -813,7 +805,7 @@
         });
 
         function refresh_Job() {
-            objectIdAttachment=null
+            objectIdAttachment=null;
             refreshLG(JobLG_job);
             PostLG_Job.setData([]);
             oLoadAttachments_Job.ListGrid_JspAttachment.setData([]);

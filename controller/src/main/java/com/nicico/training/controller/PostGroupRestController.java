@@ -8,8 +8,11 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.dto.PostGroupDTO;
+import com.nicico.training.iservice.IPersonnelService;
+import com.nicico.training.iservice.IPostService;
 import com.nicico.training.service.PostGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,12 +25,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -39,6 +46,8 @@ public class PostGroupRestController {
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
     private final DateUtil dateUtil;
+    private final IPersonnelService personnelService;
+    private final IPostService postService;
 
     // ------------------------------
 
@@ -145,53 +154,6 @@ public class PostGroupRestController {
 
     // ------------------------------
 
-//    @Loggable
-//    @GetMapping(value = "/{postGroupId}/getCompetences")
-////    @PreAuthorize("hasAnyAuthority('r_post_group')")
-//    public ResponseEntity<CompetenceDTOOld.CompetenceSpecRs> getCompetences(@PathVariable Long postGroupId) {
-//        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-//
-//        List<CompetenceDTOOld.Info> list = postGroupService.getCompetence(postGroupId);
-//
-//        final CompetenceDTOOld.SpecRs specResponse = new CompetenceDTOOld.SpecRs();
-//        specResponse.setData(list)
-//                .setStartRow(0)
-//                .setEndRow( list.size())
-//                .setTotalRows(list.size());
-//
-//        final CompetenceDTOOld.CompetenceSpecRs specRs = new CompetenceDTOOld.CompetenceSpecRs();
-//        specRs.setResponse(specResponse);
-//
-//        return new ResponseEntity<>(specRs,HttpStatus.OK);
-//
-//
-//    }
-
-/*
-    @Loggable
-    @GetMapping(value = "/{postGroupId}/getPosts")
-//    @PreAuthorize("hasAnyAuthority('r_post_group')")
-    public ResponseEntity<PostDTO.IscRes> getPosts(@PathVariable Long postGroupId) {
-        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-
-        List<PostDTO.Info> list = postGroupService.getPosts(postGroupId);
-
-        final PostDTO.SpecRs specResponse = new PostDTO.SpecRs();
-        specResponse.setData(list)
-                .setStartRow(0)
-                .setEndRow( list.size())
-                .setTotalRows(list.size());
-
-        final PostDTO.IscRes specRs = new PostDTO.IscRes();
-
-        specRs.setResponse(specResponse);
-
-        return new ResponseEntity<>(specRs,HttpStatus.OK);
-
-
-    }*/
-
-
     @Loggable
     @PostMapping(value = "/addPost/{postId}/{postGroupId}")
 //    @PreAuthorize("hasAuthority('c_tclass')")
@@ -275,6 +237,21 @@ public class PostGroupRestController {
                 .setTotalRows(list.size());
         ISC<Object> objectISC = new ISC<>(response);
         return new ResponseEntity<>(objectISC, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/{postGroupId}/getPersonnel")
+//    @PreAuthorize("hasAnyAuthority('r_post_group')")
+    public ResponseEntity<ISC<PersonnelDTO.Info>> getPersonnel(@PathVariable Long postGroupId, HttpServletRequest iscRq) throws IOException {
+        List<PostDTO.Info> postList = postGroupService.getPosts(postGroupId);
+        if (postList == null || postList.isEmpty()) {
+            return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
+        }
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq, postList.stream().map(PostDTO.Info::getId).collect(Collectors.toList()), "postId", EOperator.inSet);
+        searchRq.getCriteria().getCriteria().add(makeNewCriteria("deleted", 0, EOperator.equals, null));
+        searchRq.setDistinct(true);
+        SearchDTO.SearchRs<PersonnelDTO.Info> searchRs = personnelService.search(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 
     @Loggable

@@ -1029,5 +1029,15 @@
             <column name="n_work_flow_code" type="number(10, 0)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595998519812-466">
+        <addColumn tableName="tbl_class_student">
+            <column name="number_of_registered_behavioral_forms" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1595998519812-467">
+        <addColumn tableName="tbl_class_student">
+            <column name="number_of_sended_behavioral_forms" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

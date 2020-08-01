@@ -545,6 +545,7 @@
         autoFetchData: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
+        fetchDataURL: personnelUrl + "/iscList"
     });
 
     DetailViewer_Personnel = isc.DetailViewer.create({
@@ -801,7 +802,12 @@
     // ------------------------------------------- Functions -------------------------------------------
 
     function setDetailViewer_Personnel(postId) {
-        PersonnelDS_personnel.fetchDataURL = personnelUrl + "/byPostCode/" + postId;
+        DetailViewer_Personnel.setImplicitCriteria({
+            _constructor: "AdvancedCriteria",
+            operator: "and",
+            criteria: [{fieldName: "postId", operator: "equals", value: postId},
+                        {fieldName: "deleted", operator: "equals", value: 0}]
+        });
         DetailViewer_Personnel.invalidateCache();
         DetailViewer_Personnel.fetchData();
     }
@@ -812,7 +818,7 @@
         PostLG_post.invalidateCache();
         PostLG_post.fetchData();
     }
-   function selectionUpdated_Post() {
+    function selectionUpdated_Post() {
        let post = PostLG_post.getSelectedRecord();
        let tab = DetailTS_Post.getSelectedTab();
        if (post == null && tab.pane != null) {

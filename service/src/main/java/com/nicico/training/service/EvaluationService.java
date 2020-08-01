@@ -3,6 +3,7 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationService;
@@ -15,10 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -71,6 +70,8 @@ public class EvaluationService implements IEvaluationService {
 
         updating.setVersion(evaluation.getVersion());
 
+        Evaluation evaluation1 = evaluationDAO.save(updating);
+
         if(updating.getQuestionnaireTypeId() != null && updating.getQuestionnaireTypeId().equals(139L)) {
             if(updating.getEvaluationFull())
                 updateClassStudentInfo(updating, 2);
@@ -92,7 +93,11 @@ public class EvaluationService implements IEvaluationService {
                 updateTclassInfo(updating.getClassId(),-1, 3);
         }
 
-        return modelMapper.map(evaluationDAO.save(updating), EvaluationDTO.Info.class);
+        else  if(updating.getQuestionnaireTypeId() != null && updating.getQuestionnaireTypeId().equals(230L)) {
+            updateClassStudentInfo(updating, 2);
+        }
+
+        return modelMapper.map(evaluation1, EvaluationDTO.Info.class);
     }
 
     @Transactional
@@ -116,6 +121,14 @@ public class EvaluationService implements IEvaluationService {
     }
 
     private EvaluationDTO.Info save(Evaluation evaluation) {
+        if(evaluation.getReturnDate() == null){
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = new Date();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.add(Calendar.MONTH, 1);
+            evaluation.setReturnDate(DateUtil.convertMiToKh(formatter.format(calendar.getTime())));
+        }
         final Evaluation saved = evaluationDAO.saveAndFlush(evaluation);
         Long evaluationId = saved.getId();
         if(evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(139L)) {
@@ -139,6 +152,7 @@ public class EvaluationService implements IEvaluationService {
         else if(evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(230L)) {
             List<EvaluationAnswer> list = createEvaluationAnswers(saved);
             saved.setEvaluationAnswerList(list);
+            updateClassStudentInfo(saved, 1);
         }
         return modelMapper.map(saved, EvaluationDTO.Info.class);
     }
@@ -299,6 +313,7 @@ public class EvaluationService implements IEvaluationService {
                 Long.parseLong(req.get("evaluatedId").toString()),
                 Long.parseLong(req.get("evaluatedTypeId").toString()),
                 Long.parseLong(req.get("evaluationLevelId").toString()));
+        evaluationDAO.deleteById(evaluation.getId());
 
         if(req.get("questionnaireTypeId").toString().equals("139"))
             updateClassStudentInfo(modelMapper.map(evaluation,Evaluation.class),0);
@@ -306,7 +321,8 @@ public class EvaluationService implements IEvaluationService {
             updateTclassInfo(Long.parseLong(req.get("classId").toString()),0, -1);
         else if(req.get("questionnaireTypeId").toString().equals("140"))
             updateTclassInfo(Long.parseLong(req.get("classId").toString()),-1, 0);
-        evaluationDAO.deleteById(evaluation.getId());
+        else if(req.get("questionnaireTypeId").toString().equals("230"))
+            updateClassStudentInfo(modelMapper.map(evaluation,Evaluation.class),0);
         if(evaluation.getQuestionnaireId() != null)
             updateQuestionnarieInfo(evaluation.getQuestionnaireId());
     }
@@ -326,6 +342,23 @@ public class EvaluationService implements IEvaluationService {
                 Optional<ClassStudent> byId = classStudentDAO.findById(evaluation.getEvaluatorId());
                 ClassStudent classStudent = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                 classStudent.setEvaluationStatusReaction(version);
+            }
+            else  if(evaluation.getQuestionnaireTypeId().equals(230L)){
+                Optional<ClassStudent> byId = classStudentDAO.findById(evaluation.getEvaluatedId());
+                ClassStudent classStudent = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                List<Evaluation> evaluations = evaluationDAO.findByClassIdAndEvaluatedIdAndEvaluatedTypeIdAndEvaluationLevelIdAndQuestionnaireTypeId(
+                       evaluation.getClassId(),evaluation.getEvaluatedId(), 188L,156L, 230L);
+                classStudent.setNumberOfSendedBehavioralForms(0);
+                classStudent.setNumberOfRegisteredBehavioralForms(0);
+                for (Evaluation evaluation1 : evaluations) {
+                    if(!evaluation1.getStatus())
+                        classStudent.setNumberOfSendedBehavioralForms(classStudent.getNumberOfSendedBehavioralForms()+1);
+                    else if(evaluation1.getStatus()) {
+                        classStudent.setNumberOfSendedBehavioralForms(classStudent.getNumberOfSendedBehavioralForms() + 1);
+                        classStudent.setNumberOfRegisteredBehavioralForms(classStudent.getNumberOfRegisteredBehavioralForms() + 1);
+                    }
+                }
+
             }
     }
 

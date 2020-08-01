@@ -510,7 +510,7 @@
                 endRow: false,
                 startRow: true,
                 pickListProperties: {
-                    showFilterEditor: false
+                    showFilterEditor: true
                 },
                 changed: function (form, item, value) {
                     if (!value) {

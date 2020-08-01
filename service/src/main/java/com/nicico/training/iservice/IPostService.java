@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.function.Function;
 
 public interface IPostService {
 
@@ -24,7 +25,7 @@ public interface IPostService {
 
     SearchDTO.SearchRs<PostDTO.Info> search(SearchDTO.SearchRq rq);
 
-    SearchDTO.SearchRs<PostDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request);
+    <T> SearchDTO.SearchRs<T> searchWithoutPermission(SearchDTO.SearchRq request, Function converter);
 
     SearchDTO.SearchRs<PostDTO.Info> unassignedSearch(SearchDTO.SearchRq request);
 }

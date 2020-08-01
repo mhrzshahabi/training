@@ -63,19 +63,23 @@ public class PostGradeGroupRestController {
             return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
         }
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq, postGrades.stream().map(PostGradeDTO.Info::getId).collect(Collectors.toList()), "postGrade", EOperator.inSet);
-        SearchDTO.SearchRs<PostDTO.Info> searchRs = postService.searchWithoutPermission(searchRq);
+        SearchDTO.SearchRs<PostDTO.Info> searchRs = postService.searchWithoutPermission(searchRq, p -> modelMapper.map(p, PostDTO.Info.class));
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 
     @GetMapping(value = "/personnelIscList/{id}")
     public ResponseEntity<ISC<PersonnelDTO.Info>> personnelList(HttpServletRequest iscRq, @PathVariable(value = "id") Long id) throws IOException {
         List<PostGradeDTO.Info> postGrades = postGradeGroupService.getPostGrades(id);
-        if (postGrades.isEmpty()) {
+        if (postGrades == null || postGrades.isEmpty()) {
             return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
         }
-        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq, postGrades.stream().map(PostGradeDTO.Info::getCode).collect(Collectors.toList()), "postGradeCode", EOperator.inSet);
-        searchRq.getCriteria().getCriteria().add(makeNewCriteria("active", 1, EOperator.equals, null));
-        searchRq.getCriteria().getCriteria().add(makeNewCriteria("employmentStatusId", 5, EOperator.equals, null));
+        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq().setCriteria(makeNewCriteria("postGrade", postGrades.stream().map(PostGradeDTO.Info::getId).collect(Collectors.toList()), EOperator.inSet, null));
+        SearchDTO.SearchRs<PostDTO.TupleInfo> postList = postService.searchWithoutPermission(searchRq, p -> modelMapper.map(p, PostDTO.TupleInfo.class));
+        if (postList.getList() == null || postList.getList().isEmpty()) {
+            return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
+        }
+        searchRq = ISC.convertToSearchRq(iscRq, postList.getList().stream().map(PostDTO.TupleInfo::getId).collect(Collectors.toList()), "postId", EOperator.inSet);
+        searchRq.getCriteria().getCriteria().add(makeNewCriteria("deleted", 0, EOperator.equals, null));
         SearchDTO.SearchRs<PersonnelDTO.Info> searchRs = personnelService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
