@@ -9,6 +9,7 @@
 %>
 // <script>
     wait.show();
+    let numClasses=0,numSkills=0;
     var testData = [];
     var mainObjectiveList = [];
     var equalCourse = [];
@@ -1599,6 +1600,17 @@
                     }
                 }
             },
+
+            {
+                ID: "statusGroupTab",
+                name: "statusGroupTab",
+                title: "",
+                type:"label",
+                canEdit: false,
+                colSpan:3,
+                hidden:true,
+                baseStyle: "eval-code"
+            },
             {
                 name: "categoryId",
                 colSpan: 1,
@@ -1832,6 +1844,7 @@
             if (course_method == "POST") {
                 x = courseCode();
                 wait.show()
+                DynamicForm_course_GroupTab.getItem('statusGroupTab').hide();
                 isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "getmaxcourse/" + x, "GET", null, function (resp) {
                     let newCourseCounter = courseCounterCode(resp.data);
                     x = x + newCourseCounter;
@@ -1914,6 +1927,11 @@
                 delete data1["etechnicalType"];
                 data1.subCategoryId = DynamicForm_course_GroupTab.getValue("subCategory.id");
                 data1.eTechnicalTypeId = DynamicForm_course_GroupTab.getValue("etechnicalType.id");
+
+                data1.eRunTypeId = DynamicForm_course_GroupTab.getValue("erunType.id");
+                data1.eLevelTypeId = DynamicForm_course_GroupTab.getValue("elevelType.id");
+                data1.eTheoTypeId = DynamicForm_course_GroupTab.getValue("etheoType.id");
+
                 wait.show()
                 isc.RPCManager.sendRequest(TrDSRequest(course_url, course_method, JSON.stringify(data1), function (resp) {
                     wait.close();
@@ -2692,6 +2710,7 @@
         DynamicForm_course_GroupTab.getItem("elevelType.id").enable();
         DynamicForm_course_GroupTab.getItem("etheoType.id").enable();
         course_method = "POST";
+        DynamicForm_course_GroupTab.getItem('statusGroupTab').hide();
         course_url = courseUrl;
         vm_JspCourse.clearValues();
         vm_JspCourse.clearErrors();
@@ -2786,6 +2805,21 @@
         }
     };
 
+    const toggleGroupTabs = status => {
+        DynamicForm_course_GroupTab.getItem("categoryId").setDisabled(status);
+        DynamicForm_course_GroupTab.getItem("subCategory.id").setDisabled(status);
+        DynamicForm_course_GroupTab.getItem("erunType.id").setDisabled(status);
+        DynamicForm_course_GroupTab.getItem("elevelType.id").setDisabled(status);
+        DynamicForm_course_GroupTab.getItem("etheoType.id").setDisabled(status);
+        DynamicForm_course_GroupTab.getItem('statusGroupTab').hide();
+
+        if (status){
+            DynamicForm_course_GroupTab.getItem('statusGroupTab').show();
+            DynamicForm_course_GroupTab.getItem('statusGroupTab').setCellStyle('eval-code-label');
+            statusGroupTab.setValue("<spring:message code='status.course.groupTabSectionOne'/>" +" " +numClasses.toString()+" " +"<spring:message code='class'/>"+" و "+ numSkills.toString() + " "+"<spring:message code='skill'/>"+" "+"<spring:message code='status.course.groupTabSectionTwo'/>");
+        }
+    };
+
     function ListGrid_Course_Edit() {
         testData.length = 0;
         equalCourse.length = 0;
@@ -2833,11 +2867,26 @@
             mainObjectiveGrid_Refresh();
             // RestDataSource_category.fetchDataURL = categoryUrl + "spec-list";
             // DynamicForm_course_GroupTab.getItem("categoryId").fetchData();
-            DynamicForm_course_GroupTab.getItem("categoryId").disable();
-            DynamicForm_course_GroupTab.getItem("subCategory.id").setDisabled(true);
-            DynamicForm_course_GroupTab.getItem("erunType.id").setDisabled(true);
-            DynamicForm_course_GroupTab.getItem("elevelType.id").setDisabled(true);
-            DynamicForm_course_GroupTab.getItem("etheoType.id").setDisabled(true);
+
+           // alert(courseRecord.id);
+
+            //Amin HK
+            isc.RPCManager.sendRequest({
+                actionURL: courseUrl + "checkDependence/" + courseRecord.id,
+                httpMethod: "GET",
+                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                useSimpleHttp: true,
+                contentType: "application/json; charset=utf-8",
+                showPrompt: false,
+                serverOutputAsString: false,
+                callback: function (resp) {
+                    let normalizedResp=JSON.parse(resp.httpResponseText);
+                    numClasses=parseInt(normalizedResp.numClasses);
+                    numSkills=parseInt(normalizedResp.numSkills);
+                    toggleGroupTabs(parseInt(normalizedResp.numClasses)>0 || parseInt(normalizedResp.numSkills)>1 ? true : false);
+                }
+            });
+
             course_method = "PUT";
             course_url = courseUrl + courseRecord.id;
             // DynamicForm_course.getItem("epSection").enable();

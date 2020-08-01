@@ -37,7 +37,7 @@ public interface ICourseService {
 
     CourseDTO.Info create(CourseDTO.Create request, HttpServletResponse response);
 
-    CourseDTO.Info update(Long id, Object request);
+    CourseDTO.Info update(Long id, CourseDTO.Update request);
 
     void delete(Long id);
 
@@ -98,4 +98,7 @@ public interface ICourseService {
     //----------------------------------------------------------------------
 
     List<CourseDTO.courseWithOutTeacher> courseWithOutTeacher(String startDate, String endDate);
+
+    //--------------------Amin ------------------------------
+    CourseDTO.CourseDependence checkDependence(Long courseId);
 }
