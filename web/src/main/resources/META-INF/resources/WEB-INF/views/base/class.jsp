@@ -2430,11 +2430,11 @@
             },
             </sec:authorize>
             <sec:authorize access="hasAuthority('TclassPreCourseTestQuestionsTab')">
-            {
-                ID: "classPreCourseTestQuestionsTab",
-                title: "<spring:message code='class.preCourseTestQuestion'/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/pre-course-test-questions-tab"})
-            },
+            <%--{--%>
+                <%--ID: "classPreCourseTestQuestionsTab",--%>
+                <%--title: "<spring:message code='class.preCourseTestQuestion'/>",--%>
+                <%--pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/pre-course-test-questions-tab"})--%>
+            <%--},--%>
             </sec:authorize>
             <sec:authorize access="hasAuthority('TclassAttachmentsTab')">
             {
@@ -2917,12 +2917,12 @@
 
         <sec:authorize access="hasAuthority('TclassPreCourseTestQuestionsTab')">
         if (classRecord.preCourseTest && classRecord.course.evaluation !== "1") {
-            TabSet_Class.getTab("classPreCourseTestQuestionsTab").show();
+          //  TabSet_Class.getTab("classPreCourseTestQuestionsTab").show();
         } else {
             if (TabSet_Class.getSelectedTab().ID === "classPreCourseTestQuestionsTab") {
                 TabSet_Class.selectTab(0);
             }
-              TabSet_Class.getTab("classPreCourseTestQuestionsTab").hide();
+            //  TabSet_Class.getTab("classPreCourseTestQuestionsTab").hide();
         }
         </sec:authorize>
     }

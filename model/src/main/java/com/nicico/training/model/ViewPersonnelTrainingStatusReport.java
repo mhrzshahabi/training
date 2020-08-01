@@ -23,8 +23,14 @@ public class ViewPersonnelTrainingStatusReport {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "organizer")
+    private String organizer;
+
     @Column(name = "personnel_personnel_no")
     private String personnelNo;
+
+    @Column(name = "personnel_no_10d")
+    private String personnelNoTD;
 
     @Column(name = "personnel_national_code")
     private String personnelNationalCode;
@@ -34,6 +40,9 @@ public class ViewPersonnelTrainingStatusReport {
 
     @Column(name = "personnel_last_name")
     private String personnelLastName;
+
+    @Column(name = "job_code")
+    private String personnelJobCode;
 
     @Column(name = "personnel_job_title")
     private String PersonnelJobTitle;
@@ -50,11 +59,20 @@ public class ViewPersonnelTrainingStatusReport {
     @Column(name = "personnel_post_title")
     private String personnelPostTitle;
 
+    @Column(name = "company")
+    private String company;
+
     @Column(name = "personnel_cpp_affairs")
     private String personnelCppAffairs;
 
     @Column(name = "personnel_cpp_area")
     private String personnelCppArea;
+
+    @Column(name = "assisstant")
+    private String personnelAssisstant;
+
+    @Column(name = "unit")
+    private String personnelUnit;
 
     @Column(name = "course_code")
     private String courseCode;
@@ -68,13 +86,16 @@ public class ViewPersonnelTrainingStatusReport {
     @Column(name = "skill_title")
     private String skillTitle;
 
-    @Column(name = "c_title")
-    private String Title;
+    @Column(name = "acceptance_state")
+    private String acceptanceState;
 
-    @Column(name = "coursetype")
-    private String courseType;
+    @Column(name = "needs_assessment_state")
+    private String needsAssessmentState;
 
-    @Column(name = "c_title1")
-    private String title1;
+    @Column(name = "needs_assessment_priority")
+    private String needsAssessmentPriority;
+
+    @Column(name = "class_state")
+    private String classState;
 
 }

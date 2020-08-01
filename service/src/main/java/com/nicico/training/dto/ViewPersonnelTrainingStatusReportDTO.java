@@ -14,7 +14,13 @@ import javax.validation.constraints.NotEmpty;
 public class ViewPersonnelTrainingStatusReportDTO {
 
     @ApiModelProperty
+    private String organizer;
+
+    @ApiModelProperty
     private String personnelNo;
+
+    @ApiModelProperty
+    private String personnelNoTD;
 
     @ApiModelProperty
     private String personnelNationalCode;
@@ -24,6 +30,9 @@ public class ViewPersonnelTrainingStatusReportDTO {
 
     @ApiModelProperty
     private String personnelLastName;
+
+    @ApiModelProperty
+    private String personnelJobCode;
 
     @ApiModelProperty
     private String PersonnelJobTitle;
@@ -41,10 +50,19 @@ public class ViewPersonnelTrainingStatusReportDTO {
     private String personnelPostTitle;
 
     @ApiModelProperty
+    private String company;
+
+    @ApiModelProperty
     private String personnelCppAffairs;
 
     @ApiModelProperty
     private String personnelCppArea;
+
+    @ApiModelProperty
+    private String personnelAssisstant;
+
+    @ApiModelProperty
+    private String personnelUnit;
 
     @ApiModelProperty
     private String courseCode;
@@ -59,13 +77,16 @@ public class ViewPersonnelTrainingStatusReportDTO {
     private String skillTitle;
 
     @ApiModelProperty
-    private String Title;
+    private String acceptanceState;
 
     @ApiModelProperty
-    private String courseType;
+    private String needsAssessmentState;
 
     @ApiModelProperty
-    private String title1;
+    private String needsAssessmentPriority;
+
+    @ApiModelProperty
+    private String classState;
 
     @Getter
     @Setter
