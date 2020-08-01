@@ -6,7 +6,9 @@
 // <script>
     //----------------------------------------- properties ----------------->>
 
-    let courseTypeValueMap = {"1": "نیازسنجی", "2": "غیر نیازسنجی", "3": "همه"};
+    let needsAssessmentStateValueMap = {"1": "نیازسنجی", "2": "غیر نیازسنجی", "3": "همه"};
+    let acceptanceStateValueMap = {"1": "گذرانده", "2": "نگذرانده", "3": "همه"};
+    let classStateValueMap = {"1": "ثبت شده در پرونده", "2": "ثبت نام شده در کلاس", "3": "در حال اجرای کلاس", "4": "همه"};
 
     // <<-------------------------------------- Create - RestDataSource  ----------------------------
     PersonnelDS_PTSR_DF = isc.TrDS.create({
@@ -50,6 +52,22 @@
         fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpArea"
     });
 
+    AssistantDS_PTSR = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAssistant"
+    });
+
+    UnitDS_PTSR = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpUnit"
+    });
+
     var RestDataSource_PostGradeLvl_PTSR = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -76,24 +94,31 @@
     PersonnelTrainingStatusReport_DS = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
+            {name: "organizer", title: "<spring:message code="organizer"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelNo", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelNoTD", title: "<spring:message code="personnel.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelNationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelFirstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelLastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelJobCode", title: "<spring:message code="job.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "PersonnelJobTitle", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelPostTitle", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnel_Post_code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "company", title: "<spring:message code="company"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelAssisstant", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelUnit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelCppArea", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelCppAffairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "courseCode", title: "<spring:message code='course.code'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "courseTitleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "courseType", title: "<spring:message code='course.type'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "needsAssessmentState", title: "<spring:message code='needsAssessment.type'/>", filterOperator: "equals", autoFitWidth: true},
             {name: "personnelPostGradeCode", title: "<spring:message code="post.grade.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelPostGradeTitle", title: "<spring:message code='post.grade'/>", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "skillCode", title: "<spring:message code='skill.code'/>", filterOperator: "equals", autoFitWidth: true},
             {name: "skillTitle", title: "<spring:message code='skill.title'/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "Title", title: "<spring:message code='title'/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "title1", title: "<spring:message code='title'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "acceptanceState", title: "<spring:message code='acceptanceState.state'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "needsAssessmentPriority", title: "<spring:message code='priority'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "classState", title: "<spring:message code='class.status'/>", filterOperator: "equals", autoFitWidth: true},
 
         ],
         fetchDataURL: viewPersonnelTrainingStatusReportUrl + "/iscList"
@@ -129,7 +154,7 @@
                 valueField: "personnelNo",
                 displayField: "personnelNo",
                 endRow: false,
-                colSpan: 3,
+                colSpan: 7,
                 // comboBoxWidth: 200,
                 layoutStyle: "horizontal",
                 comboBoxProperties: {
@@ -148,9 +173,9 @@
                 },
             },
             {
-                name: "courseType",
-                colSpan: 4,
-                title: "<spring:message code="course.type"/>:",
+                name: "needsAssessmentState",
+                colSpan: 2,
+                title: "<spring:message code="needsAssessment.type"/>:",
                 wrapTitle: true,
                 type: "radioGroup",
                 vertical: true,
@@ -161,6 +186,39 @@
                     "1": "فقط نیازسنجی",
                     "2": "فقط غیر نیازسنجی",
                     "3": "همه",
+                },
+            },
+            {
+                name: "acceptanceState",
+                colSpan: 2,
+                title: "<spring:message code="acceptanceState.state"/>:",
+                wrapTitle: true,
+                type: "radioGroup",
+                vertical: true,
+                fillHorizontalSpace: true,
+                defaultValue: "1",
+// endRow:true,
+                valueMap: {
+                    "1": "گذرانده",
+                    "2": "نگذرانده",
+                    "3": "همه",
+                },
+            },
+            {
+                name: "classState",
+                colSpan: 2,
+                title: "<spring:message code="class.status"/>:",
+                wrapTitle: true,
+                type: "radioGroup",
+                vertical: true,
+                fillHorizontalSpace: true,
+                defaultValue: "1",
+// endRow:true,
+                valueMap: {
+                    "1": "ثبت شده در پرونده",
+                    "2": "ثبت نام شده در کلاس",
+                    "2": "در حال اجرای کلاس",
+                    "4": "همه",
                 },
             },
             {
@@ -183,6 +241,25 @@
                 separateSpecialValues: true
             },
             {
+                name: "personnelCcpAssistant",
+                colSpan: 1,
+                title: "<spring:message code="assistance"/>",
+                filterFields: ["value", "value"],
+                pickListWidth: 300,
+                type: "ComboBoxItem",
+                textMatchStyle: "substring",
+                pickListProperties: {
+                    showFilterEditor: false,
+                    showClippedValuesOnHover: true,
+                },
+                optionDataSource: AssistantDS_PTSR,
+                autoFetchData: false,
+                valueField: "value",
+                displayField: "value",
+                specialValues: { "**emptyValue**": ""},
+                separateSpecialValues: true
+            },
+            {
                 name: "personnelCppAffairs",
                 title: "<spring:message code="affairs"/>",
                 optionDataSource: AffairsDS_PTSR,
@@ -195,6 +272,25 @@
                     showFilterEditor: false,
                     showClippedValuesOnHover: true,
                 },
+                valueField: "value",
+                displayField: "value",
+                specialValues: { "**emptyValue**": ""},
+                separateSpecialValues: true
+            },
+            {
+                name: "personnelCcpUnit",
+                colSpan: 1,
+                title: "<spring:message code="unitName"/>",
+                filterFields: ["value", "value"],
+                pickListWidth: 300,
+                type: "ComboBoxItem",
+                textMatchStyle: "substring",
+                pickListProperties: {
+                    showFilterEditor: false,
+                    showClippedValuesOnHover: true,
+                },
+                optionDataSource: UnitDS_PTSR,
+                autoFetchData: false,
                 valueField: "value",
                 displayField: "value",
                 specialValues: { "**emptyValue**": ""},
@@ -266,11 +362,18 @@
                         createDialog("info", "فیلتری انتخاب نشده است.");
                     } else {
                         var criteria = FilterDF_PTSR.getValuesAsAdvancedCriteria();
-                        criteria.criteria.remove(criteria.criteria.find({fieldName: "courseType"}));
-                        let val = courseTypeValueMap[FilterDF_PTSR.getItem("courseType").getValue()];
-                        if (val !== "همه")
-                            criteria.criteria.push({fieldName: "courseType", operator: "equals", value: val});
-
+                        criteria.criteria.remove(criteria.criteria.find({fieldName: "needsAssessmentState"}));
+                        criteria.criteria.remove(criteria.criteria.find({fieldName: "acceptanceState"}));
+                        criteria.criteria.remove(criteria.criteria.find({fieldName: "classState"}));
+                        let needsAssessmentStateval = needsAssessmentStateValueMap[FilterDF_PTSR.getItem("needsAssessmentState").getValue()];
+                        let acceptanceStateVal = acceptanceStateValueMap[FilterDF_PTSR.getItem("acceptanceState").getValue()];
+                        let classStateVal = classStateValueMap[FilterDF_PTSR.getItem("classState").getValue()];
+                        if (needsAssessmentStateval !== "همه")
+                            criteria.criteria.push({fieldName: "needsAssessmentState", operator: "equals", value: needsAssessmentStateval});
+                        if(acceptanceStateVal !== "همه")
+                            criteria.criteria.push({fieldName: "acceptanceState", operator: "equals", value: acceptanceStateVal});
+                        if(classStateVal !== "همه")
+                            criteria.criteria.push({fieldName: "classState", operator: "equals", value: classStateVal});
                         PersonnelTrainingStatusReport_LG.implicitCriteria = criteria;
                         PersonnelTrainingStatusReport_LG.invalidateCache();
                         PersonnelTrainingStatusReport_LG.fetchData();
@@ -286,14 +389,13 @@
                         createDialog("info","فیلتری انتخاب نشده است.");
                     } else{
                         var criteria = FilterDF_PTSR.getValuesAsAdvancedCriteria();
-                        criteria.criteria.remove(criteria.criteria.find({fieldName: "courseType"}));
-                        let val = courseTypeValueMap[FilterDF_PTSR.getItem("courseType").getValue()];
+                        criteria.criteria.remove(criteria.criteria.find({fieldName: "needsAssessmentState"}));
+                        let val = needsAssessmentStateValueMap[FilterDF_PTSR.getItem("needsAssessmentState").getValue()];
                         if (val !== "همه")
-                            criteria.criteria.push({fieldName: "courseType", operator: "equals", value: val});
+                            criteria.criteria.push({fieldName: "needsAssessmentState", operator: "equals", value: val});
                         console.log(criteria.criteria.length);
                         if(criteria.criteria.length < 1)
                             criteria = {};
-                        console.log(criteria);
                         ExportToFile.showDialog(null, PersonnelTrainingStatusReport_LG, "viewPersonnelTrainingStatusReport", 0, null, '',"گزارش وضعیت آموزشی افراد"  , criteria, null);
 
                     }
@@ -311,24 +413,31 @@
         autoFetchData: false,
         fields: [
             {name: "id",hidden: true},
+            {name: "organizer"},
             {name: "personnelNo"},
+            {name: "personnelNoTD"},
             {name: "personnelNationalCode"},
             {name: "personnelFirstName"},
             {name: "personnelLastName"},
+            {name: "personnelJobCode"},
             {name: "PersonnelJobTitle"},
             {name: "personnelPostTitle"},
             {name: "personnel_Post_code"},
+            {name: "company"},
+            {name: "personnelAssisstant"},
+            {name: "personnelUnit"},
             {name: "personnelCppArea"},
             {name: "personnelCppAffairs"},
             {name: "courseCode"},
             {name: "courseTitleFa"},
-            {name: "courseType"},
+            {name: "needsAssessmentState"},
             {name: "personnelPostGradeCode"},
             {name: "personnelPostGradeTitle"},
             {name: "skillCode"},
             {name: "skillTitle"},
-            {name: "Title"},
-            {name: "title1"},
+            {name: "acceptanceState"},
+            {name: "needsAssessmentPriority"},
+            {name: "classState"},
         ],
     });
     // <<----------------------------------------------- Layout -------------------------------------------->>
@@ -344,9 +453,9 @@
 
     // <<----------------------------------------------- Functions --------------------------------------------
     function hasFilters(){
-        if(Object.keys(FilterDF_PTSR.getValuesAsCriteria()).length < 2 && FilterDF_PTSR.getValuesAsCriteria().criteria === undefined)
+        if(Object.keys(FilterDF_PTSR.getValuesAsCriteria()).length < 3 && FilterDF_PTSR.getValuesAsCriteria().criteria === undefined)
             return false;
-        else if(FilterDF_PTSR.getValuesAsCriteria().criteria !== undefined && Object.keys(FilterDF_PTSR.getValuesAsCriteria().criteria).length < 3)
+        else if(FilterDF_PTSR.getValuesAsCriteria().criteria !== undefined && Object.keys(FilterDF_PTSR.getValuesAsCriteria().criteria).length < 4)
             return false
         else
             return true;
