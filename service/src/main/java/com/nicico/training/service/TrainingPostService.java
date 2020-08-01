@@ -117,15 +117,16 @@ public class TrainingPostService implements ITrainingPostService {
     public TrainingPostDTO create(TrainingPostDTO.Create create, HttpServletResponse response) throws IOException {
         try {
             return modelMapper.map(trainingPostDAO.save(convertDTO2Obj(create)),TrainingPostDTO.class);
-        }catch (TrainingException e){
-            Locale locale = LocaleContextHolder.getLocale();
-            if(e.getErrorCode().equals(TrainingException.ErrorType.DepartmentNotFound))
-                response.sendError(404, messageSource.getMessage("خطا در دپارتمان", null, locale));
-            else if(e.getErrorCode().equals(TrainingException.ErrorType.JobNotFound))
-                response.sendError(404, messageSource.getMessage("خطا در شغل", null, locale));
-            else if(e.getErrorCode().equals(TrainingException.ErrorType.PostGradeNotFound))
-                response.sendError(404, messageSource.getMessage("خطا در رده پستی", null, locale));
         }
+//        catch (TrainingException e){
+//            Locale locale = LocaleContextHolder.getLocale();
+//            if(e.getErrorCode().equals(TrainingException.ErrorType.DepartmentNotFound))
+//                response.sendError(404, messageSource.getMessage("خطا در دپارتمان", null, locale));
+//            else if(e.getErrorCode().equals(TrainingException.ErrorType.JobNotFound))
+//                response.sendError(404, messageSource.getMessage("خطا در شغل", null, locale));
+//            else if(e.getErrorCode().equals(TrainingException.ErrorType.PostGradeNotFound))
+//                response.sendError(404, messageSource.getMessage("خطا در رده پستی", null, locale));
+//        }
         catch (Exception e){
             Locale locale = LocaleContextHolder.getLocale();
             response.sendError(500, messageSource.getMessage("exception.un-managed", null, locale));
@@ -141,17 +142,18 @@ public class TrainingPostService implements ITrainingPostService {
             modelMapper.getConfiguration().setSkipNullEnabled(true);
             modelMapper.map(convertDTO2Obj(update), currentEntity);
             return modelMapper.map(currentEntity,TrainingPostDTO.class);
-        }catch (TrainingException e){
-            Locale locale = LocaleContextHolder.getLocale();
-            if(e.getErrorCode().equals(TrainingException.ErrorType.DepartmentNotFound))
-                response.sendError(404, messageSource.getMessage("خطا در دپارتمان", null, locale));
-            else if(e.getErrorCode().equals(TrainingException.ErrorType.JobNotFound))
-                response.sendError(404, messageSource.getMessage("خطا در شغل", null, locale));
-            else if(e.getErrorCode().equals(TrainingException.ErrorType.PostGradeNotFound))
-                response.sendError(404, messageSource.getMessage("خطا در رده پستی", null, locale));
-            else if(e.getErrorCode().equals(TrainingException.ErrorType.PostGradeNotFound))
-                response.sendError(404, messageSource.getMessage("exception.record.not−found", null, locale));
         }
+//        catch (TrainingException e){
+//            Locale locale = LocaleContextHolder.getLocale();
+//            if(e.getErrorCode().equals(TrainingException.ErrorType.DepartmentNotFound))
+//                response.sendError(404, messageSource.getMessage("خطا در دپارتمان", null, locale));
+//            else if(e.getErrorCode().equals(TrainingException.ErrorType.JobNotFound))
+//                response.sendError(404, messageSource.getMessage("خطا در شغل", null, locale));
+//            else if(e.getErrorCode().equals(TrainingException.ErrorType.PostGradeNotFound))
+//                response.sendError(404, messageSource.getMessage("خطا در رده پستی", null, locale));
+//            else if(e.getErrorCode().equals(TrainingException.ErrorType.PostGradeNotFound))
+//                response.sendError(404, messageSource.getMessage("exception.record.not−found", null, locale));
+//        }
         catch (Exception e){
             Locale locale = LocaleContextHolder.getLocale();
             response.sendError(500, messageSource.getMessage("exception.un-managed", null, locale));
@@ -166,20 +168,24 @@ public class TrainingPostService implements ITrainingPostService {
     }
 
     private TrainingPost convertDTO2Obj(TrainingPostDTO trainingPostDTO) throws Exception{
-        Department department = departmentDAO.findById(trainingPostDTO.getDepartmentId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.DepartmentNotFound));
-        Job job = jobDAO.findById(trainingPostDTO.getJobId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobNotFound));
-        PostGrade postGrade = postGradeDAO.findById(trainingPostDTO.getPostGradeId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PostGradeNotFound));
+        Department department = trainingPostDTO.getDepartmentId() == null ? null : departmentDAO.findById(trainingPostDTO.getDepartmentId()).orElse(null);//.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.DepartmentNotFound));
+        Job job = trainingPostDTO.getJobId() == null ? null : jobDAO.findById(trainingPostDTO.getJobId()).orElse(null);//.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobNotFound));
+        PostGrade postGrade = trainingPostDTO.getPostGradeId() == null ? null : postGradeDAO.findById(trainingPostDTO.getPostGradeId()).orElse(null);//.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PostGradeNotFound));
         final TrainingPost entity = new TrainingPost();
-        entity.setArea(department.getHozeTitle());
-        entity.setAssistance(department.getMoavenatTitle());
-        entity.setAffairs(department.getOmorTitle());
-        entity.setSection(department.getGhesmatTitle());
-        entity.setUnit(department.getVahedTitle());
-        entity.setCostCenterCode(department.getCode());
-        entity.setCostCenterTitleFa(department.getTitle());
-        entity.setDepartmentId(department.getId());
-        entity.setJob(job);
-        entity.setPostGrade(postGrade);
+        if(department != null){
+            entity.setArea(department.getHozeTitle());
+            entity.setAssistance(department.getMoavenatTitle());
+            entity.setAffairs(department.getOmorTitle());
+            entity.setSection(department.getGhesmatTitle());
+            entity.setUnit(department.getVahedTitle());
+            entity.setCostCenterCode(department.getCode());
+            entity.setCostCenterTitleFa(department.getTitle());
+            entity.setDepartmentId(department.getId());
+        }
+        if (job != null)
+            entity.setJob(job);
+        if(postGrade != null)
+            entity.setPostGrade(postGrade);
         entity.setCode(trainingPostDTO.getCode());
         entity.setTitleFa(trainingPostDTO.getTitleFa());
         entity.setPeopleType(trainingPostDTO.getPeopleType());
