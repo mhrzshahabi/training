@@ -46,11 +46,9 @@ public class EvaluationRestController {
     private final ReportUtil reportUtil;
     private final DateUtil dateUtil;
     private final ModelMapper modelMapper;
-    private final SkillService skillService;
     private final EvaluationService evaluationService;
     private final ClassStudentService classStudentService;
     private final TclassService tclassService;
-    private final QuestionnaireQuestionService questionnaireQuestionService;
     private final EvaluationDAO evaluationDAO;
     private final PersonnelDAO personnelDAO;
     private final ParameterValueDAO parameterValueDAO;
@@ -619,5 +617,75 @@ public class EvaluationRestController {
 
         params.put(ConstantVARs.REPORT_TYPE, "PDF");
         reportUtil.export("/reports/EvaluationForm.jasper", params, jsonDataSource, response);
+    }
+
+    @Transactional
+    @GetMapping(value = "/getBehavioralEvaluationResult/{classId}")
+    public EvaluationDTO.BehavioralResult getBehavioralEvaluationResult(@PathVariable Long classId) {
+        Tclass tclass = tclassService.getTClass(classId);
+        EvaluationDTO.BehavioralResult evaluationResult = new EvaluationDTO.BehavioralResult();
+
+        Double[] studentGrade = new Double[tclass.getClassStudents().size()];
+        Double[] supervisorGrade = new Double[tclass.getClassStudents().size()];
+        Double[] trainingGrade = new Double[tclass.getClassStudents().size()];
+        Double[] coWorkersGrade = new Double[tclass.getClassStudents().size()];
+        String[] classStudentsName = new String[tclass.getClassStudents().size()];
+
+        int index = 0;
+        for (ClassStudent classStudent : tclass.getClassStudents()) {
+            List<Evaluation> evaluations = evaluationDAO.findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeIdAndEvaluatedIdAndEvaluatedTypeIdAndStatus(
+                    classId,
+                    156L,
+                    230L,
+                    classStudent.getId(),
+                    188L,
+                    true);
+            studentGrade[index] = 0.0 ;
+            supervisorGrade[index] = 0.0;
+            trainingGrade[index] = 0.0;
+            coWorkersGrade[index] = 0.0;
+
+            Integer studentGradeNum = 0 ;
+            Integer supervisorGradeNum = 0;
+            Integer trainingGradeNum = 0;
+            Integer coWorkersGradeNum = 0;
+
+            for (Evaluation evaluation : evaluations) {
+                    if(evaluation.getEvaluatorTypeId().equals(189L)) {
+                        coWorkersGradeNum++;
+                        coWorkersGrade[index] += evaluationService.getEvaluationFormGrade(evaluation);
+                    }
+                    else if(evaluation.getEvaluatorTypeId().equals(190L)) {
+                        supervisorGradeNum++;
+                        supervisorGrade[index] += evaluationService.getEvaluationFormGrade(evaluation);
+                    }
+                    else if(evaluation.getEvaluatorTypeId().equals(188L)) {
+                        studentGradeNum++;
+                        studentGrade[index] += evaluationService.getEvaluationFormGrade(evaluation);
+                    }
+                    else if(evaluation.getEvaluatorTypeId().equals(454L)) {
+                        coWorkersGradeNum++;
+                        coWorkersGrade[index] += evaluationService.getEvaluationFormGrade(evaluation);
+                    }
+            }
+            if(!studentGradeNum.equals(new Integer(0)))
+                studentGrade[index] = studentGrade[index]/studentGradeNum;
+            if(!supervisorGradeNum.equals(new Integer(0)))
+                supervisorGrade[index] = supervisorGrade[index]/supervisorGradeNum;
+            if(!trainingGradeNum.equals(new Integer(0)))
+                trainingGrade[index] = trainingGrade[index]/trainingGradeNum;
+            if(!coWorkersGradeNum.equals(new Integer(0)))
+                coWorkersGrade[index] = coWorkersGrade[index]/coWorkersGradeNum;
+            classStudentsName[index] = classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName();
+            index++;
+        }
+
+        evaluationResult.setClassStudentsName(classStudentsName);
+        evaluationResult.setCoWorkersGrade(coWorkersGrade);
+        evaluationResult.setStudentGrade(studentGrade);
+        evaluationResult.setSupervisorGrade(supervisorGrade);
+        evaluationResult.setTrainingGrade(trainingGrade);
+
+        return evaluationResult;
     }
 }
