@@ -1,8 +1,11 @@
 package com.nicico.training.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
@@ -11,6 +14,7 @@ import com.nicico.training.repository.QuestionBankDAO;
 import com.nicico.training.service.QuestionBankService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -31,6 +36,7 @@ public class QuestionBankRestController {
 
     private final QuestionBankService questionBankService;
     private final ModelMapper modelMapper;
+    private final ObjectMapper objectMapper;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -46,11 +52,34 @@ public class QuestionBankRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list")
-    public ResponseEntity<QuestionBankDTO.QuestionBankSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
-                                                                   @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+    public ResponseEntity<QuestionBankDTO.QuestionBankSpecRs> list(@RequestParam(value = "_startRow", required = false, defaultValue = "0") Integer startRow,
+                                                                   @RequestParam(value = "_endRow", required = false, defaultValue = "1") Integer endRow,
+                                                                   @RequestParam(value = "_constructor", required = false) String constructor,
                                                                    @RequestParam(value = "operator", required = false) String operator,
-                                                                   @RequestParam(value = "criteria", required = false) String criteria) throws NoSuchFieldException, IllegalAccessException {
+                                                                   @RequestParam(value = "criteria", required = false) String criteria,
+                                                                   @RequestParam(value = "id", required = false) Long id,
+                                                                   @RequestParam(value = "_sortBy", required = false) String sortBy) throws NoSuchFieldException, IllegalAccessException, IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+
+
+            request.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+
+
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 

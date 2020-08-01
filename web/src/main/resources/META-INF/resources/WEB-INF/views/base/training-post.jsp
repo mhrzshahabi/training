@@ -816,7 +816,7 @@
     });
 
     var DynamicForm_TrainingPost_Jsp = isc.DynamicForm.create({
-        width: "750",
+        width: "700",
         height: "150",
         align: "center",
         canSubmit: true,
@@ -829,7 +829,7 @@
         validateOnExit: true,
         numCols: 2,
         wrapTitle: false,
-        colWidths: [140, "*"],
+        colWidths: [150, "*"],
         margin: 10,
         padding: 5,
         fields: [
@@ -845,7 +845,8 @@
                 showHintInField: true,
                 length: "250",
                 width: "*",
-                height: "40"
+                height: "40",
+                colSpan: 2,
             },
             {
                 name: "code",
@@ -853,10 +854,11 @@
                 type: "text",
                 required: true,
                 requiredMessage: "<spring:message code="msg.field.is.required"/>",
+                colSpan: 2,
             },
             {
                 name: "jobId",
-                colSpan: 5,
+                colSpan: 1,
                 type: "ComboBoxItem",
                 multiple: false,
                 title: "<spring:message code="job"/>",
@@ -870,11 +872,11 @@
                     {name: "titleFa", filterOperator: "iContains"},
                     {name: "code", filterOperator: "iContains"},
                 ],
-                filterFields: ["titleFa", "code"]
+                filterFields: ["titleFa", "code"],
             },
             {
                 name: "departmentId",
-                colSpan: 5,
+                colSpan: 1,
                 type: "ComboBoxItem",
                 multiple: false,
                 title: "<spring:message code="department"/>",
@@ -894,7 +896,7 @@
                     {name: "ghesmatCode", title: "<spring:message code="section"/>"},
                     {name: "vahedTitle", title: "<spring:message code="unit"/>"},
                 ],
-                filterFields: ["title", "code","hozeTitle","moavenatTitle","omorTitle","ghesmatCode","vahedTitle"]
+                filterFields: ["title", "code","hozeTitle","moavenatTitle","omorTitle","ghesmatCode","vahedTitle"],
             },
             {
                 name: "postGradeId",
@@ -906,7 +908,7 @@
                 valueField: "id",
                 displayField: "titleFa",
                 endRow: false,
-                colSpan: 4,
+                colSpan: 1,
                 layoutStyle: "horizontal",
                 comboBoxProperties: {
                     hint: "",
@@ -925,6 +927,7 @@
                 name: "peopleType",
                 title: "نوع پرسنل",
                 type: "SelectItem",
+                colSpan: 1,
                 valueMap: peopleTypeMap,
                 textAlign: "center",
                 hint: "شرکتی/پیمان کار",
@@ -932,7 +935,7 @@
                 showHintInField: true,
                 pickListProperties: {
                     showFilterEditor: false
-                }
+                },
             },
         ]
     });
