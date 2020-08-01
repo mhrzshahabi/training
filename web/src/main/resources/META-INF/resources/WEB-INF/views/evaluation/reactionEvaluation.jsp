@@ -130,6 +130,25 @@
             ]
         });
 
+
+    var MSG_Window_MSG_Main = isc.Window.create({
+        placement: "center",
+        title: "ارسال پیام",
+        overflow: "auto",
+        width: 900,
+        height: 700,
+        isModal: false,
+        autoDraw: false,
+        autoSize: false,
+        items: [
+            MSG_main_layout
+        ],
+        closeClick: function () {
+            MSG_initMSG()
+            this.clear()
+            this.close();
+        },
+    });
     //----------------------------------------- ListGrids --------------------------------------------------------------
         var ListGrid_student_RE = isc.TrLG.create({
             width: "100%",
@@ -349,7 +368,66 @@
         });
 
     //----------------------------------------- ToolStrips -------------------------------------------------------------
-        var ToolStripButton_FormIssuanceForAll_RE = isc.ToolStripButton.create({
+
+    var ToolStripButton_MSG_RE = isc.IButton.create({
+        baseStyle: 'MSG-btn-orange',
+        icon: '../static/img/msg/mail.svg',
+        title:"ارسال پیام", width:80,
+        click: function () {
+            let row=ListGrid_class_Evaluation.getSelectedRecord();
+            let wait = createDialog("wait");
+            isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/students-iscList/" + ListGrid_class_Evaluation.getSelectedRecord().id, "GET", null, function (resp) {
+                wait.close();
+                if (generalGetResp(resp)) {
+                    if (resp.httpResponseCode == 200) {
+                        let id=[];
+                        JSON.parse(resp.data).response.data.filter(p=>p.student.mobile).forEach(p=>id.push(p.id));
+                        MSG_selectUsersForm.getItem("multipleSelect").setValue(id);
+                        sendMessageFunc=sendMessage_evaluation;
+                        RestDataSource_student_RE.fetchDataURL = tclassStudentUrl + "/students-iscList/" + row.id;
+                        MSG_selectUsersForm.getItem("multipleSelect").optionDataSource=RestDataSource_student_RE;
+                        //MSG_selectUsersForm.getItem("multipleSelect").pickListWidth=600;
+                        MSG_selectUsersForm.getItem("multipleSelect").pickListFields=[
+                            {name: "student.firstName",title: "<spring:message code="firstName"/>", autoFitWidth: false, align: "center"},
+                            {name: "student.lastName",title: "<spring:message code="lastName"/>", autoFitWidth: false, align: "center"},
+                            {name: "student.nationalCode",title: "<spring:message code="national.code"/>", width: 100, align: "center"},
+                            {name: "student.personnelNo",title: "<spring:message code="personnel.no"/>", width: 100, align: "center"},
+                            {name: "student.personnelNo2",title: "<spring:message code="personnel.no.6.digits"/>", width: 100, align: "center"},
+                            {name: "student.mobile",title: "<spring:message code="mobile"/>",  width: 100, align: "center"},
+                        ];
+                        MSG_selectUsersForm.getItem("multipleSelect").displayField="fullName";
+                        MSG_selectUsersForm.getItem("multipleSelect").valueField="id";
+                        MSG_selectUsersForm.getItem("multipleSelect").dataArrived=function(startRow, endRow){
+                            let ids = MSG_selectUsersForm.getItem("multipleSelect").pickList.data.getAllCachedRows().filter(p=>!p.student.mobile).map(function(item) {
+                                return item.id;
+                            });
+                            let findRows=MSG_selectUsersForm.getItem("multipleSelect").pickList.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:ids}]});
+                            findRows.setProperty("enabled", false);
+                        }
+                        MSG_selectUsersForm.getItem("multipleSelect").fetchData();
+                        /* MSG_textEditorValue = 'کاربر محترم کلاس {'+row.courseTitleFa+'} لطفا فایل ارزیابی ارسالی به کارتاپلتان را تکمیل نمایید.';
+                         MSG_contentEditor.setValue('کاربر محترم کلاس {'+row.courseTitleFa+'} لطفا فایل ارزیابی ارسالی به کارتاپلتان را تکمیل نمایید.');
+ */
+                        MSG_textEditorValue = "{full-name}\n<br>کاربر محترم کلاس {class-name} لطفا فایل ارزیابی ارسالی به کارتبالتان را تکمیل نمایید"
+                        MSG_contentEditor.setValue(MSG_textEditorValue);
+                        if(JSON.parse(resp.data).response.data.filter(p=>!p.student.mobile).length!=0){
+                            ErrorMsg.setContents('برای '+JSON.parse(resp.data).response.data.filter(p=>!p.student.mobile).length+' فراگیر، شماره موبایل تعریف نشده است.');
+                        }else{
+                            ErrorMsg.setContents('');
+                        }
+                        MSG_Window_MSG_Main.show();
+                        setTimeout(function(){
+                            $('[eventproxy=sms] img').click();
+                        },0)
+                    } else {
+                        createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
+                    }
+                }
+            }));
+        }
+    });
+
+    var ToolStripButton_FormIssuanceForAll_RE = isc.ToolStripButton.create({
             title: "<spring:message code="students.form.issuance.Behavioral"/>",
             baseStyle: "sendFile",
             click: function () {
@@ -597,9 +675,33 @@
                 // }),
                 isc.ToolStrip.create({
                     width: "100%",
+                    maxWidth:500,
                     align: "left",
                     border: '0px',
                     members: [
+                        isc.DynamicForm.create({
+                            height: "100%",
+                            margin:0,
+                            fields: [
+                                {
+                                    ID:'contactSelector_RE',
+                                    title: "<spring:message code='send.message.select.contacts'/>",
+                                    type: "SelectItem",
+                                    titleAlign:"left",
+                                    textAlign: "center",
+                                    pickListProperties: {
+                                        showFilterEditor: false
+                                    },
+                                    valueMap: {
+                                        "1": "فراگیران کلاس",
+                                        //"2": "مدرس کلاس",
+                                        //"3": "فراگیرانی که فرم ارزیابی مدرس را تکمیل نکرده&zwnj;اند"
+                                    },
+                                    defaultValue: 1
+                                }
+                            ]
+                        }),
+                        ToolStripButton_MSG_RE,
                         ToolStripButton_RefreshIssuance_RE
                     ]
                 })
@@ -1788,6 +1890,47 @@
                 DynamicForm_ReturnDate_RE.clearFieldErrors("evaluationReturnDate", true);
             }
         }
+
+    function sendMessage_evaluation() {
+        let data={
+            type:MSG_msgContent.type,
+            classStudent:MSG_msgContent.users,
+            message:MSG_msgContent.text,
+        }
+
+        let wait = createDialog("wait");
+
+        isc.RPCManager.sendRequest(TrDSRequest(sendMessageUrl +
+            "/sendSMS",
+            "POST",
+            JSON.stringify(data),
+            function(resp){
+                wait.close();
+                if (generalGetResp(resp)) {
+                    if (resp.httpResponseCode == 200) {
+                        var ERROR = isc.Dialog.create({
+                            message:"پیام با موفقیت ارسال شد",
+                            icon: "[SKIN]say.png",
+                            title:  "متن پیام"
+                        });
+
+                        setTimeout(function () {
+                            ERROR.close();
+                        }, 1000);
+
+                        MSG_initMSG()
+                        MSG_Window_MSG_Main.clear()
+                        MSG_Window_MSG_Main.close();
+
+                    } else {
+                        createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
+                    }
+                }
+            })
+        );
+    }
+
+
 
 
     //
