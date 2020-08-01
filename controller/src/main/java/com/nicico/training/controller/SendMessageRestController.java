@@ -47,7 +47,7 @@ public class SendMessageRestController {
     @Loggable
     @PostMapping(value = "/sendSMS")
     public ResponseEntity sendSMS(@RequestBody String data) throws IOException {
-        List<Long> classStudentIDs = new ArrayList<>();
+        /*List<Long> classStudentIDs = new ArrayList<>();
         List<String> mobiles = new ArrayList<>();
         List<String> fullName = new ArrayList<>();
         String className = "";
