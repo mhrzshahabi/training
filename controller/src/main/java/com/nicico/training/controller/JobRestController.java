@@ -12,7 +12,9 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.JobDTO;
+import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PostDTO;
+import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.service.CourseService;
 import com.nicico.training.service.JobService;
 import lombok.RequiredArgsConstructor;
@@ -20,14 +22,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -40,6 +42,7 @@ public class JobRestController {
     final DateUtil dateUtil;
     final ReportUtil reportUtil;
     private final JobService jobService;
+    private final IPersonnelService personnelService;
 
     @GetMapping("list")
     public ResponseEntity<List<JobDTO.Info>> list() {
@@ -55,6 +58,21 @@ public class JobRestController {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.SearchRs<JobDTO.Info> searchRs = jobService.searchWithoutPermission(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/{jobId}/getPersonnel")
+//    @PreAuthorize("hasAnyAuthority('r_post_group')")
+    public ResponseEntity<ISC<PersonnelDTO.Info>> getPersonnel(@PathVariable Long jobId, HttpServletRequest iscRq) throws IOException {
+        List<PostDTO.Info> postList = jobService.getPosts(jobId);
+        if (postList == null || postList.isEmpty()) {
+            return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
+        }
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq, postList.stream().map(PostDTO.Info::getId).collect(Collectors.toList()), "postId", EOperator.inSet);
+        searchRq.getCriteria().getCriteria().add(makeNewCriteria("deleted", 0, EOperator.equals, null));
+        searchRq.setDistinct(true);
+        SearchDTO.SearchRs<PersonnelDTO.Info> searchRs = personnelService.search(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 
     @Loggable
@@ -102,7 +120,7 @@ public class JobRestController {
         final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
         specRs.setResponse(specResponse);
 
-        return new ResponseEntity<>( specRs, HttpStatus.OK);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
 }

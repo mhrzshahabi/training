@@ -57,7 +57,8 @@ public class MonthlyStatisticalReportService implements IMonthlyStatisticalRepor
         List<?> MSReportList = null;
         List<MonthlyStatisticalReportDTO> monthlyStatisticalDTO = null;
 
-        String reportScript = " SELECT           (CASE WHEN ccp_unit IS NULL THEN '-' ELSE ccp_unit END) ccp_unit, " +
+        String reportScript = " SELECT DISTINCT " +
+                "                 (CASE WHEN ccp_unit IS NULL THEN '-' ELSE ccp_unit END) ccp_unit, " +
                 "                 (CASE WHEN ccp_assistant IS NULL THEN '-' ELSE ccp_assistant END) ccp_assistant, " +
                 "                 (CASE WHEN ccp_affairs IS NULL THEN '-' ELSE ccp_affairs END) ccp_affairs, " +
                 "                 (CASE WHEN ccp_section IS NULL THEN '-' ELSE ccp_section END) ccp_section, " +
@@ -68,30 +69,31 @@ public class MonthlyStatisticalReportService implements IMonthlyStatisticalRepor
                 "                 (CASE WHEN acceptableAbsence IS NULL THEN '0' ELSE TO_CHAR(FLOOR(acceptableAbsence/60)) || ':' || TO_CHAR(MOD(acceptableAbsence,60)) END) acceptableAbsence " +
                 "                 FROM  " +
                 "                 (SELECT      " +
-                "                    ST.ccp_unit,  " +
+                "                    department.c_vahed_title as ccp_unit,    " +
                 "                    A.c_state,  " +
-                "                    ST.complex_title, " +
-                "                    ST.ccp_assistant, " +
-                "                    ST.ccp_affairs, " +
-                "                    ST.ccp_section, " +
-                "                    CO.E_TECHNICAL_TYPE, " +
-                "                    ST.POST_GRADE_CODE, " +
-                "                    CO.C_TITLE_FA, " +
-                "                    C.C_CODE, " +
+                "                    department.c_hoze_title as complex_title, " +
+                "                    department.c_moavenat_title as ccp_assistant, " +
+                "                    department.c_omor_title ccp_affairs, " +
+                "                    department.c_ghesmat_title as ccp_section, " +
                 "                    SUM(round(to_number(TO_DATE((CASE WHEN SUBSTR(S.c_session_end_hour,1,2) > 23 THEN '23:59' ELSE S.c_session_end_hour END),'HH24:MI') - TO_DATE((CASE WHEN SUBSTR(S.c_session_start_hour,1,2) > 23 THEN '23:59' ELSE S.c_session_start_hour END),'HH24:MI') ) * 24 * 60)) AS session_time  " +
                 "                 FROM  " +
                 "                    tbl_attendance A  " +
                 "                    INNER JOIN tbl_student ST ON ST.id = A.f_student  " +
+                "                    INNER JOIN (\n " +
+                "                        SELECT\n " +
+                "                            * from view_personnels\n"+
+                "                    ) personnel ON ST.personnel_no = personnel.personnel_no\n " +
+                "                    LEFT JOIN tbl_department department ON department.id = personnel.department_id \n " +
                 "                    INNER JOIN tbl_session S ON S.id = A.f_session  " +
                 "                    INNER JOIN tbl_class C ON S.f_class_id = C.id  " +
                 "                    INNER JOIN tbl_course CO ON C.f_course = CO.id  " +
                 "                    LEFT JOIN tbl_post_grade PG ON ST.POST_GRADE_CODE = PG.c_code " +
-                "                 WHERE S.c_session_date >= :firstDate AND S.c_session_date <= :secondDate AND A.c_state <> 0  " +
-                "                 AND (CASE WHEN :complex_title = 'همه' THEN 1 WHEN ST.complex_title = :complex_title THEN 1 END) IS NOT NULL  " +
-                "                 AND (CASE WHEN :assistant = 'همه' THEN 1 WHEN ST.ccp_assistant = :assistant THEN 1 END) IS NOT NULL  " +
-                "                 AND (CASE WHEN :affairs = 'همه' THEN 1 WHEN ST.ccp_affairs = :affairs THEN 1 END) IS NOT NULL  " +
-                "                 AND (CASE WHEN :section = 'همه' THEN 1 WHEN ST.ccp_section = :section THEN 1 END) IS NOT NULL  " +
-                "                 AND (CASE WHEN :unit = 'همه' THEN 1 WHEN ST.ccp_unit = :unit THEN 1 END) IS NOT NULL  ";
+                "                 WHERE  department.c_vahed_title<>'-' and department.c_hoze_title<>'-' and department.c_moavenat_title<>'-' and department.c_omor_title<>'-' and department.c_ghesmat_title<>'-' and S.c_session_date >= :firstDate AND S.c_session_date <= :secondDate AND A.c_state <> 0  " +
+                "                 AND (CASE WHEN :complex_title = 'همه' THEN 1 WHEN  department.c_hoze_title = :complex_title THEN 1 END) IS NOT NULL  " +
+                "                 AND (CASE WHEN :assistant = 'همه' THEN 1 WHEN  department.c_moavenat_title = :assistant THEN 1 END) IS NOT NULL  " +
+                "                 AND (CASE WHEN :affairs = 'همه' THEN 1 WHEN  department.c_omor_title = :affairs THEN 1 END) IS NOT NULL  " +
+                "                 AND (CASE WHEN :section = 'همه' THEN 1 WHEN  department.c_ghesmat_title = :section THEN 1 END) IS NOT NULL  " +
+                "                 AND (CASE WHEN :unit = 'همه' THEN 1 WHEN  department.c_vahed_title = :unit THEN 1 END) IS NOT NULL  ";
         if ((Technical.size() != 0))
             reportScript += "                 AND CO.E_TECHNICAL_TYPE in (" + StringUtils.join(Technical, ",") + ")";
 
@@ -107,7 +109,7 @@ public class MonthlyStatisticalReportService implements IMonthlyStatisticalRepor
         if ((Personnel.size() != 0))
             reportScript += "                 AND ST.id in(" + StringUtils.join(Personnel, ",") + ")";
 
-        reportScript += "                 GROUP BY A.c_state, ST.ccp_unit, ST.complex_title, ST.ccp_assistant, ST.ccp_affairs, ST.ccp_section,CO.E_TECHNICAL_TYPE,ST.POST_GRADE_CODE,CO.C_TITLE_FA,C.C_CODE)  " +
+        reportScript += "                 GROUP BY A.c_state, department.c_vahed_title, department.c_hoze_title,department.c_moavenat_title,department.c_omor_title, department.c_ghesmat_title)  " +
                 "                 PIVOT(  " +
                 "                    SUM(session_time)  " +
                 "                    FOR c_state  " +

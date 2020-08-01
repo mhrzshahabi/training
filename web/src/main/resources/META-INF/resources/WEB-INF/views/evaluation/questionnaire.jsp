@@ -6,6 +6,8 @@
 
     let questionnaireMethod_questionnaire;
     let questionnaireQuestionMethod_questionnaire;
+    let waitQuestionnaire;
+    var isDelete_questionnaire=false;
 
     // ------------------------------------------- Menu -------------------------------------------
     isc.Menu.create({
@@ -55,6 +57,7 @@
         title: "فعال/غیرفعال کردن پرسشنامه",
         width: "200",
         click: function () {
+
             let record = QuestionnaireLG_questionnaire.getSelectedRecord();
             if (record == null)
             {
@@ -63,7 +66,27 @@
             }
             else {
                 let questionnaireSaveUrl = questionnaireUrl;
-                isc.RPCManager.sendRequest( TrDSRequest(questionnaireSaveUrl +"/list","GET",null, "callback: ListResponse(rpcResponse,'"+JSON.stringify(record)+"')"));
+                waitQuestionnaire = createDialog("wait");
+
+                isc.RPCManager.sendRequest(TrDSRequest(questionnaireUrl +
+                    "/isLocked/" +
+                    record.id,
+                    "GET",
+                    null,
+                    function(resp){
+                        if(resp.data=="true"){
+                            createDialog("info", "پرسشنامه مورد نظر در ارزیابی استفاده شده است. بنابراین قابل تغییر نیست.");
+                            waitQuestionnaire.close();
+
+                            return ;
+                        }
+
+                        isc.RPCManager.sendRequest( TrDSRequest(questionnaireSaveUrl+"/enable/"+record.id ,"PUT",null, "callback: EnabledResponse(rpcResponse)"))
+
+                        //isc.RPCManager.sendRequest( TrDSRequest(questionnaireSaveUrl +"/list","GET",null, "callback: ListResponse(rpcResponse,'"+JSON.stringify(record)+"')"));
+
+                    })
+                );
             }
 
         }
@@ -144,7 +167,13 @@
         {name:"id",primaryKey:true,hidden:true},
         {name:"title",title:"<spring:message code="title"/>",required:true,filterOperator:"iContains",autoFitWidth: true}
     ],
-     fetchDataURL: parameterValueUrl + "/iscList/143",
+        cacheAllData: true,
+        fetchDataURL: parameterValueUrl + "/iscList/143",
+        implicitCriteria: {
+            _constructor:"AdvancedCriteria",
+            operator:"and",
+            criteria:[{ fieldName: "id", operator: "inSet", value: ["140","139","141"]}]
+        }
     });
 
     QuestionnaireLG_questionnaire = isc.TrLG.create({
@@ -165,7 +194,7 @@
         recordDoubleClick: function () { editQuestionnaire_questionnaire(); },
         </sec:authorize>
         <sec:authorize access="hasAuthority('QuestionnaireQuestion_R')">
-        selectionUpdated: function (record) { refreshQuestionnaireQuestionLG_questionnaire(); },
+        selectionUpdated: function (record) {refreshQuestionnaireQuestionLG_questionnaire(); },
         </sec:authorize>
         getCellCSSText: function (record) {
             if (record.eenabled == 74)
@@ -173,6 +202,13 @@
             else
                 return "color:#153560; font-size: 13px;";
         },
+        dataArrived:function (startRow, endRow, data) {
+
+            if (isDelete_questionnaire){
+                QuestionnaireQuestionLG_questionnaire.setData([]);
+                isDelete_questionnaire=false;
+            }
+        }
     });
 
     QuestionnaireQuestionDS_questionnaire = isc.TrDS.create({
@@ -209,9 +245,11 @@
         ID: "EvaluationQuestionDS_questionnaire",
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "question", title: "<spring:message code="question"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "question", title: "<spring:message code="question"/>", filterOperator: "iContains"},
+            {name: "domain.id", title: "<spring:message code="question.domain"/>", filterOperator: "equals", hidden: true},
+            {name: "domain.title", title: "<spring:message code="question.domain"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
-        fetchDataURL: configQuestionnaireUrl + "/iscList",
+        fetchDataURL: configQuestionnaireUrl + "/pickList",
     });
 
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
@@ -255,6 +293,13 @@
                 pickListProperties: {
                     showFilterEditor: true,
                 },
+                pickListFields: [
+                    {name: "question"},
+                    {name: "domain.title"},
+                ],
+                pickListWidth: 800,
+                sortField: ["domain.id"],
+                sortDirection: "descending",
             },
             {name: "weight", title: "<spring:message code="weight"/>", required: true, editorType: "SpinnerItem", defaultValue: 1, min: 1},
             {name: "order", title: "<spring:message code="order"/>", required: true, editorType: "SpinnerItem", defaultValue: 1, min: 1},
@@ -288,11 +333,24 @@
     function editQuestionnaire_questionnaire() {
         let record = QuestionnaireLG_questionnaire.getSelectedRecord();
         if (checkRecordAsSelected(record, true, "<spring:message code="questionnaire"/>")) {
-            questionnaireMethod_questionnaire = "PUT";
-            QuestionnaireDF_questionnaire.clearValues();
-            QuestionnaireDF_questionnaire.editRecord(record);
-            QuestionnaireWin_questionnaire.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="questionnaire"/>");
-            QuestionnaireWin_questionnaire.show();
+            isc.RPCManager.sendRequest(TrDSRequest(questionnaireUrl +
+                "/isLocked/" +
+                record.id,
+                "GET",
+                null,
+                function(resp){
+                    if(resp.data=="true"){
+                        createDialog("info", "پرسشنامه مورد نظر در ارزیابی استفاده شده است. بنابراین قابل تغییر نیست.");
+                        return ;
+                    }
+
+                    questionnaireMethod_questionnaire = "PUT";
+                    QuestionnaireDF_questionnaire.clearValues();
+                    QuestionnaireDF_questionnaire.editRecord(record);
+                    QuestionnaireWin_questionnaire.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="questionnaire"/>");
+                    QuestionnaireWin_questionnaire.show();
+                })
+            );
         }
     }
 
@@ -317,7 +375,24 @@
         let record = QuestionnaireLG_questionnaire.getSelectedRecord();
         var entityType = '<spring:message code="questionnaire"/>';
         if (checkRecordAsSelected(record, true, entityType)) {
-            removeRecord(questionnaireUrl + "/" + record.id, entityType, record.title, 'QuestionnaireLG_questionnaire');
+
+            isc.RPCManager.sendRequest(TrDSRequest(questionnaireUrl +
+                "/isLocked/" +
+                record.id,
+                "GET",
+                null,
+                function(resp){
+                    if(resp.data=="true"){
+                        createDialog("info", "پرسشنامه مورد نظر در ارزیابی استفاده شده است. بنابراین قابل تغییر نیست.");
+                        return ;
+                    }
+
+                    removeRecord(questionnaireUrl + "/" + record.id, entityType, record.title, 'QuestionnaireLG_questionnaire');
+
+
+                })
+            );
+
         }
     }
 
@@ -333,12 +408,26 @@
     function createQuestionnaireQuestion_questionnaire() {
         let record = QuestionnaireLG_questionnaire.getSelectedRecord();
         if (checkRecordAsSelected(record, true, "<spring:message code="questionnaire"/>")) {
-            questionnaireQuestionMethod_questionnaire = "POST";
-            QuestionnaireQuestionDF_questionnaire.clearValues();
-            QuestionnaireQuestionDF_questionnaire.getItem("questionnaire.id").setValue(record.id);
-            QuestionnaireQuestionDF_questionnaire.getItem("questionnaire.title").setValue(record.title);
-            QuestionnaireQuestionWin_questionnaire.setTitle("<spring:message code="add"/>&nbsp;" + "<spring:message code="question"/>");
-            QuestionnaireQuestionWin_questionnaire.show();
+            isc.RPCManager.sendRequest(TrDSRequest(questionnaireUrl +
+                "/isLocked/" +
+                record.id,
+                "GET",
+                null,
+                function(resp){
+                    if(resp.data=="true"){
+                        createDialog("info", "پرسشنامه مورد نظر در ارزیابی استفاده شده است. بنابراین قابل تغییر نیست.");
+                        return ;
+                    }
+
+                    questionnaireQuestionMethod_questionnaire = "POST";
+                    QuestionnaireQuestionDF_questionnaire.clearValues();
+                    QuestionnaireQuestionDF_questionnaire.getItem("questionnaire.id").setValue(record.id);
+                    QuestionnaireQuestionDF_questionnaire.getItem("questionnaire.title").setValue(record.title);
+                    QuestionnaireQuestionWin_questionnaire.setTitle("<spring:message code="add"/>&nbsp;" + "<spring:message code="question"/>");
+                    QuestionnaireQuestionWin_questionnaire.show();
+                })
+            );
+
         }
     }
 
@@ -346,13 +435,27 @@
         let questionnaireRecord = QuestionnaireLG_questionnaire.getSelectedRecord();
         let record = QuestionnaireQuestionLG_questionnaire.getSelectedRecord();
         if (checkRecordAsSelected(record, true, "<spring:message code="questions"/>")) {
-            questionnaireQuestionMethod_questionnaire = "PUT";
-            QuestionnaireQuestionDF_questionnaire.clearValues();
-            QuestionnaireQuestionDF_questionnaire.editRecord(record);
-            QuestionnaireQuestionDF_questionnaire.getItem("questionnaire.id").setValue(questionnaireRecord.id);
-            QuestionnaireQuestionDF_questionnaire.getItem("questionnaire.title").setValue(questionnaireRecord.title);
-            QuestionnaireQuestionWin_questionnaire.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="question"/>");
-            QuestionnaireQuestionWin_questionnaire.show();
+            isc.RPCManager.sendRequest(TrDSRequest(questionnaireUrl +
+                "/isLocked/" +
+                record.questionnaireId,
+                "GET",
+                null,
+                function(resp){
+                    if(resp.data=="true"){
+                        createDialog("info", "پرسشنامه مورد نظر در ارزیابی استفاده شده است. بنابراین قابل تغییر نیست.");
+                        return ;
+                    }
+
+                    questionnaireQuestionMethod_questionnaire = "PUT";
+                    QuestionnaireQuestionDF_questionnaire.clearValues();
+                    QuestionnaireQuestionDF_questionnaire.editRecord(record);
+                    QuestionnaireQuestionDF_questionnaire.getItem("questionnaire.id").setValue(questionnaireRecord.id);
+                    QuestionnaireQuestionDF_questionnaire.getItem("questionnaire.title").setValue(questionnaireRecord.title);
+                    QuestionnaireQuestionWin_questionnaire.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="question"/>");
+                    QuestionnaireQuestionWin_questionnaire.show();
+                })
+            );
+
         }
     }
 
@@ -361,7 +464,7 @@
             return;
         }
         for (let i = 0; i < QuestionnaireQuestionLG_questionnaire.data.allRows.length; i++) {
-            if (QuestionnaireQuestionLG_questionnaire.data.allRows[i].evaluationQuestionId === QuestionnaireQuestionDF_questionnaire.getValue("evaluationQuestionId")){
+            if (QuestionnaireQuestionLG_questionnaire.data.allRows[i].evaluationQuestionId === QuestionnaireQuestionDF_questionnaire.getValue("evaluationQuestionId") && QuestionnaireQuestionLG_questionnaire.data.allRows[i].id != QuestionnaireQuestionDF_questionnaire.getValue("id")){
                 createDialog("info", "<spring:message code='msg.record.duplicate'/>");
                 return;
             }
@@ -391,7 +494,6 @@
             if (respCode === 200 || respCode === 201) {
                 selectedState = "[{id:" + JSON.parse(resp.data).id + "}]";
                 let entityTitle = JSON.parse(resp.httpResponseText).title;
-                console.log(JSON.parse(resp.httpResponseText));
                 msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + '</b>\' &nbsp;' + "<spring:message code="msg.successfully.done"/>";
 
                 if (gridToRefresh !== undefined) {
@@ -418,7 +520,9 @@
         }
     }
 
-    function ListResponse(resp,record) {
+    /*function ListResponse(resp,record) {
+        console.log(0);
+        waitQuestionnaire.close();
         let respCode = resp.httpResponseCode;
         if (respCode === 200 || respCode === 201) {
            let rec=JSON.parse(record);
@@ -452,9 +556,10 @@
                 // }
            }
         }
-    }
+    }*/
 
     function EnabledResponse(resp) {
+        waitQuestionnaire.close();
         let respCode = resp.httpResponseCode;
         if (respCode === 200 || respCode === 201) {
             QuestionnaireLG_questionnaire.invalidateCache()
@@ -463,11 +568,34 @@
 
     function removeQuestionnaireQuestion_questionnaire() {
         let record = QuestionnaireQuestionLG_questionnaire.getSelectedRecord();
+
         var entityType = '<spring:message code="questions"/>';
         if (checkRecordAsSelected(record, true, entityType)) {
-            //removeRecord(questionnaireQuestionUrl + "/" + record.id, entityType, record.title, 'QuestionnaireQuestionLG_questionnaire');
-            isc.RPCManager.sendRequest( TrDSRequest(questionnaireQuestionUrl + "/" + record.id, "DELETE",null, "callback: removeResponse(rpcResponse)"))
+            isc.RPCManager.sendRequest(TrDSRequest(questionnaireUrl +
+                "/isLocked/" +
+                record.questionnaireId,
+                "GET",
+                null,
+                function(resp){
 
+                    if(resp.data=="true"){
+                        createDialog("info", "پرسشنامه مورد نظر در ارزیابی استفاده شده است. بنابراین قابل تغییر نیست.");
+                        return ;
+                    }
+
+                    let Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+                        "<spring:message code='verify.delete'/>");
+                    Dialog_Delete.addProperties({
+                        buttonClick: function (button, index) {
+                            this.close();
+                            if (index === 0) {
+                                //removeRecord(questionnaireQuestionUrl + "/" + record.id, entityType, record.title, 'QuestionnaireQuestionLG_questionnaire');
+                                isc.RPCManager.sendRequest( TrDSRequest(questionnaireQuestionUrl + "/" + record.id, "DELETE",null, "callback: removeResponse(rpcResponse)"))
+                            }
+                        }
+                    });
+                })
+            );
         }
     }
 

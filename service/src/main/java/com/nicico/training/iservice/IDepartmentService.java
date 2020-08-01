@@ -22,4 +22,6 @@ public interface IDepartmentService {
     List<DepartmentDTO.Info> findRootNode();
 
     List<DepartmentDTO.Info> findByParentId(Long parentId);
+
+    SearchDTO.SearchRs<DepartmentDTO.FieldValue> findAllValuesOfOneFieldFromDepartment(String fieldName);
 }

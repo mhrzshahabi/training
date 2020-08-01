@@ -22,7 +22,6 @@ public class MainFormController {
         return "basic/parameter";
     }
 
-    ////disable targetSociety
     @RequestMapping("/organizationalChart")
     public String showOrganizationalChartForm() { return "basic/organizationalChart"; }
 
@@ -158,6 +157,11 @@ public class MainFormController {
     @RequestMapping("/continuousStatusReport")
     public String showcontinuousStatusReportForm() {
         return "report/continuousStatusReport";
+    }
+
+    @RequestMapping("/personnelTrainingStatusReport")
+    public String showPersonnemTrainingStatusReportForm() {
+        return "report/personnel-training-status-report";
     }
 
     @RequestMapping("/presenceReport")

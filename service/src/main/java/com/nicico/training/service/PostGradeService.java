@@ -7,6 +7,8 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
+import com.nicico.training.TrainingException;
+import com.nicico.training.dto.PostDTO;
 import com.nicico.training.dto.PostGradeDTO;
 import com.nicico.training.dto.PostGradeGroupDTO;
 import com.nicico.training.iservice.IPostGradeGroupService;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
@@ -56,5 +59,27 @@ public class PostGradeService implements IPostGradeService {
     @Override
     public SearchDTO.SearchRs<PostGradeDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request) {
         return SearchUtil.search(postGradeDAO, request, postGrade -> modelMapper.map(postGrade, PostGradeDTO.Info.class));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PostGradeDTO.Info get(Long id) {
+
+        final Optional<PostGrade> postGradeById = postGradeDAO.findById(id);
+        final PostGrade job = postGradeById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+        PostGradeDTO.Info result = modelMapper.map(job, PostGradeDTO.Info.class);
+
+        return result;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PostDTO.TupleInfo> getPosts(Long id) {
+
+        final Optional<PostGrade> postGradeById = postGradeDAO.findById(id);
+        final PostGrade job = postGradeById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        return modelMapper.map(job.getPostSet(), new TypeToken<List<PostDTO.TupleInfo>>() {
+        }.getType());
     }
 }

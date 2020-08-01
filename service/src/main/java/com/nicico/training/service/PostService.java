@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
@@ -81,8 +82,8 @@ public class PostService implements IPostService {
 
     @Transactional(readOnly = true)
     @Override
-    public SearchDTO.SearchRs<PostDTO.Info> searchWithoutPermission(SearchDTO.SearchRq request) {
-        return SearchUtil.search(postDAO, request, post -> modelMapper.map(post, PostDTO.Info.class));
+    public <T> SearchDTO.SearchRs<T> searchWithoutPermission(SearchDTO.SearchRq request, Function converter) {
+        return SearchUtil.search(postDAO, request, converter);
     }
 
     @Transactional(readOnly = true)

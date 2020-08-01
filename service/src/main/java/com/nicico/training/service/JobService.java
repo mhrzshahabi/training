@@ -9,8 +9,10 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.JobGroupDTO;
+import com.nicico.training.dto.PostDTO;
 import com.nicico.training.iservice.IJobGroupService;
 import com.nicico.training.iservice.IJobService;
 import com.nicico.training.iservice.IWorkGroupService;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
@@ -64,5 +67,27 @@ public class JobService implements IJobService {
     @Override
     public TotalResponse<JobDTO.Info> search(NICICOCriteria request) {
         return SearchUtil.search(jobDAO, request, job -> modelMapper.map(job, JobDTO.Info.class));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public JobDTO.Info get(Long id) {
+
+        final Optional<Job> jobById = jobDAO.findById(id);
+        final Job job = jobById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+        JobDTO.Info result = modelMapper.map(job, JobDTO.Info.class);
+
+        return result;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PostDTO.Info> getPosts(Long jobId) {
+
+        final Optional<Job> jobById = jobDAO.findById(jobId);
+        final Job job = jobById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        return modelMapper.map(job.getPostSet(), new TypeToken<List<PostDTO.Info>>() {
+        }.getType());
     }
 }

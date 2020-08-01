@@ -61,7 +61,7 @@ function courseCounterCode(n) {
 
 }
 
-function defineWindowsEditNeedsAssessment(grid) {
+function defineWindowsEditNeedsAssessment(grid = null) {
     const Window_NeedsAssessment_Edit = isc.Window.create({
         ID: "Window_NeedsAssessment_Edit",
         title: "ویرایش نیازسنجی",
@@ -79,6 +79,7 @@ function defineWindowsEditNeedsAssessment(grid) {
             this.Super("show", arguments);
         },
         close(x = 1){
+            Window_AddCompetence.close();
             if(x===1) {
                 if (isChanged) {
                     const dialog = isc.Dialog.create({
@@ -102,18 +103,24 @@ function defineWindowsEditNeedsAssessment(grid) {
                                     break;
                                 case 2:
                                     Window_NeedsAssessment_Edit.Super("close", arguments);
-                                    grid.invalidateCache();
+                                    if(grid != null) {
+                                        grid.invalidateCache();
+                                    }
                                     break;
                             }
                         }
                     });
                 } else {
                     Window_NeedsAssessment_Edit.Super("close", arguments);
-                    grid.invalidateCache();
+                    if(grid != null) {
+                        grid.invalidateCache();
+                    }
                 }
             }
             else{
-                grid.invalidateCache();
+                if(grid != null) {
+                    grid.invalidateCache();
+                }
                 this.Super("close",arguments);
             }
         },
@@ -169,13 +176,16 @@ function showDetailViewer(title, field, record) {
         title: title,
         // placement: "fillScreen",
         visibility : "hidden",
+        // autoCenter: false,
+        // isModal: false,
         headerControls: ["headerLabel", "closeButton"],
         // canDragReposition: false,
         // minWidth: 1024,
         items: [isc.DetailViewer.create({
             fields: field,
+            minWidth: 150,
             data: record,
-            autoFetchData: true,
+            // autoFetchData: true,
             // width: 700
         })],
     });

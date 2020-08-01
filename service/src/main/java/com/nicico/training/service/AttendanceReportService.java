@@ -27,9 +27,44 @@ public class AttendanceReportService implements IAttendanceReportService {
         List<?> reportList;
         List<AttendanceReportDTO> attedanceDTOList = null;
 
-        String reportScript = "SELECT tbl_student.personnel_no AS personalNum,tbl_student.emp_no AS personalNum2,tbl_student.national_code AS nationalCode,tbl_student.first_name || ' ' ||  tbl_student.last_name AS name,tbl_personnel.ccp_area AS ccpArea,tbl_personnel.ccp_affairs AS ccpAfairs,tbl_class.c_code AS classCode,tbl_class.c_title_class AS className,tbl_session.c_session_date,tbl_attendance.c_state, case when floor(SUM( round(to_number(TO_DATE((CASE WHEN SUBSTR(tbl_session.c_session_end_hour,1,2) > 23 THEN '23:59' ELSE tbl_session.c_session_end_hour END),'HH24:MI') - TO_DATE((CASE WHEN SUBSTR(tbl_session.c_session_start_hour,1,2) > 23 THEN '23:59' ELSE tbl_session.c_session_start_hour END),'HH24:MI') ) * 24 * 60,0)) / 60) >=6 then floor(SUM( round(to_number(TO_DATE((CASE WHEN SUBSTR(tbl_session.c_session_end_hour,1,2) > 23 THEN '23:59' ELSE tbl_session.c_session_end_hour END),'HH24:MI') - TO_DATE((CASE WHEN SUBSTR(tbl_session.c_session_start_hour,1,2) > 23 THEN '23:59' ELSE tbl_session.c_session_start_hour END),'HH24:MI') ) * 24 * 60,0)) / 60)+2 else floor(SUM( round(to_number(TO_DATE((CASE WHEN SUBSTR(tbl_session.c_session_end_hour,1,2) > 23 THEN '23:59' ELSE tbl_session.c_session_end_hour END),'HH24:MI') - TO_DATE((CASE WHEN SUBSTR(tbl_session.c_session_start_hour,1,2) > 23 THEN '23:59' ELSE tbl_session.c_session_start_hour END),'HH24:MI') ) * 24 * 60,0)) / 60) END  ||  ':' || MOD( SUM( round(to_number(TO_DATE((CASE WHEN SUBSTR(tbl_session.c_session_end_hour,1,2) > 23 THEN '23:59' ELSE tbl_session.c_session_end_hour END),'HH24:MI') - TO_DATE((CASE WHEN SUBSTR(tbl_session.c_session_start_hour,1,2) > 23 THEN '23:59' ELSE tbl_session.c_session_start_hour END),'HH24:MI') ) * 24 * 60)) , 60) AS time FROM tbl_attendance INNER JOIN tbl_session ON tbl_session.id = tbl_attendance.f_session INNER JOIN tbl_student ON tbl_student.id = tbl_attendance.f_student INNER JOIN tbl_personnel ON tbl_personnel.national_code = tbl_student.national_code INNER JOIN tbl_class ON tbl_class.id = tbl_session.f_class_id WHERE tbl_personnel.EMPLOYMENT_STATUS_ID=5 and tbl_personnel.active=1 and (tbl_attendance.c_state = :firstState or tbl_attendance.c_state = :secondState) AND (tbl_session.c_session_date >=  :startDate  AND tbl_session.c_session_date <= :endDate ) GROUP BY tbl_student.personnel_no,tbl_student.emp_no,tbl_student.national_code,tbl_student.first_name || ' ' || tbl_student.last_name,tbl_personnel.ccp_area,tbl_personnel.ccp_affairs,tbl_class.c_code,tbl_class.c_title_class,tbl_session.c_session_date,tbl_attendance.c_state";
+        StringBuilder stringBuilder=new StringBuilder().append(
+                " SELECT distinct\n " +
+                        "    std.personnel_no AS personalnum,\n " +
+                        "    std.emp_no  AS personalnum2,\n " +
+                        "    std.national_code AS nationalcode,\n " +
+                        "    std.first_name || ' ' || std.last_name AS name,\n " +
+                        "    dep.c_hoze_title  AS ccparea,\n " +
+                        "    dep.c_omor_title  AS ccpafairs,\n " +
+                        "    class.c_code AS classcode,\n " +
+                        "    class.c_title_class AS classname,\n " +
+                        "    csession.c_session_date,\n " +
+                        "    att.c_state,\n" +
+                        "    case when floor(SUM( round(to_number(TO_DATE((CASE WHEN SUBSTR(csession.c_session_end_hour,1,2) > 23 THEN '23:59' ELSE csession.c_session_end_hour END),'HH24:MI') - TO_DATE((CASE WHEN SUBSTR(csession.c_session_start_hour,1,2) > 23 THEN '23:59' ELSE csession.c_session_start_hour END),'HH24:MI') ) * 24 * 60,0)) / 60) >=6 then floor(SUM( round(to_number(TO_DATE((CASE WHEN SUBSTR(csession.c_session_end_hour,1,2) > 23 THEN '23:59' ELSE csession.c_session_end_hour END),'HH24:MI') - TO_DATE((CASE WHEN SUBSTR(csession.c_session_start_hour,1,2) > 23 THEN '23:59' ELSE csession.c_session_start_hour END),'HH24:MI') ) * 24 * 60,0)) / 60)+2 else floor(SUM( round(to_number(TO_DATE((CASE WHEN SUBSTR(csession.c_session_end_hour,1,2) > 23 THEN '23:59' ELSE csession.c_session_end_hour END),'HH24:MI') - TO_DATE((CASE WHEN SUBSTR(csession.c_session_start_hour,1,2) > 23 THEN '23:59' ELSE csession.c_session_start_hour END),'HH24:MI') ) * 24 * 60,0)) / 60) END  ||  ':' || MOD( SUM( round(to_number(TO_DATE((CASE WHEN SUBSTR(csession.c_session_end_hour,1,2) > 23 THEN '23:59' ELSE csession.c_session_end_hour END),'HH24:MI') - TO_DATE((CASE WHEN SUBSTR(csession.c_session_start_hour,1,2) > 23 THEN '23:59' ELSE csession.c_session_start_hour END),'HH24:MI') ) * 24 * 60)) , 60) AS time\n"+
+                        " FROM\n " +
+                        "    tbl_attendance att\n " +
+                        "    INNER JOIN tbl_student std ON att.f_student = std.id\n " +
+                        "    INNER JOIN (\n " +
+                        "        SELECT\n " +
+                        "            * from view_personnels\n"+
+                        "    ) personnel ON std.personnel_no = personnel.personnel_no\n " +
+                        "    LEFT JOIN tbl_department dep ON dep.id = personnel.department_id \n " +
+                        "    INNER JOIN tbl_session csession ON att.f_session = csession.id\n " +
+                        "    INNER JOIN tbl_class class ON csession.f_class_id = class.id\n " +
+                        " WHERE\n " +
+                        "    (att.c_state = :firstState or att.c_state = :secondState) AND (csession.c_session_date >= :startDate AND csession.c_session_date <= :endDate)\n " +
+                        " GROUP BY\n " +
+                        "    std.personnel_no,\n " +
+                        "    std.emp_no,\n " +
+                        "    std.national_code,\n " +
+                        "    std.first_name || ' ' || std.last_name,\n " +
+                        "    dep.c_hoze_title,\n " +
+                        "    dep.c_omor_title,\n " +
+                        "    class.c_code,\n " +
+                        "    class.c_title_class,\n "+
+                        "    csession.c_session_date,\n"+
+                        "    att.c_state");
 
-        Query query=entityManager.createNativeQuery(reportScript).setParameter("startDate", startDate).setParameter("endDate", endDate);
+        Query query=entityManager.createNativeQuery(stringBuilder.toString()).setParameter("startDate", startDate).setParameter("endDate", endDate);
 
         switch (absentType)
         {

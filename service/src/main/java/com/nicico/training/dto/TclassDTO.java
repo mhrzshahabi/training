@@ -190,7 +190,6 @@ public class TclassDTO {
         private List<Object> targetSocieties;
 
         public List<Object> gettargetSocieties() {
-            ////disable targetSociety
             if (targetSocieties == null)
                 return new ArrayList<>(0);
             boolean accept = true;
@@ -253,7 +252,6 @@ public class TclassDTO {
         private List<Object> targetSocieties;
 
         public List<Object> getTargetSocieties() {
-            ////disable targetSociety
             if (targetSocieties == null)
                 return new ArrayList<>(0);
             boolean accept = true;

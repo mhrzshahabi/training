@@ -194,7 +194,7 @@ public class TeacherRestController {
                                                          @RequestParam(value = "operator", required = false) String operator,
                                                          @RequestParam(value = "criteria", required = false) String criteria,
                                                          @RequestParam(value = "id", required = false) Long id,
-                                                         @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                         @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException, NoSuchFieldException, IllegalAccessException {
 
         SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
 

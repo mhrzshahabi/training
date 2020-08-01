@@ -107,9 +107,11 @@ public class TclassService implements ITclassService {
     public TclassDTO.Info create(TclassDTO.Create request) {
         final Tclass tclass = modelMapper.map(request, Tclass.class);
         List<Long> list = request.getTrainingPlaceIds();
-        List<TrainingPlace> allById = trainingPlaceDAO.findAllById(list);
-        Set<TrainingPlace> set = new HashSet<>(allById);
-        tclass.setTrainingPlaceSet(set);
+        if(list != null) {
+            List<TrainingPlace> allById = trainingPlaceDAO.findAllById(list);
+            Set<TrainingPlace> set = new HashSet<>(allById);
+            tclass.setTrainingPlaceSet(set);
+        }
         return save(tclass);
     }
 
@@ -118,11 +120,12 @@ public class TclassService implements ITclassService {
         final Tclass tclass = modelMapper.map(request, Tclass.class);
         if (checkDuration(tclass)) {
             List<Long> list = request.getTrainingPlaceIds();
-            List<TrainingPlace> allById = trainingPlaceDAO.findAllById(list);
-            Set<TrainingPlace> set = new HashSet<>(allById);
-            tclass.setTrainingPlaceSet(set);
+            if(list != null) {
+                List<TrainingPlace> allById = trainingPlaceDAO.findAllById(list);
+                Set<TrainingPlace> set = new HashSet<>(allById);
+                tclass.setTrainingPlaceSet(set);
+            }
             Tclass save = tclassDAO.save(tclass);
-            ////disable targetSociety
             saveTargetSocieties(request.gettargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
             return modelMapper.map(save, TclassDTO.Info.class);
         } else {
@@ -143,8 +146,11 @@ public class TclassService implements ITclassService {
         final Optional<Tclass> cById = tclassDAO.findById(id);
         final Tclass tclass = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
         List<Long> trainingPlaceIds = request.getTrainingPlaceIds();
-        List<TrainingPlace> allById = trainingPlaceDAO.findAllById(trainingPlaceIds);
-        Set<TrainingPlace> set = new HashSet<>(allById);
+        Set<TrainingPlace> set = new HashSet<>();
+        if(trainingPlaceIds != null) {
+            List<TrainingPlace> allById = trainingPlaceDAO.findAllById(trainingPlaceIds);
+            set.addAll(allById);
+        }
         Tclass updating = new Tclass();
         modelMapper.map(tclass, updating);
         modelMapper.map(request, updating);

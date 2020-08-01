@@ -19,7 +19,8 @@ public interface PersonnelDAO extends JpaRepository<Personnel, Long>, JpaSpecifi
 
     Personnel[] findByNationalCode(String nationalCode);
 
-    Personnel findByNationalCodeAndPersonnelNo(String nationalCode,String PersonnelNo);
+    @Query(value = "SELECT * FROM tbl_personnel where national_code = :national_code AND Personnel_No = :Personnel_No AND active = 1 AND employment_status_id=5 AND ROWNUM < 2", nativeQuery = true)
+    Personnel findByNationalCodeAndPersonnelNo(String national_code,String Personnel_No);
 
     List<Personnel> findOneByPostCode(String postCode);
 
@@ -60,6 +61,9 @@ public interface PersonnelDAO extends JpaRepository<Personnel, Long>, JpaSpecifi
     @Transactional
     @Query(value = "select CONCAT(CONCAT(first_name, ' '), last_name) from tbl_personnel p where p.ID = ?", nativeQuery = true)
     String getPersonnelFullName(Long personnelID);
+
+    @Query(value = "SELECT MAX(ID) FROM tbl_personnel where PERSONNEL_NO = :PERSONNEL_NO AND active = 1 AND employment_status_id=5", nativeQuery = true)
+    Long getPersonnelIdByPersonnelNo(String PERSONNEL_NO);
 
 
 }

@@ -302,4 +302,5 @@ public class ClassStudentRestController {
 
         reportUtil.export("/reports/trainingFile.jasper", params, jsonDataSource, response);
     }
+
 }

@@ -5,7 +5,9 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.dto.QuestionnaireDTO;
 import com.nicico.training.model.Questionnaire;
+import com.nicico.training.repository.QuestionnaireQuestionDAO;
 import com.nicico.training.service.QuestionnaireService;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,12 @@ public class QuestionnaireRestController {
 
     private final QuestionnaireService questionnaireService;
     private final ModelMapper modelMapper;
+
+    @Loggable
+    @GetMapping("/isLocked/{id}")
+    public ResponseEntity<Boolean> isLocked(@PathVariable Long id) {
+        return new ResponseEntity<>(questionnaireService.isLocked(id), HttpStatus.OK);
+    }
 
     @Loggable
     @GetMapping("/list")
@@ -51,10 +59,16 @@ public class QuestionnaireRestController {
     }
 
     @Loggable
+    @PutMapping("/enable/{id}")
+    public ResponseEntity<QuestionnaireDTO.Info> updateStatus(@PathVariable Long id) {
+        return new ResponseEntity<>(questionnaireService.updateEnable(id), HttpStatus.OK);
+    }
+
+    @Loggable
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
         try {
-            return new ResponseEntity<>(questionnaireService.delete(id), HttpStatus.OK);
+            return new ResponseEntity<>(questionnaireService.deleteWithChildren(id), HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
         }

@@ -54,6 +54,10 @@ public class ClassStudentDTO implements Serializable {
         private Integer evaluationStatusBehavior;
         @Getter(AccessLevel.NONE)
         private Integer evaluationStatusResults;
+        private Long tclassId;
+        private TclassDTO.CoursesOfStudent tclass;
+        private Integer numberOfSendedBehavioralForms;
+        private Integer numberOfRegisteredBehavioralForms;
 
         public String getFullName(){
             return student.getFirstName()+" "+student.getLastName();
@@ -196,6 +200,8 @@ public class ClassStudentDTO implements Serializable {
         private Integer evaluationStatusLearning;
         private Integer evaluationStatusBehavior;
         private Integer evaluationStatusResults;
+        private Integer numberOfSendedBehavioralForms;
+        private Integer numberOfRegisteredBehavioralForms;
     }
 
     @Getter
@@ -231,6 +237,8 @@ public class ClassStudentDTO implements Serializable {
         private Integer evaluationStatusLearning;
         private Integer evaluationStatusBehavior;
         private Integer evaluationStatusResults;
+        private Integer numberOfSendedBehavioralForms;
+        private Integer numberOfRegisteredBehavioralForms;
         private StudentDTO.ClassStudentInfo student;
     }
 
@@ -286,5 +294,6 @@ public class ClassStudentDTO implements Serializable {
         }
 //        private Long presenceTypeId;
     }
+
 
 }

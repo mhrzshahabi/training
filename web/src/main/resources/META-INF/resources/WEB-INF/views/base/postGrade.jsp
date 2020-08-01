@@ -2,11 +2,10 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 // <script>
-
     var naJob_PostGrade = null;
     var personnelJob_PostGrade = null;
     var postJob_PostGrade = null;
-
+    let oLoadAttachments_PostGrade = null;
     // ------------------------------------------- Menu -------------------------------------------
     PostGradeMenu_postGrade = isc.Menu.create({
         data: [
@@ -488,6 +487,11 @@
             {name: "TabPane_Post_PostGrade", title: "لیست پست ها", pane: PostLG_PostGrade},
             {name: "TabPane_Personnel_JobGroup", title: "لیست پرسنل", pane: PersonnelLG_PostGrade},
             {name: "TabPane_NA_PostGrade", title: "<spring:message code='need.assessment'/>", pane: NALG_PostGrade},
+            {
+                ID: "PostGrade_AttachmentsTab",
+                title: "<spring:message code="attachments"/>",
+                // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})
+            },
         ],
         tabSelected: function (){
             selectionUpdated_PostGrade();
@@ -500,10 +504,12 @@
 
     // ------------------------------------------- Functions -------------------------------------------
     function refreshPostGradeLG_postGrade() {
+        objectIdAttachment=null
         refreshLG(PostGradeLG_postGrade);
         PostLG_PostGrade.setData([]);
         PersonnelLG_PostGrade.setData([]);
         NALG_PostGrade.setData([]);
+        oLoadAttachments_PostGrade.ListGrid_JspAttachment.setData([]);
         naJob_PostGrade = null;
         personnelJob_PostGrade = null;
         postJob_PostGrade = null;
@@ -517,7 +523,7 @@
             return;
         }
 
-        switch (tab.name) {
+        switch (tab.name ||tab.ID) {
             case "TabPane_Post_PostGrade":{
                 if (postJob_PostGrade === postGrade.id)
                     return;
@@ -535,15 +541,7 @@
                 if (personnelJob_PostGrade === postGrade.id)
                     return;
                 personnelJob_PostGrade = postGrade.id;
-                PersonnelLG_PostGrade.setImplicitCriteria({
-                    _constructor: "AdvancedCriteria",
-                    operator: "and",
-                    criteria: [
-                        {fieldName: "postGradeCode", operator: "equals", value: postGrade.code},
-                        {fieldName: "active", operator: "equals", value: 1},
-                        {fieldName: "employmentStatusId", operator: "equals", value: 5}
-                    ]
-                });
+                PersonnelDS_PostGrade.fetchDataURL = postGradeUrl + "/personnelIscList/" + postGrade.id;
                 PersonnelLG_PostGrade.invalidateCache();
                 PersonnelLG_PostGrade.fetchData();
                 break;
@@ -559,7 +557,32 @@
                 NALG_PostGrade.fetchData();
                 break;
             }
+
+            case "PostGrade_AttachmentsTab": {
+
+                if (typeof oLoadAttachments_PostGrade.loadPage_attachment_Job!== "undefined")
+                    oLoadAttachments_PostGrade.loadPage_attachment_Job("PostGrade", postGrade.id, "<spring:message code="attachment"/>", {
+                        1: "جزوه",
+                        2: "لیست نمرات",
+                        3: "لیست حضور و غیاب",
+                        4: "نامه غیبت موجه"
+                    }, false);
+                break;
+            }
+
+
+
         }
     }
+    if (!loadjs.isDefined('load_Attachments_postGroup')) {
+        loadjs('<spring:url value='tclass/attachments-tab' />', 'load_Attachments_postGroup');
+    }
 
+    loadjs.ready('load_Attachments_postGroup', function () {
+        setTimeout(()=> {
+            oLoadAttachments_PostGrade = new loadAttachments();
+            Detail_Tab_PostGrade.updateTab(PostGrade_AttachmentsTab, oLoadAttachments_PostGrade.VLayout_Body_JspAttachment)
+        },0);
+
+    });
     // </script>

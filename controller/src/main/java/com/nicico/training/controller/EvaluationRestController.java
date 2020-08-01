@@ -34,6 +34,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
 
+import static com.nicico.training.service.BaseService.makeNewCriteria;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -44,7 +46,6 @@ public class EvaluationRestController {
     private final ReportUtil reportUtil;
     private final DateUtil dateUtil;
     private final ModelMapper modelMapper;
-    private final CourseService courseService;
     private final SkillService skillService;
     private final EvaluationService evaluationService;
     private final ClassStudentService classStudentService;
@@ -53,103 +54,87 @@ public class EvaluationRestController {
     private final EvaluationDAO evaluationDAO;
     private final PersonnelDAO personnelDAO;
     private final ParameterValueDAO parameterValueDAO;
+    private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
+    private final DynamicQuestionDAO dynamicQuestionDAO;
 
     @Loggable
-    @PostMapping(value = {"/{type}/{classId}"})
+    @PostMapping("/printWithCriteria")
     @Transactional
     public void printWithCriteria(HttpServletResponse response,
-                                  @PathVariable String type,
-                                  @PathVariable Long classId,
                                   @RequestParam(value = "printData") String printData) throws Exception {
 
         JSONObject jsonObject = new JSONObject(printData);
-        Long courseId = Long.parseLong(jsonObject.get("courseId").toString());
-        Long studentId = Long.parseLong(jsonObject.get("studentId").toString());
-        String evaluationType = jsonObject.get("evaluationType").toString();
-        String evaluationReturnDate = jsonObject.get("evaluationReturnDate").toString();
-        String evaluationAudience = jsonObject.get("evaluationAudience").toString();
-        String evaluationAudienceType = jsonObject.get("evaluationAudienceType").toString();
+        Long classId = Long.parseLong(jsonObject.get("classId").toString());
+        Long evaluatorId = Long.parseLong(jsonObject.get("evaluatorId").toString());
+        Long evaluatorTypeId = Long.parseLong(jsonObject.get("evaluatorTypeId").toString());
+        Long evaluatedId = Long.parseLong(jsonObject.get("evaluatedId").toString());
+        Long evaluatedTypeId = Long.parseLong(jsonObject.get("evaluatedTypeId").toString());
+        Long questionnaireTypeId = Long.parseLong(jsonObject.get("questionnaireTypeId").toString());
+        Long evaluationLevelId = Long.parseLong(jsonObject.get("evaluationLevelId").toString());
 
-
-        List<QuestionnaireQuestion> teacherQuestionnaireQuestion = questionnaireQuestionService.getEvaluationQuestion(53L);
-        teacherQuestionnaireQuestion.sort(Comparator.comparing(QuestionnaireQuestion::getOrder));
-
-        List<QuestionnaireQuestion> equipmentQuestionnaireQuestion = questionnaireQuestionService.getEvaluationQuestion(54L);
-        equipmentQuestionnaireQuestion.sort(Comparator.comparing(QuestionnaireQuestion::getOrder));
-
-        CourseDTO.CourseGoals courseGoals = courseService.getCourseGoals(courseId);
-
-        List<Skill> skillList = skillService.skillList(courseId);
-
-        List<EvaluationQuestionDTO.Info> evaluationQuestion = new ArrayList<>();
-        if (!evaluationType.equals("TabPane_Behavior") && !evaluationType.equals("TabPane_Learning"))
-            for (QuestionnaireQuestion questionnaireQuestion : teacherQuestionnaireQuestion) {
-                evaluationQuestion.add(modelMapper.map(questionnaireQuestion.getEvaluationQuestion(), EvaluationQuestionDTO.Info.class));
-            }
-
-        if (!evaluationType.equals("TabPane_Behavior") && !evaluationType.equals("TabPane_Learning"))
-            for (QuestionnaireQuestion questionnaireQuestion : equipmentQuestionnaireQuestion) {
-                evaluationQuestion.add(modelMapper.map(questionnaireQuestion.getEvaluationQuestion(), EvaluationQuestionDTO.Info.class));
-            }
-
-        for (Goal goal : courseGoals.getGoalSet()) {
-
-            EvaluationQuestionDTO.Info evaluationQuestionDTO = new EvaluationQuestionDTO.Info();
-            evaluationQuestionDTO.setQuestion(goal.getTitleFa());
-
-            ParameterValueDTO.Info domain = new ParameterValueDTO.Info();
-            domain.setTitle("اهداف");
-            evaluationQuestionDTO.setDomain(domain);
-            evaluationQuestion.add(evaluationQuestionDTO);
-        }
-
-        for (Skill skill : skillList) {
-
-            EvaluationQuestionDTO.Info evaluationQuestionDTO = new EvaluationQuestionDTO.Info();
-            evaluationQuestionDTO.setQuestion(skill.getTitleFa());
-
-            ParameterValueDTO.Info domain = new ParameterValueDTO.Info();
-            domain.setTitle("هدف کلی");
-            evaluationQuestionDTO.setDomain(domain);
-            evaluationQuestion.add(evaluationQuestionDTO);
-        }
+        EvaluationDTO.Info evaluation = evaluationService.getEvaluationByData(questionnaireTypeId, classId, evaluatorId,
+                                                        evaluatorTypeId, evaluatedId, evaluatedTypeId, evaluationLevelId);
 
         TclassDTO.Info classInfo = tclassService.get(classId);
 
-        if (evaluationReturnDate.equals("noDate")) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = new Date();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            calendar.add(Calendar.MONTH, 1);
-            evaluationReturnDate = DateUtil.convertMiToKh(formatter.format(calendar.getTime()));
+        List<EvaluationAnswerDTO.EvaluationAnswerFullData> result = new ArrayList<>();
+
+
+        for (EvaluationAnswerDTO.Info evaluationAnswerDTO : evaluation.getEvaluationAnswerList()) {
+            EvaluationAnswerDTO.EvaluationAnswerFullData evaluationAnswerFullData = new EvaluationAnswerDTO.EvaluationAnswerFullData();
+            evaluationAnswerFullData.setId(evaluationAnswerDTO.getId());
+            evaluationAnswerFullData.setEvaluationId(evaluationAnswerDTO.getEvaluationId());
+            evaluationAnswerFullData.setEvaluationQuestionId(evaluationAnswerDTO.getEvaluationQuestionId());
+            evaluationAnswerFullData.setQuestionSourceId(evaluationAnswerDTO.getQuestionSourceId());
+            evaluationAnswerFullData.setAnswerId(evaluationAnswerDTO.getAnswerId());
+            evaluationAnswerFullData.setDescription(evaluation.getDescription());
+
+            if(evaluationAnswerFullData.getQuestionSourceId().equals(199L)){
+                QuestionnaireQuestion questionnaireQuestion = questionnaireQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
+                evaluationAnswerFullData.setOrder(questionnaireQuestion.getOrder());
+                evaluationAnswerFullData.setWeight(questionnaireQuestion.getWeight());
+                evaluationAnswerFullData.setQuestion(questionnaireQuestion.getEvaluationQuestion().getQuestion());
+                evaluationAnswerFullData.setDomainId(questionnaireQuestion.getEvaluationQuestion().getDomainId());
+            }
+            else  if(evaluationAnswerFullData.getQuestionSourceId().equals(200L) || evaluationAnswerFullData.getQuestionSourceId().equals(201L)){
+                DynamicQuestion dynamicQuestion = dynamicQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
+                evaluationAnswerFullData.setOrder(dynamicQuestion.getOrder());
+                evaluationAnswerFullData.setWeight(dynamicQuestion.getWeight());
+                evaluationAnswerFullData.setQuestion(dynamicQuestion.getQuestion());
+            }
+
+            result.add(evaluationAnswerFullData);
         }
 
-        final Map<String, Object> params = new HashMap<>();
-        params.put("todayDate", dateUtil.todayDate());
-        params.put("courseCode", classInfo.getCourse().getCode());
-        params.put("courseName", classInfo.getCourse().getTitleFa());
-        params.put("classCode", classInfo.getCode());
-        params.put("startDate", classInfo.getStartDate());
-        params.put("endDate", classInfo.getEndDate());
-        params.put("evaluationAudience", evaluationAudience.equals("null") ? "" : "مخاطب : " + evaluationAudience);
-        params.put("evaluationAudienceType", "("+evaluationAudienceType+")");
-        params.put("returnDate", evaluationReturnDate.replace("-", "/"));
-        params.put("evaluationType", (evaluationType.equals("TabPane_Reaction") ? "(واکنشی)" :
-                evaluationType.equals("TabPane_Learning") ? "(پیش تست)" :
-                        evaluationType.equals("TabPane_Behavior") ? "(رفتاری)" : "(نتایج)"));
+//        final Map<String, Object> params = new HashMap<>();
+//        params.put("todayDate", dateUtil.todayDate());
+//        params.put("courseCode", classInfo.getCourse().getCode());
+//        params.put("courseName", classInfo.getCourse().getTitleFa());
+//        params.put("classCode", classInfo.getCode());
+//        params.put("startDate", classInfo.getStartDate());
+//        params.put("endDate", classInfo.getEndDate());
+//        params.put("evaluationAudience", evaluationAudience.equals("null") ? "" : "مخاطب : " + evaluationAudience);
+//        params.put("evaluationAudienceType", "("+evaluationAudienceType+")");
+//        params.put("returnDate", evaluation.getReturnDate().replace("-", "/"));
+//        params.put("evaluationLevel", (evaluationLevelId.equals(154L) ? "(واکنشی)" :
+//                evaluationLevelId.equals(155L) ? "(یادگیری)" :
+//                        evaluationLevelId.equals(156L) ? "(رفتاری)" : evaluationLevelId.equals(157L) ? "(نتایج)" : "(متفرقه)"));
+//        params.put("questionnaireType", (questionnaireTypeId.equals(140L) ? "(پرسشنامه ارزیابی مدرس از کلاس)" :
+//                questionnaireTypeId.equals(230L) ? "(پرسشنامه ارزیابی دیگری از فراگیر)" :
+//                        questionnaireTypeId.equals(139L) ? "(پرسشنامه ارزیابی فراگیر از کلاس)" :
+//                                questionnaireTypeId.equals(141L) ?  "(پرسشنامه ارزیابی مسئول آموزش از مدرس)" : "متفرقه"));
+//
+//
+//        Set<ClassStudentDTO.AttendanceInfo> classStudent = classInfo.getClassStudentsForEvaluation(studentId);
+//
+//        String data = "{" + "\"dsStudent\": " + objectMapper.writeValueAsString(classStudent) + "," +
+//                "\"dsTeacherQuestion\": " + objectMapper.writeValueAsString(evaluationQuestion) + "}";
 
 
-        Set<ClassStudentDTO.AttendanceInfo> classStudent = classInfo.getClassStudentsForEvaluation(studentId);
-
-        String data = "{" + "\"dsStudent\": " + objectMapper.writeValueAsString(classStudent) + "," +
-                "\"dsTeacherQuestion\": " + objectMapper.writeValueAsString(evaluationQuestion) + "}";
-
-
-        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
-
-        params.put(ConstantVARs.REPORT_TYPE, type);
-        reportUtil.export("/reports/EvaluationReaction.jasper", params, jsonDataSource, response);
+//        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+//
+//        params.put(ConstantVARs.REPORT_TYPE, "pdf");
+//        reportUtil.export("/reports/EvaluationForm.jasper", params, jsonDataSource, response);
     }
 
     @Loggable
@@ -246,13 +231,6 @@ public class EvaluationRestController {
         return new ResponseEntity<>(evaluationService.search(request), HttpStatus.OK);
     }
 
-//    @Loggable
-//    @GetMapping(value = "/{questionnaireTypeId}/{classId}/{evaluatorId}/{evaluatorTypeId}/{evaluatedId}/{evaluatedTypeId}/{evaluationLevelId}")
-//    public ResponseEntity<EvaluationDTO.Info> getEvaluationByData(@PathVariable Long questionnaireTypeId, @PathVariable Long classId, @PathVariable Long evaluatorId, @PathVariable Long evaluatorTypeId, @PathVariable Long evaluatedId, @PathVariable Long evaluatedTypeId, @PathVariable Long evaluationLevelId) {
-//        return new ResponseEntity<>(evaluationService.getEvaluationByData(questionnaireTypeId, classId, evaluatorId, evaluatorTypeId, evaluatedId, evaluatedTypeId, evaluationLevelId), HttpStatus.OK);
-//    }
-
-
     private void studentEvaluationRegister(EvaluationDTO.Info evaluation){
         if(evaluation.getQuestionnaireTypeId().equals(139L)){
             Integer x;
@@ -344,13 +322,17 @@ public class EvaluationRestController {
     public  ResponseEntity<ISC> getEvaluationForm(@RequestBody HashMap req) {
         List<EvaluationAnswerDTO.EvaluationAnswerFullData> result = evaluationService.getEvaluationForm(req);
 
-        ISC.Response<EvaluationAnswerDTO.EvaluationAnswerFullData> response = new ISC.Response<>();
-        response.setData(result)
-                .setStartRow(0)
-                .setEndRow(result.size())
-                .setTotalRows(result.size());
-        ISC<Object> objectISC = new ISC<>(response);
-        return new ResponseEntity<>(objectISC, HttpStatus.OK);
+        if(result != null) {
+            ISC.Response<EvaluationAnswerDTO.EvaluationAnswerFullData> response = new ISC.Response<>();
+            response.setData(result)
+                    .setStartRow(0)
+                    .setEndRow(result.size())
+                    .setTotalRows(result.size());
+            ISC<Object> objectISC = new ISC<>(response);
+            return new ResponseEntity<>(objectISC, HttpStatus.OK);
+        }
+        else
+            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
     }
 
     @Loggable
@@ -436,36 +418,43 @@ public class EvaluationRestController {
     }
     //--------------------------------------------- Calender -----------------------------------------------------------
     @Loggable
-    @PostMapping(value = {"/printTeacherReactionForm/{type}/{classId}"})
+    @PostMapping(value = {"/printTeacherReactionForm/{classId}"})
     @Transactional
     public void printTeacherReactionForm(HttpServletResponse response,
-                                  @PathVariable String type,
-                                  @PathVariable Long classId,
-                                  @RequestParam(value = "printData") String printData) throws Exception {
-
-        JSONObject jsonObject = new JSONObject(printData);
-
-        String evaluationType = jsonObject.get("evaluationType").toString();
-        String evaluationReturnDate = jsonObject.get("evaluationReturnDate").toString();
-        Long classd = Long.parseLong(jsonObject.get("classId").toString());
-
-        List<QuestionnaireQuestion> teacherQuestionnaireQuestion = questionnaireQuestionService.getEvaluationQuestion(138L);
-        teacherQuestionnaireQuestion.sort(Comparator.comparing(QuestionnaireQuestion::getOrder));
-
-        List<EvaluationQuestionDTO.Info> evaluationQuestion = new ArrayList<>();
-        for (QuestionnaireQuestion questionnaireQuestion : teacherQuestionnaireQuestion) {
-                evaluationQuestion.add(modelMapper.map(questionnaireQuestion.getEvaluationQuestion(), EvaluationQuestionDTO.Info.class));
-            }
+                                  @PathVariable Long classId) throws Exception {
 
         TclassDTO.Info classInfo = tclassService.get(classId);
+        EvaluationDTO.Info evaluation = evaluationService.getEvaluationByData(140L, classId,
+                classInfo.getTeacherId(), 187L, classId, 504L, 154L);
 
-        if (evaluationReturnDate.equals("noDate")) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = new Date();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            calendar.add(Calendar.MONTH, 1);
-            evaluationReturnDate = DateUtil.convertMiToKh(formatter.format(calendar.getTime()));
+        List<EvaluationAnswerDTO.EvaluationAnswerFullData> result = new ArrayList<>();
+
+        if(evaluation != null) {
+
+            for (EvaluationAnswerDTO.Info evaluationAnswerDTO : evaluation.getEvaluationAnswerList()) {
+                EvaluationAnswerDTO.EvaluationAnswerFullData evaluationAnswerFullData = new EvaluationAnswerDTO.EvaluationAnswerFullData();
+                evaluationAnswerFullData.setId(evaluationAnswerDTO.getId());
+                evaluationAnswerFullData.setEvaluationId(evaluationAnswerDTO.getEvaluationId());
+                evaluationAnswerFullData.setEvaluationQuestionId(evaluationAnswerDTO.getEvaluationQuestionId());
+                evaluationAnswerFullData.setQuestionSourceId(evaluationAnswerDTO.getQuestionSourceId());
+                evaluationAnswerFullData.setAnswerId(evaluationAnswerDTO.getAnswerId());
+                evaluationAnswerFullData.setDescription(evaluation.getDescription());
+
+                if (evaluationAnswerFullData.getQuestionSourceId().equals(199L)) {
+                    QuestionnaireQuestion questionnaireQuestion = questionnaireQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
+                    evaluationAnswerFullData.setOrder(questionnaireQuestion.getOrder());
+                    evaluationAnswerFullData.setWeight(questionnaireQuestion.getWeight());
+                    evaluationAnswerFullData.setQuestion(questionnaireQuestion.getEvaluationQuestion().getQuestion());
+                    evaluationAnswerFullData.setDomainId(questionnaireQuestion.getEvaluationQuestion().getDomainId());
+                } else if (evaluationAnswerFullData.getQuestionSourceId().equals(200L) || evaluationAnswerFullData.getQuestionSourceId().equals(201L)) {
+                    DynamicQuestion dynamicQuestion = dynamicQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
+                    evaluationAnswerFullData.setOrder(dynamicQuestion.getOrder());
+                    evaluationAnswerFullData.setWeight(dynamicQuestion.getWeight());
+                    evaluationAnswerFullData.setQuestion(dynamicQuestion.getQuestion());
+                }
+
+                result.add(evaluationAnswerFullData);
+            }
         }
 
         final Map<String, Object> params = new HashMap<>();
@@ -475,18 +464,16 @@ public class EvaluationRestController {
         params.put("classCode", classInfo.getCode());
         params.put("startDate", classInfo.getStartDate());
         params.put("endDate", classInfo.getEndDate());
-        params.put("evaluationType", (evaluationType.equals("TabPane_Reaction") ? "(واکنشی)" :
-                evaluationType.equals("TabPane_Learning") ? "(پیش تست)" :
-                        evaluationType.equals("TabPane_Behavior") ? "(رفتاری)" : "(نتایج)"));
-        params.put("returnDate", evaluationReturnDate.replace("-", "/"));
+        params.put("evaluationType", "واکنشی");
+        params.put("returnDate", evaluation.getReturnDate().replace("-", "/"));
         params.put("teacher", classInfo.getTeacher());
 
 
-        String data = "{" + "\"ds\": " + objectMapper.writeValueAsString(evaluationQuestion) + "}";
+        String data = "{" + "\"ds\": " + objectMapper.writeValueAsString(result) + "}";
 
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
 
-        params.put(ConstantVARs.REPORT_TYPE, type);
+        params.put(ConstantVARs.REPORT_TYPE, "PDF");
         reportUtil.export("/reports/EvaluationReactionTeacher.jasper", params, jsonDataSource, response);
     }
 
@@ -547,6 +534,7 @@ public class EvaluationRestController {
     }
 
     @GetMapping(value = "/getBehavioralForms/{stdId}/{classId}")
+    @Transactional
     public ResponseEntity<ISC<EvaluationDTO.BehavioralForms>> getBehavioralForms(HttpServletRequest iscRq, @PathVariable Long stdId, @PathVariable Long classId) throws IOException {
         SearchDTO.SearchRs<EvaluationDTO.BehavioralForms> searchRs = new SearchDTO.SearchRs<>();
         List<Evaluation> list =  evaluationDAO.findByClassIdAndEvaluatedIdAndEvaluationLevelIdAndQuestionnaireTypeId(classId,stdId,156L, 230L);
@@ -555,20 +543,90 @@ public class EvaluationRestController {
             EvaluationDTO.BehavioralForms behavioralForms = new EvaluationDTO.BehavioralForms();
             behavioralForms.setEvaluatorTypeId(evaluation.getEvaluatorTypeId());
             behavioralForms.setStatus(evaluation.getStatus());
-            Personnel personnel = personnelDAO.findById(evaluation.getEvaluatorId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-            behavioralForms.setEvaluatorName(personnel.getFirstName() + " " + personnel.getLastName());
+            if(evaluation.getEvaluatorTypeId() == 188) {
+                ClassStudent classStudent = classStudentService.getClassStudent(evaluation.getEvaluatorId());
+                behavioralForms.setEvaluatorId(classStudent.getId());
+                behavioralForms.setEvaluatorName(classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName());
+            }
+            else {
+                Personnel personnel = personnelDAO.findById(evaluation.getEvaluatorId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                behavioralForms.setEvaluatorId(personnel.getId());
+                behavioralForms.setEvaluatorName(personnel.getFirstName() + " " + personnel.getLastName());
+            }
             behavioralForms.setId(evaluation.getId());
-            behavioralForms.setEvaluatorId(personnel.getId());
             behavioralForms.setReturnDate(evaluation.getReturnDate());
             final Optional<ParameterValue> optionalParameterValue = parameterValueDAO.findById(evaluation.getEvaluatorTypeId());
             if(optionalParameterValue.isPresent()) {
                 final ParameterValue parameterValue = optionalParameterValue.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                 behavioralForms.setEvaluatorTypeTitle(parameterValue.getTitle());
             }
+            behavioralForms.setStatus(evaluation.getStatus());
             finalList.add(behavioralForms);
         }
         searchRs.setList(finalList);
         searchRs.setTotalCount(Long.parseLong(finalList.size()+""));
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/studentEvaluationForms/{nationalCode}")
+    public ResponseEntity<ISC<EvaluationDTO.StudentEvaluationForm>> studentEvaluationForms(HttpServletRequest iscRq, @PathVariable String nationalCode) throws IOException {
+        SearchDTO.CriteriaRq  criteria1 = makeNewCriteria("student.nationalCode", nationalCode, EOperator.equals, null);
+        SearchDTO.CriteriaRq  criteria2 = makeNewCriteria("evaluationStatusReaction",1, EOperator.equals, null);
+        SearchDTO.CriteriaRq  criteria3 = makeNewCriteria("numberOfSendedBehavioralForms",0, EOperator.greaterThan, null);
+        List<SearchDTO.CriteriaRq> criteriaRqList1 = new ArrayList<>();
+        criteriaRqList1.add(criteria2);
+        criteriaRqList1.add(criteria3);
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null,null,EOperator.or,criteriaRqList1);
+        List<SearchDTO.CriteriaRq> criteriaRqList2 = new ArrayList<>();
+        criteriaRqList2.add(criteriaRq);
+        criteriaRqList2.add(criteria1);
+        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+        searchRq.setCriteria(makeNewCriteria(null,null,EOperator.and,criteriaRqList2));
+        SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> evaluationResult = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
+
+
+        List<EvaluationDTO.StudentEvaluationForm> result = new ArrayList<>();
+        for (ClassStudentDTO.ClassStudentInfo classStudentInfo : evaluationResult.getList()) {
+            if(classStudentInfo.getEvaluationStatusReaction() != null && classStudentInfo.getEvaluationStatusReaction().equals(1)){
+                EvaluationDTO.StudentEvaluationForm res = new EvaluationDTO.StudentEvaluationForm();
+                res.setClassId(classStudentInfo.getTclassId());
+                res.setStudentId(classStudentInfo.getId());
+                res.setStudentName(classStudentInfo.getFullName());
+                res.setClassCode(classStudentInfo.getTclass().getCode());
+                res.setCourseCode(classStudentInfo.getTclass().getCourse().getCode());
+                res.setCourseTitle(classStudentInfo.getTclass().getCourse().getTitleFa());
+                res.setTeacherName(classStudentInfo.getTclass().getTeacher());
+                res.setClassStartDate(classStudentInfo.getTclass().getStartDate());
+                res.setEvaluationLevel(154L);
+                res.setQuestionnarieType(139L);
+                res.setHasWarning("alarm");
+                result.add(res);
+            }
+            else if(classStudentInfo.getNumberOfSendedBehavioralForms() != null && classStudentInfo.getNumberOfSendedBehavioralForms() > 0){
+                    Evaluation evaluation = evaluationDAO.findFirstByClassIdAndEvaluatedIdAndEvaluatedTypeIdAndEvaluatorTypeIdAndEvaluationLevelIdAndQuestionnaireTypeId(
+                        classStudentInfo.getTclassId(),classStudentInfo.getId(),188L,188L,156L, 230L);
+                    if(evaluation.getStatus() == false || evaluation.getStatus() == null) {
+                        EvaluationDTO.StudentEvaluationForm res = new EvaluationDTO.StudentEvaluationForm();
+                        res.setClassId(classStudentInfo.getTclassId());
+                        res.setStudentId(classStudentInfo.getId());
+                        res.setStudentName(classStudentInfo.getFullName());
+                        res.setClassCode(classStudentInfo.getTclass().getCode());
+                        res.setCourseCode(classStudentInfo.getTclass().getCourse().getCode());
+                        res.setCourseTitle(classStudentInfo.getTclass().getCourse().getTitleFa());
+                        res.setTeacherName(classStudentInfo.getTclass().getTeacher());
+                        res.setClassStartDate(classStudentInfo.getTclass().getStartDate());
+                        res.setEvaluationLevel(156L);
+                        res.setQuestionnarieType(230L);
+                        res.setHasWarning("alarm");
+                        result.add(res);
+                    }
+            }
+        }
+
+        SearchDTO.SearchRs<EvaluationDTO.StudentEvaluationForm> finalResult = new SearchDTO.SearchRs<>();
+        finalResult.setList(result);
+        finalResult.setTotalCount(new Long(result.size()));
+        return new ResponseEntity<>(ISC.convertToIscRs(finalResult, 0), HttpStatus.OK);
     }
 }

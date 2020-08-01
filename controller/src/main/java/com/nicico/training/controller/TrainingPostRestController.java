@@ -1,20 +1,28 @@
 package com.nicico.training.controller;
 
 import com.nicico.copper.common.Loggable;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PostDTO;
+import com.nicico.training.dto.TrainingPostDTO;
+import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.service.TrainingPostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,6 +31,26 @@ import java.util.Set;
 public class TrainingPostRestController {
 
     private final TrainingPostService trainingPostService;
+    private final IPersonnelService personnelService;
+
+    @Loggable
+    @PostMapping
+    public ResponseEntity<TrainingPostDTO> create(@Validated @RequestBody TrainingPostDTO.Create request, HttpServletResponse response) throws IOException {
+        return new ResponseEntity<>(trainingPostService.create(request, response), HttpStatus.CREATED);
+    }
+
+    @Loggable
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<TrainingPostDTO> update(@PathVariable Long id, @Validated @RequestBody TrainingPostDTO.Update request, HttpServletResponse response) throws IOException {
+        return new ResponseEntity<>(trainingPostService.update(id, request, response), HttpStatus.OK);
+    }
+
+    @Loggable
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        trainingPostService.delete(id);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
     @Loggable
     @PostMapping(value = "/addPosts/{TrainingPostId}/{postIds}")
@@ -61,15 +89,30 @@ public class TrainingPostRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/{TrainingPostId}/getPersonnel")
-    public ResponseEntity<ISC> getPersonnel(@PathVariable Long TrainingPostId) {
-        List<PersonnelDTO.Info> list = trainingPostService.getPersonnel(TrainingPostId);
-        ISC.Response<PersonnelDTO.Info> response = new ISC.Response<>();
+    @GetMapping(value = "/getNullPosts")
+    public ResponseEntity<ISC> getNullPosts() throws IOException {
+        List<PostDTO.Info> list = trainingPostService.getNullPosts();
+        ISC.Response<PostDTO.Info> response = new ISC.Response<>();
         response.setData(list)
                 .setStartRow(0)
                 .setEndRow(list.size())
                 .setTotalRows(list.size());
         ISC<Object> objectISC = new ISC<>(response);
         return new ResponseEntity<>(objectISC, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/{trainingPostId}/getPersonnel")
+//    @PreAuthorize("hasAnyAuthority('r_post_group')")
+    public ResponseEntity<ISC<PersonnelDTO.Info>> getPersonnel(@PathVariable Long trainingPostId, HttpServletRequest iscRq) throws IOException {
+        List<PostDTO.Info> postList = trainingPostService.getPosts(trainingPostId);
+        if (postList == null || postList.isEmpty()) {
+            return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
+        }
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq, postList.stream().map(PostDTO.Info::getId).collect(Collectors.toList()), "postId", EOperator.inSet);
+        searchRq.getCriteria().getCriteria().add(makeNewCriteria("deleted", 0, EOperator.equals, null));
+        searchRq.setDistinct(true);
+        SearchDTO.SearchRs<PersonnelDTO.Info> searchRs = personnelService.search(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 }

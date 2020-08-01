@@ -41,6 +41,7 @@ public class TrainingException extends NICICOException {
     public enum ErrorType implements IErrorCode {
 
         NotFound(404),
+        QuestionBankNotFound(404),
         SkillLevelNotFound(404),
         SkillStandardNotFound(404),
         SkillStandardCategoryNotFound(404),
@@ -113,7 +114,9 @@ public class TrainingException extends NICICOException {
         ProvinceNotFound(404),
         InvalidData(405),
         PersonnelNotFound(404),
-        NoChangeEvent(100);
+        NoChangeEvent(100),
+        DepartmentNotFound(404),
+        PostGradeNotFound(404);
 
         private final Integer httpStatusCode;
 

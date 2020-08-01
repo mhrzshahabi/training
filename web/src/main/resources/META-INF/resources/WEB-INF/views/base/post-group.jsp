@@ -8,12 +8,13 @@
 %>
 
 // <script>
-
     var postGroupPostList_Post_Group_Jsp = null;
     var naPostGroup_Post_Group_Jsp = null;
     var PersonnelPostGroup_Post_Group_Jsp = null;
+    var PostPostGroup_Post_Group_Jsp = null;
     var wait_PostGroup = null;
     var postsSelection=false;
+    let LoadAttachments_Post_Group = null;
 
     PostDS_PostGroup = isc.TrDS.create({
         fields: [
@@ -77,31 +78,6 @@
         items: [PostLG_PostGroup],
     });
 
-    <%--if(Window_NeedsAssessment_Edit === undefined) {--%>
-        <%--var Window_NeedsAssessment_Edit = isc.Window.create({--%>
-            <%--title: "<spring:message code="needs.assessment"/>",--%>
-            <%--placement: "fillScreen",--%>
-            <%--minWidth: 1024,--%>
-            <%--items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],--%>
-            <%--showUs(record, objectType) {--%>
-                <%--loadEditNeedsAssessment(record, objectType);--%>
-                <%--this.Super("show", arguments);--%>
-            <%--},--%>
-        <%--});--%>
-    <%--}--%>
-    <%--if(Window_NeedsAssessment_Tree === undefined) {--%>
-        <%--var Window_NeedsAssessment_Tree = isc.Window.create({--%>
-            <%--title: "<spring:message code="needs.assessment"/>",--%>
-            <%--placement: "fillScreen",--%>
-            <%--minWidth: 1024,--%>
-            <%--items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/tree-needs-assessment/"})],--%>
-            <%--showUs(record, objectType) {--%>
-                <%--loadNeedsAssessmentTree(record, objectType);--%>
-                <%--this.Super("show", arguments);--%>
-            <%--},--%>
-        <%--});--%>
-    <%--}--%>
-
     var RestDataSource_Post_Group_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
@@ -121,6 +97,8 @@
         width: 150,
         data: [{
             title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
+
+                LoadAttachments_Post_Group.ListGrid_JspAttachment.setData([]);
                 ListGrid_Post_Group_refresh();
             }
         }, {
@@ -189,7 +167,7 @@
                             icon: "[SKIN]ask.png",
                             title: "پیام",
                             buttons: [isc.IButtonSave.create({title: "تائید"})],
-                            buttonClick: function (button, index) {
+                            buttonClick: function () {
                                 this.close();
                             }
                         });
@@ -247,7 +225,7 @@
                     simpleDialog("پیام", "پست یا گروه پست انتخاب نشده است.", 0, "confirm");
 
                 } else {
-                    var Dialog_Delete = isc.Dialog.create({
+                    isc.Dialog.create({
                         message: getFormulaMessage("آیا از حذف  پست:' ", "2", "black", "c") + getFormulaMessage(activePost.titleFa, "3", "red", "U") + getFormulaMessage(" از گروه پست:' ", "2", "black", "c") + getFormulaMessage(activePostGroup.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
                         icon: "[SKIN]ask.png",
                         title: "تائید حذف",
@@ -257,7 +235,7 @@
                         buttonClick: function (button, index) {
                             this.close();
 
-                            if (index == 0) {
+                            if (index === 0) {
                                 deletePostFromPostGroup(activePost.id, activePostGroup.id);
                             }
                         }
@@ -351,7 +329,7 @@
             {name: "costCenterTitleFa"},
             {name: "OnAdd", title: " ",canSort:false,canFilter:false, width:30}
         ],
-        dataArrived:function(startRow, endRow){
+        dataArrived:function(){
             let lgIds = ListGrid_ForThisPostGroup_GetPosts.data.getAllCachedRows().map(function(item) {
                 return item.id;
             });
@@ -362,7 +340,7 @@
         },
         createRecordComponent: function (record, colNum) {
             var fieldName = this.getFieldName(colNum);
-            if (fieldName == "OnAdd") {
+            if (fieldName === "OnAdd") {
                 var recordCanvas = isc.HLayout.create({
                     height: 20,
                     width: "100%",
@@ -389,7 +367,7 @@
                             ids.push(current.id);
                         }
 
-                        if(ids.length!=0){
+                        if(ids.length!==0){
                             let findRows=ListGrid_AllPosts.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"equals",value:current.id}]});
 
                             let groupRecord = ListGrid_Post_Group_Jsp.getSelectedRecord();
@@ -466,7 +444,7 @@
         createRecordComponent: function (record, colNum) {
             var fieldName = this.getFieldName(colNum);
 
-            if (fieldName == "OnDelete") {
+            if (fieldName === "OnDelete") {
                 var recordCanvas = isc.HLayout.create({
                     height: 20,
                     width: "100%",
@@ -485,8 +463,7 @@
                     width: 16,
                     grid: this,
                     click: function () {
-                        var active = record;
-                        var activeId = active.id;
+                        var activeId = record.id;
                         var activeGroup = ListGrid_Post_Group_Jsp.getSelectedRecord();
                         var activeGroupId = activeGroup.id;
                         isc.RPCManager.sendRequest({
@@ -497,7 +474,7 @@
                             httpMethod: "DELETE",
                             serverOutputAsString: false,
                             callback: function (resp) {
-                                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
                                     ListGrid_ForThisPostGroup_GetPosts.invalidateCache();
 
@@ -539,8 +516,8 @@
                     dialog.addProperties({
                         buttonClick: function (button, index) {
                             this.close();
-                            if (index == 0) {
-                                var ids = ListGrid_AllPosts.getSelection().filter(function(x){return x.enabled!=false}).map(function(item) {return item.id;});
+                            if (index === 0) {
+                                var ids = ListGrid_AllPosts.getSelection().filter(function(x){return x.enabled!==false}).map(function(item) {return item.id;});
                                 var activeGroup = ListGrid_Post_Group_Jsp.getSelectedRecord();
                                 var activeGroupId = activeGroup.id;
                                 let JSONObj = {"ids": ids};
@@ -553,7 +530,7 @@
                                     data: JSON.stringify(JSONObj),
                                     serverOutputAsString: false,
                                     callback: function (resp) {
-                                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                             ListGrid_ForThisPostGroup_GetPosts.invalidateCache();
 
                                             let findRows=ListGrid_AllPosts.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:ids}]});
@@ -586,7 +563,7 @@
                     dialog.addProperties({
                         buttonClick: function (button, index) {
                             this.close();
-                            if (index == 0) {
+                            if (index === 0) {
                                 var ids = ListGrid_ForThisPostGroup_GetPosts.getSelection().map(function(item) {return item.id;});
                                 var activeGroup = ListGrid_Post_Group_Jsp.getSelectedRecord();
                                 var activeGroupId = activeGroup.id;
@@ -600,7 +577,7 @@
                                     data: JSON.stringify(JSONObj),
                                     serverOutputAsString: false,
                                     callback: function (resp) {
-                                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
                                             ListGrid_ForThisPostGroup_GetPosts.invalidateCache();
                                             let findRows=ListGrid_AllPosts.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:ids}]});
@@ -700,7 +677,6 @@
         ],
         dataArrived: function () {
             postGroupPostList_Post_Group_Jsp = ListGrid_Post_Group_Posts.data.localData;
-            fetchPersonnelData_Post_Group_Jsp();
         },
     });
 
@@ -798,7 +774,7 @@
                 data: JSON.stringify(data),
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                         var OK = isc.Dialog.create({
                             message: "عملیات با موفقیت انجام شد.",
                             icon: "[SKIN]say.png",
@@ -926,6 +902,8 @@
         // icon: "<spring:url value="refresh.png"/>",
         title: "بازخوانی اطلاعات",
         click: function () {
+
+            LoadAttachments_Post_Group.ListGrid_JspAttachment.setData([]);
             ListGrid_Post_Group_refresh();
         }
     });
@@ -1052,7 +1030,6 @@
             {name: "ccpSection", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "ccpUnit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
-        fetchDataURL: personnelUrl + "/iscList",
     });
 
     let ToolStrip_Post_Group_Personnel_Export2EXcel = isc.ToolStrip.create({
@@ -1272,7 +1249,11 @@
         tabs: [
             {name: "TabPane_Post_Post_Group_Jsp", title: "لیست پست ها", pane: ListGrid_Post_Group_Posts},
             {name: "TabPane_Personnel_Post_Group_Jsp", title: "لیست پرسنل", pane: PersonnelLG_Post_Group_Jsp},
-            {name: "TabPane_NA_Post_Group_Jsp", title: "<spring:message code='need.assessment'/>", pane: CourseLG_Post_Group_Jsp}
+            {name: "TabPane_NA_Post_Group_Jsp", title: "<spring:message code='need.assessment'/>", pane: CourseLG_Post_Group_Jsp},
+            {
+                ID: "PostGroup_AttachmentsTab",
+                title: "<spring:message code="attachments"/>",
+            },
         ],
         tabSelected: function (){
             selectionUpdated_Post_Group_Jsp();
@@ -1333,7 +1314,7 @@
         if (record == null) {
             simpleDialog("پیغام", "گروه پستی انتخاب نشده است.", 0, "ask");
         } else {
-            var Dialog_Delete = isc.Dialog.create({
+            isc.Dialog.create({
                 message: getFormulaMessage("آیا از حذف گروه پست:' ", "2", "black", "c") + getFormulaMessage(record.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
                 icon: "[SKIN]ask.png",
                 title: "تائید حذف",
@@ -1342,7 +1323,7 @@
                 })],
                 buttonClick: function (button, index) {
                     this.close();
-                    if (index == 0) {
+                    if (index === 0) {
                         var wait = isc.Dialog.create({
                             message: "در حال انجام عملیات...",
                             icon: "[SKIN]say.png",
@@ -1358,7 +1339,7 @@
                             serverOutputAsString: false,
                             callback: function (resp) {
                                 wait.close();
-                                if (resp.httpResponseCode == 200) {
+                                if (resp.httpResponseCode === 200) {
                                     ListGrid_Post_Group_Jsp.invalidateCache();
                                     simpleDialog("انجام فرمان", "حذف با موفقیت انجام شد", 2000, "say");
                                     ListGrid_Post_Group_Posts.setData([]);
@@ -1375,9 +1356,11 @@
     }
 
     function ListGrid_Post_Group_refresh() {
+        objectIdAttachment=null;
         postGroupPostList_Post_Group_Jsp = null;
         naPostGroup_Post_Group_Jsp = null;
         PersonnelPostGroup_Post_Group_Jsp = null;
+        PostPostGroup_Post_Group_Jsp = null;
         ListGrid_Post_Group_Jsp.invalidateCache();
         ListGrid_Post_Group_Posts_refresh();
     }
@@ -1399,7 +1382,7 @@
             httpMethod: "DELETE",
             serverOutputAsString: false,
             callback: function (resp) {
-                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     ListGrid_Post_Group_Posts.invalidateCache();
 
                 } else {
@@ -1417,22 +1400,28 @@
             return;
         }
         
-        switch (tab.name) {
+        switch (tab.name || tab.ID) {
             case "TabPane_Post_Post_Group_Jsp":{
-                RestDataSource_Post_Group_Posts_Jsp.fetchDataURL = postGroupUrl + "/" + postGroup.id + "/getPosts";
-                if (postGroupPostList_Post_Group_Jsp == null)
-                    refreshLG(ListGrid_Post_Group_Posts);
+                if (PostPostGroup_Post_Group_Jsp === postGroup.id){
+                    return;
+                }
+                PostPostGroup_Post_Group_Jsp = postGroup.id;
+                ListGrid_Post_Group_Posts.setImplicitCriteria({
+                    _constructor: "AdvancedCriteria",
+                    operator: "and",
+                    criteria: [{fieldName: "postGroupSet", operator: "equals", value: postGroup.id}]
+                });
+                ListGrid_Post_Group_Posts.invalidateCache();
+                ListGrid_Post_Group_Posts.fetchData();
                 break;
             }
             case "TabPane_Personnel_Post_Group_Jsp":{
                 if (PersonnelPostGroup_Post_Group_Jsp === postGroup.id)
                     return;
+                PersonnelDS_Post_Group_Jsp.fetchDataURL = postGroupUrl + "/" + postGroup.id + "/getPersonnel";
                 PersonnelPostGroup_Post_Group_Jsp = postGroup.id;
-                RestDataSource_Post_Group_Posts_Jsp.fetchDataURL = postGroupUrl + "/" + postGroup.id + "/getPosts";
-                if (postGroupPostList_Post_Group_Jsp == null)
-                    refreshLG(ListGrid_Post_Group_Posts);
-                else
-                    fetchPersonnelData_Post_Group_Jsp();
+                PersonnelLG_Post_Group_Jsp.invalidateCache();
+                PersonnelLG_Post_Group_Jsp.fetchData();
                 break;
             }
             case "TabPane_NA_Post_Group_Jsp":{
@@ -1446,24 +1435,30 @@
                 CourseLG_Post_Group_Jsp.fetchData();
                 break;
             }
+            case "PostGroup_AttachmentsTab": {
+                if (typeof LoadAttachments_Post_Group.loadPage_attachment_Job !== "undefined")
+                    LoadAttachments_Post_Group.loadPage_attachment_Job("PostGroup", postGroup.id, "<spring:message code="attachment"/>", {
+                        1: "جزوه",
+                        2: "لیست نمرات",
+                        3: "لیست حضور و غیاب",
+                        4: "نامه غیبت موجه"
+                    }, false);
+                break;
+            }
         }
     }
 
-    function fetchPersonnelData_Post_Group_Jsp() {
-        if (Detail_Tab_Post_Group.getSelectedTab().name !== "TabPane_Personnel_Post_Group_Jsp")
-            return;
-        if (postGroupPostList_Post_Group_Jsp == null) {
-            PersonnelLG_Post_Group_Jsp.setData([]);
-            return;
-        }
-        PersonnelLG_Post_Group_Jsp.implicitCriteria = {
-            _constructor: "AdvancedCriteria",
-            operator: "and",
-            criteria: [{fieldName: "postCode", operator: "equals", value: postGroupPostList_Post_Group_Jsp.map(p => p.code)}]
-        };
-        PersonnelLG_Post_Group_Jsp.invalidateCache();
-        PersonnelLG_Post_Group_Jsp.fetchData();
+    if (!loadjs.isDefined('load_Attachments_post_Group')) {
+        loadjs('<spring:url value='tclass/attachments-tab' />', 'load_Attachments_post_Group');
     }
+
+    loadjs.ready('load_Attachments_post_Group', function () {
+        setTimeout(()=> {
+            LoadAttachments_Post_Group = new loadAttachments();
+            Detail_Tab_Post_Group.updateTab(PostGroup_AttachmentsTab, LoadAttachments_Post_Group.VLayout_Body_JspAttachment)
+        },0);
+
+    });
 
     function loadPostData(criteria, title){
         PostLG_PostGroup.setImplicitCriteria(criteria);

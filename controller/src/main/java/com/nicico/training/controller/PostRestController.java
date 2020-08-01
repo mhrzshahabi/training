@@ -41,6 +41,7 @@ public class PostRestController {
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
+    private final ModelMapper modelMapper;
 
 
     @GetMapping("/list")
@@ -51,7 +52,7 @@ public class PostRestController {
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<PostDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRs<PostDTO.Info> searchRs = postService.searchWithoutPermission(searchRq);
+        SearchDTO.SearchRs<PostDTO.Info> searchRs = postService.searchWithoutPermission(searchRq, p -> modelMapper.map(p, PostDTO.Info.class));
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 
@@ -110,6 +111,7 @@ public class PostRestController {
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/PostList.jasper", params, jsonDataSource, response);
     }
+
     @Loggable
     @GetMapping(value = "/spec-list")
     //@PreAuthorize("hasAuthority('Course_R')")
@@ -144,7 +146,7 @@ public class PostRestController {
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
-        SearchDTO.SearchRs<PostDTO.Info> response = postService.searchWithoutPermission(request);
+        SearchDTO.SearchRs<PostDTO.Info> response = postService.searchWithoutPermission(request, p -> modelMapper.map(p, PostDTO.Info.class));
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
@@ -154,6 +156,6 @@ public class PostRestController {
         final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
         specRs.setResponse(specResponse);
 
-        return new ResponseEntity<>( specRs, HttpStatus.OK);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 }
