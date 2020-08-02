@@ -321,7 +321,6 @@
 
     function editCompetence_competence() {
         let record = CompetenceLG_competence.getSelectedRecord();
-        alert(record.workFlowStatusCode)
         if(record.workFlowStatusCode === 0 || record.workFlowStatusCode === 4){
             createDialog("warning", "بدلیل در گردش کار بودن شایستگی امکان ویرایش وجود ندارد")
             return;
@@ -359,7 +358,6 @@
             TrDSRequest(competenceSaveUrl, competenceMethod_competence, JSON.stringify(data), (resp)=>{
                 wait.close();
                 if(resp.httpResponseCode !== 226) {
-                    alert(competenceMethod_competence)
                     if(competenceMethod_competence === "POST") {
                         sendCompetenceToWorkflow(JSON.parse(resp.data));
                     }

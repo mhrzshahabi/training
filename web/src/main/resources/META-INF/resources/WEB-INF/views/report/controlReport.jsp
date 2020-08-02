@@ -383,7 +383,6 @@
                 ],
 
                 changed: function (form, item, value) {
-                    console.log(value);
                     if (value != null && value != undefined) {
                         RestDataSource_Term_JspControlReport.fetchDataURL = termUrl + "listByYear/" + value;
                         DynamicForm_CriteriaForm_JspControlReport.getField("termId").optionDataSource = RestDataSource_Term_JspControlReport;

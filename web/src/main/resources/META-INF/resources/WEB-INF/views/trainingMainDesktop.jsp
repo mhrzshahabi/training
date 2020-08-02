@@ -605,7 +605,6 @@
                     }
                 }
 
-                console.log(valueMaps);
 
                 if (sort != null && sort.size() != 0){
 
