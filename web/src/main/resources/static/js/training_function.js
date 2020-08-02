@@ -79,7 +79,9 @@ function defineWindowsEditNeedsAssessment(grid = null) {
             this.Super("show", arguments);
         },
         close(x = 1){
-            Window_AddCompetence.close();
+            if(typeof(Window_AddCompetence) !== "undefined") {
+                Window_AddCompetence.close();
+            }
             if(x===1) {
                 if (isChanged) {
                     const dialog = isc.Dialog.create({
@@ -125,6 +127,13 @@ function defineWindowsEditNeedsAssessment(grid = null) {
             }
         },
     });
+}
+
+function setColorForListGrid(record) {
+    if (record.competenceCount === 0)
+        return "color:red";
+    if (record.lastModifiedDateNA !== "آپ دیت نشده")
+        return "color:green";
 }
 
 function defineWindowTreeNeedsAssessment() {

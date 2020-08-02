@@ -321,6 +321,21 @@
                 optionDataSource: ComplexDS_PresenceReport,
                 valueField: "value",
                 displayField: "value",
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "classStudentApplicantCompanyName",
@@ -328,6 +343,21 @@
                 valueField: "value",
                 displayField: "value",
                 optionDataSource: CompanyDS_PresenceReport,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "studentCcpAssistant",
@@ -335,6 +365,21 @@
                 valueField: "value",
                 displayField: "value",
                 optionDataSource: AssistantDS_PresenceReport,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "studentCcpSection",
@@ -342,6 +387,21 @@
                 valueField: "value",
                 displayField: "value",
                 optionDataSource: SectionDS_PresenceReport,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "studentCcpUnit",
@@ -349,6 +409,21 @@
                 optionDataSource: UnitDS_PresenceReport,
                 valueField: "value",
                 displayField: "value",
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "studentCcpAffairs",
@@ -356,6 +431,21 @@
                 optionDataSource: AffairsDS_PresenceReport,
                 valueField: "value",
                 displayField: "value",
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "courseCode",

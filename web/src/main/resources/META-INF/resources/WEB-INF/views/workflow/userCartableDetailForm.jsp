@@ -78,33 +78,59 @@ abaspour 9803
     <c:if test="${taskFormVariable.id =='targetTitleFa'}">
     var targetTitleFa = "${taskFormVariable.value}";
     var targetTitleFaFull = "مشاهده ی " + targetTitleFa;
-    viewDocButton = isc.IButton.create
-    ({
+    viewDocButton = isc.IButton.create({
         ID: "viewDocButton",
         icon: "[SKIN]actions/edit.png",
         title: targetTitleFaFull,
         align: "center",
         width: "150",
         click: function () {
-
-            var data = taskStartConfirmForm.getValues();
+            let data = taskStartConfirmForm.getValues();
             workflowRecordId = data.cId;
-            if (workFlowName === "NeedAssessment") {
-                showWindowDiffNeedsAssessment(workflowRecordId, data.cType);
-            } else {
-                trainingTabSet.removeTab(targetTitleFa);
-                createTab(targetTitleFa, "${addDocumentUrl}");
-                // taskConfirmationWindow.resizeTo(taskConfirmationWindow.widht, 70);
-                // taskConfirmationWindow.maximize();
-                taskConfirmationWindow.top = "0";
-                taskConfirmationWindow.minimize();
+            switch(workFlowName){
+                case "NeedAssessment":
+                    showWindowDiffNeedsAssessment(workflowRecordId, data.cType);
+                    break;
+                case "Competence":
+                    isc.RPCManager.sendRequest(TrDSRequest(competenceUrl + "/spec-list?id=" + workflowRecordId, "GET", null,(resp)=>{
+                        if(resp.httpResponseCode !== 200){
+                            createDialog("warning", "ارتباط با سرور برقرار نشد.")
+                        }
+                        let record = JSON.parse(resp.data).response.data[0];
+                        let valueMap = {
+                            0: "ارسال به گردش کار",
+                            1: "عدم تایید",
+                            2: "تایید نهایی",
+                            3: "حذف گردش کار",
+                            4: "اصلاح شایستگی و ارسال به گردش کار"
+                        }
+                        let field = [
+                            {name: "code", title: "کد شایستگی", autoFitWidth: true},
+                            {name: "title", title: "عنوان شایستگی",autoFitWidth: true},
+                            {name: "competenceType.title", title: "نوع شایستگی",autoFitWidth: true},
+                            {name: "workFlowStatusCode", title: "وضعیت",autoFitWidth: true, valueMap: valueMap},
+                            {name: "category.titleFa", title: "<spring:message code="category"/>",autoFitWidth: true},
+                            {name: "category.code", title: "کد گروه",autoFitWidth: true},
+                            {name: "subCategory.titleFa", title: "<spring:message code="subcategory"/>",autoFitWidth: true},
+                            {name: "subCategory.code", title: "کد زیرگروه",autoFitWidth: true},
+                            {name: "description", title: "<spring:message code="description"/>", autoFitWidth: true},
+                        ]
+                        showDetailViewer("شایستگی", field, record)
+                    }));
+                    break;
+                default:
+                    trainingTabSet.removeTab(targetTitleFa);
+                    createTab(targetTitleFa, "${addDocumentUrl}");
+                    // taskConfirmationWindow.resizeTo(taskConfirmationWindow.widht, 70);
+                    // taskConfirmationWindow.maximize();
+                    taskConfirmationWindow.top = "0";
+                    taskConfirmationWindow.minimize();
             }
-
             workflowParameters = {
                 "taskId": "${id}",
                 "usr": "${username}",
                 "workflowdata": taskStartConfirmForm.getValues()
-            };
+            }
         }
     });
     </c:if>
@@ -491,6 +517,7 @@ abaspour 9803
     </c:if>
 
     <c:if test="${taskFormVariable.id =='DELETE'}">
+    alert(23)
     doDeleteTaskButton = isc.IButton.create({
         icon: "[SKIN]actions/edit.png", title: "حذف گردش کار", align: "center", width: "150",
         click: function () {

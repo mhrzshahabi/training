@@ -4,6 +4,13 @@
 // <script>
 
     let competenceMethod_competence;
+    let valueMap = {
+        0: "ارسال به گردش کار",
+        1: "عدم تایید",
+        2: "تایید نهایی",
+        3: "حذف گردش کار",
+        4: "اصلاح شایستگی و ارسال به گردش کار"
+    }
     var priorityList = {
         "Post": "پست",
         "PostGroup": "گروه پستی",
@@ -96,7 +103,6 @@
             {
                 name: "categoryId",
                 title: "<spring:message code="category"/>",
-
                 align: "center",
                 filterOperator: "equals",
                 optionDataSource: RestDataSource_category_JspCompetence,
@@ -123,6 +129,9 @@
                 // autoFitWidth: true
             },
             {name: "code", title: "کد", autoFitWidth: true},
+            {name: "workFlowStatusCode", title: "وضعیت گردش کار",
+                filterOnKeypress: true,
+            },
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: competenceUrl + "/spec-list",
@@ -144,7 +153,7 @@
         ID: "CompetenceLG_competence",
         dataSource: CompetenceDS_competence,
         autoFetchData: true,
-        fields: [{name: "title"}, {name: "code"}, {name: "competenceType.title"},{name: "categoryId"},{name:"subCategoryId"}, {name: "description"}],
+        fields: [{name: "title"}, {name: "code"}, {name: "competenceType.title"},{name: "categoryId"},{name:"subCategoryId"}, {name: "workFlowStatusCode", valueMap: valueMap}, {name: "description"}],
         gridComponents: [
             CompetenceTS_competence, , "filterEditor", "header", "body"
         ],
@@ -312,6 +321,11 @@
 
     function editCompetence_competence() {
         let record = CompetenceLG_competence.getSelectedRecord();
+        alert(record.workFlowStatusCode)
+        if(record.workFlowStatusCode === 0 || record.workFlowStatusCode === 4){
+            createDialog("warning", "بدلیل در گردش کار بودن شایستگی امکان ویرایش وجود ندارد")
+            return;
+        }
         if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {
             competenceMethod_competence = "PUT";
             CompetenceDF_competence.clearValues();
@@ -345,7 +359,14 @@
             TrDSRequest(competenceSaveUrl, competenceMethod_competence, JSON.stringify(data), (resp)=>{
                 wait.close();
                 if(resp.httpResponseCode !== 226) {
-                    studyResponse(resp, "action", '<spring:message code="competence"/>', CompetenceWin_competence, CompetenceLG_competence, "entityTitle")
+                    alert(competenceMethod_competence)
+                    if(competenceMethod_competence === "POST") {
+                        sendCompetenceToWorkflow(JSON.parse(resp.data));
+                    }
+                    else if(JSON.parse(resp.data).workFlowStatusCode === 3 || JSON.parse(resp.data).workFlowStatusCode === 2){
+                        sendCompetenceToWorkflow(JSON.parse(resp.data));
+                    }
+                    studyResponse(resp, "action", '<spring:message code="competence"/>', CompetenceWin_competence, CompetenceLG_competence, "entityTitle");
                 }
                 else{
                     let list = JSON.parse(resp.data);
@@ -409,6 +430,34 @@
                 code.setValue("M00000");
                 break;
         }
+    }
+
+    function sendCompetenceToWorkflow(record){
+        let varParams = [{
+            "processKey": "competenceWorkflow",
+            "cId": record.id,
+            "competenceTitle": "ایجاد شایستگی " + record.title,
+            "competenceCreatorId": "${username}",
+            "competenceCreator": userFullName,
+            "REJECTVAL": "",
+            "REJECT": "",
+            "target": "/web/competence",
+            "targetTitleFa": "شایستگی",
+            "workflowStatus": "ثبت اولیه",
+            "workflowStatusCode": "0",
+            "workFlowName": "Competence",
+        }];
+        wait.show()
+        isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), (resp)=>{
+            wait.close()
+            if (resp.httpResponseCode === 200) {
+                simpleDialog("<spring:message code="message"/>", "<spring:message code='course.set.on.workflow.engine'/>", 3000, "say");
+            } else if (resp.httpResponseCode === 404) {
+                simpleDialog("<spring:message code="message"/>", "<spring:message code='workflow.bpmn.not.uploaded'/>", 3000, "stop");
+            } else {
+                simpleDialog("<spring:message code="message"/>", "<spring:message code='msg.send.to.workflow.problem'/>", 3000, "stop");
+            }
+        }));
     }
 
     //</script>

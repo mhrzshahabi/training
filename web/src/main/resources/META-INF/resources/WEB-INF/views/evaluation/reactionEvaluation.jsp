@@ -130,8 +130,7 @@
             ]
         });
 
-
-    var MSG_Window_MSG_Main = isc.Window.create({
+        var MSG_Window_MSG_Main = isc.Window.create({
         placement: "center",
         title: "ارسال پیام",
         overflow: "auto",
@@ -340,8 +339,7 @@
         });
 
     //----------------------------------------- ToolStrips -------------------------------------------------------------
-
-    var ToolStripButton_MSG_RE = isc.IButton.create({
+        var ToolStripButton_MSG_RE = isc.IButton.create({
         baseStyle: 'MSG-btn-orange',
         icon: '../static/img/msg/mail.svg',
         title:"ارسال پیام", width:80,
@@ -399,7 +397,7 @@
         }
     });
 
-    var ToolStripButton_FormIssuanceForAll_RE = isc.ToolStripButton.create({
+        var ToolStripButton_FormIssuanceForAll_RE = isc.ToolStripButton.create({
             title: "<spring:message code="students.form.issuance.Behavioral"/>",
             baseStyle: "sendFile",
             click: function () {
@@ -1914,7 +1912,7 @@
             }
         }
 
-    function sendMessage_evaluation() {
+        function sendMessage_evaluation() {
         let data={
             type:MSG_msgContent.type,
             classStudent:MSG_msgContent.users,
