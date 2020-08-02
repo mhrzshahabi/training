@@ -173,6 +173,7 @@ public class StudentDTO {
         private String mobile;
         private String birthCertificateNo;
         private String postCode;
+        private String gender;
     }
 
     @Getter

@@ -405,14 +405,13 @@
                             findRows.setProperty("enabled", false);
                         }
                         MSG_selectUsersForm.getItem("multipleSelect").fetchData();
-                        /* MSG_textEditorValue = 'کاربر محترم کلاس {'+row.courseTitleFa+'} لطفا فایل ارزیابی ارسالی به کارتاپلتان را تکمیل نمایید.';
-                         MSG_contentEditor.setValue('کاربر محترم کلاس {'+row.courseTitleFa+'} لطفا فایل ارزیابی ارسالی به کارتاپلتان را تکمیل نمایید.');
- */
-                        MSG_textEditorValue = "{full-name}\n<br>کاربر محترم کلاس {class-name} لطفا فایل ارزیابی ارسالی به کارتبالتان را تکمیل نمایید"
+
+                        MSG_textEditorValue = "{prefix-full_name} {full-name}\n<br >فراگیر محترم کلاس «{class-name}» لطفا فایل ارزیابی ارسالی به کارتابلتان را تکمیل نمایید"
                         MSG_contentEditor.setValue(MSG_textEditorValue);
+
                         if(JSON.parse(resp.data).response.data.filter(p=>!p.student.mobile).length!=0){
                             ErrorMsg.setContents('برای '+JSON.parse(resp.data).response.data.filter(p=>!p.student.mobile).length+' فراگیر، شماره موبایل تعریف نشده است.');
-                        }else{
+                        }else {
                             ErrorMsg.setContents('');
                         }
                         MSG_Window_MSG_Main.show();
@@ -685,15 +684,13 @@
                             fields: [
                                 {
                                     ID:'contactSelector_RE',
-                                    title: "<spring:message code='send.message.select.contacts'/>",
                                     type: "SelectItem",
-                                    titleAlign:"left",
                                     textAlign: "center",
                                     pickListProperties: {
                                         showFilterEditor: false
                                     },
                                     valueMap: {
-                                        "1": "فراگیران کلاس",
+                                        "1": "ارسال پیام به فراگیران کلاس",
                                         //"2": "مدرس کلاس",
                                         //"3": "فراگیرانی که فرم ارزیابی مدرس را تکمیل نکرده&zwnj;اند"
                                     },
