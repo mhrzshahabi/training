@@ -33,7 +33,8 @@ public class EvaluationService implements IEvaluationService {
     private final SkillDAO skillDAO;
     private final DynamicQuestionService dynamicQuestionService;
     private final DynamicQuestionDAO dynamicQuestionDAO;
-    private final QuestionnaireQuestionDAO questionnaireQuestionDAO;;
+    private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
+    private final ParameterValueDAO parameterValueDAO;
 
 
     @Transactional(readOnly = true)
@@ -558,6 +559,55 @@ public class EvaluationService implements IEvaluationService {
         }
 
         return question;
+
+    }
+
+    public double getEvaluationFormGrade(Evaluation evaluation){
+        double result = 0.0;
+        int index = 0;
+
+        List<EvaluationAnswerDTO.EvaluationAnswerFullData> res = new ArrayList<>();
+
+        for (EvaluationAnswer evaluationAnswerDTO : evaluation.getEvaluationAnswerList()) {
+            EvaluationAnswerDTO.EvaluationAnswerFullData evaluationAnswerFullData = new EvaluationAnswerDTO.EvaluationAnswerFullData();
+            evaluationAnswerFullData.setId(evaluationAnswerDTO.getId());
+            evaluationAnswerFullData.setEvaluationId(evaluationAnswerDTO.getEvaluationId());
+            evaluationAnswerFullData.setEvaluationQuestionId(evaluationAnswerDTO.getEvaluationQuestionId());
+            evaluationAnswerFullData.setQuestionSourceId(evaluationAnswerDTO.getQuestionSourceId());
+            evaluationAnswerFullData.setAnswerId(evaluationAnswerDTO.getAnswerId());
+            evaluationAnswerFullData.setDescription(evaluation.getDescription());
+
+            if (evaluationAnswerFullData.getQuestionSourceId().equals(199L)) {
+                QuestionnaireQuestion questionnaireQuestion = questionnaireQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
+                evaluationAnswerFullData.setOrder(questionnaireQuestion.getOrder());
+                evaluationAnswerFullData.setWeight(questionnaireQuestion.getWeight());
+                evaluationAnswerFullData.setQuestion(questionnaireQuestion.getEvaluationQuestion().getQuestion());
+                evaluationAnswerFullData.setDomainId(questionnaireQuestion.getEvaluationQuestion().getDomainId());
+            } else if (evaluationAnswerFullData.getQuestionSourceId().equals(200L) || evaluationAnswerFullData.getQuestionSourceId().equals(201L)) {
+                DynamicQuestion dynamicQuestion = dynamicQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
+                evaluationAnswerFullData.setOrder(dynamicQuestion.getOrder());
+                evaluationAnswerFullData.setWeight(dynamicQuestion.getWeight());
+                evaluationAnswerFullData.setQuestion(dynamicQuestion.getQuestion());
+            }
+
+            res.add(evaluationAnswerFullData);
+        }
+
+        TotalResponse<ParameterValueDTO.Info> answerHelp = parameterService.getByCode("EvaluationResult");
+
+        for (EvaluationAnswerDTO.EvaluationAnswerFullData re : res) {
+            if(re.getAnswerId() != null) {
+                if(re.getWeight() != null)
+                    index += re.getWeight();
+                else
+                    index ++;
+                result += (Double.parseDouble(parameterValueDAO.findFirstById(re.getAnswerId()).getValue()))*re.getWeight();
+            }
+        }
+        if(index!=0)
+            result = result/index;
+
+        return result;
 
     }
 

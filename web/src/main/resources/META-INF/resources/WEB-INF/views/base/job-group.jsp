@@ -143,8 +143,7 @@
             ListGrid_Job_Group_edit();
         },
         getCellCSSText: function (record) {
-            if (record.competenceCount === 0)
-                return "color:red;font-size: 12px;";
+            return setColorForListGrid(record)
         },
     });
     var Menu_ListGrid_Job_Group_Jobs = isc.Menu.create({

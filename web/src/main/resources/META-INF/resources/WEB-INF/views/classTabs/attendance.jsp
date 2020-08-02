@@ -148,11 +148,11 @@
                         isc.IButton.create({
                             title:"ارسال شماره نامه",
                             click:function () {
-                                if(ListGrid_JspAttachment.getSelectedRecord() == undefined){
+                                if(oAttendanceLoadAttachments_Job.ListGrid_JspAttachment.getSelectedRecord() == undefined){
                                     createDialog("info", "لطفاً رکوردی را انتخاب نمایید.", "پیغام");
                                 }
-                                if(trTrim(ListGrid_JspAttachment.getSelectedRecord().description) != null) {
-                                    absenceForm.setValue("cause", ListGrid_JspAttachment.getSelectedRecord().description);
+                                if(trTrim(oAttendanceLoadAttachments_Job.ListGrid_JspAttachment.getSelectedRecord().description) != null) {
+                                    absenceForm.setValue("cause", oAttendanceLoadAttachments_Job.ListGrid_JspAttachment.getSelectedRecord().description);
                                     attachWindow.close();
                                     return;
                                 }
@@ -163,23 +163,23 @@
                 })
             ],
             hide() {
-                VLayout_Body_JspAttachment.addMembers([
-                    HLayout_Actions_JspAttachment,
-                    HLayout_Grid_JspAttachment
+                oAttendanceLoadAttachments_Job.VLayout_Body_JspAttachment.addMembers([
+                    oAttendanceLoadAttachments_Job.HLayout_Actions_JspAttachment,
+                    oAttendanceLoadAttachments_Job.HLayout_Grid_JspAttachment
                 ]);
-                ListGrid_JspAttachment.setShowFilterEditor(true);
+                oAttendanceLoadAttachments_Job.ListGrid_JspAttachment.setShowFilterEditor(true);
                 this.Super("hide",arguments);
-                DynamicForm_JspAttachments.getItem("description").title = "<spring:message code="description"/>";
-                ListGrid_JspAttachment.getField("description").title = "<spring:message code="description"/>";
+                oAttendanceLoadAttachments_Job.DynamicForm_JspAttachments.getItem("description").title = "<spring:message code="description"/>";
+                oAttendanceLoadAttachments_Job.ListGrid_JspAttachment.getField("description").title = "<spring:message code="description"/>";
             },
             show(){
                 VLayout_Attachment_JspAttendance.addMembers([
-                    HLayout_Actions_JspAttachment,
-                    HLayout_Grid_JspAttachment
+                    oAttendanceLoadAttachments_Job. HLayout_Actions_JspAttachment,
+                    oAttendanceLoadAttachments_Job.HLayout_Grid_JspAttachment
                 ]);
-                ListGrid_JspAttachment.getField("description").title = "شماره نامه";
+                oAttendanceLoadAttachments_Job.ListGrid_JspAttachment.getField("description").title = "شماره نامه";
                 this.Super("show",arguments);
-                DynamicForm_JspAttachments.getItem("description").title = "شماره نامه:";
+                oAttendanceLoadAttachments_Job.DynamicForm_JspAttachments.getItem("description").title = "شماره نامه:";
             }
     });
     <sec:authorize access="hasAnyAuthority('TclassAttendanceTab_classStatus','TclassAttendanceTab_ShowOption')">
@@ -611,11 +611,13 @@
                                                                         showRTL: true,
                                                                         tabIndex: -1,
                                                                         click: function (form, item, icon) {
-                                                                            loadPage_attachment("Tclass", classGridRecordInAttendanceJsp.id, "<spring:message code="attachment"/>",{4:"نامه غیبت موجه"});
+
+                                                                            oAttendanceLoadAttachments_Job = new loadAttachments();
+                                                                            oAttendanceLoadAttachments_Job.loadPage_attachment("Tclass", classGridRecordInAttendanceJsp.id, "<spring:message code="attachment"/>",{4:"نامه غیبت موجه"});
                                                                             Window_Attach.show();
-                                                                            ListGrid_JspAttachment.fetchData({"fileTypeId":4});
-                                                                            ListGrid_JspAttachment.filterByEditor();
-                                                                            ListGrid_JspAttachment.setShowFilterEditor(false);
+                                                                            oAttendanceLoadAttachments_Job.ListGrid_JspAttachment.fetchData({"fileTypeId":4});
+                                                                            oAttendanceLoadAttachments_Job.ListGrid_JspAttachment.filterByEditor();
+                                                                            oAttendanceLoadAttachments_Job.ListGrid_JspAttachment.setShowFilterEditor(false);
                                                                         }
                                                                     }, {
                                                                         name: "clear",
@@ -820,9 +822,9 @@
                                                                         click: function (form, item, icon) {
                                                                             loadPage_attachment("Tclass", classGridRecordInAttendanceJsp.id, "<spring:message code="attachment"/>",{4:"نامه غیبت موجه"});
                                                                             Window_Attach.show();
-                                                                            ListGrid_JspAttachment.fetchData({"fileTypeId":4});
-                                                                            ListGrid_JspAttachment.filterByEditor();
-                                                                            ListGrid_JspAttachment.setShowFilterEditor(false);
+                                                                            oAttendanceLoadAttachments_Job.ListGrid_JspAttachment.fetchData({"fileTypeId":4});
+                                                                            oAttendanceLoadAttachments_Job.ListGrid_JspAttachment.filterByEditor();
+                                                                            oAttendanceLoadAttachments_Job.ListGrid_JspAttachment.setShowFilterEditor(false);
                                                                         }
                                                                     }, {
                                                                         name: "clear",

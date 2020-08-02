@@ -9,6 +9,7 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.dto.CompetenceDTO;
+import com.nicico.training.dto.CompetenceWebserviceDTO;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.ViewPostDTO;
 import com.nicico.training.service.MasterDataService;
@@ -49,35 +50,35 @@ public class MasterDataRestController {
     }
 
     @GetMapping(value = "department/iscList")
-    public ResponseEntity<TotalResponse<MasterDataService.CompetenceWebserviceDTO>> getDepartments(HttpServletRequest iscRq, HttpServletResponse resp) throws IOException {
+    public ResponseEntity<TotalResponse<CompetenceWebserviceDTO>> getDepartments(HttpServletRequest iscRq, HttpServletResponse resp) throws IOException {
         return new ResponseEntity<>(masterDataService.getDepartments(iscRq,resp), HttpStatus.OK);
     }
 
     @GetMapping(value = "department/touple-iscList")
-    public ResponseEntity<TotalResponse<MasterDataService.CompetenceWebserviceDTOInfoTuple>> getToupleDepartments(HttpServletRequest iscRq, HttpServletResponse resp) throws IOException {
+    public ResponseEntity<TotalResponse<CompetenceWebserviceDTO.TupleInfo>> getToupleDepartments(HttpServletRequest iscRq, HttpServletResponse resp) throws IOException {
 
-        TotalResponse<MasterDataService.CompetenceWebserviceDTO> departments = masterDataService.getDepartments(iscRq, resp);
-        departments.getResponse().setData(modelMapper.map(departments.getResponse().getData(), new TypeToken<List<MasterDataService.CompetenceWebserviceDTOInfoTuple>>() {}.getType()));
-        return new ResponseEntity<>((TotalResponse<MasterDataService.CompetenceWebserviceDTOInfoTuple>) (Object)departments, HttpStatus.OK);
+        TotalResponse<CompetenceWebserviceDTO> departments = masterDataService.getDepartments(iscRq, resp);
+        departments.getResponse().setData(modelMapper.map(departments.getResponse().getData(), new TypeToken<List<CompetenceWebserviceDTO.TupleInfo>>() {}.getType()));
+        return new ResponseEntity<>((TotalResponse<CompetenceWebserviceDTO.TupleInfo>) (Object)departments, HttpStatus.OK);
     }
 
     @GetMapping(value = "department/getDepartmentsByParentId/{parentId}")
-    public ResponseEntity<List<MasterDataService.CompetenceWebserviceDTOInfoTuple>> getDepartmentsByParentCode(@PathVariable String parentId) throws IOException {
-        List<MasterDataService.CompetenceWebserviceDTOInfoTuple> result = modelMapper.map(masterDataService.getDepartmentsByParentCode("ParentId?parentId=" + parentId),new TypeToken<List<MasterDataService.CompetenceWebserviceDTOInfoTuple>>() {}.getType());
+    public ResponseEntity<List<CompetenceWebserviceDTO.TupleInfo>> getDepartmentsByParentCode(@PathVariable String parentId) throws IOException {
+        List<CompetenceWebserviceDTO.TupleInfo> result = modelMapper.map(masterDataService.getDepartmentsByParentCode("ParentId?parentId=" + parentId),new TypeToken<List<CompetenceWebserviceDTO.TupleInfo>>() {}.getType());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping(value = "department/getDepartmentsChilderen")
-    public ResponseEntity<List<MasterDataService.CompetenceWebserviceDTOInfoTuple>> getDepartmentsChilderen(@RequestBody List<Long> childeren) throws IOException {
-        List<MasterDataService.CompetenceWebserviceDTOInfoTuple> result = modelMapper.map(masterDataService.getDepartmentsChilderenByParentCode(childeren),new TypeToken<List<MasterDataService.CompetenceWebserviceDTOInfoTuple>>() {}.getType());
+    public ResponseEntity<List<CompetenceWebserviceDTO.TupleInfo>> getDepartmentsChilderen(@RequestBody List<Long> childeren) throws IOException {
+        List<CompetenceWebserviceDTO.TupleInfo> result = modelMapper.map(masterDataService.getDepartmentsChilderenByParentCode(childeren),new TypeToken<List<CompetenceWebserviceDTO.TupleInfo>>() {}.getType());
         return new ResponseEntity<>(result, HttpStatus.OK);
 
     }
 
     @GetMapping(value = "department/getDepartmentsRoot")
-    public ResponseEntity<List<MasterDataService.CompetenceWebserviceDTOInfoTuple>> getDepartmentsRoot() throws IOException {
-        List<MasterDataService.CompetenceWebserviceDTOInfoTuple> roots = modelMapper.map(masterDataService.getDepartmentsByParentCode("RootByType?peopleType=Personal"),new TypeToken<List<MasterDataService.CompetenceWebserviceDTOInfoTuple>>() {}.getType());
-        for(MasterDataService.CompetenceWebserviceDTOInfoTuple root : roots)
+    public ResponseEntity<List<CompetenceWebserviceDTO.TupleInfo>> getDepartmentsRoot() throws IOException {
+        List<CompetenceWebserviceDTO.TupleInfo> roots = modelMapper.map(masterDataService.getDepartmentsByParentCode("RootByType?peopleType=Personal"),new TypeToken<List<CompetenceWebserviceDTO.TupleInfo>>() {}.getType());
+        for(CompetenceWebserviceDTO.TupleInfo root : roots)
             root.setParentId(new Long(0));
         return new ResponseEntity<>(roots  , HttpStatus.OK);
     }
@@ -88,24 +89,24 @@ public class MasterDataRestController {
     }
 
     @GetMapping(value = "department/getDepartmentsChilderenAndParents")
-    public ResponseEntity<Set<MasterDataService.CompetenceWebserviceDTOInfoTuple>> getDepartmentsChilderenAndParents(HttpServletRequest iscRq, HttpServletResponse resp) throws IOException {
-        TotalResponse<MasterDataService.CompetenceWebserviceDTO> childeren = masterDataService.getDepartments(iscRq,resp);
-        Set<MasterDataService.CompetenceWebserviceDTOInfoTuple> departments = new HashSet<>();//getDepartmentsRoot().getBody()
+    public ResponseEntity<Set<CompetenceWebserviceDTO.TupleInfo>> getDepartmentsChilderenAndParents(HttpServletRequest iscRq, HttpServletResponse resp) throws IOException {
+        TotalResponse<CompetenceWebserviceDTO> childeren = masterDataService.getDepartments(iscRq,resp);
+        Set<CompetenceWebserviceDTO.TupleInfo> departments = new HashSet<>();//getDepartmentsRoot().getBody()
         //Long anccestorId = departments.iterator().next().getId();//
 //        getDepartmentsRoot().getBody().get(0).setParentId(new Long(0));
         Long anccestorId = getDepartmentsRoot().getBody().get(0).getId();
         departments.add(getDepartmentsRoot().getBody().get(0));
-        for(MasterDataService.CompetenceWebserviceDTO child : childeren.getResponse().getData()){
+        for(CompetenceWebserviceDTO child : childeren.getResponse().getData()){
             departments.addAll(findDeparmentAnccestor(anccestorId,child.getParentId()));
-            departments.add(modelMapper.map(child, MasterDataService.CompetenceWebserviceDTOInfoTuple.class));
+            departments.add(modelMapper.map(child, CompetenceWebserviceDTO.TupleInfo.class));
         }
 
         return new ResponseEntity<>(departments, HttpStatus.OK);
     }
 
-    private List<MasterDataService.CompetenceWebserviceDTOInfoTuple> findDeparmentAnccestor(Long anccestorId, Long parentId)  throws IOException {
-        List<MasterDataService.CompetenceWebserviceDTOInfoTuple> parents = new ArrayList<>();
-        MasterDataService.CompetenceWebserviceDTOInfoTuple parent = modelMapper.map(masterDataService.getDepartmentsById(parentId), MasterDataService.CompetenceWebserviceDTOInfoTuple.class);
+    private List<CompetenceWebserviceDTO.TupleInfo> findDeparmentAnccestor(Long anccestorId, Long parentId)  throws IOException {
+        List<CompetenceWebserviceDTO.TupleInfo> parents = new ArrayList<>();
+        CompetenceWebserviceDTO.TupleInfo parent = modelMapper.map(masterDataService.getDepartmentsById(parentId), CompetenceWebserviceDTO.TupleInfo.class);
         if(parent.getParentId().equals(anccestorId)) {
             parents.add(parent);
             return parents;

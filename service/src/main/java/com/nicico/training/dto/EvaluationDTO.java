@@ -146,4 +146,20 @@ public class EvaluationDTO implements Serializable {
         private String studentName;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("BehavioralResult")
+    public static class BehavioralResult {
+       private Double[] studentGrade;
+       private Double[] supervisorGrade;
+       private Double[] trainingGrade;
+       private Double[] coWorkersGrade;
+       private String[] classStudentsName;
+       private Double studentGradeMean;
+       private Double supervisorGradeMean;
+       private Double trainingGradeMean;
+       private Double coWorkersGradeMean;
+    }
+
 }

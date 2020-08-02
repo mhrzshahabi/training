@@ -8,6 +8,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.dto.CompetenceDTO;
+import com.nicico.training.dto.CompetenceWebserviceDTO;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.service.MasterDataService;
 
@@ -22,5 +23,5 @@ public interface IMasterDataService {
 
     TotalResponse<CompetenceDTO.Info> getCompetencies(HttpServletRequest iscRq, HttpServletResponse resp) throws IOException;
 
-    TotalResponse<MasterDataService.CompetenceWebserviceDTO> getDepartments(HttpServletRequest iscRq, HttpServletResponse resp) throws IOException;
+    TotalResponse<CompetenceWebserviceDTO> getDepartments(HttpServletRequest iscRq, HttpServletResponse resp) throws IOException;
 }

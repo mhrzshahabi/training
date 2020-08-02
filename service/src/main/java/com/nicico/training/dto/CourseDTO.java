@@ -228,34 +228,33 @@ public class CourseDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("CourseUpdateRq")
     public static class Update extends CourseDTO {
-//        @NotEmpty
-//        @ApiModelProperty(required = true)
-//        private Integer eRunTypeId;
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private Integer eRunTypeId;
 
-//        @NotEmpty
-//        @ApiModelProperty(required = true)
-//        private Integer eLevelTypeId;
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private Integer eLevelTypeId;
 
-//        @NotEmpty
-//        @ApiModelProperty(required = true)
-//        private Integer eTheoTypeId;
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private Integer eTheoTypeId;
 
         @NotEmpty
         @ApiModelProperty(required = true)
         private Integer eTechnicalTypeId;
 
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private Long categoryId;
+
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private Long subCategoryId;
+
 //        @NotNull
 //        @ApiModelProperty(required = true)
 //        private Integer version;
-
-//        @NotEmpty
-//        @ApiModelProperty(required = true)
-//        private Long categoryId;
-
-
-//        @NotEmpty
-//        @ApiModelProperty(required = true)
-//        private Long subCategoryId;
 
         private String evaluation;
 
@@ -431,5 +430,15 @@ public class CourseDTO implements Serializable {
         private Integer startRow;
         private Integer endRow;
         private Integer totalRows;
+    }
+
+    //Amin HK
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("CourseDependence")
+    public static class CourseDependence{
+        private Integer numClasses;
+        private Integer numSkills;
     }
 }
