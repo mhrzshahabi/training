@@ -121,6 +121,7 @@
                 title: "<spring:message code="input"/>",
                 filterOperator: "iContains", autoFitWidth: true
             },
+            {name: "workFlowStatusCode", title: "وضعیت گردش کار"},
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: competenceUrl + "/iscList"

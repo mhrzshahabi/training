@@ -6,8 +6,8 @@ ghazanfari_f,
 package com.nicico.training.repository;
 
 import com.nicico.training.model.Competence;
-
-import java.util.List;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 
 public interface CompetenceDAO extends BaseDAO<Competence, Long> {
@@ -16,4 +16,8 @@ public interface CompetenceDAO extends BaseDAO<Competence, Long> {
     boolean existsByTitleAndIdIsNot(String title, Long id);
 
     Optional<Competence> findTopByCodeStartsWithOrderByCodeDesc(String code);
+
+    @Modifying
+    @Query(value = " update DEVTRAINING.TBL_COMPETENCE set N_WORK_FLOW_CODE = :code where ID = :competenceId ", nativeQuery = true)
+    public int updateCompetenceState(Long competenceId, Integer code);
 }

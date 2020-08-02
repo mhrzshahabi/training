@@ -7,4 +7,5 @@ import org.springframework.data.repository.query.Param;
 
 public interface ParameterValueDAO extends BaseDAO<ParameterValue, Long> {
     ParameterValue findByCode(String code);
+    ParameterValue findFirstById(Long id);
     }
