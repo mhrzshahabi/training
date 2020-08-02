@@ -156,6 +156,10 @@ public class EvaluationDTO implements Serializable {
        private Double[] trainingGrade;
        private Double[] coWorkersGrade;
        private String[] classStudentsName;
+       private Double studentGradeMean;
+       private Double supervisorGradeMean;
+       private Double trainingGradeMean;
+       private Double coWorkersGradeMean;
     }
 
 }
