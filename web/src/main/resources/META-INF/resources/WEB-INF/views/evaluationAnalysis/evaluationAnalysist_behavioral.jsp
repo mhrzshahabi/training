@@ -13,7 +13,13 @@
         height: "90%",
         barMargin: "100",
         stacked: false,
+        chartType: "Column",
         allowedChartTypes: [],
+        axisStartValue: 0,
+        axisEndValue: 100,
+        showDataValues:true,
+        brightenAllOnHover:true,
+        hoverLabelPadding: -7,
         facets: [
             {
                 id: "student",
@@ -43,6 +49,10 @@
         allowedChartTypes: [],
         axisStartValue: 0,
         axisEndValue: 100,
+        // brightenAllOnHover:true,
+        // showValueOnHover:true,
+        // hoverLabelPadding: -5,
+        showDataValues:true,
         facets: [
             {
                 id: "evaluator",
