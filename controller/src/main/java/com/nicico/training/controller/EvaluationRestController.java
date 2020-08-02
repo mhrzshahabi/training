@@ -631,6 +631,16 @@ public class EvaluationRestController {
         Double[] coWorkersGrade = new Double[tclass.getClassStudents().size()];
         String[] classStudentsName = new String[tclass.getClassStudents().size()];
 
+        Double studentGradeMean = 0.0;
+        Double supervisorGradeMean = 0.0;
+        Double trainingGradeMean = 0.0;
+        Double coWorkersGradeMean = 0.0;
+
+        Integer studentGradeMeanNum = 0;
+        Integer supervisorGradeMeanNum = 0;
+        Integer trainingGradeMeanNum = 0;
+        Integer coWorkersGradeMeanNum = 0;
+
         int index = 0;
         for (ClassStudent classStudent : tclass.getClassStudents()) {
             List<Evaluation> evaluations = evaluationDAO.findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeIdAndEvaluatedIdAndEvaluatedTypeIdAndStatus(
@@ -651,21 +661,30 @@ public class EvaluationRestController {
             Integer coWorkersGradeNum = 0;
 
             for (Evaluation evaluation : evaluations) {
+                    double res = evaluationService.getEvaluationFormGrade(evaluation);
                     if(evaluation.getEvaluatorTypeId().equals(189L)) {
                         coWorkersGradeNum++;
-                        coWorkersGrade[index] += evaluationService.getEvaluationFormGrade(evaluation);
+                        coWorkersGradeMeanNum++;
+                        coWorkersGradeMean += res;
+                        coWorkersGrade[index] += res;
                     }
                     else if(evaluation.getEvaluatorTypeId().equals(190L)) {
                         supervisorGradeNum++;
-                        supervisorGrade[index] += evaluationService.getEvaluationFormGrade(evaluation);
+                        supervisorGradeMeanNum++;
+                        supervisorGradeMean += res;
+                        supervisorGrade[index] += res;
                     }
                     else if(evaluation.getEvaluatorTypeId().equals(188L)) {
                         studentGradeNum++;
-                        studentGrade[index] += evaluationService.getEvaluationFormGrade(evaluation);
+                        studentGradeMeanNum++;
+                        studentGradeMean += res;
+                        studentGrade[index] += res;
                     }
                     else if(evaluation.getEvaluatorTypeId().equals(454L)) {
-                        coWorkersGradeNum++;
-                        coWorkersGrade[index] += evaluationService.getEvaluationFormGrade(evaluation);
+                        trainingGradeNum++;
+                        trainingGradeMeanNum++;
+                        trainingGradeMean += res;
+                        trainingGrade[index] += res;
                     }
             }
             if(!studentGradeNum.equals(new Integer(0)))
@@ -680,11 +699,26 @@ public class EvaluationRestController {
             index++;
         }
 
+        if(!studentGradeMeanNum.equals(0))
+            studentGradeMean = studentGradeMean/studentGradeMeanNum;
+        if(!supervisorGradeMeanNum.equals(0))
+            supervisorGradeMean = supervisorGradeMean/supervisorGradeMeanNum;
+        if(!trainingGradeMeanNum.equals(0))
+            trainingGradeMean = trainingGradeMean/trainingGradeMeanNum;
+        if(!coWorkersGradeMeanNum.equals(0))
+            coWorkersGradeMean = coWorkersGradeMean/coWorkersGradeMeanNum;
+
+
         evaluationResult.setClassStudentsName(classStudentsName);
         evaluationResult.setCoWorkersGrade(coWorkersGrade);
         evaluationResult.setStudentGrade(studentGrade);
         evaluationResult.setSupervisorGrade(supervisorGrade);
         evaluationResult.setTrainingGrade(trainingGrade);
+
+        evaluationResult.setCoWorkersGradeMean(coWorkersGradeMean);
+        evaluationResult.setTrainingGradeMean(trainingGradeMean);
+        evaluationResult.setStudentGradeMean(studentGradeMean);
+        evaluationResult.setSupervisorGradeMean(supervisorGradeMean);
 
         return evaluationResult;
     }

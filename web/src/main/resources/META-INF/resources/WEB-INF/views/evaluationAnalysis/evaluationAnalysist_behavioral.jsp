@@ -4,16 +4,22 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
-    var behavioral_chartData = null;
+    var behavioral_chartData1 = null;
 
-    var BehavioralEvaluationChart = isc.FacetChart.create({
+    var BehavioralEvaluationChart1 = isc.FacetChart.create({
         titleAlign: "center",
         minLabelGap: 5,
         width: "80%",
         height: "90%",
         barMargin: "100",
         stacked: false,
+        chartType: "Column",
         allowedChartTypes: [],
+        axisStartValue: 0,
+        axisEndValue: 100,
+        showDataValues:true,
+        brightenAllOnHover:true,
+        hoverLabelPadding: -7,
         facets: [
             {
                 id: "student",
@@ -24,17 +30,47 @@
                 title: "ارزیابی کننده"
             }
         ],
-        data: behavioral_chartData,
+        data: behavioral_chartData1,
         valueProperty: "grade",
         valueTitle: "میانگین نمره ارزیابی",
-        title: "<spring:message code='class.behavioral.evaluation.analysis'/>",
+        title: "تحلیل ارزیابی رفتاری کلاس بر اساس فراگیران",
     });
 
-    var BehavioralEvaluationChartLayout = isc.VLayout.create({
+    var behavioral_chartData2 = null;
+
+    var BehavioralEvaluationChart2 = isc.FacetChart.create({
+        titleAlign: "center",
+        minLabelGap: 5,
+        width: "80%",
+        height: "90%",
+        barMargin: "100",
+        stacked: false,
+        chartType: "Column",
+        allowedChartTypes: [],
+        axisStartValue: 0,
+        axisEndValue: 100,
+        // brightenAllOnHover:true,
+        // showValueOnHover:true,
+        // hoverLabelPadding: -5,
+        showDataValues:true,
+        facets: [
+            {
+                id: "evaluator",
+                title: "ارزیابی کننده"
+            }
+        ],
+        data: behavioral_chartData2,
+        valueProperty: "grade",
+        valueTitle: "میانگین نمره ارزیابی",
+        title: "تحلیل ارزیابی رفتاری کلاس براساس نوع ارزیابی کننده",
+    });
+
+    var BehavioralEvaluationChartLayout = isc.HLayout.create({
         defaultLayoutAlign: "center",
         width: "50%",
         height: "500",
-        members: [BehavioralEvaluationChart]
+        membersMargin: 10,
+        members: [BehavioralEvaluationChart1,BehavioralEvaluationChart2]
     });
 
     var Hlayout_BehavioralEvaluationResult = isc.HLayout.create({
