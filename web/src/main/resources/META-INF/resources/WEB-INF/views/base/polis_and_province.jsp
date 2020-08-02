@@ -472,7 +472,6 @@
     }
 
             setTimeout(function(){$("#isc_5G").keyup(function(){
-                console.log($(this).val());
             })},3000);
 
     //</script>

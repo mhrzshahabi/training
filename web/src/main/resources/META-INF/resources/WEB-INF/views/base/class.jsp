@@ -902,11 +902,19 @@
                 optionDataSource: SupervisorDS_JspClass,
                 autoFetchData: false,
                 valueField: "id",
-                displayField: "lastName",
                 pickListWidth: 550,
                 pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "nationalCode"}, {name: "personnelNo"}],
                 // filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
                 pickListProperties: {sortField: "personnelNo2", showFilterEditor: true},
+                formatValue : function (value, record, form, item) {
+                    var selectedRecord = item.getSelectedRecord();
+                    if (selectedRecord != null) {
+                        return   selectedRecord.firstName + " " +selectedRecord.lastName ;
+
+                    } else {
+                        return value;
+                    }
+                }
             },
             {
                 name: "planner",
@@ -919,11 +927,19 @@
                 optionDataSource: PlannerDS_JspClass,
                 autoFetchData: false,
                 valueField: "id",
-                displayField: "lastName",
                 pickListWidth: 550,
                 pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "nationalCode"}, {name: "personnelNo"}],
                 // filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
                 pickListProperties: {sortField: "personnelNo2", showFilterEditor: true},
+                formatValue : function (value, record, form, item) {
+                    var selectedRecord = item.getSelectedRecord();
+                    if (selectedRecord != null) {
+                        return   selectedRecord.firstName + " " +selectedRecord.lastName ;
+
+                    } else {
+                        return value;
+                    }
+                }
             },
             {
                 name: "reason",

@@ -173,6 +173,13 @@
 
                 pickListProperties: {
                     showFilterEditor:true,
+                },
+                changed: function (form, item, value) {
+                    /*if(MSG_selectUsersForm.getItem("multipleSelect").getValue() == null){
+                        MSG_sendMsgForm.disable();
+                    }else{
+                        MSG_sendMsgForm.enable();
+                    }*/
                 }
             }
         ]
@@ -278,11 +285,11 @@
                 vAlign: "center",
                 layoutTopMargin: 5,
                 members: [
-                    MSG_getSelectMessageType('cartable', '<spring:message code="send.message.cartable"/>'),
+                    //MSG_getSelectMessageType('cartable', '<spring:message code="send.message.cartable"/>'),
                     MSG_getSelectMessageType('sms', '<spring:message code="send.message.sms"/>'),
-                    MSG_getSelectMessageType('email', '<spring:message code="send.message.email"/>'),
+                    /*MSG_getSelectMessageType('email', '<spring:message code="send.message.email"/>'),
                     MSG_getSelectMessageType('whatsapp', '<spring:message code="send.message.whatsapp"/>'),
-                    MSG_getSelectMessageType('telegram', '<spring:message code="send.message.telegram"/>'),
+                    MSG_getSelectMessageType('telegram', '<spring:message code="send.message.telegram"/>'),*/
                 ]
             }),
             isc.HLayout.create({
@@ -299,11 +306,25 @@
             ErrorMsg
             ,
             isc.LayoutSpacer.create({height: 20}),
-            isc.IButton.create({
+            MSG_sendMsgForm = isc.IButton.create({
                 autoDraw:false,
                 baseStyle: 'MSG-btn-orange',
                 title:"ارســـــــال", width:150,
                 click: function () {
+                    if(MSG_selectUsersForm.getItem("multipleSelect").getValue()==null || MSG_selectUsersForm.getItem("multipleSelect").getValue().length == 0){
+                        var ERROR = isc.Dialog.create({
+                            message:"حداقل یک مخاطب انتخاب نمایید",
+                            icon: "[SKIN]say.png",
+                            title:  "متن خطا"
+                        });
+
+                        setTimeout(function () {
+                            ERROR.close();
+                        }, 2000);
+
+                        return;
+
+                    }
                     MSG_sendMsg(MSG_contentEditor.getValue())
                 }
             })
@@ -320,7 +341,6 @@
         isFileAttached = true;
         var upload = document.getElementById('MSG-file-upload');
         var file = upload.files[0];
-        console.log(file)
         MSG_attachFiles.push(file);
         MSGAttachContainer.addMember(MSG_getAttachedFile(file.name))
     }
@@ -574,7 +594,6 @@
 
 
     function MSG_initMSG(){
-        console.log('init')
         MSG_contentEditor.setValue('');
         MSGAttachContainer.removeMembers(MSGAttachContainer.getMembers());
         MSG_selectUsersForm.clearValues()

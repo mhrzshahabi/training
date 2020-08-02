@@ -23,7 +23,7 @@
         "ContractorPersonal" : "پیمان کار"
     };
 
-    PostDS_TrainingPost = isc.TrDS.create({
+    let PostDS_TrainingPost = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap},
@@ -226,8 +226,7 @@
         },
     });
 
-    defineWindowsEditNeedsAssessment(ListGrid_TrainingPost_Jsp);
-    defineWindowTreeNeedsAssessment();
+
 
     var method = "POST";
     var Menu_ListGrid_Post_Group_Posts = isc.Menu.create({
@@ -970,7 +969,6 @@
                 data: JSON.stringify(data),
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    console.log(resp);
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                         var OK = isc.Dialog.create({
                             message: "عملیات با موفقیت انجام شد.",
@@ -1085,7 +1083,7 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
-            Window_NeedsAssessment_Edit.showUs(ListGrid_TrainingPost_Jsp.getSelectedRecord(), "PostGroup");
+            Window_NeedsAssessment_Edit.showUs(ListGrid_TrainingPost_Jsp.getSelectedRecord(), "TrainingPost");
             // Window_NeedsAssessment_Edit.setProperties({
             //     close() {
             //         ListGrid_TrainingPost_Jsp.invalidateCache()
@@ -1106,7 +1104,7 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
-            Window_NeedsAssessment_Tree.showUs(ListGrid_TrainingPost_Jsp.getSelectedRecord(), "PostGroup");
+            Window_NeedsAssessment_Tree.showUs(ListGrid_TrainingPost_Jsp.getSelectedRecord(), "TrainingPost");
         }
     });
     </sec:authorize>
@@ -1135,6 +1133,9 @@
             ListGrid_TrainingPost_refresh();
         }
     });
+
+    defineWindowsEditNeedsAssessment(ListGrid_TrainingPost_Jsp);
+    defineWindowTreeNeedsAssessment();
 
     <sec:authorize access="hasAuthority('Training_Post_U')">
     var ToolStripButton_Edit_TrainingPost_Jsp = isc.ToolStripButtonEdit.create({

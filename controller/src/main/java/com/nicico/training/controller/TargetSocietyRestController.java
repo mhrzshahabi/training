@@ -1,6 +1,7 @@
 package com.nicico.training.controller;
 
 import com.nicico.copper.common.Loggable;
+import com.nicico.training.dto.CompetenceWebserviceDTO;
 import com.nicico.training.dto.TargetSocietyDTO;
 import com.nicico.training.model.TargetSociety;
 import com.nicico.training.service.MasterDataService;
@@ -59,8 +60,8 @@ public class TargetSocietyRestController {
                 }
             }
             criteria += "]}";
-        List<MasterDataService.CompetenceWebserviceDTO> departments = masterDataService.getDepartmentsByParams(criteria,count.toString(),"and","0","");
-        for(MasterDataService.CompetenceWebserviceDTO deparment : departments){
+        List<CompetenceWebserviceDTO> departments = masterDataService.getDepartmentsByParams(criteria,count.toString(),"and","0","");
+        for(CompetenceWebserviceDTO deparment : departments){
             TargetSocietyDTO.Info info = new TargetSocietyDTO.Info();
             info.setSocietyId(deparment.getId());
             info.setTitle(deparment.getTitle());

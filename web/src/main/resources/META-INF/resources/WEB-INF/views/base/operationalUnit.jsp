@@ -377,7 +377,6 @@
         var MyOkDialog_Operational;
 
         function show_OperationalUnitActionResult(resp) {
-            console.log(resp);
             var respCode = resp.httpResponseCode;
             if (respCode === 200 || respCode === 201) {
                 ListGrid_operational.invalidateCache();
