@@ -715,15 +715,21 @@
     }
 
     function load_behavioral_evluation_analysis_data(record) {
-        dummy= record;
-        behavioral_chartData = new Array();
+        behavioral_chartData1 = new Array();
         for (let i=0;i<record.studentGrade.size();i++) {
-            behavioral_chartData.add({student: record.classStudentsName.get(i), evaluator :  "فراگیر",  grade: record.studentGrade.get(i) });
-            behavioral_chartData.add({student: record.classStudentsName.get(i), evaluator : "بالادست", grade: record.supervisorGrade.get(i)});
-            behavioral_chartData.add({student: record.classStudentsName.get(i), evaluator : "همکاران", grade: record.coWorkersGrade.get(i)});
-            behavioral_chartData.add({student: record.classStudentsName.get(i), evaluator : "آموزش", grade: record.trainingGrade.get(i)});
+            behavioral_chartData1.add({student: record.classStudentsName.get(i), evaluator :  "فراگیر",  grade: record.studentGrade.get(i) });
+            behavioral_chartData1.add({student: record.classStudentsName.get(i), evaluator : "بالادست", grade: record.supervisorGrade.get(i)});
+            behavioral_chartData1.add({student: record.classStudentsName.get(i), evaluator : "همکاران", grade: record.coWorkersGrade.get(i)});
+            behavioral_chartData1.add({student: record.classStudentsName.get(i), evaluator : "آموزش", grade: record.trainingGrade.get(i)});
         }
-        BehavioralEvaluationChart.setData(behavioral_chartData);
+        BehavioralEvaluationChart1.setData(behavioral_chartData1);
+
+        behavioral_chartData2 = new Array();
+            behavioral_chartData2.add({evaluator :  "فراگیر",  grade: record.studentGradeMean });
+            behavioral_chartData2.add({evaluator : "بالادست", grade: record.supervisorGradeMean});
+            behavioral_chartData2.add({evaluator : "همکار", grade: record.coWorkersGradeMean});
+            behavioral_chartData2.add({evaluator : "مسئول آموزش", grade: record.trainingGradeMean});
+        BehavioralEvaluationChart2.setData(behavioral_chartData2);
     }
 
     function fill_reaction_evaluation_result() {
