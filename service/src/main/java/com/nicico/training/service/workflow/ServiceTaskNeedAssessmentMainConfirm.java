@@ -28,7 +28,7 @@ public class ServiceTaskNeedAssessmentMainConfirm implements JavaDelegate {
         String mainConfirmBoss = "ahmadi_z";
         String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
 
-        if(complexTitle.equals("شهر بابک"))
+        if((complexTitle != null) && (complexTitle.equals("شهر بابک")))
         {
             mainConfirmBoss = "pourfathian_a";
         }

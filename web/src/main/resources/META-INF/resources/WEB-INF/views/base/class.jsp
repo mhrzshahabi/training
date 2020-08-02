@@ -508,7 +508,8 @@
             {name: "course.theoryDuration" , title: "", hidden:true},
             {name: "scoringMethod", hidden: true},
             {name: "evaluationStatusReactionTraining", hidden: true},
-            {name: "supervisor", hidden: true}
+            {name: "supervisor", hidden: true},
+            {name: "teacherId", hidden: true}
 
         ],
         getCellCSSText: function (record, rowNum, colNum) {
@@ -901,11 +902,19 @@
                 optionDataSource: SupervisorDS_JspClass,
                 autoFetchData: false,
                 valueField: "id",
-                displayField: "lastName",
                 pickListWidth: 550,
                 pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "nationalCode"}, {name: "personnelNo"}],
                 // filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
                 pickListProperties: {sortField: "personnelNo2", showFilterEditor: true},
+                formatValue : function (value, record, form, item) {
+                    var selectedRecord = item.getSelectedRecord();
+                    if (selectedRecord != null) {
+                        return   selectedRecord.firstName + " " +selectedRecord.lastName ;
+
+                    } else {
+                        return value;
+                    }
+                }
             },
             {
                 name: "planner",
@@ -918,11 +927,19 @@
                 optionDataSource: PlannerDS_JspClass,
                 autoFetchData: false,
                 valueField: "id",
-                displayField: "lastName",
                 pickListWidth: 550,
                 pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "nationalCode"}, {name: "personnelNo"}],
                 // filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
                 pickListProperties: {sortField: "personnelNo2", showFilterEditor: true},
+                formatValue : function (value, record, form, item) {
+                    var selectedRecord = item.getSelectedRecord();
+                    if (selectedRecord != null) {
+                        return   selectedRecord.firstName + " " +selectedRecord.lastName ;
+
+                    } else {
+                        return value;
+                    }
+                }
             },
             {
                 name: "reason",
@@ -2103,7 +2120,7 @@
                     if(record.evaluationStatusReactionTraining == null || record.evaluationStatusReactionTraining == 0)
                         createDialog("info", "برای مسئول آموزش این کلاس فرمی صادر نشده است");
                     else{
-                        if(record.tclassSupervisor == undefined || record.teacherId == undefined)
+                        if(record.supervisor == undefined || record.teacherId == undefined)
                             createDialog("info", "اطلاعات کلاس ناقص است!");
                         else
                                 register_Training_Reaction_Form_JspClass(record);

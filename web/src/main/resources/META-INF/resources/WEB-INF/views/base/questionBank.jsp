@@ -1347,8 +1347,6 @@
         if (!QuestionBankDF_questionBank.validate()) {
             return;
         }
-        console.log(QuestionBankDF_questionBank.getItem("questionTypeId").getValue());
-        console.log(QuestionBankDF_questionBank.getItem("questionTypeId").getValue()==520);
         if(QuestionBankDF_questionBank.getItem("questionTypeId").getValue()==520){
             let option1Value = QuestionBankDF_questionBank.getItem("option1").getValue();
             let option1Value2 = QuestionBankDF_questionBank.getItem("option2").getValue();
