@@ -88,6 +88,13 @@ public class CourseRestController {
     }
 
     @Loggable
+    @GetMapping(value = "/checkDependence/{courseId}")
+    //@PreAuthorize("hasAuthority('Course_R')")
+    public ResponseEntity<CourseDTO.CourseDependence> checkDependence(@PathVariable Long courseId) {
+        return new ResponseEntity<>(courseService.checkDependence(courseId), HttpStatus.OK);
+    }
+
+    @Loggable
     @PostMapping
     //@PreAuthorize("hasAuthority('Course_C')")
     public ResponseEntity<CourseDTO.Info> create(@RequestBody Object req, HttpServletResponse response) {
@@ -133,9 +140,9 @@ public class CourseRestController {
     //@PreAuthorize("hasAuthority('Course_U')")
 //	public ResponseEntity<CourseDTO.Info> update(@PathVariable Long id,@Validated @RequestBody CourseDTO.Update request) {
 //		return new ResponseEntity<>(courseService.update(id, request), HttpStatus.OK);
-    public ResponseEntity<CourseDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
-//        CourseDTO.Update update = modelMapper.map(request, CourseDTO.Update.class);
-        return new ResponseEntity<>(courseService.update(id, request), HttpStatus.OK);
+    public ResponseEntity<CourseDTO.Info> update(@PathVariable Long id, @RequestBody Object  request) {
+        CourseDTO.Update update = modelMapper.map(request, CourseDTO.Update.class);
+        return new ResponseEntity<>(courseService.update(id, update), HttpStatus.OK);
     }
 
     @Loggable
@@ -424,7 +431,8 @@ public class CourseRestController {
         for (CourseDTO.Info courseDTO : preCourseList) {
             preCourse.append(" - ").append(courseDTO.getTitleFa());
         }
-        preCourse = new StringBuilder(preCourse.toString() != "" ? preCourse.substring(2) : "");
+
+        preCourse = new StringBuilder(!preCourse.toString().equals("") ? preCourse.substring(2) : "");
         List<EqualCourseDTO.Info> equalCourseList = courseService.equalCourseList(courseId);
         for (EqualCourseDTO.Info map : equalCourseList) {
             equalCourse = equalCourse + "   یا   " + map.getNameEC();

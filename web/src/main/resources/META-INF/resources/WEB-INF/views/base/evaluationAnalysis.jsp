@@ -6,6 +6,7 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
+    var dummy;
     //----------------------------------------------------Variables-----------------------------------------------------
     var teacherGradeToClass = 0;
     var studentsGradeToTeacher = 0;
@@ -595,7 +596,6 @@
         members: [ToolStrip_Evaluation_Analysis]
     });
 
-
     var Hlayout_Grid_Evaluation_Analysis = isc.HLayout.create({
         width: "100%",
         height: "45%",
@@ -628,35 +628,38 @@
         Detail_Tab_Evaluation_Analysis.enable();
 
         if (evaluationType === "1" || evaluationType === "واکنشی") {
-            fill_reaction_evaluation_result();
+            // fill_reaction_evaluation_result();
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.disableTab(1);
             Detail_Tab_Evaluation_Analysis.disableTab(2);
             Detail_Tab_Evaluation_Analysis.disableTab(3);
         } else if (evaluationType === "2" || evaluationType === "یادگیری") {
-            fill_reaction_evaluation_result();
-            evaluationAnalysist_learning();
+            // fill_reaction_evaluation_result();
+            // evaluationAnalysist_learning();
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.enableTab(1);
             Detail_Tab_Evaluation_Analysis.disableTab(2);
             Detail_Tab_Evaluation_Analysis.disableTab(3);
         } else if (evaluationType === "3" || evaluationType === "رفتاری") {
-            fill_reaction_evaluation_result();
-            evaluationAnalysist_learning();
+            // fill_reaction_evaluation_result();
+            // evaluationAnalysist_learning();
             fill_behavioral_evaluation_result();
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.enableTab(1);
             Detail_Tab_Evaluation_Analysis.enableTab(2);
             Detail_Tab_Evaluation_Analysis.disableTab(3);
         } else if (evaluationType === "4" || evaluationType === "نتایج") {
-            fill_reaction_evaluation_result();
-            evaluationAnalysist_learning();
-            fill_behavioral_evaluation_result();
+            // fill_reaction_evaluation_result();
+            // evaluationAnalysist_learning();
+            // fill_behavioral_evaluation_result();
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.enableTab(1);
             Detail_Tab_Evaluation_Analysis.enableTab(2);
             Detail_Tab_Evaluation_Analysis.enableTab(3);
-        }
+        };
+        Detail_Tab_Evaluation_Analysis.disableTab(0);
+        Detail_Tab_Evaluation_Analysis.disableTab(1);
+        Detail_Tab_Evaluation_Analysis.disableTab(3);
     }
 
     function load_reaction_evluation_analysis_data(record) {
@@ -715,25 +718,21 @@
     }
 
     function load_behavioral_evluation_analysis_data(record) {
-        DynamicForm_Behavioral_EvaluationAnalysis_Header.getField("studentCount").setValue(listGrid_record.studentCount);
-        DynamicForm_Behavioral_EvaluationAnalysis_Header.getField("classPassedTime").setValue(record.classPassedTime);
-        DynamicForm_Behavioral_EvaluationAnalysis_Header.getField("numberOfFilledFormsBySuperviosers").setValue(record.numberOfFilledFormsBySuperviosers);
-        DynamicForm_Behavioral_EvaluationAnalysis_Header.getField("numberOfFilledFormsByStudents").setValue(record.numberOfFilledFormsByStudents);
-
-        DynamicForm_Behavioral_EvaluationAnalysis_Footer.getField("studentsMeanGrade").setValue(record.studentsMeanGrade);
-        DynamicForm_Behavioral_EvaluationAnalysis_Footer.getField("supervisorsMeanGrade").setValue(record.supervisorsMeanGrade);
-        DynamicForm_Behavioral_EvaluationAnalysis_Footer.getField("FEBGrade").setValue(record.febgrade);
-        DynamicForm_Behavioral_EvaluationAnalysis_Footer.getField("FEBPass").setValue(record.febpass);
-        DynamicForm_Behavioral_EvaluationAnalysis_Footer.getField("FECBGrade").setValue(record.fecbgrade);
-        DynamicForm_Behavioral_EvaluationAnalysis_Footer.getField("FECBPass").setValue(record.fecbpass);
-
-        behavioral_chartData = new Array();
-        for (let i=0;i<record.supervisorsGrade.size();i++) {
-            behavioral_chartData.add({student: record.classStudentsName.get(i), grade: record.studentsGrade.get(i) , evaluator :  "<spring:message code='student'/>"});
-            behavioral_chartData.add({student: record.classStudentsName.get(i), grade: record.supervisorsGrade.get(i), evaluator : "<spring:message code='boss'/>"});
+        behavioral_chartData1 = new Array();
+        for (let i=0;i<record.studentGrade.size();i++) {
+            behavioral_chartData1.add({student: record.classStudentsName.get(i), evaluator :  "فراگیر",  grade: record.studentGrade.get(i) });
+            behavioral_chartData1.add({student: record.classStudentsName.get(i), evaluator : "بالادست", grade: record.supervisorGrade.get(i)});
+            behavioral_chartData1.add({student: record.classStudentsName.get(i), evaluator : "همکاران", grade: record.coWorkersGrade.get(i)});
+            behavioral_chartData1.add({student: record.classStudentsName.get(i), evaluator : "آموزش", grade: record.trainingGrade.get(i)});
         }
+        BehavioralEvaluationChart1.setData(behavioral_chartData1);
 
-        BehavioralEvaluationChart.setData(behavioral_chartData);
+        behavioral_chartData2 = new Array();
+            behavioral_chartData2.add({evaluator :  "فراگیر",  grade: record.studentGradeMean });
+            behavioral_chartData2.add({evaluator : "بالادست", grade: record.supervisorGradeMean});
+            behavioral_chartData2.add({evaluator : "همکار", grade: record.coWorkersGradeMean});
+            behavioral_chartData2.add({evaluator : "مسئول آموزش", grade: record.trainingGradeMean});
+        BehavioralEvaluationChart2.setData(behavioral_chartData2);
     }
 
     function fill_reaction_evaluation_result() {
@@ -751,7 +750,7 @@
     }
 
     function fill_behavioral_evaluation_result() {
-        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "behavioralEvaluationResult/" + ListGrid_evaluationAnalysis_class.getSelectedRecord().id , "GET", null,
+        isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getBehavioralEvaluationResult/" + ListGrid_evaluationAnalysis_class.getSelectedRecord().id , "GET", null,
             "callback: fill_behavioral_evaluation_result_resp(rpcResponse)"));
     }
 

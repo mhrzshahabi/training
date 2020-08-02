@@ -14,17 +14,19 @@
     const green = "#5dd851";
     var editing = false;
     var priorityList = {
-        "Post": "پست",
+        "Post": "پست انفرادی",
         "PostGroup": "گروه پستی",
         "Job": "شغل",
         "JobGroup": "گروه شغلی",
         "PostGrade": "رده پستی",
         "PostGradeGroup": "گروه رده پستی",
+        "TrainingPost": "پست"
     };
     var skillTopData = [];
     var skillBottomData = [];
     var competenceTopData = [];
     var competenceBottomData = [];
+    let oLoadAttachments_Job = null;
 
     let NeedsAssessmentTargetDS_DiffNeedsAssessment = isc.TrDS.create({
         ID: "NeedsAssessmentTargetDS_DiffNeedsAssessment",
@@ -461,6 +463,55 @@
         margin: 1,
         click(){
             Window_AddSkill_Diff.show();
+        }
+    });
+    var Button_ShowAttachment_JspDiffNeedsAssessment = isc.Button.create({
+        title:"ضمیمه",
+        margin: 1,
+        click(){
+            if (!loadjs.isDefined('load_Attachments_Job')) {
+                loadjs('<spring:url value='tclass/attachments-tab' />', 'load_Attachments_Job');
+            }
+
+            loadjs.ready('load_Attachments_Job', function () {
+                setTimeout(()=>{
+                    oLoadAttachments_Job = new loadAttachments();
+                    // DetailTab_Job.updateTab(JobAttachmentsTab, oLoadAttachments_Job.VLayout_Body_JspAttachment)
+                    if (typeof oLoadAttachments_Job.loadPage_attachment_Job!== "undefined")
+                        oLoadAttachments_Job.loadPage_attachment_Job(NeedsAssessmentTargetDF_diffNeedsAssessment.getValue("objectType"), NeedsAssessmentTargetDF_diffNeedsAssessment.getValue("objectId"), "<spring:message code="attachment"/>", {
+                            1: "جزوه",
+                            2: "لیست نمرات",
+                            3: "لیست حضور و غیاب",
+                            4: "نامه غیبت موجه"
+                        }, false);
+                    let Window_Attach = isc.Window.create({
+                        title: "ضمیمه",
+                        autoSize: false,
+                        width: "70%",
+                        height:"60%",
+                        items:[
+                            oLoadAttachments_Job.VLayout_Body_JspAttachment,
+                            // isc.TrHLayoutButtons.create({
+                            //     members:[
+                            //         isc.IButton.create({
+                            //             title:"ارسال شماره نامه",
+                            //             click:function () {
+                            //                 if(ListGrid_JspAttachment.getSelectedRecord() == undefined){
+                            //                     createDialog("info", "لطفاً رکوردی را انتخاب نمایید.", "پیغام");
+                            //                 }
+                            //                 if(trTrim(ListGrid_JspAttachment.getSelectedRecord().description) != null) {
+                            //                     return;
+                            //                 }
+                            //                 createDialog("info", "لطفاً شماره نامه را مشخص نمایید.", "پیغام");
+                            //             }
+                            //         })
+                            //     ]
+                            // })
+                        ]});
+                    Window_Attach.show();
+                },0)
+            });
+            // Window_AddSkill_Diff.show();
         }
     });
 
@@ -1120,6 +1171,7 @@
             Button_CourseDetail_JspDiffNeedsAssessment,
             // Button_CancelChange_JspDiffNeedsAssessment,
             Button_AddSkill_JspDiffNeedsAssessment,
+            Button_ShowAttachment_JspDiffNeedsAssessment,
             Label_PlusData_JspDiffNeedsAssessment,
         ],
     });

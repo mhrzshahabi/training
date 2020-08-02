@@ -182,7 +182,8 @@
 
     var RestDataSourceSubCategory = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}, {name: "code"}
-        ]
+        ],
+        fetchDataURL: subCategoryUrl + "iscList"
     });
 
     AnswerTypeDS_questionBank = isc.TrDS.create({
@@ -303,10 +304,103 @@
         fields: [
             {name: "code",},
             {name: "question",},
-            {name: "questionType.title",},
-            {name: "displayType.title",},
-            {name: "category.titleFa",},
-            {name: "subCategory.titleFa",},
+            {name: "displayType.id",
+                optionDataSource: DisplayTypeDS_questionBank,
+                title: "<spring:message code="question.bank.display.type"/>",
+                editorType: "SelectItem",
+                valueField: "id",
+                displayField: "title",
+                filterOnKeypress: true,
+                filterEditorProperties:{
+                optionDataSource: DisplayTypeDS_questionBank,
+                valueField: "id",
+                displayField: "title",
+                autoFetchData: true,
+                filterFields: ["id","title"],
+                textMatchStyle: "substring",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                showFilterEditor: false,
+                autoFitWidthApproach: "both"
+                },
+                pickListFields: [
+                    {name: "title"}
+                    ]
+                }
+            },
+            {name: "questionType.id",
+                optionDataSource: AnswerTypeDS_questionBank,
+                title: "<spring:message code="question.bank.question.type"/>",
+                editorType: "SelectItem",
+                valueField: "id",
+                displayField: "title",
+                filterOnKeypress: true,
+                filterEditorProperties:{
+                optionDataSource: AnswerTypeDS_questionBank,
+                valueField: "id",
+                displayField: "title",
+                autoFetchData: true,
+                filterFields: ["id","title"],
+                textMatchStyle: "substring",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                showFilterEditor: false,
+                autoFitWidthApproach: "both"
+            },
+            pickListFields: [
+                {name: "title"}
+                ]
+            }},
+            {
+                name: "category.id",
+                optionDataSource: RestDataSource_category,
+                title: "<spring:message code="category"/>",
+                editorType: "SelectItem",
+                valueField: "id",
+                displayField: "titleFa",
+                filterOnKeypress: true,
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_category,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["id","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                }
+            },
+            {
+                name: "subCategory.id",
+                optionDataSource: RestDataSourceSubCategory,
+                title: "<spring:message code="subcategory"/>",
+                editorType: "SelectItem",
+                valueField: "id",
+                displayField: "titleFa",
+                filterOnKeypress: true,
+                filterEditorProperties:{
+                    optionDataSource: RestDataSourceSubCategory,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["id","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                }
+            },
             {name: "teacher.fullNameFa",},
             {name: "course.titleFa",},
             {name: "tclass.course.titleFa",},
@@ -318,6 +412,10 @@
         gridComponents: [QuestionBankTS_questionBank, "filterEditor", "header", "body",],
         contextMenu: QuestionBankMenu_questionBank,
         sortField: 1,
+        filterOperator: "iContains",
+        filterOnKeypress: false,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
         dataChanged: function () {
             this.Super("dataChanged", arguments);
             var totalRows = this.data.getLength();
@@ -333,6 +431,9 @@
         },
         doubleClick: function () {
             showEditForm_questionBank();
+        },
+        filterEditorSubmit: function () {
+            QuestionBankLG_questionBank.invalidateCache();
         },
     });
 
@@ -1246,8 +1347,6 @@
         if (!QuestionBankDF_questionBank.validate()) {
             return;
         }
-        console.log(QuestionBankDF_questionBank.getItem("questionTypeId").getValue());
-        console.log(QuestionBankDF_questionBank.getItem("questionTypeId").getValue()==520);
         if(QuestionBankDF_questionBank.getItem("questionTypeId").getValue()==520){
             let option1Value = QuestionBankDF_questionBank.getItem("option1").getValue();
             let option1Value2 = QuestionBankDF_questionBank.getItem("option2").getValue();

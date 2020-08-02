@@ -657,7 +657,8 @@
     {"code": "Menu_Organizational_chart", "title": "درخت سازمانی"},
     {"code": "Menu_Categories_performance", "title": "گزارش عملکرد سازمانی "},
     {"code": "Menu_continuous_Status_Report", "title": "گزارش مستمر "},
-    {"code": "Menu_Personnel_Training_Status_Report", "title": "گزارش وضعیت آموزشی افراد "}
+    {"code": "Menu_Personnel_Training_Status_Report", "title": "گزارش وضعیت آموزشی افراد "},
+    {"code": "Menu_ReportMaker", "title": "منوی گزارش ساز"}
   ]
 }
 

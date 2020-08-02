@@ -23,7 +23,7 @@
         "ContractorPersonal" : "پیمان کار"
     };
 
-    PostDS_TrainingPost = isc.TrDS.create({
+    let PostDS_TrainingPost = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap},
@@ -226,8 +226,7 @@
         },
     });
 
-    defineWindowsEditNeedsAssessment(ListGrid_TrainingPost_Jsp);
-    defineWindowTreeNeedsAssessment();
+
 
     var method = "POST";
     var Menu_ListGrid_Post_Group_Posts = isc.Menu.create({
@@ -816,7 +815,7 @@
     });
 
     var DynamicForm_TrainingPost_Jsp = isc.DynamicForm.create({
-        width: "750",
+        width: "700",
         height: "150",
         align: "center",
         canSubmit: true,
@@ -829,7 +828,7 @@
         validateOnExit: true,
         numCols: 2,
         wrapTitle: false,
-        colWidths: [140, "*"],
+        colWidths: [150, "*"],
         margin: 10,
         padding: 5,
         fields: [
@@ -845,7 +844,8 @@
                 showHintInField: true,
                 length: "250",
                 width: "*",
-                height: "40"
+                height: "40",
+                colSpan: 2,
             },
             {
                 name: "code",
@@ -853,10 +853,11 @@
                 type: "text",
                 required: true,
                 requiredMessage: "<spring:message code="msg.field.is.required"/>",
+                colSpan: 2,
             },
             {
                 name: "jobId",
-                colSpan: 5,
+                colSpan: 1,
                 type: "ComboBoxItem",
                 multiple: false,
                 title: "<spring:message code="job"/>",
@@ -870,11 +871,11 @@
                     {name: "titleFa", filterOperator: "iContains"},
                     {name: "code", filterOperator: "iContains"},
                 ],
-                filterFields: ["titleFa", "code"]
+                filterFields: ["titleFa", "code"],
             },
             {
                 name: "departmentId",
-                colSpan: 5,
+                colSpan: 1,
                 type: "ComboBoxItem",
                 multiple: false,
                 title: "<spring:message code="department"/>",
@@ -894,7 +895,7 @@
                     {name: "ghesmatCode", title: "<spring:message code="section"/>"},
                     {name: "vahedTitle", title: "<spring:message code="unit"/>"},
                 ],
-                filterFields: ["title", "code","hozeTitle","moavenatTitle","omorTitle","ghesmatCode","vahedTitle"]
+                filterFields: ["title", "code","hozeTitle","moavenatTitle","omorTitle","ghesmatCode","vahedTitle"],
             },
             {
                 name: "postGradeId",
@@ -906,7 +907,7 @@
                 valueField: "id",
                 displayField: "titleFa",
                 endRow: false,
-                colSpan: 4,
+                colSpan: 1,
                 layoutStyle: "horizontal",
                 comboBoxProperties: {
                     hint: "",
@@ -925,6 +926,7 @@
                 name: "peopleType",
                 title: "نوع پرسنل",
                 type: "SelectItem",
+                colSpan: 1,
                 valueMap: peopleTypeMap,
                 textAlign: "center",
                 hint: "شرکتی/پیمان کار",
@@ -932,7 +934,7 @@
                 showHintInField: true,
                 pickListProperties: {
                     showFilterEditor: false
-                }
+                },
             },
         ]
     });
@@ -967,7 +969,6 @@
                 data: JSON.stringify(data),
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    console.log(resp);
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                         var OK = isc.Dialog.create({
                             message: "عملیات با موفقیت انجام شد.",
@@ -1082,7 +1083,7 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
-            Window_NeedsAssessment_Edit.showUs(ListGrid_TrainingPost_Jsp.getSelectedRecord(), "PostGroup");
+            Window_NeedsAssessment_Edit.showUs(ListGrid_TrainingPost_Jsp.getSelectedRecord(), "TrainingPost");
             // Window_NeedsAssessment_Edit.setProperties({
             //     close() {
             //         ListGrid_TrainingPost_Jsp.invalidateCache()
@@ -1103,7 +1104,7 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
-            Window_NeedsAssessment_Tree.showUs(ListGrid_TrainingPost_Jsp.getSelectedRecord(), "PostGroup");
+            Window_NeedsAssessment_Tree.showUs(ListGrid_TrainingPost_Jsp.getSelectedRecord(), "TrainingPost");
         }
     });
     </sec:authorize>
@@ -1132,6 +1133,9 @@
             ListGrid_TrainingPost_refresh();
         }
     });
+
+    defineWindowsEditNeedsAssessment(ListGrid_TrainingPost_Jsp);
+    defineWindowTreeNeedsAssessment();
 
     <sec:authorize access="hasAuthority('Training_Post_U')">
     var ToolStripButton_Edit_TrainingPost_Jsp = isc.ToolStripButtonEdit.create({

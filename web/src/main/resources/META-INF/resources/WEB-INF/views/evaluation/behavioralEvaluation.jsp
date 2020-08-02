@@ -715,6 +715,7 @@
                             width: 16,
                             grid: this,
                             click: function () {
+                                print_Behavioral_Form_BE(StdRecord,record);
                             }
                         });
                         recordCanvas.addMember(addIcon);
@@ -1028,6 +1029,21 @@
                     }
                 }
          }
+
+        function print_Behavioral_Form_BE(StdRecord,EvaluatorRecord){
+            let myObj = {
+                classId: classRecord_BE.id,
+                evaluationLevelId: 156,
+                questionnarieTypeId: 230,
+                evaluatorId: EvaluatorRecord.evaluatorId,
+                evaluatorTypeId: EvaluatorRecord.evaluatorTypeId,
+                audienceName: EvaluatorRecord.evaluatorName,
+                audienceType: EvaluatorRecord.evaluatorTypeTitle,
+                evaluatedId: StdRecord.id,
+                evaluatedTypeId: 188
+            };
+            trPrintWithCriteria("<spring:url value="/evaluation/printEvaluationForm"/>", null, JSON.stringify(myObj));
+        }
 
     //----------------------------------------- Global Functions  ------------------------------------------------------
         function evaluation_check_date_BE() {

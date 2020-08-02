@@ -28,6 +28,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,12 +51,11 @@ public class SendMessageRestController {
     @Loggable
     @PostMapping(value = "/sendSMS")
     public ResponseEntity sendSMS(@RequestBody String data) throws IOException {
-
-        /*List<Long> personnelInClassIDs = new ArrayList<>();
-        List<Long> teacherInClassIDs = new ArrayList<>();
-        List<Long> topPersonnelInClassIDs = new ArrayList<>();
-        List<Long> coWorkerInClassIDs = new ArrayList<>();
+        List<Long> classStudentIDs = new ArrayList<>();
         List<String> mobiles = new ArrayList<>();
+        List<String> fullName = new ArrayList<>();
+        List<String> prefixFullName = new ArrayList<>();
+        String className = "";
 
         String oMessage = "";
 
@@ -62,88 +65,48 @@ public class SendMessageRestController {
         oMessage = jsonNode.get("message").asText("");
 
 
-        jsonNode = jsonNode.get("personnelNo");
+        jsonNode = jsonNode.get("classStudent");
 
         if (jsonNode.isArray()) {
             for (final JsonNode objNode : jsonNode) {
-                switch (objNode.get("type").asText()) {
-                    case "personnelInClass":
-                        personnelInClassIDs.add(objNode.get("id").asLong());
-                        break;
-                    case "teacherInClass":
-                        teacherInClassIDs.add(objNode.get("id").asLong());
-                        break;
-                    case "topPersonnelInClass":
-                        topPersonnelInClassIDs.add(objNode.get("id").asLong());
-                        break;
-                    case "coWorkerInClass":
-                        coWorkerInClassIDs.add(objNode.get("id").asLong());
-                        break;
-                }
+                classStudentIDs.add(objNode.asLong());
             }
         }
 
-        if (personnelInClassIDs.size() == 0 && teacherInClassIDs.size() == 0 && topPersonnelInClassIDs.size() == 0 && coWorkerInClassIDs.size() == 0) {
+        if (classStudentIDs.size() == 0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
 
-        if(personnelInClassIDs.size()>0){
+        if(classStudentIDs.size()>0){
             SearchDTO.SearchRq searchRq =new SearchDTO.SearchRq();
             searchRq.setCount(1000);
             searchRq.setStartIndex(0);
             searchRq.setSortBy("id");
-            searchRq.setCriteria(makeNewCriteria("id",personnelInClassIDs, EOperator.inSet,null));
+            searchRq.setCriteria(makeNewCriteria("id",classStudentIDs, EOperator.inSet,null));
 
             SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> searchRs = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
 
-            searchRs.getList().forEach(p->mobiles.add(p.getStudent().getMobile()));
+            searchRs.getList().forEach(p->{
+                mobiles.add(p.getStudent().getMobile());
+                fullName.add(p.getFullName());
+                prefixFullName.add(p.getStudent().getGender().equals("مرد")?"جناب آقای":(p.getStudent().getGender().equals("زن")?"سرکار خانم":"جناب آقای/سرکار خانم"));
+            }
+            );
+            className=searchRs.getList().get(0).getTclass().getCourse().getTitleFa();
         }
 
-        if(teacherInClassIDs.size()>0){
-            SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
-            searchRq.setCount(1000);
-            searchRq.setStartIndex(0);
-            searchRq.setSortBy("id");
-            searchRq.setCriteria(makeNewCriteria("id",teacherInClassIDs, EOperator.inSet,null));
+        for (int i=0;i<mobiles.size();i++) {
+            String message=oMessage;
+            message=message.replace("{prefix-full_name}",prefixFullName.get(i));
+            message=message.replace("{full-name}",fullName.get(i));
+            message=message.replace("{class-name}",className);
 
+            List<String> numbers=new ArrayList<>();
+            numbers.add(mobiles.get(i));
 
-            SearchDTO.SearchRs<TeacherDTO.Grid> searchRs = teacherService.deepSearchGrid(searchRq);
-            searchRs.getList().forEach(p->mobiles.add(p.getPersonality().getContactInfo().getMobile()));
+            sendMessageService.asyncEnqueue(numbers, message);
         }
-
-        if(topPersonnelInClassIDs.size()>0){
-            SearchDTO.SearchRq searchRq =new SearchDTO.SearchRq();
-            searchRq.setCount(1000);
-            searchRq.setStartIndex(0);
-            searchRq.setSortBy("id");
-            searchRq.setCriteria(makeNewCriteria("id",topPersonnelInClassIDs, EOperator.inSet,null));
-
-            SearchDTO.SearchRs<PersonnelDTO.Info> searchRs = personnelService.search(searchRq);
-
-            searchRs.getList().forEach(p->mobiles.add(p.getMobile()));
-        }
-
-        if(coWorkerInClassIDs.size()>0){
-            SearchDTO.SearchRq searchRq =new SearchDTO.SearchRq();
-            searchRq.setCount(1000);
-            searchRq.setStartIndex(0);
-            searchRq.setSortBy("id");
-            searchRq.setCriteria(makeNewCriteria("id",coWorkerInClassIDs, EOperator.inSet,null));
-
-            SearchDTO.SearchRs<PersonnelDTO.Info> searchRs = personnelService.search(searchRq);
-
-            searchRs.getList().forEach(p->mobiles.add(p.getMobile()));
-        }*/
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        JsonNode jsonNode = objectMapper.readTree(data);
-        List<String> number=new ArrayList<>();
-        number.add("9137454148");
-        number.add("9103677968");
-
-
-        sendMessageService.asyncEnqueue(number, "test");
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

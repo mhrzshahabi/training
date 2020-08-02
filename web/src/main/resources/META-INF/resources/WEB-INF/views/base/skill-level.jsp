@@ -126,7 +126,6 @@
                 data: JSON.stringify(data),
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    console.log(resp.httpResponseCode);
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                         var OK = isc.Dialog.create({
                             message: "عملیات با موفقیت انجام شد.",

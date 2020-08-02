@@ -149,6 +149,16 @@ public class CourseService implements ICourseService {
         }
     }
 
+    //Amin HK
+    @Transactional
+    @Override
+    public CourseDTO.CourseDependence checkDependence(Long courseId) {
+        final Optional<Course> cById = courseDAO.findById(courseId);
+        final Course course = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
+
+        return new CourseDTO.CourseDependence().setNumClasses(course.getTclassSet().size()).setNumSkills(course.getSkillSet().size());
+    }
+
     @Transactional(readOnly = true)
     @Override
     public List<EqualCourseDTO.Info> equalCourseList(Long id) {
@@ -231,13 +241,16 @@ public class CourseService implements ICourseService {
 
     @Transactional
     @Override
-    public CourseDTO.Info update(Long id, Object request) {
+    public CourseDTO.Info update(Long id, CourseDTO.Update request) {
         final Optional<Course> optionalCourse = courseDAO.findById(id);
         final Course currentCourse = optionalCourse.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
         CourseDTO.Update update = modelMapper.map(request, CourseDTO.Update.class);
         Course course = new Course();
         modelMapper.map(currentCourse, course);
         modelMapper.map(update, course);
+        course.setELevelType(eLevelTypeConverter.convertToEntityAttribute(request.getELevelTypeId()));
+        course.setERunType(eRunTypeConverter.convertToEntityAttribute(request.getERunTypeId()));
+        course.setETheoType(eTheoTypeConverter.convertToEntityAttribute(request.getETheoTypeId()));
         course.setETechnicalType(eTechnicalTypeConverter.convertToEntityAttribute(update.getETechnicalTypeId()));
         if (course.getGoalSet().isEmpty()) {
             course.setHasGoal(false);

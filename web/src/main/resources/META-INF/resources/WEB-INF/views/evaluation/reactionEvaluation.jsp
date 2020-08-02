@@ -130,6 +130,24 @@
             ]
         });
 
+        var MSG_Window_MSG_Main = isc.Window.create({
+        placement: "center",
+        title: "ارسال پیام",
+        overflow: "auto",
+        width: 900,
+        height: 700,
+        isModal: false,
+        autoDraw: false,
+        autoSize: false,
+        items: [
+            MSG_main_layout
+        ],
+        closeClick: function () {
+            MSG_initMSG()
+            this.clear()
+            this.close();
+        },
+    });
     //----------------------------------------- ListGrids --------------------------------------------------------------
         var ListGrid_student_RE = isc.TrLG.create({
             width: "100%",
@@ -307,36 +325,8 @@
                         click: function () {
                             if (record.evaluationStatusReaction == "0" ||record.evaluationStatusReaction == null)
                                 createDialog("info", "فرم ارزیابی واکنشی برای این فراگیر صادر نشده است");
-                            <%--else{--%>
-                            <%--    let data = {};--%>
-                            <%--    data.classId = classRecord_RE.id;--%>
-                            <%--    data.evaluatorId = record.id;--%>
-                            <%--    data.evaluatorTypeId = 188;--%>
-                            <%--    data.evaluatedId = classRecord_RE.id;--%>
-                            <%--    data.evaluatedTypeId = 504;--%>
-                            <%--    data.questionnaireTypeId = 139;--%>
-                            <%--    data.evaluationLevelId = 154;--%>
-
-                            <%--    let criteriaForm_operational = isc.DynamicForm.create({--%>
-                            <%--        method: "POST",--%>
-                            <%--        action: "<spring:url value="/evaluation/printWithCriteria"/>",--%>
-                            <%--        target: "_Blank",--%>
-                            <%--        canSubmit: true,--%>
-                            <%--        fields:--%>
-                            <%--            [--%>
-                            <%--                {name: "myToken", type: "hidden"},--%>
-                            <%--                {name: "printData", type: "hidden"}--%>
-                            <%--            ],--%>
-                            <%--        show: function () {--%>
-                            <%--            this.Super("show", arguments);--%>
-                            <%--        }--%>
-                            <%--    });--%>
-
-                            <%--    criteriaForm_operational.setValue("myToken", "<%=accessToken%>");--%>
-                            <%--    criteriaForm_operational.setValue("printData", JSON.stringify(data));--%>
-                            <%--    criteriaForm_operational.show();--%>
-                            <%--    criteriaForm_operational.submit();--%>
-                            <%--}--%>
+                            else
+                                print_Student_Reaction_Form_RE(record.id);
                         }
                     });
                     recordCanvas.addMember(printIcon);
@@ -349,6 +339,63 @@
         });
 
     //----------------------------------------- ToolStrips -------------------------------------------------------------
+        var ToolStripButton_MSG_RE = isc.IButton.create({
+        baseStyle: 'MSG-btn-orange',
+        icon: '../static/img/msg/mail.svg',
+        title:"ارسال پیام", width:80,
+        click: function () {
+            let row=ListGrid_class_Evaluation.getSelectedRecord();
+            let wait = createDialog("wait");
+            isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/students-iscList/" + ListGrid_class_Evaluation.getSelectedRecord().id, "GET", null, function (resp) {
+                wait.close();
+                if (generalGetResp(resp)) {
+                    if (resp.httpResponseCode == 200) {
+                        let id=[];
+                        JSON.parse(resp.data).response.data.filter(p=>p.student.mobile).forEach(p=>id.push(p.id));
+                        MSG_selectUsersForm.getItem("multipleSelect").setValue(id);
+                        sendMessageFunc=sendMessage_evaluation;
+                        RestDataSource_student_RE.fetchDataURL = tclassStudentUrl + "/students-iscList/" + row.id;
+                        MSG_selectUsersForm.getItem("multipleSelect").optionDataSource=RestDataSource_student_RE;
+                        //MSG_selectUsersForm.getItem("multipleSelect").pickListWidth=600;
+                        MSG_selectUsersForm.getItem("multipleSelect").pickListFields=[
+                            {name: "student.firstName",title: "<spring:message code="firstName"/>", autoFitWidth: false, align: "center"},
+                            {name: "student.lastName",title: "<spring:message code="lastName"/>", autoFitWidth: false, align: "center"},
+                            {name: "student.nationalCode",title: "<spring:message code="national.code"/>", width: 100, align: "center"},
+                            {name: "student.personnelNo",title: "<spring:message code="personnel.no"/>", width: 100, align: "center"},
+                            {name: "student.personnelNo2",title: "<spring:message code="personnel.no.6.digits"/>", width: 100, align: "center"},
+                            {name: "student.mobile",title: "<spring:message code="mobile"/>",  width: 100, align: "center"},
+                        ];
+                        MSG_selectUsersForm.getItem("multipleSelect").displayField="fullName";
+                        MSG_selectUsersForm.getItem("multipleSelect").valueField="id";
+                        MSG_selectUsersForm.getItem("multipleSelect").dataArrived=function(startRow, endRow){
+                            let ids = MSG_selectUsersForm.getItem("multipleSelect").pickList.data.getAllCachedRows().filter(p=>!p.student.mobile).map(function(item) {
+                                return item.id;
+                            });
+                            let findRows=MSG_selectUsersForm.getItem("multipleSelect").pickList.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:ids}]});
+                            findRows.setProperty("enabled", false);
+                        }
+                        MSG_selectUsersForm.getItem("multipleSelect").fetchData();
+
+                        MSG_textEditorValue = "{prefix-full_name} {full-name}\n<br >فراگیر محترم کلاس «{class-name}» لطفا فایل ارزیابی ارسالی به کارتابلتان را تکمیل نمایید"
+                        MSG_contentEditor.setValue(MSG_textEditorValue);
+
+                        if(JSON.parse(resp.data).response.data.filter(p=>!p.student.mobile).length!=0){
+                            ErrorMsg.setContents('برای '+JSON.parse(resp.data).response.data.filter(p=>!p.student.mobile).length+' فراگیر، شماره موبایل تعریف نشده است.');
+                        }else {
+                            ErrorMsg.setContents('');
+                        }
+                        MSG_Window_MSG_Main.show();
+                        setTimeout(function(){
+                            $('[eventproxy=sms] img').click();
+                        },0)
+                    } else {
+                        createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
+                    }
+                }
+            }));
+        }
+    });
+
         var ToolStripButton_FormIssuanceForAll_RE = isc.ToolStripButton.create({
             title: "<spring:message code="students.form.issuance.Behavioral"/>",
             baseStyle: "sendFile",
@@ -478,6 +525,10 @@
                                             inline: true,
                                             prompt: "چاپ فرم",
                                             click : function (form, item, icon) {
+                                                if (classRecord_RE.teacherEvalStatus == "0" ||classRecord_RE.teacherEvalStatus == null)
+                                                    createDialog("info", "فرم ارزیابی واکنشی برای مدرس صادر نشده است");
+                                                else
+                                                    print_Teacher_Reaction_Form_RE();
                                             }
                                         }
                                     ]},
@@ -582,6 +633,10 @@
                                             inline: true,
                                             prompt: "چاپ فرم",
                                             click : function (form, item, icon) {
+                                                if (classRecord_RE.trainingEvalStatus == "0" ||classRecord_RE.trainingEvalStatus == null)
+                                                    createDialog("info", "فرم ارزیابی واکنشی برای مسئول آموزش صادر نشده است");
+                                                else
+                                                    print_Training_Reaction_Form_RE();
                                             }
                                         }
                                     ]}
@@ -597,9 +652,31 @@
                 // }),
                 isc.ToolStrip.create({
                     width: "100%",
+                    maxWidth:500,
                     align: "left",
                     border: '0px',
                     members: [
+                        isc.DynamicForm.create({
+                            height: "100%",
+                            margin:0,
+                            fields: [
+                                {
+                                    ID:'contactSelector_RE',
+                                    type: "SelectItem",
+                                    textAlign: "center",
+                                    pickListProperties: {
+                                        showFilterEditor: false
+                                    },
+                                    valueMap: {
+                                        "1": "ارسال پیام به فراگیران کلاس",
+                                        //"2": "مدرس کلاس",
+                                        //"3": "فراگیرانی که فرم ارزیابی مدرس را تکمیل نکرده&zwnj;اند"
+                                    },
+                                    defaultValue: 1
+                                }
+                            ]
+                        }),
+                        ToolStripButton_MSG_RE,
                         ToolStripButton_RefreshIssuance_RE
                     ]
                 })
@@ -1724,6 +1801,45 @@
         }
     }
 
+        function print_Teacher_Reaction_Form_RE(){
+            let myObj = {
+                classId: classRecord_RE.id,
+                evaluationLevelId: 154,
+                questionnarieTypeId: 140,
+                evaluatorId: classRecord_RE.teacherId,
+                evaluatorTypeId: 187,
+                evaluatedId: classRecord_RE.id,
+                evaluatedTypeId: 504
+            };
+            trPrintWithCriteria("<spring:url value="/evaluation/printEvaluationForm"/>", null, JSON.stringify(myObj));
+        }
+
+        function print_Training_Reaction_Form_RE(){
+        let myObj = {
+            classId: classRecord_RE.id,
+            evaluationLevelId: 154,
+            questionnarieTypeId: 141,
+            evaluatorId: classRecord_RE.tclassSupervisor,
+            evaluatorTypeId: 454,
+            evaluatedId: classRecord_RE.teacherId,
+            evaluatedTypeId: 187
+        };
+        trPrintWithCriteria("<spring:url value="/evaluation/printEvaluationForm"/>", null, JSON.stringify(myObj));
+    }
+
+        function print_Student_Reaction_Form_RE(stdId){
+        let myObj = {
+            classId: classRecord_RE.id,
+            evaluationLevelId: 154,
+            questionnarieTypeId: 139,
+            evaluatorId: stdId,
+            evaluatorTypeId: 188,
+            evaluatedId: classRecord_RE.id,
+            evaluatedTypeId: 504
+        };
+        trPrintWithCriteria("<spring:url value="/evaluation/printEvaluationForm"/>", null, JSON.stringify(myObj));
+    }
+
     //------------------------------------------------- Global Functions -----------------------------------------------
         function create_evaluation_form_RE(id,questionnarieId, evaluatorId,
                                     evaluatorTypeId, evaluatedId, evaluatedTypeId, questionnarieTypeId,
@@ -1750,15 +1866,19 @@
                 setTimeout(() => {
                     msg.close();
                 }, 3000);
-                if(questionnarieTypeId == 139)
+                if(questionnarieTypeId == 139){
                     ListGrid_student_RE.invalidateCache();
+                    print_Student_Reaction_Form_RE(evaluatorId);
+                }
                 else if (questionnarieTypeId == 141) {
                     classRecord_RE.trainingEvalStatus = 1;
                     ToolStrip_SendForms_RE.getField("sendButtonTraining").enableIcon("ok");
+                    print_Training_Reaction_Form_RE();
                 }
                 else if(questionnarieTypeId == 140){
                     classRecord_RE.teacherEvalStatus = 1;
                     ToolStrip_SendForms_RE.getField("sendButtonTeacher").enableIcon("ok");
+                    print_Teacher_Reaction_Form_RE();
                 }
             } else {
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
@@ -1788,6 +1908,47 @@
                 DynamicForm_ReturnDate_RE.clearFieldErrors("evaluationReturnDate", true);
             }
         }
+
+        function sendMessage_evaluation() {
+        let data={
+            type:MSG_msgContent.type,
+            classStudent:MSG_msgContent.users,
+            message:MSG_msgContent.text,
+        }
+
+        let wait = createDialog("wait");
+
+        isc.RPCManager.sendRequest(TrDSRequest(sendMessageUrl +
+            "/sendSMS",
+            "POST",
+            JSON.stringify(data),
+            function(resp){
+                wait.close();
+                if (generalGetResp(resp)) {
+                    if (resp.httpResponseCode == 200) {
+                        var ERROR = isc.Dialog.create({
+                            message:"پیام با موفقیت ارسال شد",
+                            icon: "[SKIN]say.png",
+                            title:  "متن پیام"
+                        });
+
+                        setTimeout(function () {
+                            ERROR.close();
+                        }, 1000);
+
+                        MSG_initMSG()
+                        MSG_Window_MSG_Main.clear()
+                        MSG_Window_MSG_Main.close();
+
+                    } else {
+                        createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
+                    }
+                }
+            })
+        );
+    }
+
+
 
 
     //

@@ -147,10 +147,9 @@ public class ClassStudentRestController {
         try {
             Map<String, String> result;
             result = classStudentService.registerStudents(request, classId);
-            ////disable all alarms
-//            classAlarmService.alarmClassCapacity(classId);
-//            classAlarmService.alarmStudentConflict(classId);
-//            classAlarmService.saveAlarms();
+            classAlarmService.alarmClassCapacity(classId);
+            classAlarmService.alarmStudentConflict(classId);
+            classAlarmService.saveAlarms();
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
@@ -213,12 +212,11 @@ public class ClassStudentRestController {
                 classStudentService.delete(studentId);
             }
 
-            ////disable all alarms
-//            if (classId != null) {
-//                classAlarmService.alarmClassCapacity(classId);
-//                classAlarmService.alarmStudentConflict(classId);
-//                classAlarmService.saveAlarms();
-//            }
+            if (classId != null) {
+                classAlarmService.alarmClassCapacity(classId);
+                classAlarmService.alarmStudentConflict(classId);
+                classAlarmService.saveAlarms();
+            }
 
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException | DataIntegrityViolationException e) {
