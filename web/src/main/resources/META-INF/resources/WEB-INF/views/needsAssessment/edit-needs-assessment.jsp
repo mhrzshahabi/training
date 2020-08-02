@@ -1287,7 +1287,7 @@
         <%--// showDetailFields: true--%>
     <%--});--%>
 
-    let Window_AddCompetence = isc.Window.create({
+    var Window_AddCompetence = isc.Window.create({
         title: "<spring:message code="competence.list"/>",
         width: "80%",
         height: "70%",
@@ -1967,7 +1967,7 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                        var varParams = [{
+                        let varParams = [{
                             "processKey": "needAssessment_MainWorkflow",
                             "cId": DynamicForm_JspEditNeedsAssessment.getValue("objectId"),
                             "objectName": "تغییر نیازسنجی " + priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] + " : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().titleFa + ( DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code !== undefined ? " با کد : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code: ""),

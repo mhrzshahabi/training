@@ -130,8 +130,7 @@
             ]
         });
 
-
-    var MSG_Window_MSG_Main = isc.Window.create({
+        var MSG_Window_MSG_Main = isc.Window.create({
         placement: "center",
         title: "ارسال پیام",
         overflow: "auto",
@@ -326,36 +325,8 @@
                         click: function () {
                             if (record.evaluationStatusReaction == "0" ||record.evaluationStatusReaction == null)
                                 createDialog("info", "فرم ارزیابی واکنشی برای این فراگیر صادر نشده است");
-                            <%--else{--%>
-                            <%--    let data = {};--%>
-                            <%--    data.classId = classRecord_RE.id;--%>
-                            <%--    data.evaluatorId = record.id;--%>
-                            <%--    data.evaluatorTypeId = 188;--%>
-                            <%--    data.evaluatedId = classRecord_RE.id;--%>
-                            <%--    data.evaluatedTypeId = 504;--%>
-                            <%--    data.questionnaireTypeId = 139;--%>
-                            <%--    data.evaluationLevelId = 154;--%>
-
-                            <%--    let criteriaForm_operational = isc.DynamicForm.create({--%>
-                            <%--        method: "POST",--%>
-                            <%--        action: "<spring:url value="/evaluation/printWithCriteria"/>",--%>
-                            <%--        target: "_Blank",--%>
-                            <%--        canSubmit: true,--%>
-                            <%--        fields:--%>
-                            <%--            [--%>
-                            <%--                {name: "myToken", type: "hidden"},--%>
-                            <%--                {name: "printData", type: "hidden"}--%>
-                            <%--            ],--%>
-                            <%--        show: function () {--%>
-                            <%--            this.Super("show", arguments);--%>
-                            <%--        }--%>
-                            <%--    });--%>
-
-                            <%--    criteriaForm_operational.setValue("myToken", "<%=accessToken%>");--%>
-                            <%--    criteriaForm_operational.setValue("printData", JSON.stringify(data));--%>
-                            <%--    criteriaForm_operational.show();--%>
-                            <%--    criteriaForm_operational.submit();--%>
-                            <%--}--%>
+                            else
+                                print_Student_Reaction_Form_RE(record.id);
                         }
                     });
                     recordCanvas.addMember(printIcon);
@@ -368,8 +339,7 @@
         });
 
     //----------------------------------------- ToolStrips -------------------------------------------------------------
-
-    var ToolStripButton_MSG_RE = isc.IButton.create({
+        var ToolStripButton_MSG_RE = isc.IButton.create({
         baseStyle: 'MSG-btn-orange',
         icon: '../static/img/msg/mail.svg',
         title:"ارسال پیام", width:80,
@@ -426,7 +396,7 @@
         }
     });
 
-    var ToolStripButton_FormIssuanceForAll_RE = isc.ToolStripButton.create({
+        var ToolStripButton_FormIssuanceForAll_RE = isc.ToolStripButton.create({
             title: "<spring:message code="students.form.issuance.Behavioral"/>",
             baseStyle: "sendFile",
             click: function () {
@@ -555,6 +525,10 @@
                                             inline: true,
                                             prompt: "چاپ فرم",
                                             click : function (form, item, icon) {
+                                                if (classRecord_RE.teacherEvalStatus == "0" ||classRecord_RE.teacherEvalStatus == null)
+                                                    createDialog("info", "فرم ارزیابی واکنشی برای مدرس صادر نشده است");
+                                                else
+                                                    print_Teacher_Reaction_Form_RE();
                                             }
                                         }
                                     ]},
@@ -659,6 +633,10 @@
                                             inline: true,
                                             prompt: "چاپ فرم",
                                             click : function (form, item, icon) {
+                                                if (classRecord_RE.trainingEvalStatus == "0" ||classRecord_RE.trainingEvalStatus == null)
+                                                    createDialog("info", "فرم ارزیابی واکنشی برای مسئول آموزش صادر نشده است");
+                                                else
+                                                    print_Training_Reaction_Form_RE();
                                             }
                                         }
                                     ]}
@@ -1823,6 +1801,45 @@
         }
     }
 
+        function print_Teacher_Reaction_Form_RE(){
+            let myObj = {
+                classId: classRecord_RE.id,
+                evaluationLevelId: 154,
+                questionnarieTypeId: 140,
+                evaluatorId: classRecord_RE.teacherId,
+                evaluatorTypeId: 187,
+                evaluatedId: classRecord_RE.id,
+                evaluatedTypeId: 504
+            };
+            trPrintWithCriteria("<spring:url value="/evaluation/printEvaluationForm"/>", null, JSON.stringify(myObj));
+        }
+
+        function print_Training_Reaction_Form_RE(){
+        let myObj = {
+            classId: classRecord_RE.id,
+            evaluationLevelId: 154,
+            questionnarieTypeId: 141,
+            evaluatorId: classRecord_RE.tclassSupervisor,
+            evaluatorTypeId: 454,
+            evaluatedId: classRecord_RE.teacherId,
+            evaluatedTypeId: 187
+        };
+        trPrintWithCriteria("<spring:url value="/evaluation/printEvaluationForm"/>", null, JSON.stringify(myObj));
+    }
+
+        function print_Student_Reaction_Form_RE(stdId){
+        let myObj = {
+            classId: classRecord_RE.id,
+            evaluationLevelId: 154,
+            questionnarieTypeId: 139,
+            evaluatorId: stdId,
+            evaluatorTypeId: 188,
+            evaluatedId: classRecord_RE.id,
+            evaluatedTypeId: 504
+        };
+        trPrintWithCriteria("<spring:url value="/evaluation/printEvaluationForm"/>", null, JSON.stringify(myObj));
+    }
+
     //------------------------------------------------- Global Functions -----------------------------------------------
         function create_evaluation_form_RE(id,questionnarieId, evaluatorId,
                                     evaluatorTypeId, evaluatedId, evaluatedTypeId, questionnarieTypeId,
@@ -1849,15 +1866,19 @@
                 setTimeout(() => {
                     msg.close();
                 }, 3000);
-                if(questionnarieTypeId == 139)
+                if(questionnarieTypeId == 139){
                     ListGrid_student_RE.invalidateCache();
+                    print_Student_Reaction_Form_RE(evaluatorId);
+                }
                 else if (questionnarieTypeId == 141) {
                     classRecord_RE.trainingEvalStatus = 1;
                     ToolStrip_SendForms_RE.getField("sendButtonTraining").enableIcon("ok");
+                    print_Training_Reaction_Form_RE();
                 }
                 else if(questionnarieTypeId == 140){
                     classRecord_RE.teacherEvalStatus = 1;
                     ToolStrip_SendForms_RE.getField("sendButtonTeacher").enableIcon("ok");
+                    print_Teacher_Reaction_Form_RE();
                 }
             } else {
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
@@ -1888,7 +1909,7 @@
             }
         }
 
-    function sendMessage_evaluation() {
+        function sendMessage_evaluation() {
         let data={
             type:MSG_msgContent.type,
             classStudent:MSG_msgContent.users,

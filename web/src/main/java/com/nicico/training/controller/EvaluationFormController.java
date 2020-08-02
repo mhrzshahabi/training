@@ -67,55 +67,6 @@ public class EvaluationFormController {
         return "evaluation/results";
     }
 
-    @PostMapping("/printTeacherReactionForm/{classId}")
-    public ResponseEntity<?> printTeacherReactionForm(final HttpServletRequest request,@PathVariable Long classId) {
-
-        String token = request.getParameter("myToken");
-
-        final RestTemplate restTemplate = new RestTemplate();
-        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
-
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + token);
-
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-
-        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
-
-        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
-
-        return restTemplate.exchange(restApiUrl + "/api/evaluation/printTeacherReactionForm/" + classId, HttpMethod.POST, entity, byte[].class);
-
-    }
-
-    @PostMapping("/printTrainingReactionForm/{type}/{classId}")
-    public ResponseEntity<?> printTrainingReactionForm(final HttpServletRequest request, @PathVariable String type, @PathVariable Long classId) {
-
-        String token = request.getParameter("myToken");
-
-        final RestTemplate restTemplate = new RestTemplate();
-        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
-
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + token);
-
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-        map.add("printData", request.getParameter("printData"));
-
-        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
-
-        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
-
-        if (type.equals("pdf"))
-            return restTemplate.exchange(restApiUrl + "/api/evaluation/printTrainingReactionForm/PDF/" + classId, HttpMethod.POST, entity, byte[].class);
-        else
-            return null;
-    }
-
     @RequestMapping("/reaction-evaluation-form")
     public String loadPageReactionEvaluation() {
         return "evaluation/reactionEvaluation";
@@ -124,6 +75,30 @@ public class EvaluationFormController {
     @RequestMapping("/behavioral-evaluation-form")
     public String loadPageBehavioralEvaluation() {
         return "evaluation/behavioralEvaluation";
+    }
+
+    @PostMapping("/printEvaluationForm")
+    public ResponseEntity<?> printEvaluationForm(final HttpServletRequest request) {
+
+        String token = request.getParameter("token");
+
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
+
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+
+        map.add("data", request.getParameter("data"));
+
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
+
+        return restTemplate.exchange(restApiUrl + "/api/evaluation/printEvaluationForm" , HttpMethod.POST, entity, byte[].class);
     }
 
 }
