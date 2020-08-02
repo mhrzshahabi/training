@@ -9,7 +9,6 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.NeedsAssessmentDTO;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
-import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.TypeToken;
@@ -122,7 +121,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
                 needsAssessmentDAO.saveAndFlush(needsAssessment);
             }
         });
-        saveModificationsDate(objectType, objectId, createdBy);
+        saveModifications(objectType, objectId, createdBy);
         dao.deleteAllByObjectIdAndObjectType(objectId, objectType);
     }
 
@@ -195,7 +194,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
         return criteriaRq;
     }
 
-    public int saveModificationsDate(String objectType, Long objectId, String createdBy){
+    public int saveModifications(String objectType, Long objectId, String createdBy){
         Date today = new Date();
         switch (objectType) {
             case "Post":
