@@ -1762,7 +1762,6 @@
             masterRecord = ListGrid_Institute_Institute.getSelectedRecord();
             masterId = masterRecord.id;
         }
-        console.log(masterId);
         if (ListGrid_Institute_Equipment_List.getSelectedRecord() != null) {
             var selectedEquipmentRecords = ListGrid_Institute_Equipment_List.getSelectedRecords();
             if (selectedEquipmentRecords.getLength() > 1) {

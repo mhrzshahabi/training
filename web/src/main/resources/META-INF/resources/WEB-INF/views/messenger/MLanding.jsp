@@ -341,7 +341,6 @@
         isFileAttached = true;
         var upload = document.getElementById('MSG-file-upload');
         var file = upload.files[0];
-        console.log(file)
         MSG_attachFiles.push(file);
         MSGAttachContainer.addMember(MSG_getAttachedFile(file.name))
     }
@@ -595,7 +594,6 @@
 
 
     function MSG_initMSG(){
-        console.log('init')
         MSG_contentEditor.setValue('');
         MSGAttachContainer.removeMembers(MSGAttachContainer.getMembers());
         MSG_selectUsersForm.clearValues()

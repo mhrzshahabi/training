@@ -605,7 +605,6 @@
                     }
                 }
 
-                console.log(valueMaps);
 
                 if (sort != null && sort.size() != 0){
 
@@ -1917,14 +1916,14 @@
                             <%--},--%>
                             <%--</sec:authorize>--%>
 
-                            <%--<sec:authorize access="hasAuthority('Menu_Personnel_Training_Status_Report')">--%>
+                            <sec:authorize access="hasAuthority('Menu_Personnel_Training_Status_Report')">
                             {
                             title: "<spring:message code="personnel.training.status.report"/>",
                             click: function () {
                             createTab(this.title, "<spring:url value="web/personnelTrainingStatusReport"/>");
                             }
                             },
-                            <%--</sec:authorize>--%>
+                            </sec:authorize>
                         ]
                 },
                 </sec:authorize>

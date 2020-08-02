@@ -517,7 +517,6 @@ abaspour 9803
     </c:if>
 
     <c:if test="${taskFormVariable.id =='DELETE'}">
-    alert(23)
     doDeleteTaskButton = isc.IButton.create({
         icon: "[SKIN]actions/edit.png", title: "حذف گردش کار", align: "center", width: "150",
         click: function () {

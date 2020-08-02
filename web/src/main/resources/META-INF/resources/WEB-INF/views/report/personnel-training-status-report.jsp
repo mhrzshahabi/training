@@ -393,7 +393,6 @@
                         let val = needsAssessmentStateValueMap[FilterDF_PTSR.getItem("needsAssessmentState").getValue()];
                         if (val !== "همه")
                             criteria.criteria.push({fieldName: "needsAssessmentState", operator: "equals", value: val});
-                        console.log(criteria.criteria.length);
                         if(criteria.criteria.length < 1)
                             criteria = {};
                         ExportToFile.showDialog(null, PersonnelTrainingStatusReport_LG, "viewPersonnelTrainingStatusReport", 0, null, '',"گزارش وضعیت آموزشی افراد"  , criteria, null);
