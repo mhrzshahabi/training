@@ -516,8 +516,8 @@
 
         this.loadPage_attachment_Job=function loadPage_attachment(inputObjectType, inputObjectId, inputTitleAttachment, valueMap_EAttachmentType, readOnly = false, criteria = null) {
             this.VLayout_Body_JspAttachment.redraw();
-             objectTypeAttachment = inputObjectType;
-             objectIdAttachment = inputObjectId;
+            objectTypeAttachment = inputObjectType;
+            objectIdAttachment = inputObjectId;
             this.RestDataSource_Attachments_JspAttachments.fetchDataURL = attachmentUrl + "/iscList/";
             if (inputObjectType != null)
             this.RestDataSource_Attachments_JspAttachments.fetchDataURL += inputObjectType;
