@@ -2417,4 +2417,49 @@ GROUP BY
         </createView>
     </changeSet>
 
+    <changeSet author="NICICO" id="VIEW_PERSONNEL_TRAINING_STATUS_REPORT-001">
+        <createView viewName="VIEW_PERSONNEL_TRAINING_STATUS_REPORT" replaceIfExists="true">
+            <![CDATA[
+   SELECT DISTINCT
+ROW_NUMBER() OVER (ORDER BY view2_alijafari.personnel_personnel_no) AS id,
+    null AS organizer,
+    view2_alijafari.personnel_personnel_no,
+    null AS personnel_no_10d,
+    view2_alijafari.personnel_national_code,
+    view2_alijafari.personnel_first_name,
+    view2_alijafari.personnel_last_name,
+    null AS job_code,
+    view2_alijafari.personnel_job_title,
+    view2_alijafari.personnel_post_code,
+    view2_alijafari.personnel_post_grade_code,
+    view2_alijafari.personnel_post_grade_title,
+    view2_alijafari.personnel_post_title,
+    null AS company,
+    view2_alijafari.personnel_cpp_affairs,
+    view2_alijafari.personnel_cpp_area,
+    null AS assisstant,
+    null AS unit,
+    view2_alijafari.course_code,
+    view2_alijafari.course_title_fa,
+    tbl_skill.c_code skill_code,
+    tbl_skill.c_title_fa skill_title,
+    view2_alijafari.c_title AS acceptance_state,
+    view2_alijafari.coursetype AS needs_assessment_state,
+    tbl_parameter_value.c_title AS needs_assessment_priority,
+    null AS class_state
+FROM
+    view2_alijafari
+    INNER JOIN tbl_personnel ON tbl_personnel.personnel_no = view2_alijafari.personnel_personnel_no
+                                AND tbl_personnel.national_code = view2_alijafari.personnel_national_code
+    LEFT JOIN tbl_parameter_value ON tbl_parameter_value.id = view2_alijafari.na_priority_id
+    INNER JOIN tbl_course ON view2_alijafari.course_code = tbl_course.c_code
+    LEFT JOIN tbl_skill ON tbl_course.id = tbl_skill.f_course
+WHERE
+    tbl_personnel.active = 1
+    AND   tbl_personnel.employment_status_id = 5
+ORDER BY view2_alijafari.personnel_personnel_no, view2_alijafari.course_code
+            ]]>
+        </createView>
+    </changeSet>
+
 </databaseChangeLog>
