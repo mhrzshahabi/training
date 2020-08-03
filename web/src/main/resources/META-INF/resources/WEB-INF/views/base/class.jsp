@@ -603,11 +603,33 @@
                     form.getItem("startEvaluation").setDisabled(false);
                     form.setValue("titleClass", item.getSelectedRecord().titleFa);
                     form.setValue("scoringMethod", item.getSelectedRecord().scoringMethod);
-                    if (item.getSelectedRecord().startEvaluation != null) {
-                        form.setValue("startEvaluation", item.getSelectedRecord().startEvaluation)
+
+                    if (item.getSelectedRecord().evaluation != null) {
+                        form.setValue("evaluation", item.getSelectedRecord().evaluation);
+                        if (item.getSelectedRecord().evaluation === "3") {
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").required = true;
+                            DynamicForm_Class_JspClass.getItem("behavioralLevel").setDisabled(false);
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").setDisabled(false);
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").enable();
+                            if (item.getSelectedRecord().startEvaluation != null) {
+                                form.setValue("startEvaluation", item.getSelectedRecord().startEvaluation)
+                            } else {
+                                form.getItem("startEvaluation").setValue()
+                            }
+                            if (item.getSelectedRecord().behavioralLevel != null) {
+                                form.setValue("behavioralLevel", item.getSelectedRecord().behavioralLevel)
+                            } else {
+                                form.getItem("behavioralLevel").setValue()
+                            }
+                        } else {
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").required = false;
+                            DynamicForm_Class_JspClass.getItem("behavioralLevel").setDisabled(true);
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").setDisabled(true);
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").setValue();
+                            DynamicForm_Class_JspClass.getItem("behavioralLevel").setValue();
+                        }
                     } else {
-                        form.getItem("startEvaluation").setDisabled(true);
-                        form.getItem("startEvaluation").setValue()
+                        form.getItem("evaluation").setValue()
                     }
                     //==============
                     DynamicForm_Class_JspClass.getItem("scoringMethod").change(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("scoringMethod"), DynamicForm_Class_JspClass.getValue("scoringMethod"));
@@ -1084,7 +1106,6 @@
                 <%--return this.Super("validate",arguments);--%>
                 <%--}--%>
             },
-
             {
                 name: "scoringMethod",
                 colSpan: 1,
@@ -1166,7 +1187,6 @@
                 textAlign: "center",
                 required: true,
             },
-
             {
                 name: "acceptancelimit_a",
                 colSpan: 1,
@@ -1309,31 +1329,93 @@
                 title: "<spring:message code='class.preCourseTest'/>",
                 hidden: true,
             },
+            //------------------------ DONE BY ROYA---------------------------------------------------------------------
+            {
+                name: "evaluation",
+                title: "<spring:message code="evaluation.level"/>:",
+                textAlign: "center",
+                startRow: true,
+                width: 120,
+                valueMap: {
+                    "1": "واکنشی",
+                    "2": "یادگیری",
+                    "3": "رفتاری",
+                    "4": "نتایج",
+                },
+                pickListProperties:{
+                    showFilterEditor: false
+                },
+                change: function (form, item, value, oldValue) {
+                    if (value === "3") {
+                        DynamicForm_Class_JspClass.getItem("startEvaluation").required = true;
+                        DynamicForm_Class_JspClass.getItem("behavioralLevel").setDisabled(false);
+                        DynamicForm_Class_JspClass.getItem("startEvaluation").setDisabled(false);
+                        DynamicForm_Class_JspClass.getItem("startEvaluation").enable();
+                        DynamicForm_Class_JspClass.getItem("startEvaluation").setValue("3");
+                    } else {
+                        DynamicForm_Class_JspClass.getItem("startEvaluation").required = false;
+                        DynamicForm_Class_JspClass.getItem("behavioralLevel").setDisabled(true);
+                        DynamicForm_Class_JspClass.getItem("startEvaluation").setDisabled(true);
+                        DynamicForm_Class_JspClass.getItem("startEvaluation").setValue();
+                        DynamicForm_Class_JspClass.getItem("behavioralLevel").setValue();
+                    }
+                }
+            },
             {
                 name: "startEvaluation",
-                title: "<spring:message code="start.evaluation"/>",
-                colSpan: 2,
+                title: "<spring:message code="start.evaluation"/>:",
+                required : false,
+                defaultValue:"",
                 textAlign: "center",
+                width: 60,
                 hint: "&nbsp;ماه",
+                pickListProperties:{
+                    showFilterEditor: false
+                },
                 valueMap: {
-                    "1": "1",
-                    "2": "2",
-                    "3": "3",
-                    "4": "4",
-                    "5": "5",
-                    "6": "6",
-                    "7": "7",
-                    "8": "8",
-                    "9": "9",
-                    "10": "10",
-                    "11": "11",
-                    "12": "12"
-                },
-                pickListProperties: {
-                    showFilterEditor: false,
-                    sortField: 1
-                },
+                    1: "1", 2: "2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 9: "9", 10: "10", 11: "11", 12: "12"
+                }
             },
+            {
+                name: "behavioralLevel",
+                title: "<spring:message code="behavioral.Level"/>:",
+                colSpan: 3,
+                type: "radioGroup",
+                vertical: false,
+                endRow: true,
+                fillHorizontalSpace: true,
+                valueMap: {
+                    "1": "مشاهده",
+                    "2": "مصاحبه",
+                    "3": "کار پروژه ای"
+                }
+            },
+            <%--{--%>
+            <%--    name: "startEvaluation",--%>
+            <%--    title: "<spring:message code="start.evaluation"/>",--%>
+            <%--    colSpan: 2,--%>
+            <%--    textAlign: "center",--%>
+            <%--    hint: "&nbsp;ماه",--%>
+            <%--    valueMap: {--%>
+            <%--        "1": "1",--%>
+            <%--        "2": "2",--%>
+            <%--        "3": "3",--%>
+            <%--        "4": "4",--%>
+            <%--        "5": "5",--%>
+            <%--        "6": "6",--%>
+            <%--        "7": "7",--%>
+            <%--        "8": "8",--%>
+            <%--        "9": "9",--%>
+            <%--        "10": "10",--%>
+            <%--        "11": "11",--%>
+            <%--        "12": "12"--%>
+            <%--    },--%>
+            <%--    pickListProperties: {--%>
+            <%--        showFilterEditor: false,--%>
+            <%--        sortField: 1--%>
+            <%--    },--%>
+            <%--},--%>
+            //------------------------ DONE BY ROYA---------------------------------------------------------------------
         ],
         itemChanged:function () {
            if (DynamicForm_Class_JspClass.getField('teachingType').getValue() =="غیر حضوری" || DynamicForm_Class_JspClass.getField('teachingType').getValue() == "مجازی")
