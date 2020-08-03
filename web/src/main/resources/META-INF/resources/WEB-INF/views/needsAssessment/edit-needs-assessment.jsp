@@ -22,6 +22,11 @@
     };
     var skillData = [];
     var competenceData = [];
+    var peopleTypeMap ={
+        "Personal" : "شرکتی",
+        "ContractorPersonal" : "پیمان کار"
+    };
+
 
     let NeedsAssessmentTargetDS_needsAssessment = isc.TrDS.create({
         ID: "NeedsAssessmentTargetDS_needsAssessment",
