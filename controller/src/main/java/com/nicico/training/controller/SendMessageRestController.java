@@ -51,7 +51,8 @@ public class SendMessageRestController {
     @Loggable
     @PostMapping(value = "/sendSMS")
     public ResponseEntity sendSMS(@RequestBody String data) throws IOException {
-        List<Long> classStudentIDs = new ArrayList<>();
+        List<Long> ids = new ArrayList<>();
+        String type = "";
         List<String> mobiles = new ArrayList<>();
         List<String> fullName = new ArrayList<>();
         List<String> prefixFullName = new ArrayList<>();
@@ -65,44 +66,89 @@ public class SendMessageRestController {
         oMessage = jsonNode.get("message").asText("");
 
 
-        jsonNode = jsonNode.get("classStudent");
+        if (jsonNode.has("classStudent")) {
+            jsonNode = jsonNode.get("classStudent");
+            type = "classStudent";
 
-        if (jsonNode.isArray()) {
-            for (final JsonNode objNode : jsonNode) {
-                classStudentIDs.add(objNode.asLong());
+            if (jsonNode.isArray()) {
+                for (final JsonNode objNode : jsonNode) {
+                    ids.add(objNode.asLong());
+                }
+            }
+        } else if (jsonNode.has("classTeacher")) {
+            jsonNode = jsonNode.get("classTeacher");
+            type = "classTeacher";
+
+            if (jsonNode.isArray()) {
+                for (final JsonNode objNode : jsonNode) {
+                    ids.add(objNode.asLong());
+                }
             }
         }
 
-        if (classStudentIDs.size() == 0) {
+
+        if (ids.size() == 0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
 
-        if(classStudentIDs.size()>0){
-            SearchDTO.SearchRq searchRq =new SearchDTO.SearchRq();
+        if (type == "classStudent") {
+            SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
             searchRq.setCount(1000);
             searchRq.setStartIndex(0);
             searchRq.setSortBy("id");
-            searchRq.setCriteria(makeNewCriteria("id",classStudentIDs, EOperator.inSet,null));
+            searchRq.setCriteria(makeNewCriteria("id", ids, EOperator.inSet, null));
 
             SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> searchRs = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
 
-            searchRs.getList().forEach(p->{
-                mobiles.add(p.getStudent().getMobile());
-                fullName.add(p.getFullName());
-                prefixFullName.add(p.getStudent().getGender().equals("مرد")?"جناب آقای":(p.getStudent().getGender().equals("زن")?"سرکار خانم":"جناب آقای/سرکار خانم"));
-            }
+            searchRs.getList().forEach(p -> {
+                        mobiles.add(p.getStudent().getMobile());
+                        fullName.add(p.getFullName());
+                        prefixFullName.add(p.getStudent().getGender().equals("مرد") ? "جناب آقای" : (p.getStudent().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم"));
+                    }
             );
-            className=searchRs.getList().get(0).getTclass().getCourse().getTitleFa();
+            className = searchRs.getList().get(0).getTclass().getCourse().getTitleFa();
+        }else if (type == "classTeacher") {
+            SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+            searchRq.setCount(1000);
+            searchRq.setStartIndex(0);
+            searchRq.setSortBy("id");
+            searchRq.setCriteria(makeNewCriteria("id", ids, EOperator.inSet, null));
+
+            SearchDTO.SearchRs<TeacherDTO.Info> searchRs = teacherService.search(searchRq);
+
+            searchRs.getList().forEach(p -> {
+                        mobiles.add(p.getPersonality().getContactInfo().getMobile());
+                        fullName.add(p.getFullName());
+                        prefixFullName.add(p.getPersonality().getGenderId()==1 ? "جناب آقای" : (p.getPersonality().getGenderId()==2 ? "سرکار خانم" : "جناب آقای/سرکار خانم"));
+                    }
+            );
+            className = "";//searchRs.getList().get(0).getTclass().getCourse().getTitleFa();
+        }else if (type == "classStudentHaventEvaluation") {
+            SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+            searchRq.setCount(1000);
+            searchRq.setStartIndex(0);
+            searchRq.setSortBy("id");
+            searchRq.setCriteria(makeNewCriteria("id", ids, EOperator.inSet, null));
+
+            SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> searchRs = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
+
+            searchRs.getList().forEach(p -> {
+                        mobiles.add(p.getStudent().getMobile());
+                        fullName.add(p.getFullName());
+                        prefixFullName.add(p.getStudent().getGender().equals("مرد") ? "جناب آقای" : (p.getStudent().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم"));
+                    }
+            );
+            className = searchRs.getList().get(0).getTclass().getCourse().getTitleFa();
         }
 
-        for (int i=0;i<mobiles.size();i++) {
-            String message=oMessage;
-            message=message.replace("{prefix-full_name}",prefixFullName.get(i));
-            message=message.replace("{full-name}",fullName.get(i));
-            message=message.replace("{class-name}",className);
+        for (int i = 0; i < mobiles.size(); i++) {
+            String message = oMessage;
+            message = message.replace("{prefix-full_name}", prefixFullName.get(i));
+            message = message.replace("{full-name}", fullName.get(i));
+            message = message.replace("{class-name}", className);
 
-            List<String> numbers=new ArrayList<>();
+            List<String> numbers = new ArrayList<>();
             numbers.add(mobiles.get(i));
 
             sendMessageService.asyncEnqueue(numbers, message);
