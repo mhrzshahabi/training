@@ -1284,6 +1284,8 @@
                 },
                 change: function (form, item, value, oldValue) {
 
+                    highlightClassStauts(value,10);
+
                     if(classMethod.localeCompare("PUT") === 0 && value === "3" &&
                         (ListGrid_Class_JspClass.getSelectedRecord().evaluationStatusReactionTraining == undefined ||
                             ListGrid_Class_JspClass.getSelectedRecord().evaluationStatusReactionTraining == 0)){
@@ -2557,6 +2559,7 @@
                 OJT = false;
                 if (a === 0) {
                     VM_JspClass.editRecord(record);
+
                     saveButtonStatus();
                     classMethod = "PUT";
                     url = classUrl + record.id;
@@ -2587,6 +2590,8 @@
                         let result=resp.httpResponseText==Boolean(true).toString() ? true : false;
                         autoTimeActivation(result ? false : true);
                     }));
+
+                    highlightClassStauts(DynamicForm_Class_JspClass.getField("classStatus").getValue(),1200);
 
                 } else {
                     classMethod = "POST";
@@ -2964,6 +2969,7 @@
                     });
 
                     classTypeStatus.setValue(oldValue);
+                    highlightClassStauts(oldValue,10);
                 }
 
             }));
@@ -2979,6 +2985,7 @@
                 if (resp.data !== "") {
                     if (resp.data == "false") {
                         classTypeStatus.setValue(oldValue);
+                        highlightClassStauts(oldValue,10);
                         isc.Dialog.create({
                             message: "تاریخ شروع کلاس " + ListGrid_Class_JspClass.getSelectedRecord().startDate + " می باشد",
                             icon: "[SKIN]ask.png",
@@ -3612,6 +3619,26 @@
         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl, "POST", JSON.stringify(data), function (resp) {
 
         }));
+    }
+
+    //Amin HK
+    //Highlight a selected item in a radio group
+    function highlightClassStauts(value,time){
+        setTimeout(()=> {
+            let mapDictionary = {1: "برنامه ریزی", 2: "در حال اجرا", 3: "پایان یافته"};
+
+            let result = $('input[type="radio"][name="classStatus"]').parent().next();
+
+            Object.keys(result).forEach(x => {
+                if (x != "length" && x != "prevObject") {
+                    result[x].setAttribute("style", "font-weight:normal");
+
+                    if (result[x].innerText === mapDictionary[value]) {
+                        result[x].setAttribute("style", "font-weight:bold");
+                    }
+                }
+            });
+        },time);
     }
 
     }
