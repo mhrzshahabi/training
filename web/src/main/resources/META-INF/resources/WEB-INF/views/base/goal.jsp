@@ -814,12 +814,19 @@
         }
     });
     var ToolStripButton_Goal_Edit = isc.ToolStripButtonEdit.create({
-
         title: "ویرایش",
         prompt: "اخطار<br/>ویرایش هدف در تمامی دوره های ارضا کننده هدف نیز اعمال خواهد شد.",
         hoverWidth: 320,
         click: function () {
             ListGrid_Goal_Edit();
+        }
+    });
+    var ToolStripButton_Goal_Edit_WindowAllGoal = isc.ToolStripButtonEdit.create({
+        title: "ویرایش",
+        prompt: "اخطار<br/>ویرایش هدف در تمامی دوره های ارضا کننده هدف نیز اعمال خواهد شد.",
+        hoverWidth: 320,
+        click: function () {
+            ListGrid_Goal_Edit(ListGrid_GoalAll);
         }
     });
     var ToolStripButton_Goal_Add = isc.ToolStripButtonAdd.create({
@@ -908,6 +915,7 @@
         membersMargin: 5,
         members: [
             ToolStripButton_Goal_Add,
+            ToolStripButton_Goal_Edit_WindowAllGoal,
             ToolStripButton_Goal_All,
             ToolStripButton_Goal_Category
         ]
@@ -1097,8 +1105,8 @@
         }
     };
 
-    function ListGrid_Goal_Edit() {
-        var record = ListGrid_Goal.getSelectedRecord();
+    function ListGrid_Goal_Edit(LG = ListGrid_Goal) {
+        let record = LG.getSelectedRecord();
         if (record == null || record.id == null) {
             isc.Dialog.create({
                 message: "هدفی انتخاب نشده است.",
@@ -1132,6 +1140,8 @@
         RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseRecord.id;
         ListGrid_Syllabus_Goal.fetchData();
         ListGrid_Syllabus_Goal.invalidateCache();
+        ListGrid_GoalAll.fetchData();
+        ListGrid_GoalAll.invalidateCache();
     };
 
     function ListGrid_Goal_Add() {
