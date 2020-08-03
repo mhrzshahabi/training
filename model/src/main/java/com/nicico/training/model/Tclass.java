@@ -146,9 +146,6 @@ public class Tclass extends Auditable {
     @Column(name = "c_acceptance_limit")
     private String acceptancelimit;
 
-    @Column(name = "start_evaluation")
-    private Integer startEvaluation;
-
     @Column(name = "c_workflow_ending_status")
     private String workflowEndingStatus;
 
@@ -196,4 +193,14 @@ public class Tclass extends Auditable {
 
     @Column(name = "evaluation_reaction_training")
     private Integer evaluationStatusReactionTraining;
+
+    @Column(name = "start_evaluation")
+    private Integer startEvaluation;
+
+    @Column(name = "c_evaluation")
+    private String evaluation;
+
+    @Column(name = "c_behavioral_level")
+    private String behavioralLevel;
+
 }
