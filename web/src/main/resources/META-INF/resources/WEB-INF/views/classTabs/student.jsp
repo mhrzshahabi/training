@@ -1278,6 +1278,8 @@
                                         align: "center",
                                         icon: "[SKIN]/actions/save.png",
                                         click: function () {
+                                            wait.show()
+
                                             var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
                                             var students = [];
                                             for (let i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
@@ -1366,6 +1368,7 @@
         }
 
         function class_add_students_result(resp) {
+            wait.close();
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
                 ClassStudentWin_student.close();
@@ -1377,7 +1380,7 @@
                     invalMessage = "<spring:message code="for"/>" + " " + "<spring:message code="student.plural"/>" + " " + messages.names + " " + "<spring:message code="message.define.applicant.company"/>";
                     timeOut = 15000
                 }
-                wait.close();
+
                 var OK = createDialog("info", messages.accepted + " " + "<spring:message code="message.students.added.successfully"/>"
                     + "<br/>" + invalMessage,
 
@@ -1387,7 +1390,7 @@
                     OK.close();
                 }, timeOut);
             } else {
-                const wait = createDialog("wait");
+                //const wait = createDialog("wait");
                 var OK = createDialog("info", "<spring:message code="msg.operation.error"/>",
                     "<spring:message code="error"/>");
                 setTimeout(function () {

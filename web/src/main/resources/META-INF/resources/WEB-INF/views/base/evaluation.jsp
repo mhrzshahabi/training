@@ -501,6 +501,7 @@
 
                 switch (tab.id) {
                     case "TabPane_Reaction": {
+                        RestDataSource_student_RE.implicitCriteria=null;
                         RestDataSource_student_RE.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
                         ListGrid_student_RE.invalidateCache();
                         ListGrid_student_RE.fetchData();
