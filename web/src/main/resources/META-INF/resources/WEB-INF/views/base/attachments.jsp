@@ -90,8 +90,6 @@
                     return;
                 }
                 if (this.methodAttachment === "POST") {
-                    console.log(isAttachedAttachment)
-                    console.log(document.getElementById('file_JspAttachments').files.length)
                     if (!isAttachedAttachment || document.getElementById('file_JspAttachments').files.length === 0) {
                         createDialog("info", "<spring:message code='file.not.uploaded'/>");
                         return;

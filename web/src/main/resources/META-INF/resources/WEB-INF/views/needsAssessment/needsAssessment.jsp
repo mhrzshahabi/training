@@ -803,7 +803,6 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             this.openAll();
         },
         changed:function () {
-            console.log("open");
         },
     }
     });

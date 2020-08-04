@@ -93,7 +93,7 @@ public class AttachmentRestController {
                                  @RequestParam("objectId") Long objectId,
                                  @RequestParam("fileName") String fileName,
                                  @RequestParam("fileTypeId") Long fileTypeId,
-                                 @RequestParam("description") String description) {
+                                 @RequestParam("description") String description,HttpServletResponse response) throws IOException {
         if (file.isEmpty())
             return new ResponseEntity<>("wrong size", HttpStatus.NOT_ACCEPTABLE);
         AttachmentDTO.Create request = new AttachmentDTO.Create();
@@ -111,7 +111,9 @@ public class AttachmentRestController {
             file.transferTo(destinationFile);
             return new ResponseEntity<>(fileName, HttpStatus.OK);
         } catch (TrainingException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+           // return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+            response.sendError(406,ex.getMessage());
+            return null;
         } catch (Exception ex) {
             ex.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

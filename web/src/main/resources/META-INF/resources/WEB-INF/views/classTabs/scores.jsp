@@ -374,7 +374,6 @@ var mosayeb;
                 },
                 changed: function (form, item, value) {
                     failureReason_value = value
-                    console.log(value)
                     if ((scoresState_value === 403 && value === 453) || (this.grid.getRecord(this.rowNum).scoresStateId === 403 && value === 453) || value === 453) {
                         failureReason_value = null;
                         failureReason_change = false;
@@ -611,7 +610,6 @@ var mosayeb;
                 return false
             }
             else
-                console.log('sortChanged')
           ListGrid_Class_Student.invalidateCache()
         },
 
@@ -807,7 +805,6 @@ var mosayeb;
             ListGrid_Class_Student.refreshCell;
             ListGrid_Class_Student.dataChanged()
         } else {
-            console.log('Edit_Cell_scoresState_Update')
             let scores_wait=createDialog("wait", "در حال بروز رسانی اطلاعات", "<spring:message code="message"/>");
             setTimeout(function () {
                 ListGrid_Class_Student.fetchData()
@@ -825,7 +822,6 @@ var mosayeb;
             ListGrid_Class_Student.refreshFields();
             ListGrid_Class_Student.dataChanged()
         } else {
-            console.log('Edit_Cell_valence_Update')
             let scores_wait=createDialog("wait", "در حال بروز رسانی اطلاعات", "<spring:message code="message"/>");
             setTimeout(function () {
                 ListGrid_Class_Student.fetchData()
@@ -838,13 +834,11 @@ var mosayeb;
     }
 
         function Edit_Cell_ScoreState_failureReason_Update() {
-            console.log(' Edit_Cell_ScoreState_failureReason_Update')
             ListGrid_Class_Student.invalidateCache()
         }
 
     function setTotalStudentWithOutScore(resp) {
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-            console.log('setTotalStudentWithOutScore')
             ListGrid_Class_Student.invalidateCache()
         }
     }
@@ -858,7 +852,6 @@ var mosayeb;
             ListGrid_Class_Student.refreshFields()
             ListGrid_Class_Student.dataChanged()
         } else {
-            console.log('Edit_Cell_failurereason_Update')
             let scores_wait=createDialog("wait", "در حال بروز رسانی اطلاعات", "<spring:message code="message"/>");
             setTimeout(function () {
                 ListGrid_Class_Student.fetchData()
@@ -887,7 +880,6 @@ var mosayeb;
             // }
 
         } else {
-            console.log('Edit_Cell_score_Update')
             let scores_wait=createDialog("wait", "در حال بروز رسانی اطلاعات", "<spring:message code="message"/>");
             setTimeout(function () {
                 ListGrid_Class_Student.fetchData()
@@ -1004,7 +996,6 @@ var mosayeb;
                 ToolStrip_Actions.setVisibility(true)
                 </sec:authorize>
             }
-            console.log('loadPage_Scores')
             ListGrid_Class_Student.invalidateCache();
             ListGrid_Class_Student.fetchData();
         } else {

@@ -508,7 +508,8 @@
             {name: "course.theoryDuration" , title: "", hidden:true},
             {name: "scoringMethod", hidden: true},
             {name: "evaluationStatusReactionTraining", hidden: true},
-            {name: "supervisor", hidden: true}
+            {name: "supervisor", hidden: true},
+            {name: "teacherId", hidden: true}
 
         ],
         getCellCSSText: function (record, rowNum, colNum) {
@@ -602,11 +603,33 @@
                     form.getItem("startEvaluation").setDisabled(false);
                     form.setValue("titleClass", item.getSelectedRecord().titleFa);
                     form.setValue("scoringMethod", item.getSelectedRecord().scoringMethod);
-                    if (item.getSelectedRecord().startEvaluation != null) {
-                        form.setValue("startEvaluation", item.getSelectedRecord().startEvaluation)
+
+                    if (item.getSelectedRecord().evaluation != null) {
+                        form.setValue("evaluation", item.getSelectedRecord().evaluation);
+                        if (item.getSelectedRecord().evaluation === "3") {
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").required = true;
+                            DynamicForm_Class_JspClass.getItem("behavioralLevel").setDisabled(false);
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").setDisabled(false);
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").enable();
+                            if (item.getSelectedRecord().startEvaluation != null) {
+                                form.setValue("startEvaluation", item.getSelectedRecord().startEvaluation)
+                            } else {
+                                form.getItem("startEvaluation").setValue()
+                            }
+                            if (item.getSelectedRecord().behavioralLevel != null) {
+                                form.setValue("behavioralLevel", item.getSelectedRecord().behavioralLevel)
+                            } else {
+                                form.getItem("behavioralLevel").setValue()
+                            }
+                        } else {
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").required = false;
+                            DynamicForm_Class_JspClass.getItem("behavioralLevel").setDisabled(true);
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").setDisabled(true);
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").setValue();
+                            DynamicForm_Class_JspClass.getItem("behavioralLevel").setValue();
+                        }
                     } else {
-                        form.getItem("startEvaluation").setDisabled(true);
-                        form.getItem("startEvaluation").setValue()
+                        form.getItem("evaluation").setValue()
                     }
                     //==============
                     DynamicForm_Class_JspClass.getItem("scoringMethod").change(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("scoringMethod"), DynamicForm_Class_JspClass.getValue("scoringMethod"));
@@ -901,11 +924,19 @@
                 optionDataSource: SupervisorDS_JspClass,
                 autoFetchData: false,
                 valueField: "id",
-                displayField: "lastName",
                 pickListWidth: 550,
                 pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "nationalCode"}, {name: "personnelNo"}],
                 // filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
                 pickListProperties: {sortField: "personnelNo2", showFilterEditor: true},
+                formatValue : function (value, record, form, item) {
+                    var selectedRecord = item.getSelectedRecord();
+                    if (selectedRecord != null) {
+                        return   selectedRecord.firstName + " " +selectedRecord.lastName ;
+
+                    } else {
+                        return value;
+                    }
+                }
             },
             {
                 name: "planner",
@@ -918,11 +949,19 @@
                 optionDataSource: PlannerDS_JspClass,
                 autoFetchData: false,
                 valueField: "id",
-                displayField: "lastName",
                 pickListWidth: 550,
                 pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "nationalCode"}, {name: "personnelNo"}],
                 // filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
                 pickListProperties: {sortField: "personnelNo2", showFilterEditor: true},
+                formatValue : function (value, record, form, item) {
+                    var selectedRecord = item.getSelectedRecord();
+                    if (selectedRecord != null) {
+                        return   selectedRecord.firstName + " " +selectedRecord.lastName ;
+
+                    } else {
+                        return value;
+                    }
+                }
             },
             {
                 name: "reason",
@@ -1067,7 +1106,6 @@
                 <%--return this.Super("validate",arguments);--%>
                 <%--}--%>
             },
-
             {
                 name: "scoringMethod",
                 colSpan: 1,
@@ -1149,7 +1187,6 @@
                 textAlign: "center",
                 required: true,
             },
-
             {
                 name: "acceptancelimit_a",
                 colSpan: 1,
@@ -1267,6 +1304,8 @@
                 },
                 change: function (form, item, value, oldValue) {
 
+                    highlightClassStauts(value,10);
+
                     if(classMethod.localeCompare("PUT") === 0 && value === "3" &&
                         (ListGrid_Class_JspClass.getSelectedRecord().evaluationStatusReactionTraining == undefined ||
                             ListGrid_Class_JspClass.getSelectedRecord().evaluationStatusReactionTraining == 0)){
@@ -1290,31 +1329,93 @@
                 title: "<spring:message code='class.preCourseTest'/>",
                 hidden: true,
             },
+            //------------------------ DONE BY ROYA---------------------------------------------------------------------
+            {
+                name: "evaluation",
+                title: "<spring:message code="evaluation.level"/>:",
+                textAlign: "center",
+                startRow: true,
+                width: 120,
+                valueMap: {
+                    "1": "واکنشی",
+                    "2": "یادگیری",
+                    "3": "رفتاری",
+                    "4": "نتایج",
+                },
+                pickListProperties:{
+                    showFilterEditor: false
+                },
+                change: function (form, item, value, oldValue) {
+                    if (value === "3") {
+                        DynamicForm_Class_JspClass.getItem("startEvaluation").required = true;
+                        DynamicForm_Class_JspClass.getItem("behavioralLevel").setDisabled(false);
+                        DynamicForm_Class_JspClass.getItem("startEvaluation").setDisabled(false);
+                        DynamicForm_Class_JspClass.getItem("startEvaluation").enable();
+                        DynamicForm_Class_JspClass.getItem("startEvaluation").setValue("3");
+                    } else {
+                        DynamicForm_Class_JspClass.getItem("startEvaluation").required = false;
+                        DynamicForm_Class_JspClass.getItem("behavioralLevel").setDisabled(true);
+                        DynamicForm_Class_JspClass.getItem("startEvaluation").setDisabled(true);
+                        DynamicForm_Class_JspClass.getItem("startEvaluation").setValue();
+                        DynamicForm_Class_JspClass.getItem("behavioralLevel").setValue();
+                    }
+                }
+            },
             {
                 name: "startEvaluation",
-                title: "<spring:message code="start.evaluation"/>",
-                colSpan: 2,
+                title: "<spring:message code="start.evaluation"/>:",
+                required : false,
+                defaultValue:"",
                 textAlign: "center",
+                width: 60,
                 hint: "&nbsp;ماه",
+                pickListProperties:{
+                    showFilterEditor: false
+                },
                 valueMap: {
-                    "1": "1",
-                    "2": "2",
-                    "3": "3",
-                    "4": "4",
-                    "5": "5",
-                    "6": "6",
-                    "7": "7",
-                    "8": "8",
-                    "9": "9",
-                    "10": "10",
-                    "11": "11",
-                    "12": "12"
-                },
-                pickListProperties: {
-                    showFilterEditor: false,
-                    sortField: 1
-                },
+                    1: "1", 2: "2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 9: "9", 10: "10", 11: "11", 12: "12"
+                }
             },
+            {
+                name: "behavioralLevel",
+                title: "<spring:message code="behavioral.Level"/>:",
+                colSpan: 3,
+                type: "radioGroup",
+                vertical: false,
+                endRow: true,
+                fillHorizontalSpace: true,
+                valueMap: {
+                    "1": "مشاهده",
+                    "2": "مصاحبه",
+                    "3": "کار پروژه ای"
+                }
+            },
+            <%--{--%>
+            <%--    name: "startEvaluation",--%>
+            <%--    title: "<spring:message code="start.evaluation"/>",--%>
+            <%--    colSpan: 2,--%>
+            <%--    textAlign: "center",--%>
+            <%--    hint: "&nbsp;ماه",--%>
+            <%--    valueMap: {--%>
+            <%--        "1": "1",--%>
+            <%--        "2": "2",--%>
+            <%--        "3": "3",--%>
+            <%--        "4": "4",--%>
+            <%--        "5": "5",--%>
+            <%--        "6": "6",--%>
+            <%--        "7": "7",--%>
+            <%--        "8": "8",--%>
+            <%--        "9": "9",--%>
+            <%--        "10": "10",--%>
+            <%--        "11": "11",--%>
+            <%--        "12": "12"--%>
+            <%--    },--%>
+            <%--    pickListProperties: {--%>
+            <%--        showFilterEditor: false,--%>
+            <%--        sortField: 1--%>
+            <%--    },--%>
+            <%--},--%>
+            //------------------------ DONE BY ROYA---------------------------------------------------------------------
         ],
         itemChanged:function () {
            if (DynamicForm_Class_JspClass.getField('teachingType').getValue() =="غیر حضوری" || DynamicForm_Class_JspClass.getField('teachingType').getValue() == "مجازی")
@@ -2103,7 +2204,7 @@
                     if(record.evaluationStatusReactionTraining == null || record.evaluationStatusReactionTraining == 0)
                         createDialog("info", "برای مسئول آموزش این کلاس فرمی صادر نشده است");
                     else{
-                        if(record.tclassSupervisor == undefined || record.teacherId == undefined)
+                        if(record.supervisor == undefined || record.teacherId == undefined)
                             createDialog("info", "اطلاعات کلاس ناقص است!");
                         else
                                 register_Training_Reaction_Form_JspClass(record);
@@ -2540,6 +2641,7 @@
                 OJT = false;
                 if (a === 0) {
                     VM_JspClass.editRecord(record);
+
                     saveButtonStatus();
                     classMethod = "PUT";
                     url = classUrl + record.id;
@@ -2570,6 +2672,8 @@
                         let result=resp.httpResponseText==Boolean(true).toString() ? true : false;
                         autoTimeActivation(result ? false : true);
                     }));
+
+                    highlightClassStauts(DynamicForm_Class_JspClass.getField("classStatus").getValue(),1200);
 
                 } else {
                     classMethod = "POST";
@@ -2947,6 +3051,7 @@
                     });
 
                     classTypeStatus.setValue(oldValue);
+                    highlightClassStauts(oldValue,10);
                 }
 
             }));
@@ -2962,6 +3067,7 @@
                 if (resp.data !== "") {
                     if (resp.data == "false") {
                         classTypeStatus.setValue(oldValue);
+                        highlightClassStauts(oldValue,10);
                         isc.Dialog.create({
                             message: "تاریخ شروع کلاس " + ListGrid_Class_JspClass.getSelectedRecord().startDate + " می باشد",
                             icon: "[SKIN]ask.png",
@@ -3595,6 +3701,26 @@
         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl, "POST", JSON.stringify(data), function (resp) {
 
         }));
+    }
+
+    //Amin HK
+    //Highlight a selected item in a radio group
+    function highlightClassStauts(value,time){
+        setTimeout(()=> {
+            let mapDictionary = {1: "برنامه ریزی", 2: "در حال اجرا", 3: "پایان یافته"};
+
+            let result = $('input[type="radio"][name="classStatus"]').parent().next();
+
+            Object.keys(result).forEach(x => {
+                if (x != "length" && x != "prevObject") {
+                    result[x].setAttribute("style", "font-weight:normal");
+
+                    if (result[x].innerText === mapDictionary[value]) {
+                        result[x].setAttribute("style", "font-weight:bold");
+                    }
+                }
+            });
+        },time);
     }
 
     }

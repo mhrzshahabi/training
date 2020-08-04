@@ -628,35 +628,38 @@
         Detail_Tab_Evaluation_Analysis.enable();
 
         if (evaluationType === "1" || evaluationType === "واکنشی") {
-            fill_reaction_evaluation_result();
+            // fill_reaction_evaluation_result();
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.disableTab(1);
             Detail_Tab_Evaluation_Analysis.disableTab(2);
             Detail_Tab_Evaluation_Analysis.disableTab(3);
         } else if (evaluationType === "2" || evaluationType === "یادگیری") {
-            fill_reaction_evaluation_result();
-            evaluationAnalysist_learning();
+            // fill_reaction_evaluation_result();
+            // evaluationAnalysist_learning();
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.enableTab(1);
             Detail_Tab_Evaluation_Analysis.disableTab(2);
             Detail_Tab_Evaluation_Analysis.disableTab(3);
         } else if (evaluationType === "3" || evaluationType === "رفتاری") {
-            fill_reaction_evaluation_result();
-            evaluationAnalysist_learning();
+            // fill_reaction_evaluation_result();
+            // evaluationAnalysist_learning();
             fill_behavioral_evaluation_result();
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.enableTab(1);
             Detail_Tab_Evaluation_Analysis.enableTab(2);
             Detail_Tab_Evaluation_Analysis.disableTab(3);
         } else if (evaluationType === "4" || evaluationType === "نتایج") {
-            fill_reaction_evaluation_result();
-            evaluationAnalysist_learning();
-            fill_behavioral_evaluation_result();
+            // fill_reaction_evaluation_result();
+            // evaluationAnalysist_learning();
+            // fill_behavioral_evaluation_result();
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.enableTab(1);
             Detail_Tab_Evaluation_Analysis.enableTab(2);
             Detail_Tab_Evaluation_Analysis.enableTab(3);
-        }
+        };
+        Detail_Tab_Evaluation_Analysis.disableTab(0);
+        Detail_Tab_Evaluation_Analysis.disableTab(1);
+        Detail_Tab_Evaluation_Analysis.disableTab(3);
     }
 
     function load_reaction_evluation_analysis_data(record) {

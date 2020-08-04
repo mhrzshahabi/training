@@ -196,7 +196,6 @@
         canDragRecordsOut: true,
         dragDataAction: "none",
         removeRecordClick(rowNum){
-            alert(rowNum);
             this.Super("removeRecordClick", arguments);
         },
         dataChanged(){

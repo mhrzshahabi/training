@@ -12,15 +12,21 @@
     var editing = false;
     var isChanged = false;
     var priorityList = {
-        "Post": "پست",
+        "Post": "پست انفرادی",
         "PostGroup": "گروه پستی",
         "Job": "شغل",
         "JobGroup": "گروه شغلی",
         "PostGrade": "رده پستی",
         "PostGradeGroup": "گروه رده پستی",
+        "TrainingPost": "پست"
     };
     var skillData = [];
     var competenceData = [];
+    var peopleTypeMap ={
+        "Personal" : "شرکتی",
+        "ContractorPersonal" : "پیمان کار"
+    };
+
 
     let NeedsAssessmentTargetDS_needsAssessment = isc.TrDS.create({
         ID: "NeedsAssessmentTargetDS_needsAssessment",
@@ -65,6 +71,28 @@
         ],
         fetchDataURL: postUrl + "/spec-list"
     });
+    let PostDS_TrainingPost = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap},
+            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postGradeTitleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+
+        ],
+        fetchDataURL: viewTrainingPostUrl + "/spec-list"
+    });
+
     let PostGroupDs_needsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -759,7 +787,7 @@
     let Menu_LG_History_JspENA = isc.Menu.create({
         data: [
             {
-                title: "کپی نیازسنجی",
+                title: "کپی شایستگی",
                 click: function () {
                     let record = ListGrid_NeedsAssessment_JspENA.getSelectedRecord()
                     let url = needsAssessmentUrl + "/copy/" + record.objectType
@@ -962,7 +990,6 @@
                         align: "center",
                     },
                 ];
-                    console.log(JSON.parse(resp.data).response.data[0])
                 showDetailViewer("جزئیات شایستگی", fields, JSON.parse(resp.data).response.data[0]);
             }));
         }
@@ -1596,6 +1623,13 @@
                 form.getItem("objectId").optionDataSource = PostGroupDs_needsAssessment;
                 form.getItem("objectId").pickListFields = [{name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}, {name: "code", title: "<spring:message code="code"/>", autoFitWidth: false}];
                 break;
+            case 'TrainingPost':
+                form.getItem("objectId").optionDataSource = PostDS_TrainingPost;
+                form.getItem("objectId").pickListFields = [
+                    {name: "code", keyPressFilter: false}, {name: "titleFa"}, {name: "job.titleFa"}, {name: "postGrade.titleFa"}, {name: "area"}, {name: "assistance"}, {name: "affairs"},
+                    {name: "section"}, {name: "unit"}, {name: "costCenterCode"}, {name: "costCenterTitleFa"}
+                ];
+                break;
             case 'PostGrade':
                 form.getItem("objectId").optionDataSource = PostGradeDs_needsAssessment;
                 form.getItem("objectId").pickListFields = [
@@ -1844,7 +1878,7 @@
 
     function updateLabelEditNeedsAssessment(objectId) {
         Label_PlusData_JspNeedsAssessment.setContents("");
-        if(DynamicForm_JspEditNeedsAssessment.getValue("objectType") === "Post") {
+        if(DynamicForm_JspEditNeedsAssessment.getValue("objectType") === "Post" || DynamicForm_JspEditNeedsAssessment.getValue("objectType") === "TrainingPost") {
             Label_PlusData_JspNeedsAssessment.setContents(
                 (objectId.titleFa !== undefined ? "<b>عنوان پست: </b>" +  objectId.titleFa : "")
                 // + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + objectId.postGrade.titleFa

@@ -1039,5 +1039,15 @@
             <column name="number_of_sended_behavioral_forms" type="number(10, 0)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1596450800510-466">
+        <addColumn tableName="tbl_class">
+            <column name="c_behavioral_level" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1596450800510-467">
+        <addColumn tableName="tbl_class">
+            <column name="c_evaluation" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
