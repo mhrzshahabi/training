@@ -454,7 +454,7 @@ public class EvaluationRestController {
 
     @Loggable
     @GetMapping(value = "/studentEvaluationForms/{nationalCode}")
-    public ResponseEntity<ISC<EvaluationDTO.StudentEvaluationForm>> studentEvaluationForms(HttpServletRequest iscRq, @PathVariable String nationalCode) throws IOException {
+    public ResponseEntity<ISC<EvaluationDTO.EvaluationForm>> studentEvaluationForms(HttpServletRequest iscRq, @PathVariable String nationalCode) throws IOException {
         SearchDTO.CriteriaRq  criteria1 = makeNewCriteria("student.nationalCode", nationalCode, EOperator.equals, null);
         SearchDTO.CriteriaRq  criteria2 = makeNewCriteria("evaluationStatusReaction",1, EOperator.equals, null);
         SearchDTO.CriteriaRq  criteria3 = makeNewCriteria("numberOfSendedBehavioralForms",0, EOperator.greaterThan, null);
@@ -470,10 +470,10 @@ public class EvaluationRestController {
         SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> evaluationResult = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
 
 
-        List<EvaluationDTO.StudentEvaluationForm> result = new ArrayList<>();
+        List<EvaluationDTO.EvaluationForm> result = new ArrayList<>();
         for (ClassStudentDTO.ClassStudentInfo classStudentInfo : evaluationResult.getList()) {
             if(classStudentInfo.getEvaluationStatusReaction() != null && classStudentInfo.getEvaluationStatusReaction().equals(1)){
-                EvaluationDTO.StudentEvaluationForm res = new EvaluationDTO.StudentEvaluationForm();
+                EvaluationDTO.EvaluationForm res = new EvaluationDTO.EvaluationForm();
                 res.setClassId(classStudentInfo.getTclassId());
                 res.setStudentId(classStudentInfo.getId());
                 res.setStudentName(classStudentInfo.getFullName());
@@ -487,11 +487,11 @@ public class EvaluationRestController {
                 res.setHasWarning("alarm");
                 result.add(res);
             }
-            else if(classStudentInfo.getNumberOfSendedBehavioralForms() != null && classStudentInfo.getNumberOfSendedBehavioralForms() > 0){
+            if(classStudentInfo.getNumberOfSendedBehavioralForms() != null && classStudentInfo.getNumberOfSendedBehavioralForms() > 0){
                     Evaluation evaluation = evaluationDAO.findFirstByClassIdAndEvaluatedIdAndEvaluatedTypeIdAndEvaluatorTypeIdAndEvaluationLevelIdAndQuestionnaireTypeId(
                         classStudentInfo.getTclassId(),classStudentInfo.getId(),188L,188L,156L, 230L);
                     if(evaluation.getStatus() == false || evaluation.getStatus() == null) {
-                        EvaluationDTO.StudentEvaluationForm res = new EvaluationDTO.StudentEvaluationForm();
+                        EvaluationDTO.EvaluationForm res = new EvaluationDTO.EvaluationForm();
                         res.setClassId(classStudentInfo.getTclassId());
                         res.setStudentId(classStudentInfo.getId());
                         res.setStudentName(classStudentInfo.getFullName());
@@ -508,7 +508,44 @@ public class EvaluationRestController {
             }
         }
 
-        SearchDTO.SearchRs<EvaluationDTO.StudentEvaluationForm> finalResult = new SearchDTO.SearchRs<>();
+        SearchDTO.SearchRs<EvaluationDTO.EvaluationForm> finalResult = new SearchDTO.SearchRs<>();
+        finalResult.setList(result);
+        finalResult.setTotalCount(new Long(result.size()));
+        return new ResponseEntity<>(ISC.convertToIscRs(finalResult, 0), HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/teacherEvaluationForms/{teacherId}")
+    public ResponseEntity<ISC<EvaluationDTO.EvaluationForm>> teacherEvaluationForms(HttpServletRequest iscRq, @PathVariable Long teacherId) throws IOException, NoSuchFieldException, IllegalAccessException {
+        SearchDTO.CriteriaRq  criteria1 = makeNewCriteria("teacherId", teacherId, EOperator.equals, null);
+        SearchDTO.CriteriaRq  criteria2 = makeNewCriteria("evaluationStatusReactionTeacher",1, EOperator.equals, null);
+        List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+        criteriaRqList.add(criteria1);
+        criteriaRqList.add(criteria2);
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null,null,EOperator.and,criteriaRqList);
+        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+        searchRq.setCriteria(criteriaRq);
+        SearchDTO.SearchRs<TclassDTO.Info> evaluationResult = tclassService.search1(searchRq,TclassDTO.Info.class);
+
+        List<EvaluationDTO.EvaluationForm> result = new ArrayList<>();
+        for (TclassDTO.Info classInfo : evaluationResult.getList()) {
+            if(classInfo.getEvaluationStatusReactionTeacher() != null && classInfo.getEvaluationStatusReactionTeacher().equals(1)){
+                EvaluationDTO.EvaluationForm res = new EvaluationDTO.EvaluationForm();
+                res.setClassId(classInfo.getId());
+                res.setClassCode(classInfo.getCode());
+                res.setCourseCode(classInfo.getCourse().getCode());
+                res.setCourseTitle(classInfo.getCourse().getTitleFa());
+                res.setTeacherName(classInfo.getTeacher());
+                res.setClassStartDate(classInfo.getStartDate());
+                res.setTeacherId(teacherId);
+                res.setEvaluationLevel(154L);
+                res.setQuestionnarieType(140L);
+                res.setHasWarning("alarm");
+                result.add(res);
+            }
+        }
+
+        SearchDTO.SearchRs<EvaluationDTO.EvaluationForm> finalResult = new SearchDTO.SearchRs<>();
         finalResult.setList(result);
         finalResult.setTotalCount(new Long(result.size()));
         return new ResponseEntity<>(ISC.convertToIscRs(finalResult, 0), HttpStatus.OK);
