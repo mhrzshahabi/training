@@ -81,6 +81,8 @@ public class TclassDTO {
         private TermDTO.TermDTOTuple term;
         @Getter(AccessLevel.NONE)
         private TeacherDTO.TeacherFullNameTuple teacher;
+        private String plannerFullName;
+        private String supervisorFullName;
 
         //*********************************
         //******old code for alarms********
