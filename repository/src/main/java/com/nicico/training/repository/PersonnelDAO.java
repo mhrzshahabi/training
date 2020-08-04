@@ -65,5 +65,6 @@ public interface PersonnelDAO extends JpaRepository<Personnel, Long>, JpaSpecifi
     @Query(value = "SELECT MAX(ID) FROM tbl_personnel where PERSONNEL_NO = :PERSONNEL_NO AND active = 1 AND employment_status_id=5", nativeQuery = true)
     Long getPersonnelIdByPersonnelNo(String PERSONNEL_NO);
 
-
+    @Query(value = "SELECT DISTINCT POST_GRADE_TITLE FROM TBL_PERSONNEL WHERE POST_GRADE_TITLE IS NOT NULL", nativeQuery = true)
+    List<String> findAllPostGrade();
 }

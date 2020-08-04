@@ -2390,12 +2390,13 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_PERSONNELS-001">
+    <changeSet author="NICICO" id="VIEW_PERSONNELS-002">
         <createView viewName="VIEW_PERSONNELS" replaceIfExists="true">
             <![CDATA[
    SELECT
                             tbl_personnel.personnel_no AS personnel_no ,
-                            tbl_personnel.f_department_id AS department_id
+                            tbl_personnel.f_department_id AS department_id,
+                            tbl_personnel.f_post_id
                         FROM
                             tbl_personnel
                         WHERE
@@ -2403,7 +2404,8 @@ GROUP BY
                         UNION ALL
                         SELECT
                             tbl_personnel_registered.personnel_no AS personnel_no ,
-                            tbl_personnel_registered.f_department_id AS department_id
+                            tbl_personnel_registered.f_department_id AS department_id ,
+                            tbl_personnel_registered.f_post_id
                         FROM
                             tbl_personnel_registered
                         WHERE

@@ -260,6 +260,10 @@ public class PersonnelService implements IPersonnelService {
             case "ccpArea":
                 values = personnelDAO.findAllAreaFromPersonnel();
                 break;
+            case "postGrade":
+                values = personnelDAO.findAllPostGrade();
+                break;
+
         }
         SearchDTO.SearchRs<PersonnelDTO.FieldValue> response = new SearchDTO.SearchRs<>();
         response.setList(new ArrayList<>());
