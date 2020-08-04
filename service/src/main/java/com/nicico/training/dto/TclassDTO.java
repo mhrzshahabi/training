@@ -60,10 +60,12 @@ public class TclassDTO {
     private Integer workflowEndingStatusCode;
     private String scoringMethod;
     private String acceptancelimit;
-    private Integer startEvaluation;
     private Boolean preCourseTest;
     private String hasWarning;
     private Integer evaluationStatusReactionTraining;
+    private Integer startEvaluation;
+    private String evaluation;
+    private String behavioralLevel;
 
 
     @Getter
@@ -364,6 +366,9 @@ public class TclassDTO {
         //        private String evaluationStatus;
         private String titleClass;
         private String scoringMethod;
+        private Integer startEvaluation;
+        private String evaluation;
+        private String behavioralLevel;
 
         public String getTeacher() {
             if (teacher != null)
@@ -548,6 +553,9 @@ public class TclassDTO {
         private String code;
         private CourseDTO.CourseWeeklySchedule course;
         private Set<ClassStudentDTO.WeeklySchedule> classStudents;
+        private Integer startEvaluation;
+        private String evaluation;
+        private String behavioralLevel;
     }
 
     //------------------------ training class report -------------------------------------------------------------------
@@ -618,6 +626,9 @@ public class TclassDTO {
         private Long id;
         private CourseDTO.CourseInfoTuple course;
         private TermDTO.TermDTOTuple term;
+        private Integer startEvaluation;
+        private String evaluation;
+        private String behavioralLevel;
     }
 
     @Getter
@@ -643,6 +654,9 @@ public class TclassDTO {
         private CourseDTO.CourseInfoTuple course;
         private InstituteDTO.InstituteInfoTuple institute;
         private Set<ClassStudentDTO.AttendanceInfo> classStudents;
+        private Integer startEvaluation;
+        private String evaluation;
+        private String behavioralLevel;
 
         public Integer getStudentCount() {
             if (classStudents != null)

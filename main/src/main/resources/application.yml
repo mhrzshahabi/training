@@ -10,8 +10,7 @@ spring:
       connection-timeout: 60000
   jpa:
     hibernate:
-#      ddl-auto: validate
-      ddl-auto: none
+      ddl-auto: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.Oracle12cDialect
@@ -74,7 +73,7 @@ nicico:
     update:
       mode: false
   training:
-    version: '1.25'
+    version: '1.27'
   sms:
     magfa:
       username: 'maaden_81794'

@@ -15,7 +15,7 @@
     var naTrainingPost_TrainingPost_Jsp = null;
     var PersonnelTrainingPost_TrainingPost_Jsp = null;
     var PostTrainingPost_TrainingPost_Jsp = null;
-    var wait_TrainingPost = null;
+    var refresh_TrainingPost = true;
     var trainingPostsSelection=false;
 
     var peopleTypeMap ={
@@ -174,7 +174,7 @@
 
             <sec:authorize access="hasAuthority('Training_Post_List_CD')">
             {
-                title: "لیست پست ها", icon: "<spring:url value="post.png"/>", click: function () {
+                title: "لیست پست های انفرادی دسته بندی شده", icon: "<spring:url value="post.png"/>", click: function () {
                     let record = ListGrid_TrainingPost_Jsp.getSelectedRecord();
                     if (record == null || record.id == null) {
 
@@ -236,15 +236,15 @@
                 ListGrid_TrainingPost_Posts_refresh();
             }
         }, {
-            title: " حذف پست از گروه پست مربوطه", icon: "<spring:url value="remove.png"/>", click: function () {
+            title: " حذف پست انفرادی از پست مربوطه", icon: "<spring:url value="remove.png"/>", click: function () {
                 activePostGroup = ListGrid_TrainingPost_Jsp.getSelectedRecord();
                 activePost = ListGrid_TrainingPost_Posts.getSelectedRecord();
                 if (activePostGroup == null || activePost == null) {
-                    simpleDialog("پیام", "پست یا گروه پست انتخاب نشده است.", 0, "confirm");
+                    simpleDialog("پیام", "پست یا پست انفرادی انتخاب نشده است.", 0, "confirm");
 
                 } else {
                     var Dialog_Delete = isc.Dialog.create({
-                        message: getFormulaMessage("آیا از حذف  پست:' ", "2", "black", "c") + getFormulaMessage(activePost.titleFa, "3", "red", "U") + getFormulaMessage(" از گروه پست:' ", "2", "black", "c") + getFormulaMessage(activePostGroup.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
+                        message: getFormulaMessage("آیا از حذف  پست انفرادی:' ", "2", "black", "c") + getFormulaMessage(activePost.titleFa, "3", "red", "U") + getFormulaMessage(" از پست:' ", "2", "black", "c") + getFormulaMessage(activePostGroup.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
                         icon: "[SKIN]ask.png",
                         title: "تائید حذف",
                         buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
@@ -254,7 +254,7 @@
                             this.close();
 
                             if (index == 0) {
-                                deletePostFromPostGroup(activePost.id, activePostGroup.id);
+                                deletePostFromTrainingPost(activePost.id, activePostGroup.id, ListGrid_TrainingPost_Posts);
                             }
                         }
                     });
@@ -460,7 +460,7 @@
         }
     });
 
-    Lable_ForThisTrainingPost_GetPosts = isc.LgLabel.create({contents:"لیست پست های این گروه پست", customEdges: ["R","L","T", "B"]});
+    Lable_ForThisTrainingPost_GetPosts = isc.LgLabel.create({contents:"لیست پست های انفرادی این پست", customEdges: ["R","L","T", "B"]});
     var ListGrid_ForThisTrainingPost_GetPosts = isc.TrLG.create({
         height: "45%",
         dataSource: RestDataSource_ForThisTrainingPost_GetPosts,
@@ -492,6 +492,7 @@
             if(trainingPostsSelection) {
                 nullPostsRefresh(RestDataSource_All_Posts, ListGrid_AllPosts);
                 trainingPostsSelection=false;
+                refresh_TrainingPost = true;
             }
         },
         createRecordComponent: function (record, colNum) {
@@ -520,32 +521,7 @@
                         var activeId = active.id;
                         var activeGroup = ListGrid_TrainingPost_Jsp.getSelectedRecord();
                         var activeGroupId = activeGroup.id;
-                        isc.RPCManager.sendRequest({
-                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                            useSimpleHttp: true,
-                            contentType: "application/json; charset=utf-8",
-                            actionURL:  trainingPostUrl + "/removePost/" + activeGroupId + "/" + activeId,
-                            httpMethod: "DELETE",
-                            serverOutputAsString: false,
-                            callback: function (resp) {
-                                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-
-                                    ListGrid_ForThisTrainingPost_GetPosts.invalidateCache();
-
-                                    let findRows=ListGrid_AllPosts.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:[activeId]}]});
-
-                                    if(typeof (findRows)!='undefined' && findRows.length>0){
-                                        findRows.setProperty("enabled", true);
-                                        ListGrid_AllPosts.deselectRecord(findRows[0]);
-                                    }
-
-                                } else {
-                                    isc.say("خطا در پاسخ سرویس دهنده");
-                                }
-                                trainingPostsSelection = true;
-                                ListGrid_ForThisTrainingPost_GetPosts.dataArrived();
-                            }
-                        });
+                        deletePostFromTrainingPost(activeId, activeGroupId, ListGrid_ForThisTrainingPost_GetPosts);
                     }
                 });
                 recordCanvas.addMember(removeIcon);
@@ -737,7 +713,7 @@
         placement: "fillScreen",
         minWidth: 1024,
         closeClick: function () {
-            ListGrid_TrainingPost_Posts.invalidateCache();
+            ListGrid_TrainingPost_Posts_refresh();
             nullPostsRefresh(RestDataSource_All_Posts_Clone, ListGrid_AllPosts_Clone);
             this.hide();
         },
@@ -1028,7 +1004,7 @@
     });
 
     var Window_TrainingPost_Jsp = isc.Window.create({
-        title: " گروه پست ",
+        title: "پست ",
         width: 700,
         height: 200,
         autoSize: true,
@@ -1492,7 +1468,7 @@
         height: "100%",
         tabs: [
             {name: "TabPane_manage_TrainingPost_Jsp", title: "پست های انفرادی گروه بندی نشده", pane: ListGrid_AllPosts_Clone},
-            {name: "TabPane_Post_TrainingPost_Jsp", title: "لیست پست ها", pane: ListGrid_TrainingPost_Posts},
+            {name: "TabPane_Post_TrainingPost_Jsp", title: "لیست پست های انفرادی دسته بندی شده", pane: ListGrid_TrainingPost_Posts},
             {name: "TabPane_Personnel_TrainingPost_Jsp", title: "لیست پرسنل", pane: PersonnelLG_TrainingPost_Jsp},
             {name: "TabPane_NA_TrainingPost_Jsp", title: "<spring:message code='need.assessment'/>", pane: CourseLG_TrainingPost_Jsp},
         ],
@@ -1631,22 +1607,32 @@
         Window_TrainingPost_Jsp.show();
     }
 
-    function deletePostFromPostGroup(postId, postGroupId) {
+    function deletePostFromTrainingPost(activeId, activeGroupId, listGrid) {
 
         isc.RPCManager.sendRequest({
             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             useSimpleHttp: true,
             contentType: "application/json; charset=utf-8",
-            actionURL: postGroupUrl + "/removePost/" + postGroupId + "/" + postId,
+            actionURL:  trainingPostUrl + "/removePost/" + activeGroupId + "/" + activeId,
             httpMethod: "DELETE",
             serverOutputAsString: false,
             callback: function (resp) {
                 if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                    ListGrid_TrainingPost_Posts.invalidateCache();
+
+                    listGrid.invalidateCache();
+
+                    let findRows=ListGrid_AllPosts.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:[activeId]}]});
+
+                    if(typeof (findRows)!='undefined' && findRows.length>0){
+                        findRows.setProperty("enabled", true);
+                        ListGrid_AllPosts.deselectRecord(findRows[0]);
+                    }
 
                 } else {
                     isc.say("خطا در پاسخ سرویس دهنده");
                 }
+                trainingPostsSelection = true;
+                listGrid.dataArrived();
             }
         });
     }
@@ -1654,13 +1640,13 @@
     function selectionUpdated_TrainingPost_Jsp() {
         let trainingPost = ListGrid_TrainingPost_Jsp.getSelectedRecord();
         let tab = Detail_Tab_TrainingPost.getSelectedTab();
-        if (trainingPost == null && tab.pane != null) {
+        if (trainingPost == null && tab.pane != null && tab.name !== "TabPane_manage_TrainingPost_Jsp") {
             tab.pane.setData([]);
             return;
         }
         switch (tab.name) {
             case "TabPane_Post_TrainingPost_Jsp": {
-                if (PostTrainingPost_TrainingPost_Jsp === trainingPost.id)
+                if (PostTrainingPost_TrainingPost_Jsp === trainingPost.id && !refresh_TrainingPost)
                     return;
                 PostTrainingPost_TrainingPost_Jsp = trainingPost.id;
                 ListGrid_TrainingPost_Posts.setImplicitCriteria({
@@ -1670,6 +1656,7 @@
                 });
                 ListGrid_TrainingPost_Posts.invalidateCache();
                 ListGrid_TrainingPost_Posts.fetchData();
+                refresh_TrainingPost = false;
                 break;
             }
             case "TabPane_Personnel_TrainingPost_Jsp": {
@@ -1735,6 +1722,7 @@
                         findRows.setProperty("enabled", false);
                         listGridAllPosts.redraw();
                     }
+                    refresh_TrainingPost = true;
                     isc.say("عملیات با موفقیت انجام شد.");
                 } else {
                     isc.say("خطا در پاسخ سرویس دهنده");
