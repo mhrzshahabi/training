@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface PersonnelDAO extends JpaRepository<Personnel, Long>, JpaSpecificationExecutor<Personnel> {
 
-    Optional<Personnel> findOneByPersonnelNo(String personnelNo);
+    Optional<Personnel> findFirstByPersonnelNo(String personnelNo);
 
     Optional<Personnel[]> findOneByNationalCode(String nationalCode);
 

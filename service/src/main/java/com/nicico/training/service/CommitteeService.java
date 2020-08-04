@@ -98,7 +98,7 @@ public class CommitteeService implements ICommitteeService {
 
         for (String personId : personInfoIds) {
 
-            final Optional<Personnel> optionalPersonnel = personnelDAO.findOneByPersonnelNo(personId);
+            final Optional<Personnel> optionalPersonnel = personnelDAO.findFirstByPersonnelNo(personId);
             final Personnel personnel = optionalPersonnel.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PersonnelNotFound));
 //            personalSet.add(personnel);
         }
@@ -113,7 +113,7 @@ public class CommitteeService implements ICommitteeService {
         final Optional<Committee> optionalCommittee = committeeDAO.findById(committeeId);
         final Committee committee = optionalCommittee.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CommitteeNotFound));
 
-        final Optional<Personnel> optionalPersonnel = personnelDAO.findOneByPersonnelNo(personInfiId);
+        final Optional<Personnel> optionalPersonnel = personnelDAO.findFirstByPersonnelNo(personInfiId);
         final Personnel personalInfo = optionalPersonnel.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PersonnelNotFound));
 
 //        committee.getCommitteeMmembers().remove(personalInfo);
@@ -135,7 +135,7 @@ public class CommitteeService implements ICommitteeService {
         final Optional<Committee> optionalCommittee = committeeDAO.findById(committeeId);
         final Committee committee = optionalCommittee.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CommitteeNotFound));
 
-        Optional<Personnel> byId = personnelDAO.findOneByPersonnelNo(personnelNo);
+        Optional<Personnel> byId = personnelDAO.findFirstByPersonnelNo(personnelNo);
         final Personnel personnel = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PersonnelNotFound));
 //        committee.getCommitteeMmembers().add(personnel);
     }

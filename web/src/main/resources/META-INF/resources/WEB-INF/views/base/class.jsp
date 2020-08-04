@@ -104,7 +104,10 @@
             {name: "course.theoryDuration"},
             {name: "scoringMethod"},
             {name: "evaluationStatusReactionTraining"},
-            {name: "supervisor"}
+            {name: "supervisor"},
+            { name: "plannerFullName"},
+            { name: "supervisorFullName"}
+
         ]
     });
 
@@ -437,6 +440,29 @@
                 // sortNormalizer(record) {
                 //     return record.teacher.personality.lastNameFa;
                 // }
+            },
+            {
+                name: "plannerFullName",
+                title:"<spring:message code="planner"/>",
+               // displayValueFromRecord: false,
+                canFilter:false,
+                canSort:false,
+                type: "TextItem",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true,
+
+            },
+            {
+                name: "supervisorFullName",
+                title:"<spring:message code="supervisor"/>",
+                displayValueFromRecord: false,
+                canFilter:false,
+                canSort:false,
+                type: "TextItem",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true,
             },
             {
                 name: "reason", title: "<spring:message code='training.request'/>", align: "center",

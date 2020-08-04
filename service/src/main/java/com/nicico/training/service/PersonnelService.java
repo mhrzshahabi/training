@@ -56,7 +56,7 @@ public class PersonnelService implements IPersonnelService {
     @Transactional(readOnly = true)
     @Override
     public Personnel getPersonnel(String personnelNo) {
-        Optional<Personnel> optPersonnel = personnelDAO.findOneByPersonnelNo(personnelNo);
+        Optional<Personnel> optPersonnel = personnelDAO.findFirstByPersonnelNo(personnelNo);
         return optPersonnel.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
     }
 
@@ -140,7 +140,7 @@ public class PersonnelService implements IPersonnelService {
     @Override
     @Transactional
     public PersonnelDTO.PersonalityInfo getByPersonnelCode(String personnelCode) {
-        Optional<Personnel> optPersonnel = personnelDAO.findOneByPersonnelNo(personnelCode);
+        Optional<Personnel> optPersonnel = personnelDAO.findFirstByPersonnelNo(personnelCode);
         final Personnel personnel = optPersonnel.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         return modelMapper.map(personnel, PersonnelDTO.PersonalityInfo.class);
     }
@@ -275,7 +275,7 @@ public class PersonnelService implements IPersonnelService {
     @Transactional(readOnly = true)
     @Override
     public <R> R getPOrRegisteredP(String personnelNo, Function<Object, R> converter) {
-        Optional<Personnel> optPersonnel = personnelDAO.findOneByPersonnelNo(personnelNo);
+        Optional<Personnel> optPersonnel = personnelDAO.findFirstByPersonnelNo(personnelNo);
         return optPersonnel.map(converter).orElse(personnelRegisteredDAO.findOneByPersonnelNo(personnelNo).map(converter).orElse(null));
     }
 
