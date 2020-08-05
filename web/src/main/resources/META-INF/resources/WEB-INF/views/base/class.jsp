@@ -2833,7 +2833,7 @@
 
                         fields: [
                             {
-                                name: "reason",
+                                name: "classCancelReasonId",
                                 colSpan: 4,
                                 textAlign: "center",
                                 title: "علت لغو کلاس: ",
@@ -2855,22 +2855,22 @@
                                 endRow: false,
                                 changed (form, item, value){
                                     if(value) {
-                                        form.getItem("startDate").show();
+                                        form.getItem("postponeStartDate").show();
                                         form.getItem("postponeClassId").show();
-                                        form.getItem("startDate").required = true;
+                                        form.getItem("postponeStartDate").required = true;
                                         // form.getItem("postponeClassId").required = false;
                                     }
                                     else{
-                                        form.clearValue("startDate");
+                                        form.clearValue("postponeStartDate");
                                         form.clearValue("postponeClassId");
-                                        form.getItem("startDate").hide();
+                                        form.getItem("postponeStartDate").hide();
                                         form.getItem("postponeClassId").hide();
-                                        form.getItem("startDate").required = false;
+                                        form.getItem("postponeStartDate").required = false;
                                     }
                                 }
                             },
                             {
-                                name: "startDate",
+                                name: "postponeStartDate",
                                 colSpan: 4,
 // type:"staticText",
                                 ID: "startDate_CancelClass_jspClass",
@@ -2890,7 +2890,7 @@
                                 changed: function (form, item, value) {
                                     let dateCheck = checkDate(value);
                                     if (dateCheck === false) {
-                                        form.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                                        form.addFieldErrors("postponeStartDate", "<spring:message code='msg.correct.date'/>", true);
                                     };
                                 }
                             },
@@ -2958,8 +2958,8 @@
                                 title:"تایید",
                                 click:function () {
                                     DynamicFormPostponeClass.validate();
-                                    if(DynamicFormPostponeClass.getItem("startDate").required && DynamicFormPostponeClass.getValue("startDate") === undefined){
-                                        DynamicFormPostponeClass.getItem("startDate").setError("فیلد اجباری است");
+                                    if(DynamicFormPostponeClass.getItem("postponeStartDate").required && DynamicFormPostponeClass.getValue("postponeStartDate") === undefined){
+                                        DynamicFormPostponeClass.getItem("postponeStartDate").setError("فیلد اجباری است");
                                         DynamicFormPostponeClass.redraw()
                                     }
                                     if (DynamicFormPostponeClass.hasErrors()) {
