@@ -3,278 +3,424 @@
                    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet author="NICICO" id="VIEW_PERSONNEL_COURSE_NA_REPORT-003">
+    <changeSet author="NICICO" id="VIEW_PERSONNEL_COURSE_NA_REPORT-005">
         <createView viewName="VIEW_PERSONNEL_COURSE_NA_REPORT" replaceIfExists="true">
             <![CDATA[
-  with Result as (
+  WITH result AS (
     SELECT DISTINCT
-                    na_priority.id                      AS na_priority_id,
-                    na_priority.c_title                 AS na_priority,
-                    tbl_course.id                       AS course_id,
-                    tbl_course.c_code                   AS course_code,
-                    tbl_course.c_title_fa               AS course_title_fa,
-                    tbl_personnel.personnel_no          AS personnel_personnel_no,
-                         department.c_omor_title           AS personnel_cpp_affairs,
-                    department.c_hoze_title             AS personnel_cpp_area,
-                    department.c_moavenat_title         AS personnel_cpp_assistant,
-                    tbl_personnel.ccp_code              AS personnel_cpp_code,
-                    department.c_ghesmat_title           AS personnel_cpp_section,
-                    department.c_title              AS personnel_cpp_title,
-                    department.c_vahed_title              AS personnel_cpp_unit,
-                    tbl_personnel.company_name          AS personnel_company_name,
-                    department.c_hoze_title        AS personnel_complex_title,
-                    tbl_personnel.education_level_title AS personnel_education_level_title,
-                    tbl_personnel.first_name            AS personnel_first_name,
-                    tbl_personnel.id                    AS personnel_id,
-                    tbl_personnel.job_no                AS personnel_job_no,
-                    tbl_personnel.job_title             AS personnel_job_title,
-                    tbl_personnel.last_name             AS personnel_last_name,
-                    tbl_personnel.national_code         AS personnel_national_code,
-                    tbl_personnel.emp_no                AS personnel_emp_no,
-                    tbl_personnel.post_code             AS personnel_post_code,
-                    tbl_personnel.post_grade_code       AS personnel_post_grade_code,
-                    tbl_personnel.post_grade_title      AS personnel_post_grade_title,
-                    tbl_personnel.post_title            AS personnel_post_title
-    FROM tbl_needs_assessment
-             INNER JOIN tbl_skill ON tbl_needs_assessment.f_skill = tbl_skill.id
-             INNER JOIN tbl_course ON tbl_skill.f_course = tbl_course.id
-             INNER JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id
-        AND tbl_needs_assessment.c_object_type = 'Post'
-             INNER JOIN tbl_parameter_value na_priority
-                        ON tbl_needs_assessment.f_parameter_value_needs_assessment_priority = na_priority.id
-             INNER JOIN tbl_personnel ON tbl_personnel.post_code = tbl_post.c_code AND tbl_personnel.active = 1
-            LEFT JOIN tbl_department department ON department.id=tbl_personnel.f_department_id
+        na.f_parameter_value_needs_assessment_priority   AS na_priority_id,
+        course.id                                        AS course_id,
+        course.c_code                                    AS course_code,
+        course.c_title_fa                                AS course_title_fa,
+        prs.personnel_no                                 AS personnel_personnel_no,
+        dep.c_omor_title                                 AS personnel_cpp_affairs,
+        dep.c_hoze_title                                 AS personnel_cpp_area,
+        dep.c_moavenat_title                             AS personnel_cpp_assistant,
+        prs.ccp_code                                     AS personnel_cpp_code,
+        dep.c_ghesmat_title                              AS personnel_cpp_section,
+        dep.c_title                                      AS personnel_cpp_title,
+        dep.c_vahed_title                                AS personnel_cpp_unit,
+        prs.company_name                                 AS personnel_company_name,
+        dep.c_hoze_title                                 AS personnel_complex_title,
+        prs.education_level_title                        AS personnel_education_level_title,
+        prs.first_name                                   AS personnel_first_name,
+        prs.id                                           AS personnel_id,
+        prs.job_no                                       AS personnel_job_no,
+        prs.job_title                                    AS personnel_job_title,
+        prs.last_name                                    AS personnel_last_name,
+        prs.national_code                                AS personnel_national_code,
+        prs.emp_no                                       AS personnel_emp_no,
+        prs.post_code                                    AS personnel_post_code,
+        prs.post_grade_code                              AS personnel_post_grade_code,
+        prs.post_grade_title                             AS personnel_post_grade_title,
+        prs.post_title                                   AS personnel_post_title,
+        prs.f_post_id                                    AS personnel_post_id
+    FROM
+        (
+            SELECT
+                f_object,
+                f_skill,
+                f_parameter_value_needs_assessment_priority
+            FROM
+                tbl_needs_assessment
+            WHERE
+                c_object_type = 'Post'
+        ) na
+        INNER JOIN tbl_skill               skill ON na.f_skill = skill.id
+        INNER JOIN tbl_course              course ON skill.f_course = course.id
+        INNER JOIN tbl_post                p ON na.f_object = p.id
+        INNER JOIN view_active_personnel   prs ON prs.f_post_id = p.id
+        LEFT JOIN tbl_department          dep ON dep.id = prs.f_department_id
     UNION
     SELECT DISTINCT
-                    na_priority.id                      AS na_priority_id,
-                    na_priority.c_title                 AS na_priority,
-                    tbl_course.id                       AS course_id,
-                    tbl_course.c_code                   AS course_code,
-                    tbl_course.c_title_fa               AS course_title_fa,
-                    tbl_personnel.personnel_no          AS personnel_personnel_no,
-                  department.c_omor_title           AS personnel_cpp_affairs,
-                    department.c_hoze_title             AS personnel_cpp_area,
-                    department.c_moavenat_title         AS personnel_cpp_assistant,
-                    tbl_personnel.ccp_code              AS personnel_cpp_code,
-                    department.c_ghesmat_title           AS personnel_cpp_section,
-                   department.c_title              AS personnel_cpp_title,
-                    department.c_vahed_title              AS personnel_cpp_unit,
-                    tbl_personnel.company_name          AS personnel_company_name,
-                    department.c_hoze_title        AS personnel_complex_title,
-                    tbl_personnel.education_level_title AS personnel_education_level_title,
-                    tbl_personnel.first_name            AS personnel_first_name,
-                    tbl_personnel.id                    AS personnel_id,
-                    tbl_personnel.job_no                AS personnel_job_no,
-                    tbl_personnel.job_title             AS personnel_job_title,
-                    tbl_personnel.last_name             AS personnel_last_name,
-                    tbl_personnel.national_code         AS personnel_national_code,
-                    tbl_personnel.emp_no                AS personnel_emp_no,
-                    tbl_personnel.post_code             AS personnel_post_code,
-                    tbl_personnel.post_grade_code       AS personnel_post_grade_code,
-                    tbl_personnel.post_grade_title      AS personnel_post_grade_title,
-                    tbl_personnel.post_title            AS personnel_post_title
-    FROM tbl_needs_assessment
-             INNER JOIN tbl_skill ON tbl_needs_assessment.f_skill = tbl_skill.id
-             INNER JOIN tbl_course ON tbl_skill.f_course = tbl_course.id
-             INNER JOIN tbl_parameter_value na_priority
-                        ON tbl_needs_assessment.f_parameter_value_needs_assessment_priority = na_priority.id
-             INNER JOIN tbl_post_group ON tbl_needs_assessment.f_object = tbl_post_group.id
-        AND tbl_needs_assessment.c_object_type = 'PostGroup'
-             INNER JOIN tbl_post_postgroup ON tbl_post_group.id = tbl_post_postgroup.f_postgroup_id
-             INNER JOIN tbl_post ON tbl_post_postgroup.f_post_id = tbl_post.id
-             INNER JOIN tbl_personnel ON tbl_personnel.post_code = tbl_post.c_code AND tbl_personnel.active = 1
-           LEFT JOIN tbl_department department ON department.id=tbl_personnel.f_department_id
+        na.f_parameter_value_needs_assessment_priority   AS na_priority_id,
+        course.id                                        AS course_id,
+        course.c_code                                    AS course_code,
+        course.c_title_fa                                AS course_title_fa,
+        prs.personnel_no                                 AS personnel_personnel_no,
+        dep.c_omor_title                                 AS personnel_cpp_affairs,
+        dep.c_hoze_title                                 AS personnel_cpp_area,
+        dep.c_moavenat_title                             AS personnel_cpp_assistant,
+        prs.ccp_code                                     AS personnel_cpp_code,
+        dep.c_ghesmat_title                              AS personnel_cpp_section,
+        dep.c_title                                      AS personnel_cpp_title,
+        dep.c_vahed_title                                AS personnel_cpp_unit,
+        prs.company_name                                 AS personnel_company_name,
+        dep.c_hoze_title                                 AS personnel_complex_title,
+        prs.education_level_title                        AS personnel_education_level_title,
+        prs.first_name                                   AS personnel_first_name,
+        prs.id                                           AS personnel_id,
+        prs.job_no                                       AS personnel_job_no,
+        prs.job_title                                    AS personnel_job_title,
+        prs.last_name                                    AS personnel_last_name,
+        prs.national_code                                AS personnel_national_code,
+        prs.emp_no                                       AS personnel_emp_no,
+        prs.post_code                                    AS personnel_post_code,
+        prs.post_grade_code                              AS personnel_post_grade_code,
+        prs.post_grade_title                             AS personnel_post_grade_title,
+        prs.post_title                                   AS personnel_post_title,
+        prs.f_post_id                                    AS personnel_post_id
+    FROM
+        (
+            SELECT
+                tbl_needs_assessment.f_object,
+                tbl_needs_assessment.f_skill,
+                tbl_needs_assessment.f_parameter_value_needs_assessment_priority
+            FROM
+                tbl_needs_assessment
+            WHERE
+                tbl_needs_assessment.c_object_type = 'TrainingPost'
+        ) na
+        INNER JOIN tbl_skill                skill ON na.f_skill = skill.id
+        INNER JOIN tbl_course               course ON skill.f_course = course.id
+        INNER JOIN tbl_training_post        tp ON na.f_object = tp.id
+        INNER JOIN tbl_post_training_post   ptp ON ptp.f_training_post_id = tp.id
+        INNER JOIN tbl_post                 p ON p.id = ptp.f_post_id
+        INNER JOIN view_active_personnel    prs ON prs.f_post_id = p.id
+        LEFT JOIN tbl_department           dep ON dep.id = prs.f_department_id
     UNION
     SELECT DISTINCT
-                    na_priority.id                      AS na_priority_id,
-                    na_priority.c_title                 AS na_priority,
-                    tbl_course.id                       AS course_id,
-                    tbl_course.c_code                   AS course_code,
-                    tbl_course.c_title_fa               AS course_title_fa,
-                    tbl_personnel.personnel_no          AS personnel_personnel_no,
-                    department.c_omor_title           AS personnel_cpp_affairs,
-                    department.c_hoze_title             AS personnel_cpp_area,
-                    department.c_moavenat_title         AS personnel_cpp_assistant,
-                    tbl_personnel.ccp_code              AS personnel_cpp_code,
-                    department.c_ghesmat_title           AS personnel_cpp_section,
-                    department.c_title              AS personnel_cpp_title,
-                    department.c_vahed_title              AS personnel_cpp_unit,
-                    tbl_personnel.company_name          AS personnel_company_name,
-                    department.c_hoze_title        AS personnel_complex_title,
-                    tbl_personnel.education_level_title AS personnel_education_level_title,
-                    tbl_personnel.first_name            AS personnel_first_name,
-                    tbl_personnel.id                    AS personnel_id,
-                    tbl_personnel.job_no                AS personnel_job_no,
-                    tbl_personnel.job_title             AS personnel_job_title,
-                    tbl_personnel.last_name             AS personnel_last_name,
-                    tbl_personnel.national_code         AS personnel_national_code,
-                    tbl_personnel.emp_no                AS personnel_emp_no,
-                    tbl_personnel.post_code             AS personnel_post_code,
-                    tbl_personnel.post_grade_code       AS personnel_post_grade_code,
-                    tbl_personnel.post_grade_title      AS personnel_post_grade_title,
-                    tbl_personnel.post_title            AS personnel_post_title
-    FROM tbl_needs_assessment
-             INNER JOIN tbl_skill ON tbl_needs_assessment.f_skill = tbl_skill.id
-             INNER JOIN tbl_course ON tbl_skill.f_course = tbl_course.id
-             INNER JOIN tbl_parameter_value na_priority
-                        ON tbl_needs_assessment.f_parameter_value_needs_assessment_priority = na_priority.id
-             INNER JOIN tbl_job ON tbl_needs_assessment.f_object = tbl_job.id
-        AND tbl_needs_assessment.c_object_type = 'Job'
-             INNER JOIN tbl_post ON tbl_job.id = tbl_post.f_job_id
-             INNER JOIN tbl_personnel ON tbl_personnel.post_code = tbl_post.c_code AND tbl_personnel.active = 1
-            LEFT JOIN tbl_department department ON department.id=tbl_personnel.f_department_id
+        na.f_parameter_value_needs_assessment_priority   AS na_priority_id,
+        course.id                                        AS course_id,
+        course.c_code                                    AS course_code,
+        course.c_title_fa                                AS course_title_fa,
+        prs.personnel_no                                 AS personnel_personnel_no,
+        dep.c_omor_title                                 AS personnel_cpp_affairs,
+        dep.c_hoze_title                                 AS personnel_cpp_area,
+        dep.c_moavenat_title                             AS personnel_cpp_assistant,
+        prs.ccp_code                                     AS personnel_cpp_code,
+        dep.c_ghesmat_title                              AS personnel_cpp_section,
+        dep.c_title                                      AS personnel_cpp_title,
+        dep.c_vahed_title                                AS personnel_cpp_unit,
+        prs.company_name                                 AS personnel_company_name,
+        dep.c_hoze_title                                 AS personnel_complex_title,
+        prs.education_level_title                        AS personnel_education_level_title,
+        prs.first_name                                   AS personnel_first_name,
+        prs.id                                           AS personnel_id,
+        prs.job_no                                       AS personnel_job_no,
+        prs.job_title                                    AS personnel_job_title,
+        prs.last_name                                    AS personnel_last_name,
+        prs.national_code                                AS personnel_national_code,
+        prs.emp_no                                       AS personnel_emp_no,
+        prs.post_code                                    AS personnel_post_code,
+        prs.post_grade_code                              AS personnel_post_grade_code,
+        prs.post_grade_title                             AS personnel_post_grade_title,
+        prs.post_title                                   AS personnel_post_title,
+        prs.f_post_id                                    AS personnel_post_id
+    FROM
+        (
+            SELECT
+                f_object,
+                f_skill,
+                f_parameter_value_needs_assessment_priority
+            FROM
+                tbl_needs_assessment
+            WHERE
+                c_object_type = 'PostGroup'
+        ) na
+        INNER JOIN tbl_skill               skill ON na.f_skill = skill.id
+        INNER JOIN tbl_course              course ON skill.f_course = course.id
+        INNER JOIN tbl_post_group          pg ON na.f_object = pg.id
+        INNER JOIN tbl_post_postgroup      ppg ON pg.id = ppg.f_postgroup_id
+        INNER JOIN tbl_post                p ON ppg.f_post_id = p.id
+        INNER JOIN view_active_personnel   prs ON prs.f_post_id = p.id
+        LEFT JOIN tbl_department          dep ON dep.id = prs.f_department_id
     UNION
     SELECT DISTINCT
-                    na_priority.id                      AS na_priority_id,
-                    na_priority.c_title                 AS na_priority,
-                    tbl_course.id                       AS course_id,
-                    tbl_course.c_code                   AS course_code,
-                    tbl_course.c_title_fa               AS course_title_fa,
-                    tbl_personnel.personnel_no          AS personnel_personnel_no,
-                       department.c_omor_title           AS personnel_cpp_affairs,
-                    department.c_hoze_title             AS personnel_cpp_area,
-                    department.c_moavenat_title         AS personnel_cpp_assistant,
-                    tbl_personnel.ccp_code              AS personnel_cpp_code,
-                    department.c_ghesmat_title           AS personnel_cpp_section,
-                    department.c_title            AS personnel_cpp_title,
-                    department.c_vahed_title              AS personnel_cpp_unit,
-                    tbl_personnel.company_name          AS personnel_company_name,
-                    department.c_hoze_title        AS personnel_complex_title,
-                    tbl_personnel.education_level_title AS personnel_education_level_title,
-                    tbl_personnel.first_name            AS personnel_first_name,
-                    tbl_personnel.id                    AS personnel_id,
-                    tbl_personnel.job_no                AS personnel_job_no,
-                    tbl_personnel.job_title             AS personnel_job_title,
-                    tbl_personnel.last_name             AS personnel_last_name,
-                    tbl_personnel.national_code         AS personnel_national_code,
-                    tbl_personnel.emp_no                AS personnel_emp_no,
-                    tbl_personnel.post_code             AS personnel_post_code,
-                    tbl_personnel.post_grade_code       AS personnel_post_grade_code,
-                    tbl_personnel.post_grade_title      AS personnel_post_grade_title,
-                    tbl_personnel.post_title            AS personnel_post_title
-    FROM tbl_needs_assessment
-             INNER JOIN tbl_skill ON tbl_needs_assessment.f_skill = tbl_skill.id
-             INNER JOIN tbl_course ON tbl_skill.f_course = tbl_course.id
-             INNER JOIN tbl_parameter_value na_priority
-                        ON tbl_needs_assessment.f_parameter_value_needs_assessment_priority = na_priority.id
-             INNER JOIN tbl_job_group ON tbl_needs_assessment.f_object = tbl_job_group.id
-        AND tbl_needs_assessment.c_object_type = 'JobGroup'
-             INNER JOIN tbl_job_jobgroup ON tbl_job_group.id = tbl_job_jobgroup.f_jobgroup_id
-             INNER JOIN tbl_job ON tbl_job_jobgroup.f_job_id = tbl_job.id
-             INNER JOIN tbl_post ON tbl_job.id = tbl_post.f_job_id
-             INNER JOIN tbl_personnel ON tbl_personnel.post_code = tbl_post.c_code AND tbl_personnel.active = 1
-             LEFT JOIN tbl_department department ON department.id=tbl_personnel.f_department_id
+        na.f_parameter_value_needs_assessment_priority   AS na_priority_id,
+        course.id                                        AS course_id,
+        course.c_code                                    AS course_code,
+        course.c_title_fa                                AS course_title_fa,
+        prs.personnel_no                                 AS personnel_personnel_no,
+        dep.c_omor_title                                 AS personnel_cpp_affairs,
+        dep.c_hoze_title                                 AS personnel_cpp_area,
+        dep.c_moavenat_title                             AS personnel_cpp_assistant,
+        prs.ccp_code                                     AS personnel_cpp_code,
+        dep.c_ghesmat_title                              AS personnel_cpp_section,
+        dep.c_title                                      AS personnel_cpp_title,
+        dep.c_vahed_title                                AS personnel_cpp_unit,
+        prs.company_name                                 AS personnel_company_name,
+        dep.c_hoze_title                                 AS personnel_complex_title,
+        prs.education_level_title                        AS personnel_education_level_title,
+        prs.first_name                                   AS personnel_first_name,
+        prs.id                                           AS personnel_id,
+        prs.job_no                                       AS personnel_job_no,
+        prs.job_title                                    AS personnel_job_title,
+        prs.last_name                                    AS personnel_last_name,
+        prs.national_code                                AS personnel_national_code,
+        prs.emp_no                                       AS personnel_emp_no,
+        prs.post_code                                    AS personnel_post_code,
+        prs.post_grade_code                              AS personnel_post_grade_code,
+        prs.post_grade_title                             AS personnel_post_grade_title,
+        prs.post_title                                   AS personnel_post_title,
+        prs.f_post_id                                    AS personnel_post_id
+    FROM
+        (
+            SELECT
+                f_object,
+                f_skill,
+                f_parameter_value_needs_assessment_priority
+            FROM
+                tbl_needs_assessment
+            WHERE
+                c_object_type = 'PostGroup'
+        ) na
+        INNER JOIN tbl_skill                      skill ON na.f_skill = skill.id
+        INNER JOIN tbl_course                     course ON skill.f_course = course.id
+        INNER JOIN tbl_post_group                 pg ON na.f_object = pg.id
+        INNER JOIN tbl_training_post_post_group   tppg ON tppg.f_post_group_id = pg.id
+        INNER JOIN tbl_training_post              tp ON tppg.f_training_post_id = tp.id
+        INNER JOIN tbl_post_training_post         ptp ON tp.id = ptp.f_training_post_id
+        INNER JOIN tbl_post                       p ON ptp.f_post_id = p.id
+        INNER JOIN view_active_personnel          prs ON prs.f_post_id = p.id
+        LEFT JOIN tbl_department                 dep ON dep.id = prs.f_department_id
     UNION
     SELECT DISTINCT
-                    na_priority.id                      AS na_priority_id,
-                    na_priority.c_title                 AS na_priority,
-                    tbl_course.id                       AS course_id,
-                    tbl_course.c_code                   AS course_code,
-                    tbl_course.c_title_fa               AS course_title_fa,
-                    tbl_personnel.personnel_no          AS personnel_personnel_no,
-      department.c_omor_title           AS personnel_cpp_affairs,
-                    department.c_hoze_title             AS personnel_cpp_area,
-                    department.c_moavenat_title         AS personnel_cpp_assistant,
-                    tbl_personnel.ccp_code              AS personnel_cpp_code,
-                    department.c_ghesmat_title           AS personnel_cpp_section,
-                    department.c_title              AS personnel_cpp_title,
-                    department.c_vahed_title              AS personnel_cpp_unit,
-                    tbl_personnel.company_name          AS personnel_company_name,
-                    department.c_hoze_title        AS personnel_complex_title,
-                    tbl_personnel.education_level_title AS personnel_education_level_title,
-                    tbl_personnel.first_name            AS personnel_first_name,
-                    tbl_personnel.id                    AS personnel_id,
-                    tbl_personnel.job_no                AS personnel_job_no,
-                    tbl_personnel.job_title             AS personnel_job_title,
-                    tbl_personnel.last_name             AS personnel_last_name,
-                    tbl_personnel.national_code         AS personnel_national_code,
-                    tbl_personnel.emp_no                AS personnel_emp_no,
-                    tbl_personnel.post_code             AS personnel_post_code,
-                    tbl_personnel.post_grade_code       AS personnel_post_grade_code,
-                    tbl_personnel.post_grade_title      AS personnel_post_grade_title,
-                    tbl_personnel.post_title            AS personnel_post_title
-    FROM tbl_needs_assessment
-             INNER JOIN tbl_skill ON tbl_needs_assessment.f_skill = tbl_skill.id
-             INNER JOIN tbl_course ON tbl_skill.f_course = tbl_course.id
-             INNER JOIN tbl_parameter_value na_priority
-                        ON tbl_needs_assessment.f_parameter_value_needs_assessment_priority = na_priority.id
-             INNER JOIN tbl_post_grade ON tbl_needs_assessment.f_object = tbl_post_grade.id
-        AND tbl_needs_assessment.c_object_type = 'PostGrade'
-             INNER JOIN tbl_post ON tbl_post_grade.id = tbl_post.f_post_grade_id
-             INNER JOIN tbl_personnel ON tbl_personnel.post_code = tbl_post.c_code AND tbl_personnel.active = 1
-            LEFT JOIN tbl_department department ON department.id=tbl_personnel.f_department_id
+        na.f_parameter_value_needs_assessment_priority   AS na_priority_id,
+        course.id                                        AS course_id,
+        course.c_code                                    AS course_code,
+        course.c_title_fa                                AS course_title_fa,
+        prs.personnel_no                                 AS personnel_personnel_no,
+        dep.c_omor_title                                 AS personnel_cpp_affairs,
+        dep.c_hoze_title                                 AS personnel_cpp_area,
+        dep.c_moavenat_title                             AS personnel_cpp_assistant,
+        prs.ccp_code                                     AS personnel_cpp_code,
+        dep.c_ghesmat_title                              AS personnel_cpp_section,
+        dep.c_title                                      AS personnel_cpp_title,
+        dep.c_vahed_title                                AS personnel_cpp_unit,
+        prs.company_name                                 AS personnel_company_name,
+        dep.c_hoze_title                                 AS personnel_complex_title,
+        prs.education_level_title                        AS personnel_education_level_title,
+        prs.first_name                                   AS personnel_first_name,
+        prs.id                                           AS personnel_id,
+        prs.job_no                                       AS personnel_job_no,
+        prs.job_title                                    AS personnel_job_title,
+        prs.last_name                                    AS personnel_last_name,
+        prs.national_code                                AS personnel_national_code,
+        prs.emp_no                                       AS personnel_emp_no,
+        prs.post_code                                    AS personnel_post_code,
+        prs.post_grade_code                              AS personnel_post_grade_code,
+        prs.post_grade_title                             AS personnel_post_grade_title,
+        prs.post_title                                   AS personnel_post_title,
+        prs.f_post_id                                    AS personnel_post_id
+    FROM
+        (
+            SELECT
+                f_object,
+                f_skill,
+                f_parameter_value_needs_assessment_priority
+            FROM
+                tbl_needs_assessment
+            WHERE
+                c_object_type = 'Job'
+        ) na
+        INNER JOIN tbl_skill                skill ON na.f_skill = skill.id
+        INNER JOIN tbl_course               course ON skill.f_course = course.id
+        INNER JOIN tbl_job                  j ON na.f_object = j.id
+        INNER JOIN tbl_training_post        tp ON tp.f_job_id = j.id
+        INNER JOIN tbl_post_training_post   ptp ON tp.id = ptp.f_training_post_id
+        INNER JOIN tbl_post                 p ON ptp.f_post_id = p.id
+        INNER JOIN view_active_personnel    prs ON prs.f_post_id = p.id
+        LEFT JOIN tbl_department           dep ON dep.id = prs.f_department_id
     UNION
     SELECT DISTINCT
-                    na_priority.id                      AS na_priority_id,
-                    na_priority.c_title                 AS na_priority,
-                    tbl_course.id                       AS course_id,
-                    tbl_course.c_code                   AS course_code,
-                    tbl_course.c_title_fa               AS course_title_fa,
-                    tbl_personnel.personnel_no          AS personnel_personnel_no,
-                     department.c_omor_title           AS personnel_cpp_affairs,
-                    department.c_hoze_title             AS personnel_cpp_area,
-                    department.c_moavenat_title         AS personnel_cpp_assistant,
-                    tbl_personnel.ccp_code              AS personnel_cpp_code,
-                    department.c_ghesmat_title           AS personnel_cpp_section,
-                    department.c_title             AS personnel_cpp_title,
-                    department.c_vahed_title              AS personnel_cpp_unit,
-                    tbl_personnel.company_name          AS personnel_company_name,
-                    department.c_hoze_title        AS personnel_complex_title,
-                    tbl_personnel.education_level_title AS personnel_education_level_title,
-                    tbl_personnel.first_name            AS personnel_first_name,
-                    tbl_personnel.id                    AS personnel_id,
-                    tbl_personnel.job_no                AS personnel_job_no,
-                    tbl_personnel.job_title             AS personnel_job_title,
-                    tbl_personnel.last_name             AS personnel_last_name,
-                    tbl_personnel.national_code         AS personnel_national_code,
-                    tbl_personnel.emp_no                AS personnel_emp_no,
-                    tbl_personnel.post_code             AS personnel_post_code,
-                    tbl_personnel.post_grade_code       AS personnel_post_grade_code,
-                    tbl_personnel.post_grade_title      AS personnel_post_grade_title,
-                    tbl_personnel.post_title            AS personnel_post_title
-    FROM tbl_needs_assessment
-             INNER JOIN tbl_skill ON tbl_needs_assessment.f_skill = tbl_skill.id
-             INNER JOIN tbl_course ON tbl_skill.f_course = tbl_course.id
-             INNER JOIN tbl_parameter_value na_priority
-                        ON tbl_needs_assessment.f_parameter_value_needs_assessment_priority = na_priority.id
-             INNER JOIN tbl_post_grade_group ON tbl_needs_assessment.f_object = tbl_post_grade_group.id
-        AND tbl_needs_assessment.c_object_type = 'PostGradeGroup'
-             INNER JOIN tbl_post_grade_post_grade_group
-                        ON tbl_post_grade_group.id = tbl_post_grade_post_grade_group.f_post_grade_group_id
-             INNER JOIN tbl_post_grade ON tbl_post_grade_post_grade_group.f_post_grade_id = tbl_post_grade.id
-             INNER JOIN tbl_post ON tbl_post_grade.id = tbl_post.f_post_grade_id
-             INNER JOIN tbl_personnel ON tbl_personnel.post_code = tbl_post.c_code AND tbl_personnel.active = 1
-            LEFT JOIN tbl_department department ON department.id=tbl_personnel.f_department_id
-          )
-
-
-select MIN(na_priority_id) AS na_priority_id,
-       course_id,
-       course_code,
-       course_title_fa,
-       personnel_personnel_no,
-       personnel_cpp_affairs,
-       personnel_cpp_area,
-       personnel_cpp_assistant,
-       personnel_cpp_code,
-       personnel_cpp_section,
-       personnel_cpp_title,
-       personnel_cpp_unit,
-       personnel_company_name,
-       personnel_complex_title,
-       personnel_education_level_title,
-       personnel_first_name,
-       personnel_id,
-       personnel_job_no,
-       personnel_job_title,
-       personnel_last_name,
-       personnel_national_code,
-       personnel_emp_no,
-       personnel_post_code,
-       personnel_post_grade_code,
-       personnel_post_grade_title,
-       personnel_post_title
-from Result r
+        na.f_parameter_value_needs_assessment_priority   AS na_priority_id,
+        course.id                                        AS course_id,
+        course.c_code                                    AS course_code,
+        course.c_title_fa                                AS course_title_fa,
+        prs.personnel_no                                 AS personnel_personnel_no,
+        dep.c_omor_title                                 AS personnel_cpp_affairs,
+        dep.c_hoze_title                                 AS personnel_cpp_area,
+        dep.c_moavenat_title                             AS personnel_cpp_assistant,
+        prs.ccp_code                                     AS personnel_cpp_code,
+        dep.c_ghesmat_title                              AS personnel_cpp_section,
+        dep.c_title                                      AS personnel_cpp_title,
+        dep.c_vahed_title                                AS personnel_cpp_unit,
+        prs.company_name                                 AS personnel_company_name,
+        dep.c_hoze_title                                 AS personnel_complex_title,
+        prs.education_level_title                        AS personnel_education_level_title,
+        prs.first_name                                   AS personnel_first_name,
+        prs.id                                           AS personnel_id,
+        prs.job_no                                       AS personnel_job_no,
+        prs.job_title                                    AS personnel_job_title,
+        prs.last_name                                    AS personnel_last_name,
+        prs.national_code                                AS personnel_national_code,
+        prs.emp_no                                       AS personnel_emp_no,
+        prs.post_code                                    AS personnel_post_code,
+        prs.post_grade_code                              AS personnel_post_grade_code,
+        prs.post_grade_title                             AS personnel_post_grade_title,
+        prs.post_title                                   AS personnel_post_title,
+        prs.f_post_id                                    AS personnel_post_id
+    FROM
+        (
+            SELECT
+                f_object,
+                f_skill,
+                f_parameter_value_needs_assessment_priority
+            FROM
+                tbl_needs_assessment
+            WHERE
+                c_object_type = 'JobGroup'
+        ) na
+        INNER JOIN tbl_skill                skill ON na.f_skill = skill.id
+        INNER JOIN tbl_course               course ON skill.f_course = course.id
+        INNER JOIN tbl_job_group            jg ON na.f_object = jg.id
+        INNER JOIN tbl_job_jobgroup         jjg ON jg.id = jjg.f_jobgroup_id
+        INNER JOIN tbl_job                  j ON jjg.f_job_id = j.id
+        INNER JOIN tbl_training_post        tp ON tp.f_job_id = j.id
+        INNER JOIN tbl_post_training_post   ptp ON tp.id = ptp.f_training_post_id
+        INNER JOIN tbl_post                 p ON ptp.f_post_id = p.id
+        INNER JOIN view_active_personnel    prs ON prs.f_post_id = p.id
+        LEFT JOIN tbl_department           dep ON dep.id = prs.f_department_id
+    UNION
+    SELECT DISTINCT
+        na.f_parameter_value_needs_assessment_priority   AS na_priority_id,
+        course.id                                        AS course_id,
+        course.c_code                                    AS course_code,
+        course.c_title_fa                                AS course_title_fa,
+        prs.personnel_no                                 AS personnel_personnel_no,
+        dep.c_omor_title                                 AS personnel_cpp_affairs,
+        dep.c_hoze_title                                 AS personnel_cpp_area,
+        dep.c_moavenat_title                             AS personnel_cpp_assistant,
+        prs.ccp_code                                     AS personnel_cpp_code,
+        dep.c_ghesmat_title                              AS personnel_cpp_section,
+        dep.c_title                                      AS personnel_cpp_title,
+        dep.c_vahed_title                                AS personnel_cpp_unit,
+        prs.company_name                                 AS personnel_company_name,
+        dep.c_hoze_title                                 AS personnel_complex_title,
+        prs.education_level_title                        AS personnel_education_level_title,
+        prs.first_name                                   AS personnel_first_name,
+        prs.id                                           AS personnel_id,
+        prs.job_no                                       AS personnel_job_no,
+        prs.job_title                                    AS personnel_job_title,
+        prs.last_name                                    AS personnel_last_name,
+        prs.national_code                                AS personnel_national_code,
+        prs.emp_no                                       AS personnel_emp_no,
+        prs.post_code                                    AS personnel_post_code,
+        prs.post_grade_code                              AS personnel_post_grade_code,
+        prs.post_grade_title                             AS personnel_post_grade_title,
+        prs.post_title                                   AS personnel_post_title,
+        prs.f_post_id                                    AS personnel_post_id
+    FROM
+        (
+            SELECT
+                f_object,
+                f_skill,
+                f_parameter_value_needs_assessment_priority
+            FROM
+                tbl_needs_assessment
+            WHERE
+                c_object_type = 'PostGrade'
+        ) na
+        INNER JOIN tbl_skill                skill ON na.f_skill = skill.id
+        INNER JOIN tbl_course               course ON skill.f_course = course.id
+        INNER JOIN tbl_post_grade           pg ON na.f_object = pg.id
+        INNER JOIN tbl_training_post        tp ON tp.f_post_grade_id = pg.id
+        INNER JOIN tbl_post_training_post   ptp ON tp.id = ptp.f_training_post_id
+        INNER JOIN tbl_post                 p ON ptp.f_post_id = p.id
+        INNER JOIN view_active_personnel    prs ON prs.f_post_id = p.id
+        LEFT JOIN tbl_department           dep ON dep.id = prs.f_department_id
+    UNION
+    SELECT DISTINCT
+        na.f_parameter_value_needs_assessment_priority   AS na_priority_id,
+        course.id                                        AS course_id,
+        course.c_code                                    AS course_code,
+        course.c_title_fa                                AS course_title_fa,
+        prs.personnel_no                                 AS personnel_personnel_no,
+        dep.c_omor_title                                 AS personnel_cpp_affairs,
+        dep.c_hoze_title                                 AS personnel_cpp_area,
+        dep.c_moavenat_title                             AS personnel_cpp_assistant,
+        prs.ccp_code                                     AS personnel_cpp_code,
+        dep.c_ghesmat_title                              AS personnel_cpp_section,
+        dep.c_title                                      AS personnel_cpp_title,
+        dep.c_vahed_title                                AS personnel_cpp_unit,
+        prs.company_name                                 AS personnel_company_name,
+        dep.c_hoze_title                                 AS personnel_complex_title,
+        prs.education_level_title                        AS personnel_education_level_title,
+        prs.first_name                                   AS personnel_first_name,
+        prs.id                                           AS personnel_id,
+        prs.job_no                                       AS personnel_job_no,
+        prs.job_title                                    AS personnel_job_title,
+        prs.last_name                                    AS personnel_last_name,
+        prs.national_code                                AS personnel_national_code,
+        prs.emp_no                                       AS personnel_emp_no,
+        prs.post_code                                    AS personnel_post_code,
+        prs.post_grade_code                              AS personnel_post_grade_code,
+        prs.post_grade_title                             AS personnel_post_grade_title,
+        prs.post_title                                   AS personnel_post_title,
+        prs.f_post_id                                    AS personnel_post_id
+    FROM
+        (
+            SELECT
+                f_object,
+                f_skill,
+                f_parameter_value_needs_assessment_priority
+            FROM
+                tbl_needs_assessment
+            WHERE
+                c_object_type = 'PostGradeGroup'
+        ) na
+        INNER JOIN tbl_skill                         skill ON na.f_skill = skill.id
+        INNER JOIN tbl_course                        course ON skill.f_course = course.id
+        INNER JOIN tbl_post_grade_group              pgg ON na.f_object = pgg.id
+        INNER JOIN tbl_post_grade_post_grade_group   pgpgg ON pgg.id = pgpgg.f_post_grade_group_id
+        INNER JOIN tbl_post_grade                    pg ON pgpgg.f_post_grade_id = pg.id
+        INNER JOIN tbl_training_post                 tp ON tp.f_post_grade_id = pg.id
+        INNER JOIN tbl_post_training_post            ptp ON tp.id = ptp.f_training_post_id
+        INNER JOIN tbl_post                          p ON ptp.f_post_id = p.id
+        INNER JOIN view_active_personnel             prs ON prs.f_post_id = p.id
+        LEFT JOIN tbl_department                    dep ON dep.id = prs.f_department_id
+)
+SELECT
+    MIN(na_priority_id) AS na_priority_id,
+    course_id,
+    course_code,
+    course_title_fa,
+    personnel_personnel_no,
+    personnel_cpp_affairs,
+    personnel_cpp_area,
+    personnel_cpp_assistant,
+    personnel_cpp_code,
+    personnel_cpp_section,
+    personnel_cpp_title,
+    personnel_cpp_unit,
+    personnel_company_name,
+    personnel_complex_title,
+    personnel_education_level_title,
+    personnel_first_name,
+    personnel_id,
+    personnel_job_no,
+    personnel_job_title,
+    personnel_last_name,
+    personnel_national_code,
+    personnel_emp_no,
+    personnel_post_code,
+    personnel_post_grade_code,
+    personnel_post_grade_title,
+    personnel_post_title,
+     personnel_post_id
+FROM
+    result r
 GROUP BY
     course_id,
     course_code,
@@ -300,7 +446,8 @@ GROUP BY
     personnel_post_code,
     personnel_post_grade_code,
     personnel_post_grade_title,
-    personnel_post_title
+    personnel_post_title,
+   personnel_post_id
 			]]>
         </createView>
     </changeSet>
@@ -961,7 +1108,7 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_PERSONNEL_COURSE_PASSED_NA_REPORT-005">
+    <changeSet author="NICICO" id="VIEW_PERSONNEL_COURSE_PASSED_NA_REPORT-006">
         <createView viewName="VIEW_PERSONNEL_COURSE_PASSED_NA_REPORT" replaceIfExists="true">
             <![CDATA[
     SELECT
@@ -996,12 +1143,15 @@ FROM
             216
         ELSE
             399
-    END AS is_passed
+    END AS is_passed,
+    PG.c_code
 FROM
     view_personnel_course_na_report               na
     LEFT JOIN view_student_classstudent_class_term_course   passed ON na.personnel_national_code = passed.student_national_code
                                                                     AND na.course_id = passed.course_id
                                                                     AND passed.class_student_scores_state_id IN (400, 401)
+                                      LEFT JOIN tbl_post P ON na.PERSONNEL_POST_ID = P.ID
+                                     INNER JOIN tbl_post_grade PG ON P.F_POST_GRADE_ID = PG.ID
     			]]>
         </createView>
     </changeSet>
