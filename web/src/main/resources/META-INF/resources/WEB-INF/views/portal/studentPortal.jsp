@@ -109,7 +109,7 @@
                 {
                     title: "ثبت نتایج",
                     click: function () {
-                        createTab_SP(this.title, "<spring:url value="/questionEvaluation/show-form"/>", "call_questionEvaluation(student_SP)");
+                        createTab_SP(this.title, "<spring:url value="/questionEvaluation/show-form"/>", "call_questionEvaluation_forStudent(student_SP)");
                     }
                 },
                 {isSeparator: true},
@@ -129,7 +129,7 @@
             basicInfoTSMB_SP,
             NAreportTSMB_SP,
             runTSMB_SP,
-            // evaluationTSMB_SP
+            evaluationTSMB_SP
         ]
     });
 
@@ -257,7 +257,7 @@
     function studentData_Result_SP(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             student_SP = (JSON.parse(resp.data));
-            MainToolStrip_SP.addMember(evaluationTSMB_SP);
+            // MainToolStrip_SP.addMember(evaluationTSMB_SP);
         } else {
             student_SP = null;
             // createDialog("info", resp.httpResponseText);

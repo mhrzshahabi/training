@@ -16,7 +16,9 @@ import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.dto.ViewEvaluationStaticalReportDTO;
 import com.nicico.training.iservice.IInstituteService;
 import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.model.Personnel;
 import com.nicico.training.repository.CourseDAO;
+import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.StudentDAO;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.*;
@@ -36,10 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -61,6 +60,7 @@ public class TclassRestController {
     private final TclassDAO tclassDAO;
     private final WorkGroupService workGroupService;
     private final ViewEvaluationStaticalReportService viewEvaluationStaticalReportService;
+    private final PersonnelDAO personnelDAO;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -207,6 +207,23 @@ public class TclassRestController {
         request.setCriteria(workGroupService.addPermissionToCriteria("course.categoryId", request.getCriteria()));
 
         SearchDTO.SearchRs<TclassDTO.Info> response = tClassService.search(request);
+
+        for (TclassDTO.Info tclassDTO : response.getList()) {
+            tclassDTO.setPlannerFullName("");
+            tclassDTO.setSupervisorFullName("");
+
+            if (tclassDTO.getPlanner()!=null) {
+                Optional<Personnel> planner = personnelDAO.findById(tclassDTO.getPlanner());
+                   if (planner.isPresent()) {
+                       tclassDTO.setPlannerFullName(planner.get().getFirstName() + " " + planner.get().getLastName());
+                   }
+
+                Optional<Personnel> supervisor = personnelDAO.findById(tclassDTO.getSupervisor());
+                if (supervisor.isPresent()) {
+                    tclassDTO.setSupervisorFullName(supervisor.get().getFirstName() + " " + supervisor.get().getLastName());
+                }
+            }
+        }
 
         //*********************************
         //******old code for alarms********

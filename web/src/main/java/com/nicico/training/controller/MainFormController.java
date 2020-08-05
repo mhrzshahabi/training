@@ -253,6 +253,11 @@ public class MainFormController {
         return "portal/studentPortal";
     }
 
+    @RequestMapping("/teacher-portal")
+    public String showTeacherPortalForm() {
+        return "portal/teacherPortal";
+    }
+
     @RequestMapping("/personnel-course-NA-report")
     public String showPersonnelCourseNAReportForm() {
         return "report/personnelCourseNAReportV2";

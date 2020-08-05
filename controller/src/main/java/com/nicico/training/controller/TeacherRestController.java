@@ -7,6 +7,7 @@ import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
@@ -14,6 +15,7 @@ import com.nicico.training.iservice.*;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.repository.TeacherDAO;
+import com.nicico.training.repository.ViewTeacherReportDAO;
 import com.nicico.training.service.TeacherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +24,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.imageio.ImageIO;
@@ -63,6 +68,8 @@ public class TeacherRestController {
     private final ITclassService tclassService;
     @Autowired
     protected EntityManager entityManager;
+    private final ViewTeacherReportDAO viewTeacherReportDAO;
+    private final MessageSource messageSource;
 
 
     @Loggable
@@ -1059,6 +1066,20 @@ public class TeacherRestController {
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>( specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @Transactional
+    @GetMapping(value = "/getOneByNationalCode")
+    public ResponseEntity getPersonnelInfo(HttpServletRequest iscRq, HttpServletResponse response) throws IOException {
+        String restApiUrl = iscRq.getRequestURL().toString().replace(iscRq.getServletPath(), "");
+        ViewTeacherReport teacher = viewTeacherReportDAO.findFirstByNationalCode(SecurityUtil.getNationalCode());
+        if (teacher != null)
+            return new ResponseEntity<>(modelMapper.map(teacher,ViewTeacherReportDTO.Info.class), HttpStatus.OK);
+        else if(SecurityUtil.getNationalCode() == null)
+            return new ResponseEntity<>("اطلاعات کاربر در سیستم ناقص می باشد", HttpStatus.NOT_FOUND);
+        else
+            return new ResponseEntity<>("استادی با این کد ملی در سیستم پیدا نشد", HttpStatus.NOT_FOUND);
     }
 
 }
