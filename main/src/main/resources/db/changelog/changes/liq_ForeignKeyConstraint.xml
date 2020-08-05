@@ -1151,4 +1151,12 @@
         <addForeignKeyConstraint baseColumnNames="f_message_user_type" baseTableName="tbl_message" constraintName="FKtgijaybf64bt83rl9ah33eicq" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
 
+    <changeSet author="golrokhi (generated)" id="1596614216172-490">
+        <addForeignKeyConstraint baseColumnNames="f_message_id" baseTableName="tbl_message_contact" constraintName="FK5hlxrnt6fn7bfv6bh60f5v4w9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_message" validate="true"/>
+    </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1596614216172-507">
+        <dropForeignKeyConstraint baseTableName="TBL_MESSAGE_CONTACT" constraintName="FK4G999FVJBRRMH74RIQCRRYLHP"/>
+    </changeSet>
+
 </databaseChangeLog>
