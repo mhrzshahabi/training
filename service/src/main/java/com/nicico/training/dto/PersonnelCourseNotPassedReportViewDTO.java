@@ -32,6 +32,7 @@ public class PersonnelCourseNotPassedReportViewDTO {
         private String personnelCcpSection;
         private String personnelCcpUnit;
         private String personnelCcpTitle;
+        private String pgCCode;
 
         private Long courseId;
         private String courseCode;

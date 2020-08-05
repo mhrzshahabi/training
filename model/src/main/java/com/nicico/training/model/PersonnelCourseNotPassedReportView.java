@@ -91,6 +91,9 @@ public class PersonnelCourseNotPassedReportView implements Serializable {
     @Column(name = "personnel_cpp_title")
     private String personnelCcpTitle;
 
+    @Column(name = "PG_C_CODE")
+    private String pgCCode;
+
     ///////////////////////////////////////////////////course///////////////////////////////////////
 
     @Column(name = "course_id", insertable = false, updatable = false)

@@ -253,4 +253,12 @@
     <changeSet author="golrokhi (generated)" id="1595320264747-454">
         <createSequence sequenceName="seq_question_bank_id"/>
     </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1596597720708-466">
+        <createSequence sequenceName="seq_message_contact_id"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1596597720708-467">
+        <createSequence sequenceName="seq_message_id"/>
+    </changeSet>
+
 </databaseChangeLog>
