@@ -73,12 +73,15 @@
         initialSort: [],
         doubleClick: function () {
             let record = ListGrid_Grid_JspQuestionEvaluation.getSelectedRecord();
-            if (record.evaluationLevel == 154)
-                register_Student_Form_JspQuestionEvaluation(record.classId, record.studentId, 188, record.classId,
+            if (record.evaluationLevel == 154 && record.questionnarieType == 139)
+                register_Evaluation_Form_JspQuestionEvaluation(record.classId, record.studentId, 188, record.classId,
                     504, 139, 154, record.teacherName, record.studentName, record.classCode, record.courseTitle, record.classStartDate);
-            else if (record.evaluationLevel == 156)
-                register_Student_Form_JspQuestionEvaluation(record.classId, record.studentId, 188, record.studentId,
+            else if (record.evaluationLevel == 156 && record.questionnarieType == 230)
+                register_Evaluation_Form_JspQuestionEvaluation(record.classId, record.studentId, 188, record.studentId,
                     188, 230, 156, record.teacherName, record.studentName, record.classCode, record.courseTitle, record.classStartDate);
+            else   if (record.evaluationLevel == 154 && record.questionnarieType == 140)
+                register_Evaluation_Form_JspQuestionEvaluation(record.classId, record.teacherId, 187, record.classId,
+                504, 140, 154, record.teacherName, record.teacherName, record.classCode, record.courseTitle, record.classStartDate);
         },
         fields: [
             {
@@ -120,15 +123,21 @@
         ]
     });
 
-    function call_questionEvaluation(selectedStudent) {
+    function call_questionEvaluation_forStudent(selectedStudent) {
         RestDataSource_Grid_JspQuestionEvaluation.fetchDataURL = studentPortalUrl + "/evaluation/getStudentEvaluationForms/" + selectedStudent.nationalCode;
         ListGrid_Grid_JspQuestionEvaluation.fetchData();
         ListGrid_Grid_JspQuestionEvaluation.invalidateCache();
     }
 
-    function register_Student_Form_JspQuestionEvaluation(classId, evaluatorId, evaluatorTypeId, evaluatedId,
+    function call_questionEvaluation_forTeacher(selectedTeacher) {
+        RestDataSource_Grid_JspQuestionEvaluation.fetchDataURL = evaluationUrl + "/teacherEvaluationForms/" + selectedTeacher.teacherId;
+        ListGrid_Grid_JspQuestionEvaluation.fetchData();
+        ListGrid_Grid_JspQuestionEvaluation.invalidateCache();
+    }
+
+    function register_Evaluation_Form_JspQuestionEvaluation(classId, evaluatorId, evaluatorTypeId, evaluatedId,
                                                                   evaluatedTypeId, questionnaireTypeId, evaluationLevelId,
-                                                                  teacher, student, classCode, courseTitle, classStartDate) {
+                                                                  teacher, evaluatorName, classCode, courseTitle, classStartDate) {
         let evaluationResult_DS = isc.TrDS.create({
             fields:
                 [
@@ -269,16 +278,21 @@
         DynamicForm_Questions_Title_JspEvaluation.getItem("titleClass").setValue(courseTitle);
 
         DynamicForm_Questions_Title_JspEvaluation.getItem("startDate").setValue(classStartDate);
-        if (evaluationLevelId == 154) {
+        DynamicForm_Questions_Title_JspEvaluation.setValue("evaluator", evaluatorName);
+        if (evaluationLevelId == 154 && questionnaireTypeId == 139) {
             DynamicForm_Questions_Title_JspEvaluation.setValue("evaluated", courseTitle);
             DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationType").setValue("ارزیابی فراگیر از کلاس");
             DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationLevel").setValue("واکنشی");
-            DynamicForm_Questions_Title_JspEvaluation.setValue("evaluator", student);
-        } else if (evaluationLevelId == 156) {
-            DynamicForm_Questions_Title_JspEvaluation.setValue("evaluated", student);
+        }
+        else  if (evaluationLevelId == 154 && questionnaireTypeId == 140) {
+            DynamicForm_Questions_Title_JspEvaluation.setValue("evaluated", courseTitle);
+            DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationType").setValue("ارزیابی مدرس از کلاس");
+            DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationLevel").setValue("واکنشی");
+            }
+else if (evaluationLevelId == 156 && questionnaireTypeId == 230) {
+            DynamicForm_Questions_Title_JspEvaluation.setValue("evaluated", evaluatorName);
             DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationType").setValue("ارزیابی دیگری از فراگیر");
             DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationLevel").setValue("رفتاری");
-            DynamicForm_Questions_Title_JspEvaluation.setValue("evaluator", student);
         }
 
         DynamicForm_Questions_Title_JspEvaluation.setValue("user", "<%= SecurityUtil.getFullName()%>");

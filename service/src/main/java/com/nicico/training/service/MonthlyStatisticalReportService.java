@@ -87,7 +87,8 @@ public class MonthlyStatisticalReportService implements IMonthlyStatisticalRepor
                 "                    INNER JOIN tbl_session S ON S.id = A.f_session  " +
                 "                    INNER JOIN tbl_class C ON S.f_class_id = C.id  " +
                 "                    INNER JOIN tbl_course CO ON C.f_course = CO.id  " +
-                "                    LEFT JOIN tbl_post_grade PG ON ST.POST_GRADE_CODE = PG.c_code " +
+                "                    LEFT JOIN tbl_post P ON personnel.F_POST_ID = P.ID "+
+                "                    INNER JOIN tbl_post_grade PG ON P.F_POST_GRADE_ID = PG.ID "+
                 "                 WHERE  department.c_vahed_title<>'-' and department.c_hoze_title<>'-' and department.c_moavenat_title<>'-' and department.c_omor_title<>'-' and department.c_ghesmat_title<>'-' and S.c_session_date >= :firstDate AND S.c_session_date <= :secondDate AND A.c_state <> 0  " +
                 "                 AND (CASE WHEN :complex_title = 'همه' THEN 1 WHEN  department.c_hoze_title = :complex_title THEN 1 END) IS NOT NULL  " +
                 "                 AND (CASE WHEN :assistant = 'همه' THEN 1 WHEN  department.c_moavenat_title = :assistant THEN 1 END) IS NOT NULL  " +
@@ -104,7 +105,7 @@ public class MonthlyStatisticalReportService implements IMonthlyStatisticalRepor
             reportScript += "                 AND C.id in(" + StringUtils.join(Class, ",") + ")";
 
         if ((PostGrade.size() != 0))
-            reportScript += "                 AND PG.id in(" + StringUtils.join(PostGrade, ",") + ")";
+            reportScript += "                 AND PG.c_code in(" + StringUtils.join(PostGrade, ",") + ")";
 
         if ((Personnel.size() != 0))
             reportScript += "                 AND ST.id in(" + StringUtils.join(Personnel, ",") + ")";
