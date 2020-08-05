@@ -1634,6 +1634,13 @@
                     }
                 },
                 </sec:authorize>
+
+                {
+                    title: "<spring:message code='teacher.portal'/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/web/teacher-portal"/>");
+                    }
+                },
             ]
         }),
     });

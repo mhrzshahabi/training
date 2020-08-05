@@ -63,6 +63,7 @@ public class TclassDTO {
     private Boolean preCourseTest;
     private String hasWarning;
     private Integer evaluationStatusReactionTraining;
+    private Integer evaluationStatusReactionTeacher;
     private Integer startEvaluation;
     private String evaluation;
     private String behavioralLevel;
@@ -81,6 +82,8 @@ public class TclassDTO {
         private TermDTO.TermDTOTuple term;
         @Getter(AccessLevel.NONE)
         private TeacherDTO.TeacherFullNameTuple teacher;
+        private String plannerFullName;
+        private String supervisorFullName;
 
         //*********************************
         //******old code for alarms********
