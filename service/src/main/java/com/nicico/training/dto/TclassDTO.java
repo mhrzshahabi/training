@@ -67,6 +67,9 @@ public class TclassDTO {
     private Integer startEvaluation;
     private String evaluation;
     private String behavioralLevel;
+    private Long cancelClassReasonId;
+    private Long postPoneClassId;
+    private String postponeStartDate;
 
 
     @Getter

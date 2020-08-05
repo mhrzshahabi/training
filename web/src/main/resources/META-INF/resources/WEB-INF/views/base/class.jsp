@@ -69,6 +69,8 @@
         fields: [
             {name: "id", primaryKey: true},
             {name: "group"},
+            {name: "cancelClassReasonId"},
+
 // {name: "lastModifiedDate",hidden:true},
 // {name: "createdBy",hidden:true},
 // {name: "createdDate",hidden:true,type:d},
@@ -512,7 +514,14 @@
                     },
                 },
                 filterOnKeypress:true,
-                autoFitWidth: true,
+                width: 100,
+                showHover: true,
+                // canHover: true,
+                hoverWidth: 200,
+                hoverHTML(record){
+                    console.log(record)
+                    return record.cancelClassReasonId
+                }
             },
             {
                 name: "topology", title: "<spring:message code='place.shape'/>", align: "center", valueMap: {
@@ -2833,7 +2842,7 @@
 
                         fields: [
                             {
-                                name: "classCancelReasonId",
+                                name: "cancelClassReasonId",
                                 colSpan: 4,
                                 textAlign: "center",
                                 title: "علت لغو کلاس: ",
@@ -2843,7 +2852,6 @@
                                 displayField: "title",
                                 autoFitWidth: true,
                                 showFilterEditor: false
-
                             },
                             {
                                 name: "postpone",
@@ -2949,7 +2957,6 @@
                                     item.fetchData();
                                 }
                             }
-
                         ]
                     }),
                     isc.TrHLayoutButtons.create({
@@ -2970,7 +2977,29 @@
                                         WindowCancelClass.close()
                                         return;
                                     }
-                                    alert("ok")
+                                    record.cancelClassReasonId = DynamicFormPostponeClass.getValue("cancelClassReasonId");
+                                    record.postponeClassId = DynamicFormPostponeClass.getValue("postponeClassId");
+                                    record.postponeStartDate = DynamicFormPostponeClass.getValue("postponeStartDate");
+                                    record.classStatus = "4";
+                                    wait.show();
+                                    console.log(record)
+                                    isc.RPCManager.sendRequest(TrDSRequest(classUrl + "update/" + record.id, "PUT", JSON.stringify(record), (resp)=>{
+                                        wait.close();
+                                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                            ListGrid_Class_refresh();
+                                            let responseID = JSON.parse(resp.data).id;
+                                            let gridState = "[{id:" + responseID + "}]";
+                                            simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
+                                            setTimeout(function () {
+                                                ListGrid_Class_JspClass.setSelectedState(gridState);
+                                                ListGrid_Class_JspClass.scrollToRow(ListGrid_Class_JspClass.getRecordIndex(ListGrid_Class_JspClass.getSelectedRecord()), 0);
+                                            }, 3000);
+                                            WindowCancelClass.close()
+                                        }
+                                        else {
+                                            simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", "3000", "error");
+                                        }
+                                    }));
                                 }
                             }),
                             isc.IButtonCancel.create({

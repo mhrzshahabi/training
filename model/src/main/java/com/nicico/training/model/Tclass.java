@@ -210,7 +210,7 @@ public class Tclass extends Auditable {
     @Column(name = "f_cancel_class_reason", insertable = false, updatable = false)
     private Long cancelClassReasonId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "f_postpone_class")
     private Tclass postPoneClass;
 
