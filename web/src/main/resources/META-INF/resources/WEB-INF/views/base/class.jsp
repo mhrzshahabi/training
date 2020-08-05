@@ -78,6 +78,7 @@
             {name: "studentCount",canFilter:false,canSort:false},
             {name: "code"},
             {name: "term.titleFa"},
+            {name: "courseId"},
             // {name: "teacher.personality.lastNameFa"},
 // {name: "course.code"},
             {name: "course.titleFa"},
@@ -180,6 +181,15 @@
 //         fetchDataURL: trainingPlaceUrl + "/with-institute"
     });
 
+    var RestDataSource_CancelClass_JSPClass = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+        ],
+        fetchDataURL: parameterValueUrl + "/iscList/438"
+    });
+
     SupervisorDS_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", filterOperator: "equals", primaryKey: true, hidden: true},
@@ -250,6 +260,15 @@
             }
         },
             </sec:authorize>
+
+            <%--<sec:authorize access="hasAuthority('Tclass_U')">--%>
+            {
+            title: "لغو کلاس",
+            click: function () {
+                CancelClass_JspClass(ListGrid_Class_JspClass.getSelectedRecord())
+            }
+        },
+            <%--</sec:authorize>--%>
 
             <sec:authorize access="hasAuthority('Tclass_D')">
             {
@@ -459,6 +478,7 @@
                     "1": "برنامه ریزی",
                     "2": "در حال اجرا",
                     "3": "پایان یافته",
+                    "4": "لغو شده"
                 },
                 filterEditorProperties:{
                     pickListProperties: {
@@ -2763,6 +2783,180 @@
             });
         }
         printWithCriteria(cr, {}, "ClassByCriteria.jasper", type, direction + ListGrid_Class_JspClass.getSort()[0]["property"]);
+    }
+
+    function CancelClass_JspClass(record) {
+        let WindowCancelClass = isc.Window.create({
+            title: "پنجره تایید لغو کلاس",
+            items: [isc.VLayout.create({
+                width: "100%",
+                height: "100%",
+                members: [
+                    isc.DynamicForm.create({
+                        ID: "DynamicFormPostponeClass",
+                        numCols: 4,
+                        validateOnChange: true,
+                        // colWidths: [120, 20, 50, 100],
+                        readOnlyDisplay: "readOnly",
+                        // cellBorder:1,
+
+                        fields: [
+                            {
+                                name: "reason",
+                                colSpan: 4,
+                                textAlign: "center",
+                                title: "علت لغو کلاس: ",
+                                optionDataSource: RestDataSource_CancelClass_JSPClass,
+                                valueField: "id",
+                                required: true,
+                                displayField: "title",
+                                autoFitWidth: true,
+                                showFilterEditor: false
+
+                            },
+                            {
+                                name: "postpone",
+                                type: "checkbox",
+                                colSpan :4,
+                                title: "در تاریخ دیگری اجرا میشود.",
+                                // titleOrientation: "top",
+                                // labelAsTitle: true,
+                                endRow: false,
+                                changed (form, item, value){
+                                    if(value) {
+                                        form.getItem("startDate").show();
+                                        form.getItem("postponeClassId").show();
+                                        form.getItem("startDate").required = true;
+                                        // form.getItem("postponeClassId").required = false;
+                                    }
+                                    else{
+                                        form.clearValue("startDate");
+                                        form.clearValue("postponeClassId");
+                                        form.getItem("startDate").hide();
+                                        form.getItem("postponeClassId").hide();
+                                        form.getItem("startDate").required = false;
+                                    }
+                                }
+                            },
+                            {
+                                name: "startDate",
+                                colSpan: 4,
+// type:"staticText",
+                                ID: "startDate_CancelClass_jspClass",
+                                title: "<spring:message code='start.date'/>:",
+                                hint: "--/--/----",
+                                hidden: true,
+                                keyPressFilter: "[0-9/]",
+                                showHintInField: true,
+                                icons: [{
+                                    src: "<spring:url value="calendar.png"/>",
+                                    click: function (form) {
+                                            closeCalendarWindow();
+                                            displayDatePicker('startDate_CancelClass_jspClass', this, 'ymd', '/');
+                                    }
+                                }],
+                                textAlign: "center",
+                                changed: function (form, item, value) {
+                                    let dateCheck = checkDate(value);
+                                    if (dateCheck === false) {
+                                        form.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                                    };
+                                }
+                            },
+                            {
+                                name: "postponeClassId",
+                                title: "کلاس جایگزین: ",
+                                textAlign: "center",
+                                icons:[
+                                    {
+                                        name: "clear",
+                                        src: "[SKIN]actions/remove.png",
+                                        width: 15,
+                                        height: 15,
+                                        inline: true,
+                                        prompt: "پاک کردن",
+                                        click : function (form, item, icon) {
+                                            item.clearValue();
+                                            item.focusInItem();
+                                        }
+                                    }
+                                ],
+                                hidden: true,
+                                width: "280",
+                                editorType: "ComboBoxItem",
+                                pickListWidth: 700,
+                                optionDataSource: RestDataSource_Class_JspClass,
+                                displayField: "titleClass",
+                                valueField: "id",
+                                // addUnknownValues: false,
+                                // textMatchStyle: "substring",
+                                // generateExactMatchCriteria: true,
+                                filterFields: ["titleClass", "code"],
+                                pickListFields: [
+                                    {name: "code", title: "کد کلاس", autoFitWidth: true},
+                                    {name: "titleClass", title: "نام کلاس", autoFitWidth: true},
+                                    {name: "teacher", title: "استاد", autoFitWidth: true},
+                                    {name: "startDate", title: "تاریخ شروع", autoFitWidth: true},
+                                    {name: "endDate", title: "تاریخ پایان", autoFitWidth: true},
+                                ],
+                                pickListProperties: {
+                                    showFilterEditor: false,
+                                    // alternateRecordStyles: true,
+                                    autoFitWidthApproach: "both",
+                                },
+                                click(form, item){
+                                    let criteria = {
+                                        _constructor:"AdvancedCriteria",
+                                        operator:"and",
+                                        criteria:[
+                                            {fieldName:"courseId", operator:"equals", value: record.courseId},
+                                            {fieldName:"startDate", operator:"greaterOrEqual", value: record.startDate},
+                                            {fieldName:"id", operator:"notEqual", value: record.id},
+                                        ]
+                                    };
+                                    item.pickListCriteria = criteria;
+                                    item.fetchData();
+                                }
+                            }
+
+                        ]
+                    }),
+                    isc.TrHLayoutButtons.create({
+                        members:[
+                            isc.IButtonSave.create({
+                                title:"تایید",
+                                click:function () {
+                                    DynamicFormPostponeClass.validate();
+                                    if(DynamicFormPostponeClass.getItem("startDate").required && DynamicFormPostponeClass.getValue("startDate") === undefined){
+                                        DynamicFormPostponeClass.getItem("startDate").setError("فیلد اجباری است");
+                                        DynamicFormPostponeClass.redraw()
+                                    }
+                                    if (DynamicFormPostponeClass.hasErrors()) {
+                                        return;
+                                    }
+
+                                    if(!DynamicFormPostponeClass.valuesHaveChanged()){
+                                        WindowCancelClass.close()
+                                        return;
+                                    }
+                                    alert("ok")
+                                }
+                            }),
+                            isc.IButtonCancel.create({
+                                click:function () {
+                                    WindowCancelClass.close()
+                                }
+                            }),
+
+                        ]
+                    })
+                ]
+            })],
+            width: "400",
+            height: "150",
+        });
+        WindowCancelClass.show();
+
     }
 
     function classCode() {
