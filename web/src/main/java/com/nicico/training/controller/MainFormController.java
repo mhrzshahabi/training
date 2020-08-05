@@ -248,9 +248,9 @@ public class MainFormController {
         return "planning/courseNAReports";
     }
 
-    @RequestMapping("/student-portal")
+    @RequestMapping("/personnel-portal")
     public String showStudentPortalForm() {
-        return "portal/studentPortal";
+        return "portal/personnelPortal";
     }
 
     @RequestMapping("/teacher-portal")

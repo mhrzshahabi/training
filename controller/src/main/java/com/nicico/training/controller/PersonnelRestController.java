@@ -179,7 +179,10 @@ public class PersonnelRestController {
         List<PersonnelRegisteredDTO.Info> personnelRegisteredList = personnelRegisteredService.search(new SearchDTO.SearchRq().setCriteria(criteria)).getList();
         if (!personnelRegisteredList.isEmpty())
             return new ResponseEntity<>(personnelRegisteredList.get(0), HttpStatus.OK);
-        return new ResponseEntity<>(messageSource.getMessage("person.not.found", null, LocaleContextHolder.getLocale()), HttpStatus.NOT_FOUND);
+        else if(nationalCode.equalsIgnoreCase("null"))
+            return new ResponseEntity<>("اطلاعات کاربر در سیستم ناقص می باشد", HttpStatus.NOT_FOUND);
+        else
+            return new ResponseEntity<>("پرسنلی با این کد ملی در سیستم پیدا نشد", HttpStatus.NOT_FOUND);
     }
 
     @Loggable

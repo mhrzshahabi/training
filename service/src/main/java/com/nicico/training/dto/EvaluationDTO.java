@@ -141,10 +141,13 @@ public class EvaluationDTO implements Serializable {
         private String courseTitle;
         private String teacherName;
         private String hasWarning;
-        private Long studentId;
         private Long classId;
-        private String studentName;
-        private Long teacherId;
+        private Long evaluatorId;
+        private Long evaluatedId;
+        private String evaluatorName;
+        private String evaluatedName;
+        private Long evaluatorTypeId;
+        private Long evaluatedTypeId;
     }
 
     @Getter

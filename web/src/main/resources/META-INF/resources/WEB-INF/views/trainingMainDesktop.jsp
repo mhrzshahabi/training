@@ -1628,9 +1628,9 @@
 
                 <sec:authorize access="hasAuthority('Menu_Cartable_StudentPortal')">
                 {
-                    title: "<spring:message code='student.portal'/>",
+                    title: "<spring:message code='personnel.portal'/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="/web/student-portal"/>");
+                        createTab(this.title, "<spring:url value="/web/personnel-portal"/>");
                     }
                 },
                 </sec:authorize>
