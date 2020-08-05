@@ -135,7 +135,7 @@
         wrapItemTitles: true,
         fields: [
             {
-                name: "personnelPostGradeCode",
+                name: "pgCCode",
                 title: "انتخاب رده پستي",
                 optionDataSource: PostGradeDS_PCNP,
                 autoFetchData: false,
