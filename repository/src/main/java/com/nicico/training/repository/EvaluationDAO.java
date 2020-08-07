@@ -47,4 +47,9 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
                                                                                                              Long EvaluatedTypeId,
                                                                                                              Boolean Status);
 
+    List<Evaluation> findByEvaluatorIdAndEvaluatorTypeIdAndEvaluationLevelIdAndQuestionnaireTypeId(Long EvaluatorId,
+                                                                                                   Long EvaluatorTypeId,
+                                                                                                   Long EvaluationLevelId,
+                                                                                                   Long QuestionnaireTypeId);
+
 }

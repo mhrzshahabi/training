@@ -1065,4 +1065,55 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="golrokhi (generated)" id="1596614216172-476">
+        <addColumn tableName="tbl_message_contact">
+            <column name="f_message_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1596614216172-477">
+        <addColumn tableName="tbl_message">
+            <column name="n_count_send" type="number(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1596614216172-478">
+        <addColumn tableName="tbl_message">
+            <column name="n_interval" type="number(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1596614216172-479">
+        <addColumn tableName="tbl_message_contact">
+            <column name="n_message_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1596616621909-581">
+        <dropColumn columnName="C_LAST_SENT_DATE" tableName="TBL_MESSAGE_CONTACT"/>
+    </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1596619389517-477">
+        <addColumn tableName="tbl_message_contact">
+            <column name="c_last_sent_date" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1596621786561-477">
+        <addColumn tableName="tbl_message_contact">
+            <column name="c_object_mobile" type="varchar2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1596622897038-477">
+        <addColumn tableName="tbl_message_contact">
+            <column name="n_count_sent" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1596622897038-585">
+        <dropColumn columnName="N_SENT_COUNT" tableName="TBL_MESSAGE_CONTACT"/>
+    </changeSet>
 </databaseChangeLog>

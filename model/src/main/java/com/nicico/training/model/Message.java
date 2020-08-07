@@ -43,7 +43,12 @@ public class Message extends Auditable {
     @JoinColumn(name = "f_message_user_type", nullable = false, insertable = false, updatable = false)
     private ParameterValue userType;
 
-    @OneToMany(mappedBy = "id", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "message", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MessageContact> messageContactList;
 
+    @Column(name = "n_count_send", nullable = false)
+    private Integer countSend;
+
+    @Column(name = "n_interval", nullable = false)
+    private Integer Interval;
 }

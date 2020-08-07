@@ -1628,9 +1628,9 @@
 
                 <sec:authorize access="hasAuthority('Menu_Cartable_StudentPortal')">
                 {
-                    title: "<spring:message code='student.portal'/>",
+                    title: "<spring:message code='personnel.portal'/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="/web/student-portal"/>");
+                        createTab(this.title, "<spring:url value="/web/personnel-portal"/>");
                     }
                 },
                 </sec:authorize>
@@ -1731,7 +1731,7 @@
                             <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_CourseWithOutTeacher')">
                             {isSeparator: true},
                             {
-                                title: "<spring:message code="report.course.withOut.teacher"/>",
+                                title: "<spring:message code="report.course.withOut.class"/>",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/courseWithOutTeacherReaport"/>");
                                 }

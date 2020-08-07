@@ -13,6 +13,7 @@ import org.hibernate.annotations.AnyMetaDef;
 import org.hibernate.annotations.MetaValue;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 
@@ -39,11 +40,14 @@ public class MessageContact<E> extends Auditable {
     @Column(name = "c_context_html", nullable = false)
     private String contextHtml;
 
-    @Column(name = "c_last_sent_date")
-    private String lastSentDate;
+   @Column(name = "c_last_sent_date")
+    private Date lastSentDate;
 
-    @Column(name = "n_sent_count")
-    private Integer sentCount;
+    @Column(name = "n_count_sent")
+    private Integer countSent;
+
+    @Column(name = "n_message_id")
+    private Long returnMessageId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_message_contact_status_id", nullable = false, insertable = false, updatable = false)
@@ -63,6 +67,16 @@ public class MessageContact<E> extends Auditable {
 
     @Column(name = "c_object_type", nullable = false)
     private String objectType;
+
+    @Column(name = "c_object_mobile", nullable = false)
+    private String objectMobile;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_message_id", insertable = false, updatable = false)
+    private Message message;
+
+    @Column(name = "f_message_id")
+    private Long messageId;
 
 }
 

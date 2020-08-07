@@ -4,11 +4,8 @@
 
 // <script>
 
-    const userNationalCode = '<%= SecurityUtil.getNationalCode()%>';
     isc.RPCManager.sendRequest(TrDSRequest(studentPortalUrl + "/personnel/getOneByNationalCode", "GET", null, userData_Result_SP));
     isc.RPCManager.sendRequest(TrDSRequest(studentPortalUrl + "/student/getOneByNationalCode", "GET", null, studentData_Result_SP));
-    // isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/getOneByNationalCode/3149573092", "GET", null, userData_Result_SP));
-    // isc.RPCManager.sendRequest(TrDSRequest(studentUrl + "getOneByNationalCode/3149573092", "GET", null, studentData_Result_SP));
 
     var person_SP = null;
     var student_SP = null;
@@ -79,7 +76,6 @@
                     title: "<spring:message code="weekly.training.schedule"/>",
                     click:function(){
                         createTab_SP(this.title, "<spring:url value="weeklyTrainingSchedule/show-form"/>");
-                            // , "call_weeklyTrainingSchedule(person_SP)");
                     }
                 },
                 {isSeparator: true},
@@ -109,7 +105,7 @@
                 {
                     title: "ثبت نتایج",
                     click: function () {
-                        createTab_SP(this.title, "<spring:url value="/questionEvaluation/show-form"/>", "call_questionEvaluation_forStudent(student_SP)");
+                        createTab_SP(this.title, "<spring:url value="/questionEvaluation/show-form"/>", "call_questionEvaluation_forPersonnel(person_SP)");
                     }
                 },
                 {isSeparator: true},
@@ -257,10 +253,8 @@
     function studentData_Result_SP(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             student_SP = (JSON.parse(resp.data));
-            // MainToolStrip_SP.addMember(evaluationTSMB_SP);
         } else {
             student_SP = null;
-            // createDialog("info", resp.httpResponseText);
         }
     }
 
