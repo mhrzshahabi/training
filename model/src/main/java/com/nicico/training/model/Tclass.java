@@ -203,18 +203,18 @@ public class Tclass extends Auditable {
     @Column(name = "c_behavioral_level")
     private String behavioralLevel;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_cancel_class_reason")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "f_cancel_class_reason", insertable = false, updatable = false)
     private ParameterValue cancelClassReason;
 
-    @Column(name = "f_cancel_class_reason", insertable = false, updatable = false)
+    @Column(name = "f_cancel_class_reason")
     private Long cancelClassReasonId;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "f_postpone_class")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_postpone_class", insertable = false, updatable = false)
     private Tclass postPoneClass;
 
-    @Column(name = "f_postpone_class", insertable = false, updatable = false)
+    @Column(name = "f_postpone_class")
     private Long postPoneClassId;
 
     @Column(name = "c_postpone_start_date")

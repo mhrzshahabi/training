@@ -516,11 +516,9 @@
                 filterOnKeypress:true,
                 width: 100,
                 showHover: true,
-                // canHover: true,
-                hoverWidth: 200,
+                hoverWidth: 150,
                 hoverHTML(record){
-                    console.log(record)
-                    return record.cancelClassReasonId
+                    return "<b>علت لغو: </b>" + record.cancelClassReason.title;
                 }
             },
             {

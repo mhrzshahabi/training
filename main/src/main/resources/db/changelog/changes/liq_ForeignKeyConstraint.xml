@@ -1157,4 +1157,9 @@
         <addForeignKeyConstraint baseColumnNames="f_cancel_class_reason" baseTableName="tbl_class" constraintName="FKcc70ypxhqvjg7ofb2jx7asiim" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
 
+    <changeSet author="jafari-h (generated)" id="1596623830678-133">
+        <dropForeignKeyConstraint baseTableName="tbl_class" constraintName="FKcc70ypxhqvjg7ofb2jx7asiim"/>
+        <addForeignKeyConstraint baseColumnNames="f_cancel_class_reason" baseTableName="tbl_class" constraintName="FKcc70ypxhqvjg7ofb2jx7asiim" referencedColumnNames="id" referencedTableName="tbl_parameter_value"/>
+    </changeSet>
+
 </databaseChangeLog>

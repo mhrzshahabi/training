@@ -80,6 +80,7 @@ public class TclassDTO {
         private Long courseId;
         private InstituteDTO.InstituteInfoTuple institute;
         private String lastModifiedBy;
+        private ParameterValueDTO cancelClassReason;
         private Long id;
         private CourseDTO.CourseInfoTuple course;
         private TermDTO.TermDTOTuple term;
