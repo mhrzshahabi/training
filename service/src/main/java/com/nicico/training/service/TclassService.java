@@ -156,8 +156,8 @@ public class TclassService implements ITclassService {
         modelMapper.map(request, updating);
         updating.setTrainingPlaceSet(set);
         if(!updating.getClassStatus().equals("4")){
-            updating.setCancelClassReasonId(null);
-            updating.setPostPoneClassId(null);
+            updating.setClassCancelReasonId(null);
+            updating.setAlternativeClassId(null);
             updating.setPostponeStartDate(null);
         }
         Tclass save = tclassDAO.save(updating);

@@ -1150,8 +1150,8 @@
     <changeSet author="golrokhi (generated)" id="1596597720708-489">
         <addForeignKeyConstraint baseColumnNames="f_message_user_type" baseTableName="tbl_message" constraintName="FKtgijaybf64bt83rl9ah33eicq" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
-    <changeSet author="jafari-h (generated)" id="1596606676796-490">
-        <addForeignKeyConstraint baseColumnNames="f_postpone_class" baseTableName="tbl_class" constraintName="FK1s7jv4dv3cmxus0smmuosq59b" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
+    <changeSet author="jafari-h (generated)" id="1596821187750-489">
+        <addForeignKeyConstraint baseColumnNames="f_alternative_class" baseTableName="tbl_class" constraintName="FKofeec984oyy0p5hm1o2im6p01" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
     </changeSet>
     <changeSet author="jafari-h (generated)" id="1596606676796-491">
         <addForeignKeyConstraint baseColumnNames="f_cancel_class_reason" baseTableName="tbl_class" constraintName="FKcc70ypxhqvjg7ofb2jx7asiim" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>

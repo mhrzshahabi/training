@@ -205,17 +205,17 @@ public class Tclass extends Auditable {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "f_cancel_class_reason", insertable = false, updatable = false)
-    private ParameterValue cancelClassReason;
+    private ParameterValue classCancelReason;
 
     @Column(name = "f_cancel_class_reason")
-    private Long cancelClassReasonId;
+    private Long classCancelReasonId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_postpone_class", insertable = false, updatable = false)
-    private Tclass postPoneClass;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_alternative_class", insertable = false, updatable = false)
+    private Tclass alternativeClass;
 
     @Column(name = "f_postpone_class")
-    private Long postPoneClassId;
+    private Long alternativeClassId;
 
     @Column(name = "c_postpone_start_date")
     private String postponeStartDate;

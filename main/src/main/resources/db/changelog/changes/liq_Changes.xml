@@ -1059,9 +1059,9 @@
             <column name="f_cancel_class_reason" type="number(19, 0)"/>
         </addColumn>
     </changeSet>
-    <changeSet author="jafari-h (generated)" id="1596606676796-479">
+    <changeSet author="jafari-h (generated)" id="1596821187750-478">
         <addColumn tableName="tbl_class">
-            <column name="f_postpone_class" type="number(19, 0)"/>
+            <column name="f_alternative_class" type="number(19, 0)"/>
         </addColumn>
     </changeSet>
 
