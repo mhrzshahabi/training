@@ -210,6 +210,9 @@ public class Tclass extends Auditable {
     @Column(name = "f_cancel_class_reason")
     private Long classCancelReasonId;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "alternativeClass")
+    private Set<Tclass> canceledClasses;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_alternative_class", insertable = false, updatable = false)
     private Tclass alternativeClass;
