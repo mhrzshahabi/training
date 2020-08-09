@@ -195,7 +195,7 @@ public class TeacherRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
     //@PreAuthorize("hasAuthority('Teacher_R')")
-    public ResponseEntity<TeacherDTO.TeacherSpecRs> list(@RequestParam(value = "_startRow", required = false) Integer startRow,
+    public ResponseEntity<TeacherDTO.TeacherSpecRs> list(@RequestParam(value = "_startRow", required = false,defaultValue = "0") Integer startRow,
                                                          @RequestParam(value = "_endRow", required = false) Integer endRow,
                                                          @RequestParam(value = "_constructor", required = false) String constructor,
                                                          @RequestParam(value = "operator", required = false) String operator,
