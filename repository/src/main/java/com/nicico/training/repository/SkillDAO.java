@@ -30,4 +30,6 @@ public interface SkillDAO extends JpaRepository<Skill, Long>, JpaSpecificationEx
 
     Skill findByTitleFaAndCategoryIdAndSubCategoryIdAndSkillLevelId(String TitleFa,Long CategoryId,Long SubCategoryId,Long SkillLevelId);
 
+
+
 }

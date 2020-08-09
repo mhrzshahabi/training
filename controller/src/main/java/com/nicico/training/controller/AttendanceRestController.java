@@ -94,7 +94,7 @@ public class AttendanceRestController {
                                                 @RequestParam("studentId") Long studentId,
                                                 @RequestParam("sessionId") List<Long> sessionId) throws ParseException {
 
-        return new ResponseEntity<>(true, HttpStatus.CREATED);//attendanceService.studentAbsentSessionsInClass(classId, sessionId, studentId)
+        return new ResponseEntity<>(attendanceService.studentAbsentSessionsInClass(classId, sessionId, studentId), HttpStatus.CREATED);//true
     }
 
     @Loggable
