@@ -435,6 +435,14 @@
 
                 <sec:authorize access="hasAuthority('Evaluation_Learning')">
                 {
+                    id: "TabPane_Learning_PreTest",
+                    title: "یادگیری",
+                    pane: isc.ViewLoader.create({autoDraw: true, viewURL: "pre-test/show-form"})
+                },
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Evaluation_Learning')">
+                {
                     id: "TabPane_Learning",
                     title: "یادگیری-ثبت نمرات پیش آزمون",
                     pane: isc.ViewLoader.create({autoDraw: true, viewURL: "registerScorePreTest/show-form"})
@@ -566,32 +574,36 @@
 
         function set_Evaluation_Tabset_status() {
             let classRecord = ListGrid_class_Evaluation.getSelectedRecord();
-            let evaluation = classRecord.evaluation;
+            let evaluationType = classRecord.courseEvaluationType;
 
-            if (evaluation === "1") {
+            if (evaluationType === "1") {
                 Detail_Tab_Evaluation.enableTab(0);
                 Detail_Tab_Evaluation.disableTab(1);
                 Detail_Tab_Evaluation.disableTab(2);
                 Detail_Tab_Evaluation.disableTab(3);
-            } else if (evaluation === "2") {
-                Detail_Tab_Evaluation.enableTab(0);
-                Detail_Tab_Evaluation.enableTab(1);
-                Detail_Tab_Evaluation.disableTab(2);
-                Detail_Tab_Evaluation.disableTab(3);
-            } else if (evaluation === "3") {
+                Detail_Tab_Evaluation.disableTab(4);
+            } else if (evaluationType === "2") {
                 Detail_Tab_Evaluation.enableTab(0);
                 Detail_Tab_Evaluation.enableTab(1);
                 Detail_Tab_Evaluation.enableTab(2);
                 Detail_Tab_Evaluation.disableTab(3);
-            } else if (evaluation === "4") {
+                Detail_Tab_Evaluation.disableTab(4);
+            } else if (evaluationType === "3") {
                 Detail_Tab_Evaluation.enableTab(0);
                 Detail_Tab_Evaluation.enableTab(1);
                 Detail_Tab_Evaluation.enableTab(2);
                 Detail_Tab_Evaluation.enableTab(3);
+                Detail_Tab_Evaluation.disableTab(4);
+            } else if (evaluationType === "4") {
+                Detail_Tab_Evaluation.enableTab(0);
+                Detail_Tab_Evaluation.enableTab(1);
+                Detail_Tab_Evaluation.enableTab(2);
+                Detail_Tab_Evaluation.enableTab(3);
+                Detail_Tab_Evaluation.enableTab(4);
             }
 
-            Detail_Tab_Evaluation.disableTab(1);
-            Detail_Tab_Evaluation.disableTab(3);
+            Detail_Tab_Evaluation.disableTab(2);
+            Detail_Tab_Evaluation.disableTab(4);
         }
 
         function load_term_by_year(value) {
