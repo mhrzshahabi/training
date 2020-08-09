@@ -808,7 +808,7 @@
     const statisticsUnitReportUrl = rootUrl + "/ViewStatisticsUnitReport";
     const questionBankUrl = rootUrl + "/question-bank";
     const viewPersonnelTrainingStatusReportUrl = rootUrl + "/view-personnel-training-status-report";
-    const viewCoursesPassedPersonnelReportUrl = rootUrl + "/view-courses_passed_personnel-report";
+    const viewCoursesPassedPersonnelReportUrl = rootUrl + "/view-courses-passed-personnel-report";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -1829,15 +1829,15 @@
                             },
                             {isSeparator: true},
                             </sec:authorize>
-                            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">
-                            {
-                                title: "گزارش دوره های گذرانده فرد",
-                                click: function () {
-                                    createTab(this.title, "<spring:url value="web/coursesPassedPersonnelReport/"/>");
-                                }
-                            },
-                            {isSeparator: true},
-                            </sec:authorize>
+                            <%--<sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">--%>
+                            <%--{--%>
+                                <%--title: "گزارش دوره های گذرانده فرد",--%>
+                                <%--click: function () {--%>
+                                    <%--createTab(this.title, "<spring:url value="web/coursesPassedPersonnelReport/"/>");--%>
+                                <%--}--%>
+                            <%--},--%>
+                            <%--{isSeparator: true},--%>
+                            <%--</sec:authorize>--%>
                         ]
                 },
                 {isSeparator: true},

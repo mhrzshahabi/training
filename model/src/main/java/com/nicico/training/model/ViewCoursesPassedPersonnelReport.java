@@ -8,6 +8,7 @@ import org.hibernate.annotations.Subselect;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import java.io.Serializable;
 
 @Getter
 @Setter
@@ -16,9 +17,9 @@ import javax.persistence.Entity;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Subselect("SELECT * VIEW_COURSES_PASSED_PERSONNEL_PART4")
+@Subselect("SELECT * from VIEW_COURSES_PASSED_PERSONNEL_PART4")
 
-public class ViewCoursesPassedPersonnelReport {
+public class ViewCoursesPassedPersonnelReport implements Serializable {
     @EmbeddedId
     private PersonnelCourseKey id;
 
@@ -40,7 +41,7 @@ public class ViewCoursesPassedPersonnelReport {
     @Column(name = "course_code")
     private String courseCode;
 
-    @Column(name = "course_c_title_fa")
+    @Column(name = "course_title_fa")
     private String courseTitleFa;
 
     @Column(name = "class_student_scores_state_id")
@@ -70,19 +71,19 @@ public class ViewCoursesPassedPersonnelReport {
     @Column(name = "personnel_post_grade_code")
     private String postGradeCode;
 
-    @Column(name = "personnel_ccp_affairs")
+    @Column(name = "personnel_cpp_affairs")
     private String affairs;
 
-    @Column(name = "personnel_ccp_area")
+    @Column(name = "personnel_cpp_area")
     private String area;
 
-    @Column(name = "personnel_ccp_assistant")
+    @Column(name = "personnel_cpp_assistant")
     private String assistant;
 
-    @Column(name = "personnel_ccp_section")
+    @Column(name = "personnel_cpp_section")
     private String section;
 
-    @Column(name = "personnel_ccp_unit")
+    @Column(name = "personnel_cpp_unit")
     private String unit;
 
     @Column(name = "personnel_company_name")
@@ -96,4 +97,10 @@ public class ViewCoursesPassedPersonnelReport {
 
     @Column(name = "na_priority_id")
     private Long naPriorityId;
+
+    @Column(name = "course_id", insertable = false, updatable = false)
+    private Long courseId;
+
+    @Column(name = "personnel_id", insertable = false, updatable = false)
+    private Long personnelId;
 }

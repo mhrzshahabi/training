@@ -4,11 +4,14 @@
 
 // <script>
 
+    personnelPortalWait = createDialog("wait");
+
     isc.RPCManager.sendRequest(TrDSRequest(studentPortalUrl + "/personnel/getOneByNationalCode", "GET", null, userData_Result_SP));
     isc.RPCManager.sendRequest(TrDSRequest(studentPortalUrl + "/student/getOneByNationalCode", "GET", null, studentData_Result_SP));
 
     var person_SP = null;
     var student_SP = null;
+    var personnelPortalWait;
 
     //--------------------------------------------------------------------------------------------------------------------//
     //*Main Menu*/
@@ -248,6 +251,7 @@
             person_SP = null;
             createDialog("info", resp.httpResponseText);
         }
+        personnelPortalWait.close();
     }
 
     function studentData_Result_SP(resp) {

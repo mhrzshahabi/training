@@ -54,6 +54,8 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
     private TrainingPostDAO trainingPostDAO;
     @Autowired
     private MessageSource messageSource;
+    @Autowired
+    private PersonnelService personnelService;
 
     private Supplier<TrainingException> trainingExceptionSupplier = () -> new TrainingException(TrainingException.ErrorType.NotFound);
 
@@ -105,7 +107,12 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
     public void verify(String objectType, Long objectId) {
         List<NeedsAssessmentDTO.verify> needsAssessmentTemps = modelMapper.map(dao.findAll(NICICOSpecification.of(getCriteria(objectType, objectId))), new TypeToken<List<NeedsAssessmentDTO.verify>>() {
         }.getType());
-        String createdBy = SecurityUtil.getFullName();
+        String createdBy = null;
+        if(needsAssessmentTemps.size() > 0) {
+            createdBy = needsAssessmentTemps.get(0).getCreatedBy();
+            SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+            personnelService.search(searchRq.setCriteria(makeNewCriteria("userName", createdBy, EOperator.equals, null)));
+        }
         needsAssessmentTemps.forEach(needsAssessmentTemp -> {
             Optional<NeedsAssessment> optional = needsAssessmentDAO.findById(needsAssessmentTemp.getId());
             if (optional.isPresent()) {

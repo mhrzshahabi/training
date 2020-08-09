@@ -4,9 +4,13 @@
 
 // <script>
 
+    teacherPortalWait = createDialog("wait");
+
     isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "getOneByNationalCode", "GET", null, userData_Result_JspTeacherReport));
 
     var teacher_JspTeacherReport = null;
+
+    var teacherPortalWait;
 
     //--------------------------------------------------------------------------------------------------------------------//
     //*Main Menu*/
@@ -157,6 +161,7 @@
             teacher_JspTeacherReport = null;
             createDialog("info", resp.httpResponseText);
         }
+        teacherPortalWait.close();
     }
 
     function createTab_JspTeacherReport(title, url, callFunction, autoRefresh) {
