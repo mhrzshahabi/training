@@ -214,7 +214,7 @@ public class Tclass extends Auditable {
     @JoinColumn(name = "f_alternative_class", insertable = false, updatable = false)
     private Tclass alternativeClass;
 
-    @Column(name = "f_postpone_class")
+    @Column(name = "f_alternative_class")
     private Long alternativeClassId;
 
     @Column(name = "c_postpone_start_date")
