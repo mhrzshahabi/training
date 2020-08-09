@@ -92,7 +92,6 @@
             },
             {name: "state", type: "text", title: "وضعیت",
                 valueMap:attendanceState,
-                multiple: true,
                 pickListProperties: {
                     showFilterEditor: false
                 }
