@@ -460,9 +460,9 @@
 
     // <<----------------------------------------------- Functions --------------------------------------------
     function hasFilters(){
-        if(Object.keys(FilterDF_PTSR.getValuesAsCriteria()).length < 3 && FilterDF_PTSR.getValuesAsCriteria().criteria === undefined)
+        if(Object.keys(FilterDF_PTSR.getValuesAsCriteria()).length < 4 && FilterDF_PTSR.getValuesAsCriteria().criteria === undefined)
             return false;
-        else if(FilterDF_PTSR.getValuesAsCriteria().criteria !== undefined && Object.keys(FilterDF_PTSR.getValuesAsCriteria().criteria).length < 4)
+        else if(FilterDF_PTSR.getValuesAsCriteria().criteria !== undefined && Object.keys(FilterDF_PTSR.getValuesAsCriteria()).length < 5)
             return false
         else
             return true;
