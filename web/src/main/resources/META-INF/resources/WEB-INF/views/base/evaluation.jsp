@@ -37,7 +37,7 @@
                 {name: "courseCategory"},
                 {name: "courseSubCategory"},
                 {name: "courseTitleFa"},
-                {name: "courseEvaluationType"},
+                {name: "evaluation"},
                 {name: "tclassDuration"},
                 {name: "tclassOrganizerId"},
                 {name: "tclassStatus"},
@@ -216,7 +216,7 @@
                                 operator:"and",
                                 criteria:[
                                     {fieldName:"tclassEndDate", operator:"equals", value: todayDate},
-                                    {fieldName:"courseEvaluationType", operator:"equals", value: "1"}
+                                    {fieldName:"evaluation", operator:"equals", value: "1"}
                                 ]
                             };
                             RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
@@ -229,7 +229,7 @@
                                 operator:"and",
                                 criteria:[
                                     {fieldName:"tclassStartDate", operator:"equals", value: todayDate},
-                                    {fieldName:"courseEvaluationType", operator:"equals", value: "2"}
+                                    {fieldName:"evaluation", operator:"equals", value: "2"}
                                 ]
                             };
                             RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
@@ -328,7 +328,7 @@
                     hidden: true
                 },
                 {
-                    name: "courseEvaluationType",
+                    name: "evaluation",
                     title: "<spring:message code='evaluation.type'/>",
                     align: "center",
                     filterOperator: "iContains",
@@ -566,24 +566,24 @@
 
         function set_Evaluation_Tabset_status() {
             let classRecord = ListGrid_class_Evaluation.getSelectedRecord();
-            let evaluationType = classRecord.courseEvaluationType;
+            let evaluation = classRecord.evaluation;
 
-            if (evaluationType === "1") {
+            if (evaluation === "1") {
                 Detail_Tab_Evaluation.enableTab(0);
                 Detail_Tab_Evaluation.disableTab(1);
                 Detail_Tab_Evaluation.disableTab(2);
                 Detail_Tab_Evaluation.disableTab(3);
-            } else if (evaluationType === "2") {
+            } else if (evaluation === "2") {
                 Detail_Tab_Evaluation.enableTab(0);
                 Detail_Tab_Evaluation.enableTab(1);
                 Detail_Tab_Evaluation.disableTab(2);
                 Detail_Tab_Evaluation.disableTab(3);
-            } else if (evaluationType === "3") {
+            } else if (evaluation === "3") {
                 Detail_Tab_Evaluation.enableTab(0);
                 Detail_Tab_Evaluation.enableTab(1);
                 Detail_Tab_Evaluation.enableTab(2);
                 Detail_Tab_Evaluation.disableTab(3);
-            } else if (evaluationType === "4") {
+            } else if (evaluation === "4") {
                 Detail_Tab_Evaluation.enableTab(0);
                 Detail_Tab_Evaluation.enableTab(1);
                 Detail_Tab_Evaluation.enableTab(2);

@@ -2803,7 +2803,7 @@
                         }
                         //================
                         DynamicForm1_Class_JspClass.setValue("autoValid", false);
-                        if (record.course.evaluation === "1") {
+                        if (record.evaluation === "1") {
                             DynamicForm_Class_JspClass.setValue("preCourseTest", false);
                             DynamicForm_Class_JspClass.getItem("preCourseTest").hide();
                         } else
@@ -3364,7 +3364,7 @@
         TabSet_Class.enable();
 
         <sec:authorize access="hasAuthority('TclassPreCourseTestQuestionsTab')">
-        if (classRecord.preCourseTest && classRecord.course.evaluation !== "1") {
+        if (classRecord.preCourseTest && classRecord.evaluation !== "1") {
             //  TabSet_Class.getTab("classPreCourseTestQuestionsTab").show();
         } else {
             if (TabSet_Class.getSelectedTab().ID === "classPreCourseTestQuestionsTab") {

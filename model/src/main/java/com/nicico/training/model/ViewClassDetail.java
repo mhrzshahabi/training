@@ -102,4 +102,13 @@ public class ViewClassDetail extends Auditable {
     @Column(name = "TRAINING_EVAL_STATUS")
     private Integer trainingEvalStatus;
 
+    @Column(name = "start_evaluation")
+    private Integer startEvaluation;
+
+    @Column(name = "c_evaluation")
+    private String evaluation;
+
+    @Column(name = "c_behavioral_level")
+    private String behavioralLevel;
+
 }

@@ -1966,7 +1966,7 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW-CLASS-DETAIL-001">
+    <changeSet author="NICICO" id="VIEW-CLASS-DETAIL-002">
         <createView viewName="view_class_detail" replaceIfExists="true">
             <![CDATA[
    SELECT
@@ -1994,6 +1994,9 @@ FROM
         tclass.C_END_DATE as tclass_c_end_date,
         tclass.EVALUATION_REACTION_TEACHER as teacher_eval_status,
         tclass.EVALUATION_REACTION_TRAINING as training_eval_status,
+        tclass.C_EVALUATION as C_EVALUATION,
+        tclass.C_BEHAVIORAL_LEVEL as C_BEHAVIORAL_LEVEL,
+        tclass.START_EVALUATION as START_EVALUATION,
         SUBSTR(tclass.C_START_DATE,1,4) as tclass_year,
         course.ID as course_id,
         course.C_CODE as course_c_code,
