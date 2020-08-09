@@ -37,7 +37,7 @@
                 {name: "courseCategory"},
                 {name: "courseSubCategory"},
                 {name: "courseTitleFa"},
-                {name: "courseEvaluationType"},
+                {name: "evaluation"},
                 {name: "tclassDuration"},
                 {name: "tclassOrganizerId"},
                 {name: "tclassStatus"},
@@ -216,7 +216,7 @@
                                 operator:"and",
                                 criteria:[
                                     {fieldName:"tclassEndDate", operator:"equals", value: todayDate},
-                                    {fieldName:"courseEvaluationType", operator:"equals", value: "1"}
+                                    {fieldName:"evaluation", operator:"equals", value: "1"}
                                 ]
                             };
                             RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
@@ -229,7 +229,7 @@
                                 operator:"and",
                                 criteria:[
                                     {fieldName:"tclassStartDate", operator:"equals", value: todayDate},
-                                    {fieldName:"courseEvaluationType", operator:"equals", value: "2"}
+                                    {fieldName:"evaluation", operator:"equals", value: "2"}
                                 ]
                             };
                             RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
@@ -328,7 +328,7 @@
                     hidden: true
                 },
                 {
-                    name: "courseEvaluationType",
+                    name: "evaluation",
                     title: "<spring:message code='evaluation.type'/>",
                     align: "center",
                     filterOperator: "iContains",
@@ -431,6 +431,14 @@
                     pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation/reaction-evaluation-form"})
                 }
                 ,
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Evaluation_Learning')">
+                {
+                    id: "TabPane_Learning_PreTest",
+                    title: "یادگیری",
+                    pane: isc.ViewLoader.create({autoDraw: true, viewURL: "pre-test/show-form"})
+                },
                 </sec:authorize>
 
                 <sec:authorize access="hasAuthority('Evaluation_Learning')">
@@ -573,25 +581,29 @@
                 Detail_Tab_Evaluation.disableTab(1);
                 Detail_Tab_Evaluation.disableTab(2);
                 Detail_Tab_Evaluation.disableTab(3);
+                Detail_Tab_Evaluation.disableTab(4);
             } else if (evaluationType === "2") {
-                Detail_Tab_Evaluation.enableTab(0);
-                Detail_Tab_Evaluation.enableTab(1);
-                Detail_Tab_Evaluation.disableTab(2);
-                Detail_Tab_Evaluation.disableTab(3);
-            } else if (evaluationType === "3") {
                 Detail_Tab_Evaluation.enableTab(0);
                 Detail_Tab_Evaluation.enableTab(1);
                 Detail_Tab_Evaluation.enableTab(2);
                 Detail_Tab_Evaluation.disableTab(3);
+                Detail_Tab_Evaluation.disableTab(4);
+            } else if (evaluationType === "3") {
+                Detail_Tab_Evaluation.enableTab(0);
+                Detail_Tab_Evaluation.enableTab(1);
+                Detail_Tab_Evaluation.enableTab(2);
+                Detail_Tab_Evaluation.enableTab(3);
+                Detail_Tab_Evaluation.disableTab(4);
             } else if (evaluationType === "4") {
                 Detail_Tab_Evaluation.enableTab(0);
                 Detail_Tab_Evaluation.enableTab(1);
                 Detail_Tab_Evaluation.enableTab(2);
                 Detail_Tab_Evaluation.enableTab(3);
+                Detail_Tab_Evaluation.enableTab(4);
             }
 
-            Detail_Tab_Evaluation.disableTab(1);
-            Detail_Tab_Evaluation.disableTab(3);
+            Detail_Tab_Evaluation.disableTab(2);
+            Detail_Tab_Evaluation.disableTab(4);
         }
 
         function load_term_by_year(value) {
