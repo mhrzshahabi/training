@@ -1116,4 +1116,5 @@
     <changeSet author="golrokhi (generated)" id="1596622897038-585">
         <dropColumn columnName="N_SENT_COUNT" tableName="TBL_MESSAGE_CONTACT"/>
     </changeSet>
+
 </databaseChangeLog>

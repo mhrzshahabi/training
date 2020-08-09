@@ -1170,4 +1170,18 @@
         <addForeignKeyConstraint baseColumnNames="f_cancel_class_reason" baseTableName="tbl_class" constraintName="FKcc70ypxhqvjg7ofb2jx7asiim" referencedColumnNames="id" referencedTableName="tbl_parameter_value"/>
     </changeSet>
 
+
+    <changeSet author="golrokhi (generated)" id="1596959559885-491">
+        <addForeignKeyConstraint baseColumnNames="e_enabled" baseTableName="tbl_test_question" constraintName="FK5x283vlvhxs5510e30rx26njv" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1596959559885-492">
+        <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_test_question" constraintName="FK76o1rdcxojh0iicukhqnrdc53" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1596959559885-493">
+        <addForeignKeyConstraint baseColumnNames="f_class" baseTableName="tbl_test_question" constraintName="FKamu20wgoa0uwd684lny5s1nw3" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1596959559885-494">
+        <addForeignKeyConstraint baseColumnNames="f_question_bank" baseTableName="tbl_test_question" constraintName="FKkl33nqi72fj159v3jv6urqhyh" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_question_bank" validate="true"/>
+    </changeSet>
+
 </databaseChangeLog>
