@@ -385,14 +385,22 @@
                 type: "ButtonItem",
                 startRow: false,
                 click: function () {
-                    if(hasFilters()) {
+                    if(!hasFilters()) {
                         createDialog("info","فیلتری انتخاب نشده است.");
                     } else{
                         var criteria = FilterDF_PTSR.getValuesAsAdvancedCriteria();
                         criteria.criteria.remove(criteria.criteria.find({fieldName: "needsAssessmentState"}));
-                        let val = needsAssessmentStateValueMap[FilterDF_PTSR.getItem("needsAssessmentState").getValue()];
-                        if (val !== "همه")
-                            criteria.criteria.push({fieldName: "needsAssessmentState", operator: "equals", value: val});
+                        criteria.criteria.remove(criteria.criteria.find({fieldName: "acceptanceState"}));
+                        criteria.criteria.remove(criteria.criteria.find({fieldName: "classState"}));
+                        let needsAssessmentStateval = needsAssessmentStateValueMap[FilterDF_PTSR.getItem("needsAssessmentState").getValue()];
+                        let acceptanceStateVal = acceptanceStateValueMap[FilterDF_PTSR.getItem("acceptanceState").getValue()];
+                        let classStateVal = classStateValueMap[FilterDF_PTSR.getItem("classState").getValue()];
+                        if (needsAssessmentStateval !== "همه")
+                            criteria.criteria.push({fieldName: "needsAssessmentState", operator: "equals", value: needsAssessmentStateval});
+                        if(acceptanceStateVal !== "همه")
+                            criteria.criteria.push({fieldName: "acceptanceState", operator: "equals", value: acceptanceStateVal});
+                        if(classStateVal !== "همه")
+                            criteria.criteria.push({fieldName: "classState", operator: "equals", value: classStateVal});
                         if(criteria.criteria.length < 1)
                             criteria = {};
                         ExportToFile.showDialog(null, PersonnelTrainingStatusReport_LG, "viewPersonnelTrainingStatusReport", 0, null, '',"گزارش وضعیت آموزشی افراد"  , criteria, null);

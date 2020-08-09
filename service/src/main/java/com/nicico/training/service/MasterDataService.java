@@ -958,7 +958,7 @@ public class MasterDataService implements IMasterDataService {
                 index++;
                 ObjectMapper objectMapper = new ObjectMapper();
                 PrePersonByNationalCodeProcess prePersonByNationalCodeProcess = new PrePersonByNationalCodeProcess();
-                HttpURLConnection postConnection = createConnection("http://devapp01.icico.net.ir/master-data/api/v1/employees/get/byNationalCode/", "GET", null, null);
+                HttpURLConnection postConnection = createConnection("http://devapp01.icico.net.ir/master-data/api/v1/employees/get/byNationalCode/" + nationalCode, "GET", null, null);
                 int responseCode = postConnection.getResponseCode();
 
                 if (responseCode == HttpURLConnection.HTTP_OK) { //success

@@ -924,46 +924,6 @@
                                                                 buttonClick: function (button, index) {
                                                                     this.close();
                                                                     if (index === 0) {
-                                                                        <%--for (let i = 0; i <attendanceGrid.getData().allRows.length ; i++) {--%>
-                                                                            <%--let record1 = attendanceGrid.getRecord(i);--%>
-                                                                            <%--record1.studentState = "kh";--%>
-                                                                            <%--attendanceGrid.updateData(record1);--%>
-                                                                        <%--}--%>
-                                                                        <%--// attendanceGrid.saveEdits(null,null,this.rowNum);--%>
-                                                                        <%--attendanceGrid.focusInFilterEditor();--%>
-                                                                        <%--wait.show();--%>
-                                                                        <%--isc.RPCManager.sendRequest({--%>
-                                                                            <%--actionURL: parameterValueUrl + "/get-id/?code=kh",--%>
-                                                                            <%--httpMethod: "GET",--%>
-                                                                            <%--httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},--%>
-                                                                            <%--useSimpleHttp: true,--%>
-                                                                            <%--contentType: "application/json; charset=utf-8",--%>
-                                                                            <%--showPrompt: false,--%>
-                                                                            <%--serverOutputAsString: false,--%>
-                                                                            <%--callback: function (resp) {--%>
-                                                                                <%--wait.close();--%>
-                                                                                <%--if(resp.httpResponseCode == 200 || resp.httpResponseCode == 201){--%>
-                                                                                    <%--let data = {--%>
-                                                                                        <%--"presenceTypeId": JSON.parse(resp.data)--%>
-                                                                                    <%--};--%>
-                                                                                    <%--wait.show();--%>
-                                                                                    <%--isc.RPCManager.sendRequest({--%>
-                                                                                        <%--actionURL: tclassStudentUrl + "/" + attendanceForm.getValue("sessionDate"),--%>
-                                                                                        <%--httpMethod: "PUT",--%>
-                                                                                        <%--httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},--%>
-                                                                                        <%--useSimpleHttp: true,--%>
-                                                                                        <%--contentType: "application/json; charset=utf-8",--%>
-                                                                                        <%--showPrompt: false,--%>
-                                                                                        <%--serverOutputAsString: false,--%>
-                                                                                        <%--data: JSON.stringify(data),--%>
-                                                                                        <%--callback: function (resp) {--%>
-                                                                                            <%--wait.close();--%>
-                                                                                        <%--}--%>
-                                                                                    <%--});--%>
-                                                                                    <%--return;--%>
-                                                                                <%--}--%>
-                                                                            <%--}--%>
-                                                                        <%--});--%>
                                                                         return;
                                                                     }
                                                                     item.setValue(oldValue);
@@ -1042,50 +1002,6 @@
                                                 attendanceGrid.setSelectedState([{studentId: x}]);
                                                 let record1 = attendanceGrid.getSelectedRecord();
                                                 if (index === 0) {
-                                                    <%--record1.studentState = "kh";--%>
-                                                    <%--attendanceGrid.updateData(record1);--%>
-                                                    <%--attendanceGrid.focusInFilterEditor();--%>
-                                                    <%--wait.show();--%>
-                                                    <%--isc.RPCManager.sendRequest({--%>
-                                                        <%--actionURL: parameterValueUrl + "/get-id/?code=kh",--%>
-                                                        <%--httpMethod: "GET",--%>
-                                                        <%--httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},--%>
-                                                        <%--useSimpleHttp: true,--%>
-                                                        <%--contentType: "application/json; charset=utf-8",--%>
-                                                        <%--showPrompt: false,--%>
-                                                        <%--serverOutputAsString: false,--%>
-                                                        <%--callback: function (resp) {--%>
-                                                            <%--wait.close();--%>
-                                                            <%--if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {--%>
-                                                                <%--let data = {--%>
-                                                                    <%--"presenceTypeId": JSON.parse(resp.data)--%>
-                                                                <%--};--%>
-                                                                <%--wait.show();--%>
-                                                                <%--isc.RPCManager.sendRequest({--%>
-                                                                    <%--actionURL: tclassStudentUrl + "/" + record1.classStudentId,--%>
-                                                                    <%--httpMethod: "PUT",--%>
-                                                                    <%--httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},--%>
-                                                                    <%--useSimpleHttp: true,--%>
-                                                                    <%--contentType: "application/json; charset=utf-8",--%>
-                                                                    <%--showPrompt: false,--%>
-                                                                    <%--serverOutputAsString: false,--%>
-                                                                    <%--data: JSON.stringify(data),--%>
-                                                                    <%--callback: function (resp) {--%>
-                                                                        <%--wait.close();--%>
-                                                                        <%--if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {--%>
-                                                                            <%--delete selfTaughts[x];--%>
-                                                                            <%--if (Object.keys(selfTaughts).length==0) {--%>
-                                                                                <%--checkFinalSave();--%>
-                                                                            <%--}--%>
-                                                                        <%--} else {--%>
-                                                                            <%--simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");--%>
-                                                                        <%--}//end else--%>
-                                                                    <%--}--%>
-                                                                <%--});--%>
-                                                                <%--return;--%>
-                                                            <%--}--%>
-                                                        <%--}--%>
-                                                    <%--});--%>
                                                     delete selfTaughts[x];
                                                     checkFinalSave();
                                                 }
