@@ -508,7 +508,9 @@
                             MSG_textEditorValue = "{prefix-full_name} {full-name}<br>\n پرسشنامه مربوط به ارزیابی دوره «{course-name}» که از تاریخ {start-date} تا {end-date} توسط جنابعالی تدریس شده است به پرتال مدرس شما در سیستم جامع آموزش به آدرس {personel-address} ارسال گردیده است را تکمیل نمایید.بدیهی است تایید نهایی پرداخت هزینه دوره منوط به تکمیل این پرسشنامه می باشد"
                             MSG_contentEditor.setValue(MSG_textEditorValue);
 
-                            if (JSON.parse(resp.data).response.data.filter(p => !p?.personality?.contactInfo?.mobile).length != 0) {
+                            if (JSON.parse(resp.data).response.data.length == 1 && JSON.parse(resp.data).response.data.filter(p => !p?.personality?.contactInfo?.mobile).length != 0) {
+                                ErrorMsg.setContents('برای  مدرس این کلاس، شماره موبایل تعریف نشده است.');
+                            } else if (JSON.parse(resp.data).response.data.filter(p => !p?.personality?.contactInfo?.mobile).length != 0) {
                                 ErrorMsg.setContents('برای ' + JSON.parse(resp.data).response.data.filter(p => !p?.personality?.contactInfo?.mobile).length + ' مدرس، شماره موبایل تعریف نشده است.');
                             } else {
                                 ErrorMsg.setContents('');

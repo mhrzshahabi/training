@@ -16,28 +16,6 @@
     var listGrid_record = null;
     //----------------------------------------------------Rest Data Sources---------------------------------------------
 
-    // var RestDataSource_evaluationAnalysis_class = isc.TrDS.create({
-    //     fields: [
-    //         {name: "id", primaryKey: true},
-    //         {name: "code"},
-    //         {name: "course.code"},
-    //         {name: "course.titleFa"},
-    //         {name: "startDate"},
-    //         {name: "endDate"},
-    //         {name: "term.titleFa"},
-    //         {name: "teacher"},
-    //         {name: "studentCount"},
-    //         {name: "institute.titleFa"},
-    //         {name: "classStatus"},
-    //         {name: "course.evaluation"},
-    //         // {name: "evaluationStatus"},
-    //         {name: "course.id"},
-    //         {name: "instituteId"},
-    //         {name: "scoringMethod"}
-    //     ],
-    //     fetchDataURL: classUrl + "spec-list-evaluated"
-    // });
-
     var RestDataSource_evaluationAnalysis_class = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -49,7 +27,6 @@
             {name: "course.titleFa"},
             {name: "course.id"},
             {name: "course.code"},
-            {name: "course.evaluation"},
             {name: "institute.titleFa"},
             {name: "studentCount",canFilter:false,canSort:false},
             {name: "numberOfStudentEvaluation"},
@@ -61,7 +38,9 @@
             {name: "scoringMethod"},
             {name: "preCourseTest"},
             {name: "teacher"},
-            {name: "course.evaluation"}
+            {name: "evaluation"},
+            {name: "startEvaluation"},
+            {name: "behavioralLevel"}
         ],
         fetchDataURL: evaluationUrl + "/class-spec-list"
     });
@@ -321,7 +300,7 @@
                 hidden: true
             },
             {
-                name: "course.evaluation",
+                name: "evaluation",
                 title: "<spring:message code='evaluation.type'/>",
                 align: "center",
                 filterOperator: "iContains",
@@ -397,127 +376,6 @@
         }
     });
 
-
-    <%--var ListGrid_evaluationAnalysis_class = isc.TrLG.create({--%>
-    <%--    width: "100%",--%>
-    <%--    height: "100%",--%>
-    <%--    dataSource: RestDataSource_evaluationAnalysis_class,--%>
-    <%--    canAddFormulaFields: false,--%>
-    <%--    autoFetchData: true,--%>
-    <%--    showFilterEditor: true,--%>
-    <%--    allowAdvancedCriteria: true,--%>
-    <%--    allowFilterExpressions: true,--%>
-    <%--    filterOnKeypress: false,--%>
-    <%--    sortField: 0,--%>
-    <%--    fields: [--%>
-    <%--        {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},--%>
-    <%--        {--%>
-    <%--            name: "code",--%>
-    <%--            title: "<spring:message code='class.code'/>",--%>
-    <%--            align: "center",--%>
-    <%--            filterOperator: "iContains",--%>
-    <%--            autoFitWidth: true--%>
-    <%--        },--%>
-    <%--        {--%>
-    <%--            name: "course.code",--%>
-    <%--            title: "<spring:message code='course.code'/>",--%>
-    <%--            align: "center",--%>
-    <%--            filterOperator: "iContains",--%>
-    <%--            autoFithWidth: true--%>
-    <%--        },--%>
-    <%--        {--%>
-    <%--            name: "course.titleFa",--%>
-    <%--            title: "<spring:message code='course.title'/>",--%>
-    <%--            align: "center",--%>
-    <%--            filterOperator: "iContains",--%>
-    <%--            autoFitWidth: true--%>
-    <%--        },--%>
-    <%--        {--%>
-    <%--            name: "startDate",--%>
-    <%--            title: "<spring:message code='start.date'/>",--%>
-    <%--            align: "center",--%>
-    <%--            filterOperator: "iContains",--%>
-    <%--            filterEditorProperties: {--%>
-    <%--                keyPressFilter: "[0-9/]"--%>
-    <%--            }--%>
-    <%--        },--%>
-    <%--        {--%>
-    <%--            name: "endDate",--%>
-    <%--            title: "<spring:message code='end.date'/>",--%>
-    <%--            align: "center",--%>
-    <%--            filterOperator: "iContains",--%>
-    <%--            filterEditorProperties: {--%>
-    <%--                keyPressFilter: "[0-9/]"--%>
-    <%--            }--%>
-    <%--        },--%>
-    <%--        {--%>
-    <%--            name: "term.titleFa",--%>
-    <%--            title: "<spring:message code='term'/>",--%>
-    <%--            align: "center",--%>
-    <%--            filterOperator: "iContains"--%>
-    <%--        },--%>
-    <%--        {--%>
-    <%--            name: "teacher",--%>
-    <%--            title: "<spring:message code='teacher'/>",--%>
-    <%--            align: "center",--%>
-    <%--            canFilter: false,--%>
-    <%--            filterOperator: "iContains"--%>
-    <%--        },--%>
-    <%--        {--%>
-    <%--            name: "studentCount",--%>
-    <%--            title: "<spring:message code='student.count'/>",--%>
-    <%--            filterOperator: "equals",--%>
-    <%--            autoFitWidth: true,--%>
-    <%--            filterEditorProperties: {--%>
-    <%--                keyPressFilter: "[0-9]"--%>
-    <%--            },--%>
-    <%--            canFilter: false--%>
-    <%--        },--%>
-    <%--        {--%>
-    <%--            name: "institute.titleFa",--%>
-    <%--            title: "<spring:message code='presenter'/>",--%>
-    <%--            align: "center",--%>
-    <%--            filterOperator: "iContains",--%>
-    <%--            autoFitWidth: true--%>
-    <%--        },--%>
-    <%--        {--%>
-    <%--            name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",--%>
-    <%--            valueMap: {--%>
-    <%--                "1": "برنامه ریزی",--%>
-    <%--                "2": "در حال اجرا",--%>
-    <%--                "3": "پایان یافته"--%>
-    <%--            },--%>
-    <%--            filterEditorProperties:{--%>
-    <%--                pickListProperties: {--%>
-    <%--                    showFilterEditor: false--%>
-    <%--                }--%>
-    <%--            }--%>
-    <%--        },--%>
-    <%--        {--%>
-    <%--            name: "course.evaluation",--%>
-    <%--            title: "<spring:message code='evaluation.type'/>",--%>
-    <%--            align: "center",--%>
-    <%--            filterOperator: "iContains",--%>
-    <%--            autoFitWidth: true,--%>
-    <%--            valueMap: {--%>
-    <%--                "1": "واکنشی",--%>
-    <%--                "2": "یادگیری",--%>
-    <%--                "3": "رفتاری",--%>
-    <%--                "4": "نتایج"--%>
-    <%--            },--%>
-    <%--            filterEditorProperties:{--%>
-    <%--                pickListProperties: {--%>
-    <%--                    showFilterEditor: false--%>
-    <%--                }--%>
-    <%--            }--%>
-    <%--        }--%>
-    <%--    ],--%>
-    <%--    selectionUpdated: function (record) {--%>
-    <%--        listGrid_record = ListGrid_evaluationAnalysis_class.getSelectedRecord();--%>
-    <%--        set_evaluation_analysis_tabset_status();--%>
-    <%--        Detail_Tab_Evaluation_Analysis.selectTab(0);--%>
-    <%--    }--%>
-    <%--});--%>
     //----------------------------------------------------ToolStrips & Page Layout--------------------------------------
 
     var Detail_Tab_Evaluation_Analysis = isc.TabSet.create({
@@ -623,7 +481,7 @@
     function set_evaluation_analysis_tabset_status() {
 
         var classRecord = ListGrid_evaluationAnalysis_class.getSelectedRecord();
-        var evaluationType = classRecord.course.evaluation;
+        var evaluationType = classRecord.evaluation;
 
         Detail_Tab_Evaluation_Analysis.enable();
 
