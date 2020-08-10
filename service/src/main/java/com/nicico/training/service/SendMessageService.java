@@ -5,7 +5,7 @@
  */
 package com.nicico.training.service;
 
-import com.nicico.copper.core.service.sms.magfa.*;
+import com.nicico.copper.core.service.sms.magfa.MagfaSMSService;
 import com.nicico.training.iservice.ISendMessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
