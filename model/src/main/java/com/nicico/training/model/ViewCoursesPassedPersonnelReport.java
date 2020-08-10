@@ -103,4 +103,7 @@ public class ViewCoursesPassedPersonnelReport implements Serializable {
 
     @Column(name = "personnel_id", insertable = false, updatable = false)
     private Long personnelId;
+
+    @Column(name = "class_student_score")
+    private Float score;
 }
