@@ -1829,15 +1829,15 @@
                             },
                             {isSeparator: true},
                             </sec:authorize>
-                            <%--<sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">--%>
-                            <%--{--%>
-                                <%--title: "گزارش دوره های گذرانده فرد",--%>
-                                <%--click: function () {--%>
-                                    <%--createTab(this.title, "<spring:url value="web/coursesPassedPersonnelReport/"/>");--%>
-                                <%--}--%>
-                            <%--},--%>
-                            <%--{isSeparator: true},--%>
-                            <%--</sec:authorize>--%>
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">
+                            {
+                                title: "گزارش دوره های گذرانده فرد",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/coursesPassedPersonnelReport/"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            </sec:authorize>
                         ]
                 },
                 {isSeparator: true},

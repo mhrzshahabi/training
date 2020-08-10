@@ -2616,7 +2616,7 @@ ORDER BY view2_alijafari.personnel_personnel_no, view2_alijafari.course_code
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_COURSES_PASSED_PERSONNEL_PART1-001">
+    <changeSet author="NICICO" id="VIEW_COURSES_PASSED_PERSONNEL_PART1-002">
         <createView viewName="VIEW_COURSES_PASSED_PERSONNEL_PART1" replaceIfExists="true">
             <![CDATA[
   SELECT
@@ -2624,6 +2624,7 @@ ORDER BY view2_alijafari.personnel_personnel_no, view2_alijafari.course_code
         na."COURSE_ID",
         na."COURSE_CODE",
         na."COURSE_TITLE_FA",
+        passed.class_student_score,
         passed.class_student_scores_state_id,
         passed.class_end_date,
         passed.class_h_duration,
@@ -3297,10 +3298,10 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_COURSES_PASSED_PERSONNEL_PART4-002">
+    <changeSet author="NICICO" id="VIEW_COURSES_PASSED_PERSONNEL_PART4-005">
         <createView viewName="VIEW_COURSES_PASSED_PERSONNEL_PART4" replaceIfExists="true">
             <![CDATA[
- SELECT DISTINCT
+ SELECT distinct
         course_id,
         personnel_id,
         personnel_emp_no,
@@ -3310,6 +3311,7 @@ FROM
         personnel_last_name,
         course_code,
         course_title_fa,
+        class_student_score,
         class_student_scores_state_id,
         class_end_date,
         class_h_duration,
@@ -3317,7 +3319,7 @@ FROM
         term_code,
         term_title_fa,
         term_id,
-        substr(class_start_date, 1, 4) AS class_year,
+        class_start_date AS class_year,
         personnel_post_grade_code,
         personnel_cpp_affairs,
         personnel_cpp_area,
@@ -3340,6 +3342,7 @@ FROM
                 view_courses_passed_personnel_part1.personnel_last_name,
                 view_courses_passed_personnel_part1.course_code,
                 view_courses_passed_personnel_part1.course_title_fa,
+                view_courses_passed_personnel_part1.class_student_score,
                 view_courses_passed_personnel_part1.class_student_scores_state_id   AS class_student_scores_state_id,
                 view_courses_passed_personnel_part1.class_end_date                  AS class_end_date,
                 view_courses_passed_personnel_part1.class_h_duration                AS class_h_duration,
@@ -3347,6 +3350,7 @@ FROM
                 view_courses_passed_personnel_part1.term_code,
                 view_courses_passed_personnel_part1.term_title_fa,
                 view_courses_passed_personnel_part1.term_id,
+                substr(view_courses_passed_personnel_part1.class_start_date, 1, 4) AS class_year,
                 view_courses_passed_personnel_part1.personnel_post_grade_code,
                 view_courses_passed_personnel_part1.personnel_cpp_affairs,
                 view_courses_passed_personnel_part1.personnel_cpp_area,
@@ -3364,8 +3368,8 @@ FROM
                 view_courses_passed_personnel_part1.is_passed = 216
             UNION ALL
             SELECT
-                tba.personnel_id,
                 tba.course_id,
+                tba.personnel_id,
                 tba.personnel_emp_no,
                 tba.personnel_personnel_no,
                 tba.personnel_national_code,
@@ -3373,6 +3377,7 @@ FROM
                 tba.personnel_last_name,
                 tba.course_code,
                 tba.course_title_fa,
+                tba.class_student_score,
                 tba.class_student_scores_state_id,
                 tba.class_end_date,
                 tba.class_h_duration,
@@ -3380,6 +3385,7 @@ FROM
                 tba.term_code,
                 tba.term_title_fa,
                 tba.term_id,
+                tba.class_start_date AS class_year,
                 tba.personnel_post_grade_code,
                 tba.personnel_cpp_affairs,
                 tba.personnel_cpp_area,
@@ -3389,12 +3395,12 @@ FROM
                 tba.personnel_company_name,
                 tba.personnel_complex_title,
                 'غیر نیازسنجی' AS coursetype,
-                NULL AS na_priority_id
+                0 AS na_priority_id
             FROM
                 (
                     SELECT
-                        view_courses_passed_personnel_part3.personnel_id,
                         view_courses_passed_personnel_part3.course_id,
+                        view_courses_passed_personnel_part3.personnel_id,
                         view_courses_passed_personnel_part3.personnel_emp_no,
                         view_courses_passed_personnel_part3.personnel_personnel_no,
                         view_courses_passed_personnel_part3.personnel_national_code,
@@ -3402,6 +3408,7 @@ FROM
                         view_courses_passed_personnel_part3.personnel_last_name,
                         view_courses_passed_personnel_part3.course_code,
                         view_courses_passed_personnel_part3.course_title_fa,
+                        view_courses_passed_personnel_part3.class_student_score,
                         view_courses_passed_personnel_part3.class_student_scores_state_id,
                         view_courses_passed_personnel_part3.class_end_date,
                         view_courses_passed_personnel_part3.class_h_duration,
@@ -3409,6 +3416,9 @@ FROM
                         view_courses_passed_personnel_part3.term_code,
                         view_courses_passed_personnel_part3.term_title_fa,
                         view_courses_passed_personnel_part3.term_id,
+
+                        substr(view_courses_passed_personnel_part3.class_start_date, 1, 4),
+
                         view_courses_passed_personnel_part3.personnel_post_grade_code,
                         view_courses_passed_personnel_part3.personnel_cpp_affairs,
                         view_courses_passed_personnel_part3.personnel_cpp_area,
