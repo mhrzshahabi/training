@@ -741,8 +741,11 @@
                                                                         msg.close();
                                                                     }, 3000);
                                                                     classRecord_RE.teacherEvalStatus = 0;
-                                                                    ToolStrip_SendForms_RE.getField("sendButtonTeacher").disableIcon("ok");
-                                                                    ToolStrip_SendForms_RE.getField("registerButtonTeacher").disableIcon("ok");
+                                                                    // ToolStrip_SendForms_RE.getField("sendButtonTeacher").disableIcon("ok");
+                                                                    ToolStrip_SendForms_RE.getField("sendButtonTeacher").hideIcon("ok");
+                                                                    // ToolStrip_SendForms_RE.getField("registerButtonTeacher").disableIcon("ok");
+                                                                    ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
+                                                                    ToolStrip_SendForms_RE.redraw();
                                                                 } else {
                                                                     createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                                                                 }
@@ -856,8 +859,11 @@
                                                                         msg.close();
                                                                     }, 3000);
                                                                     classRecord_RE.trainingEvalStatus = 0;
-                                                                    ToolStrip_SendForms_RE.getField("sendButtonTraining").disableIcon("ok");
-                                                                    ToolStrip_SendForms_RE.getField("registerButtonTraining").disableIcon("ok");
+                                                                    // ToolStrip_SendForms_RE.getField("sendButtonTraining").disableIcon("ok");
+                                                                    ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
+                                                                    // ToolStrip_SendForms_RE.getField("registerButtonTraining").disableIcon("ok");
+                                                                    ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
+                                                                    ToolStrip_SendForms_RE.redraw();
                                                                 } else {
                                                                     createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                                                                 }
@@ -1640,7 +1646,9 @@
                         // isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
                         //     LGRecord.id,
                         //     "GET", null, null));
-                        ToolStrip_SendForms_RE.getField("registerButtonTraining").enableIcon("ok");
+                        // ToolStrip_SendForms_RE.getField("registerButtonTraining").enableIcon("ok");
+                        ToolStrip_SendForms_RE.getField("registerButtonTraining").showIcon("ok");
+                        ToolStrip_SendForms_RE.redraw();
                         const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
                         setTimeout(() => {
                             msg.close();
@@ -2012,7 +2020,9 @@
                         // isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
                         //     LGRecord.id,
                         //     "GET", null, null));
-                        ToolStrip_SendForms_RE.getField("registerButtonTeacher").enableIcon("ok");
+                        // ToolStrip_SendForms_RE.getField("registerButtonTeacher").enableIcon("ok");
+                        ToolStrip_SendForms_RE.getField("registerButtonTeacher").showIcon("ok");
+                        ToolStrip_SendForms_RE.redraw();
                         const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
                         setTimeout(() => {
                             msg.close();
@@ -2263,11 +2273,15 @@
                     print_Student_Reaction_Form_RE(evaluatorId);
                 } else if (questionnarieTypeId == 141) {
                     classRecord_RE.trainingEvalStatus = 1;
-                    ToolStrip_SendForms_RE.getField("sendButtonTraining").enableIcon("ok");
+                    // ToolStrip_SendForms_RE.getField("sendButtonTraining").enableIcon("ok");
+                    ToolStrip_SendForms_RE.getField("sendButtonTraining").showIcon("ok");
+                    ToolStrip_SendForms_RE.redraw();
                     print_Training_Reaction_Form_RE();
                 } else if (questionnarieTypeId == 140) {
                     classRecord_RE.teacherEvalStatus = 1;
-                    ToolStrip_SendForms_RE.getField("sendButtonTeacher").enableIcon("ok");
+                    // ToolStrip_SendForms_RE.getField("sendButtonTeacher").enableIcon("ok");
+                    ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
+                    ToolStrip_SendForms_RE.redraw();
                     print_Teacher_Reaction_Form_RE();
                 }
             } else {
