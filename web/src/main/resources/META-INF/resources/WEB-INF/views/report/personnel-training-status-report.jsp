@@ -213,7 +213,7 @@
                 type: "radioGroup",
                 vertical: true,
                 fillHorizontalSpace: true,
-                defaultValue: "1",
+                defaultValue: "2",
 // endRow:true,
                 valueMap: {
                     "1": "فقط نیازسنجی",
@@ -229,7 +229,7 @@
                 type: "radioGroup",
                 vertical: true,
                 fillHorizontalSpace: true,
-                defaultValue: "1",
+                defaultValue: "3",
 // endRow:true,
                 valueMap: {
                     "1": "گذرانده",
@@ -245,7 +245,7 @@
                 type: "radioGroup",
                 vertical: true,
                 fillHorizontalSpace: true,
-                defaultValue: "1",
+                defaultValue: "4",
 // endRow:true,
                 valueMap: {
                     "1": "ثبت شده در پرونده",
@@ -488,9 +488,9 @@
                         criteria.criteria.remove(criteria.criteria.find({fieldName: "classStatus"}));
                         if (FilterDF_PTSR.getItem("naIsInNa").getValue() !== "2")
                             criteria.criteria.push({fieldName: "naIsInNa", operator: "equals", value: FilterDF_PTSR.getItem("naIsInNa").getValue()});
-                        if(FilterDF_PTSR.getItem("acceptanceState").getValue() !== "همه")
+                        if(FilterDF_PTSR.getItem("acceptanceState").getValue() !== "3")
                             criteria.criteria.push({fieldName: "acceptanceState", operator: "equals", value: FilterDF_PTSR.getItem("acceptanceState").getValue()});
-                        if(FilterDF_PTSR.getItem("classStatus").getValue() !== "همه")
+                        if(FilterDF_PTSR.getItem("classStatus").getValue() !== "4")
                             criteria.criteria.push({fieldName: "classStatus", operator: "equals", value: FilterDF_PTSR.getItem("classStatus").getValue()});
                         PersonnelTrainingStatusReport_LG.implicitCriteria = criteria;
                         PersonnelTrainingStatusReport_LG.invalidateCache();
@@ -510,15 +510,12 @@
                         criteria.criteria.remove(criteria.criteria.find({fieldName: "naIsInNa"}));
                         criteria.criteria.remove(criteria.criteria.find({fieldName: "acceptanceState"}));
                         criteria.criteria.remove(criteria.criteria.find({fieldName: "classStatus"}));
-                        let needsAssessmentStateval = needsAssessmentStateValueMap[FilterDF_PTSR.getItem("naIsInNa").getValue()];
-                        let acceptanceStateVal = acceptanceStateValueMap[FilterDF_PTSR.getItem("acceptanceState").getValue()];
-                        let classStateVal = classStateValueMap[FilterDF_PTSR.getItem("classStatus").getValue()];
-                        if (needsAssessmentStateval !== "همه")
-                            criteria.criteria.push({fieldName: "naIsInNa", operator: "equals", value: needsAssessmentStateval});
-                        if(acceptanceStateVal !== "همه")
-                            criteria.criteria.push({fieldName: "acceptanceState", operator: "equals", value: acceptanceStateVal});
-                        if(classStateVal !== "همه")
-                            criteria.criteria.push({fieldName: "classStatus", operator: "equals", value: classStateVal});
+                        if (FilterDF_PTSR.getItem("naIsInNa").getValue() !== "2")
+                            criteria.criteria.push({fieldName: "naIsInNa", operator: "equals", value: FilterDF_PTSR.getItem("naIsInNa").getValue()});
+                        if(FilterDF_PTSR.getItem("acceptanceState").getValue() !== "3")
+                            criteria.criteria.push({fieldName: "acceptanceState", operator: "equals", value: FilterDF_PTSR.getItem("acceptanceState").getValue()});
+                        if(FilterDF_PTSR.getItem("classStatus").getValue() !== "4")
+                            criteria.criteria.push({fieldName: "classStatus", operator: "equals", value: FilterDF_PTSR.getItem("classStatus").getValue()});
                         if(criteria.criteria.length < 1)
                             criteria = {};
                         ExportToFile.showDialog(null, PersonnelTrainingStatusReport_LG, "viewPersonnelTrainingStatusReport", 0, null, '',"گزارش وضعیت آموزشی افراد"  , criteria, null);
@@ -577,9 +574,11 @@
 
     // <<----------------------------------------------- Functions --------------------------------------------
     function hasFilters(){
-        if(Object.keys(FilterDF_PTSR.getValuesAsCriteria()).length < 4 && FilterDF_PTSR.getValuesAsCriteria().criteria === undefined)
+        let state = FilterDF_PTSR.getValuesAsCriteria().criteria;
+        let arry = state !== undefined ? state : Object.keys(FilterDF_PTSR.getValuesAsCriteria());
+        if(state === undefined && arry.length < 4)
             return false;
-        else if(FilterDF_PTSR.getValuesAsCriteria().criteria !== undefined && Object.keys(FilterDF_PTSR.getValuesAsCriteria()).length < 5)
+        else if(state !== undefined && arry.length < 4)
             return false
         else
             return true;
