@@ -6,16 +6,22 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
-    var dummy;
     //----------------------------------------------------Variables-----------------------------------------------------
     var teacherGradeToClass = 0;
-    var studentsGradeToTeacher = 0;
-    var studentsGradeToFacility = 0;
-    var studentsGradeToGoals = 0;
-    var userId = "<%= SecurityUtil.getUserId()%>";
-    var listGrid_record = null;
-    //----------------------------------------------------Rest Data Sources---------------------------------------------
 
+    var studentsGradeToTeacher = 0;
+
+    var studentsGradeToFacility = 0;
+
+    var studentsGradeToGoals = 0;
+
+    var userId = "<%= SecurityUtil.getUserId()%>";
+
+    var listGrid_record = null;
+
+    var evalWait_JspEvaluationAnalysis;
+
+    //----------------------------------------------------Rest Data Sources---------------------------------------------
     var RestDataSource_evaluationAnalysis_class = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -206,6 +212,7 @@
             }
         ]
     });
+
     ListGrid_evaluationAnalysis_class = isc.TrLG.create({
         width: "100%",
         height: "100%",
@@ -378,7 +385,6 @@
     });
 
     //----------------------------------------------------ToolStrips & Page Layout--------------------------------------
-
     var Detail_Tab_Evaluation_Analysis = isc.TabSet.create({
         ID: "tabSetEvaluationAnalysis",
         tabBarPosition: "top",
@@ -412,7 +418,6 @@
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
         }
-
     });
 
     var ToolStripButton_Refresh_Evaluation_Analysis = isc.ToolStripButtonRefresh.create({
@@ -478,29 +483,28 @@
     });
 
     //----------------------------------------------------Functions-----------------------------------------------------
-
     function set_evaluation_analysis_tabset_status() {
 
         var classRecord = ListGrid_evaluationAnalysis_class.getSelectedRecord();
         var evaluationType = classRecord.evaluation;
 
         Detail_Tab_Evaluation_Analysis.enable();
-
+        evalWait_JspEvaluationAnalysis = createDialog("wait");
         if (evaluationType === "1" || evaluationType === "واکنشی") {
-            // fill_reaction_evaluation_result();
+            fill_reaction_evaluation_result();
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.disableTab(1);
             Detail_Tab_Evaluation_Analysis.disableTab(2);
             Detail_Tab_Evaluation_Analysis.disableTab(3);
         } else if (evaluationType === "2" || evaluationType === "یادگیری") {
-            // fill_reaction_evaluation_result();
+            fill_reaction_evaluation_result();
             // evaluationAnalysist_learning();
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.enableTab(1);
             Detail_Tab_Evaluation_Analysis.disableTab(2);
             Detail_Tab_Evaluation_Analysis.disableTab(3);
         } else if (evaluationType === "3" || evaluationType === "رفتاری") {
-            // fill_reaction_evaluation_result();
+            fill_reaction_evaluation_result();
             // evaluationAnalysist_learning();
             fill_behavioral_evaluation_result();
             Detail_Tab_Evaluation_Analysis.enableTab(0);
@@ -508,15 +512,14 @@
             Detail_Tab_Evaluation_Analysis.enableTab(2);
             Detail_Tab_Evaluation_Analysis.disableTab(3);
         } else if (evaluationType === "4" || evaluationType === "نتایج") {
-            // fill_reaction_evaluation_result();
+            fill_reaction_evaluation_result();
             // evaluationAnalysist_learning();
-            // fill_behavioral_evaluation_result();
+            fill_behavioral_evaluation_result();
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.enableTab(1);
             Detail_Tab_Evaluation_Analysis.enableTab(2);
             Detail_Tab_Evaluation_Analysis.enableTab(3);
         };
-        Detail_Tab_Evaluation_Analysis.disableTab(0);
         Detail_Tab_Evaluation_Analysis.disableTab(1);
         Detail_Tab_Evaluation_Analysis.disableTab(3);
     }
@@ -574,6 +577,7 @@
         ];
 
         ReactionEvaluationChart.setData(reaction_chartData);
+        evalWait_JspEvaluationAnalysis.close();
     }
 
     function load_behavioral_evluation_analysis_data(record) {
@@ -592,6 +596,7 @@
             behavioral_chartData2.add({evaluator : "همکار", grade: record.coWorkersGradeMean});
             behavioral_chartData2.add({evaluator : "مسئول آموزش", grade: record.trainingGradeMean});
         BehavioralEvaluationChart2.setData(behavioral_chartData2);
+        evalWait_JspEvaluationAnalysis.close();
     }
 
     function fill_reaction_evaluation_result() {
