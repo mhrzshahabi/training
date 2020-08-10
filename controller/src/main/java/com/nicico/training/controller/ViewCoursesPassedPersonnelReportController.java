@@ -3,10 +3,9 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ViewCoursesPassedPersonnelReportDTO;
-import com.nicico.training.iservice.IViewCoursesPassedPersonnelReportService;
+import com.nicico.training.service.ViewCoursesPassedPersonnelReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,16 +20,15 @@ import java.io.IOException;
 @RestController
 @RequestMapping(value = "/api/view-courses-passed-personnel-report")
 public class ViewCoursesPassedPersonnelReportController {
-    private final IViewCoursesPassedPersonnelReportService iViewCoursesPassedPersonnelReportService;
-    private final ModelMapper modelMapper;
+    private final ViewCoursesPassedPersonnelReportService iViewCoursesPassedPersonnelReportService;
 
     @Loggable
     @GetMapping
     public ResponseEntity<ISC<ViewCoursesPassedPersonnelReportDTO.Grid>> list(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        searchRq.setSortBy("id");
-        searchRq.setDistinct(true);
-        return new ResponseEntity<>(ISC.convertToIscRs(iViewCoursesPassedPersonnelReportService.search(searchRq, o -> modelMapper.map(o, ViewCoursesPassedPersonnelReportDTO.Grid.class)), searchRq.getStartIndex()), HttpStatus.OK);
-    }
+        searchRq.setSortBy("empNo");
 
+        SearchDTO.SearchRs<ViewCoursesPassedPersonnelReportDTO.Grid> searchRs = iViewCoursesPassedPersonnelReportService.search(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
+    }
 }

@@ -3298,10 +3298,10 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_COURSES_PASSED_PERSONNEL_PART4-003">
+    <changeSet author="NICICO" id="VIEW_COURSES_PASSED_PERSONNEL_PART4-005">
         <createView viewName="VIEW_COURSES_PASSED_PERSONNEL_PART4" replaceIfExists="true">
             <![CDATA[
- SELECT DISTINCT
+ SELECT distinct
         course_id,
         personnel_id,
         personnel_emp_no,
@@ -3319,7 +3319,7 @@ FROM
         term_code,
         term_title_fa,
         term_id,
-        substr(class_start_date, 1, 4) AS class_year,
+        class_start_date AS class_year,
         personnel_post_grade_code,
         personnel_cpp_affairs,
         personnel_cpp_area,
@@ -3350,6 +3350,7 @@ FROM
                 view_courses_passed_personnel_part1.term_code,
                 view_courses_passed_personnel_part1.term_title_fa,
                 view_courses_passed_personnel_part1.term_id,
+                substr(view_courses_passed_personnel_part1.class_start_date, 1, 4) AS class_year,
                 view_courses_passed_personnel_part1.personnel_post_grade_code,
                 view_courses_passed_personnel_part1.personnel_cpp_affairs,
                 view_courses_passed_personnel_part1.personnel_cpp_area,
@@ -3367,8 +3368,8 @@ FROM
                 view_courses_passed_personnel_part1.is_passed = 216
             UNION ALL
             SELECT
-                tba.personnel_id,
                 tba.course_id,
+                tba.personnel_id,
                 tba.personnel_emp_no,
                 tba.personnel_personnel_no,
                 tba.personnel_national_code,
@@ -3384,6 +3385,7 @@ FROM
                 tba.term_code,
                 tba.term_title_fa,
                 tba.term_id,
+                tba.class_start_date AS class_year,
                 tba.personnel_post_grade_code,
                 tba.personnel_cpp_affairs,
                 tba.personnel_cpp_area,
@@ -3393,12 +3395,12 @@ FROM
                 tba.personnel_company_name,
                 tba.personnel_complex_title,
                 'غیر نیازسنجی' AS coursetype,
-                NULL AS na_priority_id
+                0 AS na_priority_id
             FROM
                 (
                     SELECT
-                        view_courses_passed_personnel_part3.personnel_id,
                         view_courses_passed_personnel_part3.course_id,
+                        view_courses_passed_personnel_part3.personnel_id,
                         view_courses_passed_personnel_part3.personnel_emp_no,
                         view_courses_passed_personnel_part3.personnel_personnel_no,
                         view_courses_passed_personnel_part3.personnel_national_code,
@@ -3414,6 +3416,9 @@ FROM
                         view_courses_passed_personnel_part3.term_code,
                         view_courses_passed_personnel_part3.term_title_fa,
                         view_courses_passed_personnel_part3.term_id,
+
+                        substr(view_courses_passed_personnel_part3.class_start_date, 1, 4),
+
                         view_courses_passed_personnel_part3.personnel_post_grade_code,
                         view_courses_passed_personnel_part3.personnel_cpp_affairs,
                         view_courses_passed_personnel_part3.personnel_cpp_area,
