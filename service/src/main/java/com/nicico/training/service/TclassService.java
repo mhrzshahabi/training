@@ -145,6 +145,8 @@ public class TclassService implements ITclassService {
     public TclassDTO.Info update(Long id, TclassDTO.Update request) {
         final Optional<Tclass> cById = tclassDAO.findById(id);
         final Tclass tclass = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
+        Long classOldSupervisor = tclass.getSupervisor();
+        Long classOldTeacher = tclass.getTeacherId();
         List<Long> trainingPlaceIds = request.getTrainingPlaceIds();
         Set<TrainingPlace> set = new HashSet<>();
         if(trainingPlaceIds != null) {
@@ -161,6 +163,34 @@ public class TclassService implements ITclassService {
             updating.setPostponeStartDate(null);
         }
         Tclass save = tclassDAO.save(updating);
+        //--------------------DONE BY ROYA---------------------
+        if(classOldSupervisor!= null && request.getSupervisor() != null){
+            if(!classOldSupervisor.equals(request.getSupervisor())){
+                HashMap<String,Object> evaluation = new HashMap();
+                evaluation.put("questionnaireTypeId",141L);
+                evaluation.put("classId",id);
+                evaluation.put("evaluatorId",classOldSupervisor);
+                evaluation.put("evaluatorTypeId",454L);
+                evaluation.put("evaluatedId",classOldTeacher);
+                evaluation.put("evaluatedTypeId",187L);
+                evaluation.put("evaluationLevelId",154L);
+                evaluationService.deleteEvaluation(evaluation);
+            }
+        }
+        if(classOldTeacher!= null && request.getTeacherId() != null){
+            if(!classOldTeacher.equals(request.getTeacherId())){
+                HashMap<String,Object> evaluation = new HashMap();
+                evaluation.put("questionnaireTypeId",140L);
+                evaluation.put("classId",id);
+                evaluation.put("evaluatorId",classOldTeacher);
+                evaluation.put("evaluatorTypeId",187L);
+                evaluation.put("evaluatedId",id);
+                evaluation.put("evaluatedTypeId",504L);
+                evaluation.put("evaluationLevelId",154L);
+                evaluationService.deleteEvaluation(evaluation);
+            }
+        }
+        //-----------------------------------------------------
         if(request.getTargetSocietyTypeId() != null) {
             updateTargetSocieties(save.getTargetSocietyList(), request.getTargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
         }
