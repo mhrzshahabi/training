@@ -56,12 +56,36 @@
         fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAssistant"
     });
 
+    SectionDS_PTSR = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="term.code"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpSection"
+    });
+
     UnitDS_PTSR = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
         fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpUnit"
+    });
+
+    ComplexDS_PTSR = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=complexTitle"
+    });
+
+    CompanyDS_PTSR = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="company"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: personnelUrl + "/all-field-values?fieldName=companyName"
     });
 
     var RestDataSource_PostGradeLvl_PTSR = isc.TrDS.create({
@@ -76,6 +100,20 @@
             {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: viewPostGradeUrl + "/iscList"
+    });
+
+    var RestDataSource_Post_PTSR = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {
+                name: "code",
+                title: "<spring:message code="post.grade.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
+        ],
+        fetchDataURL: viewPostUrl + "/iscList"
     });
 
     CourseDS_PTSR = isc.TrDS.create({
@@ -273,9 +311,28 @@
                 separateSpecialValues: true
             },
             {
+                name: "personnelCcpSection",
+                title: "<spring:message code="section"/>",
+                colSpan: 1,
+                filterFields: ["value", "value"],
+                pickListWidth: 300,
+                type: "ComboBoxItem",
+                textMatchStyle: "substring",
+                pickListProperties: {
+                    showFilterEditor: false,
+                    showClippedValuesOnHover: true,
+                },
+                optionDataSource: SectionDS_PTSR,
+                autoFetchData: false,
+                valueField: "value",
+                displayField: "value",
+                specialValues: { "**emptyValue**": ""},
+                separateSpecialValues: true
+            },
+            {
                 name: "personnelCcpUnit",
                 colSpan: 1,
-                title: "<spring:message code="unitName"/>",
+                title: "<spring:message code="unit"/>",
                 filterFields: ["value", "value"],
                 pickListWidth: 300,
                 type: "ComboBoxItem",
@@ -285,6 +342,44 @@
                     showClippedValuesOnHover: true,
                 },
                 optionDataSource: UnitDS_PTSR,
+                autoFetchData: false,
+                valueField: "value",
+                displayField: "value",
+                specialValues: { "**emptyValue**": ""},
+                separateSpecialValues: true
+            },
+            {
+                name: "personnelComplexTitle",
+                title: "<spring:message code="complex"/>",
+                optionDataSource: ComplexDS_PTSR,
+                autoFetchData: false,
+                filterFields: ["value", "value"],
+                colSpan: 1,
+                pickListWidth: 300,
+                type: "ComboBoxItem",
+                textMatchStyle: "substring",
+                pickListProperties: {
+                    showFilterEditor: false,
+                    showClippedValuesOnHover: true,
+                },
+                valueField: "value",
+                displayField: "value",
+                specialValues: { "**emptyValue**": ""},
+                separateSpecialValues: true
+            },
+            {
+                name: "personnelCompanyName",
+                title: "<spring:message code="company"/>",
+                filterFields: ["value", "value"],
+                colSpan: 1,
+                pickListWidth: 300,
+                type: "ComboBoxItem",
+                textMatchStyle: "substring",
+                pickListProperties: {
+                    showFilterEditor: false,
+                    showClippedValuesOnHover: true,
+                },
+                optionDataSource: CompanyDS_PTSR,
                 autoFetchData: false,
                 valueField: "value",
                 displayField: "value",
@@ -303,11 +398,12 @@
                 displayField: "code",
                 endRow: false,
                 layoutStyle: "horizontal",
-                comboBoxWidth: 175,
+                // pickListWidth: 300,
+                comboBoxWidth: 205,
                 // layoutStyle: "horizontal",
                 comboBoxProperties: {
                     hint: "",
-                    pickListWidth: 400,
+                    pickListWidth: 300,
                     pickListFields: [
                         {name: "code", autoFitWidth: true},
                         {name: "titleFa"},
@@ -329,11 +425,41 @@
                 displayField: "titleFa",
                 endRow: false,
                 colSpan: 1,
-                comboBoxWidth: 175,
+                comboBoxWidth: 205,
+                // pickListWidth: 300,
                 layoutStyle: "horizontal",
                 comboBoxProperties: {
                     hint: "",
-                    // pickListWidth: 300,
+                    pickListWidth: 300,
+                    pickListFields: [
+                        {name: "titleFa"},
+                    ],
+                    filterFields: ["titleFa"],
+                    pickListProperties: {
+                        sortField: 1,
+                        showFilterEditor: true
+                    },
+                    textMatchStyle: "substring",
+                },
+            },
+            {
+                name: "personnelPostTitle",
+                title:"<spring:message code='post'/>",
+                operator: "inSet",
+                textAlign: "center",
+                optionDataSource: RestDataSource_Post_PTSR,
+                autoFetchData: false,
+                type: "MultiComboBoxItem",
+                valueField: "titleFa",
+                displayField: "titleFa",
+                endRow: false,
+                colSpan: 1,
+                // pickListWidth: 300,
+                comboBoxWidth: 205,
+                layoutStyle: "horizontal",
+                comboBoxProperties: {
+                    hint: "",
+                    pickListWidth: 300,
                     pickListFields: [
                         {name: "titleFa"},
                     ],
