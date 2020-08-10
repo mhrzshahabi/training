@@ -30,14 +30,15 @@
             {name: "classEndDate", title:"<spring:message code="end.date"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "classStudentScoresStateId", title:"وضعیت قبولی", filterOperator: "iContains", autoFitWidth: true, valueMap: {
                     "400" : "قبولی با نمره",
-                    "401" : "قبولی بدون نمره"
+                    "401" : "قبولی بدون نمره",
                 }},
             {name: "score",title:"<spring:message code="score"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "courseType", title:"وضعیت نیازسنجی", filterOperator: "iContains", autoFitWidth: true},
             {name: "naPriorityId", title:"اولویت نیازسنجی", filterOperator: "equals",  autoFitWidth: true, valueMap: {
             "111" : "عملکردی ضروری",
             "113" : "عملکردی توسعه",
-            "112" : "عملکردی بهبود"
+            "112" : "عملکردی بهبود",
+            "0" : ""
             }},
 
             {name: "termId", hidden: true, filterOperator: "equals"},
@@ -250,7 +251,7 @@
         title: "گزارش اکسل",
         width: 300,
         click: function () {
-            ExportToFile.showDialog(null, ListGrid_JspCoursesPassedPersonnel, 'statisticsCoursesPassedPersonnel', 0, null, '',  "گزارش واحد آمار", ListGrid_JspCoursesPassedPersonnel.data.criteria, null);
+            ExportToFile.showDialog(null, ListGrid_JspCoursesPassedPersonnel, 'coursesPassedPersonnel', 0, null, '',  "گزارش دوره های گذرانده فرد", ListGrid_JspCoursesPassedPersonnel.data.criteria, null);
         }
     });
 
@@ -735,7 +736,6 @@
                 name: "courseType",
                 title: "وضعیت نیازسنجی",
                 type: "SelectItem",
-                operator: "inSet",
                 valueMap: {
                     "1": "نیازسنجی",
                     "2": "غیر نیازسنجی",
@@ -850,55 +850,20 @@
                         data_values.criteria[i].operator = "iContains";
                     }
 
-                    else if (data_values.criteria[i].fieldName == "instituteId") {
-                        data_values.criteria[i].fieldName = "instituteId";
-                        data_values.criteria[i].operator = "equals";
-                    }
-
-
-                    else if (data_values.criteria[i].fieldName == "classPlanner") {
-                        data_values.criteria[i].fieldName = "classPlanner";
-                        data_values.criteria[i].operator = "equals";
-                    }
-
-                    else if (data_values.criteria[i].fieldName == "classSupervisor") {
-                        data_values.criteria[i].fieldName = "classSupervisor";
-                        data_values.criteria[i].operator = "equals";
-                    }
-
-                    else if (data_values.criteria[i].fieldName == "courseTeacherId") {
-                        data_values.criteria[i].fieldName = "courseTeacherId";
-                        data_values.criteria[i].operator = "equals";
-                    }
-
-
-                    else if (data_values.criteria[i].fieldName == "courseCategory") {
-                        data_values.criteria[i].fieldName = "courseCategory";
-                        data_values.criteria[i].operator = "equals";
-                    }
-
-                    else if (data_values.criteria[i].fieldName == "courseSubCategory") {
-                        data_values.criteria[i].fieldName = "courseSubCategory";
-                        data_values.criteria[i].operator = "equals";
-                    }
-
                     else if (data_values.criteria[i].fieldName == "courseType") {
                         if (data_values.criteria[i].value=="1"){
-                            data_values.criteria[i].value="null";
+                            data_values.criteria[i].value="نیازسنجی";
                             data_values.criteria[i].operator = "equals";
                         }
 
                         else if (data_values.criteria[i].value=="2"){
-                            data_values.criteria[i].value="null";
-                            data_values.criteria[i].operator = "notequals";
+                            data_values.criteria[i].value="غیر نیازسنجی";
+                            data_values.criteria[i].operator = "equals";
                         }
 
-                        else {
-                            data_values.criteria[i].value=["نیازسنجی","غیر نیازسنجی"];
-                            data_values.criteria[i].operator = "inSet";
+                        else{
+                            data_values.criteria.remove(data_values.criteria.find({fieldName: "courseType"}));
                         }
-
-                        data_values.criteria[i].fieldName = "naPriorityId";
                     }
                 }
 

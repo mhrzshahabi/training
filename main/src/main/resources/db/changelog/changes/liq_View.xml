@@ -3298,7 +3298,7 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_COURSES_PASSED_PERSONNEL_PART4-003">
+    <changeSet author="NICICO" id="VIEW_COURSES_PASSED_PERSONNEL_PART4-004">
         <createView viewName="VIEW_COURSES_PASSED_PERSONNEL_PART4" replaceIfExists="true">
             <![CDATA[
  SELECT DISTINCT
@@ -3393,7 +3393,7 @@ FROM
                 tba.personnel_company_name,
                 tba.personnel_complex_title,
                 'غیر نیازسنجی' AS coursetype,
-                NULL AS na_priority_id
+                0 AS na_priority_id
             FROM
                 (
                     SELECT
