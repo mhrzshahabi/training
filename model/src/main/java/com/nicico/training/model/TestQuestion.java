@@ -5,6 +5,8 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -32,11 +34,13 @@ public class TestQuestion extends Auditable {
     @Column(name = "f_class")
     private Long tclassId;
 
-    @ManyToOne
-    @JoinColumn(name = "f_question_bank", insertable = false, updatable = false)
-    private QuestionBank questionBank;
 
-    @Column(name = "f_question_bank")
-    private Long questionBankId;
+    /*@ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "tbl_question_bank_test_question",
+            joinColumns = {@JoinColumn(name = "f_test_question_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "f_question_bank_id", referencedColumnName = "id")})
+    private Set<QuestionBank> questionBankSet;*/
 
+    @OneToMany(mappedBy = "testQuestion", fetch = FetchType.LAZY)
+    private Set<QuestionBankTestQuestion> QuestionBankTestQuestionList;
 }

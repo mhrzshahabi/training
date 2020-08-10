@@ -3,14 +3,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 // <script>
-    var startDate1Check_JspStaticalUnitReport = true;
-    var startDate2Check_JspStaticalUnitReport = true;
-    var startDateCheck_Order_JspStaticalUnitReport = true;
-    var endDate1Check_JspStaticalUnitReport = true;
-    var endDate2Check_JspStaticalUnitReport = true;
-    var endDateCheck_Order_JspStaticalUnitReport = true;
+    var startDate1Check_JspStaticalCoursesPassedPersonnel = true;
+    var startDate2Check_JspStaticalCoursesPassedPersonnel = true;
+    var startDateCheck_Order_JspStaticalCoursesPassedPersonnel = true;
+    var endDate1Check_JspStaticalCoursesPassedPersonnel = true;
+    var endDate2Check_JspStaticalCoursesPassedPersonnel = true;
+    var endDateCheck_Order_JspStaticalCoursesPassedPersonnel = true;
     //----------------------------------------------------Rest DataSource-----------------------------------------------
-    RestDataSource_JspUnitReport = isc.TrDS.create({
+    RestDataSource_JspCoursesPassedPersonnel = isc.TrDS.create({
         fields: [
             {name: "studentPersonnelNo", title:"<spring:message code='personnel.no'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "studentPersonnelNo2", title:"<spring:message code='personnel.no.6.digits'/>", filterOperator: "iContains", autoFitWidth: true},
@@ -72,7 +72,7 @@
         fetchDataURL: viewCoursesPassedPersonnelReportUrl
     });
 
-    var RestDataSource_Course_JspUnitReport = isc.TrDS.create({
+    var RestDataSource_Course_JspCoursesPassedPersonnel = isc.TrDS.create({
         ID: "courseDS",
         fields: [
             {name: "id", type: "Integer", primaryKey: true},
@@ -82,7 +82,7 @@
         fetchDataURL: courseUrl + "info-tuple-list"
     });
 
-    var RestDataSource_Class_JspUnitReport = isc.TrDS.create({
+    var RestDataSource_Class_JspCoursesPassedPersonnel = isc.TrDS.create({
         ID: "classDS",
         fields: [
             {name: "id", primaryKey: true},
@@ -149,7 +149,7 @@
         fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpUnit"
     });
 
-    var RestDataSource_Course_JspUnitReportReport = isc.TrDS.create({
+    var RestDataSource_Course_JspCoursesPassedPersonnelReport = isc.TrDS.create({
         ID: "courseDS",
         fields: [
             {name: "id", type: "Integer", primaryKey: true},
@@ -159,7 +159,7 @@
         fetchDataURL: courseUrl + "spec-safe-list"
     });
 
-    var RestDataSource_Teacher_JspUnitReport = isc.TrDS.create({
+    var RestDataSource_Teacher_JspCoursesPassedPersonnel = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "personality.firstNameFa", filterOperator: "iContains"},
@@ -170,7 +170,7 @@
         fetchDataURL: teacherUrl + "fullName"
     });
 
-    var RestDataSource_Term_JspUnitReport = isc.TrDS.create({
+    var RestDataSource_Term_JspCoursesPassedPersonnel = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "code"},
@@ -179,19 +179,19 @@
         ]
     });
 
-    var RestDataSource_Year_JspUnitReport = isc.TrDS.create({
+    var RestDataSource_Year_JspCoursesPassedPersonnel = isc.TrDS.create({
         fields: [
             {name: "year", primaryKey: true}
         ],
         fetchDataURL: termUrl + "yearList"
     });
 
-    var RestDataSource_Category_JspUnitReport = isc.TrDS.create({
+    var RestDataSource_Category_JspCoursesPassedPersonnel = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}],
         fetchDataURL: categoryUrl + "spec-list"
     });
 
-    var RestDataSource_SubCategory_JspUnitReport = isc.TrDS.create({
+    var RestDataSource_SubCategory_JspCoursesPassedPersonnel = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}],
         fetchDataURL: subCategoryUrl + "iscList"
     });
@@ -243,11 +243,26 @@
         fetchDataURL: instituteUrl + "spec-list",
         allowAdvancedCriteria: true
     });
+
+
+    let RestDataSource_PostGradeLvl_PCNR = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {
+                name: "code",
+                title: "<spring:message code="post.grade.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
+        ],
+        fetchDataURL: viewPostGradeUrl + "/iscList"
+    });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
-    var ListGrid_JspUnitReport = isc.TrLG.create({
+    var ListGrid_JspCoursesPassedPersonnel = isc.TrLG.create({
         width: "100%",
         height: "100%",
-        dataSource : RestDataSource_JspUnitReport,
+        dataSource : RestDataSource_JspCoursesPassedPersonnel,
         cellHeight: 43,
         sortField: 0,
         showFilterEditor: false,
@@ -256,27 +271,27 @@
         showRecordComponentsByCell: true
     });
 
-    IButton_JspUnitReport_FullExcel = isc.IButtonSave.create({
+    IButton_JspCoursesPassedPersonnel_FullExcel = isc.IButtonSave.create({
         top: 260,
         title: "گزارش اکسل",
         width: 300,
         click: function () {
-            ExportToFile.showDialog(null, ListGrid_JspUnitReport, 'statisticsUnitReport', 0, null, '',  "گزارش واحد آمار", ListGrid_JspUnitReport.data.criteria, null);
+            ExportToFile.showDialog(null, ListGrid_JspCoursesPassedPersonnel, 'statisticsCoursesPassedPersonnel', 0, null, '',  "گزارش واحد آمار", ListGrid_JspCoursesPassedPersonnel.data.criteria, null);
         }
     });
 
-    var HLayOut_CriteriaForm_JspUnitReport_Details = isc.TrHLayoutButtons.create({
+    var HLayOut_CriteriaForm_JspCoursesPassedPersonnel_Details = isc.TrHLayoutButtons.create({
         showEdges: false,
         edgeImage: "",
         width: "100%",
         height: "100%",
         alignLayout: "center",
         members: [
-            ListGrid_JspUnitReport
+            ListGrid_JspCoursesPassedPersonnel
         ]
     });
 
-    var HLayOut_Confirm_JspUnitReport_UnitExcel = isc.TrHLayoutButtons.create({
+    var HLayOut_Confirm_JspCoursesPassedPersonnel_UnitExcel = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
@@ -285,11 +300,11 @@
         alignLayout: "center",
         padding: 10,
         members: [
-            IButton_JspUnitReport_FullExcel
+            IButton_JspCoursesPassedPersonnel_FullExcel
         ]
     });
 
-    var Window_JspUnitReport = isc.Window.create({
+    var Window_JspCoursesPassedPersonnel = isc.Window.create({
         placement: "fillScreen",
         title: "گزارش دوره های گذرانده فرد",
         canDragReposition: true,
@@ -300,13 +315,13 @@
         items: [
             isc.TrVLayout.create({
                 members: [
-                    HLayOut_CriteriaForm_JspUnitReport_Details,HLayOut_Confirm_JspUnitReport_UnitExcel
+                    HLayOut_CriteriaForm_JspCoursesPassedPersonnel_Details,HLayOut_Confirm_JspCoursesPassedPersonnel_UnitExcel
                 ]
             })
         ]
     });
     //----------------------------------------------------Criteria Form------------------------------------------------
-    var DynamicForm_CriteriaForm_JspUnitReport = isc.DynamicForm.create({
+    var DynamicForm_CriteriaForm_JspCoursesPassedPersonnel = isc.DynamicForm.create({
         align: "right",
         titleWidth: 0,
         titleAlign: "center",
@@ -316,7 +331,50 @@
         colWidths: ["5%", "25%", "5%", "25%","5%","25%"],
         fields: [
             {
-                name: "personnelComplexTitle",
+                name: "empNo",
+                title:"پرسنلی 6رقمی",
+                textAlign: "center",
+                width: "*",
+                keyPressFilter: "[0-9, ]",
+                operator: "inSet",
+                editorType: "TextItem",
+                length:10000,
+                changed (form, item, value){
+                    let res = value.split(" ");
+                    item.setValue(res.toString())
+                }
+            },
+            {
+                name: "personnelNo",
+                title:"<spring:message code="personnel.no"/> ",
+                textAlign: "center",
+                width: "*"
+            },
+            {
+                name: "nationalCode",
+                title:"<spring:message code="national.code"/> ",
+                textAlign: "center",
+                width: "*",
+            },
+            {
+                name: "firstName",
+                title:"<spring:message code="firstName"/> ",
+                textAlign: "center",
+                width: "*"
+            },
+            {
+                name: "lastName",
+                title:"<spring:message code="lastName"/> ",
+                textAlign: "center",
+                width: "*"
+            },
+            {
+                name: "temp0",
+                title: "",
+                canEdit: false
+            },
+            {
+                name: "complexTitle",
                 title: "<spring:message code="complex"/>",
                 optionDataSource: ComplexDS_PresenceReport,
                 valueField: "value",
@@ -338,7 +396,7 @@
                 ],
             },
             {
-                name: "classStudentApplicantCompanyName",
+                name: "companyName",
                 title: "<spring:message code="company"/>",
                 valueField: "value",
                 displayField: "value",
@@ -360,7 +418,7 @@
                 ],
             },
             {
-                name: "studentCcpAssistant",
+                name: "assistant",
                 title: "<spring:message code="assistance"/>",
                 valueField: "value",
                 displayField: "value",
@@ -382,7 +440,7 @@
                 ],
             },
             {
-                name: "studentCcpSection",
+                name: "section",
                 title: "<spring:message code="section.cost"/>",
                 valueField: "value",
                 displayField: "value",
@@ -404,7 +462,7 @@
                 ],
             },
             {
-                name: "studentCcpUnit",
+                name: "unit",
                 title: "<spring:message code="unitName"/>",
                 optionDataSource: UnitDS_PresenceReport,
                 valueField: "value",
@@ -426,7 +484,7 @@
                 ],
             },
             {
-                name: "studentCcpAffairs",
+                name: "affairs",
                 title: "<spring:message code="affairs"/>",
                 optionDataSource: AffairsDS_PresenceReport,
                 valueField: "value",
@@ -448,68 +506,8 @@
                 ],
             },
             {
-                name: "courseCode",
-                title: "کد دوره",
-                hint: "کدهای دوره را با , از یکدیگر جدا کنید",
-                prompt: "کدهای دوره فقط میتوانند شامل حروف انگلیسی بزرگ، اعداد و - باشند",
-                showHintInField: true,
-                icons: [{
-                    src: "[SKIN]/pickers/search_picker.png",
-                    click: function () {
-                        Window_SelectCourses_JspUnitReportReport.show();
-                    }
-                }],
-                keyPressFilter: "[A-Z|0-9|;-]"
-            },
-            {
-                name: "courseTitleFa",
-                title: "نام دوره",
-                length: 100,
-                filterOperator: "iContains"
-            },
-            {
-                name: "temp1",
-                title: "",
-                canEdit: false
-            },
-            {
-                name: "classCode",
-                title: "کد کلاس",
-                hint: "کدهای کلاس را با , از یکدیگر جدا کنید",
-                prompt: "کدهای کلاس فقط میتوانند شامل حروف انگلیسی بزرگ، اعداد و - باشند",
-                showHintInField: true,
-                icons: [{
-                    src: "[SKIN]/pickers/search_picker.png",
-                    click: function () {
-                        Window_SelectClasses_JspUnitReport.show();
-                    }}],
-                keyPressFilter: "[A-Z|0-9|,-]"
-            },
-            {
-                name: "classStatus",
-                title: "وضعیت کلاس",
-                type: "SelectItem",
-                operator: "inSet",
-                required: true,
-                multiple: true,
-                valueMap: {
-                    "1": "برنامه ريزی",
-                    "2": "در حال اجرا",
-                    "3": "پایان یافته",
-                },
-                pickListProperties: {
-                    showFilterEditor: false
-                },
-                defaultValue:  ["1","2","3"]
-            },
-            {
-                name: "temp2",
-                title: "",
-                canEdit: false
-            },
-            {
                 name: "startDate1",
-                ID: "startDate1_JspStaticalUnitReport",
+                ID: "startDate1_JspStaticalCoursesPassedPersonnel",
                 title: "تاریخ شروع کلاس: از",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
@@ -519,15 +517,15 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
                         closeCalendarWindow();
-                        displayDatePicker('startDate1_JspStaticalUnitReport', this, 'ymd', '/');
+                        displayDatePicker('startDate1_JspStaticalCoursesPassedPersonnel', this, 'ymd', '/');
                     }
                 }],
                 editorExit: function (form, item, value) {
                     if(value == undefined || value ==null){
                         form.clearFieldErrors("startDate2","تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد" ,true);
                         form.clearFieldErrors("startDate1", true);
-                        startDateCheck_Order_JspStaticalUnitReport = true;
-                        startDate1Check_JspStaticalUnitReport = true;
+                        startDateCheck_Order_JspStaticalCoursesPassedPersonnel = true;
+                        startDate1Check_JspStaticalCoursesPassedPersonnel = true;
                         return;
                     }
 
@@ -537,26 +535,26 @@
                     var endDate = form.getValue("startDate2");
                     dateCheck = checkDate(value);
                     if (dateCheck === false) {
-                        startDate1Check_JspStaticalUnitReport = false;
-                        startDateCheck_Order_JspStaticalUnitReport = true;
+                        startDate1Check_JspStaticalCoursesPassedPersonnel = false;
+                        startDateCheck_Order_JspStaticalCoursesPassedPersonnel = true;
                         form.clearFieldErrors("startDate1", true);
                         form.addFieldErrors("startDate1", "<spring:message code='msg.correct.date'/>", true);
                     } else if (endDate < value) {
-                        startDateCheck_Order_JspStaticalUnitReport = false;
-                        startDate1Check_JspStaticalUnitReport = true;
+                        startDateCheck_Order_JspStaticalCoursesPassedPersonnel = false;
+                        startDate1Check_JspStaticalCoursesPassedPersonnel = true;
                         form.clearFieldErrors("startDate1", true);
                         form.addFieldErrors("startDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
                     }
                     else {
-                        startDate1Check_JspStaticalUnitReport = true;
-                        startDateCheck_Order_JspStaticalUnitReport = true;
+                        startDate1Check_JspStaticalCoursesPassedPersonnel = true;
+                        startDateCheck_Order_JspStaticalCoursesPassedPersonnel = true;
                         form.clearFieldErrors("startDate1", true);
                     }
                 }
             },
             {
                 name: "startDate2",
-                ID: "startDate2_JspStaticalUnitReport",
+                ID: "startDate2_JspStaticalCoursesPassedPersonnel",
                 title: "تا",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
@@ -566,15 +564,15 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('startDate2_JspStaticalUnitReport', this, 'ymd', '/');
+                        displayDatePicker('startDate2_JspStaticalCoursesPassedPersonnel', this, 'ymd', '/');
                     }
                 }],
                 editorExit: function (form, item, value) {
                     if(value == undefined || value ==null){
                         form.clearFieldErrors("startDate1","تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد" ,true);
                         form.clearFieldErrors("startDate2", true);
-                        startDateCheck_Order_JspStaticalUnitReport = true;
-                        startDate2Check_JspStaticalUnitReport = true;
+                        startDateCheck_Order_JspStaticalCoursesPassedPersonnel = true;
+                        startDate2Check_JspStaticalCoursesPassedPersonnel = true;
                         return;
                     }
 
@@ -584,30 +582,30 @@
                     dateCheck = checkDate(value);
                     var startDate = form.getValue("startDate1");
                     if (dateCheck === false) {
-                        startDate2Check_JspStaticalUnitReport = false;
-                        startDateCheck_Order_JspStaticalUnitReport = true;
+                        startDate2Check_JspStaticalCoursesPassedPersonnel = false;
+                        startDateCheck_Order_JspStaticalCoursesPassedPersonnel = true;
                         form.clearFieldErrors("startDate2", true);
                         form.addFieldErrors("startDate2", "<spring:message code='msg.correct.date'/>", true);
                     } else if (startDate != undefined && value < startDate) {
                         form.clearFieldErrors("startDate2", true);
                         form.addFieldErrors("startDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
-                        startDate2Check_JspStaticalUnitReport = true;
-                        startDateCheck_Order_JspStaticalUnitReport = false;
+                        startDate2Check_JspStaticalCoursesPassedPersonnel = true;
+                        startDateCheck_Order_JspStaticalCoursesPassedPersonnel = false;
                     } else {
                         form.clearFieldErrors("startDate2", true);
-                        startDate2Check_JspStaticalUnitReport = true;
-                        startDateCheck_Order_JspStaticalUnitReport = true;
+                        startDate2Check_JspStaticalCoursesPassedPersonnel = true;
+                        startDateCheck_Order_JspStaticalCoursesPassedPersonnel = true;
                     }
                 }
             },
             {
-                name: "temp41",
+                name: "temp1",
                 title: "",
                 canEdit: false
             },
             {
                 name: "endDate1",
-                ID: "endDate1_JspStaticalUnitReport",
+                ID: "endDate1_JspStaticalCoursesPassedPersonnel",
                 title: "تاریخ پایان کلاس: از",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
@@ -617,15 +615,15 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
                         closeCalendarWindow();
-                        displayDatePicker('endDate1_JspStaticalUnitReport', this, 'ymd', '/');
+                        displayDatePicker('endDate1_JspStaticalCoursesPassedPersonnel', this, 'ymd', '/');
                     }
                 }],
                 editorExit: function (form, item, value) {
                     if(value == undefined || value ==null){
                         form.clearFieldErrors("endDate2","تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد" ,true);
                         form.clearFieldErrors("endDate1", true);
-                        endDateCheck_Order_JspStaticalUnitReport = true;
-                        endDate1Check_JspStaticalUnitReport = true;
+                        endDateCheck_Order_JspStaticalCoursesPassedPersonnel = true;
+                        endDate1Check_JspStaticalCoursesPassedPersonnel = true;
                         return;
                     }
 
@@ -635,25 +633,25 @@
                     var endDate = form.getValue("endDate2");
                     dateCheck = checkDate(value);
                     if (dateCheck === false) {
-                        endDate1Check_JspStaticalUnitReport = false;
-                        endDateCheck_Order_JspStaticalUnitReport = true;
+                        endDate1Check_JspStaticalCoursesPassedPersonnel = false;
+                        endDateCheck_Order_JspStaticalCoursesPassedPersonnel = true;
                         form.clearFieldErrors("endDate1", true);
                         form.addFieldErrors("endDate1", "<spring:message code='msg.correct.date'/>", true);
                     } else if (endDate < value) {
-                        endDateCheck_Order_JspStaticalUnitReport = false;
-                        endDate1Check_JspStaticalUnitReport = true;
+                        endDateCheck_Order_JspStaticalCoursesPassedPersonnel = false;
+                        endDate1Check_JspStaticalCoursesPassedPersonnel = true;
                         form.clearFieldErrors("endDate1", true);
                         form.addFieldErrors("endDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
                     } else {
-                        endDate1Check_JspStaticalUnitReport = true;
-                        endDateCheck_Order_JspStaticalUnitReport = true;
+                        endDate1Check_JspStaticalCoursesPassedPersonnel = true;
+                        endDateCheck_Order_JspStaticalCoursesPassedPersonnel = true;
                         form.clearFieldErrors("endDate1", true);
                     }
                 }
             },
             {
                 name: "endDate2",
-                ID: "endDate2_JspStaticalUnitReport",
+                ID: "endDate2_JspStaticalCoursesPassedPersonnel",
                 title: "تا",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
@@ -663,15 +661,15 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('endDate2_JspStaticalUnitReport', this, 'ymd', '/');
+                        displayDatePicker('endDate2_JspStaticalCoursesPassedPersonnel', this, 'ymd', '/');
                     }
                 }],
                 editorExit: function (form, item, value) {
                     if(value == undefined || value ==null){
                         form.clearFieldErrors("endDate1","تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد" ,true);
                         form.clearFieldErrors("endDate2", true);
-                        endDateCheck_Order_JspStaticalUnitReport = true;
-                        endDate2Check_JspStaticalUnitReport = true;
+                        endDateCheck_Order_JspStaticalCoursesPassedPersonnel = true;
+                        endDate2Check_JspStaticalCoursesPassedPersonnel = true;
                         return;
                     }
 
@@ -681,70 +679,24 @@
                     dateCheck = checkDate(value);
                     var startDate = form.getValue("endDate1");
                     if (dateCheck === false) {
-                        endDate2Check_JspStaticalUnitReport = false;
-                        endDateCheck_Order_JspStaticalUnitReport = true;
+                        endDate2Check_JspStaticalCoursesPassedPersonnel = false;
+                        endDateCheck_Order_JspStaticalCoursesPassedPersonnel = true;
                         form.clearFieldErrors("endDate2", true);
                         form.addFieldErrors("endDate2", "<spring:message code='msg.correct.date'/>", true);
                     } else if (startDate != undefined && value < startDate) {
                         form.clearFieldErrors("endDate2", true);
                         form.addFieldErrors("endDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
-                        endDate2Check_JspStaticalUnitReport = true;
-                        endDateCheck_Order_JspStaticalUnitReport = false;
+                        endDate2Check_JspStaticalCoursesPassedPersonnel = true;
+                        endDateCheck_Order_JspStaticalCoursesPassedPersonnel = false;
                     } else {
                         form.clearFieldErrors("endDate2", true);
-                        endDate2Check_JspStaticalUnitReport = true;
-                        endDateCheck_Order_JspStaticalUnitReport = true;
+                        endDate2Check_JspStaticalCoursesPassedPersonnel = true;
+                        endDateCheck_Order_JspStaticalCoursesPassedPersonnel = true;
                     }
                 }
             },
             {
-                name: "temp42",
-                title: "",
-                canEdit: false
-            },
-            {
-                name: "courseTeacherId",
-                title: "مدرس",
-                type: "ComboBoxItem",
-                autoFetchData: false,
-                optionDataSource: RestDataSource_Teacher_JspUnitReport,
-                valueField: "id",
-                displayField: "fullNameFa",
-                filterFields: ["personality.firstNameFa", "personality.lastNameFa", "personality.nationalCode"],
-                pickListFields: [
-                    {name: "personality.firstNameFa", title: "نام"},
-                    {name: "personality.lastNameFa", title: "نام خانوادگی"},
-                    {name: "personality.nationalCode", title: "کد ملی"}],
-                pickListProperties: {
-                    showFilterEditor: true
-                }
-            },
-            {
-                name: "instituteId",
-                title: "برگزار کننده",
-                editorType: "TrComboAutoRefresh",
-                optionDataSource: RestDataSource_Institute_JspTClassReport,
-                displayField: "titleFa",
-                filterOperator: "equals",
-                valueField: "id",
-                textAlign: "center",
-                filterFields: ["titleFa", "titleFa"],
-                showHintInField: true,
-                hint: "موسسه",
-                pickListWidth: 500,
-                textMatchStyle: "substring",
-                pickListFields: [
-                    {name: "titleFa", filterOperator: "iContains"},
-                    {name: "manager.firstNameFa", filterOperator: "iContains"},
-                    {name: "manager.lastNameFa", filterOperator: "iContains"}
-                ],
-                pickListProperties: {
-                    sortField: 0,
-                    showFilterEditor: false
-                }
-            },
-            {
-                name: "temp5",
+                name: "temp2",
                 title: "",
                 canEdit: false
             },
@@ -753,7 +705,7 @@
                 title: "سال کاری",
                 type: "SelectItem",
                 multiple: true,
-                optionDataSource: RestDataSource_Year_JspUnitReport,
+                optionDataSource: RestDataSource_Year_JspCoursesPassedPersonnel,
                 valueField: "year",
                 displayField: "year",
                 filterFields: ["year"],
@@ -764,10 +716,10 @@
                 },
                 changed: function (form, item, value) {
                     if (value != null && value != undefined && value.size() == 1) {
-                        RestDataSource_Term_JspUnitReport.fetchDataURL = termUrl + "listByYear/" + value[0];
-                        DynamicForm_CriteriaForm_JspUnitReport.getField("termId").optionDataSource = RestDataSource_Term_JspUnitReport;
-                        DynamicForm_CriteriaForm_JspUnitReport.getField("termId").fetchData();
-                        DynamicForm_CriteriaForm_JspUnitReport.getField("termId").enable();
+                        RestDataSource_Term_JspCoursesPassedPersonnel.fetchDataURL = termUrl + "listByYear/" + value[0];
+                        DynamicForm_CriteriaForm_JspCoursesPassedPersonnel.getField("termId").optionDataSource = RestDataSource_Term_JspCoursesPassedPersonnel;
+                        DynamicForm_CriteriaForm_JspCoursesPassedPersonnel.getField("termId").fetchData();
+                        DynamicForm_CriteriaForm_JspCoursesPassedPersonnel.getField("termId").enable();
                     } else {
                         form.getField("termId").disabled = true;
                         form.getField("termId").clearValue();
@@ -786,118 +738,37 @@
                 filterLocally: true
             },
             {
-                name: "temp6",
+                name: "temp3",
                 title: "",
                 canEdit: false
             },
             {
-                name: "courseCategory",
-                title: "گروه کاری",
-                type: "SelectItem",
-                textAlign: "center",
-                optionDataSource: RestDataSource_Category_JspUnitReport,
-                valueField: "id",
+                name: "pgCCode",
+                title:"<spring:message code='post.grade'/>",
+                operator: "inSet",
+                optionDataSource: RestDataSource_PostGradeLvl_PCNR,
+                valueField: "code",
                 displayField: "titleFa",
-                filterFields: ["titleFa"],
-                multiple: true,
-                filterLocally: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains"
-                },
-                changed: function () {
-                    isCriteriaCategoriesChanged_JspUnitReport = true;
-                    var subCategoryField = DynamicForm_CriteriaForm_JspUnitReport.getField("courseSubCategory");
-                    if (this.getSelectedRecords() == null) {
-                        subCategoryField.clearValue();
-                        subCategoryField.disable();
-                        return;
-                    }
-                    subCategoryField.enable();
-                    if (subCategoryField.getValue() === undefined)
-                        return;
-                    var subCategories = subCategoryField.getSelectedRecords();
-                    var categoryIds = this.getValue();
-                    var SubCats = [];
-                    for (var i = 0; i < subCategories.length; i++) {
-                        if (categoryIds.contains(subCategories[i].categoryId))
-                            SubCats.add(subCategories[i].id);
-                    }
-                    subCategoryField.setValue(SubCats);
-                    subCategoryField.focus(this.form, subCategoryField);
-                }
             },
-            {
-                name: "courseSubCategory",
-                title: "زیرگروه کاری",
-                type: "SelectItem",
-                textAlign: "center",
-                autoFetchData: false,
-                disabled: true,
-                optionDataSource: RestDataSource_SubCategory_JspUnitReport,
-                valueField: "id",
-                displayField: "titleFa",
-                filterFields: ["titleFa"],
-                multiple: true,
-                filterLocally: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains"
-                },
-                focus: function () {
-                    if (isCriteriaCategoriesChanged_JspUnitReport) {
-                        isCriteriaCategoriesChanged_JspUnitReport = false;
-                        var ids = DynamicForm_CriteriaForm_JspUnitReport.getField("courseCategory").getValue();
-                        if (ids === []) {
-                            RestDataSource_SubCategory_JspUnitReport.implicitCriteria = null;
-                        } else {
-                            RestDataSource_SubCategory_JspUnitReport.implicitCriteria = {
-                                _constructor: "AdvancedCriteria",
-                                operator: "and",
-                                criteria: [{fieldName: "categoryId", operator: "inSet", value: ids}]
-                            };
-                        }
-                        this.fetchData();
-                    }
-                }
-            },
-            {
-                name: "temp7",
-                title: "",
-                canEdit: false
-            },
-            {
-                name: "classSupervisor",
-                title: "<spring:message code="supervisor"/>:",
-                type: "ComboBoxItem",
-                textAlign: "center",
-                optionDataSource: RestDataSource_SupervisorDS_JspTClassReport,
-                autoFetchData: false,
-                valueField: "id",
-                displayField: "lastName",
-                pickListWidth: 550,
-                pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "nationalCode"}, {name: "personnelNo"}],
-                pickListProperties: {sortField: "personnelNo2", showFilterEditor: true}
-            },
-            {
-                name: "classPlanner",
-                wrapTitle: false,
-                title: "<spring:message code="planner"/>:",
-                type: "ComboBoxItem",
-                textAlign: "center",
-                optionDataSource: RestDataSource_PlannerDS_JspTClassReport,
-                autoFetchData: false,
-                valueField: "id",
-                displayField: "lastName",
-                pickListWidth: 550,
-                pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "nationalCode"}, {name: "personnelNo"}],
-                pickListProperties: {sortField: "personnelNo2", showFilterEditor: true}
-            }
+            // {
+            //     name: "needAssessment",
+            //     title: "وضعیت نیازسنجی",
+            //     type: "SelectItem",
+            //     valueMap: {
+            //         "1": "نیازسنجی",
+            //         "2": "غیرنیازسنجی",
+            //         "3": "همه",
+            //     },
+            //     pickListProperties: {
+            //         showFilterEditor: false
+            //     },
+            //     defaultValue:  ["3"]
+            // },
         ]
     });
 
     var initialLayoutStyle = "vertical";
-    var DynamicForm_SelectCourses_JspUnitReport = isc.DynamicForm.create({
+    var DynamicForm_SelectCourses_JspCoursesPassedPersonnel = isc.DynamicForm.create({
         align: "center",
         titleWidth: 0,
         titleAlign: "center",
@@ -917,28 +788,28 @@
                 comboBoxWidth: 500,
                 valueField: "code",
                 layoutStyle: initialLayoutStyle,
-                optionDataSource: RestDataSource_Course_JspUnitReport
+                optionDataSource: RestDataSource_Course_JspCoursesPassedPersonnel
             }
         ]
     });
-    DynamicForm_SelectCourses_JspUnitReport.getField("course.code").comboBox.setHint("دوره های مورد نظر را انتخاب کنید");
-    DynamicForm_SelectCourses_JspUnitReport.getField("course.code").comboBox.pickListFields =
+    DynamicForm_SelectCourses_JspCoursesPassedPersonnel.getField("course.code").comboBox.setHint("دوره های مورد نظر را انتخاب کنید");
+    DynamicForm_SelectCourses_JspCoursesPassedPersonnel.getField("course.code").comboBox.pickListFields =
         [{name: "titleFa", title: "نام دوره", width: "30%", filterOperator: "iContains"},
             {
                 name: "code", title: "کد دوره", width: "30%", filterOperator: "iContains"
             }];
-    DynamicForm_SelectCourses_JspUnitReport.getField("course.code").comboBox.filterFields = ["titleFa", "code"];
+    DynamicForm_SelectCourses_JspCoursesPassedPersonnel.getField("course.code").comboBox.filterFields = ["titleFa", "code"];
 
-    IButton_ConfirmCourseSelections_JspUnitReport = isc.IButtonSave.create({
+    IButton_ConfirmCourseSelections_JspCoursesPassedPersonnel = isc.IButtonSave.create({
         top: 260,
         title: "تائید",
         width: 300,
         click: function () {
             var criteriaDisplayValues = "";
-            var selectorDisplayValues = DynamicForm_SelectCourses_JspUnitReport.getItem("course.code").getValue();
-            if (DynamicForm_CriteriaForm_JspUnitReport.getField("courseCode").getValue() != undefined
-                && DynamicForm_CriteriaForm_JspUnitReport.getField("courseCode").getValue() != "") {
-                criteriaDisplayValues = DynamicForm_CriteriaForm_JspUnitReport.getField("courseCode").getValue();
+            var selectorDisplayValues = DynamicForm_SelectCourses_JspCoursesPassedPersonnel.getItem("course.code").getValue();
+            if (DynamicForm_CriteriaForm_JspCoursesPassedPersonnel.getField("courseCode").getValue() != undefined
+                && DynamicForm_CriteriaForm_JspCoursesPassedPersonnel.getField("courseCode").getValue() != "") {
+                criteriaDisplayValues = DynamicForm_CriteriaForm_JspCoursesPassedPersonnel.getField("courseCode").getValue();
                 var ALength = criteriaDisplayValues.length;
                 var lastChar = criteriaDisplayValues.charAt(ALength - 1);
                 if (lastChar != ";")
@@ -950,12 +821,12 @@
                 }
                 criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
             }
-            DynamicForm_CriteriaForm_JspUnitReport.getField("courseCode").setValue(criteriaDisplayValues);
-            Window_SelectCourses_JspUnitReport.close();
+            DynamicForm_CriteriaForm_JspCoursesPassedPersonnel.getField("courseCode").setValue(criteriaDisplayValues);
+            Window_SelectCourses_JspCoursesPassedPersonnel.close();
         }
     });
 
-    var Window_SelectCourses_JspUnitReport = isc.Window.create({
+    var Window_SelectCourses_JspCoursesPassedPersonnel = isc.Window.create({
         placement: "center",
         title: "انتخاب دوره ها",
         canDragReposition: true,
@@ -967,14 +838,14 @@
         items: [
             isc.TrVLayout.create({
                 members: [
-                    DynamicForm_SelectCourses_JspUnitReport,
-                    IButton_ConfirmCourseSelections_JspUnitReport
+                    DynamicForm_SelectCourses_JspCoursesPassedPersonnel,
+                    IButton_ConfirmCourseSelections_JspCoursesPassedPersonnel
                 ]
             })
         ]
     });
 
-    var DynamicForm_SelectClasses_JspUnitReport = isc.DynamicForm.create({
+    var DynamicForm_SelectClasses_JspCoursesPassedPersonnel = isc.DynamicForm.create({
         align: "center",
         titleWidth: 0,
         titleAlign: "center",
@@ -994,28 +865,28 @@
                 comboBoxWidth: 500,
                 valueField: "code",
                 layoutStyle: initialLayoutStyle,
-                optionDataSource: RestDataSource_Class_JspUnitReport
+                optionDataSource: RestDataSource_Class_JspCoursesPassedPersonnel
             }
         ]
     });
 
-    DynamicForm_SelectClasses_JspUnitReport.getField("class.code").comboBox.setHint("کلاسهای مورد نظر را انتخاب کنید");
-    DynamicForm_SelectClasses_JspUnitReport.getField("class.code").comboBox.pickListFields =
+    DynamicForm_SelectClasses_JspCoursesPassedPersonnel.getField("class.code").comboBox.setHint("کلاسهای مورد نظر را انتخاب کنید");
+    DynamicForm_SelectClasses_JspCoursesPassedPersonnel.getField("class.code").comboBox.pickListFields =
         [
             {name: "titleClass", title: "نام کلاس", width: "30%", filterOperator: "iContains"},
             {name: "code", title: "کد کلاس", width: "30%", filterOperator: "iContains"},
             {name: "course.titleFa", title: "نام دوره", width: "30%", filterOperator: "iContains"}];
-    DynamicForm_SelectClasses_JspUnitReport.getField("class.code").comboBox.filterFields = ["titleClass", "code", "course.titleFa"];
+    DynamicForm_SelectClasses_JspCoursesPassedPersonnel.getField("class.code").comboBox.filterFields = ["titleClass", "code", "course.titleFa"];
 
-    IButton_ConfirmClassesSelections_JspUnitReport = isc.IButtonSave.create({
+    IButton_ConfirmClassesSelections_JspCoursesPassedPersonnel = isc.IButtonSave.create({
         top: 260,
         title: "تائید",
         width: 300,
         click: function () {
             let criteriaDisplayValues = "";
-            let selectorDisplayValues = DynamicForm_SelectClasses_JspUnitReport.getItem("class.code").getValue();
-            if (DynamicForm_SelectClasses_JspUnitReport.getField("class.code").getValue() != undefined && DynamicForm_SelectClasses_JspUnitReport.getField("class.code").getValue() != "") {
-                criteriaDisplayValues = DynamicForm_SelectClasses_JspUnitReport.getField("class.code").getValue().join(",");
+            let selectorDisplayValues = DynamicForm_SelectClasses_JspCoursesPassedPersonnel.getItem("class.code").getValue();
+            if (DynamicForm_SelectClasses_JspCoursesPassedPersonnel.getField("class.code").getValue() != undefined && DynamicForm_SelectClasses_JspCoursesPassedPersonnel.getField("class.code").getValue() != "") {
+                criteriaDisplayValues = DynamicForm_SelectClasses_JspCoursesPassedPersonnel.getField("class.code").getValue().join(",");
                 let ALength = criteriaDisplayValues.length;
                 let lastChar = criteriaDisplayValues.charAt(ALength - 1);
                 if (lastChar != ";")
@@ -1039,12 +910,12 @@
 
             criteriaDisplayValues = criteriaDisplayValues == ";undefined" ? "" : criteriaDisplayValues;
 
-            DynamicForm_CriteriaForm_JspUnitReport.getField("classCode").setValue(criteriaDisplayValues);
-            Window_SelectClasses_JspUnitReport.close();
+            DynamicForm_CriteriaForm_JspCoursesPassedPersonnel.getField("classCode").setValue(criteriaDisplayValues);
+            Window_SelectClasses_JspCoursesPassedPersonnel.close();
         }
     });
 
-    var Window_SelectClasses_JspUnitReport = isc.Window.create({
+    var Window_SelectClasses_JspCoursesPassedPersonnel = isc.Window.create({
         placement: "center",
         title: "انتخاب کلاس ها",
         canDragReposition: true,
@@ -1056,14 +927,14 @@
         items: [
             isc.TrVLayout.create({
                 members: [
-                    DynamicForm_SelectClasses_JspUnitReport,
-                    IButton_ConfirmClassesSelections_JspUnitReport,
+                    DynamicForm_SelectClasses_JspCoursesPassedPersonnel,
+                    IButton_ConfirmClassesSelections_JspCoursesPassedPersonnel,
                 ]
             })
         ]
     });
 
-    var DynamicForm_SelectCourses_JspUnitReportReport = isc.DynamicForm.create({
+    var DynamicForm_SelectCourses_JspCoursesPassedPersonnelReport = isc.DynamicForm.create({
         align: "center",
         titleWidth: 0,
         titleAlign: "center",
@@ -1083,28 +954,28 @@
                 comboBoxWidth: 500,
                 valueField: "code",
                 layoutStyle: initialLayoutStyle,
-                optionDataSource: RestDataSource_Course_JspUnitReportReport
+                optionDataSource: RestDataSource_Course_JspCoursesPassedPersonnelReport
             }
         ]
     });
-    DynamicForm_SelectCourses_JspUnitReportReport.getField("courseCode").comboBox.setHint("دوره های مورد نظر را انتخاب کنید");
-    DynamicForm_SelectCourses_JspUnitReportReport.getField("courseCode").comboBox.pickListFields =
+    DynamicForm_SelectCourses_JspCoursesPassedPersonnelReport.getField("courseCode").comboBox.setHint("دوره های مورد نظر را انتخاب کنید");
+    DynamicForm_SelectCourses_JspCoursesPassedPersonnelReport.getField("courseCode").comboBox.pickListFields =
         [{name: "titleFa", title: "نام دوره", width: "30%", filterOperator: "iContains"},
             {
                 name: "code", title: "کد دوره", width: "30%", filterOperator: "iContains"
             }];
-    DynamicForm_SelectCourses_JspUnitReportReport.getField("courseCode").comboBox.filterFields = ["titleFa", "code"];
+    DynamicForm_SelectCourses_JspCoursesPassedPersonnelReport.getField("courseCode").comboBox.filterFields = ["titleFa", "code"];
 
-    IButton_ConfirmCourseSelections_JspUnitReportReport = isc.IButtonSave.create({
+    IButton_ConfirmCourseSelections_JspCoursesPassedPersonnelReport = isc.IButtonSave.create({
         top: 260,
         title: "تائید",
         width: 300,
         click: function () {
             var criteriaDisplayValues = "";
-            var selectorDisplayValues = DynamicForm_SelectCourses_JspUnitReportReport.getItem("courseCode").getValue();
-            if (DynamicForm_CriteriaForm_JspUnitReport.getField("courseCode").getValue() != undefined
-                && DynamicForm_CriteriaForm_JspUnitReport.getField("courseCode").getValue() != "") {
-                criteriaDisplayValues = DynamicForm_SelectCourses_JspUnitReportReport.getField("courseCode").getValue().join(",");
+            var selectorDisplayValues = DynamicForm_SelectCourses_JspCoursesPassedPersonnelReport.getItem("courseCode").getValue();
+            if (DynamicForm_CriteriaForm_JspCoursesPassedPersonnel.getField("courseCode").getValue() != undefined
+                && DynamicForm_CriteriaForm_JspCoursesPassedPersonnel.getField("courseCode").getValue() != "") {
+                criteriaDisplayValues = DynamicForm_SelectCourses_JspCoursesPassedPersonnelReport.getField("courseCode").getValue().join(",");
                 var ALength = criteriaDisplayValues.length;
                 var lastChar = criteriaDisplayValues.charAt(ALength - 1);
                 if (lastChar != ";")
@@ -1128,12 +999,12 @@
 
             criteriaDisplayValues = criteriaDisplayValues == ";undefined" ? "" : criteriaDisplayValues;
 
-            DynamicForm_CriteriaForm_JspUnitReport.getField("courseCode").setValue(criteriaDisplayValues);
-            Window_SelectCourses_JspUnitReportReport.close();
+            DynamicForm_CriteriaForm_JspCoursesPassedPersonnel.getField("courseCode").setValue(criteriaDisplayValues);
+            Window_SelectCourses_JspCoursesPassedPersonnelReport.close();
         }
     });
 
-    var Window_SelectCourses_JspUnitReportReport = isc.Window.create({
+    var Window_SelectCourses_JspCoursesPassedPersonnelReport = isc.Window.create({
         placement: "center",
         title: "انتخاب دوره ها",
         canDragReposition: true,
@@ -1145,152 +1016,152 @@
         items: [
             isc.TrVLayout.create({
                 members: [
-                    DynamicForm_SelectCourses_JspUnitReportReport,
-                    IButton_ConfirmCourseSelections_JspUnitReportReport
+                    DynamicForm_SelectCourses_JspCoursesPassedPersonnelReport,
+                    IButton_ConfirmCourseSelections_JspCoursesPassedPersonnelReport
                 ]
             })
         ]
     });
 
-    IButton_JspUnitReport = isc.IButtonSave.create({
+    IButton_JspCoursesPassedPersonnel = isc.IButtonSave.create({
         top: 260,
         title: "چاپ گزارش",
         width: 300,
         click: function () {
 
-            if(DynamicForm_CriteriaForm_JspUnitReport.getValuesAsAdvancedCriteria().criteria.size() <= 1) {
-                createDialog("info","فیلتری انتخاب نشده است.");
-                return;
-            }
+            // if(DynamicForm_CriteriaForm_JspCoursesPassedPersonnel.getValuesAsAdvancedCriteria().criteria.size() <= 1) {
+            //     createDialog("info","فیلتری انتخاب نشده است.");
+            //     return;
+            // }
 
-            DynamicForm_CriteriaForm_JspUnitReport.validate();
-            if (DynamicForm_CriteriaForm_JspUnitReport.hasErrors())
+            DynamicForm_CriteriaForm_JspCoursesPassedPersonnel.validate();
+            if (DynamicForm_CriteriaForm_JspCoursesPassedPersonnel.hasErrors())
                 return;
 
             else{
-                data_values = DynamicForm_CriteriaForm_JspUnitReport.getValuesAsAdvancedCriteria();
+                data_values = DynamicForm_CriteriaForm_JspCoursesPassedPersonnel.getValuesAsAdvancedCriteria();
                 for (var i = 0; i < data_values.criteria.size(); i++) {
-                    if (data_values.criteria[i].fieldName == "courseCode") {
-                        var codesString = data_values.criteria[i].value;
-                        var codesArray;
-                        codesArray = codesString.split(",");
-                        for (var j = 0; j < codesArray.length; j++) {
-                            if (codesArray[j] == "" || codesArray[j] == " ") {
-                                codesArray.remove(codesArray[j]);
-                            }
-                        }
-                        data_values.criteria[i].operator = "inSet";
-                        data_values.criteria[i].value = codesArray;
-                    }
+                    // if (data_values.criteria[i].fieldName == "courseCode") {
+                    //     var codesString = data_values.criteria[i].value;
+                    //     var codesArray;
+                    //     codesArray = codesString.split(",");
+                    //     for (var j = 0; j < codesArray.length; j++) {
+                    //         if (codesArray[j] == "" || codesArray[j] == " ") {
+                    //             codesArray.remove(codesArray[j]);
+                    //         }
+                    //     }
+                    //     data_values.criteria[i].operator = "inSet";
+                    //     data_values.criteria[i].value = codesArray;
+                    // }
+                    //
+                    // else if (data_values.criteria[i].fieldName == "classCode") {
+                    //     var codesString = data_values.criteria[i].value;
+                    //     var codesArray;
+                    //     codesArray = codesString.split(",");
+                    //     for (var j = 0; j < codesArray.length; j++) {
+                    //         if (codesArray[j] == "" || codesArray[j] == " ") {
+                    //             codesArray.remove(codesArray[j]);
+                    //         }
+                    //     }
+                    //     data_values.criteria[i].operator = "inSet";
+                    //     data_values.criteria[i].value = codesArray;
+                    // }
+                    //
+                    // else if (data_values.criteria[i].fieldName == "instituteId") {
+                    //     data_values.criteria[i].fieldName = "instituteId";
+                    //     data_values.criteria[i].operator = "equals";
+                    // }
 
-                    else if (data_values.criteria[i].fieldName == "classCode") {
-                        var codesString = data_values.criteria[i].value;
-                        var codesArray;
-                        codesArray = codesString.split(",");
-                        for (var j = 0; j < codesArray.length; j++) {
-                            if (codesArray[j] == "" || codesArray[j] == " ") {
-                                codesArray.remove(codesArray[j]);
-                            }
-                        }
-                        data_values.criteria[i].operator = "inSet";
-                        data_values.criteria[i].value = codesArray;
-                    }
-
-                    else if (data_values.criteria[i].fieldName == "instituteId") {
-                        data_values.criteria[i].fieldName = "instituteId";
-                        data_values.criteria[i].operator = "equals";
-                    }
-
-                    else if (data_values.criteria[i].fieldName == "personnelComplexTitle") {
-                        data_values.criteria[i].fieldName = "personnelComplexTitle";
+                     if (data_values.criteria[i].fieldName == "complexTitle") {
+                        data_values.criteria[i].fieldName = "complexTitle";
                         data_values.criteria[i].operator = "iContains";
                     }
 
-                    else if (data_values.criteria[i].fieldName == "classStudentApplicantCompanyName") {
-                        data_values.criteria[i].fieldName = "classStudentApplicantCompanyName";
-                        data_values.criteria[i].operator = "iContains";
-                    }
-                    else if (data_values.criteria[i].fieldName == "studentCcpAssistant") {
-                        data_values.criteria[i].fieldName = "studentCcpAssistant";
-                        data_values.criteria[i].operator = "iContains";
-                    }
-                    else if (data_values.criteria[i].fieldName == "studentCcpUnit") {
-                        data_values.criteria[i].fieldName = "studentCcpUnit";
-                        data_values.criteria[i].operator = "iContains";
-                    }
-                    else if (data_values.criteria[i].fieldName == "studentCcpAffairs") {
-                        data_values.criteria[i].fieldName = "studentCcpAffairs";
-                        data_values.criteria[i].operator = "iContains";
-                    }
-                    else if (data_values.criteria[i].fieldName == "studentCcpSection") {
-                        data_values.criteria[i].fieldName = "studentCcpSection";
-                        data_values.criteria[i].operator = "iContains";
-                    }
-                    else if (data_values.criteria[i].fieldName == "courseTitleFa") {
-                        data_values.criteria[i].fieldName = "courseTitleFa";
-                        data_values.criteria[i].operator = "iContains";
-                    }
-                    else if (data_values.criteria[i].fieldName == "startDate1") {
-                        data_values.criteria[i].fieldName = "classStartDate";
-                        data_values.criteria[i].operator = "greaterThan";
-                    }
-                    else if (data_values.criteria[i].fieldName == "startDate2") {
-                        data_values.criteria[i].fieldName = "classStartDate";
-                        data_values.criteria[i].operator = "lessThan";
-                    }
-                    else if (data_values.criteria[i].fieldName == "endDate1") {
-                        data_values.criteria[i].fieldName = "classEndDate";
-                        data_values.criteria[i].operator = "greaterThan";
-                    }
-                    else if (data_values.criteria[i].fieldName == "endDate2") {
-                        data_values.criteria[i].fieldName = "classEndDate";
-                        data_values.criteria[i].operator = "lessThan";
-                    }
-                    else if (data_values.criteria[i].fieldName == "classPlanner") {
-                        data_values.criteria[i].fieldName = "classPlanner";
-                        data_values.criteria[i].operator = "equals";
-                    }
-
-                    else if (data_values.criteria[i].fieldName == "classSupervisor") {
-                        data_values.criteria[i].fieldName = "classSupervisor";
-                        data_values.criteria[i].operator = "equals";
-                    }
-
-                    else if (data_values.criteria[i].fieldName == "courseTeacherId") {
-                        data_values.criteria[i].fieldName = "courseTeacherId";
-                        data_values.criteria[i].operator = "equals";
-                    }
-
-                    else if (data_values.criteria[i].fieldName == "classYear") {
-                        data_values.criteria[i].fieldName = "classYear";
-                        data_values.criteria[i].operator = "iContains";
-                    }
-
-                    else if (data_values.criteria[i].fieldName == "termId") {
-                        data_values.criteria[i].fieldName = "termId";
-                        data_values.criteria[i].operator = "equals";
-                    }
-
-                    else if (data_values.criteria[i].fieldName == "courseCategory") {
-                        data_values.criteria[i].fieldName = "courseCategory";
-                        data_values.criteria[i].operator = "equals";
-                    }
-
-                    else if (data_values.criteria[i].fieldName == "courseSubCategory") {
-                        data_values.criteria[i].fieldName = "courseSubCategory";
-                        data_values.criteria[i].operator = "equals";
-                    }
+                    // else if (data_values.criteria[i].fieldName == "classStudentApplicantCompanyName") {
+                    //     data_values.criteria[i].fieldName = "classStudentApplicantCompanyName";
+                    //     data_values.criteria[i].operator = "iContains";
+                    // }
+                    // else if (data_values.criteria[i].fieldName == "studentCcpAssistant") {
+                    //     data_values.criteria[i].fieldName = "studentCcpAssistant";
+                    //     data_values.criteria[i].operator = "iContains";
+                    // }
+                    // else if (data_values.criteria[i].fieldName == "studentCcpUnit") {
+                    //     data_values.criteria[i].fieldName = "studentCcpUnit";
+                    //     data_values.criteria[i].operator = "iContains";
+                    // }
+                    // else if (data_values.criteria[i].fieldName == "studentCcpAffairs") {
+                    //     data_values.criteria[i].fieldName = "studentCcpAffairs";
+                    //     data_values.criteria[i].operator = "iContains";
+                    // }
+                    // else if (data_values.criteria[i].fieldName == "studentCcpSection") {
+                    //     data_values.criteria[i].fieldName = "studentCcpSection";
+                    //     data_values.criteria[i].operator = "iContains";
+                    // }
+                    // else if (data_values.criteria[i].fieldName == "courseTitleFa") {
+                    //     data_values.criteria[i].fieldName = "courseTitleFa";
+                    //     data_values.criteria[i].operator = "iContains";
+                    // }
+                    // else if (data_values.criteria[i].fieldName == "startDate1") {
+                    //     data_values.criteria[i].fieldName = "classStartDate";
+                    //     data_values.criteria[i].operator = "greaterThan";
+                    // }
+                    // else if (data_values.criteria[i].fieldName == "startDate2") {
+                    //     data_values.criteria[i].fieldName = "classStartDate";
+                    //     data_values.criteria[i].operator = "lessThan";
+                    // }
+                    // else if (data_values.criteria[i].fieldName == "endDate1") {
+                    //     data_values.criteria[i].fieldName = "classEndDate";
+                    //     data_values.criteria[i].operator = "greaterThan";
+                    // }
+                    // else if (data_values.criteria[i].fieldName == "endDate2") {
+                    //     data_values.criteria[i].fieldName = "classEndDate";
+                    //     data_values.criteria[i].operator = "lessThan";
+                    // }
+                    // else if (data_values.criteria[i].fieldName == "classPlanner") {
+                    //     data_values.criteria[i].fieldName = "classPlanner";
+                    //     data_values.criteria[i].operator = "equals";
+                    // }
+                    //
+                    // else if (data_values.criteria[i].fieldName == "classSupervisor") {
+                    //     data_values.criteria[i].fieldName = "classSupervisor";
+                    //     data_values.criteria[i].operator = "equals";
+                    // }
+                    //
+                    // else if (data_values.criteria[i].fieldName == "courseTeacherId") {
+                    //     data_values.criteria[i].fieldName = "courseTeacherId";
+                    //     data_values.criteria[i].operator = "equals";
+                    // }
+                    //
+                    // else if (data_values.criteria[i].fieldName == "classYear") {
+                    //     data_values.criteria[i].fieldName = "classYear";
+                    //     data_values.criteria[i].operator = "iContains";
+                    // }
+                    //
+                    // else if (data_values.criteria[i].fieldName == "termId") {
+                    //     data_values.criteria[i].fieldName = "termId";
+                    //     data_values.criteria[i].operator = "equals";
+                    // }
+                    //
+                    // else if (data_values.criteria[i].fieldName == "courseCategory") {
+                    //     data_values.criteria[i].fieldName = "courseCategory";
+                    //     data_values.criteria[i].operator = "equals";
+                    // }
+                    //
+                    // else if (data_values.criteria[i].fieldName == "courseSubCategory") {
+                    //     data_values.criteria[i].fieldName = "courseSubCategory";
+                    //     data_values.criteria[i].operator = "equals";
+                    // }
                 }
 
-                ListGrid_JspUnitReport.invalidateCache();
-                ListGrid_JspUnitReport.fetchData(data_values);
-                Window_JspUnitReport.show();
+                ListGrid_JspCoursesPassedPersonnel.invalidateCache();
+                ListGrid_JspCoursesPassedPersonnel.fetchData(data_values);
+                Window_JspCoursesPassedPersonnel.show();
             }
         }
     });
 
     //----------------------------------- functions --------------------------------------------------------------------
-    let Window_CriteriaForm_JspUnitReport = isc.Window.create({
+    let Window_CriteriaForm_JspCoursesPassedPersonnel = isc.Window.create({
         placement: "fillScreen",
         title: "",
         showCloseButton: false,
@@ -1300,21 +1171,21 @@
         canDragResize: false,
         closeClick: false,
         minimize: false,
-        items: [DynamicForm_CriteriaForm_JspUnitReport]
+        items: [DynamicForm_CriteriaForm_JspCoursesPassedPersonnel]
     });
     //----------------------------------- layOut -----------------------------------------------------------------------
-    var HLayOut_CriteriaForm_JspUnitReport = isc.TrHLayoutButtons.create({
+    var HLayOut_CriteriaForm_JspCoursesPassedPersonnel = isc.TrHLayoutButtons.create({
         showEdges: false,
         edgeImage: "",
         width: "100%",
         height: "100%",
         alignLayout: "center",
         members: [
-            Window_CriteriaForm_JspUnitReport
+            Window_CriteriaForm_JspCoursesPassedPersonnel
         ]
     });
 
-    var HLayOut_Confirm_JspUnitReport = isc.TrHLayoutButtons.create({
+    var HLayOut_Confirm_JspCoursesPassedPersonnel = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
@@ -1323,15 +1194,15 @@
         alignLayout: "center",
         padding: 10,
         members: [
-            IButton_JspUnitReport
+            IButton_JspCoursesPassedPersonnel
         ]
     });
 
-    var VLayout_Body_JspUnitReport = isc.TrVLayout.create({
+    var VLayout_Body_JspCoursesPassedPersonnel = isc.TrVLayout.create({
         members: [
-            HLayOut_CriteriaForm_JspUnitReport,
-            HLayOut_Confirm_JspUnitReport
+            HLayOut_CriteriaForm_JspCoursesPassedPersonnel,
+            HLayOut_Confirm_JspCoursesPassedPersonnel
         ]
     });
     //----------------------------------------------------End-----------------------------------------------------------
-    Window_JspUnitReport.hide();
+    Window_JspCoursesPassedPersonnel.hide();
