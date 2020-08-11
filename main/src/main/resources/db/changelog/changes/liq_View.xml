@@ -2616,7 +2616,7 @@ ORDER BY view2_alijafari.personnel_personnel_no, view2_alijafari.course_code
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_COURSES_PASSED_PERSONNEL_PART1-002">
+    <changeSet author="NICICO" id="VIEW_COURSES_PASSED_PERSONNEL_PART1-003">
         <createView viewName="VIEW_COURSES_PASSED_PERSONNEL_PART1" replaceIfExists="true">
             <![CDATA[
   SELECT
@@ -2666,7 +2666,7 @@ ORDER BY view2_alijafari.personnel_personnel_no, view2_alijafari.course_code
         pg.c_code
     FROM
         view_courses_passed_personnel_part2           na
-        LEFT JOIN VIEW_COURSES_PASSED_PERSONNEL_PART3   passed ON na.personnel_national_code = passed.student_national_code
+        LEFT JOIN VIEW_COURSES_PASSED_PERSONNEL_PART3   passed ON na.personnel_personnel_no = passed.personnel_personnel_no
                                                                         AND na.course_id = passed.course_id
                                                                         AND passed.class_student_scores_state_id IN (
             400,
@@ -3127,7 +3127,7 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_COURSES_PASSED_PERSONNEL_PART3-001">
+    <changeSet author="NICICO" id="VIEW_COURSES_PASSED_PERSONNEL_PART3-002">
         <createView viewName="VIEW_COURSES_PASSED_PERSONNEL_PART3" replaceIfExists="true">
             <![CDATA[
  SELECT DISTINCT
@@ -3205,12 +3205,13 @@ GROUP BY
 FROM
     tbl_student
     INNER JOIN tbl_class_student ON tbl_student.id = tbl_class_student.student_id
-    INNER JOIN tbl_personnel ON tbl_student.national_code = tbl_personnel.national_code
+    INNER JOIN tbl_personnel ON tbl_student.personnel_no = tbl_personnel.personnel_no
      LEFT JOIN tbl_department department ON department.id=tbl_personnel.f_department_id
     INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id
     INNER JOIN tbl_term ON tbl_class.f_term = tbl_term.id
     INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id
     INNER JOIN tbl_category ON tbl_course.category_id = tbl_category.id
+    where tbl_personnel.deleted=0
 UNION ALL
 SELECT
     0 AS is_personnel,
@@ -3288,12 +3289,13 @@ SELECT
 FROM
     tbl_student
     INNER JOIN tbl_class_student ON tbl_student.id = tbl_class_student.student_id
-    INNER JOIN tbl_personnel_registered ON tbl_student.national_code = tbl_personnel_registered.national_code
+    INNER JOIN tbl_personnel_registered ON tbl_student.personnel_no = tbl_personnel_registered.personnel_no
     LEFT JOIN tbl_department department ON department.id=tbl_personnel_registered.f_department_id
     INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id
     INNER JOIN tbl_term ON tbl_class.f_term = tbl_term.id
     INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id
     INNER JOIN tbl_category ON tbl_course.category_id = tbl_category.id
+    where tbl_personnel_registered.deleted=0
             ]]>
         </createView>
     </changeSet>
