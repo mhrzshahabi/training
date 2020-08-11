@@ -1,7 +1,9 @@
 package com.nicico.training.dto;
 
+import com.nicico.training.model.ParameterValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -30,6 +32,13 @@ public class TrainingPostDTO {
 
     @ApiModelProperty()
     private Long postGradeId;
+
+//    @Getter(AccessLevel.NONE)
+//    private ParameterValue pEnabled;
+//
+//    public ParameterValue getpEnabled() {
+//        return pEnabled;
+//    }
 
 
     @Getter

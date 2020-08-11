@@ -27,6 +27,9 @@ public class ViewPostGradeDTO implements Serializable {
     private String code;
 
     @ApiModelProperty()
+    private String peopleType;
+
+    @ApiModelProperty()
     private Integer competenceCount;
 
     @ApiModelProperty()

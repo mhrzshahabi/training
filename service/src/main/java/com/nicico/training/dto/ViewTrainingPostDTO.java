@@ -1,6 +1,7 @@
 package com.nicico.training.dto;
 
 import com.nicico.copper.common.util.date.DateUtil;
+import com.nicico.training.model.ParameterValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
@@ -102,5 +103,6 @@ public class ViewTrainingPostDTO implements Serializable {
     @ApiModel("PostInfo")
     public static class Info extends ViewTrainingPostDTO{
         private Long id;
+        private Long penabledId;
     }
 }

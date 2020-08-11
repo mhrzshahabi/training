@@ -38,6 +38,7 @@ public class DepartmentDTO implements Serializable {
         private String omorTitle;
         private String ghesmatCode;
         private String vahedTitle;
+        private String type;
     }
 
 
