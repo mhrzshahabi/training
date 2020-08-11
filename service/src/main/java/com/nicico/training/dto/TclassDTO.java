@@ -6,7 +6,10 @@ package com.nicico.training.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
@@ -80,7 +83,7 @@ public class TclassDTO {
         private Long courseId;
         private InstituteDTO.InstituteInfoTuple institute;
         private String lastModifiedBy;
-        private ParameterValueDTO cancelClassReason;
+        private ParameterValueDTO classCancelReason;
         private Long id;
         private CourseDTO.CourseInfoTuple course;
         private TermDTO.TermDTOTuple term;
@@ -88,6 +91,7 @@ public class TclassDTO {
         private TeacherDTO.TeacherFullNameTuple teacher;
         private String plannerFullName;
         private String supervisorFullName;
+        private List<TclassDTO.InfoTuple> canceledClasses;
 
         //*********************************
         //******old code for alarms********

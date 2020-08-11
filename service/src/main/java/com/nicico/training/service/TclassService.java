@@ -141,8 +141,8 @@ public class TclassService implements ITclassService {
 
 
     @Transactional
-    @Override
-    public TclassDTO.Info update(Long id, TclassDTO.Update request) {
+//    @Override
+    public TclassDTO.Info update(Long id, TclassDTO.Update request, List<Long> cancelClassesIds) {
         final Optional<Tclass> cById = tclassDAO.findById(id);
         final Tclass tclass = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
         List<Long> trainingPlaceIds = request.getTrainingPlaceIds();
@@ -160,10 +160,16 @@ public class TclassService implements ITclassService {
             updating.setAlternativeClassId(null);
             updating.setPostponeStartDate(null);
         }
+        if(cancelClassesIds != null){
+            List<Tclass> tclasses = tclassDAO.findAllById(cancelClassesIds);
+            HashSet<Tclass> tclassHashSet = new HashSet<>(tclasses);
+            updating.setCanceledClasses(tclassHashSet);
+        }
         Tclass save = tclassDAO.save(updating);
         if(request.getTargetSocietyTypeId() != null) {
             updateTargetSocieties(save.getTargetSocietyList(), request.getTargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
         }
+
         return modelMapper.map(save, TclassDTO.Info.class);
     }
 

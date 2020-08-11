@@ -29,7 +29,7 @@ public interface ITclassService {
 
     TclassDTO.Info create(TclassDTO.Create request);
 
-    TclassDTO.Info update(Long id, TclassDTO.Update request);
+//    TclassDTO.Info update(Long id, TclassDTO.Update request);
 
 //    void delete(Long id);
 
