@@ -95,10 +95,11 @@ public interface ICourseService {
 
     CourseDTO.CourseGoals getCourseGoals(Long courseId);
 
+    //--------------------Amin ------------------------------
+
+    CourseDTO.CourseDependence checkDependence(Long courseId);
+
     //----------------------------------------------------------------------
 
-    List<CourseDTO.courseWithOutTeacher> courseWithOutTeacher(String startDate, String endDate);
-
-    //--------------------Amin ------------------------------
-    CourseDTO.CourseDependence checkDependence(Long courseId);
+    List<CourseDTO.courseWithOutTeacher> courseWithOutTeacher(String startDate, String endDate, String strSData2, String strEData2, String[] years, List<Long> termId, List<Long> courseId, List<Long> teacherId);
 }
