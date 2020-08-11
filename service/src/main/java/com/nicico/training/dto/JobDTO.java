@@ -26,11 +26,11 @@ public class JobDTO implements Serializable {
         private String code;
         private String titleFa;
         private String peopleType;
-        @Getter(AccessLevel.NONE)
-        private ParameterValue pEnabled;
-
-        public ParameterValue getpEnabled() {
-            return pEnabled;
-        }
+//        @Getter(AccessLevel.NONE)
+//        private ParameterValue pEnabled;
+//
+//        public ParameterValue getpEnabled() {
+//            return pEnabled;
+//        }
     }
 }

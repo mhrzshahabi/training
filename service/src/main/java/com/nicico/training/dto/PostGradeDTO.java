@@ -26,11 +26,11 @@ public class PostGradeDTO implements Serializable {
     @ApiModel("PostGrade - Info")
     public static class Info extends PostGradeDTO {
         private Long id;
-        @Getter(AccessLevel.NONE)
-        private ParameterValue pEnabled;
-
-        public ParameterValue getpEnabled() {
-            return pEnabled;
-        }
+//        @Getter(AccessLevel.NONE)
+//        private ParameterValue pEnabled;
+//
+//        public ParameterValue getpEnabled() {
+//            return pEnabled;
+//        }
     }
 }
