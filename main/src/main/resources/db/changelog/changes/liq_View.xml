@@ -1495,7 +1495,7 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_POST_GRADE-004">
+    <changeSet author="NICICO" id="VIEW_POST_GRADE-005">
         <createView viewName="VIEW_POST_GRADE" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1511,10 +1511,11 @@ SELECT
     pg.c_title_fa,
     pg.d_last_modified_date_na,
     pg.c_modified_by_na,
+    pg.c_people_type,
     COUNT(DISTINCT na.f_competence) AS n_competence_count,
     COUNT(DISTINCT prs.id) AS n_personnel_count
 FROM
-    tbl_post_grade          pg
+    tbl_post_grade           pg
     LEFT JOIN (
         SELECT
             *
@@ -1523,8 +1524,9 @@ FROM
         WHERE
             c_object_type = 'PostGrade'
     ) na ON pg.id = na.f_object
-    LEFT JOIN tbl_post                post ON post.f_post_grade_id = pg.id
-    LEFT JOIN view_active_personnel   prs ON post.id = prs.f_post_id
+    LEFT JOIN tbl_training_post        tp ON tp.f_post_grade_id = pg.id
+    LEFT JOIN tbl_post_training_post   ptp ON tp.id = ptp.f_training_post_id
+    LEFT JOIN view_active_personnel    prs ON ptp.f_post_id = prs.f_post_id
 GROUP BY
     pg.id,
     pg.c_created_by,
@@ -1537,7 +1539,8 @@ GROUP BY
     pg.n_version,
     pg.c_title_fa,
     pg.d_last_modified_date_na,
-    pg.c_modified_by_na
+    pg.c_modified_by_na,
+    pg.c_people_type
             ]]>
         </createView>
     </changeSet>

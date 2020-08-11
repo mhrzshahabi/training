@@ -20,7 +20,9 @@
 
     var peopleTypeMap ={
         "Personal" : "شرکتی",
-        "ContractorPersonal" : "پیمان کار"
+        "ContractorPersonal" : "پیمان کار",
+        "Company" : "شرکتی",
+        "OrgCostCenter" : "پیمان کار"
     };
 
     let PostDS_TrainingPost = isc.TrDS.create({
@@ -345,6 +347,7 @@
             {name: "id", primaryKey: true},
             {name: "titleFa", title: "<spring:message code="job.title"/>"},
             {name: "code", title: "<spring:message code="job.code"/>"},
+            {name: "peopleType", title: "<spring:message code="people.type"/>",  valueMap:peopleTypeMap}
         ],
         fetchDataURL: jobUrl + "/iscList"
     });
@@ -359,6 +362,7 @@
             {name: "omorTitle", title: "<spring:message code="affairs"/>", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "ghesmatCode", title: "<spring:message code="section"/>", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "vahedTitle", title: "<spring:message code="unit"/>", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "type", title: "<spring:message code="people.type"/>", autoFitWidth: true, autoFitWidthApproach: "both", valueMap:peopleTypeMap}
         ],
         fetchDataURL: departmentUrl + "/iscList"
     });
@@ -373,6 +377,7 @@
                 autoFitWidth: true
             },
             {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
+            {name: "peopleType", title: "<spring:message code="people.type"/>",  valueMap:peopleTypeMap}
         ],
         fetchDataURL: viewPostGradeUrl + "/iscList"
     });
@@ -846,6 +851,7 @@
                 pickListFields: [
                     {name: "titleFa", filterOperator: "iContains"},
                     {name: "code", filterOperator: "iContains"},
+                    {name: "peopleType", filterOperator: "iContains"},
                 ],
                 filterFields: ["titleFa", "code"],
             },
@@ -870,6 +876,7 @@
                     {name: "omorTitle", title: "<spring:message code="affairs"/>"},
                     {name: "ghesmatCode", title: "<spring:message code="section"/>"},
                     {name: "vahedTitle", title: "<spring:message code="unit"/>"},
+                    {name: "type", filterOperator: "iContains"},
                 ],
                 filterFields: ["title", "code","hozeTitle","moavenatTitle","omorTitle","ghesmatCode","vahedTitle"],
             },
@@ -885,18 +892,16 @@
                 endRow: false,
                 colSpan: 1,
                 layoutStyle: "horizontal",
-                comboBoxProperties: {
-                    hint: "",
-                    pickListWidth: 300,
-                    pickListFields: [
-                        {name: "titleFa"},
-                    ],
-                    filterFields: ["titleFa"],
-                    pickListProperties: {
-                        sortField: 1,
-                        showFilterEditor: true},
-                    textMatchStyle: "substring",
-                },
+                hint: "",
+                pickListFields: [
+                    {name: "titleFa"},
+                    {name: "peopleType", filterOperator: "iContains"},
+                ],
+                filterFields: ["titleFa"],
+                // pickListProperties: {
+                //     sortField: 1,
+                //     showFilterEditor: true},
+                // textMatchStyle: "substring",
             },
             {
                 name: "peopleType",

@@ -23,5 +23,6 @@ public class JobDTO implements Serializable {
         private Long id;
         private String code;
         private String titleFa;
+        private String peopleType;
     }
 }
