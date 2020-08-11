@@ -368,7 +368,8 @@
                     valueMap: {
                         "1": "برنامه ریزی",
                         "2": "در حال اجرا",
-                        "3": "پایان یافته"
+                        "3": "پایان یافته",
+                        "4": "لغو شده"
                     }
                 },
                 {
@@ -518,31 +519,43 @@
                         if (classRecord.trainingEvalStatus == 0 ||
                                 classRecord.trainingEvalStatus == undefined ||
                                     classRecord.trainingEvalStatus == null) {
-                            ToolStrip_SendForms_RE.getField("sendButtonTraining").disableIcon("ok");
-                            ToolStrip_SendForms_RE.getField("registerButtonTraining").disableIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("sendButtonTraining").disableIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("registerButtonTraining").disableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
+                            ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
                         }
                         else if(classRecord.trainingEvalStatus == 1){
-                            ToolStrip_SendForms_RE.getField("sendButtonTraining").enableIcon("ok");
-                            ToolStrip_SendForms_RE.getField("registerButtonTraining").disableIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("sendButtonTraining").enableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("sendButtonTraining").showIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("registerButtonTraining").disableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
                         }
                         else{
-                            ToolStrip_SendForms_RE.getField("sendButtonTraining").enableIcon("ok");
-                            ToolStrip_SendForms_RE.getField("registerButtonTraining").enableIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("sendButtonTraining").enableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("sendButtonTraining").showIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("registerButtonTraining").enableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("registerButtonTraining").showIcon("ok");
                         }
 
                         if (classRecord.teacherEvalStatus == 0 ||
                             classRecord.teacherEvalStatus == undefined ||
                             classRecord.teacherEvalStatus == null) {
-                            ToolStrip_SendForms_RE.getField("sendButtonTeacher").disableIcon("ok");
-                            ToolStrip_SendForms_RE.getField("registerButtonTeacher").disableIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("sendButtonTeacher").disableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("sendButtonTeacher").hideIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("registerButtonTeacher").disableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
                         }
                         else if(classRecord.teacherEvalStatus == 1){
-                            ToolStrip_SendForms_RE.getField("sendButtonTeacher").enableIcon("ok");
-                            ToolStrip_SendForms_RE.getField("registerButtonTeacher").disableIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("sendButtonTeacher").enableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("registerButtonTeacher").disableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
                         }
                         else{
-                            ToolStrip_SendForms_RE.getField("sendButtonTeacher").enableIcon("ok");
-                            ToolStrip_SendForms_RE.getField("registerButtonTeacher").enableIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("sendButtonTeacher").enableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("registerButtonTeacher").enableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("registerButtonTeacher").showIcon("ok");
                         }
                         ToolStrip_SendForms_RE.redraw();
 

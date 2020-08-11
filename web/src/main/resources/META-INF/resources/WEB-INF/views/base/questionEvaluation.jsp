@@ -5,7 +5,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
-//<script>
+// <script>
     var evalWait_JspQuestionEvaluation;
 
     var RestDataSource_Grid_JspQuestionEvaluation = isc.TrDS.create({
@@ -25,6 +25,11 @@
             {name: "evaluatedName"},
             {name: "evaluatorTypeId"},
             {name: "evaluatedTypeId"},
+            {name: "classEndDate"},
+            {name: "classDuration"},
+            {name: "classYear"},
+            {name: "supervisorName"},
+            {name: "plannerName"}
         ]
     });
 
@@ -66,6 +71,25 @@
         fetchDataURL: parameterValueUrl + "/iscList/143"
     });
 
+    var RestData_EvaluatorType_JspQuestionEvaluation = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {
+                name: "title",
+                title: "<spring:message code="title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "value",
+                title: "<spring:message code="value"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            }
+        ],
+        fetchDataURL: parameterValueUrl + "/iscList/188"
+    });
+
     var ListGrid_Grid_JspQuestionEvaluation = isc.TrLG.create({
         width: "100%",
         height: "100%",
@@ -74,12 +98,14 @@
         allowFilterExpressions: true,
         selectionType: "single",
         autoFetchData: false,
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
         initialSort: [],
         doubleClick: function () {
             let record = ListGrid_Grid_JspQuestionEvaluation.getSelectedRecord();
             register_Evaluation_Form_JspQuestionEvaluation(record.classId, record.evaluatorId, record.evaluatorTypeId,
-            record.evaluatedId, record.evaluatedTypeId, record.questionnarieType, record.evaluationLevel,
-            record.teacherName, record.evaluatorName, record.evaluatedName, record.classCode, record.courseTitle, record.classStartDate);
+                record.evaluatedId, record.evaluatedTypeId, record.questionnarieType, record.evaluationLevel,
+                record.teacherName, record.evaluatorName, record.evaluatedName, record.classCode, record.courseTitle, record.classStartDate);
         },
         fields: [
             {
@@ -89,8 +115,9 @@
                 editorType: "SelectItem",
                 displayField: "title",
                 valueField: "id",
+                autoFitWidth: true,
                 optionDataSource: RestData_EvaluationLevel_JspQuestionEvaluation,
-                filterEditorProperties:{
+                filterEditorProperties: {
                     pickListProperties: {
                         showFilterEditor: false
                     }
@@ -103,32 +130,73 @@
                 editorType: "SelectItem",
                 displayField: "title",
                 valueField: "id",
+                autoFitWidth: true,
                 optionDataSource: RestData_QuestionnarieType_JspQuestionEvaluation,
-                filterEditorProperties:{
+                filterEditorProperties: {
                     pickListProperties: {
                         showFilterEditor: false
                     }
                 }
             },
-            {name: "evaluatedName", title: "ارزیابی شونده"},
-            {name: "classCode", title: "کد کلاس"},
-            {name: "courseCode", title: "کد دوره"},
-            {name: "courseTitle", title: "عنوان دوره"},
-            {name: "teacherName", title: "نام استاد"},
-            {name: "classStartDate", title: "تاریخ شروع"},
-            {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"},
+            {name: "evaluatedName", title: "ارزیابی شونده",autoFitWidth: true},
+            {
+                name: "evaluatorTypeId",
+                title: "نوع مخاطب",
+                type: "IntegerItem",
+                editorType: "SelectItem",
+                displayField: "title",
+                valueField: "id",
+                autoFitWidth: true,
+                optionDataSource: RestData_EvaluatorType_JspQuestionEvaluation,
+                filterEditorProperties: {
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                }
+            },
+            {name: "classCode", title: "کد کلاس" ,autoFitWidth: true},
+            {name: "courseCode", title: "کد دوره" ,autoFitWidth: true},
+            {name: "courseTitle", title: "عنوان دوره" ,autoFitWidth: true},
+            {name: "teacherName", title: "نام استاد", hidden:true},
+            {name: "classStartDate", title: "تاریخ شروع" ,autoFitWidth: true},
+            {name: "classEndDate", title: "تاریخ پایان" ,autoFitWidth: true},
+            {name: "classDuration", title: "مدت" ,autoFitWidth: true},
+            {name: "classYear", title: "سال" ,autoFitWidth: true},
+            {name: "supervisorName", title: "مسئول اجرا" ,autoFitWidth: true},
+            {name: "plannerName", title: "مسئول برنامه ریز" ,autoFitWidth: true},
+            // {name: "hasWarning", title: " ", autoFitWidth: true, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"},
+            {name: "saveResults", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true},
             {name: "classId", hidden: true},
             {name: "evaluatorId", hidden: true},
             {name: "evaluatedId", hidden: true},
             {name: "evaluatorName", hidden: true},
-            {name: "evaluatorTypeId", hidden: true},
             {name: "evaluatedTypeId", hidden: true},
-        ]
+        ],
+        createRecordComponent: function (record, colNum) {
+            let fieldName = this.getFieldName(colNum);
+            if (fieldName == "saveResults") {
+                let button = isc.IButton.create({
+                    layoutAlign: "center",
+                    title: "ثبت نتیجه ارزیابی",
+                    width: "120",
+                    baseStyle: "registerFile",
+                    click: function () {
+                        register_Evaluation_Form_JspQuestionEvaluation(record.classId, record.evaluatorId, record.evaluatorTypeId,
+                            record.evaluatedId, record.evaluatedTypeId, record.questionnarieType, record.evaluationLevel,
+                            record.teacherName, record.evaluatorName, record.evaluatedName, record.classCode, record.courseTitle, record.classStartDate);
+                    }
+                });
+                return button;
+            }
+            else {
+                return null;
+            }
+        }
     });
 
     function call_questionEvaluation_forPersonnel(selectedPersonnel) {
         RestDataSource_Grid_JspQuestionEvaluation.fetchDataURL = studentPortalUrl + "/evaluation/getStudentEvaluationForms/"
-        + selectedPersonnel.nationalCode + "/" + selectedPersonnel.id;
+            + selectedPersonnel.nationalCode + "/" + selectedPersonnel.id;
         ListGrid_Grid_JspQuestionEvaluation.fetchData();
         ListGrid_Grid_JspQuestionEvaluation.invalidateCache();
     }
@@ -140,8 +208,8 @@
     }
 
     function register_Evaluation_Form_JspQuestionEvaluation(classId, evaluatorId, evaluatorTypeId, evaluatedId,
-                                                                  evaluatedTypeId, questionnaireTypeId, evaluationLevelId,
-                                                                  teacher, evaluatorName, evaluatedName, classCode, courseTitle, classStartDate) {
+                                                            evaluatedTypeId, questionnaireTypeId, evaluationLevelId,
+                                                            teacher, evaluatorName, evaluatedName, classCode, courseTitle, classStartDate) {
         let evaluationResult_DS = isc.TrDS.create({
             fields:
                 [
@@ -207,46 +275,54 @@
 
         let IButton_Questions_Save = isc.IButtonSave.create({
             click: function () {
-                let evaluationAnswerList = [];
-                let data = {};
-                let evaluationFull = true;
+                let Dialog_ASK_SAVE = createDialog("ask", "پس از ثبت فرم ارزیابی دیگر امکان تغییر وجود نخواهد داشت، آیا از ذخیره ی تغییرات مطمئن هستید؟", "تائید ذخیره");
+                Dialog_ASK_SAVE.addProperties({
+                    buttonClick: function (button, index) {
+                        this.close();
+                        if (index === 0) {
+                            let evaluationAnswerList = [];
+                            let data = {};
+                            let evaluationFull = true;
 
-                let questions = DynamicForm_Questions_Body_JspEvaluation.getFields();
-                for (let i = 0; i < questions.length; i++) {
-                    if (DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name) === undefined) {
-                        evaluationFull = false;
-                    }
-                    let evaluationAnswer = {};
-                    evaluationAnswer.answerID = DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name);
-                    evaluationAnswer.id = questions[i].name.substring(1);
-                    evaluationAnswerList.push(evaluationAnswer);
-                }
-                data.evaluationAnswerList = evaluationAnswerList;
-                data.evaluationFull = evaluationFull;
-                data.description = DynamicForm_Description_JspEvaluation.getField("description").getValue();
-                data.classId = classId;
-                data.evaluatorId = evaluatorId;
-                data.evaluatorTypeId = evaluatorTypeId;
-                data.evaluatedId = evaluatedId;
-                data.evaluatedTypeId = evaluatedTypeId;
-                data.questionnaireTypeId = questionnaireTypeId;
-                data.evaluationLevelId = evaluationLevelId;
-                data.status = true;
-                isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
-                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                        Window_Questions_JspEvaluation.close();
-                        ListGrid_Grid_JspQuestionEvaluation.invalidateCache();
+                            let questions = DynamicForm_Questions_Body_JspEvaluation.getFields();
+                            for (let i = 0; i < questions.length; i++) {
+                                if (DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name) === undefined) {
+                                    evaluationFull = false;
+                                }
+                                let evaluationAnswer = {};
+                                evaluationAnswer.answerID = DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name);
+                                evaluationAnswer.id = questions[i].name.substring(1);
+                                evaluationAnswerList.push(evaluationAnswer);
+                            }
+                            data.evaluationAnswerList = evaluationAnswerList;
+                            data.evaluationFull = evaluationFull;
+                            data.description = DynamicForm_Description_JspEvaluation.getField("description").getValue();
+                            data.classId = classId;
+                            data.evaluatorId = evaluatorId;
+                            data.evaluatorTypeId = evaluatorTypeId;
+                            data.evaluatedId = evaluatedId;
+                            data.evaluatedTypeId = evaluatedTypeId;
+                            data.questionnaireTypeId = questionnaireTypeId;
+                            data.evaluationLevelId = evaluationLevelId;
+                            data.status = true;
+                            isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
+                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                    Window_Questions_JspEvaluation.close();
+                                    ListGrid_Grid_JspQuestionEvaluation.invalidateCache();
 // isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
 // LGRecord.id,
 // "GET", null, null));
-                        const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                        setTimeout(() => {
-                            msg.close();
-                        }, 3000);
-                    } else {
-                        createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                    const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                                    setTimeout(() => {
+                                        msg.close();
+                                    }, 3000);
+                                } else {
+                                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                }
+                            }))
+                        }
                     }
-                }))
+                });
             }
         });
 
@@ -287,12 +363,10 @@
         if (evaluationLevelId == 154 && questionnaireTypeId == 139) {
             DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationType").setValue("ارزیابی فراگیر از کلاس");
             DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationLevel").setValue("واکنشی");
-        }
-        else  if (evaluationLevelId == 154 && questionnaireTypeId == 140) {
+        } else if (evaluationLevelId == 154 && questionnaireTypeId == 140) {
             DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationType").setValue("ارزیابی مدرس از کلاس");
             DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationLevel").setValue("واکنشی");
-            }
-        else if (evaluationLevelId == 156 && questionnaireTypeId == 230) {
+        } else if (evaluationLevelId == 156 && questionnaireTypeId == 230) {
             DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationType").setValue("ارزیابی دیگری از فراگیر");
             DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationLevel").setValue("رفتاری");
         }

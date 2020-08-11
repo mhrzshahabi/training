@@ -330,7 +330,10 @@ public class TclassDTO {
         private String classStatus;
         private String startDate;
         private String endDate;
+        private Long hDuration;
         private TermDTO term;
+        private Long supervisor;
+        private Long planner;
         @Getter(AccessLevel.NONE)
         private TeacherDTO.TeacherFullNameTuple teacher;
 

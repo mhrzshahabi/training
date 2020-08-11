@@ -486,6 +486,21 @@ public class EvaluationRestController {
                 res.setCourseTitle(classStudentInfo.getTclass().getCourse().getTitleFa());
                 res.setTeacherName(classStudentInfo.getTclass().getTeacher());
                 res.setClassStartDate(classStudentInfo.getTclass().getStartDate());
+                res.setClassEndDate(classStudentInfo.getTclass().getEndDate());
+                res.setClassDuration(classStudentInfo.getTclass().getHDuration());
+                res.setClassYear(classStudentInfo.getTclass().getStartDate().substring(0,4));
+                final Optional<Personnel> pByID1 = personnelDAO.findById(classStudentInfo.getTclass().getSupervisor());
+                final Optional<Personnel> pByID2 = personnelDAO.findById(classStudentInfo.getTclass().getPlanner());
+                Personnel personnel1 = null;
+                Personnel personnel2 = null;
+                if(pByID1.isPresent())
+                    personnel1 = pByID1.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                if(pByID2.isPresent())
+                    personnel2 = pByID2.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                if(personnel1 != null)
+                    res.setSupervisorName(personnel1.getFirstName() +" "+personnel1.getLastName());
+                if(personnel2 != null)
+                    res.setPlannerName(personnel2.getFirstName() +" "+personnel2.getLastName());
                 res.setEvaluationLevel(154L);
                 res.setQuestionnarieType(139L);
                 res.setHasWarning("alarm");
@@ -509,6 +524,21 @@ public class EvaluationRestController {
                             res.setCourseTitle(classStudentInfo.getTclass().getCourse().getTitleFa());
                             res.setTeacherName(classStudentInfo.getTclass().getTeacher());
                             res.setClassStartDate(classStudentInfo.getTclass().getStartDate());
+                            res.setClassEndDate(classStudentInfo.getTclass().getEndDate());
+                            res.setClassDuration(classStudentInfo.getTclass().getHDuration());
+                            res.setClassYear(classStudentInfo.getTclass().getStartDate().substring(0,4));
+                            final Optional<Personnel> pByID1 = personnelDAO.findById(classStudentInfo.getTclass().getSupervisor());
+                            final Optional<Personnel> pByID2 = personnelDAO.findById(classStudentInfo.getTclass().getPlanner());
+                            Personnel personnel1 = null;
+                            Personnel personnel2 = null;
+                            if(pByID1.isPresent())
+                                personnel1 = pByID1.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                            if(pByID2.isPresent())
+                                personnel2 = pByID2.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                            if(personnel1 != null)
+                                res.setSupervisorName(personnel1.getFirstName() +" "+personnel1.getLastName());
+                            if(personnel2 != null)
+                                res.setPlannerName(personnel2.getFirstName() +" "+personnel2.getLastName());
                             res.setEvaluationLevel(156L);
                             res.setQuestionnarieType(230L);
                             res.setHasWarning("alarm");
@@ -545,6 +575,21 @@ public class EvaluationRestController {
                 res.setCourseTitle(tclass.getCourse().getTitleFa());
                 res.setTeacherName(tclass.getTeacher());
                 res.setClassStartDate(tclass.getStartDate());
+                res.setClassEndDate(tclass.getEndDate());
+                res.setClassDuration(tclass.getHDuration());
+                res.setClassYear(tclass.getStartDate().substring(0,4));
+                final Optional<Personnel> pByID1 = personnelDAO.findById(tclass.getSupervisor());
+                final Optional<Personnel> pByID2 = personnelDAO.findById(tclass.getPlanner());
+                Personnel personnel1 = null;
+                Personnel personnel2 = null;
+                if(pByID1.isPresent())
+                    personnel1 = pByID1.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                if(pByID2.isPresent())
+                    personnel2 = pByID2.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                if(personnel1 != null)
+                    res.setSupervisorName(personnel1.getFirstName() +" "+personnel1.getLastName());
+                if(personnel2 != null)
+                    res.setPlannerName(personnel2.getFirstName() +" "+personnel2.getLastName());
                 res.setEvaluationLevel(156L);
                 res.setQuestionnarieType(230L);
                 res.setHasWarning("alarm");
@@ -576,6 +621,21 @@ public class EvaluationRestController {
                 res.setCourseTitle(tclass.getCourse().getTitleFa());
                 res.setTeacherName(tclass.getTeacher());
                 res.setClassStartDate(tclass.getStartDate());
+                res.setClassEndDate(tclass.getEndDate());
+                res.setClassDuration(tclass.getHDuration());
+                res.setClassYear(tclass.getStartDate().substring(0,4));
+                final Optional<Personnel> pByID1 = personnelDAO.findById(tclass.getSupervisor());
+                final Optional<Personnel> pByID2 = personnelDAO.findById(tclass.getPlanner());
+                Personnel personnel1 = null;
+                Personnel personnel2 = null;
+                if(pByID1.isPresent())
+                    personnel1 = pByID1.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                if(pByID2.isPresent())
+                    personnel2 = pByID2.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                if(personnel1 != null)
+                    res.setSupervisorName(personnel1.getFirstName() +" "+personnel1.getLastName());
+                if(personnel2 != null)
+                    res.setPlannerName(personnel2.getFirstName() +" "+personnel2.getLastName());
                 res.setEvaluationLevel(156L);
                 res.setQuestionnarieType(230L);
                 res.setHasWarning("alarm");
@@ -607,6 +667,21 @@ public class EvaluationRestController {
                 res.setCourseTitle(tclass.getCourse().getTitleFa());
                 res.setTeacherName(tclass.getTeacher());
                 res.setClassStartDate(tclass.getStartDate());
+                res.setClassEndDate(tclass.getEndDate());
+                res.setClassDuration(tclass.getHDuration());
+                res.setClassYear(tclass.getStartDate().substring(0,4));
+                final Optional<Personnel> pByID1 = personnelDAO.findById(tclass.getSupervisor());
+                final Optional<Personnel> pByID2 = personnelDAO.findById(tclass.getPlanner());
+                Personnel personnel1 = null;
+                Personnel personnel2 = null;
+                if(pByID1.isPresent())
+                    personnel1 = pByID1.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                if(pByID2.isPresent())
+                    personnel2 = pByID2.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                if(personnel1 != null)
+                    res.setSupervisorName(personnel1.getFirstName() +" "+personnel1.getLastName());
+                if(personnel2 != null)
+                    res.setPlannerName(personnel2.getFirstName() +" "+personnel2.getLastName());
                 res.setEvaluationLevel(156L);
                 res.setQuestionnarieType(230L);
                 res.setHasWarning("alarm");
@@ -652,6 +727,21 @@ public class EvaluationRestController {
                 res.setEvaluatedId(classInfo.getId());
                 res.setEvaluatedTypeId(504L);
                 res.setEvaluatorTypeId(187L);
+                res.setClassEndDate(classInfo.getEndDate());
+                res.setClassDuration(classInfo.getHDuration());
+                res.setClassYear(classInfo.getStartDate().substring(0,4));
+                final Optional<Personnel> pByID1 = personnelDAO.findById(classInfo.getSupervisor());
+                final Optional<Personnel> pByID2 = personnelDAO.findById(classInfo.getPlanner());
+                Personnel personnel1 = null;
+                Personnel personnel2 = null;
+                if(pByID1.isPresent())
+                    personnel1 = pByID1.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                if(pByID2.isPresent())
+                    personnel2 = pByID2.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                if(personnel1 != null)
+                    res.setSupervisorName(personnel1.getFirstName() +" "+personnel1.getLastName());
+                if(personnel2 != null)
+                    res.setPlannerName(personnel2.getFirstName() +" "+personnel2.getLastName());
                 result.add(res);
             }
         }
@@ -723,7 +813,8 @@ public class EvaluationRestController {
         params.put("classCode", classInfo.getCode());
         params.put("startDate", classInfo.getStartDate());
         params.put("endDate", classInfo.getEndDate());
-        params.put("returnDate", evaluation.getReturnDate().replace("-", "/"));
+        if(evaluation.getReturnDate() != null)
+            params.put("returnDate", evaluation.getReturnDate().replace("-", "/"));
         params.put("teacher", classInfo.getTeacher());
         if(questionnarieTypeId.equals(140L)) {
             params.put("evaluationType", "واکنشی-ارزیابی مدرس از کلاس");

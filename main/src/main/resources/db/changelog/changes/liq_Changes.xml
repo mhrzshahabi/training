@@ -1116,4 +1116,10 @@
     <changeSet author="golrokhi (generated)" id="1596622897038-585">
         <dropColumn columnName="N_SENT_COUNT" tableName="TBL_MESSAGE_CONTACT"/>
     </changeSet>
+
+
+    <changeSet author="golrokhi (generated)" id="1596986495722-598">
+        <dropColumn columnName="F_QUESTION_BANK" tableName="TBL_TEST_QUESTION"/>
+    </changeSet>
+
 </databaseChangeLog>
