@@ -71,6 +71,25 @@
         fetchDataURL: parameterValueUrl + "/iscList/143"
     });
 
+    var RestData_EvaluatorType_JspQuestionEvaluation = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {
+                name: "title",
+                title: "<spring:message code="title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "value",
+                title: "<spring:message code="value"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            }
+        ],
+        fetchDataURL: parameterValueUrl + "/iscList/188"
+    });
+
     var ListGrid_Grid_JspQuestionEvaluation = isc.TrLG.create({
         width: "100%",
         height: "100%",
@@ -120,6 +139,21 @@
                 }
             },
             {name: "evaluatedName", title: "ارزیابی شونده",autoFitWidth: true},
+            {
+                name: "evaluatorTypeId",
+                title: "نوع مخاطب",
+                type: "IntegerItem",
+                editorType: "SelectItem",
+                displayField: "title",
+                valueField: "id",
+                autoFitWidth: true,
+                optionDataSource: RestData_EvaluatorType_JspQuestionEvaluation,
+                filterEditorProperties: {
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                }
+            },
             {name: "classCode", title: "کد کلاس" ,autoFitWidth: true},
             {name: "courseCode", title: "کد دوره" ,autoFitWidth: true},
             {name: "courseTitle", title: "عنوان دوره" ,autoFitWidth: true},
@@ -130,13 +164,12 @@
             {name: "classYear", title: "سال" ,autoFitWidth: true},
             {name: "supervisorName", title: "مسئول اجرا" ,autoFitWidth: true},
             {name: "plannerName", title: "مسئول برنامه ریز" ,autoFitWidth: true},
-            {name: "hasWarning", title: " ", autoFitWidth: true, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"},
+            // {name: "hasWarning", title: " ", autoFitWidth: true, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"},
             {name: "saveResults", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true},
             {name: "classId", hidden: true},
             {name: "evaluatorId", hidden: true},
             {name: "evaluatedId", hidden: true},
             {name: "evaluatorName", hidden: true},
-            {name: "evaluatorTypeId", hidden: true},
             {name: "evaluatedTypeId", hidden: true},
         ],
         createRecordComponent: function (record, colNum) {

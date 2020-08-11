@@ -813,7 +813,8 @@ public class EvaluationRestController {
         params.put("classCode", classInfo.getCode());
         params.put("startDate", classInfo.getStartDate());
         params.put("endDate", classInfo.getEndDate());
-        params.put("returnDate", evaluation.getReturnDate().replace("-", "/"));
+        if(evaluation.getReturnDate() != null)
+            params.put("returnDate", evaluation.getReturnDate().replace("-", "/"));
         params.put("teacher", classInfo.getTeacher());
         if(questionnarieTypeId.equals(140L)) {
             params.put("evaluationType", "واکنشی-ارزیابی مدرس از کلاس");
