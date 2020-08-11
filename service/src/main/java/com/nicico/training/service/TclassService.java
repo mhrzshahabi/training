@@ -163,15 +163,22 @@ public class TclassService implements ITclassService {
             updating.setPostponeStartDate(null);
         }
         if(cancelClassesIds != null){
+            Set<Tclass> canceledClasses = updating.getCanceledClasses();
+            for (Tclass canceledClass : canceledClasses) {
+                canceledClass.setAlternativeClassId(null);
+            }
             List<Tclass> tclasses = tclassDAO.findAllById(cancelClassesIds);
             HashSet<Tclass> tclassHashSet = new HashSet<>(tclasses);
-            updating.setCanceledClasses(tclassHashSet);
+            for (Tclass c : tclassHashSet) {
+                c.setAlternativeClassId(id);
+                c.setPostponeStartDate(updating.getStartDate());
+            }
         }
         Tclass save = tclassDAO.save(updating);
         //--------------------DONE BY ROYA---------------------
         if(classOldSupervisor!= null && request.getSupervisor() != null){
             if(!classOldSupervisor.equals(request.getSupervisor())){
-                HashMap<String,Object> evaluation = new HashMap();
+                HashMap<String,Object> evaluation = new HashMap<>();
                 evaluation.put("questionnaireTypeId",141L);
                 evaluation.put("classId",id);
                 evaluation.put("evaluatorId",classOldSupervisor);
@@ -184,7 +191,7 @@ public class TclassService implements ITclassService {
         }
         if(classOldTeacher!= null && request.getTeacherId() != null){
             if(!classOldTeacher.equals(request.getTeacherId())){
-                HashMap<String,Object> evaluation = new HashMap();
+                HashMap<String,Object> evaluation = new HashMap<>();
                 evaluation.put("questionnaireTypeId",140L);
                 evaluation.put("classId",id);
                 evaluation.put("evaluatorId",classOldTeacher);

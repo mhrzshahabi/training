@@ -3191,11 +3191,11 @@
                                         operator: "and",
                                         criteria: [
                                             {fieldName: "courseId", operator: "equals", value: record.courseId},
-                                            // {
-                                            //     fieldName: "startDate",
-                                            //     operator: "greaterOrEqual",
-                                            //     value: record.startDate
-                                            // },
+                                            {
+                                                fieldName: "startDate",
+                                                operator: "lessOrEqual",
+                                                value: record.startDate
+                                            },
                                             {fieldName: "id", operator: "notEqual", value: record.id},
                                             {fieldName: "classStatus", operator: "equals", value: "4"},
                                         ]
@@ -3249,7 +3249,7 @@
             height: "150",
         });
         WindowAlternativeClass.show();
-        DynamicFormAlternativeClass.setValue("canceledClasses", record.canceledClasses)
+        DynamicFormAlternativeClass.setValue("canceledClasses", record.canceledClasses.map(x => x.id))
 
     }
 

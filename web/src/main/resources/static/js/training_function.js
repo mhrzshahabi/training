@@ -232,3 +232,7 @@ function showOrganizationalChart(func, x = "show") {
     },100)
 }
 
+var peopleTypeMap ={
+    "Personal" : "شرکتی",
+    "ContractorPersonal" : "پیمان کار"
+};
