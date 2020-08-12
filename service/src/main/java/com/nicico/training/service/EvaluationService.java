@@ -251,6 +251,7 @@ public class EvaluationService implements IEvaluationService {
     }
 
     @Transactional
+    @Override
     public EvaluationDTO.Info getEvaluationByData(Long questionnaireTypeId, Long classId, Long evaluatorId, Long evaluatorTypeId, Long evaluatedId, Long evaluatedTypeId, Long evaluationLevelId) {
         final Evaluation evaluation = evaluationDAO.findFirstByQuestionnaireTypeIdAndClassIdAndEvaluatorIdAndEvaluatorTypeIdAndEvaluatedIdAndEvaluatedTypeIdAndEvaluationLevelId(questionnaireTypeId, classId, evaluatorId, evaluatorTypeId, evaluatedId, evaluatedTypeId, evaluationLevelId);
         if(evaluation == null)
@@ -305,27 +306,34 @@ public class EvaluationService implements IEvaluationService {
     }
 
     @Transactional
-    public void deleteEvaluation(@RequestBody HashMap req) {
+    @Override
+    public Boolean deleteEvaluation(@RequestBody HashMap req) {
 
-        EvaluationDTO.Info evaluation = getEvaluationByData(Long.parseLong(req.get("questionnaireTypeId").toString()),
+        EvaluationDTO.Info evaluation = getEvaluationByData(
+                Long.parseLong(req.get("questionnaireTypeId").toString()),
                 Long.parseLong(req.get("classId").toString()),
                 Long.parseLong(req.get("evaluatorId").toString()),
                 Long.parseLong(req.get("evaluatorTypeId").toString()),
                 Long.parseLong(req.get("evaluatedId").toString()),
                 Long.parseLong(req.get("evaluatedTypeId").toString()),
                 Long.parseLong(req.get("evaluationLevelId").toString()));
-        evaluationDAO.deleteById(evaluation.getId());
+        if(evaluation != null) {
+            evaluationDAO.deleteById(evaluation.getId());
 
-        if(req.get("questionnaireTypeId").toString().equals("139"))
-            updateClassStudentInfo(modelMapper.map(evaluation,Evaluation.class),0);
-        else if(req.get("questionnaireTypeId").toString().equals("141"))
-            updateTclassInfo(Long.parseLong(req.get("classId").toString()),0, -1);
-        else if(req.get("questionnaireTypeId").toString().equals("140"))
-            updateTclassInfo(Long.parseLong(req.get("classId").toString()),-1, 0);
-        else if(req.get("questionnaireTypeId").toString().equals("230"))
-            updateClassStudentInfo(modelMapper.map(evaluation,Evaluation.class),0);
-        if(evaluation.getQuestionnaireId() != null)
-            updateQuestionnarieInfo(evaluation.getQuestionnaireId());
+            if (req.get("questionnaireTypeId").toString().equals("139"))
+                updateClassStudentInfo(modelMapper.map(evaluation, Evaluation.class), 0);
+            else if (req.get("questionnaireTypeId").toString().equals("141"))
+                updateTclassInfo(Long.parseLong(req.get("classId").toString()), 0, -1);
+            else if (req.get("questionnaireTypeId").toString().equals("140"))
+                updateTclassInfo(Long.parseLong(req.get("classId").toString()), -1, 0);
+            else if (req.get("questionnaireTypeId").toString().equals("230"))
+                updateClassStudentInfo(modelMapper.map(evaluation, Evaluation.class), 0);
+            if (evaluation.getQuestionnaireId() != null)
+                updateQuestionnarieInfo(evaluation.getQuestionnaireId());
+            return true;
+        }
+        else
+            return false;
     }
 
     //----------------------------------------------- evaluation updating ----------------------------------------------

@@ -115,9 +115,11 @@ public class TclassRestController {
     @Loggable
     @PutMapping(value = "/update/{id}")
 //    @PreAuthorize("hasAuthority('u_tclass')")
-    public ResponseEntity<TclassDTO.Info> safeUpdate(@PathVariable Long id, @RequestBody TclassDTO.Update request) {
+    public ResponseEntity<TclassDTO.Info> safeUpdate(@PathVariable Long id,
+                                                     @RequestBody TclassDTO.Update request,
+                                                     @RequestParam(required = false) List<Long> cancelClassesIds) {
 
-        ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.update(id, request), HttpStatus.OK);
+        ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.update(id, request, cancelClassesIds), HttpStatus.OK);
 
         //*****check alarms*****
         if (infoResponseEntity.getStatusCodeValue() == 200) {
@@ -134,7 +136,7 @@ public class TclassRestController {
 //    @PreAuthorize("hasAuthority('u_tclass')")
     public ResponseEntity<TclassDTO.Info> update(@PathVariable Long id, @RequestBody TclassDTO.Update request) {
 
-        ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.update(id, request), HttpStatus.OK);
+        ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.update(id, request, null), HttpStatus.OK);
 
         //*****check alarms*****
         if (infoResponseEntity.getStatusCodeValue() == 200) {
@@ -182,6 +184,7 @@ public class TclassRestController {
                                                        @RequestParam(value = "_constructor", required = false) String constructor,
                                                        @RequestParam(value = "operator", required = false) String operator,
                                                        @RequestParam(value = "criteria", required = false) String criteria,
+                                                       @RequestParam(value = "id", required = false) Long id,
                                                        @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException, NoSuchFieldException, IllegalAccessException {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
@@ -200,6 +203,15 @@ public class TclassRestController {
 
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
+        }
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);

@@ -212,12 +212,23 @@
         }
     });
 
+    var ToolStripButton_PrintJasper = isc.ToolStripButton.create({
+        icon: "[SKIN]/RichTextEditor/print.png",
+        title: "<spring:message code='print'/>",
+        click: function () {
+            let params = {};
+            let data = [];
+            printToJasper(data, params, "preTestForm.jasper");
+        }
+    });
+
     var ToolStrip_Actions_PreTest = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
         members: [
             ToolStripButton_InsertQuestionFromQuestionBank_PreTest,
             ToolStripButton_InsertQuestionFromLatestQuestions_PreTest,
+            ToolStripButton_PrintJasper,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",

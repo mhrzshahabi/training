@@ -20,7 +20,9 @@
 
     var peopleTypeMap ={
         "Personal" : "شرکتی",
-        "ContractorPersonal" : "پیمان کار"
+        "ContractorPersonal" : "پیمان کار",
+        "Company" : "شرکتی",
+        "OrgCostCenter" : "پیمان کار"
     };
 
     let PostDS_TrainingPost = isc.TrDS.create({
@@ -135,6 +137,13 @@
             {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {
+                name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",
+                formatCellValue: function (value, record) {
+                    let newVal = value == undefined ? "فعال" : "غیر فعال";
+                    return newVal;
+                }
+            },
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         fetchDataURL: viewTrainingPostUrl + "/iscList"
@@ -345,6 +354,8 @@
             {name: "id", primaryKey: true},
             {name: "titleFa", title: "<spring:message code="job.title"/>"},
             {name: "code", title: "<spring:message code="job.code"/>"},
+            {name: "peopleType", title: "<spring:message code="people.type"/>",  valueMap:peopleTypeMap},
+            {name: "enabled", title: "<spring:message code="active.status"/>"}
         ],
         fetchDataURL: jobUrl + "/iscList"
     });
@@ -359,6 +370,8 @@
             {name: "omorTitle", title: "<spring:message code="affairs"/>", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "ghesmatCode", title: "<spring:message code="section"/>", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "vahedTitle", title: "<spring:message code="unit"/>", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "type", title: "<spring:message code="people.type"/>", autoFitWidth: true, autoFitWidthApproach: "both", valueMap:peopleTypeMap},
+            {name: "enabled", title: "<spring:message code="active.status"/>", autoFitWidth: true, autoFitWidthApproach: "both"}
         ],
         fetchDataURL: departmentUrl + "/iscList"
     });
@@ -373,6 +386,8 @@
                 autoFitWidth: true
             },
             {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
+            {name: "peopleType", title: "<spring:message code="people.type"/>",  valueMap:peopleTypeMap},
+            {name: "enabled", title: "<spring:message code="active.status"/>"}
         ],
         fetchDataURL: viewPostGradeUrl + "/iscList"
     });
@@ -846,6 +861,14 @@
                 pickListFields: [
                     {name: "titleFa", filterOperator: "iContains"},
                     {name: "code", filterOperator: "iContains"},
+                    {name: "peopleType", filterOperator: "iContains"},
+                    {
+                        name: "enabled",
+                        formatCellValue: function (value, record) {
+                            let newVal = value == undefined ? "فعال" : "غیر فعال";
+                            return newVal;
+                        }
+                    }
                 ],
                 filterFields: ["titleFa", "code"],
             },
@@ -870,6 +893,14 @@
                     {name: "omorTitle", title: "<spring:message code="affairs"/>"},
                     {name: "ghesmatCode", title: "<spring:message code="section"/>"},
                     {name: "vahedTitle", title: "<spring:message code="unit"/>"},
+                    {name: "type", filterOperator: "iContains"},
+                    {
+                        name: "enabled",
+                        formatCellValue: function (value, record) {
+                            let newVal = value == undefined ? "فعال" : "غیر فعال";
+                            return newVal;
+                        }
+                    }
                 ],
                 filterFields: ["title", "code","hozeTitle","moavenatTitle","omorTitle","ghesmatCode","vahedTitle"],
             },
@@ -885,33 +916,62 @@
                 endRow: false,
                 colSpan: 1,
                 layoutStyle: "horizontal",
-                comboBoxProperties: {
-                    hint: "",
-                    pickListWidth: 300,
-                    pickListFields: [
-                        {name: "titleFa"},
-                    ],
-                    filterFields: ["titleFa"],
-                    pickListProperties: {
-                        sortField: 1,
-                        showFilterEditor: true},
-                    textMatchStyle: "substring",
-                },
+                hint: "",
+                pickListFields: [
+                    {name: "titleFa"},
+                    {name: "peopleType", filterOperator: "iContains"},
+                    {
+                        name: "enabled",
+                        formatCellValue: function (value, record) {
+                            let newVal = value == undefined ? "فعال" : "غیر فعال";
+                            return newVal;
+                        }
+                    }
+                ],
+                filterFields: ["titleFa"],
+                // pickListProperties: {
+                //     sortField: 1,
+                //     showFilterEditor: true},
+                // textMatchStyle: "substring",
             },
             {
+                width: 300,
                 name: "peopleType",
                 title: "نوع پرسنل",
-                type: "SelectItem",
+                type: "radioGroup",
                 colSpan: 1,
-                valueMap: peopleTypeMap,
-                textAlign: "center",
-                hint: "شرکتی/پیمان کار",
-                required: true,
-                showHintInField: true,
-                pickListProperties: {
-                    showFilterEditor: false
+                valueMap: {
+                    "Personal" : "شرکتی",
+                    "ContractorPersonal" : "پیمان کار",
                 },
+                textAlign: "center",
+                // hint: "شرکتی/پیمان کار",
+                required: true,
+                vertical: false,
+                fillHorizontalSpace: true,
+                // showHintInField: true,
+                // pickListProperties: {
+                //     showFilterEditor: false
+                // },
             },
+            {
+                width: 300,
+                ID: "enabled",
+                name: "enabled",
+                colSpan: 1,
+                // rowSpan: 1,
+                title: "<spring:message code="active.status"/>:",
+                wrapTitle: true,
+                type: "radioGroup",
+                vertical: false,
+                fillHorizontalSpace: true,
+                defaultValue: "1",
+// endRow:true,
+                valueMap: {
+                    74: "غیر فعال",
+                    null: "فعال",
+                },
+            }
         ]
     });
 

@@ -197,7 +197,7 @@
         selectionUpdated: function (record) {refreshQuestionnaireQuestionLG_questionnaire(); },
         </sec:authorize>
         getCellCSSText: function (record) {
-            if (record.eenabled == 74)
+            if (record.enabled === 74)
                 return "color:gray; font-size: 13px;";
             else
                 return "color:#153560; font-size: 13px;";

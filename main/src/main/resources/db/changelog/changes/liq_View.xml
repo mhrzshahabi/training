@@ -1495,7 +1495,7 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_POST_GRADE-004">
+    <changeSet author="NICICO" id="VIEW_POST_GRADE-005">
         <createView viewName="VIEW_POST_GRADE" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1511,10 +1511,11 @@ SELECT
     pg.c_title_fa,
     pg.d_last_modified_date_na,
     pg.c_modified_by_na,
+    pg.c_people_type,
     COUNT(DISTINCT na.f_competence) AS n_competence_count,
     COUNT(DISTINCT prs.id) AS n_personnel_count
 FROM
-    tbl_post_grade          pg
+    tbl_post_grade           pg
     LEFT JOIN (
         SELECT
             *
@@ -1523,8 +1524,9 @@ FROM
         WHERE
             c_object_type = 'PostGrade'
     ) na ON pg.id = na.f_object
-    LEFT JOIN tbl_post                post ON post.f_post_grade_id = pg.id
-    LEFT JOIN view_active_personnel   prs ON post.id = prs.f_post_id
+    LEFT JOIN tbl_training_post        tp ON tp.f_post_grade_id = pg.id
+    LEFT JOIN tbl_post_training_post   ptp ON tp.id = ptp.f_training_post_id
+    LEFT JOIN view_active_personnel    prs ON ptp.f_post_id = prs.f_post_id
 GROUP BY
     pg.id,
     pg.c_created_by,
@@ -1537,7 +1539,8 @@ GROUP BY
     pg.n_version,
     pg.c_title_fa,
     pg.d_last_modified_date_na,
-    pg.c_modified_by_na
+    pg.c_modified_by_na,
+    pg.c_people_type
             ]]>
         </createView>
     </changeSet>
@@ -2616,7 +2619,7 @@ ORDER BY view2_alijafari.personnel_personnel_no, view2_alijafari.course_code
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_COURSES_PASSED_PERSONNEL_PART1-001">
+    <changeSet author="NICICO" id="VIEW_COURSES_PASSED_PERSONNEL_PART1-003">
         <createView viewName="VIEW_COURSES_PASSED_PERSONNEL_PART1" replaceIfExists="true">
             <![CDATA[
   SELECT
@@ -2624,6 +2627,7 @@ ORDER BY view2_alijafari.personnel_personnel_no, view2_alijafari.course_code
         na."COURSE_ID",
         na."COURSE_CODE",
         na."COURSE_TITLE_FA",
+        passed.class_student_score,
         passed.class_student_scores_state_id,
         passed.class_end_date,
         passed.class_h_duration,
@@ -2665,7 +2669,7 @@ ORDER BY view2_alijafari.personnel_personnel_no, view2_alijafari.course_code
         pg.c_code
     FROM
         view_courses_passed_personnel_part2           na
-        LEFT JOIN VIEW_COURSES_PASSED_PERSONNEL_PART3   passed ON na.personnel_national_code = passed.student_national_code
+        LEFT JOIN VIEW_COURSES_PASSED_PERSONNEL_PART3   passed ON na.personnel_personnel_no = passed.personnel_personnel_no
                                                                         AND na.course_id = passed.course_id
                                                                         AND passed.class_student_scores_state_id IN (
             400,
@@ -3126,7 +3130,7 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_COURSES_PASSED_PERSONNEL_PART3-001">
+    <changeSet author="NICICO" id="VIEW_COURSES_PASSED_PERSONNEL_PART3-002">
         <createView viewName="VIEW_COURSES_PASSED_PERSONNEL_PART3" replaceIfExists="true">
             <![CDATA[
  SELECT DISTINCT
@@ -3204,12 +3208,13 @@ GROUP BY
 FROM
     tbl_student
     INNER JOIN tbl_class_student ON tbl_student.id = tbl_class_student.student_id
-    INNER JOIN tbl_personnel ON tbl_student.national_code = tbl_personnel.national_code
+    INNER JOIN tbl_personnel ON tbl_student.personnel_no = tbl_personnel.personnel_no
      LEFT JOIN tbl_department department ON department.id=tbl_personnel.f_department_id
     INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id
     INNER JOIN tbl_term ON tbl_class.f_term = tbl_term.id
     INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id
     INNER JOIN tbl_category ON tbl_course.category_id = tbl_category.id
+    where tbl_personnel.deleted=0
 UNION ALL
 SELECT
     0 AS is_personnel,
@@ -3287,20 +3292,21 @@ SELECT
 FROM
     tbl_student
     INNER JOIN tbl_class_student ON tbl_student.id = tbl_class_student.student_id
-    INNER JOIN tbl_personnel_registered ON tbl_student.national_code = tbl_personnel_registered.national_code
+    INNER JOIN tbl_personnel_registered ON tbl_student.personnel_no = tbl_personnel_registered.personnel_no
     LEFT JOIN tbl_department department ON department.id=tbl_personnel_registered.f_department_id
     INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id
     INNER JOIN tbl_term ON tbl_class.f_term = tbl_term.id
     INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id
     INNER JOIN tbl_category ON tbl_course.category_id = tbl_category.id
+    where tbl_personnel_registered.deleted=0
             ]]>
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_COURSES_PASSED_PERSONNEL_PART4-002">
+    <changeSet author="NICICO" id="VIEW_COURSES_PASSED_PERSONNEL_PART4-006">
         <createView viewName="VIEW_COURSES_PASSED_PERSONNEL_PART4" replaceIfExists="true">
             <![CDATA[
- SELECT DISTINCT
+ SELECT distinct
         course_id,
         personnel_id,
         personnel_emp_no,
@@ -3310,6 +3316,7 @@ FROM
         personnel_last_name,
         course_code,
         course_title_fa,
+        class_student_score,
         class_student_scores_state_id,
         class_end_date,
         class_h_duration,
@@ -3317,7 +3324,7 @@ FROM
         term_code,
         term_title_fa,
         term_id,
-        substr(class_start_date, 1, 4) AS class_year,
+        class_start_date AS class_year,
         personnel_post_grade_code,
         personnel_cpp_affairs,
         personnel_cpp_area,
@@ -3340,6 +3347,7 @@ FROM
                 view_courses_passed_personnel_part1.personnel_last_name,
                 view_courses_passed_personnel_part1.course_code,
                 view_courses_passed_personnel_part1.course_title_fa,
+                view_courses_passed_personnel_part1.class_student_score,
                 view_courses_passed_personnel_part1.class_student_scores_state_id   AS class_student_scores_state_id,
                 view_courses_passed_personnel_part1.class_end_date                  AS class_end_date,
                 view_courses_passed_personnel_part1.class_h_duration                AS class_h_duration,
@@ -3347,6 +3355,7 @@ FROM
                 view_courses_passed_personnel_part1.term_code,
                 view_courses_passed_personnel_part1.term_title_fa,
                 view_courses_passed_personnel_part1.term_id,
+                substr(view_courses_passed_personnel_part1.class_start_date, 1, 4) AS class_year,
                 view_courses_passed_personnel_part1.personnel_post_grade_code,
                 view_courses_passed_personnel_part1.personnel_cpp_affairs,
                 view_courses_passed_personnel_part1.personnel_cpp_area,
@@ -3364,8 +3373,8 @@ FROM
                 view_courses_passed_personnel_part1.is_passed = 216
             UNION ALL
             SELECT
-                tba.personnel_id,
                 tba.course_id,
+                tba.personnel_id,
                 tba.personnel_emp_no,
                 tba.personnel_personnel_no,
                 tba.personnel_national_code,
@@ -3373,6 +3382,7 @@ FROM
                 tba.personnel_last_name,
                 tba.course_code,
                 tba.course_title_fa,
+                tba.class_student_score,
                 tba.class_student_scores_state_id,
                 tba.class_end_date,
                 tba.class_h_duration,
@@ -3380,6 +3390,7 @@ FROM
                 tba.term_code,
                 tba.term_title_fa,
                 tba.term_id,
+                tba.class_start_date AS class_year,
                 tba.personnel_post_grade_code,
                 tba.personnel_cpp_affairs,
                 tba.personnel_cpp_area,
@@ -3389,12 +3400,12 @@ FROM
                 tba.personnel_company_name,
                 tba.personnel_complex_title,
                 'غیر نیازسنجی' AS coursetype,
-                NULL AS na_priority_id
+                0 AS na_priority_id
             FROM
                 (
                     SELECT
-                        view_courses_passed_personnel_part3.personnel_id,
                         view_courses_passed_personnel_part3.course_id,
+                        view_courses_passed_personnel_part3.personnel_id,
                         view_courses_passed_personnel_part3.personnel_emp_no,
                         view_courses_passed_personnel_part3.personnel_personnel_no,
                         view_courses_passed_personnel_part3.personnel_national_code,
@@ -3402,6 +3413,7 @@ FROM
                         view_courses_passed_personnel_part3.personnel_last_name,
                         view_courses_passed_personnel_part3.course_code,
                         view_courses_passed_personnel_part3.course_title_fa,
+                        view_courses_passed_personnel_part3.class_student_score,
                         view_courses_passed_personnel_part3.class_student_scores_state_id,
                         view_courses_passed_personnel_part3.class_end_date,
                         view_courses_passed_personnel_part3.class_h_duration,
@@ -3409,6 +3421,9 @@ FROM
                         view_courses_passed_personnel_part3.term_code,
                         view_courses_passed_personnel_part3.term_title_fa,
                         view_courses_passed_personnel_part3.term_id,
+
+                        substr(view_courses_passed_personnel_part3.class_start_date, 1, 4),
+
                         view_courses_passed_personnel_part3.personnel_post_grade_code,
                         view_courses_passed_personnel_part3.personnel_cpp_affairs,
                         view_courses_passed_personnel_part3.personnel_cpp_area,
@@ -3425,7 +3440,150 @@ FROM
                             401
                         )
                 ) tba
+
+                 LEFT JOIN (
+                SELECT
+                    view_courses_passed_personnel_part1.course_id,
+                    view_courses_passed_personnel_part1.personnel_id,
+                    view_courses_passed_personnel_part1.personnel_emp_no,
+                    view_courses_passed_personnel_part1.personnel_personnel_no,
+                    view_courses_passed_personnel_part1.personnel_national_code,
+                    view_courses_passed_personnel_part1.personnel_first_name,
+                    view_courses_passed_personnel_part1.personnel_last_name,
+                    view_courses_passed_personnel_part1.course_code,
+                    view_courses_passed_personnel_part1.course_title_fa,
+                    view_courses_passed_personnel_part1.class_student_score,
+                   view_courses_passed_personnel_part1.class_student_scores_state_id,
+                view_courses_passed_personnel_part1.class_end_date,
+                  view_courses_passed_personnel_part1.class_h_duration,
+                view_courses_passed_personnel_part1.class_start_date,
+                view_courses_passed_personnel_part1.term_code,
+                view_courses_passed_personnel_part1.term_title_fa,
+                view_courses_passed_personnel_part1.term_id,
+                substr(view_courses_passed_personnel_part1.class_start_date, 1, 4) AS class_year,
+                view_courses_passed_personnel_part1.personnel_post_grade_code,
+                view_courses_passed_personnel_part1.personnel_cpp_affairs,
+                view_courses_passed_personnel_part1.personnel_cpp_area,
+                view_courses_passed_personnel_part1.personnel_cpp_assistant,
+                view_courses_passed_personnel_part1.personnel_cpp_section,
+                view_courses_passed_personnel_part1.personnel_cpp_unit,
+                view_courses_passed_personnel_part1.personnel_company_name,
+                view_courses_passed_personnel_part1.personnel_complex_title
+                FROM
+                    view_courses_passed_personnel_part1
+                    INNER JOIN tbl_parameter_value ON tbl_parameter_value.id = view_courses_passed_personnel_part1.is_passed
+
+            ) tbb ON tbb.course_code = tba.course_code
+                     AND tbb.personnel_national_code = tba.personnel_national_code
+        WHERE
+            tbb.personnel_personnel_no IS NULL
+
         )
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="NICICO" id="VIEW_CONTINUOUS_STATUS_REPORT-002">
+        <createView viewName="VIEW_CONTINUOUS_STATUS_REPORT" replaceIfExists="true">
+            <![CDATA[
+            SELECT
+        tbl_class.c_status                               AS class_status,
+        view_active_personnel.id                         AS personnel_id,
+        view_active_personnel.emp_no                     AS personnel_emp_no,
+        view_active_personnel.personnel_no               AS personnel_personnel_no,
+        view_active_personnel.national_code              AS personnel_national_code,
+        view_active_personnel.first_name                 AS personnel_first_name,
+        view_active_personnel.last_name                  AS personnel_last_name,
+        view_active_personnel.post_title                 AS peronnel_post_title,
+        tbl_class.id                                     AS class_id,
+        tbl_class.c_code                                 AS class_code,
+        tbl_course.id                                    AS course_id,
+        tbl_course.c_code                                AS course_code,
+        tbl_course.c_title_fa                            AS course_title_fa,
+        tbl_class.c_start_date                           AS class_start_date,
+        tbl_class.c_end_date                             AS class_end_date,
+        tbl_class.n_h_duration                           AS class_h_duration,
+        substr(tbl_class.c_start_date, 1, 4) AS class_year,
+        tbl_term.c_code                                  AS term_code,
+        tbl_term.c_title_fa                              AS term_title_fa,
+        tbl_term.id                                      AS term_id,
+        department.c_hoze_title                          AS personnel_complex_title,
+        view_active_personnel.company_name               AS personnel_company_name,
+        department.c_hoze_title                          AS personnel_cccp_area,
+        department.c_moavenat_title                      AS personnel_ccp_assistant,
+        department.c_omor_title                          AS personnel_ccp_affairs,
+        department.c_vahed_title                         AS personnel_ccp_unit,
+        department.c_ghesmat_title                       AS personnel_ccp_section,
+        CASE
+            WHEN view_personnel_course_na_report.na_priority_id IS NOT NULL THEN
+             'نیازسنجی'
+            ELSE
+                'غیر نیازسنجی'
+        END AS coursetype,
+        view_personnel_course_na_report.na_priority_id   AS na_priority_id
+    FROM
+        (
+            SELECT
+                *
+            FROM
+                tbl_class
+            WHERE
+                c_status IN (
+                    1,
+                    2
+                )
+        ) tbl_class
+        INNER JOIN tbl_course ON tbl_course.id = tbl_class.f_course
+        INNER JOIN tbl_term ON tbl_term.id = tbl_class.f_term
+        INNER JOIN tbl_class_student ON tbl_class_student.class_id = tbl_class.id
+        INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.student_id
+        INNER JOIN view_active_personnel ON view_active_personnel.national_code = tbl_student.national_code
+        LEFT JOIN tbl_department department ON department.id = view_active_personnel.f_department_id
+        LEFT JOIN view_personnel_course_na_report ON view_active_personnel.id = view_personnel_course_na_report.personnel_id
+                                                     AND tbl_course.id = view_personnel_course_na_report.course_id
+  UNION ALL
+  SELECT
+   tbl_class.c_status as class_status,
+    TBL_PERSONNEL_REGISTERED.id as PERSONNEL_ID,
+    TBL_PERSONNEL_REGISTERED.emp_no as PERSONNEL_EMP_NO,
+    TBL_PERSONNEL_REGISTERED.personnel_no as PERSONNEL_PERSONNEL_NO,
+    TBL_PERSONNEL_REGISTERED.national_code as PERSONNEL_NATIONAL_CODE,
+    TBL_PERSONNEL_REGISTERED.first_name as PERSONNEL_FIRST_NAME,
+    TBL_PERSONNEL_REGISTERED.last_name as PERSONNEL_LAST_NAME,
+    TBL_PERSONNEL_REGISTERED.post_title as PERSONNEL_POST_TITLE,
+
+    tbl_class.id as class_id,
+    tbl_class.c_code as class_code,
+
+    tbl_course.id AS course_id,
+    tbl_course.c_code AS course_code,
+    tbl_course.c_title_fa as course_title_fa,
+    tbl_class.c_start_date as class_start_date,
+    tbl_class.c_end_date as class_end_date,
+    tbl_class.n_h_duration as class_h_duration,
+    substr(tbl_class.c_start_date, 1, 4) AS class_year,
+
+    tbl_term.c_code AS term_code,
+    tbl_term.c_title_fa AS term_title_fa,
+    tbl_term.id AS term_id,
+
+    department.c_hoze_title AS personnel_complex_title,
+    TBL_PERSONNEL_REGISTERED.company_name AS personnel_company_name,
+    department.c_hoze_title as personnel_cccp_area,
+    department.c_moavenat_title as personnel_ccp_assistant,
+    department.c_omor_title as ccp_affairs,
+    department.c_vahed_title as ccp_unit,
+    department.c_ghesmat_title  AS personnel_ccp_section,
+    null as coursetype,
+    null as na_priority_id
+FROM
+    (select * from tbl_class where c_status in (1,2)) tbl_class
+    INNER JOIN tbl_course ON tbl_course.id = tbl_class.f_course
+    INNER JOIN tbl_term ON tbl_term.id = tbl_class.f_term
+    INNER JOIN tbl_class_student ON tbl_class_student.CLASS_ID = tbl_class.id
+    INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.student_id
+    INNER JOIN TBL_PERSONNEL_REGISTERED on TBL_PERSONNEL_REGISTERED.national_code = tbl_student.national_code
+    LEFT JOIN tbl_department department ON department.id=TBL_PERSONNEL_REGISTERED.f_department_id
             ]]>
         </createView>
     </changeSet>
