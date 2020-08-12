@@ -104,6 +104,7 @@
         JobDS_job = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true, hidden: true},
+                {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap},
                 {
                     name: "code",
                     title: "<spring:message code="job.code"/>",
@@ -156,6 +157,7 @@
                         keyPressFilter: "[0-9]"
                     }
                 },
+                {name: "peopleType", filterOnKeypress: true},
                 {name: "titleFa",},
                 {name: "competenceCount"},
                 {name: "personnelCount"},
