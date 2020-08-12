@@ -120,7 +120,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
         needsAssessmentTemps.forEach(needsAssessmentTemp -> {
             Optional<NeedsAssessment> optional = needsAssessmentDAO.findById(needsAssessmentTemp.getId());
             if (optional.isPresent()) {
-                if (needsAssessmentTemp.getEDeleted() != null && needsAssessmentTemp.getEDeleted().equals(75L))
+                if (needsAssessmentTemp.getDeleted() != null && needsAssessmentTemp.getDeleted().equals(75L))
                     needsAssessmentDAO.deleteById(needsAssessmentTemp.getId());
                 else {
                     modelMapper.map(needsAssessmentTemp, optional.get());
@@ -178,7 +178,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
 
         Optional<NeedsAssessmentTemp> optionalNA = dao.findFirstByObjectIdAndObjectTypeAndCompetenceIdAndSkillIdAndNeedsAssessmentDomainIdAndNeedsAssessmentPriorityId(rq.getObjectId(), rq.getObjectType(), rq.getCompetenceId(), rq.getSkillId(), rq.getNeedsAssessmentDomainId(), rq.getNeedsAssessmentPriorityId());
         if (optionalNA.isPresent()) {
-            optionalNA.get().setEDeleted(null);
+            optionalNA.get().setDeleted(null);
             return modelMapper.map(dao.saveAndFlush(optionalNA.get()), NeedsAssessmentDTO.Info.class);
         }
         rq.setId(needsAssessmentDAO.getNextId());
@@ -191,7 +191,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
         final Optional<NeedsAssessmentTemp> optional = dao.findById(id);
         final NeedsAssessmentTemp entityTemp = optional.orElseThrow(trainingExceptionSupplier);
         if (needsAssessmentDAO.existsById(id)) {
-            entityTemp.setEDeleted(75L);
+            entityTemp.setDeleted(75L);
             dao.saveAndFlush(entityTemp);
             return modelMapper.map(entityTemp, NeedsAssessmentDTO.Info.class);
         } else {
