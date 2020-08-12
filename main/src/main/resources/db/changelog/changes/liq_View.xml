@@ -3516,9 +3516,9 @@ FROM
         department.c_ghesmat_title                       AS personnel_ccp_section,
         CASE
             WHEN view_personnel_course_na_report.na_priority_id IS NOT NULL THEN
-                'ن?ازسنج?'
+             'نیازسنجی'
             ELSE
-                'غ?ر ن?ازسنج?'
+                'غیر نیازسنجی'
         END AS coursetype,
         view_personnel_course_na_report.na_priority_id   AS na_priority_id
     FROM
