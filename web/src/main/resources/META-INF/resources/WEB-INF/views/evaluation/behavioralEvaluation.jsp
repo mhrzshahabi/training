@@ -387,34 +387,7 @@
         var HLayout_returnData_BE = isc.HLayout.create({
             width: "100%",
             members: [
-                DynamicForm_ReturnDate_BE,
-                // isc.LayoutSpacer.create({width: "80%"}),
-                // isc.RibbonGroup.create({
-                //     ID: "fileGroup",
-                //     title: "راهنمای رنگ بندی لیست",
-                //     numRows: 1,
-                //     colWidths: [ 40, "*" ],
-                //     height: "10px",
-                //     titleAlign: "center",
-                //     titleStyle : "gridHint",
-                //     controls: [
-                //         isc.IconButton.create(isc.addProperties({
-                //             title: "صادر نشده",
-                //             baseStyle: "gridHint",
-                //             backgroundColor: '#fffff'
-                //         })),
-                //         isc.IconButton.create(isc.addProperties({
-                //             title: "صادر شده",
-                //             baseStyle: "gridHint",
-                //             backgroundColor: '#d8e4bc'
-                //         })),
-                //         isc.IconButton.create(isc.addProperties({
-                //             title: "تکمیل شده",
-                //             baseStyle: "gridHint",
-                //             backgroundColor: '#b7dee8'
-                //         }))
-                //     ]
-                // })
+                DynamicForm_ReturnDate_BE
             ]
         });
 

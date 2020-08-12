@@ -31,6 +31,9 @@ public class ViewPostGrade extends Auditable {
     @Column(name = "c_code", unique = true, nullable = false)
     private String code;
 
+    @Column(name = "c_people_type")
+    private String peopleType;
+
     @Column(name = "n_competence_count")
     private Integer competenceCount;
 

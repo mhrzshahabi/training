@@ -7,6 +7,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.NeedsAssessmentDTO;
+import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -108,10 +109,13 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
         List<NeedsAssessmentDTO.verify> needsAssessmentTemps = modelMapper.map(dao.findAll(NICICOSpecification.of(getCriteria(objectType, objectId))), new TypeToken<List<NeedsAssessmentDTO.verify>>() {
         }.getType());
         String createdBy = null;
-        if(needsAssessmentTemps.size() > 0) {
+        try{
             createdBy = needsAssessmentTemps.get(0).getCreatedBy();
             SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
-            personnelService.search(searchRq.setCriteria(makeNewCriteria("userName", createdBy, EOperator.equals, null)));
+            PersonnelDTO.Info person = personnelService.search(searchRq.setCriteria(makeNewCriteria("userName", createdBy, EOperator.equals, null))).getList().get(0);
+            createdBy = person.getFirstName() + " " + person.getLastName();
+        }catch (Exception e ){
+            createdBy = "anonymous";
         }
         needsAssessmentTemps.forEach(needsAssessmentTemp -> {
             Optional<NeedsAssessment> optional = needsAssessmentDAO.findById(needsAssessmentTemp.getId());

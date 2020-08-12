@@ -94,5 +94,7 @@ public class ViewCoursesPassedPersonnelReportDTO implements Serializable {
         private Long courseId;
 
         private Long personnelId;
+
+        private Float score;
     }
 }
