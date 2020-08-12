@@ -3303,7 +3303,7 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_COURSES_PASSED_PERSONNEL_PART4-005">
+    <changeSet author="NICICO" id="VIEW_COURSES_PASSED_PERSONNEL_PART4-006">
         <createView viewName="VIEW_COURSES_PASSED_PERSONNEL_PART4" replaceIfExists="true">
             <![CDATA[
  SELECT distinct
@@ -3440,6 +3440,44 @@ FROM
                             401
                         )
                 ) tba
+
+                 LEFT JOIN (
+                SELECT
+                    view_courses_passed_personnel_part1.course_id,
+                    view_courses_passed_personnel_part1.personnel_id,
+                    view_courses_passed_personnel_part1.personnel_emp_no,
+                    view_courses_passed_personnel_part1.personnel_personnel_no,
+                    view_courses_passed_personnel_part1.personnel_national_code,
+                    view_courses_passed_personnel_part1.personnel_first_name,
+                    view_courses_passed_personnel_part1.personnel_last_name,
+                    view_courses_passed_personnel_part1.course_code,
+                    view_courses_passed_personnel_part1.course_title_fa,
+                    view_courses_passed_personnel_part1.class_student_score,
+                   view_courses_passed_personnel_part1.class_student_scores_state_id,
+                view_courses_passed_personnel_part1.class_end_date,
+                  view_courses_passed_personnel_part1.class_h_duration,
+                view_courses_passed_personnel_part1.class_start_date,
+                view_courses_passed_personnel_part1.term_code,
+                view_courses_passed_personnel_part1.term_title_fa,
+                view_courses_passed_personnel_part1.term_id,
+                substr(view_courses_passed_personnel_part1.class_start_date, 1, 4) AS class_year,
+                view_courses_passed_personnel_part1.personnel_post_grade_code,
+                view_courses_passed_personnel_part1.personnel_cpp_affairs,
+                view_courses_passed_personnel_part1.personnel_cpp_area,
+                view_courses_passed_personnel_part1.personnel_cpp_assistant,
+                view_courses_passed_personnel_part1.personnel_cpp_section,
+                view_courses_passed_personnel_part1.personnel_cpp_unit,
+                view_courses_passed_personnel_part1.personnel_company_name,
+                view_courses_passed_personnel_part1.personnel_complex_title
+                FROM
+                    view_courses_passed_personnel_part1
+                    INNER JOIN tbl_parameter_value ON tbl_parameter_value.id = view_courses_passed_personnel_part1.is_passed
+
+            ) tbb ON tbb.course_code = tba.course_code
+                     AND tbb.personnel_national_code = tba.personnel_national_code
+        WHERE
+            tbb.personnel_personnel_no IS NULL
+
         )
             ]]>
         </createView>
