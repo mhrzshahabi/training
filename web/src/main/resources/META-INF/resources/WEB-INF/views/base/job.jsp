@@ -144,6 +144,14 @@
                     autoFitWidth: true,
                     autoFitWidthApproach: "both"
                 },
+                {
+                    name: "enabled",
+                    title: "<spring:message code="active.status"/>",
+                    align: "center",
+                    filterOperator: "equals",
+                    autoFitWidth: true,
+                    autoFitWidthApproach: "both",
+                },
             ],
             fetchDataURL: viewJobUrl + "/iscList"
         });
@@ -162,7 +170,13 @@
                 {name: "competenceCount"},
                 {name: "personnelCount"},
                 {name: "lastModifiedDateNA"},
-                {name: "modifiedByNA"}
+                {name: "modifiedByNA"},
+                {name: "enabled",
+                    formatCellValue: function (value, record) {
+                        let newVal = value == undefined ? "فعال" : "غیر فعال";
+                        return newVal;
+                    }
+                },
             ],
             autoFetchData: true,
             gridComponents: [JobTS_job, ToolStrip_NA_Job, "filterEditor", "header", "body"],

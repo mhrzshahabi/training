@@ -36,6 +36,7 @@ public class NeedsAssessment<E> extends Auditable {
                     @MetaValue(value = "Job", targetEntity = Job.class),
                     @MetaValue(value = "JobGroup", targetEntity = JobGroup.class),
                     @MetaValue(value = "Post", targetEntity = Post.class),
+                    @MetaValue(value = "TrainingPost", targetEntity = TrainingPost.class),
                     @MetaValue(value = "PostGroup", targetEntity = PostGroup.class),
                     @MetaValue(value = "PostGrade", targetEntity = PostGrade.class),
                     @MetaValue(value = "PostGradeGroup", targetEntity = PostGradeGroup.class),
@@ -86,6 +87,7 @@ public class NeedsAssessment<E> extends Auditable {
     public static List<String> priorityList = new ArrayList<String>() {
         {
             add("Post");
+            add("TrainingPost");
             add("PostGroup");
             add("Job");
             add("JobGroup");

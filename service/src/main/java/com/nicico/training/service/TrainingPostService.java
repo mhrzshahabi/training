@@ -141,6 +141,8 @@ public class TrainingPostService implements ITrainingPostService {
             TrainingPost currentEntity = trainingPostDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
             modelMapper.getConfiguration().setSkipNullEnabled(true);
             modelMapper.map(convertDTO2Obj(update), currentEntity);
+            if(update.getEnabled() == null)
+                currentEntity.setEnabled(null);
             return modelMapper.map(currentEntity,TrainingPostDTO.class);
         }
 //        catch (TrainingException e){
@@ -189,6 +191,7 @@ public class TrainingPostService implements ITrainingPostService {
         entity.setCode(trainingPostDTO.getCode());
         entity.setTitleFa(trainingPostDTO.getTitleFa());
         entity.setPeopleType(trainingPostDTO.getPeopleType());
+        entity.setEnabled(trainingPostDTO.getEnabled());
         return entity;
     }
 }

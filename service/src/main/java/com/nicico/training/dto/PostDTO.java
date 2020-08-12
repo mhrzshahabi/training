@@ -47,11 +47,6 @@ public class PostDTO implements Serializable {
         private Long id;
         private String code;
         private String titleFa;
-//        @Getter(AccessLevel.NONE)
-//        private ParameterValue pEnabled;
-//
-//        public ParameterValue getpEnabled() {
-//            return pEnabled;
-//        }
+        private Long enabled;
     }
 }

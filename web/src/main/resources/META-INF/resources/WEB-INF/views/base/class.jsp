@@ -4153,7 +4153,7 @@
             _constructor: "AdvancedCriteria",
             operator: "and",
             criteria: [
-                {fieldName: "eEnabled", operator: "equals", value: 494},
+                {fieldName: "enabled", operator: "isNull"},
                 {fieldName: "questionnaireTypeId", operator: "equals", value: 141}
             ]
         };

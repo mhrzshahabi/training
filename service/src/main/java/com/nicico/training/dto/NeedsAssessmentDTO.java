@@ -79,8 +79,8 @@ public class NeedsAssessmentDTO implements Serializable {
         private Integer mainWorkflowStatusCode;
         private Date createdDate;
         private String createdBy;
-        private Long eEnabled;
-        private Long eDeleted;
+        private Long enabled;
+        private Long deleted;
         private Date lastModifiedDate;
         private String lastModifiedBy;
     }

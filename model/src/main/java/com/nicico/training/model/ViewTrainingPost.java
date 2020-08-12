@@ -87,7 +87,4 @@ public class ViewTrainingPost extends Auditable {
 
     @Column(name = "c_people_type")
     private String peopleType;
-
-    @Column(name = "e_enabled", insertable = false, updatable = false)
-    private Long penabledId;
 }
