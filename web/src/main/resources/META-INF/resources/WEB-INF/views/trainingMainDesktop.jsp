@@ -530,7 +530,7 @@
                 downloadForm.submitForm();
             }
 
-            static exportToExcelFromServer(fields, fileName, criteriaStr, sortBy, len, titr, pageName, valueMaps) {
+            static exportToExcelFromServer(fields, fileName, criteriaStr, sortBy,startRow, len, titr, pageName, valueMaps) {
 
                 let downloadForm = isc.DynamicForm.create({
                     method: "POST",
@@ -546,6 +546,7 @@
                             {name: "pageName", type: "hidden"},
                             {name: "_sortBy", type: "hidden"},
                             {name: "_len", type: "hidden"},
+                            {name: "_startRow", type: "hidden"},
                             {name: "criteriaStr", type: "hidden"},
                             {name: "valueMaps", type: "hidden"}
                         ]
@@ -558,6 +559,7 @@
                 downloadForm.setValue("pageName", pageName);
                 downloadForm.setValue("_sortBy", sortBy);
                 downloadForm.setValue("_len", len);
+                downloadForm.setValue("_startRow", startRow);
                 downloadForm.setValue("criteriaStr", criteriaStr);
                 downloadForm.setValue("valueMaps", JSON.stringify(valueMaps));
                 downloadForm.show();
@@ -580,7 +582,7 @@
                 this.exportToExcelFromClient(result.fields, result.data, tmptitr, pageName);
             }
 
-            static downloadExcelFromServer(listGrid, fileName, len, parentListGrid, titr, pageName, criteria) {
+            static downloadExcelFromServer(listGrid, fileName,startRow, len, parentListGrid, titr, pageName, criteria) {
 
                 let tmptitr = '';
 
@@ -620,12 +622,14 @@
                     }
                 }
 
-                this.exportToExcelFromServer(fields.fields, fileName, criteria, sortStr , len, tmptitr, pageName, valueMaps);
+                this.exportToExcelFromServer(fields.fields, fileName, criteria, sortStr ,startRow, len, tmptitr, pageName, valueMaps);
             }
 
             static showDialog(title, listgrid, fileName, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate){
                 let size = listgrid.data.size();
+                let maxCount=5000;
 
+                size = Math.min(maxCount,size);
                 if(isValidate==null){
                     isValidate=function (len) {
                         return true;
@@ -644,15 +648,51 @@
                     items: [
                         isc.DynamicForm.create({
                             ID: "exportExcelForm",
-                            numCols: 1,
+                            numCols: 2,
+                            colWidths: ["80%","20%"],
                             padding: 10,
                             fields: [
                                 {
+                                    title: "سطرهاي موجود: " + listgrid.data.size(),
+                                    type: 'staticText',
+                                    width: "150",
+                                    colSpan:2,
+                                    height: 30
+                                },
+                                {
+                                    name: "startRow",
+                                    startRow: true,
+                                    colSpan:2,
+                                    width: "100%",
+                                    titleOrientation: "top",
+                                    title: "از کدام سطر شروع شود:",
+                                    value: 1,
+                                    suppressBrowserClearIcon: true,
+                                    icons: [{
+                                        name: "clear",
+                                        src: "[SKIN]actions/close.png",
+                                        width: 10,
+                                        height: 10,
+                                        inline: true,
+                                        prompt: "پاک کردن",
+                                        click: function (form, item, icon) {
+                                            item.clearValue();
+                                            item.focusInItem();
+                                        }
+                                    }],
+                                    iconWidth: 16,
+                                    iconHeight: 16
+                                },
+                                {
                                     name: "maxRow",
+                                    startRow: true,
+                                    colSpan:2,
                                     width: "100%",
                                     titleOrientation: "top",
                                     title: "لطفا حداکثر تعداد سطرهای موجود در اکسل را وارد نمایید:",
                                     value: size,
+                                    hint: "حداکثر سطرهاي قابل چاپ: " + size,
+                                    minHintWidth:'100%',
                                     suppressBrowserClearIcon: true,
                                     icons: [{
                                         name: "clear",
@@ -678,9 +718,17 @@
                                     click: function () {
                                         if (trTrim(exportExcelForm.getValue("maxRow")) != "") {
 
+                                            if(Number(trTrim(exportExcelForm.getValue("maxRow")))+Number(trTrim(exportExcelForm.getValue("startRow"))) > Number(listgrid.data.size())){
+                                                createDialog("info", "مجمع سطر شروع و تعداد سطر ها در خواستي براي خروجي بيشتر از تعداد کل سطرهاي موجود است");
+                                                return;
+                                            }else if(Number(trTrim(exportExcelForm.getValue("maxRow"))) > size){
+                                                createDialog("info", "تعداد سطرهاي وارد شده جهت خروجي، بيشتر از حداکثر تعداد سطرهاي قابل چاپ است");
+                                                return;
+                                            }
+
                                             if(isValidate(trTrim(exportExcelForm.getValue("maxRow")))) {
 
-                                                ExportToFile.downloadExcelFromServer(listgrid, fileName, parseInt(trTrim(exportExcelForm.getValue("maxRow"))), parentListGrid, titr, pageName,JSON.stringify(criteria));
+                                                ExportToFile.downloadExcelFromServer(listgrid, fileName, parseInt(trTrim(exportExcelForm.getValue("startRow")))-1, parseInt(trTrim(exportExcelForm.getValue("maxRow"))), parentListGrid, titr, pageName,JSON.stringify(criteria));
                                                 exportExcelWindow.close();
 
                                             }
@@ -809,6 +857,7 @@
     const questionBankUrl = rootUrl + "/question-bank";
     const viewPersonnelTrainingStatusReportUrl = rootUrl + "/view-personnel-training-status-report";
     const viewCoursesPassedPersonnelReportUrl = rootUrl + "/view-courses-passed-personnel-report";
+    const questionBankTestQuestionUrl = rootUrl + "/question-bank-test-question";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
