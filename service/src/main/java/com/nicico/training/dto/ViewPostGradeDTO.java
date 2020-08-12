@@ -55,5 +55,6 @@ public class ViewPostGradeDTO implements Serializable {
     @ApiModel("PostGradeInfo")
     public static class Info extends ViewPostGradeDTO {
         private Long id;
+        private Long enabled;
     }
 }

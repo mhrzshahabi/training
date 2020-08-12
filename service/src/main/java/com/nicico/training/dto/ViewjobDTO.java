@@ -58,5 +58,6 @@ public class ViewjobDTO implements Serializable {
     @ApiModel("JobInfo")
     public static class Info extends ViewjobDTO {
         private Long id;
+        private Long enabled;
     }
 }
