@@ -1923,22 +1923,20 @@
                             },
                             {isSeparator: true},
                             </sec:authorize>
-
-                            <%--<sec:authorize access="hasAuthority('Menu_continuous_Status_Report')">--%>
-                            <%--{--%>
-                                <%--title: "<spring:message code="continuous.status.report"/>",--%>
-                                <%--click: function () {--%>
-                                    <%--createTab(this.title, "<spring:url value="web/continuousStatusReport"/>");--%>
-                                <%--}--%>
-                            <%--},--%>
-                            <%--</sec:authorize>--%>
-
                             <sec:authorize access="hasAuthority('Menu_Personnel_Training_Status_Report')">
                             {
                             title: "<spring:message code="personnel.training.status.report"/>",
                             click: function () {
                             createTab(this.title, "<spring:url value="web/personnelTrainingStatusReport"/>");
                             }
+                            },
+                            </sec:authorize>
+                            <sec:authorize access="hasAuthority('Menu_continuous_Status_Report')">
+                            {
+                                title: "<spring:message code="continuous.status.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/continuousStatusReport"/>");
+                                }
                             },
                             </sec:authorize>
                         ]
