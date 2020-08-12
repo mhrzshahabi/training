@@ -87,7 +87,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
                 return false;
         }
         SearchDTO.CriteriaRq criteria = getCriteria(sourceObjectType, sourceObjectId);
-        if (sourceCompetenceId != null){
+        if (sourceCompetenceId != null) {
             criteria.getCriteria().add(makeNewCriteria("competenceId", sourceCompetenceId, EOperator.equals, null));
         }
         List<Skill> skillList = needsAssessmentDAO.findAll(NICICOSpecification.of(getCriteria(objectType, objectId))).stream().map(NeedsAssessment::getSkill).collect(Collectors.toList());
@@ -137,8 +137,11 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
     }
 
     @Transactional
-    public void rollback(String objectType, Long objectId) {
+    public Boolean rollback(String objectType, Long objectId) {
+        if (readOnlyStatus(objectType, objectId) > 1)
+            return false;
         dao.deleteAllByObjectIdAndObjectType(objectId, objectType);
+        return true;
     }
 
     @Transactional(readOnly = true)
@@ -147,9 +150,12 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
         List<NeedsAssessmentTemp> needsAssessmentTemps = dao.findAll(NICICOSpecification.of(criteriaRq));
         if (needsAssessmentTemps == null || needsAssessmentTemps.isEmpty())
             return 0; //this object is editable and needs to be initialize
-        if (needsAssessmentTemps.get(0).getCreatedBy().equals(SecurityUtil.getUsername()))
-            return 1; //this object is editable and dont needs to be initialize
-        return 2; //this object is read only
+        if (needsAssessmentTemps.get(0).getCreatedBy().equals(SecurityUtil.getUsername())) {
+            if (needsAssessmentTemps.get(0).getMainWorkflowStatusCode() == null || needsAssessmentTemps.get(0).getMainWorkflowStatusCode() == -1)
+                return 1; //this object is editable and dont needs to be initialize
+            return 3; // this object is read only and user should see edited NAs
+        }
+        return 2; //this object is read only and user should not see edited NAs
     }
 
     @Transactional(readOnly = true)
@@ -157,10 +163,10 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
         switch (readOnlyStatus(objectType, objectId)) {
             case 0:
                 initial(objectType, objectId);
-                return true;
             case 1:
                 return true;
             case 2:
+            case 3:
                 return false;
         }
         return false;
@@ -205,7 +211,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
         return criteriaRq;
     }
 
-    public int saveModifications(String objectType, Long objectId, String createdBy){
+    public int saveModifications(String objectType, Long objectId, String createdBy) {
         Date today = new Date();
         switch (objectType) {
             case "Post":
@@ -230,7 +236,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
     public void checkCategoryNotEquals(NeedsAssessmentDTO.Create rq, HttpServletResponse resp) throws IOException {
         Optional<Competence> byId = competenceDAO.findById(rq.getCompetenceId());
         Competence competence = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
-        if(competence.getCategoryId() == null){
+        if (competence.getCategoryId() == null) {
             return;
         }
         Optional<Skill> byId1 = skillDAO.findById(rq.getSkillId());
@@ -241,5 +247,10 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
         if (!(skill.getCategoryId().equals(competence.getCategoryId()))) {
             resp.sendError(408, messageSource.getMessage("گروه مهارت با گروه شایستگی یکسان نیست", null, LocaleContextHolder.getLocale()));
         }
+    }
+
+    @Transactional
+    public Integer updateNeedsAssessmentTempMainWorkflow(String objectType, Long objectId, Integer workflowStatusCode, String workflowStatus) {
+        return dao.updateNeedsAssessmentTempWorkflowMainStatus(objectType, objectId, workflowStatusCode, workflowStatus);
     }
 }
