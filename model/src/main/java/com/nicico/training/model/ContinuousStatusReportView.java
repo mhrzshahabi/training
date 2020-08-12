@@ -60,13 +60,13 @@ public class ContinuousStatusReportView {
     @Column(name = "course_title_fa")
     private String courseTitleFa;
 
-    @Column(name = "course_start_date")
+    @Column(name = "class_start_date")
     private String classStartDate;
 
-    @Column(name = "course_end_date")
+    @Column(name = "class_end_date")
     private String classEndDate;
 
-    @Column(name = "course_h_duration")
+    @Column(name = "class_h_duration")
     private Long classHDduration;
 
     @Column(name = "class_year")
