@@ -370,7 +370,8 @@
             {name: "omorTitle", title: "<spring:message code="affairs"/>", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "ghesmatCode", title: "<spring:message code="section"/>", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "vahedTitle", title: "<spring:message code="unit"/>", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "type", title: "<spring:message code="people.type"/>", autoFitWidth: true, autoFitWidthApproach: "both", valueMap:peopleTypeMap}
+            {name: "type", title: "<spring:message code="people.type"/>", autoFitWidth: true, autoFitWidthApproach: "both", valueMap:peopleTypeMap},
+            {name: "enabled", title: "<spring:message code="active.status"/>", autoFitWidth: true, autoFitWidthApproach: "both"}
         ],
         fetchDataURL: departmentUrl + "/iscList"
     });
@@ -893,6 +894,13 @@
                     {name: "ghesmatCode", title: "<spring:message code="section"/>"},
                     {name: "vahedTitle", title: "<spring:message code="unit"/>"},
                     {name: "type", filterOperator: "iContains"},
+                    {
+                        name: "enabled",
+                        formatCellValue: function (value, record) {
+                            let newVal = value == undefined ? "فعال" : "غیر فعال";
+                            return newVal;
+                        }
+                    }
                 ],
                 filterFields: ["title", "code","hozeTitle","moavenatTitle","omorTitle","ghesmatCode","vahedTitle"],
             },

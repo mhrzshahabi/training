@@ -33,6 +33,7 @@ public class TrainingPostDTO {
     @ApiModelProperty()
     private Long postGradeId;
 
+    @ApiModelProperty()
     private Long enabled;
 
 
