@@ -3483,7 +3483,7 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_CONTINUOUS_STATUS_REPORT-002">
+    <changeSet author="NICICO" id="VIEW_CONTINUOUS_STATUS_REPORT-005">
         <createView viewName="VIEW_CONTINUOUS_STATUS_REPORT" replaceIfExists="true">
             <![CDATA[
             SELECT
@@ -3494,7 +3494,7 @@ FROM
         view_active_personnel.national_code              AS personnel_national_code,
         view_active_personnel.first_name                 AS personnel_first_name,
         view_active_personnel.last_name                  AS personnel_last_name,
-        view_active_personnel.post_title                 AS peronnel_post_title,
+        view_active_personnel.post_title                 AS personnel_post_title,
         tbl_class.id                                     AS class_id,
         tbl_class.c_code                                 AS class_code,
         tbl_course.id                                    AS course_id,
@@ -3509,7 +3509,7 @@ FROM
         tbl_term.id                                      AS term_id,
         department.c_hoze_title                          AS personnel_complex_title,
         view_active_personnel.company_name               AS personnel_company_name,
-        department.c_hoze_title                          AS personnel_cccp_area,
+        department.c_hoze_title                          AS personnel_ccp_area,
         department.c_moavenat_title                      AS personnel_ccp_assistant,
         department.c_omor_title                          AS personnel_ccp_affairs,
         department.c_vahed_title                         AS personnel_ccp_unit,
