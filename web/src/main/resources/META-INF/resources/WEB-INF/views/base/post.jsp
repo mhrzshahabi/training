@@ -189,6 +189,7 @@
     PostDS_post = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -204,6 +205,14 @@
             {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {
+                name: "enabled",
+                title: "<spring:message code="active.status"/>",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both",
+            },
         ],
         fetchDataURL: viewPostUrl + "/iscList"
     });
@@ -322,6 +331,7 @@
                     keyPressFilter: "[0-9/]"
                 }
             },
+            {name: "peopleType", filterOnKeypress: true},
             {name: "titleFa",},
             {name: "jobTitleFa",},
             {name: "postGradeTitleFa",},
@@ -339,7 +349,13 @@
             {name: "competenceCount"},
             {name: "personnelCount"},
             {name: "lastModifiedDateNA"},
-            {name: "modifiedByNA"}
+            {name: "modifiedByNA"},
+            {name: "enabled",
+                formatCellValue: function (value, record) {
+                    let newVal = value == undefined ? "فعال" : "غیر فعال";
+                    return newVal;
+                }
+            },
         ],
         autoFetchData: true,
         gridComponents: [PostTS_post, ToolStrip_NA_POST, "filterEditor", "header", "body",],

@@ -1173,7 +1173,7 @@
             _constructor: "AdvancedCriteria",
             operator: "and",
             criteria: [
-                {fieldName: "enabled", operator: "equals", value: 494},
+                {fieldName: "enabled", operator: "isNull"},
                 {fieldName: "questionnaireTypeId", operator: "equals", value: 139}
             ]
         };
@@ -1376,7 +1376,7 @@
                 _constructor: "AdvancedCriteria",
                 operator: "and",
                 criteria: [
-                    {fieldName: "enabled", operator: "equals", value: 494},
+                    {fieldName: "enabled", operator: "isNull"},
                     {fieldName: "questionnaireTypeId", operator: "equals", value: 139}
                 ]
             };
@@ -1747,7 +1747,7 @@
             _constructor: "AdvancedCriteria",
             operator: "and",
             criteria: [
-                {fieldName: "enabled", operator: "equals", value: 494},
+                {fieldName: "enabled", operator: "isNull"},
                 {fieldName: "questionnaireTypeId", operator: "equals", value: 141}
             ]
         };
@@ -2121,7 +2121,7 @@
             _constructor: "AdvancedCriteria",
             operator: "and",
             criteria: [
-                {fieldName: "enabled", operator: "equals", value: 494},
+                {fieldName: "enabled", operator: "isNull"},
                 {fieldName: "questionnaireTypeId", operator: "equals", value: 140}
             ]
         };

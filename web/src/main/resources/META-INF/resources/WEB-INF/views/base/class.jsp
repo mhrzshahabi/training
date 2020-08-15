@@ -3118,10 +3118,16 @@
             height: "150",
         });
         WindowCancelClass.show();
+        DynamicFormPostponeClass.setValues(record);
+        if(record.postponeStartDate !== undefined){
+            DynamicFormPostponeClass.getItem("postpone").changed(DynamicFormPostponeClass, DynamicFormPostponeClass.getItem("postpone"), true);
+            DynamicFormPostponeClass.setValue("postpone", true)
+        }
 
     }
 
     function alternativeClass_JspClass(record) {
+        console.log(record)
         let WindowAlternativeClass = isc.Window.create({
             title: "جایگزین کلاس های لغو شده",
             items: [isc.VLayout.create({
@@ -3139,7 +3145,8 @@
                             {
                                 name: "canceledClasses",
                                 title: "کلاسهای لغو شده: ",
-                                // multiple: true,
+                                multiple: true,
+                                required: true,
                                 textAlign: "center",
                                 // icons: [
                                 //     {
@@ -3184,13 +3191,13 @@
                                         operator: "and",
                                         criteria: [
                                             {fieldName: "courseId", operator: "equals", value: record.courseId},
-                                            // {
-                                            //     fieldName: "startDate",
-                                            //     operator: "greaterOrEqual",
-                                            //     value: record.startDate
-                                            // },
+                                            {
+                                                fieldName: "startDate",
+                                                operator: "lessOrEqual",
+                                                value: record.startDate
+                                            },
                                             {fieldName: "id", operator: "notEqual", value: record.id},
-                                            {fieldName: "classStatus", operator: "equal", value: "4"},
+                                            {fieldName: "classStatus", operator: "equals", value: "4"},
                                         ]
                                     };
                                     item.pickListCriteria = criteria;
@@ -3204,26 +3211,16 @@
                             isc.IButtonSave.create({
                                 title: "تایید",
                                 click: function () {
-                                    DynamicFormPostponeClass.validate();
-                                    if (DynamicFormPostponeClass.getItem("postponeStartDate").required && DynamicFormPostponeClass.getValue("postponeStartDate") === undefined) {
-                                        DynamicFormPostponeClass.getItem("postponeStartDate").setError("فیلد اجباری است");
-                                        DynamicFormPostponeClass.redraw()
-                                    }
-                                    if (DynamicFormPostponeClass.hasErrors()) {
+                                    DynamicFormAlternativeClass.validate();
+                                    if (DynamicFormAlternativeClass.hasErrors()) {
                                         return;
                                     }
-                                    if (!DynamicFormPostponeClass.valuesHaveChanged()) {
-                                        WindowCancelClass.close()
-                                        return;
-                                    }
-                                    record.classCancelReasonId = DynamicFormPostponeClass.getValue("classCancelReasonId");
-                                    record.alternativeClassId = DynamicFormPostponeClass.getValue("alternativeClassId");
-                                    record.postponeStartDate = DynamicFormPostponeClass.getValue("postponeStartDate");
-                                    record.classStatus = "4";
+                                    let rec = DynamicFormAlternativeClass.getValue("canceledClasses")
                                     wait.show();
-                                    isc.RPCManager.sendRequest(TrDSRequest(classUrl + "update/" + record.id, "PUT", JSON.stringify(record), (resp) => {
+                                    isc.RPCManager.sendRequest(TrDSRequest(classUrl + "update/" + record.id + "?cancelClassesIds=" + rec.toString() , "PUT", JSON.stringify(record), (resp) => {
                                         wait.close();
                                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                            WindowAlternativeClass.close()
                                             ListGrid_Class_refresh();
                                             let responseID = JSON.parse(resp.data).id;
                                             let gridState = "[{id:" + responseID + "}]";
@@ -3241,7 +3238,7 @@
                             }),
                             isc.IButtonCancel.create({
                                 click: function () {
-                                    WindowCancelClass.close()
+                                    WindowAlternativeClass.close()
                                 }
                             }),
                         ]
@@ -3252,6 +3249,8 @@
             height: "150",
         });
         WindowAlternativeClass.show();
+        DynamicFormAlternativeClass.setValue("canceledClasses", record.canceledClasses.map(x => x.id))
+
     }
 
     function classCode() {
@@ -4154,7 +4153,7 @@
             _constructor: "AdvancedCriteria",
             operator: "and",
             criteria: [
-                {fieldName: "eEnabled", operator: "equals", value: 494},
+                {fieldName: "enabled", operator: "isNull"},
                 {fieldName: "questionnaireTypeId", operator: "equals", value: 141}
             ]
         };

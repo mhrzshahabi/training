@@ -34,10 +34,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -485,8 +483,23 @@ public class CourseRestController {
     @GetMapping(value = "courseWithOutTeacher/{startdate}/{endDate}")
     //@PreAuthorize("hasAuthority('r_teacher')")
     //TODO:Unknown
-    public ResponseEntity<CourseDTO.SpecRs> getcourseWithOutTeacher(@PathVariable String startdate, @PathVariable String endDate) {
-        List<CourseDTO.courseWithOutTeacher> list = courseService.courseWithOutTeacher(startdate, endDate);
+    public ResponseEntity<CourseDTO.SpecRs> getcourseWithOutTeacher(@PathVariable String startdate, @PathVariable String endDate,@RequestParam(value = "strSData2") String strSData2,@RequestParam(value = "strEData2") String strEData2,@RequestParam(value = "Years") String Years,@RequestParam(value = "termId") String termId,@RequestParam(value = "courseId") String courseId,@RequestParam(value = "teacherId") String teacherId) {
+        String[] years=(!Years.equals("") ? Years.split(","): new String[]{});
+
+        String[] term= (!termId.equals("") && !Years.equals("") ? termId.split(",") : new String[]{"null"});
+        List<Long> termIds= (!term[0].equals("null")  ? Arrays.stream(term).map(x->Long.parseLong(x)).collect(Collectors.toList()) : new ArrayList(Arrays.asList(new Long[]{})));
+
+        String[] course= (!courseId.equals("") ? courseId.split(",") : new String[]{"null"});
+        List<Long> courseIds=(!course[0].equals("null") ?  Arrays.stream(course).map(x->Long.parseLong(x)).collect(Collectors.toList()) : new ArrayList(Arrays.asList(new Long[]{})));
+
+        String[] teacher= (!teacherId.equals("") ? teacherId.split(","):new String[]{"null"});
+        List<Long> teacherIds= (!teacher[0].equals("null") ? Arrays.stream(teacher).map(x->Long.parseLong(x)).collect(Collectors.toList()) :new ArrayList(Arrays.asList(new Long[]{})));
+
+        startdate = startdate.substring(0, 4) + "/" + startdate.substring(4, 6) + "/" + startdate.substring(6, 8);
+        endDate = endDate.substring(0, 4) + "/" + endDate.substring(4, 6) + "/" + endDate.substring(6, 8);
+        strSData2 = strSData2.substring(0, 4) + "/" + strSData2.substring(4, 6) + "/" + strSData2.substring(6, 8);
+        strEData2 = strEData2.substring(0, 4) + "/" + strEData2.substring(4, 6) + "/" + strEData2.substring(6, 8);
+        List<CourseDTO.courseWithOutTeacher> list = courseService.courseWithOutTeacher(startdate,endDate,strSData2,strEData2,years,termIds,courseIds,teacherIds);
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(list)
                 .setStartRow(0)

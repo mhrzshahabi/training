@@ -72,7 +72,8 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
     @Transactional(readOnly = true)
     public SearchDTO.SearchRs<NeedsAssessmentDTO.Info> fullSearch(Long objectId, String objectType) {
         List<NeedsAssessmentDTO.Info> naList;
-        if (needsAssessmentTempService.readOnlyStatus(objectType, objectId) == 1)
+        Integer readOnlyStatus = needsAssessmentTempService.readOnlyStatus(objectType, objectId);
+        if (readOnlyStatus == 1 /* || readOnlyStatus == 3 */)
             naList = modelMapper.map(needsAssessmentReportsService.getUnverifiedNeedsAssessmentList(objectId, objectType), new TypeToken<List<NeedsAssessmentDTO.Info>>() {}.getType());
         else
             naList = modelMapper.map(needsAssessmentReportsService.getNeedsAssessmentList(objectId, objectType), new TypeToken<List<NeedsAssessmentDTO.Info>>() {}.getType());

@@ -6,6 +6,23 @@
 // <script>
     //----------------------------------------- properties ----------------->>
 
+    var peopleTypeMap ={
+        "1" : "غیر متفرقه",
+        "0" : "متفرقه",
+    };
+
+    var classStatus = {
+        "1": "برنامه ریزی",
+            "2": "در حال اجرا",
+            "3": "پایان یافته",
+            "4": "لغو شده"
+    };
+
+    var Na_status = {
+        "1": "نیازسنجی شده",
+        "0": "نیازسنجی نشده",
+    };
+
     // <<-------------------------------------- Create - RestDataSource  ----------------------------
     PersonnelDS_PTSR_DF = isc.TrDS.create({
         fields: [
@@ -125,6 +142,29 @@
         fetchDataURL: courseUrl + "spec-list",
     });
 
+    let classStudentScoresState_DS = isc.TrDS.create({
+        fields:
+            [
+                {name: "id", primaryKey: true, hidden: true},
+                {name: "title", title: "<spring:message code="title"/>"},
+                {name: "code", title: "<spring:message code="code"/>"}
+            ],
+        autoFetchData: false,
+        autoCacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/StudentScoreState"
+    });
+
+    naPriorityId_DS = isc.TrDS.create({
+        fields:
+            [
+                {name: "id", primaryKey: true, hidden: true},
+                {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+                {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+            ],
+        autoCacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/NeedsAssessmentPriority"
+    });
+
     PersonnelTrainingStatusReport_DS = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -145,13 +185,14 @@
             {name: "personnelCppAffairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "courseCode", title: "<spring:message code='course.code'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "courseTitleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "naIsInNa", title: "<spring:message code='needsAssessment.type'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "naIsInNa", title: "<spring:message code='needsAssessment.type'/>", filterOperator: "equals", autoFitWidth: true, valueMap:Na_status},
             {name: "personnelPostGradeCode", title: "<spring:message code="post.grade.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelPostGradeTitle", title: "<spring:message code='post.grade'/>", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "classStudentScore", title: "<spring:message code='score'/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "personnelIsPersonnel", title: "<spring:message code='acceptanceState.state'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "classStudentScoresStateId", title: "<spring:message code='acceptanceState.state'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "personnelIsPersonnel", title: "<spring:message code='personnel.type'/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap},
             {name: "naPriorityId", title: "<spring:message code='priority'/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "classStatus", title: "<spring:message code='class.status'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "classStatus", title: "<spring:message code='class.status'/>", filterOperator: "equals", autoFitWidth: true, valueMap:classStatus},
 
         ],
         fetchDataURL: viewPersonnelTrainingStatusReportUrl + "/iscList"
@@ -187,7 +228,7 @@
                 valueField: "personnelNo",
                 displayField: "personnelNo",
                 endRow: false,
-                colSpan: 7,
+                colSpan: 3,
                 // comboBoxWidth: 200,
                 layoutStyle: "horizontal",
                 comboBoxProperties: {
@@ -206,8 +247,27 @@
                 },
             },
             {
-                name: "naIsInNa",
+                name: "classStudentScoresStateId",
+                width : 150,
                 colSpan: 2,
+                title: "<spring:message code="acceptanceState.state"/>:",
+                wrapTitle: true,
+                type: "ComboBoxItem",
+                optionDataSource: classStudentScoresState_DS,
+                autoFetchData: false,
+                useClientFiltering: true,
+                valueField: "id",
+                displayField: "title",
+                specialValues: { "**emptyValue**": ""},
+                textAlign: "center",
+                pickListFields: [
+                    {name: "title", filterOperator: "iContains"},
+                ],
+                filterFields: ["titleFa"],
+            },
+            {
+                name: "naIsInNa",
+                colSpan: 4,
                 title: "<spring:message code="needsAssessment.type"/>:",
                 wrapTitle: true,
                 type: "radioGroup",
@@ -222,24 +282,8 @@
                 },
             },
             {
-                name: "acceptanceState",
-                colSpan: 2,
-                title: "<spring:message code="acceptanceState.state"/>:",
-                wrapTitle: true,
-                type: "radioGroup",
-                vertical: true,
-                fillHorizontalSpace: true,
-                defaultValue: "3",
-// endRow:true,
-                valueMap: {
-                    "1": "گذرانده",
-                    "2": "نگذرانده",
-                    "3": "همه",
-                },
-            },
-            {
                 name: "classStatus",
-                colSpan: 2,
+                colSpan: 4,
                 title: "<spring:message code="class.status"/>:",
                 wrapTitle: true,
                 type: "radioGroup",
@@ -398,8 +442,8 @@
                 displayField: "code",
                 endRow: false,
                 layoutStyle: "horizontal",
-                // pickListWidth: 300,
-                comboBoxWidth: 205,
+                pickListWidth: 300,
+                // comboBoxWidth: 205,
                 // layoutStyle: "horizontal",
                 comboBoxProperties: {
                     hint: "",
@@ -425,8 +469,8 @@
                 displayField: "titleFa",
                 endRow: false,
                 colSpan: 1,
-                comboBoxWidth: 205,
-                // pickListWidth: 300,
+                // comboBoxWidth: 205,
+                pickListWidth: 300,
                 layoutStyle: "horizontal",
                 comboBoxProperties: {
                     hint: "",
@@ -454,8 +498,8 @@
                 displayField: "titleFa",
                 endRow: false,
                 colSpan: 1,
-                // pickListWidth: 300,
-                comboBoxWidth: 205,
+                pickListWidth: 300,
+                // comboBoxWidth: 205,
                 layoutStyle: "horizontal",
                 comboBoxProperties: {
                     hint: "",
@@ -484,12 +528,9 @@
                     } else {
                         var criteria = FilterDF_PTSR.getValuesAsAdvancedCriteria();
                         criteria.criteria.remove(criteria.criteria.find({fieldName: "naIsInNa"}));
-                        criteria.criteria.remove(criteria.criteria.find({fieldName: "acceptanceState"}));
                         criteria.criteria.remove(criteria.criteria.find({fieldName: "classStatus"}));
                         if (FilterDF_PTSR.getItem("naIsInNa").getValue() !== "2")
                             criteria.criteria.push({fieldName: "naIsInNa", operator: "equals", value: FilterDF_PTSR.getItem("naIsInNa").getValue()});
-                        if(FilterDF_PTSR.getItem("acceptanceState").getValue() !== "3")
-                            criteria.criteria.push({fieldName: "acceptanceState", operator: "equals", value: FilterDF_PTSR.getItem("acceptanceState").getValue()});
                         if(FilterDF_PTSR.getItem("classStatus").getValue() !== "4")
                             criteria.criteria.push({fieldName: "classStatus", operator: "equals", value: FilterDF_PTSR.getItem("classStatus").getValue()});
                         PersonnelTrainingStatusReport_LG.implicitCriteria = criteria;
@@ -508,12 +549,9 @@
                     } else{
                         var criteria = FilterDF_PTSR.getValuesAsAdvancedCriteria();
                         criteria.criteria.remove(criteria.criteria.find({fieldName: "naIsInNa"}));
-                        criteria.criteria.remove(criteria.criteria.find({fieldName: "acceptanceState"}));
                         criteria.criteria.remove(criteria.criteria.find({fieldName: "classStatus"}));
                         if (FilterDF_PTSR.getItem("naIsInNa").getValue() !== "2")
                             criteria.criteria.push({fieldName: "naIsInNa", operator: "equals", value: FilterDF_PTSR.getItem("naIsInNa").getValue()});
-                        if(FilterDF_PTSR.getItem("acceptanceState").getValue() !== "3")
-                            criteria.criteria.push({fieldName: "acceptanceState", operator: "equals", value: FilterDF_PTSR.getItem("acceptanceState").getValue()});
                         if(FilterDF_PTSR.getItem("classStatus").getValue() !== "4")
                             criteria.criteria.push({fieldName: "classStatus", operator: "equals", value: FilterDF_PTSR.getItem("classStatus").getValue()});
                         if(criteria.criteria.length < 1)
@@ -556,8 +594,19 @@
             {name: "courseCode"},
             {name: "naIsInNa"},
             {name: "classStudentScore"},
+            {
+                name: "classStudentScoresStateId",
+                optionDataSource : classStudentScoresState_DS,
+                valueField: "id",
+                displayField: "title",
+            },
             {name: "personnelIsPersonnel"},
-            {name: "naPriorityId"},
+            {
+                name: "naPriorityId",
+                displayField: "title",
+                valueField: "id",
+                optionDataSource: naPriorityId_DS,
+            },
             {name: "classStatus"},
         ],
     });
@@ -576,7 +625,7 @@
     function hasFilters(){
         let state = FilterDF_PTSR.getValuesAsCriteria().criteria;
         let arry = state !== undefined ? state : Object.keys(FilterDF_PTSR.getValuesAsCriteria());
-        if(state === undefined && arry.length < 4)
+        if(state === undefined && arry.length < 3)
             return false;
         else if(state !== undefined && arry.length < 4)
             return false

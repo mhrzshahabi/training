@@ -93,6 +93,7 @@ public class ExportToFileController {
 
     private final ViewStatisticsUnitReportService viewStatisticsUnitReportService;
     private final ViewCoursesPassedPersonnelReportService viewCoursesPassedPersonnelReportService;
+    private final ContinuousStatusReportViewService continuousStatusReportViewService;
 
     private final ModelMapper modelMapper;
     private final MessageSource messageSource;
@@ -388,6 +389,11 @@ public class ExportToFileController {
                 searchRq.setSortBy("id");
                 generalList = (List<Object>)((Object) viewCoursesPassedPersonnelReportService.search(searchRq).getList());
                 break;
+
+            case "continuousPersonnel":
+                searchRq.setSortBy("empNo");
+                generalList = (List<Object>)((Object) continuousStatusReportViewService.search(searchRq).getList());
+                break;
         }
 
         //End Of Query
@@ -462,6 +468,7 @@ public class ExportToFileController {
 
         SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
         String lenStr = rq.getParameter("_len");
+        String startRowStr = rq.getParameter("_startRow");
         String criteriaStr = rq.getParameter("criteriaStr");
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -488,7 +495,7 @@ public class ExportToFileController {
             }
         }
 
-        searchRq.setStartIndex(0);
+        searchRq.setStartIndex(Integer.parseInt(startRowStr));
         searchRq.setCount(Integer.parseInt(lenStr));
 
         if (StringUtils.isNotEmpty(sortBy)) {

@@ -78,8 +78,9 @@ public class NeedsAssessmentRestController {
     @Loggable
     @PutMapping("/rollBack/{objectType}/{objectId}")
     public ResponseEntity rollBack(@PathVariable String objectType, @PathVariable Long objectId) {
-        needsAssessmentTempService.rollback(objectType, objectId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        if (needsAssessmentTempService.rollback(objectType, objectId))
+            return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(messageSource.getMessage("read.only.na.message", null, LocaleContextHolder.getLocale()), HttpStatus.CONFLICT);
     }
 
     @Loggable
@@ -89,7 +90,7 @@ public class NeedsAssessmentRestController {
                                           @RequestParam(value = "competenceId", required = false) Long competenceId,
                                           @PathVariable String typeCopyTo,
                                           @PathVariable Long idCopyTo) {
-        return new ResponseEntity<>(needsAssessmentTempService.copyNA(typeCopyOf, idCopyOf, competenceId,typeCopyTo, idCopyTo), HttpStatus.OK);
+        return new ResponseEntity<>(needsAssessmentTempService.copyNA(typeCopyOf, idCopyOf, competenceId, typeCopyTo, idCopyTo), HttpStatus.OK);
     }
 
     @Loggable

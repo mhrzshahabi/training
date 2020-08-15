@@ -55,7 +55,7 @@ public class PersonnelRegisteredDTO {
     private String fatherName;
     private String age;
     private String active;
-    private String deleted;
+    private Long deleted;
     private String employmentDate;
     private String postCode;
     private String operationalUnit;
