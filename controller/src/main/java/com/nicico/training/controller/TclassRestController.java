@@ -446,15 +446,9 @@ public class TclassRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/reactionEvaluationResult/{classId}/{userId}")
-    public ResponseEntity<TclassDTO.ReactionEvaluationResult> getReactionEvaluationResult(@PathVariable Long classId, @PathVariable Long userId) {
-        return new ResponseEntity<TclassDTO.ReactionEvaluationResult>(tClassService.getReactionEvaluationResult(classId, userId), HttpStatus.OK);
-    }
-
-    @Loggable
-    @GetMapping(value = "/behavioralEvaluationResult/{classId}")
-    public ResponseEntity<TclassDTO.BehavioralEvaluationResult> getBehavioralEvaluationResult(@PathVariable Long classId) {
-        return new ResponseEntity<TclassDTO.BehavioralEvaluationResult>(tClassService.getBehavioralEvaluationResult(classId), HttpStatus.OK);
+    @GetMapping(value = "/reactionEvaluationResult/{classId}")
+    public ResponseEntity<TclassDTO.ReactionEvaluationResult> getReactionEvaluationResult(@PathVariable Long classId) {
+        return new ResponseEntity<TclassDTO.ReactionEvaluationResult>(tClassService.getReactionEvaluationResult(classId), HttpStatus.OK);
     }
 
     @Loggable

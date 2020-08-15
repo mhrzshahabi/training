@@ -54,6 +54,7 @@ public class TclassService implements ITclassService {
     private final TargetSocietyService societyService;
     private final TargetSocietyDAO societyDAO;
     private final AttendanceDAO attendanceDAO;
+    private final ParameterValueDAO parameterValueDAO;
 
     @Transactional(readOnly = true)
     @Override
@@ -443,7 +444,7 @@ public class TclassService implements ITclassService {
     //----------------------------------------------- Reaction Evaluation ----------------------------------------------
     @Override
     @Transactional
-    public TclassDTO.ReactionEvaluationResult getReactionEvaluationResult(Long classId_l, Long trainingId_l) {
+    public TclassDTO.ReactionEvaluationResult getReactionEvaluationResult(Long classId_l) {
         boolean FERPass = false;
         boolean FETPass = false;
         boolean FECRPass = false;
@@ -458,7 +459,7 @@ public class TclassService implements ITclassService {
         Set<ClassStudent> classStudents;
         Long teacherId = null;
         Long classId = classId_l;
-        Long trainingId = trainingId_l;
+        Long trainingId = null;
         double studentsGradeToTeacher = 0.0;
         double studentsGradeToGoals = 0.0;
         double studentsGradeToFacility = 0.0;
@@ -470,6 +471,7 @@ public class TclassService implements ITclassService {
         Tclass tclass = getTClass(classId);
         classStudents = tclass.getClassStudents();
         teacherId = tclass.getTeacherId();
+        trainingId = tclass.getSupervisor();
         TclassDTO.ReactionEvaluationResult evaluationResult = modelMapper.map(tclass, TclassDTO.ReactionEvaluationResult.class);
 
         Map<String, Double> reactionEvaluationResult = calculateStudentsReactionEvaluationResult(classStudents);
@@ -539,6 +541,7 @@ public class TclassService implements ITclassService {
         return result.get("studentsGradeToTeacher");
     }
 
+    @Transactional
     public Map<String, Double> calculateStudentsReactionEvaluationResult(Set<ClassStudent> classStudents) {
         double studentsGradeToTeacher_l = 0;
         double studentsGradeToFacility_l = 0;
@@ -546,38 +549,39 @@ public class TclassService implements ITclassService {
         Map<String, Double> result = new HashMap<>();
         for (ClassStudent classStudent : classStudents) {
             if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 2 || Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 3) {
-                Evaluation evaluation = evaluationService.getStudentEvaluationForClass(classStudent.getTclassId(), classStudent.getId());
+                EvaluationDTO.Info evaluationDTO =  evaluationService.getEvaluationByData(139L, classStudent.getTclass().getId(), classStudent.getId(), 188L,
+                        classStudent.getTclass().getId(), 504L, 154L);
+                Evaluation evaluation = modelMapper.map(evaluationDTO,Evaluation.class);
                 if (evaluation != null) {
-                    List<EvaluationAnswer> answers = evaluation.getEvaluationAnswerList();
+                    List<EvaluationAnswerDTO.EvaluationAnswerFullData> answers =  evaluationService.getEvaluationFormAnswerDetail(evaluation);
                     double teacherTotalGrade = 0.0;
                     double facilityTotalGrade = 0.0;
                     double goalsTotalGrade = 0.0;
                     double teacherTotalWeight = 0.0;
                     double facilityTotalWeight = 0.0;
                     double goalsTotalWeight = 0.0;
-                    for (EvaluationAnswer answer : answers) {
-                        if (answer.getAnswer() != null) {
-                            double weight = 1.0;
-                            double grade = 1.0;
-                            QuestionnaireQuestion questionnaireQuestion = null;
-                            Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
-                            if (question.isPresent())
-                                questionnaireQuestion = question.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-                            if (answer.getQuestionSource().getCode().equals("3") && question.isPresent()) {
-                                weight = questionnaireQuestion.getWeight();
+                    for (EvaluationAnswerDTO.EvaluationAnswerFullData answer : answers) {
+                        if (answer.getAnswerId() != null) {
+                            if(answer.getDomainId().equals(54L)){ //Facilities
+                                if(answer.getWeight() != null)
+                                    facilityTotalWeight += answer.getWeight();
+                                else
+                                    facilityTotalWeight ++;
+                                facilityTotalGrade += (Double.parseDouble(parameterValueDAO.findFirstById(answer.getAnswerId()).getValue()))*answer.getWeight();
                             }
-                            grade = Double.parseDouble(answer.getAnswer().getValue());
-                            if (questionnaireQuestion != null) {
-                                if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("SAT")) { // teacher
-                                    teacherTotalGrade += grade * weight;
-                                    teacherTotalWeight += weight;
-                                } else if (questionnaireQuestion.getEvaluationQuestion().getDomain().getCode().equalsIgnoreCase("EQP")) { //Facilities
-                                    facilityTotalGrade += grade * weight;
-                                    facilityTotalWeight += weight;
-                                }
-                            } else {//Goals
-                                goalsTotalGrade += grade * weight;
-                                goalsTotalWeight += weight;
+                            else if(answer.getDomainId().equals(183L)){ //Content
+                                if(answer.getWeight() != null)
+                                    goalsTotalWeight += answer.getWeight();
+                                else
+                                    goalsTotalWeight ++;
+                                goalsTotalGrade += (Double.parseDouble(parameterValueDAO.findFirstById(answer.getAnswerId()).getValue()))*answer.getWeight();
+                            }
+                            else if(answer.getDomainId().equals(53L)){ //teacher
+                                if(answer.getWeight() != null)
+                                    teacherTotalWeight += answer.getWeight();
+                                else
+                                    teacherTotalWeight ++;
+                                teacherTotalGrade += (Double.parseDouble(parameterValueDAO.findFirstById(answer.getAnswerId()).getValue()))*answer.getWeight();
                             }
                         }
                     }
@@ -604,61 +608,17 @@ public class TclassService implements ITclassService {
     }
 
     public Double getTeacherGradeToClass(Long classId, Long teacherId) {
-        double result = 0.0;
-        Evaluation evaluation = evaluationService.getTeacherEvaluationForClass(teacherId, classId);
-        if (evaluation != null) {
-            List<EvaluationAnswer> answers = evaluation.getEvaluationAnswerList();
-            double totalGrade = 0.0;
-            double totalWeight = 0.0;
-            for (EvaluationAnswer answer : answers) {
-                if (answer != null && answer.getAnswer() != null) {
-                    double weight = 1.0;
-                    double grade = 1.0;
-                    Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
-                    QuestionnaireQuestion questionnaireQuestion = null;
-                    if (question.isPresent())
-                        questionnaireQuestion = question.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-                    if (answer.getQuestionSource().getCode().equals("2") && question.isPresent()) {
-                        weight = questionnaireQuestion.getWeight();
-                    }
-                    grade = Double.parseDouble(answer.getAnswer().getValue());
-                    totalGrade += grade * weight;
-                    totalWeight += weight;
-                }
-            }
-            if (totalWeight != 0)
-                result = totalGrade / totalWeight;
-        }
-        return result;
+        EvaluationDTO.Info evaluationDTO =  evaluationService.getEvaluationByData(140L, classId, teacherId,
+                187L, classId, 504L, 154L);
+        Evaluation evaluation = modelMapper.map(evaluationDTO,Evaluation.class);
+        return evaluationService.getEvaluationFormGrade(evaluation);
     }
 
     public Double getTrainingGradeToTeacher(Long classId, Long trainingId, Long teacherId) {
-        double result = 0.0;
-        Evaluation evaluation = evaluationService.getTrainingEvaluationForTeacherCustomized(teacherId, classId);
-        if (evaluation != null) {
-            List<EvaluationAnswer> answers = evaluation.getEvaluationAnswerList();
-            double totalGrade = 0.0;
-            double totalWeight = 0.0;
-            for (EvaluationAnswer answer : answers) {
-                if (answer != null && answer.getAnswer() != null) {
-                    double weight = 1.0;
-                    double grade = 1.0;
-                    Optional<QuestionnaireQuestion> question = questionnaireQuestionDAO.findById(answer.getEvaluationQuestionId());
-                    QuestionnaireQuestion questionnaireQuestion = null;
-                    if (question.isPresent())
-                        questionnaireQuestion = question.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-                    if (answer.getQuestionSource().getCode().equals("2") && question.isPresent()) {
-                        weight = questionnaireQuestion.getWeight();
-                    }
-                    grade = Double.parseDouble(answer.getAnswer().getValue());
-                    totalGrade += grade * weight;
-                    totalWeight += weight;
-                }
-            }
-            if (totalWeight != 0)
-                result = totalGrade / totalWeight;
-        }
-        return result;
+        EvaluationDTO.Info evaluationDTO =  evaluationService.getEvaluationByData(141L, classId, trainingId,
+                454L, teacherId, 187L, 154L);
+        Evaluation evaluation = modelMapper.map(evaluationDTO,Evaluation.class);
+        return evaluationService.getEvaluationFormGrade(evaluation);
     }
 
     @Override
@@ -890,9 +850,31 @@ public class TclassService implements ITclassService {
         return result;
     }
 
+
+    @Transactional(readOnly = true)
+    @Override
+    public Double getClassReactionEvaluationGrade(Long classId, Long teacherId) {
+        Tclass tclass = getTClass(classId);
+        Set<ClassStudent> classStudents = tclass.getClassStudents();
+        calculateStudentsReactionEvaluationResult(classStudents);
+
+        Map<String, Double> reactionEvaluationResult = calculateStudentsReactionEvaluationResult(classStudents);
+        double studentsGradeToTeacher = (Double) reactionEvaluationResult.get("studentsGradeToTeacher");
+        double studentsGradeToGoals = (Double) reactionEvaluationResult.get("studentsGradeToGoals");
+        double studentsGradeToFacility = (Double) reactionEvaluationResult.get("studentsGradeToFacility");
+        double percenetOfFilledReactionEvaluationForms = getPercenetOfFilledReactionEvaluationForms(classStudents);
+        double teacherGradeToClass = getTeacherGradeToClass(classId, teacherId);
+        Map<String, Object> FERGradeResult = getFERGrade(studentsGradeToTeacher,
+                studentsGradeToGoals,
+                studentsGradeToFacility,
+                percenetOfFilledReactionEvaluationForms,
+                teacherGradeToClass);
+        return (double) FERGradeResult.get("FERGrade");
+    }
+
     ///---------------------------------------------- Reaction Evaluation ----------------------------------------------
 
-    //----------------------------------------------- Behavioral Evaluation --------------------------------------------
+    //----------------------------------------------- Behavioral Evaluation Old ----------------------------------------
     @Override
     @Transactional
     public TclassDTO.BehavioralEvaluationResult getBehavioralEvaluationResult(Long classId) {
@@ -1122,7 +1104,6 @@ public class TclassService implements ITclassService {
         return result;
     }
 
-
     public Map<String, Object> getFECBGrade(double FEBGrade_l, Long classId, Long teacherId, Set<ClassStudent> classStudents, String scoringMethod) {
         double grade = 0.0;
         boolean pass = false;
@@ -1178,9 +1159,7 @@ public class TclassService implements ITclassService {
         return result;
     }
 
-    //----------------------------------------------- Behavioral Evaluation --------------------------------------------
-
-
+    //----------------------------------------------- Behavioral Evaluation Old ----------------------------------------
     @Transactional(readOnly = true)
     @Override
     public List<TclassDTO.PersonnelClassInfo> findAllPersonnelClass(String national_code, String personnel_no) {
@@ -1267,34 +1246,12 @@ public class TclassService implements ITclassService {
 
     @Transactional(readOnly = true)
     @Override
-    public Double getClassReactionEvaluationGrade(Long classId, Long teacherId) {
-        Tclass tclass = getTClass(classId);
-        Set<ClassStudent> classStudents = tclass.getClassStudents();
-        calculateStudentsReactionEvaluationResult(classStudents);
-
-        Map<String, Double> reactionEvaluationResult = calculateStudentsReactionEvaluationResult(classStudents);
-        double studentsGradeToTeacher = (Double) reactionEvaluationResult.get("studentsGradeToTeacher");
-        double studentsGradeToGoals = (Double) reactionEvaluationResult.get("studentsGradeToGoals");
-        double studentsGradeToFacility = (Double) reactionEvaluationResult.get("studentsGradeToFacility");
-        double percenetOfFilledReactionEvaluationForms = getPercenetOfFilledReactionEvaluationForms(classStudents);
-        double teacherGradeToClass = getTeacherGradeToClass(classId, teacherId);
-        Map<String, Object> FERGradeResult = getFERGrade(studentsGradeToTeacher,
-                studentsGradeToGoals,
-                studentsGradeToFacility,
-                percenetOfFilledReactionEvaluationForms,
-                teacherGradeToClass);
-        return (double) FERGradeResult.get("FERGrade");
-    }
-
-    @Transactional(readOnly = true)
-    @Override
     public List<TclassDTO.Info> PersonnelClass(Long id) {
 
         List<Tclass> tclass = tclassDAO.findTclassesByCourseId(id);
         return modelMapper.map(tclass, new TypeToken<List<TclassDTO.Info>>() {
         }.getType());
     }
-
 
     @Transactional(readOnly = true)
     @Override

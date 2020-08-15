@@ -1,6 +1,7 @@
 package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.EvaluationAnswerDTO;
 import com.nicico.training.dto.EvaluationDTO;
 import com.nicico.training.model.Evaluation;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,4 +41,8 @@ public interface IEvaluationService {
 
     @Transactional
     Boolean deleteEvaluation(@RequestBody HashMap req);
+
+    double getEvaluationFormGrade(Evaluation evaluation);
+
+    List<EvaluationAnswerDTO.EvaluationAnswerFullData> getEvaluationFormAnswerDetail(Evaluation evaluation);
 }

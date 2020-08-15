@@ -3,7 +3,6 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationService;
@@ -15,8 +14,6 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -570,7 +567,30 @@ public class EvaluationService implements IEvaluationService {
 
     }
 
+    @Override
     public double getEvaluationFormGrade(Evaluation evaluation){
+        double result = 0.0;
+        int index = 0;
+
+        List<EvaluationAnswerDTO.EvaluationAnswerFullData> res =  getEvaluationFormAnswerDetail(evaluation);
+
+        for (EvaluationAnswerDTO.EvaluationAnswerFullData re : res) {
+            if(re.getAnswerId() != null) {
+                if(re.getWeight() != null)
+                    index += re.getWeight();
+                else
+                    index ++;
+                result += (Double.parseDouble(parameterValueDAO.findFirstById(re.getAnswerId()).getValue()))*re.getWeight();
+            }
+        }
+        if(index!=0)
+            result = result/index;
+
+        return result;
+    }
+
+    @Override
+    public List<EvaluationAnswerDTO.EvaluationAnswerFullData> getEvaluationFormAnswerDetail(Evaluation evaluation){
         double result = 0.0;
         int index = 0;
 
@@ -596,27 +616,13 @@ public class EvaluationService implements IEvaluationService {
                 evaluationAnswerFullData.setOrder(dynamicQuestion.getOrder());
                 evaluationAnswerFullData.setWeight(dynamicQuestion.getWeight());
                 evaluationAnswerFullData.setQuestion(dynamicQuestion.getQuestion());
+                evaluationAnswerFullData.setDomainId(183L);
             }
 
             res.add(evaluationAnswerFullData);
         }
 
-        TotalResponse<ParameterValueDTO.Info> answerHelp = parameterService.getByCode("EvaluationResult");
-
-        for (EvaluationAnswerDTO.EvaluationAnswerFullData re : res) {
-            if(re.getAnswerId() != null) {
-                if(re.getWeight() != null)
-                    index += re.getWeight();
-                else
-                    index ++;
-                result += (Double.parseDouble(parameterValueDAO.findFirstById(re.getAnswerId()).getValue()))*re.getWeight();
-            }
-        }
-        if(index!=0)
-            result = result/index;
-
-        return result;
-
+        return res;
     }
 
 }

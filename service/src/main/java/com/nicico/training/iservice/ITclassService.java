@@ -64,7 +64,7 @@ public interface ITclassService {
 
     Integer getWorkflowEndingStatusCode(Long classId);
 
-    public TclassDTO.ReactionEvaluationResult getReactionEvaluationResult(Long classId, Long trainingId);
+    public TclassDTO.ReactionEvaluationResult getReactionEvaluationResult(Long classId);
 
     @Transactional
     double getJustFERGrade(Long classId);
