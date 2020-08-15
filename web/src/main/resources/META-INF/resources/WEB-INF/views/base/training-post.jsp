@@ -17,7 +17,7 @@
     var PostTrainingPost_TrainingPost_Jsp = null;
     var refresh_TrainingPost = true;
     var trainingPostsSelection=false;
-
+    let LoadAttachments_Training_Post = null;
     var peopleTypeMap ={
         "Personal" : "شرکتی",
         "ContractorPersonal" : "پیمان کار",
@@ -236,6 +236,8 @@
         width: 150,
         data: [{
             title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
+                objectIdAttachment=null
+                LoadAttachments_Training_Post.ListGrid_JspAttachment.setData([]);
                 ListGrid_TrainingPost_Posts_refresh();
             }
         }, {
@@ -1112,6 +1114,8 @@
         // icon: "<spring:url value="refresh.png"/>",
         title: "بازخوانی اطلاعات",
         click: function () {
+            objectIdAttachment=null
+            LoadAttachments_Training_Post.ListGrid_JspAttachment.setData([]);
             ListGrid_TrainingPost_refresh();
         }
     });
@@ -1477,6 +1481,8 @@
             {name: "TabPane_Post_TrainingPost_Jsp", title: "لیست پست های انفرادی دسته بندی شده", pane: ListGrid_TrainingPost_Posts},
             {name: "TabPane_Personnel_TrainingPost_Jsp", title: "لیست پرسنل", pane: PersonnelLG_TrainingPost_Jsp},
             {name: "TabPane_NA_TrainingPost_Jsp", title: "<spring:message code='need.assessment'/>", pane: CourseLG_TrainingPost_Jsp},
+            {ID: "Training_post_AttachmentsTab",title: "<spring:message code="attachments"/>"},
+
         ],
         tabSelected: function (){
             selectionUpdated_TrainingPost_Jsp();
@@ -1650,7 +1656,7 @@
             tab.pane.setData([]);
             return;
         }
-        switch (tab.name) {
+        switch (tab.name || tab.ID) {
             case "TabPane_Post_TrainingPost_Jsp": {
                 if (PostTrainingPost_TrainingPost_Jsp === trainingPost.id && !refresh_TrainingPost)
                     return;
@@ -1691,6 +1697,16 @@
                      nullPostsRefresh(RestDataSource_All_Posts_Clone, ListGrid_AllPosts_Clone);
                     trainingPostsSelection = false;
                 }
+                break;
+            }
+            case "Training_Post_AttachmentsTab": {
+                if (typeof LoadAttachments_Training_Post.loadPage_attachment_Job !== "undefined")
+                    LoadAttachments_Training_Post.loadPage_attachment_Job("TrainingPost",trainingPost.id, "<spring:message code="attachment"/>", {
+                        1: "جزوه",
+                        2: "لیست نمرات",
+                        3: "لیست حضور و غیاب",
+                        4: "نامه غیبت موجه"
+                    }, false);
                 break;
             }
         }
@@ -1754,4 +1770,16 @@
         }
         return result;
     }
+
+    if (!loadjs.isDefined('load_Attachments_Training_Post')) {
+        loadjs('<spring:url value='tclass/attachments-tab' />', 'load_Attachments_Training_Post');
+    }
+
+    loadjs.ready('load_Attachments_Training_Post', function () {
+        setTimeout(()=> {
+            LoadAttachments_Training_Post = new loadAttachments();
+            Detail_Tab_TrainingPost.updateTab(Training_post_AttachmentsTab, LoadAttachments_Training_Post.VLayout_Body_JspAttachment)
+        },0);
+
+    })
     // </script>
