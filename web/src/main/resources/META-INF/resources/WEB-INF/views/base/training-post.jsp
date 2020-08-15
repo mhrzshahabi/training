@@ -1535,7 +1535,7 @@
             {name: "TabPane_Post_TrainingPost_Jsp", title: "لیست پست های انفرادی دسته بندی شده", pane: ListGrid_TrainingPost_Posts},
             {name: "TabPane_Personnel_TrainingPost_Jsp", title: "لیست پرسنل", pane: PersonnelLG_TrainingPost_Jsp},
             {name: "TabPane_NA_TrainingPost_Jsp", title: "<spring:message code='need.assessment'/>", pane: CourseLG_TrainingPost_Jsp},
-            {ID: "Training_post_AttachmentsTab",title: "<spring:message code="attachments"/>"},
+            {ID: "TrainingPost_AttachmentsTab",title: "<spring:message code="attachments"/>"},
 
         ],
         tabSelected: function (){
@@ -1753,7 +1753,8 @@
                 }
                 break;
             }
-            case "Training_Post_AttachmentsTab": {
+            case "TrainingPost_AttachmentsTab": {
+
                 if (typeof LoadAttachments_Training_Post.loadPage_attachment_Job !== "undefined")
                     LoadAttachments_Training_Post.loadPage_attachment_Job("TrainingPost",trainingPost.id, "<spring:message code="attachment"/>", {
                         1: "جزوه",
@@ -1832,7 +1833,7 @@
     loadjs.ready('load_Attachments_Training_Post', function () {
         setTimeout(()=> {
             LoadAttachments_Training_Post = new loadAttachments();
-            Detail_Tab_TrainingPost.updateTab(Training_post_AttachmentsTab, LoadAttachments_Training_Post.VLayout_Body_JspAttachment)
+            Detail_Tab_TrainingPost.updateTab(TrainingPost_AttachmentsTab, LoadAttachments_Training_Post.VLayout_Body_JspAttachment)
         },0);
 
     })
