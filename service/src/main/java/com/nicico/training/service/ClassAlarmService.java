@@ -734,7 +734,7 @@ public class ClassAlarmService implements IClassAlarm {
 
     //****************class attendance alarm*****************checking for unjustified absence limitations
     @Transactional
-    public List<ClassAlarmDTO> alarmAttendanceUnjustifiedAbsence(Long class_id, Long studentId) {
+    public List<ClassAlarmDTO> alarmAttendanceUnjustifiedAbsence(Long class_id) {
 
         List<ClassAlarmDTO> alarmList = null;
 
@@ -802,7 +802,7 @@ public class ClassAlarmService implements IClassAlarm {
                     "                                         AND tbl_attendance.f_student = tbl_class_student.student_id\n" +
                     "        WHERE\n" +
                     "            tbl_session.f_class_id =:class_id\n" +
-                    "            AND   tbl_attendance.f_student =:student_id\n" +
+                    "--            AND   tbl_attendance.f_student =:student_id\n" +
                     "        GROUP BY\n" +
                     "            tbl_session.f_class_id,\n" +
                     "            tbl_class_student.student_id\n" +
@@ -812,7 +812,7 @@ public class ClassAlarmService implements IClassAlarm {
                     "    sum_session_time * :absence_percentage < absence_session_time\n" +
                     "    )";
 
-            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).setParameter("student_id", studentId).setParameter("absence_percentage", 0.34).getResultList();
+            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).setParameter("absence_percentage", 0.34).getResultList();
 
             if (alarms != null) {
                 alarmList = new ArrayList<>(alarms.size());
