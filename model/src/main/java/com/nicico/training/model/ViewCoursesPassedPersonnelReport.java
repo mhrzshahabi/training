@@ -1,6 +1,6 @@
 package com.nicico.training.model;
 
-import com.nicico.training.model.compositeKey.PersonnelCourseKey;
+import com.nicico.training.model.compositeKey.PersonnelCourseTermKey;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
@@ -21,7 +21,7 @@ import java.io.Serializable;
 
 public class ViewCoursesPassedPersonnelReport implements Serializable {
     @EmbeddedId
-    private PersonnelCourseKey id;
+    private PersonnelCourseTermKey id;
 
     @Column(name = "personnel_emp_no")
     private String empNo;
