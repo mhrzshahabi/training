@@ -815,9 +815,8 @@
                             isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
                                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                     Window_Questions_JspEvaluation.close();
-                                    // isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
-                                    //     LGRecord.id,
-                                    //     "GET", null, null));
+                                    isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
+                                        classRecord_BE.id, "GET", null, null));
                                     ListGrid_student_BE.invalidateCache();
                                     Listgrid_BehavioralRegisteration_JSPEvaluation.invalidateCache();
                                     const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
