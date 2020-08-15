@@ -28,6 +28,7 @@ public class NeedsAssessmentTemp<E> extends Auditable {
                     @MetaValue(value = "Job", targetEntity = Job.class),
                     @MetaValue(value = "JobGroup", targetEntity = JobGroup.class),
                     @MetaValue(value = "Post", targetEntity = Post.class),
+                    @MetaValue(value = "TrainingPost", targetEntity = TrainingPost.class),
                     @MetaValue(value = "PostGroup", targetEntity = PostGroup.class),
                     @MetaValue(value = "PostGrade", targetEntity = PostGrade.class),
                     @MetaValue(value = "PostGradeGroup", targetEntity = PostGradeGroup.class),

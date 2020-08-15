@@ -205,6 +205,14 @@
             {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {
+                name: "enabled",
+                title: "<spring:message code="active.status"/>",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both",
+            },
         ],
         fetchDataURL: viewPostUrl + "/iscList"
     });
@@ -341,7 +349,13 @@
             {name: "competenceCount"},
             {name: "personnelCount"},
             {name: "lastModifiedDateNA"},
-            {name: "modifiedByNA"}
+            {name: "modifiedByNA"},
+            {name: "enabled",
+                formatCellValue: function (value, record) {
+                    let newVal = value == undefined ? "فعال" : "غیر فعال";
+                    return newVal;
+                }
+            },
         ],
         autoFetchData: true,
         gridComponents: [PostTS_post, ToolStrip_NA_POST, "filterEditor", "header", "body",],

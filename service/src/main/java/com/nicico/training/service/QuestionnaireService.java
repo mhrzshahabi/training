@@ -36,27 +36,10 @@ public class QuestionnaireService extends BaseService<Questionnaire, Long, Quest
 
     @Transactional
     public QuestionnaireDTO.Info updateEnable(Long id) {
-        Optional<Questionnaire> model = dao.findById(id);
-
-        Questionnaire oQuestionnaire = model.orElse(null);
-
-        if (oQuestionnaire == null)
-            return null;
-        else {
-            Long enable = oQuestionnaire.getEEnabled();
-
-            if (enable == null || enable == 74) {
-                enable = 494L;
-            } else {
-                enable = 74L;
-            }
-
-            oQuestionnaire.setEEnabled(enable);
-
-            dao.save(oQuestionnaire);
-
-            return modelMapper.map(oQuestionnaire, QuestionnaireDTO.Info.class);
-        }
+        Questionnaire oQuestionnaire = dao.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        oQuestionnaire.setEnabled(new Long(74L).equals(oQuestionnaire.getEnabled()) ? null : 74L);
+        dao.save(oQuestionnaire);
+        return modelMapper.map(oQuestionnaire, QuestionnaireDTO.Info.class);
     }
 
     @Transactional
@@ -69,7 +52,7 @@ public class QuestionnaireService extends BaseService<Questionnaire, Long, Quest
             if (model == null) {
                 throw new TrainingException(TrainingException.ErrorType.NotFound);
             } else {
-                List<QuestionnaireQuestion> questionnaireQuestionList=model.getQuestionnaireQuestionList();
+                List<QuestionnaireQuestion> questionnaireQuestionList = model.getQuestionnaireQuestionList();
 
                 questionnaireQuestionDAO.deleteAll(questionnaireQuestionList);
 

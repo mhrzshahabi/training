@@ -21,7 +21,7 @@ import java.util.List;
 
 public class ExcelUtil {
 
-    static final String baseUrl = "http://localhost:8080/training/api/";
+    /*static final String baseUrl = "http://localhost:8080/training/api/";
     final static String baseDTOPath = "com.nicico.training.dto";
     static String excelFilePath = "E:\\System\\Training\\Data\\Converted\\forConvert(n3) Part 2 For Import.xlsx";
 
@@ -140,7 +140,7 @@ public class ExcelUtil {
             value = cell.toString();
         }
         return value;
-    }
+    }*/
 }
 
 //

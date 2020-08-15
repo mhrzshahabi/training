@@ -49,12 +49,12 @@ public class ExportToFileService implements IExportToFileService {
             XSSFSheet sheet = workbook.createSheet("گزارش");
             sheet.setRightToLeft(true);
 
-            XSSFCellStyle headerCellStyle = setCellStyle(workbook, "Tahoma", (short) 12, new Color(255, 255, 255), null,VerticalAlignment.CENTER,HorizontalAlignment.CENTER);
+            XSSFCellStyle headerCellStyle = setCellStyle(workbook, "Tahoma", (short) 12, new Color(0,0,0), null,VerticalAlignment.CENTER,HorizontalAlignment.CENTER);
 
             XSSFCellStyle bodyCellStyle = setCellStyle(workbook, "Tahoma", (short) 12, null, null,VerticalAlignment.CENTER,HorizontalAlignment.CENTER);
 
             //first row
-            XSSFCellStyle rCellStyle = setCellStyle(workbook, "Tahoma", (short) 16, new Color(255, 255, 255), null,VerticalAlignment.CENTER,HorizontalAlignment.CENTER);
+            XSSFCellStyle rCellStyle = setCellStyle(workbook, "Tahoma", (short) 16, new Color(0,0,0), null,VerticalAlignment.CENTER,HorizontalAlignment.CENTER);
 
             CellReference cellAddress = new CellReference(0, fields1.size() - 1);
             sheet.addMergedRegion(CellRangeAddress.valueOf("A1:" + cellAddress.formatAsString()));
@@ -64,7 +64,7 @@ public class ExportToFileService implements IExportToFileService {
             cellOfRow.setCellStyle(rCellStyle);
 
             //second row
-            rCellStyle = setCellStyle(workbook, "Tahoma", (short) 14, new Color(255, 255, 255), null,VerticalAlignment.CENTER,HorizontalAlignment.CENTER);
+            rCellStyle = setCellStyle(workbook, "Tahoma", (short) 14, new Color(0,0,0), null,VerticalAlignment.CENTER,HorizontalAlignment.CENTER);
 
             cellAddress = new CellReference(1, fields1.size() - 1);
             sheet.addMergedRegion(CellRangeAddress.valueOf("A2:" + cellAddress.formatAsString()));
@@ -74,7 +74,7 @@ public class ExportToFileService implements IExportToFileService {
             cellOfRow.setCellStyle(rCellStyle);
 
             //third row
-            rCellStyle = setCellStyle(workbook, "Tahoma", (short) 12, new Color(255, 255, 255), null,VerticalAlignment.CENTER,HorizontalAlignment.CENTER);
+            rCellStyle = setCellStyle(workbook, "Tahoma", (short) 12, new Color(0,0,0), null,VerticalAlignment.CENTER,HorizontalAlignment.CENTER);
 
             if (columns.length > 3) {
                 cellAddress = new CellReference(2, fields1.size() - 1);

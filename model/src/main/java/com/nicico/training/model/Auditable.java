@@ -32,7 +32,7 @@ public abstract class Auditable {
     private ParameterValue pEnabled;
 
     @Column(name = "e_enabled")
-    Long eEnabled;
+    Long enabled;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "e_deleted", insertable = false, updatable = false)
@@ -40,7 +40,7 @@ public abstract class Auditable {
     private ParameterValue pDeleted;
 
     @Column(name = "e_deleted")
-    Long eDeleted;
+    Long deleted;
 
     @LastModifiedDate
     @Column(name = "d_last_modified_date")

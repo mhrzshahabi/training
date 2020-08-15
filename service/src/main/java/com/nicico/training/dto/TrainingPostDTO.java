@@ -33,12 +33,8 @@ public class TrainingPostDTO {
     @ApiModelProperty()
     private Long postGradeId;
 
-//    @Getter(AccessLevel.NONE)
-//    private ParameterValue pEnabled;
-//
-//    public ParameterValue getpEnabled() {
-//        return pEnabled;
-//    }
+    @ApiModelProperty()
+    private Long enabled;
 
 
     @Getter

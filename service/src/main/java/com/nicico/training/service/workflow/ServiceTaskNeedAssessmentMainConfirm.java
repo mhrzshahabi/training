@@ -18,18 +18,20 @@ import org.springframework.stereotype.Component;
 public class ServiceTaskNeedAssessmentMainConfirm implements JavaDelegate {
 
 
-    NeedsAssessmentService needsAssessmentService;
+    private final NeedsAssessmentService needsAssessmentService;
     private final NeedsAssessmentTempService needsAssessmentTempService;
     private final PersonnelDAO personnelDAO;
 
     @Override
     public void execute(DelegateExecution exe) {
 
+        String objectType = (String) exe.getVariable("cType");
+        Long objectId = Long.parseLong((String) exe.getVariable("cId"));
+
         String mainConfirmBoss = "ahmadi_z";
         String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
 
-        if((complexTitle != null) && (complexTitle.equals("شهر بابک")))
-        {
+        if ((complexTitle != null) && (complexTitle.equals("شهر بابک"))) {
             mainConfirmBoss = "pourfathian_a";
         }
 
@@ -42,7 +44,7 @@ public class ServiceTaskNeedAssessmentMainConfirm implements JavaDelegate {
 
             if (exe.getVariable("REJECT").toString().equals("") && exe.getVariable("workflowStatusCode").toString().equals("0")) {
 
-//                needsAssessmentService.updateNeedsAssessmentMainWorkflow(Long.parseLong(exe.getVariable("cId").toString()), 0, "ارسال به گردش کار اصلی");
+                needsAssessmentTempService.updateNeedsAssessmentTempMainWorkflow(objectType, objectId, 0, "ارسال به گردش کار اصلی");
                 exe.setVariable("C_WORKFLOW_ENDING_STATUS", "ارسال به گردش کار اصلی");
                 exe.setVariable("C_WORKFLOW_ENDING_STATUS_CODE", "0");
 
@@ -55,16 +57,16 @@ public class ServiceTaskNeedAssessmentMainConfirm implements JavaDelegate {
 
             if (exe.getVariable("REJECT").toString().equals("Y")) {
 
-//                needsAssessmentService.updateNeedsAssessmentMainWorkflow(Long.parseLong(exe.getVariable("cId").toString()), -1, "عدم تایید اصلی");
+                needsAssessmentTempService.updateNeedsAssessmentTempMainWorkflow(objectType, objectId, -1, "عدم تایید اصلی");
                 exe.setVariable("C_WORKFLOW_ENDING_STATUS", "عدم تایید اصلی");
                 exe.setVariable("C_WORKFLOW_ENDING_STATUS_CODE", "-1");
 
 
             } else if (exe.getVariable("REJECT").toString().equals("N")) {
-//                needsAssessmentService.updateNeedsAssessmentMainWorkflow(Long.parseLong(exe.getVariable("cId").toString()), 1, "تایید نهایی اصلی");
+                needsAssessmentTempService.updateNeedsAssessmentTempMainWorkflow(objectType, objectId, 1, "تایید نهایی اصلی");
                 exe.setVariable("C_WORKFLOW_ENDING_STATUS", "تایید نهایی اصلی");
                 exe.setVariable("C_WORKFLOW_ENDING_STATUS_CODE", "1");
-                needsAssessmentTempService.verify(exe.getVariable("cType").toString(), Long.parseLong(exe.getVariable("cId").toString()));
+                needsAssessmentTempService.verify(objectType, objectId);
             }
         }
         //**************************************************
@@ -74,14 +76,14 @@ public class ServiceTaskNeedAssessmentMainConfirm implements JavaDelegate {
 
             if (exe.getVariable("REJECT").toString().equals("Y")) {
 
-//                needsAssessmentService.updateNeedsAssessmentMainWorkflow(Long.parseLong(exe.getVariable("cId").toString()), -3, "حذف گردش کار اصلی");
+                needsAssessmentTempService.updateNeedsAssessmentTempMainWorkflow(objectType, objectId, -3, "حذف گردش کار اصلی");
                 exe.setVariable("C_WORKFLOW_ENDING_STATUS", "حذف گردش کار اصلی");
                 exe.setVariable("C_WORKFLOW_ENDING_STATUS_CODE", "-3");
-                needsAssessmentTempService.rollback(exe.getVariable("cType").toString(), Long.parseLong(exe.getVariable("cId").toString()));
+                needsAssessmentTempService.rollback(objectType, objectId);
 
             } else if (exe.getVariable("REJECT").toString().equals("N")) {
 
-//                needsAssessmentService.updateNeedsAssessmentMainWorkflow(Long.parseLong(exe.getVariable("cId").toString()), 10, "اصلاح نیازسنجی و ارسال به گردش کار اصلی");
+                needsAssessmentTempService.updateNeedsAssessmentTempMainWorkflow(objectType, objectId, 10, "اصلاح نیازسنجی و ارسال به گردش کار اصلی");
                 exe.setVariable("C_WORKFLOW_ENDING_STATUS", "اصلاح نیازسنجی و ارسال به گردش کار اصلی");
                 exe.setVariable("C_WORKFLOW_ENDING_STATUS_CODE", "10");
 

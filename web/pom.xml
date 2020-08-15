@@ -25,11 +25,11 @@
             <artifactId>spring-boot-devtools</artifactId>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>3.17</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>com.nicico.training</groupId>
             <artifactId>controller</artifactId>
