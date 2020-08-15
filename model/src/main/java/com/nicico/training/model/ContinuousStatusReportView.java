@@ -80,7 +80,7 @@ public class ContinuousStatusReportView {
     @Column(name = "term_title_fa")
     private String termTitleFa;
 
-    @Column(name = "term_id")
+    @Column(name = "term_id", insertable = false, updatable = false)
     private Long termId;
 
     ////////////////////////////////////////////////////////////////////////

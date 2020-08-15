@@ -27,8 +27,12 @@
 
             {name: "courseCode", title:"<spring:message code='course.code'/>", autoFitWidth: true},
             {name: "courseTitleFa", title:"<spring:message code='course'/>", filterOperator: "iContains", autoFitWidth: true},
-
             {name: "classCode", title:"<spring:message code='class.code'/>", autoFitWidth: true},
+
+
+            {name: "termTitleFa", title:"<spring:message code='term'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classYear", title:"<spring:message code='year'/>", filterOperator: "iContains", autoFitWidth: true},
+
             {name: "classHDduration", title:"<spring:message code='course_theoryDuration'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "classStartDate", title:"<spring:message code="start.date"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "classEndDate", title:"<spring:message code="end.date"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -243,51 +247,13 @@
                     }}],
                 keyPressFilter: "[A-Z|0-9|,-]"
             },
-            <%--{--%>
-                <%--name: "empNo",--%>
-                <%--title:"پرسنلی 6رقمی",--%>
-                <%--textAlign: "center",--%>
-                <%--width: "*",--%>
-                <%--keyPressFilter: "[0-9, ]",--%>
-                <%--operator: "inSet",--%>
-                <%--editorType: "TextItem",--%>
-                <%--length:10000,--%>
-                <%--changed (form, item, value){--%>
-                    <%--let res = value.split(" ");--%>
-                    <%--item.setValue(res.toString())--%>
-                <%--}--%>
-            <%--},--%>
-            <%--{--%>
-                <%--name: "personnelNo",--%>
-                <%--title:"<spring:message code="personnel.no"/> ",--%>
-                <%--textAlign: "center",--%>
-                <%--width: "*"--%>
-            <%--},--%>
-            <%--{--%>
-                <%--name: "nationalCode",--%>
-                <%--title:"<spring:message code="national.code"/> ",--%>
-                <%--textAlign: "center",--%>
-                <%--width: "*",--%>
-            <%--},--%>
-            <%--{--%>
-                <%--name: "firstName",--%>
-                <%--title:"<spring:message code="firstName"/> ",--%>
-                <%--textAlign: "center",--%>
-                <%--width: "*"--%>
-            <%--},--%>
-            <%--{--%>
-                <%--name: "lastName",--%>
-                <%--title:"<spring:message code="lastName"/> ",--%>
-                <%--textAlign: "center",--%>
-                <%--width: "*"--%>
-            <%--},--%>
             {
                 name: "temp0",
                 title: "",
                 canEdit: false
             },
             {
-                name: "temp00",
+                name: "temp1",
                 title: "",
                 canEdit: false
             },
@@ -453,7 +419,7 @@
                 defaultValue:  ["1","2"]
             },
             {
-                name: "temp1",
+                name: "temp2",
                 title: "",
                 canEdit: false
             },
@@ -547,7 +513,7 @@
                 }
             },
             {
-                name: "temp2",
+                name: "temp3",
                 title: "",
                 canEdit: false
             },
@@ -640,7 +606,7 @@
                 }
             },
             {
-                name: "temp3",
+                name: "temp4",
                 title: "",
                 canEdit: false
             },
@@ -682,7 +648,7 @@
                 filterLocally: true
             },
             {
-                name: "temp4",
+                name: "temp5",
                 title: "",
                 canEdit: false
             },

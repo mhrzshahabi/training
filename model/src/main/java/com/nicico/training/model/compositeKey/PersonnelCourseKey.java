@@ -11,7 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode(of = {"courseId", "personnelId"}, callSuper = false)
+@EqualsAndHashCode(of = {"courseId", "personnelId", "termId"}, callSuper = false)
 @Embeddable
 public class PersonnelCourseKey implements Serializable {
 
@@ -20,4 +20,7 @@ public class PersonnelCourseKey implements Serializable {
 
     @Column(name = "personnel_id")
     private Long personnelId;
+
+    @Column(name = "term_id")
+    private Long termId;
 }
