@@ -317,7 +317,6 @@
                 autoFitWidth: true,
                 autoFitWidthApproach: "both"
             },
-
         ],
         fetchDataURL: masterDataUrl + "/post/iscList?type=ContractorPersonal"
     });
