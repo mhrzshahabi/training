@@ -1,6 +1,6 @@
 package com.nicico.training.model;
 
-import com.nicico.training.model.compositeKey.PersonnelCourseKey;
+import com.nicico.training.model.compositeKey.PersonnelCourseTermKey;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
@@ -17,11 +17,11 @@ import java.io.Serializable;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Subselect("SELECT * from VIEW_COURSES_PASSED_PERSONNEL_PART4")
+@Subselect("SELECT * from VIEW_COURSES_PASSED_PERSONNEL")
 
 public class ViewCoursesPassedPersonnelReport implements Serializable {
     @EmbeddedId
-    private PersonnelCourseKey id;
+    private PersonnelCourseTermKey id;
 
     @Column(name = "personnel_emp_no")
     private String empNo;
@@ -62,7 +62,7 @@ public class ViewCoursesPassedPersonnelReport implements Serializable {
     @Column(name = "term_title_fa")
     private String termTitleFa;
 
-    @Column(name = "term_id")
+    @Column(name = "term_id", insertable = false, updatable = false)
     private Long termId;
 
     @Column(name = "class_year")
@@ -71,19 +71,19 @@ public class ViewCoursesPassedPersonnelReport implements Serializable {
     @Column(name = "personnel_post_grade_code")
     private String postGradeCode;
 
-    @Column(name = "personnel_cpp_affairs")
+    @Column(name = "personnel_ccp_affairs")
     private String affairs;
 
-    @Column(name = "personnel_cpp_area")
+    @Column(name = "personnel_ccp_area")
     private String area;
 
-    @Column(name = "personnel_cpp_assistant")
+    @Column(name = "personnel_ccp_assistant")
     private String assistant;
 
-    @Column(name = "personnel_cpp_section")
+    @Column(name = "personnel_ccp_section")
     private String section;
 
-    @Column(name = "personnel_cpp_unit")
+    @Column(name = "personnel_ccp_unit")
     private String unit;
 
     @Column(name = "personnel_company_name")

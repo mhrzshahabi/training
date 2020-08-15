@@ -605,7 +605,7 @@
         IButton_Print_ReactionEvaluation_Evaluation_Analysis.show();
         chartSelector.show();
         ReactionEvaluationChart.show();
-        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "reactionEvaluationResult/" + ListGrid_evaluationAnalysis_class.getSelectedRecord().id + "/" + userId, "GET", null,
+        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "reactionEvaluationResult/" + ListGrid_evaluationAnalysis_class.getSelectedRecord().id , "GET", null,
             "callback: fill_reaction_evaluation_result_resp(rpcResponse)"));
     }
 

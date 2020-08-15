@@ -1,6 +1,6 @@
 package com.nicico.training.model;
 
-import com.nicico.training.model.compositeKey.PersonnelCourseKey;
+import com.nicico.training.model.compositeKey.PersonnelCourseTermKey;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
@@ -20,7 +20,7 @@ import javax.persistence.Entity;
 
 public class ContinuousStatusReportView {
     @EmbeddedId
-    private PersonnelCourseKey id;
+    private PersonnelCourseTermKey id;
 
     @Column(name = "personnel_id", insertable = false, updatable = false)
     private Long personnelId;
@@ -80,7 +80,7 @@ public class ContinuousStatusReportView {
     @Column(name = "term_title_fa")
     private String termTitleFa;
 
-    @Column(name = "term_id")
+    @Column(name = "term_id", insertable = false, updatable = false)
     private Long termId;
 
     ////////////////////////////////////////////////////////////////////////

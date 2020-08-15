@@ -1961,8 +1961,14 @@
                                 }
                             },
                             {isSeparator: true},
+                            {
+                                title: "گزارش آماری سالانه",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/annualStatisticalReportBySections"/>");
+                                }
+                            },
                             </sec:authorize>
-
+                            {isSeparator: true},
                             <sec:authorize access="hasAuthority('Menu_Categories_performance')">
                             {
                                 title: "<spring:message code="course.performance.report"/>",

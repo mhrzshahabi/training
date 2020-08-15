@@ -156,6 +156,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         }
     }
 
+
     public Map<String,Object> evaluationAnalysistLearningResult(Long classId, String scoringMethod) {
         Float[] result =  evaluationAnalysistLearningService.getStudents(classId,scoringMethod);
         Map<String,Object> finalResult = new HashMap<>();
