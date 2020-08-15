@@ -10,11 +10,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
-import com.nicico.training.model.ClassStudent;
-import com.nicico.training.model.Tclass;
+import com.nicico.training.model.*;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +45,7 @@ public class SendMessageRestController {
     private final TeacherService teacherService;
     private final PersonnelService personnelService;
     private final TclassService tclassService;
+    private final ParameterService parameterService;
 
     @Loggable
     @PostMapping(value = "/sendSMS")
@@ -54,12 +55,15 @@ public class SendMessageRestController {
         List<String> mobiles = new ArrayList<>();
         List<String> fullName = new ArrayList<>();
         List<String> prefixFullName = new ArrayList<>();
-        String personleAdress = request.getRequestURL().toString().replace(request.getServletPath(), "");
+        String personelAdress = request.getRequestURL().toString().replace(request.getServletPath(), "");
         Long classId;
         String courseName = "";
         String courseStartDate = "";
         String courseEndDate = "";
         String oMessage = "";
+        String code = null;
+
+        TotalResponse<ParameterValueDTO.Info> parameter=null;
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -92,7 +96,7 @@ public class SendMessageRestController {
                     ids.add(objNode.asLong());
                 }
             }
-        }else if (jsonNode.has("classStudentHaventEvaluation")) {
+        } else if (jsonNode.has("classStudentHaventEvaluation")) {
             jsonNode = jsonNode.get("classStudentHaventEvaluation");
             type = "classStudentHaventEvaluation";
 
@@ -109,7 +113,10 @@ public class SendMessageRestController {
         }
 
 
-        if (type == "classStudent") {
+        if (type.equals("classStudent")) {
+
+            code="CS";
+
             SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
             searchRq.setCount(1000);
             searchRq.setStartIndex(0);
@@ -124,7 +131,9 @@ public class SendMessageRestController {
                         prefixFullName.add(p.getStudent().getGender().equals("مرد") ? "جناب آقای" : (p.getStudent().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم"));
                     }
             );
-        } else if (type == "classTeacher") {
+        } else if (type.equals("classTeacher")) {
+            code="Teacher";
+
             SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
             searchRq.setCount(1000);
             searchRq.setStartIndex(0);
@@ -139,7 +148,9 @@ public class SendMessageRestController {
                         prefixFullName.add(p.getPersonality().getGenderId() == 1 ? "جناب آقای" : (p.getPersonality().getGenderId() == 2 ? "سرکار خانم" : "جناب آقای/سرکار خانم"));
                     }
             );
-        } else if (type == "classStudentHaventEvaluation") {
+        } else if (type.equals("classStudentHaventEvaluation")) {
+            code="CSHE";
+
             SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
             searchRq.setCount(1000);
             searchRq.setStartIndex(0);
@@ -156,6 +167,29 @@ public class SendMessageRestController {
             );
         }
 
+        Message oMessageModel=new Message();
+
+        oMessageModel.setContextText(oMessage);
+
+        parameter = parameterService.getByCode("MessageUserType");
+
+        String finalCode = code;
+        ParameterValue parameterValue=(ParameterValue)parameter.getResponse().getData().stream().filter(p->p.getCode().equals(finalCode)).toArray()[0];
+
+        oMessageModel.setUserType(parameterValue);
+        List<ParameterValue> sentWays=new ArrayList<>();
+
+        parameter = parameterService.getByCode("MessageSendWays");
+
+        parameterValue=(ParameterValue)parameter.getResponse().getData().stream().filter(p->p.getCode().equals("sms")).toArray()[0];
+
+        sentWays.add(parameterValue);
+
+        oMessageModel.setSendWays(sentWays);
+
+        List<MessageContact> messageContactList=new ArrayList<>();
+
+
         for (int i = 0; i < mobiles.size(); i++) {
             String message = oMessage;
             message = message.replace("{prefix-full_name}", prefixFullName.get(i));
@@ -163,13 +197,20 @@ public class SendMessageRestController {
             message = message.replace("{course-name}", courseName);
             message = message.replace("{start-date}", courseStartDate);
             message = message.replace("{end-date}", courseEndDate);
-            message = message.replace("{personel-address}", personleAdress);
+            message = message.replace("{personel-address}", personelAdress);
             message += "\nواحد ارزیابی امور آموزش";
 
             List<String> numbers = new ArrayList<>();
             numbers.add(mobiles.get(i));
 
-            sendMessageService.asyncEnqueue(numbers, message);
+            Long messageId = sendMessageService.asyncEnqueue(numbers, message);
+            /*MessageContact messageContact=new MessageContact();
+            messageContact.setContextText(message);
+            messageContact.setSentCount(0);
+            messageContact.setStatus();
+            //messageContact.set
+            messageContactList.add()*/
+
         }
 
         return new ResponseEntity<>(HttpStatus.OK);

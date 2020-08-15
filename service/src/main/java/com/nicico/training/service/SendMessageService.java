@@ -31,4 +31,9 @@ public class SendMessageService implements ISendMessageService {
 
         return messageId;
     }
+
+    @Override
+    public void scheduling() {
+
+    }
 }
