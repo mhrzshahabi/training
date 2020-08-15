@@ -38,6 +38,9 @@ public class MainFormController {
     @RequestMapping("/courseWithOutTeacherReaport")
     public String courseWithOutTeacherReaport(){return "report/courseWithOutTeacherReaport";}
 
+    @RequestMapping("/annualStatisticalReportBySections")
+    public String annualStatisticalReport(){return "report/annualStatisticalReportBySections";}
+
     @RequestMapping("/personnelCourseNotPassed")
     public String showPersonalCoursesNotPassedForm() {
         return "report/personnelCourseNotPassed";

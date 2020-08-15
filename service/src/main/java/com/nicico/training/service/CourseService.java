@@ -724,7 +724,7 @@ public class CourseService implements ICourseService {
 
         if (!(years.length == 0))
             stringBuilder.append(" AND SUBSTR(tbl_term.c_startdate, 1, 4 ) IN (" + StringUtils.join(years, ",") + ")");
-         stringBuilder.append(" AND   (tbl_class.c_start_date >= :startDate AND tbl_class.c_start_date<= :endDate) AND   (tbl_class.c_end_date >= :strSData2 AND  tbl_class.c_end_date<= :strEData2)))" +
+         stringBuilder.append(" AND   (tbl_class.c_start_date >= :startDate AND tbl_class.c_end_date <= :endDate) AND   (tbl_class.c_start_date >= :strSData2 AND  tbl_class.c_end_date<= :strEData2)))" +
                  "  tb on tbl_class.f_course =tb.courseId) tbl2 WHERE TBL2.f_teacher is not null  and (tbl2.c_start_date  not like '//')  GROUP by courseId,c_code,titleCourse");
         List<Object> list = new ArrayList<>();
         list = (List<Object>) entityManager.createNativeQuery(stringBuilder.toString())
