@@ -561,6 +561,12 @@
 
                         break;
                     }
+                    case "TabPane_Learning_PreTest": {
+                        RestDataSource_PreTest.fetchDataURL = questionBankTestQuestionUrl +"/preTest/"+classRecord.id+ "/spec-list";
+                        ListGrid_PreTest.invalidateCache();
+                        ListGrid_PreTest.fetchData();
+                        break;
+                    }
                     case "TabPane_Learning": {
                         RestDataSource_ClassStudent_registerScorePreTest.fetchDataURL = tclassStudentUrl + "/pre-test-score-iscList/" + classRecord.id;
                         ListGrid_Class_Student_RegisterScorePreTest.invalidateCache();

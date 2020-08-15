@@ -100,5 +100,8 @@ public class QuestionBank extends Auditable {
     @Column(name = "f_teacher_id")
     private Long teacherId;
 
+    @OneToMany(mappedBy = "questionBank", fetch = FetchType.LAZY)
+    private Set<QuestionBankTestQuestion> questionBankTestQuestion;
+
 }
 

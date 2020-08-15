@@ -2833,6 +2833,22 @@
             let userErrorMessage = "<spring:message code="msg.error.connecting.to.server"/>";
             if (JSON.parse(response.httpResponseText).message !== undefined && JSON.parse(response.httpResponseText).message !== "No message available" && JSON.parse(response.httpResponseText).message.length > 0) {
                 userErrorMessage = JSON.parse(response.httpResponseText).message;
+            }else if (JSON.parse(response.httpResponseText).message !== undefined && (JSON.parse(response.httpResponseText).status == 404 ||JSON.parse(response.httpResponseText).status == 500 || JSON.parse(response.httpResponseText).status == 400)) {
+
+                if(JSON.parse(response.httpResponseText).path.indexOf("isomorphic/IDACall")==-1){
+
+                    /*if(JSON.parse(response.httpResponseText).status == 400){
+                        userErrorMessage = "خطا در ارسال اطلاعات";
+                    }else */if(JSON.parse(response.httpResponseText).status == 404){
+                        userErrorMessage = "خطا در ارسال اطلاعات";
+                    }/*else if(JSON.parse(response.httpResponseText).status == 500){
+                        userErrorMessage = "خطا در سرور";
+                    }*/
+
+                    createDialog("warning", userErrorMessage, "اخطار");
+                    wait.close();
+                }
+                return;
             } else if (JSON.parse(response.httpResponseText).errors[0].message !== undefined && JSON.parse(response.httpResponseText).errors[0].message.length > 0) {
                 userErrorMessage = JSON.parse(response.httpResponseText).errors[0].message;
             }
