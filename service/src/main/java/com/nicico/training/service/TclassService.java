@@ -623,15 +623,23 @@ public class TclassService implements ITclassService {
     public Double getTeacherGradeToClass(Long classId, Long teacherId) {
         EvaluationDTO.Info evaluationDTO =  evaluationService.getEvaluationByData(140L, classId, teacherId,
                 187L, classId, 504L, 154L);
-        Evaluation evaluation = modelMapper.map(evaluationDTO,Evaluation.class);
-        return evaluationService.getEvaluationFormGrade(evaluation);
+        if(evaluationDTO != null) {
+            Evaluation evaluation = modelMapper.map(evaluationDTO, Evaluation.class);
+            return evaluationService.getEvaluationFormGrade(evaluation);
+        }
+        else
+            return 0.0;
     }
 
     public Double getTrainingGradeToTeacher(Long classId, Long trainingId, Long teacherId) {
         EvaluationDTO.Info evaluationDTO =  evaluationService.getEvaluationByData(141L, classId, trainingId,
                 454L, teacherId, 187L, 154L);
-        Evaluation evaluation = modelMapper.map(evaluationDTO,Evaluation.class);
-        return evaluationService.getEvaluationFormGrade(evaluation);
+        if(evaluationDTO != null) {
+            Evaluation evaluation = modelMapper.map(evaluationDTO, Evaluation.class);
+            return evaluationService.getEvaluationFormGrade(evaluation);
+        }
+        else
+            return 0.0;
     }
 
     @Override

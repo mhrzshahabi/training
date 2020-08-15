@@ -309,9 +309,9 @@
                                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                     Window_Questions_JspEvaluation.close();
                                     ListGrid_Grid_JspQuestionEvaluation.invalidateCache();
-// isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
-// LGRecord.id,
-// "GET", null, null));
+                                    isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
+                                    classId,
+                                    "GET", null, null));
                                     const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
                                     setTimeout(() => {
                                         msg.close();

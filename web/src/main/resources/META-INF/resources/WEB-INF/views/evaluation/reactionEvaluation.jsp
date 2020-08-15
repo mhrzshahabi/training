@@ -1485,9 +1485,8 @@
                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                         Window_Questions_JspEvaluation.close();
                         ListGrid_student_RE.invalidateCache();
-// isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
-// LGRecord.id,
-// "GET", null, null));
+                        isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
+                         classRecord_RE.id,"GET", null, null));
                         const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
                         setTimeout(() => {
                             msg.close();
@@ -1854,10 +1853,8 @@
                             classRecord_RE.trainingEvalStatus = 2;
                         else
                             classRecord_RE.trainingEvalStatus = 3;
-// isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
-// LGRecord.id,
-// "GET", null, null));
-// ToolStrip_SendForms_RE.getField("registerButtonTraining").enableIcon("ok");
+                        isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
+                        classRecord_RE.id,"GET", null, null));
                         ToolStrip_SendForms_RE.getField("registerButtonTraining").showIcon("ok");
                         ToolStrip_SendForms_RE.redraw();
                         const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
@@ -2228,10 +2225,8 @@
                             classRecord_RE.teacherEvalStatus = 2;
                         else
                             classRecord_RE.teacherEvalStatus = 3;
-// isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
-// LGRecord.id,
-// "GET", null, null));
-// ToolStrip_SendForms_RE.getField("registerButtonTeacher").enableIcon("ok");
+                        isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
+                        classRecord_RE.id,"GET", null, null));
                         ToolStrip_SendForms_RE.getField("registerButtonTeacher").showIcon("ok");
                         ToolStrip_SendForms_RE.redraw();
                         const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
