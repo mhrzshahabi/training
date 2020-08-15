@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface IEvaluationService {
 
@@ -45,4 +46,8 @@ public interface IEvaluationService {
     double getEvaluationFormGrade(Evaluation evaluation);
 
     List<EvaluationAnswerDTO.EvaluationAnswerFullData> getEvaluationFormAnswerDetail(Evaluation evaluation);
+
+    @Transactional
+    EvaluationDTO.BehavioralResult getBehavioralEvaluationResult(Long classId);
+
 }
