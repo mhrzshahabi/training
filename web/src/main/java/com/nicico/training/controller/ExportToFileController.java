@@ -468,6 +468,7 @@ public class ExportToFileController {
 
         SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
         String lenStr = rq.getParameter("_len");
+        String startRowStr = rq.getParameter("_startRow");
         String criteriaStr = rq.getParameter("criteriaStr");
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -494,7 +495,7 @@ public class ExportToFileController {
             }
         }
 
-        searchRq.setStartIndex(0);
+        searchRq.setStartIndex(Integer.parseInt(startRowStr));
         searchRq.setCount(Integer.parseInt(lenStr));
 
         if (StringUtils.isNotEmpty(sortBy)) {
