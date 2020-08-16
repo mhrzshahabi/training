@@ -21,8 +21,8 @@
     var peopleTypeMap ={
         "Personal" : "شرکتی",
         "ContractorPersonal" : "پیمان کار",
-        "Company" : "شرکتی",
-        "OrgCostCenter" : "پیمان کار"
+        // "Company" : "شرکتی",
+        // "OrgCostCenter" : "پیمان کار"
     };
 
     let PostDS_TrainingPost = isc.TrDS.create({
@@ -42,6 +42,7 @@
             {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",}
 
         ],
         fetchDataURL: viewPostUrl + "/iscList"
@@ -94,7 +95,14 @@
             },
             {name: "costCenterTitleFa"},
             {name: "competenceCount"},
-            {name: "personnelCount"}
+            {name: "personnelCount"},
+            {
+                name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+            }
         ],
         // doubleClick: function () {
         //     if (ListGrid_TrainingPost_Jsp.getSelectedRecord() !== null || ListGrid_TrainingPost_Jsp.getSelectedRecord() !== undefined) {
@@ -139,10 +147,10 @@
             {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {
                 name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",
-                formatCellValue: function (value, record) {
-                    let newVal = value == undefined ? "فعال" : "غیر فعال";
-                    return newVal;
-                }
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
             },
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
@@ -292,7 +300,8 @@
             {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true}
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",}
 
         ],
         fetchDataURL: postUrl + "/iscList"
@@ -311,7 +320,9 @@
             {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},]
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",}
+        ]
         // , fetchDataURL: postUrl + "/iscList"
     });
 
@@ -329,7 +340,9 @@
             {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},]
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",}
+        ]
         // , fetchDataURL: postUrl + "/iscList"
     });
 
@@ -347,7 +360,8 @@
             {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true}
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",}
         ]
     });
 
@@ -372,7 +386,12 @@
             {name: "omorTitle", title: "<spring:message code="affairs"/>", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "ghesmatCode", title: "<spring:message code="section"/>", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "vahedTitle", title: "<spring:message code="unit"/>", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "type", title: "<spring:message code="people.type"/>", autoFitWidth: true, autoFitWidthApproach: "both", valueMap:peopleTypeMap},
+            {name: "type", title: "<spring:message code="people.type"/>", autoFitWidth: true, autoFitWidthApproach: "both",
+                valueMap:{
+                    "Company" : "شرکتی",
+                    "OrgCostCenter" : "پیمان کار"
+                }
+            },
             {name: "enabled", title: "<spring:message code="active.status"/>", autoFitWidth: true, autoFitWidthApproach: "both"}
         ],
         fetchDataURL: departmentUrl + "/iscList"
@@ -425,7 +444,14 @@
             {name: "unit"},
             {name: "costCenterCode"},
             {name: "costCenterTitleFa"},
-            {name: "OnAdd", title: " ", canSort:false, canFilter:false, width:30}
+            {
+                name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true
+            },
+            {name: "OnAdd", title: " ", canSort:false, canFilter:false, width:30},
         ],
         dataArrived:function(startRow, endRow){
             let lgIds = ListGrid_ForThisTrainingPost_GetPosts.data.getAllCachedRows().map(function(item) {
@@ -503,6 +529,13 @@
             {name: "unit"},
             {name: "costCenterCode"},
             {name: "costCenterTitleFa"},
+            {
+                name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true
+            },
             {name: "OnDelete", title: " ", canSort:false, canFilter:false, width:30}
         ],
         dataArrived:function(){
@@ -605,6 +638,13 @@
             {name: "unit"},
             {name: "costCenterCode"},
             {name: "costCenterTitleFa"},
+            {
+                name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true
+            },
             {name: "OnAdd", title: " ", canSort:false, canFilter:false, width:30}
         ],
         createRecordComponent: function (record, colNum) {
@@ -801,6 +841,13 @@
                 }
             },
             {name: "costCenterTitleFa"},
+            {
+                name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true
+            }
         ],
         dataArrived: function () {
             TrainingPost_PostList_TrainingPost_Jsp = ListGrid_TrainingPost_Posts.data.localData;
@@ -866,10 +913,14 @@
                     {name: "peopleType", filterOperator: "iContains"},
                     {
                         name: "enabled",
-                        formatCellValue: function (value, record) {
-                            let newVal = value == undefined ? "فعال" : "غیر فعال";
-                            return newVal;
-                        }
+                        valueMap:{
+                            // undefined : "فعال",
+                            74 : "غیر فعال"
+                        },filterOnKeypress: true
+                        // formatCellValue: function (value, record) {
+                        //     let newVal = value == undefined ? "فعال" : "غیر فعال";
+                        //     return newVal;
+                        // }
                     }
                 ],
                 filterFields: ["titleFa", "code"],
@@ -898,10 +949,14 @@
                     {name: "type", filterOperator: "iContains"},
                     {
                         name: "enabled",
-                        formatCellValue: function (value, record) {
-                            let newVal = value == undefined ? "فعال" : "غیر فعال";
-                            return newVal;
-                        }
+                        valueMap:{
+                            // undefined : "فعال",
+                            74 : "غیر فعال"
+                        },filterOnKeypress: true
+                        // formatCellValue: function (value, record) {
+                        //     let newVal = value == undefined ? "فعال" : "غیر فعال";
+                        //     return newVal;
+                        // }
                     }
                 ],
                 filterFields: ["title", "code","hozeTitle","moavenatTitle","omorTitle","ghesmatCode","vahedTitle"],
@@ -924,10 +979,14 @@
                     {name: "peopleType", filterOperator: "iContains"},
                     {
                         name: "enabled",
-                        formatCellValue: function (value, record) {
-                            let newVal = value == undefined ? "فعال" : "غیر فعال";
-                            return newVal;
-                        }
+                        valueMap:{
+                            // undefined : "فعال",
+                            74 : "غیر فعال"
+                        },filterOnKeypress: true
+                        // formatCellValue: function (value, record) {
+                        //     let newVal = value == undefined ? "فعال" : "غیر فعال";
+                        //     return newVal;
+                        // }
                     }
                 ],
                 filterFields: ["titleFa"],
@@ -942,10 +1001,7 @@
                 title: "نوع پرسنل",
                 type: "radioGroup",
                 colSpan: 1,
-                valueMap: {
-                    "Personal" : "شرکتی",
-                    "ContractorPersonal" : "پیمان کار",
-                },
+                valueMap: peopleTypeMap,
                 textAlign: "center",
                 // hint: "شرکتی/پیمان کار",
                 required: true,

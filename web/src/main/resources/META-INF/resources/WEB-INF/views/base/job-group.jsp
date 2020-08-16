@@ -51,6 +51,14 @@
             {name: "titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains"},
             {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {
+                name: "enabled",
+                title: "<spring:message code="active.status"/>",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both",
+            },
         ],
         fetchDataURL: viewJobUrl + "/iscList"
     });
@@ -61,7 +69,15 @@
             {name: "titleFa", filterOperator: "iContains"},
             {name: "titleEn", filterOperator: "iContains"},
             {name: "description", filterOperator: "iContains"},
-            {name: "version"}
+            {name: "version"},
+            {
+                name: "enabled",
+                title: "<spring:message code="active.status"/>",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both",
+            },
         ]
         , fetchDataURL: jobUrl + "/iscList"
     });
@@ -72,7 +88,10 @@
             {name: "titleFa"},
             {name: "titleEn"},
             {name: "description"},
-            {name: "version"}
+            {name: "version"},
+            {
+                name: "enabled", autoFitWidth: true, autoFitWidthApproach: "both",
+            },
         ]
     });
     var Menu_ListGrid_Job_Group_Jsp = isc.Menu.create({
@@ -215,7 +234,13 @@
             {name: "titleEn", title: "نام لاتین شغل", align: "center", hidden: true},
             {name: "description", title: "توضیحات", align: "center", hidden: true},
             {name: "OnAdd", title: " ", align: "center",canSort:false,canFilter:false},
-            {name: "version", title: "version", canEdit: false, hidden: true}
+            {name: "version", title: "version", canEdit: false, hidden: true},
+            {name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+            },
         ],
         sortField: 1,
         sortDirection: "descending",
@@ -322,6 +347,12 @@
                 }
             },
             {name: "titleFa", title: "نام شغل", align: "center", width: "70%"},
+            {name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+            },
             {name: "OnDelete", title: " ", align: "center",canSort:false,canFilter:false}
         ],
         dataArrived:function(){
@@ -612,6 +643,12 @@
             {name: "titleFa"},
             {name: "competenceCount"},
             {name: "personnelCount"},
+            {name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+            },
         ],
         sortField: 1,
         sortDirection: "descending",
@@ -1173,7 +1210,15 @@
             {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true}
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "enabled",
+                title: "<spring:message code="active.status"/>",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both",
+            },
 
         ],
         fetchDataURL: postUrl + "/iscList"
@@ -1236,7 +1281,13 @@
                     keyPressFilter: "[0-9]"
                 }
             },
-            {name: "costCenterTitleFa"}
+            {name: "costCenterTitleFa"},
+            {name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+            },
         ],
     });
 

@@ -49,7 +49,15 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "code"},
-            {name: "titleFa"}
+            {name: "titleFa"},
+            {
+                name: "enabled",
+                title: "<spring:message code="active.status"/>",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both",
+            },
         ],
         fetchDataURL: postGradeUrl + "/iscList"
     });
@@ -57,7 +65,15 @@
         fields: [
             {name: "id", primaryKey: true},
             {name: "code"},
-            {name: "titleFa"}
+            {name: "titleFa"},
+            {
+                name: "enabled",
+                title: "<spring:message code="active.status"/>",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both",
+            },
         ],
         fetchDataURL: postGradeUrl + "/iscList"
     });
@@ -65,7 +81,15 @@
         fields: [
             {name: "id", primaryKey: true},
             {name: "code"},
-            {name: "titleFa"}
+            {name: "titleFa"},
+            {
+                name: "enabled",
+                title: "<spring:message code="active.status"/>",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both",
+            },
         ]
     });
 
@@ -162,6 +186,13 @@
                 }
             },
             {name: "titleFa", title: "<spring:message code='post.grade.title'/>", filterOperator: "iContains", align: "center"},
+            {name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+
+            },
             {name: "OnAdd", title: " ", align: "center",canSort:false,canFilter:false},
         ],
         selectionAppearance: "checkbox",
@@ -259,6 +290,13 @@
                 }
             },
             {name: "titleFa", title: "<spring:message code='post.grade.title'/>", filterOperator: "iContains", align: "center"},
+            {name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+
+            },
             {name: "OnDelete", title: " ", align: "center", canFilter: false}
         ],
         dataArrived:function(){
@@ -531,7 +569,13 @@
                 name: "titleFa",
                 title: "<spring:message code='post.grade.title'/>",
                 filterOperator: "iContains"
-            }
+            },
+            {name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+            },
         ]
     });
 
@@ -973,7 +1017,15 @@
             {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true}
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "enabled",
+                title: "<spring:message code="active.status"/>",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both",
+            },
 
         ],
         fetchDataURL: postUrl + "/iscList"
@@ -1036,7 +1088,14 @@
                     keyPressFilter: "[0-9]"
                 }
             },
-            {name: "costCenterTitleFa"}
+            {name: "costCenterTitleFa"},
+            {name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+
+            },
         ],
     });
 
