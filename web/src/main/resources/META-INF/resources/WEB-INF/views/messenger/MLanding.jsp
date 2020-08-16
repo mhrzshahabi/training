@@ -188,7 +188,112 @@
     })
 
 
+    function MSG_getMessageTypes(){
+        return  MSG_messageTypes = isc.HLayout.create({
+            width: "80%",
+            height: "100%",
+            membersMargin: 5,
+            alignment: 'center',
+            align: "center",
+            vAlign: "center",
+            layoutTopMargin: 5,
+            members: [
+                //MSG_getSelectMessageType('cartable', '<spring:message code="send.message.cartable"/>',true),
+                MSG_getSelectMessageType('sms', '<spring:message code="send.message.sms"/>', true),
+                /*MSG_getSelectMessageType('email', '<spring:message code="send.message.email"/>'),
+              MSG_getSelectMessageType('whatsapp', '<spring:message code="send.message.whatsapp"/>'),
+              MSG_getSelectMessageType('telegram', '<spring:message code="send.message.telegram"/>'),*/
+            ]
+        })
+    }
 
+    MSG_sendMsgForm = isc.IButton.create({
+        autoDraw:false,
+        baseStyle: 'MSG-btn-orange',
+        border: 'none',
+        title:"ارســـــــال", width:120,
+        click: function () {
+            if(MSG_selectUsersForm.getItem("multipleSelect").getValue()==null || MSG_selectUsersForm.getItem("multipleSelect").getValue().length == 0){
+                var ERROR = isc.Dialog.create({
+                    message:"حداقل یک مخاطب انتخاب نمایید",
+                    icon: "[SKIN]say.png",
+                    title:  "متن خطا"
+                });
+
+                setTimeout(function () {
+                    ERROR.close();
+                }, 2000);
+
+                return;
+
+            }
+            MSG_sendMsg(MSG_contentEditor.getValue())
+        }
+    });
+
+    MSG_Cancel_MsgForm = isc.IButton.create({
+        autoDraw:false,
+        baseStyle: 'MSG-btn-white',
+        title:"انصراف", width:120,
+        click: function () {
+            MSG_Window_MSG_Main.close()
+            MSG_initMSG()
+        },
+        mouseOver: function(){
+            this.baseStyle = 'MSG-btn-orange';
+        },
+        mouseOut: function(){
+            this.baseStyle = 'MSG-btn-white';
+        }
+    });
+
+    var MSG_action_Btns_HLayout = isc.HLayout.create({
+        width: "80%",
+        membersMargin:5,
+        alignment: 'center',
+        align: "center",
+        vAlign: "center",
+        layoutTopMargin: 20,
+        members: [
+            MSG_Cancel_MsgForm,
+            MSG_sendMsgForm
+        ]
+    });
+
+
+
+    var MSG_repeatOptions = isc.DynamicForm.create({
+        width: 400,
+        wrapItemTitles:false,
+        numCols: 4,
+        fields: [{
+            name: "maxRepeat", title: "حداکثر تعداد تکرار", type: "select",
+            wrapHintText: false,
+            valueMap: {
+                "unLimited" : "نامحدود",
+                "one" : "یکبار",
+                "two" : "دوبار",
+                "three" : "سه بار",
+                "four" : "چهار بار",
+                "five" : "پنج بار",
+                "six" : "شش بار",
+                "seven" : "هفت بار",
+                "eight" : "هشت بار",
+                "nine" : "نه بار",
+                "ten" : "ده بار",
+            },
+        },
+            {
+                name: "timeBMessages", title: "فاصله زمانی بین پیام ها", type: "select",
+                wrapHintText: false,
+                valueMap: {
+                    "one" : "هر روز",
+                    "five" : "یک روز درمیان",
+                    "ten" : "دو روز درمیان",
+                },
+            }
+        ]
+    });
 
     var MSG_main_layout = isc.VLayout.create({
         width: "100%",
@@ -225,28 +330,41 @@
                 ],
 
             }),
-            isc.HLayout.create({
-                ID:'MSGAttachContainer',
-                width: "80%",
-                height: "100%",
-                membersMargin:10,
-                layoutTopMargin: 10,
-                alignment: 'right',
-                align: "right",
-                vAlign: "center",
-                members: [
-                ]
-            }),
+            // isc.HLayout.create({
+            //     ID:'MSGAttachContainer',
+            //     width: "80%",
+            //     height: "100%",
+            //     membersMargin:10,
+            //     layoutTopMargin: 10,
+            //     alignment: 'right',
+            //     align: "right",
+            //     vAlign: "center",
+            //     members: [
+            //
+            //     ]
+            // }),
             isc.HLayout.create({
                 width: "80%",
                 height: "100%",
                 membersMargin:5,
-                alignment: 'right',
+                alignment: 'center',
                 align: "right",
                 vAlign: "center",
                 layoutTopMargin: 10,
                 members: [
-                    MSG_selectDefaultMsgBtn
+                    MSG_selectDefaultMsgBtn,
+
+                    isc.HLayout.create({
+                        width: "80%",
+                        height: "100%",
+                        alignment: 'left',
+                        align: "left",
+                        vAlign: "center",
+                        layoutTopMargin: -10,
+                        members: [
+                            MSG_repeatOptions
+                        ]
+                    })
                     /*MSG_selectDefaultMsgBtn, MSG_saveDefaultMsgBtn,
                     isc.HLayout.create({
                         width: "80%",
@@ -278,22 +396,7 @@
                 wrap: false,
                 contents: "ارســـــال از طریق"
             }),
-            isc.HLayout.create({
-                width: "80%",
-                height: "100%",
-                membersMargin: 5,
-                alignment: 'center',
-                align: "center",
-                vAlign: "center",
-                layoutTopMargin: 5,
-                members: [
-                    //MSG_getSelectMessageType('cartable', '<spring:message code="send.message.cartable"/>'),
-                    MSG_getSelectMessageType('sms', '<spring:message code="send.message.sms"/>'),
-                    /*MSG_getSelectMessageType('email', '<spring:message code="send.message.email"/>'),
-                    MSG_getSelectMessageType('whatsapp', '<spring:message code="send.message.whatsapp"/>'),
-                    MSG_getSelectMessageType('telegram', '<spring:message code="send.message.telegram"/>'),*/
-                ]
-            }),
+            MSG_getMessageTypes(),
             isc.HLayout.create({
                 width: "80%",
                 membersMargin:5,
@@ -308,29 +411,7 @@
             ErrorMsg
             ,
             isc.LayoutSpacer.create({height: 20}),
-            MSG_sendMsgForm = isc.IButton.create({
-                autoDraw:false,
-                baseStyle: 'MSG-btn-orange',
-                title:"ارســـــــال", width:150,
-                click: function () {
-                    if(MSG_selectUsersForm.getItem("multipleSelect").getValue()==null || MSG_selectUsersForm.getItem("multipleSelect").getValue().length == 0){
-                        var ERROR = isc.Dialog.create({
-                            message:"حداقل یک مخاطب انتخاب نمایید",
-                            icon: "[SKIN]say.png",
-                            title:  "متن خطا"
-                        });
-
-                        setTimeout(function () {
-                            ERROR.close();
-                        }, 2000);
-
-                        return;
-
-                    }
-                    MSG_sendMsg(MSG_contentEditor.getValue())
-                }
-            })
-
+            MSG_action_Btns_HLayout
         ]
     });
 
@@ -581,25 +662,46 @@
         return htmlFlow;
     }
 
-    function MSG_getSelectMessageType(messageTypeID, faName) {
+    function MSG_getSelectMessageType(messageTypeID, faName, isEnable) {
         var MSG_typeHtmlFlow = isc.HTMLFlow.create({
-            ID: messageTypeID,
+            ID: "MSG_messageType_"+messageTypeID,
             height: 115,
             overflow: "auto",
             width: 100,
             align: "right",
-            contents: "<div class='MSG-type-container' id='"+messageTypeID+"' ><img class='MSG-type-icon' src='static/img/msg/"+messageTypeID+".png' onclick='selectSendMessageType(this)' ><span class='MSG-type-title'>"+faName+"</span></div>"
+            contents: ""
         })
-
+        var contentEnable = "<div class='MSG-type-container'  id='MSG_messageType_"+messageTypeID+"' ><img class='MSG-type-icon' src='static/img/msg/"+messageTypeID+".png' onclick='selectSendMessageType(this)' ><span class='MSG-type-title'>"+faName+"</span></div>";
+        var contentDisable = "<div class='MSG-type-container-disable'  id='MSG_messageType_"+messageTypeID+"' ><img class='MSG-type-icon' src='static/img/msg/"+messageTypeID+".png'  ><span class='MSG-type-title'>"+faName+"</span></div>";
+        MSG_typeHtmlFlow.setContents(isEnable ? contentEnable : contentDisable)
         return MSG_typeHtmlFlow;
     }
 
 
     function MSG_initMSG(){
         MSG_contentEditor.setValue('');
-        MSGAttachContainer.removeMembers(MSGAttachContainer.getMembers());
+        //MSGAttachContainer.removeMembers(MSGAttachContainer.getMembers());
         MSG_selectUsersForm.clearValues()
         MSG_sendTypesItems = [];
         MSG_msgContent = {};
         MSG_attachFiles = [];
     }
+
+    function MSG_toggleMessageType(messageTypeID, isEnable){
+        var selectType = 'MSG_messageType_'+messageTypeID;
+        console.log(selectType)
+        setTimeout(function(){
+            var c = window[selectType].contents;
+            var joinText = isEnable ? 'MSG-type-container': 'MSG-type-container-disable';
+            var cr = c.split("MSG-type-container").join(joinText);
+            var cr2 = cr.split('onclick=\'selectSendMessageType(this)\'').join('');
+             window[selectType].setContents(isEnable ? cr : cr2)
+        },1000)
+
+    }
+
+
+    /*----------------------------------setDisable-----------------------------*/
+
+    // MSG_sendMsgForm.setDisabled(true); // true == enable  false == disable
+    // MSG_toggleMessageType('sms', true)   // true == enable  false == disable
