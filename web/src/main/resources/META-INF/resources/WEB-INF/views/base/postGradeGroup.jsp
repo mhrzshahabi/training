@@ -49,7 +49,15 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "code"},
-            {name: "titleFa"}
+            {name: "titleFa"},
+            {
+                name: "enabled",
+                title: "<spring:message code="active.status"/>",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both",
+            },
         ],
         fetchDataURL: postGradeUrl + "/iscList"
     });
@@ -561,7 +569,13 @@
                 name: "titleFa",
                 title: "<spring:message code='post.grade.title'/>",
                 filterOperator: "iContains"
-            }
+            },
+            {name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+            },
         ]
     });
 
