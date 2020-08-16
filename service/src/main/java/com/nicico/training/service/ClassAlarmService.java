@@ -734,14 +734,14 @@ public class ClassAlarmService implements IClassAlarm {
 
     //****************class attendance alarm*****************checking for unjustified absence limitations
     @Transactional
-    public List<ClassAlarmDTO> alarmAttendanceUnjustifiedAbsence(Long class_id) {
+    public void alarmAttendanceUnjustifiedAbsence(Long class_id) {
 
         List<ClassAlarmDTO> alarmList = null;
 
         try {
 
             String alarmScript = "SELECT DISTINCT \n" +
-                    "    alarmTypeTitleFa, 'Attendance' AS alarmTypeTitleEn, classId, null AS sessionId, null AS teacherId, studentId,\n" +
+                    "    alarmTypeTitleFa, 'UnjustifiedAttendance' AS alarmTypeTitleEn, classId, null AS sessionId, null AS teacherId, studentId,\n" +
                     "    null AS instituteId, null AS trainingPlaceId, null AS reservationId, targetRecordId, tabName, pageAddress,\n" +
                     "    alarm, detailRecordId, sortField,  null AS classIdConflict, null AS  sessionIdConflict,\n" +
                     "    null AS instituteIdConflict, null AS trainingPlaceIdConflict, null AS reservationIdConflict\n" +
@@ -821,13 +821,16 @@ public class ClassAlarmService implements IClassAlarm {
                     Object[] alarm = (Object[]) alarms.get(i);
                     alarmList.add(convertObjectToDTO(alarm));
                 }
-            }
 
+                if (alarmList.size() > 0) {
+                    addAlarmsToQueue(alarmList, class_id);
+                } else {
+                addAlarmsToDeleteQueue("UnjustifiedAttendance", class_id);
+                }
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
-        return alarmList;
     }
     //*********************************
 
