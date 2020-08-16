@@ -13,7 +13,7 @@
         var selectedRecord_addStudent_class = '';
 
         // ------------------------------------------- Menu -------------------------------------------
-        StudentMenu_student = isc.Menu.create({
+        let StudentMenu_student = isc.Menu.create({
             data: [
 
                 <sec:authorize access="hasAnyAuthority('TclassStudentsTab_R','TclassStudentsTab_classStatus')">
@@ -60,19 +60,19 @@
         });
 
         // ------------------------------------------- ToolStrip -------------------------------------------
-        var btnAdd_student_class = isc.ToolStripButtonAdd.create({
+        let btnAdd_student_class = isc.ToolStripButtonAdd.create({
             click: function () {
                 addStudent_student();
             }
         });
 
-        var btnRemove_student_class = isc.ToolStripButtonRemove.create({
+        let btnRemove_student_class = isc.ToolStripButtonRemove.create({
             click: function () {
                 removeStudent_student();
             }
         });
 
-        StudentTS_student = isc.ToolStrip.create({
+        let StudentTS_student = isc.ToolStrip.create({
             members: [
 
                 <sec:authorize access="hasAnyAuthority('TclassStudentsTab_ADD','TclassStudentsTab_classStatus')">
@@ -159,14 +159,14 @@
             ]
         });
 
-        PersonnelsTS_student = isc.ToolStrip.create({
+        let PersonnelsTS_student = isc.ToolStrip.create({
             members: [
                 isc.LayoutSpacer.create({width: "*"}),
                 isc.Label.create({ID: "PersonnelsCount_student"}),
             ]
         });
 
-        var RegisteredTS_student = isc.ToolStrip.create({
+        let RegisteredTS_student = isc.ToolStrip.create({
             members: [
                 isc.LayoutSpacer.create({width: "*"}),
                 isc.Label.create({ID: "RegisteredCount_student"}),
@@ -175,7 +175,7 @@
 
         // ------------------------------------------- DataSource & ListGrid -------------------------------------------
 
-        var RestDataSource_company_Student = isc.TrDS.create({
+        let RestDataSource_company_Student = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true, hidden: true},
                 {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
@@ -203,7 +203,7 @@
             fetchDataURL: companyUrl + "spec-list"
         });
 
-        StudentsDS_student = isc.TrDS.create({
+        let StudentsDS_student = isc.TrDS.create({
             <%--transformRequest: function (dsRequest) {--%>
             <%--    dsRequest.httpHeaders = {--%>
             <%--        "Authorization": "Bearer <%= accessToken1 %>"--%>
@@ -310,7 +310,7 @@
             fetchDataURL: tclassStudentUrl + "/students-iscList/"
         });
 
-        StudentsDS_PresenceType = isc.TrDS.create({
+        let StudentsDS_PresenceType = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true, hidden: true},
                 {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
@@ -319,7 +319,7 @@
             fetchDataURL: parameterValueUrl + "/iscList/98"
         });
 
-        StudentsLG_student = isc.TrLG.create({
+        var StudentsLG_student = isc.TrLG.create({
             <sec:authorize access="hasAnyAuthority('TclassStudentsTab_R','TclassStudentsTab_classStatus')">
             dataSource: StudentsDS_student,
             </sec:authorize>
@@ -406,8 +406,6 @@
                 {name: "student.ccpUnit", autoFitWidth: true},
                 {name: "warning",hidden:true},
                 {name: "hasWarning", title: "قبولی در پیش تست", width: 130, type: "image", imageURLPrefix: "", imageURLSuffix: ".png", canEdit: false}
-
-
             ],
             gridComponents: [StudentTS_student, "filterEditor", "header", "body"],
             dataArrived:function()
@@ -482,7 +480,7 @@
             }
         });
 
-        SelectedPersonnelsLG_student = isc.TrLG.create({
+        let SelectedPersonnelsLG_student = isc.TrLG.create({
             ID: "SelectedPersonnelsLG_student",
             showFilterEditor: true,
             allowAdvancedCriteria: true,
@@ -551,6 +549,7 @@
                     displayField: "title",
                     filterOnKeypress: true,
                 },
+                {name: "isNeedsAssesment", type: "boolean", canEdit: false, title:"نیازسنجی"},
                 <%--{name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},--%>
                 <%--{name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},--%>
                 <%--{name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},--%>
@@ -632,12 +631,11 @@
                 if (this.getFieldName(colNum) == "nationalCode") {
                     result += "color: #0066cc !important;text-decoration: underline !important;cursor: pointer !important;"
                 }
-
                 return result;
-            }
+            },
         });
 
-        PersonnelDS_student = isc.TrDS.create({
+        let PersonnelDS_student = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true, hidden: true},
                 {
@@ -719,7 +717,7 @@
             fetchDataURL: personnelUrl + "/iscList",
         });
 
-        PersonnelsLG_student = isc.TrLG.create({
+        let PersonnelsLG_student = isc.TrLG.create({
             dataSource: PersonnelDS_student,
             selectionType: "single",
             fields: [
@@ -799,7 +797,6 @@
                     return;
                 }
 
-
                 let current = PersonnelsLG_student.getSelection().filter(function (x) {
                     return x.enabled != false
                 })[0];//.filter(p->p.enabled==false);
@@ -829,12 +826,13 @@
                         current.presenceTypeId = studentDefaultPresenceId;
                         current.registerTypeId = 1;
 
-                        SelectedPersonnelsLG_student.data.add(Object.assign({}, current));
+                        SelectedPersonnelsLG_student.data.add({...current});
                         PersonnelsLG_student.findAll({
                             _constructor: "AdvancedCriteria",
                             operator: "and",
                             criteria: [{fieldName: "nationalCode", operator: "equals", value: current.nationalCode}]
                         }).setProperty("enabled", false);
+                        checkExistInNeedsAssesment(ListGrid_Class_JspClass.getSelectedRecord().courseId)
                     }
 
                     function checkIfAlreadyExist(currentVal) {
@@ -853,7 +851,7 @@
                         }
                     });
                     studentSelection = true;
-                    PersonnelsLG_student.deselectRecord(current)
+                    PersonnelsLG_student.deselectRecord(current);
                     studentSelection = false;
                 }
             },
@@ -915,7 +913,7 @@
             });
         }
 
-        PersonnelRegDS_student = isc.TrDS.create({
+        let PersonnelRegDS_student = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true, hidden: true},
                 {
@@ -989,7 +987,7 @@
             fetchDataURL: personnelRegUrl + "/spec-list",
         });
 
-        PersonnelsRegLG_student = isc.TrLG.create({
+        let PersonnelsRegLG_student = isc.TrLG.create({
             dataSource: PersonnelRegDS_student,
             selectionType: "single",
             fields: [
@@ -1171,7 +1169,7 @@
 
         // ------------------------------------------- DynamicForm & Window -------------------------------------------
 
-        var personnel_List_VLayout = isc.VLayout.create({
+        let personnel_List_VLayout = isc.VLayout.create({
             width: "100%",
             height: "100%",
             autoDraw: false,
@@ -1207,7 +1205,7 @@
             ]
         });
 
-        var registered_List_VLayout = isc.VLayout.create({
+        let registered_List_VLayout = isc.VLayout.create({
             width: "100%",
             height: "100%",
             autoDraw: false,
@@ -1238,7 +1236,7 @@
             ]
         });
 
-        var personnelTabs = isc.TabSet.create({
+        let personnelTabs = isc.TabSet.create({
             height: "50%",
             width: "100%",
             showTabScroller: false,
@@ -1254,7 +1252,7 @@
             ]
         });
 
-        ClassStudentWin_student = isc.Window.create({
+        let ClassStudentWin_student = isc.Window.create({
             width: 1000,
             height: 768,
             minWidth: 1000,
@@ -1278,10 +1276,8 @@
                                         align: "center",
                                         icon: "[SKIN]/actions/save.png",
                                         click: function () {
-                                            wait.show()
-
-                                            var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
-                                            var students = [];
+                                            let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
+                                            let students = [];
                                             for (let i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
                                                 students.add({
                                                     "personnelNo": SelectedPersonnelsLG_student.data[i].personnelNo,
@@ -1290,9 +1286,10 @@
                                                     "registerTypeId": SelectedPersonnelsLG_student.data[i].registerTypeId
                                                 });
                                             }
-                                            if (students.getLength() > 0)
+                                            if (students.getLength() > 0) {
+                                                wait.show()
                                                 isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST", JSON.stringify(students), class_add_students_result));
-
+                                            }
                                             SelectedPersonnelsLG_student.data.clearAll();
                                         }
                                     }), isc.IButtonCancel.create({
@@ -1309,21 +1306,20 @@
                                 ],
                             }),
                         ]
-                    }
-                    ]
+                    }]
                 }),
             ]
         });
 
 
-        var evaluationViewloader = isc.ViewLoader.create({
+        let evaluationViewloader = isc.ViewLoader.create({
             width: "100%",
             height: "100%",
             autoDraw: true,
             loadingMessage: " "
         });
 
-        var evaluationWindowViewloader = isc.Window.create({
+        let evaluationWindowViewloader = isc.Window.create({
             width: 800,
             height: 900,
             autoSize: false,
@@ -1353,7 +1349,7 @@
         }
 
         function addStudent_student() {
-            classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+            let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
             if (classRecord == null || classRecord.id == null) {
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
@@ -1370,7 +1366,7 @@
         function class_add_students_result(resp) {
             wait.close();
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
+                let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
                 ClassStudentWin_student.close();
                 refreshLG(StudentsLG_student);
                 let messages = JSON.parse(resp.data);
@@ -1380,18 +1376,15 @@
                     invalMessage = "<spring:message code="for"/>" + " " + "<spring:message code="student.plural"/>" + " " + messages.names + " " + "<spring:message code="message.define.applicant.company"/>";
                     timeOut = 15000
                 }
-
-                var OK = createDialog("info", messages.accepted + " " + "<spring:message code="message.students.added.successfully"/>"
+                let OK = createDialog("info", messages.accepted + " " + "<spring:message code="message.students.added.successfully"/>"
                     + "<br/>" + invalMessage,
 
                     "<spring:message code="msg.command.done"/>");
-
                 setTimeout(function () {
                     OK.close();
                 }, timeOut);
             } else {
-                //const wait = createDialog("wait");
-                var OK = createDialog("info", "<spring:message code="msg.operation.error"/>",
+                let OK = createDialog("info", "<spring:message code="msg.operation.error"/>",
                     "<spring:message code="error"/>");
                 setTimeout(function () {
                     OK.close();
@@ -1400,14 +1393,14 @@
         }
 
         function removeStudent_student() {
-            var studentIds = new Array();
-            var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
-            var studentRecord = StudentsLG_student.getSelectedRecords();
+            let studentIds = new Array();
+            let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
+            let studentRecord = StudentsLG_student.getSelectedRecords();
 
             if (studentRecord == null) {
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             } else {
-                var Dialog_Delete = isc.Dialog.create({
+                let Dialog_Delete = isc.Dialog.create({
                     message: "<spring:message code='msg.record.remove.ask'/>",
                     icon: "[SKIN]ask.png",
                     title: "<spring:message code='msg.remove.title'/>",
@@ -1424,7 +1417,7 @@
                                 title: "<spring:message code='message'/>"
                             });
 
-                            for (i = 0; i < studentRecord.getLength(); i++) {
+                            for (let i = 0; i < studentRecord.getLength(); i++) {
                                 studentIds.add(studentRecord[i].id)
                             }
 
@@ -1442,7 +1435,7 @@
                 simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
                 refreshLG(StudentsLG_student);
             } else if (resp.data == false) {
-                var ERROR = isc.Dialog.create({
+                let ERROR = isc.Dialog.create({
                     message: "<spring:message code='msg.student.remove.error'/>",
                     icon: "[SKIN]stop.png",
                     title: "<spring:message code='message'/>"
@@ -1451,7 +1444,7 @@
                     ERROR.close();
                 }, 3000);
             } else {
-                var ERROR = isc.Dialog.create({
+                let ERROR = isc.Dialog.create({
                     message: "<spring:message code='msg.record.remove.failed'/>",
                     icon: "[SKIN]stop.png",
                     title: "<spring:message code='message'/>"
@@ -1477,7 +1470,7 @@
 
         function class_student_update_student_result(resp) {
             wait.close();
-            var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
+            let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
             if (resp.httpResponseCode === 200) {
                 refreshLG(StudentsLG_student);
             } else {
@@ -1490,14 +1483,14 @@
         }
 
         function loadPage_student() {
-            classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+            let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
             if (!(classRecord === undefined || classRecord == null)) {
                 StudentsDS_student.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
 
                 btnAdd_student_class.setVisibility(true);
                 btnRemove_student_class.setVisibility(true);
 
-                if (classRecord.classStatus === "3") {
+                if (classRecord.classStatus === "3" || classRecord.classStatus === "4") {
                     //StudentTS_student.setVisibility(false)
                     btnAdd_student_class.setVisibility(false);
                     btnRemove_student_class.setVisibility(false);
@@ -1516,17 +1509,16 @@
         // ------------------------------------------- Duplicate Student
 
         function checkStudentDuplicateNationalCode() {
-            var record = PersonnelsRegLG_student.getSelectedRecord().getValue("nationalCode");
-            var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
+            let record = PersonnelsRegLG_student.getSelectedRecord().getValue("nationalCode");
+            let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
             isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkStudentInClass/" + nationalCode + "/" + classId, "GET",
                 null, "callback: student_national_code_findOne_result(rpcResponse)"));
         }
 
-
         function student_national_code_findOne_result(resp) {
             if (resp == null || resp == undefined || resp.data == "") {
                 duplicateCodePerReg = true;
-                var ERROR = isc.Dialog.create({
+                let ERROR = isc.Dialog.create({
                     message: ("<spring:message code='msg.national.code.duplicate'/>"),
                     icon: "[SKIN]stop.png",
                     title: "<spring:message code='message'/>"
@@ -1536,7 +1528,6 @@
                 }, 3000);
             }
         }
-
 
         function evaluationStudent_student() {
 
@@ -1724,6 +1715,28 @@
 
                 }
             }
+        }
+
+        function checkExistInNeedsAssesment(courseId){
+            // let personnelIds = personnel.map(x => x.id);
+            // isc.RPCManager.sendRequest(TrDSRequest(url, "GET", JSON.stringify(SelectedPersonnelsLG_student.data.toArray()), (resp) => {
+            //
+            // }));
+            isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/check-register-students/" + courseId , "POST", JSON.stringify(SelectedPersonnelsLG_student.data.toArray()), (resp)=>{
+                console.log(JSON.parse(resp.data))
+                SelectedPersonnelsLG_student.setData(JSON.parse(resp.data));
+                // let ids = JSON.parse(resp.data);
+
+                // for (let i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
+                //     if(ids.includes(SelectedPersonnelsLG_student.data[i].id)){
+                //         SelectedPersonnelsLG_student.data[i].isNeedsAssesment = true;
+                //     }
+                //     else{
+                //         SelectedPersonnelsLG_student.data[i].isNeedsAssesment = false;
+                //     }
+                // }
+                SelectedPersonnelsLG_student.fetchData()
+            }));
         }
     }
     //

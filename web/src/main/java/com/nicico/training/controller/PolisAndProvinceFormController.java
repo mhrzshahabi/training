@@ -1,7 +1,6 @@
 package com.nicico.training.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.collections4.MultiValuedMap;
 import org.springframework.http.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.stereotype.Controller;

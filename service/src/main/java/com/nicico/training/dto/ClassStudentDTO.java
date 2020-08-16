@@ -104,6 +104,21 @@ public class ClassStudentDTO implements Serializable {
         private String applicantCompanyName;
         private Long presenceTypeId;
     }
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ClassStudent - CheckRegister")
+    public static class RegisterInClass {
+        @ApiModelProperty(required = true)
+        private String personnelNo;
+        private String nationalCode;
+        private Integer registerTypeId;
+        private String applicantCompanyName;
+        private Long presenceTypeId;
+        private Long id;
+        private Boolean isNeedsAssessment;
+        private Boolean isRepeat;
+    }
 
     @Getter
     @Setter
