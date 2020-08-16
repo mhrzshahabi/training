@@ -11,6 +11,7 @@
         var url = '';
         var studentSelection = false;
         var selectedRecord_addStudent_class = '';
+        var checkRefresh = 0;
 
         // ------------------------------------------- Menu -------------------------------------------
         let StudentMenu_student = isc.Menu.create({
@@ -549,7 +550,9 @@
                     displayField: "title",
                     filterOnKeypress: true,
                 },
-                {name: "isNeedsAssesment", type: "boolean", canEdit: false, title:"نیازسنجی"},
+                {name: "isNeedsAssessment", type: "boolean", canEdit: false, title:"نیازسنجی"},
+                {name: "isPassed", type: "boolean", canEdit: false, title:"گذرانده"},
+                {name: "isRunning", type: "boolean", canEdit: false, title:"در حال گذراندن"},
                 <%--{name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},--%>
                 <%--{name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},--%>
                 <%--{name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},--%>
@@ -633,6 +636,12 @@
                 }
                 return result;
             },
+            dataChanged(){
+                if(checkRefresh === 0) {
+                    checkRefresh = 1
+                    checkExistInNeedsAssessment(ListGrid_Class_JspClass.getSelectedRecord().courseId)
+                }
+            }
         });
 
         let PersonnelDS_student = isc.TrDS.create({
@@ -826,13 +835,12 @@
                         current.presenceTypeId = studentDefaultPresenceId;
                         current.registerTypeId = 1;
 
-                        SelectedPersonnelsLG_student.data.add({...current});
+                        SelectedPersonnelsLG_student.addData({...current});
                         PersonnelsLG_student.findAll({
                             _constructor: "AdvancedCriteria",
                             operator: "and",
                             criteria: [{fieldName: "nationalCode", operator: "equals", value: current.nationalCode}]
                         }).setProperty("enabled", false);
-                        checkExistInNeedsAssesment(ListGrid_Class_JspClass.getSelectedRecord().courseId)
                     }
 
                     function checkIfAlreadyExist(currentVal) {
@@ -1717,13 +1725,14 @@
             }
         }
 
-        function checkExistInNeedsAssesment(courseId){
+        function checkExistInNeedsAssessment(courseId){
             // let personnelIds = personnel.map(x => x.id);
             // isc.RPCManager.sendRequest(TrDSRequest(url, "GET", JSON.stringify(SelectedPersonnelsLG_student.data.toArray()), (resp) => {
             //
             // }));
+            wait.show()
             isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/check-register-students/" + courseId , "POST", JSON.stringify(SelectedPersonnelsLG_student.data.toArray()), (resp)=>{
-                console.log(JSON.parse(resp.data))
+                wait.close()
                 SelectedPersonnelsLG_student.setData(JSON.parse(resp.data));
                 // let ids = JSON.parse(resp.data);
 
@@ -1735,7 +1744,8 @@
                 //         SelectedPersonnelsLG_student.data[i].isNeedsAssesment = false;
                 //     }
                 // }
-                SelectedPersonnelsLG_student.fetchData()
+                SelectedPersonnelsLG_student.fetchData();
+                checkRefresh = 0;
             }));
         }
     }
