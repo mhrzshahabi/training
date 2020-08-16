@@ -52,28 +52,28 @@ public class ViewPersonnelCourseNaReport implements Serializable {
     @Column(name = "personnel_post_grade_code")
     private String postGradeCode;
 
-    @Column(name = "personnel_ccp_affairs")
+    @Column(name = "personnel_cpp_affairs")
     private String affairs;
 
     @Column(name = "personnel_education_level_title")
     private String educationLevelTitle;
 
-    @Column(name = "personnel_ccp_area")
+    @Column(name = "personnel_cpp_area")
     private String area;
 
-    @Column(name = "personnel_ccp_assistant")
+    @Column(name = "personnel_cpp_assistant")
     private String assistant;
 
-    @Column(name = "personnel_ccp_code")
+    @Column(name = "personnel_cpp_code")
     private String ccpCode;
 
-    @Column(name = "personnel_ccp_title")
+    @Column(name = "personnel_cpp_title")
     private String ccpTitle;
 
-    @Column(name = "personnel_ccp_section")
+    @Column(name = "personnel_cpp_section")
     private String section;
 
-    @Column(name = "personnel_ccp_unit")
+    @Column(name = "personnel_cpp_unit")
     private String unit;
 
     @Column(name = "personnel_company_name")
@@ -97,7 +97,7 @@ public class ViewPersonnelCourseNaReport implements Serializable {
     @Column(name = "personnel_post_code")
     private String postCode;
 
-    @Column(name = "personnel_grade_title")
+    @Column(name = "personnel_post_grade_title")
     private String postGradeTitle;
 
     @Column(name = "personnel_post_title")
@@ -105,6 +105,4 @@ public class ViewPersonnelCourseNaReport implements Serializable {
 
     @Column(name = "personnel_post_id")
     private Long postId;
-
-
 }

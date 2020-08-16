@@ -4,6 +4,29 @@
 
 // <script>
 
+    //Amin HK
+    let hideRadioButtons=false;
+
+    $(document).ready(()=>{
+        let nameTab=mainTabSet.tabs[mainTabSet.selectedTab].title;
+        if (nameTab=="اطلاعات پرسنل"){
+            hideRadioButtons=true;
+
+            [...Array(3).keys()].slice(1).forEach(idx=> {
+                ReportTypeDF_NABOP.getItem("reportType").getItem(idx).setDisabled(true);
+                ReportTypeDF_NABOP.getItem("personnelId").hide();
+            });
+        }
+        else if (nameTab=="گزارشات نیازسنجی"){
+            [...Array(4).keys()].slice(1).forEach(idx=> {
+                ReportTypeDF_NABOP.getItem("reportType").getItem(idx).setDisabled(false);
+                ReportTypeDF_NABOP.getItem("personnelId").show();
+            });
+            hideRadioButtons=false;
+        }
+    });
+    ////////////////////////////////////
+
     var postCode_NABOP = null;
     var passedStatusId_NABOP = 216;
     var priorities_NABOP;
@@ -911,6 +934,7 @@
 
         if (ReportTypeDF_NABOP.getValue("reportType") === "0") {
             reportType_NABOP = "0";
+            if (!hideRadioButtons)
             changeablePerson_NABOP ? ReportTypeDF_NABOP.getItem("personnelId").show() : ReportTypeDF_NABOP.getItem("personnelId").hide();
             DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport'/>" + " <spring:message code='Mrs/Mr'/> " + personName + " <spring:message code='in.post'/> " + getFormulaMessage("...", 2, "red", "b");
             ReportTypeDF_NABOP.getItem("objectId").hide();
