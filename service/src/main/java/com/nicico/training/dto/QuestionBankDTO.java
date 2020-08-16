@@ -98,21 +98,25 @@ public class QuestionBankDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("QuestionBank-CreateRq")
-    public static class Exam extends QuestionBankDTO {
+    public static class Exam {
 
-        private String option1;
+        private String vOption1;
 
-        private String option2;
+        private String vOption2;
 
-        private String option3;
+        private String vOption3;
 
-        private String option4;
+        private String vOption4;
+
+        private String hOption1;
+
+        private String hOption2;
+
+        private String hOption3;
+
+        private String hOption4;
 
         private String question;
-
-        private Long questionTypeId;
-
-        private Long displayTypeId;
 
     }
 

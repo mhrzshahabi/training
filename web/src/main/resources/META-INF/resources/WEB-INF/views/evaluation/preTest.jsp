@@ -717,6 +717,7 @@
         click: function () {
             let params = {};
             let data = ListGrid_PreTest.getData().localData.get(0).testQuestionId;
+            params.teacher = ListGrid_PreTest.getData().localData.get(0).questionBank.teacher.fullNameFa;
             // ListGrid_PreTest.getData().localData.forEach(function (value, index, array) {
             //     let q = {
             //         category: value.questionBank.category,
@@ -729,7 +730,7 @@
             //     };
             //     data.add(q);
             // });
-            console.log(data);
+            console.log(params);
             print(data, params, "preTestForm.jasper");
         }
     });
