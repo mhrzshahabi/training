@@ -117,7 +117,8 @@ public class ClassStudentDTO implements Serializable {
         private Long presenceTypeId;
         private Long id;
         private Boolean isNeedsAssessment;
-        private Boolean isRepeat;
+        private Boolean isPassed;
+        private Boolean isRunning;
     }
 
     @Getter

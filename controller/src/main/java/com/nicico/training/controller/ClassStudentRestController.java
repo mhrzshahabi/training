@@ -9,10 +9,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.ClassStudentDTO;
-import com.nicico.training.dto.TclassDTO;
-import com.nicico.training.dto.ViewCoursesPassedPersonnelReportDTO;
-import com.nicico.training.dto.ViewPersonnelCourseNaReportDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationAnalysisService;
 import com.nicico.training.model.EvaluationAnalysis;
 import com.nicico.training.model.ViewPersonnelCourseNaReport;
@@ -57,6 +54,7 @@ public class ClassStudentRestController {
     private final IEvaluationAnalysisService evaluationAnalysisService;
     private final ViewCoursesPassedPersonnelReportService iViewCoursesPassedPersonnelReportService;
     private final ViewPersonnelCourseNaReportService viewPersonnelCourseNaReportService;
+    private final ContinuousStatusReportViewService continuousStatusReportViewService;
 //    private final SearchDTO.SearchRq searchRq;
 //    private final SearchDTO.CriteriaRq criteriaRq;
 //    private final List<SearchDTO.CriteriaRq> list;
@@ -171,24 +169,32 @@ public class ClassStudentRestController {
         for (ClassStudentDTO.RegisterInClass s : request) {
             List<SearchDTO.CriteriaRq> list = new ArrayList<>();
             list.add(makeNewCriteria("courseId", courseId, EOperator.equals, null));
-            list.add(makeNewCriteria("personnelId", s.getId(), EOperator.equals, null));
+            list.add(makeNewCriteria("nationalCode", s.getNationalCode(), EOperator.equals, null));
             SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
             criteriaRq.setCriteria(list);
-            SearchDTO.SearchRq searchRq=new SearchDTO.SearchRq();
+            SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
             SearchDTO.SearchRs<ViewCoursesPassedPersonnelReportDTO.Grid> search = iViewCoursesPassedPersonnelReportService.search(searchRq.setCriteria(criteriaRq));
-//            SearchDTO.SearchRs<ViewPersonnelCourseNaReportDTO.Grid> search1 = viewPersonnelCourseNaReportService.search(searchRq.setCriteria(criteriaRq));
-//            if(search1.getList().isEmpty()){
-//                s.setIsNeedsAssessment(false);
-//            }
-//            else{
-//                s.setIsNeedsAssessment(true);
-//            }
-
-            if(search.getList().isEmpty()){
-                s.setIsRepeat(false);
+            SearchDTO.SearchRs<ContinuousStatusReportViewDTO.Grid> search2 = continuousStatusReportViewService.search(searchRq.setCriteria(criteriaRq));
+            SearchDTO.SearchRs<ViewPersonnelCourseNaReportDTO.Grid> search1 = viewPersonnelCourseNaReportService.search(searchRq.setCriteria(criteriaRq));
+            if(search1.getList().isEmpty()){
+                s.setIsNeedsAssessment(false);
             }
             else{
-                s.setIsRepeat(true);
+                s.setIsNeedsAssessment(true);
+            }
+
+            if(search.getList().isEmpty()){
+                s.setIsPassed(false);
+            }
+            else{
+                s.setIsPassed(true);
+            }
+
+            if(search2.getList().isEmpty()){
+                s.setIsRunning(false);
+            }
+            else{
+                s.setIsRunning(true);
             }
         }
         return new ResponseEntity<>(request, HttpStatus.OK);
