@@ -1,6 +1,6 @@
 package com.nicico.training.model;
 
-import com.nicico.training.model.compositeKey.PersonnelCourseTermKey;
+import com.nicico.training.model.compositeKey.PersonnelCourseNaKey;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
@@ -17,11 +17,16 @@ import java.io.Serializable;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Subselect("SELECT * from VIEW_COURSES_PASSED_PERSONNEL")
+@Subselect("SELECT * from VIEW_PERSONNEL_COURSE_NA_REPORT")
 
-public class ViewCoursesPassedPersonnelReport implements Serializable {
+public class ViewPersonnelCourseNaReport implements Serializable {
     @EmbeddedId
-    private PersonnelCourseTermKey id;
+    private PersonnelCourseNaKey id;
+
+    //personnel_personnel_no
+
+    @Column(name = "na_priority_id")
+    private String priorityId;
 
     @Column(name = "personnel_emp_no")
     private String empNo;
@@ -44,41 +49,26 @@ public class ViewCoursesPassedPersonnelReport implements Serializable {
     @Column(name = "course_title_fa")
     private String courseTitleFa;
 
-    @Column(name = "class_student_scores_state_id")
-    private Long classStudentScoresStateId;
-
-    @Column(name = "class_start_date")
-    private String classStartDate;
-
-    @Column(name = "class_end_date")
-    private String classEndDate;
-
-    @Column(name = "class_h_duration")
-    private Long classHDduration;
-
-    @Column(name = "term_code")
-    private String termCode;
-
-    @Column(name = "term_title_fa")
-    private String termTitleFa;
-
-    @Column(name = "term_id", insertable = false, updatable = false)
-    private Long termId;
-
-    @Column(name = "class_year")
-    private String classYear;
-
     @Column(name = "personnel_post_grade_code")
     private String postGradeCode;
 
     @Column(name = "personnel_ccp_affairs")
     private String affairs;
 
+    @Column(name = "personnel_education_level_title")
+    private String educationLevelTitle;
+
     @Column(name = "personnel_ccp_area")
     private String area;
 
     @Column(name = "personnel_ccp_assistant")
     private String assistant;
+
+    @Column(name = "personnel_ccp_code")
+    private String ccpCode;
+
+    @Column(name = "personnel_ccp_title")
+    private String ccpTitle;
 
     @Column(name = "personnel_ccp_section")
     private String section;
@@ -92,18 +82,29 @@ public class ViewCoursesPassedPersonnelReport implements Serializable {
     @Column(name = "personnel_complex_title")
     private String complexTitle;
 
-    @Column(name = "coursetype")
-    private String courseType;
-
-    @Column(name = "na_priority_id")
-    private Long naPriorityId;
-
     @Column(name = "course_id", insertable = false, updatable = false)
     private Long courseId;
 
     @Column(name = "personnel_id", insertable = false, updatable = false)
     private Long personnelId;
 
-    @Column(name = "class_student_score")
-    private Float score;
+    @Column(name = "personnel_job_no")
+    private String jobNo;
+
+    @Column(name = "personnel_job_title")
+    private String jobTitle;
+
+    @Column(name = "personnel_post_code")
+    private String postCode;
+
+    @Column(name = "personnel_grade_title")
+    private String postGradeTitle;
+
+    @Column(name = "personnel_post_title")
+    private String postTitle;
+
+    @Column(name = "personnel_post_id")
+    private Long postId;
+
+
 }

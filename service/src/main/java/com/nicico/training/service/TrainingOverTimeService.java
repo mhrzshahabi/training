@@ -47,9 +47,9 @@ public class TrainingOverTimeService implements ITrainingOverTimeService {
                 "    INNER JOIN tbl_student std ON att.f_student = std.id\n " +
                 "    INNER JOIN (\n " +
                 "        SELECT\n " +
-                "            * from view_personnels\n"+
-                "    ) personnel ON std.personnel_no = personnel.personnel_no\n " +
-                "    LEFT JOIN tbl_department dep ON dep.id = personnel.department_id \n " +
+                "            * from view_active_personnel\n"+
+                "    ) personnel ON std.national_code = personnel.national_code\n " +
+                "    LEFT JOIN tbl_department dep ON dep.id = personnel.f_department_id \n " +
                 "    INNER JOIN tbl_session csession ON att.f_session = csession.id\n " +
                 "    INNER JOIN tbl_class class ON csession.f_class_id = class.id\n " +
                 " WHERE\n " +

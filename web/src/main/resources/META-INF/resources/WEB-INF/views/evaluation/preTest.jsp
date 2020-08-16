@@ -3,212 +3,711 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<%
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
+
 // <script>
     //----------------------------------------- Variables --------------------------------------------------------------
-
+    var questionsSelection=false;
+    var fromQuestionBank=true;
     //----------------------------------------- DataSources ------------------------------------------------------------
-    var RestDataSource_student_PreTest = isc.TrDS.create({
+    var RestDataSource_PreTest = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "student.id", hidden: true},
             {
-                name: "student.firstName",
-                title: "<spring:message code="firstName"/>",
+                name: "questionBank.question",
+                title: "<spring:message code='question.bank.question'/>",
+                align: "center",
+                filterOperator: "iContains",
+            },
+            {
+                name: "questionBank.questionType.title",
+                title: "<spring:message code='question.bank.question.type'/>",
+                align: "center",
                 filterOperator: "iContains",
                 autoFitWidth: true
             },
             {
-                name: "student.lastName",
-                title: "<spring:message code="lastName"/>",
+                name: "questionBank.displayType.title",
+                title: "<spring:message code='question.bank.display.type'/>",
+                align: "center",
                 filterOperator: "iContains",
                 autoFitWidth: true
             },
-            {
-                name: "student.nationalCode",
-                title: "<spring:message code="national.code"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true,
-            },
-            {
-                name: "applicantCompanyName",
-                title: "<spring:message code="company.applicant"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "presenceTypeId",
-                title: "<spring:message code="class.presence.type"/>",
-                filterOperator: "equals",
-                autoFitWidth: true
-            },
-            {
-                name: "student.companyName",
-                title: "<spring:message code="company.name"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "student.personnelNo",
-                title: "<spring:message code="personnel.no"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "student.personnelNo2",
-                title: "<spring:message code="personnel.no.6.digits"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "student.postTitle",
-                title: "<spring:message code="post"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "student.ccpArea",
-                title: "<spring:message code="reward.cost.center.area"/>",
-                filterOperator: "iContains"
-            },
-            {
-                name: "evaluationStatusReaction",
-                title: "<spring:message code="evaluation.reaction.status"/>",
-                filterOperator: "iContains"
-            },
-            {
-                name: "evaluationStatusLearning",
-                title: "<spring:message code="evaluation.learning.status"/>",
-                filterOperator: "iContains"
-            },
-            {
-                name: "evaluationStatusBehavior",
-                title: "<spring:message code="evaluation.behavioral.status"/>",
-                filterOperator: "iContains"
-            },
-            {
-                name: "evaluationStatusResults",
-                title: "<spring:message code="evaluation.results.status"/>",
-                filterOperator: "iContains"
-            }
         ],
     });
 
-    //----------------------------------------- DynamicForms -----------------------------------------------------------
-    var DynamicForm_ReturnDate_PreTest = isc.DynamicForm.create({
-        width: "150px",
-        height: "10px",
-        padding: 0,
-        fields: [
-            {
-                name: "evaluationReturnDate",
-                title: "<spring:message code='return.date'/>",
-                ID: "ReturnDate_PreTest",
-                width: "150px",
-                hint: "----/--/--",
-                keyPressFilter: "[0-9/]",
-                showHintInField: true,
-                icons: [{
-                    src: "<spring:url value="calendar.png"/>",
-                    click: function (form) {
-                        closeCalendarWindow();
-                        displayDatePicker('ReturnDate_PreTest', this, 'ymd', '/');
-                    }
-                }],
-                textAlign: "center",
-                click: function (form) {
+    var RestDataSource_All_PreTest = isc.TrDS.create();
 
-                },
-                changed: function (form, item, value) {
-                    evaluation_check_date_PreTest();
-                }
-            }
+    var RestDataSource_ForThisClass_PreTest = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {
+                name: "questionBank.question",
+                title: "<spring:message code='question.bank.question'/>",
+                align: "center",
+                filterOperator: "iContains",
+            },
+            {
+                name: "questionBank.questionType.title",
+                title: "<spring:message code='question.bank.question.type'/>",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "questionBank.displayType.title",
+                title: "<spring:message code='question.bank.display.type'/>",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+
         ]
     });
+
+    DisplayTypeDS_PreTest = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+        ],
+        //autoCacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/DisplayType"
+    });
+
+    AnswerTypeDS_PreTest = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+        ],
+        //autoCacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/AnswerType"
+    });
+
+    var RestDataSource_category_PreTest = isc.TrDS.create({
+        ID: "categoryDS",
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa", type: "text"}
+        ],
+        fetchDataURL: categoryUrl + "spec-list",
+    });
+
+    var RestDataSourceSubCategory_PreTest = isc.TrDS.create({
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa"}, {name: "code"}
+        ],
+        fetchDataURL: subCategoryUrl + "iscList"
+    });
+
     //----------------------------------------- ListGrids --------------------------------------------------------------
-    var ListGrid_student_PreTest = isc.TrLG.create({
+    var ListGrid_PreTest = isc.TrLG.create({
         width: "100%",
         height: "100%",
-        dataSource: RestDataSource_student_PreTest,
-        selectionType: "single",
         showRecordComponents: true,
         showRecordComponentsByCell: true,
-        sortField: 5,
-        sortDirection: "descending",
+        dataSource: RestDataSource_PreTest,
+        selectionType: "single",
         fields: [
-            {name: "student.firstName"},
-            {name: "student.lastName"},
-            {
-                name: "student.nationalCode",
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
-                }
-            },
-            {
-                name: "student.personnelNo",
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
-                }
-            },
-            {
-                name: "student.personnelNo2",
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
-                }
-            },
-            {
-                name: "applicantCompanyName",
-                textAlign: "center"
-            },
-            {
-                name: "evaluationStatusReaction",
-                valueMap: {
-                    "0": "صادر نشده",
-                    "1": "صادر شده",
-                    "2": "تکمیل شده و کامل",
-                    "3": "تکمیل شده و ناقص"
-                },
-                filterEditorProperties: {
-                    pickListProperties: {
-                        showFilterEditor: false
-                    }
-                },
-                filterOnKeypress: true,
-                filterOperator: "equals"
-            },
-            {name: "sendForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true},
-            {
-                name: "saveResults",
-                title: " ",
-                align: "center",
-                canSort: false,
-                canFilter: false,
-                autoFithWidth: true
-            },
-            {name: "removeForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true},
-            {name: "printForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true}
+            {name: "id", hidden:true},
+            {name: "questionBank.question"},
+            {name: "questionBank.questionType.title"},
+            {name: "questionBank.displayType.title"},
+            {name: "OnDelete", title: " ", align: "center", width:30}
         ],
+        createRecordComponent: function (record, colNum) {
+            var fieldName = this.getFieldName(colNum);
+
+            if (fieldName === "OnDelete") {
+                var recordCanvas = isc.HLayout.create({
+                    height: 20,
+                    width: "100%",
+                    layoutMargin: 5,
+                    membersMargin: 10,
+                    align: "center"
+                });
+
+                var removeIcon = isc.ImgButton.create({
+                    showDown: false,
+                    showRollOver: false,
+                    layoutAlign: "center",
+                    src: "[SKIN]/actions/remove.png",
+                    prompt: "حذف کردن",
+                    height: 16,
+                    width: 16,
+                    grid: this,
+                    click: function () {
+                        var activeId = record.questionBank.id;
+                        var activeClass = ListGrid_class_Evaluation.getSelectedRecord();
+                        var activeClassId = activeClass.id;
+                        isc.RPCManager.sendRequest({
+                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                            useSimpleHttp: true,
+                            contentType: "application/json; charset=utf-8",
+                            actionURL:  questionBankTestQuestionUrl + "/delete-questions/preTest/" + activeClassId + "/" + activeId,
+                            httpMethod: "DELETE",
+                            serverOutputAsString: false,
+                            callback: function (resp) {
+                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                    refreshLG(ListGrid_PreTest);
+
+                                } else {
+                                    isc.say("خطا در پاسخ سرویس دهنده");
+                                }
+                            }
+                        });
+                    }
+                });
+                recordCanvas.addMember(removeIcon);
+                return recordCanvas;
+            } else
+                return null;
+        }
     });
+
+    Lable_AllQuestions_PreTest = isc.LgLabel.create({contents:"لیست سوالات از بانک سوال", customEdges: ["R","L","T", "B"]});
+    var ListGrid_AllQuestions_PreTestJSP = isc.TrLG.create({
+        height: "45%",
+        dataSource: RestDataSource_All_PreTest,
+        selectionAppearance: "checkbox",
+        selectionType: "simple",
+        sortField: "id",
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
+        gridComponents: [Lable_AllQuestions_PreTest, "filterEditor", "header", "body"],
+        dataArrived:function(){
+            let lgIds = ListGrid_ForQuestions_PreTestJSP.data.getAllCachedRows().map(function(item) {
+                return item.id;
+            });
+
+            if(lgIds.length==0){
+                return;
+            }
+
+            let findRows=ListGrid_AllQuestions_PreTestJSP.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:lgIds}]});
+            ListGrid_AllQuestions_PreTestJSP.setSelectedState(findRows);
+            findRows.setProperty("enabled", false);
+        },
+        createRecordComponent: function (record, colNum) {
+            var fieldName = this.getFieldName(colNum);
+            if (fieldName === "OnAdd") {
+                var recordCanvas = isc.HLayout.create({
+                    height: 20,
+                    width: "100%",
+                    layoutMargin: 5,
+                    membersMargin: 10,
+                    align: "center"
+                });
+                var addIcon = isc.ImgButton.create({
+                    showDown: false,
+                    showRollOver: false,
+                    layoutAlign: "center",
+                    src: "[SKIN]/actions/add.png",
+                    prompt: "اضافه کردن",
+                    height: 16,
+                    width: 16,
+                    grid: this,
+                    click: function () {
+                        let current = record;
+                        let selected = ListGrid_ForQuestions_PreTestJSP.data.getAllCachedRows().map(function(item) {return item.id;});
+
+                        let ids = [];
+
+                        let questionBankId=0;
+
+                        if(!current.questionBank){
+                            questionBankId=current.id;
+                        }else{
+                            questionBankId=current.questionBank.id;
+                        }
+                        if ($.inArray(questionBankId, selected) === -1){
+                            ids.push(questionBankId);
+                        }
+
+                        if(ids.length!==0){
+                            let findRows=ListGrid_AllQuestions_PreTestJSP.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"equals",value:current.id}]});
+
+                            let classRecord = ListGrid_class_Evaluation.getSelectedRecord();
+                            let classId = classRecord.id;
+
+                            let JSONObj = {"ids": ids};
+                            wait.show();
+
+                            isc.RPCManager.sendRequest({
+                                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                useSimpleHttp: true,
+                                contentType: "application/json; charset=utf-8",
+                                actionURL: questionBankTestQuestionUrl + "/add-questions/preTest/" + classId + "/" + ids,
+                                httpMethod: "POST",
+                                data: JSON.stringify(JSONObj),
+                                serverOutputAsString: false,
+                                callback: function (resp) {
+                                    wait.close();
+                                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                        ListGrid_AllQuestions_PreTestJSP.selectRecord(findRows);
+                                        findRows.setProperty("enabled", false);
+                                        ListGrid_AllQuestions_PreTestJSP.redraw();
+
+                                        ListGrid_ForQuestions_PreTestJSP.invalidateCache();
+                                        ListGrid_ForQuestions_PreTestJSP.fetchData();
+                                    } else {
+                                        isc.say("خطا");
+                                    }
+                                }
+                            });
+
+                        }
+                    }
+                });
+                recordCanvas.addMember(addIcon);
+                return recordCanvas;
+            } else
+                return null;
+        }
+    });
+
+    Lable_ForQuestions_PreTest = isc.LgLabel.create({contents:"لیست سوالات برای این کلاس", customEdges: ["R","L","T", "B"]});
+
+    var ListGrid_ForQuestions_PreTestJSP = isc.TrLG.create({
+        height: "45%",
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
+        gridComponents: [Lable_ForQuestions_PreTest, "filterEditor", "header", "body"],
+        dataSource: RestDataSource_ForThisClass_PreTest,
+        sortField: 0,
+        selectionAppearance: "checkbox",
+        selectionType: "simple",
+        fields: [
+            {name: "id", hidden:true},
+            {name: "questionBank.question"},
+            {name: "questionBank.questionType.title"},
+            {name: "questionBank.displayType.title"},
+            {name: "OnDelete", title: " ", align: "center", width:30}
+        ],
+        dataArrived:function(){
+            if(questionsSelection) {
+                ListGrid_AllQuestions_PreTestJSP.invalidateCache();
+
+                /*if(ListGrid_AllQuestions_PreTestJSP.fields.some(p=>p.name=="tclass.course.titleFa")){
+                    ListGrid_AllQuestions_PreTestJSP.fetchData({
+                        _constructor: "AdvancedCriteria",
+                        operator: "and",
+                        criteria: [{fieldName: "tclass.course.titleFa", operator: "equals", value: ListGrid_class_Evaluation.getSelectedRecord().courseTitleFa}]
+                    });
+                }else{*/
+                    ListGrid_AllQuestions_PreTestJSP.fetchData();
+                //}
+
+                questionsSelection=false;
+            }
+        },
+        createRecordComponent: function (record, colNum) {
+            var fieldName = this.getFieldName(colNum);
+
+            if (fieldName === "OnDelete") {
+                var recordCanvas = isc.HLayout.create({
+                    height: 20,
+                    width: "100%",
+                    layoutMargin: 5,
+                    membersMargin: 10,
+                    align: "center"
+                });
+
+                var removeIcon = isc.ImgButton.create({
+                    showDown: false,
+                    showRollOver: false,
+                    layoutAlign: "center",
+                    src: "[SKIN]/actions/remove.png",
+                    prompt: "حذف کردن",
+                    height: 16,
+                    width: 16,
+                    grid: this,
+                    click: function () {
+                        var activeId = record.questionBank.id;
+                        var activeClass = ListGrid_class_Evaluation.getSelectedRecord();
+                        var activeClassId = activeClass.id;
+                        isc.RPCManager.sendRequest({
+                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                            useSimpleHttp: true,
+                            contentType: "application/json; charset=utf-8",
+                            actionURL:  questionBankTestQuestionUrl + "/delete-questions/preTest/" + activeClassId + "/" + activeId,
+                            httpMethod: "DELETE",
+                            serverOutputAsString: false,
+                            callback: function (resp) {
+                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+                                    ListGrid_ForQuestions_PreTestJSP.invalidateCache();
+
+                                    let findRows=ListGrid_AllQuestions_PreTestJSP.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:[activeId]}]});
+
+                                    if(typeof (findRows)!='undefined' && findRows.length>0){
+                                        findRows.setProperty("enabled", true);
+                                        ListGrid_AllQuestions_PreTestJSP.deselectRecord(findRows[0]);
+                                    }
+
+                                } else {
+                                    isc.say("خطا در پاسخ سرویس دهنده");
+                                }
+                            }
+                        });
+                    }
+                });
+                recordCanvas.addMember(removeIcon);
+                return recordCanvas;
+            } else
+                return null;
+        }
+    });
+
 
     //----------------------------------------- ToolStrips -------------------------------------------------------------
 
     var ToolStripButton_RefreshIssuance_PreTest = isc.ToolStripButtonRefresh.create({
         title: "<spring:message code="refresh"/>",
         click: function () {
-            ListGrid_student_PreTest.invalidateCache();
+            ListGrid_PreTest.invalidateCache();
         }
     });
 
     var ToolStripButton_InsertQuestionFromQuestionBank_PreTest = isc.ToolStripButtonAdd.create({
-        title: "اضافه کردن از بانک سوال",
         click: function () {
-            ListGrid_student_PreTest.invalidateCache();
-        }
+            let record = ListGrid_class_Evaluation.getSelectedRecord();
+            if (record == null || record.id == null) {
+                isc.Dialog.create({
+                    message: "<spring:message code='msg.no.records.selected'/>",
+                    icon: "[SKIN]ask.png",
+                    title: "<spring:message code='message'/>",
+                    buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
+                    buttonClick: function (button, index) {
+                        this.close();
+                    }
+                });
+
+            } else {
+                questionsSelection=true;
+                fromQuestionBank=true;
+
+                RestDataSource_All_PreTest.fields=[
+                    {name: "id", primaryKey: true, hidden: true},
+                    {name: "code",},
+                    {name: "question",},
+                    {name: "questionType.title",},
+                    {name: "displayType.title",},
+                    {name: "category.titleFa",},
+                    {name: "subCategory.titleFa",},
+                    {name: "teacher.fullNameFa",},
+                    {name: "tclass.course.titleFa",},
+                    {name: "tclass.code",},
+                    {name: "tclass.startDate",},
+                    {name: "tclass.endDate",},
+                    {name: "course.titleFa",}
+                ];
+
+                RestDataSource_All_PreTest.fetchDataURL=questionBankUrl + "/spec-list";
+
+                ListGrid_AllQuestions_PreTestJSP.dataSource=RestDataSource_All_PreTest;
+                ListGrid_AllQuestions_PreTestJSP.setFields([
+                    {
+                        name: "code",
+                        title: "<spring:message code="code"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "question",
+                        title: "<spring:message code="question.bank.question"/>",
+                        filterOperator: "iContains"
+                    },
+                    {name: "displayType.id",
+                        optionDataSource: DisplayTypeDS_PreTest,
+                        title: "<spring:message code="question.bank.display.type"/>",
+                        filterOperator: "iContains", autoFitWidth: true,
+                        editorType: "SelectItem",
+                        valueField: "id",
+                        displayField: "title",
+                        filterOnKeypress: true,
+                        filterEditorProperties:{
+                            optionDataSource: DisplayTypeDS_PreTest,
+                            valueField: "id",
+                            displayField: "title",
+                            autoFetchData: true,
+                            filterFields: ["id","title"],
+                            textMatchStyle: "substring",
+                            generateExactMatchCriteria: true,
+                            pickListProperties: {
+                                showFilterEditor: false,
+                                autoFitWidthApproach: "both"
+                            },
+                            pickListFields: [
+                                {name: "title"}
+                            ]
+                        }
+                    },
+                    {name: "questionType.id",
+                        optionDataSource: AnswerTypeDS_PreTest,
+                        title: "<spring:message code="question.bank.question.type"/>",
+                        filterOperator: "iContains", autoFitWidth: true,
+                        editorType: "SelectItem",
+                        valueField: "id",
+                        displayField: "title",
+                        filterOnKeypress: true,
+                        filterEditorProperties:{
+                            optionDataSource: AnswerTypeDS_PreTest,
+                            valueField: "id",
+                            displayField: "title",
+                            autoFetchData: true,
+                            filterFields: ["id","title"],
+                            textMatchStyle: "substring",
+                            generateExactMatchCriteria: true,
+                            pickListProperties: {
+                                showFilterEditor: false,
+                                autoFitWidthApproach: "both"
+                            },
+                            pickListFields: [
+                                {name: "title"}
+                            ]
+                        }},
+                    {
+                        name: "category.id",
+                        optionDataSource: RestDataSource_category_PreTest,
+                        title: "<spring:message code="category"/>",
+                        filterOperator: "iContains", autoFitWidth: true,
+                        editorType: "SelectItem",
+                        valueField: "id",
+                        displayField: "titleFa",
+                        filterOnKeypress: true,
+                        filterEditorProperties:{
+                            optionDataSource: RestDataSource_category_PreTest,
+                            valueField: "id",
+                            displayField: "titleFa",
+                            autoFetchData: true,
+                            filterFields: ["id","titleFa"],
+                            textMatchStyle: "substring",
+                            generateExactMatchCriteria: true,
+                            pickListProperties: {
+                                showFilterEditor: false,
+                                autoFitWidthApproach: "both"
+                            },
+                            pickListFields: [
+                                {name: "titleFa"}
+                            ]
+                        }
+                    },
+                    {
+                        name: "subCategory.id",
+                        optionDataSource: RestDataSourceSubCategory_PreTest,
+                        title: "<spring:message code="subcategory"/>",
+                        filterOperator: "iContains", autoFitWidth: true,
+                        editorType: "SelectItem",
+                        valueField: "id",
+                        displayField: "titleFa",
+                        filterOnKeypress: true,
+                        filterEditorProperties:{
+                            optionDataSource: RestDataSourceSubCategory_PreTest,
+                            valueField: "id",
+                            displayField: "titleFa",
+                            autoFetchData: true,
+                            filterFields: ["id","titleFa"],
+                            textMatchStyle: "substring",
+                            generateExactMatchCriteria: true,
+                            pickListProperties: {
+                                showFilterEditor: false,
+                                autoFitWidthApproach: "both"
+                            },
+                            pickListFields: [
+                                {name: "titleFa"}
+                            ]
+                        }
+                    },
+                    {
+                        name: "teacher.fullNameFa",
+                        title: "<spring:message code="teacher"/>",
+                        filterOperator: "iContains", autoFitWidth: true
+                    },
+                    {
+                        name: "course.titleFa",
+                        title: "<spring:message code="course"/>",
+                        filterOperator: "iContains", autoFitWidth: true
+                    },
+                    {
+                        name: "tclass.course.titleFa",
+                        title: "<spring:message code="class"/>",
+                        filterOperator: "iContains", autoFitWidth: true},
+                    {
+                        name: "tclass.code",
+                        title: "<spring:message code='class.code'/>",
+                        align: "center",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "tclass.startDate",
+                        title: "<spring:message code='start.date'/>",
+                        align: "center",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "tclass.endDate",
+                        title: "<spring:message code='end.date'/>",
+                        align: "center",
+                        filterOperator: "iContains",
+                        autoFitWidth: true},
+                    {name: "OnAdd", title: " ",canSort:false,canFilter:false, width:30}
+                ]);
+
+                RestDataSource_ForThisClass_PreTest.fetchDataURL = questionBankTestQuestionUrl +"/preTest/"+record.id+ "/spec-list";
+
+                ListGrid_ForQuestions_PreTestJSP.invalidateCache();
+                ListGrid_ForQuestions_PreTestJSP.fetchData();
+                DynamicForm_Header_PreTestJsp.setValue("sgTitle", getFormulaMessage(record.courseTitleFa, "2", "red", "B"));
+                Window_QuestionBank_PreTest.show();
+            }
+        },
+        title: "اضافه کردن از بانک سوال"
     });
 
     var ToolStripButton_InsertQuestionFromLatestQuestions_PreTest = isc.ToolStripButtonAdd.create({
         title:  "اضافه کردن از آخرین سوالات انتخاب شده",
         click: function () {
-            ListGrid_student_PreTest.invalidateCache();
+            let record = ListGrid_class_Evaluation.getSelectedRecord();
+            if (record == null || record.id == null) {
+                isc.Dialog.create({
+                    message: "<spring:message code='msg.no.records.selected'/>",
+                    icon: "[SKIN]ask.png",
+                    title: "<spring:message code='message'/>",
+                    buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
+                    buttonClick: function (button, index) {
+                        this.close();
+                    }
+                });
+
+            } else {
+                questionsSelection=true;
+                fromQuestionBank=false;
+
+                RestDataSource_All_PreTest.fields=[
+                    {name: "id", primaryKey: true, hidden: true},
+                    {name: "questionBank.code",},
+                    {name: "questionBank.question",},
+                    {name: "questionBank.questionType.title",},
+                    {name: "questionBank.displayType.title",},
+                    {name: "testQuestion.tclass.teacher.fullNameFa",},
+                    {name: "testQuestion.tclass.course.titleFa",},
+                    {name: "testQuestion.tclass.code",},
+                    {name: "testQuestion.tclass.startDate",},
+                    {name: "testQuestion.tclass.endDate",},
+                    {name: "testQuestion.tclass.course.titleFa",}
+                ];
+
+                RestDataSource_All_PreTest.fetchDataURL=questionBankTestQuestionUrl + "/byCourse/preTest/"+record.id+"/spec-list";
+                ListGrid_AllQuestions_PreTestJSP.dataSource=RestDataSource_All_PreTest;
+
+                ListGrid_AllQuestions_PreTestJSP.setFields([
+                    {
+                        name: "questionBank.code",
+                        title: "<spring:message code="code"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "questionBank.question",
+                        title: "<spring:message code="question.bank.question"/>",
+                        filterOperator: "iContains"
+                    },
+                    {name: "questionBank.displayType.id",
+                        optionDataSource: DisplayTypeDS_PreTest,
+                        title: "<spring:message code="question.bank.display.type"/>",
+                        filterOperator: "iContains", autoFitWidth: true,
+                        editorType: "SelectItem",
+                        valueField: "id",
+                        displayField: "title",
+                        filterOnKeypress: true,
+                        filterEditorProperties:{
+                            optionDataSource: DisplayTypeDS_PreTest,
+                            valueField: "id",
+                            displayField: "title",
+                            autoFetchData: true,
+                            filterFields: ["id","title"],
+                            textMatchStyle: "substring",
+                            generateExactMatchCriteria: true,
+                            pickListProperties: {
+                                showFilterEditor: false,
+                                autoFitWidthApproach: "both"
+                            },
+                            pickListFields: [
+                                {name: "title"}
+                            ]
+                        }
+                    },
+                    {name: "questionBank.questionType.id",
+                        optionDataSource: AnswerTypeDS_PreTest,
+                        title: "<spring:message code="question.bank.question.type"/>",
+                        filterOperator: "iContains", autoFitWidth: true,
+                        editorType: "SelectItem",
+                        valueField: "id",
+                        displayField: "title",
+                        filterOnKeypress: true,
+                        filterEditorProperties:{
+                            optionDataSource: AnswerTypeDS_PreTest,
+                            valueField: "id",
+                            displayField: "title",
+                            autoFetchData: true,
+                            filterFields: ["id","title"],
+                            textMatchStyle: "substring",
+                            generateExactMatchCriteria: true,
+                            pickListProperties: {
+                                showFilterEditor: false,
+                                autoFitWidthApproach: "both"
+                            },
+                            pickListFields: [
+                                {name: "title"}
+                            ]
+                        }
+                    },
+                    {
+                        name: "testQuestion.tclass.teacher.fullNameFa",
+                        title: "<spring:message code="teacher"/>",
+                        filterOperator: "iContains", autoFitWidth: true
+                    },
+                    {
+                        name: "testQuestion.tclass.course.titleFa",
+                        title: "<spring:message code="class"/>",
+                        filterOperator: "iContains", autoFitWidth: true},
+                    {
+                        name: "testQuestion.tclass.code",
+                        title: "<spring:message code='class.code'/>",
+                        align: "center",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "testQuestion.tclass.startDate",
+                        title: "<spring:message code='start.date'/>",
+                        align: "center",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "testQuestion.tclass.endDate",
+                        title: "<spring:message code='end.date'/>",
+                        align: "center",
+                        filterOperator: "iContains",
+                        autoFitWidth: true},
+                    {name: "OnAdd", title: " ",canSort:false,canFilter:false, width:30}
+                ]);
+
+
+                RestDataSource_ForThisClass_PreTest.fetchDataURL = questionBankTestQuestionUrl +"/preTest/"+record.id+ "/spec-list";
+
+                //ListGrid_ForQuestions_PreTestJSP.implicitCriteria=criteria;
+                ListGrid_ForQuestions_PreTestJSP.invalidateCache();
+                ListGrid_ForQuestions_PreTestJSP.fetchData();
+                DynamicForm_Header_PreTestJsp.setValue("sgTitle", getFormulaMessage(record.courseTitleFa, "2", "red", "B"));
+                Window_QuestionBank_PreTest.show();
+            }
         }
     });
 
@@ -241,6 +740,120 @@
     });
 
     //----------------------------------------- LayOut -----------------------------------------------------------------
+
+    var DynamicForm_Header_PreTestJsp = isc.DynamicForm.create({
+        height: "5%",
+        align: "center",
+        fields: [{name: "sgTitle", type: "staticText", title: "افزودن سوال به کلاس ", wrapTitle: false}]
+    });
+
+    var VLayOut_PostGroup_Posts_Jsp = isc.VLayout.create({
+        width: "100%",
+        height: "100%",
+        border: "3px solid gray",
+        align:"center",
+        layoutLeftMargin: 5,
+        layoutRightMargin: 5,
+        members: [
+            DynamicForm_Header_PreTestJsp,
+            ListGrid_AllQuestions_PreTestJSP,
+            isc.ToolStripButtonAdd.create({
+                width:"100%",
+                height:25,
+                title:"اضافه کردن گروهی",
+                click: function () {
+                    let dialog = createDialog('ask', "<spring:message code="msg.record.adds.ask"/>");
+                    dialog.addProperties({
+                        buttonClick: function (button, index) {
+                            this.close();
+                            if (index === 0) {
+                                var ids = ListGrid_AllQuestions_PreTestJSP.getSelection().filter(function(x){return x.enabled!==false}).map(function(item) {return (!item.questionBank)?item.id:item.questionBank.id;});
+                                var activeClass = ListGrid_class_Evaluation.getSelectedRecord();
+                                var activeClassId = activeClass.id;
+                                let JSONObj = {"ids": ids};
+                                wait.show();
+
+                                isc.RPCManager.sendRequest({
+                                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                    useSimpleHttp: true,
+                                    contentType: "application/json; charset=utf-8",
+                                    actionURL: questionBankTestQuestionUrl + "/add-questions/preTest/" + activeClassId + "/" + ids,
+                                    httpMethod: "POST",
+                                    data: JSON.stringify(JSONObj),
+                                    serverOutputAsString: false,
+                                    callback: function (resp) {
+                                        wait.close();
+
+                                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                            ListGrid_ForQuestions_PreTestJSP.invalidateCache();
+
+                                            let findRows=ListGrid_AllQuestions_PreTestJSP.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:ids}]});
+
+                                            if(typeof (findRows)!='undefined' && findRows.length>0){
+                                                findRows.setProperty("enabled", false);
+                                                ListGrid_AllQuestions_PreTestJSP.redraw();
+                                            }
+                                            isc.say("عملیات با موفقیت انجام شد.");
+
+                                        } else {
+                                            isc.say("خطا در پاسخ سرویس دهنده");
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    })
+                }
+            }),
+            isc.LayoutSpacer.create({ID: "spacer", height: "5%"}),
+            ListGrid_ForQuestions_PreTestJSP,
+            isc.ToolStripButtonRemove.create({
+                width:"100%",
+                height:25,
+                title:"حذف گروهی",
+                click: function () {
+                    let dialog = createDialog('ask', "<spring:message code="msg.record.remove.ask"/>");
+                    dialog.addProperties({
+                        buttonClick: function (button, index) {
+                            this.close();
+                            if (index === 0) {
+                                var ids = ListGrid_ForQuestions_PreTestJSP.getSelection().map(function(item) {return item.questionBank.id;});
+                                var activeClass = ListGrid_class_Evaluation.getSelectedRecord();
+                                var activeClassId = activeClass.id;
+                                let JSONObj = {"ids": ids};
+                                isc.RPCManager.sendRequest({
+                                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                    useSimpleHttp: true,
+                                    contentType: "application/json; charset=utf-8",
+                                    actionURL: questionBankTestQuestionUrl + "/delete-questions/preTest/" + activeClassId + "/" + ids,
+                                    httpMethod: "DELETE",
+                                    data: JSON.stringify(JSONObj),
+                                    serverOutputAsString: false,
+                                    callback: function (resp) {
+                                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+                                            ListGrid_ForQuestions_PreTestJSP.invalidateCache();
+                                            let findRows=ListGrid_AllQuestions_PreTestJSP.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:ids}]});
+
+                                            if(typeof (findRows)!='undefined' && findRows.length>0){
+                                                findRows.setProperty("enabled", true);
+                                                ListGrid_AllQuestions_PreTestJSP.deselectRecord(findRows);
+                                                ListGrid_AllQuestions_PreTestJSP.redraw();
+                                            }
+                                            isc.say("عملیات با موفقیت انجام شد.");
+                                        } else {
+                                            isc.say("خطا در پاسخ سرویس دهنده");
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    })
+                }
+            })
+        ]
+    });
+
     var HLayout_Actions_PreTest = isc.HLayout.create({
         width: "100%",
         height:35,
@@ -252,16 +865,30 @@
     var Hlayout_Grid_PreTest = isc.HLayout.create({
         width: "100%",
         height: "100%",
-        members: [ListGrid_student_PreTest]
+        members: [ListGrid_PreTest]
     });
+
+    //----------------------------------------- DynamicForms -----------------------------------------------------------
+    var Window_QuestionBank_PreTest = isc.Window.create({
+        title: "بانک سوال",
+        align: "center",
+        placement: "fillScreen",
+        minWidth: 1024,
+        closeClick: function () {
+            ListGrid_PreTest.invalidateCache();
+            this.hide();
+        },
+        items: [
+            VLayOut_PostGroup_Posts_Jsp
+        ]
+    });
+
+    //----------------------------------- New Funsctions ---------------------------------------------------------------
 
     var VLayout_Body_PreTest = isc.VLayout.create({
         width: "100%",
         height: "100%",
         members: [HLayout_Actions_PreTest, Hlayout_Grid_PreTest]
     });
-
-    //----------------------------------- New Funsctions ---------------------------------------------------------------
-
 
 //</script>

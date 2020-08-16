@@ -3,10 +3,10 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationService;
+import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.text.SimpleDateFormat;
+import javax.transaction.TransactionScoped;
 import java.util.*;
 
 @Service
@@ -570,7 +570,30 @@ public class EvaluationService implements IEvaluationService {
 
     }
 
+    @Override
     public double getEvaluationFormGrade(Evaluation evaluation){
+        double result = 0.0;
+        int index = 0;
+
+        List<EvaluationAnswerDTO.EvaluationAnswerFullData> res =  getEvaluationFormAnswerDetail(evaluation);
+
+        for (EvaluationAnswerDTO.EvaluationAnswerFullData re : res) {
+            if(re.getAnswerId() != null) {
+                if(re.getWeight() != null)
+                    index += re.getWeight();
+                else
+                    index ++;
+                result += (Double.parseDouble(parameterValueDAO.findFirstById(re.getAnswerId()).getValue()))*re.getWeight();
+            }
+        }
+        if(index!=0)
+            result = result/index;
+
+        return result;
+    }
+
+    @Override
+    public List<EvaluationAnswerDTO.EvaluationAnswerFullData> getEvaluationFormAnswerDetail(Evaluation evaluation){
         double result = 0.0;
         int index = 0;
 
@@ -596,27 +619,118 @@ public class EvaluationService implements IEvaluationService {
                 evaluationAnswerFullData.setOrder(dynamicQuestion.getOrder());
                 evaluationAnswerFullData.setWeight(dynamicQuestion.getWeight());
                 evaluationAnswerFullData.setQuestion(dynamicQuestion.getQuestion());
+                evaluationAnswerFullData.setDomainId(183L);
             }
 
             res.add(evaluationAnswerFullData);
         }
 
-        TotalResponse<ParameterValueDTO.Info> answerHelp = parameterService.getByCode("EvaluationResult");
+        return res;
+    }
 
-        for (EvaluationAnswerDTO.EvaluationAnswerFullData re : res) {
-            if(re.getAnswerId() != null) {
-                if(re.getWeight() != null)
-                    index += re.getWeight();
-                else
-                    index ++;
-                result += (Double.parseDouble(parameterValueDAO.findFirstById(re.getAnswerId()).getValue()))*re.getWeight();
+    @Override
+    @Transactional
+    public EvaluationDTO.BehavioralResult getBehavioralEvaluationResult(Long classId){
+        Optional<Tclass> byId = tclassDAO.findById(classId);
+        Tclass tclass = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        EvaluationDTO.BehavioralResult evaluationResult = new EvaluationDTO.BehavioralResult();
+
+        Double[] studentGrade = new Double[tclass.getClassStudents().size()];
+        Double[] supervisorGrade = new Double[tclass.getClassStudents().size()];
+        Double[] trainingGrade = new Double[tclass.getClassStudents().size()];
+        Double[] coWorkersGrade = new Double[tclass.getClassStudents().size()];
+        String[] classStudentsName = new String[tclass.getClassStudents().size()];
+
+        Double studentGradeMean = 0.0;
+        Double supervisorGradeMean = 0.0;
+        Double trainingGradeMean = 0.0;
+        Double coWorkersGradeMean = 0.0;
+
+        Integer studentGradeMeanNum = 0;
+        Integer supervisorGradeMeanNum = 0;
+        Integer trainingGradeMeanNum = 0;
+        Integer coWorkersGradeMeanNum = 0;
+
+        int index = 0;
+        for (ClassStudent classStudent : tclass.getClassStudents()) {
+            List<Evaluation> evaluations = evaluationDAO.findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeIdAndEvaluatedIdAndEvaluatedTypeIdAndStatus(
+                    classId,
+                    156L,
+                    230L,
+                    classStudent.getId(),
+                    188L,
+                    true);
+            studentGrade[index] = 0.0 ;
+            supervisorGrade[index] = 0.0;
+            trainingGrade[index] = 0.0;
+            coWorkersGrade[index] = 0.0;
+
+            Integer studentGradeNum = 0 ;
+            Integer supervisorGradeNum = 0;
+            Integer trainingGradeNum = 0;
+            Integer coWorkersGradeNum = 0;
+
+            for (Evaluation evaluation : evaluations) {
+                double res = getEvaluationFormGrade(evaluation);
+                if(evaluation.getEvaluatorTypeId().equals(189L)) {
+                    coWorkersGradeNum++;
+                    coWorkersGradeMeanNum++;
+                    coWorkersGradeMean += res;
+                    coWorkersGrade[index] += res;
+                }
+                else if(evaluation.getEvaluatorTypeId().equals(190L)) {
+                    supervisorGradeNum++;
+                    supervisorGradeMeanNum++;
+                    supervisorGradeMean += res;
+                    supervisorGrade[index] += res;
+                }
+                else if(evaluation.getEvaluatorTypeId().equals(188L)) {
+                    studentGradeNum++;
+                    studentGradeMeanNum++;
+                    studentGradeMean += res;
+                    studentGrade[index] += res;
+                }
+                else if(evaluation.getEvaluatorTypeId().equals(454L)) {
+                    trainingGradeNum++;
+                    trainingGradeMeanNum++;
+                    trainingGradeMean += res;
+                    trainingGrade[index] += res;
+                }
             }
+            if(!studentGradeNum.equals(new Integer(0)))
+                studentGrade[index] = studentGrade[index]/studentGradeNum;
+            if(!supervisorGradeNum.equals(new Integer(0)))
+                supervisorGrade[index] = supervisorGrade[index]/supervisorGradeNum;
+            if(!trainingGradeNum.equals(new Integer(0)))
+                trainingGrade[index] = trainingGrade[index]/trainingGradeNum;
+            if(!coWorkersGradeNum.equals(new Integer(0)))
+                coWorkersGrade[index] = coWorkersGrade[index]/coWorkersGradeNum;
+            classStudentsName[index] = classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName();
+            index++;
         }
-        if(index!=0)
-            result = result/index;
 
-        return result;
+        if(!studentGradeMeanNum.equals(0))
+            studentGradeMean = studentGradeMean/studentGradeMeanNum;
+        if(!supervisorGradeMeanNum.equals(0))
+            supervisorGradeMean = supervisorGradeMean/supervisorGradeMeanNum;
+        if(!trainingGradeMeanNum.equals(0))
+            trainingGradeMean = trainingGradeMean/trainingGradeMeanNum;
+        if(!coWorkersGradeMeanNum.equals(0))
+            coWorkersGradeMean = coWorkersGradeMean/coWorkersGradeMeanNum;
 
+
+        evaluationResult.setClassStudentsName(classStudentsName);
+        evaluationResult.setCoWorkersGrade(coWorkersGrade);
+        evaluationResult.setStudentGrade(studentGrade);
+        evaluationResult.setSupervisorGrade(supervisorGrade);
+        evaluationResult.setTrainingGrade(trainingGrade);
+
+        evaluationResult.setCoWorkersGradeMean(coWorkersGradeMean);
+        evaluationResult.setTrainingGradeMean(trainingGradeMean);
+        evaluationResult.setStudentGradeMean(studentGradeMean);
+        evaluationResult.setSupervisorGradeMean(supervisorGradeMean);
+
+        return evaluationResult;
     }
 
 }

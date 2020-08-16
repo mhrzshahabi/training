@@ -116,7 +116,9 @@ public class TrainingException extends NICICOException {
         PersonnelNotFound(404),
         NoChangeEvent(100),
         DepartmentNotFound(404),
-        PostGradeNotFound(404);
+        PostGradeNotFound(404),
+        TestQuestionBadRequest(400),
+        TestQuestionNotFound(404);
 
         private final Integer httpStatusCode;
 
