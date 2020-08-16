@@ -631,9 +631,8 @@
                 if (this.getFieldName(colNum) == "nationalCode") {
                     result += "color: #0066cc !important;text-decoration: underline !important;cursor: pointer !important;"
                 }
-
                 return result;
-            }
+            },
         });
 
         let PersonnelDS_student = isc.TrDS.create({
@@ -798,7 +797,6 @@
                     return;
                 }
 
-
                 let current = PersonnelsLG_student.getSelection().filter(function (x) {
                     return x.enabled != false
                 })[0];//.filter(p->p.enabled==false);
@@ -828,14 +826,13 @@
                         current.presenceTypeId = studentDefaultPresenceId;
                         current.registerTypeId = 1;
 
-                        console.log(current)
-
                         SelectedPersonnelsLG_student.data.add({...current});
                         PersonnelsLG_student.findAll({
                             _constructor: "AdvancedCriteria",
                             operator: "and",
                             criteria: [{fieldName: "nationalCode", operator: "equals", value: current.nationalCode}]
                         }).setProperty("enabled", false);
+                        checkExistInNeedsAssesment(ListGrid_Class_JspClass.getSelectedRecord().courseId)
                     }
 
                     function checkIfAlreadyExist(currentVal) {
@@ -854,7 +851,7 @@
                         }
                     });
                     studentSelection = true;
-                    PersonnelsLG_student.deselectRecord(current)
+                    PersonnelsLG_student.deselectRecord(current);
                     studentSelection = false;
                 }
             },
@@ -1309,8 +1306,7 @@
                                 ],
                             }),
                         ]
-                    }
-                    ]
+                    }]
                 }),
             ]
         });
@@ -1380,17 +1376,14 @@
                     invalMessage = "<spring:message code="for"/>" + " " + "<spring:message code="student.plural"/>" + " " + messages.names + " " + "<spring:message code="message.define.applicant.company"/>";
                     timeOut = 15000
                 }
-
                 let OK = createDialog("info", messages.accepted + " " + "<spring:message code="message.students.added.successfully"/>"
                     + "<br/>" + invalMessage,
 
                     "<spring:message code="msg.command.done"/>");
-
                 setTimeout(function () {
                     OK.close();
                 }, timeOut);
             } else {
-                //const wait = createDialog("wait");
                 let OK = createDialog("info", "<spring:message code="msg.operation.error"/>",
                     "<spring:message code="error"/>");
                 setTimeout(function () {
@@ -1724,18 +1717,24 @@
             }
         }
 
-        function checkExistInNeedsAssesment(personnel, courseId){
-            let personnelIds = personnel.map(x => x.id);
-            isc.RPCManager.sendRequest(TrDSRequest(url + "/" + courseId + "?personnelIds="+ personnelIds.toString(), "GET", null, (resp)=>{
-                let ids = JSON.parse(resp.data)
-                for (let i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
-                    if(ids.includes(SelectedPersonnelsLG_student.data[i].id)){
-                        SelectedPersonnelsLG_student.data[i].isNeedsAssesment = true;
-                    }
-                    else{
-                        SelectedPersonnelsLG_student.data[i].isNeedsAssesment = false;
-                    }
-                }
+        function checkExistInNeedsAssesment(courseId){
+            // let personnelIds = personnel.map(x => x.id);
+            // isc.RPCManager.sendRequest(TrDSRequest(url, "GET", JSON.stringify(SelectedPersonnelsLG_student.data.toArray()), (resp) => {
+            //
+            // }));
+            isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/check-register-students/" + courseId , "POST", JSON.stringify(SelectedPersonnelsLG_student.data.toArray()), (resp)=>{
+                console.log(JSON.parse(resp.data))
+                SelectedPersonnelsLG_student.setData(JSON.parse(resp.data));
+                // let ids = JSON.parse(resp.data);
+
+                // for (let i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
+                //     if(ids.includes(SelectedPersonnelsLG_student.data[i].id)){
+                //         SelectedPersonnelsLG_student.data[i].isNeedsAssesment = true;
+                //     }
+                //     else{
+                //         SelectedPersonnelsLG_student.data[i].isNeedsAssesment = false;
+                //     }
+                // }
                 SelectedPersonnelsLG_student.fetchData()
             }));
         }
