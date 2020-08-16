@@ -36,6 +36,7 @@ public class PostDTO implements Serializable {
         private String costCenterCode;
         private String costCenterTitleFa;
         private String peopleType;
+        private Long enabled;
 //        private DepartmentDTO.Info department;
     }
 
@@ -47,6 +48,5 @@ public class PostDTO implements Serializable {
         private Long id;
         private String code;
         private String titleFa;
-        private Long enabled;
     }
 }
