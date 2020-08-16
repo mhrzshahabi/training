@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="preTestForm" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5c7879da-4fe6-4e43-878c-062f863d8266">
+	<subDataset name="content" uuid="81142457-8391-4b66-adcf-4c129665a1be">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="question" class="java.lang.String"/>
+	</subDataset>
 	<parameter name="logo_nicico" class="java.lang.Object"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
+	<field name="question" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -23,7 +31,17 @@
 		<band height="61" splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="125" splitType="Stretch"/>
+		<band height="125" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="550" height="70" uuid="dd330b54-4ce1-4329-9fb5-dac74d474d40">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a4612b74-2dce-4db8-afd5-df173a4d4d70"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font fontName="Shabnam-FD"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{question}]]></textFieldExpression>
+			</textField>
+		</band>
 	</detail>
 	<columnFooter>
 		<band height="45" splitType="Stretch"/>

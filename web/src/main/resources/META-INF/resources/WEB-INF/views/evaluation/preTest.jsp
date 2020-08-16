@@ -716,8 +716,21 @@
         title: "<spring:message code='print'/>",
         click: function () {
             let params = {};
-            let data = [];
-            printToJasper(data, params, "preTestForm.jasper");
+            let data = ListGrid_PreTest.getData().localData.get(0).testQuestionId;
+            // ListGrid_PreTest.getData().localData.forEach(function (value, index, array) {
+            //     let q = {
+            //         category: value.questionBank.category,
+            //         subCategory: value.questionBank.subCategory,
+            //         course: value.questionBank.course,
+            //         displayType: value.questionBank.displayType,
+            //         questionType: value.questionBank.questionType,
+            //         question: value.questionBank.question,
+            //         teacher: value.questionBank.teacher
+            //     };
+            //     data.add(q);
+            // });
+            console.log(data);
+            print(data, params, "preTestForm.jasper");
         }
     });
 
@@ -890,5 +903,25 @@
         height: "100%",
         members: [HLayout_Actions_PreTest, Hlayout_Grid_PreTest]
     });
+
+    function print(TestQuestionId, params, fileName, type = "pdf") {
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="question-bank-test-question-form/print/"/>" + type,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "fileName", type: "hidden"},
+                    {name: "TestQuestionId", type: "hidden"},
+                    {name: "params", type: "hidden"}
+                ]
+        });
+        criteriaForm.setValue("TestQuestionId", TestQuestionId);
+        criteriaForm.setValue("fileName", fileName);
+        criteriaForm.setValue("params", JSON.stringify(params));
+        criteriaForm.show();
+        criteriaForm.submitForm();
+    }
 
 //</script>

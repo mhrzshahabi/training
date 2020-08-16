@@ -98,6 +98,28 @@ public class QuestionBankDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("QuestionBank-CreateRq")
+    public static class Exam extends QuestionBankDTO {
+
+        private String option1;
+
+        private String option2;
+
+        private String option3;
+
+        private String option4;
+
+        private String question;
+
+        private Long questionTypeId;
+
+        private Long displayTypeId;
+
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("QuestionBank-CreateRq")
     public static class Create extends FullInfo {
 
     }
