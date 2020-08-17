@@ -1201,4 +1201,14 @@
         <addForeignKeyConstraint baseColumnNames="e_enabled" baseTableName="tbl_question_bank_test_question" constraintName="FK3aqy982w5oo6uo3q6tw0d769g" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
 
+    <changeSet author="golrokhi (generated)" id="1597649040205-499">
+        <addForeignKeyConstraint baseColumnNames="f_parameter_value_id" baseTableName="tbl_message_parameter_value" constraintName="FK82jmh0tugm73y9feiadkcl4hl" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1597649040205-500">
+        <addForeignKeyConstraint baseColumnNames="f_message_id" baseTableName="tbl_message_parameter_value" constraintName="FKi46y0hxhwanr5qnkgcsy9n9kg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_message" validate="true"/>
+    </changeSet>
+
+
+
+
 </databaseChangeLog>

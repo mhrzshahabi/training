@@ -1680,7 +1680,7 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_PERSONNEL_COURSE_NOT_PASSED_REPORT_NEW-003">
+    <changeSet author="NICICO" id="VIEW_PERSONNEL_COURSE_NOT_PASSED_REPORT_NEW-006">
         <createView viewName="VIEW_PERSONNEL_COURSE_NOT_PASSED_REPORT_NEW" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1718,7 +1718,7 @@ FROM
     LEFT JOIN view_sub_active_personnel_passed_course passed ON passed.f_course = must_pass.course_id
                                                                 AND passed.national_code = must_pass.personnel_national_code
                                                                    LEFT JOIN tbl_post P ON must_pass.personnel_f_post_id = P.ID
-                                     INNER JOIN tbl_post_grade PG ON P.F_POST_GRADE_ID = PG.ID
+                                     LEFT JOIN tbl_post_grade PG ON P.F_POST_GRADE_ID = PG.ID
 where  passed.class_student_id is null
 ]]>
         </createView>

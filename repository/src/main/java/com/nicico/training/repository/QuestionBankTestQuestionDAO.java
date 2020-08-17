@@ -16,4 +16,7 @@ public interface QuestionBankTestQuestionDAO extends JpaRepository<QuestionBankT
     @Modifying
     @Query(value = "delete from tbl_question_bank_test_question where f_test_question = :testQuestionId and f_question_bank in(:questionBankId)", nativeQuery = true)
     void deleteAllByTestQuestionIdAndQuestionBankId(Long testQuestionId, List<Long> questionBankId);
+
+    @Query(value = "select F_QUESTION_BANK from tbl_question_bank_test_question where F_TEST_QUESTION = :testQuestionId", nativeQuery = true)
+    List<Long> findQuestionBankIdsByTestQuestionId(Long testQuestionId);
 }

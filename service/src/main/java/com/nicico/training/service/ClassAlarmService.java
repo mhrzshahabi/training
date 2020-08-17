@@ -751,7 +751,7 @@ public class ClassAlarmService implements IClassAlarm {
                     "    classId,\n" +
                     "    targetRecordId,\n" +
                     "    detailRecordId,\n" +
-                    "    detailRecordId AS studentId,\n" +
+                    "    null AS studentId,\n" +
                     "    'classAttendanceTab' AS tabName,\n" +
                     "    '/tclass/show-form' AS pageAddress,\n" +
                     "    'حضور و غیاب' as alarmTypeTitleFa,\n" +
@@ -825,7 +825,7 @@ public class ClassAlarmService implements IClassAlarm {
                 if (alarmList.size() > 0) {
                     addAlarmsToQueue(alarmList, class_id);
                 } else {
-                addAlarmsToDeleteQueue("UnjustifiedAttendance", class_id);
+                    addAlarmsToDeleteQueue("UnjustifiedAttendance", class_id);
                 }
             }
         } catch (Exception ex) {
@@ -891,12 +891,12 @@ public class ClassAlarmService implements IClassAlarm {
 
         for (Map.Entry<String, Long> alarmForDelete : alarmQueueDelete.entrySet()) {
             alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId(alarmForDelete.getKey(), alarmForDelete.getValue());
-            alarmChanged =true;
+            alarmChanged = true;
         }
 
         for (Map.Entry<String, Long> alarmConflictForDelete : alarmConflictQueueDelete.entrySet()) {
             alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict(alarmConflictForDelete.getKey(), alarmConflictForDelete.getValue());
-            alarmChanged =true;
+            alarmChanged = true;
         }
 
         if (alarmQueue.size() > 0 || alarmQueueType.size() > 0) {
@@ -906,11 +906,10 @@ public class ClassAlarmService implements IClassAlarm {
             alarmDAO.saveAll(modelMapper.map(alarmQueue, new TypeToken<List<Alarm>>() {
             }.getType()));
 
-            alarmChanged =true;
+            alarmChanged = true;
         }
 
-        if(alarmChanged)
-        {
+        if (alarmChanged) {
             setClassHasWarningStatus(classIdQueue);
 
             alarmQueueDelete.clear();
