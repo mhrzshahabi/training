@@ -731,7 +731,7 @@
             //     data.add(q);
             // });
             console.log(params);
-            print(data, params, "preTestForm.jasper");
+            print(data, params, "testForm.jasper");
         }
     });
 
@@ -908,7 +908,7 @@
     function print(TestQuestionId, params, fileName, type = "pdf") {
         var criteriaForm = isc.DynamicForm.create({
             method: "POST",
-            action: "<spring:url value="question-bank-test-question-form/print/"/>" + type,
+            action: "<spring:url value="test-question-form/print/"/>" + type,
             target: "_Blank",
             canSubmit: true,
             fields:
