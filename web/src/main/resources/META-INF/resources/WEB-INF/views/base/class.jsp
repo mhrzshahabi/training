@@ -108,6 +108,7 @@
             {name: "supervisor"},
             {name: "plannerFullName"},
             {name: "supervisorFullName"},
+            {name: "organizerName"},
             {name: "evaluation"},
             {name: "startEvaluation"},
             {name: "behavioralLevel"}
@@ -535,6 +536,17 @@
             {
                 name: "supervisorFullName",
                 title: "<spring:message code="supervisor"/>",
+                displayValueFromRecord: false,
+                canFilter: false,
+                canSort: false,
+                type: "TextItem",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true,
+            },
+            {
+                name: "organizerName",
+                title: "<spring:message code="executer"/>",
                 displayValueFromRecord: false,
                 canFilter: false,
                 canSort: false,
@@ -1430,6 +1442,8 @@
                         (ListGrid_Class_JspClass.getSelectedRecord().evaluationStatusReactionTraining == undefined ||
                             ListGrid_Class_JspClass.getSelectedRecord().evaluationStatusReactionTraining == 0)) {
                         createDialog("info", "مدرس این کلاس هنوز توسط مسئول آموزش ارزیابی نشده است و امکان پایان دادن به کلاس نمی باشد");
+                        classTypeStatus.setValue(oldValue);
+                        highlightClassStauts(oldValue, 10);
                         return false;
                     }
 

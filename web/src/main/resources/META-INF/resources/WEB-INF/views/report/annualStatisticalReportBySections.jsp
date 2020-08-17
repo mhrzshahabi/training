@@ -85,6 +85,22 @@
         allowAdvancedCriteria: true,
     });
 
+    var RestDataSource_Term_JspControlReport = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "code"},
+            {name: "startDate"},
+            {name: "endDate"}
+        ]
+    });
+
+    var RestDataSource_Year_JspControlReport = isc.TrDS.create({
+        fields: [
+            {name: "year", primaryKey: true}
+        ],
+        fetchDataURL: termUrl + "yearList"
+    });
+
 
     RestDataSource_CourseDS = isc.TrDS.create({
         fields: [
@@ -98,7 +114,7 @@
     var ButtonExcel =isc.ToolStripButtonExcel.create({
         margin:5,
         click: function () {
-            ExportToFile.downloadExcelFromClient(List_Grid_Reaport_annualStatisticalReportBySection, null, '', "دوره های بدون استاد");
+            ExportToFile.downloadExcelFromClient(List_Grid_Reaport_annualStatisticalReportBySection, null, '', "'گزارش آماري سالانه");
         }
     })
     var ToolStrip_Actions = isc.ToolStrip.create({
@@ -115,12 +131,22 @@
         height: "100%",
       dataSource: RestDataSource_annualStatisticalReportBySection,
         showRowNumbers: true,
-       //autoFetchData: true,
-
         fields: [
-            {name: "code", title: "<spring:message code="code"/>", align: "center", filterOperator: "iContains",autoFitWidth:true},
-            {name: "title", title:"<spring:message code="course"/>", align: "center", filterOperator: "iContains",autoFitWidth:true},
-            {name: "max_start_date", title:"تاریخ شروع آخرین کلاس", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "instituteId",hidden:true},
+            {name: "instituteTitle", title:"<spring:message code="institute"/>", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "categoryTitle",  title:"<spring:message code="category"/>", align: "center", filterOperator: "iContains",autoFitWidth:true},
+
+            {name: "classStatus",  title:"نوع دوره", align: "center", filterOperator: "iContains",autoFitWidth:true,
+                valueMap: {
+                    "1": "برگزار شده",
+                    "4": "لغو شده"
+                }
+            },
+
+            {name: "countCourses",  title:"تعداد دوره ها", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "countStudents",  title:"تعداد نفر آموزش داده", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "sumHours",  title:"ساعت آموزشی ارائه شده", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "sumHoursPerPerson",  title:"نقر ساعت آموزشي", align: "center", filterOperator: "iContains",autoFitWidth:true},
 
         ],
         recordDoubleClick: function () {
@@ -387,78 +413,17 @@
 
 
             {
-                name: "tclassYears",
-                title: "سال کاری",
-                width:430,
-                colSpan:4,
-                textAlign:"center",
-                titleAlign:"center",
+                name: "classYear",
+                title: "سال",
                 type: "SelectItem",
-                multiple: true,
-                optionDataSource: RestDataSource_Year_Filter_annualStatistical,
+                optionDataSource: RestDataSource_Year_JspControlReport,
                 valueField: "year",
                 displayField: "year",
                 filterFields: ["year"],
                 filterLocally: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains",
-                    gridComponents: [
-                        isc.ToolStrip.create({
-                            autoDraw: false,
-                            height: 30,
-                            width: "100%",
-                            members: [
-                                isc.ToolStripButton.create({
-                                    width: "50%",
-                                    icon: "[SKIN]/actions/approve.png",
-                                    title: "انتخاب همه",
-                                    click: function () {
-                                        var item =DynamicForm_Report_annualStatisticalReportBySection.getField("tclassYears"),
-                                            fullData = item.pickList.data,
-                                            cache = fullData.localData,
-                                            values = [];
-
-                                        for (var i = 0; i < cache.length; i++) {
-                                            values[i] = cache[i].year;
-                                        }
-                                        item.setValue(values);
-                                        item.pickList.hide();
-                                        DynamicForm_Report_annualStatisticalReportBySection.getField("termFilters").setDisabled(true)
-
-
-                                    }
-                                }),
-                                isc.ToolStripButton.create({
-                                    width: "50%",
-                                    icon: "[SKIN]/actions/close.png",
-                                    title: "حذف همه",
-                                    click: function () {
-                                        var item =DynamicForm_Report_annualStatisticalReportBySection.getField("tclassYears");
-                                        item.setValue([]);
-                                        item.pickList.hide();
-                                      //  DynamicForm_Report_annualStatisticalReportBySection.getField("termFilters").setValue([]);
-                                       // DynamicForm_Report_annualStatisticalReportBySection.getField("termFilters").pickList.hide();
-                                    }
-                                })
-                            ]
-                        }),
-                        "header", "body"
-                    ]
-                },
-                changed: function (form, item, value) {
-                     if (value != null && value != undefined && value.size() == 1) {
-                        DynamicForm_Report_annualStatisticalReportBySection.getField("termFilters").setValue([])
-                        let criteria= '{"fieldName":"startDate","operator":"iStartsWith","value":"' + value[0] + '"}';
-                        RestDataSource_Term_Filter_annualStatistical.fetchDataURL = termUrl + "spec-list?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria;
-                       DynamicForm_Report_annualStatisticalReportBySection.getField("termFilters").optionDataSource = RestDataSource_Term_Filter_annualStatistical;
-                       DynamicForm_Report_annualStatisticalReportBySection.getField("termFilters").fetchData();
-                       DynamicForm_Report_annualStatisticalReportBySection.getField("termFilters").enable();
-                    } else {
-                        DynamicForm_Report_annualStatisticalReportBySection.getField("termFilters").setDisabled(true)
-                        DynamicForm_Report_annualStatisticalReportBySection.getField("termFilters").setValue([])
-                    }
-                },
+                initialSort: [
+                    {property: "year", direction: "descending", primarySort: true}
+                ],
                 icons:[
                     {
                         name: "clear",
@@ -470,111 +435,34 @@
                         click : function (form, item, icon) {
                             item.clearValue();
                             item.focusInItem();
-                            form.setValue(null);
+                            DynamicForm_Report_annualStatisticalReportBySection.getField("termId").disable();
+                            DynamicForm_Report_annualStatisticalReportBySection.getField("termId").setValue(null);
+                            DynamicForm_Report_annualStatisticalReportBySection.getField("classYear").setValue(null);
                         }
                     }
                 ],
 
-            },
-
-            {
-                name: "termFilters",
-                title: "<spring:message code='term'/>",
-                width:430,
-                colSpan:4,
-                textAlign:"center",
-                titleAlign:"center",
-                endRow:false,
-                startRow:true,
-                textAlign: "center",
-                type: "SelectItem",
-                multiple: true,
-                filterLocally: true,
-                displayField: "code",
-                valueField: "id",
-                filterFields: ["code"],
-                sortField: ["code"],
-                sortDirection: "descending",
-                defaultToFirstOption: true,
-                useClientFiltering: true,
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9]",
-                },
-                pickListFields: [
-                    {
-                        name: "code",
-                        title: "<spring:message code='term.code'/>",
-                        filterOperator: "iContains",
-                        filterEditorProperties: {
-                            keyPressFilter: "[0-9]"
-                        }
-                    },
-                    {
-                        name: "startDate",
-                        title: "<spring:message code='start.date'/>",
-                        filterOperator: "iContains",
-                        filterEditorProperties: {
-                            keyPressFilter: "[0-9/]"
-                        }
-                    },
-                    {
-                        name: "endDate",
-                        title: "<spring:message code='end.date'/>",
-                        filterOperator: "iContains",
-                        filterEditorProperties: {
-                            keyPressFilter: "[0-9/]"
-                        }
-                    }
-                ],
-                pickListProperties: {
-                    gridComponents: [
-                        isc.ToolStrip.create({
-                            autoDraw: false,
-                            height: 30,
-                            width: "100%",
-                            members: [
-                                isc.ToolStripButton.create({
-                                    width: "50%",
-                                    icon: "[SKIN]/actions/approve.png",
-                                    title: "انتخاب همه",
-                                    click: function () {
-                                        var item =    DynamicForm_Report_annualStatisticalReportBySection.getField("termFilters"),
-                                            fullData = item.pickList.data,
-                                            cache = fullData.localData,
-                                            values = [];
-
-                                        for (var i = 0; i < cache.length; i++) {
-                                            values[i] = cache[i].id;
-                                        }
-                                        item.setValue(values);
-                                        item.pickList.hide();
-
-                                    }
-                                }),
-                                isc.ToolStripButton.create({
-                                    width: "50%",
-                                    icon: "[SKIN]/actions/close.png",
-                                    title: "حذف همه",
-                                    click: function () {
-                                        DynamicForm_Report_annualStatisticalReportBySection.getField("termFilters").setValue([])
-                                       }
-                                })
-                            ]
-                        }),
-                        "header", "body"
-                    ]
-                },
                 changed: function (form, item, value) {
-                    // load_classes_by_term(value);
-                },
-                dataArrived:function (startRow, endRow, data) {
-                    //if(data.allRows[0].id !== undefined)
-                  //  {
-                        // DynamicForm_Term_Filter.getItem("termFilters").clearValue();
-                        // DynamicForm_Term_Filter.getItem("termFilters").setValue(data.allRows[0].code);
-                        // load_classes_by_term(data.allRows[0].id);
-                   // }
-                },
+                    if (value != null && value != undefined) {
+                        RestDataSource_Term_JspControlReport.fetchDataURL = termUrl + "listByYear/" + value;
+                        DynamicForm_Report_annualStatisticalReportBySection.getField("termId").optionDataSource = RestDataSource_Term_JspControlReport;
+                        DynamicForm_Report_annualStatisticalReportBySection.getField("termId").fetchData();
+                        DynamicForm_Report_annualStatisticalReportBySection.getField("termId").enable();
+                    } else {
+                        form.getField("termId").disabled = true;
+                        form.getField("termId").clearValue();
+                    }
+                }
+            },
+            {
+                name: "termId",
+                title: "ترم",
+                type: "SelectItem",
+                filterOperator: "equals",
+                disabled: true,
+                valueField: "id",
+                displayField: "titleFa",
+                filterLocally: true,
                 icons:[
                     {
                         name: "clear",
@@ -585,8 +473,8 @@
                         prompt: "پاک کردن",
                         click : function (form, item, icon) {
                             item.clearValue();
-                           // item.focusInItem();
-                            item.setValue([])
+                            item.focusInItem();
+                            DynamicForm_Report_annualStatisticalReportBySection.getField("termId").setValue(null);
                         }
                     }
                 ],
@@ -596,7 +484,6 @@
                 name: "institute",
                 ID: "institute",
               //  emptyDisplayValue: "همه",
-                multiple: true,
               //  required: true,
                 endRow:false,
                 startRow:true,
@@ -611,9 +498,6 @@
                 textAlign:"center",
                 titleAlign:"center",
                 textMatchStyle: "substring",
-                pickListFields: [
-                    {name: "titleFa", filterOperator: "iContains"},
-                ],
                 icons:[
                     {
                         name: "clear",
@@ -808,22 +692,22 @@
                         return;
                     }
                     modalDialog=createDialog('wait');
-                    let strSData =(!DynamicForm_Report_annualStatisticalReportBySection.getItem("startDate").getValue() ? '13000101' : DynamicForm_Report_annualStatisticalReportBySection.getItem("startDate").getValue().replace(/(\/)/g, ""));
-                    let strEData =(!DynamicForm_Report_annualStatisticalReportBySection.getItem("endDate").getValue() ? '19000101' : DynamicForm_Report_annualStatisticalReportBySection.getItem("endDate").getValue().replace(/(\/)/g, ""));
-                    let strSData2 =(!DynamicForm_Report_annualStatisticalReportBySection.getItem("startDate2").getValue() ? '13000101': DynamicForm_Report_annualStatisticalReportBySection.getItem("startDate2").getValue().replace(/(\/)/g, ""));
-                    let strEData2 =(!DynamicForm_Report_annualStatisticalReportBySection.getItem("endDate2").getValue() ? '19000101' : DynamicForm_Report_annualStatisticalReportBySection.getItem("endDate2").getValue().replace(/(\/)/g, ""));
-                    let Years = (!DynamicForm_Report_annualStatisticalReportBySection.getField("tclassYears").getValue()  ?  "" : DynamicForm_Report_annualStatisticalReportBySection.getField("tclassYears").getValue()) ;
-                    let termId =(!DynamicForm_Report_annualStatisticalReportBySection.getField("termFilters").getValue()  ?  "" : DynamicForm_Report_annualStatisticalReportBySection.getField("termFilters").getValue());
-                  //  let courseId =(!DynamicForm_Report_annualStatisticalReportBySection.getField("courseId").getValue()  ?  "" : DynamicForm_Report_annualStatisticalReportBySection.getField("courseId").getValue());
-                   // let teacherId =(!DynamicForm_Report_annualStatisticalReportBySection.getField("teacherId").getValue()  ?  "" : DynamicForm_Report_annualStatisticalReportBySection.getField("teacherId").getValue());
-                   // RestDataSource_annualStatisticalReportBySection.fetchDataURL=courseUrl + "courseWithOutTeacher"+"/"+strSData + "/" + strEData +"?strSData2=" +strSData2  +"&strEData2=" +strEData2 +"&Years=" +Years +"&termId=" +termId + "&courseId=" +courseId+ "&teacherId="+teacherId;
-                  //  List_Grid_Reaport_annualStatisticalReportBySection.invalidateCache();
-                  //  List_Grid_Reaport_annualStatisticalReportBySection.fetchData();
+
+                    isc.RPCManager.sendRequest(TrDSRequest(annualStatisticsReportUrl+"/list" ,"POST",
+                        JSON.stringify(DynamicForm_Report_annualStatisticalReportBySection.getValues()), "callback: fill_control_result(rpcResponse)"));
+
                 }
             },
 
          ]
-    })
+    });
+
+    function fill_control_result(resp) {
+        if (resp.httpResponseCode === 200) {
+            modalDialog.close();
+            List_Grid_Reaport_annualStatisticalReportBySection.setData(JSON.parse(resp.data).response.data);
+        }
+    }
 
     var ToolStrip_ToolStrip_Personnel_Info_Training_Action = isc.ToolStrip.create({
         width: "30%",
