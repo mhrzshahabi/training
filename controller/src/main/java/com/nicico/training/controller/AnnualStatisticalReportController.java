@@ -31,7 +31,7 @@ public class AnnualStatisticalReportController {
     @Loggable
     @GetMapping(value = "/list")
     @Transactional(readOnly = true)
-    public ResponseEntity<AnnualStatisticalReportDTO.AnnualStatisticalReportDTOSpecRs> list(@RequestParam(value = "data") String data) {
+    public ResponseEntity<AnnualStatisticalReportDTO.AnnualStatisticalReportDTOSpecRs> list(@RequestBody String data) {
         JSONObject jsonObject = new JSONObject(data);
         List<?> tOTReportList = null;
         List<AnnualStatisticalReportDTO> DTOList = null;
