@@ -15,6 +15,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.mapper.TrainingClassBeanMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +55,7 @@ public class TclassService implements ITclassService {
     private final TargetSocietyService societyService;
     private final TargetSocietyDAO societyDAO;
     private final AttendanceDAO attendanceDAO;
+    private final TrainingClassBeanMapper trainingClassBeanMapper;
 
     @Transactional(readOnly = true)
     @Override
@@ -145,19 +147,24 @@ public class TclassService implements ITclassService {
     public TclassDTO.Info update(Long id, TclassDTO.Update request) {
         final Optional<Tclass> cById = tclassDAO.findById(id);
         final Tclass tclass = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
+
+        Tclass mappedClass = trainingClassBeanMapper.updateTClass(request, tclass);
+
         List<Long> trainingPlaceIds = request.getTrainingPlaceIds();
         Set<TrainingPlace> set = new HashSet<>();
         if(trainingPlaceIds != null) {
             List<TrainingPlace> allById = trainingPlaceDAO.findAllById(trainingPlaceIds);
             set.addAll(allById);
         }
-        Tclass updating = new Tclass();
-        modelMapper.map(tclass, updating);
-        modelMapper.map(request, updating);
-        updating.setTrainingPlaceSet(set);
-        Tclass save = tclassDAO.save(updating);
-        updateTargetSocieties(save.getTargetSocietyList(), request.getTargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
-        return modelMapper.map(save, TclassDTO.Info.class);
+
+        mappedClass.setTrainingPlaceSet(set);
+        Tclass updatedClass = tclassDAO.save(mappedClass);
+
+        //TODO CHANGE THE WAY OF MAPPING ASAP
+        //   updateTargetSocieties(save.getTargetSocietyList(), request.getTargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
+        TclassDTO.Info info = new TclassDTO.Info();
+        info.setId(updatedClass.getId());
+        return info;
     }
 
     @Transactional
@@ -938,10 +945,10 @@ public class TclassService implements ITclassService {
         return evaluationResult;
     }
 
-    public static int j_days_in_month[] = {31, 31, 31, 31, 31, 31, 30, 30, 30,
+    public static int[] j_days_in_month = {31, 31, 31, 31, 31, 31, 30, 30, 30,
             30, 30, 29};
 
-    public static int g_days_in_month[] = {31, 28, 31, 30, 31, 30, 31, 31, 30,
+    public static int[] g_days_in_month = {31, 28, 31, 30, 31, 30, 31, 31, 30,
             31, 30, 31};
 
     private static int parsBooleanToInt(Boolean sample) {
