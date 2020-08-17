@@ -84,13 +84,14 @@ public class TclassRestController {
         ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.create(request), HttpStatus.CREATED);
 
         //*****check alarms*****
-        if (infoResponseEntity.getStatusCodeValue() == 201) {
-            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
-            classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
-            classAlarmService.alarmCheckListConflict(infoResponseEntity.getBody().getId());
-            classAlarmService.alarmPreCourseTestQuestion(infoResponseEntity.getBody().getId());
-            classAlarmService.saveAlarms();
-        }
+//// cancel alarms
+//        if (infoResponseEntity.getStatusCodeValue() == 201) {
+//            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
+//            classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
+//            classAlarmService.alarmCheckListConflict(infoResponseEntity.getBody().getId());
+//            classAlarmService.alarmPreCourseTestQuestion(infoResponseEntity.getBody().getId());
+//            classAlarmService.saveAlarms();
+//        }
         return infoResponseEntity;
     }
 
@@ -102,13 +103,14 @@ public class TclassRestController {
         ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.safeCreate(request, response), HttpStatus.CREATED);
 
         //*****check alarms*****
-        if (infoResponseEntity.getStatusCodeValue() == 201) {
-            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
-            classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
-            classAlarmService.alarmCheckListConflict(infoResponseEntity.getBody().getId());
-            classAlarmService.alarmPreCourseTestQuestion(infoResponseEntity.getBody().getId());
-            classAlarmService.saveAlarms();
-        }
+//// cancel alarms
+//        if (infoResponseEntity.getStatusCodeValue() == 201) {
+//            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
+//            classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
+//            classAlarmService.alarmCheckListConflict(infoResponseEntity.getBody().getId());
+//            classAlarmService.alarmPreCourseTestQuestion(infoResponseEntity.getBody().getId());
+//            classAlarmService.saveAlarms();
+//        }
         return infoResponseEntity;
     }
 
@@ -120,7 +122,8 @@ public class TclassRestController {
         ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.update(id, request), HttpStatus.OK);
 
         //*****check alarms*****
-      /*  if (infoResponseEntity.getStatusCodeValue() == 200) {
+      /* //// cancel alarms
+        if (infoResponseEntity.getStatusCodeValue() == 200) {
             classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
             classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
             classAlarmService.saveAlarms();
@@ -137,11 +140,12 @@ public class TclassRestController {
         ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.update(id, request), HttpStatus.OK);
 
         //*****check alarms*****
-        if (infoResponseEntity.getStatusCodeValue() == 200) {
-            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
-            classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
-            classAlarmService.saveAlarms();
-        }
+        //// cancel alarms
+//        if (infoResponseEntity.getStatusCodeValue() == 200) {
+//            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
+//            classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
+//            classAlarmService.saveAlarms();
+//        }
 
         return infoResponseEntity;
     }
@@ -451,8 +455,9 @@ public class TclassRestController {
     public ResponseEntity updatePreCourseTestQuestions(@PathVariable Long classId, @RequestBody List<String> request) {
         try {
             tClassService.updatePreCourseTestQuestions(classId, request);
-            classAlarmService.alarmPreCourseTestQuestion(classId);
-            classAlarmService.saveAlarms();
+            //// cancel alarms
+//            classAlarmService.alarmPreCourseTestQuestion(classId);
+//            classAlarmService.saveAlarms();
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);

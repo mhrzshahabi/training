@@ -326,13 +326,14 @@ public class ClassSessionService implements IClassSession {
         deleteStatus.setTotalSizes(totalSize);
 
         //*****check alarms*****
-        if (successes > 0) {
-            classAlarmService.alarmSumSessionsTimes(classId);
-            classAlarmService.alarmTeacherConflict(classId);
-            classAlarmService.alarmStudentConflict(classId);
-            classAlarmService.alarmTrainingPlaceConflict(classId);
-            classAlarmService.saveAlarms();
-        }
+        //// cancel alarms
+//        if (successes > 0) {
+//            classAlarmService.alarmSumSessionsTimes(classId);
+//            classAlarmService.alarmTeacherConflict(classId);
+//            classAlarmService.alarmStudentConflict(classId);
+//            classAlarmService.alarmTrainingPlaceConflict(classId);
+//            classAlarmService.saveAlarms();
+//        }
 
         return deleteStatus;
     }
