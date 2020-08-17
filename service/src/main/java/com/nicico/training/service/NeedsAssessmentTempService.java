@@ -112,9 +112,12 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
         try{
             createdBy = needsAssessmentTemps.get(0).getCreatedBy();
             SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
-//            PersonnelDTO.Info person = personnelService.search(searchRq.setCriteria(makeNewCriteria("userName", createdBy, EOperator.equals, null))).getList().get(0);
-//            createdBy = person.getFirstName() + " " + person.getLastName();
-        }catch (Exception e ){
+            PersonnelDTO.Info person = personnelService.search(searchRq.setCriteria(makeNewCriteria("userName", createdBy, EOperator.equals, null))).getList().get(0);
+            createdBy = person.getFirstName() + " " + person.getLastName();
+        }catch (IndexOutOfBoundsException e){
+            createdBy = needsAssessmentTemps.get(0).getCreatedBy();
+        }
+        catch (Exception e ){
             createdBy = "anonymous";
         }
         needsAssessmentTemps.forEach(needsAssessmentTemp -> {

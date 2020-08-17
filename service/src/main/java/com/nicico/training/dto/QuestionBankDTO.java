@@ -6,6 +6,7 @@ package com.nicico.training.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.Category;
 import com.nicico.training.model.ParameterValue;
+import com.nicico.training.model.QuestionBankTestQuestion;
 import com.nicico.training.model.Subcategory;
 import com.nicico.training.repository.CourseDAO;
 import io.swagger.annotations.ApiModel;
@@ -97,9 +98,30 @@ public class QuestionBankDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("Exam")
+    public static class Exam {
+
+        private String option1;
+
+        private String option2;
+
+        private String option3;
+
+        private String option4;
+
+        private String question;
+
+        private ParameterValueDTO.TupleInfo questionType;
+
+        private ParameterValueDTO.TupleInfo displayType;
+
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("QuestionBank-CreateRq")
     public static class Create extends FullInfo {
-
     }
 
     @Getter

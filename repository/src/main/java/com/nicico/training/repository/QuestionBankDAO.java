@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface QuestionBankDAO extends JpaRepository<QuestionBank, Long>, JpaSpecificationExecutor<QuestionBank> {
 
@@ -24,4 +26,7 @@ public interface QuestionBankDAO extends JpaRepository<QuestionBank, Long>, JpaS
 
     @Query(value = "select max(n_code_id) from tbl_question_bank",nativeQuery = true)
     Integer getLastCodeId();
+
+    @Query(value = "select * from tbl_question_bank where ID in(:ids)",nativeQuery = true)
+    List<QuestionBank> findByIds(List<Long> ids);
 }
