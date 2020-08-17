@@ -111,31 +111,10 @@ public class QuestionBankDTO {
 
         private String question;
 
-        private boolean multiChoice;
-
-        private boolean vertical;
-
-    }
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("questions")
-    public static class Questions {
-
-        private String option1;
-
-        private String option2;
-
-        private String option3;
-
-        private String option4;
-
         private ParameterValueDTO.TupleInfo questionType;
 
         private ParameterValueDTO.TupleInfo displayType;
 
-        private String question;
     }
 
     @Getter

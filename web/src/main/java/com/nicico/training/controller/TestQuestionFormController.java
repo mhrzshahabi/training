@@ -48,26 +48,10 @@ public class TestQuestionFormController {
         Type resultType = new TypeToken<HashMap<String, Object>>() {
         }.getType();
         final HashMap<String, Object> params = gson.fromJson(receiveParams, resultType);
-        List<QuestionBankDTO.Exam> examList = new ArrayList<>();
 
-        Set<QuestionBankDTO.Questions> testQuestionBanks = testQuestionService.getAllQuestionsByTestQuestionId(testQuestionId);
+        Set<QuestionBankDTO.Exam> testQuestionBanks = testQuestionService.getAllQuestionsByTestQuestionId(testQuestionId);
 
-        for(QuestionBankDTO.Questions question : testQuestionBanks){
-            QuestionBankDTO.Exam exam = new QuestionBankDTO.Exam();
-            if(question.getQuestionType().getCode().equals("MultipleChoiceAnswer")){
-                if(question.getDisplayType().getCode().equals("Block")){
-                    exam.setVertical(false);
-                }else{
-                    exam.setVertical(true);
-                }
-                exam.setMultiChoice(true);
-            }else
-                exam.setMultiChoice(false);
-            modelMapper.map(question,exam);
-            examList.add(exam);
-        }
-
-        String data = mapper.writeValueAsString(examList);
+        String data = mapper.writeValueAsString(testQuestionBanks);
         params.put("today", DateUtil.todayDate());
         params.put(ConstantVARs.REPORT_TYPE, type);
         JsonDataSource jsonDataSource = null;

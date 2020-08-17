@@ -34,10 +34,10 @@ public class TestQuestionService implements ITestQuestionService {
 
     @Transactional
     @Override
-    public Set<QuestionBankDTO.Questions> getAllQuestionsByTestQuestionId(Long testQuestionId){
+    public Set<QuestionBankDTO.Exam> getAllQuestionsByTestQuestionId(Long testQuestionId){
         final TestQuestion model = testQuestionDAO.findById(testQuestionId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.QuestionBankNotFound));
         Set<QuestionBank> result = new HashSet<>();
         model.getQuestionBankTestQuestionList().forEach(q -> result.add(q.getQuestionBank()));
-        return modelMapper.map(result, new TypeToken<Set<QuestionBankDTO.Questions>>(){}.getType());
+        return modelMapper.map(result, new TypeToken<Set<QuestionBankDTO.Exam>>(){}.getType());
     }
 }

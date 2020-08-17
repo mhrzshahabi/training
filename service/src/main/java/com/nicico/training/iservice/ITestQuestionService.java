@@ -9,5 +9,5 @@ public interface ITestQuestionService {
 
     SearchDTO.SearchRs<TestQuestionDTO.Info> search(SearchDTO.SearchRq request);
 
-    Set<QuestionBankDTO.Questions> getAllQuestionsByTestQuestionId(Long testQuestionId);
+    Set<QuestionBankDTO.Exam> getAllQuestionsByTestQuestionId(Long testQuestionId);
 }
