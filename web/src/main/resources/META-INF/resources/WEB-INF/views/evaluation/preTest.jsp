@@ -186,7 +186,7 @@
                 return;
             }
 
-            let findRows=ListGrid_AllQuestions_PreTestJSP.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:lgIds}]});
+            let findRows=ListGrid_AllQuestions_PreTestJSP.findAll(({ id }) =>  lgIds.some(p=>p==id));
             ListGrid_AllQuestions_PreTestJSP.setSelectedState(findRows);
             findRows.setProperty("enabled", false);
         },
@@ -227,7 +227,7 @@
                         }
 
                         if(ids.length!==0){
-                            let findRows=ListGrid_AllQuestions_PreTestJSP.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"equals",value:current.id}]});
+                            let findRows=ListGrid_AllQuestions_PreTestJSP.findAll(({ id }) =>  [current.id].some(p=>p==id));
 
                             let classRecord = ListGrid_class_Evaluation.getSelectedRecord();
                             let classId = classRecord.id;
@@ -340,7 +340,7 @@
 
                                     ListGrid_ForQuestions_PreTestJSP.invalidateCache();
 
-                                    let findRows=ListGrid_AllQuestions_PreTestJSP.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:[activeId]}]});
+                                    let findRows=ListGrid_AllQuestions_PreTestJSP.findAll(({ id }) =>  [activeId].some(p=>p==id));
 
                                     if(typeof (findRows)!='undefined' && findRows.length>0){
                                         findRows.setProperty("enabled", true);
@@ -716,8 +716,22 @@
         title: "<spring:message code='print'/>",
         click: function () {
             let params = {};
-            let data = [];
-            printToJasper(data, params, "preTestForm.jasper");
+            let data = ListGrid_PreTest.getData().localData.get(0).testQuestionId;
+            params.teacher = ListGrid_PreTest.getData().localData.get(0).questionBank.teacher.fullNameFa;
+            // ListGrid_PreTest.getData().localData.forEach(function (value, index, array) {
+            //     let q = {
+            //         category: value.questionBank.category,
+            //         subCategory: value.questionBank.subCategory,
+            //         course: value.questionBank.course,
+            //         displayType: value.questionBank.displayType,
+            //         questionType: value.questionBank.questionType,
+            //         question: value.questionBank.question,
+            //         teacher: value.questionBank.teacher
+            //     };
+            //     data.add(q);
+            // });
+            console.log(params);
+            print(data, params, "testForm.jasper");
         }
     });
 
@@ -787,7 +801,7 @@
                                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                             ListGrid_ForQuestions_PreTestJSP.invalidateCache();
 
-                                            let findRows=ListGrid_AllQuestions_PreTestJSP.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:ids}]});
+                                            let findRows=ListGrid_AllQuestions_PreTestJSP.findAll(({ id }) =>  ids.some(p=>p==id));
 
                                             if(typeof (findRows)!='undefined' && findRows.length>0){
                                                 findRows.setProperty("enabled", false);
@@ -833,7 +847,7 @@
                                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
                                             ListGrid_ForQuestions_PreTestJSP.invalidateCache();
-                                            let findRows=ListGrid_AllQuestions_PreTestJSP.findAll({_constructor:"AdvancedCriteria",operator:"and",criteria:[{fieldName:"id",operator:"inSet",value:ids}]});
+                                            let findRows=ListGrid_AllQuestions_PreTestJSP.findAll(({ id }) =>  ids.some(p=>p==id));
 
                                             if(typeof (findRows)!='undefined' && findRows.length>0){
                                                 findRows.setProperty("enabled", true);
@@ -890,5 +904,25 @@
         height: "100%",
         members: [HLayout_Actions_PreTest, Hlayout_Grid_PreTest]
     });
+
+    function print(TestQuestionId, params, fileName, type = "pdf") {
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="test-question-form/print/"/>" + type,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "fileName", type: "hidden"},
+                    {name: "TestQuestionId", type: "hidden"},
+                    {name: "params", type: "hidden"}
+                ]
+        });
+        criteriaForm.setValue("TestQuestionId", TestQuestionId);
+        criteriaForm.setValue("fileName", fileName);
+        criteriaForm.setValue("params", JSON.stringify(params));
+        criteriaForm.show();
+        criteriaForm.submitForm();
+    }
 
 //</script>

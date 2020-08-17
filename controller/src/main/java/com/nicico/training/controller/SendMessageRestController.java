@@ -10,11 +10,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
-import com.nicico.training.model.ClassStudent;
-import com.nicico.training.model.Tclass;
+import com.nicico.training.model.*;
+import com.nicico.training.repository.MessageContactDAO;
+import com.nicico.training.repository.MessageDAO;
+import com.nicico.training.repository.ParameterValueDAO;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +33,7 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
@@ -45,6 +49,10 @@ public class SendMessageRestController {
     private final TeacherService teacherService;
     private final PersonnelService personnelService;
     private final TclassService tclassService;
+    private final ParameterService parameterService;
+    private final MessageDAO messageDAO;
+    private final MessageContactDAO messageContactDAO;
+    private final ParameterValueDAO parameterValueDAO;
 
     @Loggable
     @PostMapping(value = "/sendSMS")
@@ -54,17 +62,24 @@ public class SendMessageRestController {
         List<String> mobiles = new ArrayList<>();
         List<String> fullName = new ArrayList<>();
         List<String> prefixFullName = new ArrayList<>();
-        String personleAdress = request.getRequestURL().toString().replace(request.getServletPath(), "");
+        String personelAdress = request.getRequestURL().toString().replace(request.getServletPath(), "");
         Long classId;
         String courseName = "";
         String courseStartDate = "";
         String courseEndDate = "";
         String oMessage = "";
+        Integer maxRepeat = 0;
+        Integer timeBMessages = 0;
+        String code = null;
+
+        TotalResponse<ParameterValueDTO.Info> parameter = null;
 
         ObjectMapper objectMapper = new ObjectMapper();
 
         JsonNode jsonNode = objectMapper.readTree(data);
         oMessage = jsonNode.get("message").asText("");
+        maxRepeat = Integer.parseInt(jsonNode.get("maxRepeat").asText(""));
+        timeBMessages = Integer.parseInt(jsonNode.get("timeBMessages").asText(""));
 
         if (jsonNode.has("classID")) {
             classId = jsonNode.get("classID").asLong();
@@ -92,7 +107,7 @@ public class SendMessageRestController {
                     ids.add(objNode.asLong());
                 }
             }
-        }else if (jsonNode.has("classStudentHaventEvaluation")) {
+        } else if (jsonNode.has("classStudentHaventEvaluation")) {
             jsonNode = jsonNode.get("classStudentHaventEvaluation");
             type = "classStudentHaventEvaluation";
 
@@ -109,7 +124,10 @@ public class SendMessageRestController {
         }
 
 
-        if (type == "classStudent") {
+        if (type.equals("classStudent")) {
+
+            code = "CS";
+
             SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
             searchRq.setCount(1000);
             searchRq.setStartIndex(0);
@@ -124,7 +142,9 @@ public class SendMessageRestController {
                         prefixFullName.add(p.getStudent().getGender().equals("مرد") ? "جناب آقای" : (p.getStudent().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم"));
                     }
             );
-        } else if (type == "classTeacher") {
+        } else if (type.equals("classTeacher")) {
+            code = "Teacher";
+
             SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
             searchRq.setCount(1000);
             searchRq.setStartIndex(0);
@@ -139,7 +159,9 @@ public class SendMessageRestController {
                         prefixFullName.add(p.getPersonality().getGenderId() == 1 ? "جناب آقای" : (p.getPersonality().getGenderId() == 2 ? "سرکار خانم" : "جناب آقای/سرکار خانم"));
                     }
             );
-        } else if (type == "classStudentHaventEvaluation") {
+        } /*else if (type.equals("classStudentHaventEvaluation")) {
+            code = "CSHE";
+
             SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
             searchRq.setCount(1000);
             searchRq.setStartIndex(0);
@@ -154,8 +176,35 @@ public class SendMessageRestController {
                         prefixFullName.add(p.getStudent().getGender().equals("مرد") ? "جناب آقای" : (p.getStudent().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم"));
                     }
             );
-        }
+        }*/
 
+        Message oMessageModel = new Message();
+
+        if (maxRepeat > 0) {
+
+            oMessageModel.setContextText(oMessage);
+            oMessageModel.setContextHtml(oMessage);
+
+            parameter = parameterService.getByCode("MessageUserType");
+
+            String finalCode = code;
+            ParameterValueDTO.Info parameterValue = modelMapper.map(((TotalResponse) parameter).getResponse().getData().stream().filter(p -> ((ParameterValueDTO.Info) p).getCode().equals(finalCode)).toArray()[0], ParameterValueDTO.Info.class);
+
+            oMessageModel.setUserTypeId(parameterValue.getId());
+            List<ParameterValue> sentWays = new ArrayList<>();
+
+            parameter = parameterService.getByCode("MessageSendWays");
+
+            parameterValue = modelMapper.map(((TotalResponse) parameter).getResponse().getData().stream().filter(p -> ((ParameterValueDTO.Info) p).getCode().equals("sms")).toArray()[0], ParameterValueDTO.Info.class);
+
+            sentWays.add(parameterValueDAO.findById(parameterValue.getId()).orElse(null));
+
+            oMessageModel.setSendWays(sentWays);
+            oMessageModel.setInterval(timeBMessages);
+            oMessageModel.setCountSend(maxRepeat);
+
+            messageDAO.save(oMessageModel);
+        }
         for (int i = 0; i < mobiles.size(); i++) {
             String message = oMessage;
             message = message.replace("{prefix-full_name}", prefixFullName.get(i));
@@ -163,13 +212,36 @@ public class SendMessageRestController {
             message = message.replace("{course-name}", courseName);
             message = message.replace("{start-date}", courseStartDate);
             message = message.replace("{end-date}", courseEndDate);
-            message = message.replace("{personel-address}", personleAdress);
+            message = message.replace("{personel-address}", personelAdress);
             message += "\nواحد ارزیابی امور آموزش";
 
             List<String> numbers = new ArrayList<>();
             numbers.add(mobiles.get(i));
 
-            sendMessageService.asyncEnqueue(numbers, message);
+            Long messageId = sendMessageService.asyncEnqueue(numbers, message);
+
+            if (maxRepeat > 0) {
+
+                MessageContact messageContact = new MessageContact();
+                messageContact.setCountSent(0);
+                messageContact.setContextText(message);
+                messageContact.setContextHtml(message);
+                messageContact.setLastSentDate(new Date());
+                messageContact.setReturnMessageId(messageId);
+                messageContact.setStatusId((long) 588);
+
+                messageContact.setObjectId(ids.get(i));
+
+                if (type.equals("classStudent")) {
+                    messageContact.setObjectType("ClassStudent");
+                } else if (type.equals("classTeacher")) {
+                    messageContact.setObjectType("Teacher");
+                }
+
+                messageContact.setObjectMobile(mobiles.get(i));
+                messageContact.setMessageId(oMessageModel.getId());
+                messageContactDAO.save(messageContact);
+            }
         }
 
         return new ResponseEntity<>(HttpStatus.OK);

@@ -1442,6 +1442,8 @@
                         (ListGrid_Class_JspClass.getSelectedRecord().evaluationStatusReactionTraining == undefined ||
                             ListGrid_Class_JspClass.getSelectedRecord().evaluationStatusReactionTraining == 0)) {
                         createDialog("info", "مدرس این کلاس هنوز توسط مسئول آموزش ارزیابی نشده است و امکان پایان دادن به کلاس نمی باشد");
+                        classTypeStatus.setValue(oldValue);
+                        highlightClassStauts(oldValue, 10);
                         return false;
                     }
 
