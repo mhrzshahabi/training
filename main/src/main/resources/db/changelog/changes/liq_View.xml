@@ -1969,10 +1969,10 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW-CLASS-DETAIL-002">
+    <changeSet author="NICICO" id="VIEW-CLASS-DETAIL-003">
         <createView viewName="view_class_detail" replaceIfExists="true">
             <![CDATA[
-   SELECT
+  SELECT
         tclass.ID as id,
         tclass.c_created_by as c_created_by ,
         tclass.d_created_date as d_created_date,
@@ -2000,6 +2000,8 @@ FROM
         tclass.C_EVALUATION as C_EVALUATION,
         tclass.C_BEHAVIORAL_LEVEL as C_BEHAVIORAL_LEVEL,
         tclass.START_EVALUATION as START_EVALUATION,
+        tclass.F_CANCEL_CLASS_REASON as CANCEL_REASON_ID,
+        tclass.C_POSTPONE_START_DATE as POSTPONE_DATE,
         SUBSTR(tclass.C_START_DATE,1,4) as tclass_year,
         course.ID as course_id,
         course.C_CODE as course_c_code,
@@ -2009,7 +2011,9 @@ FROM
         course.C_EVALUATION as course_c_evaluation,
         CASE WHEN students.counts IS NULL THEN 0 ELSE students.counts END AS tclass_students_count,
         term.C_TITLE_FA as term_TitleFa,
-        institute.C_TITLE_FA as tclass_institute
+        institute.C_TITLE_FA as tclass_institute,
+        altClasses.C_CODE as ALTERNATIVE_CLASS_CODE,
+        CASE WHEN altClasses.ID IS NULL THEN 0 ELSE 1 END AS RE_HOLIDING_STATUS
 
         FROM TBL_CLASS tclass LEFT JOIN TBL_COURSE course
         ON tclass.F_COURSE = course.ID
@@ -2021,6 +2025,7 @@ FROM
             GROUP BY TBL_CLASS_STUDENT.CLASS_ID) students ON students.CLASS_ID = tclass.ID
         LEFT JOIN TBL_TERM term ON tclass.F_TERM = term.ID
         LEFT JOIN TBL_INSTITUTE institute ON institute.id = tclass.F_INSTITUTE
+        LEFT JOIN TBL_CLASS altClasses ON altClasses.id = tclass.F_ALTERNATIVE_CLASS
 
             ]]>
         </createView>

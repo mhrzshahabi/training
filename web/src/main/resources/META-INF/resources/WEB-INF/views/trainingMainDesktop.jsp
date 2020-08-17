@@ -1821,6 +1821,13 @@
                                 }
                             },
                             {isSeparator: true},
+                            {
+                                title: "<spring:message code="noncompliance.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="nonComplianceReport/show-form"/>");
+                                }
+                            },
+                            {isSeparator: true},
                             </sec:authorize>
 
                             <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_UnfinishedClasses')">
