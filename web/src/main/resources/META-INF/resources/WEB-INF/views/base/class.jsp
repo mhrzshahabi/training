@@ -108,6 +108,7 @@
             {name: "supervisor"},
             {name: "plannerFullName"},
             {name: "supervisorFullName"},
+            {name: "organizerName"},
             {name: "evaluation"},
             {name: "startEvaluation"},
             {name: "behavioralLevel"}
@@ -535,6 +536,17 @@
             {
                 name: "supervisorFullName",
                 title: "<spring:message code="supervisor"/>",
+                displayValueFromRecord: false,
+                canFilter: false,
+                canSort: false,
+                type: "TextItem",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true,
+            },
+            {
+                name: "organizerName",
+                title: "<spring:message code="executer"/>",
                 displayValueFromRecord: false,
                 canFilter: false,
                 canSort: false,
