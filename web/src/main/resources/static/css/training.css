@@ -207,7 +207,16 @@ span {
     background-color: #fe9d2a;
     border: solid 1px #fe9d2a;
 }
+.MSG-btn-orangeDisabled,
+.MSG-btn-orangeDisabled,
+.MSG-btn-orangeSelectedDisabled{
+    background-color: #b5b5b5 !important;
+}
 
+.MSG-btn-orangeDisabled:hover,
+.MSG-btn-orangeSelectedDisabled:hover{
+    background-color: #cecece !important;
+}
 
 .MSG-btn-white,
 .MSG-btn-whiteOver,
@@ -363,6 +372,28 @@ span {
     font-weight: bold;
     color: #fe9d2a;
 }
+
+
+.MSG-type-container-disable img {
+    width: 80px;
+    height: 80px;
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+
+}
+.MSG-type-container-disable span {
+    color: #626363;
+    margin-top: 7px;
+}
+.MSG-type-container-disable:hover span{
+    font-weight: bold;
+    color: #626363;
+}
+
+
+
+
+
 .MSG-select-icon span{
     color: #fe9d2a;
     font-weight: bold;
