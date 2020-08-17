@@ -20,7 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -56,6 +60,14 @@ public class ViewTrainingPostRestController {
             criteriaRq.setOperator(EOperator.valueOf(operator))
                     .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
+            if(criteriaRq.getCriteria().stream().anyMatch(a->(a.getFieldName().equals("jobGroup")))){
+                List<List<Object>> lists = criteriaRq.getCriteria().stream().filter(a -> (a.getFieldName().equals("jobGroup"))).map(a -> a.getValue()).collect(Collectors.toList());
+                ArrayList<Long> list = new ArrayList<>();
+                ArrayList<SearchDTO.CriteriaRq> listCR = new ArrayList<>();
+                SearchDTO.CriteriaRq criteriaRq1 = makeNewCriteria("jobId", list, EOperator.inSet, null);
+                listCR.add(criteriaRq1);
+                criteriaRq.setCriteria(listCR);
+            }
             request.setCriteria(criteriaRq);
         }
         if (StringUtils.isNotEmpty(sortBy)) {
