@@ -120,11 +120,11 @@ public class TclassRestController {
         ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.update(id, request), HttpStatus.OK);
 
         //*****check alarms*****
-        if (infoResponseEntity.getStatusCodeValue() == 200) {
+      /*  if (infoResponseEntity.getStatusCodeValue() == 200) {
             classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getId());
             classAlarmService.alarmClassCapacity(infoResponseEntity.getBody().getId());
             classAlarmService.saveAlarms();
-        }
+        }*/
 
         return infoResponseEntity;
     }
