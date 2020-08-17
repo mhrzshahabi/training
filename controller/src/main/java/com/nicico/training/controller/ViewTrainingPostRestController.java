@@ -6,7 +6,10 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CourseDTO;
+import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.ViewTrainingPostDTO;
+import com.nicico.training.model.JobGroup;
+import com.nicico.training.service.JobGroupService;
 import com.nicico.training.service.ViewTrainingPostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +37,7 @@ public class ViewTrainingPostRestController {
 
     private final ObjectMapper objectMapper;
     private final ViewTrainingPostService viewTrainingPostService;
+    private final JobGroupService jobGroupService;
 
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<ViewTrainingPostDTO.Info>> iscList(HttpServletRequest iscRq) throws IOException {
@@ -62,9 +66,10 @@ public class ViewTrainingPostRestController {
                     }));
             if(criteriaRq.getCriteria().stream().anyMatch(a->(a.getFieldName().equals("jobGroup")))){
                 List<List<Object>> lists = criteriaRq.getCriteria().stream().filter(a -> (a.getFieldName().equals("jobGroup"))).map(a -> a.getValue()).collect(Collectors.toList());
-                ArrayList<Long> list = new ArrayList<>();
+                List<JobDTO.Info> jobs = jobGroupService.getJobs(Long.parseLong(lists.get(0).get(0).toString()));
+                List<Long> jobIds = jobs.stream().map(a -> a.getId()).collect(Collectors.toList());
                 ArrayList<SearchDTO.CriteriaRq> listCR = new ArrayList<>();
-                SearchDTO.CriteriaRq criteriaRq1 = makeNewCriteria("jobId", list, EOperator.inSet, null);
+                SearchDTO.CriteriaRq criteriaRq1 = makeNewCriteria("jobId", jobIds, EOperator.inSet, null);
                 listCR.add(criteriaRq1);
                 criteriaRq.setCriteria(listCR);
             }
