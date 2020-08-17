@@ -1272,7 +1272,7 @@
                 autoFitWidthApproach: "both"
             }
         ],
-        fetchDataURL: viewTrainingPostUrl + "/iscList"
+        fetchDataURL: viewTrainingPostUrl + "/spec-list"
     });
 
     let ToolStrip_Job_Group_Post_Export2EXcel = isc.ToolStrip.create({
@@ -1293,7 +1293,7 @@
                     }
                     criteria.criteria.push({fieldName: "jobGroup", operator: "equals", value: ListGrid_Job_Group_Jsp.getSelectedRecord().id});
 
-                    ExportToFile.showDialog(null, PostLG_JobGroup , "Job_Group_Post", 0, null, '',"لیست پست - آموزش"  , criteria, null);
+                    ExportToFile.showDialog(null, PostLG_JobGroup, "Job_Group_Post", 0, null, '',"لیست پست - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -1494,9 +1494,16 @@
                 if (postJob_JobGroup === jobGroup.id)
                     return;
                 postJob_JobGroup = jobGroup.id;
-                PostDS_JobGroup.fetchDataURL = jobGroupUrl + "postIscList/" + jobGroup.id;
+                PostLG_JobGroup.setImplicitCriteria({
+                    _constructor: "AdvancedCriteria",
+                    operator: "and",
+                    criteria: [{fieldName: "jobGroup", operator: "equals", value: jobGroup.id}]
+                });
                 PostLG_JobGroup.invalidateCache();
                 PostLG_JobGroup.fetchData();
+                // PostDS_JobGroup.fetchDataURL = jobGroupUrl + "postIscList/" + jobGroup.id;
+                // PostLG_JobGroup.invalidateCache();
+                // PostLG_JobGroup.fetchData();
                 break;
             }
             case "TabPane_Personnel_JobGroup":{
