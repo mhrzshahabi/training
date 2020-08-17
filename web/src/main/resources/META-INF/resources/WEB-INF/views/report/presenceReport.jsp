@@ -42,6 +42,31 @@
         fetchDataURL: presenceReportUrl
     });
 
+    PersonnelDS_PTSR_DF = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+        ],
+        fetchDataURL: personnelUrl + "/iscList",
+        implicitCriteria: {
+            _constructor:"AdvancedCriteria",
+            operator:"and",
+            criteria:[{ fieldName: "active", operator: "equals", value: 1}]
+        },
+    });
+
     var RestDataSource_Course_JspAttendanceReport = isc.TrDS.create({
         ID: "courseDS",
         fields: [
@@ -186,42 +211,26 @@
         colWidths: ["5%", "25%", "5%", "25%","5%","25%"],
         fields: [
             {
-                name: "studentPersonnelNo2",
-                title:"پرسنلی 6رقمی",
-                textAlign: "center",
-                width: "*",
-                keyPressFilter: "[0-9, ]",
-                operator: "inSet",
-                editorType: "TextItem",
-                length:10000,
-                changed (form, item, value){
-                    let res = value.split(" ");
-                    item.setValue(res.toString())
-                }
-            },
-            {
                 name: "studentPersonnelNo",
-                title:"<spring:message code="personnel.no"/> ",
-                textAlign: "center",
-                width: "*"
+                title: "شماره پرسنلي",
+                hint: "شماره پرسنلي را با , از یکدیگر جدا کنید",
+                showHintInField: true,
+                icons: [{
+                    src: "[SKIN]/pickers/search_picker.png",
+                    click: function () {
+                        Window_SelectPeople_JspUnitReport.show();
+                    }}],
+                keyPressFilter: "[A-Z|0-9|,-]"
             },
             {
-                name: "studentNationalCode",
-                title:"<spring:message code="national.code"/> ",
-                textAlign: "center",
-                width: "*",
+                name: "temp0",
+                title: "",
+                canEdit: false
             },
             {
-                name: "studentFirstName",
-                title:"<spring:message code="firstName"/> ",
-                textAlign: "center",
-                width: "*"
-            },
-            {
-                name: "studentLastName",
-                title:"<spring:message code="lastName"/> ",
-                textAlign: "center",
-                width: "*"
+                name: "temp1",
+                title: "",
+                canEdit: false
             },
             {
                 name: "personnelComplexTitle",
@@ -279,6 +288,16 @@
                 keyPressFilter: "[A-Z|0-9|,-]"
             },
             {
+                name: "temp2",
+                title: "",
+                canEdit: false
+            },
+            {
+                name: "temp3",
+                title: "",
+                canEdit: false
+            },
+            {
                 name: "classStartDate",
                 title: "تاریخ کلاس: از",
                 ID: "startDate_jspAttendanceReport",
@@ -331,7 +350,7 @@
                 }
             },
             {
-                name: "temp1",
+                name: "temp4",
                 title: "",
                 canEdit: false
             },
@@ -530,6 +549,99 @@
         ]
     });
 
+    var initialLayoutStyle = "vertical";
+    var DynamicForm_SelectPeople_JspUnitReport = isc.DynamicForm.create({
+        align: "center",
+        titleWidth: 0,
+        titleAlign: "center",
+        width: 500,
+        height: 300,
+        fields: [
+            {
+                name: "people.code",
+                align: "center",
+                title: "",
+                editorType: "MultiComboBoxItem",
+                multiple: true,
+                defaultValue: null,
+                changeOnKeypress: true,
+                showHintInField: true,
+                displayField: "personnelNo",
+                comboBoxWidth: 500,
+                valueField: "personnelNo",
+                layoutStyle: initialLayoutStyle,
+                optionDataSource: PersonnelDS_PTSR_DF
+            }
+        ]
+    });
+
+    DynamicForm_SelectPeople_JspUnitReport.getField("people.code").comboBox.setHint("پرسنل مورد نظر را انتخاب کنید");
+    DynamicForm_SelectPeople_JspUnitReport.getField("people.code").comboBox.pickListFields =
+        [
+            {name: "firstName", title: "نام", width: "30%", filterOperator: "iContains"},
+            {name: "lastName", title: "نام خانوادگي", width: "30%", filterOperator: "iContains"},
+            {name: "nationalCode", title: "کدملي", width: "30%", filterOperator: "iContains"},
+            {name: "personnelNo", title: "کد پرسنلي", width: "30%", filterOperator: "iContains"},
+            {name: "personnelNo2", title: "کد پرسنلي 6 رقمي", width: "30%", filterOperator: "iContains"},
+        ];
+    DynamicForm_SelectPeople_JspUnitReport.getField("people.code").comboBox.filterFields = ["firstName","lastName","nationalCode","personnelNo","personnelNo2"];
+
+    IButton_ConfirmPeopleSelections_JspUnitReport = isc.IButtonSave.create({
+        top: 260,
+        title: "تائید",
+        width: 300,
+        click: function () {
+            let criteriaDisplayValues = "";
+            let selectorDisplayValues = DynamicForm_SelectPeople_JspUnitReport.getItem("people.code").getValue();
+            if (DynamicForm_SelectPeople_JspUnitReport.getField("people.code").getValue() != undefined && DynamicForm_SelectPeople_JspUnitReport.getField("people.code").getValue() != "") {
+                criteriaDisplayValues = DynamicForm_SelectPeople_JspUnitReport.getField("people.code").getValue().join(",");
+                let ALength = criteriaDisplayValues.length;
+                let lastChar = criteriaDisplayValues.charAt(ALength - 1);
+                if (lastChar != ";")
+                    criteriaDisplayValues += ",";
+            }
+            if (selectorDisplayValues != undefined) {
+                for (let i = 0; i < selectorDisplayValues.size() - 1; i++) {
+                    criteriaDisplayValues += selectorDisplayValues [i] + ",";
+                }
+                criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
+            }
+
+            if (typeof criteriaDisplayValues != "undefined") {
+                let uniqueNames = [];
+
+                $.each(criteriaDisplayValues.split(","), function (i, el) {
+                    if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+                });
+                criteriaDisplayValues = uniqueNames.join(",");
+            }
+
+            criteriaDisplayValues = criteriaDisplayValues == ";undefined" ? "" : criteriaDisplayValues;
+
+            DynamicForm_CriteriaForm_JspAttendanceReport.getField("studentPersonnelNo").setValue(criteriaDisplayValues);
+            Window_SelectPeople_JspUnitReport.close();
+        }
+    });
+
+    var Window_SelectPeople_JspUnitReport = isc.Window.create({
+        placement: "center",
+        title: "انتخاب پرسنل",
+        canDragReposition: true,
+        align: "center",
+        autoDraw: false,
+        border: "2px solid gray",
+        width: 500,
+        height: 300,
+        items: [
+            isc.TrVLayout.create({
+                members: [
+                    DynamicForm_SelectPeople_JspUnitReport,
+                    IButton_ConfirmPeopleSelections_JspUnitReport,
+                ]
+            })
+        ]
+    });
+
     IButton_JspAttendanceReport = isc.IButtonSave.create({
         top: 260,
         title: "چاپ گزارش",
@@ -548,6 +660,19 @@
                 data_values = DynamicForm_CriteriaForm_JspAttendanceReport.getValuesAsAdvancedCriteria();
                 for (let i = 0; i < data_values.criteria.size(); i++) {
                      if (data_values.criteria[i].fieldName == "classCode") {
+                        let codesString = data_values.criteria[i].value;
+                        let codesArray;
+                        codesArray = codesString.split(",");
+                        for (var j = 0; j < codesArray.length; j++) {
+                            if (codesArray[j] == "" || codesArray[j] == " ") {
+                                codesArray.remove(codesArray[j]);
+                            }
+                        }
+                        data_values.criteria[i].operator = "inSet";
+                        data_values.criteria[i].value = codesArray;
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "studentPersonnelNo") {
                         let codesString = data_values.criteria[i].value;
                         let codesArray;
                         codesArray = codesString.split(",");

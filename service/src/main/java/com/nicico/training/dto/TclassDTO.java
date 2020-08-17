@@ -91,6 +91,7 @@ public class TclassDTO {
         private TeacherDTO.TeacherFullNameTuple teacher;
         private String plannerFullName;
         private String supervisorFullName;
+        private String organizerName;
         private List<TclassDTO.InfoTuple> canceledClasses;
 
         //*********************************

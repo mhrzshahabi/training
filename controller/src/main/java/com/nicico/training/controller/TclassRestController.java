@@ -16,11 +16,9 @@ import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.dto.ViewEvaluationStaticalReportDTO;
 import com.nicico.training.iservice.IInstituteService;
 import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.model.Institute;
 import com.nicico.training.model.Personnel;
-import com.nicico.training.repository.CourseDAO;
-import com.nicico.training.repository.PersonnelDAO;
-import com.nicico.training.repository.StudentDAO;
-import com.nicico.training.repository.TclassDAO;
+import com.nicico.training.repository.*;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -61,6 +59,7 @@ public class TclassRestController {
     private final WorkGroupService workGroupService;
     private final ViewEvaluationStaticalReportService viewEvaluationStaticalReportService;
     private final PersonnelDAO personnelDAO;
+    private final InstituteDAO instituteDAO;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -223,6 +222,7 @@ public class TclassRestController {
         for (TclassDTO.Info tclassDTO : response.getList()) {
             tclassDTO.setPlannerFullName("");
             tclassDTO.setSupervisorFullName("");
+            tclassDTO.setOrganizerName("");
 
             if (tclassDTO.getPlanner()!=null) {
                 Optional<Personnel> planner = personnelDAO.findById(tclassDTO.getPlanner());
@@ -233,6 +233,12 @@ public class TclassRestController {
                 Optional<Personnel> supervisor = personnelDAO.findById(tclassDTO.getSupervisor());
                 if (supervisor.isPresent()) {
                     tclassDTO.setSupervisorFullName(supervisor.get().getFirstName() + " " + supervisor.get().getLastName());
+                }
+            }
+            if(tclassDTO.getOrganizerId() != null){
+                Optional<Institute> institute = instituteDAO.findById(tclassDTO.getOrganizerId());
+                if(institute.isPresent()){
+                    tclassDTO.setOrganizerName(institute.get().getTitleFa());
                 }
             }
         }

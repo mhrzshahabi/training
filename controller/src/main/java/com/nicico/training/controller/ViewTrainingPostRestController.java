@@ -6,7 +6,10 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CourseDTO;
+import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.ViewTrainingPostDTO;
+import com.nicico.training.model.JobGroup;
+import com.nicico.training.service.JobGroupService;
 import com.nicico.training.service.ViewTrainingPostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,6 +37,7 @@ public class ViewTrainingPostRestController {
 
     private final ObjectMapper objectMapper;
     private final ViewTrainingPostService viewTrainingPostService;
+    private final JobGroupService jobGroupService;
 
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<ViewTrainingPostDTO.Info>> iscList(HttpServletRequest iscRq) throws IOException {
@@ -56,6 +64,15 @@ public class ViewTrainingPostRestController {
             criteriaRq.setOperator(EOperator.valueOf(operator))
                     .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
+            if(criteriaRq.getCriteria().stream().anyMatch(a->(a.getFieldName().equals("jobGroup")))){
+                List<List<Object>> lists = criteriaRq.getCriteria().stream().filter(a -> (a.getFieldName().equals("jobGroup"))).map(a -> a.getValue()).collect(Collectors.toList());
+                List<JobDTO.Info> jobs = jobGroupService.getJobs(Long.parseLong(lists.get(0).get(0).toString()));
+                List<Long> jobIds = jobs.stream().map(a -> a.getId()).collect(Collectors.toList());
+                ArrayList<SearchDTO.CriteriaRq> listCR = new ArrayList<>();
+                SearchDTO.CriteriaRq criteriaRq1 = makeNewCriteria("jobId", jobIds, EOperator.inSet, null);
+                listCR.add(criteriaRq1);
+                criteriaRq.setCriteria(listCR);
+            }
             request.setCriteria(criteriaRq);
         }
         if (StringUtils.isNotEmpty(sortBy)) {

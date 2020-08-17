@@ -34,6 +34,7 @@ public class AttendanceService implements IAttendanceService {
     private final TclassService tclassService;
     private final ClassSessionService classSessionService;
     private final ParameterService parameterService;
+    private final ClassAlarmService classAlarmService;
 
     @Transactional(readOnly = true)
     @Override
@@ -169,6 +170,7 @@ public class AttendanceService implements IAttendanceService {
     @Transactional
     @Override
     public void studentAttendanceSave(List<List<Map<String, String>>> maps) {
+        Set<Long> classIdSet = new HashSet<>();
         List<Map<String, String>> mapList = maps.get(0);
         ArrayList<Attendance> attendanceSaving = new ArrayList<>();
         for (Map<String, String> map : mapList) {
@@ -185,6 +187,7 @@ public class AttendanceService implements IAttendanceService {
         }
         for (Attendance attendance : attendanceSaving) {
             ClassSessionDTO.Info info = classSessionService.get(attendance.getSessionId());
+            classIdSet.add(info.getClassId());
             if(!info.getReadOnly()){
                 List<Attendance> saved = attendanceDAO.findBySessionIdAndStudentId(attendance.getSessionId(), attendance.getStudentId());
                 if (saved == null || saved.size()==0) {
@@ -195,6 +198,12 @@ public class AttendanceService implements IAttendanceService {
                     attendanceDAO.save(saved.get(0));
                 }
             }
+        }
+        Iterator<Long> iterator = classIdSet.iterator();
+        while (iterator.hasNext()){
+            Long info = iterator.next();
+            classAlarmService.alarmAttendanceUnjustifiedAbsence(info);
+            classAlarmService.saveAlarms();
         }
     }
 

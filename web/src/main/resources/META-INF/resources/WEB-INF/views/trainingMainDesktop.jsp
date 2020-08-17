@@ -858,6 +858,7 @@
     const viewPersonnelTrainingStatusReportUrl = rootUrl + "/view-personnel-training-status-report";
     const viewCoursesPassedPersonnelReportUrl = rootUrl + "/view-courses-passed-personnel-report";
     const questionBankTestQuestionUrl = rootUrl + "/question-bank-test-question";
+    const annualStatisticsReportUrl = rootUrl + "/annualStatisticsReport";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -1818,6 +1819,13 @@
                                 title: "<spring:message code="training.class.report"/>",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="trainingClassReport/show-form"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            {
+                                title: "<spring:message code="noncompliance.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="nonComplianceReport/show-form"/>");
                                 }
                             },
                             {isSeparator: true},

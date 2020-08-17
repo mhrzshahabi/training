@@ -744,7 +744,7 @@
     });
 
     var ToolStripButton_FormIssuanceForAll_RE = isc.ToolStripButton.create({
-        title: "<spring:message code="students.form.issuance.Behavioral"/>",
+        title: "صدور فرم ارزیابی واکنشی برای همه فراگیران",
         baseStyle: "sendFile",
         click: function () {
             Student_Reaction_Form_Inssurance_All_RE();

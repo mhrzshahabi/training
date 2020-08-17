@@ -172,10 +172,10 @@
                 {name: "lastModifiedDateNA"},
                 {name: "modifiedByNA"},
                 {name: "enabled",
-                    formatCellValue: function (value, record) {
-                        let newVal = value == undefined ? "فعال" : "غیر فعال";
-                        return newVal;
-                    }
+                    valueMap:{
+                        // undefined : "فعال",
+                        74 : "غیر فعال"
+                    },filterOnKeypress: true,
                 },
             ],
             autoFetchData: true,
