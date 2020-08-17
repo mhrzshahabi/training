@@ -4,6 +4,7 @@
 
 // <script>
 
+
     PersonnelCourseDS_PCNP = isc.TrDS.create({
         fields: [
             {name: "personnelId", hidden: true},
@@ -141,8 +142,10 @@
                 autoFetchData: false,
                 //filterFields: ["value", "value"],
                 pickListWidth: 300,
-                type: "ComboBoxItem",
+                type: "SelectItem",
                 textMatchStyle: "substring",
+                multiple: true,
+                operator: "inSet",
                 /*pickListProperties: {
                     showFilterEditor: false,
                     showClippedValuesOnHover: true,
@@ -170,10 +173,22 @@
                 //specialValues: { "**emptyValue**": ""},
                 //separateSpecialValues: true
                 changed: function (form, item, value) {
-                    let criteria= '{"fieldName":"postGradeCode","operator":"equals","value":"' + value + '"}';
-                    PersonnelDS_PCNP.fetchDataURL = personnelUrl + "/iscList?criteria=" + criteria;
-                    FilterDF_PCNP.getItem("personnelPersonnelNo").setValue();
-                    FilterDF_PCNP.getItem("personnelPersonnelNo").comboBox.fetchData();
+                    if(value != null && value.length != 0){
+                        let criteriaVal = "[";
+                        for (var j = 0; j < value.length-1; j++) {
+                            criteriaVal += '"' + value[j] + '"';
+                            criteriaVal += ",";
+                        }
+                        criteriaVal += '"' + value[value.length-1] + '"' +  ']';
+                        let criteria= '{"fieldName":"postGradeCode","operator":"inSet","value":' + criteriaVal + '}';
+                        // let criteria = new Object();
+                        // criteria.fieldName = "postGradeCode";
+                        // criteria.operator = "inSet";
+                        // criteria.value = criteriaVal;
+                        PersonnelDS_PCNP.fetchDataURL = personnelUrl + "/iscList?criteria=" + criteria;
+                        FilterDF_PCNP.getItem("personnelPersonnelNo").setValue();
+                        FilterDF_PCNP.getItem("personnelPersonnelNo").comboBox.fetchData();
+                    }
                 },
             },
             {
