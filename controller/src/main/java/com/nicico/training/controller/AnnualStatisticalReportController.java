@@ -29,7 +29,7 @@ public class AnnualStatisticalReportController {
     EntityManager entityManager;
 
     @Loggable
-    @GetMapping(value = "/list")
+    @PostMapping(value = "/list")
     @Transactional(readOnly = true)
     public ResponseEntity<AnnualStatisticalReportDTO.AnnualStatisticalReportDTOSpecRs> list(@RequestBody String data) {
         JSONObject jsonObject = new JSONObject(data);
