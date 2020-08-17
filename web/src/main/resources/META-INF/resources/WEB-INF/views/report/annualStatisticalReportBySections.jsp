@@ -24,6 +24,28 @@
             {name: "titleFa"}],
         fetchDataURL: categoryUrl + "iscTupleList"
     });
+
+    var RestDataSource_annualStatisticalReportBySection = isc.TrDS.create({
+
+        transformRequest: function (dsRequest) {
+            dsRequest.httpHeaders = {
+                "Authorization": "Bearer <%= accessToken %>"
+            };
+            return this.Super("transformRequest", arguments);
+        },
+        fields: [{name: "id", primaryKey: true},
+            {name: "instituteId",hidden:true},
+            {name: "instituteTitle"},
+            {name: "categoryTitle"},
+            {name: "classStatus"},
+            {name: "countCourses"},
+            {name: "countStudents"},
+            {name: "sumHours"},
+            {name: "sumHoursPerPerson"},
+        ], dataFormat: "json",
+      });
+
+
     var RestDataSource_Assistant_MSReport = isc.TrDS.create({
         fields: [
             {name: "ccpAssistant", title: "<spring:message code="telephone"/>"}
@@ -60,21 +82,7 @@
         ],
     });
 
-    var RestDataSource_annualStatisticalReportBySection = isc.TrDS.create({
 
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer <%= accessToken %>"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fields: [{name: "id", primaryKey: true},
-            {name: "code"},
-            {name: "title"},
-        ], dataFormat: "json",
-
-       // autoFetchData: true,
-    });
 
     var RestDataSource_Institute = isc.TrDS.create({
         fields: [
@@ -154,9 +162,7 @@
         },
             gridComponents: [ToolStrip_Actions,"filterEditor", "header", "body"],
 
-
-
-        dataArrived: function ()
+       dataArrived: function ()
         {
             modalDialog.close();
 
@@ -693,8 +699,12 @@
                     }
                     modalDialog=createDialog('wait');
 
-                    isc.RPCManager.sendRequest(TrDSRequest(annualStatisticsReportUrl+"/list" ,"POST",
-                        JSON.stringify(DynamicForm_Report_annualStatisticalReportBySection.getValues()), "callback: fill_control_result(rpcResponse)"));
+                  //  isc.RPCManager.sendRequest(TrDSRequest(annualStatisticsReportUrl+"/list" ,"POST",
+                     //   JSON.stringify(DynamicForm_Report_annualStatisticalReportBySection.getValues()), "callback: fill_control_result(rpcResponse)"));
+                   // RestDataSource_annualStatisticalReportBySection.fetchDataURL=(annualStatisticsReportUrl+"/list" ,"GET",JSON.stringify(DynamicForm_Report_annualStatisticalReportBySection.getValues()), "callback: fill_control_result(rpcResponse)");
+                    RestDataSource_annualStatisticalReportBySection.fetchDataURL=annualStatisticsReportUrl+"/list" +"?data=" + JSON.stringify(DynamicForm_Report_annualStatisticalReportBySection.getValues())
+                    List_Grid_Reaport_annualStatisticalReportBySection.invalidateCache()
+                    List_Grid_Reaport_annualStatisticalReportBySection.fetchData()
 
                 }
             },
@@ -704,8 +714,8 @@
 
     function fill_control_result(resp) {
         if (resp.httpResponseCode === 200) {
-            modalDialog.close();
-            List_Grid_Reaport_annualStatisticalReportBySection.setData(JSON.parse(resp.data).response.data);
+           // modalDialog.close();
+           // List_Grid_Reaport_annualStatisticalReportBySection.setData(JSON.parse(resp.data).response.data);
         }
     }
 
