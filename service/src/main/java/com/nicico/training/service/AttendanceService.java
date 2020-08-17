@@ -203,6 +203,7 @@ public class AttendanceService implements IAttendanceService {
         while (iterator.hasNext()){
             Long info = iterator.next();
             classAlarmService.alarmAttendanceUnjustifiedAbsence(info);
+            classAlarmService.saveAlarms();
         }
     }
 

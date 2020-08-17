@@ -1122,4 +1122,64 @@
         <dropColumn columnName="F_QUESTION_BANK" tableName="TBL_TEST_QUESTION"/>
     </changeSet>
 
+    <changeSet author="golrokhi (generated)" id="1597647780681-598">
+        <dropColumn columnName="C_CONTEXT_HTML" tableName="TBL_MESSAGE"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1597647780681-599">
+        <dropColumn columnName="C_CONTEXT_HTML" tableName="TBL_MESSAGE_CONTACT"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1597647780681-600">
+        <dropColumn columnName="C_CONTEXT_TEXT" tableName="TBL_MESSAGE"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1597647780681-601">
+        <dropColumn columnName="C_CONTEXT_TEXT" tableName="TBL_MESSAGE_CONTACT"/>
+    </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1597642991877-490">
+        <addColumn tableName="tbl_message">
+            <column name="c_context_html" type="varchar2(2000 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1597642991877-491">
+        <addColumn tableName="tbl_message_contact">
+            <column name="c_context_html" type="varchar2(2000 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1597642991877-492">
+        <addColumn tableName="tbl_message">
+            <column name="c_context_text" type="varchar2(2000 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1597642991877-493">
+        <addColumn tableName="tbl_message_contact">
+            <column name="c_context_text" type="varchar2(2000 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet author="golrokhi (generated)" id="1597649040205-488">
+        <createTable tableName="tbl_message_parameter_value">
+            <column name="f_message_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_parameter_value_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+
+
+    <changeSet author="golrokhi (generated)" id="1597649040205-591">
+        <dropTable tableName="TBL_MESSAGE_PARAMETERVALUE"/>
+    </changeSet>
+
 </databaseChangeLog>

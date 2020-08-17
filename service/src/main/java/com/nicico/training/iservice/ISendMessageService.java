@@ -6,4 +6,6 @@ public interface ISendMessageService {
 
     Long asyncEnqueue(List<String> recipientNos,String message);
 
+    void scheduling();
+
 }

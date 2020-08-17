@@ -2577,6 +2577,9 @@ public class ControlReportService {
             for (int j = startCellReference.getCol(); j <= endCellReference.getCol(); j++) {
                 XSSFCell cell=row.getCell(j);
 
+                if (cell==null)
+                    cell = row.createCell(j);
+
                 if(Type=="Bottom"){
                     cell.setCellStyle(rCellStyleCornerBottom);
                 }else if(Type=="Top"){

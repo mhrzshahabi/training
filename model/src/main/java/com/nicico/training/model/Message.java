@@ -27,14 +27,14 @@ public class Message extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "c_context_text", nullable = false)
+    @Column(name = "c_context_text", nullable = false, length = 2000)
     private String contextText;
 
-    @Column(name = "c_context_html", nullable = false)
+    @Column(name = "c_context_html", nullable = false, length = 2000)
     private String contextHtml;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "tbl_message_ParameterValue",
+    @JoinTable(name = "tbl_message_parameter_value",
             joinColumns = {@JoinColumn(name = "f_message_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_parameter_value_id", referencedColumnName = "id")})
     private List<ParameterValue> sendWays;
@@ -42,6 +42,9 @@ public class Message extends Auditable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_message_user_type", nullable = false, insertable = false, updatable = false)
     private ParameterValue userType;
+
+    @Column(name = "f_message_user_type")
+    private Long userTypeId;
 
     @OneToMany(mappedBy = "message", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MessageContact> messageContactList;
