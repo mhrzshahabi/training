@@ -1,6 +1,5 @@
-/**
- * Author:    Mehran Golrokhi
- * Created:    1399.05.15
+/*
+ * Author: Mehran Golrokhi
  */
 
 package com.nicico.training.dto;
@@ -8,6 +7,7 @@ package com.nicico.training.dto;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -16,27 +16,27 @@ import java.util.Set;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class MessageContactDTO {
-
-
-
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @AllArgsConstructor
-    @ApiModel("FullInfo")
-    public static class FullInfo{
+    @NoArgsConstructor
+    @ApiModel("AllMessagesForSend")
+    public static class AllMessagesForSend {
 
-        private Long id;
-
-        private String contextText;
-        private String contextHtml;
-
-        private Integer countSent;
         private Integer countSend;
 
+        private Integer countSent;
+
+        private String contextText;
+
+        private String contextHtml;
+
         private String objectMobile;
+
+        private Long messageContactId;
     }
+
 }

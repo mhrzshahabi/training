@@ -34,13 +34,13 @@ public class MessageContact<E> extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "c_context_text", nullable = false)
+    @Column(name = "c_context_text", nullable = false, length = 2000)
     private String contextText;
 
-    @Column(name = "c_context_html", nullable = false)
+    @Column(name = "c_context_html", nullable = false, length = 2000)
     private String contextHtml;
 
-   @Column(name = "c_last_sent_date")
+    @Column(name = "c_last_sent_date")
     private Date lastSentDate;
 
     @Column(name = "n_count_sent")
@@ -52,6 +52,9 @@ public class MessageContact<E> extends Auditable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_message_contact_status_id", nullable = false, insertable = false, updatable = false)
     private ParameterValue status;
+
+    @Column(name = "f_message_contact_status_id")
+    private Long statusId;
 
     @Any(metaColumn = @Column(name = "c_object_type", nullable = false), fetch = FetchType.LAZY)
     @AnyMetaDef(idType = "long", metaType = "string",

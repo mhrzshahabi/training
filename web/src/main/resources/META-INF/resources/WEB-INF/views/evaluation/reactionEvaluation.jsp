@@ -526,7 +526,7 @@
                             } else {
                                 ErrorMsg.setContents('');
                             }
-                            MSG_userType = "classStudentHaventEvaluation";
+                            MSG_userType = "classStudent";
                             MSG_classID = row.id;
                             MSG_Window_MSG_Main.show();
 
@@ -1260,7 +1260,7 @@
                                             } else {
                                                 ErrorMsg.setContents('');
                                             }
-                                            MSG_userType = "classStudentHaventEvaluation";
+                                            MSG_userType = "classStudent";
                                             MSG_Window_MSG_Main.show();
 
                                             setTimeout(function () {
@@ -1463,7 +1463,7 @@
                                                 } else {
                                                     ErrorMsg.setContents('');
                                                 }
-                                                MSG_userType = "classStudentHaventEvaluation";
+                                                MSG_userType = "classStudent";
                                                 MSG_Window_MSG_Main.show();
 
                                                 setTimeout(function () {
@@ -2642,9 +2642,11 @@
     function sendMessage_evaluation() {
 
         let data = {
-            type: MSG_msgContent.type,
+            type: ['sms'],
 //classStudent:MSG_msgContent.users,
             message: MSG_msgContent.text,
+            maxRepeat: MSG_repeatOptions.getItem('maxRepeat').getValue(),
+            timeBMessages: MSG_repeatOptions.getItem('timeBMessages').getValue(),
         }
         if (MSG_userType == "classStudent") {
             data.classStudent = MSG_msgContent.users;
@@ -2652,10 +2654,10 @@
         } else if (MSG_userType == "classTeacher") {
             data.classTeacher = MSG_msgContent.users;
             data.classID = MSG_classID;
-        } else if (MSG_userType == "classStudentHaventEvaluation") {
+        } /*else if (MSG_userType == "classStudentHaventEvaluation") {
             data.classStudentHaventEvaluation = MSG_msgContent.users;
             data.classID = MSG_classID;
-        }
+        }*/
 
         let wait = createDialog("wait");
 

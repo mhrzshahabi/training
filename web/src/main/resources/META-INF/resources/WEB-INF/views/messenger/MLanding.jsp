@@ -266,30 +266,35 @@
         width: 400,
         wrapItemTitles:false,
         numCols: 4,
-        fields: [{
-            name: "maxRepeat", title: "حداکثر تعداد تکرار", type: "select",
-            wrapHintText: false,
-            valueMap: {
-                "unLimited" : "نامحدود",
-                "one" : "یکبار",
-                "two" : "دوبار",
-                "three" : "سه بار",
-                "four" : "چهار بار",
-                "five" : "پنج بار",
-                "six" : "شش بار",
-                "seven" : "هفت بار",
-                "eight" : "هشت بار",
-                "nine" : "نه بار",
-                "ten" : "ده بار",
+        fields: [
+            {
+                name: "maxRepeat", title: "حداکثر تعداد تکرار", type: "select",
+                wrapHintText: false,
+                value:"0",
+                valueMap:
+                    {
+                    "10000" : "نامحدود",
+                    "0" : "عدم تکرار",
+                    "1" : "یکبار",
+                    "2" : "دوبار",
+                    "3" : "سه بار",
+                    "4" : "چهار بار",
+                    "5" : "پنج بار",
+                    "6" : "شش بار",
+                    "7" : "هفت بار",
+                    "8" : "هشت بار",
+                    "9" : "نه بار",
+                    "10" : "ده بار",
+                },
             },
-        },
             {
                 name: "timeBMessages", title: "فاصله زمانی بین پیام ها", type: "select",
                 wrapHintText: false,
+                value:"1",
                 valueMap: {
-                    "one" : "هر روز",
-                    "five" : "یک روز درمیان",
-                    "ten" : "دو روز درمیان",
+                    "1" : "هر روز",
+                    "2" : "هر دو روز یکبار",
+                    "3" : "هر سه روز یکبار",
                 },
             }
         ]
@@ -583,7 +588,7 @@
         }
 
 
-        if(!MSG_msgContent.type.some(p=>p=='sms')){
+        if(!MSG_msgContent.type.some(p => p == 'MSG_messageType_sms')){
             var ERROR = isc.Dialog.create({
                 message:"نوع ارسال پیامک انتخاب نشده است",
                 icon: "[SKIN]stop.png",
