@@ -2026,7 +2026,7 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="view_statistics_unit_report-006">
+    <changeSet author="NICICO" id="view_statistics_unit_report-010s">
         <createView viewName="view_statistics_unit_report" replaceIfExists="true">
             <![CDATA[
   SELECT distinct
@@ -2187,6 +2187,7 @@ FROM
         INNER JOIN (
         SELECT
                 tbl_personnel.personnel_no,
+                tbl_personnel.national_code,
                 tbl_personnel.complex_title,
                 tbl_personnel.work_place_title,
                 tbl_personnel.post_grade_title,
@@ -2198,6 +2199,7 @@ FROM
             UNION ALL
             SELECT
                 tbl_personnel_registered.personnel_no,
+                tbl_personnel_registered.national_code,
                 tbl_personnel_registered.complex_title,
                 tbl_personnel_registered.work_place_title,
                 tbl_personnel_registered.post_grade_title,
@@ -2206,7 +2208,7 @@ FROM
             FROM
                 tbl_personnel_registered
                  where tbl_personnel_registered.deleted=0
-        ) personnel ON std.personnel_no = personnel.personnel_no
+        ) personnel ON std.national_code = personnel.national_code
           LEFT JOIN tbl_department department ON department.id=personnel.f_department_id
         INNER JOIN tbl_session               csession ON att.f_session = csession.id
         INNER JOIN tbl_class                 class ON csession.f_class_id = class.id
@@ -2280,7 +2282,7 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="view_presence_report-006">
+    <changeSet author="NICICO" id="view_presence_report-007">
         <createView viewName="view_presence_report" replaceIfExists="true">
             <![CDATA[
   SELECT DISTINCT
@@ -2416,6 +2418,7 @@ FROM
     INNER JOIN (
         SELECT
             tbl_personnel.personnel_no,
+            tbl_personnel.national_code,
             tbl_personnel.complex_title,
             tbl_personnel.f_department_id
         FROM
@@ -2424,12 +2427,13 @@ FROM
         UNION ALL
         SELECT
             tbl_personnel_registered.personnel_no,
+            tbl_personnel_registered.national_code,
             tbl_personnel_registered.complex_title,
             tbl_personnel_registered.f_department_id
         FROM
             tbl_personnel_registered
               where   tbl_personnel_registered.deleted=0
-    ) personnel ON std.personnel_no = personnel.personnel_no
+    ) personnel ON std.national_code = personnel.national_code
     LEFT JOIN tbl_department department ON department.id=personnel.f_department_id
     INNER JOIN tbl_session         csession ON att.f_session = csession.id
     INNER JOIN tbl_class           class ON csession.f_class_id = class.id
