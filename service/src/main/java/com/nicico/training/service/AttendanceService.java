@@ -241,12 +241,10 @@ public class AttendanceService implements IAttendanceService {
             List<Attendance> saved = attendanceDAO.findBySessionIdAndStudentId(attendance.getSessionId(), attendance.getStudentId());
             if (saved == null || saved.size()==0) {
                 attendanceList.add(attendance);
-//                attendanceDAO.save(attendance);
             } else {
                 saved.get(0).setState(attendance.getState());
                 saved.get(0).setDescription(attendance.getDescription());
                 attendanceList.add(saved.get(0));
-//                attendanceDAO.save(saved.get(0));
             }
         }
         attendanceDAO.saveAll(attendanceList);

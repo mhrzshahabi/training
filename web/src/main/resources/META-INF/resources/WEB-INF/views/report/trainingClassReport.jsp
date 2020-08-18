@@ -59,7 +59,7 @@
             {name: "termTitleFa"},
             {name: "teacherFullName"},
             {name: "tclassStatus"},
-            {name: "unitId"},
+            // {name: "unitId"},
             {name: "tclassPlanner"},
             {name: "tclassSupervisor"},
             {name: "tclassCode"},
@@ -233,7 +233,7 @@
             {name: "tclassYear", title: "سال کاری"},
             {name: "termTitleFa", title: "ترم"},
             {name: "teacherFullName", title: "استاد"},
-            {name: "unitId", title: "حوزه"},
+            // {name: "unitId", title: "حوزه"},
             <%--{name: "tclassPlanner",  title: "<spring:message code="planner"/>"},--%>
             <%--{name: "tclassSupervisor",  title: "<spring:message code="supervisor"/>"},--%>
             {name: "tclassStudentsCount", title: "تعداد فراگیران" , filterOperator: "equals"},
@@ -828,19 +828,24 @@
                 }
             },
             {
-                name: "unitId",
-                title: "حوزه",
-                type: "SelectItem",
-                pickListProperties: {
-                    showFilterEditor: false
-                },
-                textAlign: "center",
-                wrapTitle: false,
-                filterOperator: "equals",
-                optionDataSource: RestDataSource_TargetSociety_JspTClassReport,
-                displayField: "title",
-                valueField: "societyId"
+                name: "temp10",
+                title: "",
+                canEdit: false
             },
+            // {
+            //     name: "unitId",
+            //     title: "حوزه",
+            //     type: "SelectItem",
+            //     pickListProperties: {
+            //         showFilterEditor: false
+            //     },
+            //     textAlign: "center",
+            //     wrapTitle: false,
+            //     filterOperator: "equals",
+            //     optionDataSource: RestDataSource_TargetSociety_JspTClassReport,
+            //     displayField: "title",
+            //     valueField: "societyId"
+            // },
             {
                 name: "tclassSupervisor",
                 title: "<spring:message code="supervisor"/>:",
@@ -1361,21 +1366,6 @@
                 data_values.criteria[i].fieldName = "tclassEndDate";
                 data_values.criteria[i].operator = "lessThan";
             }
-            // else if (data_values.criteria[i].fieldName == "tclassYear") {
-            //     data_values.criteria[i].operator = "inSet";
-            // }
-            // else if (data_values.criteria[i].fieldName == "termId") {
-            //     data_values.criteria[i].operator = "inSet";
-            // }
-            // else if (data_values.criteria[i].fieldName == "teacherId") {
-            //     data_values.criteria[i].operator = "inSet";
-            // }
-            // else if (data_values.criteria[i].fieldName == "unitId") {
-            //     data_values.criteria[i].operator = "inSet";
-            // }
-            // else if (data_values.criteria[i].fieldName == "tclassStatus") {
-            //     data_values.criteria[i].operator = "inSet";
-            // }
             else if(data_values.criteria[i].fieldName == "tclassOrganizerId")
                 data_values.criteria[i].operator = "equals";
             else if(data_values.criteria[i].fieldName == "tclassSupervisor")

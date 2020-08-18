@@ -694,7 +694,7 @@
     DetailTS_Skill = isc.TabSet.create({
         tabBarPosition: "top",
         height: "40%",
-        tabs: [{name: "Post", title: "<spring:message code='post'/>", pane: PostLG_Skill}],
+        tabs: [{name: "Post", title: "پست انفرادی", pane: PostLG_Skill}],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
             if (name === "Post" && skillChanged_Skill) {
                 skillChanged_Skill = false;

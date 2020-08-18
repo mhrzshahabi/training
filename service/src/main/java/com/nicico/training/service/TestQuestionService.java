@@ -39,6 +39,11 @@ public class TestQuestionService implements ITestQuestionService {
     private final ObjectMapper mapper;
 
 
+    @Override
+    public TestQuestionDTO.Info get(Long id) {
+        return modelMapper.map(testQuestionDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.QuestionBankNotFound)), TestQuestionDTO.Info.class);
+    }
+
     @Transactional
     @Override
     public SearchDTO.SearchRs<TestQuestionDTO.Info> search(SearchDTO.SearchRq request) {
@@ -62,11 +67,20 @@ public class TestQuestionService implements ITestQuestionService {
         }.getType();
         final HashMap<String, Object> params = gson.fromJson(receiveParams, resultType);
 
+        TestQuestionDTO.Info model = get(testQuestionId);
+
         Set<QuestionBankDTO.Exam> testQuestionBanks = getAllQuestionsByTestQuestionId(testQuestionId);
+
+        for(QuestionBankDTO.Exam q : testQuestionBanks){
+            if(q.getQuestionType().getCode().equals("Descriptive")){
+                q.setQuestion(q.getQuestion() + "\n\n\n\n");
+            }
+        }
 
         String data = mapper.writeValueAsString(testQuestionBanks);
         params.put("today", DateUtil.todayDate());
         params.put(ConstantVARs.REPORT_TYPE, type);
+        params.put("class", model.getTclass().getTitleClass());
         JsonDataSource jsonDataSource = null;
         jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
