@@ -718,13 +718,13 @@
                                     click: function () {
                                         if (trTrim(exportExcelForm.getValue("maxRow")) != "") {
 
-                                            if(Number(trTrim(exportExcelForm.getValue("maxRow")))+Number(trTrim(exportExcelForm.getValue("startRow"))) > Number(listgrid.data.size())){
+                                            /*if(Number(trTrim(exportExcelForm.getValue("maxRow")))+Number(trTrim(exportExcelForm.getValue("startRow"))) > Number(listgrid.data.size())){
                                                 createDialog("info", "مجمع سطر شروع و تعداد سطر ها در خواستي براي خروجي بيشتر از تعداد کل سطرهاي موجود است");
                                                 return;
                                             }else if(Number(trTrim(exportExcelForm.getValue("maxRow"))) > size){
                                                 createDialog("info", "تعداد سطرهاي وارد شده جهت خروجي، بيشتر از حداکثر تعداد سطرهاي قابل چاپ است");
                                                 return;
-                                            }
+                                            }*/
 
                                             if(isValidate(trTrim(exportExcelForm.getValue("maxRow")))) {
 
@@ -859,6 +859,7 @@
     const viewCoursesPassedPersonnelReportUrl = rootUrl + "/view-courses-passed-personnel-report";
     const questionBankTestQuestionUrl = rootUrl + "/question-bank-test-question";
     const annualStatisticsReportUrl = rootUrl + "/annualStatisticsReport";
+    const testQuestionUrl = rootUrl + "/test-question";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -1600,6 +1601,13 @@
                     title: "<spring:message code="evaluation.question.bank"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/evaluation-question-bank/show-form"/>");
+                    }
+                },
+
+                {
+                    title: "<spring:message code="evaluation.final.test"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/evaluation-final-test/show-form"/>");
                     }
                 },
                 <%--{--%>
