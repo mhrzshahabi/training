@@ -48,7 +48,6 @@
     PostLG_PostGroup = isc.TrLG.create({
         dataSource: PostDS_PostGroup,
         autoFetchData: true,
-        showResizeBar: true,
         sortField: 0,
         fields: [
             {name: "code",
@@ -701,7 +700,6 @@
         dataSource: RestDataSource_Post_Group_Posts_Jsp,
         contextMenu: Menu_ListGrid_Post_Group_Posts,
         autoFetchData: false,
-        showResizeBar: true,
         sortField: 1,
         gridComponents: [ActionsTS_Post_Group_Grades, "header", "filterEditor", "body",],
         fields: [
@@ -1326,6 +1324,7 @@
     var HLayout_Grid_Post_Group_Jsp = isc.HLayout.create({
         width: "100%",
         height: "100%",
+        showResizeBar:true,
         members: [ListGrid_Post_Group_Jsp]
     });
 

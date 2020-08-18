@@ -235,6 +235,6 @@ function showOrganizationalChart(func, x = "show") {
 var peopleTypeMap ={
     "Personal" : "شرکتی",
     "ContractorPersonal" : "پیمان کار",
-    "Company" : "شرکتی",
-    "OrgCostCenter" : "پیمان کار"
+    // "Company" : "شرکتی",
+    // "OrgCostCenter" : "پیمان کار"
 };

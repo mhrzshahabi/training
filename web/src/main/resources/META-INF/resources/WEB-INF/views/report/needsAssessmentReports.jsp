@@ -80,20 +80,80 @@
     PostDS_NABOP = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "code",
+                title: "<spring:message code="post.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "titleFa",
+                title: "<spring:message code="post.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "jobTitleFa",
+                title: "<spring:message code="job.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "postGradeTitleFa",
+                title: "<spring:message code="post.grade.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
             {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "assistance",
+                title: "<spring:message code="assistance"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "affairs",
+                title: "<spring:message code="affairs"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "section",
+                title: "<spring:message code="section"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
             {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
-
+            {
+                name: "costCenterCode",
+                title: "<spring:message code="reward.cost.center.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "costCenterTitleFa",
+                title: "<spring:message code="reward.cost.center.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "competenceCount",
+                title: "تعداد شایستگی",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both"
+            },
+            {
+                name: "personnelCount",
+                title: "تعداد پرسنل",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both"
+            }
         ],
-        fetchDataURL: postUrl + "/iscList"
+        fetchDataURL: viewTrainingPostUrl + "/spec-list"
     });
 
     PostGroupDS_NABOP = isc.TrDS.create({
@@ -162,19 +222,20 @@
         contextMenu: Menu_Post_NABOP,
         selectionType: "single",
         autoFetchData: true,
-        fields: [
-            {name: "code"},
-            {name: "titleFa"},
-            {name: "job.titleFa"},
-            {name: "postGrade.titleFa"},
-            {name: "area"},
-            {name: "assistance"},
-            {name: "affairs"},
-            {name: "section"},
-            {name: "unit"},
-            {name: "costCenterCode"},
-            {name: "costCenterTitleFa"}
-        ],
+        sortField: "id",
+        // fields: [
+        //     {name: "code"},
+        //     {name: "titleFa"},
+        //     {name: "job.titleFa"},
+        //     {name: "postGrade.titleFa"},
+        //     {name: "area"},
+        //     {name: "assistance"},
+        //     {name: "affairs"},
+        //     {name: "section"},
+        //     {name: "unit"},
+        //     {name: "costCenterCode"},
+        //     {name: "costCenterTitleFa"}
+        // ],
         rowDoubleClick: "Select_Post_NABOP()"
     });
 
@@ -247,7 +308,7 @@
         tabBarPosition: "right",
         tabBarThickness: 100,
         tabs: [
-            {title: "<spring:message code="post"/>", name: "Post", pane: PostsLG_NABOP},
+            {title: "<spring:message code="post"/>", name: "TrainingPost", pane: PostsLG_NABOP},
             {title: "<spring:message code="job"/>", name: "Job", pane: JobLG_NABOP},
             {title: "<spring:message code="post.grade"/>", name: "PostGrade", pane: PostGradeLG_NABOP},
             {title: "<spring:message code="post.group"/>", name: "PostGroup", pane: PostGroupLG_NABOP},
@@ -940,7 +1001,7 @@
             ReportTypeDF_NABOP.getItem("objectId").hide();
             CoursesLG_NABOP.showField("skill.course.scoresState");
             CoursesLG_NABOP.getField("skill.course.theoryDuration").summaryFunction = fullSummaryFunc_NABOP;
-            Tabset_Object_NABOP.selectTab("Post");
+            Tabset_Object_NABOP.selectTab("TrainingPost");
         } else if (ReportTypeDF_NABOP.getValue("reportType") === "1") {
             reportType_NABOP = "1";
             ReportTypeDF_NABOP.getItem("personnelId").hide();
@@ -960,7 +1021,7 @@
             CoursesLG_NABOP.getField("skill.course.theoryDuration").summaryFunction = fullSummaryFunc_NABOP;
             for (let i = 1; i < Tabset_Object_NABOP.tabs.length; i++)
                 Tabset_Object_NABOP.disableTab(Tabset_Object_NABOP.tabs[i]);
-            Tabset_Object_NABOP.selectTab("Post");
+            Tabset_Object_NABOP.selectTab("TrainingPost");
         }
         DynamicForm_Title_NABOP.getItem("Title_NASB").redraw();
         CoursesLG_NABOP.setData([]);
@@ -979,7 +1040,7 @@
         chartData_NABOP.forEach(value1 => value1.duration=0);
         switch (reportType_NABOP) {
             case "0":
-                CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + selectedObject_NABOP.id + "&personnelNo=" + selectedPerson_NABOP.personnelNo + "&objectType=Post";
+                CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + selectedObject_NABOP.id + "&personnelNo=" + selectedPerson_NABOP.personnelNo + "&objectType=TrainingPost";
                 DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport'/> " + "<spring:message code='Mrs/Mr'/> " +
                     getFormulaMessage(selectedPerson_NABOP.firstName, 2, "red", "b") + " " + getFormulaMessage(selectedPerson_NABOP.lastName, 2, "red", "b") +
                     " <spring:message code='national.code'/> " + getFormulaMessage(selectedPerson_NABOP.nationalCode, 2, "red", "b") +
@@ -999,7 +1060,7 @@
                 break;
             case "2":
                 if (selectedPerson_NABOP != null && selectedObject_NABOP != null) {
-                    CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + selectedObject_NABOP.id + "&personnelNo=" + selectedPerson_NABOP.personnelNo + "&objectType=Post";
+                    CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + selectedObject_NABOP.id + "&personnelNo=" + selectedPerson_NABOP.personnelNo + "&objectType=TrainingPost";
                     refreshLG_NABOP(CourseDS_NABOP);
                 }
                 let personName = selectedPerson_NABOP != null ? getFormulaMessage(selectedPerson_NABOP.firstName, 2, "red", "b") + " " + getFormulaMessage(selectedPerson_NABOP.lastName, 2, "red", "b") : getFormulaMessage("...", 2, "red", "b");
