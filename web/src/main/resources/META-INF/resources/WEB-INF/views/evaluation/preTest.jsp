@@ -11,6 +11,7 @@
     //----------------------------------------- Variables --------------------------------------------------------------
     var questionsSelection=false;
     var fromQuestionBank=true;
+    var classId_preTest;
     //----------------------------------------- DataSources ------------------------------------------------------------
     var RestDataSource_PreTest = isc.TrDS.create({
         fields: [
@@ -723,6 +724,23 @@
         }
     });
 
+    var Window_registerScorePreTest = null;
+
+    var ToolStripButton_RegisterScorePreTest = isc.ToolStripButton.create({
+        title: "ثبت نمرات پیش آزمون",
+        click: function () {
+           Window_registerScorePreTest = isc.Window.create({
+                title: "ثبت نمرات پیش آزمون",
+                placement: "fillScreen",
+                items: [
+                    isc.ViewLoader.create({autoDraw: true, viewURL: "registerScorePreTest/show-form", viewLoaded() {
+                            eval('call_registerScorePreTest(classId_preTest)');}})
+                ]
+            });
+            Window_registerScorePreTest.show();
+        }
+    });
+
     var ToolStrip_Actions_PreTest = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -730,6 +748,7 @@
             ToolStripButton_InsertQuestionFromQuestionBank_PreTest,
             ToolStripButton_InsertQuestionFromLatestQuestions_PreTest,
             ToolStripButton_PrintJasper,
+            ToolStripButton_RegisterScorePreTest,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",

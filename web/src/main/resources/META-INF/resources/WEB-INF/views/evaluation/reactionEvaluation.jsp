@@ -1172,109 +1172,111 @@
                     height: "5%",
                     members: [
                         IButtonSave_SelectQuestionnarie_RE,
-                        isc.IButtonSave.create({
-                            title: "ارسال از طریق پیامک",
-                            click: function () {
 
-                                let row = ListGrid_class_Evaluation.getSelectedRecord();
-                                let wait = createDialog("wait");
+<%--                        isc.IButtonSave.create({--%>
+<%--                            title: "ارسال از طریق پیامک",--%>
+<%--                            click: function () {--%>
 
-                                isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/students-iscList/" + row.id, "GET", null, function (resp) {
-                                    wait.close();
-                                    if (generalGetResp(resp)) {
-                                        if (resp.httpResponseCode == 200) {
-                                            let id = [];
-                                            JSON.parse(resp.data).response.data.filter(p => p.student.mobile && p.id == studentRecord.id).forEach(p => id.push(p.id));
-                                            MSG_selectUsersForm.getItem("multipleSelect").setValue(id);
-                                            sendMessageFunc = sendMessage_evaluation;
-                                            RestDataSource_student_RE.fetchDataURL = tclassStudentUrl + "/students-iscList/" + row.id;
-                                            MSG_selectUsersForm.getItem("multipleSelect").optionDataSource = RestDataSource_student_RE;
-                                            RestDataSource_student_RE.implicitCriteria = {
-                                                _constructor: "AdvancedCriteria",
-                                                operator: "and",
-                                                criteria: [{
-                                                    fieldName: "id",
-                                                    operator: "equals",
-                                                    value: studentRecord.id
-                                                }]
-                                            };
-//MSG_selectUsersForm.getItem("multipleSelect").pickListWidth=600;
-                                            MSG_selectUsersForm.getItem("multipleSelect").pickListFields = [
-                                                {
-                                                    name: "student.firstName",
-                                                    title: "<spring:message code="firstName"/>",
-                                                    autoFitWidth: false,
-                                                    align: "center"
-                                                },
-                                                {
-                                                    name: "student.lastName",
-                                                    title: "<spring:message code="lastName"/>",
-                                                    autoFitWidth: false,
-                                                    align: "center"
-                                                },
-                                                {
-                                                    name: "student.nationalCode",
-                                                    title: "<spring:message code="national.code"/>",
-                                                    width: 100,
-                                                    align: "center"
-                                                },
-                                                {
-                                                    name: "student.personnelNo",
-                                                    title: "<spring:message code="personnel.no"/>",
-                                                    width: 100,
-                                                    align: "center"
-                                                },
-                                                {
-                                                    name: "student.personnelNo2",
-                                                    title: "<spring:message code="personnel.no.6.digits"/>",
-                                                    width: 100,
-                                                    align: "center"
-                                                },
-                                                {
-                                                    name: "student.mobile",
-                                                    title: "<spring:message code="mobile"/>",
-                                                    width: 100,
-                                                    align: "center"
-                                                },
-                                            ];
-                                            MSG_selectUsersForm.getItem("multipleSelect").displayField = "fullName";
-                                            MSG_selectUsersForm.getItem("multipleSelect").valueField = "id";
-                                            MSG_selectUsersForm.getItem("multipleSelect").dataArrived = function (startRow, endRow) {
-                                                let ids = MSG_selectUsersForm.getItem("multipleSelect").pickList.data.getAllCachedRows().filter(p => !p.student.mobile).map(function (item) {
-                                                    return item.id;
-                                                });
-                                                let findRows = MSG_selectUsersForm.getItem("multipleSelect").pickList.findAll({
-                                                    _constructor: "AdvancedCriteria",
-                                                    operator: "and",
-                                                    criteria: [{fieldName: "id", operator: "inSet", value: ids}]
-                                                });
-                                                findRows.setProperty("enabled", false);
-                                            }
-                                            MSG_selectUsersForm.getItem("multipleSelect").fetchData();
+<%--                                let row = ListGrid_class_Evaluation.getSelectedRecord();--%>
+<%--                                let wait = createDialog("wait");--%>
 
-                                            MSG_textEditorValue = "{prefix-full_name} {full-name}\n<br >پرسشنامه مربوط به ارزیابی دوره «{course-name}» که از تاریخ {start-date} تا {end-date}برگزارشده است و جنابعالی در آن شرکت داشته اید به پرتال پرسنلی شما در سیستم جامع آموزش به آدرس {personel-address} ارسال گردیده است را با دقت تکمیل نمایید.بدیهی است تایید نهایی دوره جنابعالی منوط به تکمیل این پرسش‎نامه می باشد"
-                                            MSG_contentEditor.setValue(MSG_textEditorValue);
+<%--                                isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/students-iscList/" + row.id, "GET", null, function (resp) {--%>
+<%--                                    wait.close();--%>
+<%--                                    if (generalGetResp(resp)) {--%>
+<%--                                        if (resp.httpResponseCode == 200) {--%>
+<%--                                            let id = [];--%>
+<%--                                            JSON.parse(resp.data).response.data.filter(p => p.student.mobile && p.id == studentRecord.id).forEach(p => id.push(p.id));--%>
+<%--                                            MSG_selectUsersForm.getItem("multipleSelect").setValue(id);--%>
+<%--                                            sendMessageFunc = sendMessage_evaluation;--%>
+<%--                                            RestDataSource_student_RE.fetchDataURL = tclassStudentUrl + "/students-iscList/" + row.id;--%>
+<%--                                            MSG_selectUsersForm.getItem("multipleSelect").optionDataSource = RestDataSource_student_RE;--%>
+<%--                                            RestDataSource_student_RE.implicitCriteria = {--%>
+<%--                                                _constructor: "AdvancedCriteria",--%>
+<%--                                                operator: "and",--%>
+<%--                                                criteria: [{--%>
+<%--                                                    fieldName: "id",--%>
+<%--                                                    operator: "equals",--%>
+<%--                                                    value: studentRecord.id--%>
+<%--                                                }]--%>
+<%--                                            };--%>
+<%--//MSG_selectUsersForm.getItem("multipleSelect").pickListWidth=600;--%>
+<%--                                            MSG_selectUsersForm.getItem("multipleSelect").pickListFields = [--%>
+<%--                                                {--%>
+<%--                                                    name: "student.firstName",--%>
+<%--                                                    title: "<spring:message code="firstName"/>",--%>
+<%--                                                    autoFitWidth: false,--%>
+<%--                                                    align: "center"--%>
+<%--                                                },--%>
+<%--                                                {--%>
+<%--                                                    name: "student.lastName",--%>
+<%--                                                    title: "<spring:message code="lastName"/>",--%>
+<%--                                                    autoFitWidth: false,--%>
+<%--                                                    align: "center"--%>
+<%--                                                },--%>
+<%--                                                {--%>
+<%--                                                    name: "student.nationalCode",--%>
+<%--                                                    title: "<spring:message code="national.code"/>",--%>
+<%--                                                    width: 100,--%>
+<%--                                                    align: "center"--%>
+<%--                                                },--%>
+<%--                                                {--%>
+<%--                                                    name: "student.personnelNo",--%>
+<%--                                                    title: "<spring:message code="personnel.no"/>",--%>
+<%--                                                    width: 100,--%>
+<%--                                                    align: "center"--%>
+<%--                                                },--%>
+<%--                                                {--%>
+<%--                                                    name: "student.personnelNo2",--%>
+<%--                                                    title: "<spring:message code="personnel.no.6.digits"/>",--%>
+<%--                                                    width: 100,--%>
+<%--                                                    align: "center"--%>
+<%--                                                },--%>
+<%--                                                {--%>
+<%--                                                    name: "student.mobile",--%>
+<%--                                                    title: "<spring:message code="mobile"/>",--%>
+<%--                                                    width: 100,--%>
+<%--                                                    align: "center"--%>
+<%--                                                },--%>
+<%--                                            ];--%>
+<%--                                            MSG_selectUsersForm.getItem("multipleSelect").displayField = "fullName";--%>
+<%--                                            MSG_selectUsersForm.getItem("multipleSelect").valueField = "id";--%>
+<%--                                            MSG_selectUsersForm.getItem("multipleSelect").dataArrived = function (startRow, endRow) {--%>
+<%--                                                let ids = MSG_selectUsersForm.getItem("multipleSelect").pickList.data.getAllCachedRows().filter(p => !p.student.mobile).map(function (item) {--%>
+<%--                                                    return item.id;--%>
+<%--                                                });--%>
+<%--                                                let findRows = MSG_selectUsersForm.getItem("multipleSelect").pickList.findAll({--%>
+<%--                                                    _constructor: "AdvancedCriteria",--%>
+<%--                                                    operator: "and",--%>
+<%--                                                    criteria: [{fieldName: "id", operator: "inSet", value: ids}]--%>
+<%--                                                });--%>
+<%--                                                findRows.setProperty("enabled", false);--%>
+<%--                                            }--%>
+<%--                                            MSG_selectUsersForm.getItem("multipleSelect").fetchData();--%>
 
-                                            if (JSON.parse(resp.data).response.data.filter(p => p.student.mobile && p.id == studentRecord.id).length == 0) {
-                                                ErrorMsg.setContents('هیچ مخاطبی انتخاب نشده است');
-                                            } else {
-                                                ErrorMsg.setContents('');
-                                            }
-                                            MSG_userType = "classStudent";
-                                            MSG_Window_MSG_Main.show();
+<%--                                            MSG_textEditorValue = "{prefix-full_name} {full-name}\n<br >پرسشنامه مربوط به ارزیابی دوره «{course-name}» که از تاریخ {start-date} تا {end-date}برگزارشده است و جنابعالی در آن شرکت داشته اید به پرتال پرسنلی شما در سیستم جامع آموزش به آدرس {personel-address} ارسال گردیده است را با دقت تکمیل نمایید.بدیهی است تایید نهایی دوره جنابعالی منوط به تکمیل این پرسش‎نامه می باشد"--%>
+<%--                                            MSG_contentEditor.setValue(MSG_textEditorValue);--%>
 
-                                            setTimeout(function () {
-                                                $('#MSG_messageType_sms img').click()
-                                            }, 0)
-                                        } else {
-                                            createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
-                                        }
-                                    }
-                                }));
+<%--                                            if (JSON.parse(resp.data).response.data.filter(p => p.student.mobile && p.id == studentRecord.id).length == 0) {--%>
+<%--                                                ErrorMsg.setContents('هیچ مخاطبی انتخاب نشده است');--%>
+<%--                                            } else {--%>
+<%--                                                ErrorMsg.setContents('');--%>
+<%--                                            }--%>
+<%--                                            MSG_userType = "classStudent";--%>
+<%--                                            MSG_Window_MSG_Main.show();--%>
+
+<%--                                            setTimeout(function () {--%>
+<%--                                                $('#MSG_messageType_sms img').click()--%>
+<%--                                            }, 0)--%>
+<%--                                        } else {--%>
+<%--                                            createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");--%>
+<%--                                        }--%>
+<%--                                    }--%>
+<%--                                }));--%>
 
 
-                            }
-                        }),
+<%--                            }--%>
+<%--                        }),--%>
+
                         isc.IButtonCancel.create({
                             click: function () {
                                 Window_SelectQuestionnarie_RE.close();
@@ -1375,109 +1377,111 @@
                         height: "5%",
                         members: [
                             IButtonSave_SelectQuestionnarie_RE,
-                            isc.IButtonSave.create({
-                                title: "ارسال از طریق پیامک",
-                                click: function () {
 
-                                    let row = ListGrid_class_Evaluation.getSelectedRecord();
-                                    let wait = createDialog("wait");
+<%--                            isc.IButtonSave.create({--%>
+<%--                                title: "ارسال از طریق پیامک",--%>
+<%--                                click: function () {--%>
 
-                                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/students-iscList/" + row.id, "GET", null, function (resp) {
-                                        wait.close();
-                                        if (generalGetResp(resp)) {
-                                            if (resp.httpResponseCode == 200) {
-                                                let id = [];
-                                                JSON.parse(resp.data).response.data.filter(p => p.student.mobile && p.id == studentRecord.id).forEach(p => id.push(p.id));
-                                                MSG_selectUsersForm.getItem("multipleSelect").setValue(id);
-                                                sendMessageFunc = sendMessage_evaluation;
-                                                RestDataSource_student_RE.fetchDataURL = tclassStudentUrl + "/students-iscList/" + row.id;
-                                                MSG_selectUsersForm.getItem("multipleSelect").optionDataSource = RestDataSource_student_RE;
-                                                RestDataSource_student_RE.implicitCriteria = {
-                                                    _constructor: "AdvancedCriteria",
-                                                    operator: "and",
-                                                    criteria: [{
-                                                        fieldName: "id",
-                                                        operator: "equals",
-                                                        value: studentRecord.id
-                                                    }]
-                                                };
-//MSG_selectUsersForm.getItem("multipleSelect").pickListWidth=600;
-                                                MSG_selectUsersForm.getItem("multipleSelect").pickListFields = [
-                                                    {
-                                                        name: "student.firstName",
-                                                        title: "<spring:message code="firstName"/>",
-                                                        autoFitWidth: false,
-                                                        align: "center"
-                                                    },
-                                                    {
-                                                        name: "student.lastName",
-                                                        title: "<spring:message code="lastName"/>",
-                                                        autoFitWidth: false,
-                                                        align: "center"
-                                                    },
-                                                    {
-                                                        name: "student.nationalCode",
-                                                        title: "<spring:message code="national.code"/>",
-                                                        width: 100,
-                                                        align: "center"
-                                                    },
-                                                    {
-                                                        name: "student.personnelNo",
-                                                        title: "<spring:message code="personnel.no"/>",
-                                                        width: 100,
-                                                        align: "center"
-                                                    },
-                                                    {
-                                                        name: "student.personnelNo2",
-                                                        title: "<spring:message code="personnel.no.6.digits"/>",
-                                                        width: 100,
-                                                        align: "center"
-                                                    },
-                                                    {
-                                                        name: "student.mobile",
-                                                        title: "<spring:message code="mobile"/>",
-                                                        width: 100,
-                                                        align: "center"
-                                                    },
-                                                ];
-                                                MSG_selectUsersForm.getItem("multipleSelect").displayField = "fullName";
-                                                MSG_selectUsersForm.getItem("multipleSelect").valueField = "id";
-                                                MSG_selectUsersForm.getItem("multipleSelect").dataArrived = function (startRow, endRow) {
-                                                    let ids = MSG_selectUsersForm.getItem("multipleSelect").pickList.data.getAllCachedRows().filter(p => !p.student.mobile).map(function (item) {
-                                                        return item.id;
-                                                    });
-                                                    let findRows = MSG_selectUsersForm.getItem("multipleSelect").pickList.findAll({
-                                                        _constructor: "AdvancedCriteria",
-                                                        operator: "and",
-                                                        criteria: [{fieldName: "id", operator: "inSet", value: ids}]
-                                                    });
-                                                    findRows.setProperty("enabled", false);
-                                                }
-                                                MSG_selectUsersForm.getItem("multipleSelect").fetchData();
+<%--                                    let row = ListGrid_class_Evaluation.getSelectedRecord();--%>
+<%--                                    let wait = createDialog("wait");--%>
 
-                                                MSG_textEditorValue = "{prefix-full_name} {full-name}\n<br >پرسشنامه مربوط به ارزیابی دوره «{course-name}» که از تاریخ {start-date} تا {end-date}برگزارشده است و جنابعالی در آن شرکت داشته اید به پرتال پرسنلی شما در سیستم جامع آموزش به آدرس {personel-address} ارسال گردیده است را با دقت تکمیل نمایید.بدیهی است تایید نهایی دوره جنابعالی منوط به تکمیل این پرسش‎نامه می باشد"
-                                                MSG_contentEditor.setValue(MSG_textEditorValue);
+<%--                                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/students-iscList/" + row.id, "GET", null, function (resp) {--%>
+<%--                                        wait.close();--%>
+<%--                                        if (generalGetResp(resp)) {--%>
+<%--                                            if (resp.httpResponseCode == 200) {--%>
+<%--                                                let id = [];--%>
+<%--                                                JSON.parse(resp.data).response.data.filter(p => p.student.mobile && p.id == studentRecord.id).forEach(p => id.push(p.id));--%>
+<%--                                                MSG_selectUsersForm.getItem("multipleSelect").setValue(id);--%>
+<%--                                                sendMessageFunc = sendMessage_evaluation;--%>
+<%--                                                RestDataSource_student_RE.fetchDataURL = tclassStudentUrl + "/students-iscList/" + row.id;--%>
+<%--                                                MSG_selectUsersForm.getItem("multipleSelect").optionDataSource = RestDataSource_student_RE;--%>
+<%--                                                RestDataSource_student_RE.implicitCriteria = {--%>
+<%--                                                    _constructor: "AdvancedCriteria",--%>
+<%--                                                    operator: "and",--%>
+<%--                                                    criteria: [{--%>
+<%--                                                        fieldName: "id",--%>
+<%--                                                        operator: "equals",--%>
+<%--                                                        value: studentRecord.id--%>
+<%--                                                    }]--%>
+<%--                                                };--%>
+<%--//MSG_selectUsersForm.getItem("multipleSelect").pickListWidth=600;--%>
+<%--                                                MSG_selectUsersForm.getItem("multipleSelect").pickListFields = [--%>
+<%--                                                    {--%>
+<%--                                                        name: "student.firstName",--%>
+<%--                                                        title: "<spring:message code="firstName"/>",--%>
+<%--                                                        autoFitWidth: false,--%>
+<%--                                                        align: "center"--%>
+<%--                                                    },--%>
+<%--                                                    {--%>
+<%--                                                        name: "student.lastName",--%>
+<%--                                                        title: "<spring:message code="lastName"/>",--%>
+<%--                                                        autoFitWidth: false,--%>
+<%--                                                        align: "center"--%>
+<%--                                                    },--%>
+<%--                                                    {--%>
+<%--                                                        name: "student.nationalCode",--%>
+<%--                                                        title: "<spring:message code="national.code"/>",--%>
+<%--                                                        width: 100,--%>
+<%--                                                        align: "center"--%>
+<%--                                                    },--%>
+<%--                                                    {--%>
+<%--                                                        name: "student.personnelNo",--%>
+<%--                                                        title: "<spring:message code="personnel.no"/>",--%>
+<%--                                                        width: 100,--%>
+<%--                                                        align: "center"--%>
+<%--                                                    },--%>
+<%--                                                    {--%>
+<%--                                                        name: "student.personnelNo2",--%>
+<%--                                                        title: "<spring:message code="personnel.no.6.digits"/>",--%>
+<%--                                                        width: 100,--%>
+<%--                                                        align: "center"--%>
+<%--                                                    },--%>
+<%--                                                    {--%>
+<%--                                                        name: "student.mobile",--%>
+<%--                                                        title: "<spring:message code="mobile"/>",--%>
+<%--                                                        width: 100,--%>
+<%--                                                        align: "center"--%>
+<%--                                                    },--%>
+<%--                                                ];--%>
+<%--                                                MSG_selectUsersForm.getItem("multipleSelect").displayField = "fullName";--%>
+<%--                                                MSG_selectUsersForm.getItem("multipleSelect").valueField = "id";--%>
+<%--                                                MSG_selectUsersForm.getItem("multipleSelect").dataArrived = function (startRow, endRow) {--%>
+<%--                                                    let ids = MSG_selectUsersForm.getItem("multipleSelect").pickList.data.getAllCachedRows().filter(p => !p.student.mobile).map(function (item) {--%>
+<%--                                                        return item.id;--%>
+<%--                                                    });--%>
+<%--                                                    let findRows = MSG_selectUsersForm.getItem("multipleSelect").pickList.findAll({--%>
+<%--                                                        _constructor: "AdvancedCriteria",--%>
+<%--                                                        operator: "and",--%>
+<%--                                                        criteria: [{fieldName: "id", operator: "inSet", value: ids}]--%>
+<%--                                                    });--%>
+<%--                                                    findRows.setProperty("enabled", false);--%>
+<%--                                                }--%>
+<%--                                                MSG_selectUsersForm.getItem("multipleSelect").fetchData();--%>
 
-                                                if (JSON.parse(resp.data).response.data.filter(p => p.student.mobile && p.id == studentRecord.id).length == 0) {
-                                                    ErrorMsg.setContents('هیچ مخاطبی انتخاب نشده است');
-                                                } else {
-                                                    ErrorMsg.setContents('');
-                                                }
-                                                MSG_userType = "classStudent";
-                                                MSG_Window_MSG_Main.show();
+<%--                                                MSG_textEditorValue = "{prefix-full_name} {full-name}\n<br >پرسشنامه مربوط به ارزیابی دوره «{course-name}» که از تاریخ {start-date} تا {end-date}برگزارشده است و جنابعالی در آن شرکت داشته اید به پرتال پرسنلی شما در سیستم جامع آموزش به آدرس {personel-address} ارسال گردیده است را با دقت تکمیل نمایید.بدیهی است تایید نهایی دوره جنابعالی منوط به تکمیل این پرسش‎نامه می باشد"--%>
+<%--                                                MSG_contentEditor.setValue(MSG_textEditorValue);--%>
 
-                                                setTimeout(function () {
-                                                    $('#MSG_messageType_sms img').click()
-                                                }, 0)
-                                            } else {
-                                                createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
-                                            }
-                                        }
-                                    }));
+<%--                                                if (JSON.parse(resp.data).response.data.filter(p => p.student.mobile && p.id == studentRecord.id).length == 0) {--%>
+<%--                                                    ErrorMsg.setContents('هیچ مخاطبی انتخاب نشده است');--%>
+<%--                                                } else {--%>
+<%--                                                    ErrorMsg.setContents('');--%>
+<%--                                                }--%>
+<%--                                                MSG_userType = "classStudent";--%>
+<%--                                                MSG_Window_MSG_Main.show();--%>
+
+<%--                                                setTimeout(function () {--%>
+<%--                                                    $('#MSG_messageType_sms img').click()--%>
+<%--                                                }, 0)--%>
+<%--                                            } else {--%>
+<%--                                                createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");--%>
+<%--                                            }--%>
+<%--                                        }--%>
+<%--                                    }));--%>
 
 
-                                }
-                            }),
+<%--                                }--%>
+<%--                            }),--%>
+
                             isc.IButtonCancel.create({
                                 click: function () {
                                     Window_SelectQuestionnarie_RE.close();
@@ -1843,11 +1847,11 @@
                     height: "5%",
                     members: [
                         IButtonSave_SelectQuestionnarie_RE,
-                        isc.IButtonSave.create({
-                            title: "ارسال از طریق پیامک",
-                            click: function () {
-                            }
-                        }),
+                        // isc.IButtonSave.create({
+                        //     title: "ارسال از طریق پیامک",
+                        //     click: function () {
+                        //     }
+                        // }),
                         isc.IButtonCancel.create({
                             click: function () {
                                 Window_SelectQuestionnarie_RE.close();
@@ -2215,11 +2219,11 @@
                     height: "5%",
                     members: [
                         IButtonSave_SelectQuestionnarie_RE,
-                        isc.IButtonSave.create({
-                            title: "ارسال از طریق پیامک",
-                            click: function () {
-                            }
-                        }),
+                        // isc.IButtonSave.create({
+                        //     title: "ارسال از طریق پیامک",
+                        //     click: function () {
+                        //     }
+                        // }),
                         isc.IButtonCancel.create({
                             click: function () {
                                 Window_SelectQuestionnarie_RE.close();
