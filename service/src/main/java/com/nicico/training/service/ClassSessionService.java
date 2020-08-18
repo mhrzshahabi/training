@@ -535,8 +535,8 @@ public class ClassSessionService implements IClassSession {
 
             } else if (classId == null ||
                     sessionTypeId == null ||
-                    autoSessionsRequirement.getInstituteId() == null ||
-                    autoSessionsRequirement.getTrainingPlaceIds() == null ||
+//                    autoSessionsRequirement.getInstituteId() == null ||
+//                    autoSessionsRequirement.getTrainingPlaceIds() == null ||
                     autoSessionsRequirement.getTeacherId() == null ||
                     sessionState == null) {
 
@@ -575,8 +575,9 @@ public class ClassSessionService implements IClassSession {
                                     MainHoursRange().get(range).get(1),
                                     sessionTypeId,
                                     "آموزش",
-                                    autoSessionsRequirement.getInstituteId().intValue(),
-                                    autoSessionsRequirement.getTrainingPlaceIds().get(0).intValue(),
+                                    ((autoSessionsRequirement.getOrganizerId() != null) ? (autoSessionsRequirement.getOrganizerId().intValue()) : null),
+                                    ((autoSessionsRequirement.getTrainingPlaceIds() != null) ? (autoSessionsRequirement.getTrainingPlaceIds().get(0).intValue()) : null),
+//                                    autoSessionsRequirement.getTrainingPlaceIds().get(0).intValue(),
                                     autoSessionsRequirement.getTeacherId(),
                                     sessionState,
                                     "شروع نشده",
