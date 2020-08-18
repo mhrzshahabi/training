@@ -2031,7 +2031,7 @@
             data.courseId = data.course.id;
             delete data.course;
             delete data.term;
-            if (data.scoringMethod == "1") {
+            if (data.scoringMethod === "1") {
                 data.acceptancelimit = data.acceptancelimit_a
             }
             let classSaveUrl = classUrl;
