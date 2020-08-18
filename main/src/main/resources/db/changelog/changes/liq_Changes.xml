@@ -1182,4 +1182,21 @@
         <dropTable tableName="TBL_MESSAGE_PARAMETERVALUE"/>
     </changeSet>
 
+
+    <changeSet author="golrokhi (generated)" id="1597731116255-490">
+        <addColumn tableName="tbl_test_question">
+            <column name="c_date" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1597731116255-491">
+        <addColumn tableName="tbl_test_question">
+            <column name="c_time" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1597731116255-492">
+        <addColumn tableName="tbl_test_question">
+            <column name="n_duration" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
