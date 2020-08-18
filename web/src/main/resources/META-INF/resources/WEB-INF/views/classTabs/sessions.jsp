@@ -767,7 +767,7 @@
                 if (ListGrid_Class_JspClass.getSelectedRecord().classStatus !== "3") {
                     let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
                     const {trainingPlaceIds,teacherId,...record}=classRecord;
-                    const essentialRecord={instituteId:record.institute.id,trainingPlaceId:trainingPlaceIds[0],teacherId};
+                    const essentialRecord={instituteId:record.organizerId,trainingPlaceId:trainingPlaceIds[0],teacherId};
 
                     DynamicForm_Session.clearValues();
 
