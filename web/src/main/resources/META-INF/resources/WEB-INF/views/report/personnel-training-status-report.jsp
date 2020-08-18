@@ -35,11 +35,11 @@
             {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "cppArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "cppAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "cppAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "cppSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "cppUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
         ],
         fetchDataURL: personnelUrl + "/iscList",
         implicitCriteria: {
@@ -318,7 +318,7 @@
                 separateSpecialValues: true
             },
             {
-                name: "personnelCcpAssistant",
+                name: "personnelCppAssistant",
                 colSpan: 1,
                 title: "<spring:message code="assistance"/>",
                 filterFields: ["value", "value"],
@@ -355,7 +355,7 @@
                 separateSpecialValues: true
             },
             {
-                name: "personnelCcpSection",
+                name: "personnelCppSection",
                 title: "<spring:message code="section"/>",
                 colSpan: 1,
                 filterFields: ["value", "value"],
@@ -374,7 +374,7 @@
                 separateSpecialValues: true
             },
             {
-                name: "personnelCcpUnit",
+                name: "personnelCppUnit",
                 colSpan: 1,
                 title: "<spring:message code="unit"/>",
                 filterFields: ["value", "value"],
