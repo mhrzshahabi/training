@@ -67,7 +67,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
 
     @Transactional
     public void initial(String objectType, Long objectId) {
-        List<NeedsAssessment> needsAssessments = needsAssessmentDAO.findAll(NICICOSpecification.of(getCriteria(objectType, objectId)));
+        List<NeedsAssessment> needsAssessments = needsAssessmentDAO.findAll(NICICOSpecification.of(getCriteria(objectType, objectId, true)));
         if (needsAssessments == null || needsAssessments.isEmpty())
             return;
         needsAssessments.forEach(needsAssessment -> {
@@ -86,11 +86,11 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
             case 2:
                 return false;
         }
-        SearchDTO.CriteriaRq criteria = getCriteria(sourceObjectType, sourceObjectId);
+        SearchDTO.CriteriaRq criteria = getCriteria(sourceObjectType, sourceObjectId, true);
         if (sourceCompetenceId != null) {
             criteria.getCriteria().add(makeNewCriteria("competenceId", sourceCompetenceId, EOperator.equals, null));
         }
-        List<Skill> skillList = needsAssessmentDAO.findAll(NICICOSpecification.of(getCriteria(objectType, objectId))).stream().map(NeedsAssessment::getSkill).collect(Collectors.toList());
+        List<Skill> skillList = needsAssessmentDAO.findAll(NICICOSpecification.of(getCriteria(objectType, objectId, true))).stream().map(NeedsAssessment::getSkill).collect(Collectors.toList());
         List<NeedsAssessment> sourceNeedsAssessments = needsAssessmentDAO.findAll(NICICOSpecification.of(criteria));
         sourceNeedsAssessments.forEach(sourceNA -> {
             if (!skillList.contains(sourceNA.getSkill())) {
@@ -106,10 +106,10 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
 
     @Transactional
     public void verify(String objectType, Long objectId) {
-        List<NeedsAssessmentDTO.verify> needsAssessmentTemps = modelMapper.map(dao.findAll(NICICOSpecification.of(getCriteria(objectType, objectId))), new TypeToken<List<NeedsAssessmentDTO.verify>>() {
+        List<NeedsAssessmentDTO.verify> needsAssessmentTemps = modelMapper.map(dao.findAll(NICICOSpecification.of(getCriteria(objectType, objectId, false))), new TypeToken<List<NeedsAssessmentDTO.verify>>() {
         }.getType());
         String createdBy = null;
-        try{
+        try {
             createdBy = needsAssessmentTemps.get(0).getCreatedBy();
             SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
             PersonnelDTO.Info person = personnelService.search(searchRq.setCriteria(makeNewCriteria("userName", createdBy, EOperator.equals, null))).getList().get(0);
@@ -149,7 +149,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
 
     @Transactional(readOnly = true)
     public Integer readOnlyStatus(String objectType, Long objectId) {
-        SearchDTO.CriteriaRq criteriaRq = getCriteria(objectType, objectId);
+        SearchDTO.CriteriaRq criteriaRq = getCriteria(objectType, objectId, false);
         List<NeedsAssessmentTemp> needsAssessmentTemps = dao.findAll(NICICOSpecification.of(criteriaRq));
         if (needsAssessmentTemps == null || needsAssessmentTemps.isEmpty())
             return 0; //this object is editable and needs to be initialize
@@ -207,10 +207,25 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
         }
     }
 
-    public static SearchDTO.CriteriaRq getCriteria(String objectType, Long objectId) {
+    @Transactional
+    public Boolean checkBeforeDeleteObject(String objectType, Long objectId) {
+        List<NeedsAssessmentTemp> needsAssessments = dao.findAll(NICICOSpecification.of(getCriteria(objectType, objectId, true)));
+        if (needsAssessments == null || needsAssessments.isEmpty())
+            return true;
+        if (needsAssessments.get(0).getMainWorkflowStatusCode() == null){
+            dao.deleteAllByObjectIdAndObjectType(objectId, objectType);
+            return true;
+        }
+        return false;
+    }
+
+    public static SearchDTO.CriteriaRq getCriteria(String objectType, Long objectId, Boolean addNotDeletedCriteria) {
         SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
         criteriaRq.getCriteria().add(makeNewCriteria("objectType", objectType, EOperator.equals, null));
         criteriaRq.getCriteria().add(makeNewCriteria("objectId", objectId, EOperator.equals, null));
+        if (addNotDeletedCriteria) {
+            criteriaRq.getCriteria().add(makeNewCriteria("deleted", null, EOperator.isNull, null));
+        }
         return criteriaRq;
     }
 

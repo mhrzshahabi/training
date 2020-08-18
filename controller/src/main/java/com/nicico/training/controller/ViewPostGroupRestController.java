@@ -2,6 +2,7 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ViewPostGroupDTO;
+import com.nicico.training.service.BaseService;
 import com.nicico.training.service.ViewPostGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ public class ViewPostGroupRestController {
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<ViewPostGroupDTO.Info>> iscList(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
         SearchDTO.SearchRs<ViewPostGroupDTO.Info> searchRs = viewPostGroupService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }

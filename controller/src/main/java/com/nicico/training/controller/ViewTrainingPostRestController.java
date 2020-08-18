@@ -9,6 +9,8 @@ import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.PostGradeDTO;
 import com.nicico.training.dto.ViewTrainingPostDTO;
+import com.nicico.training.service.BaseService;
+import com.nicico.training.model.JobGroup;
 import com.nicico.training.service.JobGroupService;
 import com.nicico.training.service.PostGradeGroupService;
 import com.nicico.training.service.ViewTrainingPostService;
@@ -44,6 +46,7 @@ public class ViewTrainingPostRestController {
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<ViewTrainingPostDTO.Info>> iscList(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
         SearchDTO.SearchRs<ViewTrainingPostDTO.Info> searchRs = viewTrainingPostService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
@@ -106,6 +109,7 @@ public class ViewTrainingPostRestController {
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
+        BaseService.setCriteriaToNotSearchDeleted(request);
         SearchDTO.SearchRs<ViewTrainingPostDTO.Info> response = viewTrainingPostService.search(request);
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(response.getList())

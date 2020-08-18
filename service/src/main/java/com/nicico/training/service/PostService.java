@@ -51,6 +51,12 @@ public class PostService implements IPostService {
 
     @Transactional(readOnly = true)
     @Override
+    public PostDTO.Info get(Long id) {
+        return modelMapper.map(postDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound)), PostDTO.Info.class);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public Page<Post> listByJobId(Long jobId, Pageable pageable) {
         return postDAO.findAllByJobId(jobId, pageable);
     }

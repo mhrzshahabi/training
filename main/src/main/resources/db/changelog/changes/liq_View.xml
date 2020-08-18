@@ -3,7 +3,7 @@
                    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet author="NICICO" id="VIEW_PERSONNEL_COURSE_NA_REPORT-005">
+    <changeSet author="NICICO" id="VIEW_PERSONNEL_COURSE_NA_REPORT-006">
         <createView viewName="VIEW_PERSONNEL_COURSE_NA_REPORT" replaceIfExists="true">
             <![CDATA[
   WITH result AS (
@@ -45,10 +45,20 @@
                 tbl_needs_assessment
             WHERE
                 c_object_type = 'Post'
+                AND e_deleted IS NULL
+                AND e_enabled IS NULL
         ) na
         INNER JOIN tbl_skill               skill ON na.f_skill = skill.id
         INNER JOIN tbl_course              course ON skill.f_course = course.id
-        INNER JOIN tbl_post                p ON na.f_object = p.id
+        INNER JOIN (
+            SELECT
+                *
+            FROM
+                tbl_post
+            WHERE
+                e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) p ON na.f_object = p.id
         INNER JOIN view_active_personnel   prs ON prs.f_post_id = p.id
         LEFT JOIN tbl_department          dep ON dep.id = prs.f_department_id
     UNION
@@ -90,12 +100,30 @@
                 tbl_needs_assessment
             WHERE
                 tbl_needs_assessment.c_object_type = 'TrainingPost'
+                AND e_deleted IS NULL
+                AND e_enabled IS NULL
         ) na
         INNER JOIN tbl_skill                skill ON na.f_skill = skill.id
         INNER JOIN tbl_course               course ON skill.f_course = course.id
-        INNER JOIN tbl_training_post        tp ON na.f_object = tp.id
+        INNER JOIN (
+            SELECT
+                *
+            FROM
+                tbl_training_post
+            WHERE
+                e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) tp ON na.f_object = tp.id
         INNER JOIN tbl_post_training_post   ptp ON ptp.f_training_post_id = tp.id
-        INNER JOIN tbl_post                 p ON p.id = ptp.f_post_id
+        INNER JOIN (
+            SELECT
+                *
+            FROM
+                tbl_post
+            WHERE
+                e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) p ON p.id = ptp.f_post_id
         INNER JOIN view_active_personnel    prs ON prs.f_post_id = p.id
         LEFT JOIN tbl_department           dep ON dep.id = prs.f_department_id
     UNION
@@ -137,12 +165,30 @@
                 tbl_needs_assessment
             WHERE
                 c_object_type = 'PostGroup'
+                AND e_deleted IS NULL
+                AND e_enabled IS NULL
         ) na
         INNER JOIN tbl_skill               skill ON na.f_skill = skill.id
         INNER JOIN tbl_course              course ON skill.f_course = course.id
-        INNER JOIN tbl_post_group          pg ON na.f_object = pg.id
+        INNER JOIN (
+            SELECT
+                *
+            FROM
+                tbl_post_group
+            WHERE
+                e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) pg ON na.f_object = pg.id
         INNER JOIN tbl_post_postgroup      ppg ON pg.id = ppg.f_postgroup_id
-        INNER JOIN tbl_post                p ON ppg.f_post_id = p.id
+        INNER JOIN (
+            SELECT
+                *
+            FROM
+                tbl_post
+            WHERE
+                e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) p ON ppg.f_post_id = p.id
         INNER JOIN view_active_personnel   prs ON prs.f_post_id = p.id
         LEFT JOIN tbl_department          dep ON dep.id = prs.f_department_id
     UNION
@@ -184,14 +230,40 @@
                 tbl_needs_assessment
             WHERE
                 c_object_type = 'PostGroup'
+                AND e_deleted IS NULL
+                AND e_enabled IS NULL
         ) na
         INNER JOIN tbl_skill                      skill ON na.f_skill = skill.id
         INNER JOIN tbl_course                     course ON skill.f_course = course.id
-        INNER JOIN tbl_post_group                 pg ON na.f_object = pg.id
+        INNER JOIN (
+            SELECT
+                *
+            FROM
+                tbl_post_group
+            WHERE
+                e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) pg ON na.f_object = pg.id
         INNER JOIN tbl_training_post_post_group   tppg ON tppg.f_post_group_id = pg.id
-        INNER JOIN tbl_training_post              tp ON tppg.f_training_post_id = tp.id
+        INNER JOIN (
+            SELECT
+                *
+            FROM
+                tbl_training_post
+            WHERE
+                e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) tp ON tppg.f_training_post_id = tp.id
         INNER JOIN tbl_post_training_post         ptp ON tp.id = ptp.f_training_post_id
-        INNER JOIN tbl_post                       p ON ptp.f_post_id = p.id
+        INNER JOIN (
+            SELECT
+                *
+            FROM
+                tbl_post
+            WHERE
+                e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) p ON ptp.f_post_id = p.id
         INNER JOIN view_active_personnel          prs ON prs.f_post_id = p.id
         LEFT JOIN tbl_department                 dep ON dep.id = prs.f_department_id
     UNION
@@ -233,13 +305,39 @@
                 tbl_needs_assessment
             WHERE
                 c_object_type = 'Job'
+                AND e_deleted IS NULL
+                AND e_enabled IS NULL
         ) na
         INNER JOIN tbl_skill                skill ON na.f_skill = skill.id
         INNER JOIN tbl_course               course ON skill.f_course = course.id
-        INNER JOIN tbl_job                  j ON na.f_object = j.id
-        INNER JOIN tbl_training_post        tp ON tp.f_job_id = j.id
+        INNER JOIN (
+            SELECT
+                *
+            FROM
+                tbl_job
+            WHERE
+                e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) j ON na.f_object = j.id
+        INNER JOIN (
+            SELECT
+                *
+            FROM
+                tbl_training_post
+            WHERE
+                e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) tp ON tp.f_job_id = j.id
         INNER JOIN tbl_post_training_post   ptp ON tp.id = ptp.f_training_post_id
-        INNER JOIN tbl_post                 p ON ptp.f_post_id = p.id
+        INNER JOIN (
+            SELECT
+                *
+            FROM
+                tbl_post
+            WHERE
+                e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) p ON ptp.f_post_id = p.id
         INNER JOIN view_active_personnel    prs ON prs.f_post_id = p.id
         LEFT JOIN tbl_department           dep ON dep.id = prs.f_department_id
     UNION
@@ -281,15 +379,49 @@
                 tbl_needs_assessment
             WHERE
                 c_object_type = 'JobGroup'
+                AND e_deleted IS NULL
+                AND e_enabled IS NULL
         ) na
         INNER JOIN tbl_skill                skill ON na.f_skill = skill.id
         INNER JOIN tbl_course               course ON skill.f_course = course.id
-        INNER JOIN tbl_job_group            jg ON na.f_object = jg.id
+        INNER JOIN (
+            SELECT
+                *
+            FROM
+                tbl_job_group
+            WHERE
+                e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) jg ON na.f_object = jg.id
         INNER JOIN tbl_job_jobgroup         jjg ON jg.id = jjg.f_jobgroup_id
-        INNER JOIN tbl_job                  j ON jjg.f_job_id = j.id
-        INNER JOIN tbl_training_post        tp ON tp.f_job_id = j.id
+        INNER JOIN (
+            SELECT
+                *
+            FROM
+                tbl_job
+            WHERE
+                e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) j ON jjg.f_job_id = j.id
+        INNER JOIN (
+            SELECT
+                *
+            FROM
+                tbl_training_post
+            WHERE
+                e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) tp ON tp.f_job_id = j.id
         INNER JOIN tbl_post_training_post   ptp ON tp.id = ptp.f_training_post_id
-        INNER JOIN tbl_post                 p ON ptp.f_post_id = p.id
+        INNER JOIN (
+            SELECT
+                *
+            FROM
+                tbl_post
+            WHERE
+                e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) p ON ptp.f_post_id = p.id
         INNER JOIN view_active_personnel    prs ON prs.f_post_id = p.id
         LEFT JOIN tbl_department           dep ON dep.id = prs.f_department_id
     UNION
@@ -331,13 +463,39 @@
                 tbl_needs_assessment
             WHERE
                 c_object_type = 'PostGrade'
+                AND e_deleted IS NULL
+                AND e_enabled IS NULL
         ) na
         INNER JOIN tbl_skill                skill ON na.f_skill = skill.id
         INNER JOIN tbl_course               course ON skill.f_course = course.id
-        INNER JOIN tbl_post_grade           pg ON na.f_object = pg.id
-        INNER JOIN tbl_training_post        tp ON tp.f_post_grade_id = pg.id
+        INNER JOIN (
+            SELECT
+                *
+            FROM
+                tbl_post_grade
+            WHERE
+                e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) pg ON na.f_object = pg.id
+        INNER JOIN (
+            SELECT
+                *
+            FROM
+                tbl_training_post
+            WHERE
+                e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) tp ON tp.f_post_grade_id = pg.id
         INNER JOIN tbl_post_training_post   ptp ON tp.id = ptp.f_training_post_id
-        INNER JOIN tbl_post                 p ON ptp.f_post_id = p.id
+        INNER JOIN (
+            SELECT
+                *
+            FROM
+                tbl_post
+            WHERE
+                e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) p ON ptp.f_post_id = p.id
         INNER JOIN view_active_personnel    prs ON prs.f_post_id = p.id
         LEFT JOIN tbl_department           dep ON dep.id = prs.f_department_id
     UNION
@@ -379,15 +537,49 @@
                 tbl_needs_assessment
             WHERE
                 c_object_type = 'PostGradeGroup'
+                AND e_deleted IS NULL
+                AND e_enabled IS NULL
         ) na
         INNER JOIN tbl_skill                         skill ON na.f_skill = skill.id
         INNER JOIN tbl_course                        course ON skill.f_course = course.id
-        INNER JOIN tbl_post_grade_group              pgg ON na.f_object = pgg.id
+        INNER JOIN (
+            SELECT
+                *
+            FROM
+                tbl_post_grade_group
+            WHERE
+                e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) pgg ON na.f_object = pgg.id
         INNER JOIN tbl_post_grade_post_grade_group   pgpgg ON pgg.id = pgpgg.f_post_grade_group_id
-        INNER JOIN tbl_post_grade                    pg ON pgpgg.f_post_grade_id = pg.id
-        INNER JOIN tbl_training_post                 tp ON tp.f_post_grade_id = pg.id
+        INNER JOIN (
+            SELECT
+                *
+            FROM
+                tbl_post_grade
+            WHERE
+                e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) pg ON pgpgg.f_post_grade_id = pg.id
+        INNER JOIN (
+            SELECT
+                *
+            FROM
+                tbl_training_post
+            WHERE
+                e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) tp ON tp.f_post_grade_id = pg.id
         INNER JOIN tbl_post_training_post            ptp ON tp.id = ptp.f_training_post_id
-        INNER JOIN tbl_post                          p ON ptp.f_post_id = p.id
+        INNER JOIN (
+            SELECT
+                *
+            FROM
+                tbl_post
+            WHERE
+                e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) p ON ptp.f_post_id = p.id
         INNER JOIN view_active_personnel             prs ON prs.f_post_id = p.id
         LEFT JOIN tbl_department                    dep ON dep.id = prs.f_department_id
 )
@@ -418,7 +610,7 @@ SELECT
     personnel_post_grade_code,
     personnel_post_grade_title,
     personnel_post_title,
-     personnel_post_id
+    personnel_post_id
 FROM
     result r
 GROUP BY
@@ -447,7 +639,7 @@ GROUP BY
     personnel_post_grade_code,
     personnel_post_grade_title,
     personnel_post_title,
-   personnel_post_id
+    personnel_post_id
 			]]>
         </createView>
     </changeSet>
@@ -1275,7 +1467,7 @@ FROM
     </changeSet>
 
 
-    <changeSet author="NICICO" id="VIEW_POST-006">
+    <changeSet author="NICICO" id="VIEW_POST-007">
         <createView viewName="VIEW_POST" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1308,11 +1500,20 @@ SELECT
     COUNT(DISTINCT na.f_competence) AS n_competence_count,
     COUNT(DISTINCT prs.id) AS n_personnel_count
 FROM
-    tbl_post                p
-    LEFT JOIN (select * from  tbl_needs_assessment where c_object_type = 'Post')     na ON p.id = na.f_object
-    LEFT JOIN view_active_personnel   prs ON p.id = prs.f_post_id
-    INNER JOIN tbl_job                 j ON j.id = p.f_job_id
-    INNER JOIN tbl_post_grade          pg ON pg.id = p.f_post_grade_id
+    tbl_post p
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            tbl_needs_assessment
+        WHERE
+            c_object_type = 'Post'
+            AND e_deleted IS NULL
+            AND e_enabled IS NULL
+    ) na ON p.id = na.f_object
+    LEFT JOIN view_active_personnel prs ON p.id = prs.f_post_id
+    INNER JOIN tbl_job j ON j.id = p.f_job_id
+    INNER JOIN tbl_post_grade pg ON pg.id = p.f_post_grade_id
 GROUP BY
     p.id,
     p.c_created_by,
@@ -1344,7 +1545,7 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_POST_GROUP-003">
+    <changeSet author="NICICO" id="VIEW_POST_GROUP-004">
         <createView viewName="VIEW_POST_GROUP" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1363,9 +1564,9 @@ SELECT
     pg.d_last_modified_date_na,
     pg.c_modified_by_na,
     COUNT(DISTINCT na.f_competence) AS n_competence_count,
-    COUNT(DISTINCT prs.id) AS n_personnel_count
+    COUNT(DISTINCT prs.id) + COUNT(DISTINCT prs2.id) AS n_personnel_count
 FROM
-    tbl_post_group          pg
+    tbl_post_group                                                         pg
     LEFT JOIN (
         SELECT
             *
@@ -1373,9 +1574,41 @@ FROM
             tbl_needs_assessment
         WHERE
             c_object_type = 'PostGroup'
+            AND e_deleted IS NULL
+            AND e_enabled IS NULL
     ) na ON pg.id = na.f_object
-    LEFT JOIN tbl_post_postgroup ON pg.id = tbl_post_postgroup.f_postgroup_id
-    LEFT JOIN view_active_personnel   prs ON tbl_post_postgroup.f_post_id = prs.f_post_id
+    LEFT JOIN tbl_post_postgroup                                                     ppg ON pg.id = ppg.f_postgroup_id
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            tbl_post
+        WHERE
+            e_deleted IS NULL
+            AND e_enabled IS NULL
+    ) p ON p.id = ppg.f_post_id
+    LEFT JOIN view_active_personnel                                                  prs ON p.id = prs.f_post_id
+    LEFT JOIN tbl_training_post_post_group                                           tppg ON tppg.f_post_group_id = pg.id
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            tbl_training_post
+        WHERE
+            e_deleted IS NULL
+            AND e_enabled IS NULL
+    ) tp ON tp.id = tppg.f_training_post_id
+    LEFT JOIN tbl_post_training_post                                                 ptp ON tp.id = ptp.f_training_post_id
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            tbl_post
+        WHERE
+            e_deleted IS NULL
+            AND e_enabled IS NULL
+    ) p2 ON p2.id = ppg.f_post_id
+    LEFT JOIN view_active_personnel                                                  prs2 ON p2.id = prs2.f_post_id
 GROUP BY
     pg.id,
     pg.c_created_by,
@@ -1395,7 +1628,7 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_JOB-004">
+    <changeSet author="NICICO" id="VIEW_JOB-005">
         <createView viewName="VIEW_JOB" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1411,20 +1644,41 @@ SELECT
     j.c_title_fa,
     j.d_last_modified_date_na,
     j.c_modified_by_na,
+    j.C_PEOPLE_TYPE,
     COUNT(DISTINCT na.f_competence) AS n_competence_count,
     COUNT(DISTINCT prs.id) AS n_personnel_count
 FROM
-    tbl_job                                                     j
+    tbl_job                  j
     LEFT JOIN (
         SELECT
             *
         FROM
             tbl_needs_assessment
         WHERE
-            c_object_type = 'Job'
+            tbl_needs_assessment.c_object_type = 'Job'
+            AND e_deleted IS NULL
+            AND e_enabled IS NULL
     ) na ON j.id = na.f_object
-    LEFT JOIN tbl_post                                                    post ON post.f_job_id = j.id
-    LEFT JOIN view_active_personnel                                       prs ON post.id = prs.f_post_id
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            tbl_training_post
+        WHERE
+            e_deleted IS NULL
+            AND e_enabled IS NULL
+    )        tp ON tp.f_job_id = j.id
+    LEFT JOIN tbl_post_training_post   ptp ON tp.id = ptp.f_training_post_id
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            tbl_post
+        WHERE
+            e_deleted IS NULL
+            AND e_enabled IS NULL
+    ) p ON p.id = ptp.f_post_id
+    LEFT JOIN view_active_personnel    prs ON p.id = prs.f_post_id
 GROUP BY
     j.id,
     j.c_created_by,
@@ -1437,12 +1691,13 @@ GROUP BY
     j.n_version,
     j.c_title_fa,
     j.d_last_modified_date_na,
-    j.c_modified_by_na
+    j.c_modified_by_na,
+    j.C_PEOPLE_TYPE
             ]]>
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_JOB_GROUP-004">
+    <changeSet author="NICICO" id="VIEW_JOB_GROUP-005">
         <createView viewName="VIEW_JOB_GROUP" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1463,7 +1718,7 @@ SELECT
     COUNT(DISTINCT na.f_competence) AS n_competence_count,
     COUNT(DISTINCT prs.id) AS n_personnel_count
 FROM
-    tbl_job_group           jg
+    tbl_job_group            jg
     LEFT JOIN (
         SELECT
             *
@@ -1471,11 +1726,39 @@ FROM
             tbl_needs_assessment
         WHERE
             c_object_type = 'JobGroup'
+            AND e_deleted IS NULL
+            AND e_enabled IS NULL
     ) na ON jg.id = na.f_object
     LEFT JOIN tbl_job_jobgroup ON jg.id = tbl_job_jobgroup.f_jobgroup_id
-    LEFT JOIN tbl_job                 j ON tbl_job_jobgroup.f_job_id = j.id
-    LEFT JOIN tbl_post                post ON post.f_job_id = j.id
-    LEFT JOIN view_active_personnel   prs ON post.id = prs.f_post_id
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            tbl_job
+        WHERE
+            e_deleted IS NULL
+            AND e_enabled IS NULL
+    ) j ON tbl_job_jobgroup.f_job_id = j.id
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            tbl_training_post
+        WHERE
+            e_deleted IS NULL
+            AND e_enabled IS NULL
+    ) tp ON tp.f_job_id = j.id
+    LEFT JOIN tbl_post_training_post   ptp ON tp.id = ptp.f_training_post_id
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            tbl_post
+        WHERE
+            e_deleted IS NULL
+            AND e_enabled IS NULL
+    ) p ON p.id = ptp.f_post_id
+    LEFT JOIN view_active_personnel    prs ON p.id = prs.f_post_id
 GROUP BY
     jg.id,
     jg.c_created_by,
@@ -1495,7 +1778,7 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_POST_GRADE-005">
+    <changeSet author="NICICO" id="VIEW_POST_GRADE-006">
         <createView viewName="VIEW_POST_GRADE" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1523,10 +1806,29 @@ FROM
             tbl_needs_assessment
         WHERE
             c_object_type = 'PostGrade'
+            AND e_deleted IS NULL
+            AND e_enabled IS NULL
     ) na ON pg.id = na.f_object
-    LEFT JOIN tbl_training_post        tp ON tp.f_post_grade_id = pg.id
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            tbl_training_post
+        WHERE
+            e_deleted IS NULL
+            AND e_enabled IS NULL
+    )        tp ON tp.f_post_grade_id = pg.id
     LEFT JOIN tbl_post_training_post   ptp ON tp.id = ptp.f_training_post_id
-    LEFT JOIN view_active_personnel    prs ON ptp.f_post_id = prs.f_post_id
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            tbl_post
+        WHERE
+            e_deleted IS NULL
+            AND e_enabled IS NULL
+    ) p ON p.id = ptp.f_post_id
+    LEFT JOIN view_active_personnel    prs ON p.id = prs.f_post_id
 GROUP BY
     pg.id,
     pg.c_created_by,
@@ -1541,58 +1843,87 @@ GROUP BY
     pg.d_last_modified_date_na,
     pg.c_modified_by_na,
     pg.c_people_type
-            ]]>
+]]>
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_POST_GRADE_GROUP-004">
+    <changeSet author="NICICO" id="VIEW_POST_GRADE_GROUP-005">
         <createView viewName="VIEW_POST_GRADE_GROUP" replaceIfExists="true">
             <![CDATA[
 SELECT
-    pgg.id,
-    pgg.c_created_by,
-    pgg.d_created_date,
-    pgg.e_deleted,
-    pgg.e_enabled,
-    pgg.c_last_modified_by,
-    pgg.d_last_modified_date,
-    pgg.n_version,
-    pgg.c_description,
-    pgg.c_title_fa,
-    pgg.c_title_en,
-    pgg.c_code,
-    pgg.d_last_modified_date_na,
-    pgg.c_modified_by_na,
-    COUNT(DISTINCT na.f_competence) AS n_competence_count,
-    COUNT(DISTINCT prs.id) AS n_personnel_count
-FROM
-    tbl_post_grade_group              pgg
-    LEFT JOIN (
-        SELECT
-            *
-        FROM
-            tbl_needs_assessment
-        WHERE
-            tbl_needs_assessment.c_object_type = 'PostGradeGroup'
-    ) na ON pgg.id = na.f_object
-    LEFT JOIN tbl_post_grade_post_grade_group   pgpg ON pgg.id = pgpg.f_post_grade_group_id
-    LEFT JOIN tbl_post                          post ON post.f_post_grade_id = pgpg.f_post_grade_id
-    LEFT JOIN view_active_personnel             prs ON post.id = prs.f_post_id
-GROUP BY
-    pgg.id,
-    pgg.c_created_by,
-    pgg.d_created_date,
-    pgg.e_deleted,
-    pgg.e_enabled,
-    pgg.c_last_modified_by,
-    pgg.d_last_modified_date,
-    pgg.n_version,
-    pgg.c_description,
-    pgg.c_title_fa,
-    pgg.c_title_en,
-    pgg.c_code,
-    pgg.d_last_modified_date_na,
-    pgg.c_modified_by_na
+        pgg.id,
+        pgg.c_created_by,
+        pgg.d_created_date,
+        pgg.e_deleted,
+        pgg.e_enabled,
+        pgg.c_last_modified_by,
+        pgg.d_last_modified_date,
+        pgg.n_version,
+        pgg.c_description,
+        pgg.c_title_fa,
+        pgg.c_title_en,
+        pgg.c_code,
+        pgg.d_last_modified_date_na,
+        pgg.c_modified_by_na,
+        COUNT(DISTINCT na.f_competence) AS n_competence_count,
+        COUNT(DISTINCT prs.id) AS n_personnel_count
+    FROM
+        tbl_post_grade_group              pgg
+        LEFT JOIN (
+            SELECT
+                *
+            FROM
+                tbl_needs_assessment
+            WHERE
+                tbl_needs_assessment.c_object_type = 'PostGradeGroup'
+                AND e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) na ON pgg.id = na.f_object
+        LEFT JOIN tbl_post_grade_post_grade_group   pgpg ON pgg.id = pgpg.f_post_grade_group_id
+        LEFT JOIN (
+            SELECT
+                *
+            FROM
+                tbl_post_grade
+            WHERE
+                e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) pg ON pg.id = pgpg.f_post_grade_id
+        LEFT JOIN (
+            SELECT
+                *
+            FROM
+                tbl_training_post
+            WHERE
+                e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) tp ON tp.f_post_grade_id = pg.id
+        LEFT JOIN tbl_post_training_post            ptp ON tp.id = ptp.f_training_post_id
+        LEFT JOIN (
+            SELECT
+                *
+            FROM
+                tbl_post
+            WHERE
+                e_deleted IS NULL
+                AND e_enabled IS NULL
+        ) p ON p.id = ptp.f_post_id
+        LEFT JOIN view_active_personnel             prs ON p.id = prs.f_post_id
+    GROUP BY
+        pgg.id,
+        pgg.c_created_by,
+        pgg.d_created_date,
+        pgg.e_deleted,
+        pgg.e_enabled,
+        pgg.c_last_modified_by,
+        pgg.d_last_modified_date,
+        pgg.n_version,
+        pgg.c_description,
+        pgg.c_title_fa,
+        pgg.c_title_en,
+        pgg.c_code,
+        pgg.d_last_modified_date_na,
+        pgg.c_modified_by_na
             ]]>
         </createView>
     </changeSet>
@@ -1610,7 +1941,7 @@ SELECT "PERSONNEL_NO","ACTIVE","ADDRESS","AGE","BIRTH_CERTIFICATE_NO","BIRTH_DAT
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_SUB_ACTIVE_PERSONNEL_PASSED_COURSE-001">
+    <changeSet author="NICICO" id="VIEW_SUB_ACTIVE_PERSONNEL_PASSED_COURSE-002">
         <createView viewName="VIEW_SUB_ACTIVE_PERSONNEL_PASSED_COURSE" replaceIfExists="true">
             <![CDATA[
 SELECT DISTINCT
@@ -1627,11 +1958,9 @@ SELECT DISTINCT
 FROM
     tbl_class_student cs
     INNER JOIN tbl_student s ON s.id = cs.student_id
-    INNER JOIN tbl_personnel p ON p.national_code = s.national_code
+    INNER JOIN view_active_personnel p ON p.national_code = s.national_code
     INNER JOIN tbl_class cl ON cl.id = cs.class_id
 WHERE
-    p.active = 1 AND
-    p.employment_status_id = 5 AND
     cs.scores_state_id IN (
         400,
         401,
@@ -2480,7 +2809,7 @@ GROUP BY
     ]]>
         </createView>
     </changeSet>
-    <changeSet author="NICICO" id="VIEW_TRAINING_POST-006">
+    <changeSet author="NICICO" id="VIEW_TRAINING_POST-007">
         <createView viewName="VIEW_TRAINING_POST" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -2514,7 +2843,7 @@ SELECT
     COUNT(DISTINCT na.f_competence) AS n_competence_count,
     COUNT(DISTINCT prs.id) AS n_personnel_count
 FROM
-    tbl_training_post        tp
+    tbl_training_post                                             tp
     LEFT JOIN (
         SELECT
             *
@@ -2522,11 +2851,22 @@ FROM
             tbl_needs_assessment
         WHERE
             c_object_type = 'TrainingPost'
+            AND e_deleted IS NULL
+            AND e_enabled IS NULL
     ) na ON tp.id = na.f_object
-    LEFT JOIN tbl_post_training_post   ptp ON tp.id = ptp.f_training_post_id
-    LEFT JOIN view_active_personnel    prs ON ptp.f_post_id = prs.f_post_id
-    LEFT JOIN tbl_job                  j ON j.id = tp.f_job_id
-    LEFT JOIN tbl_post_grade           pg ON pg.id = tp.f_post_grade_id
+    LEFT JOIN tbl_post_training_post                                        ptp ON tp.id = ptp.f_training_post_id
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            tbl_post
+        WHERE
+            e_deleted IS NULL
+            AND e_enabled IS NULL
+    ) p ON p.id = ptp.f_post_id
+    LEFT JOIN view_active_personnel                                         prs ON p.id = prs.f_post_id
+    LEFT JOIN tbl_job                                                       j ON j.id = tp.f_job_id
+    LEFT JOIN tbl_post_grade                                                pg ON pg.id = tp.f_post_grade_id
 GROUP BY
     tp.id,
     tp.c_created_by,

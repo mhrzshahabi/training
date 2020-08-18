@@ -45,6 +45,9 @@ public class ViewjobDTO implements Serializable {
     @ApiModelProperty
     private String modifiedByNA;
 
+    @ApiModelProperty
+    private String peopleType;
+
     public String getLastModifiedDateNA(){
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         if(lastModifiedDateNA != null)

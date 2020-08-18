@@ -27,5 +27,6 @@ public class JobDTO implements Serializable {
         private String titleFa;
         private String peopleType;
         private Long enabled;
+        private Long deleted;
     }
 }

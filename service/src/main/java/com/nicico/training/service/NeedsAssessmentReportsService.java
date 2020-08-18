@@ -106,11 +106,13 @@ public class NeedsAssessmentReportsService {
     @Transactional(readOnly = true)
 //    @Override
     public List<NeedsAssessment> getNeedsAssessmentList(Long objectId, String objectType) {
+        List<NeedsAssessment> needsAssessmentList = new ArrayList<>();
         SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
         criteriaRq.getCriteria().add(makeNewCriteria(null, null, EOperator.or, new ArrayList<>()));
-//        criteriaRq.getCriteria().add(makeNewCriteria("deleted", 75L, EOperator.notEqual, null));
-        addCriteria(criteriaRq.getCriteria().get(0), objectType, objectId, null, null, true);
-        List<NeedsAssessment> needsAssessmentList = needsAssessmentDAO.findAll(NICICOSpecification.of(criteriaRq));
+        criteriaRq.getCriteria().add(makeNewCriteria("deleted", null, EOperator.isNull, null));
+        addCriteria(criteriaRq.getCriteria().get(0), objectType, objectId, true, true);
+        if (!criteriaRq.getCriteria().get(0).getCriteria().isEmpty())
+            needsAssessmentList = needsAssessmentDAO.findAll(NICICOSpecification.of(criteriaRq));
         return removeDuplicateNAs(needsAssessmentList);
     }
 
@@ -119,13 +121,12 @@ public class NeedsAssessmentReportsService {
         List<NeedsAssessment> needsAssessmentList = new ArrayList<>();
         SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
         criteriaRq.getCriteria().add(makeNewCriteria(null, null, EOperator.or, new ArrayList<>()));
-//        criteriaRq.getCriteria().add(makeNewCriteria("deleted", 75L, EOperator.notEqual, null));
-        addCriteria(criteriaRq.getCriteria().get(0), objectType, objectId, objectType, objectId, false);
+        criteriaRq.getCriteria().add(makeNewCriteria("deleted", null, EOperator.isNull, null));
+        addCriteria(criteriaRq.getCriteria().get(0), objectType, objectId, true, false);
         if (!criteriaRq.getCriteria().get(0).getCriteria().isEmpty())
             needsAssessmentList.addAll(needsAssessmentDAO.findAll(NICICOSpecification.of(criteriaRq)));
 
-        SearchDTO.CriteriaRq tempCriteriaRq = getCriteria(objectType, objectId);
-//        tempCriteriaRq.getCriteria().add(makeNewCriteria("deleted", 75L, EOperator.notEqual, null));
+        SearchDTO.CriteriaRq tempCriteriaRq = getCriteria(objectType, objectId, true);
         List<NeedsAssessmentTemp> needsAssessmentTemps = needsAssessmentTempDAO.findAll(NICICOSpecification.of(tempCriteriaRq));
         needsAssessmentList.addAll(modelMapper.map(needsAssessmentTemps, new TypeToken<List<NeedsAssessment>>() {
         }.getType()));
@@ -145,6 +146,8 @@ public class NeedsAssessmentReportsService {
     private MultiValueMap getNAPostsGByPriority(List<NeedsAssessment> needsAssessments) {
         MultiValueMap postCodes = new MultiValueMap();
         needsAssessments.forEach(needsAssessment -> {
+            if (needsAssessment.getDeleted() != null)
+                return;
             switch (needsAssessment.getObjectType()) {
                 case "Post":
                     try {
@@ -278,7 +281,7 @@ public class NeedsAssessmentReportsService {
     public SearchDTO.SearchRs<PostDTO.Info> getSkillNAPostList(SearchDTO.SearchRq request, Long skillId) {
         Skill skill = skillService.getSkill(skillId);
         List<NeedsAssessment> needsAssessments = new ArrayList<>(skill.getNeedsAssessments());
-        MultiValueMap postsGByPriority = getNAPostsGByPriority(needsAssessments);
+        MultiValueMap postsGByPriority = getNAPostsGByPriority(needsAssessments.stream().filter(na -> na.getDeleted() == null).collect(Collectors.toList()));
         SearchDTO.SearchRs<PostDTO.Info> searchRs = new SearchDTO.SearchRs<>();
         searchRs.setTotalCount((long) postsGByPriority.values().size());
         searchRs.setList(modelMapper.map(postsGByPriority.values(), new TypeToken<List<PostDTO.Info>>() {
@@ -297,7 +300,7 @@ public class NeedsAssessmentReportsService {
         });
         Course course = courseService.getCourse(courseId);
         List<NeedsAssessment> needsAssessments = new ArrayList<>();
-        course.getSkillSet().forEach(skill -> needsAssessments.addAll(skill.getNeedsAssessments()));
+        course.getSkillSet().forEach(skill -> needsAssessments.addAll(skill.getNeedsAssessments().stream().filter(na -> na.getDeleted() == null).collect(Collectors.toList())));
         Comparator<NeedsAssessment> comparator = Comparator.comparing(na -> NeedsAssessment.priorityList.indexOf(na.getObjectType()));
         comparator = comparator.thenComparing(NeedsAssessment::getNeedsAssessmentPriorityId);
         needsAssessments.sort(comparator);
@@ -328,55 +331,55 @@ public class NeedsAssessmentReportsService {
     }
 
     @Transactional(readOnly = true)
-    public void addCriteria(SearchDTO.CriteriaRq criteriaRq, String objectType, Long objectId, String mainObjectType, Long mainObjectId, boolean isVerified) {
+    public void addCriteria(SearchDTO.CriteriaRq criteriaRq, String objectType, Long objectId, boolean isFirstObject, boolean addFirstObject) {
         Supplier<TrainingException> trainingExceptionSupplier = () -> new TrainingException(TrainingException.ErrorType.NotFound);
         switch (objectType) {
             case "Post":
                 Post currentPost = postDAO.findById(objectId).orElseThrow(trainingExceptionSupplier);
-                if (currentPost.getDeleted() != null || currentPost.getEnabled() != null)
+                if (!isFirstObject && (currentPost.getDeleted() != null || currentPost.getEnabled() != null))
                     return;
-                currentPost.getTrainingPostSet().forEach(trainingPost -> addCriteria(criteriaRq, "TrainingPost", trainingPost.getId(), mainObjectType, mainObjectId, isVerified));
-                currentPost.getPostGroupSet().forEach(postGroup -> addCriteria(criteriaRq, "PostGroup", postGroup.getId(), mainObjectType, mainObjectId, isVerified));
+                currentPost.getTrainingPostSet().forEach(trainingPost -> addCriteria(criteriaRq, "TrainingPost", trainingPost.getId(), false, addFirstObject));
+                currentPost.getPostGroupSet().forEach(postGroup -> addCriteria(criteriaRq, "PostGroup", postGroup.getId(), false, addFirstObject));
                 break;
             case "TrainingPost":
                 TrainingPost currentTrainingPost = trainingPostDAO.findById(objectId).orElseThrow(trainingExceptionSupplier);
-                if (currentTrainingPost.getDeleted() != null || currentTrainingPost.getEnabled() != null)
+                if (!isFirstObject && (currentTrainingPost.getDeleted() != null || currentTrainingPost.getEnabled() != null))
                     return;
                 if (currentTrainingPost.getJob() != null)
-                    addCriteria(criteriaRq, "Job", currentTrainingPost.getJob().getId(), mainObjectType, mainObjectId, isVerified);
+                    addCriteria(criteriaRq, "Job", currentTrainingPost.getJob().getId(), false, addFirstObject);
                 if (currentTrainingPost.getPostGrade() != null)
-                    addCriteria(criteriaRq, "PostGrade", currentTrainingPost.getPostGrade().getId(), mainObjectType, mainObjectId, isVerified);
-                currentTrainingPost.getPostGroupSet().forEach(postGroup -> addCriteria(criteriaRq, "PostGroup", postGroup.getId(), mainObjectType, mainObjectId, isVerified));
+                    addCriteria(criteriaRq, "PostGrade", currentTrainingPost.getPostGrade().getId(), false, addFirstObject);
+                currentTrainingPost.getPostGroupSet().forEach(postGroup -> addCriteria(criteriaRq, "PostGroup", postGroup.getId(), false, addFirstObject));
                 break;
             case "PostGroup":
                 PostGroup postGroup = postGroupDAO.findById(objectId).orElseThrow(trainingExceptionSupplier);
-                if (postGroup.getDeleted() != null || postGroup.getEnabled() != null)
+                if (!isFirstObject && (postGroup.getDeleted() != null || postGroup.getEnabled() != null))
                     return;
                 break;
             case "Job":
                 Job currentJob = jobDAO.findById(objectId).orElseThrow(trainingExceptionSupplier);
-                if (currentJob.getDeleted() != null || currentJob.getEnabled() != null)
+                if (!isFirstObject && (currentJob.getDeleted() != null || currentJob.getEnabled() != null))
                     return;
-                currentJob.getJobGroupSet().forEach(jobGroup -> addCriteria(criteriaRq, "JobGroup", jobGroup.getId(), mainObjectType, mainObjectId, isVerified));
+                currentJob.getJobGroupSet().forEach(jobGroup -> addCriteria(criteriaRq, "JobGroup", jobGroup.getId(), false, addFirstObject));
                 break;
             case "JobGroup":
                 JobGroup jobGroup = jobGroupDAO.findById(objectId).orElseThrow(trainingExceptionSupplier);
-                if (jobGroup.getDeleted() != null || jobGroup.getEnabled() != null)
+                if (!isFirstObject && (jobGroup.getDeleted() != null || jobGroup.getEnabled() != null))
                     return;
                 break;
             case "PostGrade":
                 PostGrade currentPostGrade = postGradeDAO.findById(objectId).orElseThrow(trainingExceptionSupplier);
-                if (currentPostGrade.getDeleted() != null || currentPostGrade.getEnabled() != null)
+                if (!isFirstObject && (currentPostGrade.getDeleted() != null || currentPostGrade.getEnabled() != null))
                     return;
-                currentPostGrade.getPostGradeGroup().forEach(postGradeGroup -> addCriteria(criteriaRq, "PostGradeGroup", postGradeGroup.getId(), mainObjectType, mainObjectId, isVerified));
+                currentPostGrade.getPostGradeGroup().forEach(postGradeGroup -> addCriteria(criteriaRq, "PostGradeGroup", postGradeGroup.getId(), false, addFirstObject));
                 break;
             case "PostGradeGroup":
                 PostGradeGroup postGradeGroup = postGradeGroupDAO.findById(objectId).orElseThrow(trainingExceptionSupplier);
-                if (postGradeGroup.getDeleted() != null || postGradeGroup.getEnabled() != null)
+                if (!isFirstObject && (postGradeGroup.getDeleted() != null || postGradeGroup.getEnabled() != null))
                     return;
                 break;
         }
-        if (isVerified || !objectType.equals(mainObjectType) || !objectId.equals(mainObjectId)) {
+        if (!isFirstObject || addFirstObject) {
             List<SearchDTO.CriteriaRq> list = new ArrayList<>();
             list.add(makeNewCriteria("objectId", objectId, EOperator.equals, null));
             list.add(makeNewCriteria("objectType", objectType, EOperator.equals, null));

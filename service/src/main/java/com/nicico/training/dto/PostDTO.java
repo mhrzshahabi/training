@@ -48,5 +48,7 @@ public class PostDTO implements Serializable {
         private Long id;
         private String code;
         private String titleFa;
+        private Long enabled;
+        private Long deleted;
     }
 }

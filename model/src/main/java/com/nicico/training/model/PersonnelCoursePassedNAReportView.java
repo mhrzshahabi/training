@@ -4,10 +4,11 @@ package com.nicico.training.model;
 import com.nicico.training.model.compositeKey.PersonnelCourseKey;
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.Subselect;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import java.io.Serializable;
 
 @Getter

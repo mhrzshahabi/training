@@ -76,6 +76,7 @@ public class PersonnelDTO implements Serializable {
         private String phone;
         private String mobile;
         private String email;
+        private Long postId;
     }
 
     @Getter
@@ -117,12 +118,13 @@ public class PersonnelDTO implements Serializable {
         private String phone;
         private String mobile;
         private String email;
+        private Long postId;
 
         @Getter(AccessLevel.NONE)
         private String fullName;
 
         public String getFullName() {
-            return (firstName + " " + lastName).compareTo("null null")==0?null:firstName + " " + lastName;
+            return (firstName + " " + lastName).compareTo("null null") == 0 ? null : firstName + " " + lastName;
         }
     }
 
