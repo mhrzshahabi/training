@@ -442,14 +442,6 @@
                 },
                 </sec:authorize>
 
-                <sec:authorize access="hasAuthority('Evaluation_Learning')">
-                {
-                    id: "TabPane_Learning",
-                    title: "یادگیری-ثبت نمرات پیش آزمون",
-                    pane: isc.ViewLoader.create({autoDraw: true, viewURL: "registerScorePreTest/show-form"})
-                },
-                </sec:authorize>
-
                 <sec:authorize access="hasAuthority('Evaluation_Behavior')">
                 {
                     id: "TabPane_Behavior",
@@ -562,15 +554,10 @@
                         break;
                     }
                     case "TabPane_Learning_PreTest": {
+                        classId_preTest = classRecord.id;
                         RestDataSource_PreTest.fetchDataURL = questionBankTestQuestionUrl +"/preTest/"+classRecord.id+ "/spec-list";
                         ListGrid_PreTest.invalidateCache();
                         ListGrid_PreTest.fetchData();
-                        break;
-                    }
-                    case "TabPane_Learning": {
-                        RestDataSource_ClassStudent_registerScorePreTest.fetchDataURL = tclassStudentUrl + "/pre-test-score-iscList/" + classRecord.id;
-                        ListGrid_Class_Student_RegisterScorePreTest.invalidateCache();
-                        ListGrid_Class_Student_RegisterScorePreTest.fetchData();
                         break;
                     }
                     case "TabPane_Behavior": {
@@ -600,29 +587,22 @@
                 Detail_Tab_Evaluation.disableTab(1);
                 Detail_Tab_Evaluation.disableTab(2);
                 Detail_Tab_Evaluation.disableTab(3);
-                Detail_Tab_Evaluation.disableTab(4);
             } else if (evaluationType === "2") {
                 Detail_Tab_Evaluation.enableTab(0);
                 Detail_Tab_Evaluation.enableTab(1);
-                Detail_Tab_Evaluation.enableTab(2);
+                Detail_Tab_Evaluation.disableTab(2);
                 Detail_Tab_Evaluation.disableTab(3);
-                Detail_Tab_Evaluation.disableTab(4);
             } else if (evaluationType === "3") {
                 Detail_Tab_Evaluation.enableTab(0);
                 Detail_Tab_Evaluation.enableTab(1);
                 Detail_Tab_Evaluation.enableTab(2);
-                Detail_Tab_Evaluation.enableTab(3);
-                Detail_Tab_Evaluation.disableTab(4);
+                Detail_Tab_Evaluation.disableTab(3);
             } else if (evaluationType === "4") {
                 Detail_Tab_Evaluation.enableTab(0);
                 Detail_Tab_Evaluation.enableTab(1);
                 Detail_Tab_Evaluation.enableTab(2);
                 Detail_Tab_Evaluation.enableTab(3);
-                Detail_Tab_Evaluation.enableTab(4);
             }
-
-            Detail_Tab_Evaluation.disableTab(2);
-            Detail_Tab_Evaluation.disableTab(4);
         }
 
         function load_term_by_year(value) {

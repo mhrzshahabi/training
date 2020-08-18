@@ -767,12 +767,15 @@
                 if (ListGrid_Class_JspClass.getSelectedRecord().classStatus !== "3") {
                     let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
                     const {trainingPlaceIds,teacherId,...record}=classRecord;
-                    const essentialRecord={instituteId:record.institute.id,trainingPlaceId:trainingPlaceIds[0],teacherId};
+                    const essentialRecord={instituteId:record.instituteId ,trainingPlaceId:trainingPlaceIds[0],teacherId};
 
                     DynamicForm_Session.clearValues();
 
-                    DynamicForm_Session.getField("instituteId").fetchData();
-                    RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + essentialRecord.instituteId + "/trainingPlaces";
+                    if (record.instituteId!=0) {
+                        DynamicForm_Session.getField("instituteId").fetchData();
+                        RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + essentialRecord.instituteId + "/trainingPlaces";
+                    }
+
                     RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + classRecord.courseId+"/"+teacherId;
                     RestDataSource_Teacher_JspClass.invalidateCache();
 

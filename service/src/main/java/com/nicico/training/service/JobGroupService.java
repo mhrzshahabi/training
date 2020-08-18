@@ -5,6 +5,7 @@ com.nicico.training.service
 @Time :9:16 AM
     */
 
+import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.setCriteria;
 
@@ -36,6 +38,8 @@ public class JobGroupService implements IJobGroupService {
     private final JobGroupDAO jobGroupDAO;
     private final JobDAO jobDAO;
     private final IWorkGroupService workGroupService;
+    private final NeedsAssessmentTempService needsAssessmentTempService;
+    private final NeedsAssessmentService needsAssessmentService;
 
     @Transactional(readOnly = true)
     @Override
@@ -117,14 +121,18 @@ public class JobGroupService implements IJobGroupService {
     @Transactional
     @Override
     public void delete(Long id) {
-        jobGroupDAO.deleteById(id);
+        if (needsAssessmentService.checkBeforeDeleteObject("JobGroup", id) && needsAssessmentTempService.checkBeforeDeleteObject("JobGroup", id))
+            jobGroupDAO.deleteById(id);
+        else
+            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
     }
 
     @Transactional
     @Override
     public void delete(JobGroupDTO.Delete request) {
-        final List<JobGroup> cAllById = jobGroupDAO.findAllById(request.getIds());
-        jobGroupDAO.deleteAll(cAllById);
+        request.getIds().forEach(id -> delete(id));
+//        final List<JobGroup> cAllById = jobGroupDAO.findAllById(request.getIds());
+//        jobGroupDAO.deleteAll(cAllById);
     }
 
     @Transactional(readOnly = true)
@@ -144,23 +152,13 @@ public class JobGroupService implements IJobGroupService {
 
     private JobGroupDTO.Info save(JobGroup jobGroup, Set<Long> jobIds) {
         final Set<Job> jobs = new HashSet<>();
-//        final Set<CompetenceOld> competences = new HashSet<>();
         Optional.ofNullable(jobIds)
                 .ifPresent(jobIdSet -> jobIdSet
                         .forEach(jobId ->
                                 jobs.add(jobDAO.findById(jobId)
                                         .orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobNotFound)))
                         ));
-//        Optional.ofNullable(competenceIds)
-//                .ifPresent(competenceIdSet -> competenceIdSet
-//                        .forEach(competenceIdss ->
-//                                competences.add(competenceDAO.findById(competenceIdss)
-//                                        .orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompetenceNotFound)))
-//                        ));
-
-//        jobGroup.setCompetenceSet(competences);
         jobGroup.setJobSet(jobs);
-        //final JobGroup saved = jobGroupDAO.saveAndFlush(jobGroup);
         final JobGroup saved = jobGroupDAO.save(jobGroup);
         return modelMapper.map(saved, JobGroupDTO.Info.class);
     }
@@ -171,26 +169,8 @@ public class JobGroupService implements IJobGroupService {
     public List<JobDTO.Info> getJobs(Long jobGroupID) {
         final Optional<JobGroup> optionalJobGroup = jobGroupDAO.findById(jobGroupID);
         final JobGroup jobGroup = optionalJobGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobGroupNotFound));
-//        Set<CompetenceOld> competenceSet = jobGroup.getCompetenceSet();
-        Set<Job> jobs = jobGroup.getJobSet();
-        ArrayList<JobDTO.Info> jobList = new ArrayList<>();
-        for (Job job : jobs) {
-            jobList.add(modelMapper.map(job, JobDTO.Info.class));
-        }
-//        JobDTO.Info info = new JobDTO.Info();
-//      --------------------------------------- By f.ghazanfari - start ---------------------------------------
-//        for (CompetenceOld competence:jobGroup.getCompetenceSet()
-//             ) {
-//
-//            for (JobCompetence jobCompetence:competence.getJobCompetenceSet()
-//                 ) {
-//                jobs.add(jobCompetence.getJob());
-//
-//            }
-//        }
-//      --------------------------------------- By f.ghazanfari - end ---------------------------------------
-        return jobList;
-//        return infoList;
+        return modelMapper.map(jobGroup.getJobSet().stream().filter(job -> job.getDeleted() == null).collect(Collectors.toList()), new TypeToken<List<JobDTO.Info>>() {
+        }.getType());
     }
 
     @Override
@@ -205,33 +185,14 @@ public class JobGroupService implements IJobGroupService {
 
     @Override
     @Transactional
-    public void removeFromCompetency(Long jobGroupId, Long competenceId) {
-
-//        Optional<JobGroup> optionalJobGroup = jobGroupDAO.findById(jobGroupId);
-//        final JobGroup jobGroup = optionalJobGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobGroupNotFound));
-//        final Optional<CompetenceOld> optionalCompetence = competenceDAO.findById(competenceId);
-//        final CompetenceOld competence = optionalCompetence.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
-//        jobGroup.getCompetenceSet().remove(competence);
-    }
-
-    @Override
-    @Transactional
-    public void removeFromAllCompetences(Long jobGroupId) {
-
-//        Optional<JobGroup> optionalJobGroup = jobGroupDAO.findById(jobGroupId);
-//        final JobGroup jobGroup = optionalJobGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobGroupNotFound));
-//        jobGroup.getCompetenceSet().clear();
-
-    }
-
-    @Override
-    @Transactional
     public Set<JobDTO.Info> unAttachJobs(Long jobGroupId) {
         final Optional<JobGroup> optionalJobGroup = jobGroupDAO.findById(jobGroupId);
         final JobGroup jobGroup = optionalJobGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobGroupNotFound));
 
         Set<Job> activeJobs = jobGroup.getJobSet();
-        List<Job> allJobs = jobDAO.findAll();
+        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
+        List<Job> allJobs = jobDAO.findAll(NICICOSpecification.of(searchRq));
         Set<Job> unAttachJobs = new HashSet<>();
 
         for (Job job : allJobs) {

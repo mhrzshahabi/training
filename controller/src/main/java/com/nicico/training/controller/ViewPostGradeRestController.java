@@ -2,6 +2,7 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ViewPostGradeDTO;
+import com.nicico.training.service.BaseService;
 import com.nicico.training.service.ViewPostGradeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,11 +25,9 @@ public class ViewPostGradeRestController {
 
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<ViewPostGradeDTO.Info>> iscList(HttpServletRequest iscRq) throws IOException {
-        int startRow = 0;
-        if (iscRq.getParameter("_startRow") != null)
-            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
         SearchDTO.SearchRs<ViewPostGradeDTO.Info> searchRs = viewPostGradeService.search(searchRq);
-        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 }

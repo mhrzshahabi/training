@@ -27,5 +27,6 @@ public class PostGradeDTO implements Serializable {
     public static class Info extends PostGradeDTO {
         private Long id;
         private Long enabled;
+        private Long deleted;
     }
 }

@@ -470,11 +470,11 @@
                             }
                         }
                     }),
-                    isc.IButton.create({
-                        title: "ارسال از طریق پیامک",
-                        click: function () {
-                        }
-                    }),
+                    // isc.IButton.create({
+                    //     title: "ارسال از طریق پیامک",
+                    //     click: function () {
+                    //     }
+                    // }),
                     isc.IButton.create({
                         title: "<spring:message code="logout"/>",
                         click: function () {

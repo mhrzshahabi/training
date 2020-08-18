@@ -575,7 +575,7 @@ public class ClassSessionService implements IClassSession {
                                     MainHoursRange().get(range).get(1),
                                     sessionTypeId,
                                     "آموزش",
-                                    ((autoSessionsRequirement.getOrganizerId() != null) ? (autoSessionsRequirement.getOrganizerId().intValue()) : null),
+                                    ((autoSessionsRequirement.getInstituteId() != null) ? (autoSessionsRequirement.getInstituteId().intValue()) : null),
                                     ((autoSessionsRequirement.getTrainingPlaceIds() != null) ? (autoSessionsRequirement.getTrainingPlaceIds().get(0).intValue()) : null),
 //                                    autoSessionsRequirement.getTrainingPlaceIds().get(0).intValue(),
                                     autoSessionsRequirement.getTeacherId(),

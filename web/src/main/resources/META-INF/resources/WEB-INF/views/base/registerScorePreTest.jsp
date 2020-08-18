@@ -7,14 +7,11 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 // <script>
-    var change_value;
-    //************************************************************************************
-    // RestDataSource & ListGrid
-    //************************************************************************************
+    var change_value_registerScorePreTest;
 
-    RestDataSource_ClassStudent_registerScorePreTest = isc.TrDS.create({
+    var RestDataSource_ClassStudent_registerScorePreTest = isc.TrDS.create({
         fields: [
-            {name: "id", hidden: true},
+            {name: "id", hidden: true, primaryKey: true},
             {name: "tclass.scoringMethod"},
             {
                 name: "student.firstName",
@@ -44,20 +41,17 @@
             {name:"preTestScore", title: "<spring:message code="score"/>", filterOperator: "iContains"},
         ],
     });
-    //**************************************************************************
+
     var ListGrid_Class_Student_RegisterScorePreTest = isc.TrLG.create({
         selectionType: "single",
         editOnFocus: true,
         showRowNumbers: false,
-//------------
         editByCell: true,
         editEvent: "click",
         modalEditing: true,
-        autoSaveEdits: false,
         canHover:true,
-//------
         canSelectCells: true,
-// sortField: 0,
+        autoFetchData: false,
         dataSource: RestDataSource_ClassStudent_registerScorePreTest,
         fields: [
 
@@ -90,69 +84,63 @@
                     keyPressFilter: "[0-9]"
                 }
             },
-                {
+            {
                 name: "preTestScore",
                 title: "نمره پيش آزمون",
                 filterOperator: "iContains",
                 canEdit: true,
                 validateOnChange: false,
-                    filterEditorProperties: {
-                        keyPressFilter: "[0-9|.]"
-                    },
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9|.]"
+                },
                 editEvent: "click",
-                    change:function(form,item,value,oldValue){
+                change: function (form, item, value, oldValue) {
 
-                        if(value!=null && value!='' && typeof (value) != 'undefined'&& !value.match(/^(([1-9]\d{0,1})|100|0)$/)){
-                            item.setValue(value.substring(0,value.length-1));
-                        }else{
-                            item.setValue(value);
-                        }
-
-                        if(value==null || typeof (value) == 'undefined'){
-                            item.setValue('');
-                        }
-
-
-                        if(oldValue==null || typeof (oldValue) == 'undefined'){
-                            oldValue='';
-                        }
-
-
-                        if(item.getValue() != oldValue)
-                        {
-                            change_value=true;
-                        }
-                    },
-                    editorExit:function(editCompletionEvent, record, newValue) {
-
-                        if( change_value){
-                            if (newValue != null && newValue != '' && typeof (newValue) != 'undefined') {
-
-                                ListGrid_Cell_ScorePreTest_Update(record, newValue);
-
-                            } else {
-                                ListGrid_Cell_ScorePreTest_Update(record, null);
-                            }
-                        }
-                        change_value=false;
-                    },
-                    hoverHTML:function (record, rowNum, colNum, grid) {
-                        return"نمره پیش آزمون بین 0 تا 100 می باشد"
+                    if (value != null && value != '' && typeof (value) != 'undefined' && !value.match(/^(([1-9]\d{0,1})|100|0)$/)) {
+                        item.setValue(value.substring(0, value.length - 1));
+                    } else {
+                        item.setValue(value);
                     }
-             },
+
+                    if (value == null || typeof (value) == 'undefined') {
+                        item.setValue('');
+                    }
+
+
+                    if (oldValue == null || typeof (oldValue) == 'undefined') {
+                        oldValue = '';
+                    }
+
+
+                    if (item.getValue() != oldValue) {
+                        change_value_registerScorePreTest = true;
+                    }
+                },
+                editorExit: function (editCompletionEvent, record, newValue) {
+
+                    if (change_value_registerScorePreTest) {
+                        if (newValue != null && newValue != '' && typeof (newValue) != 'undefined') {
+
+                            ListGrid_Cell_ScorePreTest_Update(record, newValue);
+
+                        } else {
+                            ListGrid_Cell_ScorePreTest_Update(record, null);
+                        }
+                    }
+                    change_value_registerScorePreTest = false;
+                },
+                hoverHTML: function (record, rowNum, colNum, grid) {
+                    return "نمره پیش آزمون بین 0 تا 100 می باشد"
+                }
+            },
 
         ],
 
     });
-    //**************************************************************************
 
-    var criteria_RegisterScorePreTest = {
-        _constructor: "AdvancedCriteria",
-        operator: "and",
-        criteria: [
-            {fieldName: "preCourseTest", operator: "equals", value: true}
-        ]
-    };
+    var Body_RegisterScorePreTest = isc.HLayout.create({
+        members: [ListGrid_Class_Student_RegisterScorePreTest]
+    });
 
     function ListGrid_Cell_ScorePreTest_Update(record, newValue) {
         record.preTestScore = newValue;
@@ -177,22 +165,13 @@
         }
     }
 
+    function call_registerScorePreTest(classId) {
+        RestDataSource_ClassStudent_registerScorePreTest.fetchDataURL = tclassStudentUrl + "/pre-test-score-iscList/" + classId;
+        ListGrid_Class_Student_RegisterScorePreTest.invalidateCache();
+        ListGrid_Class_Student_RegisterScorePreTest.fetchData();
+    }
 
-    //**********************************************************************************
 
-    var HLayout_Grid_ClassStudent_registerScorePreTest=isc.HLayout.create({
-        width: "100%",
-        height: "100%",
-        members: [ListGrid_Class_Student_RegisterScorePreTest]
-    });
-
-    var VLayout_Body_Group = isc.VLayout.create({
-        width: "100%",
-        height: "100%",
-        members: [
-              HLayout_Grid_ClassStudent_registerScorePreTest
-        ]
-    });
 
 
 
