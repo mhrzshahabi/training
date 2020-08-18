@@ -531,8 +531,6 @@
                         return;
                     }
 
-                    form.getItem("startDate1").setValue(reformat(form.getValue("startDate1")));
-
                     var dateCheck;
                     var endDate = form.getValue("startDate2");
                     dateCheck = checkDate(value);
@@ -577,8 +575,6 @@
                         startDate2Check_JspStaticalUnitReport = true;
                         return;
                     }
-
-                    form.getItem("startDate2").setValue(reformat(form.getValue("startDate2")));
 
                     var dateCheck;
                     dateCheck = checkDate(value);
@@ -629,8 +625,6 @@
                         return;
                     }
 
-                    form.getItem("endDate1").setValue(reformat(form.getValue("endDate1")));
-
                     var dateCheck;
                     var endDate = form.getValue("endDate2");
                     dateCheck = checkDate(value);
@@ -674,8 +668,6 @@
                         endDate2Check_JspStaticalUnitReport = true;
                         return;
                     }
-
-                    form.getItem("endDate2").setValue(reformat(form.getValue("endDate2")));
 
                     var dateCheck;
                     dateCheck = checkDate(value);

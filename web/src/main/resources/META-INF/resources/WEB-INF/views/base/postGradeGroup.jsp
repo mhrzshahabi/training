@@ -1006,29 +1006,88 @@
     PostDS_PGG = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "job.code", title: "<spring:message code="job.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap, filterOnKeypress: true},
             {
-                name: "enabled",
-                title: "<spring:message code="active.status"/>",
+                name: "code",
+                title: "<spring:message code="post.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "titleFa",
+                title: "<spring:message code="post.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "jobTitleFa",
+                title: "<spring:message code="job.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "postGradeTitleFa",
+                title: "<spring:message code="post.grade.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "assistance",
+                title: "<spring:message code="assistance"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "affairs",
+                title: "<spring:message code="affairs"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "section",
+                title: "<spring:message code="section"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "costCenterCode",
+                title: "<spring:message code="reward.cost.center.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "costCenterTitleFa",
+                title: "<spring:message code="reward.cost.center.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "competenceCount",
+                title: "تعداد شایستگی",
                 align: "center",
                 filterOperator: "equals",
                 autoFitWidth: true,
-                autoFitWidthApproach: "both",
+                autoFitWidthApproach: "both"
             },
-
+            {
+                name: "personnelCount",
+                title: "تعداد پرسنل",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both"
+            },
+            {
+                name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+            }
         ],
-        fetchDataURL: postUrl + "/iscList"
+        fetchDataURL: viewTrainingPostUrl + "/spec-list"
     });
 
     let ToolStrip_Post_Grade_Group_Post_Export2EXcel = isc.ToolStrip.create({
@@ -1065,38 +1124,9 @@
     PostLG_PGG = isc.TrLG.create({
         dataSource: PostDS_PGG,
         autoFetchData: false,
-        showResizeBar: true,
-        sortField: 0,
+        sortField: "id",
         // groupByField: "postGrade.titleFa",
         gridComponents: [ActionsTS_Post_Post_Grade_Group, "header", "filterEditor", "body",],
-        fields: [
-            {name: "code",
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9/]"
-                }
-            },
-            {name: "titleFa"},
-            {name: "job.titleFa"},
-            {name: "postGrade.titleFa"},
-            {name: "area"},
-            {name: "assistance"},
-            {name: "affairs"},
-            {name: "section"},
-            {name: "unit"},
-            {name: "costCenterCode",
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
-                }
-            },
-            {name: "costCenterTitleFa"},
-            {name: "enabled",
-                valueMap:{
-                    // undefined : "فعال",
-                    74 : "غیر فعال"
-                },filterOnKeypress: true,
-
-            },
-        ],
     });
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1124,6 +1154,7 @@
     });
 
     var HLayout_Grid_Post_Grade_Group_Jsp = isc.TrHLayout.create({
+        showResizeBar:true,
         members: [ListGrid_Post_Grade_Group_Jsp]
     });
 
@@ -1309,7 +1340,11 @@
                 if (post_PGG === postGradeGroup.id)
                     return;
                 post_PGG = postGradeGroup.id;
-                PostDS_PGG.fetchDataURL = postGradeGroupUrl + "postIscList/" + postGradeGroup.id;
+                PostLG_PGG.setImplicitCriteria({
+                    _constructor: "AdvancedCriteria",
+                    operator: "and",
+                    criteria: [{fieldName: "postGGI", operator: "equals", value: postGradeGroup.id}]
+                });
                 PostLG_PGG.invalidateCache();
                 PostLG_PGG.fetchData();
                 break;

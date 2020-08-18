@@ -28,7 +28,7 @@
     let PostDS_TrainingPost = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap, filterOnKeypress: true},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -371,7 +371,7 @@
             {name: "titleFa", title: "<spring:message code="job.title"/>"},
             {name: "code", title: "<spring:message code="job.code"/>"},
             {name: "peopleType", title: "<spring:message code="people.type"/>",  valueMap:peopleTypeMap},
-            {name: "enabled", title: "<spring:message code="active.status"/>"}
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",}
         ],
         fetchDataURL: jobUrl + "/iscList"
     });
@@ -392,7 +392,7 @@
                     "OrgCostCenter" : "پیمان کار"
                 }
             },
-            {name: "enabled", title: "<spring:message code="active.status"/>", autoFitWidth: true, autoFitWidthApproach: "both"}
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",}
         ],
         fetchDataURL: departmentUrl + "/iscList"
     });
@@ -408,7 +408,7 @@
             },
             {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
             {name: "peopleType", title: "<spring:message code="people.type"/>",  valueMap:peopleTypeMap},
-            {name: "enabled", title: "<spring:message code="active.status"/>"}
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",}
         ],
         fetchDataURL: viewPostGradeUrl + "/iscList"
     });
@@ -1012,24 +1012,36 @@
                 //     showFilterEditor: false
                 // },
             },
+            <%--{--%>
+                <%--width: 300,--%>
+                <%--ID: "enabled",--%>
+                <%--name: "enabled",--%>
+                <%--colSpan: 1,--%>
+                <%--// rowSpan: 1,--%>
+                <%--title: "<spring:message code="active.status"/>:",--%>
+                <%--wrapTitle: true,--%>
+                <%--type: "radioGroup",--%>
+                <%--vertical: false,--%>
+                <%--fillHorizontalSpace: true,--%>
+                <%--defaultValue: "1",--%>
+<%--// endRow:true,--%>
+                <%--valueMap: {--%>
+                    <%--74: "غیر فعال",--%>
+                    <%--// null: "فعال",--%>
+                <%--},--%>
+            <%--},--%>
             {
-                width: 300,
+                // width: 300,
                 ID: "enabled",
                 name: "enabled",
-                colSpan: 1,
-                // rowSpan: 1,
-                title: "<spring:message code="active.status"/>:",
-                wrapTitle: true,
-                type: "radioGroup",
-                vertical: false,
-                fillHorizontalSpace: true,
-                defaultValue: "1",
-// endRow:true,
-                valueMap: {
-                    74: "غیر فعال",
-                    null: "فعال",
-                },
-            }
+                // colSpan: 1,
+                type: "checkbox",
+                // title: "<spring:message code="active.status"/>:",
+                // titleOrientation: "top",
+                labelAsTitle: true,
+                title : "غیر فعال"
+                // defaultValue: true
+            },
         ]
     });
 
@@ -1052,6 +1064,8 @@
                 return;
             }
             var data = DynamicForm_TrainingPost_Jsp.getValues();
+
+            data.enabled = data.enabled ? "74" : null;
 
             isc.RPCManager.sendRequest({
                 actionURL: url,

@@ -18,8 +18,9 @@ import javax.persistence.*;
 @DiscriminatorValue("ViewPersonnelTrainingStatusReport")
 public class ViewPersonnelTrainingStatusReport {
 
-    @EmbeddedId
-    private PersonnelClassKey id;
+    @Id
+    @Column(name = "id")
+    private Long id;
 
     @Column(name = "na_priority_id")
     private Long naPriorityId;

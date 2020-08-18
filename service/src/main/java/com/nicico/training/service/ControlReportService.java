@@ -324,10 +324,13 @@ public class ControlReportService {
                     rCellStyle6.setBorderTop(BorderStyle.MEDIUM);
                     rCellStyle6.setBorderLeft(BorderStyle.MEDIUM);
                     rCellStyle6.setBorderRight(BorderStyle.MEDIUM);
-                    setBorderRegion("Top",BorderStyle.MEDIUM, startCellReference,endCellReference, sheet, workbook);
-                    setBorderRegion("Bottom",BorderStyle.MEDIUM, startCellReference,endCellReference, sheet, workbook);
-                    setBorderRegion("Left",BorderStyle.MEDIUM, startCellReference,endCellReference, sheet, workbook);
-                    setBorderRegion("Right",BorderStyle.MEDIUM, startCellReference,endCellReference, sheet, workbook);
+
+                    RegionUtil.setBorderBottom(BorderStyle.MEDIUM, CellRangeAddress.valueOf(startCellReference.formatAsString() + ":" + endCellReference.formatAsString()), sheet);
+                    RegionUtil.setBorderTop(BorderStyle.MEDIUM, CellRangeAddress.valueOf(startCellReference.formatAsString() + ":" + endCellReference.formatAsString()), sheet);
+                    RegionUtil.setBorderLeft(BorderStyle.MEDIUM, CellRangeAddress.valueOf(startCellReference.formatAsString() + ":" + endCellReference.formatAsString()), sheet);
+                    RegionUtil.setBorderRight(BorderStyle.MEDIUM, CellRangeAddress.valueOf(startCellReference.formatAsString() + ":" + endCellReference.formatAsString()), sheet);
+
+
                     cellOfRow.setCellStyle(rCellStyle6);
                     factorShift += 5;
                 }
@@ -345,10 +348,12 @@ public class ControlReportService {
 
                 rCellStyle5.setAlignment(HorizontalAlignment.CENTER);
                 rCellStyle5.setVerticalAlignment(VerticalAlignment.CENTER);
-                setBorderRegion("Top",BorderStyle.MEDIUM, startCellReference,endCellReference, sheet, workbook);
-                setBorderRegion("Bottom",BorderStyle.MEDIUM, startCellReference,endCellReference, sheet, workbook);
-                setBorderRegion("Left",BorderStyle.MEDIUM, startCellReference,endCellReference, sheet, workbook);
-                setBorderRegion("Right",BorderStyle.MEDIUM, startCellReference,endCellReference, sheet, workbook);
+
+                RegionUtil.setBorderBottom(BorderStyle.MEDIUM, CellRangeAddress.valueOf(startCellReference.formatAsString() + ":" + endCellReference.formatAsString()), sheet);
+                RegionUtil.setBorderTop(BorderStyle.MEDIUM, CellRangeAddress.valueOf(startCellReference.formatAsString() + ":" + endCellReference.formatAsString()), sheet);
+                RegionUtil.setBorderLeft(BorderStyle.MEDIUM, CellRangeAddress.valueOf(startCellReference.formatAsString() + ":" + endCellReference.formatAsString()), sheet);
+                RegionUtil.setBorderRight(BorderStyle.MEDIUM, CellRangeAddress.valueOf(startCellReference.formatAsString() + ":" + endCellReference.formatAsString()), sheet);
+
                 cellOfRow.setCellStyle(rCellStyle5);
                 //end ninth row
 
@@ -483,11 +488,13 @@ public class ControlReportService {
                     List<String> statesPerStudentValuesList = new ArrayList<>(statesPerStudentValues);
 
                     z = 0;
+                    int k=0;
                     for (int j = 0; j < reaminCols; j++) {
                         cellOfRow = row.createCell(6 + j);
 
-                        if (j < statesPerStudentKeysList.size() && statesPerStudentKeysList.get(j).equals(j)) {
-                            cellOfRow.setCellValue(statesPerStudentValuesList.get(j));
+                        if (k < statesPerStudentKeysList.size() && statesPerStudentKeysList.get(k).equals(j)) {
+                            cellOfRow.setCellValue(statesPerStudentValuesList.get(k));
+                            k++;
                         }
 
                         rCellStyle7.setAlignment(HorizontalAlignment.CENTER);
@@ -1993,10 +2000,12 @@ public class ControlReportService {
                     rCellStyle6.setBorderTop(BorderStyle.MEDIUM);
                     rCellStyle6.setBorderLeft(BorderStyle.MEDIUM);
                     rCellStyle6.setBorderRight(BorderStyle.MEDIUM);
-                    setBorderRegion("Bottom",BorderStyle.MEDIUM, startCellReference,endCellReference, sheet, workbook);
-                    setBorderRegion("Top",BorderStyle.MEDIUM, startCellReference,endCellReference, sheet, workbook);
-                    setBorderRegion("Left",BorderStyle.MEDIUM, startCellReference,endCellReference, sheet, workbook);
-                    setBorderRegion("Right",BorderStyle.MEDIUM, startCellReference,endCellReference, sheet, workbook);
+
+                    RegionUtil.setBorderBottom(BorderStyle.MEDIUM, CellRangeAddress.valueOf(startCellReference.formatAsString() + ":" + endCellReference.formatAsString()), sheet);
+                    RegionUtil.setBorderTop(BorderStyle.MEDIUM, CellRangeAddress.valueOf(startCellReference.formatAsString() + ":" + endCellReference.formatAsString()), sheet);
+                    RegionUtil.setBorderLeft(BorderStyle.MEDIUM, CellRangeAddress.valueOf(startCellReference.formatAsString() + ":" + endCellReference.formatAsString()), sheet);
+                    RegionUtil.setBorderRight(BorderStyle.MEDIUM, CellRangeAddress.valueOf(startCellReference.formatAsString() + ":" + endCellReference.formatAsString()), sheet);
+
                     cellOfRow.setCellStyle(rCellStyle6);
                     factorShift += 5;
                 }
@@ -2014,10 +2023,12 @@ public class ControlReportService {
 
                 rCellStyle5.setAlignment(HorizontalAlignment.CENTER);
                 rCellStyle5.setVerticalAlignment(VerticalAlignment.CENTER);
-                setBorderRegion("Bottom", BorderStyle.MEDIUM, startCellReference, endCellReference, sheet, workbook);
-                setBorderRegion("Top",BorderStyle.MEDIUM, startCellReference,endCellReference, sheet, workbook);
-                setBorderRegion("Left",BorderStyle.MEDIUM, startCellReference,endCellReference, sheet, workbook);
-                setBorderRegion("Right",BorderStyle.MEDIUM, startCellReference,endCellReference, sheet, workbook);
+
+                RegionUtil.setBorderBottom(BorderStyle.MEDIUM, CellRangeAddress.valueOf(startCellReference.formatAsString() + ":" + endCellReference.formatAsString()), sheet);
+                RegionUtil.setBorderTop(BorderStyle.MEDIUM, CellRangeAddress.valueOf(startCellReference.formatAsString() + ":" + endCellReference.formatAsString()), sheet);
+                RegionUtil.setBorderLeft(BorderStyle.MEDIUM, CellRangeAddress.valueOf(startCellReference.formatAsString() + ":" + endCellReference.formatAsString()), sheet);
+                RegionUtil.setBorderRight(BorderStyle.MEDIUM, CellRangeAddress.valueOf(startCellReference.formatAsString() + ":" + endCellReference.formatAsString()), sheet);
+
                 cellOfRow.setCellStyle(rCellStyle5);
                 //end ninth row
 
@@ -2151,11 +2162,13 @@ public class ControlReportService {
                     Collection<String> statesPerStudentValues = students.get(m).get(i).getStates().values();
                     List<String> statesPerStudentValuesList = new ArrayList<>(statesPerStudentValues);
 
+                    int k=0;
                     for (int j = 0; j < reaminCols; j++) {
                         cellOfRow = row.createCell(6 + j);
 
-                        if (j < statesPerStudentKeysList.size() && statesPerStudentKeysList.get(j).equals(j)) {
-                            cellOfRow.setCellValue(statesPerStudentValuesList.get(j));
+                        if (k < statesPerStudentKeysList.size() && statesPerStudentKeysList.get(k).equals(j)) {
+                            cellOfRow.setCellValue(statesPerStudentValuesList.get(k));
+                            k++;
                         }
 
                         rCellStyle7.setAlignment(HorizontalAlignment.CENTER);
@@ -2558,35 +2571,4 @@ public class ControlReportService {
             throw new Exception("Server problem");
         }//end catch
     }//end exportToExcelFull
-
-
-    void setBorderRegion(String Type, BorderStyle size, CellReference startCellReference, CellReference endCellReference, XSSFSheet sheet, XSSFWorkbook workbook) {
-        XSSFCellStyle rCellStyleCornerTop =  workbook.createCellStyle();
-        XSSFCellStyle rCellStyleCornerBottom =  workbook.createCellStyle();
-        XSSFCellStyle rCellStyleCornerLeft =  workbook.createCellStyle();
-        XSSFCellStyle rCellStyleCornerRight =  workbook.createCellStyle();
-
-        rCellStyleCornerTop.setBorderTop(size);
-        rCellStyleCornerBottom.setBorderBottom(size);
-        rCellStyleCornerLeft.setBorderLeft(size);
-        rCellStyleCornerRight.setBorderRight(size);
-
-
-        for (int i = startCellReference.getRow(); i <= endCellReference.getRow(); i++) {
-            XSSFRow row=sheet.getRow(i);
-            for (int j = startCellReference.getCol(); j <= endCellReference.getCol(); j++) {
-                XSSFCell cell=row.getCell(j);
-
-                if(Type=="Bottom"){
-                    cell.setCellStyle(rCellStyleCornerBottom);
-                }else if(Type=="Top"){
-                    cell.setCellStyle(rCellStyleCornerTop);
-                }else if(Type=="Left"){
-                    cell.setCellStyle(rCellStyleCornerLeft);
-                }else if(Type=="Right"){
-                    cell.setCellStyle(rCellStyleCornerRight);
-                }
-            }
-        }
-    }
 }

@@ -137,7 +137,7 @@
     var List_Grid_Reaport_annualStatisticalReportBySection = isc.TrLG.create({
         width: "100%",
         height: "100%",
-      dataSource: RestDataSource_annualStatisticalReportBySection,
+     // dataSource: RestDataSource_annualStatisticalReportBySection,
         showRowNumbers: true,
         fields: [
             {name: "instituteId",hidden:true},
@@ -698,14 +698,8 @@
                         return;
                     }
                     modalDialog=createDialog('wait');
-
-                  //  isc.RPCManager.sendRequest(TrDSRequest(annualStatisticsReportUrl+"/list" ,"POST",
-                     //   JSON.stringify(DynamicForm_Report_annualStatisticalReportBySection.getValues()), "callback: fill_control_result(rpcResponse)"));
-                   // RestDataSource_annualStatisticalReportBySection.fetchDataURL=(annualStatisticsReportUrl+"/list" ,"GET",JSON.stringify(DynamicForm_Report_annualStatisticalReportBySection.getValues()), "callback: fill_control_result(rpcResponse)");
-                    RestDataSource_annualStatisticalReportBySection.fetchDataURL=annualStatisticsReportUrl+"/list" +"?data=" + JSON.stringify(DynamicForm_Report_annualStatisticalReportBySection.getValues())
-                    List_Grid_Reaport_annualStatisticalReportBySection.invalidateCache()
-                    List_Grid_Reaport_annualStatisticalReportBySection.fetchData()
-
+                   isc.RPCManager.sendRequest(TrDSRequest(annualStatisticsReportUrl+"/list" ,"POST",
+                       JSON.stringify(DynamicForm_Report_annualStatisticalReportBySection.getValues()), "callback: fill_control_result(rpcResponse)"));
                 }
             },
 
@@ -714,8 +708,8 @@
 
     function fill_control_result(resp) {
         if (resp.httpResponseCode === 200) {
-           // modalDialog.close();
-           // List_Grid_Reaport_annualStatisticalReportBySection.setData(JSON.parse(resp.data).response.data);
+           modalDialog.close();
+           List_Grid_Reaport_annualStatisticalReportBySection.setData(JSON.parse(resp.data).response.data);
         }
     }
 

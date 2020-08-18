@@ -28,7 +28,7 @@
             <%--}--%>
         <%--});--%>
     <%--}--%>
-    
+
     var RestDataSource_Job_Group_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
@@ -631,7 +631,6 @@
         height: "100%",
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        showResizeBars: true,
         dataSource: RestDataSource_Job_Group_Jobs_Jsp,
         contextMenu: Menu_ListGrid_Job_Group_Jobs,
         gridComponents: [ActionsTS_Job_Group_Job, "header", "filterEditor", "body",],
@@ -1199,6 +1198,7 @@
     PostDS_JobGroup = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap, filterOnKeypress: true},
             {
                 name: "code",
                 title: "<spring:message code="post.code"/>",
@@ -1270,6 +1270,13 @@
                 filterOperator: "equals",
                 autoFitWidth: true,
                 autoFitWidthApproach: "both"
+            },
+            {
+                name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
             }
         ],
         fetchDataURL: viewTrainingPostUrl + "/spec-list"
@@ -1309,9 +1316,8 @@
     PostLG_JobGroup = isc.TrLG.create({
         dataSource: PostDS_JobGroup,
         autoFetchData: false,
-        showResizeBar: true,
-        sortField: 0,
-        gridComponents: [ActionsTS_Post_Job_Group, "header", "filterEditor", "body",],
+        sortField: "id",
+        gridComponents: [ActionsTS_Post_Job_Group, "header", "filterEditor", "body"],
         // groupByField: "job.titleFa",
     });
 
@@ -1345,6 +1351,7 @@
     var HLayout_Grid_Job_Group_Jsp = isc.HLayout.create({
         width: "100%",
         height: "100%",
+        showResizeBar:true,
         members: [ListGrid_Job_Group_Jsp]
     });
     var VLayout_Body_Job_Group_Jsp = isc.VLayout.create({
