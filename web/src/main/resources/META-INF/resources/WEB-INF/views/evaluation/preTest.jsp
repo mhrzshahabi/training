@@ -713,24 +713,12 @@
 
     var ToolStripButton_PrintJasper = isc.ToolStripButton.create({
         icon: "[SKIN]/RichTextEditor/print.png",
-        title: "<spring:message code='print'/>",
+        title: "چاپ سوالات پیش آزمون",
         click: function () {
             let params = {};
             let data = ListGrid_PreTest.getData().localData.get(0).testQuestionId;
             params.teacher = ListGrid_PreTest.getData().localData.get(0).questionBank.teacher.fullNameFa;
-            // ListGrid_PreTest.getData().localData.forEach(function (value, index, array) {
-            //     let q = {
-            //         category: value.questionBank.category,
-            //         subCategory: value.questionBank.subCategory,
-            //         course: value.questionBank.course,
-            //         displayType: value.questionBank.displayType,
-            //         questionType: value.questionBank.questionType,
-            //         question: value.questionBank.question,
-            //         teacher: value.questionBank.teacher
-            //     };
-            //     data.add(q);
-            // });
-            console.log(params);
+
             print(data, params, "testForm.jasper");
         }
     });
