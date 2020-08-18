@@ -32,6 +32,14 @@
             {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {
+                name: "enabled",
+                title: "<spring:message code="active.status"/>",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both",
+            },
 
         ],
         fetchDataURL: viewPostUrl + "/iscList"
@@ -40,7 +48,6 @@
     PostLG_PostGroup = isc.TrLG.create({
         dataSource: PostDS_PostGroup,
         autoFetchData: true,
-        showResizeBar: true,
         sortField: 0,
         fields: [
             {name: "code",
@@ -63,7 +70,13 @@
             },
             {name: "costCenterTitleFa"},
             {name: "competenceCount"},
-            {name: "personnelCount"}
+            {name: "personnelCount"},
+            {name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+            },
         ],
     });
 
@@ -261,7 +274,15 @@
             {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true}
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "enabled",
+                title: "<spring:message code="active.status"/>",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both",
+            },
 
         ],
         fetchDataURL: postUrl + "/iscList"
@@ -279,7 +300,16 @@
             {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},]
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "enabled",
+                title: "<spring:message code="active.status"/>",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both",
+            },
+        ]
         , fetchDataURL: postUrl + "/iscList"
     });
     var RestDataSource_ForThisPostGroup_GetPosts = isc.TrDS.create({
@@ -295,7 +325,15 @@
             {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true}
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "enabled",
+                title: "<spring:message code="active.status"/>",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both",
+            },
             ]
     });
     var DynamicForm_thisPostGroupHeader_Jsp = isc.DynamicForm.create({
@@ -326,6 +364,12 @@
             {name: "unit"},
             {name: "costCenterCode"},
             {name: "costCenterTitleFa"},
+            {name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+            },
             {name: "OnAdd", title: " ",canSort:false,canFilter:false, width:30}
         ],
         dataArrived:function(){
@@ -431,6 +475,12 @@
             {name: "unit"},
             {name: "costCenterCode"},
             {name: "costCenterTitleFa"},
+            {name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+            },
             {name: "OnDelete", title: " ", align: "center", width:30}
         ],
         dataArrived:function(){
@@ -650,7 +700,6 @@
         dataSource: RestDataSource_Post_Group_Posts_Jsp,
         contextMenu: Menu_ListGrid_Post_Group_Posts,
         autoFetchData: false,
-        showResizeBar: true,
         sortField: 1,
         gridComponents: [ActionsTS_Post_Group_Grades, "header", "filterEditor", "body",],
         fields: [
@@ -672,7 +721,13 @@
                     keyPressFilter: "[0-9]"
                 }
             },
-            {name: "costCenterTitleFa"}
+            {name: "costCenterTitleFa"},
+            {name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+            },
         ],
         dataArrived: function () {
             postGroupPostList_Post_Group_Jsp = ListGrid_Post_Group_Posts.data.localData;
@@ -1269,6 +1324,7 @@
     var HLayout_Grid_Post_Group_Jsp = isc.HLayout.create({
         width: "100%",
         height: "100%",
+        showResizeBar:true,
         members: [ListGrid_Post_Group_Jsp]
     });
 

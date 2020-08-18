@@ -732,6 +732,108 @@ public class ClassAlarmService implements IClassAlarm {
     }
     //*********************************
 
+    //****************class attendance alarm*****************checking for unjustified absence limitations
+    @Transactional
+    public void alarmAttendanceUnjustifiedAbsence(Long class_id) {
+
+        List<ClassAlarmDTO> alarmList = null;
+
+        try {
+
+            String alarmScript = "SELECT DISTINCT \n" +
+                    "    alarmTypeTitleFa, 'UnjustifiedAttendance' AS alarmTypeTitleEn, classId, null AS sessionId, null AS teacherId, studentId,\n" +
+                    "    null AS instituteId, null AS trainingPlaceId, null AS reservationId, targetRecordId, tabName, pageAddress,\n" +
+                    "    alarm, detailRecordId, sortField,  null AS classIdConflict, null AS  sessionIdConflict,\n" +
+                    "    null AS instituteIdConflict, null AS trainingPlaceIdConflict, null AS reservationIdConflict\n" +
+                    "    FROM \n" +
+                    "    ( \n" +
+                    "    SELECT\n" +
+                    "    classId,\n" +
+                    "    targetRecordId,\n" +
+                    "    detailRecordId,\n" +
+                    "    null AS studentId,\n" +
+                    "    'classAttendanceTab' AS tabName,\n" +
+                    "    '/tclass/show-form' AS pageAddress,\n" +
+                    "    'حضور و غیاب' as alarmTypeTitleFa,\n" +
+                    "    ( 'میزان غیبت غیر موجه فراگیر با نام '|| tbl_student.first_name || ' ' || tbl_student.last_name || ' با کد پرسنلی ' || tbl_student.emp_no || ' از حد مجاز گذشته است ') AS alarm,\n" +
+                    "    ( '8' ) AS sortField,\n" +
+                    "    sum_session_time,\n" +
+                    "    absence_session_time,\n" +
+                    "    tbl_student.first_name,\n" +
+                    "    tbl_student.last_name,\n" +
+                    "    tbl_student.emp_no\n" +
+                    "FROM\n" +
+                    "    (\n" +
+                    "        SELECT\n" +
+                    "            tbl_session.f_class_id AS classId,\n" +
+                    "            tbl_session.f_class_id AS targetRecordId,\n" +
+                    "            tbl_class_student.student_id AS detailRecordId,\n" +
+                    "            SUM(round(to_number(TO_DATE( (\n" +
+                    "                CASE\n" +
+                    "                    WHEN substr(tbl_session.c_session_end_hour,1,2) > 23 THEN '23:59'\n" +
+                    "                    ELSE tbl_session.c_session_end_hour\n" +
+                    "                END\n" +
+                    "            ),'HH24:MI') - TO_DATE( (\n" +
+                    "                CASE\n" +
+                    "                    WHEN substr(tbl_session.c_session_end_hour,1,2) > 23 THEN '23:59'\n" +
+                    "                    ELSE tbl_session.c_session_start_hour\n" +
+                    "                END\n" +
+                    "            ),'HH24:MI') ) * 24 * 60 * 60 * 1000) ) AS sum_session_time,\n" +
+                    "            SUM(\n" +
+                    "                CASE\n" +
+                    "                    WHEN tbl_attendance.c_state = 3                      THEN round(to_number(TO_DATE( (\n" +
+                    "                        CASE\n" +
+                    "                            WHEN substr(tbl_session.c_session_end_hour,1,2) > 23 THEN '23:59'\n" +
+                    "                            ELSE tbl_session.c_session_end_hour\n" +
+                    "                        END\n" +
+                    "                    ),'HH24:MI') - TO_DATE( (\n" +
+                    "                        CASE\n" +
+                    "                            WHEN substr(tbl_session.c_session_end_hour,1,2) > 23 THEN '23:59'\n" +
+                    "                            ELSE tbl_session.c_session_start_hour\n" +
+                    "                        END\n" +
+                    "                    ),'HH24:MI') ) * 24 * 60 * 60 * 1000)\n" +
+                    "                    ELSE 0\n" +
+                    "                END\n" +
+                    "            ) AS absence_session_time\n" +
+                    "        FROM\n" +
+                    "            tbl_class_student\n" +
+                    "            INNER JOIN tbl_session ON tbl_class_student.class_id = tbl_session.f_class_id\n" +
+                    "            INNER JOIN tbl_attendance ON tbl_session.id = tbl_attendance.f_session\n" +
+                    "                                         AND tbl_attendance.f_student = tbl_class_student.student_id\n" +
+                    "        WHERE\n" +
+                    "            tbl_session.f_class_id =:class_id\n" +
+                    "--            AND   tbl_attendance.f_student =:student_id\n" +
+                    "        GROUP BY\n" +
+                    "            tbl_session.f_class_id,\n" +
+                    "            tbl_class_student.student_id\n" +
+                    "    )\n" +
+                    "    INNER JOIN tbl_student ON tbl_student.id = detailrecordid\n" +
+                    "WHERE\n" +
+                    "    sum_session_time * :absence_percentage < absence_session_time\n" +
+                    "    )";
+
+            List<?> alarms = (List<?>) entityManager.createNativeQuery(alarmScript).setParameter("class_id", class_id).setParameter("absence_percentage", 0.34).getResultList();
+
+            if (alarms != null) {
+                alarmList = new ArrayList<>(alarms.size());
+
+                for (int i = 0; i < alarms.size(); i++) {
+                    Object[] alarm = (Object[]) alarms.get(i);
+                    alarmList.add(convertObjectToDTO(alarm));
+                }
+
+                if (alarmList.size() > 0) {
+                    addAlarmsToQueue(alarmList, class_id);
+                } else {
+                    addAlarmsToDeleteQueue("UnjustifiedAttendance", class_id);
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    //*********************************
+
     //****************convert object to dto*****************
     private ClassAlarmDTO convertObjectToDTO(Object[] alarm) {
         return new ClassAlarmDTO(
@@ -789,12 +891,12 @@ public class ClassAlarmService implements IClassAlarm {
 
         for (Map.Entry<String, Long> alarmForDelete : alarmQueueDelete.entrySet()) {
             alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassId(alarmForDelete.getKey(), alarmForDelete.getValue());
-            alarmChanged =true;
+            alarmChanged = true;
         }
 
         for (Map.Entry<String, Long> alarmConflictForDelete : alarmConflictQueueDelete.entrySet()) {
             alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdConflict(alarmConflictForDelete.getKey(), alarmConflictForDelete.getValue());
-            alarmChanged =true;
+            alarmChanged = true;
         }
 
         if (alarmQueue.size() > 0 || alarmQueueType.size() > 0) {
@@ -804,11 +906,10 @@ public class ClassAlarmService implements IClassAlarm {
             alarmDAO.saveAll(modelMapper.map(alarmQueue, new TypeToken<List<Alarm>>() {
             }.getType()));
 
-            alarmChanged =true;
+            alarmChanged = true;
         }
 
-        if(alarmChanged)
-        {
+        if (alarmChanged) {
             setClassHasWarningStatus(classIdQueue);
 
             alarmQueueDelete.clear();

@@ -2,12 +2,9 @@ package com.nicico.training.service;
 
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.QuestionnaireQuestionDTO;
-import com.nicico.training.model.Publication;
 import com.nicico.training.model.QuestionnaireQuestion;
-import com.nicico.training.model.enums.EEnabled;
 import com.nicico.training.repository.QuestionnaireQuestionDAO;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

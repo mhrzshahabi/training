@@ -18,6 +18,9 @@ public interface IPostService {
     List<PostDTO.Info> list();
 
     @Transactional(readOnly = true)
+    PostDTO.Info get(Long id);
+
+    @Transactional(readOnly = true)
     Page<Post> listByJobId(Long jobId, Pageable pageable);
 
     @Transactional(readOnly = true)

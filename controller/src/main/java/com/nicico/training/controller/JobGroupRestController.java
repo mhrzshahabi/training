@@ -14,6 +14,7 @@ import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.iservice.IPostService;
+import com.nicico.training.service.BaseService;
 import com.nicico.training.service.JobGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -69,6 +70,7 @@ public class JobGroupRestController {
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<JobGroupDTO.Info>> list(HttpServletRequest iscRq, @RequestParam(value = "id", required = false) Long id) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq, id, "id", EOperator.equals);
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
         SearchDTO.SearchRs<JobGroupDTO.Info> searchRs = jobGroupService.searchWithoutPermission(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
@@ -79,7 +81,8 @@ public class JobGroupRestController {
         if (jobs.isEmpty()) {
             return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
         }
-        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq, jobs.stream().map(JobDTO.Info::getId).collect(Collectors.toList()), "job", EOperator.inSet);
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq, jobs.stream().filter(job -> job.getDeleted() == null).map(JobDTO.Info::getId).collect(Collectors.toList()), "job", EOperator.inSet);
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
         SearchDTO.SearchRs<PostDTO.Info> searchRs = postService.searchWithoutPermission(searchRq, p -> modelMapper.map(p, PostDTO.Info.class));
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
@@ -90,7 +93,7 @@ public class JobGroupRestController {
         if (jobs.isEmpty()) {
             return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
         }
-        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq().setCriteria(makeNewCriteria("job", jobs.stream().map(JobDTO.Info::getId).collect(Collectors.toList()), EOperator.inSet, null));
+        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq().setCriteria(makeNewCriteria("job", jobs.stream().filter(job -> job.getDeleted() == null).map(JobDTO.Info::getId).collect(Collectors.toList()), EOperator.inSet, null));
         SearchDTO.SearchRs<PostDTO.TupleInfo> postList = postService.searchWithoutPermission(searchRq, p -> modelMapper.map(p, PostDTO.TupleInfo.class));
         if (postList.getList() == null || postList.getList().isEmpty())
             return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
@@ -163,6 +166,7 @@ public class JobGroupRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
+        BaseService.setCriteriaToNotSearchDeleted(request);
         SearchDTO.SearchRs<JobGroupDTO.Info> response = jobGroupService.searchWithoutPermission(request);
 
         final JobGroupDTO.SpecRs specResponse = new JobGroupDTO.SpecRs();
@@ -183,56 +187,9 @@ public class JobGroupRestController {
     @PostMapping(value = "/search")
 //    @PreAuthorize("hasAuthority('r_job_group')")
     public ResponseEntity<SearchDTO.SearchRs<JobGroupDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
+        BaseService.setCriteriaToNotSearchDeleted(request);
         return new ResponseEntity<>(jobGroupService.searchWithoutPermission(request), HttpStatus.OK);
     }
-
-    // ------------------------------
-
-//    @Loggable
-//    @GetMapping(value = "/{jobGroupId}/getCompetences")
-////    @PreAuthorize("hasAnyAuthority('r_job_group')")
-//    public ResponseEntity<CompetenceDTOOld.CompetenceSpecRs> getCompetences(@PathVariable Long jobGroupId) {
-//        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-//
-//        List<CompetenceDTOOld.Info> list = jobGroupService.getCompetence(jobGroupId);
-//
-//        final CompetenceDTOOld.SpecRs specResponse = new CompetenceDTOOld.SpecRs();
-//        specResponse.setData(list)
-//                .setStartRow(0)
-//                .setEndRow( list.size())
-//                .setTotalRows(list.size());
-//
-//        final CompetenceDTOOld.CompetenceSpecRs specRs = new CompetenceDTOOld.CompetenceSpecRs();
-//        specRs.setResponse(specResponse);
-//
-//        return new ResponseEntity<>(specRs,HttpStatus.OK);
-//
-//
-//    }
-
-/*
-    @Loggable
-    @GetMapping(value = "/{jobGroupId}/getJobs")
-//    @PreAuthorize("hasAnyAuthority('r_job_group')")
-    public ResponseEntity<JobDTO.IscRes> getJobs(@PathVariable Long jobGroupId) {
-        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-
-        List<JobDTO.Info> list = jobGroupService.getJobs(jobGroupId);
-
-        final JobDTO.SpecRs specResponse = new JobDTO.SpecRs();
-        specResponse.setData(list)
-                .setStartRow(0)
-                .setEndRow( list.size())
-                .setTotalRows(list.size());
-
-        final JobDTO.IscRes specRs = new JobDTO.IscRes();
-
-        specRs.setResponse(specResponse);
-
-        return new ResponseEntity<>(specRs,HttpStatus.OK);
-
-
-    }*/
 
 
     @Loggable
@@ -259,20 +216,6 @@ public class JobGroupRestController {
     public ResponseEntity<Void> removeJob(@PathVariable Long jobGroupId, @PathVariable Long jobId) {
         jobGroupService.removeJob(jobGroupId, jobId);
         return new ResponseEntity(HttpStatus.OK);
-    }
-
-    @Loggable
-    @DeleteMapping(value = "/removeCompetence/{jobGroupId}/{competenceId}")
-    public ResponseEntity<Void> removeFromCompetence(@PathVariable Long jobGroupId, @PathVariable Long competenceId) {
-        jobGroupService.removeFromCompetency(jobGroupId, competenceId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @Loggable
-    @DeleteMapping(value = "/removeAllCompetence/{jobGroupId}/")
-    public ResponseEntity<Void> removeFromAllCompetences(@PathVariable Long jobGroupId) {
-        jobGroupService.removeFromAllCompetences(jobGroupId);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

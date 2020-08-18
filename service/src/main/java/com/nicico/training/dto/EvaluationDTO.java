@@ -131,8 +131,8 @@ public class EvaluationDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("StudentEvaluationForm - Info")
-    public static class StudentEvaluationForm {
+    @ApiModel("EvaluationForm - Info")
+    public static class EvaluationForm {
         private Long evaluationLevel;
         private Long questionnarieType;
         private String classCode;
@@ -141,9 +141,18 @@ public class EvaluationDTO implements Serializable {
         private String courseTitle;
         private String teacherName;
         private String hasWarning;
-        private Long studentId;
         private Long classId;
-        private String studentName;
+        private Long evaluatorId;
+        private Long evaluatedId;
+        private String evaluatorName;
+        private String evaluatedName;
+        private Long evaluatorTypeId;
+        private Long evaluatedTypeId;
+        private String classEndDate;
+        private Long classDuration;
+        private String classYear;
+        private String supervisorName;
+        private String plannerName;
     }
 
     @Getter

@@ -38,6 +38,9 @@ public class MainFormController {
     @RequestMapping("/courseWithOutTeacherReaport")
     public String courseWithOutTeacherReaport(){return "report/courseWithOutTeacherReaport";}
 
+    @RequestMapping("/annualStatisticalReportBySections")
+    public String annualStatisticalReport(){return "report/annualStatisticalReportBySections";}
+
     @RequestMapping("/personnelCourseNotPassed")
     public String showPersonalCoursesNotPassedForm() {
         return "report/personnelCourseNotPassed";
@@ -164,6 +167,11 @@ public class MainFormController {
         return "report/personnel-training-status-report";
     }
 
+    @RequestMapping("/coursesPassedPersonnelReport")
+    public String showCoursesPassedPersonnelReportForm() {
+        return "report/coursesPassedPersonnelReport";
+    }
+
     @RequestMapping("/presenceReport")
     public String showPresenceReport() {
         return "report/presenceReport";
@@ -248,9 +256,14 @@ public class MainFormController {
         return "planning/courseNAReports";
     }
 
-    @RequestMapping("/student-portal")
+    @RequestMapping("/personnel-portal")
     public String showStudentPortalForm() {
-        return "portal/studentPortal";
+        return "portal/personnelPortal";
+    }
+
+    @RequestMapping("/teacher-portal")
+    public String showTeacherPortalForm() {
+        return "portal/teacherPortal";
     }
 
     @RequestMapping("/personnel-course-NA-report")

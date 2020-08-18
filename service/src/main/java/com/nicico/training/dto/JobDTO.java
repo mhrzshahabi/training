@@ -3,7 +3,9 @@ ghazanfari_f, 8/29/2019, 10:48 AM
 */
 package com.nicico.training.dto;
 
+import com.nicico.training.model.ParameterValue;
 import io.swagger.annotations.ApiModel;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -23,5 +25,8 @@ public class JobDTO implements Serializable {
         private Long id;
         private String code;
         private String titleFa;
+        private String peopleType;
+        private Long enabled;
+        private Long deleted;
     }
 }

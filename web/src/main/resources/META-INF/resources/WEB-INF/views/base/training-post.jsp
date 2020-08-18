@@ -17,16 +17,18 @@
     var PostTrainingPost_TrainingPost_Jsp = null;
     var refresh_TrainingPost = true;
     var trainingPostsSelection=false;
-
+    let LoadAttachments_Training_Post = null;
     var peopleTypeMap ={
         "Personal" : "شرکتی",
-        "ContractorPersonal" : "پیمان کار"
+        "ContractorPersonal" : "پیمان کار",
+        // "Company" : "شرکتی",
+        // "OrgCostCenter" : "پیمان کار"
     };
 
     let PostDS_TrainingPost = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap, filterOnKeypress: true},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -40,6 +42,7 @@
             {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",}
 
         ],
         fetchDataURL: viewPostUrl + "/iscList"
@@ -92,7 +95,14 @@
             },
             {name: "costCenterTitleFa"},
             {name: "competenceCount"},
-            {name: "personnelCount"}
+            {name: "personnelCount"},
+            {
+                name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+            }
         ],
         // doubleClick: function () {
         //     if (ListGrid_TrainingPost_Jsp.getSelectedRecord() !== null || ListGrid_TrainingPost_Jsp.getSelectedRecord() !== undefined) {
@@ -135,6 +145,13 @@
             {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {
+                name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+            },
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         fetchDataURL: viewTrainingPostUrl + "/iscList"
@@ -233,6 +250,8 @@
         width: 150,
         data: [{
             title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
+                objectIdAttachment=null
+                LoadAttachments_Training_Post.ListGrid_JspAttachment.setData([]);
                 ListGrid_TrainingPost_Posts_refresh();
             }
         }, {
@@ -281,7 +300,8 @@
             {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true}
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",}
 
         ],
         fetchDataURL: postUrl + "/iscList"
@@ -300,7 +320,9 @@
             {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},]
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",}
+        ]
         // , fetchDataURL: postUrl + "/iscList"
     });
 
@@ -318,7 +340,9 @@
             {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},]
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",}
+        ]
         // , fetchDataURL: postUrl + "/iscList"
     });
 
@@ -336,7 +360,8 @@
             {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true}
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",}
         ]
     });
 
@@ -345,6 +370,8 @@
             {name: "id", primaryKey: true},
             {name: "titleFa", title: "<spring:message code="job.title"/>"},
             {name: "code", title: "<spring:message code="job.code"/>"},
+            {name: "peopleType", title: "<spring:message code="people.type"/>",  valueMap:peopleTypeMap},
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",}
         ],
         fetchDataURL: jobUrl + "/iscList"
     });
@@ -359,6 +386,13 @@
             {name: "omorTitle", title: "<spring:message code="affairs"/>", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "ghesmatCode", title: "<spring:message code="section"/>", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "vahedTitle", title: "<spring:message code="unit"/>", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "type", title: "<spring:message code="people.type"/>", autoFitWidth: true, autoFitWidthApproach: "both",
+                valueMap:{
+                    "Company" : "شرکتی",
+                    "OrgCostCenter" : "پیمان کار"
+                }
+            },
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",}
         ],
         fetchDataURL: departmentUrl + "/iscList"
     });
@@ -373,6 +407,8 @@
                 autoFitWidth: true
             },
             {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
+            {name: "peopleType", title: "<spring:message code="people.type"/>",  valueMap:peopleTypeMap},
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",}
         ],
         fetchDataURL: viewPostGradeUrl + "/iscList"
     });
@@ -408,7 +444,14 @@
             {name: "unit"},
             {name: "costCenterCode"},
             {name: "costCenterTitleFa"},
-            {name: "OnAdd", title: " ", canSort:false, canFilter:false, width:30}
+            {
+                name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true
+            },
+            {name: "OnAdd", title: " ", canSort:false, canFilter:false, width:30},
         ],
         dataArrived:function(startRow, endRow){
             let lgIds = ListGrid_ForThisTrainingPost_GetPosts.data.getAllCachedRows().map(function(item) {
@@ -486,6 +529,13 @@
             {name: "unit"},
             {name: "costCenterCode"},
             {name: "costCenterTitleFa"},
+            {
+                name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true
+            },
             {name: "OnDelete", title: " ", canSort:false, canFilter:false, width:30}
         ],
         dataArrived:function(){
@@ -588,6 +638,13 @@
             {name: "unit"},
             {name: "costCenterCode"},
             {name: "costCenterTitleFa"},
+            {
+                name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true
+            },
             {name: "OnAdd", title: " ", canSort:false, canFilter:false, width:30}
         ],
         createRecordComponent: function (record, colNum) {
@@ -784,6 +841,13 @@
                 }
             },
             {name: "costCenterTitleFa"},
+            {
+                name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true
+            }
         ],
         dataArrived: function () {
             TrainingPost_PostList_TrainingPost_Jsp = ListGrid_TrainingPost_Posts.data.localData;
@@ -846,6 +910,18 @@
                 pickListFields: [
                     {name: "titleFa", filterOperator: "iContains"},
                     {name: "code", filterOperator: "iContains"},
+                    {name: "peopleType", filterOperator: "iContains"},
+                    {
+                        name: "enabled",
+                        valueMap:{
+                            // undefined : "فعال",
+                            74 : "غیر فعال"
+                        },filterOnKeypress: true
+                        // formatCellValue: function (value, record) {
+                        //     let newVal = value == undefined ? "فعال" : "غیر فعال";
+                        //     return newVal;
+                        // }
+                    }
                 ],
                 filterFields: ["titleFa", "code"],
             },
@@ -870,6 +946,18 @@
                     {name: "omorTitle", title: "<spring:message code="affairs"/>"},
                     {name: "ghesmatCode", title: "<spring:message code="section"/>"},
                     {name: "vahedTitle", title: "<spring:message code="unit"/>"},
+                    {name: "type", filterOperator: "iContains"},
+                    {
+                        name: "enabled",
+                        valueMap:{
+                            // undefined : "فعال",
+                            74 : "غیر فعال"
+                        },filterOnKeypress: true
+                        // formatCellValue: function (value, record) {
+                        //     let newVal = value == undefined ? "فعال" : "غیر فعال";
+                        //     return newVal;
+                        // }
+                    }
                 ],
                 filterFields: ["title", "code","hozeTitle","moavenatTitle","omorTitle","ghesmatCode","vahedTitle"],
             },
@@ -885,32 +973,74 @@
                 endRow: false,
                 colSpan: 1,
                 layoutStyle: "horizontal",
-                comboBoxProperties: {
-                    hint: "",
-                    pickListWidth: 300,
-                    pickListFields: [
-                        {name: "titleFa"},
-                    ],
-                    filterFields: ["titleFa"],
-                    pickListProperties: {
-                        sortField: 1,
-                        showFilterEditor: true},
-                    textMatchStyle: "substring",
-                },
+                hint: "",
+                pickListFields: [
+                    {name: "titleFa"},
+                    {name: "peopleType", filterOperator: "iContains"},
+                    {
+                        name: "enabled",
+                        valueMap:{
+                            // undefined : "فعال",
+                            74 : "غیر فعال"
+                        },filterOnKeypress: true
+                        // formatCellValue: function (value, record) {
+                        //     let newVal = value == undefined ? "فعال" : "غیر فعال";
+                        //     return newVal;
+                        // }
+                    }
+                ],
+                filterFields: ["titleFa"],
+                // pickListProperties: {
+                //     sortField: 1,
+                //     showFilterEditor: true},
+                // textMatchStyle: "substring",
             },
             {
+                width: 300,
                 name: "peopleType",
                 title: "نوع پرسنل",
-                type: "SelectItem",
+                type: "radioGroup",
                 colSpan: 1,
                 valueMap: peopleTypeMap,
                 textAlign: "center",
-                hint: "شرکتی/پیمان کار",
+                // hint: "شرکتی/پیمان کار",
                 required: true,
-                showHintInField: true,
-                pickListProperties: {
-                    showFilterEditor: false
-                },
+                vertical: false,
+                fillHorizontalSpace: true,
+                // showHintInField: true,
+                // pickListProperties: {
+                //     showFilterEditor: false
+                // },
+            },
+            <%--{--%>
+                <%--width: 300,--%>
+                <%--ID: "enabled",--%>
+                <%--name: "enabled",--%>
+                <%--colSpan: 1,--%>
+                <%--// rowSpan: 1,--%>
+                <%--title: "<spring:message code="active.status"/>:",--%>
+                <%--wrapTitle: true,--%>
+                <%--type: "radioGroup",--%>
+                <%--vertical: false,--%>
+                <%--fillHorizontalSpace: true,--%>
+                <%--defaultValue: "1",--%>
+<%--// endRow:true,--%>
+                <%--valueMap: {--%>
+                    <%--74: "غیر فعال",--%>
+                    <%--// null: "فعال",--%>
+                <%--},--%>
+            <%--},--%>
+            {
+                // width: 300,
+                ID: "enabled",
+                name: "enabled",
+                // colSpan: 1,
+                type: "checkbox",
+                // title: "<spring:message code="active.status"/>:",
+                // titleOrientation: "top",
+                labelAsTitle: true,
+                title : "غیر فعال"
+                // defaultValue: true
             },
         ]
     });
@@ -934,6 +1064,8 @@
                 return;
             }
             var data = DynamicForm_TrainingPost_Jsp.getValues();
+
+            data.enabled = data.enabled ? "74" : null;
 
             isc.RPCManager.sendRequest({
                 actionURL: url,
@@ -1106,6 +1238,8 @@
         // icon: "<spring:url value="refresh.png"/>",
         title: "بازخوانی اطلاعات",
         click: function () {
+            objectIdAttachment=null
+            LoadAttachments_Training_Post.ListGrid_JspAttachment.setData([]);
             ListGrid_TrainingPost_refresh();
         }
     });
@@ -1243,6 +1377,8 @@
             },
             {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "mobile",  title: "<spring:message code="mobile"/>", filterOperator: "iContains",autoFitWidth: true},
+            {name: "email",  title: "<spring:message code="email"/>", filterOperator: "iContains",autoFitWidth: true},
             {name: "ccpArea", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "ccpAssistant", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "ccpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -1309,6 +1445,8 @@
             },
             {name: "postCode"},
             {name: "postTitle"},
+            {name: "mobile"},
+            {name: "email"},
             {name: "ccpArea"},
             {name: "ccpAssistant"},
             {name: "ccpAffairs"},
@@ -1471,6 +1609,8 @@
             {name: "TabPane_Post_TrainingPost_Jsp", title: "لیست پست های انفرادی دسته بندی شده", pane: ListGrid_TrainingPost_Posts},
             {name: "TabPane_Personnel_TrainingPost_Jsp", title: "لیست پرسنل", pane: PersonnelLG_TrainingPost_Jsp},
             {name: "TabPane_NA_TrainingPost_Jsp", title: "<spring:message code='need.assessment'/>", pane: CourseLG_TrainingPost_Jsp},
+            {ID: "TrainingPost_AttachmentsTab",title: "<spring:message code="attachments"/>"},
+
         ],
         tabSelected: function (){
             selectionUpdated_TrainingPost_Jsp();
@@ -1644,7 +1784,7 @@
             tab.pane.setData([]);
             return;
         }
-        switch (tab.name) {
+        switch (tab.name || tab.ID) {
             case "TabPane_Post_TrainingPost_Jsp": {
                 if (PostTrainingPost_TrainingPost_Jsp === trainingPost.id && !refresh_TrainingPost)
                     return;
@@ -1685,6 +1825,17 @@
                      nullPostsRefresh(RestDataSource_All_Posts_Clone, ListGrid_AllPosts_Clone);
                     trainingPostsSelection = false;
                 }
+                break;
+            }
+            case "TrainingPost_AttachmentsTab": {
+
+                if (typeof LoadAttachments_Training_Post.loadPage_attachment_Job !== "undefined")
+                    LoadAttachments_Training_Post.loadPage_attachment_Job("TrainingPost",trainingPost.id, "<spring:message code="attachment"/>", {
+                        1: "جزوه",
+                        2: "لیست نمرات",
+                        3: "لیست حضور و غیاب",
+                        4: "نامه غیبت موجه"
+                    }, false);
                 break;
             }
         }
@@ -1748,4 +1899,16 @@
         }
         return result;
     }
+
+    if (!loadjs.isDefined('load_Attachments_Training_Post')) {
+        loadjs('<spring:url value='tclass/attachments-tab' />', 'load_Attachments_Training_Post');
+    }
+
+    loadjs.ready('load_Attachments_Training_Post', function () {
+        setTimeout(()=> {
+            LoadAttachments_Training_Post = new loadAttachments();
+            Detail_Tab_TrainingPost.updateTab(TrainingPost_AttachmentsTab, LoadAttachments_Training_Post.VLayout_Body_JspAttachment)
+        },0);
+
+    })
     // </script>

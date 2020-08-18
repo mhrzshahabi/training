@@ -7,6 +7,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.NeedsAssessmentDTO;
+import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +55,8 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
     private TrainingPostDAO trainingPostDAO;
     @Autowired
     private MessageSource messageSource;
+    @Autowired
+    private PersonnelService personnelService;
 
     private Supplier<TrainingException> trainingExceptionSupplier = () -> new TrainingException(TrainingException.ErrorType.NotFound);
 
@@ -64,7 +67,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
 
     @Transactional
     public void initial(String objectType, Long objectId) {
-        List<NeedsAssessment> needsAssessments = needsAssessmentDAO.findAll(NICICOSpecification.of(getCriteria(objectType, objectId)));
+        List<NeedsAssessment> needsAssessments = needsAssessmentDAO.findAll(NICICOSpecification.of(getCriteria(objectType, objectId, true)));
         if (needsAssessments == null || needsAssessments.isEmpty())
             return;
         needsAssessments.forEach(needsAssessment -> {
@@ -83,11 +86,11 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
             case 2:
                 return false;
         }
-        SearchDTO.CriteriaRq criteria = getCriteria(sourceObjectType, sourceObjectId);
-        if (sourceCompetenceId != null){
+        SearchDTO.CriteriaRq criteria = getCriteria(sourceObjectType, sourceObjectId, true);
+        if (sourceCompetenceId != null) {
             criteria.getCriteria().add(makeNewCriteria("competenceId", sourceCompetenceId, EOperator.equals, null));
         }
-        List<Skill> skillList = needsAssessmentDAO.findAll(NICICOSpecification.of(getCriteria(objectType, objectId))).stream().map(NeedsAssessment::getSkill).collect(Collectors.toList());
+        List<Skill> skillList = needsAssessmentDAO.findAll(NICICOSpecification.of(getCriteria(objectType, objectId, true))).stream().map(NeedsAssessment::getSkill).collect(Collectors.toList());
         List<NeedsAssessment> sourceNeedsAssessments = needsAssessmentDAO.findAll(NICICOSpecification.of(criteria));
         sourceNeedsAssessments.forEach(sourceNA -> {
             if (!skillList.contains(sourceNA.getSkill())) {
@@ -103,13 +106,24 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
 
     @Transactional
     public void verify(String objectType, Long objectId) {
-        List<NeedsAssessmentDTO.verify> needsAssessmentTemps = modelMapper.map(dao.findAll(NICICOSpecification.of(getCriteria(objectType, objectId))), new TypeToken<List<NeedsAssessmentDTO.verify>>() {
+        List<NeedsAssessmentDTO.verify> needsAssessmentTemps = modelMapper.map(dao.findAll(NICICOSpecification.of(getCriteria(objectType, objectId, false))), new TypeToken<List<NeedsAssessmentDTO.verify>>() {
         }.getType());
-        String createdBy = SecurityUtil.getFullName();
+        String createdBy = null;
+        try {
+            createdBy = needsAssessmentTemps.get(0).getCreatedBy();
+            SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+            PersonnelDTO.Info person = personnelService.search(searchRq.setCriteria(makeNewCriteria("userName", createdBy, EOperator.equals, null))).getList().get(0);
+            createdBy = person.getFirstName() + " " + person.getLastName();
+        }catch (IndexOutOfBoundsException e){
+            createdBy = needsAssessmentTemps.get(0).getCreatedBy();
+        }
+        catch (Exception e ){
+            createdBy = "anonymous";
+        }
         needsAssessmentTemps.forEach(needsAssessmentTemp -> {
             Optional<NeedsAssessment> optional = needsAssessmentDAO.findById(needsAssessmentTemp.getId());
             if (optional.isPresent()) {
-                if (needsAssessmentTemp.getEDeleted() != null && needsAssessmentTemp.getEDeleted().equals(75L))
+                if (needsAssessmentTemp.getDeleted() != null && needsAssessmentTemp.getDeleted().equals(75L))
                     needsAssessmentDAO.deleteById(needsAssessmentTemp.getId());
                 else {
                     modelMapper.map(needsAssessmentTemp, optional.get());
@@ -126,19 +140,25 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
     }
 
     @Transactional
-    public void rollback(String objectType, Long objectId) {
+    public Boolean rollback(String objectType, Long objectId) {
+        if (readOnlyStatus(objectType, objectId) > 1)
+            return false;
         dao.deleteAllByObjectIdAndObjectType(objectId, objectType);
+        return true;
     }
 
     @Transactional(readOnly = true)
     public Integer readOnlyStatus(String objectType, Long objectId) {
-        SearchDTO.CriteriaRq criteriaRq = getCriteria(objectType, objectId);
+        SearchDTO.CriteriaRq criteriaRq = getCriteria(objectType, objectId, false);
         List<NeedsAssessmentTemp> needsAssessmentTemps = dao.findAll(NICICOSpecification.of(criteriaRq));
         if (needsAssessmentTemps == null || needsAssessmentTemps.isEmpty())
             return 0; //this object is editable and needs to be initialize
-        if (needsAssessmentTemps.get(0).getCreatedBy().equals(SecurityUtil.getUsername()))
-            return 1; //this object is editable and dont needs to be initialize
-        return 2; //this object is read only
+        if (needsAssessmentTemps.get(0).getCreatedBy().equals(SecurityUtil.getUsername())) {
+            if (needsAssessmentTemps.get(0).getMainWorkflowStatusCode() == null || needsAssessmentTemps.get(0).getMainWorkflowStatusCode() == -1)
+                return 1; //this object is editable and dont needs to be initialize
+            return 3; // this object is read only and user should see edited NAs
+        }
+        return 2; //this object is read only and user should not see edited NAs
     }
 
     @Transactional(readOnly = true)
@@ -146,10 +166,10 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
         switch (readOnlyStatus(objectType, objectId)) {
             case 0:
                 initial(objectType, objectId);
-                return true;
             case 1:
                 return true;
             case 2:
+            case 3:
                 return false;
         }
         return false;
@@ -161,7 +181,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
 
         Optional<NeedsAssessmentTemp> optionalNA = dao.findFirstByObjectIdAndObjectTypeAndCompetenceIdAndSkillIdAndNeedsAssessmentDomainIdAndNeedsAssessmentPriorityId(rq.getObjectId(), rq.getObjectType(), rq.getCompetenceId(), rq.getSkillId(), rq.getNeedsAssessmentDomainId(), rq.getNeedsAssessmentPriorityId());
         if (optionalNA.isPresent()) {
-            optionalNA.get().setEDeleted(null);
+            optionalNA.get().setDeleted(null);
             return modelMapper.map(dao.saveAndFlush(optionalNA.get()), NeedsAssessmentDTO.Info.class);
         }
         rq.setId(needsAssessmentDAO.getNextId());
@@ -174,7 +194,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
         final Optional<NeedsAssessmentTemp> optional = dao.findById(id);
         final NeedsAssessmentTemp entityTemp = optional.orElseThrow(trainingExceptionSupplier);
         if (needsAssessmentDAO.existsById(id)) {
-            entityTemp.setEDeleted(75L);
+            entityTemp.setDeleted(75L);
             dao.saveAndFlush(entityTemp);
             return modelMapper.map(entityTemp, NeedsAssessmentDTO.Info.class);
         } else {
@@ -187,14 +207,29 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
         }
     }
 
-    public static SearchDTO.CriteriaRq getCriteria(String objectType, Long objectId) {
+    @Transactional
+    public Boolean checkBeforeDeleteObject(String objectType, Long objectId) {
+        List<NeedsAssessmentTemp> needsAssessments = dao.findAll(NICICOSpecification.of(getCriteria(objectType, objectId, true)));
+        if (needsAssessments == null || needsAssessments.isEmpty())
+            return true;
+        if (needsAssessments.get(0).getMainWorkflowStatusCode() == null){
+            dao.deleteAllByObjectIdAndObjectType(objectId, objectType);
+            return true;
+        }
+        return false;
+    }
+
+    public static SearchDTO.CriteriaRq getCriteria(String objectType, Long objectId, Boolean addNotDeletedCriteria) {
         SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
         criteriaRq.getCriteria().add(makeNewCriteria("objectType", objectType, EOperator.equals, null));
         criteriaRq.getCriteria().add(makeNewCriteria("objectId", objectId, EOperator.equals, null));
+        if (addNotDeletedCriteria) {
+            criteriaRq.getCriteria().add(makeNewCriteria("deleted", null, EOperator.isNull, null));
+        }
         return criteriaRq;
     }
 
-    public int saveModifications(String objectType, Long objectId, String createdBy){
+    public int saveModifications(String objectType, Long objectId, String createdBy) {
         Date today = new Date();
         switch (objectType) {
             case "Post":
@@ -219,7 +254,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
     public void checkCategoryNotEquals(NeedsAssessmentDTO.Create rq, HttpServletResponse resp) throws IOException {
         Optional<Competence> byId = competenceDAO.findById(rq.getCompetenceId());
         Competence competence = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
-        if(competence.getCategoryId() == null){
+        if (competence.getCategoryId() == null) {
             return;
         }
         Optional<Skill> byId1 = skillDAO.findById(rq.getSkillId());
@@ -230,5 +265,10 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
         if (!(skill.getCategoryId().equals(competence.getCategoryId()))) {
             resp.sendError(408, messageSource.getMessage("گروه مهارت با گروه شایستگی یکسان نیست", null, LocaleContextHolder.getLocale()));
         }
+    }
+
+    @Transactional
+    public Integer updateNeedsAssessmentTempMainWorkflow(String objectType, Long objectId, Integer workflowStatusCode, String workflowStatus) {
+        return dao.updateNeedsAssessmentTempWorkflowMainStatus(objectType, objectId, workflowStatusCode, workflowStatus);
     }
 }

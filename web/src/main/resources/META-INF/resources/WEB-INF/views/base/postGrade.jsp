@@ -90,6 +90,7 @@
     PostGradeDS_postGrade = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap},
             {
                 name: "code",
                 title: "<spring:message code="post.grade.code"/>",
@@ -101,6 +102,14 @@
             {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {
+                name: "enabled",
+                title: "<spring:message code="active.status"/>",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both",
+            },
         ],
         fetchDataURL: viewPostGradeUrl + "/iscList"
     });
@@ -113,11 +122,19 @@
                     keyPressFilter: "[0-9]"
                 }
             },
+            {name: "peopleType", filterOnKeypress: true},
             {name: "titleFa"},
             {name: "competenceCount"},
             {name: "personnelCount"},
             {name: "lastModifiedDateNA"},
-            {name: "modifiedByNA"}
+            {name: "modifiedByNA"},
+            {name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+
+            },
         ],
         autoFetchData: true,
         gridComponents: [PostGradeTS_postGrade, ToolStrip_NA_PostGrade, "filterEditor", "header", "body",],
@@ -130,7 +147,7 @@
         selectionType: "single",
         dataChanged: function () {
             this.Super("dataChanged", arguments);
-            var totalRows = this.data.getLength();
+            let totalRows = this.data.getLength();
             if (totalRows >= 0 && this.data.lengthIsKnown()) {
                 totalsLabel_postGrade.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
             } else {
@@ -400,21 +417,80 @@
     PostDS_PostGrade = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "job.code", title: "<spring:message code="job.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "code",
+                title: "<spring:message code="post.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "titleFa",
+                title: "<spring:message code="post.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "jobTitleFa",
+                title: "<spring:message code="job.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "postGradeTitleFa",
+                title: "<spring:message code="post.grade.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
             {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "assistance",
+                title: "<spring:message code="assistance"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "affairs",
+                title: "<spring:message code="affairs"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "section",
+                title: "<spring:message code="section"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
             {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true}
-
+            {
+                name: "costCenterCode",
+                title: "<spring:message code="reward.cost.center.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "costCenterTitleFa",
+                title: "<spring:message code="reward.cost.center.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "competenceCount",
+                title: "تعداد شایستگی",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both"
+            },
+            {
+                name: "personnelCount",
+                title: "تعداد پرسنل",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both"
+            }
         ],
-        fetchDataURL: postUrl + "/iscList"
+        fetchDataURL: viewTrainingPostUrl + "/spec-list"
     });
 
     let ToolStrip_Post_Grade_Post_Export2EXcel = isc.ToolStrip.create({
@@ -452,29 +528,8 @@
         dataSource: PostDS_PostGrade,
         autoFetchData: false,
         showResizeBar: true,
-        sortField: 0,
+        sortField: "id",
         gridComponents: [ActionsTS_Post_Post_Grade, "header", "filterEditor", "body",],
-        fields: [
-            {name: "code",
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9/]"
-                }
-            },
-            {name: "titleFa"},
-            {name: "job.titleFa"},
-            {name: "postGrade.titleFa"},
-            {name: "area"},
-            {name: "assistance"},
-            {name: "affairs"},
-            {name: "section"},
-            {name: "unit"},
-            {name: "costCenterCode",
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
-                }
-            },
-            {name: "costCenterTitleFa"}
-        ],
     });
 
     // ------------------------------------------- Page UI -------------------------------------------
@@ -530,7 +585,7 @@
                 PostLG_PostGrade.setImplicitCriteria({
                     _constructor: "AdvancedCriteria",
                     operator: "and",
-                    criteria: [{fieldName: "postGrade", operator: "equals", value: postGrade.id}]
+                    criteria: [{fieldName: "postGradeId", operator: "equals", value: postGrade.id}]
                 });
                 PostLG_PostGrade.invalidateCache();
                 PostLG_PostGrade.fetchData();

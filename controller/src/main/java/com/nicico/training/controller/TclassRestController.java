@@ -16,9 +16,9 @@ import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.dto.ViewEvaluationStaticalReportDTO;
 import com.nicico.training.iservice.IInstituteService;
 import com.nicico.training.iservice.ITclassService;
-import com.nicico.training.repository.CourseDAO;
-import com.nicico.training.repository.StudentDAO;
-import com.nicico.training.repository.TclassDAO;
+import com.nicico.training.model.Institute;
+import com.nicico.training.model.Personnel;
+import com.nicico.training.repository.*;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,10 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -61,6 +58,8 @@ public class TclassRestController {
     private final TclassDAO tclassDAO;
     private final WorkGroupService workGroupService;
     private final ViewEvaluationStaticalReportService viewEvaluationStaticalReportService;
+    private final PersonnelDAO personnelDAO;
+    private final InstituteDAO instituteDAO;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -117,9 +116,11 @@ public class TclassRestController {
     @Loggable
     @PutMapping(value = "/update/{id}")
 //    @PreAuthorize("hasAuthority('u_tclass')")
-    public ResponseEntity<TclassDTO.Info> safeUpdate(@PathVariable Long id, @RequestBody TclassDTO.Update request) {
+    public ResponseEntity<TclassDTO.Info> safeUpdate(@PathVariable Long id,
+                                                     @RequestBody TclassDTO.Update request,
+                                                     @RequestParam(required = false) List<Long> cancelClassesIds) {
 
-        ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.update(id, request), HttpStatus.OK);
+        ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.update(id, request, cancelClassesIds), HttpStatus.OK);
 
         //*****check alarms*****
       /* //// cancel alarms
@@ -137,7 +138,7 @@ public class TclassRestController {
 //    @PreAuthorize("hasAuthority('u_tclass')")
     public ResponseEntity<TclassDTO.Info> update(@PathVariable Long id, @RequestBody TclassDTO.Update request) {
 
-        ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.update(id, request), HttpStatus.OK);
+        ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.update(id, request, null), HttpStatus.OK);
 
         //*****check alarms*****
         //// cancel alarms
@@ -186,6 +187,7 @@ public class TclassRestController {
                                                        @RequestParam(value = "_constructor", required = false) String constructor,
                                                        @RequestParam(value = "operator", required = false) String operator,
                                                        @RequestParam(value = "criteria", required = false) String criteria,
+                                                       @RequestParam(value = "id", required = false) Long id,
                                                        @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException, NoSuchFieldException, IllegalAccessException {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
@@ -205,12 +207,45 @@ public class TclassRestController {
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
         }
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
         request.setCriteria(workGroupService.addPermissionToCriteria("course.categoryId", request.getCriteria()));
 
         SearchDTO.SearchRs<TclassDTO.Info> response = tClassService.search(request);
+
+        for (TclassDTO.Info tclassDTO : response.getList()) {
+            tclassDTO.setPlannerFullName("");
+            tclassDTO.setSupervisorFullName("");
+            tclassDTO.setOrganizerName("");
+
+            if (tclassDTO.getPlanner()!=null) {
+                Optional<Personnel> planner = personnelDAO.findById(tclassDTO.getPlanner());
+                   if (planner.isPresent()) {
+                       tclassDTO.setPlannerFullName(planner.get().getFirstName() + " " + planner.get().getLastName());
+                   }
+
+                Optional<Personnel> supervisor = personnelDAO.findById(tclassDTO.getSupervisor());
+                if (supervisor.isPresent()) {
+                    tclassDTO.setSupervisorFullName(supervisor.get().getFirstName() + " " + supervisor.get().getLastName());
+                }
+            }
+            if(tclassDTO.getOrganizerId() != null){
+                Optional<Institute> institute = instituteDAO.findById(tclassDTO.getOrganizerId());
+                if(institute.isPresent()){
+                    tclassDTO.setOrganizerName(institute.get().getTitleFa());
+                }
+            }
+        }
 
         //*********************************
         //******old code for alarms********
@@ -433,15 +468,9 @@ public class TclassRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/reactionEvaluationResult/{classId}/{userId}")
-    public ResponseEntity<TclassDTO.ReactionEvaluationResult> getReactionEvaluationResult(@PathVariable Long classId, @PathVariable Long userId) {
-        return new ResponseEntity<TclassDTO.ReactionEvaluationResult>(tClassService.getReactionEvaluationResult(classId, userId), HttpStatus.OK);
-    }
-
-    @Loggable
-    @GetMapping(value = "/behavioralEvaluationResult/{classId}")
-    public ResponseEntity<TclassDTO.BehavioralEvaluationResult> getBehavioralEvaluationResult(@PathVariable Long classId) {
-        return new ResponseEntity<TclassDTO.BehavioralEvaluationResult>(tClassService.getBehavioralEvaluationResult(classId), HttpStatus.OK);
+    @GetMapping(value = "/reactionEvaluationResult/{classId}")
+    public ResponseEntity<TclassDTO.ReactionEvaluationResult> getReactionEvaluationResult(@PathVariable Long classId) {
+        return new ResponseEntity<TclassDTO.ReactionEvaluationResult>(tClassService.getReactionEvaluationResult(classId), HttpStatus.OK);
     }
 
     @Loggable

@@ -49,8 +49,8 @@ public class Attachment<E> extends Auditable {
                     @MetaValue(targetEntity = PostGrade.class, value = "PostGrade"),
                     @MetaValue(targetEntity = PostGradeGroup.class, value = "PostGradeGroup"),
                     @MetaValue(targetEntity = Post.class, value = "Post"),
-                    @MetaValue(targetEntity = PostGroup.class, value = "PostGroup")
-
+                    @MetaValue(targetEntity = PostGroup.class, value = "PostGroup"),
+                    @MetaValue(targetEntity = TrainingPost.class, value = "TrainingPost")
             }
     )
     @JoinColumn(name = "f_object_id", nullable = false, insertable = false, updatable = false)

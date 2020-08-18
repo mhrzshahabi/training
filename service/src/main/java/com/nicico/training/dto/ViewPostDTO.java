@@ -99,5 +99,7 @@ public class ViewPostDTO implements Serializable {
     @ApiModel("PostInfo")
     public static class Info extends ViewPostDTO{
         private Long id;
+        private Long enabled;
+        private Long deleted;
     }
 }

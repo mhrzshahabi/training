@@ -29,7 +29,7 @@ public interface ITclassService {
 
     TclassDTO.Info create(TclassDTO.Create request);
 
-    TclassDTO.Info update(Long id, TclassDTO.Update request);
+//    TclassDTO.Info update(Long id, TclassDTO.Update request);
 
 //    void delete(Long id);
 
@@ -64,7 +64,7 @@ public interface ITclassService {
 
     Integer getWorkflowEndingStatusCode(Long classId);
 
-    public TclassDTO.ReactionEvaluationResult getReactionEvaluationResult(Long classId, Long trainingId);
+    public TclassDTO.ReactionEvaluationResult getReactionEvaluationResult(Long classId);
 
     @Transactional
     double getJustFERGrade(Long classId);

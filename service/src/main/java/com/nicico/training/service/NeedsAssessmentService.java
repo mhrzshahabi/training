@@ -6,6 +6,7 @@ ghazanfari_f,
 package com.nicico.training.service;
 
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
+import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
@@ -23,6 +24,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static com.nicico.training.service.NeedsAssessmentTempService.getCriteria;
 
 @RequiredArgsConstructor
 @Service
@@ -72,10 +75,13 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
     @Transactional(readOnly = true)
     public SearchDTO.SearchRs<NeedsAssessmentDTO.Info> fullSearch(Long objectId, String objectType) {
         List<NeedsAssessmentDTO.Info> naList;
-        if (needsAssessmentTempService.readOnlyStatus(objectType, objectId) == 1)
-            naList = modelMapper.map(needsAssessmentReportsService.getUnverifiedNeedsAssessmentList(objectId, objectType), new TypeToken<List<NeedsAssessmentDTO.Info>>() {}.getType());
+        Integer readOnlyStatus = needsAssessmentTempService.readOnlyStatus(objectType, objectId);
+        if (readOnlyStatus == 1 /* || readOnlyStatus == 3 */)
+            naList = modelMapper.map(needsAssessmentReportsService.getUnverifiedNeedsAssessmentList(objectId, objectType), new TypeToken<List<NeedsAssessmentDTO.Info>>() {
+            }.getType());
         else
-            naList = modelMapper.map(needsAssessmentReportsService.getNeedsAssessmentList(objectId, objectType), new TypeToken<List<NeedsAssessmentDTO.Info>>() {}.getType());
+            naList = modelMapper.map(needsAssessmentReportsService.getNeedsAssessmentList(objectId, objectType), new TypeToken<List<NeedsAssessmentDTO.Info>>() {
+            }.getType());
         SearchDTO.SearchRs<NeedsAssessmentDTO.Info> rs = new SearchDTO.SearchRs<>();
         rs.setTotalCount((long) naList.size());
         rs.setList(naList);
@@ -84,7 +90,8 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
 
     @Transactional(readOnly = true)
     public SearchDTO.SearchRs<NeedsAssessmentDTO.Info> workflowSearch(Long objectId, String objectType) {
-        List<NeedsAssessmentDTO.Info> naList = modelMapper.map(needsAssessmentReportsService.getUnverifiedNeedsAssessmentList(objectId, objectType), new TypeToken<List<NeedsAssessmentDTO.Info>>() {}.getType());
+        List<NeedsAssessmentDTO.Info> naList = modelMapper.map(needsAssessmentReportsService.getUnverifiedNeedsAssessmentList(objectId, objectType), new TypeToken<List<NeedsAssessmentDTO.Info>>() {
+        }.getType());
         SearchDTO.SearchRs<NeedsAssessmentDTO.Info> rs = new SearchDTO.SearchRs<>();
         rs.setTotalCount((long) naList.size());
         rs.setList(naList);
@@ -176,5 +183,13 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
             ancestors.add(child);
         }
         return i;
+    }
+
+    @Transactional
+    public Boolean checkBeforeDeleteObject(String objectType, Long objectId) {
+        List<NeedsAssessment> needsAssessments = needsAssessmentDAO.findAll(NICICOSpecification.of(getCriteria(objectType, objectId, true)));
+        if (needsAssessments == null || needsAssessments.isEmpty())
+            return true;
+        return false;
     }
 }

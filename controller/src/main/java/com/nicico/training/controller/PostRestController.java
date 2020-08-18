@@ -14,6 +14,7 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.PostDTO;
+import com.nicico.training.service.BaseService;
 import com.nicico.training.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +53,7 @@ public class PostRestController {
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<PostDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
         SearchDTO.SearchRs<PostDTO.Info> searchRs = postService.searchWithoutPermission(searchRq, p -> modelMapper.map(p, PostDTO.Info.class));
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
@@ -59,6 +61,7 @@ public class PostRestController {
     @GetMapping(value = "/wpIscList")
     public ResponseEntity<ISC<PostDTO.Info>> withPermissionList(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
         SearchDTO.SearchRs<PostDTO.Info> searchRs = postService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
@@ -73,9 +76,19 @@ public class PostRestController {
         }
     }
 
+    @GetMapping("/get-by-id/{postId}")
+    public ResponseEntity get(@PathVariable Long postId) {
+        try {
+            return new ResponseEntity<>(postService.get(postId), HttpStatus.OK);
+        } catch (TrainingException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping(value = "/unassigned-iscList")
     public ResponseEntity<ISC<PostDTO.Info>> unassignedList(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
         SearchDTO.SearchRs<PostDTO.Info> searchRs = postService.unassignedSearch(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
@@ -146,6 +159,7 @@ public class PostRestController {
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
+        BaseService.setCriteriaToNotSearchDeleted(request);
         SearchDTO.SearchRs<PostDTO.Info> response = postService.searchWithoutPermission(request, p -> modelMapper.map(p, PostDTO.Info.class));
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(response.getList())

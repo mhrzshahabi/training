@@ -530,7 +530,7 @@
                 downloadForm.submitForm();
             }
 
-            static exportToExcelFromServer(fields, fileName, criteriaStr, sortBy, len, titr, pageName, valueMaps) {
+            static exportToExcelFromServer(fields, fileName, criteriaStr, sortBy,startRow, len, titr, pageName, valueMaps) {
 
                 let downloadForm = isc.DynamicForm.create({
                     method: "POST",
@@ -546,6 +546,7 @@
                             {name: "pageName", type: "hidden"},
                             {name: "_sortBy", type: "hidden"},
                             {name: "_len", type: "hidden"},
+                            {name: "_startRow", type: "hidden"},
                             {name: "criteriaStr", type: "hidden"},
                             {name: "valueMaps", type: "hidden"}
                         ]
@@ -558,6 +559,7 @@
                 downloadForm.setValue("pageName", pageName);
                 downloadForm.setValue("_sortBy", sortBy);
                 downloadForm.setValue("_len", len);
+                downloadForm.setValue("_startRow", startRow);
                 downloadForm.setValue("criteriaStr", criteriaStr);
                 downloadForm.setValue("valueMaps", JSON.stringify(valueMaps));
                 downloadForm.show();
@@ -580,7 +582,7 @@
                 this.exportToExcelFromClient(result.fields, result.data, tmptitr, pageName);
             }
 
-            static downloadExcelFromServer(listGrid, fileName, len, parentListGrid, titr, pageName, criteria) {
+            static downloadExcelFromServer(listGrid, fileName,startRow, len, parentListGrid, titr, pageName, criteria) {
 
                 let tmptitr = '';
 
@@ -620,12 +622,14 @@
                     }
                 }
 
-                this.exportToExcelFromServer(fields.fields, fileName, criteria, sortStr , len, tmptitr, pageName, valueMaps);
+                this.exportToExcelFromServer(fields.fields, fileName, criteria, sortStr ,startRow, len, tmptitr, pageName, valueMaps);
             }
 
             static showDialog(title, listgrid, fileName, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate){
                 let size = listgrid.data.size();
+                let maxCount=5000;
 
+                size = Math.min(maxCount,size);
                 if(isValidate==null){
                     isValidate=function (len) {
                         return true;
@@ -644,15 +648,51 @@
                     items: [
                         isc.DynamicForm.create({
                             ID: "exportExcelForm",
-                            numCols: 1,
+                            numCols: 2,
+                            colWidths: ["80%","20%"],
                             padding: 10,
                             fields: [
                                 {
+                                    title: "سطرهاي موجود: " + listgrid.data.size(),
+                                    type: 'staticText',
+                                    width: "150",
+                                    colSpan:2,
+                                    height: 30
+                                },
+                                {
+                                    name: "startRow",
+                                    startRow: true,
+                                    colSpan:2,
+                                    width: "100%",
+                                    titleOrientation: "top",
+                                    title: "از کدام سطر شروع شود:",
+                                    value: 1,
+                                    suppressBrowserClearIcon: true,
+                                    icons: [{
+                                        name: "clear",
+                                        src: "[SKIN]actions/close.png",
+                                        width: 10,
+                                        height: 10,
+                                        inline: true,
+                                        prompt: "پاک کردن",
+                                        click: function (form, item, icon) {
+                                            item.clearValue();
+                                            item.focusInItem();
+                                        }
+                                    }],
+                                    iconWidth: 16,
+                                    iconHeight: 16
+                                },
+                                {
                                     name: "maxRow",
+                                    startRow: true,
+                                    colSpan:2,
                                     width: "100%",
                                     titleOrientation: "top",
                                     title: "لطفا حداکثر تعداد سطرهای موجود در اکسل را وارد نمایید:",
                                     value: size,
+                                    hint: "حداکثر سطرهاي قابل چاپ: " + size,
+                                    minHintWidth:'100%',
                                     suppressBrowserClearIcon: true,
                                     icons: [{
                                         name: "clear",
@@ -678,9 +718,17 @@
                                     click: function () {
                                         if (trTrim(exportExcelForm.getValue("maxRow")) != "") {
 
+                                            /*if(Number(trTrim(exportExcelForm.getValue("maxRow")))+Number(trTrim(exportExcelForm.getValue("startRow"))) > Number(listgrid.data.size())){
+                                                createDialog("info", "مجمع سطر شروع و تعداد سطر ها در خواستي براي خروجي بيشتر از تعداد کل سطرهاي موجود است");
+                                                return;
+                                            }else if(Number(trTrim(exportExcelForm.getValue("maxRow"))) > size){
+                                                createDialog("info", "تعداد سطرهاي وارد شده جهت خروجي، بيشتر از حداکثر تعداد سطرهاي قابل چاپ است");
+                                                return;
+                                            }*/
+
                                             if(isValidate(trTrim(exportExcelForm.getValue("maxRow")))) {
 
-                                                ExportToFile.downloadExcelFromServer(listgrid, fileName, parseInt(trTrim(exportExcelForm.getValue("maxRow"))), parentListGrid, titr, pageName,JSON.stringify(criteria));
+                                                ExportToFile.downloadExcelFromServer(listgrid, fileName, parseInt(trTrim(exportExcelForm.getValue("startRow")))-1, parseInt(trTrim(exportExcelForm.getValue("maxRow"))), parentListGrid, titr, pageName,JSON.stringify(criteria));
                                                 exportExcelWindow.close();
 
                                             }
@@ -808,6 +856,10 @@
     const statisticsUnitReportUrl = rootUrl + "/ViewStatisticsUnitReport";
     const questionBankUrl = rootUrl + "/question-bank";
     const viewPersonnelTrainingStatusReportUrl = rootUrl + "/view-personnel-training-status-report";
+    const viewCoursesPassedPersonnelReportUrl = rootUrl + "/view-courses-passed-personnel-report";
+    const questionBankTestQuestionUrl = rootUrl + "/question-bank-test-question";
+    const annualStatisticsReportUrl = rootUrl + "/annualStatisticsReport";
+    const testQuestionUrl = rootUrl + "/test-question";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -1551,6 +1603,13 @@
                         createTab(this.title, "<spring:url value="/evaluation-question-bank/show-form"/>");
                     }
                 },
+
+               /* {
+                    title: "<spring:message code="evaluation.final.test"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/evaluation-final-test/show-form"/>");
+                    }
+                },*/
                 <%--{--%>
                 <%--title: "ثبت نتایج",--%>
                 <%--click: function () {--%>
@@ -1628,12 +1687,19 @@
 
                 <sec:authorize access="hasAuthority('Menu_Cartable_StudentPortal')">
                 {
-                    title: "<spring:message code='student.portal'/>",
+                    title: "<spring:message code='personnel.portal'/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="/web/student-portal"/>");
+                        createTab(this.title, "<spring:url value="/web/personnel-portal"/>");
                     }
                 },
                 </sec:authorize>
+
+                {
+                    title: "<spring:message code='teacher.portal'/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/web/teacher-portal"/>");
+                    }
+                },
             ]
         }),
     });
@@ -1724,7 +1790,7 @@
                             <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_CourseWithOutTeacher')">
                             {isSeparator: true},
                             {
-                                title: "<spring:message code="report.course.withOut.teacher"/>",
+                                title: "<spring:message code="report.course.withOut.class"/>",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/courseWithOutTeacherReaport"/>");
                                 }
@@ -1761,6 +1827,13 @@
                                 title: "<spring:message code="training.class.report"/>",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="trainingClassReport/show-form"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            {
+                                title: "<spring:message code="noncompliance.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="nonComplianceReport/show-form"/>");
                                 }
                             },
                             {isSeparator: true},
@@ -1817,6 +1890,15 @@
                                 title: "گزارش واحد آمار",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/statisticsUnitReport/"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            </sec:authorize>
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">
+                            {
+                                title: "گزارش دوره های گذرانده فرد",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/coursesPassedPersonnelReport/"/>");
                                 }
                             },
                             {isSeparator: true},
@@ -1895,8 +1977,14 @@
                                 }
                             },
                             {isSeparator: true},
+                            {
+                                title: "گزارش آماری سالانه",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/annualStatisticalReportBySections"/>");
+                                }
+                            },
                             </sec:authorize>
-
+                            {isSeparator: true},
                             <sec:authorize access="hasAuthority('Menu_Categories_performance')">
                             {
                                 title: "<spring:message code="course.performance.report"/>",
@@ -1906,22 +1994,20 @@
                             },
                             {isSeparator: true},
                             </sec:authorize>
-
-                            <%--<sec:authorize access="hasAuthority('Menu_continuous_Status_Report')">--%>
-                            <%--{--%>
-                                <%--title: "<spring:message code="continuous.status.report"/>",--%>
-                                <%--click: function () {--%>
-                                    <%--createTab(this.title, "<spring:url value="web/continuousStatusReport"/>");--%>
-                                <%--}--%>
-                            <%--},--%>
-                            <%--</sec:authorize>--%>
-
                             <sec:authorize access="hasAuthority('Menu_Personnel_Training_Status_Report')">
                             {
                             title: "<spring:message code="personnel.training.status.report"/>",
                             click: function () {
                             createTab(this.title, "<spring:url value="web/personnelTrainingStatusReport"/>");
                             }
+                            },
+                            </sec:authorize>
+                            <sec:authorize access="hasAuthority('Menu_continuous_Status_Report')">
+                            {
+                                title: "<spring:message code="continuous.status.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/continuousStatusReport"/>");
+                                }
                             },
                             </sec:authorize>
                         ]
@@ -2769,6 +2855,22 @@
             let userErrorMessage = "<spring:message code="msg.error.connecting.to.server"/>";
             if (JSON.parse(response.httpResponseText).message !== undefined && JSON.parse(response.httpResponseText).message !== "No message available" && JSON.parse(response.httpResponseText).message.length > 0) {
                 userErrorMessage = JSON.parse(response.httpResponseText).message;
+            }else if (JSON.parse(response.httpResponseText).message !== undefined && (JSON.parse(response.httpResponseText).status == 404 ||JSON.parse(response.httpResponseText).status == 500 || JSON.parse(response.httpResponseText).status == 400)) {
+
+                if(JSON.parse(response.httpResponseText).path.indexOf("isomorphic/IDACall")==-1){
+
+                    /*if(JSON.parse(response.httpResponseText).status == 400){
+                        userErrorMessage = "خطا در ارسال اطلاعات";
+                    }else */if(JSON.parse(response.httpResponseText).status == 404){
+                        userErrorMessage = "خطا در ارسال اطلاعات";
+                    }/*else if(JSON.parse(response.httpResponseText).status == 500){
+                        userErrorMessage = "خطا در سرور";
+                    }*/
+
+                    createDialog("warning", userErrorMessage, "اخطار");
+                    wait.close();
+                }
+                return;
             } else if (JSON.parse(response.httpResponseText).errors[0].message !== undefined && JSON.parse(response.httpResponseText).errors[0].message.length > 0) {
                 userErrorMessage = JSON.parse(response.httpResponseText).errors[0].message;
             }
@@ -3022,6 +3124,7 @@
     <%--autoFitFieldText: "<spring:message code="auto.fit"/>",--%>
     <%--emptyMessage: "",--%>
     <%--loadingDataMessage: "<spring:message code="loading"/>"--%>
+    <%--createTab("<spring:message code="post"/>", "<spring:url value="/web/post"/>");--%>
     <%--createTab("<spring:message code="post"/>", "<spring:url value="/web/post"/>");--%>
     <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="web/needsAssessment/"/>");--%>
 

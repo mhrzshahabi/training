@@ -13,6 +13,7 @@ import com.nicico.training.dto.PostDTO;
 import com.nicico.training.dto.PostGroupDTO;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.iservice.IPostService;
+import com.nicico.training.service.BaseService;
 import com.nicico.training.service.PostGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -130,6 +131,7 @@ public class PostGroupRestController {
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
+        BaseService.setCriteriaToNotSearchDeleted(request);
         SearchDTO.SearchRs<PostGroupDTO.Info> response = postGroupService.searchWithoutPermission(request);
         final PostGroupDTO.SpecRs specResponse = new PostGroupDTO.SpecRs();
         specResponse.setData(response.getList())
@@ -149,6 +151,7 @@ public class PostGroupRestController {
     @PostMapping(value = "/search")
 //    @PreAuthorize("hasAuthority('r_post_group')")
     public ResponseEntity<SearchDTO.SearchRs<PostGroupDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
+        BaseService.setCriteriaToNotSearchDeleted(request);
         return new ResponseEntity<>(postGroupService.searchWithoutPermission(request), HttpStatus.OK);
     }
 

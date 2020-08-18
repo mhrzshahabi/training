@@ -28,7 +28,7 @@
             <%--}--%>
         <%--});--%>
     <%--}--%>
-    
+
     var RestDataSource_Job_Group_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
@@ -51,6 +51,14 @@
             {name: "titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains"},
             {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {
+                name: "enabled",
+                title: "<spring:message code="active.status"/>",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both",
+            },
         ],
         fetchDataURL: viewJobUrl + "/iscList"
     });
@@ -61,7 +69,15 @@
             {name: "titleFa", filterOperator: "iContains"},
             {name: "titleEn", filterOperator: "iContains"},
             {name: "description", filterOperator: "iContains"},
-            {name: "version"}
+            {name: "version"},
+            {
+                name: "enabled",
+                title: "<spring:message code="active.status"/>",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both",
+            },
         ]
         , fetchDataURL: jobUrl + "/iscList"
     });
@@ -72,7 +88,10 @@
             {name: "titleFa"},
             {name: "titleEn"},
             {name: "description"},
-            {name: "version"}
+            {name: "version"},
+            {
+                name: "enabled", autoFitWidth: true, autoFitWidthApproach: "both",
+            },
         ]
     });
     var Menu_ListGrid_Job_Group_Jsp = isc.Menu.create({
@@ -215,7 +234,13 @@
             {name: "titleEn", title: "نام لاتین شغل", align: "center", hidden: true},
             {name: "description", title: "توضیحات", align: "center", hidden: true},
             {name: "OnAdd", title: " ", align: "center",canSort:false,canFilter:false},
-            {name: "version", title: "version", canEdit: false, hidden: true}
+            {name: "version", title: "version", canEdit: false, hidden: true},
+            {name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+            },
         ],
         sortField: 1,
         sortDirection: "descending",
@@ -322,6 +347,12 @@
                 }
             },
             {name: "titleFa", title: "نام شغل", align: "center", width: "70%"},
+            {name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+            },
             {name: "OnDelete", title: " ", align: "center",canSort:false,canFilter:false}
         ],
         dataArrived:function(){
@@ -600,7 +631,6 @@
         height: "100%",
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        showResizeBars: true,
         dataSource: RestDataSource_Job_Group_Jobs_Jsp,
         contextMenu: Menu_ListGrid_Job_Group_Jobs,
         gridComponents: [ActionsTS_Job_Group_Job, "header", "filterEditor", "body",],
@@ -612,6 +642,12 @@
             {name: "titleFa"},
             {name: "competenceCount"},
             {name: "personnelCount"},
+            {name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+            },
         ],
         sortField: 1,
         sortDirection: "descending",
@@ -1162,21 +1198,88 @@
     PostDS_JobGroup = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "job.code", title: "<spring:message code="job.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap, filterOnKeypress: true},
+            {
+                name: "code",
+                title: "<spring:message code="post.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "titleFa",
+                title: "<spring:message code="post.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "jobTitleFa",
+                title: "<spring:message code="job.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "postGradeTitleFa",
+                title: "<spring:message code="post.grade.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
             {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "assistance",
+                title: "<spring:message code="assistance"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "affairs",
+                title: "<spring:message code="affairs"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "section",
+                title: "<spring:message code="section"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
             {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true}
-
+            {
+                name: "costCenterCode",
+                title: "<spring:message code="reward.cost.center.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "costCenterTitleFa",
+                title: "<spring:message code="reward.cost.center.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "competenceCount",
+                title: "تعداد شایستگی",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both"
+            },
+            {
+                name: "personnelCount",
+                title: "تعداد پرسنل",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both"
+            },
+            {
+                name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+            }
         ],
-        fetchDataURL: postUrl + "/iscList"
+        fetchDataURL: viewTrainingPostUrl + "/spec-list"
     });
 
     let ToolStrip_Job_Group_Post_Export2EXcel = isc.ToolStrip.create({
@@ -1197,7 +1300,7 @@
                     }
                     criteria.criteria.push({fieldName: "jobGroup", operator: "equals", value: ListGrid_Job_Group_Jsp.getSelectedRecord().id});
 
-                    ExportToFile.showDialog(null, PostLG_JobGroup , "Job_Group_Post", 0, null, '',"لیست پست - آموزش"  , criteria, null);
+                    ExportToFile.showDialog(null, PostLG_JobGroup, "Job_Group_Post", 0, null, '',"لیست پست - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -1213,31 +1316,9 @@
     PostLG_JobGroup = isc.TrLG.create({
         dataSource: PostDS_JobGroup,
         autoFetchData: false,
-        showResizeBar: true,
-        sortField: 0,
-        gridComponents: [ActionsTS_Post_Job_Group, "header", "filterEditor", "body",],
+        sortField: "id",
+        gridComponents: [ActionsTS_Post_Job_Group, "header", "filterEditor", "body"],
         // groupByField: "job.titleFa",
-        fields: [
-            {name: "code",
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9/]"
-                }
-            },
-            {name: "titleFa"},
-            {name: "job.titleFa"},
-            {name: "postGrade.titleFa"},
-            {name: "area"},
-            {name: "assistance"},
-            {name: "affairs"},
-            {name: "section"},
-            {name: "unit"},
-            {name: "costCenterCode",
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
-                }
-            },
-            {name: "costCenterTitleFa"}
-        ],
     });
 
     Detail_Tab_Job_Group = isc.TabSet.create({
@@ -1270,6 +1351,7 @@
     var HLayout_Grid_Job_Group_Jsp = isc.HLayout.create({
         width: "100%",
         height: "100%",
+        showResizeBar:true,
         members: [ListGrid_Job_Group_Jsp]
     });
     var VLayout_Body_Job_Group_Jsp = isc.VLayout.create({
@@ -1419,9 +1501,16 @@
                 if (postJob_JobGroup === jobGroup.id)
                     return;
                 postJob_JobGroup = jobGroup.id;
-                PostDS_JobGroup.fetchDataURL = jobGroupUrl + "postIscList/" + jobGroup.id;
+                PostLG_JobGroup.setImplicitCriteria({
+                    _constructor: "AdvancedCriteria",
+                    operator: "and",
+                    criteria: [{fieldName: "jobGroup", operator: "equals", value: jobGroup.id}]
+                });
                 PostLG_JobGroup.invalidateCache();
                 PostLG_JobGroup.fetchData();
+                // PostDS_JobGroup.fetchDataURL = jobGroupUrl + "postIscList/" + jobGroup.id;
+                // PostLG_JobGroup.invalidateCache();
+                // PostLG_JobGroup.fetchData();
                 break;
             }
             case "TabPane_Personnel_JobGroup":{

@@ -3,7 +3,10 @@ ghazanfari_f, 8/29/2019, 10:48 AM
 */
 package com.nicico.training.dto;
 
+import com.nicico.training.model.ParameterValue;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -33,6 +36,7 @@ public class PostDTO implements Serializable {
         private String costCenterCode;
         private String costCenterTitleFa;
         private String peopleType;
+        private Long enabled;
 //        private DepartmentDTO.Info department;
     }
 
@@ -44,5 +48,7 @@ public class PostDTO implements Serializable {
         private Long id;
         private String code;
         private String titleFa;
+        private Long enabled;
+        private Long deleted;
     }
 }

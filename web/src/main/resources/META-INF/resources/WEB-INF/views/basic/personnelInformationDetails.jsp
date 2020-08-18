@@ -390,7 +390,7 @@
                     {name: "course.titleFa"},
                     {name: "course.id"},
                     {name: "course.code"},
-                    {name: "course.evaluation"},
+                    {name: "evaluation"},
                     {name: "institute.titleFa"},
                     {name: "studentCount"},
                     {name: "numberOfStudentEvaluation"},

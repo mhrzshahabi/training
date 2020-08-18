@@ -5,6 +5,7 @@ com.nicico.training.service
 @Time :9:16 AM
     */
 
+import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.setCriteria;
 
@@ -36,6 +38,8 @@ public class PostGroupService implements IPostGroupService {
     private final PostGroupDAO postGroupDAO;
     private final PostDAO postDAO;
     private final IWorkGroupService workGroupService;
+    private final NeedsAssessmentTempService needsAssessmentTempService;
+    private final NeedsAssessmentService needsAssessmentService;
 
     @Transactional(readOnly = true)
     @Override
@@ -111,14 +115,19 @@ public class PostGroupService implements IPostGroupService {
     @Transactional
     @Override
     public void delete(Long id) {
-        postGroupDAO.deleteById(id);
+        if (needsAssessmentService.checkBeforeDeleteObject("PostGroup", id) && needsAssessmentTempService.checkBeforeDeleteObject("PostGroup", id))
+            postGroupDAO.deleteById(id);
+        else
+            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
+
     }
 
     @Transactional
     @Override
     public void delete(PostGroupDTO.Delete request) {
-        final List<PostGroup> cAllById = postGroupDAO.findAllById(request.getIds());
-        postGroupDAO.deleteAll(cAllById);
+        request.getIds().forEach(id -> delete(id));
+//        final List<PostGroup> cAllById = postGroupDAO.findAllById(request.getIds());
+//        postGroupDAO.deleteAll(cAllById);
     }
 
     @Transactional(readOnly = true)
@@ -162,28 +171,9 @@ public class PostGroupService implements IPostGroupService {
     @Override
     @Transactional
     public List<PostDTO.Info> getPosts(Long postGroupID) {
-        final Optional<PostGroup> optionalPostGroup = postGroupDAO.findById(postGroupID);
-        final PostGroup postGroup = optionalPostGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PostGroupNotFound));
-//        Set<CompetenceOld> competenceSet = postGroup.getCompetenceSet();
-        Set<Post> posts = postGroup.getPostSet();
-        ArrayList<PostDTO.Info> postList = new ArrayList<>();
-        for (Post post : posts) {
-            postList.add(modelMapper.map(post, PostDTO.Info.class));
-        }
-//        PostDTO.Info info = new PostDTO.Info();
-//      --------------------------------------- By f.ghazanfari - start ---------------------------------------
-//        for (CompetenceOld competence:postGroup.getCompetenceSet()
-//             ) {
-//
-//            for (PostCompetence postCompetence:competence.getPostCompetenceSet()
-//                 ) {
-//                posts.add(postCompetence.getPost());
-//
-//            }
-//        }
-//      --------------------------------------- By f.ghazanfari - end ---------------------------------------
-        return postList;
-//        return infoList;
+        final PostGroup postGroup = postGroupDAO.findById(postGroupID).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PostGroupNotFound));
+        return modelMapper.map(postGroup.getPostSet().stream().filter(post -> post.getDeleted() == null).collect(Collectors.toList()), new TypeToken<List<PostDTO.Info>>() {
+        }.getType());
     }
 
     @Override
@@ -224,7 +214,9 @@ public class PostGroupService implements IPostGroupService {
         final PostGroup postGroup = optionalPostGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PostGroupNotFound));
 
         Set<Post> activePosts = postGroup.getPostSet();
-        List<Post> allPosts = postDAO.findAll();
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        BaseService.setCriteriaToNotSearchDeleted(request);
+        List<Post> allPosts = postDAO.findAll(NICICOSpecification.of(request));
         Set<Post> unAttachPosts = new HashSet<>();
 
         for (Post post : allPosts) {

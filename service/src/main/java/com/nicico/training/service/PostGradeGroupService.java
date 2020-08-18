@@ -37,6 +37,8 @@ public class PostGradeGroupService implements IPostGradeGroupService {
     private final ModelMapper modelMapper;
     private final PostGradeDAO postGradeDAO;
     private final IWorkGroupService workGroupService;
+    private final NeedsAssessmentTempService needsAssessmentTempService;
+    private final NeedsAssessmentService needsAssessmentService;
 
     @Transactional(readOnly = true)
     @Override
@@ -76,18 +78,22 @@ public class PostGradeGroupService implements IPostGradeGroupService {
     @Transactional
     @Override
     public void delete(Long id) {
-        try {
-            postGradeGroupDAO.deleteById(id);
-        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+        if (needsAssessmentService.checkBeforeDeleteObject("PostGradeGroup", id) && needsAssessmentTempService.checkBeforeDeleteObject("PostGradeGroup", id))
+            try {
+                postGradeGroupDAO.deleteById(id);
+            } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+                throw new TrainingException(TrainingException.ErrorType.NotDeletable);
+            }
+        else
             throw new TrainingException(TrainingException.ErrorType.NotDeletable);
-        }
     }
 
     @Transactional
     @Override
     public void delete(PostGradeGroupDTO.Delete request) {
-        final List<PostGradeGroup> postGradeGroupList = postGradeGroupDAO.findAllById(request.getIds());
-        postGradeGroupDAO.deleteAll(postGradeGroupList);
+        request.getIds().forEach(id -> delete(id));
+//        final List<PostGradeGroup> postGradeGroupList = postGradeGroupDAO.findAllById(request.getIds());
+//        postGradeGroupDAO.deleteAll(postGradeGroupList);
     }
 
     @Transactional(readOnly = true)
@@ -116,7 +122,7 @@ public class PostGradeGroupService implements IPostGradeGroupService {
     public List<PostGradeDTO.Info> getPostGrades(Long postGradeGroupId) {
         final Optional<PostGradeGroup> optionalPostGradeGroup = postGradeGroupDAO.findById(postGradeGroupId);
         final PostGradeGroup postGradeGroup = optionalPostGradeGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        return postGradeGroup.getPostGradeSet().stream().map(postGrade -> modelMapper.map(postGrade, PostGradeDTO.Info.class)).collect(Collectors.toList());
+        return postGradeGroup.getPostGradeSet().stream().filter(pg -> pg.getDeleted() == null).map(postGrade -> modelMapper.map(postGrade, PostGradeDTO.Info.class)).collect(Collectors.toList());
     }
 
     @Transactional

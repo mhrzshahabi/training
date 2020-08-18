@@ -14,16 +14,34 @@ import javax.validation.constraints.NotEmpty;
 public class ViewPersonnelTrainingStatusReportDTO {
 
     @ApiModelProperty
-    private String organizer;
+    private Long naPriorityId;
 
     @ApiModelProperty
-    private String personnelNo;
+    private Long naIsInNa;
 
     @ApiModelProperty
-    private String personnelNoTD;
+    private String classStatus;
 
     @ApiModelProperty
-    private String personnelNationalCode;
+    private Long classStudentScoresStateId;
+
+    @ApiModelProperty
+    private Long classStudentScore;
+
+    @ApiModelProperty
+    private Long personnelIsPersonnel;
+
+    @ApiModelProperty
+    private Long courseId;
+
+    @ApiModelProperty
+    private String courseCode;
+
+    @ApiModelProperty
+    private String courseTitleFa;
+
+    @ApiModelProperty
+    private String personnelPersonnelNo;
 
     @ApiModelProperty
     private String personnelFirstName;
@@ -32,13 +50,46 @@ public class ViewPersonnelTrainingStatusReportDTO {
     private String personnelLastName;
 
     @ApiModelProperty
-    private String personnelJobCode;
+    private String personnelNationalCode;
 
     @ApiModelProperty
-    private String PersonnelJobTitle;
+    private String personnelCppAffairs;
 
     @ApiModelProperty
-    private String personnel_Post_code;
+    private String personnelCppArea;
+
+    @ApiModelProperty
+    private String personnelCppAssistant;
+
+    @ApiModelProperty
+    private String personnelCppCode;
+
+    @ApiModelProperty
+    private String personnelCppSection;
+
+    @ApiModelProperty
+    private String personnelCppTitle;
+
+    @ApiModelProperty
+    private String personnelCppUnit;
+
+    @ApiModelProperty
+    private String personnelCompanyName;
+
+    @ApiModelProperty
+    private String personnelComplexTitle;
+
+    @ApiModelProperty
+    private String personnelJobNo;
+
+    @ApiModelProperty
+    private String personnelJobTitle;
+
+    @ApiModelProperty
+    private String personnelEmpNo;
+
+    @ApiModelProperty
+    private String personnelPostCode;
 
     @ApiModelProperty
     private String personnelPostGradeCode;
@@ -50,49 +101,17 @@ public class ViewPersonnelTrainingStatusReportDTO {
     private String personnelPostTitle;
 
     @ApiModelProperty
-    private String company;
+    private Long personnelDepartmentId;
 
     @ApiModelProperty
-    private String personnelCppAffairs;
-
-    @ApiModelProperty
-    private String personnelCppArea;
-
-    @ApiModelProperty
-    private String personnelAssisstant;
-
-    @ApiModelProperty
-    private String personnelUnit;
-
-    @ApiModelProperty
-    private String courseCode;
-
-    @ApiModelProperty
-    private String courseTitleFa;
-
-    @ApiModelProperty
-    private String skillCode;
-
-    @ApiModelProperty
-    private String skillTitle;
-
-    @ApiModelProperty
-    private String acceptanceState;
-
-    @ApiModelProperty
-    private String needsAssessmentState;
-
-    @ApiModelProperty
-    private String needsAssessmentPriority;
-
-    @ApiModelProperty
-    private String classState;
+    private Long personnelPostId;
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("ViewPersonnelTrainingStatusReportInfo")
     public static class Info extends ViewPersonnelTrainingStatusReportDTO{
-        private Long id;
+        private Long classId;
+        private Long personnelId;
     }
 }

@@ -41,6 +41,8 @@ public class TrainingPostService implements ITrainingPostService {
     private final DepartmentDAO departmentDAO;
     private final JobDAO jobDAO;
     private final PostGradeDAO postGradeDAO;
+    private final NeedsAssessmentTempService needsAssessmentTempService;
+    private final NeedsAssessmentService needsAssessmentService;
 
     @Transactional
     @Override
@@ -84,13 +86,15 @@ public class TrainingPostService implements ITrainingPostService {
         final Optional<TrainingPost> optionalTrainingPost = trainingPostDAO.findById(trainingPostID);
         final TrainingPost trainingPost = optionalTrainingPost.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TrainingPostNotFound));
         Set<Post> posts = trainingPost.getPostSet();
-        return modelMapper.map(posts.toArray(), new TypeToken<List<PostDTO.Info>>() {}.getType());
+        return modelMapper.map(posts.stream().filter(post -> post.getDeleted() == null).collect(Collectors.toList()), new TypeToken<List<PostDTO.Info>>() {
+        }.getType());
     }
 
     @Override
     public List<PostDTO.Info> getNullPosts() {
         List<ViewPostDTO.Info> nullViewPosts = viewPostService.search(new SearchDTO.SearchRq().setCriteria(makeNewCriteria("trainingPostSet", null, EOperator.isNull, null))).getList();
-        return modelMapper.map(nullViewPosts, new TypeToken<List<PostDTO.Info>>() {}.getType());
+        return modelMapper.map(nullViewPosts.stream().filter(post -> post.getDeleted() == null).collect(Collectors.toList()), new TypeToken<List<PostDTO.Info>>() {
+        }.getType());
     }
 
     @Transactional
@@ -100,14 +104,12 @@ public class TrainingPostService implements ITrainingPostService {
         final TrainingPost trainingPost = optionalTrainingPost.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TrainingPostNotFound));
         List<PersonnelDTO.Info> infoList = new ArrayList<>();
         Set<Post> posts = trainingPost.getPostSet();
-        if(posts != null && posts.size() > 0)
-        {
+        posts = posts.stream().filter(post -> post.getDeleted() == null).collect(Collectors.toSet());
+        if (posts != null && posts.size() > 0) {
             SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
             criteria.getCriteria().add(makeNewCriteria("postId", posts.stream().map(Post::getId).collect(Collectors.toList()), EOperator.inSet, null));
-//            criteria.getCriteria().add(makeNewCriteria("active", 1, EOperator.equals, null));
-//            criteria.getCriteria().add(makeNewCriteria("employmentStatusId", 5, EOperator.equals, null));
+            criteria.getCriteria().add(makeNewCriteria("deleted", 0, EOperator.equals, null));
             infoList = personnelService.search(new SearchDTO.SearchRq().setCriteria(criteria)).getList();
-            return infoList;
         }
         return infoList;
     }
@@ -116,7 +118,7 @@ public class TrainingPostService implements ITrainingPostService {
     @Override
     public TrainingPostDTO create(TrainingPostDTO.Create create, HttpServletResponse response) throws IOException {
         try {
-            return modelMapper.map(trainingPostDAO.save(convertDTO2Obj(create)),TrainingPostDTO.class);
+            return modelMapper.map(trainingPostDAO.save(convertDTO2Obj(create)), TrainingPostDTO.class);
         }
 //        catch (TrainingException e){
 //            Locale locale = LocaleContextHolder.getLocale();
@@ -127,7 +129,7 @@ public class TrainingPostService implements ITrainingPostService {
 //            else if(e.getErrorCode().equals(TrainingException.ErrorType.PostGradeNotFound))
 //                response.sendError(404, messageSource.getMessage("خطا در رده پستی", null, locale));
 //        }
-        catch (Exception e){
+        catch (Exception e) {
             Locale locale = LocaleContextHolder.getLocale();
             response.sendError(500, messageSource.getMessage("exception.un-managed", null, locale));
         }
@@ -141,7 +143,9 @@ public class TrainingPostService implements ITrainingPostService {
             TrainingPost currentEntity = trainingPostDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
             modelMapper.getConfiguration().setSkipNullEnabled(true);
             modelMapper.map(convertDTO2Obj(update), currentEntity);
-            return modelMapper.map(currentEntity,TrainingPostDTO.class);
+            if (update.getEnabled() == null)
+                currentEntity.setEnabled(null);
+            return modelMapper.map(currentEntity, TrainingPostDTO.class);
         }
 //        catch (TrainingException e){
 //            Locale locale = LocaleContextHolder.getLocale();
@@ -154,7 +158,7 @@ public class TrainingPostService implements ITrainingPostService {
 //            else if(e.getErrorCode().equals(TrainingException.ErrorType.PostGradeNotFound))
 //                response.sendError(404, messageSource.getMessage("exception.record.not−found", null, locale));
 //        }
-        catch (Exception e){
+        catch (Exception e) {
             Locale locale = LocaleContextHolder.getLocale();
             response.sendError(500, messageSource.getMessage("exception.un-managed", null, locale));
         }
@@ -164,15 +168,18 @@ public class TrainingPostService implements ITrainingPostService {
     @Transactional
     @Override
     public void delete(Long id) {
-        trainingPostDAO.deleteById(id);
+        if (needsAssessmentService.checkBeforeDeleteObject("TrainingPost", id) && needsAssessmentTempService.checkBeforeDeleteObject("TrainingPost", id))
+            trainingPostDAO.deleteById(id);
+        else
+            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
     }
 
-    private TrainingPost convertDTO2Obj(TrainingPostDTO trainingPostDTO) throws Exception{
+    private TrainingPost convertDTO2Obj(TrainingPostDTO trainingPostDTO) throws Exception {
         Department department = trainingPostDTO.getDepartmentId() == null ? null : departmentDAO.findById(trainingPostDTO.getDepartmentId()).orElse(null);//.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.DepartmentNotFound));
         Job job = trainingPostDTO.getJobId() == null ? null : jobDAO.findById(trainingPostDTO.getJobId()).orElse(null);//.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobNotFound));
         PostGrade postGrade = trainingPostDTO.getPostGradeId() == null ? null : postGradeDAO.findById(trainingPostDTO.getPostGradeId()).orElse(null);//.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PostGradeNotFound));
         final TrainingPost entity = new TrainingPost();
-        if(department != null){
+        if (department != null) {
             entity.setArea(department.getHozeTitle());
             entity.setAssistance(department.getMoavenatTitle());
             entity.setAffairs(department.getOmorTitle());
@@ -184,11 +191,12 @@ public class TrainingPostService implements ITrainingPostService {
         }
         if (job != null)
             entity.setJob(job);
-        if(postGrade != null)
+        if (postGrade != null)
             entity.setPostGrade(postGrade);
         entity.setCode(trainingPostDTO.getCode());
         entity.setTitleFa(trainingPostDTO.getTitleFa());
         entity.setPeopleType(trainingPostDTO.getPeopleType());
+        entity.setEnabled(trainingPostDTO.getEnabled());
         return entity;
     }
 }
