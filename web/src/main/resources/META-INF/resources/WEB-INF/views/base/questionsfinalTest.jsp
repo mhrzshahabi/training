@@ -739,12 +739,26 @@
         }
     });
 */
+
+    var ToolStripButton_PrintJasper = isc.ToolStripButton.create({
+        icon: "[SKIN]/RichTextEditor/print.png",
+        title: "چاپ سوالات پیش آزمون",
+        click: function () {
+            let params = {};
+            let data = ListGrid_FinalTest.getData().localData.get(0).testQuestionId;
+            params.teacher = ListGrid_FinalTest.getData().localData.get(0).questionBank.teacher.fullNameFa;
+
+            print(data, params, "testForm.jasper");
+        }
+    });
+
     var ToolStrip_Actions_FinalTest = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
         members: [
             ToolStripButton_InsertQuestionFromQuestionBank_FinalTest,
             ToolStripButton_InsertQuestionFromLatestQuestions_FinalTest,
+            ToolStripButton_PrintJasper,
             //ToolStripButton_PrintJasper,
             isc.ToolStrip.create({
                 width: "100%",
@@ -929,4 +943,24 @@
         criteriaForm.submitForm();
     }
 */
+
+    function print(TestQuestionId, params, fileName, type = "pdf") {
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="test-question-form/print/"/>" + type,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "fileName", type: "hidden"},
+                    {name: "TestQuestionId", type: "hidden"},
+                    {name: "params", type: "hidden"}
+                ]
+        });
+        criteriaForm.setValue("TestQuestionId", TestQuestionId);
+        criteriaForm.setValue("fileName", fileName);
+        criteriaForm.setValue("params", JSON.stringify(params));
+        criteriaForm.show();
+        criteriaForm.submitForm();
+    }
     //</script>
