@@ -140,8 +140,11 @@ public class TestQuestionService implements ITestQuestionService {
 
         String data = mapper.writeValueAsString(testQuestionBanks);
         params.put("today", DateUtil.todayDate());
-        params.put(ConstantVARs.REPORT_TYPE, type);
         params.put("class", model.getTclass().getTitleClass());
+        params.put("date", model.getDate());
+        params.put("time", model.getTime());
+        params.put("duration", model.getDuration().toString() + " دقیقه");
+        params.put(ConstantVARs.REPORT_TYPE, type);
         JsonDataSource jsonDataSource = null;
         jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
