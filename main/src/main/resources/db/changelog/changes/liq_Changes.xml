@@ -1178,9 +1178,9 @@
 
 
 
-    <changeSet author="golrokhi (generated)" id="1597649040205-591">
+<!--    <changeSet author="golrokhi (generated)" id="1597649040205-591">
         <dropTable tableName="TBL_MESSAGE_PARAMETERVALUE"/>
-    </changeSet>
+    </changeSet>-->
 
 
     <changeSet author="golrokhi (generated)" id="1597731116255-490">

@@ -17,14 +17,5 @@ public class TestQuestionFormController {
 
     private final TestQuestionService testQuestionService;
 
-    @PostMapping(value = {"/print/{type}"})
-    public void print(HttpServletResponse response,
-                      @PathVariable String type,
-                      @RequestParam(value = "fileName") String fileName,
-                      @RequestParam(value = "TestQuestionId") Long testQuestionId,
-                      @RequestParam(value = "params") String receiveParams
-    ) throws Exception {
-        testQuestionService.print(response, type, fileName, testQuestionId, receiveParams);
-    }
 
 }

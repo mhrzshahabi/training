@@ -1129,15 +1129,11 @@
     <changeSet author="golrokhi (generated)" id="1596597720708-482">
         <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_message" constraintName="FK9lgx37ofr266ok7cavf67efmr" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
-    <changeSet author="golrokhi (generated)" id="1596597720708-483">
-        <addForeignKeyConstraint baseColumnNames="f_message_id" baseTableName="tbl_message_ParameterValue" constraintName="FKa0fijtlavwxhf6mixdjxvephn" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_message" validate="true"/>
-    </changeSet>
+
     <changeSet author="golrokhi (generated)" id="1596597720708-484">
         <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_message_contact" constraintName="FKbso4uky7gl9lyckywfc6ooj3n" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
-    <changeSet author="golrokhi (generated)" id="1596597720708-485">
-        <addForeignKeyConstraint baseColumnNames="f_parameter_value_id" baseTableName="tbl_message_ParameterValue" constraintName="FKd6sgkuel25w65m0e21wfi7p2s" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
-    </changeSet>
+
     <changeSet author="golrokhi (generated)" id="1596597720708-486">
         <addForeignKeyConstraint baseColumnNames="f_message_contact_status_id" baseTableName="tbl_message_contact" constraintName="FKg52ambqi2uixknyn03rn2925h" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
@@ -1180,10 +1176,6 @@
     <changeSet author="golrokhi (generated)" id="1596959559885-493">
         <addForeignKeyConstraint baseColumnNames="f_class" baseTableName="tbl_test_question" constraintName="FKamu20wgoa0uwd684lny5s1nw3" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
     </changeSet>
-    <changeSet author="golrokhi (generated)" id="1596959559885-494">
-        <addForeignKeyConstraint baseColumnNames="f_question_bank" baseTableName="tbl_test_question" constraintName="FKkl33nqi72fj159v3jv6urqhyh" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_question_bank" validate="true"/>
-    </changeSet>
-
 
     <changeSet author="golrokhi (generated)" id="1596986495722-498">
         <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_question_bank_test_question" constraintName="FKsbbpqwkmqgq4yh9g7k2ebc2s4" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
