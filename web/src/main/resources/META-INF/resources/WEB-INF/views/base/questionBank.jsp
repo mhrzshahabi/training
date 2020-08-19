@@ -23,13 +23,6 @@
                     showNewForm_questionBank();
                 }
             },
-            /*{
-                title: "<spring:message code="question.bank.add.from.classes"/>",
-                icon: "<spring:url value="create.png"/>",
-                click: function () {
-                    showNewForm_questionBank();
-                }
-            },*/
             {
                 title: "<spring:message code="edit"/>",
                 icon: "<spring:url value="edit.png"/>",
@@ -51,22 +44,11 @@
 
     QuestionBankTS_questionBank = isc.ToolStrip.create({
         members: [
-            isc.ToolStripButtonRefresh.create({
-                click: function () {
-                    refresh_questionBank();
-                }
-            }),
             isc.ToolStripButtonAdd.create({
                 click: function () {
                     showNewForm_questionBank();
                 }
             }),
-            /*isc.ToolStripButtonAdd.create({
-                title:"<spring:message code="question.bank.add.from.classes"/>",
-                click: function () {
-                    showNewForm_questionBank();
-                }
-            }),*/
             isc.ToolStripButtonEdit.create({
                 click: function () {
                     showEditForm_questionBank();
@@ -88,9 +70,10 @@
             isc.LayoutSpacer.create({
                 width: "*"
             }),
-            isc.Label.create({
-                padding: 5,
-                ID: "totalsLabel_question_bank"
+            isc.ToolStripButtonRefresh.create({
+                click: function () {
+                    refresh_questionBank();
+                }
             }),
         ]
     });

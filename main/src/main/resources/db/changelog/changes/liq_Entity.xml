@@ -2991,7 +2991,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="golrokhi (generated)" id="1596597720708-469">
+<!--    <changeSet author="golrokhi (generated)" id="1596597720708-469">
         <createTable tableName="tbl_message_ParameterValue">
             <column name="f_message_id" type="NUMBER(19, 0)">
                 <constraints nullable="false"/>
@@ -3000,7 +3000,7 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-    </changeSet>
+    </changeSet>-->
     <changeSet author="golrokhi (generated)" id="1596597720708-470">
         <createTable tableName="tbl_message_contact">
             <column name="id" type="NUMBER(19, 0)">

@@ -14,4 +14,7 @@ public interface TestQuestionDAO extends JpaRepository<TestQuestion, Long>, JpaS
 
     @Query(value = "select * from tbl_test_question where b_is_pre_test_question=:isPreTestQuestion and f_class=:tclassId and rownum=1", nativeQuery = true)
     TestQuestion findTestQuestionByTclassAndPreTestQuestion(Long tclassId, boolean isPreTestQuestion);
+
+    @Query(value = "select count(id) from tbl_test_question where f_class=:tclassId and b_is_pre_test_question=:isPreTestQuestion and id <> :id", nativeQuery = true)
+    Integer IsExist(Long tclassId, boolean isPreTestQuestion,Long id);
 }

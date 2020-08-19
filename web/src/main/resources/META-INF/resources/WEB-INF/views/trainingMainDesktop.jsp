@@ -1604,12 +1604,12 @@
                     }
                 },
 
-               /* {
+                {
                     title: "<spring:message code="evaluation.final.test"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/evaluation-final-test/show-form"/>");
                     }
-                },*/
+                },
                 <%--{--%>
                 <%--title: "ثبت نتایج",--%>
                 <%--click: function () {--%>
