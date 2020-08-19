@@ -37,6 +37,12 @@ public class MessageContactDTO {
         private String objectMobile;
 
         private Long messageContactId;
+
+        private Long classId;
+
+        private String objectType;
+
+        private Long objectId;
     }
 
 }
