@@ -633,8 +633,8 @@
         let arry = state !== undefined ? state : Object.keys(FilterDF_PTSR.getValuesAsCriteria());
         if(state === undefined && arry.length < 3)
             return false;
-        // else if(state !== undefined && arry.length < 4)
-        //     return false;
+        else if(state === undefined)
+            return true;
         else if(state.length < 3 && arry.length < 4)
             return false;
         else
