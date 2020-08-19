@@ -119,4 +119,32 @@ public class TestQuestionService implements ITestQuestionService {
         }
 
     }
+
+    @Transactional
+    @Override
+    public void print (HttpServletResponse response, String type , String fileName, Long testQuestionId, String receiveParams) throws Exception {
+        final Gson gson = new Gson();
+        Type resultType = new TypeToken<HashMap<String, Object>>() {
+        }.getType();
+        final HashMap<String, Object> params = gson.fromJson(receiveParams, resultType);
+
+        TestQuestionDTO.fullInfo model = get(testQuestionId);
+
+        Set<QuestionBankDTO.Exam> testQuestionBanks = getAllQuestionsByTestQuestionId(testQuestionId);
+
+        for(QuestionBankDTO.Exam q : testQuestionBanks){
+            if(q.getQuestionType().getCode().equals("Descriptive")){
+                q.setQuestion(q.getQuestion() + "\n\n\n\n");
+            }
+        }
+
+        String data = mapper.writeValueAsString(testQuestionBanks);
+        params.put("today", DateUtil.todayDate());
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        params.put("class", model.getTclass().getTitleClass());
+        JsonDataSource jsonDataSource = null;
+        jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
+    }
+
 }
