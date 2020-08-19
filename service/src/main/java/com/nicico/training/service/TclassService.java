@@ -15,6 +15,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.mapper.TrainingClassBeanMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -55,6 +56,7 @@ public class TclassService implements ITclassService {
     private final TargetSocietyDAO societyDAO;
     private final AttendanceDAO attendanceDAO;
     private final ParameterValueDAO parameterValueDAO;
+    private final TrainingClassBeanMapper trainingClassBeanMapper;
 
     @Transactional(readOnly = true)
     @Override
@@ -148,23 +150,24 @@ public class TclassService implements ITclassService {
         final Tclass tclass = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
         Long classOldSupervisor = tclass.getSupervisor();
         Long classOldTeacher = tclass.getTeacherId();
+
+        Tclass mappedClass = trainingClassBeanMapper.updateTClass(request, tclass);
         List<Long> trainingPlaceIds = request.getTrainingPlaceIds();
         Set<TrainingPlace> set = new HashSet<>();
         if(trainingPlaceIds != null) {
             List<TrainingPlace> allById = trainingPlaceDAO.findAllById(trainingPlaceIds);
             set.addAll(allById);
         }
-        Tclass updating = new Tclass();
-        modelMapper.map(tclass, updating);
-        modelMapper.map(request, updating);
-        updating.setTrainingPlaceSet(set);
-        if(!updating.getClassStatus().equals("4")){
-            updating.setClassCancelReasonId(null);
-            updating.setAlternativeClassId(null);
-            updating.setPostponeStartDate(null);
+
+        mappedClass.setTrainingPlaceSet(set);
+
+        if(!mappedClass.getClassStatus().equals("4")){
+            mappedClass.setClassCancelReasonId(null);
+            mappedClass.setAlternativeClassId(null);
+            mappedClass.setPostponeStartDate(null);
         }
         if(cancelClassesIds != null){
-            Set<Tclass> canceledClasses = updating.getCanceledClasses();
+            Set<Tclass> canceledClasses = mappedClass.getCanceledClasses();
             for (Tclass canceledClass : canceledClasses) {
                 canceledClass.setAlternativeClassId(null);
             }
@@ -172,10 +175,10 @@ public class TclassService implements ITclassService {
             HashSet<Tclass> tclassHashSet = new HashSet<>(tclasses);
             for (Tclass c : tclassHashSet) {
                 c.setAlternativeClassId(id);
-                c.setPostponeStartDate(updating.getStartDate());
+                c.setPostponeStartDate(mappedClass.getStartDate());
             }
         }
-        Tclass save = tclassDAO.save(updating);
+        Tclass updatedClass = tclassDAO.save(mappedClass);
         //--------------------DONE BY ROYA---------------------
         if(classOldSupervisor!= null && request.getSupervisor() != null){
             if(!classOldSupervisor.equals(request.getSupervisor())){
@@ -204,11 +207,12 @@ public class TclassService implements ITclassService {
             }
         }
         //-----------------------------------------------------
-        if(request.getTargetSocietyTypeId() != null) {
-            updateTargetSocieties(save.getTargetSocietyList(), request.getTargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
-        }
 
-        return modelMapper.map(save, TclassDTO.Info.class);
+        //TODO CHANGE THE WAY OF MAPPING ASAP
+        //   updateTargetSocieties(save.getTargetSocietyList(), request.getTargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
+        TclassDTO.Info info = new TclassDTO.Info();
+        info.setId(updatedClass.getId());
+        return info;
     }
 
     @Transactional
@@ -978,10 +982,10 @@ public class TclassService implements ITclassService {
         return evaluationResult;
     }
 
-    public static int j_days_in_month[] = {31, 31, 31, 31, 31, 31, 30, 30, 30,
+    public static int[] j_days_in_month = {31, 31, 31, 31, 31, 31, 30, 30, 30,
             30, 30, 29};
 
-    public static int g_days_in_month[] = {31, 28, 31, 30, 31, 30, 31, 31, 30,
+    public static int[] g_days_in_month = {31, 28, 31, 30, 31, 30, 31, 31, 30,
             31, 30, 31};
 
     private static int parsBooleanToInt(Boolean sample) {
