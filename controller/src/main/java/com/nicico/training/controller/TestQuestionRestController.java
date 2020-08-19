@@ -7,6 +7,8 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.TrainingException;
+import com.nicico.training.dto.GoalDTO;
 import com.nicico.training.dto.SkillLevelDTO;
 import com.nicico.training.dto.TermDTO;
 import com.nicico.training.dto.TestQuestionDTO;
@@ -15,6 +17,8 @@ import com.nicico.training.iservice.ITestQuestionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
@@ -30,19 +34,24 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/api/test-question")
 public class TestQuestionRestController {
-
+    private final ModelMapper modelMapper;
     private final ITestQuestionService testQuestionService;
     private final ObjectMapper objectMapper;
     // ------------------------------
 
+    @Loggable
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<TestQuestionDTO.fullInfo> get(@PathVariable Long id) throws IOException {
+        return new ResponseEntity<>(testQuestionService.get(id), HttpStatus.OK);
+    }
+
     @GetMapping(value = "/spec-list")
     public ResponseEntity<TestQuestionDTO.TestQuestionSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
-                                                           @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
-                                                           @RequestParam(value = "_constructor", required = false) String constructor,
-                                                           @RequestParam(value = "operator", required = false) String operator,
-                                                           @RequestParam(value = "criteria", required = false) String criteria,
-                                                           @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException
-    {
+                                                                   @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+                                                                   @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                   @RequestParam(value = "operator", required = false) String operator,
+                                                                   @RequestParam(value = "criteria", required = false) String criteria,
+                                                                   @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
         SearchDTO.CriteriaRq criteriaRq;
@@ -73,6 +82,40 @@ public class TestQuestionRestController {
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @DeleteMapping(value = "/{id}")
+//    @PreAuthorize("hasAuthority('d_personalInfo')")
+    public ResponseEntity delete(@PathVariable Long id) {
+        try {
+            testQuestionService.delete(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (TrainingException | DataIntegrityViolationException e) {
+            return new ResponseEntity<>(
+                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+    @Loggable
+    @PostMapping
+    public ResponseEntity<TestQuestionDTO.Info> create(@Validated @RequestBody TestQuestionDTO.Create request) {
+        HttpStatus httpStatus = HttpStatus.CREATED;
+        TestQuestionDTO.Info info = null;
+        try {
+            info = testQuestionService.create(request);
+
+        } catch (Exception e) {
+            httpStatus = HttpStatus.NO_CONTENT;
+            info = null;
+        }
+        return new ResponseEntity<>(info, httpStatus);
+    }
+
+    @Loggable
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<TestQuestionDTO.Info> update(@PathVariable Long id, @Validated @RequestBody TestQuestionDTO.Update request, HttpServletResponse response) {
+        return new ResponseEntity<>(testQuestionService.update(id, request,response), HttpStatus.OK);
     }
 
 }
