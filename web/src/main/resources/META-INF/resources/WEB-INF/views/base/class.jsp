@@ -1453,7 +1453,6 @@
                         hasClassStarted(oldValue);
                     else if (classMethod.localeCompare("POST") === 0 && (value === "3" || value === "2"))
                         return false;
-
                 }
             },
             {
