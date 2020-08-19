@@ -1,5 +1,6 @@
 package com.nicico.training.controller;
 
+import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ContinuousStatusReportViewDTO;
 import com.nicico.training.service.ContinuousStatusReportViewService;
@@ -22,10 +23,12 @@ public class ContinuousStatusReportViewRestController {
 
     private final ContinuousStatusReportViewService continuousStatusReportViewService;
 
-    @GetMapping(value = "/iscList")
-    public ResponseEntity<ISC<ContinuousStatusReportViewDTO.Info>> iscList(HttpServletRequest iscRq) throws IOException {
+    @Loggable
+    @GetMapping
+    public ResponseEntity<ISC<ContinuousStatusReportViewDTO.Grid>> iscList(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRs<ContinuousStatusReportViewDTO.Info> searchRs = continuousStatusReportViewService.search(searchRq);
+        searchRq.setSortBy("empNo");
+        SearchDTO.SearchRs<ContinuousStatusReportViewDTO.Grid> searchRs = continuousStatusReportViewService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 

@@ -109,7 +109,9 @@ public class ControlFormController {
             Personnel personnel=null;
 
             if (student!=null && student.getNationalCode()!=null)
-            personnel=personnelDAO.findByNationalCodeAndPersonnelNo(student.getNationalCode().trim(),student.getPersonnelNo().trim());
+                if (student.getPersonnelNo() != null) {
+                    personnel = personnelDAO.findByNationalCodeAndPersonnelNo(student.getNationalCode().trim(), student.getPersonnelNo().trim());
+                }
 
             st.setCcpAffairs(personnel!=null ? (personnel.getCcpAffairs() != null ? personnel.getCcpAffairs() : "") : "");
 
@@ -343,7 +345,9 @@ public class ControlFormController {
             Personnel personnel=null;
 
             if (student!=null && student.getNationalCode()!=null)
-                personnel=personnelDAO.findByNationalCodeAndPersonnelNo(student.getNationalCode().trim(),student.getPersonnelNo().trim());
+                if (student.getPersonnelNo() != null) {
+                    personnel = personnelDAO.findByNationalCodeAndPersonnelNo(student.getNationalCode().trim(), student.getPersonnelNo().trim());
+                }
 
             st.setCcpAffairs(personnel!=null ? (personnel.getCcpAffairs() != null ? personnel.getCcpAffairs() : "") : "");
 
@@ -416,7 +420,9 @@ public class ControlFormController {
                 Personnel personnel=null;
 
                 if (student!=null && student.getNationalCode()!=null)
-                    personnel=personnelDAO.findByNationalCodeAndPersonnelNo(student.getNationalCode().trim(),student.getPersonnelNo().trim());
+                    if (student.getPersonnelNo() != null) {
+                        personnel = personnelDAO.findByNationalCodeAndPersonnelNo(student.getNationalCode().trim(), student.getPersonnelNo().trim());
+                    }
 
                 st.setCcpAffairs(personnel!=null ? (personnel.getCcpAffairs() != null ? personnel.getCcpAffairs() : "") : "");
 
@@ -585,7 +591,9 @@ public class ControlFormController {
                 Personnel personnel=null;
 
                 if (student!=null && student.getNationalCode()!=null)
-                    personnel=personnelDAO.findByNationalCodeAndPersonnelNo(student.getNationalCode().trim(),student.getPersonnelNo().trim());
+                    if (student.getPersonnelNo() != null) {
+                        personnel = personnelDAO.findByNationalCodeAndPersonnelNo(student.getNationalCode().trim(), student.getPersonnelNo().trim());
+                    }
 
                 st.setCcpAffairs(personnel!=null ? (personnel.getCcpAffairs() != null ? personnel.getCcpAffairs() : "") : "");
 
@@ -671,7 +679,9 @@ public class ControlFormController {
                 Personnel personnel=null;
 
                 if (student!=null && student.getNationalCode()!=null)
-                    personnel=personnelDAO.findByNationalCodeAndPersonnelNo(student.getNationalCode().trim(),student.getPersonnelNo().trim());
+                    if (student.getPersonnelNo() != null) {
+                        personnel = personnelDAO.findByNationalCodeAndPersonnelNo(student.getNationalCode().trim(), student.getPersonnelNo().trim());
+                    }
 
                 st.setCcpAffairs(personnel!=null ? (personnel.getCcpAffairs() != null ? personnel.getCcpAffairs() : "") : "");
 

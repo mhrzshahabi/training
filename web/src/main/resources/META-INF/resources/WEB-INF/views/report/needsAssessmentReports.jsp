@@ -4,6 +4,29 @@
 
 // <script>
 
+    //Amin HK
+    let hideRadioButtons=false;
+
+    $(document).ready(()=>{
+        let nameTab=mainTabSet.tabs[mainTabSet.selectedTab].title;
+        if (nameTab=="اطلاعات پرسنل"){
+            hideRadioButtons=true;
+
+            [...Array(3).keys()].slice(1).forEach(idx=> {
+                ReportTypeDF_NABOP.getItem("reportType").getItem(idx).setDisabled(true);
+                ReportTypeDF_NABOP.getItem("personnelId").hide();
+            });
+        }
+        else if (nameTab=="گزارشات نیازسنجی"){
+            [...Array(4).keys()].slice(1).forEach(idx=> {
+                ReportTypeDF_NABOP.getItem("reportType").getItem(idx).setDisabled(false);
+                ReportTypeDF_NABOP.getItem("personnelId").show();
+            });
+            hideRadioButtons=false;
+        }
+    });
+    ////////////////////////////////////
+
     var postCode_NABOP = null;
     var passedStatusId_NABOP = 216;
     var priorities_NABOP;
@@ -54,9 +77,42 @@
     //*post form*/
     //--------------------------------------------------------------------------------------------------------------------//
 
+    TrainingPostDS_NABOP = isc.TrDS.create({
+        fields: [
+            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "departmentId", title: "departmentId", primaryKey: true, canEdit: false, hidden: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار"},filterOnKeypress: true},
+            {name: "code", title: "<spring:message code='code'/>", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postGradeTitleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "description", hidden: true, title: "توضیحات", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "competenceCount", hidden: true, title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {
+                name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",
+                formatCellValue: function (value, record) {
+                    let newVal = value == undefined ? "فعال" : "غیر فعال";
+                    return newVal;
+                }
+            },
+        ],
+        fetchDataURL: viewTrainingPostUrl + "/iscList"
+    });
+
     PostDS_NABOP = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار"},filterOnKeypress: true},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -68,9 +124,19 @@
             {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
-
+            {name: "competenceCount", hidden: true, title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {
+                name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",
+                formatCellValue: function (value, record) {
+                    let newVal = value == undefined ? "فعال" : "غیر فعال";
+                    return newVal;
+                }
+            },
         ],
-        fetchDataURL: postUrl + "/iscList"
+        fetchDataURL: viewPostUrl + "/iscList"
     });
 
     PostGroupDS_NABOP = isc.TrDS.create({
@@ -80,19 +146,35 @@
                 {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains", autoFitWidth: true},
+                {name: "competenceCount", hidden: true, title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+                {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+                {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+                {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             ],
-        fetchDataURL: postGroupUrl + "/spec-list"
+        fetchDataURL: viewPostGroupUrl + "/iscList"
     });
 
     JobDS_NABOP = isc.TrDS.create({
         fields:
             [
                 {name: "id", primaryKey: true, hidden: true},
+                {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار"},filterOnKeypress: true},
                 {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains", autoFitWidth: true},
+                {name: "competenceCount", hidden: true, title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+                {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+                {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+                {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+                {
+                    name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",
+                    formatCellValue: function (value, record) {
+                        let newVal = value == undefined ? "فعال" : "غیر فعال";
+                        return newVal;
+                    }
+                },
             ],
-        fetchDataURL: jobUrl + "/iscList"
+        fetchDataURL: viewJobUrl + "/iscList"
     });
 
     JobGroupDS_NABOP = isc.TrDS.create({
@@ -102,18 +184,34 @@
                 {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains", autoFitWidth: true},
+                {name: "competenceCount", hidden: true, title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+                {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+                {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+                {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             ],
-        fetchDataURL: jobGroupUrl + "spec-list"
+        fetchDataURL: viewJobGroupUrl + "/iscList"
     });
 
     PostGradeDS_NABOP = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار"},filterOnKeypress: true},
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "competenceCount", hidden: true, title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {
+                name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",
+                formatCellValue: function (value, record) {
+                    let newVal = value == undefined ? "فعال" : "غیر فعال";
+                    return newVal;
+                }
+            },
         ],
-        fetchDataURL: postGradeUrl + "/iscList"
+        fetchDataURL: viewPostGradeUrl + "/iscList"
     });
 
     PostGradeGroupDS_NABOP = isc.TrDS.create({
@@ -121,9 +219,13 @@
             {name: "id", title: "id", primaryKey: true, hidden: true},
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains", autoFitWidth: true}
+            {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "competenceCount", hidden: true, title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
         ],
-        fetchDataURL: postGradeGroupUrl + "spec-list"
+        fetchDataURL: viewPostGradeGroupUrl + "/iscList"
     });
 
     Menu_Post_NABOP = isc.Menu.create({
@@ -134,25 +236,37 @@
         }]
     });
 
+    TrainingPostLG_NABOP = isc.TrLG.create({
+        selectionType: "single",
+        dataSource: TrainingPostDS_NABOP,
+        contextMenu: Menu_Post_NABOP,
+        autoFetchData: true,
+        rowDoubleClick: "Select_Post_NABOP()",
+        sortField: 1,
+        sortDirection: "descending"
+    });
+
     PostsLG_NABOP = isc.TrLG.create({
         dataSource: PostDS_NABOP,
         contextMenu: Menu_Post_NABOP,
         selectionType: "single",
         autoFetchData: true,
-        fields: [
-            {name: "code"},
-            {name: "titleFa"},
-            {name: "job.titleFa"},
-            {name: "postGrade.titleFa"},
-            {name: "area"},
-            {name: "assistance"},
-            {name: "affairs"},
-            {name: "section"},
-            {name: "unit"},
-            {name: "costCenterCode"},
-            {name: "costCenterTitleFa"}
-        ],
-        rowDoubleClick: "Select_Post_NABOP()"
+        // fields: [
+        //     {name: "code"},
+        //     {name: "titleFa"},
+        //     {name: "job.titleFa"},
+        //     {name: "postGrade.titleFa"},
+        //     {name: "area"},
+        //     {name: "assistance"},
+        //     {name: "affairs"},
+        //     {name: "section"},
+        //     {name: "unit"},
+        //     {name: "costCenterCode"},
+        //     {name: "costCenterTitleFa"}
+        // ],
+        rowDoubleClick: "Select_Post_NABOP()",
+        sortField: 1,
+        sortDirection: "descending"
     });
 
     JobLG_NABOP = isc.TrLG.create({
@@ -160,12 +274,14 @@
         contextMenu: Menu_Post_NABOP,
         selectionType: "single",
         autoFetchData: true,
-        fields: [
-            {name: "code"},
-            {name: "titleFa"},
-            {name: "description"}
-        ],
-        rowDoubleClick: "Select_Post_NABOP()"
+        // fields: [
+        //     {name: "code"},
+        //     {name: "titleFa"},
+        //     {name: "description"}
+        // ],
+        rowDoubleClick: "Select_Post_NABOP()",
+        sortField: 1,
+        sortDirection: "descending"
     });
 
     PostGradeLG_NABOP = isc.TrLG.create({
@@ -173,12 +289,14 @@
         contextMenu: Menu_Post_NABOP,
         selectionType: "single",
         autoFetchData: true,
-        fields: [
-            {name: "code"},
-            {name: "titleFa"},
-            {name: "description"}
-        ],
-        rowDoubleClick: "Select_Post_NABOP()"
+        // fields: [
+        //     {name: "code"},
+        //     {name: "titleFa"},
+        //     {name: "description"}
+        // ],
+        rowDoubleClick: "Select_Post_NABOP()",
+        sortField: 1,
+        sortDirection: "descending"
     });
 
     PostGroupLG_NABOP = isc.TrLG.create({
@@ -186,12 +304,14 @@
         contextMenu: Menu_Post_NABOP,
         selectionType: "single",
         autoFetchData: true,
-        fields: [
-            {name: "code"},
-            {name: "titleFa"},
-            {name: "description"}
-        ],
-        rowDoubleClick: "Select_Post_NABOP()"
+        // fields: [
+        //     {name: "code"},
+        //     {name: "titleFa"},
+        //     {name: "description"}
+        // ],
+        rowDoubleClick: "Select_Post_NABOP()",
+        sortField: 1,
+        sortDirection: "descending"
     });
 
     JobGroupLG_NABOP = isc.TrLG.create({
@@ -199,12 +319,14 @@
         contextMenu: Menu_Post_NABOP,
         selectionType: "single",
         autoFetchData: true,
-        fields: [
-            {name: "code"},
-            {name: "titleFa"},
-            {name: "description"}
-        ],
-        rowDoubleClick: "Select_Post_NABOP()"
+        // fields: [
+        //     {name: "code"},
+        //     {name: "titleFa"},
+        //     {name: "description"}
+        // ],
+        rowDoubleClick: "Select_Post_NABOP()",
+        sortField: 1,
+        sortDirection: "descending"
     });
 
     PostGradeGroupLG_NABOP = isc.TrLG.create({
@@ -212,19 +334,22 @@
         contextMenu: Menu_Post_NABOP,
         selectionType: "single",
         autoFetchData: true,
-        fields: [
-            {name: "code"},
-            {name: "titleFa"},
-            {name: "description"}
-        ],
-        rowDoubleClick: "Select_Post_NABOP()"
+        // fields: [
+        //     {name: "code"},
+        //     {name: "titleFa"},
+        //     {name: "description"}
+        // ],
+        rowDoubleClick: "Select_Post_NABOP()",
+        sortField: 1,
+        sortDirection: "descending"
     });
 
     Tabset_Object_NABOP = isc.TabSet.create({
         tabBarPosition: "right",
         tabBarThickness: 100,
         tabs: [
-            {title: "<spring:message code="post"/>", name: "Post", pane: PostsLG_NABOP},
+            {title: "<spring:message code="post"/>", name: "TrainingPost", pane: TrainingPostLG_NABOP},
+            {title: "<spring:message code="post.individual"/>", name: "Post", pane: PostsLG_NABOP},
             {title: "<spring:message code="job"/>", name: "Job", pane: JobLG_NABOP},
             {title: "<spring:message code="post.grade"/>", name: "PostGrade", pane: PostGradeLG_NABOP},
             {title: "<spring:message code="post.group"/>", name: "PostGroup", pane: PostGroupLG_NABOP},
@@ -298,6 +423,7 @@
             {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postId", hidden: true},
         ],
         fetchDataURL: personnelUrl + "/iscList"
     });
@@ -346,7 +472,11 @@
             {name: "ccpSection"},
             {name: "ccpUnit"},
         ],
-        rowDoubleClick: "Select_Person_NABOP()"
+        rowDoubleClick: "Select_Person_NABOP()",
+        implicitCriteria: {
+            _constructor: "AdvancedCriteria",
+            criteria: [{fieldName: "deleted", operator: "equals", value: 0}]
+        }
     });
 
     IButton_Personnel_Ok_NABOP = isc.IButtonSave.create({
@@ -812,17 +942,15 @@
             return;
         }
 
-        if (selected_Person.postCode !== undefined && reportType_NABOP === "0") {
-            postCode_NABOP = selected_Person.postCode.replace("/", ".");
+        if (selected_Person.postId !== undefined && reportType_NABOP === "0") {
             wait_NABOP = createDialog("wait");
             selectedPerson_NABOP = selected_Person;
-            isc.RPCManager.sendRequest(TrDSRequest(postUrl + "/" + postCode_NABOP, "GET", null, PostCodeSearch_result_NABOP));
+            isc.RPCManager.sendRequest(TrDSRequest(postUrl + "/get-by-id/" + selectedPerson_NABOP.postId, "GET", null, PostCodeSearch_result_NABOP));
         } else if (reportType_NABOP !== "0") {
             selectedPerson_NABOP = selected_Person;
             setTitle_NABOP();
             Window_Personnel_NABOP.close();
         } else {
-            postCode_NABOP = null;
             createDialog("info", "<spring:message code="personnel.without.postCode"/>");
         }
     }
@@ -911,12 +1039,13 @@
 
         if (ReportTypeDF_NABOP.getValue("reportType") === "0") {
             reportType_NABOP = "0";
+            if (!hideRadioButtons)
             changeablePerson_NABOP ? ReportTypeDF_NABOP.getItem("personnelId").show() : ReportTypeDF_NABOP.getItem("personnelId").hide();
             DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport'/>" + " <spring:message code='Mrs/Mr'/> " + personName + " <spring:message code='in.post'/> " + getFormulaMessage("...", 2, "red", "b");
             ReportTypeDF_NABOP.getItem("objectId").hide();
             CoursesLG_NABOP.showField("skill.course.scoresState");
             CoursesLG_NABOP.getField("skill.course.theoryDuration").summaryFunction = fullSummaryFunc_NABOP;
-            Tabset_Object_NABOP.selectTab("Post");
+            Tabset_Object_NABOP.selectTab("TrainingPost");
         } else if (ReportTypeDF_NABOP.getValue("reportType") === "1") {
             reportType_NABOP = "1";
             ReportTypeDF_NABOP.getItem("personnelId").hide();
@@ -936,7 +1065,7 @@
             CoursesLG_NABOP.getField("skill.course.theoryDuration").summaryFunction = fullSummaryFunc_NABOP;
             for (let i = 1; i < Tabset_Object_NABOP.tabs.length; i++)
                 Tabset_Object_NABOP.disableTab(Tabset_Object_NABOP.tabs[i]);
-            Tabset_Object_NABOP.selectTab("Post");
+            Tabset_Object_NABOP.selectTab("TrainingPost");
         }
         DynamicForm_Title_NABOP.getItem("Title_NASB").redraw();
         CoursesLG_NABOP.setData([]);
@@ -975,7 +1104,7 @@
                 break;
             case "2":
                 if (selectedPerson_NABOP != null && selectedObject_NABOP != null) {
-                    CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + selectedObject_NABOP.id + "&personnelNo=" + selectedPerson_NABOP.personnelNo + "&objectType=Post";
+                    CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + selectedObject_NABOP.id + "&personnelNo=" + selectedPerson_NABOP.personnelNo + "&objectType=TrainingPost";
                     refreshLG_NABOP(CourseDS_NABOP);
                 }
                 let personName = selectedPerson_NABOP != null ? getFormulaMessage(selectedPerson_NABOP.firstName, 2, "red", "b") + " " + getFormulaMessage(selectedPerson_NABOP.lastName, 2, "red", "b") : getFormulaMessage("...", 2, "red", "b");

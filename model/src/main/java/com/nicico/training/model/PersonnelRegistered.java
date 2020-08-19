@@ -56,8 +56,8 @@ public class PersonnelRegistered extends Auditable {
     @Column(name = "active")
     private Integer active;
 
-    @Column(name = "deleted")
-    private Integer deleted;
+//    @Column(name = "deleted")
+//    private Integer deleted;
 
     @Column(name = "employment_date")
     private String employmentDate;

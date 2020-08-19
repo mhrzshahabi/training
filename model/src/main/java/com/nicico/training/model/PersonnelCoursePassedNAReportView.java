@@ -4,10 +4,11 @@ package com.nicico.training.model;
 import com.nicico.training.model.compositeKey.PersonnelCourseKey;
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.Subselect;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import java.io.Serializable;
 
 @Getter
@@ -97,6 +98,8 @@ public class PersonnelCoursePassedNAReportView implements Serializable {
     @Column(name = "personnel_cpp_title")
     private String personnelCcpTitle;
 
+    @Column(name = "C_CODE")
+    private String pgCCode;
 
     ///////////////////////////////////////////////////course///////////////////////////////////////
 

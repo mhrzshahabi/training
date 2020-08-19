@@ -102,4 +102,25 @@ public class ViewClassDetail extends Auditable {
     @Column(name = "TRAINING_EVAL_STATUS")
     private Integer trainingEvalStatus;
 
+    @Column(name = "start_evaluation")
+    private Integer startEvaluation;
+
+    @Column(name = "c_evaluation")
+    private String evaluation;
+
+    @Column(name = "c_behavioral_level")
+    private String behavioralLevel;
+
+    @Column(name = "CANCEL_REASON_ID")
+    private Long cancelReasonId;
+
+    @Column(name = "POSTPONE_DATE")
+    private String postPoneDate;
+
+    @Column(name = "ALTERNATIVE_CLASS_CODE")
+    private String alternativeClassCode;
+
+    @Column(name = "RE_HOLIDING_STATUS")
+    private Boolean reHoldingStatus;
+
 }

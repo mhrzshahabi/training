@@ -37,10 +37,6 @@ public interface IJobGroupService {
 
     void removeJobs(Long jobGroupId, Set<Long> jobIds);
 
-    void removeFromCompetency(Long jobGroupId, Long competenceId);
-
-    void removeFromAllCompetences(Long jobGroupId);
-
     Set<JobDTO.Info> unAttachJobs(Long jobGroupId);
 
     SearchDTO.SearchRs<JobGroupDTO.Info> search(SearchDTO.SearchRq request);

@@ -64,13 +64,8 @@ public class PostGradeService implements IPostGradeService {
     @Override
     @Transactional(readOnly = true)
     public PostGradeDTO.Info get(Long id) {
-
-        final Optional<PostGrade> postGradeById = postGradeDAO.findById(id);
-        final PostGrade job = postGradeById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-
-        PostGradeDTO.Info result = modelMapper.map(job, PostGradeDTO.Info.class);
-
-        return result;
+        final PostGrade job = postGradeDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        return modelMapper.map(job, PostGradeDTO.Info.class);
     }
 
     @Override

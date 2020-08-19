@@ -12,6 +12,7 @@ import com.nicico.training.dto.PostGradeDTO;
 import com.nicico.training.dto.PostGradeGroupDTO;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.iservice.IPostService;
+import com.nicico.training.service.BaseService;
 import com.nicico.training.service.PostGradeGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +53,7 @@ public class PostGradeGroupRestController {
     public ResponseEntity<ISC<PostGradeGroupDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
         Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
         SearchDTO.SearchRs<PostGradeGroupDTO.Info> searchRs = postGradeGroupService.searchWithoutPermission(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
@@ -62,7 +64,8 @@ public class PostGradeGroupRestController {
         if (postGrades.isEmpty()) {
             return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
         }
-        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq, postGrades.stream().map(PostGradeDTO.Info::getId).collect(Collectors.toList()), "postGrade", EOperator.inSet);
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq, postGrades.stream().filter(pg -> pg.getDeleted() == null).map(PostGradeDTO.Info::getId).collect(Collectors.toList()), "postGrade", EOperator.inSet);
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
         SearchDTO.SearchRs<PostDTO.Info> searchRs = postService.searchWithoutPermission(searchRq, p -> modelMapper.map(p, PostDTO.Info.class));
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
@@ -73,7 +76,7 @@ public class PostGradeGroupRestController {
         if (postGrades == null || postGrades.isEmpty()) {
             return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
         }
-        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq().setCriteria(makeNewCriteria("postGrade", postGrades.stream().map(PostGradeDTO.Info::getId).collect(Collectors.toList()), EOperator.inSet, null));
+        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq().setCriteria(makeNewCriteria("postGrade", postGrades.stream().filter(pg -> pg.getDeleted() == null).map(PostGradeDTO.Info::getId).collect(Collectors.toList()), EOperator.inSet, null));
         SearchDTO.SearchRs<PostDTO.TupleInfo> postList = postService.searchWithoutPermission(searchRq, p -> modelMapper.map(p, PostDTO.TupleInfo.class));
         if (postList.getList() == null || postList.getList().isEmpty()) {
             return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
@@ -160,7 +163,7 @@ public class PostGradeGroupRestController {
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
-
+        BaseService.setCriteriaToNotSearchDeleted(request);
         SearchDTO.SearchRs<PostGradeGroupDTO.Info> response = postGradeGroupService.searchWithoutPermission(request);
         final PostGradeGroupDTO.SpecRs specResponse = new PostGradeGroupDTO.SpecRs();
         specResponse.setData(response.getList())

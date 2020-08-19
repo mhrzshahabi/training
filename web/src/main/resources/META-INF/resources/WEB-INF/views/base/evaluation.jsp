@@ -37,7 +37,7 @@
                 {name: "courseCategory"},
                 {name: "courseSubCategory"},
                 {name: "courseTitleFa"},
-                {name: "courseEvaluationType"},
+                {name: "evaluation"},
                 {name: "tclassDuration"},
                 {name: "tclassOrganizerId"},
                 {name: "tclassStatus"},
@@ -216,7 +216,7 @@
                                 operator:"and",
                                 criteria:[
                                     {fieldName:"tclassEndDate", operator:"equals", value: todayDate},
-                                    {fieldName:"courseEvaluationType", operator:"equals", value: "1"}
+                                    {fieldName:"evaluation", operator:"equals", value: "1"}
                                 ]
                             };
                             RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
@@ -229,7 +229,7 @@
                                 operator:"and",
                                 criteria:[
                                     {fieldName:"tclassStartDate", operator:"equals", value: todayDate},
-                                    {fieldName:"courseEvaluationType", operator:"equals", value: "2"}
+                                    {fieldName:"evaluation", operator:"equals", value: "2"}
                                 ]
                             };
                             RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
@@ -328,7 +328,7 @@
                     hidden: true
                 },
                 {
-                    name: "courseEvaluationType",
+                    name: "evaluation",
                     title: "<spring:message code='evaluation.type'/>",
                     align: "center",
                     filterOperator: "iContains",
@@ -368,7 +368,8 @@
                     valueMap: {
                         "1": "برنامه ریزی",
                         "2": "در حال اجرا",
-                        "3": "پایان یافته"
+                        "3": "پایان یافته",
+                        "4": "لغو شده"
                     }
                 },
                 {
@@ -435,9 +436,9 @@
 
                 <sec:authorize access="hasAuthority('Evaluation_Learning')">
                 {
-                    id: "TabPane_Learning",
-                    title: "یادگیری-ثبت نمرات پیش آزمون",
-                    pane: isc.ViewLoader.create({autoDraw: true, viewURL: "registerScorePreTest/show-form"})
+                    id: "TabPane_Learning_PreTest",
+                    title: "یادگیری",
+                    pane: isc.ViewLoader.create({autoDraw: true, viewURL: "pre-test/show-form"})
                 },
                 </sec:authorize>
 
@@ -501,6 +502,7 @@
 
                 switch (tab.id) {
                     case "TabPane_Reaction": {
+                        RestDataSource_student_RE.implicitCriteria=null;
                         RestDataSource_student_RE.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
                         ListGrid_student_RE.invalidateCache();
                         ListGrid_student_RE.fetchData();
@@ -509,40 +511,53 @@
                         if (classRecord.trainingEvalStatus == 0 ||
                                 classRecord.trainingEvalStatus == undefined ||
                                     classRecord.trainingEvalStatus == null) {
-                            ToolStrip_SendForms_RE.getField("sendButtonTraining").disableIcon("ok");
-                            ToolStrip_SendForms_RE.getField("registerButtonTraining").disableIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("sendButtonTraining").disableIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("registerButtonTraining").disableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
+                            ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
                         }
                         else if(classRecord.trainingEvalStatus == 1){
-                            ToolStrip_SendForms_RE.getField("sendButtonTraining").enableIcon("ok");
-                            ToolStrip_SendForms_RE.getField("registerButtonTraining").disableIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("sendButtonTraining").enableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("sendButtonTraining").showIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("registerButtonTraining").disableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
                         }
                         else{
-                            ToolStrip_SendForms_RE.getField("sendButtonTraining").enableIcon("ok");
-                            ToolStrip_SendForms_RE.getField("registerButtonTraining").enableIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("sendButtonTraining").enableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("sendButtonTraining").showIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("registerButtonTraining").enableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("registerButtonTraining").showIcon("ok");
                         }
 
                         if (classRecord.teacherEvalStatus == 0 ||
                             classRecord.teacherEvalStatus == undefined ||
                             classRecord.teacherEvalStatus == null) {
-                            ToolStrip_SendForms_RE.getField("sendButtonTeacher").disableIcon("ok");
-                            ToolStrip_SendForms_RE.getField("registerButtonTeacher").disableIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("sendButtonTeacher").disableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("sendButtonTeacher").hideIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("registerButtonTeacher").disableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
                         }
                         else if(classRecord.teacherEvalStatus == 1){
-                            ToolStrip_SendForms_RE.getField("sendButtonTeacher").enableIcon("ok");
-                            ToolStrip_SendForms_RE.getField("registerButtonTeacher").disableIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("sendButtonTeacher").enableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("registerButtonTeacher").disableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
                         }
                         else{
-                            ToolStrip_SendForms_RE.getField("sendButtonTeacher").enableIcon("ok");
-                            ToolStrip_SendForms_RE.getField("registerButtonTeacher").enableIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("sendButtonTeacher").enableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("registerButtonTeacher").enableIcon("ok");
+                            ToolStrip_SendForms_RE.getField("registerButtonTeacher").showIcon("ok");
                         }
                         ToolStrip_SendForms_RE.redraw();
 
                         break;
                     }
-                    case "TabPane_Learning": {
-                        RestDataSource_ClassStudent_registerScorePreTest.fetchDataURL = tclassStudentUrl + "/pre-test-score-iscList/" + classRecord.id;
-                        ListGrid_Class_Student_RegisterScorePreTest.invalidateCache();
-                        ListGrid_Class_Student_RegisterScorePreTest.fetchData();
+                    case "TabPane_Learning_PreTest": {
+                        classId_preTest = classRecord.id;
+                        RestDataSource_PreTest.fetchDataURL = questionBankTestQuestionUrl +"/preTest/"+classRecord.id+ "/spec-list";
+                        ListGrid_PreTest.invalidateCache();
+                        ListGrid_PreTest.fetchData();
                         break;
                     }
                     case "TabPane_Behavior": {
@@ -588,9 +603,6 @@
                 Detail_Tab_Evaluation.enableTab(2);
                 Detail_Tab_Evaluation.enableTab(3);
             }
-
-            Detail_Tab_Evaluation.disableTab(1);
-            Detail_Tab_Evaluation.disableTab(3);
         }
 
         function load_term_by_year(value) {

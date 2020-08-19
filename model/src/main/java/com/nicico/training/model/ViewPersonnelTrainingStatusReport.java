@@ -1,13 +1,11 @@
 package com.nicico.training.model;
 
+import com.nicico.training.model.compositeKey.PersonnelClassKey;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -16,24 +14,46 @@ import javax.persistence.Id;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Subselect("select * from view_Personnel_Training_Status_Report")
+@Subselect("select * from view_Personnel_Training_Status_Report_v2")
 @DiscriminatorValue("ViewPersonnelTrainingStatusReport")
 public class ViewPersonnelTrainingStatusReport {
+
     @Id
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "organizer")
-    private String organizer;
+    @Column(name = "na_priority_id")
+    private Long naPriorityId;
+
+    @Column(name = "na_is_in_na")
+    private Long naIsInNa;
+
+    @Column(name = "class_status")
+    private String classStatus;
+
+    @Column(name = "class_student_scores_state_id")
+    private Long classStudentScoresStateId;
+
+    @Column(name = "class_student_score")
+    private Long classStudentScore;
+
+    @Column(name = "class_id", insertable = false, updatable = false)
+    private Long classId;
+
+    @Column(name = "personnel_is_personnel")
+    private Long personnelIsPersonnel;
+
+    @Column(name = "course_id", insertable = false, updatable = false)
+    private Long courseId;
+
+    @Column(name = "course_code")
+    private String courseCode;
+
+    @Column(name = "course_title_fa")
+    private String courseTitleFa;
 
     @Column(name = "personnel_personnel_no")
-    private String personnelNo;
-
-    @Column(name = "personnel_no_10d")
-    private String personnelNoTD;
-
-    @Column(name = "personnel_national_code")
-    private String personnelNationalCode;
+    private String personnelPersonnelNo;
 
     @Column(name = "personnel_first_name")
     private String personnelFirstName;
@@ -41,14 +61,50 @@ public class ViewPersonnelTrainingStatusReport {
     @Column(name = "personnel_last_name")
     private String personnelLastName;
 
-    @Column(name = "job_code")
-    private String personnelJobCode;
+    @Column(name = "personnel_national_code")
+    private String personnelNationalCode;
+
+    @Column(name = "personnel_cpp_affairs")
+    private String personnelCppAffairs;
+
+    @Column(name = "personnel_cpp_area")
+    private String personnelCppArea;
+
+    @Column(name = "personnel_cpp_assistant")
+    private String personnelCppAssistant;
+
+    @Column(name = "personnel_cpp_code")
+    private String personnelCppCode;
+
+    @Column(name = "personnel_cpp_section")
+    private String personnelCppSection;
+
+    @Column(name = "personnel_cpp_title")
+    private String personnelCppTitle;
+
+    @Column(name = "personnel_cpp_unit")
+    private String personnelCppUnit;
+
+    @Column(name = "personnel_company_name")
+    private String personnelCompanyName;
+
+    @Column(name = "personnel_complex_title")
+    private String personnelComplexTitle;
+
+    @Column(name = "personnel_id", insertable = false, updatable = false)
+    private Long personnelId;
+
+    @Column(name = "personnel_job_no")
+    private String personnelJobNo;
 
     @Column(name = "personnel_job_title")
-    private String PersonnelJobTitle;
+    private String personnelJobTitle;
+
+    @Column(name = "personnel_emp_no")
+    private String personnelEmpNo;
 
     @Column(name = "personnel_post_code")
-    private String personnel_Post_code;
+    private String personnelPostCode;
 
     @Column(name = "personnel_post_grade_code")
     private String personnelPostGradeCode;
@@ -59,43 +115,10 @@ public class ViewPersonnelTrainingStatusReport {
     @Column(name = "personnel_post_title")
     private String personnelPostTitle;
 
-    @Column(name = "company")
-    private String company;
+    @Column(name = "personnel_f_department_id")
+    private Long personnelDepartmentId;
 
-    @Column(name = "personnel_cpp_affairs")
-    private String personnelCppAffairs;
-
-    @Column(name = "personnel_cpp_area")
-    private String personnelCppArea;
-
-    @Column(name = "assisstant")
-    private String personnelAssisstant;
-
-    @Column(name = "unit")
-    private String personnelUnit;
-
-    @Column(name = "course_code")
-    private String courseCode;
-
-    @Column(name = "course_title_fa")
-    private String courseTitleFa;
-
-    @Column(name = "skill_code")
-    private String skillCode;
-
-    @Column(name = "skill_title")
-    private String skillTitle;
-
-    @Column(name = "acceptance_state")
-    private String acceptanceState;
-
-    @Column(name = "needs_assessment_state")
-    private String needsAssessmentState;
-
-    @Column(name = "needs_assessment_priority")
-    private String needsAssessmentPriority;
-
-    @Column(name = "class_state")
-    private String classState;
+    @Column(name = "personnel_f_post_id")
+    private Long personnelPostId;
 
 }

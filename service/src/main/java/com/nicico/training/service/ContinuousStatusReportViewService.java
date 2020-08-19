@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-public class ContinuousStatusReportViewService extends BaseService<ContinuousStatusReportView, Long, ContinuousStatusReportViewDTO.Info, ContinuousStatusReportViewDTO.Info, ContinuousStatusReportViewDTO.Info, ContinuousStatusReportViewDTO.Info, ContinuousStatusReportViewDAO> {
+public class ContinuousStatusReportViewService extends BaseService<ContinuousStatusReportView, Long, ContinuousStatusReportViewDTO.Grid, ContinuousStatusReportViewDTO.Grid, ContinuousStatusReportViewDTO.Grid, ContinuousStatusReportViewDTO.Grid, ContinuousStatusReportViewDAO> {
 
     @Autowired
     ContinuousStatusReportViewService(ContinuousStatusReportViewDAO continuousStatusReportViewDAO) {

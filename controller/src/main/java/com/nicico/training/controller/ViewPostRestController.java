@@ -8,6 +8,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.dto.ViewPostDTO;
+import com.nicico.training.service.BaseService;
 import com.nicico.training.service.ViewPostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,7 @@ public class ViewPostRestController {
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<ViewPostDTO.Info>> iscList(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
         SearchDTO.SearchRs<ViewPostDTO.Info> searchRs = viewPostService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
@@ -73,6 +75,7 @@ public class ViewPostRestController {
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
+        BaseService.setCriteriaToNotSearchDeleted(request);
         SearchDTO.SearchRs<ViewPostDTO.Info> response = viewPostService.search(request);
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(response.getList())

@@ -129,6 +129,9 @@ nicico:
     upload-person-tmp: /var/nicico/${spring.application.name}/upload/person/img/tmp
     upload-bpmn: /var/nicico/${spring.application.name}/upload/bpmn
     upload-bpmn-img: /var/nicico/${spring.application.name}/upload/bpmn/img
+    upload-TriningPost: /var/nicico/${spring.application.name}/upload/TriningPost
+    upload-TriningPost-deleted: /var/nicico/${spring.application.name}/upload/TriningPost/deleted
+
 ---
 
 spring:
@@ -180,6 +183,9 @@ nicico:
     upload-person-tmp: /var/nicico/${spring.application.name}/upload/person/img/tmp
     upload-bpmn: /var/nicico/${spring.application.name}/upload/bpmn
     upload-bpmn-img: /var/nicico/${spring.application.name}/upload/bpmn/img
+    upload-TriningPost: /var/nicico/${spring.application.name}/upload/TrainingPost
+    upload-TriningPost-deleted: /var/nicico/${spring.application.name}/upload/TrainingPost/deleted
+
 ---
 
 spring:
@@ -233,4 +239,5 @@ nicico:
     upload-person-tmp: c:/nicico/${spring.application.name}/upload/person/img/tmp
     upload-bpmn: c:/nicico/${spring.application.name}/upload/bpmn
     upload-bpmn-img: c:/nicico/${spring.application.name}/upload/bpmn/img
-
+    upload-TrainingPost: c:/nicico/${spring.application.name}/upload/TrainingPost
+    upload-TrainingPost-deleted: c:/nicico/${spring.application.name}/upload/TrainingPost/deleted

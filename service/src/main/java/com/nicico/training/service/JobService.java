@@ -54,6 +54,7 @@ public class JobService implements IJobService {
         List<JobGroupDTO.Info> jobGroups = jobGroupService.search(new SearchDTO.SearchRq()).getList();
         jobCriteria.getCriteria().add(makeNewCriteria("jobGroupSet", jobGroups.stream().map(JobGroupDTO.Info::getId).collect(Collectors.toList()), EOperator.inSet, null));
         setCriteria(request, jobCriteria);
+        BaseService.setCriteriaToNotSearchDeleted(request);
         return SearchUtil.search(jobDAO, request, job -> modelMapper.map(job, JobDTO.Info.class));
     }
 
@@ -72,22 +73,15 @@ public class JobService implements IJobService {
     @Override
     @Transactional(readOnly = true)
     public JobDTO.Info get(Long id) {
-
-        final Optional<Job> jobById = jobDAO.findById(id);
-        final Job job = jobById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-
-        JobDTO.Info result = modelMapper.map(job, JobDTO.Info.class);
-
-        return result;
+        final Job job = jobDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        return modelMapper.map(job, JobDTO.Info.class);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<PostDTO.Info> getPosts(Long jobId) {
-
-        final Optional<Job> jobById = jobDAO.findById(jobId);
-        final Job job = jobById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        return modelMapper.map(job.getPostSet(), new TypeToken<List<PostDTO.Info>>() {
+        final Job job = jobDAO.findById(jobId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        return modelMapper.map(job.getPostSet().stream().filter(post -> post.getDeleted() == null).collect(Collectors.toList()), new TypeToken<List<PostDTO.Info>>() {
         }.getType());
     }
 }

@@ -765,8 +765,22 @@
                 });
             } else {
                 if (ListGrid_Class_JspClass.getSelectedRecord().classStatus !== "3") {
-                    session_method = "POST";
+                    let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                    const {trainingPlaceIds,teacherId,...record}=classRecord;
+                    const essentialRecord={instituteId:record.instituteId ,trainingPlaceId:trainingPlaceIds[0],teacherId};
+
                     DynamicForm_Session.clearValues();
+
+                    if (record.instituteId!=0) {
+                        DynamicForm_Session.getField("instituteId").fetchData();
+                        RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + essentialRecord.instituteId + "/trainingPlaces";
+                    }
+
+                    RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + classRecord.courseId+"/"+teacherId;
+                    RestDataSource_Teacher_JspClass.invalidateCache();
+
+                    DynamicForm_Session.editRecord(essentialRecord);
+                    session_method = "POST";
                     Window_Session.setTitle("<spring:message code="session"/>");
                     Window_Session.show();
                 } else {
@@ -803,7 +817,6 @@
 
         //*****open update window*****
         function show_SessionEditForm() {
-
             let record = ListGrid_session.getSelectedRecord();
 
             if (record == null || record.id == null) {

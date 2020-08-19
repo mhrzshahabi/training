@@ -1039,5 +1039,164 @@
             <column name="number_of_sended_behavioral_forms" type="number(10, 0)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1596450800510-466">
+        <addColumn tableName="tbl_class">
+            <column name="c_behavioral_level" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1596450800510-467">
+        <addColumn tableName="tbl_class">
+            <column name="c_evaluation" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1596606676796-477">
+        <addColumn tableName="tbl_class">
+            <column name="c_postpone_start_date" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1596606676796-478">
+        <addColumn tableName="tbl_class">
+            <column name="f_cancel_class_reason" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1596821187750-478">
+        <addColumn tableName="tbl_class">
+            <column name="f_alternative_class" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1596614216172-476">
+        <addColumn tableName="tbl_message_contact">
+            <column name="f_message_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1596614216172-477">
+        <addColumn tableName="tbl_message">
+            <column name="n_count_send" type="number(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1596614216172-478">
+        <addColumn tableName="tbl_message">
+            <column name="n_interval" type="number(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1596614216172-479">
+        <addColumn tableName="tbl_message_contact">
+            <column name="n_message_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1596616621909-581">
+        <dropColumn columnName="C_LAST_SENT_DATE" tableName="TBL_MESSAGE_CONTACT"/>
+    </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1596619389517-477">
+        <addColumn tableName="tbl_message_contact">
+            <column name="c_last_sent_date" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1596621786561-477">
+        <addColumn tableName="tbl_message_contact">
+            <column name="c_object_mobile" type="varchar2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1596622897038-477">
+        <addColumn tableName="tbl_message_contact">
+            <column name="n_count_sent" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1596622897038-585">
+        <dropColumn columnName="N_SENT_COUNT" tableName="TBL_MESSAGE_CONTACT"/>
+    </changeSet>
+
+
+    <changeSet author="golrokhi (generated)" id="1596986495722-598">
+        <dropColumn columnName="F_QUESTION_BANK" tableName="TBL_TEST_QUESTION"/>
+    </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1597647780681-598">
+        <dropColumn columnName="C_CONTEXT_HTML" tableName="TBL_MESSAGE"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1597647780681-599">
+        <dropColumn columnName="C_CONTEXT_HTML" tableName="TBL_MESSAGE_CONTACT"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1597647780681-600">
+        <dropColumn columnName="C_CONTEXT_TEXT" tableName="TBL_MESSAGE"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1597647780681-601">
+        <dropColumn columnName="C_CONTEXT_TEXT" tableName="TBL_MESSAGE_CONTACT"/>
+    </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1597642991877-490">
+        <addColumn tableName="tbl_message">
+            <column name="c_context_html" type="varchar2(2000 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1597642991877-491">
+        <addColumn tableName="tbl_message_contact">
+            <column name="c_context_html" type="varchar2(2000 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1597642991877-492">
+        <addColumn tableName="tbl_message">
+            <column name="c_context_text" type="varchar2(2000 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1597642991877-493">
+        <addColumn tableName="tbl_message_contact">
+            <column name="c_context_text" type="varchar2(2000 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet author="golrokhi (generated)" id="1597649040205-488">
+        <createTable tableName="tbl_message_parameter_value">
+            <column name="f_message_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_parameter_value_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+
+
+    <changeSet author="golrokhi (generated)" id="1597649040205-591">
+        <dropTable tableName="TBL_MESSAGE_PARAMETERVALUE"/>
+    </changeSet>
+
+
+    <changeSet author="golrokhi (generated)" id="1597731116255-490">
+        <addColumn tableName="tbl_test_question">
+            <column name="c_date" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1597731116255-491">
+        <addColumn tableName="tbl_test_question">
+            <column name="c_time" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1597731116255-492">
+        <addColumn tableName="tbl_test_question">
+            <column name="n_duration" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

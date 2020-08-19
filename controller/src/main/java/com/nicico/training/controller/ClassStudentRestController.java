@@ -9,15 +9,13 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.ClassStudentDTO;
-import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationAnalysisService;
 import com.nicico.training.model.EvaluationAnalysis;
+import com.nicico.training.model.ViewPersonnelCourseNaReport;
 import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.EvaluationAnalysisDAO;
-import com.nicico.training.service.ClassAlarmService;
-import com.nicico.training.service.ClassStudentService;
-import com.nicico.training.service.ParameterService;
+import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -36,6 +34,7 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -53,6 +52,13 @@ public class ClassStudentRestController {
     private final ParameterService parameterService;
     private final ClassAlarmService classAlarmService;
     private final IEvaluationAnalysisService evaluationAnalysisService;
+    private final ViewCoursesPassedPersonnelReportService iViewCoursesPassedPersonnelReportService;
+    private final ViewPersonnelCourseNaReportService viewPersonnelCourseNaReportService;
+    private final ContinuousStatusReportViewService continuousStatusReportViewService;
+//    private final SearchDTO.SearchRq searchRq;
+//    private final SearchDTO.CriteriaRq criteriaRq;
+//    private final List<SearchDTO.CriteriaRq> list;
+
 
     private <E, T> ResponseEntity<ISC<T>> search(HttpServletRequest iscRq, SearchDTO.CriteriaRq criteria, Function<E, T> converter) throws IOException {
         int startRow = 0;
@@ -155,6 +161,44 @@ public class ClassStudentRestController {
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
+    }
+    @Loggable
+    @PostMapping(value = "/check-register-students/{courseId}")
+    public ResponseEntity checkRegisterStudents(@RequestBody List<ClassStudentDTO.RegisterInClass> request, @PathVariable Long courseId) {
+//        List<Long> ids = request.stream().map(s -> s.getId()).collect(Collectors.toList());
+
+        for (ClassStudentDTO.RegisterInClass s : request) {
+            List<SearchDTO.CriteriaRq> list = new ArrayList<>();
+            list.add(makeNewCriteria("courseId", courseId, EOperator.equals, null));
+            list.add(makeNewCriteria("nationalCode", s.getNationalCode(), EOperator.equals, null));
+            SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
+            criteriaRq.setCriteria(list);
+            SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+            SearchDTO.SearchRs<ViewCoursesPassedPersonnelReportDTO.Grid> search = iViewCoursesPassedPersonnelReportService.search(searchRq.setCriteria(criteriaRq));
+            SearchDTO.SearchRs<ContinuousStatusReportViewDTO.Grid> search2 = continuousStatusReportViewService.search(searchRq.setCriteria(criteriaRq));
+            SearchDTO.SearchRs<ViewPersonnelCourseNaReportDTO.Grid> search1 = viewPersonnelCourseNaReportService.search(searchRq.setCriteria(criteriaRq));
+            if(search1.getList().isEmpty()){
+                s.setIsNeedsAssessment(false);
+            }
+            else{
+                s.setIsNeedsAssessment(true);
+            }
+
+            if(search.getList().isEmpty()){
+                s.setIsPassed(false);
+            }
+            else{
+                s.setIsPassed(true);
+            }
+
+            if(search2.getList().isEmpty()){
+                s.setIsRunning(false);
+            }
+            else{
+                s.setIsRunning(true);
+            }
+        }
+        return new ResponseEntity<>(request, HttpStatus.OK);
     }
 
     @Loggable

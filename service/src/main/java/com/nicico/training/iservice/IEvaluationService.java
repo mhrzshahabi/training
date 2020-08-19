@@ -1,10 +1,15 @@
 package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.EvaluationAnswerDTO;
 import com.nicico.training.dto.EvaluationDTO;
 import com.nicico.training.model.Evaluation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface IEvaluationService {
 
@@ -31,4 +36,18 @@ public interface IEvaluationService {
     Evaluation getTrainingEvaluationForTeacherCustomized(Long teacherId, Long classId);
 
     Evaluation getBehavioralEvaluationByStudent(Long studentId, Long classId);
+
+    @Transactional
+    EvaluationDTO.Info getEvaluationByData(Long questionnaireTypeId, Long classId, Long evaluatorId, Long evaluatorTypeId, Long evaluatedId, Long evaluatedTypeId, Long evaluationLevelId);
+
+    @Transactional
+    Boolean deleteEvaluation(@RequestBody HashMap req);
+
+    double getEvaluationFormGrade(Evaluation evaluation);
+
+    List<EvaluationAnswerDTO.EvaluationAnswerFullData> getEvaluationFormAnswerDetail(Evaluation evaluation);
+
+    @Transactional
+    EvaluationDTO.BehavioralResult getBehavioralEvaluationResult(Long classId);
+
 }

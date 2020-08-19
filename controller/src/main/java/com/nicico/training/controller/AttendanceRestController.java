@@ -46,7 +46,7 @@ public class AttendanceRestController {
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
-
+    private final ClassAlarmService classAlarmService;
     // ------------------------------
 
     @Loggable
@@ -94,7 +94,7 @@ public class AttendanceRestController {
                                                 @RequestParam("studentId") Long studentId,
                                                 @RequestParam("sessionId") List<Long> sessionId) throws ParseException {
 
-        return new ResponseEntity<>(true, HttpStatus.CREATED);//attendanceService.studentAbsentSessionsInClass(classId, sessionId, studentId)
+        return new ResponseEntity<>(attendanceService.studentAbsentSessionsInClass(classId, sessionId, studentId), HttpStatus.CREATED);//true
     }
 
     @Loggable
@@ -103,6 +103,8 @@ public class AttendanceRestController {
                                         @RequestParam("classId") Long classId,
                                         @RequestParam("date") String date) {
         attendanceService.convertToModelAndSave(req, classId, date);
+        classAlarmService.alarmAttendanceUnjustifiedAbsence(classId);
+        classAlarmService.saveAlarms();
         return new ResponseEntity(HttpStatus.CREATED);
     }
 

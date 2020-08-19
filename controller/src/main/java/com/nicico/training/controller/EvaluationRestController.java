@@ -453,8 +453,9 @@ public class EvaluationRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/studentEvaluationForms/{nationalCode}")
-    public ResponseEntity<ISC<EvaluationDTO.StudentEvaluationForm>> studentEvaluationForms(HttpServletRequest iscRq, @PathVariable String nationalCode) throws IOException {
+    @Transactional
+    @GetMapping(value = "/personnelEvaluationForms/{nationalCode}/{personnelId}")
+    public ResponseEntity<ISC<EvaluationDTO.EvaluationForm>> personnelEvaluationForms(HttpServletRequest iscRq, @PathVariable String nationalCode, @PathVariable Long personnelId) throws IOException {
         SearchDTO.CriteriaRq  criteria1 = makeNewCriteria("student.nationalCode", nationalCode, EOperator.equals, null);
         SearchDTO.CriteriaRq  criteria2 = makeNewCriteria("evaluationStatusReaction",1, EOperator.equals, null);
         SearchDTO.CriteriaRq  criteria3 = makeNewCriteria("numberOfSendedBehavioralForms",0, EOperator.greaterThan, null);
@@ -469,46 +470,283 @@ public class EvaluationRestController {
         searchRq.setCriteria(makeNewCriteria(null,null,EOperator.and,criteriaRqList2));
         SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> evaluationResult = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
 
-
-        List<EvaluationDTO.StudentEvaluationForm> result = new ArrayList<>();
+        List<EvaluationDTO.EvaluationForm> result = new ArrayList<>();
         for (ClassStudentDTO.ClassStudentInfo classStudentInfo : evaluationResult.getList()) {
             if(classStudentInfo.getEvaluationStatusReaction() != null && classStudentInfo.getEvaluationStatusReaction().equals(1)){
-                EvaluationDTO.StudentEvaluationForm res = new EvaluationDTO.StudentEvaluationForm();
+                EvaluationDTO.EvaluationForm res = new EvaluationDTO.EvaluationForm();
                 res.setClassId(classStudentInfo.getTclassId());
-                res.setStudentId(classStudentInfo.getId());
-                res.setStudentName(classStudentInfo.getFullName());
+                res.setEvaluatorId(classStudentInfo.getId());
+                res.setEvaluatorName(classStudentInfo.getFullName());
+                res.setEvaluatedId(classStudentInfo.getTclassId());
+                res.setEvaluatedName(classStudentInfo.getTclass().getCourse().getTitleFa());
+                res.setEvaluatedTypeId(504L);
+                res.setEvaluatorTypeId(188L);
                 res.setClassCode(classStudentInfo.getTclass().getCode());
                 res.setCourseCode(classStudentInfo.getTclass().getCourse().getCode());
                 res.setCourseTitle(classStudentInfo.getTclass().getCourse().getTitleFa());
                 res.setTeacherName(classStudentInfo.getTclass().getTeacher());
                 res.setClassStartDate(classStudentInfo.getTclass().getStartDate());
+                res.setClassEndDate(classStudentInfo.getTclass().getEndDate());
+                res.setClassDuration(classStudentInfo.getTclass().getHDuration());
+                res.setClassYear(classStudentInfo.getTclass().getStartDate().substring(0,4));
+                final Optional<Personnel> pByID1 = personnelDAO.findById(classStudentInfo.getTclass().getSupervisor());
+                final Optional<Personnel> pByID2 = personnelDAO.findById(classStudentInfo.getTclass().getPlanner());
+                Personnel personnel1 = null;
+                Personnel personnel2 = null;
+                if(pByID1.isPresent())
+                    personnel1 = pByID1.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                if(pByID2.isPresent())
+                    personnel2 = pByID2.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                if(personnel1 != null)
+                    res.setSupervisorName(personnel1.getFirstName() +" "+personnel1.getLastName());
+                if(personnel2 != null)
+                    res.setPlannerName(personnel2.getFirstName() +" "+personnel2.getLastName());
                 res.setEvaluationLevel(154L);
                 res.setQuestionnarieType(139L);
                 res.setHasWarning("alarm");
                 result.add(res);
             }
-            else if(classStudentInfo.getNumberOfSendedBehavioralForms() != null && classStudentInfo.getNumberOfSendedBehavioralForms() > 0){
+            if(classStudentInfo.getNumberOfSendedBehavioralForms() != null && classStudentInfo.getNumberOfSendedBehavioralForms() > 0){
                     Evaluation evaluation = evaluationDAO.findFirstByClassIdAndEvaluatedIdAndEvaluatedTypeIdAndEvaluatorTypeIdAndEvaluationLevelIdAndQuestionnaireTypeId(
                         classStudentInfo.getTclassId(),classStudentInfo.getId(),188L,188L,156L, 230L);
-                    if(evaluation.getStatus() == false || evaluation.getStatus() == null) {
-                        EvaluationDTO.StudentEvaluationForm res = new EvaluationDTO.StudentEvaluationForm();
-                        res.setClassId(classStudentInfo.getTclassId());
-                        res.setStudentId(classStudentInfo.getId());
-                        res.setStudentName(classStudentInfo.getFullName());
-                        res.setClassCode(classStudentInfo.getTclass().getCode());
-                        res.setCourseCode(classStudentInfo.getTclass().getCourse().getCode());
-                        res.setCourseTitle(classStudentInfo.getTclass().getCourse().getTitleFa());
-                        res.setTeacherName(classStudentInfo.getTclass().getTeacher());
-                        res.setClassStartDate(classStudentInfo.getTclass().getStartDate());
-                        res.setEvaluationLevel(156L);
-                        res.setQuestionnarieType(230L);
-                        res.setHasWarning("alarm");
-                        result.add(res);
+                    if(evaluation != null) {
+                        if (evaluation.getStatus() == false || evaluation.getStatus() == null) {
+                            EvaluationDTO.EvaluationForm res = new EvaluationDTO.EvaluationForm();
+                            res.setClassId(classStudentInfo.getTclassId());
+                            res.setEvaluatorId(classStudentInfo.getId());
+                            res.setEvaluatorName(classStudentInfo.getFullName());
+                            res.setEvaluatedId(classStudentInfo.getId());
+                            res.setEvaluatedName(classStudentInfo.getFullName());
+                            res.setEvaluatedTypeId(188L);
+                            res.setEvaluatorTypeId(188L);
+                            res.setClassCode(classStudentInfo.getTclass().getCode());
+                            res.setCourseCode(classStudentInfo.getTclass().getCourse().getCode());
+                            res.setCourseTitle(classStudentInfo.getTclass().getCourse().getTitleFa());
+                            res.setTeacherName(classStudentInfo.getTclass().getTeacher());
+                            res.setClassStartDate(classStudentInfo.getTclass().getStartDate());
+                            res.setClassEndDate(classStudentInfo.getTclass().getEndDate());
+                            res.setClassDuration(classStudentInfo.getTclass().getHDuration());
+                            res.setClassYear(classStudentInfo.getTclass().getStartDate().substring(0,4));
+                            final Optional<Personnel> pByID1 = personnelDAO.findById(classStudentInfo.getTclass().getSupervisor());
+                            final Optional<Personnel> pByID2 = personnelDAO.findById(classStudentInfo.getTclass().getPlanner());
+                            Personnel personnel1 = null;
+                            Personnel personnel2 = null;
+                            if(pByID1.isPresent())
+                                personnel1 = pByID1.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                            if(pByID2.isPresent())
+                                personnel2 = pByID2.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                            if(personnel1 != null)
+                                res.setSupervisorName(personnel1.getFirstName() +" "+personnel1.getLastName());
+                            if(personnel2 != null)
+                                res.setPlannerName(personnel2.getFirstName() +" "+personnel2.getLastName());
+                            res.setEvaluationLevel(156L);
+                            res.setQuestionnarieType(230L);
+                            res.setHasWarning("alarm");
+                            result.add(res);
+                        }
                     }
             }
         }
 
-        SearchDTO.SearchRs<EvaluationDTO.StudentEvaluationForm> finalResult = new SearchDTO.SearchRs<>();
+        final Optional<Personnel> pById = personnelDAO.findById(personnelId);
+        final Personnel personnel = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+        List<Evaluation> behavioralResultCoWorker = evaluationDAO.findByEvaluatorIdAndEvaluatorTypeIdAndEvaluationLevelIdAndQuestionnaireTypeId(
+                personnelId,
+                189L,
+                156L,
+                230L);
+
+        if(behavioralResultCoWorker != null && behavioralResultCoWorker.size() >0){
+            for (Evaluation evaluation : behavioralResultCoWorker) {
+                EvaluationDTO.EvaluationForm res = new EvaluationDTO.EvaluationForm();
+                TclassDTO.Info tclass = modelMapper.map(tclassService.getTClass(evaluation.getClassId()),TclassDTO.Info.class);
+                Optional<ClassStudent> cById = classStudentDAO.findById(evaluation.getEvaluatedId());
+                ClassStudent classStudent = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                res.setClassId(tclass.getId());
+                res.setEvaluatorId(personnelId);
+                res.setEvaluatorName(personnel.getFirstName() + " " + personnel.getLastName());
+                res.setEvaluatedId(evaluation.getEvaluatedId());
+                res.setEvaluatedName(classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName());
+                res.setEvaluatedTypeId(evaluation.getEvaluatedTypeId());
+                res.setEvaluatorTypeId(evaluation.getEvaluatorTypeId());
+                res.setClassCode(tclass.getCode());
+                res.setCourseCode(tclass.getCourse().getCode());
+                res.setCourseTitle(tclass.getCourse().getTitleFa());
+                res.setTeacherName(tclass.getTeacher());
+                res.setClassStartDate(tclass.getStartDate());
+                res.setClassEndDate(tclass.getEndDate());
+                res.setClassDuration(tclass.getHDuration());
+                res.setClassYear(tclass.getStartDate().substring(0,4));
+                final Optional<Personnel> pByID1 = personnelDAO.findById(tclass.getSupervisor());
+                final Optional<Personnel> pByID2 = personnelDAO.findById(tclass.getPlanner());
+                Personnel personnel1 = null;
+                Personnel personnel2 = null;
+                if(pByID1.isPresent())
+                    personnel1 = pByID1.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                if(pByID2.isPresent())
+                    personnel2 = pByID2.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                if(personnel1 != null)
+                    res.setSupervisorName(personnel1.getFirstName() +" "+personnel1.getLastName());
+                if(personnel2 != null)
+                    res.setPlannerName(personnel2.getFirstName() +" "+personnel2.getLastName());
+                res.setEvaluationLevel(156L);
+                res.setQuestionnarieType(230L);
+                res.setHasWarning("alarm");
+                result.add(res);
+            }
+        }
+
+        List<Evaluation> behavioralResultSupervisor = evaluationDAO.findByEvaluatorIdAndEvaluatorTypeIdAndEvaluationLevelIdAndQuestionnaireTypeId(
+                personnelId,
+                190L,
+                156L,
+                230L);
+
+        if(behavioralResultSupervisor != null && behavioralResultSupervisor.size() >0){
+            for (Evaluation evaluation : behavioralResultSupervisor) {
+                EvaluationDTO.EvaluationForm res = new EvaluationDTO.EvaluationForm();
+                TclassDTO.Info tclass = modelMapper.map(tclassService.getTClass(evaluation.getClassId()),TclassDTO.Info.class);
+                Optional<ClassStudent> cById = classStudentDAO.findById(evaluation.getEvaluatedId());
+                ClassStudent classStudent = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                res.setClassId(tclass.getId());
+                res.setEvaluatorId(personnelId);
+                res.setEvaluatorName(personnel.getFirstName() + " " + personnel.getLastName());
+                res.setEvaluatedId(evaluation.getEvaluatedId());
+                res.setEvaluatedName(classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName());
+                res.setEvaluatedTypeId(evaluation.getEvaluatedTypeId());
+                res.setEvaluatorTypeId(evaluation.getEvaluatorTypeId());
+                res.setClassCode(tclass.getCode());
+                res.setCourseCode(tclass.getCourse().getCode());
+                res.setCourseTitle(tclass.getCourse().getTitleFa());
+                res.setTeacherName(tclass.getTeacher());
+                res.setClassStartDate(tclass.getStartDate());
+                res.setClassEndDate(tclass.getEndDate());
+                res.setClassDuration(tclass.getHDuration());
+                res.setClassYear(tclass.getStartDate().substring(0,4));
+                final Optional<Personnel> pByID1 = personnelDAO.findById(tclass.getSupervisor());
+                final Optional<Personnel> pByID2 = personnelDAO.findById(tclass.getPlanner());
+                Personnel personnel1 = null;
+                Personnel personnel2 = null;
+                if(pByID1.isPresent())
+                    personnel1 = pByID1.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                if(pByID2.isPresent())
+                    personnel2 = pByID2.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                if(personnel1 != null)
+                    res.setSupervisorName(personnel1.getFirstName() +" "+personnel1.getLastName());
+                if(personnel2 != null)
+                    res.setPlannerName(personnel2.getFirstName() +" "+personnel2.getLastName());
+                res.setEvaluationLevel(156L);
+                res.setQuestionnarieType(230L);
+                res.setHasWarning("alarm");
+                result.add(res);
+            }
+        }
+
+        List<Evaluation> behavioralResultTraining = evaluationDAO.findByEvaluatorIdAndEvaluatorTypeIdAndEvaluationLevelIdAndQuestionnaireTypeId(
+                personnelId,
+                454L,
+                156L,
+                230L);
+
+        if(behavioralResultTraining != null && behavioralResultTraining.size() >0){
+            for (Evaluation evaluation : behavioralResultTraining) {
+                EvaluationDTO.EvaluationForm res = new EvaluationDTO.EvaluationForm();
+                TclassDTO.Info tclass = modelMapper.map(tclassService.getTClass(evaluation.getClassId()),TclassDTO.Info.class);
+                Optional<ClassStudent> cById = classStudentDAO.findById(evaluation.getEvaluatedId());
+                ClassStudent classStudent = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                res.setClassId(tclass.getId());
+                res.setEvaluatorId(personnelId);
+                res.setEvaluatorName(personnel.getFirstName() + " " + personnel.getLastName());
+                res.setEvaluatedId(evaluation.getEvaluatedId());
+                res.setEvaluatedName(classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName());
+                res.setEvaluatedTypeId(evaluation.getEvaluatedTypeId());
+                res.setEvaluatorTypeId(evaluation.getEvaluatorTypeId());
+                res.setClassCode(tclass.getCode());
+                res.setCourseCode(tclass.getCourse().getCode());
+                res.setCourseTitle(tclass.getCourse().getTitleFa());
+                res.setTeacherName(tclass.getTeacher());
+                res.setClassStartDate(tclass.getStartDate());
+                res.setClassEndDate(tclass.getEndDate());
+                res.setClassDuration(tclass.getHDuration());
+                res.setClassYear(tclass.getStartDate().substring(0,4));
+                final Optional<Personnel> pByID1 = personnelDAO.findById(tclass.getSupervisor());
+                final Optional<Personnel> pByID2 = personnelDAO.findById(tclass.getPlanner());
+                Personnel personnel1 = null;
+                Personnel personnel2 = null;
+                if(pByID1.isPresent())
+                    personnel1 = pByID1.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                if(pByID2.isPresent())
+                    personnel2 = pByID2.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                if(personnel1 != null)
+                    res.setSupervisorName(personnel1.getFirstName() +" "+personnel1.getLastName());
+                if(personnel2 != null)
+                    res.setPlannerName(personnel2.getFirstName() +" "+personnel2.getLastName());
+                res.setEvaluationLevel(156L);
+                res.setQuestionnarieType(230L);
+                res.setHasWarning("alarm");
+                result.add(res);
+            }
+        }
+
+        SearchDTO.SearchRs<EvaluationDTO.EvaluationForm> finalResult = new SearchDTO.SearchRs<>();
+        finalResult.setList(result);
+        finalResult.setTotalCount(new Long(result.size()));
+        return new ResponseEntity<>(ISC.convertToIscRs(finalResult, 0), HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/teacherEvaluationForms/{teacherId}")
+    public ResponseEntity<ISC<EvaluationDTO.EvaluationForm>> teacherEvaluationForms(HttpServletRequest iscRq, @PathVariable Long teacherId) throws IOException, NoSuchFieldException, IllegalAccessException {
+        SearchDTO.CriteriaRq  criteria1 = makeNewCriteria("teacherId", teacherId, EOperator.equals, null);
+        SearchDTO.CriteriaRq  criteria2 = makeNewCriteria("evaluationStatusReactionTeacher",1, EOperator.equals, null);
+        List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+        criteriaRqList.add(criteria1);
+        criteriaRqList.add(criteria2);
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null,null,EOperator.and,criteriaRqList);
+        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+        searchRq.setCriteria(criteriaRq);
+        SearchDTO.SearchRs<TclassDTO.Info> evaluationResult = tclassService.search1(searchRq,TclassDTO.Info.class);
+
+        List<EvaluationDTO.EvaluationForm> result = new ArrayList<>();
+        for (TclassDTO.Info classInfo : evaluationResult.getList()) {
+            if(classInfo.getEvaluationStatusReactionTeacher() != null && classInfo.getEvaluationStatusReactionTeacher().equals(1)){
+                EvaluationDTO.EvaluationForm res = new EvaluationDTO.EvaluationForm();
+                res.setClassId(classInfo.getId());
+                res.setClassCode(classInfo.getCode());
+                res.setCourseCode(classInfo.getCourse().getCode());
+                res.setCourseTitle(classInfo.getCourse().getTitleFa());
+                res.setTeacherName(classInfo.getTeacher());
+                res.setClassStartDate(classInfo.getStartDate());
+                res.setEvaluationLevel(154L);
+                res.setQuestionnarieType(140L);
+                res.setHasWarning("alarm");
+                res.setEvaluatorName(classInfo.getTeacher());
+                res.setEvaluatedName(classInfo.getCourse().getTitleFa());
+                res.setEvaluatorId(classInfo.getTeacherId());
+                res.setEvaluatedId(classInfo.getId());
+                res.setEvaluatedTypeId(504L);
+                res.setEvaluatorTypeId(187L);
+                res.setClassEndDate(classInfo.getEndDate());
+                res.setClassDuration(classInfo.getHDuration());
+                res.setClassYear(classInfo.getStartDate().substring(0,4));
+                final Optional<Personnel> pByID1 = personnelDAO.findById(classInfo.getSupervisor());
+                final Optional<Personnel> pByID2 = personnelDAO.findById(classInfo.getPlanner());
+                Personnel personnel1 = null;
+                Personnel personnel2 = null;
+                if(pByID1.isPresent())
+                    personnel1 = pByID1.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                if(pByID2.isPresent())
+                    personnel2 = pByID2.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                if(personnel1 != null)
+                    res.setSupervisorName(personnel1.getFirstName() +" "+personnel1.getLastName());
+                if(personnel2 != null)
+                    res.setPlannerName(personnel2.getFirstName() +" "+personnel2.getLastName());
+                result.add(res);
+            }
+        }
+
+        SearchDTO.SearchRs<EvaluationDTO.EvaluationForm> finalResult = new SearchDTO.SearchRs<>();
         finalResult.setList(result);
         finalResult.setTotalCount(new Long(result.size()));
         return new ResponseEntity<>(ISC.convertToIscRs(finalResult, 0), HttpStatus.OK);
@@ -575,7 +813,8 @@ public class EvaluationRestController {
         params.put("classCode", classInfo.getCode());
         params.put("startDate", classInfo.getStartDate());
         params.put("endDate", classInfo.getEndDate());
-        params.put("returnDate", evaluation.getReturnDate().replace("-", "/"));
+        if(evaluation.getReturnDate() != null)
+            params.put("returnDate", evaluation.getReturnDate().replace("-", "/"));
         params.put("teacher", classInfo.getTeacher());
         if(questionnarieTypeId.equals(140L)) {
             params.put("evaluationType", "واکنشی-ارزیابی مدرس از کلاس");
@@ -622,104 +861,6 @@ public class EvaluationRestController {
     @Transactional
     @GetMapping(value = "/getBehavioralEvaluationResult/{classId}")
     public EvaluationDTO.BehavioralResult getBehavioralEvaluationResult(@PathVariable Long classId) {
-        Tclass tclass = tclassService.getTClass(classId);
-        EvaluationDTO.BehavioralResult evaluationResult = new EvaluationDTO.BehavioralResult();
-
-        Double[] studentGrade = new Double[tclass.getClassStudents().size()];
-        Double[] supervisorGrade = new Double[tclass.getClassStudents().size()];
-        Double[] trainingGrade = new Double[tclass.getClassStudents().size()];
-        Double[] coWorkersGrade = new Double[tclass.getClassStudents().size()];
-        String[] classStudentsName = new String[tclass.getClassStudents().size()];
-
-        Double studentGradeMean = 0.0;
-        Double supervisorGradeMean = 0.0;
-        Double trainingGradeMean = 0.0;
-        Double coWorkersGradeMean = 0.0;
-
-        Integer studentGradeMeanNum = 0;
-        Integer supervisorGradeMeanNum = 0;
-        Integer trainingGradeMeanNum = 0;
-        Integer coWorkersGradeMeanNum = 0;
-
-        int index = 0;
-        for (ClassStudent classStudent : tclass.getClassStudents()) {
-            List<Evaluation> evaluations = evaluationDAO.findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeIdAndEvaluatedIdAndEvaluatedTypeIdAndStatus(
-                    classId,
-                    156L,
-                    230L,
-                    classStudent.getId(),
-                    188L,
-                    true);
-            studentGrade[index] = 0.0 ;
-            supervisorGrade[index] = 0.0;
-            trainingGrade[index] = 0.0;
-            coWorkersGrade[index] = 0.0;
-
-            Integer studentGradeNum = 0 ;
-            Integer supervisorGradeNum = 0;
-            Integer trainingGradeNum = 0;
-            Integer coWorkersGradeNum = 0;
-
-            for (Evaluation evaluation : evaluations) {
-                    double res = evaluationService.getEvaluationFormGrade(evaluation);
-                    if(evaluation.getEvaluatorTypeId().equals(189L)) {
-                        coWorkersGradeNum++;
-                        coWorkersGradeMeanNum++;
-                        coWorkersGradeMean += res;
-                        coWorkersGrade[index] += res;
-                    }
-                    else if(evaluation.getEvaluatorTypeId().equals(190L)) {
-                        supervisorGradeNum++;
-                        supervisorGradeMeanNum++;
-                        supervisorGradeMean += res;
-                        supervisorGrade[index] += res;
-                    }
-                    else if(evaluation.getEvaluatorTypeId().equals(188L)) {
-                        studentGradeNum++;
-                        studentGradeMeanNum++;
-                        studentGradeMean += res;
-                        studentGrade[index] += res;
-                    }
-                    else if(evaluation.getEvaluatorTypeId().equals(454L)) {
-                        trainingGradeNum++;
-                        trainingGradeMeanNum++;
-                        trainingGradeMean += res;
-                        trainingGrade[index] += res;
-                    }
-            }
-            if(!studentGradeNum.equals(new Integer(0)))
-                studentGrade[index] = studentGrade[index]/studentGradeNum;
-            if(!supervisorGradeNum.equals(new Integer(0)))
-                supervisorGrade[index] = supervisorGrade[index]/supervisorGradeNum;
-            if(!trainingGradeNum.equals(new Integer(0)))
-                trainingGrade[index] = trainingGrade[index]/trainingGradeNum;
-            if(!coWorkersGradeNum.equals(new Integer(0)))
-                coWorkersGrade[index] = coWorkersGrade[index]/coWorkersGradeNum;
-            classStudentsName[index] = classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName();
-            index++;
-        }
-
-        if(!studentGradeMeanNum.equals(0))
-            studentGradeMean = studentGradeMean/studentGradeMeanNum;
-        if(!supervisorGradeMeanNum.equals(0))
-            supervisorGradeMean = supervisorGradeMean/supervisorGradeMeanNum;
-        if(!trainingGradeMeanNum.equals(0))
-            trainingGradeMean = trainingGradeMean/trainingGradeMeanNum;
-        if(!coWorkersGradeMeanNum.equals(0))
-            coWorkersGradeMean = coWorkersGradeMean/coWorkersGradeMeanNum;
-
-
-        evaluationResult.setClassStudentsName(classStudentsName);
-        evaluationResult.setCoWorkersGrade(coWorkersGrade);
-        evaluationResult.setStudentGrade(studentGrade);
-        evaluationResult.setSupervisorGrade(supervisorGrade);
-        evaluationResult.setTrainingGrade(trainingGrade);
-
-        evaluationResult.setCoWorkersGradeMean(coWorkersGradeMean);
-        evaluationResult.setTrainingGradeMean(trainingGradeMean);
-        evaluationResult.setStudentGradeMean(studentGradeMean);
-        evaluationResult.setSupervisorGradeMean(supervisorGradeMean);
-
-        return evaluationResult;
+        return evaluationService.getBehavioralEvaluationResult(classId);
     }
 }

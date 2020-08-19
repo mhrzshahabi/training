@@ -387,34 +387,7 @@
         var HLayout_returnData_BE = isc.HLayout.create({
             width: "100%",
             members: [
-                DynamicForm_ReturnDate_BE,
-                // isc.LayoutSpacer.create({width: "80%"}),
-                // isc.RibbonGroup.create({
-                //     ID: "fileGroup",
-                //     title: "راهنمای رنگ بندی لیست",
-                //     numRows: 1,
-                //     colWidths: [ 40, "*" ],
-                //     height: "10px",
-                //     titleAlign: "center",
-                //     titleStyle : "gridHint",
-                //     controls: [
-                //         isc.IconButton.create(isc.addProperties({
-                //             title: "صادر نشده",
-                //             baseStyle: "gridHint",
-                //             backgroundColor: '#fffff'
-                //         })),
-                //         isc.IconButton.create(isc.addProperties({
-                //             title: "صادر شده",
-                //             baseStyle: "gridHint",
-                //             backgroundColor: '#d8e4bc'
-                //         })),
-                //         isc.IconButton.create(isc.addProperties({
-                //             title: "تکمیل شده",
-                //             baseStyle: "gridHint",
-                //             backgroundColor: '#b7dee8'
-                //         }))
-                //     ]
-                // })
+                DynamicForm_ReturnDate_BE
             ]
         });
 
@@ -497,11 +470,11 @@
                             }
                         }
                     }),
-                    isc.IButton.create({
-                        title: "ارسال از طریق پیامک",
-                        click: function () {
-                        }
-                    }),
+                    // isc.IButton.create({
+                    //     title: "ارسال از طریق پیامک",
+                    //     click: function () {
+                    //     }
+                    // }),
                     isc.IButton.create({
                         title: "<spring:message code="logout"/>",
                         click: function () {
@@ -842,9 +815,8 @@
                             isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
                                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                     Window_Questions_JspEvaluation.close();
-                                    // isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
-                                    //     LGRecord.id,
-                                    //     "GET", null, null));
+                                    isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
+                                        classRecord_BE.id, "GET", null, null));
                                     ListGrid_student_BE.invalidateCache();
                                     Listgrid_BehavioralRegisteration_JSPEvaluation.invalidateCache();
                                     const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");

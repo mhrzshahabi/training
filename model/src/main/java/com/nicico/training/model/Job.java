@@ -37,6 +37,9 @@ public class Job extends Auditable {
     @OneToMany(mappedBy = "job", fetch = FetchType.LAZY)
     private Set<Post> postSet;
 
+    @OneToMany(mappedBy = "job", fetch = FetchType.LAZY)
+    private Set<TrainingPost> trainingPostSet;
+
     @Column(name = "d_last_modified_date_na")
     private Date lastModifiedDateNA;
 

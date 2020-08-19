@@ -220,4 +220,12 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
         mainCriteria.setEnd(request.getCriteria().getEnd());
         request.setCriteria(mainCriteria);
     }
+
+    public static void setCriteriaToNotSearchDeleted(SearchDTO.SearchRq request) {
+        SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        criteria.getCriteria().add(makeNewCriteria("deleted", null, EOperator.isNull, null));
+        if (request.getCriteria() != null)
+            criteria.getCriteria().add(request.getCriteria());
+        request.setCriteria(criteria);
+    }
 }

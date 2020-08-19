@@ -15,6 +15,7 @@ import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.iservice.IPersonnelService;
+import com.nicico.training.service.BaseService;
 import com.nicico.training.service.CourseService;
 import com.nicico.training.service.JobService;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +57,7 @@ public class JobRestController {
         if (iscRq.getParameter("_startRow") != null)
             startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
         SearchDTO.SearchRs<JobDTO.Info> searchRs = jobService.searchWithoutPermission(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
@@ -110,6 +112,7 @@ public class JobRestController {
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
+        BaseService.setCriteriaToNotSearchDeleted(request);
         SearchDTO.SearchRs<JobDTO.Info> response = jobService.searchWithoutPermission(request);
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(response.getList())

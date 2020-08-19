@@ -146,9 +146,6 @@ public class Tclass extends Auditable {
     @Column(name = "c_acceptance_limit")
     private String acceptancelimit;
 
-    @Column(name = "start_evaluation")
-    private Integer startEvaluation;
-
     @Column(name = "c_workflow_ending_status")
     private String workflowEndingStatus;
 
@@ -196,4 +193,33 @@ public class Tclass extends Auditable {
 
     @Column(name = "evaluation_reaction_training")
     private Integer evaluationStatusReactionTraining;
+
+    @Column(name = "start_evaluation")
+    private Integer startEvaluation;
+
+    @Column(name = "c_evaluation")
+    private String evaluation;
+
+    @Column(name = "c_behavioral_level")
+    private String behavioralLevel;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "f_cancel_class_reason", insertable = false, updatable = false)
+    private ParameterValue classCancelReason;
+
+    @Column(name = "f_cancel_class_reason")
+    private Long classCancelReasonId;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "alternativeClass")
+    private Set<Tclass> canceledClasses;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_alternative_class", insertable = false, updatable = false)
+    private Tclass alternativeClass;
+
+    @Column(name = "f_alternative_class")
+    private Long alternativeClassId;
+
+    @Column(name = "c_postpone_start_date")
+    private String postponeStartDate;
 }

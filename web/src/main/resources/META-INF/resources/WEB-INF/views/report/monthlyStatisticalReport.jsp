@@ -491,7 +491,7 @@
                     multiple: true,
                     type: "SelectItem",
                     textMatchStyle: "substring",
-                    valueField: "id",
+                    valueField: "code",
                     displayField: "titleFa",
                     textAlign: "center",
                 },
