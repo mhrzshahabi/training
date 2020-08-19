@@ -1437,15 +1437,15 @@
                 change: function (form, item, value, oldValue) {
 
                     highlightClassStauts(value, 10);
-
-                    if (classMethod.localeCompare("PUT") === 0 && value === "3" &&
-                        (ListGrid_Class_JspClass.getSelectedRecord().evaluationStatusReactionTraining == undefined ||
-                            ListGrid_Class_JspClass.getSelectedRecord().evaluationStatusReactionTraining == 0)) {
-                        createDialog("info", "مدرس این کلاس هنوز توسط مسئول آموزش ارزیابی نشده است و امکان پایان دادن به کلاس نمی باشد");
-                        classTypeStatus.setValue(oldValue);
-                        highlightClassStauts(oldValue, 10);
-                        return false;
-                    }
+                        //-------------- ِDONE BY ROYA--------------------------------
+                    // if (classMethod.localeCompare("PUT") === 0 && value === "3" &&
+                    //     (ListGrid_Class_JspClass.getSelectedRecord().evaluationStatusReactionTraining == undefined ||
+                    //         ListGrid_Class_JspClass.getSelectedRecord().evaluationStatusReactionTraining == 0)) {
+                    //     createDialog("info", "مدرس این کلاس هنوز توسط مسئول آموزش ارزیابی نشده است و امکان پایان دادن به کلاس نمی باشد");
+                    //     classTypeStatus.setValue(oldValue);
+                    //     highlightClassStauts(oldValue, 10);
+                    //     return false;
+                    // }
 
                     if (classMethod.localeCompare("PUT") === 0 && value === "3")
                         checkEndingClass(oldValue);
@@ -1453,7 +1453,6 @@
                         hasClassStarted(oldValue);
                     else if (classMethod.localeCompare("POST") === 0 && (value === "3" || value === "2"))
                         return false;
-
                 }
             },
             {

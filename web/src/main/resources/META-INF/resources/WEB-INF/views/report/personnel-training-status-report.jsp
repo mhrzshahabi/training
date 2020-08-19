@@ -35,11 +35,11 @@
             {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "cppArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "cppAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "cppAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "cppSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "cppUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
         ],
         fetchDataURL: personnelUrl + "/iscList",
         implicitCriteria: {
@@ -292,11 +292,17 @@
                 defaultValue: "4",
 // endRow:true,
                 valueMap: {
-                    "1": "ثبت شده در پرونده",
-                    "2": "ثبت نام شده در کلاس",
-                    "2": "در حال اجرای کلاس",
+                    "1": "برنامه ریزی",
+                    "2": "در حال اجرا",
+                    "3": "پایان یافته",
                     "4": "همه",
                 },
+                //     {
+                //     "1": "ثبت شده در پرونده",
+                //     "2": "ثبت نام شده در کلاس",
+                //     "2": "در حال اجرای کلاس",
+                //     "4": "همه",
+                // },
             },
             {
                 name: "personnelCppArea",
@@ -318,7 +324,7 @@
                 separateSpecialValues: true
             },
             {
-                name: "personnelCcpAssistant",
+                name: "personnelCppAssistant",
                 colSpan: 1,
                 title: "<spring:message code="assistance"/>",
                 filterFields: ["value", "value"],
@@ -355,7 +361,7 @@
                 separateSpecialValues: true
             },
             {
-                name: "personnelCcpSection",
+                name: "personnelCppSection",
                 title: "<spring:message code="section"/>",
                 colSpan: 1,
                 filterFields: ["value", "value"],
@@ -374,7 +380,7 @@
                 separateSpecialValues: true
             },
             {
-                name: "personnelCcpUnit",
+                name: "personnelCppUnit",
                 colSpan: 1,
                 title: "<spring:message code="unit"/>",
                 filterFields: ["value", "value"],
@@ -627,8 +633,10 @@
         let arry = state !== undefined ? state : Object.keys(FilterDF_PTSR.getValuesAsCriteria());
         if(state === undefined && arry.length < 3)
             return false;
-        else if(state !== undefined && arry.length < 4)
-            return false
+        else if(state === undefined)
+            return true;
+        else if(state.length < 3 && arry.length < 4)
+            return false;
         else
             return true;
     }
