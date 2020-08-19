@@ -1201,6 +1201,8 @@
     </changeSet>
 
 
-
+    <changeSet author="golrokhi (generated)" id="1597825754792-501">
+        <addForeignKeyConstraint baseColumnNames="f_message_class" baseTableName="tbl_message" constraintName="FKe84hylynisuaaov4um6l84fl3" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
+    </changeSet>
 
 </databaseChangeLog>

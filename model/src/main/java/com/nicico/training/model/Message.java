@@ -54,4 +54,11 @@ public class Message extends Auditable {
 
     @Column(name = "n_interval", nullable = false)
     private Integer Interval;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_message_class", insertable = false, updatable = false)
+    private Tclass tclass;
+
+    @Column(name = "f_message_class")
+    private Long tclassId;
 }
