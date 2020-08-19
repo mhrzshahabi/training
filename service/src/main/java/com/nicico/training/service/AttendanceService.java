@@ -202,8 +202,9 @@ public class AttendanceService implements IAttendanceService {
         Iterator<Long> iterator = classIdSet.iterator();
         while (iterator.hasNext()){
             Long info = iterator.next();
-            classAlarmService.alarmAttendanceUnjustifiedAbsence(info);
-            classAlarmService.saveAlarms();
+            //// cancel alarms
+//            classAlarmService.alarmAttendanceUnjustifiedAbsence(info);
+//            classAlarmService.saveAlarms();
         }
     }
 

@@ -103,8 +103,9 @@ public class AttendanceRestController {
                                         @RequestParam("classId") Long classId,
                                         @RequestParam("date") String date) {
         attendanceService.convertToModelAndSave(req, classId, date);
-        classAlarmService.alarmAttendanceUnjustifiedAbsence(classId);
-        classAlarmService.saveAlarms();
+        //// cancel alarms
+//        classAlarmService.alarmAttendanceUnjustifiedAbsence(classId);
+//        classAlarmService.saveAlarms();
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
