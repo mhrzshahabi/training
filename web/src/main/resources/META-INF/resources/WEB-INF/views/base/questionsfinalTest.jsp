@@ -742,7 +742,7 @@
 
     var ToolStripButton_PrintJasper = isc.ToolStripButton.create({
         icon: "[SKIN]/RichTextEditor/print.png",
-        title: "چاپ سوالات پیش آزمون",
+        title: "چاپ سوالات آزمون نهایی",
         click: function () {
             let params = {};
             let data = ListGrid_FinalTest.getData().localData.get(0).testQuestionId;
