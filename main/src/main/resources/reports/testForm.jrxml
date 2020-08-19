@@ -94,7 +94,8 @@
 		</band>
 	</title>
 	<detail>
-		<band height="35" splitType="Stretch">
+		<band height="35" splitType="Prevent">
+			<property name="com.jaspersoft.studio.layout"/>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="-1" y="5" width="529" height="20" uuid="c06b54d1-650a-4477-8b33-5d03d9d5ce87">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a4612b74-2dce-4db8-afd5-df173a4d4d70"/>
@@ -119,7 +120,7 @@
 				<text><![CDATA[_]]></text>
 			</staticText>
 		</band>
-		<band height="22">
+		<band height="22" splitType="Prevent">
 			<printWhenExpression><![CDATA[$F{questionType.code}.equals("MultipleChoiceAnswer")  &&  $F{displayType.code}.equals("Block" )? 
 new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 			<frame>
@@ -138,8 +139,6 @@ new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 					<rectangle radius="5">
 						<reportElement x="110" y="2" width="15" height="15" backcolor="#FFFFFF" uuid="edc9de9a-34bf-42a9-b8cd-9f55c749dd8d">
 							<property name="com.jaspersoft.studio.element.name" value="h"/>
-							<printWhenExpression><![CDATA[$F{displayType.code} .equals("Block") ? 
-new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 						</reportElement>
 					</rectangle>
 				</frame>
@@ -157,8 +156,6 @@ new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 					<rectangle radius="5">
 						<reportElement x="110" y="2" width="15" height="15" backcolor="#FFFFFF" uuid="da937291-8f8e-46af-9374-f191df8b69ec">
 							<property name="com.jaspersoft.studio.element.name" value="h"/>
-							<printWhenExpression><![CDATA[$F{displayType.code} .equals("Block") ? 
-new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 						</reportElement>
 					</rectangle>
 				</frame>
@@ -176,8 +173,6 @@ new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 					<rectangle radius="5">
 						<reportElement x="110" y="2" width="15" height="15" backcolor="#FFFFFF" uuid="46e2b034-e3c9-43a7-88d6-b3eae5b562de">
 							<property name="com.jaspersoft.studio.element.name" value="h"/>
-							<printWhenExpression><![CDATA[$F{displayType.code} .equals("Block") ? 
-new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 						</reportElement>
 					</rectangle>
 				</frame>
@@ -195,14 +190,12 @@ new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 					<rectangle radius="5">
 						<reportElement x="110" y="2" width="15" height="15" backcolor="#FFFFFF" uuid="a0df97a7-0466-49da-ba78-d8aab5b27d13">
 							<property name="com.jaspersoft.studio.element.name" value="h"/>
-							<printWhenExpression><![CDATA[$F{displayType.code} .equals("Block")? 
-new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 						</reportElement>
 					</rectangle>
 				</frame>
 			</frame>
 		</band>
-		<band height="25">
+		<band height="25" splitType="Prevent">
 			<printWhenExpression><![CDATA[$F{questionType.code}.equals("MultipleChoiceAnswer")  &&  !$F{displayType.code}.equals("Block") ? 
 new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 			<frame>
@@ -219,13 +212,11 @@ new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 				<rectangle radius="5">
 					<reportElement x="520" y="2" width="15" height="15" backcolor="#FFFFFF" uuid="55322b80-e5ba-4849-afe2-807901e00afa">
 						<property name="com.jaspersoft.studio.element.name" value="v"/>
-						<printWhenExpression><![CDATA[!$F{displayType.code} .equals("Block") ? 
-new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 					</reportElement>
 				</rectangle>
 			</frame>
 		</band>
-		<band height="25">
+		<band height="25" splitType="Prevent">
 			<printWhenExpression><![CDATA[$F{questionType.code}.equals("MultipleChoiceAnswer")  &&  !$F{displayType.code}.equals("Block") ? 
 new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 			<frame>
@@ -242,13 +233,11 @@ new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 				<rectangle radius="5">
 					<reportElement x="520" y="2" width="15" height="15" backcolor="#FFFFFF" uuid="7f8a3e89-6f53-491e-b930-be3f80a5da4a">
 						<property name="com.jaspersoft.studio.element.name" value="v"/>
-						<printWhenExpression><![CDATA[!$F{displayType.code} .equals("Block") ? 
-new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 					</reportElement>
 				</rectangle>
 			</frame>
 		</band>
-		<band height="25">
+		<band height="25" splitType="Prevent">
 			<printWhenExpression><![CDATA[$F{questionType.code}.equals("MultipleChoiceAnswer")  &&  !$F{displayType.code}.equals("Block") ? 
 new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 			<frame>
@@ -265,13 +254,11 @@ new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 				<rectangle radius="5">
 					<reportElement x="520" y="2" width="15" height="15" backcolor="#FFFFFF" uuid="b9764214-332a-47f1-b92a-6a6f4d411cf1">
 						<property name="com.jaspersoft.studio.element.name" value="v"/>
-						<printWhenExpression><![CDATA[!$F{displayType.code} .equals("Block") ? 
-new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 					</reportElement>
 				</rectangle>
 			</frame>
 		</band>
-		<band height="25">
+		<band height="25" splitType="Prevent">
 			<printWhenExpression><![CDATA[$F{questionType.code}.equals("MultipleChoiceAnswer")  &&  !$F{displayType.code}.equals("Block") ? 
 new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 			<frame>
@@ -288,19 +275,14 @@ new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 				<rectangle radius="5">
 					<reportElement x="521" y="2" width="15" height="15" backcolor="#FFFFFF" uuid="ed63c824-1bce-4ff1-a8fa-3c61463feb7d">
 						<property name="com.jaspersoft.studio.element.name" value="v"/>
-						<printWhenExpression><![CDATA[!$F{displayType.code} .equals("Block") ? 
-new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 					</reportElement>
 				</rectangle>
 			</frame>
 		</band>
-		<band height="1">
+		<band height="1" splitType="Immediate">
 			<line>
 				<reportElement x="0" y="0" width="560" height="1" uuid="aeeb1637-f7b4-4291-aec3-40166b79b12f"/>
 			</line>
 		</band>
 	</detail>
-	<summary>
-		<band height="42" splitType="Stretch"/>
-	</summary>
 </jasperReport>
