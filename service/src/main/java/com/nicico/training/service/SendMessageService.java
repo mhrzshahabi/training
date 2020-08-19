@@ -61,7 +61,7 @@ public class SendMessageService implements ISendMessageService {
         return messageId;
     }
 
-    @Scheduled(cron = "0 * * * * ?", zone = "Asia/Tehran")
+    @Scheduled(cron = "0 0 9 * * ?", zone = "Asia/Tehran")
     @Transactional
     @Override
     public void scheduling() {
