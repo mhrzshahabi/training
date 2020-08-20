@@ -475,6 +475,7 @@
         rowDoubleClick: "Select_Person_NABOP()",
         implicitCriteria: {
             _constructor: "AdvancedCriteria",
+            operator: "and",
             criteria: [{fieldName: "deleted", operator: "equals", value: 0}]
         }
     });
