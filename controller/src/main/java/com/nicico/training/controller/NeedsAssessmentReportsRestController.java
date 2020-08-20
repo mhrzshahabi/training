@@ -41,11 +41,11 @@ public class NeedsAssessmentReportsRestController {
     public ResponseEntity fullList(HttpServletRequest iscRq,
                                    @RequestParam Long objectId,
                                    @RequestParam String objectType,
-                                   @RequestParam(required = false) String personnelNo,
+                                   @RequestParam(required = false) Long personnelId,
                                    HttpServletResponse response) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         try {
-            SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> searchRs = needsAssessmentReportsService.search(searchRq, objectId, objectType, personnelNo);
+            SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> searchRs = needsAssessmentReportsService.search(searchRq, objectId, objectType, personnelId);
             return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
         } catch (TrainingException e) {
             Locale locale = LocaleContextHolder.getLocale();

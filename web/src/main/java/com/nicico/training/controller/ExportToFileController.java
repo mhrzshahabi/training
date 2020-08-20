@@ -286,7 +286,7 @@ public class ExportToFileController {
                 searchRq.getCriteria().getCriteria().remove(0);
                 searchRq.getCriteria().getCriteria().remove(0);
                 searchRq.getCriteria().getCriteria().remove(0);
-                generalList = (List<Object>) ((Object) needsAssessmentReportsService.search(searchRq, objectId, objectType, personnelNo).getList());
+//                generalList = (List<Object>) ((Object) needsAssessmentReportsService.search(searchRq, objectId, objectType, personnelNo).getList());
                 break;
 
             case "View_Post":

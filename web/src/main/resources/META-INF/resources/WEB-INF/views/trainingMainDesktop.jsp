@@ -2755,7 +2755,7 @@
     const studentUrl = rootUrl + "/student/";
     const classUrl = rootUrl + "/tclass/";
     const targetSocietyUrl = rootUrl + "/target-society/";
-    const calenderCurrentTerm = rootUrl + "/calenderCurrentTerm/";
+    const calenderCurrentTermUrl = rootUrl + "/calenderCurrentTerm/";
     const classReportUrl = rootUrl + "/classReport/";
     const instituteUrl = rootUrl + "/institute/";
     const educationUrl = rootUrl + "/education/";
