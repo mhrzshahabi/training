@@ -2,10 +2,7 @@ package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.util.List;
@@ -15,7 +12,7 @@ import java.util.List;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class AttendanceReportDTO {
+public class ViewAttendanceReportDTO {
     String personalNum;
     String personalNum2;
     String nationalCode;
@@ -32,7 +29,14 @@ public class AttendanceReportDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("AttendanceReportDTOInfo")
-    public static class Info extends AttendanceReportDTO {
+    public static class Info extends ViewAttendanceReportDTO {
+
+        @Getter(AccessLevel.NONE)
+        private String fixTime;
+
+        public String getFixTime(){
+            return time != null ? time.toString().split(":")[1].equals("0") ? time.toString().split(":")[0] : time.toString() : null;
+        }
     }
 
     @Getter
@@ -41,7 +45,7 @@ public class AttendanceReportDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("AttendanceReportDTOSpecRs")
     public static class AttendanceReportDTOSpecRs {
-        private AttendanceReportDTO.SpecRs response;
+        private ViewAttendanceReportDTO.SpecRs response;
     }
 
     @Getter
@@ -49,7 +53,7 @@ public class AttendanceReportDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<AttendanceReportDTO.Info> data;
+        private List<ViewAttendanceReportDTO.Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;

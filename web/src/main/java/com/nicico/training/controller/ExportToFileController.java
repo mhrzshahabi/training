@@ -12,7 +12,6 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonnelCourseNotPassedReportViewService;
 import com.nicico.training.iservice.ITclassService;
-import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.PersonnelRegisteredDAO;
 import com.nicico.training.repository.StudentClassReportViewDAO;
@@ -209,14 +208,100 @@ public class ExportToFileController {
                 generalList = (List<Object>) ((Object) trainingOverTimeService.getTrainingOverTimeReportList(startDate, endDate));
                 break;
 
-            case "attendanceReport":
+            case "attendanceReport": {
                 String startDate2 = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
                 searchRq.getCriteria().getCriteria().remove(0);
                 String endDate2 = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
                 searchRq.getCriteria().getCriteria().remove(0);
                 int absentType = Integer.parseInt(searchRq.getCriteria().getCriteria().get(0).getValue().get(0) + "");
                 searchRq.getCriteria().getCriteria().remove(0);
-                List<AttendanceReportDTO.Info> attendanceReportServiceAbsentList = attendanceReportService.getAbsentList(startDate2, endDate2, absentType + "");
+
+                SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+                request.setStartIndex(null);
+                request.setSortBy("personalNum2");
+
+
+                List<SearchDTO.CriteriaRq> listOfCriteria = new ArrayList<>();
+
+                SearchDTO.CriteriaRq criteriaRq = null;
+
+                criteriaRq = new SearchDTO.CriteriaRq();
+                criteriaRq.setOperator(EOperator.greaterOrEqual);
+                criteriaRq.setFieldName("date");
+                criteriaRq.setValue(startDate2);
+
+                listOfCriteria.add(criteriaRq);
+
+                criteriaRq = new SearchDTO.CriteriaRq();
+                criteriaRq.setOperator(EOperator.lessOrEqual);
+                criteriaRq.setFieldName("date");
+                criteriaRq.setValue(endDate2);
+
+                listOfCriteria.add(criteriaRq);
+
+                switch (absentType + "") {
+                    case "3": {
+                        SearchDTO.CriteriaRq criteriaRq2 = new SearchDTO.CriteriaRq();
+                        criteriaRq2.setOperator(EOperator.or);
+                        criteriaRq2.setCriteria(new ArrayList<>());
+
+                        criteriaRq = new SearchDTO.CriteriaRq();
+                        criteriaRq.setOperator(EOperator.equals);
+                        criteriaRq.setFieldName("attendanceStatus");
+                        criteriaRq.setValue(3);
+
+                        criteriaRq2.getCriteria().add(criteriaRq);
+
+                        listOfCriteria.add(criteriaRq2);
+                        break;
+                    }
+                    case "4": {
+                        SearchDTO.CriteriaRq criteriaRq2 = new SearchDTO.CriteriaRq();
+                        criteriaRq2.setOperator(EOperator.or);
+                        criteriaRq2.setCriteria(new ArrayList<>());
+
+                        criteriaRq = new SearchDTO.CriteriaRq();
+                        criteriaRq.setOperator(EOperator.equals);
+                        criteriaRq.setFieldName("attendanceStatus");
+                        criteriaRq.setValue(4);
+
+                        criteriaRq2.getCriteria().add(criteriaRq);
+
+                        listOfCriteria.add(criteriaRq2);
+                        break;
+                    }
+                    default: {
+                        SearchDTO.CriteriaRq criteriaRq2 = new SearchDTO.CriteriaRq();
+                        criteriaRq2.setOperator(EOperator.or);
+                        criteriaRq2.setCriteria(new ArrayList<>());
+
+                        criteriaRq = new SearchDTO.CriteriaRq();
+                        criteriaRq.setOperator(EOperator.equals);
+                        criteriaRq.setFieldName("attendanceStatus");
+                        criteriaRq.setValue(4);
+                        criteriaRq2.getCriteria().add(criteriaRq);
+
+
+                        criteriaRq = new SearchDTO.CriteriaRq();
+                        criteriaRq.setOperator(EOperator.equals);
+                        criteriaRq.setFieldName("attendanceStatus");
+                        criteriaRq.setValue(3);
+                        criteriaRq2.getCriteria().add(criteriaRq);
+
+                        listOfCriteria.add(criteriaRq2);
+                        break;
+                    }
+                }
+
+                criteriaRq = new SearchDTO.CriteriaRq();
+                criteriaRq.setCriteria(listOfCriteria);
+                criteriaRq.setOperator(EOperator.and);
+
+                request.setCriteria(criteriaRq);
+
+                SearchDTO.SearchRs result = attendanceReportService.search(request, o -> modelMapper.map(o, ViewAttendanceReportDTO.Info.class));
+
+                List<ViewAttendanceReportDTO.Info> attendanceReportServiceAbsentList = result.getList();
                 attendanceReportServiceAbsentList.forEach(x ->
                         {
                             if (x.getAttendanceStatus().equals("3"))
@@ -227,7 +312,7 @@ public class ExportToFileController {
                 );
                 generalList = (List<Object>) ((Object) attendanceReportServiceAbsentList);
                 break;
-
+            }
             case "Category":
                 generalList = (List<Object>) ((Object) categoryService.search(searchRq).getList());
                 break;
