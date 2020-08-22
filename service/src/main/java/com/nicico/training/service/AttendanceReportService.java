@@ -24,6 +24,7 @@ public class AttendanceReportService implements IAttendanceReportService {
     @Override
     public List<AttendanceReportDTO.Info> getAbsentList(String startDate, String endDate, String absentType) {
 
+        Long id=0L;
         List<?> reportList;
         List<AttendanceReportDTO> attedanceDTOList = null;
 
