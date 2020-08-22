@@ -129,7 +129,7 @@ public class TclassService implements ITclassService {
                 tclass.setTrainingPlaceSet(set);
             }
             Tclass save = tclassDAO.save(tclass);
-            saveTargetSocieties(request.gettargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
+//            saveTargetSocieties(request.gettargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
             return modelMapper.map(save, TclassDTO.Info.class);
         } else {
             try {
@@ -324,25 +324,25 @@ public class TclassService implements ITclassService {
     private List<TargetSociety> updateTargetSocieties(List<TargetSociety> targets, List<Object> societies, Long typeId, Long tclassId) {
         List<Long> deleteList = new ArrayList<>();
         String type = parameterValueService.get(typeId).getCode();
-        for (int i = 0; i < targets.size(); i++) {
-            TargetSociety society = targets.get(i);
-            if (!society.getTargetSocietyTypeId().equals(typeId)) {
-
-            } else if (type.equals("single")) {
-                Object id = societies.stream().filter(s -> ((Integer) s).longValue() == society.getSocietyId()).findFirst().orElse(null);
-                if (id != null) {
-                    societies.remove(id);
-                    continue;
-                }
-            } else if (type.equals("etc")) {
-                Object id = societies.stream().filter(s -> (String) s == society.getTitle()).findFirst().orElse(null);
-                if (id != null) {
-                    societies.remove(id);
-                    continue;
-                }
-            }
-            targets.set(i, null);
-        }
+//        for (int i = 0; i < targets.size(); i++) {
+//            TargetSociety society = targets.get(i);
+//            if (!society.getTargetSocietyTypeId().equals(typeId)) {
+//
+//            } else if (type.equals("single")) {
+//                Object id = societies.stream().filter(s -> ((Integer) s).longValue() == society.getSocietyId()).findFirst().orElse(null);
+//                if (id != null) {
+//                    societies.remove(id);
+//                    continue;
+//                }
+//            } else if (type.equals("etc")) {
+//                Object id = societies.stream().filter(s -> (String) s == society.getTitle()).findFirst().orElse(null);
+//                if (id != null) {
+//                    societies.remove(id);
+//                    continue;
+//                }
+//            }
+//            targets.set(i, null);
+//        }
         return saveTargetSocieties(societies, typeId, tclassId);
     }
 
@@ -355,7 +355,7 @@ public class TclassService implements ITclassService {
                 create.setSocietyId(((Integer) society).longValue());
             else if (type.equals("etc"))
                 create.setTitle((String) society);
-            create.setTargetSocietyTypeId(new Long(typeId));
+//            create.setTargetSocietyTypeId(new Long(typeId));
             create.setTclassId(tclassId);
             result.add(societyDAO.save(create));
         }

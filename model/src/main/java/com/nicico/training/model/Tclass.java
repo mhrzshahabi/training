@@ -222,4 +222,11 @@ public class Tclass extends Auditable {
 
     @Column(name = "c_postpone_start_date")
     private String postponeStartDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_targetsociety_type_id", insertable = false, updatable = false)
+    private ParameterValue targetSocietyType;
+
+    @Column(name = "f_targetsociety_type_id")
+    private Long targetSocietyTypeId;
 }
