@@ -279,14 +279,14 @@ public class ExportToFileController {
                 generalList = (List<Object>) ((Object) personnelService.search(searchRq).getList());
                 break;
 
-            case "NeedsAssessment":
+            case "NeedsAssessmentReport":
                 Long objectId = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
                 String objectType = searchRq.getCriteria().getCriteria().get(1).getValue().get(0).toString();
-                String personnelNo = searchRq.getCriteria().getCriteria().get(2).getValue().get(0) == null ? null : searchRq.getCriteria().getCriteria().get(2).getValue().get(0).toString();
+                Long personnelId = searchRq.getCriteria().getCriteria().get(2).getValue().get(0) == null ? null : (Long)searchRq.getCriteria().getCriteria().get(2).getValue().get(0);
                 searchRq.getCriteria().getCriteria().remove(0);
                 searchRq.getCriteria().getCriteria().remove(0);
                 searchRq.getCriteria().getCriteria().remove(0);
-//                generalList = (List<Object>) ((Object) needsAssessmentReportsService.search(searchRq, objectId, objectType, personnelNo).getList());
+                generalList = (List<Object>) ((Object) needsAssessmentReportsService.search(searchRq, objectId, objectType, personnelId).getList());
                 break;
 
             case "View_Post":

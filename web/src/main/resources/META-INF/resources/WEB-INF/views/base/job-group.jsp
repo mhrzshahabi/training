@@ -1121,7 +1121,7 @@
                     criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "JobGroup"});
                     criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
 
-                    ExportToFile.showDialog(null, NALG_JobGroup , "NeedsAssessment", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
+                    ExportToFile.showDialog(null, NALG_JobGroup , "NeedsAssessmentReport", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
                 }
             })
         ]

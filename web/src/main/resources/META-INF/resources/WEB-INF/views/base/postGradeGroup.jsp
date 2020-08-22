@@ -929,7 +929,7 @@
                     criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "PostGradeGroup"});
                     criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
 
-                    ExportToFile.showDialog(null, NALG_PGG , "NeedsAssessment", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
+                    ExportToFile.showDialog(null, NALG_PGG , "NeedsAssessmentReport", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
                 }
             })
         ]
