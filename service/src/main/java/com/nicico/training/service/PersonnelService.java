@@ -49,15 +49,14 @@ public class PersonnelService implements IPersonnelService {
 
     @Transactional(readOnly = true)
     @Override
-    public PersonnelDTO.Info get(String personnelNo) {
-        return modelMapper.map(getPersonnel(personnelNo), PersonnelDTO.Info.class);
+    public PersonnelDTO.Info get(Long id) {
+        return modelMapper.map(getPersonnel(id), PersonnelDTO.Info.class);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public Personnel getPersonnel(String personnelNo) {
-        Optional<Personnel> optPersonnel = personnelDAO.findFirstByPersonnelNo(personnelNo);
-        return optPersonnel.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+    public Personnel getPersonnel(Long id) {
+        return personnelDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
     }
 
     @Transactional(readOnly = true)
@@ -82,7 +81,7 @@ public class PersonnelService implements IPersonnelService {
 
         for (String personnelNo : personnelNos) {
 
-            if (list.stream().filter(p -> (p.getPersonnelNo() != null && p.getPersonnelNo().equals(personnelNo)) || (p.getPersonnelNo2() != null && p.getPersonnelNo2().equals(personnelNo))).collect(Collectors.toList()).size() == 0) {
+            if (list.stream().filter(p -> (p.getPersonnelNo() != null && p.getPersonnelNo().equals(personnelNo)) || (p.getPersonnelNo2() != null && p.getPersonnelNo2().equals(personnelNo))).count() == 0) {
                 result.add(new PersonnelDTO.Info());
 
             } else {
@@ -272,11 +271,11 @@ public class PersonnelService implements IPersonnelService {
         return response;
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public <R> R getPOrRegisteredP(String personnelNo, Function<Object, R> converter) {
-        Optional<Personnel> optPersonnel = personnelDAO.findFirstByPersonnelNo(personnelNo);
-        return optPersonnel.map(converter).orElse(personnelRegisteredDAO.findOneByPersonnelNo(personnelNo).map(converter).orElse(null));
-    }
+//    @Transactional(readOnly = true)
+//    @Override
+//    public <R> R getPOrRegisteredP(String personnelNo, Function<Object, R> converter) {
+//        Optional<Personnel> optPersonnel = personnelDAO.findFirstByPersonnelNo(personnelNo);
+//        return optPersonnel.map(converter).orElse(personnelRegisteredDAO.findOneByPersonnelNo(personnelNo).map(converter).orElse(null));
+//    }
 
 }

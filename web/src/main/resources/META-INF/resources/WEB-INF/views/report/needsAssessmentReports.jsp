@@ -475,6 +475,7 @@
         rowDoubleClick: "Select_Person_NABOP()",
         implicitCriteria: {
             _constructor: "AdvancedCriteria",
+            operator: "and",
             criteria: [{fieldName: "deleted", operator: "equals", value: 0}]
         }
     });
@@ -1084,7 +1085,7 @@
         chartData_NABOP.forEach(value1 => value1.duration=0);
         switch (reportType_NABOP) {
             case "0":
-                CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + selectedObject_NABOP.id + "&personnelNo=" + selectedPerson_NABOP.personnelNo + "&objectType=Post";
+                CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + selectedObject_NABOP.id + "&personnelId=" + selectedPerson_NABOP.id + "&objectType=Post";
                 DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport'/> " + "<spring:message code='Mrs/Mr'/> " +
                     getFormulaMessage(selectedPerson_NABOP.firstName, 2, "red", "b") + " " + getFormulaMessage(selectedPerson_NABOP.lastName, 2, "red", "b") +
                     " <spring:message code='national.code'/> " + getFormulaMessage(selectedPerson_NABOP.nationalCode, 2, "red", "b") +
@@ -1104,7 +1105,7 @@
                 break;
             case "2":
                 if (selectedPerson_NABOP != null && selectedObject_NABOP != null) {
-                    CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + selectedObject_NABOP.id + "&personnelNo=" + selectedPerson_NABOP.personnelNo + "&objectType=TrainingPost";
+                    CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + selectedObject_NABOP.id + "&personnelId=" + selectedPerson_NABOP.id + "&objectType=TrainingPost";
                     refreshLG_NABOP(CourseDS_NABOP);
                 }
                 let personName = selectedPerson_NABOP != null ? getFormulaMessage(selectedPerson_NABOP.firstName, 2, "red", "b") + " " + getFormulaMessage(selectedPerson_NABOP.lastName, 2, "red", "b") : getFormulaMessage("...", 2, "red", "b");

@@ -52,8 +52,8 @@ public class NeedsAssessmentReportsService {
 
     @Transactional(readOnly = true)
 //    @Override
-    public SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> search(SearchDTO.SearchRq request, Long objectId, String objectType, String personnelNo) {
-        List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = getCourseList(objectId, objectType, personnelNo);
+    public SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> search(SearchDTO.SearchRq request, Long objectId, String objectType, Long personnelId) {
+        List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = getCourseList(objectId, objectType, personnelId);
         SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> rs = new SearchDTO.SearchRs<>();
         rs.setTotalCount((long) needsAssessmentReportList.size());
         rs.setList(needsAssessmentReportList);
@@ -62,7 +62,7 @@ public class NeedsAssessmentReportsService {
 
     @Transactional(readOnly = true)
 //    @Override
-    public List<NeedsAssessmentReportsDTO.ReportInfo> getCourseList(Long objectId, String objectType, String personnelNo) {
+    public List<NeedsAssessmentReportsDTO.ReportInfo> getCourseList(Long objectId, String objectType, Long personnelId) {
 
         Long passedCodeId = parameterValueService.getId("Passed");
         Long notPassedCodeId = parameterValueService.getId("false");
@@ -85,8 +85,8 @@ public class NeedsAssessmentReportsService {
 //                }
 //            }
 //        }
-        if (personnelNo != null && !mustPass.isEmpty()) {
-            PersonnelDTO.Info student = personnelService.getPOrRegisteredP(personnelNo, p -> modelMapper.map(p, PersonnelDTO.Info.class));
+        if (personnelId != null && !mustPass.isEmpty()) {
+            PersonnelDTO.Info student = personnelService.get(personnelId);
             if (student == null) {
                 throw new TrainingException(TrainingException.ErrorType.NotFound);
             }

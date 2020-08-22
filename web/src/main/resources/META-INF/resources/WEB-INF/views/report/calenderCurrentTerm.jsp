@@ -28,7 +28,7 @@
 
         ],
 
-        fetchDataURL: calenderCurrentTerm + "speclist"
+        fetchDataURL: calenderCurrentTermUrl + "speclist"
     });
 
     var RestDataSource_AllCourses_CurrentTerm = isc.TrDS.create({
@@ -38,7 +38,7 @@
             {name: "course.evaluation"},
 
         ],
-        fetchDataURL: calenderCurrentTerm + "spec-list"
+        fetchDataURL: calenderCurrentTermUrl + "spec-list"
     });
 
     var RestDataSource_Class_CurrentTerm = isc.TrDS.create({
@@ -496,7 +496,7 @@
     //===================================================================================
     function needAssessmentClass_CurrentTerm(post) {
         Window_Calender_CurrentTerm.close();
-        RestDataSource_Class_CurrentTerm.fetchDataURL = calenderCurrentTerm + "needassessmentClass" + "?objectId=" + post.id + "&postTitle=" + selectedPerson_CurrentTerm.postTitle + "&postCode=" + selectedPerson_CurrentTerm.postCode + "&personnelNo=" + selectedPerson_CurrentTerm.personnelNo + "&personnelNo2=" + selectedPerson_CurrentTerm.personnelNo2 + "&companyName=" + selectedPerson_CurrentTerm.companyName + "&objectType=Post" + "&nationalCode=" + selectedPerson_CurrentTerm.nationalCode + "&firstName=" + selectedPerson_CurrentTerm.firstName + "&lastName=" + selectedPerson_CurrentTerm.lastName;
+        RestDataSource_Class_CurrentTerm.fetchDataURL = calenderCurrentTermUrl + "needassessmentClass" + "?personnelId=" + selectedPerson_CurrentTerm.id + "&objectId=" + post.id + "&postTitle=" + selectedPerson_CurrentTerm.postTitle + "&postCode=" + selectedPerson_CurrentTerm.postCode + "&personnelNo=" + selectedPerson_CurrentTerm.personnelNo + "&personnelNo2=" + selectedPerson_CurrentTerm.personnelNo2 + "&companyName=" + selectedPerson_CurrentTerm.companyName + "&objectType=Post" + "&nationalCode=" + selectedPerson_CurrentTerm.nationalCode + "&firstName=" + selectedPerson_CurrentTerm.firstName + "&lastName=" + selectedPerson_CurrentTerm.lastName;
         flag = 1;
         ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1.fetchData();
         ListGrid_NeedAssessmentClass_CalculatorCurrentTerm1.invalidateCache()

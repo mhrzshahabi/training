@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Subselect("select * from view_Personnel_Training_Status_Report_v2")
+@Subselect("select * from view_Personnel_Training_Status_Report")
 @DiscriminatorValue("ViewPersonnelTrainingStatusReport")
 public class ViewPersonnelTrainingStatusReport {
 

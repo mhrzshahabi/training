@@ -29,10 +29,41 @@ public class TestQuestionDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("SkillLeveFullInfo")
+    public static class fullInfo extends TestQuestionDTO {
+
+        private Long id;
+        private Integer version;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private String date;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private String time;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private Integer duration;
+
+        private TclassDTO.Info tclass;
+
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("SkillLevelInfo")
     public static class Info extends TestQuestionDTO {
         private Long id;
         private Integer version;
+
+        private String date;
+
+        private String time;
+
+        private Integer duration;
 
         private TclassDTO.Info tclass;
         //private Set<QuestionBankTestQuestionDTO.Info> QuestionBankTestQuestionList;
@@ -45,6 +76,18 @@ public class TestQuestionDTO {
     @Accessors(chain = true)
     @ApiModel("SkillLevelCreateRq")
     public static class Create extends TestQuestionDTO {
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private String date;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private String time;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private Integer duration;
     }
 
     // ------------------------------
@@ -56,6 +99,17 @@ public class TestQuestionDTO {
     public static class Update extends TestQuestionDTO {
         @NotNull
         @ApiModelProperty(required = true)
+        private String date;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private String time;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private Integer duration;
+
+        private Long id;
         private Integer version;
     }
 

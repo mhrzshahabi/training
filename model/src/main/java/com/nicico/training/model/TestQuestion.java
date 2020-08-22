@@ -36,4 +36,13 @@ public class TestQuestion extends Auditable {
 
     @OneToMany(mappedBy = "testQuestion", fetch = FetchType.LAZY)
     private Set<QuestionBankTestQuestion> questionBankTestQuestionList;
+
+    @Column(name = "c_date")
+    private String date;
+
+    @Column(name = "c_time")
+    private String time;
+
+    @Column(name = "n_duration")
+    private Integer duration;
 }

@@ -1129,9 +1129,11 @@
     <changeSet author="golrokhi (generated)" id="1596597720708-482">
         <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_message" constraintName="FK9lgx37ofr266ok7cavf67efmr" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
+
     <changeSet author="golrokhi (generated)" id="1596597720708-484">
         <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_message_contact" constraintName="FKbso4uky7gl9lyckywfc6ooj3n" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
+
     <changeSet author="golrokhi (generated)" id="1596597720708-486">
         <addForeignKeyConstraint baseColumnNames="f_message_contact_status_id" baseTableName="tbl_message_contact" constraintName="FKg52ambqi2uixknyn03rn2925h" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
@@ -1175,7 +1177,6 @@
         <addForeignKeyConstraint baseColumnNames="f_class" baseTableName="tbl_test_question" constraintName="FKamu20wgoa0uwd684lny5s1nw3" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
     </changeSet>
 
-
     <changeSet author="golrokhi (generated)" id="1596986495722-498">
         <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_question_bank_test_question" constraintName="FKsbbpqwkmqgq4yh9g7k2ebc2s4" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
@@ -1200,6 +1201,8 @@
     </changeSet>
 
 
-
+    <changeSet author="golrokhi (generated)" id="1597825754792-501">
+        <addForeignKeyConstraint baseColumnNames="f_message_class" baseTableName="tbl_message" constraintName="FKe84hylynisuaaov4um6l84fl3" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
+    </changeSet>
 
 </databaseChangeLog>

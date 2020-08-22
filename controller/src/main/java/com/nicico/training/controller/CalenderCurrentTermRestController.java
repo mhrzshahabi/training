@@ -80,26 +80,26 @@ public class CalenderCurrentTermRestController {
             }
         }
 
-        String personnelNo = null;
+        Long personnelId = null;
         Long postId = null;
         SearchDTO.CriteriaRq cri = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-        cri.getCriteria().add(makeNewCriteria("active", 1, EOperator.equals, null));
+        cri.getCriteria().add(makeNewCriteria("deleted", 0, EOperator.equals, null));
         cri.getCriteria().add(makeNewCriteria("nationalCode", SecurityUtil.getNationalCode(), EOperator.equals, null));
         List<PersonnelDTO.Info> personnelList = personnelService.search(new SearchDTO.SearchRq().setCriteria(cri)).getList();
         if (personnelList.isEmpty()) {
             List<PersonnelRegisteredDTO.Info> personnelRegisteredList = personnelRegisteredService.search(new SearchDTO.SearchRq().setCriteria(cri)).getList();
             if (!personnelRegisteredList.isEmpty()) {
-                personnelNo = personnelRegisteredList.get(0).getPersonnelNo();
+                personnelId = personnelRegisteredList.get(0).getId();
                 postId = postService.getByPostCode(personnelRegisteredList.get(0).getPostCode()).getId();
             }
         } else {
-            personnelNo = personnelList.get(0).getPersonnelNo();
+            personnelId = personnelList.get(0).getId();
             postId = postService.getByPostCode(personnelList.get(0).getPostCode()).getId();
         }
 
         SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> list = null;
-        if (postId != null && personnelNo != null)
-            list = needsAssessmentReportsService.search(null, postId, "Post", personnelNo);
+        if (postId != null && personnelId != null)
+            list = needsAssessmentReportsService.search(null, postId, "Post", personnelId);
 
 
         if (list != null && list.getList().size() > 0) {
@@ -159,7 +159,7 @@ public class CalenderCurrentTermRestController {
     @Transactional(readOnly = true)
     @Loggable
     @GetMapping(value = {"/needassessmentClass"})
-    public ResponseEntity<CalenderCurrentTermDTO.CalenderCurrentTermSpecRs> print(HttpServletResponse response, @RequestParam(value = "objectId") String objectId, @RequestParam(value = "objectType") String objectType, @RequestParam(value = "personnelNo") String personnelNo, @RequestParam(value = "nationalCode") String nationalCode, @RequestParam(value = "firstName") String firstName, @RequestParam(value = "lastName") String lastName, @RequestParam(value = "companyName") String companyName, @RequestParam(value = "personnelNo2") String personnelNo2, @RequestParam(value = "postTitle") String postTitle, @RequestParam(value = "postCode") String postCode) throws Exception {
+    public ResponseEntity<CalenderCurrentTermDTO.CalenderCurrentTermSpecRs> print(HttpServletResponse response, @RequestParam(value = "personnelId") Long personnelId, @RequestParam(value = "objectId") String objectId, @RequestParam(value = "objectType") String objectType, @RequestParam(value = "personnelNo") String personnelNo, @RequestParam(value = "nationalCode") String nationalCode, @RequestParam(value = "firstName") String firstName, @RequestParam(value = "lastName") String lastName, @RequestParam(value = "companyName") String companyName, @RequestParam(value = "personnelNo2") String personnelNo2, @RequestParam(value = "postTitle") String postTitle, @RequestParam(value = "postCode") String postCode) throws Exception {
         SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> list;
         TotalResponse<ParameterValueDTO.Info> NeedsAssessmentPriorityParameter;
         TotalResponse<ParameterValueDTO.Info> competenceTypeParameter;
@@ -170,7 +170,7 @@ public class CalenderCurrentTermRestController {
 
         List<CalenderCurrentTermDTO.tclass> y = new ArrayList<>();//لیست کلاسهای فرد بر اساس دوره های ترم جاری
         List<ClassStudent> classStudents = null;//لیست کلاس هایی که فرد ثبت نام شده
-        list = needsAssessmentReportsService.search(null, Long.parseLong(objectId), objectType, personnelNo);//دوره های نیازسنجی
+        list = needsAssessmentReportsService.search(null, Long.parseLong(objectId), objectType, personnelId);//دوره های نیازسنجی
         // totalPersonnelClass=tclassService.findAllPersonnelClass("2559979705");//کل کلاس های فرد
         Long count = list.getTotalCount();
         for (int i = 0; i < count; i++) {

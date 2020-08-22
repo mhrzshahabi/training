@@ -24,6 +24,7 @@ public class PersonnelDTO implements Serializable {
     @Accessors
     @ApiModel("Personnel - Personality - Info")
     public static class PersonalityInfo {
+        private Long id;
         private String personnelNo;
         private String firstName;
         private String lastName;
@@ -135,7 +136,7 @@ public class PersonnelDTO implements Serializable {
     public static class Ids {
         @NotNull
         @ApiModelProperty(required = true)
-        private List<String> ids;
+        private List<Long> ids;
     }
 
 

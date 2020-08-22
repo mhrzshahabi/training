@@ -63,7 +63,7 @@ public class SendMessageRestController {
         List<String> fullName = new ArrayList<>();
         List<String> prefixFullName = new ArrayList<>();
         String personelAdress = request.getRequestURL().toString().replace(request.getServletPath(), "");
-        Long classId;
+        Long classId = null;
         String courseName = "";
         String courseStartDate = "";
         String courseEndDate = "";
@@ -202,6 +202,7 @@ public class SendMessageRestController {
             oMessageModel.setSendWays(sentWays);
             oMessageModel.setInterval(timeBMessages);
             oMessageModel.setCountSend(maxRepeat);
+            oMessageModel.setTclassId(classId);
 
             messageDAO.save(oMessageModel);
         }
