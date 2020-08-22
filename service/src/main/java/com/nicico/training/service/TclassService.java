@@ -209,7 +209,7 @@ public class TclassService implements ITclassService {
         //-----------------------------------------------------
 
         //TODO CHANGE THE WAY OF MAPPING ASAP
-//           updatedClass.setTargetSocietyList(updateTargetSocieties(request.getTargetSocieties(), request.getTargetSocietyTypeId(), updatedClass));
+           //updatedClass.setTargetSocietyList(updateTargetSocieties(request.getTargetSocieties(), request.getTargetSocietyTypeId(), updatedClass));//also targetSocietyTypeId needs to get update
         TclassDTO.Info info = new TclassDTO.Info();
         info.setId(updatedClass.getId());
         return info;
@@ -344,7 +344,6 @@ public class TclassService implements ITclassService {
             }
             targets.set(i, null);
         }
-        tclass.setTargetSocietyTypeId(typeId);
         return saveTargetSocieties(societies, typeId, tclass.getId());
     }
 
