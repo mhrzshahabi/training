@@ -129,7 +129,7 @@ public class TclassService implements ITclassService {
                 tclass.setTrainingPlaceSet(set);
             }
             Tclass save = tclassDAO.save(tclass);
-//            saveTargetSocieties(request.gettargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
+            save.setTargetSocietyList(saveTargetSocieties(request.gettargetSocieties(), request.getTargetSocietyTypeId(), save.getId()));
             return modelMapper.map(save, TclassDTO.Info.class);
         } else {
             try {
@@ -209,7 +209,7 @@ public class TclassService implements ITclassService {
         //-----------------------------------------------------
 
         //TODO CHANGE THE WAY OF MAPPING ASAP
-        //   updateTargetSocieties(save.getTargetSocietyList(), request.getTargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
+//           updatedClass.setTargetSocietyList(updateTargetSocieties(request.getTargetSocieties(), request.getTargetSocietyTypeId(), updatedClass));
         TclassDTO.Info info = new TclassDTO.Info();
         info.setId(updatedClass.getId());
         return info;
@@ -321,15 +321,15 @@ public class TclassService implements ITclassService {
     }
 
     // ------------------------------
-    private List<TargetSociety> updateTargetSocieties(List<TargetSociety> targets, List<Object> societies, Long typeId, Long tclassId) {
-        List<Long> deleteList = new ArrayList<>();
+    private List<TargetSociety> updateTargetSocieties(List<Object> societies, Long typeId, Tclass tclass) {
+        List<TargetSociety> targets = tclass.getTargetSocietyList();
         String type = parameterValueService.get(typeId).getCode();
         for (int i = 0; i < targets.size(); i++) {
+
             TargetSociety society = targets.get(i);
-//            if (!society.getTargetSocietyTypeId().equals(typeId)) {
-//
-//            } else
-                if (type.equals("single")) {
+            if (tclass.getTargetSocietyTypeId() == null || !tclass.getTargetSocietyTypeId().equals(typeId)) {
+
+            } else if (type.equals("single")) {
                 Object id = societies.stream().filter(s -> ((Integer) s).longValue() == society.getSocietyId()).findFirst().orElse(null);
                 if (id != null) {
                     societies.remove(id);
@@ -344,7 +344,8 @@ public class TclassService implements ITclassService {
             }
             targets.set(i, null);
         }
-        return saveTargetSocieties(societies, typeId, tclassId);
+        tclass.setTargetSocietyTypeId(typeId);
+        return saveTargetSocieties(societies, typeId, tclass.getId());
     }
 
     private List<TargetSociety> saveTargetSocieties(List<Object> societies, Long typeId, Long tclassId) {
@@ -358,9 +359,21 @@ public class TclassService implements ITclassService {
                 create.setTitle((String) society);
 //            create.setTargetSocietyTypeId(new Long(typeId));
             create.setTclassId(tclassId);
-            result.add(societyDAO.save(create));
+//            result.add(societyDAO.save(create));
+            result.add(create);
         }
         return result;
+    }
+
+    public ParameterValue getTargetSocietyTypeById(Long id){
+        Tclass tclass = tclassDAO.findById(id).orElse(null);
+        return tclass != null ? tclass.getTargetSocietyType() : null;
+    }
+
+    @Transactional()
+    public List<TargetSocietyDTO.Info> getTargetSocietiesListById(Long id){
+        Tclass tclass = tclassDAO.findById(id).orElse(null);
+        return tclass != null ? modelMapper.map(tclass.getTargetSocietyList(),new TypeToken<List<TargetSocietyDTO.Info>>(){}.getType()) : null;
     }
 
     private TclassDTO.Info save(Tclass tclass) {
