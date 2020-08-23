@@ -91,11 +91,12 @@ public class MasterDataRestController {
     @GetMapping(value = "department/getDepartmentsChilderenAndParents")
     public ResponseEntity<Set<CompetenceWebserviceDTO.TupleInfo>> getDepartmentsChilderenAndParents(HttpServletRequest iscRq, HttpServletResponse resp) throws IOException {
         TotalResponse<CompetenceWebserviceDTO> childeren = masterDataService.getDepartments(iscRq,resp);
-        Set<CompetenceWebserviceDTO.TupleInfo> departments = new HashSet<>();//getDepartmentsRoot().getBody()
-        //Long anccestorId = departments.iterator().next().getId();//
-//        getDepartmentsRoot().getBody().get(0).setParentId(new Long(0));
-        Long anccestorId = getDepartmentsRoot().getBody().get(0).getId();
-        departments.add(getDepartmentsRoot().getBody().get(0));
+        Set<CompetenceWebserviceDTO.TupleInfo> departments = new HashSet<>();
+        Long anccestorId = null;
+        if(childeren.getResponse().getData().size() > 0) {
+            anccestorId = getDepartmentsRoot().getBody().get(0).getId();
+            departments.add(getDepartmentsRoot().getBody().get(0));
+        }
         for(CompetenceWebserviceDTO child : childeren.getResponse().getData()){
             departments.addAll(findDeparmentAnccestor(anccestorId,child.getParentId()));
             departments.add(modelMapper.map(child, CompetenceWebserviceDTO.TupleInfo.class));

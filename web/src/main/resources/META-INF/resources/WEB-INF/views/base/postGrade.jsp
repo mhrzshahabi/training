@@ -340,7 +340,7 @@
                     criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "PostGrade"});
                     criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
 
-                    ExportToFile.showDialog(null, NALG_PostGrade , "NeedsAssessment", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
+                    ExportToFile.showDialog(null, NALG_PostGrade , "NeedsAssessmentReport", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
                 }
             })
         ]

@@ -1344,6 +1344,7 @@
                 },
                 change: function (form, item, value, oldValue) {
                     if (value === "371") {
+                        var selectedSocieties = [];
                         // form.getItem("addtargetSociety").hide();
                         DataSource_TargetSociety_List.testData.forEach(function (currentValue, index, arr) {
                             DataSource_TargetSociety_List.removeData(currentValue)
@@ -1351,8 +1352,10 @@
                         form.getItem("targetSocieties").valueField = "societyId";
                         form.getItem("targetSocieties").clearValue();
                         singleTargetScoiety.forEach(function (currentValue, index, arr) {
-                            DataSource_TargetSociety_List.addData(currentValue);
+                            DataSource_TargetSociety_List.addData({societyId: currentValue.societyId, title: currentValue.title});
+                            selectedSocieties.add(currentValue.societyId);
                         });
+                        DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(selectedSocieties);
                     } else if (value === "372") {
                         // form.getItem("addtargetSociety").show();
                         DataSource_TargetSociety_List.testData.forEach(function (currentValue, index, arr) {
@@ -1363,6 +1366,7 @@
                         etcTargetSociety.forEach(function (currentValue, index, arr) {
                             DataSource_TargetSociety_List.addData({societyId: index, title: currentValue});
                         });
+                        DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(etcTargetSociety);
                     } else
                         return false;
                 }
@@ -1406,10 +1410,13 @@
                         isc.askForValue("لطفا جامعه هدف مورد نظر را وارد کنید",
                             function (value) {
                                 if (value !== "" && value !== null && value !== undefined) {
+                                    const found = etcTargetSociety.some(st => st === value);
+                                    if(!found){
                                     DataSource_TargetSociety_List.addData({societyId: i, title: value});
                                     etcTargetSociety.add(value);
                                     DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(etcTargetSociety);
                                     i += 1;
+                                    }
                                 }
                             });
                     } else if (DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").getValue() === "371") {
@@ -3768,16 +3775,20 @@
     }
 
     function setSocieties() {
-        var selectedSocieties = [];
+        var selectedSocieties = DynamicForm_Class_JspClass.getItem("targetSocieties").getValue();
         chosenDepartments_JspOC.data.forEach(function (currentValue, index, arr) {
-            DataSource_TargetSociety_List.addData({societyId: currentValue.id, title: currentValue.title});
-            singleTargetScoiety.add({societyId: currentValue.id, title: currentValue.title});
-            // selectedSocieties.add(currentValue.id);//don't delet !!!!
+            const found = singleTargetScoiety.some(st => st.id === currentValue.id);
+            if (!found){
+                DataSource_TargetSociety_List.addData({societyId: currentValue.id, title: currentValue.title});
+                singleTargetScoiety.add({societyId: currentValue.id, title: currentValue.title});
+                selectedSocieties.add(currentValue.id);
+                DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(selectedSocieties);
+            }
         });
-        singleTargetScoiety.forEach(function (currentValue, index, arr) {
-            selectedSocieties.add(currentValue.societyId);
-        });
-        DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(selectedSocieties);
+        // singleTargetScoiety.forEach(function (currentValue, index, arr) {
+        //     selectedSocieties.add(currentValue.societyId);
+        // });
+        // DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(selectedSocieties);
     }
 
     function autoTimeActivation(active = true) {

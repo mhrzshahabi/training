@@ -27,13 +27,6 @@ public class TargetSociety extends Auditable  {
     private String title;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_targetsociety_type_id", insertable = false, updatable = false)
-    private ParameterValue targetSocietyType;
-
-    @Column(name = "f_targetsociety_type_id")
-    private Long targetSocietyTypeId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_class_id", insertable = false, updatable = false)
     private Tclass tclass;
 

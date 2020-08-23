@@ -1199,4 +1199,13 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="matin_ar (generated)" id="1598067280592-490">
+        <addColumn tableName="tbl_class">
+            <column name="f_targetsociety_type_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="matin_ar (generated)" id="1598067280592-607">
+        <dropColumn columnName="F_TARGETSOCIETY_TYPE_ID" tableName="TBL_TARGET_SOCIETY"/>
+    </changeSet>
+
 </databaseChangeLog>
