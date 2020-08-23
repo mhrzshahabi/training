@@ -3152,10 +3152,10 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_COURSES_PASSED_PERSONNEL-001">
+    <changeSet author="NICICO" id="VIEW_COURSES_PASSED_PERSONNEL-002">
         <createView viewName="VIEW_COURSES_PASSED_PERSONNEL" replaceIfExists="true">
             <![CDATA[
- SELECT
+  SELECT
         tbl_class.c_status                               AS class_status,
         view_active_personnel.id                         AS personnel_id,
         view_active_personnel.emp_no                     AS personnel_emp_no,
