@@ -2616,7 +2616,7 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="view_presence_report-007">
+    <changeSet author="NICICO" id="view_presence_report-009">
         <createView viewName="view_presence_report" replaceIfExists="true">
             <![CDATA[
   SELECT DISTINCT
@@ -2676,7 +2676,6 @@ FROM
     std.first_name                     AS student_first_name,
     std.last_name                      AS student_last_name,
     class_std.applicant_company_name   AS class_student_applicant_company_name,
---    std.ccp_area                       AS student_cpp_area,
     department.c_hoze_title            AS personnel_complex_title,
     department.c_moavenat_title AS student_ccp_assistant,
     department.c_omor_title   AS student_ccp_affairs,
@@ -2745,35 +2744,37 @@ FROM
     class.c_teaching_type              AS class_teaching_type,
     institute.id                       AS institute_id,
     institute.c_title_fa               AS institute_c_title_fa
---    category.c_title_fa                AS category_title_fa
 FROM
     tbl_attendance      att
     INNER JOIN tbl_student         std ON att.f_student = std.id
     INNER JOIN (
         SELECT
-            tbl_personnel.personnel_no,
-            tbl_personnel.national_code,
-            tbl_personnel.complex_title,
-            tbl_personnel.f_department_id
-        FROM
-                tbl_personnel
-              where  tbl_personnel.deleted=0
-        UNION ALL
-        SELECT
-            tbl_personnel_registered.personnel_no,
-            tbl_personnel_registered.national_code,
-            tbl_personnel_registered.complex_title,
-            tbl_personnel_registered.f_department_id
-        FROM
-            tbl_personnel_registered
-              where   tbl_personnel_registered.deleted=0
-    ) personnel ON std.national_code = personnel.national_code
-    LEFT JOIN tbl_department department ON department.id=personnel.f_department_id
+                  view_active_personnel.personnel_no,
+                  view_active_personnel.national_code,
+                  view_active_personnel.complex_title,
+                  view_active_personnel.work_place_title,
+                  view_active_personnel.post_grade_title,
+                  view_active_personnel.job_title,
+                  view_active_personnel.f_department_id
+            FROM
+                 view_active_personnel
+            UNION ALL
+            SELECT
+                tbl_personnel_registered.personnel_no,
+                tbl_personnel_registered.national_code,
+                tbl_personnel_registered.complex_title,
+                tbl_personnel_registered.work_place_title,
+                tbl_personnel_registered.post_grade_title,
+                tbl_personnel_registered.job_title,
+                tbl_personnel_registered.f_department_id
+            FROM
+                tbl_personnel_registered
+        ) personnel ON std.national_code = personnel.national_code
+          LEFT JOIN tbl_department department ON department.id=personnel.f_department_id
     INNER JOIN tbl_session         csession ON att.f_session = csession.id
     INNER JOIN tbl_class           class ON csession.f_class_id = class.id
     INNER JOIN tbl_institute       institute ON class.f_institute_organizer = institute.id
     INNER JOIN tbl_course          course ON class.f_course = course.id
---    INNER JOIN tbl_category        category ON course.category_id = category.id
     INNER JOIN tbl_class_student   class_std ON class_std.student_id = std.id
                                               AND class_std.class_id = class.id
 GROUP BY
@@ -2788,7 +2789,6 @@ GROUP BY
     std.first_name,
     std.last_name,
     class_std.applicant_company_name,
-    --std.ccp_area,
     department.c_hoze_title,
     department.c_moavenat_title,
     department.c_omor_title,
@@ -3152,10 +3152,10 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_COURSES_PASSED_PERSONNEL-001">
+    <changeSet author="NICICO" id="VIEW_COURSES_PASSED_PERSONNEL-002">
         <createView viewName="VIEW_COURSES_PASSED_PERSONNEL" replaceIfExists="true">
             <![CDATA[
- SELECT
+  SELECT
         tbl_class.c_status                               AS class_status,
         view_active_personnel.id                         AS personnel_id,
         view_active_personnel.emp_no                     AS personnel_emp_no,
@@ -3271,7 +3271,7 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_ATTENDANCE_REPORT-001">
+    <changeSet author="NICICO" id="VIEW_ATTENDANCE_REPORT-003">
         <createView viewName="VIEW_ATTENDANCE_REPORT" replaceIfExists="true">
             <![CDATA[
  SELECT distinct
@@ -3291,9 +3291,9 @@ FROM
     INNER JOIN tbl_student std ON att.f_student = std.id
     INNER JOIN (
         SELECT
-            * from view_personnels
+            * from view_active_personnel
     ) personnel ON std.national_code = personnel.national_code
-    LEFT JOIN tbl_department dep ON dep.id = personnel.department_id
+    LEFT JOIN tbl_department dep ON dep.id = personnel.f_department_id
     INNER JOIN tbl_session csession ON att.f_session = csession.id
     INNER JOIN tbl_class class ON csession.f_class_id = class.id
   GROUP BY
@@ -3307,6 +3307,114 @@ FROM
     class.c_title_class,
     csession.c_session_date,
     att.c_state
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="NICICO" id="VIEW_TRAINING_OVER_TIME_REPORT-003">
+        <createView viewName="VIEW_TRAINING_OVER_TIME_REPORT" replaceIfExists="true">
+            <![CDATA[
+ SELECT DISTINCT
+    std.personnel_no      AS personalnum,
+    std.emp_no            AS personalnum2,
+    std.national_code     AS nationalcode,
+    std.first_name
+    || ' '
+    || std.last_name AS name,
+    dep.c_hoze_title      AS ccparea,
+    dep.c_omor_title      AS ccpafairs,
+    class.c_code          AS classcode,
+    class.c_title_class   AS classname,
+    csession.c_session_date,
+    CASE
+            WHEN floor(SUM(round(to_number(to_date((
+                CASE
+                    WHEN substr(csession.c_session_end_hour, 1, 2) > 23 THEN
+                        '23:59'
+                    ELSE
+                        csession.c_session_end_hour
+                END
+            ), 'HH24:MI') - to_date((
+                CASE
+                    WHEN substr(csession.c_session_start_hour, 1, 2) > 23 THEN
+                        '23:59'
+                    ELSE
+                        csession.c_session_start_hour
+                END
+            ), 'HH24:MI')) * 24 * 60, 0)) / 60) >= 6 THEN
+                floor(SUM(round(to_number(to_date((
+                    CASE
+                        WHEN substr(csession.c_session_end_hour, 1, 2) > 23 THEN
+                            '23:59'
+                        ELSE
+                            csession.c_session_end_hour
+                    END
+                ), 'HH24:MI') - to_date((
+                    CASE
+                        WHEN substr(csession.c_session_start_hour, 1, 2) > 23 THEN
+                            '23:59'
+                        ELSE
+                            csession.c_session_start_hour
+                    END
+                ), 'HH24:MI')) * 24 * 60, 0)) / 60) + 2
+            ELSE
+                floor(SUM(round(to_number(to_date((
+                    CASE
+                        WHEN substr(csession.c_session_end_hour, 1, 2) > 23 THEN
+                            '23:59'
+                        ELSE
+                            csession.c_session_end_hour
+                    END
+                ), 'HH24:MI') - to_date((
+                    CASE
+                        WHEN substr(csession.c_session_start_hour, 1, 2) > 23 THEN
+                            '23:59'
+                        ELSE
+                            csession.c_session_start_hour
+                    END
+                ), 'HH24:MI')) * 24 * 60, 0)) / 60)
+        END
+    || ':'
+    || mod(SUM(round(to_number(to_date((
+        CASE
+            WHEN substr(csession.c_session_end_hour, 1, 2) > 23 THEN
+                '23:59'
+            ELSE
+                csession.c_session_end_hour
+        END
+    ), 'HH24:MI') - to_date((
+        CASE
+            WHEN substr(csession.c_session_start_hour, 1, 2) > 23 THEN
+                '23:59'
+            ELSE
+                csession.c_session_start_hour
+        END
+    ), 'HH24:MI')) * 24 * 60)), 60) AS time
+FROM
+   tbl_attendance   att
+    INNER JOIN tbl_student      std ON att.f_student = std.id
+    INNER JOIN (
+        SELECT
+            *
+        FROM
+            view_active_personnel
+    ) personnel ON std.national_code = personnel.national_code
+    LEFT JOIN tbl_department   dep ON dep.id = personnel.f_department_id
+    INNER JOIN tbl_session      csession ON att.f_session = csession.id
+    INNER JOIN tbl_class        class ON csession.f_class_id = class.id
+WHERE
+    att.c_state = '2'
+GROUP BY std.personnel_no,
+std.emp_no,
+std.national_code,
+std.first_name
+|| ' '
+   || std.last_name,
+dep.c_hoze_title,
+dep.c_omor_title,
+class.c_code,
+class.c_title_class,
+csession.c_session_date
             ]]>
         </createView>
     </changeSet>
