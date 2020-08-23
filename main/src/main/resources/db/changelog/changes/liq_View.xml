@@ -3311,4 +3311,112 @@ FROM
         </createView>
     </changeSet>
 
+    <changeSet author="NICICO" id="VIEW_TRAINING_OVER_TIME_REPORT-001">
+        <createView viewName="VIEW_TRAINING_OVER_TIME_REPORT" replaceIfExists="true">
+            <![CDATA[
+ SELECT DISTINCT
+    std.personnel_no      AS personalnum,
+    std.emp_no            AS personalnum2,
+    std.national_code     AS nationalcode,
+    std.first_name
+    || ' '
+    || std.last_name AS name,
+    dep.c_hoze_title      AS ccparea,
+    dep.c_omor_title      AS ccpafairs,
+    class.c_code          AS classcode,
+    class.c_title_class   AS classname,
+    csession.c_session_date,
+    CASE
+            WHEN floor(SUM(round(to_number(to_date((
+                CASE
+                    WHEN substr(csession.c_session_end_hour, 1, 2) > 23 THEN
+                        '23:59'
+                    ELSE
+                        csession.c_session_end_hour
+                END
+            ), 'HH24:MI') - to_date((
+                CASE
+                    WHEN substr(csession.c_session_start_hour, 1, 2) > 23 THEN
+                        '23:59'
+                    ELSE
+                        csession.c_session_start_hour
+                END
+            ), 'HH24:MI')) * 24 * 60, 0)) / 60) >= 6 THEN
+                floor(SUM(round(to_number(to_date((
+                    CASE
+                        WHEN substr(csession.c_session_end_hour, 1, 2) > 23 THEN
+                            '23:59'
+                        ELSE
+                            csession.c_session_end_hour
+                    END
+                ), 'HH24:MI') - to_date((
+                    CASE
+                        WHEN substr(csession.c_session_start_hour, 1, 2) > 23 THEN
+                            '23:59'
+                        ELSE
+                            csession.c_session_start_hour
+                    END
+                ), 'HH24:MI')) * 24 * 60, 0)) / 60) + 2
+            ELSE
+                floor(SUM(round(to_number(to_date((
+                    CASE
+                        WHEN substr(csession.c_session_end_hour, 1, 2) > 23 THEN
+                            '23:59'
+                        ELSE
+                            csession.c_session_end_hour
+                    END
+                ), 'HH24:MI') - to_date((
+                    CASE
+                        WHEN substr(csession.c_session_start_hour, 1, 2) > 23 THEN
+                            '23:59'
+                        ELSE
+                            csession.c_session_start_hour
+                    END
+                ), 'HH24:MI')) * 24 * 60, 0)) / 60)
+        END
+    || ':'
+    || mod(SUM(round(to_number(to_date((
+        CASE
+            WHEN substr(csession.c_session_end_hour, 1, 2) > 23 THEN
+                '23:59'
+            ELSE
+                csession.c_session_end_hour
+        END
+    ), 'HH24:MI') - to_date((
+        CASE
+            WHEN substr(csession.c_session_start_hour, 1, 2) > 23 THEN
+                '23:59'
+            ELSE
+                csession.c_session_start_hour
+        END
+    ), 'HH24:MI')) * 24 * 60)), 60) AS time
+FROM
+    tbl_attendance   att
+    INNER JOIN tbl_student      std ON att.f_student = std.id
+    INNER JOIN (
+        SELECT
+            *
+        FROM
+            view_personnels
+    ) personnel ON std.national_code = personnel.national_code
+    LEFT JOIN tbl_department   dep ON dep.id = personnel.department_id
+    INNER JOIN tbl_session      csession ON att.f_session = csession.id
+    INNER JOIN tbl_class        class ON csession.f_class_id = class.id
+WHERE
+    att.c_state = '2'
+GROUP BY std.personnel_no,
+std.emp_no,
+std.national_code,
+std.first_name
+|| ' '
+   || std.last_name,
+dep.c_hoze_title,
+dep.c_omor_title,
+class.c_code,
+class.c_title_class,
+csession.c_session_date
+            ]]>
+        </createView>
+    </changeSet>
+
 </databaseChangeLog>
