@@ -19,10 +19,11 @@ public class AnnualStatisticalService implements IAnnualStatisticalReport {
     private final ModelMapper mapper;
     @Transactional(readOnly = true)
     @Override
-    public List<AnnualStatisticalReportDTO.Info> list(Long termId, String year, String hozeh, String moavenat, String omor, String vahed, String ghesmat, Long categoryId, String startDate, String enddate) {
+    public List<AnnualStatisticalReportDTO.Info> list(Long termId, String year, String hozeh, Long institute, String moavenat, String omor, String vahed, String ghesmat, Long categoryId, String startDate, String enddate, String startDate2, String enddate2) {
         termId = termId == null ? new Long(-1) : termId;
         categoryId = categoryId == null ? new Long(-1) : categoryId;
-        List<AnnualStatisticalReport> AnnualList = annualStatisticalReportDAO.AnnualStatistical(termId,year,hozeh,moavenat,omor,vahed,ghesmat,categoryId,startDate,enddate);
+        institute = institute == null ? new Long(-1) : institute;
+        List<AnnualStatisticalReport> AnnualList = annualStatisticalReportDAO.AnnualStatistical(termId,year,hozeh,institute,moavenat,omor,vahed,ghesmat,categoryId,startDate,enddate, startDate2,enddate2);
         return mapper.map(AnnualList, new TypeToken<List<AnnualStatisticalReportDTO.Info>>() {
         }.getType());
     }

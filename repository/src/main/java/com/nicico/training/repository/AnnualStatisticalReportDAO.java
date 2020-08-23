@@ -30,13 +30,16 @@ public interface AnnualStatisticalReportDAO extends JpaRepository<AnnualStatisti
             "        (:termId = -1 OR term.id =:termId)" +//"        (CASE WHEN :termId IS NULL THEN 1 WHEN term.id =:termId THEN 1 END) IS NOT NULL " +
             "        AND (CASE WHEN :years IS NULL THEN 1 WHEN SUBSTR(term.c_startdate,1,4) =:years THEN 1 END) IS NOT NULL " +
             "        AND (CASE WHEN :hoze IS NULL THEN 1 WHEN dep.c_hoze_title =:hoze THEN 1 END) IS NOT NULL " +
+            "        AND (:instituteId = -1 OR  institute.id =:instituteId)"+
             "        AND (CASE WHEN :moavenat IS NULL THEN 1 WHEN dep.c_moavenat_title =:moavenat THEN 1 END) IS NOT NULL " +
             "        AND (CASE WHEN :omor IS NULL THEN 1 WHEN dep.c_omor_title =:omor THEN 1 END) IS NOT NULL " +
             "        AND (CASE WHEN :vahed IS NULL THEN 1 WHEN dep.c_vahed_title =:vahed THEN 1 END) IS NOT NULL " +
             "        AND (CASE WHEN :ghesmat IS NULL THEN 1 WHEN dep.c_ghesmat_title =:ghesmat THEN 1 END) IS NOT NULL " +
             "        AND (:categoryId = -1 OR course.category_id =:categoryId)" +//"        AND (CASE WHEN :categoryId IS NULL THEN 1 WHEN course.category_id =:categoryId THEN 1 END) IS NOT NULL " +
             "        AND (CASE WHEN :startDate IS NULL THEN 1 WHEN class.c_start_date >= :startDate THEN 1 END) IS NOT NULL " +
-            "        AND (CASE WHEN :endDate IS NULL THEN 1 WHEN class.c_end_date <= :endDate THEN 1 END) IS NOT NULL " +
+            "        AND (CASE WHEN :startDate2 IS NULL THEN 1 WHEN class.c_start_date <= :startDate2 THEN 1 END) IS NOT NULL " +
+            "        AND (CASE WHEN :endDate IS NULL THEN 1 WHEN class.c_end_date >= :endDate THEN 1 END) IS NOT NULL " +
+            "        AND (CASE WHEN :endDate2 IS NULL THEN 1 WHEN class.c_end_date <= :endDate2 THEN 1 END) IS NOT NULL " +
             ") " +
             "SELECT " +
             "    r.institute_id          AS institute_id, " +
@@ -54,5 +57,5 @@ public interface AnnualStatisticalReportDAO extends JpaRepository<AnnualStatisti
             "    r.institute_title_fa, " +
             "    r.category_id ", nativeQuery = true)
 
-    List<AnnualStatisticalReport> AnnualStatistical(@Param("termId") Long termId,@Param("years")  String years,@Param("hoze") String  hoze,@Param("moavenat") String moavenat,@Param("omor") String omor ,@Param("vahed") String vahed,@Param("ghesmat") String ghesmat,@Param("categoryId") Long categoryId,@Param("startDate") String startDate ,@Param("endDate") String endDate);
+    List<AnnualStatisticalReport> AnnualStatistical(@Param("termId") Long termId,@Param("years")  String years,@Param("hoze") String  hoze,@Param("instituteId") Long instituteId,@Param("moavenat") String moavenat,@Param("omor") String omor ,@Param("vahed") String vahed,@Param("ghesmat") String ghesmat,@Param("categoryId") Long categoryId,@Param("startDate") String startDate ,@Param("endDate") String endDate,@Param("startDate2") String startDate2 ,@Param("endDate2") String endDate2);
 }

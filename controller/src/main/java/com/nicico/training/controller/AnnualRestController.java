@@ -97,7 +97,7 @@ public class AnnualRestController {
             if (!jsonObject.isNull("complex_MSReport"))
                 complex_MSReport = modelMapper.map(jsonObject.get("complex_MSReport"), String.class);
 
-        list= Collections.singletonList(annualStatisticalService.list(termId != null ? Long.parseLong(termId) : null, classYear, complex_MSReport, Assistant, Affairs, complex_MSReport, null, courseCategory != null ? Long.parseLong(courseCategory) : null, startDate1, endDate1));
+         list= Collections.singletonList(annualStatisticalService.list(termId != null ? Long.parseLong(termId) : null, classYear, complex_MSReport,institute != null ? Long.parseLong(institute) : null, Assistant, Affairs,Unit, null, courseCategory != null ? Long.parseLong(courseCategory) : null, startDate1, endDate1, startDate2, endDate2));
 
             if (list != null) {
                 DTOList = new ArrayList<>(list.size());
