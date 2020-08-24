@@ -57,8 +57,6 @@ public class ExportToFileController {
     private final IPersonnelCourseNotPassedReportViewService personnelCourseNotPassedReportViewService;
     private final ClassSessionService classSessionService;
     private final ViewTrainingOverTimeReportService viewTrainingOverTimeReportService;
-    private final UnfinishedClassesReportService unfinishedClassesReportService;
-    private final TrainingOverTimeService trainingOverTimeService;
     private final AttendanceReportService attendanceReportService;
     private final ViewEvaluationStaticalReportService viewEvaluationStaticalReportService;
     private final CategoryService categoryService;
