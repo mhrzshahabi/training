@@ -2299,10 +2299,10 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW-CLASS-DETAIL-003">
+    <changeSet author="NICICO" id="VIEW-CLASS-DETAIL-004">
         <createView viewName="view_class_detail" replaceIfExists="true">
             <![CDATA[
-  SELECT
+ SELECT
         tclass.ID as id,
         tclass.c_created_by as c_created_by ,
         tclass.d_created_date as d_created_date,
@@ -2332,6 +2332,8 @@ FROM
         tclass.START_EVALUATION as START_EVALUATION,
         tclass.F_CANCEL_CLASS_REASON as CANCEL_REASON_ID,
         tclass.C_POSTPONE_START_DATE as POSTPONE_DATE,
+        personalInfo.C_FIRST_NAME_FA as teacher_First_Name,
+        personalInfo.C_LAST_NAME_FA as teacher_Last_Name,
         SUBSTR(tclass.C_START_DATE,1,4) as tclass_year,
         course.ID as course_id,
         course.C_CODE as course_c_code,
@@ -2356,6 +2358,8 @@ FROM
         LEFT JOIN TBL_TERM term ON tclass.F_TERM = term.ID
         LEFT JOIN TBL_INSTITUTE institute ON institute.id = tclass.F_INSTITUTE
         LEFT JOIN TBL_CLASS altClasses ON altClasses.id = tclass.F_ALTERNATIVE_CLASS
+        LEFT JOIN TBL_TEACHER teacher ON teacher.id = tclass.F_TEACHER
+        LEFT JOIN TBL_PERSONAL_INFO personalInfo ON teacher.F_PERSONALITY = personalInfo.Id
 
             ]]>
         </createView>

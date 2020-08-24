@@ -53,5 +53,11 @@ public class ViewClassDetailDTO implements Serializable {
         private String postPoneDate;
         private String alternativeClassCode;
         private Boolean reHoldingStatus;
+        private String teacherFirstName;
+        private String teacherLastName;
+
+        public String getTeacherFullName() {
+            return (teacherFirstName + " " + teacherLastName);
+        }
     }
 }

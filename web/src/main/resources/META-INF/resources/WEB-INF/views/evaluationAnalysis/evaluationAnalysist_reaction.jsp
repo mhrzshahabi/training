@@ -159,7 +159,6 @@
         click: function () {
             var obj1 = vm_reaction_evaluation.getValues();
             var obj2 = ListGrid_evaluationAnalysis_class.getSelectedRecord();
-            delete obj1['studentCount'];
             var obj1_str = JSON.stringify(obj1);
             var obj2_str = JSON.stringify(obj2);
             obj1_str = obj1_str.substr(0,obj1_str.length-1);
