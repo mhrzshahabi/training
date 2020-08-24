@@ -2299,10 +2299,10 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW-CLASS-DETAIL-004">
+    <changeSet author="NICICO" id="VIEW-CLASS-DETAIL-005">
         <createView viewName="view_class_detail" replaceIfExists="true">
             <![CDATA[
- SELECT
+SELECT
         tclass.ID as id,
         tclass.c_created_by as c_created_by ,
         tclass.d_created_date as d_created_date,
@@ -2345,7 +2345,13 @@ FROM
         term.C_TITLE_FA as term_TitleFa,
         institute.C_TITLE_FA as tclass_institute,
         altClasses.C_CODE as ALTERNATIVE_CLASS_CODE,
-        CASE WHEN altClasses.ID IS NULL THEN 0 ELSE 1 END AS RE_HOLIDING_STATUS
+        CASE WHEN altClasses.ID IS NULL THEN 0 ELSE 1 END AS RE_HOLIDING_STATUS,
+        CASE WHEN tclass.START_EVALUATION IS NULL THEN NULL ELSE
+        TO_DATE(
+         tclass.C_END_DATE,
+         'yyyy/mm/dd',
+         'nls_calendar=persian'
+       )+30*tclass.START_EVALUATION END AS Behavioral_Due_Date
 
         FROM TBL_CLASS tclass LEFT JOIN TBL_COURSE course
         ON tclass.F_COURSE = course.ID

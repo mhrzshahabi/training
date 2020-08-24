@@ -48,8 +48,6 @@
         var DynamicForm_AlarmSelection = isc.DynamicForm.create({
             width: "85%",
             height: "100%",
-            // numCols: 6,
-            // colWidths: ["1%","30%","1%","30%","1%","37%"],
             fields: [
                 {
 
@@ -92,9 +90,17 @@
                             ListGrid_class_Evaluation.fetchData(criteria);
                         }
                         if(value == "3"){
-                            let date = new Date();
-                            let newDate = JalaliDate.addMonths(date,4);
-                            JalaliDate.gregorianToJalali(newDate.getFullYear(),newDate.getMonth()+1,newDate.getDate())
+                            let criteria = {
+                                _constructor:"AdvancedCriteria",
+                                operator:"and",
+                                criteria:[
+                                    {fieldName:"behavioralDueDate", operator:"equals", value: new Date()},
+                                    {fieldName:"evaluation", operator:"equals", value: "3"}
+                                ]
+                            };
+                            RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
+                            ListGrid_class_Evaluation.invalidateCache();
+                            ListGrid_class_Evaluation.fetchData(criteria);
                         }
                         if(value == "4"){
                             RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
