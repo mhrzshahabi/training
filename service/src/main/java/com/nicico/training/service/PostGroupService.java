@@ -12,12 +12,15 @@ import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.dto.PostGroupDTO;
+import com.nicico.training.dto.TrainingPostDTO;
 import com.nicico.training.iservice.IPostGroupService;
 import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.Post;
 import com.nicico.training.model.PostGroup;
+import com.nicico.training.model.TrainingPost;
 import com.nicico.training.repository.PostDAO;
 import com.nicico.training.repository.PostGroupDAO;
+import com.nicico.training.repository.TrainingPostDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -37,6 +40,7 @@ public class PostGroupService implements IPostGroupService {
     private final ModelMapper modelMapper;
     private final PostGroupDAO postGroupDAO;
     private final PostDAO postDAO;
+    private final TrainingPostDAO trainingPostDAO;
     private final IWorkGroupService workGroupService;
     private final NeedsAssessmentTempService needsAssessmentTempService;
     private final NeedsAssessmentService needsAssessmentService;
@@ -79,6 +83,17 @@ public class PostGroupService implements IPostGroupService {
         postGroup.getPostSet().add(post);
     }
 
+    @Transactional
+    @Override
+    public void addTrainingPost(Long trainingPostId, Long postGroupId) {
+        final Optional<PostGroup> postGroupById = postGroupDAO.findById(postGroupId);
+        final PostGroup postGroup = postGroupById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PostGroupNotFound));
+
+        final Optional<TrainingPost> TrainingPostById = trainingPostDAO.findById(trainingPostId);
+        final TrainingPost trainingPost = TrainingPostById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TrainingPostNotFound));
+        postGroup.getTrainingPostSet().add(trainingPost);
+    }
+
 
     @Transactional
     @Override
@@ -96,6 +111,25 @@ public class PostGroupService implements IPostGroupService {
             postSet.add(post);
         }
         postGroup.setPostSet(postSet);
+    }
+
+
+    @Transactional
+    @Override
+    public void addTrainingPosts(Long postGroupId, Set<Long> trainingPostIds) {
+
+        final Optional<PostGroup> postGroupById = postGroupDAO.findById(postGroupId);
+        final PostGroup postGroup = postGroupById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PostGroupNotFound));
+
+        Set<TrainingPost> trainingPostSet = postGroup.getTrainingPostSet();
+
+        for (Long trainingPostId : trainingPostIds) {
+
+            final Optional<TrainingPost> optionalTrainingPost = trainingPostDAO.findById(trainingPostId);
+            final TrainingPost trainingPost = optionalTrainingPost.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TrainingPostNotFound));
+            trainingPostSet.add(trainingPost);
+        }
+        postGroup.setTrainingPostSet(trainingPostSet);
     }
 
 
@@ -178,12 +212,30 @@ public class PostGroupService implements IPostGroupService {
 
     @Override
     @Transactional
+    public List<TrainingPostDTO.Info> getTrainingPosts(Long postGroupID) {
+        final PostGroup postGroup = postGroupDAO.findById(postGroupID).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PostGroupNotFound));
+        return modelMapper.map(postGroup.getTrainingPostSet().stream().filter(post -> post.getDeleted() == null).collect(Collectors.toList()), new TypeToken<List<TrainingPostDTO.Info>>() {
+        }.getType());
+    }
+
+    @Override
+    @Transactional
     public void removePost(Long postGroupId, Long postId) {
         Optional<PostGroup> optionalPostGroup = postGroupDAO.findById(postGroupId);
         final PostGroup postGroup = optionalPostGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PostGroupNotFound));
         final Optional<Post> optionalPost = postDAO.findById(postId);
         final Post post = optionalPost.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PostNotFound));
         postGroup.getPostSet().remove(post);
+    }
+
+    @Override
+    @Transactional
+    public void removeTrainingPost(Long postGroupId, Long trainingPostId) {
+        Optional<PostGroup> optionalPostGroup = postGroupDAO.findById(postGroupId);
+        final PostGroup postGroup = optionalPostGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PostGroupNotFound));
+        final Optional<TrainingPost> optionalTrainingPost = trainingPostDAO.findById(trainingPostId);
+        final TrainingPost trainingPost = optionalTrainingPost.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TrainingPostNotFound));
+        postGroup.getTrainingPostSet().remove(trainingPost);
     }
 
     @Override
@@ -240,6 +292,14 @@ public class PostGroupService implements IPostGroupService {
     public void removePosts(Long postGroupId, Set<Long> postIds) {
         for (long postId : postIds) {
             removePost(postGroupId, postId);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void removeTrainingPosts(Long postGroupId, Set<Long> trainingPostIds) {
+        for (long trainingPostId : trainingPostIds) {
+            removeTrainingPost(postGroupId, trainingPostId);
         }
     }
 

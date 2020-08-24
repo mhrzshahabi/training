@@ -693,10 +693,14 @@
     //##--------------------#Functions#---------------------------------##
 
     function hasFilters(){
-        if(Object.keys(FilterDF_PCNR.getValuesAsCriteria()).length < 2 && FilterDF_PCNR.getValuesAsCriteria().criteria === undefined)
+        let state = FilterDF_PCNR.getValuesAsCriteria().criteria;
+        let arry = state !== undefined ? state : Object.keys(FilterDF_PCNR.getValuesAsCriteria());
+        if(state === undefined && arry.length < 2)
             return false;
-        else if(FilterDF_PCNR.getValuesAsCriteria().criteria !== undefined && Object.keys(FilterDF_PCNR.getValuesAsCriteria().criteria).length < 3)
-            return false
+        else if(state === undefined)
+            return true;
+        else if(state.length < 2 && arry.length < 3)
+            return false;
         else
             return true;
     }

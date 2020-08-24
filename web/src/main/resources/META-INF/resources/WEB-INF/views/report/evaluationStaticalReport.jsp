@@ -359,20 +359,20 @@
                 }],
                 keyPressFilter: "[A-Z|0-9|;-]"
             },
-            {
-                name: "unitId",
-                title: "واحد",
-                type: "SelectItem",
-                pickListProperties: {
-                    showFilterEditor: false
-                },
-                textAlign: "center",
-                wrapTitle: false,
-                filterOperator: "equals",
-                optionDataSource: RestDataSource_TargetSociety_JspEvaluationStaticalReport,
-                displayField: "title",
-                valueField: "societyId"
-            },
+            // {
+            //     name: "unitId",
+            //     title: "واحد",
+            //     type: "SelectItem",
+            //     pickListProperties: {
+            //         showFilterEditor: false
+            //     },
+            //     textAlign: "center",
+            //     wrapTitle: false,
+            //     filterOperator: "equals",
+            //     optionDataSource: RestDataSource_TargetSociety_JspEvaluationStaticalReport,
+            //     displayField: "title",
+            //     valueField: "societyId"
+            // },
             {
                 name: "instituteId",
                 title: "محل برگزاری",
@@ -396,6 +396,11 @@
                     sortField: 0,
                     showFilterEditor: false
                 }
+            },
+            {
+                name: "temp0",
+                title: "",
+                canEdit: false
             },
             {
                 name: "teacherId",
@@ -804,7 +809,7 @@
                 }
             },
             {
-                name: "evaluation",
+                name: "classEvaluation",
                 title: "نوع ارزیابی",
                 type: "SelectItem",
                 required: true,
@@ -1230,7 +1235,7 @@
             else if(data_values.criteria[i].fieldName == "courseSubCategory"){
                 data_values.criteria[i].operator = "inSet";
             }
-            else if(data_values.criteria[i].fieldName == "evaluation"){
+            else if(data_values.criteria[i].fieldName == "classEvaluation"){
                 data_values.criteria[i].operator = "inSet";
             }
             else

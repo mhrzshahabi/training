@@ -1,5 +1,6 @@
 package com.nicico.training.service;
 
+import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
@@ -43,6 +44,13 @@ public class TrainingPostService implements ITrainingPostService {
     private final PostGradeDAO postGradeDAO;
     private final NeedsAssessmentTempService needsAssessmentTempService;
     private final NeedsAssessmentService needsAssessmentService;
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<TrainingPostDTO.Info> search(SearchDTO.SearchRq request) {
+        return SearchUtil.search(trainingPostDAO, request, model -> modelMapper.map(model, TrainingPostDTO.Info.class));
+    }
+
 
     @Transactional
     @Override
