@@ -9,6 +9,7 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
+import com.nicico.copper.oauth.common.domain.CustomUserDetails;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonnelCourseNotPassedReportViewService;
 import com.nicico.training.iservice.ITclassService;
@@ -26,6 +27,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -54,6 +56,7 @@ public class ExportToFileController {
     private final ITclassService tclassService;
     private final IPersonnelCourseNotPassedReportViewService personnelCourseNotPassedReportViewService;
     private final ClassSessionService classSessionService;
+    private final ViewTrainingOverTimeReportService viewTrainingOverTimeReportService;
     private final UnfinishedClassesReportService unfinishedClassesReportService;
     private final TrainingOverTimeService trainingOverTimeService;
     private final AttendanceReportService attendanceReportService;
@@ -96,6 +99,8 @@ public class ExportToFileController {
     private final ViewStatisticsUnitReportService viewStatisticsUnitReportService;
     private final ViewCoursesPassedPersonnelReportService viewCoursesPassedPersonnelReportService;
     private final ContinuousStatusReportViewService continuousStatusReportViewService;
+
+    private final ViewUnfinishedClassesReportService viewUnfinishedClassesReportService;
 
     private final ModelMapper modelMapper;
     private final MessageSource messageSource;
@@ -201,14 +206,18 @@ public class ExportToFileController {
                 break;
 
             case "unfinishedClassesReport":
-                generalList = (List<Object>) ((Object) unfinishedClassesReportService.UnfinishedClassesList());
+                SearchDTO.CriteriaRq criteriaRq1 = new SearchDTO.CriteriaRq();
+                criteriaRq1.setOperator(EOperator.equals);
+                criteriaRq1.setFieldName("nationalCode");
+                criteriaRq1.setValue(modelMapper.map(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), CustomUserDetails.class).getNationalCode());
+
+                searchRq.setCriteria(criteriaRq1);
+
+                generalList = (List<Object>)((Object) viewUnfinishedClassesReportService.search(searchRq).getList());
                 break;
             case "trainingOverTime":
-                String startDate = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
-                searchRq.getCriteria().getCriteria().remove(0);
-                String endDate = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
-                searchRq.getCriteria().getCriteria().remove(0);
-                generalList = (List<Object>) ((Object) trainingOverTimeService.getTrainingOverTimeReportList(startDate, endDate));
+                searchRq.setSortBy("id");
+                generalList = (List<Object>)((Object) viewTrainingOverTimeReportService.search(searchRq,o -> modelMapper.map(o, ViewTrainingOverTimeReportDTO.Info.class)).getList());
                 break;
 
             case "attendanceReport": {
