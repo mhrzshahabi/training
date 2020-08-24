@@ -2,9 +2,7 @@ package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.util.List;
@@ -13,7 +11,8 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 @AllArgsConstructor
-public class unjustifiedAbsenceReportDTO {
+@NoArgsConstructor
+public class ViewUnjustifiedAbsenceReportDTO {
     private String sessionDate;
     private String lastName;
     private String firstName;
@@ -23,22 +22,29 @@ public class unjustifiedAbsenceReportDTO {
     private String code;
     private String endHour;
     private String startHour;
+
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("preTestScoreReportSpecRs")
-    public static class unjustifiedAbsenceReporSpecRs {
-        private unjustifiedAbsenceReportDTO.SpecRs response;
+    @ApiModel("ViewUnjustifiedAbsenceReportDTOInfo")
+    public static class Info extends ViewUnjustifiedAbsenceReportDTO {
     }
 
-    //*********************************
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("ViewUnjustifiedAbsenceReportDTOSpecRs")
+    public static class ViewUnjustifiedAbsenceReportDTOSpecRs {
+        private ViewUnjustifiedAbsenceReportDTO.SpecRs response;
+    }
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<unjustifiedAbsenceReportDTO> data;
+        private List<ViewUnjustifiedAbsenceReportDTO.Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
