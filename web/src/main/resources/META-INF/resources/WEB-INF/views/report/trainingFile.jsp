@@ -67,7 +67,7 @@
             {name: "postCode", title:"<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "affairs", title:"<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
-        fetchDataURL: trainingFileUrl + "/spec-list"
+        fetchDataURL: trainingFileUrl + "/iscList"
     });
 
     var ListGrid_StudentSearch_JspTrainingFile = isc.TrLG.create({
@@ -108,14 +108,14 @@
             selectedPerson_TrainingFile = this.getSelectedRecord();
             let cr = {
                 _constructor:"AdvancedCriteria",
-                operator:"or",
+                operator:"and",
                 criteria:[
                     {fieldName:"nationalCode", operator:"equals", value: selectedPerson_TrainingFile.nationalCode},
-                    {fieldName:"empNo", operator:"equals", value: selectedPerson_TrainingFile.personnelNo2}
+                    // {fieldName:"empNo", operator:"equals", value: selectedPerson_TrainingFile.personnelNo2}
                 ]
             };
             ListGrid_TrainingFile_TrainingFileJSP.invalidateCache();
-            ListGrid_TrainingFile_TrainingFileJSP.implicitCriteria(cr);
+            ListGrid_TrainingFile_TrainingFileJSP.setImplicitCriteria(cr);
             ListGrid_TrainingFile_TrainingFileJSP.fetchData(cr);
             Window_StudentSearch_JspTrainingFile.close();
             excelBtn.setDisabled(false);

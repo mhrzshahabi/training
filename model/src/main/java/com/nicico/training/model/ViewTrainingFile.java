@@ -22,7 +22,12 @@ import java.io.Serializable;
 @Subselect("select * from view_training_file_report")
 public class ViewTrainingFile implements Serializable {
 
+    @Id
+    @Column(name = "id")
+    private Long id;
+
     /////////////////////////////////////////////student////////////////////////////////////////////
+
 
     @Column(name = "emp_no")
     private String empNo;
