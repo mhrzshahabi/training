@@ -182,8 +182,8 @@ public class TclassService implements ITclassService {
         Tclass updatedClass = tclassDAO.save(mappedClass);
 
         //TODO CHANGE THE WAY OF MAPPING ASAP
-            updateTargetSocieties(request.getTargetSocieties(), request.getTargetSocietyTypeId(), updatedClass);
-            updatedClass.setTargetSocietyTypeId(request.getTargetSocietyTypeId());
+            //updateTargetSocieties(request.getTargetSocieties(), request.getTargetSocietyTypeId(), updatedClass);
+            //updatedClass.setTargetSocietyTypeId(request.getTargetSocietyTypeId());
         //--------------------DONE BY ROYA---------------------
         if(classOldSupervisor!= null && request.getSupervisor() != null){
             if(!classOldSupervisor.equals(request.getSupervisor())){
@@ -360,9 +360,7 @@ public class TclassService implements ITclassService {
                 create.setSocietyId(((Integer) society).longValue());
             else if (type.equals("etc"))
                 create.setTitle((String) society);
-//            create.setTargetSocietyTypeId(new Long(typeId));
             create.setTclassId(tclassId);
-//            result.add(societyDAO.save(create));
             result.add(create);
         }
         return result;
