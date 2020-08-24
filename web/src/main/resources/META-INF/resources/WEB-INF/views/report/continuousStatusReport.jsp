@@ -3,6 +3,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 // <script>
+    $(document).ready(()=>{
+        setTimeout(()=>{
+            $("input[name='personnelNo']").attr("disabled","disabled");
+        },0)}
+    );
+
     var startDate1Check_JspcontinuousPersonnel = true;
     var startDate2Check_JspcontinuousPersonnel = true;
     var startDateCheck_Order_JspcontinuousPersonnel = true;
@@ -238,7 +244,7 @@
             {
                 name: "personnelNo",
                 title: "شماره پرسنلي",
-                hint: "شماره پرسنلي را با , از یکدیگر جدا کنید",
+                hint: "شماره پرسنلي را انتخاب نمایید",
                 showHintInField: true,
                 icons: [{
                     src: "[SKIN]/pickers/search_picker.png",

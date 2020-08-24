@@ -17,15 +17,14 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AnnualStatisticalReportDTO implements Serializable {
-    Long instituteId;
-    String instituteTitle;
-    Long categoryId;
-    String categoryTitle;
-    String classStatus;
-    Long countCourses;
-    Long countStudents;
-    Float sumHours;
-    Float sumHoursPerPerson;
+    private Long institute_id;
+    private String institute_title_fa;
+    private Long category_id;
+    private Long finished_class_count;
+    private Long canceled_class_count;
+    private Long sum_of_duration;
+    private Long student_count;
+    private Long sum_of_student_hour;
 
     @Getter
     @Setter

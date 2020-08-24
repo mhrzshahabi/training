@@ -2,13 +2,9 @@ package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.Accessors;
 
-import java.io.Serializable;
 import java.util.List;
 
 @Getter
@@ -16,7 +12,7 @@ import java.util.List;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class TrainingOverTimeDTO implements Serializable {
+public class ViewTrainingOverTimeReportDTO {
     String personalNum;
     String personalNum2;
     String nationalCode;
@@ -31,29 +27,32 @@ public class TrainingOverTimeDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("TrainingOverTimeInfo")
-    public static class Info extends TrainingOverTimeDTO {
-    }
+    @ApiModel("TrainingOverTimeReportDTOInfo")
+    public static class Info extends ViewTrainingOverTimeReportDTO {
 
-    // ------------------------------
+        @Getter(AccessLevel.NONE)
+        private String fixTime;
+
+        public String getFixTime(){
+            return time != null ? time.toString().split(":")[1].equals("0") ? time.toString().split(":")[0] : time.toString() : null;
+        }
+    }
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("TrainingOverTimeSpecRs")
-    public static class TrainingOverTimeSpecRs {
-        private TrainingOverTimeDTO.SpecRs response;
+    @ApiModel("TrainingOverTimeReportDTOSpecRs")
+    public static class TrainingOverTimeReportDTOSpecRs {
+        private ViewTrainingOverTimeReportDTO.SpecRs response;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<TrainingOverTimeDTO.Info> data;
+        private List<ViewTrainingOverTimeReportDTO.Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
