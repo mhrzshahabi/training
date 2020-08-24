@@ -182,6 +182,9 @@
     <changeSet author="matin_ar (generated)" id="1596015939557-422">
         <addNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_code" tableName="tbl_training_post"/>
     </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1598260979293-504">
+        <addUniqueConstraint columnNames="n_class, n_skill, n_goal" constraintName="UKr0m0bo09woqpjmo9k7qa5dm3d" tableName="tbl_class_evaluation_goals"/>
+    </changeSet>
     <!--<changeSet author="matin_ar (generated)" id="1596019535756-477">-->
         <!--<addUniqueConstraint columnNames="c_title_fa" constraintName="UC_TBL_TRAINING_POSTC_TITLE_FA_COL" tableName="tbl_training_post"/>-->
     <!--</changeSet>-->
