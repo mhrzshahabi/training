@@ -53,7 +53,7 @@ public class ExportToFileController {
     private final IPersonnelCourseNotPassedReportViewService personnelCourseNotPassedReportViewService;
     private final ClassSessionService classSessionService;
     private final UnfinishedClassesReportService unfinishedClassesReportService;
-    private final TrainingOverTimeService trainingOverTimeService;
+    private final ViewTrainingOverTimeReportService viewTrainingOverTimeReportService;
     private final AttendanceReportService attendanceReportService;
     private final ViewEvaluationStaticalReportService viewEvaluationStaticalReportService;
     private final CategoryService categoryService;
@@ -201,11 +201,8 @@ public class ExportToFileController {
                 generalList = (List<Object>) ((Object) unfinishedClassesReportService.UnfinishedClassesList());
                 break;
             case "trainingOverTime":
-                String startDate = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
-                searchRq.getCriteria().getCriteria().remove(0);
-                String endDate = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
-                searchRq.getCriteria().getCriteria().remove(0);
-                generalList = (List<Object>) ((Object) trainingOverTimeService.getTrainingOverTimeReportList(startDate, endDate));
+                searchRq.setSortBy("id");
+                generalList = (List<Object>)((Object) viewTrainingOverTimeReportService.search(searchRq,o -> modelMapper.map(o, ViewTrainingOverTimeReportDTO.Info.class)).getList());
                 break;
 
             case "attendanceReport": {
