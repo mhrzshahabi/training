@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Subselect("select * from view_personnel_course_not_passed_report_new")
+@Subselect("select * from view_personnel_course_not_passed_report")
 public class PersonnelCourseNotPassedReportView implements Serializable {
 
     @EmbeddedId
@@ -91,8 +91,11 @@ public class PersonnelCourseNotPassedReportView implements Serializable {
     @Column(name = "personnel_cpp_title")
     private String personnelCcpTitle;
 
-    @Column(name = "PG_C_CODE")
-    private String pgCCode;
+//    @Column(name = "PG_C_CODE")
+//    private String pgCCode;
+
+//    @Column(name = "class_student_id")
+//    private long classStudentId;
 
     ///////////////////////////////////////////////////course///////////////////////////////////////
 
