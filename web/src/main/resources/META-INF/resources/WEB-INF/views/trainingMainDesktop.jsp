@@ -798,6 +798,7 @@
     const postGradeUrl = rootUrl + "/postGrade";
     const postUrl = rootUrl + "/post";
     const trainingPostUrl = rootUrl + "/training-post";
+    const viewAllPostUrl = rootUrl + "/ViewAllPost";
     const competenceUrl = rootUrl + "/competence";
     const needAssessmentUrl = rootUrl + "/needAssessment";
     const skillUrl = rootUrl + "/skill";

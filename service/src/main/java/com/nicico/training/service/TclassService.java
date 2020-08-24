@@ -178,7 +178,12 @@ public class TclassService implements ITclassService {
                 c.setPostponeStartDate(mappedClass.getStartDate());
             }
         }
+
         Tclass updatedClass = tclassDAO.save(mappedClass);
+
+        //TODO CHANGE THE WAY OF MAPPING ASAP
+            //updateTargetSocieties(request.getTargetSocieties(), request.getTargetSocietyTypeId(), updatedClass);
+            //updatedClass.setTargetSocietyTypeId(request.getTargetSocietyTypeId());
         //--------------------DONE BY ROYA---------------------
         if(classOldSupervisor!= null && request.getSupervisor() != null){
             if(!classOldSupervisor.equals(request.getSupervisor())){
@@ -208,8 +213,6 @@ public class TclassService implements ITclassService {
         }
         //-----------------------------------------------------
 
-        //TODO CHANGE THE WAY OF MAPPING ASAP
-           //updatedClass.setTargetSocietyList(updateTargetSocieties(request.getTargetSocieties(), request.getTargetSocietyTypeId(), updatedClass));//also targetSocietyTypeId needs to get update
         TclassDTO.Info info = new TclassDTO.Info();
         info.setId(updatedClass.getId());
         return info;
@@ -344,7 +347,8 @@ public class TclassService implements ITclassService {
             }
             targets.set(i, null);
         }
-        return saveTargetSocieties(societies, typeId, tclass.getId());
+        targets.addAll(saveTargetSocieties(societies, typeId, tclass.getId()));
+        return targets;
     }
 
     private List<TargetSociety> saveTargetSocieties(List<Object> societies, Long typeId, Long tclassId) {
@@ -356,9 +360,7 @@ public class TclassService implements ITclassService {
                 create.setSocietyId(((Integer) society).longValue());
             else if (type.equals("etc"))
                 create.setTitle((String) society);
-//            create.setTargetSocietyTypeId(new Long(typeId));
             create.setTclassId(tclassId);
-//            result.add(societyDAO.save(create));
             result.add(create);
         }
         return result;

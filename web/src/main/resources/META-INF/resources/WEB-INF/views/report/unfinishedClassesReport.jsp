@@ -13,7 +13,7 @@
         var RestDataSource_UCReport = isc.TrDS.create({
             fields:
                 [
-                    {name: "id"},
+                    {name: "classId"},
                     {name: "classCode"},
                     {name: "courseId"},
                     {name: "courseCode"},
@@ -31,7 +31,7 @@
                     {name: "firstName"},
                     {name: "lastName"}
                 ],
-            fetchDataURL: unfinishedClasses + "/list"
+            fetchDataURL: unfinishedClasses
         });
 
         var  ListGrid_UCReport = isc.TrLG.create({
@@ -51,8 +51,8 @@
             fields: [
 
                 {
-                    name: "id",
-                    title: "id",
+                    name: "classId",
+                    title: "classId",
                     align: "center",
                     filterOperator: "iContains",
                     hidden: true
@@ -199,7 +199,7 @@
         width: "100%",
         height: "100%",
         members: [
-            ToolStripButton_Print_UCReport,
+           // ToolStripButton_Print_UCReport,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "right",
@@ -252,6 +252,7 @@
                         {name: "myToken", type: "hidden"}
                     ]
             });
+
             criteriaForm_UCReport.setValue("CriteriaStr", JSON.stringify(advancedCriteria_unit));
             criteriaForm_UCReport.setValue("myToken", "<%=accessToken%>");
             criteriaForm_UCReport.show();

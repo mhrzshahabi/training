@@ -3775,7 +3775,8 @@
     }
 
     function setSocieties() {
-        var selectedSocieties = DynamicForm_Class_JspClass.getItem("targetSocieties").getValue();
+        var selectedSocieties = [];
+        selectedSocieties.addAll(DynamicForm_Class_JspClass.getItem("targetSocieties").getValue());
         chosenDepartments_JspOC.data.forEach(function (currentValue, index, arr) {
             const found = singleTargetScoiety.some(st => st.id === currentValue.id);
             if (!found){
