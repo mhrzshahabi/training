@@ -123,4 +123,10 @@ public class ViewClassDetail extends Auditable {
     @Column(name = "RE_HOLIDING_STATUS")
     private Boolean reHoldingStatus;
 
+    @Column(name = "TEACHER_FIRST_NAME")
+    private String teacherFirstName;
+
+    @Column(name="TEACHER_LAST_NAME")
+    private String teacherLastName;
+
 }

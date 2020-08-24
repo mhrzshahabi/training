@@ -367,24 +367,24 @@
             RestDataSource_evaluationAnalysist_learning.fetchDataURL = tclassStudentUrl + "/evaluationAnalysistLearning/" + Record.id;
             ListGrid_evaluationAnalysist_learning.invalidateCache();
             ListGrid_evaluationAnalysist_learning.fetchData();
-            if (Record.scoringMethod == "1") {
+            if (Record.classScoringMethod == "1") {
                 ListGrid_evaluationAnalysist_learning.hideField('score');
                 ListGrid_evaluationAnalysist_learning.showField('valence');
-            } else if (Record.scoringMethod == "2") {
+            } else if (Record.classScoringMethod == "2") {
                 ListGrid_evaluationAnalysist_learning.showField('score');
                 ListGrid_evaluationAnalysist_learning.hideField('valence');
             }
-            else if (Record.scoringMethod == "3") {
+            else if (Record.classScoringMethod == "3") {
                 ListGrid_evaluationAnalysist_learning.showField('score');
                 ListGrid_evaluationAnalysist_learning.hideField('valence');
             }
-            else if (Record.scoringMethod == "4") {
+            else if (Record.classScoringMethod == "4") {
                 ListGrid_evaluationAnalysist_learning.hideField('valence');
                 ListGrid_evaluationAnalysist_learning.hideField('score');
             }
         }
         isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/evaluationAnalysistLearningResult/"
-            + ListGrid_evaluationAnalysis_class.getSelectedRecord().id + "/" + ListGrid_evaluationAnalysis_class.getSelectedRecord().scoringMethod ,
+            + ListGrid_evaluationAnalysis_class.getSelectedRecord().id + "/" + ListGrid_evaluationAnalysis_class.getSelectedRecord().classScoringMethod ,
             "GET", null, "callback: fill_learning_evaluation_result_resp(rpcResponse)"));
     }
 

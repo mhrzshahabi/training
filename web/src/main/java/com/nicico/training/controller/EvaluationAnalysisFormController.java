@@ -49,12 +49,12 @@ public class EvaluationAnalysisFormController {
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap();
-        params.add("code",object.get("code").toString());
-        params.add("titleClass",((JSONObject)object.get("course")).get("titleFa").toString());
-        params.add("term",object.getJSONObject("term").get("titleFa").toString());
-        params.add("studentCount", object.get("studentCount").toString());
-        params.add("classStatus", object.get("classStatus").toString());
-        params.add("teacher", object.get("teacher").toString());
+        params.add("code",object.get("tclassCode").toString());
+        params.add("titleClass",object.get("courseTitleFa").toString());
+        params.add("term",object.get("termTitleFa").toString());
+        params.add("studentCount", object.get("tclassStudentsCount").toString());
+        params.add("classStatus", object.get("tclassStatus").toString());
+        params.add("teacher", object.get("teacherFullName").toString());
 
         params.add("numberOfExportedReactionEvaluationForms", object.get("numberOfExportedReactionEvaluationForms").toString());
         params.add("numberOfFilledReactionEvaluationForms", object.get("numberOfFilledReactionEvaluationForms").toString());

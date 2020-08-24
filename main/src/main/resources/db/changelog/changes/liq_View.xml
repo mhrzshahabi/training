@@ -1546,7 +1546,7 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_POST_GROUP-004">
+    <changeSet author="NICICO" id="VIEW_POST_GROUP-005">
         <createView viewName="VIEW_POST_GROUP" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1564,52 +1564,21 @@ SELECT
     pg.c_code,
     pg.d_last_modified_date_na,
     pg.c_modified_by_na,
-    COUNT(DISTINCT na.f_competence) AS n_competence_count,
-    COUNT(DISTINCT prs.id) + COUNT(DISTINCT prs2.id) AS n_personnel_count
+    (select count(DISTINCT f_competence) from tbl_needs_assessment where c_object_type = 'PostGroup' AND e_deleted IS NULL AND e_enabled IS NULL AND pg.id = f_object) AS n_competence_count,
+    COUNT(DISTINCT prs.id) AS n_personnel_count
 FROM
-    tbl_post_group                                                         pg
+    tbl_post_group pg
     LEFT JOIN (
         SELECT
             *
         FROM
-            tbl_needs_assessment
-        WHERE
-            c_object_type = 'PostGroup'
-            AND e_deleted IS NULL
-            AND e_enabled IS NULL
-    ) na ON pg.id = na.f_object
-    LEFT JOIN tbl_post_postgroup                                                     ppg ON pg.id = ppg.f_postgroup_id
-    LEFT JOIN (
-        SELECT
-            *
-        FROM
-            tbl_post
+            view_all_posts
         WHERE
             e_deleted IS NULL
-            AND e_enabled IS NULL
-    ) p ON p.id = ppg.f_post_id
-    LEFT JOIN view_active_personnel                                                  prs ON p.id = prs.f_post_id
-    LEFT JOIN tbl_training_post_post_group                                           tppg ON tppg.f_post_group_id = pg.id
-    LEFT JOIN (
-        SELECT
-            *
-        FROM
-            tbl_training_post
-        WHERE
-            e_deleted IS NULL
-            AND e_enabled IS NULL
-    ) tp ON tp.id = tppg.f_training_post_id
-    LEFT JOIN tbl_post_training_post                                                 ptp ON tp.id = ptp.f_training_post_id
-    LEFT JOIN (
-        SELECT
-            *
-        FROM
-            tbl_post
-        WHERE
-            e_deleted IS NULL
-            AND e_enabled IS NULL
-    ) p2 ON p2.id = ppg.f_post_id
-    LEFT JOIN view_active_personnel                                                  prs2 ON p2.id = prs2.f_post_id
+    ) p
+        ON p.groupid = pg.id
+    LEFT JOIN view_active_personnel prs
+        ON p.postid = prs.f_post_id
 GROUP BY
     pg.id,
     pg.c_created_by,
@@ -2299,10 +2268,10 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW-CLASS-DETAIL-003">
+    <changeSet author="NICICO" id="VIEW-CLASS-DETAIL-004">
         <createView viewName="view_class_detail" replaceIfExists="true">
             <![CDATA[
-  SELECT
+ SELECT
         tclass.ID as id,
         tclass.c_created_by as c_created_by ,
         tclass.d_created_date as d_created_date,
@@ -2332,6 +2301,8 @@ FROM
         tclass.START_EVALUATION as START_EVALUATION,
         tclass.F_CANCEL_CLASS_REASON as CANCEL_REASON_ID,
         tclass.C_POSTPONE_START_DATE as POSTPONE_DATE,
+        personalInfo.C_FIRST_NAME_FA as teacher_First_Name,
+        personalInfo.C_LAST_NAME_FA as teacher_Last_Name,
         SUBSTR(tclass.C_START_DATE,1,4) as tclass_year,
         course.ID as course_id,
         course.C_CODE as course_c_code,
@@ -2356,6 +2327,8 @@ FROM
         LEFT JOIN TBL_TERM term ON tclass.F_TERM = term.ID
         LEFT JOIN TBL_INSTITUTE institute ON institute.id = tclass.F_INSTITUTE
         LEFT JOIN TBL_CLASS altClasses ON altClasses.id = tclass.F_ALTERNATIVE_CLASS
+        LEFT JOIN TBL_TEACHER teacher ON teacher.id = tclass.F_TEACHER
+        LEFT JOIN TBL_PERSONAL_INFO personalInfo ON teacher.F_PERSONALITY = personalInfo.Id
 
             ]]>
         </createView>
@@ -3312,7 +3285,7 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_TRAINING_OVER_TIME_REPORT-003">
+    <changeSet author="NICICO" id="VIEW_TRAINING_OVER_TIME_REPORT-005">
         <createView viewName="VIEW_TRAINING_OVER_TIME_REPORT" replaceIfExists="true">
             <![CDATA[
  SELECT DISTINCT
@@ -3323,7 +3296,7 @@ FROM
     || ' '
     || std.last_name AS name,
     dep.c_hoze_title      AS ccparea,
-    dep.c_omor_title      AS ccpafairs,
+    dep.c_omor_title      AS ccpaffairs,
     class.c_code          AS classcode,
     class.c_title_class   AS classname,
     csession.c_session_date,
@@ -3502,7 +3475,6 @@ csession.c_session_date
         </createView>
     </changeSet>
 
-
     <changeSet author="NICICO" id="VIEW_ALL_POSTS-001">
         <createView viewName="VIEW_ALL_POSTS" replaceIfExists="true">
             <![CDATA[
@@ -3531,6 +3503,36 @@ from ((select post.*,job.C_TITLE_FA jobTitle,postgrade.C_TITLE_FA postgradeTitle
         </createView>
     </changeSet>
 
+    <changeSet author="NICICO" id="VIEW_UNJUSTIFIED_ABSENCE_REPORT-001">
+        <createView viewName="VIEW_UNJUSTIFIED_ABSENCE_REPORT" replaceIfExists="true">
+            <![CDATA[
+   SELECT DISTINCT
+        tbl_session.c_session_date,
+        tbl_student.last_name,
+        tbl_student.first_name,
+        tbl_class.c_title_class,
+        tbl_class.c_start_date,
+        tbl_class.c_end_date,
+        tbl_class.c_code,
+        tbl_session.c_session_end_hour,
+        tbl_session.c_session_start_hour,
+        tbl_student.id   AS student_id,
+        tbl_class.id     AS class_id,
+        tbl_session.id   AS session_id
+    FROM
+        tbl_attendance
+        INNER JOIN tbl_session ON tbl_session.id = tbl_attendance.f_session
+        INNER JOIN tbl_class ON tbl_class.id = tbl_session.f_class_id
+        INNER JOIN tbl_student ON tbl_student.id = tbl_attendance.f_student
+    WHERE
+        tbl_attendance.c_state = '3'
+    ORDER BY
+        tbl_class.c_title_class,
+        tbl_student.last_name,
+        tbl_student.first_name
+            ]]>
+        </createView>
+    </changeSet>
     <changeSet author="NICICO" id="VIEW_TRAINING_FILE_REPORT-002">
         <createView viewName="VIEW_TRAINING_FILE_REPORT" replaceIfExists="true">
             <![CDATA[
