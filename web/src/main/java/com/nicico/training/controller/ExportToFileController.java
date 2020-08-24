@@ -28,8 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -99,6 +97,7 @@ public class ExportToFileController {
     private final ContinuousStatusReportViewService continuousStatusReportViewService;
 
     private final ViewUnfinishedClassesReportService viewUnfinishedClassesReportService;
+    private final ViewUnjustifiedAbsenceReportService viewUnjustifiedAbsenceReportService;
 
     private final ModelMapper modelMapper;
     private final MessageSource messageSource;
@@ -488,6 +487,11 @@ public class ExportToFileController {
             case "continuousPersonnel":
                 searchRq.setSortBy("empNo");
                 generalList = (List<Object>)((Object) continuousStatusReportViewService.search(searchRq).getList());
+                break;
+
+            case "unjustifiedAbsence":
+                searchRq.setSortBy("studentId");
+                generalList = (List<Object>)((Object) viewUnjustifiedAbsenceReportService.search(searchRq,o -> modelMapper.map(o, ViewUnjustifiedAbsenceReportDTO.Info.class)).getList());
                 break;
 
             case "PersonnelPostGroup":

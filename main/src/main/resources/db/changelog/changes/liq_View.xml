@@ -3316,7 +3316,7 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_TRAINING_OVER_TIME_REPORT-003">
+    <changeSet author="NICICO" id="VIEW_TRAINING_OVER_TIME_REPORT-005">
         <createView viewName="VIEW_TRAINING_OVER_TIME_REPORT" replaceIfExists="true">
             <![CDATA[
  SELECT DISTINCT
@@ -3327,7 +3327,7 @@ FROM
     || ' '
     || std.last_name AS name,
     dep.c_hoze_title      AS ccparea,
-    dep.c_omor_title      AS ccpafairs,
+    dep.c_omor_title      AS ccpaffairs,
     class.c_code          AS classcode,
     class.c_title_class   AS classname,
     csession.c_session_date,
@@ -3506,7 +3506,6 @@ csession.c_session_date
         </createView>
     </changeSet>
 
-
     <changeSet author="NICICO" id="VIEW_ALL_POSTS-001">
         <createView viewName="VIEW_ALL_POSTS" replaceIfExists="true">
             <![CDATA[
@@ -3535,4 +3534,34 @@ from ((select post.*,job.C_TITLE_FA jobTitle,postgrade.C_TITLE_FA postgradeTitle
         </createView>
     </changeSet>
 
+    <changeSet author="NICICO" id="VIEW_UNJUSTIFIED_ABSENCE_REPORT-001">
+        <createView viewName="VIEW_UNJUSTIFIED_ABSENCE_REPORT" replaceIfExists="true">
+            <![CDATA[
+   SELECT DISTINCT
+        tbl_session.c_session_date,
+        tbl_student.last_name,
+        tbl_student.first_name,
+        tbl_class.c_title_class,
+        tbl_class.c_start_date,
+        tbl_class.c_end_date,
+        tbl_class.c_code,
+        tbl_session.c_session_end_hour,
+        tbl_session.c_session_start_hour,
+        tbl_student.id   AS student_id,
+        tbl_class.id     AS class_id,
+        tbl_session.id   AS session_id
+    FROM
+        tbl_attendance
+        INNER JOIN tbl_session ON tbl_session.id = tbl_attendance.f_session
+        INNER JOIN tbl_class ON tbl_class.id = tbl_session.f_class_id
+        INNER JOIN tbl_student ON tbl_student.id = tbl_attendance.f_student
+    WHERE
+        tbl_attendance.c_state = '3'
+    ORDER BY
+        tbl_class.c_title_class,
+        tbl_student.last_name,
+        tbl_student.first_name
+            ]]>
+        </createView>
+    </changeSet>
 </databaseChangeLog>
