@@ -1546,7 +1546,7 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_POST_GROUP-005">
+    <changeSet author="NICICO" id="VIEW_POST_GROUP-006">
         <createView viewName="VIEW_POST_GROUP" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1564,10 +1564,23 @@ SELECT
     pg.c_code,
     pg.d_last_modified_date_na,
     pg.c_modified_by_na,
-    (select count(DISTINCT f_competence) from tbl_needs_assessment where c_object_type = 'PostGroup' AND e_deleted IS NULL AND e_enabled IS NULL AND pg.id = f_object) AS n_competence_count,
+    count(DISTINCT na.f_competence) AS n_competence_count,
     COUNT(DISTINCT prs.id) AS n_personnel_count
 FROM
     tbl_post_group pg
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            tbl_needs_assessment
+        WHERE
+            c_object_type = 'PostGroup'
+                AND
+            e_deleted IS NULL
+                AND
+            e_enabled IS NULL
+    ) na
+        ON pg.id = na.f_object
     LEFT JOIN (
         SELECT
             *
