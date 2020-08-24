@@ -1546,7 +1546,7 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_POST_GROUP-004">
+    <changeSet author="NICICO" id="VIEW_POST_GROUP-005">
         <createView viewName="VIEW_POST_GROUP" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1564,52 +1564,21 @@ SELECT
     pg.c_code,
     pg.d_last_modified_date_na,
     pg.c_modified_by_na,
-    COUNT(DISTINCT na.f_competence) AS n_competence_count,
-    COUNT(DISTINCT prs.id) + COUNT(DISTINCT prs2.id) AS n_personnel_count
+    (select count(DISTINCT f_competence) from tbl_needs_assessment where c_object_type = 'PostGroup' AND e_deleted IS NULL AND e_enabled IS NULL AND pg.id = f_object) AS n_competence_count,
+    COUNT(DISTINCT prs.id) AS n_personnel_count
 FROM
-    tbl_post_group                                                         pg
+    tbl_post_group pg
     LEFT JOIN (
         SELECT
             *
         FROM
-            tbl_needs_assessment
-        WHERE
-            c_object_type = 'PostGroup'
-            AND e_deleted IS NULL
-            AND e_enabled IS NULL
-    ) na ON pg.id = na.f_object
-    LEFT JOIN tbl_post_postgroup                                                     ppg ON pg.id = ppg.f_postgroup_id
-    LEFT JOIN (
-        SELECT
-            *
-        FROM
-            tbl_post
+            view_all_posts
         WHERE
             e_deleted IS NULL
-            AND e_enabled IS NULL
-    ) p ON p.id = ppg.f_post_id
-    LEFT JOIN view_active_personnel                                                  prs ON p.id = prs.f_post_id
-    LEFT JOIN tbl_training_post_post_group                                           tppg ON tppg.f_post_group_id = pg.id
-    LEFT JOIN (
-        SELECT
-            *
-        FROM
-            tbl_training_post
-        WHERE
-            e_deleted IS NULL
-            AND e_enabled IS NULL
-    ) tp ON tp.id = tppg.f_training_post_id
-    LEFT JOIN tbl_post_training_post                                                 ptp ON tp.id = ptp.f_training_post_id
-    LEFT JOIN (
-        SELECT
-            *
-        FROM
-            tbl_post
-        WHERE
-            e_deleted IS NULL
-            AND e_enabled IS NULL
-    ) p2 ON p2.id = ppg.f_post_id
-    LEFT JOIN view_active_personnel                                                  prs2 ON p2.id = prs2.f_post_id
+    ) p
+        ON p.groupid = pg.id
+    LEFT JOIN view_active_personnel prs
+        ON p.postid = prs.f_post_id
 GROUP BY
     pg.id,
     pg.c_created_by,
