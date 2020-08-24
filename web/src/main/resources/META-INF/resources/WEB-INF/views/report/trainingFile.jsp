@@ -42,12 +42,20 @@
         ],
         fetchDataURL: studentUrl + "spec-list/"
     });
+    var RestDataSource_ScoreState_JspTrainingFile = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+        ],
+        fetchDataURL: parameterValueUrl + "/iscList/317"
+    });
     var RestDataSource_Course_JspTrainingFile = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "classCode", title:"<spring:message code='class.code'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "courseCode", title:"<spring:message code='course.code'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "courseTitleFa", title:"<spring:message code='course.title'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "courseTitle", title:"<spring:message code='course.title'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "termTitleFa", title:"<spring:message code='term'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "startDate", title:"<spring:message code='start.date'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "endDate", title:"<spring:message code='end.date'/>", filterOperator: "iContains", autoFitWidth: true},
@@ -61,7 +69,13 @@
                 },
             },
             {name: "score", title:"<spring:message code='score'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "scoresState", title:"<spring:message code="pass.mode"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "scoresState", title:"<spring:message code="pass.mode"/>", autoFitWidth: true,
+                optionDataSource: RestDataSource_ScoreState_JspTrainingFile,
+                valueField: "id",
+                displayField: "title",
+                filterOperator: "equals",
+
+            },
             {name: "postTitle", title:"<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "teacher", title:"<spring:message code='teacher'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "postCode", title:"<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -116,15 +130,11 @@
             };
             ListGrid_TrainingFile_TrainingFileJSP.invalidateCache();
             ListGrid_TrainingFile_TrainingFileJSP.setImplicitCriteria(cr);
-            ListGrid_TrainingFile_TrainingFileJSP.fetchData(cr);
+            ListGrid_TrainingFile_TrainingFileJSP.fetchData();
             Window_StudentSearch_JspTrainingFile.close();
             excelBtn.setDisabled(false);
         }
     });
-
-
-
-
 
     var Window_StudentSearch_JspTrainingFile = isc.Window.create({
         autoSize:false,
@@ -243,7 +253,7 @@
         }
     });
 
-    Menu_Courses_TrainingFileJSP = isc.Menu.create({
+    var Menu_Courses_TrainingFileJSP = isc.Menu.create({
         data: [
             {
                 title: "<spring:message code="global.form.print.pdf"/>",
@@ -296,7 +306,7 @@
         fields:[
             {name: "classCode"},
             {name: "courseCode"},
-            {name: "courseTitleFa"},
+            {name: "courseTitle"},
             {name: "termTitleFa"},
             {name: "startDate",
                 filterEditorProperties: {
@@ -308,18 +318,17 @@
                     keyPressFilter: "[0-9/]"
                 }
             },
-            {name: "classStatus", hidden: true},
+            {name: "classStatus"},
             {name: "score"},
             {name: "scoresState"},
-            {name: "postTitle", hidden: true},
-            {name: "postCode"},
+            {name: "postTitle"},
+            {name: "postCode", hidden: true},
             {name: "affairs"},
             {name: "teacher"}
         ]
-
     });
 
-    VLayout_Body_Training_File = isc.VLayout.create({
+    var VLayout_Body_Training_File = isc.VLayout.create({
         width: "100%",
         height: "100%",
         members: [

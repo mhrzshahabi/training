@@ -35,7 +35,6 @@ public class ViewTrainingFileRestController {
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<ViewTrainingFileDTO.Info>> iscList(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        BaseService.setCriteriaToNotSearchDeleted(searchRq);
         SearchDTO.SearchRs<ViewTrainingFileDTO.Info> searchRs = viewTrainingFileService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
@@ -74,7 +73,6 @@ public class ViewTrainingFileRestController {
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
-        BaseService.setCriteriaToNotSearchDeleted(request);
         SearchDTO.SearchRs<ViewTrainingFileDTO.Info> response = viewTrainingFileService.search(request);
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(response.getList())

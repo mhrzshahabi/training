@@ -1,14 +1,12 @@
 
 package com.nicico.training.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.Serializable;
@@ -18,13 +16,14 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Subselect("select * from view_training_file_report")
-public class ViewTrainingFile implements Serializable {
+@DiscriminatorValue("ViewTrainingFile")
+public class ViewTrainingFile implements Serializable{
 
-    @Id
-    @Column(name = "id")
-    private Long id;
+
+//    private Long id;
 
     /////////////////////////////////////////////student////////////////////////////////////////////
 
@@ -53,7 +52,7 @@ public class ViewTrainingFile implements Serializable {
     @Column(name = "post_grade_title")
     private String postGradeTitle;
 
-    @Column(name = "cpp_affairs")
+    @Column(name = "ccp_affairs")
     private String affairs;
 
     ///////////////////////////////////////////////////term///////////////////////////////////////
@@ -62,6 +61,10 @@ public class ViewTrainingFile implements Serializable {
     private String termTitleFa;
 
     ///////////////////////////////////////////////////classStudent///////////////////////////////////////
+
+    @Id
+    @Column(name = "class_student_id")
+    private Long classStudentId;
 
     @Column(name = "scores_state_id")
     private Long scoresState;
