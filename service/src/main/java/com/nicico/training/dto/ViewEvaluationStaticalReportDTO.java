@@ -33,7 +33,8 @@ public class ViewEvaluationStaticalReportDTO implements Serializable {
         private Long courseCategory;
         private Long courseSubCategory;
         private String courseTitleFa;
-        private String evaluation;
+        private String courseEvaluation;
+        private String classEvaluation;
         private String evaluationBehavioralGrade;
         private Boolean evaluationBehavioralPass;
         private Boolean evaluationBehavioralStatus;

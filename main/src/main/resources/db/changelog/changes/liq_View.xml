@@ -1393,10 +1393,10 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_EVALUATION_STATICAL_REPORT-010">
+    <changeSet author="NICICO" id="VIEW_EVALUATION_STATICAL_REPORT-011">
         <createView viewName="VIEW_EVALUATION_STATICAL_REPORT" replaceIfExists="true">
             <![CDATA[
-	   SELECT
+	 SELECT
         rowNum as id,
         term.C_TITLE_FA as term_TitleFa,
         personal.C_FIRST_NAME_FA as teacher_FirstName,
@@ -1422,6 +1422,7 @@ FROM
         tclass.F_TERM as term_id,
         tclass.C_START_DATE as tclass_c_start_date,
         tclass.C_END_DATE as tclass_c_end_date,
+        tclass.C_EVALUATION as tclass_evaluation,
         SUBSTR(tclass.C_START_DATE,1,4) as tclass_year,
         course.C_CODE as course_c_code,
         course.CATEGORY_ID as course_category_id,
