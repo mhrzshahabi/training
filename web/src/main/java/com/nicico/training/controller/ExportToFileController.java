@@ -9,6 +9,7 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
+import com.nicico.copper.oauth.common.domain.CustomUserDetails;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonnelCourseNotPassedReportViewService;
 import com.nicico.training.iservice.ITclassService;
@@ -26,6 +27,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,7 +54,6 @@ public class ExportToFileController {
     private final ITclassService tclassService;
     private final IPersonnelCourseNotPassedReportViewService personnelCourseNotPassedReportViewService;
     private final ClassSessionService classSessionService;
-    private final UnfinishedClassesReportService unfinishedClassesReportService;
     private final ViewTrainingOverTimeReportService viewTrainingOverTimeReportService;
     private final AttendanceReportService attendanceReportService;
     private final ViewEvaluationStaticalReportService viewEvaluationStaticalReportService;
@@ -93,6 +94,8 @@ public class ExportToFileController {
     private final ViewStatisticsUnitReportService viewStatisticsUnitReportService;
     private final ViewCoursesPassedPersonnelReportService viewCoursesPassedPersonnelReportService;
     private final ContinuousStatusReportViewService continuousStatusReportViewService;
+
+    private final ViewUnfinishedClassesReportService viewUnfinishedClassesReportService;
 
     private final ModelMapper modelMapper;
     private final MessageSource messageSource;
@@ -198,7 +201,14 @@ public class ExportToFileController {
                 break;
 
             case "unfinishedClassesReport":
-                generalList = (List<Object>) ((Object) unfinishedClassesReportService.UnfinishedClassesList());
+                SearchDTO.CriteriaRq criteriaRq1 = new SearchDTO.CriteriaRq();
+                criteriaRq1.setOperator(EOperator.equals);
+                criteriaRq1.setFieldName("nationalCode");
+                criteriaRq1.setValue(modelMapper.map(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), CustomUserDetails.class).getNationalCode());
+
+                searchRq.setCriteria(criteriaRq1);
+
+                generalList = (List<Object>)((Object) viewUnfinishedClassesReportService.search(searchRq).getList());
                 break;
             case "trainingOverTime":
                 searchRq.setSortBy("id");
