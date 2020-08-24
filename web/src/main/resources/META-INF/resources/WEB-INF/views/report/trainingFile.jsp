@@ -45,14 +45,14 @@
     var RestDataSource_Course_JspTrainingFile = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "tclass.code", title:"<spring:message code='class.code'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "tclass.course.code", title:"<spring:message code='course.code'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "tclass.course.titleFa", title:"<spring:message code='course.title'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "tclass.term.titleFa", title:"<spring:message code='term'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "tclass.startDate", title:"<spring:message code='start.date'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "tclass.endDate", title:"<spring:message code='end.date'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classCode", title:"<spring:message code='class.code'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "courseCode", title:"<spring:message code='course.code'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "courseTitleFa", title:"<spring:message code='course.title'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "termTitleFa", title:"<spring:message code='term'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "startDate", title:"<spring:message code='start.date'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "endDate", title:"<spring:message code='end.date'/>", filterOperator: "iContains", autoFitWidth: true},
             {
-                name: "tclass.classStatus", filterOperator: "equals", autoFitWidth: true,
+                name: "classStatus", filterOperator: "equals", autoFitWidth: true,
                 title:"<spring:message code='class.status'/>",
                 valueMap: {
                     "1": "برنامه ریزی",
@@ -61,13 +61,13 @@
                 },
             },
             {name: "score", title:"<spring:message code='score'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "scoresState.title", title:"<spring:message code="pass.mode"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "student.postTitle", title:"<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "tclass.teacher", title:"<spring:message code='teacher'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "student.postCode", title:"<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "student.ccpAffairs", title:"<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "scoresState", title:"<spring:message code="pass.mode"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postTitle", title:"<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "teacher", title:"<spring:message code='teacher'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postCode", title:"<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "affairs", title:"<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
-        fetchDataURL: tclassStudentUrl + "classes-of-student/"
+        fetchDataURL: trainingFileUrl + "/spec-list"
     });
 
     var ListGrid_StudentSearch_JspTrainingFile = isc.TrLG.create({
@@ -106,9 +106,17 @@
         rowDoubleClick: function () {
             DynamicForm_TrainingFile.editRecord(this.getSelectedRecord());
             selectedPerson_TrainingFile = this.getSelectedRecord();
-            RestDataSource_Course_JspTrainingFile.fetchDataURL = tclassStudentUrl + "/classes-of-student/" + this.getSelectedRecord().nationalCode;
+            let cr = {
+                _constructor:"AdvancedCriteria",
+                operator:"or",
+                criteria:[
+                    {fieldName:"nationalCode", operator:"equals", value: selectedPerson_TrainingFile.nationalCode},
+                    {fieldName:"empNo", operator:"equals", value: selectedPerson_TrainingFile.personnelNo2}
+                ]
+            };
             ListGrid_TrainingFile_TrainingFileJSP.invalidateCache();
-            ListGrid_TrainingFile_TrainingFileJSP.fetchData();
+            ListGrid_TrainingFile_TrainingFileJSP.implicitCriteria(cr);
+            ListGrid_TrainingFile_TrainingFileJSP.fetchData(cr);
             Window_StudentSearch_JspTrainingFile.close();
             excelBtn.setDisabled(false);
         }
@@ -286,27 +294,27 @@
 
         }), "header", "filterEditor", "body"],
         fields:[
-            {name: "tclass.code"},
-            {name: "tclass.course.code"},
-            {name: "tclass.course.titleFa"},
-            {name: "tclass.term.titleFa"},
-            {name: "tclass.startDate",
+            {name: "classCode"},
+            {name: "courseCode"},
+            {name: "courseTitleFa"},
+            {name: "termTitleFa"},
+            {name: "startDate",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
                 }
             },
-            {name: "tclass.endDate",
+            {name: "endDate",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
                 }
             },
-            {name: "tclass.classStatus", hidden: true},
+            {name: "classStatus", hidden: true},
             {name: "score"},
-            {name: "scoresState.title"},
-            {name: "student.postTitle", hidden: true},
-            {name: "student.postCode"},
-            {name: "student.ccpAffairs"},
-            {name: "tclass.teacher"}
+            {name: "scoresState"},
+            {name: "postTitle", hidden: true},
+            {name: "postCode"},
+            {name: "affairs"},
+            {name: "teacher"}
         ]
 
     });

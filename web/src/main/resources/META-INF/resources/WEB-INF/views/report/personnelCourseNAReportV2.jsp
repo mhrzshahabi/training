@@ -272,6 +272,7 @@
         fields: [
             {
                 name: "personnelPersonnelNo",
+
                 title:"انتخاب پرسنل",
                 operator: "inSet",
                 textAlign: "center",
