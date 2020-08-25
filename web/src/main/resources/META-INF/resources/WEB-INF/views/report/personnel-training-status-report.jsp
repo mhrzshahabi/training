@@ -62,7 +62,7 @@
             {name: "value", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpArea"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpArea"
     });
 
     AssistantDS_PTSR = isc.TrDS.create({
@@ -218,14 +218,14 @@
         wrapItemTitles: true,
         fields: [
             {
-                name: "personnelEmpNo",
+                name: "personnelNationalCode",
                 title:"انتخاب پرسنل",
                 operator: "inSet",
                 textAlign: "center",
                 optionDataSource: PersonnelDS_PTSR_DF,
                 autoFetchData: false,
                 type: "MultiComboBoxItem",
-                valueField: "personnelNo",
+                valueField: "nationalCode",
                 displayField: "personnelNo",
                 endRow: false,
                 colSpan: 3,

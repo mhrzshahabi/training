@@ -271,7 +271,7 @@
         wrapItemTitles: true,
         fields: [
             {
-                name: "personnelPersonnelNo",
+                name: "personnelNationalCode",
 
                 title:"انتخاب پرسنل",
                 operator: "inSet",
@@ -279,7 +279,7 @@
                 optionDataSource: PersonnelDS_PCNR_DF,
                 autoFetchData: false,
                 type: "MultiComboBoxItem",
-                valueField: "personnelNo",
+                valueField: "nationalCode",
                 displayField: "personnelNo",
                 endRow: false,
                 colSpan: 3,
