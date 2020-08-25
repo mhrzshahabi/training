@@ -160,6 +160,8 @@ spring:
             user-info-uri: http://devapp01.icico.net.ir/user/info
             user-name-attribute: username
 nicico:
+  security:
+    sys-password: password
   upload:
     dir: /var/nicico/${spring.application.name}/upload
   dirs:
@@ -216,6 +218,8 @@ spring:
             user-info-uri: http://devapp01.icico.net.ir/user/info
             user-name-attribute: username
 nicico:
+  security:
+    sys-password: password
   upload:
     dir: c:/nicico/${spring.application.name}/upload
   dirs:
