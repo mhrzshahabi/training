@@ -186,7 +186,7 @@
             {name: "teacherId", hidden: true},
             {name: "teacherFullName", hidden:true}
         ],
-        selectionUpdated: function (record) {
+        doubleClick: function (record) {
             set_evaluation_analysis_tabset_status();
             Detail_Tab_Evaluation_Analysis.selectTab(0);
             Window_Evaluation_Analysis.show();
