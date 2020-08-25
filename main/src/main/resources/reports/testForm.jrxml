@@ -47,7 +47,7 @@
 				<imageExpression><![CDATA[$P{logo_nicico}]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="385" y="10" width="95" height="20" uuid="4b96c66b-28e7-42b9-b89b-dc1fb60b89ec"/>
+				<reportElement x="410" y="10" width="70" height="20" uuid="4b96c66b-28e7-42b9-b89b-dc1fb60b89ec"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="8"/>
 				</textElement>
@@ -73,14 +73,14 @@
 			<frame>
 				<reportElement x="290" y="38" width="190" height="20" uuid="f9d81464-78cf-4429-b8cd-2093285a4f93"/>
 				<staticText>
-					<reportElement x="140" y="0" width="50" height="20" uuid="3555add0-078a-4ebf-accc-35500870e286"/>
+					<reportElement x="150" y="0" width="40" height="20" uuid="3555add0-078a-4ebf-accc-35500870e286"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Shabnam-FD" size="8"/>
 					</textElement>
-					<text><![CDATA[نام استاد :]]></text>
+					<text><![CDATA[نام مدرس :]]></text>
 				</staticText>
 				<textField isBlankWhenNull="true">
-					<reportElement x="0" y="0" width="140" height="20" uuid="7f0070f2-e11c-4f21-a983-e95f6e31c378"/>
+					<reportElement x="0" y="0" width="150" height="20" uuid="7f0070f2-e11c-4f21-a983-e95f6e31c378"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Shabnam-FD" size="8"/>
 					</textElement>
