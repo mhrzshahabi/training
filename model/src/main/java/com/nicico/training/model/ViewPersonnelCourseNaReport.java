@@ -105,4 +105,7 @@ public class ViewPersonnelCourseNaReport implements Serializable {
 
     @Column(name = "personnel_post_id")
     private Long postId;
+
+    @Column(name = "personnel_post_grade_id")
+    private Long postGradeId;
 }
