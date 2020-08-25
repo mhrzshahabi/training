@@ -743,7 +743,7 @@
         click: function () {
             let params = {};
             let data = ListGrid_FinalTest.getData().localData.get(0).testQuestionId;
-            params.teacher = ListGrid_FinalTest.getData().localData.get(0).questionBank.teacher.fullNameFa;
+            params.teacher = FinalTestLG_finalTest.getSelectedRecord().tclass.teacher;//ListGrid_FinalTest.getData().localData.get(0).questionBank.teacher.fullNameFa;
 
             print(data, params, "testForm.jasper");
         }
