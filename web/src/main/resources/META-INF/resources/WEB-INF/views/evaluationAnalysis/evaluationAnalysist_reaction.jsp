@@ -12,7 +12,6 @@
     var vm_reaction_evaluation = isc.ValuesManager.create({});
 
     DynamicForm_Reaction_EvaluationAnalysis_Header = isc.DynamicForm.create({
-        width: "60%",
         canSubmit: true,
         border: "3px solid orange",
         titleWidth: 120,
@@ -67,7 +66,6 @@
         canSubmit: true,
         titleAlign: "right",
         titleWidth: 120,
-        width: "54%",
         border: "3px solid orange",
         showInlineErrors: true,
         showErrorText: false,
@@ -170,7 +168,6 @@
     });
 
     var VLayout_Body_evaluation_analysis_reaction = isc.VLayout.create({
-        width: "50%",
         height: "100%",
         defaultLayoutAlign: "center",
         members: [ DynamicForm_Reaction_EvaluationAnalysis_Header,
@@ -181,8 +178,6 @@
     var ReactionEvaluationChart = isc.FacetChart.create({
         titleAlign: "center",
         minLabelGap: 5,
-        width: "80%",
-        height: "90%",
         barMargin: "100",
         allowedChartTypes: [],
         facets: [
@@ -222,8 +217,7 @@
 
     var ReactionEvaluationChartLayout =  isc.VLayout.create({
         defaultLayoutAlign: "center",
-        width: "50%",
-        height: "500",
+        height: "600",
         members: [chartSelector, ReactionEvaluationChart]
     });
 

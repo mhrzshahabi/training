@@ -186,9 +186,10 @@
             {name: "teacherId", hidden: true},
             {name: "teacherFullName", hidden:true}
         ],
-        selectionUpdated: function (record) {
+        doubleClick: function (record) {
             set_evaluation_analysis_tabset_status();
             Detail_Tab_Evaluation_Analysis.selectTab(0);
+            Window_Evaluation_Analysis.show();
         },
         getCellCSSText: function (record, rowNum, colNum) {
             if ((!ListGrid_evaluationAnalysis_class.getFieldByName("evaluation").hidden && record.evaluation === "1"))
@@ -295,11 +296,20 @@
         ]
     });
 
+    var Window_Evaluation_Analysis = isc.Window.create({
+        title: "پنجره ی نتایج ارزیابی",
+        overflow: "auto",
+        placement: "fillScreen",
+        items: [
+            Hlayout_Tab_Evaluation_Analysis
+        ]
+    });
+
+
     var VLayout_Body_Evaluation_Analysis = isc.VLayout.create({
         width: "100%",
         height: "100%",
-        members: [HLayout_Actions_Evaluation_Analysis, Hlayout_Grid_Evaluation_Analysis,
-            Hlayout_Tab_Evaluation_Analysis]
+        members: [HLayout_Actions_Evaluation_Analysis, Hlayout_Grid_Evaluation_Analysis]
     });
 
     //----------------------------------------------------Functions-----------------------------------------------------
@@ -439,6 +449,8 @@
     function fill_behavioral_evaluation_result_resp(resp) {
         load_behavioral_evluation_analysis_data(JSON.parse(resp.data));
     }
+
+    Window_Evaluation_Analysis.hide();
 
 
 

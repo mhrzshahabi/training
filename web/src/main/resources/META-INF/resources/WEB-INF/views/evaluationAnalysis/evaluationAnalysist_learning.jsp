@@ -25,10 +25,6 @@
                 name: "student.lastName",filterOperator: "iContains"
             },
             {
-                name: "student.nationalCode",filterOperator: "iContains"
-            },
-
-            {
                 name: "student.personnelNo",filterOperator: "iContains"
             },
             {name:"preTestScore", filterOperator: "iContains"},
@@ -41,7 +37,6 @@
     var vm_learning_evaluation = isc.ValuesManager.create({});
 
     DynamicForm_Learning_EvaluationAnalysis_Header = isc.DynamicForm.create({
-        width: "60%",
         canSubmit: true,
         border: "3px solid orange",
         titleWidth: 120,
@@ -99,7 +94,6 @@
         canSubmit: true,
         titleAlign: "right",
         titleWidth: 120,
-        width: "54%",
         border: "3px solid orange",
         showInlineErrors: true,
         showErrorText: false,
@@ -211,7 +205,6 @@
     }
 
     var VLayout_Body_evaluation_analysis_learning = isc.VLayout.create({
-        width: "53%",
         height: "100%",
         defaultLayoutAlign: "center",
         members: [ DynamicForm_Learning_EvaluationAnalysis_Header,
@@ -220,29 +213,13 @@
     });
 
     var ListGrid_evaluationAnalysist_learning = isc.TrLG.create({
-        selectionType: "single",
-        editOnFocus: true,
-        showRowNumbers: false,
-        editByCell: true,
-        editEvent: "click",
-        modalEditing: true,
-        autoSaveEdits: false,
-        canSelectCells: true,
-        canHover:true,
         dataSource: RestDataSource_evaluationAnalysist_learning,
+        showFilterEditor: false,
         fields: [
             {
                 name: "student.personnelNo",
                 title: "<spring:message code="personnel.no"/>",
-                filterOperator: "iContains",autoFitWidth:true,
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
-                }
-            },
-            {
-                name: "student.nationalCode",
-                title: "<spring:message code="national.code"/>",
-                filterOperator: "iContains",autoFitWidth:true,
+                filterOperator: "iContains",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
                 }
@@ -250,74 +227,33 @@
             {
                 name: "student.firstName",
                 title: "<spring:message code="firstName"/>",
-                filterOperator: "iContains",autoFitWidth:true
+                filterOperator: "iContains"
 
             },
             {
                 name: "student.lastName",
                 title: "<spring:message code="lastName"/>",
-                filterOperator: "iContains",autoFitWidth:true
+                filterOperator: "iContains"
 
             },
             {
                 name: "preTestScore",
                 title: "نمره پيش آزمون",
                 filterOperator: "iContains",
-                // canEdit: true,
                 validateOnChange: false,
-                autoFitWidth:true,
                 editEvent: "click",
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9|.]"
-                },
-                change:function(form,item,value,oldValue){
-
-                    if(value!=null && value!='' && typeof (value) != 'undefined'&& !value.match(/^(([1-9]\d{0,1})|100|0)$/)){
-                        item.setValue(value.substring(0,value.length-1));
-                    }else{
-                        item.setValue(value);
-                    }
-
-                    if(value==null || typeof (value) == 'undefined'){
-                        item.setValue('');
-                    }
-
-
-                    if(oldValue==null || typeof (oldValue) == 'undefined'){
-                        oldValue='';
-                    }
-
-
-                    if(item.getValue() != oldValue)
-                    {
-                        change_value=true;
-                    }
-                },
-                editorExit:function(editCompletionEvent, record, newValue) {
-
-                    if( change_value){
-                        if (newValue != null && newValue != '' && typeof (newValue) != 'undefined') {
-
-                            ListGrid_Cell_evaluationAnalysist_learning(record, newValue);
-
-                        } else {
-                            ListGrid_Cell_evaluationAnalysist_learning(record, null);
-                        }
-                    }
-                    change_value=false;
-                },
-                // hoverHTML:function (record, rowNum, colNum, grid) {
-                //     return"نمره پیش آزمون بین 0 تا 100 می باشد"
-                // }
-            },
-            {
-                name:"score", title: "نمره پس آزمون",  filterOperator: "iContains",autoFitWidth:true,
                 filterEditorProperties: {
                     keyPressFilter: "[0-9|.]"
                 }
             },
             {
-                name:"valence",title: "نمره پس آزمون",  filterOperator: "iContains",autoFitWidth:true,
+                name:"score", title: "نمره پس آزمون",  filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9|.]"
+                }
+            },
+            {
+                name:"valence",title: "نمره پس آزمون",  filterOperator: "iContains",
                 valueMap: {"1001": "40", "1002": "60", "1003": "80", "1004": "100"},
                 filterEditorProperties: {
                     keyPressFilter: "[0-9|.]"
@@ -328,7 +264,6 @@
 
     var LearningEvaluationGridLayout =  isc.VLayout.create({
         defaultLayoutAlign: "center",
-        width: "37%",
         height: "400",
         members: [ListGrid_evaluationAnalysist_learning]
     });
@@ -338,8 +273,9 @@
         height: "100%",
         overflow: "scroll",
         members: [
+            VLayout_Body_evaluation_analysis_learning,
             LearningEvaluationGridLayout,
-            VLayout_Body_evaluation_analysis_learning
+
         ]
     });
 
