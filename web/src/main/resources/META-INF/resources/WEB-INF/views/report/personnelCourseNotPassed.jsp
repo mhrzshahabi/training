@@ -136,7 +136,7 @@
         wrapItemTitles: true,
         fields: [
             {
-                name: "pgCCode",
+                name: "pgId",
                 title: "انتخاب رده پستي",
                 optionDataSource: PostGradeDS_PCNP,
                 autoFetchData: false,
@@ -168,7 +168,7 @@
                         }
                     }
                 ],
-                valueField: "code",
+                valueField: "id",
                 displayField: "titleFa",
                 //specialValues: { "**emptyValue**": ""},
                 //separateSpecialValues: true
