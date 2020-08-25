@@ -361,4 +361,9 @@ public class AttendanceService implements IAttendanceService {
 
         return new String();
     }
+
+    @Override
+    public void saveList(List<Attendance> attendances) {
+        attendanceDAO.saveAll(attendances);
+    }
 }
