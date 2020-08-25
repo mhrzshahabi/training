@@ -10,7 +10,6 @@
 // <script>
     //----------------------------------------- Variables --------------------------------------------------------------
     var questionsSelection=false;
-    var fromQuestionBank=true;
     var classId_preTest;
     //----------------------------------------- DataSources ------------------------------------------------------------
     var RestDataSource_PreTest = isc.TrDS.create({
@@ -179,17 +178,22 @@
         showRecordComponentsByCell: true,
         gridComponents: [Lable_AllQuestions_PreTest, "filterEditor", "header", "body"],
         dataArrived:function(){
+
             let lgIds = ListGrid_ForQuestions_PreTestJSP.data.getAllCachedRows().map(function(item) {
                 return item.questionBankId;
             });
+
 
             if(lgIds.length==0){
                 return;
             }
 
-            let findRows=ListGrid_AllQuestions_PreTestJSP.findAll(({ id }) =>  lgIds.some(p=>p==id));
-            ListGrid_AllQuestions_PreTestJSP.setSelectedState(findRows);
-            findRows.setProperty("enabled", false);
+            let findRows=ListGrid_AllQuestions_PreTestJSP.findAll(({ id,questionBank,questionBankId }) =>  lgIds.some(p=>(!questionBank)?p==id:p==questionBankId));
+
+            if(findRows && findRows.length>0){
+                ListGrid_AllQuestions_PreTestJSP.setSelectedState(findRows);
+                findRows.setProperty("enabled", false);
+            }
         },
         createRecordComponent: function (record, colNum) {
             var fieldName = this.getFieldName(colNum);
@@ -223,6 +227,7 @@
                         }else{
                             questionBankId=current.questionBank.id;
                         }
+
                         if ($.inArray(questionBankId, selected) === -1){
                             ids.push(questionBankId);
                         }
@@ -288,6 +293,7 @@
             {name: "OnDelete", title: " ", align: "center", width:30}
         ],
         dataArrived:function(){
+
             if(questionsSelection) {
                 ListGrid_AllQuestions_PreTestJSP.invalidateCache();
 
@@ -298,6 +304,7 @@
                         criteria: [{fieldName: "tclass.course.titleFa", operator: "equals", value: ListGrid_class_Evaluation.getSelectedRecord().courseTitleFa}]
                     });
                 }else{*/
+
                     ListGrid_AllQuestions_PreTestJSP.fetchData();
                 //}
 
@@ -341,11 +348,12 @@
 
                                     ListGrid_ForQuestions_PreTestJSP.invalidateCache();
 
-                                    let findRows=ListGrid_AllQuestions_PreTestJSP.findAll(({ id }) =>  [activeId].some(p=>p==id));
+                                    let findRows=ListGrid_AllQuestions_PreTestJSP.findAll(({ id,questionBank,questionBankId }) =>  [activeId].some(p=>(!questionBank)?p==id:p==questionBankId));
 
                                     if(typeof (findRows)!='undefined' && findRows.length>0){
                                         findRows.setProperty("enabled", true);
                                         ListGrid_AllQuestions_PreTestJSP.deselectRecord(findRows[0]);
+                                        ListGrid_AllQuestions_PreTestJSP.redraw();
                                     }
 
                                 } else {
@@ -388,7 +396,6 @@
 
             } else {
                 questionsSelection=true;
-                fromQuestionBank=true;
 
                 RestDataSource_All_PreTest.fields=[
                     {name: "id", primaryKey: true, hidden: true},
@@ -587,7 +594,6 @@
 
             } else {
                 questionsSelection=true;
-                fromQuestionBank=false;
 
                 RestDataSource_All_PreTest.fields=[
                     {name: "id", primaryKey: true, hidden: true},
@@ -783,47 +789,51 @@
                 height:25,
                 title:"اضافه کردن گروهی",
                 click: function () {
+                    var ids = ListGrid_AllQuestions_PreTestJSP.getSelection().filter(function(x){return x.enabled!==false}).map(function(item) {return (!item.questionBank)?item.id:item.questionBank.id;});
+                    if(ids &&ids.length>0){
                     let dialog = createDialog('ask', "<spring:message code="msg.record.adds.ask"/>");
                     dialog.addProperties({
                         buttonClick: function (button, index) {
                             this.close();
                             if (index === 0) {
-                                var ids = ListGrid_AllQuestions_PreTestJSP.getSelection().filter(function(x){return x.enabled!==false}).map(function(item) {return (!item.questionBank)?item.id:item.questionBank.id;});
                                 var activeClass = ListGrid_class_Evaluation.getSelectedRecord();
                                 var activeClassId = activeClass.id;
                                 let JSONObj = {"ids": ids};
                                 wait.show();
 
-                                isc.RPCManager.sendRequest({
-                                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                                    useSimpleHttp: true,
-                                    contentType: "application/json; charset=utf-8",
-                                    actionURL: questionBankTestQuestionUrl + "/add-questions/preTest/" + activeClassId + "/" + ids,
-                                    httpMethod: "POST",
-                                    data: JSON.stringify(JSONObj),
-                                    serverOutputAsString: false,
-                                    callback: function (resp) {
-                                        wait.close();
+                                    isc.RPCManager.sendRequest({
+                                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                        useSimpleHttp: true,
+                                        contentType: "application/json; charset=utf-8",
+                                        actionURL: questionBankTestQuestionUrl + "/add-questions/preTest/" + activeClassId + "/" + ids,
+                                        httpMethod: "POST",
+                                        data: JSON.stringify(JSONObj),
+                                        serverOutputAsString: false,
+                                        callback: function (resp) {
+                                            wait.close();
 
-                                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                                            ListGrid_ForQuestions_PreTestJSP.invalidateCache();
+                                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                                ListGrid_ForQuestions_PreTestJSP.invalidateCache();
 
-                                            let findRows=ListGrid_AllQuestions_PreTestJSP.findAll(({ id }) =>  ids.some(p=>p==id));
+                                                let findRows=ListGrid_AllQuestions_PreTestJSP.findAll(({ id,questionBank,questionBankId }) =>  ids.some(p=>(!questionBank)?p==id:p==questionBankId));
 
-                                            if(typeof (findRows)!='undefined' && findRows.length>0){
-                                                findRows.setProperty("enabled", false);
-                                                ListGrid_AllQuestions_PreTestJSP.redraw();
+                                                if(findRows && findRows.length>0){
+                                                    findRows.setProperty("enabled", false);
+                                                    ListGrid_AllQuestions_PreTestJSP.redraw();
+                                                }
+                                                isc.say("عملیات با موفقیت انجام شد.");
+
+                                            } else {
+                                                isc.say("خطا در پاسخ سرویس دهنده");
                                             }
-                                            isc.say("عملیات با موفقیت انجام شد.");
-
-                                        } else {
-                                            isc.say("خطا در پاسخ سرویس دهنده");
                                         }
-                                    }
-                                });
+                                    });
                             }
                         }
                     })
+                    }else{
+                        isc.say("سوالي انتخاب نشده است.");
+                    }
                 }
             }),
             isc.LayoutSpacer.create({ID: "spacer", height: "5%"}),
@@ -833,43 +843,52 @@
                 height:25,
                 title:"حذف گروهی",
                 click: function () {
-                    let dialog = createDialog('ask', "<spring:message code="msg.record.remove.ask"/>");
-                    dialog.addProperties({
-                        buttonClick: function (button, index) {
-                            this.close();
-                            if (index === 0) {
-                                var ids = ListGrid_ForQuestions_PreTestJSP.getSelection().map(function(item) {return item.questionBank.id;});
-                                var activeClass = ListGrid_class_Evaluation.getSelectedRecord();
-                                var activeClassId = activeClass.id;
-                                let JSONObj = {"ids": ids};
-                                isc.RPCManager.sendRequest({
-                                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                                    useSimpleHttp: true,
-                                    contentType: "application/json; charset=utf-8",
-                                    actionURL: questionBankTestQuestionUrl + "/delete-questions/preTest/" + activeClassId + "/" + ids,
-                                    httpMethod: "DELETE",
-                                    data: JSON.stringify(JSONObj),
-                                    serverOutputAsString: false,
-                                    callback: function (resp) {
-                                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    var ids = ListGrid_ForQuestions_PreTestJSP.getSelection().map(function(item) {return item.questionBank.id;});
 
-                                            ListGrid_ForQuestions_PreTestJSP.invalidateCache();
-                                            let findRows=ListGrid_AllQuestions_PreTestJSP.findAll(({ id }) =>  ids.some(p=>p==id));
+                    if(ids && ids.length>0){
+                        let dialog = createDialog('ask', "<spring:message code="msg.record.remove.ask"/>");
+                        dialog.addProperties({
+                            buttonClick: function (button, index) {
+                                this.close();
+                                if (index === 0) {
 
-                                            if(typeof (findRows)!='undefined' && findRows.length>0){
-                                                findRows.setProperty("enabled", true);
-                                                ListGrid_AllQuestions_PreTestJSP.deselectRecord(findRows);
-                                                ListGrid_AllQuestions_PreTestJSP.redraw();
+                                    var activeClass = ListGrid_class_Evaluation.getSelectedRecord();
+                                    var activeClassId = activeClass.id;
+                                    let JSONObj = {"ids": ids};
+
+
+                                    isc.RPCManager.sendRequest({
+                                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                        useSimpleHttp: true,
+                                        contentType: "application/json; charset=utf-8",
+                                        actionURL: questionBankTestQuestionUrl + "/delete-questions/preTest/" + activeClassId + "/" + ids,
+                                        httpMethod: "DELETE",
+                                        data: JSON.stringify(JSONObj),
+                                        serverOutputAsString: false,
+                                        callback: function (resp) {
+                                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+                                                ListGrid_ForQuestions_PreTestJSP.invalidateCache();
+                                                let findRows=ListGrid_AllQuestions_PreTestJSP.findAll(({ id,questionBank,questionBankId }) =>  ids.some(p=>(!questionBank)?p==id:p==questionBankId));
+
+                                                if(findRows && findRows.length>0){
+                                                    findRows.setProperty("enabled", true);
+                                                    ListGrid_AllQuestions_PreTestJSP.deselectRecord(findRows);
+                                                    ListGrid_AllQuestions_PreTestJSP.redraw();
+                                                }
+                                                isc.say("عملیات با موفقیت انجام شد.");
+                                            } else {
+                                                isc.say("خطا در پاسخ سرویس دهنده");
                                             }
-                                            isc.say("عملیات با موفقیت انجام شد.");
-                                        } else {
-                                            isc.say("خطا در پاسخ سرویس دهنده");
                                         }
-                                    }
-                                });
+                                    });
+                                }
                             }
-                        }
-                    })
+                        })
+
+                    }else{
+                        isc.say("سوالي انتخاب نشده است.");
+                    }
                 }
             })
         ]
