@@ -22,6 +22,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -73,8 +74,14 @@ public class PostGradeService implements IPostGradeService {
     public List<PostDTO.TupleInfo> getPosts(Long id) {
 
         final Optional<PostGrade> postGradeById = postGradeDAO.findById(id);
-        final PostGrade job = postGradeById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        return modelMapper.map(job.getPostSet(), new TypeToken<List<PostDTO.TupleInfo>>() {
-        }.getType());
+        final PostGrade postGrade = postGradeById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+
+        List<PostDTO.TupleInfo> result = new ArrayList<>();
+
+        postGrade.getTrainingPostSet().stream().filter(p -> p.getDeleted() == null).collect(Collectors.toList()).forEach(p -> result.addAll(modelMapper.map(p.getPostSet().stream().filter(r->r.getDeleted() == null).collect(Collectors.toList()), new TypeToken<List<PostDTO.TupleInfo>>() {
+        }.getType())));
+
+        return result;
     }
 }
