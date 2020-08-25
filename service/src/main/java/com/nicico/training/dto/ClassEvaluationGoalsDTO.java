@@ -27,4 +27,16 @@ public class ClassEvaluationGoalsDTO {
         private String goalQuestion;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("Update")
+    public static class Update{
+        private Long classId;
+        private Long skillId;
+        private Long goalId;
+        private String question;
+        private String goalQuestion;
+    }
+
 }

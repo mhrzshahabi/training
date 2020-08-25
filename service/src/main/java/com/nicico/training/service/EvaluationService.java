@@ -299,6 +299,9 @@ public class EvaluationService implements IEvaluationService {
 
                 result.add(evaluationAnswerFullData);
             }
+            Comparator<EvaluationAnswerDTO.EvaluationAnswerFullData> compareByOrder = (EvaluationAnswerDTO.EvaluationAnswerFullData o1, EvaluationAnswerDTO.EvaluationAnswerFullData o2) ->
+                    o1.getOrder().compareTo( o2.getOrder() );
+            Collections.sort(result, compareByOrder);
             return result;
         }
         else
@@ -403,7 +406,7 @@ public class EvaluationService implements IEvaluationService {
                 }
                 else{
                     DynamicQuestionDTO.Info dynamicQuestionCreate = new DynamicQuestionDTO.Info();
-                    dynamicQuestionCreate.setOrder(1);
+                    dynamicQuestionCreate.setOrder(0);
                     dynamicQuestionCreate.setQuestion(Question);
                     dynamicQuestionCreate.setTypeId(type);
                     dynamicQuestionCreate.setWeight(1);
@@ -433,7 +436,7 @@ public class EvaluationService implements IEvaluationService {
                 }
                 else{
                     DynamicQuestionDTO.Info dynamicQuestionCreate = new DynamicQuestionDTO.Info();
-                    dynamicQuestionCreate.setOrder(1);
+                    dynamicQuestionCreate.setOrder(-1);
                     dynamicQuestionCreate.setQuestion(Question);
                     dynamicQuestionCreate.setTypeId(type);
                     dynamicQuestionCreate.setWeight(1);
@@ -499,7 +502,7 @@ public class EvaluationService implements IEvaluationService {
                 }
                 else{
                     DynamicQuestionDTO.Info dynamicQuestionCreate = new DynamicQuestionDTO.Info();
-                    dynamicQuestionCreate.setOrder(1);
+                    dynamicQuestionCreate.setOrder(0);
                     dynamicQuestionCreate.setQuestion(Question);
                     dynamicQuestionCreate.setTypeId(type);
                     dynamicQuestionCreate.setWeight(1);
@@ -527,7 +530,7 @@ public class EvaluationService implements IEvaluationService {
                 }
                 else{
                     DynamicQuestionDTO.Info dynamicQuestionCreate = new DynamicQuestionDTO.Info();
-                    dynamicQuestionCreate.setOrder(1);
+                    dynamicQuestionCreate.setOrder(-1);
                     dynamicQuestionCreate.setQuestion(Question);
                     dynamicQuestionCreate.setTypeId(type);
                     dynamicQuestionCreate.setWeight(1);
