@@ -14,7 +14,6 @@
 // <script>
     //----------------------------------------- Variables --------------------------------------------------------------
     var questionsSelection=false;
-    var fromQuestionBank=true;
     //----------------------------------------- DataSources ------------------------------------------------------------
     var RestDataSource_FinalTest = isc.TrDS.create({
         fields: [
@@ -391,7 +390,6 @@
 
             } else {
                 questionsSelection=true;
-                fromQuestionBank=true;
 
                 RestDataSource_All_FinalTest.fields=[
                     {name: "id", primaryKey: true, hidden: true},
@@ -590,7 +588,6 @@
 
             } else {
                 questionsSelection=true;
-                fromQuestionBank=false;
 
                 RestDataSource_All_FinalTest.fields=[
                     {name: "id", primaryKey: true, hidden: true},
@@ -746,7 +743,7 @@
         click: function () {
             let params = {};
             let data = ListGrid_FinalTest.getData().localData.get(0).testQuestionId;
-            params.teacher = ListGrid_FinalTest.getData().localData.get(0).questionBank.teacher.fullNameFa;
+            params.teacher = FinalTestLG_finalTest.getSelectedRecord().tclass.teacher;//ListGrid_FinalTest.getData().localData.get(0).questionBank.teacher.fullNameFa;
 
             print(data, params, "testForm.jasper");
         }

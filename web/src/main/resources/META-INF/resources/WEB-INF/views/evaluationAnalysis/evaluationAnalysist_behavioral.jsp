@@ -7,6 +7,8 @@
     var behavioral_chartData1 = null;
 
     var BehavioralEvaluationChart1 = isc.FacetChart.create({
+        height: "75%",
+        verticalAlign: "top",
         titleAlign: "center",
         minLabelGap: 5,
         barMargin: "100",
@@ -37,6 +39,8 @@
     var behavioral_chartData2 = null;
 
     var BehavioralEvaluationChart2 = isc.FacetChart.create({
+        height: "75%",
+        verticalAlign: "top",
         titleAlign: "center",
         minLabelGap: 5,
         barMargin: "100",
@@ -60,20 +64,42 @@
         title: "تحلیل ارزیابی رفتاری کلاس براساس نوع ارزیابی کننده",
     });
 
+    var IButton_Print_LearningBehavioral_Evaluation_Analysis = isc.IButton.create({
+        align: "center",
+        width: "300",
+        height: "30",
+        margin: 2,
+        title: "چاپ گزارش تغییر رفتار",
+        click: function () {
+        }
+    });
+
     var BehavioralEvaluationChartLayout = isc.HLayout.create({
-        defaultLayoutAlign: "center",
-        width: "50%",
-        height: "80%",
+        defaultLayoutAlign: "top",
+        width: "100%",
+        height: "75%",
         membersMargin: 10,
         members: [BehavioralEvaluationChart1,BehavioralEvaluationChart2]
     });
 
-    var Hlayout_BehavioralEvaluationResult = isc.HLayout.create({
+    // var Hlayout_BehavioralEvaluationResult = isc.HLayout.create({
+    //     width: "100%",
+    //     height: "75%",
+    //     // overflow: "scroll",
+    //     members: [
+    //         BehavioralEvaluationChartLayout,
+    //     ]
+    // });
+
+    var Hlayout_BehavioralEvaluationResult = isc.VLayout.create({
         width: "100%",
         height: "100%",
+        defaultLayoutAlign : "center",
+        vAlign: "top",
         overflow: "scroll",
         members: [
-            BehavioralEvaluationChartLayout
+            BehavioralEvaluationChartLayout,
+            IButton_Print_LearningBehavioral_Evaluation_Analysis
         ]
     });
 
