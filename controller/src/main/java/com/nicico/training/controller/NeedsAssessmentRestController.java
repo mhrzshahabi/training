@@ -11,6 +11,8 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.dto.NeedsAssessmentDTO;
+import com.nicico.training.mapper.needsassessment.NeedsAssessmentBeanMapper;
+import com.nicico.training.model.NeedsAssessmentTemp;
 import com.nicico.training.service.NeedsAssessmentService;
 import com.nicico.training.service.NeedsAssessmentTempService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import request.needsassessment.NeedsAssessmentUpdateRequest;
+import response.needsassessment.NeedsAssessmentUpdateResponse;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -35,6 +39,8 @@ public class NeedsAssessmentRestController {
     private final NeedsAssessmentTempService needsAssessmentTempService;
     private final MessageSource messageSource;
     private final ModelMapper modelMapper;
+    private final NeedsAssessmentBeanMapper mapper;
+    private final com.nicico.training.service.needsassessment.NeedsAssessmentTempService tempService;
 
 
     @Loggable
@@ -105,11 +111,19 @@ public class NeedsAssessmentRestController {
 
     @Loggable
     @PutMapping("/{id}")
-    public ResponseEntity update(@PathVariable Long id, @RequestBody Object rq) {
-        NeedsAssessmentDTO.Update update = modelMapper.map(rq, NeedsAssessmentDTO.Update.class);
-        if (!needsAssessmentTempService.isEditable(update.getObjectType(), update.getObjectId()))
-            return new ResponseEntity<>(messageSource.getMessage("read.only.na.message", null, LocaleContextHolder.getLocale()), HttpStatus.CONFLICT);
-        return new ResponseEntity<>(needsAssessmentTempService.update(id, update), HttpStatus.OK);
+    public ResponseEntity<NeedsAssessmentUpdateResponse> update(@PathVariable Long id, @RequestBody NeedsAssessmentUpdateRequest rq) {
+        NeedsAssessmentUpdateResponse response = new NeedsAssessmentUpdateResponse();
+
+        if (!needsAssessmentTempService.isEditable(rq.getObjectType(), rq.getObjectId())) {
+            response.setMessage(messageSource.getMessage("read.only.na.message", null, LocaleContextHolder.getLocale()));
+            response.setStatus(HttpStatus.CONFLICT.value());
+            return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+        }
+
+        tempService.update(mapper.toUpdatedNeedsTemp(rq, tempService.get(id)));
+        response.setStatus(HttpStatus.OK.value());
+        response.setMessage("ویرایش موفقیت آمیز");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Loggable
