@@ -45,10 +45,9 @@
         allowedChartTypes: [],
         axisStartValue: 0,
         axisEndValue: 100,
-        // brightenAllOnHover:true,
-        // showValueOnHover:true,
-        // hoverLabelPadding: -5,
         showDataValues:true,
+        brightenAllOnHover:true,
+        hoverLabelPadding: -7,
         facets: [
             {
                 id: "evaluator",
