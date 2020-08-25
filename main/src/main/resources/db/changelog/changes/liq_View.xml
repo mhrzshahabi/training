@@ -1756,7 +1756,7 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_POST_GRADE-006">
+    <changeSet author="NICICO" id="VIEW_POST_GRADE-007">
         <createView viewName="VIEW_POST_GRADE" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1794,7 +1794,6 @@ FROM
             tbl_training_post
         WHERE
             e_deleted IS NULL
-            AND e_enabled IS NULL
     )        tp ON tp.f_post_grade_id = pg.id
     LEFT JOIN tbl_post_training_post   ptp ON tp.id = ptp.f_training_post_id
     LEFT JOIN (
@@ -1804,7 +1803,6 @@ FROM
             tbl_post
         WHERE
             e_deleted IS NULL
-            AND e_enabled IS NULL
     ) p ON p.id = ptp.f_post_id
     LEFT JOIN view_active_personnel    prs ON p.id = prs.f_post_id
 GROUP BY
