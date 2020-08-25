@@ -24,5 +24,7 @@ public class ClassEvaluationGoalsDTO {
         private Long skillId;
         private Long goalId;
         private String question;
+        private String goalQuestion;
     }
+
 }

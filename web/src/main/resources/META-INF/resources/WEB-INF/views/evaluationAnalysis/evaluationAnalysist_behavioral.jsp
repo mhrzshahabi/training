@@ -9,8 +9,6 @@
     var BehavioralEvaluationChart1 = isc.FacetChart.create({
         titleAlign: "center",
         minLabelGap: 5,
-        width: "80%",
-        height: "90%",
         barMargin: "100",
         stacked: false,
         chartType: "Column",
@@ -41,8 +39,6 @@
     var BehavioralEvaluationChart2 = isc.FacetChart.create({
         titleAlign: "center",
         minLabelGap: 5,
-        width: "80%",
-        height: "90%",
         barMargin: "100",
         stacked: false,
         chartType: "Column",
@@ -68,7 +64,7 @@
     var BehavioralEvaluationChartLayout = isc.HLayout.create({
         defaultLayoutAlign: "center",
         width: "50%",
-        height: "500",
+        height: "80%",
         membersMargin: 10,
         members: [BehavioralEvaluationChart1,BehavioralEvaluationChart2]
     });

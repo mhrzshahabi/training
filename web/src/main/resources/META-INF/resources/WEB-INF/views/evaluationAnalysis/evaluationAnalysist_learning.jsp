@@ -25,10 +25,6 @@
                 name: "student.lastName",filterOperator: "iContains"
             },
             {
-                name: "student.nationalCode",filterOperator: "iContains"
-            },
-
-            {
                 name: "student.personnelNo",filterOperator: "iContains"
             },
             {name:"preTestScore", filterOperator: "iContains"},
@@ -211,7 +207,6 @@
     }
 
     var VLayout_Body_evaluation_analysis_learning = isc.VLayout.create({
-        width: "53%",
         height: "100%",
         defaultLayoutAlign: "center",
         members: [ DynamicForm_Learning_EvaluationAnalysis_Header,
@@ -234,14 +229,6 @@
             {
                 name: "student.personnelNo",
                 title: "<spring:message code="personnel.no"/>",
-                filterOperator: "iContains",autoFitWidth:true,
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
-                }
-            },
-            {
-                name: "student.nationalCode",
-                title: "<spring:message code="national.code"/>",
                 filterOperator: "iContains",autoFitWidth:true,
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
@@ -328,7 +315,6 @@
 
     var LearningEvaluationGridLayout =  isc.VLayout.create({
         defaultLayoutAlign: "center",
-        width: "37%",
         height: "400",
         members: [ListGrid_evaluationAnalysist_learning]
     });

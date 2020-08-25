@@ -338,7 +338,7 @@
                 </sec:authorize>
                 {
                     id: "TabPane_EditGoalQuestions",
-                    title: "ویرایش سوالات ارزیابی-اهداف",
+                    title: "ویرایش سوالات ارزیابی مربوط به اهداف",
                     pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation/edit-goal-questions-form"})
                 }
             ],
@@ -440,6 +440,13 @@
                         classRecord_BE = classRecord;
                         break;
                     }
+                    case "TabPane_EditGoalQuestions" : {
+                        RestDataSource_Golas_JspEGQ.fetchDataURL = evaluationUrl + "/getClassGoalsQuestions/" + classRecord.id;
+                        ListGrid_Goal_JspEGQ.invalidateCache();
+                        ListGrid_Goal_JspEGQ.fetchData();
+                        classRecord_JspEGQ = classRecord;
+                        break;
+                    }
                     case "TabPane_Results": {
                         break;
                     }
@@ -452,7 +459,7 @@
 
         function set_Evaluation_Tabset_status() {
             let classRecord = ListGrid_class_Evaluation.getSelectedRecord();
-            let evaluationType = classRecord.courseEvaluationType;
+            let evaluationType = classRecord.evaluation;
 
             if (evaluationType === "1") {
                 Detail_Tab_Evaluation.enableTab(0);

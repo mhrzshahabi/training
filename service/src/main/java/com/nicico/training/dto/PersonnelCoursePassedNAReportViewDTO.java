@@ -80,6 +80,6 @@ public class PersonnelCoursePassedNAReportViewDTO {
         private Long isPassed;
         private String personnelPostGradeLvlCode;
         private String personnelPostGradeTitle;
-        private String pgCCode;
+        private Long postGradeId;
     }
 }

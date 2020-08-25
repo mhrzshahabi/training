@@ -136,7 +136,7 @@
         wrapItemTitles: true,
         fields: [
             {
-                name: "personnelPostGradeCode",
+                name: "pgId",
                 title: "انتخاب رده پستي",
                 optionDataSource: PostGradeDS_PCNP,
                 autoFetchData: false,
@@ -168,7 +168,7 @@
                         }
                     }
                 ],
-                valueField: "code",
+                valueField: "id",
                 displayField: "titleFa",
                 //specialValues: { "**emptyValue**": ""},
                 //separateSpecialValues: true
@@ -534,8 +534,6 @@
 
 
                         PersonnelCourseLG_PCNP.implicitCriteria = tmp;
-
-                        console.log(tmp);
 
                         PersonnelCourseLG_PCNP.invalidateCache();
                         PersonnelCourseLG_PCNP.fetchData();

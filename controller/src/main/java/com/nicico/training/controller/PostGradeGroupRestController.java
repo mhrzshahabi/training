@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -76,7 +77,14 @@ public class PostGradeGroupRestController {
         if (postGrades == null || postGrades.isEmpty()) {
             return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
         }
-        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq().setCriteria(makeNewCriteria("postGrade", postGrades.stream().filter(pg -> pg.getDeleted() == null).map(PostGradeDTO.Info::getId).collect(Collectors.toList()), EOperator.inSet, null));
+        SearchDTO.CriteriaRq criteriaRq=new SearchDTO.CriteriaRq();
+        criteriaRq.setCriteria(new ArrayList<>());
+        criteriaRq.setOperator(EOperator.and);
+
+        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+        searchRq.getCriteria().getCriteria().add(makeNewCriteria("trainingPostSet.postGrade", postGrades.stream().filter(pg -> pg.getDeleted() == null).map(PostGradeDTO.Info::getId).collect(Collectors.toList()), EOperator.inSet, null)) ;
+        searchRq.getCriteria().getCriteria().add(makeNewCriteria("deleted", null, EOperator.isNull, null));
+        searchRq.getCriteria().getCriteria().add(makeNewCriteria("trainingPostSet.deleted",null, EOperator.isNull, null));
         SearchDTO.SearchRs<PostDTO.TupleInfo> postList = postService.searchWithoutPermission(searchRq, p -> modelMapper.map(p, PostDTO.TupleInfo.class));
         if (postList.getList() == null || postList.getList().isEmpty()) {
             return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
