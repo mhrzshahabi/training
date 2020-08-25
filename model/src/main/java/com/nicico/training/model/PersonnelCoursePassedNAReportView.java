@@ -98,8 +98,8 @@ public class PersonnelCoursePassedNAReportView implements Serializable {
     @Column(name = "personnel_cpp_title")
     private String personnelCcpTitle;
 
-    @Column(name = "C_CODE")
-    private String pgCCode;
+    @Column(name = "personnel_post_grade_id")
+    private Long postGradeId;
 
     ///////////////////////////////////////////////////course///////////////////////////////////////
 

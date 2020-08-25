@@ -104,19 +104,9 @@ public class ClassEvaluationGoalsService extends BaseService<ClassEvaluationGoal
                create(classEvaluationGoals);
            }
            else if(id != null &&  question != null  && !question.equalsIgnoreCase("") && !question.equalsIgnoreCase(" ")){
-               ClassEvaluationGoalsDTO.Info classEvaluationGoals = new ClassEvaluationGoalsDTO.Info();
-               classEvaluationGoals.setQuestion(question);
-//               classEvaluationGoals.setClassId(classId);
-//               classEvaluationGoals.setSkillId(skillId);
-//               classEvaluationGoals.setGoalId(goalId);
-               classEvaluationGoals.setId(null);
-
                final Optional<ClassEvaluationGoals> cById = dao.findById(id);
-               final ClassEvaluationGoals classEvaluationGoals1 = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
-               ClassEvaluationGoals updating = new ClassEvaluationGoals();
-               modelMapper.map(classEvaluationGoals, updating);
-               modelMapper.map(classEvaluationGoals1, updating);
-               update(id,modelMapper.map(updating,ClassEvaluationGoalsDTO.Info.class));
+               final ClassEvaluationGoals classEvaluationGoals = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
+               classEvaluationGoals.setQuestion(question);
            }
            else if(id != null && (question == null || question.equalsIgnoreCase("") || !question.equalsIgnoreCase(" "))){
                delete(id);
