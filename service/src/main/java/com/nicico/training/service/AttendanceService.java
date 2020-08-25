@@ -364,7 +364,7 @@ public class AttendanceService implements IAttendanceService {
     }
 
     @Override
-    public void saveList(List<Attendance> attendances) {
+    public void saveOrUpdateList(List<Attendance> attendances) {
         attendances.forEach(attendance -> {
             Optional<Attendance> optional = attendanceDAO.findBySessionIdAndStudentId(attendance.getSessionId(),
                     attendance.getStudentId());

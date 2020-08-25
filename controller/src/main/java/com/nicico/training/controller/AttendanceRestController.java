@@ -106,7 +106,7 @@ public class AttendanceRestController {
       //  attendanceService.convertToModelAndSave(req, classId, date);
  /*       classAlarmService.alarmAttendanceUnjustifiedAbsence(classId);
         classAlarmService.saveAlarms();*/
-        attendanceService.saveList(mapper.ToAttendanceList(request));
+        attendanceService.saveOrUpdateList(mapper.ToAttendanceList(request));
         AttendanceListSaveResponse response = new AttendanceListSaveResponse();
         response.setStatus(HttpStatus.CREATED.value());
         response.setMessage("با موفقیت ایجاد شد");

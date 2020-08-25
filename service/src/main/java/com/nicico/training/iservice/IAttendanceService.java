@@ -69,5 +69,5 @@ public interface IAttendanceService {
 
     String studentUnknownSessionsInClass(Long classId);
 
-    void saveList(List<Attendance> attendances);
+    void saveOrUpdateList(List<Attendance> attendances);
 }
