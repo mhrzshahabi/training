@@ -140,7 +140,8 @@ public class TestQuestionService implements ITestQuestionService {
 
         String data = mapper.writeValueAsString(testQuestionBanks);
         params.put("today", DateUtil.todayDate());
-        params.put("class", model.getTclass().getTitleClass());
+        params.put("course", model.getTclass().getTitleClass());
+        params.put("class_code", model.getTclass().getCode());
         params.put("date", model.getDate() != null ? model.getDate() : null);
         params.put("time", model.getTime() != null ? model.getTime() : null);
         params.put("duration", model.getDuration() != null ? model.getDuration().toString() + " دقیقه" : null);
