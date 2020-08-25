@@ -106,9 +106,6 @@ public class ClassEvaluationGoalsService extends BaseService<ClassEvaluationGoal
            else if(id != null &&  question != null  && !question.equalsIgnoreCase("") && !question.equalsIgnoreCase(" ")){
                ClassEvaluationGoalsDTO.Info classEvaluationGoals = new ClassEvaluationGoalsDTO.Info();
                classEvaluationGoals.setQuestion(question);
-//               classEvaluationGoals.setClassId(classId);
-//               classEvaluationGoals.setSkillId(skillId);
-//               classEvaluationGoals.setGoalId(goalId);
                classEvaluationGoals.setId(null);
 
                final Optional<ClassEvaluationGoals> cById = dao.findById(id);
