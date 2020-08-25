@@ -550,7 +550,6 @@ public class ClassSessionService implements IClassSession {
             //********fetch holidays*********
             List<String> holidays = holidayDAO.Holidays(classStartDate, classEndDate);
 
-
             //*********************************
             //*********************************
             //*********************************
@@ -577,7 +576,6 @@ public class ClassSessionService implements IClassSession {
                                     "آموزش",
                                     ((autoSessionsRequirement.getInstituteId() != null) ? (autoSessionsRequirement.getInstituteId().intValue()) : null),
                                     ((autoSessionsRequirement.getTrainingPlaceIds() != null) ? (autoSessionsRequirement.getTrainingPlaceIds().get(0).intValue()) : null),
-//                                    autoSessionsRequirement.getTrainingPlaceIds().get(0).intValue(),
                                     autoSessionsRequirement.getTeacherId(),
                                     sessionState,
                                     "شروع نشده",
@@ -587,7 +585,6 @@ public class ClassSessionService implements IClassSession {
                         }
                     }
                 }
-
                 gregorianStartDate = DateUtils.addDays(gregorianStartDate, 1);
             }
 

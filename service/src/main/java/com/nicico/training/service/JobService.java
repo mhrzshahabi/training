@@ -24,6 +24,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -83,5 +84,17 @@ public class JobService implements IJobService {
         final Job job = jobDAO.findById(jobId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         return modelMapper.map(job.getPostSet().stream().filter(post -> post.getDeleted() == null).collect(Collectors.toList()), new TypeToken<List<PostDTO.Info>>() {
         }.getType());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PostDTO.Info> getPostsWithTrainingPost(Long jobId) {
+        final Job job = jobDAO.findById(jobId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        List<PostDTO.Info> result = new ArrayList<>();
+
+        job.getTrainingPostSet().stream().filter(p-> p.getDeleted() == null).collect(Collectors.toList()).forEach(p -> result.addAll(modelMapper.map(p.getPostSet().stream().filter(r->r.getDeleted() == null).collect(Collectors.toList()), new TypeToken<List<PostDTO.Info>>() {
+        }.getType())));
+
+        return result;
     }
 }
