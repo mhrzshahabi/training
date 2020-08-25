@@ -1062,6 +1062,15 @@
             idClasses=JSON.parse(resp.data).response.data.map(x=>x.idClass);
             ListGrid_JspControlReport.setData(JSON.parse(resp.data).response.data);
             Window_JspControlReport.show();
+
+            let buttons=[IButton_JspControlReport_AttendanceExcel, IButton_JspControlReport_ScoreExcel, IButton_JspControlReport_ControlExcel, IButton_JspControlReport_FullExcel];
+            let disabled=true;
+
+            if (ListGrid_JspControlReport.data.size() > 0){
+                disabled=!disabled;
+            }
+
+            buttons.forEach(item => item.setDisabled(disabled));
         }
     }
 
