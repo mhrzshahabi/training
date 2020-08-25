@@ -89,5 +89,4 @@ public class Evaluation extends Auditable {
 
     @Column(name = "f_questionnaire_id")
     private Long questionnaireId;
-
 }

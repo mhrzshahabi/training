@@ -94,7 +94,7 @@
                                 _constructor:"AdvancedCriteria",
                                 operator:"and",
                                 criteria:[
-                                    {fieldName:"behavioralDueDate", operator:"equals", value: new Date()},
+                                    {fieldName:"behavioralDueDate", operator:"equals", value: Date.create(today).toUTCString()},
                                     {fieldName:"evaluation", operator:"equals", value: "3"}
                                 ]
                             };
