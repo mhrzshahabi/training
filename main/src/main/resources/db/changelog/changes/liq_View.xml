@@ -1678,7 +1678,7 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_JOB_GROUP-005">
+    <changeSet author="NICICO" id="VIEW_JOB_GROUP-006">
         <createView viewName="VIEW_JOB_GROUP" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -1718,7 +1718,6 @@ FROM
             tbl_job
         WHERE
             e_deleted IS NULL
-            AND e_enabled IS NULL
     ) j ON tbl_job_jobgroup.f_job_id = j.id
     LEFT JOIN (
         SELECT
@@ -1727,7 +1726,6 @@ FROM
             tbl_training_post
         WHERE
             e_deleted IS NULL
-            AND e_enabled IS NULL
     ) tp ON tp.f_job_id = j.id
     LEFT JOIN tbl_post_training_post   ptp ON tp.id = ptp.f_training_post_id
     LEFT JOIN (
@@ -1737,7 +1735,6 @@ FROM
             tbl_post
         WHERE
             e_deleted IS NULL
-            AND e_enabled IS NULL
     ) p ON p.id = ptp.f_post_id
     LEFT JOIN view_active_personnel    prs ON p.id = prs.f_post_id
 GROUP BY
