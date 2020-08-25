@@ -3,12 +3,18 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-var change_value_JspEGQ  = true;
+    var change_value_JspEGQ = false;
+    var classRecord_JspEGQ;
+
     var RestDataSource_Golas_JspEGQ = isc.TrDS.create({
         fields: [
-            {name: "teacherCode"}
-        ],
-        fetchDataURL: teacherUrl + "spec-list-grid"
+            {name: "question"},
+            {name: "goalQuestion"},
+            {name: "skillId"},
+            {name: "goalId"},
+            {name: "classId"},
+            {name: "id"}
+        ]
     });
 
 
@@ -22,56 +28,54 @@ var change_value_JspEGQ  = true;
         editByCell: true,
         editEvent: "click",
         modalEditing: true,
-        canHover:true,
+        canHover: true,
         canSelectCells: true,
-        autoFetchData: true,
-        initialSort: [
-            {property: "teacherCode", direction: "descending", primarySort: true}
-        ],
+        autoFetchData: false,
         fields: [
-            {name: "teacherCode",
-            canEdit: true,
-            validateOnChange: false,
-            editEvent: "click",
-            change: function (form, item, value, oldValue) {
-
-            if (value != null && value != '' && typeof (value) != 'undefined' && !value.match(/^(([1-9]\d{0,1})|100|0)$/)) {
-            item.setValue(value.substring(0, value.length - 1));
-            } else {
-            item.setValue(value);
-            }
-
-            if (value == null || typeof (value) == 'undefined') {
-            item.setValue('');
-            }
-
-
-            if (oldValue == null || typeof (oldValue) == 'undefined') {
-            oldValue = '';
-            }
-
-
-            if (item.getValue() != oldValue) {
-change_value_JspEGQ = true;
-            }
+            {
+                name: "goalQuestion",
+                title: "سوالات اهداف کلاس",
             },
-            editorExit: function (editCompletionEvent, record, newValue) {
-
-            if (change_value_JspEGQ) {
-            if (newValue != null && newValue != '' && typeof (newValue) != 'undefined') {
-
-            ListGrid_Cell_ScorePreTest_Update(record, newValue);
-
-            } else {
-            ListGrid_Cell_ScorePreTest_Update(record, null);
-            }
-            }
-change_value_JspEGQ = false;
-            },
+            {
+                name: "question",
+                title: "سوالات ویرایش شده",
+                canEdit: true,
+                validateOnChange: false,
+                editEvent: "click",
+                editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum) {
+                        record.question = newValue;
+                }
             }
         ],
     });
 
-    var HLayout_Body_JspEGQ = isc.TrHLayout.create({
-        members: [ListGrid_Goal_JspEGQ]
+    var IButton_SaveButton_JspEGQ = isc.IButtonSave.create({
+        top: 260,
+        click: function () {
+            let data = ListGrid_Goal_JspEGQ.getData().localData;
+            isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/editClassGoalsQuestions" , "POST", JSON.stringify(data), function (resp) {
+                ListGrid_Goal_JspEGQ.invalidateCache();
+            }
+        ));
+
+    }
+    });
+
+    var HLayOut_SaveButton_JspEGQ = isc.TrHLayoutButtons.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        width: "100%",
+        alignLayout: "center",
+        padding: 10,
+        members: [
+            IButton_SaveButton_JspEGQ,
+        ]
+    });
+
+    var VLayout_Body_JspEGQ = isc.TrVLayout.create({
+        members: [
+            ListGrid_Goal_JspEGQ,
+            HLayOut_SaveButton_JspEGQ
+        ]
     });

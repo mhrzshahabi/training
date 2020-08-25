@@ -700,7 +700,7 @@ public class TclassService implements ITclassService {
         result.put("FERGrade",FERGradeResult.get("FERGrade"));
         result.put("FERPass",FERGradeResult.get("FERPass"));
 
-        double trainingGradeToTeacher = getTrainingGradeToTeacher(classId, null, tclass.getTeacherId());
+        double trainingGradeToTeacher = getTrainingGradeToTeacher(classId, tclass.getSupervisor(), tclass.getTeacherId());
         Map<String,Object> FETGradeResult = getFETGrade(studentsGradeToTeacher,trainingGradeToTeacher,percenetOfFilledReactionEvaluationForms);
         result.put("FETGrade", FETGradeResult.get("FETGrade"));
         result.put("FETPass", FETGradeResult.get("FETPass"));

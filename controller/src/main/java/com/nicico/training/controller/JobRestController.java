@@ -66,7 +66,7 @@ public class JobRestController {
     @GetMapping(value = "/{jobId}/getPersonnel")
 //    @PreAuthorize("hasAnyAuthority('r_post_group')")
     public ResponseEntity<ISC<PersonnelDTO.Info>> getPersonnel(@PathVariable Long jobId, HttpServletRequest iscRq) throws IOException {
-        List<PostDTO.Info> postList = jobService.getPosts(jobId);
+        List<PostDTO.Info> postList = jobService.getPostsWithTrainingPost(jobId);
         if (postList == null || postList.isEmpty()) {
             return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
         }

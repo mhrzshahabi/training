@@ -35,6 +35,7 @@ public class EvaluationService implements IEvaluationService {
     private final DynamicQuestionDAO dynamicQuestionDAO;
     private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
     private final ParameterValueDAO parameterValueDAO;
+    private final ClassEvaluationGoalsDAO classEvaluationGoalsDAO;
 
 
     @Transactional(readOnly = true)
@@ -388,7 +389,12 @@ public class EvaluationService implements IEvaluationService {
             Tclass tclass = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
             for (Goal goal : tclass.getCourse().getGoalSet()) {
-                String Question = getGoalQuestion(goal.getId());
+                ClassEvaluationGoals classEvaluationGoals = classEvaluationGoalsDAO.findByClassIdAndSkillIdAndGoalId(tclass.getId(),null,goal.getId());
+                String Question = null;
+                if(classEvaluationGoals != null)
+                    Question = classEvaluationGoals.getQuestion();
+                else
+                    Question = goal.getTitleFa();
                 Long type = 201L;
                 DynamicQuestionDTO.Info dynamicQuestion;
                 List<DynamicQuestion> list = dynamicQuestionDAO.findByQuestionAndTypeId(Question,type);
@@ -412,7 +418,13 @@ public class EvaluationService implements IEvaluationService {
             }
 
             for(Skill skill : tclass.getCourse().getSkillSet()){
-                String Question = getSkillQuestion(skill.getId());
+                ClassEvaluationGoals classEvaluationGoals = classEvaluationGoalsDAO.findByClassIdAndSkillIdAndGoalId(tclass.getId(),skill.getId(),null);
+                String Question = null;
+                if(classEvaluationGoals != null)
+                    Question = classEvaluationGoals.getQuestion();
+                else
+                    Question = skill.getTitleFa();
+
                 Long type = 200L;
                 DynamicQuestionDTO.Info dynamicQuestion;
                 List<DynamicQuestion> list = dynamicQuestionDAO.findByQuestionAndTypeId(Question,type);
@@ -473,7 +485,12 @@ public class EvaluationService implements IEvaluationService {
             Tclass tclass = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
             for (Goal goal : tclass.getCourse().getGoalSet()) {
-                String Question = getGoalQuestion(goal.getId());
+                ClassEvaluationGoals classEvaluationGoals = classEvaluationGoalsDAO.findByClassIdAndSkillIdAndGoalId(tclass.getId(),null,goal.getId());
+                String Question = null;
+                if(classEvaluationGoals != null)
+                    Question = classEvaluationGoals.getQuestion();
+                else
+                    Question = goal.getTitleFa();
                 Long type = 201L;
                 DynamicQuestionDTO.Info dynamicQuestion;
                 List<DynamicQuestion> list = dynamicQuestionDAO.findByQuestionAndTypeId(Question,type);
@@ -496,7 +513,12 @@ public class EvaluationService implements IEvaluationService {
             }
 
             for(Skill skill : tclass.getCourse().getSkillSet()){
-                String Question = getSkillQuestion(skill.getId());
+                ClassEvaluationGoals classEvaluationGoals = classEvaluationGoalsDAO.findByClassIdAndSkillIdAndGoalId(tclass.getId(),skill.getId(),null);
+                String Question = null;
+                if(classEvaluationGoals != null)
+                    Question = classEvaluationGoals.getQuestion();
+                else
+                    Question = skill.getTitleFa();
                 Long type = 200L;
                 DynamicQuestionDTO.Info dynamicQuestion;
                 List<DynamicQuestion> list = dynamicQuestionDAO.findByQuestionAndTypeId(Question,type);

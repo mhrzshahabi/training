@@ -209,7 +209,8 @@
 
     function register_Evaluation_Form_JspQuestionEvaluation(classId, evaluatorId, evaluatorTypeId, evaluatedId,
                                                             evaluatedTypeId, questionnaireTypeId, evaluationLevelId,
-                                                            teacher, evaluatorName, evaluatedName, classCode, courseTitle, classStartDate) {
+                                                            teacher, evaluatorName, evaluatedName, classCode, courseTitle, classStartDate)
+    {
         let evaluationResult_DS = isc.TrDS.create({
             fields:
                 [
