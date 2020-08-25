@@ -51,5 +51,7 @@ public class ViewPersonnelCourseNaReportDTO implements Serializable {
         private Long courseId;
 
         private Long personnelId;
+
+        private Long postGradeId;
     }
 }
