@@ -81,9 +81,9 @@ public class MonthlyStatisticalReportService implements IMonthlyStatisticalRepor
                 "                    INNER JOIN tbl_student ST ON ST.id = A.f_student  " +
                 "                    INNER JOIN (\n " +
                 "                        SELECT\n " +
-                "                            * from view_personnels\n"+
+                "                            * from view_active_personnel\n"+
                 "                    ) personnel ON ST.national_code = personnel.national_code\n " +
-                "                    LEFT JOIN tbl_department department ON department.id = personnel.department_id \n " +
+                "                    LEFT JOIN tbl_department department ON department.id = personnel.f_department_id \n " +
                 "                    INNER JOIN tbl_session S ON S.id = A.f_session  " +
                 "                    INNER JOIN tbl_class C ON S.f_class_id = C.id  " +
                 "                    INNER JOIN tbl_course CO ON C.f_course = CO.id  " +
@@ -105,7 +105,7 @@ public class MonthlyStatisticalReportService implements IMonthlyStatisticalRepor
             reportScript += "                 AND C.id in(" + StringUtils.join(Class, ",") + ")";
 
         if ((PostGrade.size() != 0))
-            reportScript += "                 AND PG.c_code in(" + StringUtils.join(PostGrade, ",") + ")";
+            reportScript += "                 AND PG.id in(" + StringUtils.join(PostGrade, ",") + ")";
 
         if ((Personnel.size() != 0))
             reportScript += "                 AND ST.id in(" + StringUtils.join(Personnel, ",") + ")";

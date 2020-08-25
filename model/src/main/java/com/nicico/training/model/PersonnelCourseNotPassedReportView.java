@@ -73,26 +73,26 @@ public class PersonnelCourseNotPassedReportView implements Serializable {
     @Column(name = "personnel_cpp_code")
     private String personnelCcpCode;
 
-    @Column(name = "personnel_cpp_area")
+    @Column(name = "personnel_ccp_area")
     private String personnelCcpArea;
 
-    @Column(name = "personnel_cpp_assistant")
+    @Column(name = "personnel_ccp_assistant")
     private String personnelCcpAssistant;
 
-    @Column(name = "personnel_cpp_affairs")
+    @Column(name = "personnel_ccp_affairs")
     private String personnelCcpAffairs;
 
-    @Column(name = "personnel_cpp_section")
+    @Column(name = "personnel_ccp_section")
     private String personnelCcpSection;
 
-    @Column(name = "personnel_cpp_unit")
+    @Column(name = "personnel_ccp_unit")
     private String personnelCcpUnit;
 
     @Column(name = "personnel_cpp_title")
     private String personnelCcpTitle;
 
-    @Column(name = "PG_C_CODE")
-    private String pgCCode;
+    @Column(name = "personnel_post_grade_id")
+    private Long pgId;
 
     ///////////////////////////////////////////////////course///////////////////////////////////////
 
