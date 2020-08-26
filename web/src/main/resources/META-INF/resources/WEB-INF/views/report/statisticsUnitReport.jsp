@@ -3,6 +3,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 // <script>
+
+    $(document).ready(()=>{
+        setTimeout(()=>{
+            $("input[name='courseCode']").attr("disabled","disabled");
+            $("input[name='classCode']").attr("disabled","disabled");
+        },0)}
+    );
+
     var startDate1Check_JspStaticalUnitReport = true;
     var startDate2Check_JspStaticalUnitReport = true;
     var startDateCheck_Order_JspStaticalUnitReport = true;
@@ -450,8 +458,7 @@
             {
                 name: "courseCode",
                 title: "کد دوره",
-                hint: "کدهای دوره را با , از یکدیگر جدا کنید",
-                prompt: "کدهای دوره فقط میتوانند شامل حروف انگلیسی بزرگ، اعداد و - باشند",
+                hint: "کد دوره را وارد نمایید",
                 showHintInField: true,
                 icons: [{
                     src: "[SKIN]/pickers/search_picker.png",
@@ -475,8 +482,7 @@
             {
                 name: "classCode",
                 title: "کد کلاس",
-                hint: "کدهای کلاس را با , از یکدیگر جدا کنید",
-                prompt: "کدهای کلاس فقط میتوانند شامل حروف انگلیسی بزرگ، اعداد و - باشند",
+                hint: "کد کلاس را وارد نمایید",
                 showHintInField: true,
                 icons: [{
                     src: "[SKIN]/pickers/search_picker.png",
@@ -1029,7 +1035,7 @@
                 criteriaDisplayValues = uniqueNames.join(",");
             }
 
-            criteriaDisplayValues = criteriaDisplayValues == ";undefined" ? "" : criteriaDisplayValues;
+            criteriaDisplayValues = criteriaDisplayValues == "undefined" ? "" : criteriaDisplayValues;
 
             DynamicForm_CriteriaForm_JspUnitReport.getField("classCode").setValue(criteriaDisplayValues);
             Window_SelectClasses_JspUnitReport.close();
@@ -1118,7 +1124,9 @@
                 criteriaDisplayValues = uniqueNames.join(",");
             }
 
-            criteriaDisplayValues = criteriaDisplayValues == ";undefined" ? "" : criteriaDisplayValues;
+            console.log(criteriaDisplayValues);
+
+            criteriaDisplayValues = criteriaDisplayValues == ",undefined" ? "" : criteriaDisplayValues;
 
             DynamicForm_CriteriaForm_JspUnitReport.getField("courseCode").setValue(criteriaDisplayValues);
             Window_SelectCourses_JspUnitReportReport.close();
