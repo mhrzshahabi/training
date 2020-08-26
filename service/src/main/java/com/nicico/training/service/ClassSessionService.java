@@ -35,6 +35,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -302,37 +303,29 @@ public class ClassSessionService implements IClassSession {
 
     @Transactional
     @Override
-    public ClassSessionDTO.DeleteStatus deleteSessions(List<Long> sessionIds) {
+    public ClassSessionDTO.DeleteStatus deleteSessions(Long classId, List<Long> sessionIds) {
         int totalSize = sessionIds.size();
         int successes = 0;
         Long kh = parameterValueService.getId("kh");
-        Long classId = -1l;
-        for (int i = 0; i < sessionIds.size(); i++) {
-            Long sessionId = sessionIds.get(i);
+        List<Long> notDeletableIds = attendanceDAO.checkSessionIdsAndStates(sessionIds, "0", kh);
+        List<Long> deletableIds = sessionIds.stream().filter(d -> !notDeletableIds.contains(d)).collect(Collectors.toList());
 
-            if (attendanceDAO.checkSessionIdAndState(sessionId, "0", kh) <= 0) {
+        if(deletableIds.size() > 0) {
+            attendanceDAO.deleteAllBySessionId(deletableIds);
+            classAlarmService.deleteAllAlarmsBySessionIds(deletableIds);
+            successes = classSessionDAO.deleteAllById(deletableIds);
 
-                if (classId == -1)
-                    classId = getClassIdBySessionId(sessionId);
-
-                attendanceDAO.deleteAllBySessionId(sessionId);
-                classSessionDAO.deleteById(sessionId);
-                successes++;
-            }
-        }
-
-        ClassSessionDTO.DeleteStatus deleteStatus = new ClassSessionDTO.DeleteStatus();
-        deleteStatus.setSucesses(successes);
-        deleteStatus.setTotalSizes(totalSize);
-
-        //*****check alarms*****
-        if (successes > 0) {
+            //*****check alarms*****
             classAlarmService.alarmSumSessionsTimes(classId);
             classAlarmService.alarmTeacherConflict(classId);
             classAlarmService.alarmStudentConflict(classId);
             classAlarmService.alarmTrainingPlaceConflict(classId);
             classAlarmService.saveAlarms();
         }
+
+        ClassSessionDTO.DeleteStatus deleteStatus = new ClassSessionDTO.DeleteStatus();
+        deleteStatus.setSucesses(successes);
+        deleteStatus.setTotalSizes(totalSize);
 
         return deleteStatus;
     }
@@ -639,11 +632,12 @@ public class ClassSessionService implements IClassSession {
                         classSession.setStudentStatus("ثبت نام شده");
                     }
                 }
-                List<Attendance> attendance = null;
-                if (studentId != null)
-                    attendance = attendanceDAO.findBySessionIdAndStudentId(classSession.getId(), studentId);
-                if (attendance != null && attendance.size() != 0)
-                    classSession.setStudentPresentStatus(attendance.get(0).getState());
+
+                if (studentId != null) {
+                    Optional<Attendance> optionalAttendance = attendanceDAO.findBySessionIdAndStudentId(classSession.getId(), studentId);
+                    optionalAttendance.ifPresent(attendance -> classSession.setStudentPresentStatus(attendance.getState()));
+                }
+
             }
         }
         resp.getList().sort(new StudentStatusSorter().thenComparing(new DateSorter()).thenComparing(new HourSorter()));

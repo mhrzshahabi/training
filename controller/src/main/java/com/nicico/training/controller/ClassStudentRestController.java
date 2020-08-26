@@ -11,10 +11,8 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationAnalysisService;
-import com.nicico.training.model.EvaluationAnalysis;
-import com.nicico.training.model.ViewPersonnelCourseNaReport;
+import com.nicico.training.mapper.student.ClassStudentBeanMapper;
 import com.nicico.training.repository.ClassStudentDAO;
-import com.nicico.training.repository.EvaluationAnalysisDAO;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +23,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import response.student.UpdatePreTestScoreResponse;
+import request.student.UpdateStudentScoreRequest;
+import request.student.UpdatePreTestScoreRequest;
+import response.student.UpdateStudentScoreResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,7 +36,6 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -55,6 +56,7 @@ public class ClassStudentRestController {
     private final ViewCoursesPassedPersonnelReportService iViewCoursesPassedPersonnelReportService;
     private final ViewPersonnelCourseNaReportService viewPersonnelCourseNaReportService;
     private final ContinuousStatusReportViewService continuousStatusReportViewService;
+    private final ClassStudentBeanMapper mapper;
 //    private final SearchDTO.SearchRq searchRq;
 //    private final SearchDTO.CriteriaRq criteriaRq;
 //    private final List<SearchDTO.CriteriaRq> list;
@@ -176,47 +178,43 @@ public class ClassStudentRestController {
             SearchDTO.SearchRs<ViewCoursesPassedPersonnelReportDTO.Grid> search = iViewCoursesPassedPersonnelReportService.search(searchRq.setCriteria(criteriaRq));
             SearchDTO.SearchRs<ContinuousStatusReportViewDTO.Grid> search2 = continuousStatusReportViewService.search(searchRq.setCriteria(criteriaRq));
             SearchDTO.SearchRs<ViewPersonnelCourseNaReportDTO.Grid> search1 = viewPersonnelCourseNaReportService.search(searchRq.setCriteria(criteriaRq));
-            if(search1.getList().isEmpty()){
-                s.setIsNeedsAssessment(false);
-            }
-            else{
-                s.setIsNeedsAssessment(true);
-            }
 
-            if(search.getList().isEmpty()){
-                s.setIsPassed(false);
-            }
-            else{
-                s.setIsPassed(true);
-            }
-
-            if(search2.getList().isEmpty()){
-                s.setIsRunning(false);
-            }
-            else{
-                s.setIsRunning(true);
-            }
+            s.setIsNeedsAssessment(!search1.getList().isEmpty());
+            s.setIsPassed(!search.getList().isEmpty());
+            s.setIsRunning(!search2.getList().isEmpty());
         }
         return new ResponseEntity<>(request, HttpStatus.OK);
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
-    public ResponseEntity update(@PathVariable Long id, @RequestBody Object request) {
+    public ResponseEntity<UpdateStudentScoreResponse> update(@PathVariable Long id, @RequestBody UpdateStudentScoreRequest request) {
+        UpdateStudentScoreResponse response = new UpdateStudentScoreResponse();
         try {
-            return new ResponseEntity<>(classStudentService.update(id, request, ClassStudentDTO.ScoresInfo.class), HttpStatus.OK);
+            classStudentService.saveOrUpdate(mapper.updateScoreClassStudent(request, classStudentService.getClassStudent(id)));
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("ویرایش موفقیت آمیز");
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (TrainingException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+            response.setMessage("بروز خطا در سیستم");
+            return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
     @Loggable
     @PutMapping(value = "/score-pre-test/{id}")
-    public ResponseEntity updateScorePreTest(@PathVariable Long id, @RequestBody Object request) {
+    public ResponseEntity<UpdatePreTestScoreResponse> updateScorePreTest(@PathVariable Long id, @RequestBody UpdatePreTestScoreRequest request) {
+        UpdatePreTestScoreResponse response = new UpdatePreTestScoreResponse();
         try {
-            return new ResponseEntity<>(classStudentService.update(id, request, ClassStudentDTO.PreTestScoreInfo.class), HttpStatus.OK);
+            classStudentService.saveOrUpdate(mapper.updatePreTestScoreClassStudent(request, classStudentService.getClassStudent(id)));
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("ویرایش موفقیت آمیز");
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (TrainingException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+            response.setMessage("بروز خطا در سیستم");
+            return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
         }
     }
 

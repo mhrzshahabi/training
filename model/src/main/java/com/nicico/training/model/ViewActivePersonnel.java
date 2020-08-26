@@ -182,8 +182,8 @@ public class ViewActivePersonnel {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "p_type", length = 50)
-    private String peopleType;
+//    @Column(name = "p_type", length = 50)
+//    private String peopleType;
 
     @Column(name = "f_department_id")
     private Long departmentId;
@@ -192,8 +192,8 @@ public class ViewActivePersonnel {
 //    @JoinColumn(name = "f_department_id", insertable = false, updatable = false)
 //    private Department department;
 
-    @Column(name = "f_geo_id")
-    private Long geoWorkId;
+//    @Column(name = "f_geo_id")
+//    private Long geoWorkId;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "f_geo_id", insertable = false, updatable = false)
@@ -205,7 +205,7 @@ public class ViewActivePersonnel {
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "f_post_id", insertable = false, updatable = false)
 //    private Post post;
-
-    @Column(name = "c_username")
-    private String userName;
+//
+//    @Column(name = "c_username")
+//    private String userName;
 }

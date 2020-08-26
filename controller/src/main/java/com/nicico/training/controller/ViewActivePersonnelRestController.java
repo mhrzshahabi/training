@@ -76,9 +76,7 @@ public class ViewActivePersonnelRestController {
     @Loggable
     @GetMapping(value = "/byPostCode/{postId}")
     public ResponseEntity<ViewActivePersonnelDTO.PersonnelSpecRs> findPersonnelByPostCode(@PathVariable Long postId) {
-
         List<ViewActivePersonnelDTO.Info> list = personnelService.getByPostCode(postId);
-
         final ViewActivePersonnelDTO.SpecRs specResponse = new ViewActivePersonnelDTO.SpecRs();
         final ViewActivePersonnelDTO.PersonnelSpecRs specRs = new ViewActivePersonnelDTO.PersonnelSpecRs();
 
@@ -89,7 +87,6 @@ public class ViewActivePersonnelRestController {
                     .setTotalRows(list.size());
             specRs.setResponse(specResponse);
         }
-
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 

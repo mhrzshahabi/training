@@ -576,6 +576,7 @@
                                             ListGrid_Cell_score_Update(record, newValue, 2)
                                             return
                                         } else {
+
                                             failureReason_change = false
                                             ListGrid_Cell_score_Update(record, newValue, 3)
                                             return
@@ -734,10 +735,12 @@
         } else if (a == 3) {
 
             record.scoresStateId = 403;
+            record.failureReasonId = 409;
             record.failureReasonId = record.failureReasonId;
         } else if (a == 4) {
             record.scoresStateId = 403;
             record.failureReasonId = 409;
+
 
         } else if (a == 5) {
           record.failureReasonId = failureReason_value
@@ -745,6 +748,7 @@
         scoresState_value = null;
         failureReason_value = null;
         failureReason_change = false;
+
         isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_score_Update(rpcResponse)"));
 
 
@@ -781,7 +785,7 @@
 
 
     function ListGrid_Remove_All_Cell(record) {
-        record.scoresStateId = null;
+        record.scoresStateId = 410;
         record.failureReasonId = null;
         record.score = null;
         record.valence = null;

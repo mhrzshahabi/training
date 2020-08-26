@@ -67,7 +67,6 @@ public class ClassStudentService implements IClassStudentService {
                     mapper.map(personnelRegisteredService.getByPersonnelCode(create.getPersonnelNo()), student);
                 }
             }
-
             ClassStudent classStudent = new ClassStudent();
             if(create.getApplicantCompanyName() != null)
                 classStudent.setApplicantCompanyName(create.getApplicantCompanyName());
@@ -79,19 +78,15 @@ public class ClassStudentService implements IClassStudentService {
                 classStudent.setPresenceTypeId(create.getPresenceTypeId());
             classStudent.setTclass(tclass);
             classStudent.setStudent(student);
-
             classStudentDAO.saveAndFlush(classStudent);
         }
-
         String nameList = new String();
-
         if(invalStudents.size() > 0) {
             for (String name : invalStudents) {
                 nameList += name + " , ";
             }
         }else
             nameList = null;
-
         Map<String, String> map = new HashMap();
         map.put("names", nameList);
         map.put("accepted", new Integer(request.size() - invalStudents.size()).toString());
@@ -100,12 +95,8 @@ public class ClassStudentService implements IClassStudentService {
 
     @Transactional
     @Override
-    public <E, T> T update(Long id, E request, Class<T> infoType) {
-        ClassStudent classStudent = getClassStudent(id);
-        ClassStudent updating = new ClassStudent();
-        mapper.map(classStudent, updating);
-        mapper.map(request, updating);
-        return mapper.map(classStudentDAO.saveAndFlush(updating), infoType);
+    public void saveOrUpdate(ClassStudent classStudent) {
+        classStudentDAO.save(classStudent);
     }
 
     @Transactional

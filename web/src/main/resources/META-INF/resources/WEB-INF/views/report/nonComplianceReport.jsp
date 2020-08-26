@@ -20,6 +20,12 @@
     });
     var data_values_NCR;
 
+    $(document).ready(()=>{
+        setTimeout(()=>{
+            $("input[name='tclassCode']").attr("disabled","disabled");
+        },0)}
+    );
+
     //----------------------------------------------------Rest DataSource-----------------------------------------------
     var RestDataSource_ListResult_NCR  = isc.TrDS.create({
         fields: [
@@ -170,8 +176,7 @@
             {
                 name: "tclassCode",
                 title: "کد کلاس",
-                hint: "کدهای کلاس را با , از یکدیگر جدا کنید",
-                prompt: "کدهای کلاس فقط میتوانند شامل حروف انگلیسی بزرگ، اعداد و - باشند",
+                hint: "کد کلاس را انتخاب نمائيد",
                 showHintInField: true,
                 icons: [{
                     src: "[SKIN]/pickers/search_picker.png",
@@ -662,7 +667,7 @@
                 criteriaDisplayValues = uniqueNames.join(",");
             }
 
-            criteriaDisplayValues = criteriaDisplayValues == ";undefined" ? "" : criteriaDisplayValues;
+            criteriaDisplayValues = criteriaDisplayValues == "undefined" ? "" : criteriaDisplayValues;
 
             DynamicForm_CriteriaForm_NCR.getField("tclassCode").setValue(criteriaDisplayValues);
             Window_SelectClasses_NCR.close();

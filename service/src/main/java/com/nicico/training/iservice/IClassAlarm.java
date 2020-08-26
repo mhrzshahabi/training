@@ -13,4 +13,6 @@ public interface IClassAlarm {
     List<ClassAlarmDTO> list(Long class_id, HttpServletResponse response) throws IOException;
 
     String checkAlarmsForEndingClass(Long class_id, String endDate, HttpServletResponse response) throws IOException;
+
+    Integer deleteAllAlarmsBySessionIds(List<Long> sessionIds);
 }
