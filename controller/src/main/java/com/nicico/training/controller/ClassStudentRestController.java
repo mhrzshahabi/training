@@ -176,26 +176,10 @@ public class ClassStudentRestController {
             SearchDTO.SearchRs<ViewCoursesPassedPersonnelReportDTO.Grid> search = iViewCoursesPassedPersonnelReportService.search(searchRq.setCriteria(criteriaRq));
             SearchDTO.SearchRs<ContinuousStatusReportViewDTO.Grid> search2 = continuousStatusReportViewService.search(searchRq.setCriteria(criteriaRq));
             SearchDTO.SearchRs<ViewPersonnelCourseNaReportDTO.Grid> search1 = viewPersonnelCourseNaReportService.search(searchRq.setCriteria(criteriaRq));
-            if(search1.getList().isEmpty()){
-                s.setIsNeedsAssessment(false);
-            }
-            else{
-                s.setIsNeedsAssessment(true);
-            }
 
-            if(search.getList().isEmpty()){
-                s.setIsPassed(false);
-            }
-            else{
-                s.setIsPassed(true);
-            }
-
-            if(search2.getList().isEmpty()){
-                s.setIsRunning(false);
-            }
-            else{
-                s.setIsRunning(true);
-            }
+            s.setIsNeedsAssessment(!search1.getList().isEmpty());
+            s.setIsPassed(!search.getList().isEmpty());
+            s.setIsRunning(!search2.getList().isEmpty());
         }
         return new ResponseEntity<>(request, HttpStatus.OK);
     }
