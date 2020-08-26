@@ -153,17 +153,7 @@
     }
 
     function Edit_score_Update(resp) {
-
-        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-            isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateLearningEvaluation" + "/" + classID_registerScorePreTest +
-                "/" + scoringMethod_registerScorePreTest,
-                "GET", null, (resp)=>{
-                    wait_registerScorePreTest.close();
-                }));
-        }
-        else{
             wait_registerScorePreTest.close();
-        }
     }
 
     function validators_ScorePreTest(value) {
