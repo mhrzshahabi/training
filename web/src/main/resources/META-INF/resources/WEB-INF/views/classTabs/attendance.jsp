@@ -1088,12 +1088,17 @@
                         record.studentId = a.studentId;
                         record.sessionId = Object.keys(a).find(b=>b.substr(0,2)==="se").substr(2);
                         record.state = a[Object.keys(a).find(b=>b.substr(0,2)==="se")];
-                        if(causeOfAbsence.length !== 0) {
-                            record.description = causeOfAbsence.find(c => ((c.sessionId === record.sessionId) && (c.studentId === record.studentId))).description;
-                        }
                         console.log(record);
                         sendList.push(record);
                     })
+                    causeOfAbsence.forEach(c=>{
+                        sendList.find(d => (c.sessionId === d.sessionId) && (c.studentId === d.studentId)).description = c.description;
+                    })
+                    // if(causeOfAbsence.length !== 0) {
+                    //     let cause = causeOfAbsence.find(c => ((c.sessionId === record.sessionId) && (c.studentId === record.studentId)));
+                    //     console.log(record);
+                    //     record.description = cause.description;
+                    // }
                     console.log(sendList);
                     sendObject.attendanceDtos = sendList;
                     isc.RPCManager.sendRequest({
