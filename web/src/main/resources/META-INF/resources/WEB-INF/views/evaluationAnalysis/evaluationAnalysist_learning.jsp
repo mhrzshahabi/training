@@ -13,6 +13,7 @@
     var change_value;
     var arrData = [];
     var minscoreValue;
+    var classRecord_evaluationAnalysist_learning;
 
     RestDataSource_evaluationAnalysist_learning = isc.TrDS.create({
         fields: [
@@ -189,7 +190,6 @@
     }
 
     function load_learning_evluation_analysis_data(record) {
-        var gridClassList = ListGrid_evaluationAnalysis_class.getSelectedRecord();
         DynamicForm_Learning_EvaluationAnalysis_Header.getField("studentCount").setValue(record.studentCount);
         DynamicForm_Learning_EvaluationAnalysis_Header.getField("preTestMeanScore").setValue(record.preTestMeanScore);
         DynamicForm_Learning_EvaluationAnalysis_Header.getField("postTestMeanScore").setValue(record.postTestMeanScore);
@@ -294,38 +294,37 @@
         }
     }
 
-    function evaluationAnalysist_learning() {
+    function evaluationAnalysist_learning(record) {
         DynamicForm_Learning_EvaluationAnalysis_Footer.clearValues();
         DynamicForm_Learning_EvaluationAnalysis_Header.clearValues();
-        var Record = ListGrid_evaluationAnalysis_class.getSelectedRecord();
-        if (!(Record === undefined || Record == null)) {
+        classRecord_evaluationAnalysist_learning = record;
+        if (!(record === undefined || record == null)) {
             isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/iscList/FEL", "GET", null, "callback:results(rpcResponse)"));
-            RestDataSource_evaluationAnalysist_learning.fetchDataURL = tclassStudentUrl + "/evaluationAnalysistLearning/" + Record.id;
+            RestDataSource_evaluationAnalysist_learning.fetchDataURL = tclassStudentUrl + "/evaluationAnalysistLearning/" + record.id;
             ListGrid_evaluationAnalysist_learning.invalidateCache();
             ListGrid_evaluationAnalysist_learning.fetchData();
-            if (Record.classScoringMethod == "1") {
+            if (record.classScoringMethod == "1") {
                 ListGrid_evaluationAnalysist_learning.hideField('score');
                 ListGrid_evaluationAnalysist_learning.showField('valence');
-            } else if (Record.classScoringMethod == "2") {
+            } else if (record.classScoringMethod == "2") {
                 ListGrid_evaluationAnalysist_learning.showField('score');
                 ListGrid_evaluationAnalysist_learning.hideField('valence');
             }
-            else if (Record.classScoringMethod == "3") {
+            else if (record.classScoringMethod == "3") {
                 ListGrid_evaluationAnalysist_learning.showField('score');
                 ListGrid_evaluationAnalysist_learning.hideField('valence');
             }
-            else if (Record.classScoringMethod == "4") {
+            else if (record.classScoringMethod == "4") {
                 ListGrid_evaluationAnalysist_learning.hideField('valence');
                 ListGrid_evaluationAnalysist_learning.hideField('score');
             }
         }
         isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/evaluationAnalysistLearningResult/"
-            + ListGrid_evaluationAnalysis_class.getSelectedRecord().id + "/" + ListGrid_evaluationAnalysis_class.getSelectedRecord().classScoringMethod ,
+            + record.id + "/" + record.classScoringMethod ,
             "GET", null, "callback: fill_learning_evaluation_result_resp(rpcResponse)"));
     }
 
     function printEvaluationAnalysistLearning(a) {
-        var Record = ListGrid_evaluationAnalysis_class.getSelectedRecord();
         var criteriaForm = isc.DynamicForm.create({
             method: "POST",
             action: "<spring:url value="/evaluationAnalysist-learning/evaluaationAnalysist-learningReport"/>",
@@ -341,8 +340,8 @@
                 ]
 
         });
-        criteriaForm.setValue("recordId", JSON.stringify(Record.id));
-        criteriaForm.setValue("record", JSON.stringify(Record));
+        criteriaForm.setValue("recordId", JSON.stringify(classRecord_evaluationAnalysist_learning.id));
+        criteriaForm.setValue("record", JSON.stringify(classRecord_evaluationAnalysist_learning));
         criteriaForm.setValue("minScore",a);
         criteriaForm.setValue("token", "<%= accessToken %>");
         criteriaForm.show();
