@@ -83,6 +83,13 @@
 
     ];
 
+    $(document).ready(()=>{
+        setTimeout(()=>{
+            $("input[name='courseCode']").attr("disabled","disabled");
+            $("input[name='tclassCode']").attr("disabled","disabled");
+        },0)}
+    );
+
     //----------------------------------------------------Rest DataSource-----------------------------------------------
     var RestDataSource_ListResult_JspEvaluationStaticalReport = isc.TrDS.create({
         fields: [
@@ -347,13 +354,12 @@
             {
                 name: "tclassCode",
                 title: "کد کلاس",
-                hint: "کدهای کلاس را با ; از یکدیگر جدا کنید",
-                prompt: "کدهای کلاس فقط میتوانند شامل حروف انگلیسی بزرگ، اعداد و - باشند",
+                hint: "کد کلاس را انتخاب نمائيد",
                 showHintInField: true,
                 icons: [{
                     src: "[SKIN]/pickers/search_picker.png",
                     click: function () {
-                        DynamicForm_SelectClasses_JspEvaluationStaticalReport.clearValues();
+                       // DynamicForm_SelectClasses_JspEvaluationStaticalReport.clearValues();
                         Window_SelectClasses_JspEvaluationStaticalReport.show();
                     }
                 }],
@@ -725,13 +731,11 @@
             {
                 name: "courseCode",
                 title: "کد دوره",
-                hint: "کدهای دوره را با ; از یکدیگر جدا کنید",
-                prompt: "کدهای دوره فقط میتوانند شامل حروف انگلیسی بزرگ، اعداد و - باشند",
+                hint: "کد دوره را انتخاب نمائيد",
                 showHintInField: true,
                 icons: [{
                     src: "[SKIN]/pickers/search_picker.png",
                     click: function () {
-                        DynamicForm_SelectCourses_JspEvaluationStaticalReport.clearValues();
                         Window_SelectCourses_JspEvaluationStaticalReport.show();
                     }
                 }],
@@ -870,18 +874,30 @@
             var selectorDisplayValues = DynamicForm_SelectCourses_JspEvaluationStaticalReport.getItem("course.code").getValue();
             if (DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("courseCode").getValue() != undefined
                 && DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("courseCode").getValue() != "") {
-                criteriaDisplayValues = DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("courseCode").getValue();
+                criteriaDisplayValues = DynamicForm_SelectCourses_JspEvaluationStaticalReport.getField("course.code").getValue().join(",");
                 var ALength = criteriaDisplayValues.length;
                 var lastChar = criteriaDisplayValues.charAt(ALength - 1);
-                if (lastChar != ";")
-                    criteriaDisplayValues += ";";
+                if (lastChar != ",")
+                    criteriaDisplayValues += ",";
             }
             if (selectorDisplayValues != undefined) {
                 for (var i = 0; i < selectorDisplayValues.size() - 1; i++) {
-                    criteriaDisplayValues += selectorDisplayValues [i] + ";";
+                    criteriaDisplayValues += selectorDisplayValues [i] + ",";
                 }
                 criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
             }
+
+            if (typeof criteriaDisplayValues != "undefined") {
+                let uniqueNames = [];
+
+                $.each(criteriaDisplayValues.split(","), function (i, el) {
+                    if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+                });
+                criteriaDisplayValues = uniqueNames.join(",");
+            }
+
+            criteriaDisplayValues = criteriaDisplayValues == ",undefined" ? "" : criteriaDisplayValues;
+console.log(criteriaDisplayValues);
             DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("courseCode").setValue(criteriaDisplayValues);
             Window_SelectCourses_JspEvaluationStaticalReport.close();
         }
@@ -948,18 +964,30 @@
             var selectorDisplayValues = DynamicForm_SelectClasses_JspEvaluationStaticalReport.getItem("class.code").getValue();
             if (DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("tclassCode").getValue() != undefined
                 && DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("tclassCode").getValue() != "") {
-                criteriaDisplayValues = DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("tclassCode").getValue();
+                criteriaDisplayValues = DynamicForm_SelectClasses_JspEvaluationStaticalReport.getItem("class.code").getValue().join(",");
                 var ALength = criteriaDisplayValues.length;
                 var lastChar = criteriaDisplayValues.charAt(ALength - 1);
-                if (lastChar != ";")
-                    criteriaDisplayValues += ";";
+                if (lastChar != ",")
+                    criteriaDisplayValues += ",";
             }
             if (selectorDisplayValues != undefined) {
                 for (var i = 0; i < selectorDisplayValues.size() - 1; i++) {
-                    criteriaDisplayValues += selectorDisplayValues [i] + ";";
+                    criteriaDisplayValues += selectorDisplayValues [i] + ",";
                 }
                 criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
             }
+
+            if (typeof criteriaDisplayValues != "undefined") {
+                let uniqueNames = [];
+
+                $.each(criteriaDisplayValues.split(","), function (i, el) {
+                    if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+                });
+                criteriaDisplayValues = uniqueNames.join(",");
+            }
+
+            criteriaDisplayValues = criteriaDisplayValues == ",undefined" ? "" : criteriaDisplayValues;
+
             DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("tclassCode").setValue(criteriaDisplayValues);
             Window_SelectClasses_JspEvaluationStaticalReport.close();
         }

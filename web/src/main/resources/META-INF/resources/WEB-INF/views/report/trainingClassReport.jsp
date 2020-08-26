@@ -12,6 +12,12 @@
     var endDate2Check_JspTClassReport = true;
     var endDateCheck_Order_JspTClassReport = true;
 
+    $(document).ready(()=>{
+        setTimeout(()=>{
+            $("input[name='courseCode']").attr("disabled","disabled");
+        },0)}
+    );
+
     var data_values = null;
     let societies = [];
 
@@ -323,8 +329,7 @@
             {
                 name: "courseCode",
                 title: "کد دوره",
-                hint: "کدهای دوره را با ; از یکدیگر جدا کنید",
-                prompt: "کدهای دوره فقط میتوانند شامل حروف انگلیسی بزرگ، اعداد و - باشند",
+                hint: "کد دوره را وارد نمائيد",
                 showHintInField: true,
                 icons: [{
                     src: "[SKIN]/pickers/search_picker.png",
@@ -1124,15 +1129,15 @@
             var selectorDisplayValues = DynamicForm_SelectCourses_JspTClassReport.getItem("courseCode").getValue();
             if (DynamicForm_CriteriaForm_JspTClassReport.getField("courseCode").getValue() != undefined
                 && DynamicForm_CriteriaForm_JspTClassReport.getField("courseCode").getValue() != "") {
-                criteriaDisplayValues = DynamicForm_SelectCourses_JspTClassReport.getField("courseCode").getValue().join(";");
+                criteriaDisplayValues = DynamicForm_SelectCourses_JspTClassReport.getField("courseCode").getValue().join(",");
                 var ALength = criteriaDisplayValues.length;
                 var lastChar = criteriaDisplayValues.charAt(ALength - 1);
-                if (lastChar != ";")
-                    criteriaDisplayValues += ";";
+                if (lastChar != ",")
+                    criteriaDisplayValues += ",";
             }
             if (selectorDisplayValues != undefined) {
                 for (var i = 0; i < selectorDisplayValues.size() - 1; i++) {
-                    criteriaDisplayValues += selectorDisplayValues [i] + ";";
+                    criteriaDisplayValues += selectorDisplayValues [i] + ",";
                 }
                 criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
             }
@@ -1140,13 +1145,13 @@
             if (typeof criteriaDisplayValues != "undefined") {
                 let uniqueNames = [];
 
-                $.each(criteriaDisplayValues.split(";"), function (i, el) {
+                $.each(criteriaDisplayValues.split(","), function (i, el) {
                     if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
                 });
-                criteriaDisplayValues = uniqueNames.join(";");
+                criteriaDisplayValues = uniqueNames.join(",");
             }
 
-            criteriaDisplayValues = criteriaDisplayValues == ";undefined" ? "" : criteriaDisplayValues;
+            criteriaDisplayValues = criteriaDisplayValues == ",undefined" ? "" : criteriaDisplayValues;
 
             DynamicForm_CriteriaForm_JspTClassReport.getField("courseCode").setValue(criteriaDisplayValues);
             Window_SelectCourses_JspTClassReport.close();

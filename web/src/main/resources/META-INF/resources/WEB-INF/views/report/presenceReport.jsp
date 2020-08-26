@@ -3,6 +3,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 // <script>
+    $(document).ready(()=>{
+        setTimeout(()=>{
+            $("input[name='studentPersonnelNo']").attr("disabled","disabled");
+            $("input[name='classCode']").attr("disabled","disabled");
+        },0)}
+    );
+
     //----------------------------------------------------Rest DataSource-----------------------------------------------
     RestDataSource_JspAttendanceReport = isc.TrDS.create({
         fields: [
@@ -213,7 +220,7 @@
             {
                 name: "studentPersonnelNo",
                 title: "شماره پرسنلي",
-                hint: "شماره پرسنلي را با , از یکدیگر جدا کنید",
+                hint: "شماره پرسنلي را انتخاب نمائيد",
                 showHintInField: true,
                 icons: [{
                     src: "[SKIN]/pickers/search_picker.png",
@@ -277,8 +284,7 @@
             {
                 name: "classCode",
                 title: "کد کلاس",
-                hint: "کدهای کلاس را با , از یکدیگر جدا کنید",
-                prompt: "کدهای کلاس فقط میتوانند شامل حروف انگلیسی بزرگ، اعداد و - باشند",
+                hint: "کد کلاس را انتخاب نمائيد",
                 showHintInField: true,
                 icons: [{
                     src: "[SKIN]/pickers/search_picker.png",
@@ -523,7 +529,7 @@
                 criteriaDisplayValues = uniqueNames.join(",");
             }
 
-            criteriaDisplayValues = criteriaDisplayValues == ";undefined" ? "" : criteriaDisplayValues;
+            criteriaDisplayValues = criteriaDisplayValues == "undefined" ? "" : criteriaDisplayValues;
 
             DynamicForm_CriteriaForm_JspAttendanceReport.getField("classCode").setValue(criteriaDisplayValues);
             Window_SelectClasses_JspAttendanceReport.close();
@@ -616,7 +622,7 @@
                 criteriaDisplayValues = uniqueNames.join(",");
             }
 
-            criteriaDisplayValues = criteriaDisplayValues == ";undefined" ? "" : criteriaDisplayValues;
+            criteriaDisplayValues = criteriaDisplayValues == "undefined" ? "" : criteriaDisplayValues;
 
             DynamicForm_CriteriaForm_JspAttendanceReport.getField("studentPersonnelNo").setValue(criteriaDisplayValues);
             Window_SelectPeople_JspUnitReport.close();

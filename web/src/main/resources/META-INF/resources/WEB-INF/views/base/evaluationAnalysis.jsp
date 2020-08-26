@@ -54,7 +54,8 @@
         implicitCriteria: {
             _constructor: "AdvancedCriteria",
             operator: "and",
-            criteria: [{fieldName: "tclassStudentsCount", operator: "notEqual", value: 0}]
+            criteria: [{fieldName: "tclassStudentsCount", operator: "notEqual", value: 0},
+                        {fieldName: "evaluation", operator: "notNull"}]
         },
     });
 

@@ -120,7 +120,6 @@ public class AttendanceRestController {
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
-
     @Loggable
     @GetMapping(value = "/session-date")
 //	@PreAuthorize("hasAuthority('c_attendance')")
