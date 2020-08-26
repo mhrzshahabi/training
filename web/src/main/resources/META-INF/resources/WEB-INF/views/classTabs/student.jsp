@@ -550,6 +550,11 @@
                     displayField: "title",
                     filterOnKeypress: true,
                 },
+                {name: "registerTypeId", title: "پرسنل", canEdit: false,
+                    formatCellValue(value){
+                        return (value === 1 ? "هست" : "نیست");
+                    }
+                },
                 {name: "isNeedsAssessment", type: "boolean", canEdit: false, title:"نیازسنجی"},
                 {name: "isPassed", type: "boolean", canEdit: false, title:"گذرانده"},
                 {name: "isRunning", type: "boolean", canEdit: false, title:"در حال گذراندن"},
@@ -1285,18 +1290,17 @@
                                         icon: "[SKIN]/actions/save.png",
                                         click: function () {
                                             let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
-                                            let students = [];
-                                            for (let i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
-                                                students.add({
-                                                    "personnelNo": SelectedPersonnelsLG_student.data[i].personnelNo,
-                                                    "applicantCompanyName": SelectedPersonnelsLG_student.data[i].applicantCompanyName,
-                                                    "presenceTypeId": SelectedPersonnelsLG_student.data[i].presenceTypeId,
-                                                    "registerTypeId": SelectedPersonnelsLG_student.data[i].registerTypeId
-                                                });
-                                            }
-                                            if (students.getLength() > 0) {
+                                            // for (let i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
+                                            //     students.add({
+                                            //         "personnelNo": SelectedPersonnelsLG_student.data[i].personnelNo,
+                                            //         "applicantCompanyName": SelectedPersonnelsLG_student.data[i].applicantCompanyName,
+                                            //         "presenceTypeId": SelectedPersonnelsLG_student.data[i].presenceTypeId,
+                                            //         "registerTypeId": SelectedPersonnelsLG_student.data[i].registerTypeId
+                                            //     });
+                                            // }
+                                            if (SelectedPersonnelsLG_student.data.toArray().getLength() > 0) {
                                                 wait.show()
-                                                isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST", JSON.stringify(students), class_add_students_result));
+                                                isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST", JSON.stringify(SelectedPersonnelsLG_student.data.toArray()), class_add_students_result));
                                             }
                                             SelectedPersonnelsLG_student.data.clearAll();
                                         }
