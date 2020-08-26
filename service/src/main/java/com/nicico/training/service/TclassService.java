@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -57,6 +58,7 @@ public class TclassService implements ITclassService {
     private final AttendanceDAO attendanceDAO;
     private final ParameterValueDAO parameterValueDAO;
     private final TrainingClassBeanMapper trainingClassBeanMapper;
+    private DecimalFormat numberFormat = new DecimalFormat("#.00");
 
     @Transactional(readOnly = true)
     @Override
@@ -500,6 +502,7 @@ public class TclassService implements ITclassService {
         double percenetOfFilledReactionEvaluationForms = 0.0;
         Integer studentCount = 0;
 
+
         Tclass tclass = getTClass(classId);
         classStudents = tclass.getClassStudents();
         teacherId = tclass.getTeacherId();
@@ -543,28 +546,29 @@ public class TclassService implements ITclassService {
         minScoreFECR = (double) FECRResult.get("minScoreFECR");
 
         evaluationResult.setStudentCount(studentCount);
-        evaluationResult.setFERGrade(FERGrade);
+        evaluationResult.setFERGrade(Double.parseDouble(numberFormat.format(FERGrade).toString()));
         evaluationResult.setFERPass(FERPass);
-        evaluationResult.setFETGrade(FETGrade);
+        evaluationResult.setFETGrade(Double.parseDouble(numberFormat.format(FETGrade).toString()));
         evaluationResult.setFETPass(FETPass);
-        evaluationResult.setFECRGrade(FECRGrade);
+        evaluationResult.setFECRGrade(Double.parseDouble(numberFormat.format(FECRGrade).toString()));
         evaluationResult.setFECRPass(FECRPass);
         evaluationResult.setMinScore_ER(minScore_ER);
         evaluationResult.setMinScore_ET(minScore_ET);
         evaluationResult.setMinScoreFECR(minScoreFECR);
 
+
         evaluationResult.setNumberOfEmptyReactionEvaluationForms(getNumberOfEmptyReactionEvaluationForms(classStudents));
         evaluationResult.setNumberOfFilledReactionEvaluationForms(getNumberOfFilledReactionEvaluationForms(classStudents));
         evaluationResult.setNumberOfInCompletedReactionEvaluationForms(getNumberOfInCompletedReactionEvaluationForms(classStudents));
-        evaluationResult.setPercenetOfFilledReactionEvaluationForms(getPercenetOfFilledReactionEvaluationForms(classStudents));
+        evaluationResult.setPercenetOfFilledReactionEvaluationForms(Double.parseDouble(numberFormat.format(getPercenetOfFilledReactionEvaluationForms(classStudents)).toString()));
         evaluationResult.setNumberOfExportedReactionEvaluationForms(getNumberOfExportedEvaluationForms(classStudents));
 
 
-        evaluationResult.setStudentsGradeToFacility(studentsGradeToFacility);
-        evaluationResult.setStudentsGradeToGoals(studentsGradeToGoals);
-        evaluationResult.setStudentsGradeToTeacher(studentsGradeToTeacher);
-        evaluationResult.setTrainingGradeToTeacher(trainingGradeToTeacher);
-        evaluationResult.setTeacherGradeToClass(teacherGradeToClass);
+        evaluationResult.setStudentsGradeToFacility(Double.parseDouble(numberFormat.format(studentsGradeToFacility).toString()));
+        evaluationResult.setStudentsGradeToGoals(Double.parseDouble(numberFormat.format(studentsGradeToGoals).toString()));
+        evaluationResult.setStudentsGradeToTeacher(Double.parseDouble(numberFormat.format(studentsGradeToTeacher).toString()));
+        evaluationResult.setTrainingGradeToTeacher(Double.parseDouble(numberFormat.format(trainingGradeToTeacher).toString()));
+        evaluationResult.setTeacherGradeToClass(Double.parseDouble(numberFormat.format(teacherGradeToClass).toString()));
         return evaluationResult;
     }
 
@@ -804,7 +808,7 @@ public class TclassService implements ITclassService {
             else if (parameterValue.getCode().equalsIgnoreCase("minScoreFECR"))
                 minScoreFECR = Double.parseDouble(parameterValue.getValue());
         }
-        FECRGrade = FERGrade * FECRZ;
+        FECRGrade = (FERGrade * FECRZ) / 100;
         if (FECRGrade >= minScoreFECR)
             FECRPass = true;
 

@@ -7,6 +7,7 @@
 
 // <script>
     var reaction_chartData = null;
+    var classRecord_evaluationAnalysist_reaction;
     //----------------------------------------------------Reaction Evaluation-------------------------------------------
 
     var vm_reaction_evaluation = isc.ValuesManager.create({});
@@ -34,11 +35,19 @@
                 name: "numberOfFilledReactionEvaluationForms",
                 title: "<spring:message code='numberOfFilledReactionEvaluationForms'/>",
                 baseStyle: "evaluation-code",
-                canEdit: false
+                canEdit: false,
+                hidden: true
             },
             {
                 name: "numberOfInCompletedReactionEvaluationForms",
                 title: "<spring:message code='numberOfInCompletedReactionEvaluationForms'/>",
+                baseStyle: "evaluation-code",
+                canEdit: false,
+                hidden: true
+            },
+            {
+                name: "filledFormsInfo",
+                title: "<spring:message code='numberOfFilledReactionEvaluationForms'/>",
                 baseStyle: "evaluation-code",
                 canEdit: false
             },
@@ -72,7 +81,7 @@
         valuesManager: vm_reaction_evaluation,
         styleName: "teacher-form",
         numCols: 2,
-        margin: 2,
+        margin: 5,
         canTabToIcons: false,
         fields: [
             {
@@ -84,7 +93,7 @@
             },
             {
                 name: "FETGrade",
-                title:"<spring:message code='FETGrade'/>",
+                title:"نمره ارزیابی مدرس کلاس",
                 baseStyle: "evaluation-code",
                 canEdit: false
             },
@@ -138,6 +147,8 @@
     DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfEmptyReactionEvaluationForms').titleStyle = 'evaluation-code-title';
     DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('percenetOfFilledReactionEvaluationForms').setCellStyle('evaluation-code-label');
     DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('percenetOfFilledReactionEvaluationForms').titleStyle = 'evaluation-code-title';
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('filledFormsInfo').setCellStyle('evaluation-code-label');
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('filledFormsInfo').titleStyle = 'evaluation-code-title';
 
     DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FERGrade').setCellStyle('evaluation-code-label');
     DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FERGrade').titleStyle = 'evaluation-code-title';
@@ -156,7 +167,7 @@
         title: "چاپ خلاصه نتیجه ارزیابی واکنشی",
         click: function () {
             var obj1 = vm_reaction_evaluation.getValues();
-            var obj2 = ListGrid_evaluationAnalysis_class.getSelectedRecord();
+            var obj2 =  classRecord_evaluationAnalysist_reaction;
             var obj1_str = JSON.stringify(obj1);
             var obj2_str = JSON.stringify(obj2);
             obj1_str = obj1_str.substr(0,obj1_str.length-1);
@@ -168,7 +179,6 @@
     });
 
     var VLayout_Body_evaluation_analysis_reaction = isc.VLayout.create({
-        height: "100%",
         defaultLayoutAlign: "center",
         members: [ DynamicForm_Reaction_EvaluationAnalysis_Header,
             DynamicForm_Reaction_EvaluationAnalysis_Footer,
@@ -180,6 +190,11 @@
         minLabelGap: 5,
         barMargin: "100",
         allowedChartTypes: [],
+        axisStartValue: 0,
+        axisEndValue: 100,
+        showDataValues:true,
+        brightenAllOnHover:true,
+        hoverLabelPadding: -7,
         facets: [
             {id: "region", title: "حیطه"}],
         data: reaction_chartData,
@@ -224,7 +239,6 @@
     var Hlayout_ReactionEvaluationResult = isc.HLayout.create({
         width: "100%",
         height: "100%",
-        overflow: "scroll",
         members: [
             VLayout_Body_evaluation_analysis_reaction,
             ReactionEvaluationChartLayout
