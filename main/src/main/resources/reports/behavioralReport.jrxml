@@ -132,7 +132,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="270" y="15" width="100" height="20" uuid="642c6152-780b-4b0b-84f0-8b76ce7314e7"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD"/>
 				</textElement>
 				<text><![CDATA[گزارش تغییر رفتار دوره ]]></text>
