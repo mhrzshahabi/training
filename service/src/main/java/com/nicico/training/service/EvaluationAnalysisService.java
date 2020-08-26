@@ -196,10 +196,11 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
                 evaluationAnalysis.setEffectivenessGrade(effectivenessResult.get("EffectivenessGrade").toString());
                 evaluationAnalysis.setEffectivenessPass(Boolean.parseBoolean(effectivenessResult.get("EffectivenessPass").toString()));
             }
+            create(evaluationAnalysis);
         }
     }
 
-
+    @Transactional
     public Map<String,Object> evaluationAnalysistLearningResult(Long classId, String scoringMethod) {
         Float[] result =  evaluationAnalysistLearningService.getStudents(classId,scoringMethod);
         Map<String,Object> finalResult = new HashMap<>();

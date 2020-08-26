@@ -11,6 +11,7 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationAnalysisService;
+import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.mapper.student.ClassStudentBeanMapper;
 import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.service.*;
@@ -52,7 +53,6 @@ public class ClassStudentRestController {
     private final ModelMapper modelMapper;
     private final ParameterService parameterService;
     private final ClassAlarmService classAlarmService;
-    private final IEvaluationAnalysisService evaluationAnalysisService;
     private final ViewCoursesPassedPersonnelReportService iViewCoursesPassedPersonnelReportService;
     private final ViewPersonnelCourseNaReportService viewPersonnelCourseNaReportService;
     private final ContinuousStatusReportViewService continuousStatusReportViewService;

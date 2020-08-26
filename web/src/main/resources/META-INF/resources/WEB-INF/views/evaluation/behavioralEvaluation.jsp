@@ -643,7 +643,7 @@
                                         this.close();
                                         if (index === 0) {
                                             let data = {};
-                                            data.classId = classRecord_RE.id;
+                                            data.classId = classRecord_BE.id;
                                             data.evaluatorId = record.evaluatorId;
                                             data.evaluatorTypeId = record.evaluatorTypeId;
                                             data.evaluatedId = StdRecord.id;
@@ -654,6 +654,8 @@
                                                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                                     Listgrid_BehavioralRegisteration_JSPEvaluation.invalidateCache();
                                                     ListGrid_student_BE.invalidateCache();
+                                                    isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateBehavioralEvaluation" + "/" +
+                                                        classRecord_BE.id,"GET", null, null));
                                                     const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
                                                     setTimeout(() => {
                                                         msg.close();
@@ -815,8 +817,8 @@
                             isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
                                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                     Window_Questions_JspEvaluation.close();
-                                    isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
-                                        classRecord_BE.id, "GET", null, null));
+                                    isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateBehavioralEvaluation" + "/" +
+                                        classRecord_BE.id,"GET", null, null));
                                     ListGrid_student_BE.invalidateCache();
                                     Listgrid_BehavioralRegisteration_JSPEvaluation.invalidateCache();
                                     const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
