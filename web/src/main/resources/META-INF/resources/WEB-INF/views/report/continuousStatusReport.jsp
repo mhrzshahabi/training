@@ -6,6 +6,7 @@
     $(document).ready(()=>{
         setTimeout(()=>{
             $("input[name='personnelNo']").attr("disabled","disabled");
+            $("input[name='classCode']").attr("disabled","disabled");
         },0)}
     );
 
@@ -398,8 +399,7 @@
             {
                 name: "classCode",
                 title: "کد کلاس",
-                hint: "کدهای کلاس را با , از یکدیگر جدا کنید",
-                prompt: "کدهای کلاس فقط میتوانند شامل حروف انگلیسی بزرگ، اعداد و - باشند",
+                hint: "کد کلاس را انتخاب نمائيد",
                 showHintInField: true,
                 icons: [{
                     src: "[SKIN]/pickers/search_picker.png",
@@ -739,7 +739,7 @@
                 criteriaDisplayValues = uniqueNames.join(",");
             }
 
-            criteriaDisplayValues = criteriaDisplayValues == ";undefined" ? "" : criteriaDisplayValues;
+            criteriaDisplayValues = criteriaDisplayValues == "undefined" ? "" : criteriaDisplayValues;
 
             DynamicForm_CriteriaForm_JspcontinuousPersonnel.getField("classCode").setValue(criteriaDisplayValues);
             Window_SelectClasses_JspUnitReport.close();
@@ -832,7 +832,7 @@
                 criteriaDisplayValues = uniqueNames.join(",");
             }
 
-            criteriaDisplayValues = criteriaDisplayValues == ";undefined" ? "" : criteriaDisplayValues;
+            criteriaDisplayValues = criteriaDisplayValues == "undefined" ? "" : criteriaDisplayValues;
 
             DynamicForm_CriteriaForm_JspcontinuousPersonnel.getField("personnelNo").setValue(criteriaDisplayValues);
             Window_SelectPeople_JspUnitReport.close();
