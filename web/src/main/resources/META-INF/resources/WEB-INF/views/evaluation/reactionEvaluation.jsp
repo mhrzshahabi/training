@@ -449,6 +449,15 @@
                         if (resp.httpResponseCode == 200) {
                             let id = [];
                             JSON.parse(resp.data).response.data.filter(p => p.student.mobile && (p.evaluationStatusReaction == 1)).forEach(p => id.push(p.id));
+
+                            if(JSON.parse(resp.data).response.data.filter(p =>(p.evaluationStatusReaction == 1)).length==0){
+
+                                wait.close();
+                                createDialog("warning", "فراگیری که وضعیت ارزیابی آن «صادر شده» باشد وجود ندارد", "<spring:message code="error"/>");
+
+                                return;
+                            }
+
                             MSG_selectUsersForm.getItem("multipleSelect").setValue(id);
                             sendMessageFunc = sendMessage_evaluation;
                             RestDataSource_student_RE.fetchDataURL = tclassStudentUrl + "/students-iscList/" + row.id;
@@ -462,7 +471,7 @@
                                     "value": [1]
                                 }, {"fieldName": "evaluationStatusReaction", "operator": "isNull"}]
                             };
-//MSG_selectUsersForm.getItem("multipleSelect").pickListWidth=600;
+                            //MSG_selectUsersForm.getItem("multipleSelect").pickListWidth=600;
                             MSG_selectUsersForm.getItem("multipleSelect").pickListFields = [
                                 {
                                     name: "student.firstName",

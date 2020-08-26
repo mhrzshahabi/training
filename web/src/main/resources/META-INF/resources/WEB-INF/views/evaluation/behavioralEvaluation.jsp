@@ -710,7 +710,7 @@
             });
             let Window_BehavioralRegisteration_JSPEvaluation = isc.Window.create({
                 placement: "fillScreen",
-                title: "لیست فرم های صادر شده",
+                title: "لیست فرم های ارزیابی تغییر رفتار فراگیر " + StdRecord.student.firstName + " " + StdRecord.student.lastName,
                 canDragReposition: true,
                 align: "center",
                 autoDraw: true,

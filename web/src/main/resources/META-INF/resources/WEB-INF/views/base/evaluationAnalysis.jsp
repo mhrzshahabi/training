@@ -17,7 +17,6 @@
 
     var evalWait_JspEvaluationAnalysis;
 
-    var dummy;
 
     //----------------------------------------------------Rest Data Sources---------------------------------------------
     var RestDataSource_evaluationAnalysis_class = isc.TrDS.create({
@@ -355,12 +354,17 @@
     }
 
     function load_reaction_evluation_analysis_data(record) {
+        let filledFormsInfo = "";
+        let numberOfCompletedReactionEvaluationForms = record.numberOfFilledReactionEvaluationForms - record.numberOfInCompletedReactionEvaluationForms;
+        filledFormsInfo += record.numberOfFilledReactionEvaluationForms + " - " +
+            record.numberOfInCompletedReactionEvaluationForms+ "ناقص و " + numberOfCompletedReactionEvaluationForms + " کامل ";
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("studentCount").setValue(record.studentCount);
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfFilledReactionEvaluationForms").setValue(record.numberOfFilledReactionEvaluationForms);
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfInCompletedReactionEvaluationForms").setValue(record.numberOfInCompletedReactionEvaluationForms);
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfEmptyReactionEvaluationForms").setValue(record.numberOfEmptyReactionEvaluationForms);
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("percenetOfFilledReactionEvaluationForms").setValue(record.percenetOfFilledReactionEvaluationForms);
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfExportedReactionEvaluationForms").setValue(record.numberOfExportedReactionEvaluationForms);
+        DynamicForm_Reaction_EvaluationAnalysis_Header.getField("filledFormsInfo").setValue(filledFormsInfo);
 
         DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FERGrade").setValue(record.fergrade);
         DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FETGrade").setValue(record.fetgrade);
