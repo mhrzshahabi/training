@@ -141,6 +141,7 @@
         title:"<spring:message code="students.list"/>",
         width: "100%",
         placement:"fillPanel",
+        keepInParentRect: true,
         height: 600,
         items:[
            ListGrid_StudentSearch_JspTrainingFile
