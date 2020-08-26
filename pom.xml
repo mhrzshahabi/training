@@ -26,6 +26,7 @@
         <module>controller</module>
         <module>web</module>
         <module>main</module>
+        <module>spec</module>
     </modules>
 
     <dependencies>
@@ -51,7 +52,6 @@
             <artifactId>mapstruct</artifactId>
             <version>${org.mapstruct.version}</version>
         </dependency>
-
     </dependencies>
 
     <profiles>

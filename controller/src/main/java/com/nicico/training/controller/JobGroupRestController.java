@@ -93,7 +93,14 @@ public class JobGroupRestController {
         if (jobs.isEmpty()) {
             return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
         }
-        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq().setCriteria(makeNewCriteria("job", jobs.stream().filter(job -> job.getDeleted() == null).map(JobDTO.Info::getId).collect(Collectors.toList()), EOperator.inSet, null));
+        SearchDTO.CriteriaRq criteria=new SearchDTO.CriteriaRq();
+        criteria.setOperator(EOperator.and);
+        criteria.setCriteria(new ArrayList<>());
+
+        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq().setCriteria(criteria);
+        searchRq.getCriteria().getCriteria().add(makeNewCriteria("trainingPostSet.job", jobs.stream().filter(job -> job.getDeleted() == null).map(JobDTO.Info::getId).collect(Collectors.toList()), EOperator.inSet, null));
+        searchRq.getCriteria().getCriteria().add(makeNewCriteria("deleted", null, EOperator.isNull, null));
+        searchRq.getCriteria().getCriteria().add(makeNewCriteria("trainingPostSet.deleted", null, EOperator.isNull, null));
         SearchDTO.SearchRs<PostDTO.TupleInfo> postList = postService.searchWithoutPermission(searchRq, p -> modelMapper.map(p, PostDTO.TupleInfo.class));
         if (postList.getList() == null || postList.getList().isEmpty())
             return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);

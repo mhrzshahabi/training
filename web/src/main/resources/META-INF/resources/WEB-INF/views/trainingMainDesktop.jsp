@@ -805,6 +805,7 @@
     const attachmentUrl = rootUrl + "/attachment";
     const trainingPlaceUrl = rootUrl + "/trainingPlace";
     const personnelUrl = rootUrl + "/personnel";
+    const viewActivePersonnelUrl = rootUrl + "/view_active_personnel";
     const personnelRegUrl = rootUrl + "/personnelRegistered";
     const attendanceUrl = rootUrl + "/attendance";
     const parameterUrl = rootUrl + "/parameter";
@@ -820,6 +821,7 @@
     const questionnaireUrl = rootUrl + "/questionnaire";
     const questionnaireQuestionUrl = rootUrl + "/questionnaireQuestion";
     const tclassStudentUrl = rootUrl + "/class-student";
+    const trainingFileUrl = rootUrl + "/view-training_file";
     const teacherInformation = rootUrl + "/teacherInformation";
     const needsAssessmentUrl = rootUrl + "/needsAssessment";
     const workGroupUrl = rootUrl + "/work-group";

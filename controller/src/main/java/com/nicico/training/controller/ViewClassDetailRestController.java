@@ -27,11 +27,8 @@ public class ViewClassDetailRestController {
 
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<ViewClassDetailDTO.Info>> iscList(HttpServletRequest iscRq) throws IOException {
-        int startRow = 0;
-        if (iscRq.getParameter("_startRow") != null)
-            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.SearchRs<ViewClassDetailDTO.Info> searchRs = viewClassDetailService.search(searchRq);
-        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 }

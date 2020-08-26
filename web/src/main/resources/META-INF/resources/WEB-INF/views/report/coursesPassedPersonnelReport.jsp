@@ -831,7 +831,7 @@
                 criteriaDisplayValues = uniqueNames.join(",");
             }
 
-            criteriaDisplayValues = criteriaDisplayValues == ";undefined" ? "" : criteriaDisplayValues;
+            criteriaDisplayValues = criteriaDisplayValues == "undefined" ? "" : criteriaDisplayValues;
 
             DynamicForm_CriteriaForm_JspCoursesPassedPersonnel.getField("personnelNo").setValue(criteriaDisplayValues);
             Window_SelectPeople_JspUnitReport.close();

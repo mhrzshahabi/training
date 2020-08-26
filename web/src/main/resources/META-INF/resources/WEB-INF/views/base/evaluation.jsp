@@ -48,8 +48,6 @@
         var DynamicForm_AlarmSelection = isc.DynamicForm.create({
             width: "85%",
             height: "100%",
-            // numCols: 6,
-            // colWidths: ["1%","30%","1%","30%","1%","37%"],
             fields: [
                 {
 
@@ -92,9 +90,17 @@
                             ListGrid_class_Evaluation.fetchData(criteria);
                         }
                         if(value == "3"){
-                            let date = new Date();
-                            let newDate = JalaliDate.addMonths(date,4);
-                            JalaliDate.gregorianToJalali(newDate.getFullYear(),newDate.getMonth()+1,newDate.getDate())
+                            let criteria = {
+                                _constructor:"AdvancedCriteria",
+                                operator:"and",
+                                criteria:[
+                                    {fieldName:"behavioralDueDate", operator:"equals", value: Date.create(today).toUTCString()},
+                                    {fieldName:"evaluation", operator:"equals", value: "3"}
+                                ]
+                            };
+                            RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
+                            ListGrid_class_Evaluation.invalidateCache();
+                            ListGrid_class_Evaluation.fetchData(criteria);
                         }
                         if(value == "4"){
                             RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
@@ -332,7 +338,7 @@
                 </sec:authorize>
                 {
                     id: "TabPane_EditGoalQuestions",
-                    title: "ویرایش سوالات ارزیابی-اهداف",
+                    title: "ویرایش سوالات ارزیابی مربوط به اهداف",
                     pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation/edit-goal-questions-form"})
                 }
             ],
@@ -434,6 +440,13 @@
                         classRecord_BE = classRecord;
                         break;
                     }
+                    case "TabPane_EditGoalQuestions" : {
+                        RestDataSource_Golas_JspEGQ.fetchDataURL = evaluationUrl + "/getClassGoalsQuestions/" + classRecord.id;
+                        ListGrid_Goal_JspEGQ.invalidateCache();
+                        ListGrid_Goal_JspEGQ.fetchData();
+                        classRecord_JspEGQ = classRecord;
+                        break;
+                    }
                     case "TabPane_Results": {
                         break;
                     }
@@ -446,7 +459,7 @@
 
         function set_Evaluation_Tabset_status() {
             let classRecord = ListGrid_class_Evaluation.getSelectedRecord();
-            let evaluationType = classRecord.courseEvaluationType;
+            let evaluationType = classRecord.evaluation;
 
             if (evaluationType === "1") {
                 Detail_Tab_Evaluation.enableTab(0);

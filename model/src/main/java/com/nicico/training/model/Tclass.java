@@ -213,6 +213,9 @@ public class Tclass extends Auditable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "alternativeClass")
     private Set<Tclass> canceledClasses;
 
+    @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Evaluation> evaluations;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_alternative_class", insertable = false, updatable = false)
     private Tclass alternativeClass;

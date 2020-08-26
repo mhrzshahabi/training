@@ -108,7 +108,9 @@ public class ISC<T> {
     private static void convertDate(SearchDTO.CriteriaRq criteria) {
         if (criteria == null)
             return;
-        if ("createdDate".equals(criteria.getFieldName()) || "lastModifiedDate".equals(criteria.getFieldName())) {
+        if ("createdDate".equals(criteria.getFieldName()) ||
+                "lastModifiedDate".equals(criteria.getFieldName()) ||
+                "behavioralDueDate".equals(criteria.getFieldName())) {
             criteria.setValue(criteria.getValue().stream().map(o -> new Date(o.toString())).collect(Collectors.toList()));
         }
         if (criteria.getCriteria() != null)

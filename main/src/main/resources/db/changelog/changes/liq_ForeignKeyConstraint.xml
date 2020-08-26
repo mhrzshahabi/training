@@ -1207,6 +1207,12 @@
     <changeSet author="matin_ar (generated)" id="1598067280592-501">
         <addForeignKeyConstraint baseColumnNames="f_targetsociety_type_id" baseTableName="tbl_class" constraintName="FKr4sb3w5cug6r9bm1jjvxj9gu8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1598260979293-505">
+        <addForeignKeyConstraint baseColumnNames="e_enabled" baseTableName="tbl_class_evaluation_goals" constraintName="FKbu4iiafj9rdq2aw7wl1jci0rr" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1598260979293-506">
+        <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_class_evaluation_goals" constraintName="FKkj5l7g3vj5xxlkfe5kticvpkk" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
     <!--<changeSet author="matin_ar (generated)" id="1598067280592-521">-->
         <!--<dropForeignKeyConstraint baseTableName="TBL_TARGET_SOCIETY" constraintName="FKGBWT8EEIHABEWSK5I46S8Q3LT"/>-->
     <!--</changeSet>-->
