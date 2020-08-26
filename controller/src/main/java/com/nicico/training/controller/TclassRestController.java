@@ -204,6 +204,13 @@ public class TclassRestController {
             request.setCriteria(criteriaRq);
         }
 
+        //criteriaRq=(SearchDTO.SearchRq[])request.getCriteria().getCriteria().stream().filter(p->p.getFieldName().equals("term.id")&&p.getValue().get(0).equals("[]")).toArray();
+
+        if(request.getCriteria().getCriteria().stream().filter(p->p.getFieldName().equals("term.id")&&p.getValue().size()==0).toArray().length>0){
+            ArrayList list=new ArrayList<>();
+            list.add("-1000");
+            ((SearchDTO.CriteriaRq)request.getCriteria().getCriteria().stream().filter(p->p.getFieldName().equals("term.id")&&p.getValue().size()==0).toArray()[0]).setValue(list);
+        }
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
         }
