@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Repository
@@ -18,7 +19,7 @@ public interface AttendanceDAO extends JpaRepository<Attendance, Long>, JpaSpeci
     //    List<Attendance> findAllBySessionId(ArrayList<Long> sessionIds);
     List<Attendance> findBySessionId(Long sessionId);
 
-    List<Attendance> findBySessionIdAndStudentId(Long sessionId, Long studentId);
+    Optional<Attendance> findBySessionIdAndStudentId(Long sessionId, Long studentId);
 
     List<Attendance> findBySessionIdInAndStudentIdAndState(List<Long> sessionIdList, Long studentId, String state);
 

@@ -99,6 +99,8 @@ public class ClassStudentDTO implements Serializable {
     @ApiModel("ClassStudent - Create")
     public static class Create {
         @ApiModelProperty(required = true)
+        private Long id;
+        private String nationalCode;
         private String personnelNo;
         private Integer registerTypeId;
         private String applicantCompanyName;
@@ -119,6 +121,9 @@ public class ClassStudentDTO implements Serializable {
         private Boolean isNeedsAssessment;
         private Boolean isPassed;
         private Boolean isRunning;
+        private Integer isPersonnel;
+        private String firstName;
+        private String lastName;
     }
 
     @Getter

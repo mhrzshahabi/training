@@ -632,11 +632,12 @@ public class ClassSessionService implements IClassSession {
                         classSession.setStudentStatus("ثبت نام شده");
                     }
                 }
-                List<Attendance> attendance = null;
-                if (studentId != null)
-                    attendance = attendanceDAO.findBySessionIdAndStudentId(classSession.getId(), studentId);
-                if (attendance != null && attendance.size() != 0)
-                    classSession.setStudentPresentStatus(attendance.get(0).getState());
+
+                if (studentId != null) {
+                    Optional<Attendance> optionalAttendance = attendanceDAO.findBySessionIdAndStudentId(classSession.getId(), studentId);
+                    optionalAttendance.ifPresent(attendance -> classSession.setStudentPresentStatus(attendance.getState()));
+                }
+
             }
         }
         resp.getList().sort(new StudentStatusSorter().thenComparing(new DateSorter()).thenComparing(new HourSorter()));

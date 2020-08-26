@@ -1371,10 +1371,10 @@ WITH result AS (
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_STUDENT_CLASSSTUDENT_CLASS_TERM_COURSE-008">
+    <changeSet author="NICICO" id="VIEW_STUDENT_CLASSSTUDENT_CLASS_TERM_COURSE-009">
         <createView viewName="VIEW_STUDENT_CLASSSTUDENT_CLASS_TERM_COURSE" replaceIfExists="true">
             <![CDATA[
-     SELECT DISTINCT
+SELECT
     1 AS is_personnel,
     tbl_student.id                             AS student_id,
     tbl_student.active                         AS student_active,
@@ -1400,29 +1400,29 @@ WITH result AS (
     tbl_student.post_grade_code                AS student_post_grade_code,
     tbl_student.post_grade_title               AS student_post_grade_title,
     tbl_student.post_title                     AS student_post_title,
-    tbl_personnel.id                           AS personnel_id,
-    tbl_personnel.active                       AS personnel_active,
+    prs.id                           AS personnel_id,
+    prs.active                       AS personnel_active,
      department.c_omor_title              AS personnel_cpp_affairs,
    department.c_hoze_title                  AS personnel_cpp_area,
     department.c_moavenat_title           AS personnel_cpp_assistant,
-    tbl_personnel.ccp_code                AS personnel_cpp_code,
+    prs.ccp_code                AS personnel_cpp_code,
     department.c_ghesmat_title             AS personnel_cpp_section,
-    tbl_personnel.ccp_title               AS personnel_cpp_title,
+    prs.ccp_title               AS personnel_cpp_title,
       department.c_vahed_title                 AS personnel_cpp_unit,
-    tbl_personnel.company_name            AS personnel_company_name,
+    prs.company_name            AS personnel_company_name,
       department.c_hoze_title             AS personnel_complex_title,
-    tbl_personnel.education_level_title        AS personnel_education_level_title,
-    tbl_personnel.first_name                   AS personnel_first_name,
-    tbl_personnel.job_no                       AS personnel_job_no,
-    tbl_personnel.job_title                    AS personnel_job_title,
-    tbl_personnel.last_name                    AS personnel_last_name,
-    tbl_personnel.national_code                AS personnel_national_code,
-    tbl_personnel.personnel_no                 AS personnel_personnel_no,
-    tbl_personnel.emp_no                       AS personnel_emp_no,
-    tbl_personnel.post_code                    AS personnel_post_code,
-    tbl_personnel.post_grade_code              AS personnel_post_grade_code,
-    tbl_personnel.post_grade_title             AS personnel_post_grade_title,
-    tbl_personnel.post_title                   AS personnel_post_title,
+    prs.education_level_title        AS personnel_education_level_title,
+    prs.first_name                   AS personnel_first_name,
+    prs.job_no                       AS personnel_job_no,
+    prs.job_title                    AS personnel_job_title,
+    prs.last_name                    AS personnel_last_name,
+    prs.national_code                AS personnel_national_code,
+    prs.personnel_no                 AS personnel_personnel_no,
+    prs.emp_no                       AS personnel_emp_no,
+    prs.post_code                    AS personnel_post_code,
+    prs.post_grade_code              AS personnel_post_grade_code,
+    prs.post_grade_title             AS personnel_post_grade_title,
+    prs.post_title                   AS personnel_post_title,
     tbl_term.c_code                            AS term_code,
     tbl_term.c_title_fa                        AS term_title_fa,
     tbl_term.id                                AS term_id,
@@ -1450,8 +1450,8 @@ WITH result AS (
 FROM
     tbl_student
     INNER JOIN tbl_class_student ON tbl_student.id = tbl_class_student.student_id
-    INNER JOIN tbl_personnel ON tbl_student.national_code = tbl_personnel.national_code
-     LEFT JOIN tbl_department department ON department.id=tbl_personnel.f_department_id
+    INNER JOIN VIEW_ACTIVE_PERSONNEL prs ON tbl_student.national_code = prs.national_code
+     LEFT JOIN tbl_department department ON department.id=prs.f_department_id
     INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id
     INNER JOIN tbl_term ON tbl_class.f_term = tbl_term.id
     INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id

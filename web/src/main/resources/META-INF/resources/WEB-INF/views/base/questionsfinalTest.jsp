@@ -189,9 +189,13 @@
                 return;
             }
 
-            let findRows=ListGrid_AllQuestions_FinalTestJSP.findAll(({ id }) =>  lgIds.some(p=>p==id));
-            ListGrid_AllQuestions_FinalTestJSP.setSelectedState(findRows);
-            findRows.setProperty("enabled", false);
+
+            let findRows=ListGrid_AllQuestions_FinalTestJSP.findAll(({ id,questionBank,questionBankId }) =>  lgIds.some(p=>(!questionBank)?p==id:p==questionBankId));
+
+            if(findRows && findRows.length>0) {
+                ListGrid_AllQuestions_FinalTestJSP.setSelectedState(findRows);
+                findRows.setProperty("enabled", false);
+            }
         },
         createRecordComponent: function (record, colNum) {
             var fieldName = this.getFieldName(colNum);
@@ -343,11 +347,12 @@
 
                                     ListGrid_ForQuestions_FinalTestJSP.invalidateCache();
 
-                                    let findRows=ListGrid_AllQuestions_FinalTestJSP.findAll(({ id }) =>  [activeId].some(p=>p==id));
+                                    let findRows=ListGrid_AllQuestions_FinalTestJSP.findAll(({ id,questionBank,questionBankId }) =>  [activeId].some(p=>(!questionBank)?p==id:p==questionBankId));
 
-                                    if(typeof (findRows)!='undefined' && findRows.length>0){
+                                    if(findRows && findRows.length>0){
                                         findRows.setProperty("enabled", true);
                                         ListGrid_AllQuestions_FinalTestJSP.deselectRecord(findRows[0]);
+                                        ListGrid_AllQuestions_FinalTestJSP.redraw();
                                     }
 
                                 } else {
@@ -791,12 +796,13 @@
                 height:25,
                 title:"اضافه کردن گروهی",
                 click: function () {
+                    var ids = ListGrid_AllQuestions_FinalTestJSP.getSelection().filter(function(x){return x.enabled!==false}).map(function(item) {return (!item.questionBank)?item.id:item.questionBank.id;});
+                    if(ids &&ids.length>0){
                     let dialog = createDialog('ask', "<spring:message code="msg.record.adds.ask"/>");
                     dialog.addProperties({
                         buttonClick: function (button, index) {
                             this.close();
                             if (index === 0) {
-                                var ids = ListGrid_AllQuestions_FinalTestJSP.getSelection().filter(function(x){return x.enabled!==false}).map(function(item) {return (!item.questionBank)?item.id:item.questionBank.id;});
                                 var activeClass = FinalTestLG_finalTest.getSelectedRecord();
                                 var activeClassId = activeClass.tclass.id;
                                 let JSONObj = {"ids": ids};
@@ -816,9 +822,9 @@
                                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                             ListGrid_ForQuestions_FinalTestJSP.invalidateCache();
 
-                                            let findRows=ListGrid_AllQuestions_FinalTestJSP.findAll(({ id }) =>  ids.some(p=>p==id));
+                                            let findRows=ListGrid_AllQuestions_FinalTestJSP.findAll(({ id,questionBank,questionBankId }) =>  ids.some(p=>(!questionBank)?p==id:p==questionBankId));
 
-                                            if(typeof (findRows)!='undefined' && findRows.length>0){
+                                            if(findRows && findRows.length>0){
                                                 findRows.setProperty("enabled", false);
                                                 ListGrid_AllQuestions_FinalTestJSP.redraw();
                                             }
@@ -832,6 +838,9 @@
                             }
                         }
                     })
+                    }else{
+                        isc.say("سوالي انتخاب نشده است.");
+                    }
                 }
             }),
             isc.LayoutSpacer.create({ID: "spacer", height: "5%"}),
@@ -841,12 +850,15 @@
                 height:25,
                 title:"حذف گروهی",
                 click: function () {
+                    var ids = ListGrid_ForQuestions_FinalTestJSP.getSelection().map(function(item) {return item.questionBank.id;});
+
+                    if(ids && ids.length>0){
                     let dialog = createDialog('ask', "<spring:message code="msg.record.remove.ask"/>");
                     dialog.addProperties({
                         buttonClick: function (button, index) {
                             this.close();
                             if (index === 0) {
-                                var ids = ListGrid_ForQuestions_FinalTestJSP.getSelection().map(function(item) {return item.questionBank.id;});
+
                                 var activeClass = FinalTestLG_finalTest.getSelectedRecord();
                                 var activeClassId = activeClass.tclass.id;
                                 let JSONObj = {"ids": ids};
@@ -862,9 +874,9 @@
                                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
                                             ListGrid_ForQuestions_FinalTestJSP.invalidateCache();
-                                            let findRows=ListGrid_AllQuestions_FinalTestJSP.findAll(({ id }) =>  ids.some(p=>p==id));
+                                            let findRows=ListGrid_AllQuestions_FinalTestJSP.findAll(({ id,questionBank,questionBankId }) =>  ids.some(p=>(!questionBank)?p==id:p==questionBankId));
 
-                                            if(typeof (findRows)!='undefined' && findRows.length>0){
+                                            if(findRows && findRows.length>0){
                                                 findRows.setProperty("enabled", true);
                                                 ListGrid_AllQuestions_FinalTestJSP.deselectRecord(findRows);
                                                 ListGrid_AllQuestions_FinalTestJSP.redraw();
@@ -878,6 +890,9 @@
                             }
                         }
                     })
+                    }else{
+                        isc.say("سوالي انتخاب نشده است.");
+                    }
                 }
             })
         ]
