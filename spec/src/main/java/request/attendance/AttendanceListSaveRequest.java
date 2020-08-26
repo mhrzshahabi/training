@@ -11,6 +11,5 @@ import java.util.List;
 @Setter
 public class AttendanceListSaveRequest implements Serializable {
     private static final long serialVersionUID = 7710786106266650447L;
-
     private List<AttendanceDto> attendanceDtos;
 }

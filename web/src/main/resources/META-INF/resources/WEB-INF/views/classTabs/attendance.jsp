@@ -1080,15 +1080,33 @@
             setTimeout(function () {
                 if(attendanceForm.getValue("filterType")==1) {
                     wait.show();
+                    let sendObject = {};
+                    sendObject.serialVersionUID = 7710786106266650447;
+                    let sendList = [];
+                    sessionInOneDate.forEach(a=>{
+                        let record = {};
+                        record.studentId = a.studentId;
+                        record.sessionId = Object.keys(a).find(b=>b.substr(0,2)==="se").substr(2);
+                        record.state = a[Object.keys(a).find(b=>b.substr(0,2)==="se")];
+                        if(causeOfAbsence.length !== 0) {
+                            record.description = causeOfAbsence.find(c => ((c.sessionId === record.sessionId) && (c.studentId === record.studentId))).description;
+                        }
+                        console.log(record);
+                        sendList.push(record);
+                    })
+                    console.log(sendList);
+                    sendObject.attendanceDtos = sendList;
                     isc.RPCManager.sendRequest({
-                        actionURL: attendanceUrl + "/save-attendance?classId=" + classGridRecordInAttendanceJsp.id + "&date=" + DynamicForm_Attendance.getValue("sessionDate"),
+                        // actionURL: attendanceUrl + "/save-attendance?classId=" + classGridRecordInAttendanceJsp.id + "&date=" + DynamicForm_Attendance.getValue("sessionDate"),
+                        actionURL: attendanceUrl + "/save-attendance",
                         willHandleError: true,
                         httpMethod: "POST",
                         httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                         useSimpleHttp: true,
                         contentType: "application/json; charset=utf-8",
                         showPrompt: false,
-                        data: JSON.stringify([sessionInOneDate, causeOfAbsence]),
+                        data: JSON.stringify(sendObject),
+                        // data: JSON.stringify([sessionInOneDate, causeOfAbsence]),
                         serverOutputAsString: false,
                         callback: function (resp) {
                             loadPage_Attendance();
