@@ -17,7 +17,6 @@
 
     var evalWait_JspEvaluationAnalysis;
 
-    var dummy;
 
     //----------------------------------------------------Rest Data Sources---------------------------------------------
     var RestDataSource_evaluationAnalysis_class = isc.TrDS.create({
