@@ -399,15 +399,6 @@
         filterOnKeypress: false,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        dataChanged: function () {
-            this.Super("dataChanged", arguments);
-            var totalRows = this.data.getLength();
-            if (totalRows >= 0 && this.data.lengthIsKnown()) {
-                totalsLabel_question_bank.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
-            } else {
-                totalsLabel_question_bank.setContents("&nbsp;");
-            }
-        },
         selectionUpdated: function (record) {
             loadAttachment();
 
@@ -426,6 +417,7 @@
         //width: 780,
         overflow: "hidden",
         //autoSize: false,
+        wrapItemTitles: true,
         numCols: 4,
         colWidths: ["10%", "25%", "10%", "25%"],
         fields: [
@@ -874,6 +866,7 @@
                         QuestionBankDF_questionBank.getItem("option4").enable();
 
                         QuestionBankDF_questionBank.getItem("descriptiveAnswer").disable();
+                        QuestionBankDF_questionBank.getItem("lines").disable();
                         QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").enable();
 
 
@@ -895,6 +888,7 @@
                         QuestionBankDF_questionBank.getItem("option4").disable();
 
                         QuestionBankDF_questionBank.getItem("descriptiveAnswer").enable();
+                        QuestionBankDF_questionBank.getItem("lines").enable();
                         QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").disable();
 
 
@@ -929,6 +923,21 @@
                 click: function (form, item) {
                     item.fetchData();
                 }
+            },
+            {
+                name: "lines",
+                title: "<spring:message code="question.bank.lines"/>",
+                width: "*",
+                colSpan: 4,
+                defaultValue: "1",
+                keyPressFilter: "[0-9]",
+                blur: function () {
+                    var lines=QuestionBankDF_questionBank.getValue("lines")
+
+                    if(lines && (parseInt(lines)>10||parseInt(lines)<1)){
+                        createDialog("info", "<spring:message code="question.bank.lines.validation"/>");
+                    }
+                },
             },
             {
                 type: "BlurbItem",
@@ -1090,7 +1099,7 @@
 
     let QuestionBankWin_questionBank = isc.Window.create({
         width: 800,
-        height: 880,
+        height: 920,
         //autoCenter: true,
         overflow: "hidden",
         showMaximizeButton: false,
@@ -1203,6 +1212,7 @@
         QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").setValue(0);
         QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").disable();
         QuestionBankDF_questionBank.getItem("descriptiveAnswer").enable();
+        QuestionBankDF_questionBank.getItem("lines").enable();
 
         QuestionBankDF_questionBank.getItem("questionTypeId").setValue(519);
 
@@ -1300,6 +1310,7 @@
                     //QuestionBankDF_questionBank.getItem("option1").setRequired(true);
                     //QuestionBankDF_questionBank.getItem("option2").setRequired(true);
                     QuestionBankDF_questionBank.getItem("displayTypeId").setRequired(true);
+                    QuestionBankDF_questionBank.getItem("lines").disable();
                     //QuestionBankDF_questionBank.redraw();
 
                 } else {
@@ -1316,6 +1327,7 @@
                     //QuestionBankDF_questionBank.getItem("option1").setRequired(false);
                     //QuestionBankDF_questionBank.getItem("option2").setRequired(false);
                     QuestionBankDF_questionBank.getItem("displayTypeId").setRequired(false);
+                    QuestionBankDF_questionBank.getItem("lines").enable();
                     // QuestionBankDF_questionBank.redraw();
                 }
 

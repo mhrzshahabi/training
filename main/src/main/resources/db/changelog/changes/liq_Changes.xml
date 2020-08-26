@@ -1208,4 +1208,11 @@
         <dropColumn columnName="F_TARGETSOCIETY_TYPE_ID" tableName="TBL_TARGET_SOCIETY"/>
     </changeSet>
 
+    <changeSet author="golrokhi (generated)" id="1598422312247-496">
+        <addColumn tableName="tbl_question_bank">
+            <column defaultValueNumeric="1" name="n_lines" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

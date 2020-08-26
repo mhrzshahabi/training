@@ -765,13 +765,28 @@
                 });
             } else {
                 if (ListGrid_Class_JspClass.getSelectedRecord().classStatus !== "3") {
+                    DynamicForm_Session.getItem("instituteId").setDisabled(false);
+                    DynamicForm_Session.getItem("instituteId").setRequired(false);
+
+                    DynamicForm_Session.getItem("trainingPlaceId").setDisabled(true);
+                    DynamicForm_Session.getItem("trainingPlaceId").setRequired(false);
+
                     let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
                     const {trainingPlaceIds,teacherId,...record}=classRecord;
                     const essentialRecord={instituteId:record.instituteId ,trainingPlaceId:trainingPlaceIds[0],teacherId};
 
                     DynamicForm_Session.clearValues();
 
-                    if (record.instituteId!=0) {
+                    const teachingTypes=[ "غیر حضوری", "مجازی"];
+                    let checkInstitute=false;
+
+                    if (teachingTypes.includes(record.teachingType)){
+                        changeStatusInstituteId(!checkInstitute);
+                    }
+                    else
+                        changeStatusInstituteId(checkInstitute);
+
+                    if (checkInstitute && record.instituteId!=0) {
                         DynamicForm_Session.getField("instituteId").fetchData();
                         RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + essentialRecord.instituteId + "/trainingPlaces";
                     }
@@ -783,10 +798,19 @@
                     session_method = "POST";
                     Window_Session.setTitle("<spring:message code="session"/>");
                     Window_Session.show();
+
                 } else {
                     simpleDialog("<spring:message code="message"/>", "<spring:message code="the.class.is.over"/>", 3000, "stop");
                 }
             }
+        }
+
+        function changeStatusInstituteId(status){
+            DynamicForm_Session.getItem("instituteId").setDisabled(status);
+            DynamicForm_Session.getItem("instituteId").setRequired(!status);
+
+            DynamicForm_Session.getItem("trainingPlaceId").setDisabled(status);
+            DynamicForm_Session.getItem("trainingPlaceId").setRequired(!status);
         }
 
         //*****insert function*****
