@@ -1966,6 +1966,11 @@ public class ClassAlarmService implements IClassAlarm {
         return endingClassAlarm.toString();
 
     }
+
+    @Override
+    public Integer deleteAllAlarmsBySessionIds(List<Long> sessionIds) {
+        return alarmDAO.deleteAllBySessionIds(sessionIds);
+    }
     //*********************************
 
 }

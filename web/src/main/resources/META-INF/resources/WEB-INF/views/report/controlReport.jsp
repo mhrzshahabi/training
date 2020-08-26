@@ -12,6 +12,12 @@
     var endDateCheck_Order_JspControlReport = true;
     let wait;
     let idClasses;
+
+    $(document).ready(()=>{
+        setTimeout(()=>{
+            $("input[name='classCode']").attr("disabled","disabled");
+        },0)}
+    );
     //----------------------------------------------------Rest DataSource-----------------------------------------------
     RestDataSource_JspControlReport = isc.TrDS.create({
         fields: [
@@ -342,8 +348,7 @@
             {
                 name: "classCode",
                 title: "کد کلاس",
-                hint: "کدهای کلاس را با , از یکدیگر جدا کنید",
-                prompt: "کدهای کلاس فقط میتوانند شامل حروف انگلیسی بزرگ، اعداد و - باشند",
+                hint: "کد کلاس را انتخاب نمائيد",
                 showHintInField: true,
                 icons: [{
                     src: "[SKIN]/pickers/search_picker.png",
@@ -801,12 +806,12 @@
                 criteriaDisplayValues = DynamicForm_CriteriaForm_JspControlReport.getField("courseCode").getValue();
                 var ALength = criteriaDisplayValues.length;
                 var lastChar = criteriaDisplayValues.charAt(ALength - 1);
-                if (lastChar != ";")
-                    criteriaDisplayValues += ";";
+                if (lastChar != ",")
+                    criteriaDisplayValues += ",";
             }
             if (selectorDisplayValues != undefined) {
                 for (var i = 0; i < selectorDisplayValues.size() - 1; i++) {
-                    criteriaDisplayValues += selectorDisplayValues [i] + ";";
+                    criteriaDisplayValues += selectorDisplayValues [i] + ",";
                 }
                 criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
             }
@@ -897,7 +902,7 @@
                 criteriaDisplayValues = uniqueNames.join(",");
             }
 
-            criteriaDisplayValues = criteriaDisplayValues == ";undefined" ? "" : criteriaDisplayValues;
+            criteriaDisplayValues = criteriaDisplayValues == "undefined" ? "" : criteriaDisplayValues;
 
             DynamicForm_CriteriaForm_JspControlReport.getField("classCode").setValue(criteriaDisplayValues);
             Window_SelectClasses_JspControlReport.close();

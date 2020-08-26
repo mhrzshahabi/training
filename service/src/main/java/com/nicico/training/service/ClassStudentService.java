@@ -5,6 +5,7 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassStudentDTO;
+import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.Student;
@@ -36,6 +37,8 @@ public class ClassStudentService implements IClassStudentService {
     private final IPersonnelService personnelService;
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final ModelMapper mapper;
+    private final IEvaluationAnalysisService evaluationAnalysisService;
+
 
 
     @Transactional(readOnly = true)
@@ -96,7 +99,8 @@ public class ClassStudentService implements IClassStudentService {
     @Transactional
     @Override
     public void saveOrUpdate(ClassStudent classStudent) {
-        classStudentDAO.save(classStudent);
+        ClassStudent tclass = classStudentDAO.save(classStudent);
+        evaluationAnalysisService.updateLearningEvaluation(tclass.getTclassId(),tclass.getTclass().getScoringMethod());
     }
 
     @Transactional

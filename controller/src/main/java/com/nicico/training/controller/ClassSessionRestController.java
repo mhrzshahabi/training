@@ -135,19 +135,10 @@ public class ClassSessionRestController {
     }
 
     @Transactional
-    @DeleteMapping(value = "/deleteSessions/{sessionIds}")
-    public ResponseEntity<ClassSessionDTO.DeleteStatus> deleteSessions(@PathVariable List<Long> sessionIds) {
-        ClassSessionDTO.DeleteStatus deleteStatus = classSessionService.deleteSessions(sessionIds);
-        if(deleteStatus.getSucesses() == deleteStatus.getTotalSizes())
-            return new ResponseEntity<>(deleteStatus,HttpStatus.OK);
-        else if(deleteStatus.getSucesses() > 0)
-            return new ResponseEntity<>(deleteStatus,HttpStatus.OK);
-        else {
-            deleteStatus.setSucesses(0);
-            deleteStatus.setTotalSizes(0);
-            return new ResponseEntity<>(deleteStatus, HttpStatus.PRECONDITION_REQUIRED);
-        }
-//            return new ResponseEntity<>(deleteStatus,HttpStatus.valueOf(TrainingException.ErrorType.NoChangeEvent.getHttpStatusCode()));
+    @DeleteMapping(value = "/deleteSessions/cId{classId}/sIds{sessionIds}")
+    public ResponseEntity<ClassSessionDTO.DeleteStatus> deleteSessions(@PathVariable Long classId,@PathVariable List<Long> sessionIds) {
+        ClassSessionDTO.DeleteStatus deleteStatus = classSessionService.deleteSessions(classId, sessionIds);
+        return new ResponseEntity<>(deleteStatus,HttpStatus.OK);
     }
 
     //*********************************

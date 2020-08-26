@@ -11,7 +11,7 @@
 			<rightPen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
-	<style name="Table_CH" mode="Opaque" backcolor="#BFE1FF">
+	<style name="Table_CH" mode="Opaque" backcolor="#FE9D2A">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
 			<topPen lineWidth="0.5" lineColor="#000000"/>
@@ -38,7 +38,7 @@
 			<rightPen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
-	<style name="Table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+	<style name="Table 1_CH" mode="Opaque" backcolor="#FE9D2A">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
 			<topPen lineWidth="0.5" lineColor="#000000"/>
@@ -108,9 +108,9 @@
 		</band>
 	</background>
 	<title>
-		<band height="88">
+		<band height="90">
 			<rectangle radius="5">
-				<reportElement x="0" y="0" width="560" height="88" backcolor="#BFFDFF" uuid="50089cf7-6b00-4e5b-b043-117ac6b1b8aa"/>
+				<reportElement x="0" y="0" width="559" height="89" backcolor="#FE9D2A" uuid="50089cf7-6b00-4e5b-b043-117ac6b1b8aa"/>
 			</rectangle>
 			<image>
 				<reportElement x="495" y="15" width="50" height="50" uuid="9ed695bb-6ddb-40cc-8c6c-27f1cf279471"/>
@@ -147,7 +147,7 @@
 		</band>
 	</title>
 	<detail>
-		<band height="802" splitType="Stretch">
+		<band height="802" splitType="Immediate">
 			<componentElement>
 				<reportElement x="10" y="30" width="540" height="40" uuid="bbdc4a7e-2ecd-4bef-8523-b281f2fa5e65">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
@@ -204,7 +204,7 @@
 				</jr:table>
 			</componentElement>
 			<staticText>
-				<reportElement positionType="Float" x="430" y="0" width="120" height="20" uuid="b6c95684-2e58-4ba5-b3ee-d64cac6e3bef"/>
+				<reportElement positionType="Float" x="430" y="0" width="120" height="20" forecolor="#FE9D2A" uuid="b6c95684-2e58-4ba5-b3ee-d64cac6e3bef"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD"/>
 				</textElement>
@@ -348,42 +348,42 @@
 				<textFieldExpression><![CDATA[$P{comment}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="391" y="80" width="160" height="20" uuid="4f3081b2-9177-4c94-b5ab-d722165ffa33"/>
+				<reportElement x="391" y="80" width="160" height="20" forecolor="#FE9D2A" uuid="4f3081b2-9177-4c94-b5ab-d722165ffa33"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD"/>
 				</textElement>
 				<text><![CDATA[تکمیل کننده فرم فراگیران(سرپرست) :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="393" y="130" width="156" height="20" uuid="0eb69350-4172-430b-9a8e-c521ffb19652"/>
+				<reportElement x="393" y="130" width="156" height="20" forecolor="#FE9D2A" uuid="0eb69350-4172-430b-9a8e-c521ffb19652"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD"/>
 				</textElement>
 				<text><![CDATA[شاخصهاي تغيير رفتاري سنجش شده:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="330" y="230" width="219" height="20" uuid="9f8d6076-74b8-4784-82a7-9b09527a9134"/>
+				<reportElement x="330" y="230" width="219" height="20" forecolor="#FE9D2A" uuid="9f8d6076-74b8-4784-82a7-9b09527a9134"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD"/>
 				</textElement>
 				<text><![CDATA[نتيجه ارزيابي شاخص هاي رفتاري كل شركت كنندگان :]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="404" y="460" width="134" height="20" uuid="e91b3a6a-1ff0-4d21-951e-5f20a51ecb65"/>
+				<reportElement x="404" y="460" width="134" height="20" forecolor="#FE9D2A" uuid="e91b3a6a-1ff0-4d21-951e-5f20a51ecb65"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD"/>
 				</textElement>
 				<text><![CDATA[نمره ارزيابي تغيير رفتار فراگيران:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="417" y="690" width="134" height="20" uuid="ec983e25-f603-4133-9881-cef5c1270457"/>
+				<reportElement x="417" y="690" width="134" height="20" forecolor="#FE9D2A" uuid="ec983e25-f603-4133-9881-cef5c1270457"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD"/>
 				</textElement>
 				<text><![CDATA[پيشنهادات و انتقادت مطرح شده:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="460" y="760" width="91" height="20" uuid="70ff0a6c-c262-4423-a18a-53b00ce8da48"/>
+				<reportElement x="460" y="760" width="91" height="20" forecolor="#FE9D2A" uuid="70ff0a6c-c262-4423-a18a-53b00ce8da48"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD"/>
 				</textElement>
@@ -391,7 +391,4 @@
 			</staticText>
 		</band>
 	</detail>
-	<summary>
-		<band height="42" splitType="Stretch"/>
-	</summary>
 </jasperReport>

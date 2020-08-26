@@ -5,6 +5,7 @@
 
 // <script>
     var behavioral_chartData1 = null;
+    var behavioralEvaluationClassId = null;
 
     var BehavioralEvaluationChart1 = isc.FacetChart.create({
         height: "75%",
@@ -71,6 +72,7 @@
         margin: 2,
         title: "چاپ گزارش تغییر رفتار",
         click: function () {
+            print(behavioralEvaluationClassId, {}, "behavioralReport.jasper");
         }
     });
 
@@ -102,4 +104,24 @@
             IButton_Print_LearningBehavioral_Evaluation_Analysis
         ]
     });
+
+    function print(ClassId, params, fileName, type = "pdf") {
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="evaluationAnalysis/printBehavioralReport/"/>" + type,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "fileName", type: "hidden"},
+                    {name: "ClassId", type: "hidden"},
+                    {name: "params", type: "hidden"}
+                ]
+        });
+        criteriaForm.setValue("ClassId", ClassId);
+        criteriaForm.setValue("fileName", fileName);
+        criteriaForm.setValue("params", JSON.stringify(params));
+        criteriaForm.show();
+        criteriaForm.submitForm();
+    }
 

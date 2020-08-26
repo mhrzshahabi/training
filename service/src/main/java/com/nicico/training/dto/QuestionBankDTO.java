@@ -117,6 +117,8 @@ public class QuestionBankDTO {
 
         private ParameterValueDTO.TupleInfo displayType;
 
+        private Integer lines;
+
     }
 
     @Getter

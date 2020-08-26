@@ -40,7 +40,8 @@
             implicitCriteria: {
                 _constructor: "AdvancedCriteria",
                 operator: "and",
-                criteria: [{fieldName: "tclassStudentsCount", operator: "notEqual", value: 0}]
+                criteria: [{fieldName: "tclassStudentsCount", operator: "notEqual", value: 0},
+                    {fieldName: "evaluation", operator: "notNull"}]
             },
         });
 
@@ -343,8 +344,10 @@
                 }
             ],
             tabSelected: function (tabNum, tabPane, ID, tab, name) {
-                if (isc.Page.isLoaded())
+                if (isc.Page.isLoaded()){
                     loadSelectedTab_data(tab);
+                }
+
             }
 
         });
@@ -427,6 +430,7 @@
                     }
                     case "TabPane_Learning_PreTest": {
                         classId_preTest = classRecord.id;
+                        scoringMethod_preTest = classRecord.classScoringMethod;
                         RestDataSource_PreTest.fetchDataURL = questionBankTestQuestionUrl +"/preTest/"+classRecord.id+ "/spec-list";
                         ListGrid_PreTest.invalidateCache();
                         ListGrid_PreTest.fetchData();

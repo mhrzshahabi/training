@@ -5,6 +5,7 @@
 
     var change_value_JspEGQ = false;
     var classRecord_JspEGQ;
+    var wait_JspEGQ;
 
     var RestDataSource_Golas_JspEGQ = isc.TrDS.create({
         fields: [
@@ -52,9 +53,11 @@
     var IButton_SaveButton_JspEGQ = isc.IButtonSave.create({
         top: 260,
         click: function () {
+            wait_JspEGQ = createDialog("wait");
             let data = ListGrid_Goal_JspEGQ.getData().localData;
             isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/editClassGoalsQuestions" , "POST", JSON.stringify(data), function (resp) {
                 ListGrid_Goal_JspEGQ.invalidateCache();
+                wait_JspEGQ.close();
             }
         ));
 
