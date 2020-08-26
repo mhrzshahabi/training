@@ -883,35 +883,6 @@
 
         //*****delete function*****
         function remove_Session() {
-         /* Hamed Jafari:
-            var record = ListGrid_session.getSelectedRecord();
-            if (record == null || record.id == null) {
-                isc.Dialog.create({
-                    message: "<spring:message code="msg.no.records.selected"/>",
-                    icon: "[SKIN]ask.png",
-                    title: "<spring:message code="message"/>",
-                    buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
-                    buttonClick: function (button, index) {
-                        this.close();
-                    }
-                });
-            } else {
-                if (ListGrid_Class_JspClass.getSelectedRecord().classStatus !== "3") {
-                    isc.MyYesNoDialog.create({
-                        message: "<spring:message code="global.grid.record.remove.ask"/>",
-                        title: "<spring:message code="verify.delete"/>",
-                        buttonClick: function (button, index) {
-                            this.close();
-                            if (index === 0) {
-                                isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + record.id, "DELETE", null, show_SessionActionResult));
-                            }
-                        }
-                    });
-                } else {
-                    simpleDialog("<spring:message code="message"/>", "<spring:message code="the.class.is.over"/>", 3000, "stop");
-                }
-            }*/
-
             let sessionIds=[];
             let records = ListGrid_session.getSelectedRecords();
             deleteRecord=true;
@@ -934,14 +905,10 @@
                         buttonClick: function (button, index) {
                             this.close();
                             if (index === 0) {
-                                <%--studentRemoveWait = isc.Dialog.create({--%>
-                                    <%--message: "<spring:message code='msg.waiting'/>",--%>
-                                    <%--icon: "[SKIN]say.png",--%>
-                                    <%--title: "<spring:message code='message'/>"--%>
-                                <%--});--%>
+
                                 wait.show();
                                 records.forEach(item=> sessionIds=[...sessionIds,parseInt(item.id)]);
-                                isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "deleteSessions/" + sessionIds , "DELETE", null, show_SessionActionResult));
+                                isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "deleteSessions/cId" + ListGrid_Class_JspClass.getSelectedRecord().id + "/sIds" + sessionIds , "DELETE", null, show_SessionActionResult));
                             }
                         }
                     });
@@ -967,21 +934,19 @@
                 let totalSizes=parseInt(dataTemp.totalSizes);
                 let failures = totalSizes-success;
 
-                if (deleteRecord) {
-                    if (success != 0 && failures != 0) {
-                        MyOkDialog_Session = isc.Dialog.create({
-                            message: getFormulaMessage(failures.toString() + " ", 2, "red", "B") + "<spring:message code="attendance.meeting.none.nums"/>" + "<br/>" +
-                                getFormulaMessage(success.toString() + " ", 2, "green", "B") + "<spring:message code="attendance.meeting.ok.nums"/>",
-                            icon: "[SKIN]say.png",
-                            title: "<spring:message code="warning"/>",
-                        });
-                    } else if (success != 0) {
-                        MyOkDialog_Session = isc.Dialog.create({
-                            message: getFormulaMessage(success.toString() + " ", 2, "green", "B") + "<spring:message code="attendance.meeting.ok.nums"/>",
-                            icon: "[SKIN]say.png",
-                            title: "<spring:message code="warning"/>",
-                        });
-                    }
+                if (success != 0 && failures != 0) {
+                    MyOkDialog_Session = isc.Dialog.create({
+                        message: getFormulaMessage(failures.toString() + " ", 2, "red", "B") + "<spring:message code="attendance.meeting.none.nums"/>" + "<br/>" +
+                            getFormulaMessage(success.toString() + " ", 2, "green", "B") + "<spring:message code="attendance.meeting.ok.nums"/>",
+                        icon: "[SKIN]say.png",
+                        title: "<spring:message code="warning"/>",
+                    });
+                } else if (success != 0) {
+                    MyOkDialog_Session = isc.Dialog.create({
+                        message: getFormulaMessage(success.toString() + " ", 2, "green", "B") + "<spring:message code="attendance.meeting.ok.nums"/>",
+                        icon: "[SKIN]say.png",
+                        title: "<spring:message code="warning"/>",
+                    });
                 }
                 else {
                     MyOkDialog_Session= isc.Dialog.create({
