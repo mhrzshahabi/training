@@ -449,6 +449,7 @@
     }
 
     function fill_behavioral_evaluation_result(record) {
+        behavioralEvaluationClassId = record.id;
         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getBehavioralEvaluationResult/" + record.id , "GET", null,
             "callback: fill_behavioral_evaluation_result_resp(rpcResponse)"));
     }

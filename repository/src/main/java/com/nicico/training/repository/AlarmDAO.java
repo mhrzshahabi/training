@@ -3,6 +3,8 @@ package com.nicico.training.repository;
 import com.nicico.training.model.Alarm;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,5 +25,9 @@ public interface AlarmDAO extends JpaRepository<Alarm, Long>, JpaSpecificationEx
     List<Alarm> getAlarmsByClassIdOrClassIdConflictOrderBySortField(Long classId, Long classIdConflict);
 
     boolean existsAlarmsByClassIdOrClassIdConflict(Long classId, Long classIdConflict);
+
+    @Modifying
+    @Query(value = "DELETE FROM TBL_ALARM WHERE F_SESSION_ID IN (:sessionIds)", nativeQuery = true)
+    Integer deleteAllBySessionIds(List<Long> sessionIds);
 
 }

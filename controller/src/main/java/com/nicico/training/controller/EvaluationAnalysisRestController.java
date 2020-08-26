@@ -187,6 +187,11 @@ public class EvaluationAnalysisRestController {
         evaluationAnalysisService.updateReactionEvaluation(classId);
     }
 
+    @GetMapping("/updateBehavioralEvaluation/{classId}")
+    public void updateBehavioralEvaluation(@PathVariable Long classId) {
+        evaluationAnalysisService.updateBehavioral(classId);
+    }
+
     @GetMapping("/evaluationAnalysistLearningResult/{classId}/{scoringMethod}")
     public ResponseEntity<EvaluationDTO.EvaluationLearningResult> evaluationAnalysistLearningResult(@PathVariable Long classId,
                                                                                                     @PathVariable String scoringMethod) {

@@ -67,33 +67,8 @@ public class QuestionBankService implements IQuestionBankService {
     @Override
     public QuestionBankDTO.Info create(QuestionBankDTO.Create request) {
         final QuestionBank model = modelMapper.map(request, QuestionBank.class);
-        String code = "";
         Integer codeId = questionBankDAO.getLastCodeId();
 
-
-        /*if (model.getSubCategoryId() != null) {
-            code = subcategoryDAO.findById(model.getSubCategoryId()).orElseGet(null).getCode();
-            Integer top = questionBankDAO.getMaxCodeIDWithSubCategory(model.getSubCategoryId());
-
-            if (top != null) {
-                codeId=top + 1;
-            }
-
-        } else if (model.getCategoryId() != null) {
-            code = categoryDAO.findById(model.getCategoryId()).orElseGet(null).getCode();
-            Integer top = questionBankDAO.getMaxCodeIDWithCategory(model.getCategoryId());
-
-            if (top != null) {
-                codeId=top + 1;
-            }
-        } else {
-            code="P";
-            Integer top = questionBankDAO.getMaxCodeIDWithoutCategoryAndSubCategory();
-
-            if (top != null) {
-                codeId=top + 1;
-            }
-        }*/
         if(codeId != null)
             model.setCodeId(codeId+1);
         else

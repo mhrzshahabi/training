@@ -134,7 +134,9 @@ public class TestQuestionService implements ITestQuestionService {
 
         for(QuestionBankDTO.Exam q : testQuestionBanks){
             if(q.getQuestionType().getCode().equals("Descriptive")){
-                q.setQuestion(q.getQuestion() + "\n\n\n\n");
+                for(int i = 0; i <= q.getLines(); i ++){
+                    q.setQuestion(q.getQuestion() + "\n");
+                }
             }
         }
 

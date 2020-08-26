@@ -8,6 +8,9 @@
 %>
 // <script>
     var change_value_registerScorePreTest;
+    var wait_registerScorePreTest;
+    var classID_registerScorePreTest;
+    var scoringMethod_registerScorePreTest;
 
     var RestDataSource_ClassStudent_registerScorePreTest = isc.TrDS.create({
         fields: [
@@ -119,6 +122,7 @@
                 editorExit: function (editCompletionEvent, record, newValue) {
 
                     if (change_value_registerScorePreTest) {
+                        wait_registerScorePreTest = createDialog("wait");
                         if (newValue != null && newValue != '' && typeof (newValue) != 'undefined') {
 
                             ListGrid_Cell_ScorePreTest_Update(record, newValue);
@@ -149,10 +153,16 @@
     }
 
     function Edit_score_Update(resp) {
+
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-            isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateLearningEvaluation" + "/" + ListGrid_evaluation_class.getSelectedRecord().id +
-                "/" + ListGrid_evaluation_class.getSelectedRecord().scoringMethod,
-                "GET", null, null));
+            isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateLearningEvaluation" + "/" + classID_registerScorePreTest +
+                "/" + scoringMethod_registerScorePreTest,
+                "GET", null, (resp)=>{
+                    wait_registerScorePreTest.close();
+                }));
+        }
+        else{
+            wait_registerScorePreTest.close();
         }
     }
 
@@ -165,7 +175,9 @@
         }
     }
 
-    function call_registerScorePreTest(classId) {
+    function call_registerScorePreTest(classId,scoringMethod) {
+        classID_registerScorePreTest = classId;
+        scoringMethod_registerScorePreTest = scoringMethod;
         RestDataSource_ClassStudent_registerScorePreTest.fetchDataURL = tclassStudentUrl + "/pre-test-score-iscList/" + classId;
         ListGrid_Class_Student_RegisterScorePreTest.invalidateCache();
         ListGrid_Class_Student_RegisterScorePreTest.fetchData();

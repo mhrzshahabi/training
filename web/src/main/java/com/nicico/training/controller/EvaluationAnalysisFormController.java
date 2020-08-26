@@ -8,11 +8,14 @@ import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 
 @RequiredArgsConstructor
@@ -126,4 +129,13 @@ public class EvaluationAnalysisFormController {
         return restTemplate.exchange(restApiUrl + "/api/evaluationAnalysis/printBehavioralEvaluation" , HttpMethod.POST, entity, byte[].class);
     }
 
+    @PostMapping(value = {"/printBehavioralReport/{type}"})
+    public void print(HttpServletResponse response,
+                      @PathVariable String type,
+                      @RequestParam(value = "fileName") String fileName,
+                      @RequestParam(value = "ClassId") Long ClassId,
+                      @RequestParam(value = "params") String Params
+    ) throws Exception {
+//        service.print(response, type, fileName, ClassId, Params);
+    }
 }
