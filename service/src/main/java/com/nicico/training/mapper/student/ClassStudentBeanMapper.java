@@ -8,7 +8,7 @@ import response.student.UpdatePreTestScoreRequest;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
 public interface ClassStudentBeanMapper {
 
-    @Mapping(source = "failureReasonId", target = "failureReasonId", qualifiedByName = "checkFailureReasonId")
+    @Mapping(source = "request.failureReasonId", target = "classStudent.failureReasonId", qualifiedByName = "checkFailureReasonId")
     ClassStudent updateScoreClassStudent(UpdateStudentScoreRequest request, @MappingTarget ClassStudent classStudent);
     ClassStudent updatePreTestScoreClassStudent(UpdatePreTestScoreRequest request, @MappingTarget ClassStudent classStudent);
 
