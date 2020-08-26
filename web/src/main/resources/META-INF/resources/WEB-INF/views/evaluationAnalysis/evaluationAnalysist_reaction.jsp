@@ -35,11 +35,19 @@
                 name: "numberOfFilledReactionEvaluationForms",
                 title: "<spring:message code='numberOfFilledReactionEvaluationForms'/>",
                 baseStyle: "evaluation-code",
-                canEdit: false
+                canEdit: false,
+                hidden: true
             },
             {
                 name: "numberOfInCompletedReactionEvaluationForms",
                 title: "<spring:message code='numberOfInCompletedReactionEvaluationForms'/>",
+                baseStyle: "evaluation-code",
+                canEdit: false,
+                hidden: true
+            },
+            {
+                name: "filledFormsInfo",
+                title: "<spring:message code='numberOfFilledReactionEvaluationForms'/>",
                 baseStyle: "evaluation-code",
                 canEdit: false
             },
@@ -139,6 +147,8 @@
     DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('numberOfEmptyReactionEvaluationForms').titleStyle = 'evaluation-code-title';
     DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('percenetOfFilledReactionEvaluationForms').setCellStyle('evaluation-code-label');
     DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('percenetOfFilledReactionEvaluationForms').titleStyle = 'evaluation-code-title';
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('filledFormsInfo').setCellStyle('evaluation-code-label');
+    DynamicForm_Reaction_EvaluationAnalysis_Header.getItem('filledFormsInfo').titleStyle = 'evaluation-code-title';
 
     DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FERGrade').setCellStyle('evaluation-code-label');
     DynamicForm_Reaction_EvaluationAnalysis_Footer.getItem('FERGrade').titleStyle = 'evaluation-code-title';
@@ -180,6 +190,11 @@
         minLabelGap: 5,
         barMargin: "100",
         allowedChartTypes: [],
+        axisStartValue: 0,
+        axisEndValue: 100,
+        showDataValues:true,
+        brightenAllOnHover:true,
+        hoverLabelPadding: -7,
         facets: [
             {id: "region", title: "حیطه"}],
         data: reaction_chartData,
