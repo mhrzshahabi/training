@@ -17,6 +17,8 @@
 
     var evalWait_JspEvaluationAnalysis;
 
+    var dummy;
+
     //----------------------------------------------------Rest Data Sources---------------------------------------------
     var RestDataSource_evaluationAnalysis_class = isc.TrDS.create({
         fields: [
@@ -186,8 +188,11 @@
             {name: "teacherId", hidden: true},
             {name: "teacherFullName", hidden:true}
         ],
-        selectionUpdated: function (record) {
-            set_evaluation_analysis_tabset_status();
+        rowDoubleClick: function(record, recordNum, fieldNum) {
+            Window_Evaluation_Analysis.title = "نتایج ارزیابی کلاس " + record.courseTitleFa;
+            Window_Evaluation_Analysis.show();
+            evalWait_JspEvaluationAnalysis = createDialog("wait");
+            set_evaluation_analysis_tabset_status(record);
             Detail_Tab_Evaluation_Analysis.selectTab(0);
         },
         getCellCSSText: function (record, rowNum, colNum) {
@@ -295,46 +300,53 @@
         ]
     });
 
+    var Window_Evaluation_Analysis = isc.Window.create({
+        title: "پنجره ی نتایج ارزیابی",
+        overflow: "auto",
+        placement: "fillScreen",
+        items: [
+            Hlayout_Tab_Evaluation_Analysis
+        ]
+    });
+
+
     var VLayout_Body_Evaluation_Analysis = isc.VLayout.create({
         width: "100%",
         height: "100%",
-        members: [HLayout_Actions_Evaluation_Analysis, Hlayout_Grid_Evaluation_Analysis,
-            Hlayout_Tab_Evaluation_Analysis]
+        members: [HLayout_Actions_Evaluation_Analysis, Hlayout_Grid_Evaluation_Analysis]
     });
 
     //----------------------------------------------------Functions-----------------------------------------------------
-    function set_evaluation_analysis_tabset_status() {
+    function set_evaluation_analysis_tabset_status(record) {
 
-        var classRecord = ListGrid_evaluationAnalysis_class.getSelectedRecord();
-        var evaluationType = classRecord.evaluation;
+        let evaluationType = record.evaluation;
 
         Detail_Tab_Evaluation_Analysis.enable();
-        evalWait_JspEvaluationAnalysis = createDialog("wait");
         if (evaluationType === "1" || evaluationType === "واکنشی") {
-            fill_reaction_evaluation_result();
+            fill_reaction_evaluation_result(record);
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.disableTab(1);
             Detail_Tab_Evaluation_Analysis.disableTab(2);
             Detail_Tab_Evaluation_Analysis.disableTab(3);
         } else if (evaluationType === "2" || evaluationType === "یادگیری") {
-            fill_reaction_evaluation_result();
-            evaluationAnalysist_learning();
+            fill_reaction_evaluation_result(record);
+            evaluationAnalysist_learning(record);
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.enableTab(1);
             Detail_Tab_Evaluation_Analysis.disableTab(2);
             Detail_Tab_Evaluation_Analysis.disableTab(3);
         } else if (evaluationType === "3" || evaluationType === "رفتاری") {
-            fill_reaction_evaluation_result();
-            evaluationAnalysist_learning();
-            fill_behavioral_evaluation_result();
+            fill_reaction_evaluation_result(record);
+            evaluationAnalysist_learning(record);
+            fill_behavioral_evaluation_result(record);
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.enableTab(1);
             Detail_Tab_Evaluation_Analysis.enableTab(2);
             Detail_Tab_Evaluation_Analysis.disableTab(3);
         } else if (evaluationType === "4" || evaluationType === "نتایج") {
-            fill_reaction_evaluation_result();
-            evaluationAnalysist_learning();
-            fill_behavioral_evaluation_result();
+            fill_reaction_evaluation_result(record);
+            evaluationAnalysist_learning(record);
+            fill_behavioral_evaluation_result(record);
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.enableTab(1);
             Detail_Tab_Evaluation_Analysis.enableTab(2);
@@ -417,13 +429,14 @@
         evalWait_JspEvaluationAnalysis.close();
     }
 
-    function fill_reaction_evaluation_result() {
+    function fill_reaction_evaluation_result(record) {
         DynamicForm_Reaction_EvaluationAnalysis_Header.show();
         DynamicForm_Reaction_EvaluationAnalysis_Footer.show();
         IButton_Print_ReactionEvaluation_Evaluation_Analysis.show();
         chartSelector.show();
         ReactionEvaluationChart.show();
-        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "reactionEvaluationResult/" + ListGrid_evaluationAnalysis_class.getSelectedRecord().id , "GET", null,
+        classRecord_evaluationAnalysist_reaction = record;
+        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "reactionEvaluationResult/" + record.id , "GET", null,
             "callback: fill_reaction_evaluation_result_resp(rpcResponse)"));
     }
 
@@ -431,14 +444,16 @@
         load_reaction_evluation_analysis_data(JSON.parse(resp.data));
     }
 
-    function fill_behavioral_evaluation_result() {
-        isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getBehavioralEvaluationResult/" + ListGrid_evaluationAnalysis_class.getSelectedRecord().id , "GET", null,
+    function fill_behavioral_evaluation_result(record) {
+        isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getBehavioralEvaluationResult/" + record.id , "GET", null,
             "callback: fill_behavioral_evaluation_result_resp(rpcResponse)"));
     }
 
     function fill_behavioral_evaluation_result_resp(resp) {
         load_behavioral_evluation_analysis_data(JSON.parse(resp.data));
     }
+
+    Window_Evaluation_Analysis.hide();
 
 
 

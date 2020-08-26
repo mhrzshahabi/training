@@ -271,7 +271,7 @@
         wrapItemTitles: true,
         fields: [
             {
-                name: "personnelPersonnelNo",
+                name: "personnelNationalCode",
 
                 title:"انتخاب پرسنل",
                 operator: "inSet",
@@ -279,7 +279,7 @@
                 optionDataSource: PersonnelDS_PCNR_DF,
                 autoFetchData: false,
                 type: "MultiComboBoxItem",
-                valueField: "personnelNo",
+                valueField: "nationalCode",
                 displayField: "personnelNo",
                 endRow: false,
                 colSpan: 3,
@@ -301,14 +301,14 @@
                 },
             },
             {
-                name: "pgCCode",
+                name: "postGradeId",
                 title:"<spring:message code='post.grade'/>",
                 operator: "inSet",
                 textAlign: "center",
                 optionDataSource: RestDataSource_PostGradeLvl_PCNR,
                 autoFetchData: false,
                 type: "MultiComboBoxItem",
-                valueField: "code",
+                valueField: "id",
                 displayField: "titleFa",
                 endRow: false,
                 colSpan: 4,

@@ -2764,7 +2764,7 @@
                     DynamicForm1_Class_JspClass.getItem("termId").enable();
                     DynamicForm1_Class_JspClass.getItem("startDate").enable();
                     DynamicForm1_Class_JspClass.getItem("endDate").enable();
-                    if (resp.data === "true") {
+                    if (resp.data === "true" && a === 0) {
                         DynamicForm1_Class_JspClass.getItem("termId").disable();
                         DynamicForm1_Class_JspClass.getItem("startDate").disable();
                         DynamicForm1_Class_JspClass.getItem("endDate").disable();
