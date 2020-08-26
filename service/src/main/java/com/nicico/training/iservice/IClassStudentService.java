@@ -20,7 +20,7 @@ public interface IClassStudentService {
 
     Map<String, String> registerStudents(List<ClassStudentDTO.Create> request, Long classId);
 
-    <E, T> T update(Long id, E request, Class<T> infoType);
+    void saveOrUpdate(ClassStudent classStudent);
 
     void delete(Long id);
 

@@ -233,7 +233,7 @@ public class EvaluationRestController {
         return new ResponseEntity<>(evaluationService.search(request), HttpStatus.OK);
     }
 
-    private void studentEvaluationRegister(EvaluationDTO.Info evaluation){
+  /*  private void studentEvaluationRegister(EvaluationDTO.Info evaluation){
         if(evaluation.getQuestionnaireTypeId().equals(139L)){
             Integer x;
             if(evaluation.getEvaluationFull()) {
@@ -253,7 +253,7 @@ public class EvaluationRestController {
                 classStudentService.update(classStudent.getId(), classStudent.setEvaluationStatusResults(x), ClassStudentDTO.ClassStudentInfo.class);
             }
         }
-    }
+    }*/
 
     @Loggable
     @GetMapping(value = "/class-spec-list")
