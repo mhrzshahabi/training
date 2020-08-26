@@ -728,7 +728,7 @@
                     filterOperator: "iContains"
                 },
             ],
-            fetchDataURL: personnelUrl + "/iscList",
+            fetchDataURL: viewActivePersonnelUrl + "/iscList",
         });
 
         let PersonnelsLG_student = isc.TrLG.create({
@@ -910,15 +910,15 @@
             }
         });
 
-        let criteria_ActivePersonnel = {
-            _constructor: "AdvancedCriteria",
-            operator: "and",
-            criteria: [
-                {fieldName: "active", operator: "equals", value: 1}
-            ]
-        };
+        // let criteria_ActivePersonnel = {
+        //     _constructor: "AdvancedCriteria",
+        //     operator: "and",
+        //     criteria: [
+        //         {fieldName: "active", operator: "equals", value: 1}
+        //     ]
+        // };
 
-        PersonnelsLG_student.implicitCriteria = criteria_ActivePersonnel;
+        // PersonnelsLG_student.implicitCriteria = criteria_ActivePersonnel;
 
         function nationalCodeExists(nationalCode) {
             return StudentsLG_student.data.localData.some(function (el) {
@@ -1304,7 +1304,8 @@
                                             }
                                             SelectedPersonnelsLG_student.data.clearAll();
                                         }
-                                    }), isc.IButtonCancel.create({
+                                    }),
+                                    isc.IButtonCancel.create({
                                         top: 260,
                                         title: "<spring:message code='cancel'/>",
                                         align: "center",
