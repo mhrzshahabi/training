@@ -670,6 +670,8 @@ public class EvaluationService implements IEvaluationService {
         Double supervisorGradeMean = 0.0;
         Double trainingGradeMean = 0.0;
         Double coWorkersGradeMean = 0.0;
+        Double behavioralGrade = 0.0;
+        Boolean behavioralPass = false;
 
         Integer studentGradeMeanNum = 0;
         Integer supervisorGradeMeanNum = 0;
@@ -743,6 +745,32 @@ public class EvaluationService implements IEvaluationService {
         if(!coWorkersGradeMeanNum.equals(0))
             coWorkersGradeMean = coWorkersGradeMean/coWorkersGradeMeanNum;
 
+        Double minScoreEB = 0.0;
+        Double z7 = 0.0;
+        Double z8 = 0.0;
+        Double scoreEvaluationRTEB = 0.0;
+        Double scoreEvaluationPartnersEB = 0.0;
+
+        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("FEB");
+        List<ParameterValueDTO.Info> parameterValues = parameters.getResponse().getData();
+        for (ParameterValueDTO.Info parameterValue : parameterValues) {
+            if (parameterValue.getCode().equalsIgnoreCase("z7"))
+                z7 = Double.parseDouble(parameterValue.getValue());
+            else if (parameterValue.getCode().equalsIgnoreCase("z8"))
+                z8 = Double.parseDouble(parameterValue.getValue());
+            else if (parameterValue.getCode().equalsIgnoreCase("scoreEvaluationRTEB"))
+                scoreEvaluationRTEB = Double.parseDouble(parameterValue.getValue());
+            else if (parameterValue.getCode().equalsIgnoreCase("scoreEvaluationPartnersEB"))
+                scoreEvaluationPartnersEB = Double.parseDouble(parameterValue.getValue());
+            else if (parameterValue.getCode().equalsIgnoreCase("minScoreEB"))
+                minScoreEB = Double.parseDouble(parameterValue.getValue());
+        }
+
+        behavioralGrade = (coWorkersGradeMean*scoreEvaluationPartnersEB + trainingGradeMean*scoreEvaluationRTEB + supervisorGradeMean*z7 + studentGradeMean*z8)/100;
+        if(behavioralGrade >= minScoreEB)
+            behavioralPass = true;
+        else
+            behavioralPass = false;
 
         evaluationResult.setClassStudentsName(classStudentsName);
         evaluationResult.setCoWorkersGrade(coWorkersGrade);
@@ -754,6 +782,8 @@ public class EvaluationService implements IEvaluationService {
         evaluationResult.setTrainingGradeMean(trainingGradeMean);
         evaluationResult.setStudentGradeMean(studentGradeMean);
         evaluationResult.setSupervisorGradeMean(supervisorGradeMean);
+        evaluationResult.setBehavioralGrade(behavioralGrade);
+        evaluationResult.setBehavioralPass(behavioralPass);
 
         return evaluationResult;
     }

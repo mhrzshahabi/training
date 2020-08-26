@@ -26,4 +26,5 @@ public interface IEvaluationAnalysisService {
 
     void updateReactionEvaluation(Long classId);
 
+    void updateBehavioral(Long classId);
 }
