@@ -350,7 +350,7 @@
 
                                     let findRows=ListGrid_AllQuestions_PreTestJSP.findAll(({ id,questionBank,questionBankId }) =>  [activeId].some(p=>(!questionBank)?p==id:p==questionBankId));
 
-                                    if(typeof (findRows)!='undefined' && findRows.length>0){
+                                    if(findRows && findRows.length>0){
                                         findRows.setProperty("enabled", true);
                                         ListGrid_AllQuestions_PreTestJSP.deselectRecord(findRows[0]);
                                         ListGrid_AllQuestions_PreTestJSP.redraw();

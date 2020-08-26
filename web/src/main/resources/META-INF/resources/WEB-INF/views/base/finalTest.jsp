@@ -23,13 +23,6 @@
                     showNewForm_finalTest();
                 }
             },
-            /*{
-                title: "<spring:message code="question.bank.add.from.classes"/>",
-                icon: "<spring:url value="create.png"/>",
-                click: function () {
-                    showNewForm_finalTest();
-                }
-            },*/
             {
                 title: "<spring:message code="edit"/>",
                 icon: "<spring:url value="edit.png"/>",
