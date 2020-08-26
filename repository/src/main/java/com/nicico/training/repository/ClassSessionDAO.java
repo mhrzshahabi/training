@@ -3,8 +3,10 @@ package com.nicico.training.repository;
 import com.nicico.training.model.ClassSession;
 import com.nicico.training.model.IClassSessionDTO;
 import com.nicico.training.model.ICourseSCRV;
+import io.swagger.models.auth.In;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -38,4 +40,8 @@ public interface ClassSessionDAO extends JpaRepository<ClassSession, Long>, JpaS
     List<ClassSession> findBySessionDateAndClassId(String sessionDate,Long classId);
 
     Boolean existsByClassId(Long classId);
+
+    @Modifying
+    @Query(value = "DELETE FROM TBL_SESSION WHERE ID IN (:ids)",nativeQuery = true)
+    Integer deleteAllById(List<Long> ids);
 }

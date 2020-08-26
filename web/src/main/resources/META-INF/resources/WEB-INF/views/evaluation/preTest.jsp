@@ -11,6 +11,7 @@
     //----------------------------------------- Variables --------------------------------------------------------------
     var questionsSelection=false;
     var classId_preTest;
+    var scoringMethod_preTest;
     //----------------------------------------- DataSources ------------------------------------------------------------
     var RestDataSource_PreTest = isc.TrDS.create({
         fields: [
@@ -740,7 +741,7 @@
                 placement: "fillScreen",
                 items: [
                     isc.ViewLoader.create({autoDraw: true, viewURL: "registerScorePreTest/show-form", viewLoaded() {
-                            eval('call_registerScorePreTest(classId_preTest)');}})
+                            eval('call_registerScorePreTest(classId_preTest,scoringMethod_preTest)');}})
                 ]
             });
             Window_registerScorePreTest.show();

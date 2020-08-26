@@ -22,9 +22,9 @@ public class TestQuestionFormController {
                       @PathVariable String type,
                       @RequestParam(value = "fileName") String fileName,
                       @RequestParam(value = "TestQuestionId") Long testQuestionId,
-                      @RequestParam(value = "params") String receiveParams
+                      @RequestParam(value = "params") String Params
     ) throws Exception {
-        testQuestionService.print(response, type, fileName, testQuestionId, receiveParams);
+        testQuestionService.print(response, type, fileName, testQuestionId, Params);
     }
 
 }

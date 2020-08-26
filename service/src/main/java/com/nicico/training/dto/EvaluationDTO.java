@@ -169,6 +169,8 @@ public class EvaluationDTO implements Serializable {
        private Double supervisorGradeMean;
        private Double trainingGradeMean;
        private Double coWorkersGradeMean;
+       private Double behavioralGrade;
+       private Boolean behavioralPass;
     }
 
 }
