@@ -58,7 +58,6 @@ public class ClassStudentService implements IClassStudentService {
         Tclass tclass = tclassService.getTClass(classId);
 
         for (ClassStudentDTO.Create create : request) {
-
             Student student = studentService.getStudentByPersonnelNo(create.getPersonnelNo());
             if (student == null) {
                 student = new Student();
