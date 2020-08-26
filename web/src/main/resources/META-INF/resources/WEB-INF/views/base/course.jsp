@@ -718,7 +718,9 @@
                                     keyPressFilter: "[0-9]"
                                 }
                             },
-                            {name: "categoryId"}
+                            {name: "categoryId",canFilter:false},
+                            {name: "subCategoryId",canFilter:false
+                            },
                         ],
                         gridComponents: ["filterEditor", "header", "body"],
                     }),

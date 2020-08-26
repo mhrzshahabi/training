@@ -45,6 +45,8 @@ public class QuestionBankDTO {
 
     private Long tclassId;
 
+    private Integer lines;
+
 
     @Getter
     @Setter
