@@ -786,7 +786,7 @@ var mosayeb;
 
 
     function ListGrid_Remove_All_Cell(record) {
-        record.scoresStateId = null;
+        record.scoresStateId = 410;
         record.failureReasonId = null;
         record.score = null;
         record.valence = null;
