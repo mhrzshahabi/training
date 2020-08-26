@@ -1,6 +1,8 @@
 package com.nicico.training.controller;
 
 
+import com.nicico.training.model.EvaluationAnalysis;
+import com.nicico.training.service.EvaluationAnalysisService;
 import lombok.RequiredArgsConstructor;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.springframework.http.*;
@@ -22,6 +24,8 @@ import java.util.Arrays;
 @Controller
 @RequestMapping("/evaluationAnalysis")
 public class EvaluationAnalysisFormController {
+
+    private final EvaluationAnalysisService evaluationAnalysisService;
 
     @RequestMapping("/show-form")
     public String showForm() {
@@ -136,6 +140,6 @@ public class EvaluationAnalysisFormController {
                       @RequestParam(value = "ClassId") Long ClassId,
                       @RequestParam(value = "params") String Params
     ) throws Exception {
-//        service.print(response, type, fileName, ClassId, Params);
+        evaluationAnalysisService.print(response, type, fileName, ClassId, Params);
     }
 }

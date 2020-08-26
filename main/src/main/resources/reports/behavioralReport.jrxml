@@ -147,7 +147,7 @@
 		</band>
 	</title>
 	<detail>
-		<band height="802" splitType="Stretch">
+		<band height="802" splitType="Immediate">
 			<componentElement>
 				<reportElement x="10" y="30" width="540" height="40" uuid="bbdc4a7e-2ecd-4bef-8523-b281f2fa5e65">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
@@ -391,7 +391,4 @@
 			</staticText>
 		</band>
 	</detail>
-	<summary>
-		<band height="42" splitType="Stretch"/>
-	</summary>
 </jasperReport>

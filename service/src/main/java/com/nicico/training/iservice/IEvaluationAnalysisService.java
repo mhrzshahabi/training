@@ -5,6 +5,7 @@ import com.nicico.training.dto.EvaluationAnalysisDTO;
 import com.nicico.training.model.EvaluationAnalysis;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface IEvaluationAnalysisService {
@@ -27,4 +28,6 @@ public interface IEvaluationAnalysisService {
     void updateReactionEvaluation(Long classId);
 
     void updateBehavioral(Long classId);
+
+    void print (HttpServletResponse response, String type , String fileName, Long testQuestionId, String receiveParams) throws Exception;
 }

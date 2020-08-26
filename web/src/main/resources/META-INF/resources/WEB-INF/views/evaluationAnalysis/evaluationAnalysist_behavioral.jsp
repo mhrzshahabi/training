@@ -72,7 +72,7 @@
         margin: 2,
         title: "چاپ گزارش تغییر رفتار",
         click: function () {
-            print(behavioralEvaluationClassId, null, "behavioralReport");
+            print(behavioralEvaluationClassId, {}, "behavioralReport.jasper");
         }
     });
 

@@ -1,8 +1,12 @@
 package com.nicico.training.service;
 
+import com.google.gson.Gson;
+import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.common.util.date.DateUtil;
+import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.EvaluationAnalysisDTO;
 import com.nicico.training.dto.EvaluationDTO;
@@ -16,11 +20,16 @@ import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.EvaluationAnalysisDAO;
 import com.nicico.training.repository.TclassDAO;
 import lombok.RequiredArgsConstructor;;
+import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.modelmapper.TypeToken;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 import java.util.*;
 
 @Service
@@ -34,6 +43,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
     private final TclassDAO tclassDAO;
     private final ITclassService tclassService;
     private final IEvaluationService evaluationService;
+    private final ReportUtil reportUtil;
 
     @Transactional(readOnly = true)
     @Override
@@ -321,6 +331,35 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         finalResult.put("EffectivenessGrade", effectivenessGrade);
         finalResult.put("EffectivenessPass",effectivenessPass);
         return finalResult;
+    }
+
+    @Transactional
+    @Override
+    public void print (HttpServletResponse response, String type , String fileName, Long testQuestionId, String receiveParams) throws Exception {
+        final Gson gson = new Gson();
+        Type resultType = new TypeToken<HashMap<String, Object>>() {
+        }.getType();
+        final HashMap<String, Object> params = gson.fromJson(receiveParams, resultType);
+        String data = "";
+        String courseRegisteredData = "[{}]";
+        String behavioralIndicators = "[{}]";
+        String behavioralChart = "[{}]";
+        String behavioralScoreChart = "[{}]";
+        data = "{" + "\"courseRegistered\": " + courseRegisteredData + "," +
+                "\"behavioralIndicators\": " + behavioralIndicators + "," +
+                "\"behavioralChart\": " + behavioralChart + "," +
+                "\"behavioralScoreChart\": " + behavioralScoreChart + "}"
+        ;
+        params.put("today", DateUtil.todayDate());
+        params.put("course", "course name");
+        params.put("courseRegisteredCount", "registered Count");
+        params.put("students_head", "head of students");
+        params.put("criticisim", "criticise");
+        params.put("comment", "you're comment");
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        JsonDataSource jsonDataSource = null;
+        jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
     }
 
 }
