@@ -8,6 +8,8 @@ import response.student.UpdatePreTestScoreRequest;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
 public interface ClassStudentBeanMapper {
 
+//    You can ignore mapping on specific field in target class
+//    @Mapping(source = "request.scoresStateId", target = "classStudent.scoresStateId", ignore = true)
     @Mapping(source = "request.failureReasonId", target = "classStudent.failureReasonId", qualifiedByName = "checkFailureReasonId")
     @Mapping(source = "request.scoresStateId", target = "classStudent.scoresStateId", qualifiedByName = "checkNullScoresStateId")
     ClassStudent updateScoreClassStudent(UpdateStudentScoreRequest request, @MappingTarget ClassStudent classStudent);
