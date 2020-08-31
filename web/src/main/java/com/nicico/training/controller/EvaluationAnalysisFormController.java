@@ -138,8 +138,10 @@ public class EvaluationAnalysisFormController {
                       @PathVariable String type,
                       @RequestParam(value = "fileName") String fileName,
                       @RequestParam(value = "ClassId") Long ClassId,
-                      @RequestParam(value = "params") String Params
+                      @RequestParam(value = "params") String Params,
+                      @RequestParam(value = "suggestions") String suggestions,
+                      @RequestParam(value = "opinion") String opinion
     ) throws Exception {
-        evaluationAnalysisService.print(response, type, fileName, ClassId, Params);
+        evaluationAnalysisService.print(response, type, fileName, ClassId, Params, suggestions, opinion);
     }
 }
