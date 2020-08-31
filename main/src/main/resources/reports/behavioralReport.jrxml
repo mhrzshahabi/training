@@ -132,7 +132,7 @@
 			</staticText>
 			<staticText>
 				<reportElement x="270" y="15" width="100" height="20" uuid="642c6152-780b-4b0b-84f0-8b76ce7314e7"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD"/>
 				</textElement>
 				<text><![CDATA[گزارش تغییر رفتار دوره ]]></text>
@@ -147,9 +147,9 @@
 		</band>
 	</title>
 	<detail>
-		<band height="802" splitType="Immediate">
+		<band height="90" splitType="Immediate">
 			<componentElement>
-				<reportElement x="10" y="30" width="540" height="40" uuid="bbdc4a7e-2ecd-4bef-8523-b281f2fa5e65">
+				<reportElement x="7" y="30" width="543" height="40" uuid="bbdc4a7e-2ecd-4bef-8523-b281f2fa5e65">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
@@ -212,32 +212,36 @@
 			</staticText>
 			<textField isBlankWhenNull="true">
 				<reportElement x="300" y="0" width="130" height="20" uuid="e1faa0fd-192b-49ce-af90-08be1271dfb8"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$P{courseRegisteredCount}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="290" y="80" width="100" height="20" uuid="6cc525f6-ccda-41f7-8aa9-6310f27a082b"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{students_head}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{courseRegisteredCount}]]></textFieldExpression>
 			</textField>
+		</band>
+		<band height="91">
+			<staticText>
+				<reportElement x="394" y="0" width="156" height="20" forecolor="#FE9D2A" uuid="397e1702-c156-4fdf-8e4e-5e88a4c402c9"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD"/>
+				</textElement>
+				<text><![CDATA[شاخصهاي تغيير رفتاري سنجش شده:]]></text>
+			</staticText>
 			<componentElement>
-				<reportElement x="9" y="160" width="539" height="40" uuid="2ef0ab2f-6edf-4d64-b64e-1d66b9afda2e">
+				<reportElement x="7" y="30" width="543" height="40" uuid="82a40d12-df94-4c09-b1b3-196807222acc">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 1_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 1_CH"/>
 					<property name="com.jaspersoft.studio.table.style.detail" value="Table 1_TD"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="behavioralIndicators" uuid="7d02dfed-e6d9-451e-a290-fd7c62d02a53">
+					<datasetRun subDataset="behavioralIndicators" uuid="22b90bf9-9fbb-4fda-b3a6-4750a3152526">
 						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("behavioralIndicators")]]></dataSourceExpression>
 					</datasetRun>
-					<jr:column width="430" uuid="0663d85a-9061-4e52-b125-8f95880699ff">
+					<jr:column width="430" uuid="77a78007-0e02-43a9-a546-096cc9c068a7">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
 						<jr:columnHeader style="Table 1_CH" height="20" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="430" height="20" uuid="53896201-ab94-4aba-afaa-d816111128d8"/>
+								<reportElement x="0" y="0" width="430" height="20" uuid="de68bd09-0701-452f-914e-f5a2a052f9d7"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD"/>
 								</textElement>
@@ -246,17 +250,19 @@
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="20">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="430" height="20" uuid="fb8e0e32-a9e2-427d-ab10-826b4dd68992"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<reportElement x="0" y="0" width="430" height="20" uuid="7faff95b-3298-4450-b87e-20f66f348433"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Shabnam-FD"/>
+								</textElement>
 								<textFieldExpression><![CDATA[$F{indicatorEx}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="109" uuid="7e26589c-b776-42f3-ba41-269c82dbc079">
+					<jr:column width="109" uuid="c3e7c462-53fc-496b-80b7-cfca64590c2e">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 						<jr:columnHeader style="Table 1_CH" height="20" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="109" height="20" uuid="c85cb6e5-1d4e-47e1-ab6b-1ff35c9b6dc8"/>
+								<reportElement x="0" y="0" width="109" height="20" uuid="e92c9c79-9429-4e6d-9b3f-008bcb0b581c"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD"/>
 								</textElement>
@@ -265,7 +271,7 @@
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="20">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="109" height="20" uuid="34ce0b8a-07fc-44b7-b316-c90fa1b78739"/>
+								<reportElement x="0" y="0" width="109" height="20" uuid="d79956a3-8b63-4432-971f-6dcfdf82606d"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD"/>
 								</textElement>
@@ -275,16 +281,27 @@
 					</jr:column>
 				</jr:table>
 			</componentElement>
+		</band>
+		<band height="228">
+			<staticText>
+				<reportElement x="331" y="0" width="219" height="20" forecolor="#FE9D2A" uuid="93c0f7b1-0896-4eca-affa-20c4acd36d92"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD"/>
+				</textElement>
+				<text><![CDATA[نتيجه ارزيابي شاخص هاي رفتاري كل شركت كنندگان :]]></text>
+			</staticText>
 			<barChart>
 				<chart evaluationTime="Report">
-					<reportElement x="12" y="260" width="536" height="180" uuid="fa8b1053-7263-4ae4-933b-061ad1ddfb77"/>
+					<reportElement x="7" y="30" width="541" height="180" uuid="967e99dc-da76-46cf-9277-c52f6d18e631"/>
 					<chartTitle/>
 					<chartSubtitle/>
 					<chartLegend/>
 				</chart>
 				<categoryDataset>
 					<dataset>
-						<datasetRun subDataset="behavioralChart" uuid="b7f4049c-c354-4db4-a0e1-d3871c25e091"/>
+						<datasetRun subDataset="behavioralChart" uuid="eb7c7e9d-60a4-4ab9-8e03-bf1cc9fd5623">
+							<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("behavioralChart")]]></dataSourceExpression>
+						</datasetRun>
 					</dataset>
 					<categorySeries>
 						<seriesExpression><![CDATA["SERIES 1"]]></seriesExpression>
@@ -305,16 +322,27 @@
 					</valueAxisFormat>
 				</barPlot>
 			</barChart>
+		</band>
+		<band height="230">
+			<staticText>
+				<reportElement x="416" y="0" width="134" height="20" forecolor="#FE9D2A" uuid="8d44de0d-603f-4c86-af25-a2a4b56b01c9"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD"/>
+				</textElement>
+				<text><![CDATA[نمره ارزيابي تغيير رفتار فراگيران:]]></text>
+			</staticText>
 			<barChart>
 				<chart evaluationTime="Report">
-					<reportElement x="14" y="490" width="536" height="180" uuid="7337e3a9-d887-4eaa-b6b0-2c43e43d98d3"/>
+					<reportElement x="7" y="30" width="541" height="180" uuid="10ae7d86-9dbf-4309-925c-de18205be23b"/>
 					<chartTitle/>
 					<chartSubtitle/>
 					<chartLegend/>
 				</chart>
 				<categoryDataset>
 					<dataset>
-						<datasetRun subDataset="behavioralScoreChart" uuid="c9a1f25e-bbc1-4856-9fe9-820884e26a79"/>
+						<datasetRun subDataset="behavioralScoreChart" uuid="6b66ce16-974f-4155-987c-6ec848120da4">
+							<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("behavioralScoreChart")]]></dataSourceExpression>
+						</datasetRun>
 					</dataset>
 					<categorySeries>
 						<seriesExpression><![CDATA["SERIES 1"]]></seriesExpression>
@@ -333,62 +361,38 @@
 					</valueAxisFormat>
 				</barPlot>
 			</barChart>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="7" y="690" width="410" height="20" uuid="83fadf33-9e57-4fea-b614-8ab82450cbf0"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{criticisim}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="0" y="760" width="460" height="20" uuid="b661a9fe-5bf7-4702-b80d-20bc824a290b"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{comment}]]></textFieldExpression>
-			</textField>
+		</band>
+		<band height="42">
 			<staticText>
-				<reportElement x="391" y="80" width="160" height="20" forecolor="#FE9D2A" uuid="4f3081b2-9177-4c94-b5ab-d722165ffa33"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<text><![CDATA[تکمیل کننده فرم فراگیران(سرپرست) :]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="393" y="130" width="156" height="20" forecolor="#FE9D2A" uuid="0eb69350-4172-430b-9a8e-c521ffb19652"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<text><![CDATA[شاخصهاي تغيير رفتاري سنجش شده:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="330" y="230" width="219" height="20" forecolor="#FE9D2A" uuid="9f8d6076-74b8-4784-82a7-9b09527a9134"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<text><![CDATA[نتيجه ارزيابي شاخص هاي رفتاري كل شركت كنندگان :]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="404" y="460" width="134" height="20" forecolor="#FE9D2A" uuid="e91b3a6a-1ff0-4d21-951e-5f20a51ecb65"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<text><![CDATA[نمره ارزيابي تغيير رفتار فراگيران:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="417" y="690" width="134" height="20" forecolor="#FE9D2A" uuid="ec983e25-f603-4133-9881-cef5c1270457"/>
+				<reportElement x="414" y="0" width="134" height="20" forecolor="#FE9D2A" uuid="dca67f06-db45-4da1-9721-97eb8d037710"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD"/>
 				</textElement>
 				<text><![CDATA[پيشنهادات و انتقادت مطرح شده:]]></text>
 			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="7" y="0" width="407" height="20" uuid="55b0243d-9c08-434f-92bb-7921205f49f1"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{criticisim}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="39">
 			<staticText>
-				<reportElement x="460" y="760" width="91" height="20" forecolor="#FE9D2A" uuid="70ff0a6c-c262-4423-a18a-53b00ce8da48"/>
+				<reportElement x="459" y="0" width="91" height="20" forecolor="#FE9D2A" uuid="9ca84d04-6ad0-4711-b836-ef0199a906f3"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD"/>
 				</textElement>
 				<text><![CDATA[نظر كارشناس ارزيابي:]]></text>
 			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="7" y="0" width="452" height="20" uuid="11529b61-8828-46b5-84c0-74e32adadeb0"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{comment}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 </jasperReport>

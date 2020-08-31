@@ -29,5 +29,5 @@ public interface IEvaluationAnalysisService {
 
     void updateBehavioral(Long classId);
 
-    void print (HttpServletResponse response, String type , String fileName, Long testQuestionId, String receiveParams) throws Exception;
+    void print (HttpServletResponse response, String type , String fileName, Long testQuestionId, String receiveParams,  String suggestions, String opinion) throws Exception;
 }
