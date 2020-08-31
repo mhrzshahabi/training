@@ -2,6 +2,9 @@ package com.nicico.training.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.ibm.icu.text.ArabicShaping;
+import com.ibm.icu.text.ArabicShapingException;
+import com.ibm.icu.text.Bidi;
 import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
@@ -344,8 +347,12 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         List<Map> studentsList = new ArrayList();
         for (ClassStudent student : tclass.getClassStudents()) {
             Map<String,String> std = new HashMap<>();
-            std.put("studentFullName",student.getStudent().getFirstName() + " " + student.getStudent().getLastName());
-            std.put("personnelCode",student.getStudent().getPersonnelNo());
+
+            String name = student.getStudent().getFirstName() + " " + student.getStudent().getLastName();
+            String code = student.getStudent().getPersonnelNo();
+
+            std.put("studentFullName", name);
+            std.put("personnelCode",code);
             studentsList.add(std);
         }
 
@@ -373,16 +380,22 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         List<Map> behavioralChart = new ArrayList();
         for(int j=0;j<indicesList.size();j++){
             Map<String,Object> behavior = new HashMap<>();
+
+            String cat = indicesList.get(j).get("indicatorNo").toString();
+
             behavior.put("behaviorVal",50.0);
-            behavior.put("behaviorCat",indicesList.get(j).get("indicatorNo").toString());
+            behavior.put("behaviorCat",bidiReorder(cat));
             behavioralChart.add(behavior);
         }
 
         List<Map> behavioralScoreChart = new ArrayList();
         for (ClassStudent student : tclass.getClassStudents()) {
             Map<String,Object> behavior = new HashMap<>();
+
+            String cat = student.getStudent().getFirstName() + " " + student.getStudent().getLastName();
+
             behavior.put("scoreVal",50.0);
-            behavior.put("scoreCat",student.getStudent().getFirstName() + " " + student.getStudent().getLastName());
+            behavior.put("scoreCat",bidiReorder(cat));
             behavioralScoreChart.add(behavior);
         }
 
@@ -404,6 +417,18 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         JsonDataSource jsonDataSource = null;
         jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
+    }
+
+    private static String bidiReorder(String text)
+    {
+        try {
+            Bidi bidi = new Bidi((new ArabicShaping(ArabicShaping.LETTERS_SHAPE)).shape(text), 127);
+            bidi.setReorderingMode(0);
+            return bidi.writeReordered(2);
+        }
+        catch (ArabicShapingException ase3) {
+            return text;
+        }
     }
 
 }

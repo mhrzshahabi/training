@@ -285,7 +285,12 @@
     QuestionBankLG_questionBank = isc.TrLG.create({
         dataSource: QuestionBankDS_questionBank,
         fields: [
-            {name: "code",},
+            {name: "code",
+                sortNormalizer: function (record) {
+                    console.log(record.code,parseInt(record.code))
+                    return parseInt(record.code);
+                }
+            },
             {name: "question",},
             {name: "displayType.id",
                 optionDataSource: DisplayTypeDS_questionBank,
@@ -394,7 +399,7 @@
         autoFetchData: true,
         gridComponents: [QuestionBankTS_questionBank, "filterEditor", "header", "body",],
         contextMenu: QuestionBankMenu_questionBank,
-        sortField: 1,
+        sortField: "id",
         filterOperator: "iContains",
         filterOnKeypress: false,
         allowAdvancedCriteria: true,

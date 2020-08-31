@@ -5,9 +5,13 @@ package com.nicico.training.repository;
 
 import com.nicico.training.model.JobGroup;
 import com.nicico.training.model.QuestionBank;
+import com.nicico.training.model.Tclass;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -29,4 +33,10 @@ public interface QuestionBankDAO extends JpaRepository<QuestionBank, Long>, JpaS
 
     @Query(value = "select * from tbl_question_bank where ID in(:ids)",nativeQuery = true)
     List<QuestionBank> findByIds(List<Long> ids);
+
+
+    @EntityGraph(attributePaths = {"questionType", "displayType", "category", "course", "tclass", "tclass.teacher", "tclass.teacher.personality","tclass.course", "subCategory", "teacher"})
+    @Override
+    List<QuestionBank> findAll(@Nullable Specification<QuestionBank> var1);
+
 }

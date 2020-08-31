@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="evaluationReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="92fbd97e-62bb-4c78-bc86-10540d4c7d95">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="evaluationReport" pageWidth="595" pageHeight="842" whenNoDataType="NoPages" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="92fbd97e-62bb-4c78-bc86-10540d4c7d95">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
@@ -76,7 +76,7 @@
 		<queryString>
 			<![CDATA[]]>
 		</queryString>
-		<field name="behaviorVal" class="java.lang.String"/>
+		<field name="behaviorVal" class="java.lang.Long"/>
 		<field name="behaviorCat" class="java.lang.String"/>
 	</subDataset>
 	<subDataset name="behavioralScoreChart" uuid="e7d65d45-db5f-42b3-af4c-926abd71c928">
@@ -85,7 +85,7 @@
 			<![CDATA[]]>
 		</queryString>
 		<field name="scoreCat" class="java.lang.String"/>
-		<field name="scoreVal" class="java.lang.String"/>
+		<field name="scoreVal" class="java.lang.Long"/>
 	</subDataset>
 	<parameter name="courseRegisteredCount" class="java.lang.String"/>
 	<parameter name="students_head" class="java.lang.String"/>
@@ -282,7 +282,7 @@
 				</jr:table>
 			</componentElement>
 		</band>
-		<band height="228">
+		<band height="228" splitType="Prevent">
 			<staticText>
 				<reportElement x="331" y="0" width="219" height="20" forecolor="#FE9D2A" uuid="93c0f7b1-0896-4eca-affa-20c4acd36d92"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -291,39 +291,61 @@
 				<text><![CDATA[نتيجه ارزيابي شاخص هاي رفتاري كل شركت كنندگان :]]></text>
 			</staticText>
 			<barChart>
-				<chart evaluationTime="Report">
-					<reportElement x="7" y="30" width="541" height="180" uuid="967e99dc-da76-46cf-9277-c52f6d18e631"/>
-					<chartTitle/>
-					<chartSubtitle/>
-					<chartLegend/>
+				<chart isShowLegend="false" evaluationTime="Report">
+					<reportElement x="7" y="30" width="541" height="180" uuid="d38c4b5f-5569-456b-b801-283f922b9d05"/>
+					<chartTitle>
+						<font fontName="Shabnam-FD"/>
+					</chartTitle>
+					<chartSubtitle>
+						<font fontName="Shabnam-FD"/>
+					</chartSubtitle>
+					<chartLegend>
+						<font fontName="Shabnam-FD"/>
+					</chartLegend>
 				</chart>
 				<categoryDataset>
 					<dataset>
-						<datasetRun subDataset="behavioralChart" uuid="eb7c7e9d-60a4-4ab9-8e03-bf1cc9fd5623">
+						<datasetRun subDataset="behavioralChart" uuid="85bbd957-ef1f-48e5-ae94-41213c089c19">
 							<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("behavioralChart")]]></dataSourceExpression>
 						</datasetRun>
 					</dataset>
 					<categorySeries>
-						<seriesExpression><![CDATA["SERIES 1"]]></seriesExpression>
+						<seriesExpression><![CDATA[$F{behaviorVal}]]></seriesExpression>
 						<categoryExpression><![CDATA[$F{behaviorCat}]]></categoryExpression>
 						<valueExpression><![CDATA[$F{behaviorVal}]]></valueExpression>
 					</categorySeries>
 				</categoryDataset>
-				<barPlot>
-					<plot/>
+				<barPlot isShowLabels="true" isShowTickLabels="true" isShowTickMarks="false">
+					<plot backgroundAlpha="1.0" labelRotation="360.0"/>
 					<itemLabel>
 						<font fontName="Shabnam-FD"/>
 					</itemLabel>
-					<categoryAxisFormat>
-						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000"/>
+					<categoryAxisFormat labelRotation="360.0">
+						<axisFormat labelColor="#000000" tickLabelColor="#000000" tickLabelMask="" axisLineColor="#000000">
+							<labelFont>
+								<font fontName="Shabnam-FD"/>
+							</labelFont>
+							<tickLabelFont>
+								<font fontName="Shabnam-FD"/>
+							</tickLabelFont>
+						</axisFormat>
 					</categoryAxisFormat>
 					<valueAxisFormat>
-						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000"/>
+						<axisFormat labelColor="#000000" tickLabelColor="#000000" tickLabelMask="" axisLineColor="#000000">
+							<labelFont>
+								<font fontName="Shabnam-FD"/>
+							</labelFont>
+							<tickLabelFont>
+								<font fontName="Shabnam-FD"/>
+							</tickLabelFont>
+						</axisFormat>
 					</valueAxisFormat>
+					<domainAxisMinValueExpression><![CDATA[0]]></domainAxisMinValueExpression>
+					<domainAxisMaxValueExpression><![CDATA[0.1]]></domainAxisMaxValueExpression>
 				</barPlot>
 			</barChart>
 		</band>
-		<band height="230">
+		<band height="376" splitType="Prevent">
 			<staticText>
 				<reportElement x="416" y="0" width="134" height="20" forecolor="#FE9D2A" uuid="8d44de0d-603f-4c86-af25-a2a4b56b01c9"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -332,32 +354,54 @@
 				<text><![CDATA[نمره ارزيابي تغيير رفتار فراگيران:]]></text>
 			</staticText>
 			<barChart>
-				<chart evaluationTime="Report">
-					<reportElement x="7" y="30" width="541" height="180" uuid="10ae7d86-9dbf-4309-925c-de18205be23b"/>
-					<chartTitle/>
-					<chartSubtitle/>
-					<chartLegend/>
+				<chart isShowLegend="false" evaluationTime="Report">
+					<reportElement x="7" y="30" width="541" height="330" isPrintWhenDetailOverflows="true" uuid="58d9196f-1e11-4237-9e59-39480ad8ad72"/>
+					<chartTitle>
+						<font fontName="Shabnam-FD" size="10"/>
+					</chartTitle>
+					<chartSubtitle>
+						<font fontName="Shabnam-FD" size="10"/>
+					</chartSubtitle>
+					<chartLegend position="Bottom">
+						<font fontName="Shabnam-FD"/>
+					</chartLegend>
 				</chart>
 				<categoryDataset>
 					<dataset>
-						<datasetRun subDataset="behavioralScoreChart" uuid="6b66ce16-974f-4155-987c-6ec848120da4">
+						<datasetRun subDataset="behavioralScoreChart" uuid="b5361135-6d6f-45fa-a943-3977d7521d80">
 							<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("behavioralScoreChart")]]></dataSourceExpression>
 						</datasetRun>
 					</dataset>
 					<categorySeries>
-						<seriesExpression><![CDATA["SERIES 1"]]></seriesExpression>
+						<seriesExpression><![CDATA[$F{scoreVal}]]></seriesExpression>
 						<categoryExpression><![CDATA[$F{scoreCat}]]></categoryExpression>
 						<valueExpression><![CDATA[$F{scoreVal}]]></valueExpression>
 					</categorySeries>
 				</categoryDataset>
 				<barPlot>
-					<plot/>
-					<itemLabel/>
-					<categoryAxisFormat>
-						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000"/>
+					<plot backgroundAlpha="1.0" labelRotation="45.0"/>
+					<itemLabel>
+						<font fontName="Shabnam-FD"/>
+					</itemLabel>
+					<categoryAxisFormat labelRotation="45.0">
+						<axisFormat labelColor="#000000" tickLabelColor="#000000" verticalTickLabels="true" axisLineColor="#000000">
+							<labelFont>
+								<font fontName="Shabnam-FD"/>
+							</labelFont>
+							<tickLabelFont>
+								<font fontName="Shabnam-FD" size="8"/>
+							</tickLabelFont>
+						</axisFormat>
 					</categoryAxisFormat>
 					<valueAxisFormat>
-						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000"/>
+						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000">
+							<labelFont>
+								<font fontName="Shabnam-FD"/>
+							</labelFont>
+							<tickLabelFont>
+								<font fontName="Shabnam-FD"/>
+							</tickLabelFont>
+						</axisFormat>
 					</valueAxisFormat>
 				</barPlot>
 			</barChart>

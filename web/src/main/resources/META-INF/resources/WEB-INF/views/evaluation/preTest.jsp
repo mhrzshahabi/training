@@ -676,7 +676,7 @@
                         }
                     },
                     {
-                        name: "testQuestion.tclass.teacher.fullNameFa",
+                        name: "testQuestion.tclass.teacher",
                         title: "<spring:message code="teacher"/>",
                         filterOperator: "iContains", autoFitWidth: true
                     },
