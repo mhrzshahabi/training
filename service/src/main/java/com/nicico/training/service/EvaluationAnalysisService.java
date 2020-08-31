@@ -350,19 +350,32 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         }
 
         List<Map> indicesList = new ArrayList();
-        int i = 0;
-        Map<String,String> indice = new HashMap<>();
+        int i = 1;
         for (Goal goal : tclass.getCourse().getGoalSet()) {
+            Map<String,String> indice = new HashMap<>();
             indice.put("indicatorEx",goal.getTitleFa());
-            indice.put("indicatorNo",i+"");
+            indice.put("indicatorNo", "شاخص " +i);
+            indice.put("goalId",goal.getId()+"");
+            indice.put("skillId",null);
             indicesList.add(indice);
             i++;
         }
         for (Skill skill : tclass.getCourse().getSkillSet()) {
+            Map<String,String> indice = new HashMap<>();
             indice.put("indicatorEx",skill.getTitleFa());
-            indice.put("indicatorNo",i+"");
+            indice.put("indicatorNo", "شاخص " + i);
+            indice.put("goalId",null);
+            indice.put("skillId",skill.getId()+"");
             indicesList.add(indice);
             i++;
+        }
+
+        List<Map> behavioralChart = new ArrayList();
+        for(int j=0;j<indicesList.size();j++){
+            Map<String,String> behavior = new HashMap<>();
+            behavior.put("behaviorVal",50+"");
+            behavior.put("behaviorCat",indicesList.get(j).get("indicatorNo").toString());
+            behavioralChart.add(behavior);
         }
 
         final Gson gson = new Gson();
@@ -370,13 +383,12 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         }.getType();
         final HashMap<String, Object> params = gson.fromJson(receiveParams, resultType);
         String data = "";
-        String behavioralIndicators = "[{}]";
-        String behavioralChart = "[{}]";
         String behavioralScoreChart = "[{}]";
         data = "{" + "\"courseRegistered\": " +  objectMapper.writeValueAsString(studentsList) + ","  +
                 "\"behavioralIndicators\": " + objectMapper.writeValueAsString(indicesList) + ","  +
-                "\"behavioralChart\": " + behavioralChart + "," +
-                "\"behavioralScoreChart\": " + behavioralScoreChart + "}"
+                "\"behavioralChart\": " + objectMapper.writeValueAsString(behavioralChart) + ","  +
+                "\"behavioralScoreChart\": " + behavioralScoreChart +
+                 "}"
         ;
         params.put("today", DateUtil.todayDate());
         params.put("course", tclass.getCourse().getTitleFa());
