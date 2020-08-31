@@ -41,8 +41,8 @@ public class AttendanceReportController {
 
         SearchDTO.SearchRq request=new SearchDTO.SearchRq();
         request.setStartIndex(null);
-        request.setSortBy("personalNum2");
 
+        request.setSortBy("personalNum");
 
         List<SearchDTO.CriteriaRq> listOfCriteria=new ArrayList<>();
 

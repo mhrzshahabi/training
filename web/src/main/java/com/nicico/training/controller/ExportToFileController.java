@@ -227,7 +227,12 @@ public class ExportToFileController {
 
                 SearchDTO.SearchRq request = new SearchDTO.SearchRq();
                 request.setStartIndex(null);
-                request.setSortBy("personalNum2");
+
+                if(req.getParameter("_sortBy")==null){
+                    request.setSortBy("personalNum");
+                }else{
+                    request.setSortBy(req.getParameter("_sortBy"));
+                }
 
 
                 List<SearchDTO.CriteriaRq> listOfCriteria = new ArrayList<>();
