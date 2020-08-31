@@ -364,7 +364,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
             Map<String,Object> behavior = new HashMap<>();
             behavior.put("behaviorVal",result.getIndicesGrade().get("g"+goal.getId()));
-            behavior.put("behaviorCat","شاخص " +i);
+            behavior.put("behaviorCat","ﺺﺧﺎﺷ " +i);
             behavioralChart.add(behavior);
 
             i++;
@@ -377,7 +377,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
             Map<String,Object> behavior = new HashMap<>();
             behavior.put("behaviorVal",result.getIndicesGrade().get("s"+skill.getId()));
-            behavior.put("behaviorCat","شاخص " + i);
+            behavior.put("behaviorCat","ﺺﺧﺎﺷ " + i);
             behavioralChart.add(behavior);
 
             i++;
@@ -389,7 +389,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         for(int z=0;z<result.getClassStudentsName().length;z++){
             Map<String,Object> behavior = new HashMap<>();
             behavior.put("scoreVal",behavioralGrades[z]);
-            behavior.put("scoreCat",classStudentsName[z]);
+            behavior.put("scoreCat",bidiReorder(classStudentsName[z]));
             behavioralScoreChart.add(behavior);
         }
 
