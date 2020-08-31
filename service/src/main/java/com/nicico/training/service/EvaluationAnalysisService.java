@@ -1,5 +1,6 @@
 package com.nicico.training.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
@@ -14,8 +15,7 @@ import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.iservice.IEvaluationAnalysisService;
 import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.iservice.ITclassService;
-import com.nicico.training.model.EvaluationAnalysis;
-import com.nicico.training.model.Tclass;
+import com.nicico.training.model.*;
 import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.EvaluationAnalysisDAO;
 import com.nicico.training.repository.TclassDAO;
@@ -44,6 +44,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
     private final ITclassService tclassService;
     private final IEvaluationService evaluationService;
     private final ReportUtil reportUtil;
+    private final ObjectMapper objectMapper;
 
     @Transactional(readOnly = true)
     @Override
@@ -336,27 +337,69 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
     @Transactional
     @Override
-    public void print (HttpServletResponse response, String type , String fileName, Long testQuestionId, String receiveParams) throws Exception {
+    public void print (HttpServletResponse response, String type , String fileName, Long classId, String receiveParams, String suggestions, String opinion) throws Exception {
+        Optional<Tclass> byId = tclassDAO.findById(classId);
+        Tclass tclass = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+        List<Map> studentsList = new ArrayList();
+        for (ClassStudent student : tclass.getClassStudents()) {
+            Map<String,String> std = new HashMap<>();
+            std.put("studentFullName",student.getStudent().getFirstName() + " " + student.getStudent().getLastName());
+            std.put("personnelCode",student.getStudent().getPersonnelNo());
+            studentsList.add(std);
+        }
+
+        List<Map> indicesList = new ArrayList();
+        int i = 1;
+        for (Goal goal : tclass.getCourse().getGoalSet()) {
+            Map<String,String> indice = new HashMap<>();
+            indice.put("indicatorEx",goal.getTitleFa());
+            indice.put("indicatorNo", "شاخص " +i);
+            indice.put("goalId",goal.getId()+"");
+            indice.put("skillId",null);
+            indicesList.add(indice);
+            i++;
+        }
+        for (Skill skill : tclass.getCourse().getSkillSet()) {
+            Map<String,String> indice = new HashMap<>();
+            indice.put("indicatorEx",skill.getTitleFa());
+            indice.put("indicatorNo", "شاخص " + i);
+            indice.put("goalId",null);
+            indice.put("skillId",skill.getId()+"");
+            indicesList.add(indice);
+            i++;
+        }
+
+        List<Map> behavioralChart = new ArrayList();
+        for(int j=0;j<indicesList.size();j++){
+            Map<String,Object> behavior = new HashMap<>();
+            behavior.put("behaviorVal",50.0);
+            behavior.put("behaviorCat",indicesList.get(j).get("indicatorNo").toString());
+            behavioralChart.add(behavior);
+        }
+
+        List<Map> behavioralScoreChart = new ArrayList();
+        for (ClassStudent student : tclass.getClassStudents()) {
+            Map<String,Object> behavior = new HashMap<>();
+            behavior.put("scoreVal",50.0);
+            behavior.put("scoreCat",student.getStudent().getFirstName() + " " + student.getStudent().getLastName());
+            behavioralScoreChart.add(behavior);
+        }
+
         final Gson gson = new Gson();
         Type resultType = new TypeToken<HashMap<String, Object>>() {
         }.getType();
         final HashMap<String, Object> params = gson.fromJson(receiveParams, resultType);
         String data = "";
-        String courseRegisteredData = "[{}]";
-        String behavioralIndicators = "[{}]";
-        String behavioralChart = "[{}]";
-        String behavioralScoreChart = "[{}]";
-        data = "{" + "\"courseRegistered\": " + courseRegisteredData + "," +
-                "\"behavioralIndicators\": " + behavioralIndicators + "," +
-                "\"behavioralChart\": " + behavioralChart + "," +
-                "\"behavioralScoreChart\": " + behavioralScoreChart + "}"
-        ;
+        data = "{" + "\"courseRegistered\": " +  objectMapper.writeValueAsString(studentsList) + ","  +
+                "\"behavioralIndicators\": " + objectMapper.writeValueAsString(indicesList) + ","  +
+                "\"behavioralChart\": " + objectMapper.writeValueAsString(behavioralChart) + ","  +
+                "\"behavioralScoreChart\": " + objectMapper.writeValueAsString(behavioralScoreChart) + "}";
         params.put("today", DateUtil.todayDate());
-        params.put("course", "course name");
-        params.put("courseRegisteredCount", "registered Count");
-        params.put("students_head", "head of students");
-        params.put("criticisim", "criticise");
-        params.put("comment", "you're comment");
+        params.put("course", tclass.getCourse().getTitleFa());
+        params.put("courseRegisteredCount", tclass.getClassStudents().size() + "");
+        params.put("criticisim", suggestions);
+        params.put("comment", opinion);
         params.put(ConstantVARs.REPORT_TYPE, type);
         JsonDataSource jsonDataSource = null;
         jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));

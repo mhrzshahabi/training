@@ -72,7 +72,33 @@
         margin: 2,
         title: "چاپ گزارش تغییر رفتار",
         click: function () {
-            print(behavioralEvaluationClassId, {}, "behavioralReport.jasper");
+            let Window_Report_Evaluation_Analysis  = isc.Window.create({
+                title: "گزارش تغییر رفتار",
+                width: 500,
+                items: [
+                        isc.DynamicForm.create({
+                            ID: "DF_Report_Evaluation_Analysis",
+                            fields: [
+                                {name: "suggestions", title: "پیشنهادات و انتقادات مطرح شده"},
+                                {name: "opinion", title: "نظر کارشناس ارزیابی"}
+                            ]
+                        }),
+                    isc.TrHLayoutButtons.create({
+                        members: [
+                        isc.IButton.create({
+                        title: "گزارش گیری",
+                        click: function () {
+                            print(behavioralEvaluationClassId, {}, "behavioralReport.jasper",
+                                DF_Report_Evaluation_Analysis.getValue("suggestions"),
+                                DF_Report_Evaluation_Analysis.getValue("opinion"));
+                            Window_Report_Evaluation_Analysis.close();
+                        }
+                    })
+                    ],
+                })
+                ]
+            });
+            Window_Report_Evaluation_Analysis.show();
         }
     });
 
@@ -105,7 +131,7 @@
         ]
     });
 
-    function print(ClassId, params, fileName, type = "pdf") {
+    function print(ClassId, params, fileName,suggestions,opinion, type = "pdf") {
         var criteriaForm = isc.DynamicForm.create({
             method: "POST",
             action: "<spring:url value="evaluationAnalysis/printBehavioralReport/"/>" + type,
@@ -115,13 +141,18 @@
                 [
                     {name: "fileName", type: "hidden"},
                     {name: "ClassId", type: "hidden"},
-                    {name: "params", type: "hidden"}
+                    {name: "params", type: "hidden"},
+                    {name: "suggestions", type: "hidden"},
+                    {name: "opinion", type: "hidden"}
                 ]
         });
         criteriaForm.setValue("ClassId", ClassId);
         criteriaForm.setValue("fileName", fileName);
         criteriaForm.setValue("params", JSON.stringify(params));
+        criteriaForm.setValue("suggestions", suggestions);
+        criteriaForm.setValue("opinion", opinion);
         criteriaForm.show();
         criteriaForm.submitForm();
+        console.log(criteriaForm);
     }
 
