@@ -1795,7 +1795,35 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_POST_GROUP-006">
+    <changeSet author="NICICO" id="VIEW_ALL_POSTS-002">
+        <createView viewName="VIEW_ALL_POSTS" replaceIfExists="true">
+            <![CDATA[
+ select ID postid,E_DELETED,E_ENABLED,N_VERSION,C_AFFAIRS,C_AREA,C_ASSISTANCE,C_CODE,C_COST_CENTER_CODE,C_COST_CENTER_TITLE_FA,C_SECTION,C_TITLE_FA,C_UNIT,C_PEOPLE_TYPE,jobTitle,postgradeTitle,groupid,type
+from ((select post.*,job.C_TITLE_FA jobTitle,postgrade.C_TITLE_FA postgradeTitle,postgroups.f_postgroup_id groupid,'0' type from tbl_post post
+	left join tbl_post_postgroup postgroups
+	on post.id=postgroups.f_post_id
+    left join tbl_job job
+	on post.f_job_id=job.id
+    left join tbl_post_grade postgrade
+	on post.f_post_grade_id=postgrade.id)
+    union all
+ (select post.*,job.C_TITLE_FA jobTitle,postgrade.C_TITLE_FA postgradeTitle,trainingpostpostgroup.f_post_group_id groupid,'1' type from tbl_post post
+	left join tbl_post_training_post post_trainingpost
+	on post.id=post_trainingpost.f_post_id
+	left join tbl_training_post trainingpost
+	on post_trainingpost.f_training_post_id=trainingpost.id
+	left join tbl_training_post_post_group trainingpostpostgroup
+	on trainingpost.id=trainingpostpostgroup.f_training_post_id
+    left join tbl_job job
+	on post.f_job_id=job.id
+    left join tbl_post_grade postgrade
+	on post.f_post_grade_id=postgrade.id )
+    ) posts
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="NICICO" id="VIEW_POST_GROUP-007">
         <createView viewName="VIEW_POST_GROUP" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -3690,34 +3718,6 @@ csession.c_session_date
                           st.national_code,
                           st.first_name,
                           st.last_name
-            ]]>
-        </createView>
-    </changeSet>
-
-    <changeSet author="NICICO" id="VIEW_ALL_POSTS-001">
-        <createView viewName="VIEW_ALL_POSTS" replaceIfExists="true">
-            <![CDATA[
- select ID postid,E_DELETED,E_ENABLED,N_VERSION,C_AFFAIRS,C_AREA,C_ASSISTANCE,C_CODE,C_COST_CENTER_CODE,C_COST_CENTER_TITLE_FA,C_SECTION,C_TITLE_FA,C_UNIT,C_PEOPLE_TYPE,jobTitle,postgradeTitle,groupid,type
-from ((select post.*,job.C_TITLE_FA jobTitle,postgrade.C_TITLE_FA postgradeTitle,postgroups.f_postgroup_id groupid,'0' type from tbl_post post
-	left join tbl_post_postgroup postgroups
-	on post.id=postgroups.f_post_id
-    left join tbl_job job
-	on post.f_job_id=job.id
-    left join tbl_post_grade postgrade
-	on post.f_post_grade_id=postgrade.id)
-    union all
- (select post.*,job.C_TITLE_FA jobTitle,postgrade.C_TITLE_FA postgradeTitle,trainingpostpostgroup.f_post_group_id groupid,'1' type from tbl_post post
-	left join tbl_post_training_post post_trainingpost
-	on post.id=post_trainingpost.f_post_id
-	left join tbl_training_post trainingpost
-	on post_trainingpost.f_training_post_id=trainingpost.id
-	left join tbl_training_post_post_group trainingpostpostgroup
-	on trainingpost.id=trainingpostpostgroup.f_training_post_id
-    left join tbl_job job
-	on post.f_job_id=job.id
-    left join tbl_post_grade postgrade
-	on post.f_post_grade_id=postgrade.id )
-    ) posts
             ]]>
         </createView>
     </changeSet>

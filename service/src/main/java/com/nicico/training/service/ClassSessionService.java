@@ -315,15 +315,13 @@ public class ClassSessionService implements IClassSession {
             classAlarmService.deleteAllAlarmsBySessionIds(deletableIds);
             successes = classSessionDAO.deleteAllById(deletableIds);
 
-        //*****check alarms*****
-        //// cancel alarms
-//        if (successes > 0) {
+            //*****check alarms*****
 //            classAlarmService.alarmSumSessionsTimes(classId);
 //            classAlarmService.alarmTeacherConflict(classId);
 //            classAlarmService.alarmStudentConflict(classId);
 //            classAlarmService.alarmTrainingPlaceConflict(classId);
 //            classAlarmService.saveAlarms();
-//        }
+        }
 
         ClassSessionDTO.DeleteStatus deleteStatus = new ClassSessionDTO.DeleteStatus();
         deleteStatus.setSucesses(successes);
