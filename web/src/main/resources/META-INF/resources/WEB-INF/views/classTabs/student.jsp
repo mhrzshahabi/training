@@ -728,7 +728,7 @@
                     filterOperator: "iContains"
                 },
             ],
-            fetchDataURL: viewActivePersonnelUrl + "/iscList",
+            fetchDataURL: viewActivePersonnelInRegisteringUrl + "/spec-list",
         });
 
         let PersonnelsLG_student = isc.TrLG.create({
@@ -1368,7 +1368,13 @@
                 return;
             }
             ClassStudentWin_student.setTitle("<spring:message code="add.student.to.class"/> \'" + classRecord.titleClass + "\'");
+            let cr = {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [{fieldName: "courseId", operator: "equals", value: classRecord.courseId}]
+            };
             PersonnelsLG_student.invalidateCache();
+            PersonnelsLG_student.setImplicitCriteria(cr);
             PersonnelsLG_student.fetchData();
             PersonnelsRegLG_student.invalidateCache();
             PersonnelsRegLG_student.fetchData();
