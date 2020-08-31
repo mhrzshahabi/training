@@ -212,7 +212,9 @@
 			</staticText>
 			<textField isBlankWhenNull="true">
 				<reportElement x="300" y="0" width="130" height="20" uuid="e1faa0fd-192b-49ce-af90-08be1271dfb8"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{courseRegisteredCount}]]></textFieldExpression>
 			</textField>
 		</band>
@@ -249,7 +251,9 @@
 						<jr:detailCell style="Table 1_TD" height="20">
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="430" height="20" uuid="7faff95b-3298-4450-b87e-20f66f348433"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Shabnam-FD"/>
+								</textElement>
 								<textFieldExpression><![CDATA[$F{indicatorEx}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -288,14 +292,16 @@
 			</staticText>
 			<barChart>
 				<chart evaluationTime="Report">
-					<reportElement x="7" y="30" width="541" height="180" uuid="ec1d2909-3bad-4881-b075-a7671cdcf231"/>
+					<reportElement x="7" y="30" width="541" height="180" uuid="967e99dc-da76-46cf-9277-c52f6d18e631"/>
 					<chartTitle/>
 					<chartSubtitle/>
 					<chartLegend/>
 				</chart>
 				<categoryDataset>
 					<dataset>
-						<datasetRun subDataset="behavioralChart" uuid="bef0845d-aeff-426d-b3de-926ad38a0d5f"/>
+						<datasetRun subDataset="behavioralChart" uuid="eb7c7e9d-60a4-4ab9-8e03-bf1cc9fd5623">
+							<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("behavioralChart")]]></dataSourceExpression>
+						</datasetRun>
 					</dataset>
 					<categorySeries>
 						<seriesExpression><![CDATA["SERIES 1"]]></seriesExpression>
@@ -327,14 +333,16 @@
 			</staticText>
 			<barChart>
 				<chart evaluationTime="Report">
-					<reportElement x="7" y="30" width="541" height="180" uuid="d5f1cf99-e8f1-4f28-9ab2-c5940396d811"/>
+					<reportElement x="7" y="30" width="541" height="180" uuid="10ae7d86-9dbf-4309-925c-de18205be23b"/>
 					<chartTitle/>
 					<chartSubtitle/>
 					<chartLegend/>
 				</chart>
 				<categoryDataset>
 					<dataset>
-						<datasetRun subDataset="behavioralScoreChart" uuid="3232f901-9125-4408-8ccb-920b0ad53697"/>
+						<datasetRun subDataset="behavioralScoreChart" uuid="6b66ce16-974f-4155-987c-6ec848120da4">
+							<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("behavioralScoreChart")]]></dataSourceExpression>
+						</datasetRun>
 					</dataset>
 					<categorySeries>
 						<seriesExpression><![CDATA["SERIES 1"]]></seriesExpression>
