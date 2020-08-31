@@ -372,10 +372,18 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
         List<Map> behavioralChart = new ArrayList();
         for(int j=0;j<indicesList.size();j++){
-            Map<String,String> behavior = new HashMap<>();
-            behavior.put("behaviorVal",50+"");
+            Map<String,Object> behavior = new HashMap<>();
+            behavior.put("behaviorVal",50.0);
             behavior.put("behaviorCat",indicesList.get(j).get("indicatorNo").toString());
             behavioralChart.add(behavior);
+        }
+
+        List<Map> behavioralScoreChart = new ArrayList();
+        for (ClassStudent student : tclass.getClassStudents()) {
+            Map<String,Object> behavior = new HashMap<>();
+            behavior.put("scoreVal",50.0);
+            behavior.put("scoreCat",student.getStudent().getFirstName() + " " + student.getStudent().getLastName());
+            behavioralScoreChart.add(behavior);
         }
 
         final Gson gson = new Gson();
@@ -383,17 +391,13 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         }.getType();
         final HashMap<String, Object> params = gson.fromJson(receiveParams, resultType);
         String data = "";
-        String behavioralScoreChart = "[{}]";
         data = "{" + "\"courseRegistered\": " +  objectMapper.writeValueAsString(studentsList) + ","  +
                 "\"behavioralIndicators\": " + objectMapper.writeValueAsString(indicesList) + ","  +
                 "\"behavioralChart\": " + objectMapper.writeValueAsString(behavioralChart) + ","  +
-                "\"behavioralScoreChart\": " + behavioralScoreChart +
-                 "}"
-        ;
+                "\"behavioralScoreChart\": " + objectMapper.writeValueAsString(behavioralScoreChart) + "}";
         params.put("today", DateUtil.todayDate());
         params.put("course", tclass.getCourse().getTitleFa());
         params.put("courseRegisteredCount", tclass.getClassStudents().size() + "");
-        params.put("students_head", "head of students");
         params.put("criticisim", suggestions);
         params.put("comment", opinion);
         params.put(ConstantVARs.REPORT_TYPE, type);
