@@ -51,9 +51,6 @@ public class ViewActivePersonnelInRegistering {
     @Column(name = "national_code")
     private String nationalCode;
 
-    @Column(name = "active")
-    private Integer active;
-
     @Column(name = "deleted")
     private Integer deleted;
 
