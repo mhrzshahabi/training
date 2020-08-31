@@ -10,6 +10,7 @@ import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections.ArrayStack;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ public class EvaluationService implements IEvaluationService {
     private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
     private final ParameterValueDAO parameterValueDAO;
     private final ClassEvaluationGoalsDAO classEvaluationGoalsDAO;
+    private final EvaluationAnswerDAO evaluationAnswerDAO;
 
 
     @Transactional(readOnly = true)
@@ -64,46 +66,44 @@ public class EvaluationService implements IEvaluationService {
     @Override
     public EvaluationDTO.Info update(Long id, EvaluationDTO.Update request) {
         final Optional<Evaluation> sById = evaluationDAO.findById(id);
-        final Evaluation evaluation = sById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EvaluationNotFound));
+        Evaluation evaluation = sById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EvaluationNotFound));
 
-        Evaluation updating = new Evaluation();
-        modelMapper.map(evaluation, updating);
-        modelMapper.map(request, updating);
+        evaluation.setDescription(request.getDescription());
+        evaluation.setStatus(request.getStatus());
+        evaluation.setEvaluationFull(request.getEvaluationFull());
 
-        updating.setVersion(evaluation.getVersion());
-
-        Evaluation evaluation1 = evaluationDAO.save(updating);
-
-        for (EvaluationAnswer evaluationAnswer : evaluation1.getEvaluationAnswerList()) {
-
+        for (EvaluationAnswerDTO.Update evaluationAnswer : request.getEvaluationAnswerList()) {
+            final Optional<EvaluationAnswer> aById = evaluationAnswerDAO.findById(evaluationAnswer.getId());
+            EvaluationAnswer evaluationAnswerDAO = aById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+            evaluationAnswerDAO.setAnswerId(evaluationAnswer.getAnswerId());
         }
 
-        if(updating.getQuestionnaireTypeId() != null && updating.getQuestionnaireTypeId().equals(139L)) {
-            if(updating.getEvaluationFull())
-                updateClassStudentInfo(updating, 2);
-            else if(!updating.getEvaluationFull())
-                updateClassStudentInfo(updating, 3);
+        if(evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(139L)) {
+            if(evaluation.getEvaluationFull())
+                updateClassStudentInfo(evaluation, 2);
+            else if(!evaluation.getEvaluationFull())
+                updateClassStudentInfo(evaluation, 3);
         }
 
-        else  if(updating.getQuestionnaireTypeId() != null && updating.getQuestionnaireTypeId().equals(141L)) {
-            if(updating.getEvaluationFull())
-                updateTclassInfo(updating.getClassId(),2, -1);
-            else if(!updating.getEvaluationFull())
-                updateTclassInfo(updating.getClassId(),3, -1);
+        else  if(evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(141L)) {
+            if(evaluation.getEvaluationFull())
+                updateTclassInfo(evaluation.getClassId(),2, -1);
+            else if(!evaluation.getEvaluationFull())
+                updateTclassInfo(evaluation.getClassId(),3, -1);
         }
 
-        else  if(updating.getQuestionnaireTypeId() != null && updating.getQuestionnaireTypeId().equals(140L)) {
-            if(updating.getEvaluationFull())
-                updateTclassInfo(updating.getClassId(),-1, 2);
-            else if(!updating.getEvaluationFull())
-                updateTclassInfo(updating.getClassId(),-1, 3);
+        else  if(evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(140L)) {
+            if(evaluation.getEvaluationFull())
+                updateTclassInfo(evaluation.getClassId(),-1, 2);
+            else if(!evaluation.getEvaluationFull())
+                updateTclassInfo(evaluation.getClassId(),-1, 3);
         }
 
-        else  if(updating.getQuestionnaireTypeId() != null && updating.getQuestionnaireTypeId().equals(230L)) {
-            updateClassStudentInfo(updating, 2);
+        else  if(evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(230L)) {
+            updateClassStudentInfo(evaluation, 2);
         }
 
-        return modelMapper.map(evaluation1, EvaluationDTO.Info.class);
+        return modelMapper.map(evaluation, EvaluationDTO.Info.class);
     }
 
     @Transactional
