@@ -5,12 +5,13 @@
 
 // <script>
     var behavioral_chartData1 = null;
+    var behavioralEvaluationClassId = null;
 
     var BehavioralEvaluationChart1 = isc.FacetChart.create({
+        height: "75%",
+        verticalAlign: "top",
         titleAlign: "center",
         minLabelGap: 5,
-        width: "80%",
-        height: "90%",
         barMargin: "100",
         stacked: false,
         chartType: "Column",
@@ -39,20 +40,19 @@
     var behavioral_chartData2 = null;
 
     var BehavioralEvaluationChart2 = isc.FacetChart.create({
+        height: "75%",
+        verticalAlign: "top",
         titleAlign: "center",
         minLabelGap: 5,
-        width: "80%",
-        height: "90%",
         barMargin: "100",
         stacked: false,
         chartType: "Column",
         allowedChartTypes: [],
         axisStartValue: 0,
         axisEndValue: 100,
-        // brightenAllOnHover:true,
-        // showValueOnHover:true,
-        // hoverLabelPadding: -5,
         showDataValues:true,
+        brightenAllOnHover:true,
+        hoverLabelPadding: -7,
         facets: [
             {
                 id: "evaluator",
@@ -65,20 +65,94 @@
         title: "تحلیل ارزیابی رفتاری کلاس براساس نوع ارزیابی کننده",
     });
 
+    var IButton_Print_LearningBehavioral_Evaluation_Analysis = isc.IButton.create({
+        align: "center",
+        width: "300",
+        height: "30",
+        margin: 2,
+        title: "چاپ گزارش تغییر رفتار",
+        click: function () {
+            let Window_Report_Evaluation_Analysis  = isc.Window.create({
+                title: "گزارش تغییر رفتار",
+                width: 500,
+                items: [
+                        isc.DynamicForm.create({
+                            ID: "DF_Report_Evaluation_Analysis",
+                            fields: [
+                                {name: "suggestions", title: "پیشنهادات و انتقادات مطرح شده"},
+                                {name: "opinion", title: "نظر کارشناس ارزیابی"}
+                            ]
+                        }),
+                    isc.TrHLayoutButtons.create({
+                        members: [
+                        isc.IButton.create({
+                        title: "گزارش گیری",
+                        click: function () {
+                            print(behavioralEvaluationClassId, {}, "behavioralReport.jasper",
+                                DF_Report_Evaluation_Analysis.getValue("suggestions"),
+                                DF_Report_Evaluation_Analysis.getValue("opinion"));
+                            Window_Report_Evaluation_Analysis.close();
+                        }
+                    })
+                    ],
+                })
+                ]
+            });
+            Window_Report_Evaluation_Analysis.show();
+        }
+    });
+
     var BehavioralEvaluationChartLayout = isc.HLayout.create({
-        defaultLayoutAlign: "center",
-        width: "50%",
-        height: "500",
+        defaultLayoutAlign: "top",
+        width: "100%",
+        height: "75%",
         membersMargin: 10,
         members: [BehavioralEvaluationChart1,BehavioralEvaluationChart2]
     });
 
-    var Hlayout_BehavioralEvaluationResult = isc.HLayout.create({
+    // var Hlayout_BehavioralEvaluationResult = isc.HLayout.create({
+    //     width: "100%",
+    //     height: "75%",
+    //     // overflow: "scroll",
+    //     members: [
+    //         BehavioralEvaluationChartLayout,
+    //     ]
+    // });
+
+    var Hlayout_BehavioralEvaluationResult = isc.VLayout.create({
         width: "100%",
         height: "100%",
+        defaultLayoutAlign : "center",
+        vAlign: "top",
         overflow: "scroll",
         members: [
-            BehavioralEvaluationChartLayout
+            BehavioralEvaluationChartLayout,
+            IButton_Print_LearningBehavioral_Evaluation_Analysis
         ]
     });
+
+    function print(ClassId, params, fileName,suggestions,opinion, type = "pdf") {
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="evaluationAnalysis/printBehavioralReport/"/>" + type,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "fileName", type: "hidden"},
+                    {name: "ClassId", type: "hidden"},
+                    {name: "params", type: "hidden"},
+                    {name: "suggestions", type: "hidden"},
+                    {name: "opinion", type: "hidden"}
+                ]
+        });
+        criteriaForm.setValue("ClassId", ClassId);
+        criteriaForm.setValue("fileName", fileName);
+        criteriaForm.setValue("params", JSON.stringify(params));
+        criteriaForm.setValue("suggestions", suggestions);
+        criteriaForm.setValue("opinion", opinion);
+        criteriaForm.show();
+        criteriaForm.submitForm();
+        console.log(criteriaForm);
+    }
 

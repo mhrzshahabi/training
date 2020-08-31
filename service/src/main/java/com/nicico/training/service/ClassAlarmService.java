@@ -901,7 +901,7 @@ public class ClassAlarmService implements IClassAlarm {
 
         if (alarmQueue.size() > 0 || alarmQueueType.size() > 0) {
             for (ClassAlarmDTO classAlarmDTO : alarmQueueType)
-                alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdAndSessionIdAndTeacherIdAndStudentIdAndInstituteIdAndTrainingPlaceIdAndReservationIdAndClassIdConflictAndSessionIdConflictAndInstituteIdConflictAndTrainingPlaceIdConflictAndReservationIdConflict(classAlarmDTO.getAlarmTypeTitleEn(), classAlarmDTO.getClassId(), classAlarmDTO.getSessionId(), classAlarmDTO.getTeacherId(), classAlarmDTO.getStudentId(), classAlarmDTO.getInstituteId(), classAlarmDTO.getTrainingPlaceId(), classAlarmDTO.getReservationId(), classAlarmDTO.getClassIdConflict(), classAlarmDTO.getSessionIdConflict(), classAlarmDTO.getInstituteIdConflict(), classAlarmDTO.getTrainingPlaceIdConflict(), classAlarmDTO.getReservationIdConflict());
+                alarmDAO.deleteAlarmsByAlarmTypeTitleEnAndClassIdAndSessionIdAndTeacherIdAndStudentIdAndInstituteIdAndTrainingPlaceIdAndReservationIdAndClassIdConflictAndSessionIdConflictAndInstituteIdConflictAndTrainingPlaceIdConflictAndReservationIdConflict(classAlarmDTO.getAlarmTypeTitleEn()==null?"":classAlarmDTO.getAlarmTypeTitleEn(), classAlarmDTO.getClassId()==null?-1:classAlarmDTO.getClassId(), classAlarmDTO.getSessionId()==null?-1:classAlarmDTO.getSessionId(), classAlarmDTO.getTeacherId()==null?-1:classAlarmDTO.getTeacherId(), classAlarmDTO.getStudentId()==null?-1:classAlarmDTO.getStudentId(), classAlarmDTO.getInstituteId()==null?-1:classAlarmDTO.getInstituteId(), classAlarmDTO.getTrainingPlaceId()==null?-1:classAlarmDTO.getTrainingPlaceId(), classAlarmDTO.getReservationId()==null?-1:classAlarmDTO.getReservationId(), classAlarmDTO.getClassIdConflict()==null?-1:classAlarmDTO.getClassIdConflict(), classAlarmDTO.getSessionIdConflict()==null?-1:classAlarmDTO.getSessionIdConflict(), classAlarmDTO.getInstituteIdConflict()==null?-1:classAlarmDTO.getInstituteIdConflict(), classAlarmDTO.getTrainingPlaceIdConflict()==null?-1:classAlarmDTO.getTrainingPlaceIdConflict(), classAlarmDTO.getReservationIdConflict()==null?-1:classAlarmDTO.getReservationIdConflict());
 
             alarmDAO.saveAll(modelMapper.map(alarmQueue, new TypeToken<List<Alarm>>() {
             }.getType()));
@@ -1965,6 +1965,11 @@ public class ClassAlarmService implements IClassAlarm {
 
         return endingClassAlarm.toString();
 
+    }
+
+    @Override
+    public Integer deleteAllAlarmsBySessionIds(List<Long> sessionIds) {
+        return alarmDAO.deleteAllBySessionIds(sessionIds);
     }
     //*********************************
 

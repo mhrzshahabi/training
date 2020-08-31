@@ -38,21 +38,21 @@ public class EvaluationAnalysistLearningRestController {
         map.put("3", "نمره از بیست");
         map.put("4", "بدون نمره");
         JSONObject json = new JSONObject(Record);
-        params.put("code", json.getString("code"));
-        params.put("studentCount", json.getString("studentCount"));
-        params.put("endDate", json.getString("endDate"));
-        params.put("startDate", json.getString("startDate"));
-        params.put("teacher", json.getString("teacher"));
-        params.put("courseCode", json.getJSONObject("course").getString("code"));
-        params.put("coursetitleFa", json.getJSONObject("course").getString("titleFa"));
-        if(json.has("scoringMethod"))
-            params.put("scoringMethod", map.get(json.getString("scoringMethod")));
+        params.put("code", json.getString("tclassCode"));
+        params.put("studentCount", json.getString("tclassStudentsCount"));
+        params.put("endDate", json.getString("tclassEndDate"));
+        params.put("startDate", json.getString("tclassStartDate"));
+        params.put("teacher", json.getString("teacherFullName"));
+        params.put("courseCode", json.getString("courseCode"));
+        params.put("coursetitleFa", json.getString("courseTitleFa"));
+        if(json.has("classScoringMethod"))
+            params.put("scoringMethod", map.get(json.getString("classScoringMethod")));
         else
             params.put("scoringMethod", "");
         params.put("minScoreLearning",minScoreLearning);
         String scoringMethod = "3";
-        if(json.has("scoringMethod"))
-            scoringMethod = json.getString("scoringMethod");
+        if(json.has("classScoringMethod"))
+            scoringMethod = json.getString("classScoringMethod");
         Float[] classStudent = evaluationAnalysistLearningService.getStudents(Long.parseLong(recordId),scoringMethod);
 
         params.put("score", classStudent[0]);

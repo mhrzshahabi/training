@@ -24,4 +24,6 @@ public interface IJobService {
     JobDTO.Info get(Long id);
 
     List<PostDTO.Info> getPosts(Long jobId);
+
+    List<PostDTO.Info> getPostsWithTrainingPost(Long jobId);
 }

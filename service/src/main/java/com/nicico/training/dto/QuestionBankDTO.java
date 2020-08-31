@@ -45,6 +45,8 @@ public class QuestionBankDTO {
 
     private Long tclassId;
 
+    private Integer lines;
+
 
     @Getter
     @Setter
@@ -61,7 +63,7 @@ public class QuestionBankDTO {
 
         private SubcategoryDTO.SubCategoryInfoTuple subCategory;
 
-        private TclassDTO.Info tclass;
+        private TclassDTO.InfoForQB tclass;
 
         private CourseDTO.InfoTuple course;
 
@@ -114,6 +116,8 @@ public class QuestionBankDTO {
         private ParameterValueDTO.TupleInfo questionType;
 
         private ParameterValueDTO.TupleInfo displayType;
+
+        private Integer lines;
 
     }
 

@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -49,6 +50,7 @@ public class EvaluationAnalysisRestController {
     private final ClassStudentDAO classStudentDAO;
     private final TclassDAO tclassDAO;
     private final IEvaluationAnalysisService evaluationAnalysisService;
+    private DecimalFormat numberFormat = new DecimalFormat("#.00");
 
     @Loggable
     @PostMapping(value = {"/printReactionEvaluation"})
@@ -185,6 +187,11 @@ public class EvaluationAnalysisRestController {
         evaluationAnalysisService.updateReactionEvaluation(classId);
     }
 
+    @GetMapping("/updateBehavioralEvaluation/{classId}")
+    public void updateBehavioralEvaluation(@PathVariable Long classId) {
+        evaluationAnalysisService.updateBehavioral(classId);
+    }
+
     @GetMapping("/evaluationAnalysistLearningResult/{classId}/{scoringMethod}")
     public ResponseEntity<EvaluationDTO.EvaluationLearningResult> evaluationAnalysistLearningResult(@PathVariable Long classId,
                                                                                                     @PathVariable String scoringMethod) {
@@ -236,16 +243,17 @@ public class EvaluationAnalysisRestController {
         if(result != null && result.length > 2)
             felGrade = result[3];
         Double ferGrade = tclassService.getJustFERGrade(classId);
-        Double feclGrade = felGrade * FECLZ2 + ferGrade * FECLZ1;
+        Double feclGradeLong = (felGrade * FECLZ2 + ferGrade * FECLZ1)/100;
+        Double feclGrade = Double.parseDouble(numberFormat.format(feclGradeLong).toString());
 
-        resultSet.setFelgrade(felGrade + "");
+        resultSet.setFelgrade(numberFormat.format(felGrade).toString());
         if(felGrade >= minScoreEL)
             resultSet.setFelpass("true");
         else
             resultSet.setFelpass("false");
         resultSet.setLimit(minScoreEL + "");
-        resultSet.setPostTestMeanScore(postTestMeanGrade + "");
-        resultSet.setPreTestMeanScore(preTestMeanGrade + "");
+        resultSet.setPostTestMeanScore(numberFormat.format(postTestMeanGrade).toString());
+        resultSet.setPreTestMeanScore(numberFormat.format(preTestMeanGrade).toString());
         resultSet.setFeclgrade(feclGrade.floatValue() + "");
         if(feclGrade >= minScoreFECR)
             resultSet.setFeclpass("true");

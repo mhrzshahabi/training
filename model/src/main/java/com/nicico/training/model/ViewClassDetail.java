@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -122,5 +123,14 @@ public class ViewClassDetail extends Auditable {
 
     @Column(name = "RE_HOLIDING_STATUS")
     private Boolean reHoldingStatus;
+
+    @Column(name = "TEACHER_FIRST_NAME")
+    private String teacherFirstName;
+
+    @Column(name="TEACHER_LAST_NAME")
+    private String teacherLastName;
+
+    @Column(name = "BEHAVIORAL_DUE_DATE")
+    private Date behavioralDueDate;
 
 }

@@ -189,13 +189,14 @@ public class AttendanceService implements IAttendanceService {
             ClassSessionDTO.Info info = classSessionService.get(attendance.getSessionId());
             classIdSet.add(info.getClassId());
             if(!info.getReadOnly()){
-                List<Attendance> saved = attendanceDAO.findBySessionIdAndStudentId(attendance.getSessionId(), attendance.getStudentId());
-                if (saved == null || saved.size()==0) {
-                    attendanceDAO.save(attendance);
+                Optional<Attendance> saved = attendanceDAO.findBySessionIdAndStudentId(attendance.getSessionId(), attendance.getStudentId());
+                if (saved.isPresent()) {
+                    Attendance oldAttendance = saved.get();
+                    oldAttendance.setState(attendance.getState());
+                    oldAttendance.setDescription(attendance.getDescription());
+                    attendanceDAO.save(oldAttendance);
                 } else {
-                    saved.get(0).setState(attendance.getState());
-                    saved.get(0).setDescription(attendance.getDescription());
-                    attendanceDAO.save(saved.get(0));
+                    attendanceDAO.save(attendance);
                 }
             }
         }
@@ -211,7 +212,7 @@ public class AttendanceService implements IAttendanceService {
     @Transactional
     @Override
     public void convertToModelAndSave(List<List<Map<String, String>>> maps, Long classId, String date) {
-        Map<String, String> map1 = maps.get(0).get(0);
+    /*    Map<String, String> map1 = maps.get(0).get(0);
         Set<String> keySet = map1.keySet();
         ArrayList<Long> sessionIds = new ArrayList<>();
         ArrayList<Attendance> attendanceSaving = new ArrayList<>();
@@ -248,7 +249,7 @@ public class AttendanceService implements IAttendanceService {
                 attendanceList.add(saved.get(0));
             }
         }
-        attendanceDAO.saveAll(attendanceList);
+        attendanceDAO.saveAll(attendanceList);*/
     }
 
     @Transactional
@@ -361,5 +362,21 @@ public class AttendanceService implements IAttendanceService {
         }
 
         return new String();
+    }
+
+    @Override
+    public void saveOrUpdateList(List<Attendance> attendances) {
+        attendances.forEach(attendance -> {
+            Optional<Attendance> optional = attendanceDAO.findBySessionIdAndStudentId(attendance.getSessionId(),
+                    attendance.getStudentId());
+            if (optional.isPresent()) {
+                Attendance oldAttendance = optional.get();
+                oldAttendance.setState(attendance.getState());
+                oldAttendance.setDescription(attendance.getDescription());
+                attendanceDAO.save(oldAttendance);
+            } else {
+                attendanceDAO.save(attendance);
+            }
+        });
     }
 }

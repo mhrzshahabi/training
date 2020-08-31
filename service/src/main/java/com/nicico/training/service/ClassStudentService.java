@@ -5,6 +5,7 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassStudentDTO;
+import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.Student;
@@ -36,6 +37,8 @@ public class ClassStudentService implements IClassStudentService {
     private final IPersonnelService personnelService;
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final ModelMapper mapper;
+    private final IEvaluationAnalysisService evaluationAnalysisService;
+
 
 
     @Transactional(readOnly = true)
@@ -58,7 +61,6 @@ public class ClassStudentService implements IClassStudentService {
         Tclass tclass = tclassService.getTClass(classId);
 
         for (ClassStudentDTO.Create create : request) {
-
             Student student = studentService.getStudentByPersonnelNo(create.getPersonnelNo());
             if (student == null) {
                 student = new Student();
@@ -68,7 +70,6 @@ public class ClassStudentService implements IClassStudentService {
                     mapper.map(personnelRegisteredService.getByPersonnelCode(create.getPersonnelNo()), student);
                 }
             }
-
             ClassStudent classStudent = new ClassStudent();
             if(create.getApplicantCompanyName() != null)
                 classStudent.setApplicantCompanyName(create.getApplicantCompanyName());
@@ -80,19 +81,15 @@ public class ClassStudentService implements IClassStudentService {
                 classStudent.setPresenceTypeId(create.getPresenceTypeId());
             classStudent.setTclass(tclass);
             classStudent.setStudent(student);
-
             classStudentDAO.saveAndFlush(classStudent);
         }
-
         String nameList = new String();
-
         if(invalStudents.size() > 0) {
             for (String name : invalStudents) {
                 nameList += name + " , ";
             }
         }else
             nameList = null;
-
         Map<String, String> map = new HashMap();
         map.put("names", nameList);
         map.put("accepted", new Integer(request.size() - invalStudents.size()).toString());
@@ -101,12 +98,9 @@ public class ClassStudentService implements IClassStudentService {
 
     @Transactional
     @Override
-    public <E, T> T update(Long id, E request, Class<T> infoType) {
-        ClassStudent classStudent = getClassStudent(id);
-        ClassStudent updating = new ClassStudent();
-        mapper.map(classStudent, updating);
-        mapper.map(request, updating);
-        return mapper.map(classStudentDAO.saveAndFlush(updating), infoType);
+    public void saveOrUpdate(ClassStudent classStudent) {
+        ClassStudent tclass = classStudentDAO.save(classStudent);
+        evaluationAnalysisService.updateLearningEvaluation(tclass.getTclassId(),tclass.getTclass().getScoringMethod());
     }
 
     @Transactional

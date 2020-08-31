@@ -3,6 +3,7 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.dto.PostGroupDTO;
+import com.nicico.training.dto.TrainingPostDTO;
 
 import java.util.List;
 import java.util.Set;
@@ -22,11 +23,19 @@ public interface IPostGroupService {
 
     void addPost(Long postGroupId, Long postId);
 
+    void addTrainingPost(Long trainingPostId, Long postGroupId);
+
     void addPosts(Long postGroupId, Set<Long> postIds);
+
+    void addTrainingPosts(Long postGroupId, Set<Long> trainingPostIds);
 
     void removePost(Long postGroupId, Long postId);
 
+    void removeTrainingPost(Long postGroupId, Long trainingPostId);
+
     void removePosts(Long postGroupId, Set<Long> postIds);
+
+    void removeTrainingPosts(Long postGroupId, Set<Long> trainingPostIds);
 
     void removeFromCompetency(Long postGroupId, Long competenceId);
 
@@ -40,5 +49,5 @@ public interface IPostGroupService {
 
     List<PostDTO.Info> getPosts(Long postGroupID);
 
-
+    List<TrainingPostDTO.Info> getTrainingPosts(Long postGroupID);
 }

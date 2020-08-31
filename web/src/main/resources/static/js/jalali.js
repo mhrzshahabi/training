@@ -316,6 +316,14 @@ function checkDate(date) {
     return true;
 }
 
+JalaliDate.addMonths = function(date, months) {
+    var d = date.getDate();
+    date.setMonth(date.getMonth() + +months);
+    if (date.getDate() != d) {
+        date.setDate(0);
+    }
+    return date;
+}
 
 JalaliDate.JalaliTodayDate = function(){
     week = new Array("يكشنبه", "دوشنبه", "سه شنبه", "چهارشنبه", "پنج شنبه", "جمعه", "شنبه")

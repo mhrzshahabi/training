@@ -550,9 +550,31 @@
                     displayField: "title",
                     filterOnKeypress: true,
                 },
-                {name: "isNeedsAssessment", type: "boolean", canEdit: false, title:"نیازسنجی"},
+                {name: "registerTypeId", title: "پرسنل", canEdit: false,
+                    formatCellValue(value){
+                        return (value === 1 ? "هست" : "نیست");
+                    }
+                },
+                {
+                    name: "isInNA",
+                    title: "نیازسنجی",
+                    filterOperator: "equals",
+                    type: "boolean",
+                    filterOnKeypress: true
+                },{
+                    name: "scoreState",
+                    title: "سوابق",
+                    filterOperator: "equals",
+                    filterOnKeypress: true,
+                    valueMap: {
+                        400: "قبول با نمره",
+                        401: "قبول بدون نمره",
+                        410: "ثبت نام شده",
+                    }
+                },
+                /*{name: "isNeedsAssessment", type: "boolean", canEdit: false, title:"نیازسنجی"},
                 {name: "isPassed", type: "boolean", canEdit: false, title:"گذرانده"},
-                {name: "isRunning", type: "boolean", canEdit: false, title:"در حال گذراندن"},
+                {name: "isRunning", type: "boolean", canEdit: false, title:"در حال گذراندن"},*/
                 <%--{name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},--%>
                 <%--{name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},--%>
                 <%--{name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},--%>
@@ -636,12 +658,12 @@
                 }
                 return result;
             },
-            dataChanged(){
+            /*dataChanged(){
                 if(checkRefresh === 0) {
                     checkRefresh = 1
                     checkExistInNeedsAssessment(ListGrid_Class_JspClass.getSelectedRecord().courseId)
                 }
-            }
+            }*/
         });
 
         let PersonnelDS_student = isc.TrDS.create({
@@ -722,8 +744,25 @@
                     title: "<spring:message code="reward.cost.center.unit"/>",
                     filterOperator: "iContains"
                 },
+                {
+                    name: "isInNA",
+                    title: "نیازسنجی",
+                    filterOperator: "equals",
+                    type: "boolean",
+                    filterOnKeypress: true
+                },{
+                    name: "scoreState",
+                    title: "سوابق",
+                    filterOperator: "equals",
+                    filterOnKeypress: true,
+                    valueMap: {
+                        400: "قبول با نمره",
+                        401: "قبول بدون نمره",
+                        410: "ثبت نام شده",
+                    }
+                },
             ],
-            fetchDataURL: personnelUrl + "/iscList",
+            fetchDataURL: viewActivePersonnelInRegisteringUrl + "/spec-list",
         });
 
         let PersonnelsLG_student = isc.TrLG.create({
@@ -758,6 +797,8 @@
                 {name: "ccpAffairs", hidden: true},
                 {name: "ccpSection", hidden: true},
                 {name: "ccpUnit", hidden: true},
+                {name:"isInNA"},
+                {name:"scoreState"},
             ],
             gridComponents: [PersonnelsTS_student, "filterEditor", "header", "body"],
             selectionAppearance: "checkbox",
@@ -905,15 +946,15 @@
             }
         });
 
-        let criteria_ActivePersonnel = {
-            _constructor: "AdvancedCriteria",
-            operator: "and",
-            criteria: [
-                {fieldName: "active", operator: "equals", value: 1}
-            ]
-        };
+        // let criteria_ActivePersonnel = {
+        //     _constructor: "AdvancedCriteria",
+        //     operator: "and",
+        //     criteria: [
+        //         {fieldName: "active", operator: "equals", value: 1}
+        //     ]
+        // };
 
-        PersonnelsLG_student.implicitCriteria = criteria_ActivePersonnel;
+        // PersonnelsLG_student.implicitCriteria = criteria_ActivePersonnel;
 
         function nationalCodeExists(nationalCode) {
             return StudentsLG_student.data.localData.some(function (el) {
@@ -1285,22 +1326,22 @@
                                         icon: "[SKIN]/actions/save.png",
                                         click: function () {
                                             let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
-                                            let students = [];
-                                            for (let i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
-                                                students.add({
-                                                    "personnelNo": SelectedPersonnelsLG_student.data[i].personnelNo,
-                                                    "applicantCompanyName": SelectedPersonnelsLG_student.data[i].applicantCompanyName,
-                                                    "presenceTypeId": SelectedPersonnelsLG_student.data[i].presenceTypeId,
-                                                    "registerTypeId": SelectedPersonnelsLG_student.data[i].registerTypeId
-                                                });
-                                            }
-                                            if (students.getLength() > 0) {
+                                            // for (let i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
+                                            //     students.add({
+                                            //         "personnelNo": SelectedPersonnelsLG_student.data[i].personnelNo,
+                                            //         "applicantCompanyName": SelectedPersonnelsLG_student.data[i].applicantCompanyName,
+                                            //         "presenceTypeId": SelectedPersonnelsLG_student.data[i].presenceTypeId,
+                                            //         "registerTypeId": SelectedPersonnelsLG_student.data[i].registerTypeId
+                                            //     });
+                                            // }
+                                            if (SelectedPersonnelsLG_student.data.toArray().getLength() > 0) {
                                                 wait.show()
-                                                isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST", JSON.stringify(students), class_add_students_result));
+                                                isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST", JSON.stringify(SelectedPersonnelsLG_student.data.toArray()), class_add_students_result));
                                             }
                                             SelectedPersonnelsLG_student.data.clearAll();
                                         }
-                                    }), isc.IButtonCancel.create({
+                                    }),
+                                    isc.IButtonCancel.create({
                                         top: 260,
                                         title: "<spring:message code='cancel'/>",
                                         align: "center",
@@ -1363,7 +1404,13 @@
                 return;
             }
             ClassStudentWin_student.setTitle("<spring:message code="add.student.to.class"/> \'" + classRecord.titleClass + "\'");
+            let cr = {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [{fieldName: "courseId", operator: "equals", value: classRecord.courseId}]
+            };
             PersonnelsLG_student.invalidateCache();
+            PersonnelsLG_student.setImplicitCriteria(cr);
             PersonnelsLG_student.fetchData();
             PersonnelsRegLG_student.invalidateCache();
             PersonnelsRegLG_student.fetchData();

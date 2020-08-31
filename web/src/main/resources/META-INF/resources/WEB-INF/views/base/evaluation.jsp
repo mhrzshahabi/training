@@ -5,22 +5,6 @@
 <%@include file="../messenger/MLanding.jsp" %>
 // <script>
     //----------------------------------------- DataSources ------------------------------------------------------------
-        var RestDataSource_Year_Filter_Evaluation = isc.TrDS.create({
-            fields: [
-                {name: "year"}
-            ],
-            fetchDataURL: termUrl + "years",
-            autoFetchData: true
-        });
-
-        var RestDataSource_Term_Filter_Evaluation = isc.TrDS.create({
-            fields: [
-                {name: "id", primaryKey: true},
-                {name: "code"},
-                {name: "startDate"},
-                {name: "endDate"}
-            ]
-        });
 
         var RestDataSource_class_Evaluation = isc.TrDS.create({
             fields: [
@@ -52,161 +36,31 @@
                 {name: "trainingEvalStatus"},
                 {name: "tclassSupervisor"}
             ],
-            fetchDataURL: viewClassDetailUrl + "/iscList"
+            fetchDataURL: viewClassDetailUrl + "/iscList",
+            implicitCriteria: {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [{fieldName: "tclassStudentsCount", operator: "notEqual", value: 0},
+                    {fieldName: "evaluation", operator: "notNull"}]
+            },
         });
 
     //----------------------------------------- DynamicForms -----------------------------------------------------------
-        var DynamicForm_Term_Filter_Evaluation = isc.DynamicForm.create({
+        var DynamicForm_AlarmSelection = isc.DynamicForm.create({
             width: "85%",
             height: "100%",
-            numCols: 6,
-            colWidths: ["1%", "6%", "1%", "20%", "0%", "60%"],
             fields: [
-                {
-                    name: "yearFilter",
-                    title: "<spring:message code='year'/>",
-                    width: "100%",
-                    textAlign: "center",
-                    editorType: "ComboBoxItem",
-                    displayField: "year",
-                    valueField: "year",
-                    optionDataSource: RestDataSource_Year_Filter_Evaluation,
-                    filterFields: ["year"],
-                    sortField: ["year"],
-                    sortDirection: "descending",
-                    defaultToFirstOption: true,
-                    useClientFiltering: true,
-                    filterEditorProperties: {
-                        keyPressFilter: "[0-9]"
-                    },
-                    pickListFields: [
-                        {
-                            name: "year",
-                            title: "<spring:message code='year'/>",
-                            filterOperator: "iContains",
-                            filterEditorProperties: {
-                                keyPressFilter: "[0-9]"
-                            }
-                        }
-                    ],
-                    changed: function (form, item, value) {
-                        load_term_by_year(value);
-                    },
-                    dataArrived:function (startRow, endRow, data) {
-                        if(data.allRows[0].year !== undefined)
-                        {
-                            load_term_by_year(data.allRows[0].year);
-                        }
-                    }
-                },
-                {
-                    name: "termFilter",
-                    title: "<spring:message code='term'/>",
-                    width: "100%",
-                    textAlign: "center",
-                    type: "SelectItem",
-                    multiple: true,
-                    filterLocally: true,
-                    displayField: "code",
-                    valueField: "id",
-                    optionDataSource: RestDataSource_Term_Filter_Evaluation,
-                    filterFields: ["code"],
-                    sortField: ["code"],
-                    sortDirection: "descending",
-                    defaultToFirstOption: true,
-                    useClientFiltering: true,
-                    filterEditorProperties: {
-                        keyPressFilter: "[0-9]"
-                    },
-                    pickListFields: [
-                        {
-                            name: "code",
-                            title: "<spring:message code='term.code'/>",
-                            filterOperator: "iContains",
-                            filterEditorProperties: {
-                                keyPressFilter: "[0-9]"
-                            }
-                        },
-                        {
-                            name: "startDate",
-                            title: "<spring:message code='start.date'/>",
-                            filterOperator: "iContains",
-                            filterEditorProperties: {
-                                keyPressFilter: "[0-9/]"
-                            }
-                        },
-                        {
-                            name: "endDate",
-                            title: "<spring:message code='end.date'/>",
-                            filterOperator: "iContains",
-                            filterEditorProperties: {
-                                keyPressFilter: "[0-9/]"
-                            }
-                        }
-                    ],
-                    pickListProperties: {
-                        gridComponents: [
-                            isc.ToolStrip.create({
-                                autoDraw: false,
-                                height: 30,
-                                width: "100%",
-                                members: [
-                                    isc.ToolStripButton.create({
-                                        width: "50%",
-                                        icon: "[SKIN]/actions/approve.png",
-                                        title: "انتخاب همه",
-                                        click: function () {
-                                            var item = DynamicForm_Term_Filter_Evaluation.getField("termFilter"),
-                                                fullData = item.pickList.data,
-                                                cache = fullData.localData,
-                                                values = [];
-
-                                            for (var i = 0; i < cache.length; i++) {
-                                                values[i] = cache[i].id;
-                                            }
-                                            item.setValue(values);
-                                            item.pickList.hide();
-                                            load_classes_by_term(values);
-                                        }
-                                    }),
-                                    isc.ToolStripButton.create({
-                                        width: "50%",
-                                        icon: "[SKIN]/actions/close.png",
-                                        title: "حذف همه",
-                                        click: function () {
-                                            var item = DynamicForm_Term_Filter_Evaluation.getField("termFilter");
-                                            item.setValue([]);
-                                            item.pickList.hide();
-                                            load_classes_by_term([]);
-                                        }
-                                    })
-                                ]
-                            }),
-                            "header", "body"
-                        ]
-                    },
-                    changed: function (form, item, value) {
-                        load_classes_by_term(value);
-                    },
-                    dataArrived:function (startRow, endRow, data) {
-                        if(data.allRows[0].id !== undefined)
-                        {
-                            DynamicForm_Term_Filter_Evaluation.getItem("termFilter").clearValue();
-                            DynamicForm_Term_Filter_Evaluation.getItem("termFilter").setValue(data.allRows[0].code);
-                            load_classes_by_term(data.allRows[0].id);
-                        }
-                    }
-                },
                 {
 
                     name: "classAlarmSelect",
                     title: "",
                     type: "radioGroup",
-                    defaultValue: "3",
+                    defaultValue: "4",
                     valueMap: {
                         "1" : "لیست کلاسهایی که موعد ارزیابی واکنشی آنها امروز است",
                         "2" : "لیست کلاسهایی که موعد ارزیابی یادگیری آنها امروز است",
-                        "3" : "لیست همه ی کلاسها"
+                        "3" : "لیست کلاسهایی که موعد ارزیابی رفتاری آنها امروز است",
+                        "4" : "لیست همه ی کلاسها"
                     },
                     vertical: false,
                     changed: function (form, item, value) {
@@ -237,6 +91,19 @@
                             ListGrid_class_Evaluation.fetchData(criteria);
                         }
                         if(value == "3"){
+                            let criteria = {
+                                _constructor:"AdvancedCriteria",
+                                operator:"and",
+                                criteria:[
+                                    {fieldName:"behavioralDueDate", operator:"equals", value: Date.create(today).toUTCString()},
+                                    {fieldName:"evaluation", operator:"equals", value: "3"}
+                                ]
+                            };
+                            RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
+                            ListGrid_class_Evaluation.invalidateCache();
+                            ListGrid_class_Evaluation.fetchData(criteria);
+                        }
+                        if(value == "4"){
                             RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
                             ListGrid_class_Evaluation.invalidateCache();
                             ListGrid_class_Evaluation.fetchData();
@@ -390,7 +257,20 @@
             selectionUpdated: function () {
                 loadSelectedTab_data(Detail_Tab_Evaluation.getSelectedTab());
                 set_Evaluation_Tabset_status();
-            }
+            },
+            getCellCSSText: function (record, rowNum, colNum) {
+                if ((!ListGrid_class_Evaluation.getFieldByName("evaluation").hidden && record.evaluation === "1"))
+                    return "background-color : #c9fecf";
+
+                if ((!ListGrid_class_Evaluation.getFieldByName("evaluation").hidden && record.evaluation === "2"))
+                    return "background-color : #d3f4fe";
+
+                if ((!ListGrid_class_Evaluation.getFieldByName("evaluation").hidden && record.evaluation === "3"))
+                    return "background-color : #fedee9";
+
+                if ((!ListGrid_class_Evaluation.getFieldByName("evaluation").hidden && record.evaluation === "4"))
+                    return "background-color : #fefad1";
+            },
         });
 
     //----------------------------------------- ToolStrips -------------------------------------------------------------
@@ -406,7 +286,7 @@
             membersMargin: 5,
             members: [
                 <sec:authorize access="hasAuthority('Evaluation_R')">
-                DynamicForm_Term_Filter_Evaluation,
+                DynamicForm_AlarmSelection,
                 isc.ToolStrip.create({
                     width: "5%",
                     align: "left",
@@ -455,12 +335,19 @@
                     id: "TabPane_Results",
                     title: "<spring:message code="evaluation.results"/>",
                     pane: null
-                }
+                },
                 </sec:authorize>
+                {
+                    id: "TabPane_EditGoalQuestions",
+                    title: "ویرایش سوالات ارزیابی مربوط به اهداف",
+                    pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation/edit-goal-questions-form"})
+                }
             ],
             tabSelected: function (tabNum, tabPane, ID, tab, name) {
-                if (isc.Page.isLoaded())
+                if (isc.Page.isLoaded()){
                     loadSelectedTab_data(tab);
+                }
+
             }
 
         });
@@ -511,42 +398,30 @@
                         if (classRecord.trainingEvalStatus == 0 ||
                                 classRecord.trainingEvalStatus == undefined ||
                                     classRecord.trainingEvalStatus == null) {
-                            // ToolStrip_SendForms_RE.getField("sendButtonTraining").disableIcon("ok");
-                            // ToolStrip_SendForms_RE.getField("registerButtonTraining").disableIcon("ok");
                             ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
                             ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
                         }
                         else if(classRecord.trainingEvalStatus == 1){
-                            // ToolStrip_SendForms_RE.getField("sendButtonTraining").enableIcon("ok");
                             ToolStrip_SendForms_RE.getField("sendButtonTraining").showIcon("ok");
-                            // ToolStrip_SendForms_RE.getField("registerButtonTraining").disableIcon("ok");
                             ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
                         }
                         else{
-                            // ToolStrip_SendForms_RE.getField("sendButtonTraining").enableIcon("ok");
                             ToolStrip_SendForms_RE.getField("sendButtonTraining").showIcon("ok");
-                            // ToolStrip_SendForms_RE.getField("registerButtonTraining").enableIcon("ok");
                             ToolStrip_SendForms_RE.getField("registerButtonTraining").showIcon("ok");
                         }
 
                         if (classRecord.teacherEvalStatus == 0 ||
                             classRecord.teacherEvalStatus == undefined ||
                             classRecord.teacherEvalStatus == null) {
-                            // ToolStrip_SendForms_RE.getField("sendButtonTeacher").disableIcon("ok");
                             ToolStrip_SendForms_RE.getField("sendButtonTeacher").hideIcon("ok");
-                            // ToolStrip_SendForms_RE.getField("registerButtonTeacher").disableIcon("ok");
                             ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
                         }
                         else if(classRecord.teacherEvalStatus == 1){
-                            // ToolStrip_SendForms_RE.getField("sendButtonTeacher").enableIcon("ok");
                             ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
-                            // ToolStrip_SendForms_RE.getField("registerButtonTeacher").disableIcon("ok");
                             ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
                         }
                         else{
-                            // ToolStrip_SendForms_RE.getField("sendButtonTeacher").enableIcon("ok");
                             ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
-                            // ToolStrip_SendForms_RE.getField("registerButtonTeacher").enableIcon("ok");
                             ToolStrip_SendForms_RE.getField("registerButtonTeacher").showIcon("ok");
                         }
                         ToolStrip_SendForms_RE.redraw();
@@ -555,6 +430,7 @@
                     }
                     case "TabPane_Learning_PreTest": {
                         classId_preTest = classRecord.id;
+                        scoringMethod_preTest = classRecord.classScoringMethod;
                         RestDataSource_PreTest.fetchDataURL = questionBankTestQuestionUrl +"/preTest/"+classRecord.id+ "/spec-list";
                         ListGrid_PreTest.invalidateCache();
                         ListGrid_PreTest.fetchData();
@@ -566,6 +442,13 @@
                         ListGrid_student_BE.fetchData();
                         DynamicForm_ReturnDate_BE.clearValues();
                         classRecord_BE = classRecord;
+                        break;
+                    }
+                    case "TabPane_EditGoalQuestions" : {
+                        RestDataSource_Golas_JspEGQ.fetchDataURL = evaluationUrl + "/getClassGoalsQuestions/" + classRecord.id;
+                        ListGrid_Goal_JspEGQ.invalidateCache();
+                        ListGrid_Goal_JspEGQ.fetchData();
+                        classRecord_JspEGQ = classRecord;
                         break;
                     }
                     case "TabPane_Results": {
@@ -580,7 +463,7 @@
 
         function set_Evaluation_Tabset_status() {
             let classRecord = ListGrid_class_Evaluation.getSelectedRecord();
-            let evaluationType = classRecord.courseEvaluationType;
+            let evaluationType = classRecord.evaluation;
 
             if (evaluationType === "1") {
                 Detail_Tab_Evaluation.enableTab(0);
@@ -602,33 +485,6 @@
                 Detail_Tab_Evaluation.enableTab(1);
                 Detail_Tab_Evaluation.enableTab(2);
                 Detail_Tab_Evaluation.enableTab(3);
-            }
-        }
-
-        function load_term_by_year(value) {
-            let criteria= '{"fieldName":"startDate","operator":"iStartsWith","value":"' + value + '"}';
-            RestDataSource_Term_Filter_Evaluation.fetchDataURL = termUrl + "spec-list?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria;
-            DynamicForm_Term_Filter_Evaluation.getItem("termFilter").fetchData();
-        }
-
-        function load_classes_by_term(value) {
-            if(value !== undefined) {
-                let criteria = {
-                    _constructor:"AdvancedCriteria",
-                    operator:"and",
-                    criteria:[
-                        { fieldName:"termId", operator:"inSet", value: value},
-                        { fieldName:"tclassStatus", operator:"notEqual", value: "3"}
-                    ]
-                };
-                RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
-                ListGrid_class_Evaluation.implicitCriteria = criteria;
-                ListGrid_class_Evaluation.invalidateCache();
-                ListGrid_class_Evaluation.fetchData();
-            }
-            else
-            {
-                createDialog("info", "<spring:message code="msg.select.term.ask"/>", "<spring:message code="message"/>")
             }
         }
 

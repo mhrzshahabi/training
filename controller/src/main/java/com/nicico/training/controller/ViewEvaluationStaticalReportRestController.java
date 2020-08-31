@@ -55,7 +55,7 @@ public class ViewEvaluationStaticalReportRestController {
         ViewEvaluationStaticalReportDTO.Statical result = new ViewEvaluationStaticalReportDTO.Statical();
         JSONObject jsonObject = new JSONObject(data);
 
-        JSONArray evaluation = null;
+        JSONArray classEvaluation = null;
         String evaluation_Str = "";
         String teacherId = null;
         String[] tclassCode = null;
@@ -78,8 +78,8 @@ public class ViewEvaluationStaticalReportRestController {
         String courseSubCategory_Str = "";
 
 
-        if(!jsonObject.isNull("evaluation"))
-            evaluation = modelMapper.map(jsonObject.get("evaluation"),JSONArray.class);
+        if(!jsonObject.isNull("classEvaluation"))
+            classEvaluation = modelMapper.map(jsonObject.get("classEvaluation"),JSONArray.class);
         if(!jsonObject.isNull("tclassCode"))
             tclassCode = modelMapper.map(jsonObject.get("tclassCode"),String.class).split(";");
         if(!jsonObject.isNull("teacherId"))
@@ -125,12 +125,12 @@ public class ViewEvaluationStaticalReportRestController {
                 "from view_evaluation_statical_report\n" +
                 "where ";
 
-        if(evaluation != null) {
-            evaluation_Str += evaluation.get(0).toString();
-            for (int i = 1; i < evaluation.length(); i++) {
-                evaluation_Str += "," + evaluation.get(i).toString();
+        if(classEvaluation != null) {
+            evaluation_Str += classEvaluation.get(0).toString();
+            for (int i = 1; i < classEvaluation.length(); i++) {
+                evaluation_Str += "," + classEvaluation.get(i).toString();
             }
-            sql += "COURSE_C_EVALUATION IN (" + evaluation_Str + ") ";
+            sql += "TCLASS_EVALUATION IN (" + evaluation_Str + ") ";
         }
 
         if(tclassCode != null) {

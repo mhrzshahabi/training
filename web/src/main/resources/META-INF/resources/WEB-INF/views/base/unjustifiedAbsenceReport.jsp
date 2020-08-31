@@ -46,7 +46,9 @@
     var ToolStripButton_ExportToExcel = isc.ToolStripButtonExcel.create({
         margin:5,
         click: function () {
-            ExportToFile.downloadExcelFromClient(List_Grid_Reaport, null, '', "غیبت ناموجه")
+            let title="گزارش غيبت ناموجه از تاریخ "+DynamicForm_Report.getItem("startDate").getValue()+ " الی "+DynamicForm_Report.getItem("endDate").getValue();
+
+            ExportToFile.showDialog(null, List_Grid_Reaport, 'unjustifiedAbsence', 0, null, '', title, List_Grid_Reaport.data.criteria, null);
         }
     })
 
@@ -195,7 +197,9 @@
                     ToolStripButton_ExportToExcel.setDisabled(false);
                     var strSData=DynamicForm_Report.getItem("startDate").getValue().replace(/(\/)/g, "");
                     var strEData = DynamicForm_Report.getItem("endDate").getValue().replace(/(\/)/g, "");
-                    RestDataSource_unjustifiedAbsenceReport.fetchDataURL=unjustifiedAbsenceReport +"unjustifiedAbsenceReport"+"/"+strSData + "/" + strEData;
+                    let url = unjustifiedAbsenceReport + "list?startDate=" + strSData + "&endDate=" + strEData;
+
+                    RestDataSource_unjustifiedAbsenceReport.fetchDataURL=url;
                     List_Grid_Reaport.fetchData();
                     List_Grid_Reaport.invalidateCache();
                     List_Grid_Reaport.fetchData();

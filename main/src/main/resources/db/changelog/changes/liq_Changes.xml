@@ -1199,4 +1199,32 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="matin_ar (generated)" id="1598067280592-490">
+        <addColumn tableName="tbl_class">
+            <column name="f_targetsociety_type_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="matin_ar (generated)" id="1598067280592-607">
+        <dropColumn columnName="F_TARGETSOCIETY_TYPE_ID" tableName="TBL_TARGET_SOCIETY"/>
+    </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1598422312247-496">
+        <addColumn tableName="tbl_question_bank">
+            <column defaultValueNumeric="1" name="n_lines" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="razmnoosh (generated)" id="1598868939010-496">
+        <addColumn tableName="tbl_dynamic_question">
+            <column name="goal_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1598868939010-497">
+        <addColumn tableName="tbl_dynamic_question">
+            <column name="skill_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

@@ -271,14 +271,15 @@
         wrapItemTitles: true,
         fields: [
             {
-                name: "personnelPersonnelNo",
+                name: "personnelNationalCode",
+
                 title:"انتخاب پرسنل",
                 operator: "inSet",
                 textAlign: "center",
                 optionDataSource: PersonnelDS_PCNR_DF,
                 autoFetchData: false,
                 type: "MultiComboBoxItem",
-                valueField: "personnelNo",
+                valueField: "nationalCode",
                 displayField: "personnelNo",
                 endRow: false,
                 colSpan: 3,
@@ -300,14 +301,14 @@
                 },
             },
             {
-                name: "pgCCode",
+                name: "postGradeId",
                 title:"<spring:message code='post.grade'/>",
                 operator: "inSet",
                 textAlign: "center",
                 optionDataSource: RestDataSource_PostGradeLvl_PCNR,
                 autoFetchData: false,
                 type: "MultiComboBoxItem",
-                valueField: "code",
+                valueField: "id",
                 displayField: "titleFa",
                 endRow: false,
                 colSpan: 4,
@@ -692,10 +693,14 @@
     //##--------------------#Functions#---------------------------------##
 
     function hasFilters(){
-        if(Object.keys(FilterDF_PCNR.getValuesAsCriteria()).length < 2 && FilterDF_PCNR.getValuesAsCriteria().criteria === undefined)
+        let state = FilterDF_PCNR.getValuesAsCriteria().criteria;
+        let arry = state !== undefined ? state : Object.keys(FilterDF_PCNR.getValuesAsCriteria());
+        if(state === undefined && arry.length < 2)
             return false;
-        else if(FilterDF_PCNR.getValuesAsCriteria().criteria !== undefined && Object.keys(FilterDF_PCNR.getValuesAsCriteria().criteria).length < 3)
-            return false
+        else if(state === undefined)
+            return true;
+        else if(state.length < 2 && arry.length < 3)
+            return false;
         else
             return true;
     }

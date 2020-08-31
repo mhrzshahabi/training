@@ -3,6 +3,7 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PostDTO;
+import com.nicico.training.dto.TrainingPlaceDTO;
 import com.nicico.training.dto.TrainingPostDTO;
 
 import javax.servlet.http.HttpServletResponse;
@@ -11,6 +12,8 @@ import java.util.List;
 import java.util.Set;
 
 public interface ITrainingPostService {
+
+    SearchDTO.SearchRs<TrainingPostDTO.Info> search(SearchDTO.SearchRq request);
 
     void addPosts(Long trainingPostID, Set<Long> postIds);
 

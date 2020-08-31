@@ -3,6 +3,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 // <script>
+    $(document).ready(()=>{
+        setTimeout(()=>{
+            $("input[name='personnelNo']").attr("disabled","disabled");
+            $("input[name='classCode']").attr("disabled","disabled");
+        },0)}
+    );
+
     var startDate1Check_JspcontinuousPersonnel = true;
     var startDate2Check_JspcontinuousPersonnel = true;
     var startDateCheck_Order_JspcontinuousPersonnel = true;
@@ -238,7 +245,7 @@
             {
                 name: "personnelNo",
                 title: "شماره پرسنلي",
-                hint: "شماره پرسنلي را با , از یکدیگر جدا کنید",
+                hint: "شماره پرسنلي را انتخاب نمایید",
                 showHintInField: true,
                 icons: [{
                     src: "[SKIN]/pickers/search_picker.png",
@@ -392,8 +399,7 @@
             {
                 name: "classCode",
                 title: "کد کلاس",
-                hint: "کدهای کلاس را با , از یکدیگر جدا کنید",
-                prompt: "کدهای کلاس فقط میتوانند شامل حروف انگلیسی بزرگ، اعداد و - باشند",
+                hint: "کد کلاس را انتخاب نمائيد",
                 showHintInField: true,
                 icons: [{
                     src: "[SKIN]/pickers/search_picker.png",
@@ -733,7 +739,7 @@
                 criteriaDisplayValues = uniqueNames.join(",");
             }
 
-            criteriaDisplayValues = criteriaDisplayValues == ";undefined" ? "" : criteriaDisplayValues;
+            criteriaDisplayValues = criteriaDisplayValues == "undefined" ? "" : criteriaDisplayValues;
 
             DynamicForm_CriteriaForm_JspcontinuousPersonnel.getField("classCode").setValue(criteriaDisplayValues);
             Window_SelectClasses_JspUnitReport.close();
@@ -826,7 +832,7 @@
                 criteriaDisplayValues = uniqueNames.join(",");
             }
 
-            criteriaDisplayValues = criteriaDisplayValues == ";undefined" ? "" : criteriaDisplayValues;
+            criteriaDisplayValues = criteriaDisplayValues == "undefined" ? "" : criteriaDisplayValues;
 
             DynamicForm_CriteriaForm_JspcontinuousPersonnel.getField("personnelNo").setValue(criteriaDisplayValues);
             Window_SelectPeople_JspUnitReport.close();

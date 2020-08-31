@@ -1,6 +1,8 @@
 package com.nicico.training.controller;
 
 
+import com.nicico.training.model.EvaluationAnalysis;
+import com.nicico.training.service.EvaluationAnalysisService;
 import lombok.RequiredArgsConstructor;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.springframework.http.*;
@@ -8,17 +10,22 @@ import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/evaluationAnalysis")
 public class EvaluationAnalysisFormController {
+
+    private final EvaluationAnalysisService evaluationAnalysisService;
 
     @RequestMapping("/show-form")
     public String showForm() {
@@ -49,12 +56,12 @@ public class EvaluationAnalysisFormController {
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap();
-        params.add("code",object.get("code").toString());
-        params.add("titleClass",((JSONObject)object.get("course")).get("titleFa").toString());
-        params.add("term",object.getJSONObject("term").get("titleFa").toString());
-        params.add("studentCount", object.get("studentCount").toString());
-        params.add("classStatus", object.get("classStatus").toString());
-        params.add("teacher", object.get("teacher").toString());
+        params.add("code",object.get("tclassCode").toString());
+        params.add("titleClass",object.get("courseTitleFa").toString());
+        params.add("term",object.get("termTitleFa").toString());
+        params.add("studentCount", object.get("tclassStudentsCount").toString());
+        params.add("classStatus", object.get("tclassStatus").toString());
+        params.add("teacher", object.get("teacherFullName").toString());
 
         params.add("numberOfExportedReactionEvaluationForms", object.get("numberOfExportedReactionEvaluationForms").toString());
         params.add("numberOfFilledReactionEvaluationForms", object.get("numberOfFilledReactionEvaluationForms").toString());
@@ -126,4 +133,15 @@ public class EvaluationAnalysisFormController {
         return restTemplate.exchange(restApiUrl + "/api/evaluationAnalysis/printBehavioralEvaluation" , HttpMethod.POST, entity, byte[].class);
     }
 
+    @PostMapping(value = {"/printBehavioralReport/{type}"})
+    public void print(HttpServletResponse response,
+                      @PathVariable String type,
+                      @RequestParam(value = "fileName") String fileName,
+                      @RequestParam(value = "ClassId") Long ClassId,
+                      @RequestParam(value = "params") String Params,
+                      @RequestParam(value = "suggestions") String suggestions,
+                      @RequestParam(value = "opinion") String opinion
+    ) throws Exception {
+        evaluationAnalysisService.print(response, type, fileName, ClassId, Params, suggestions, opinion);
+    }
 }

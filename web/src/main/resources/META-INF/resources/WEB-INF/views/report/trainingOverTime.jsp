@@ -32,7 +32,6 @@
             {
                 name: "startDate",
                 titleColSpan: 1,
-// type:"staticText",
                 title: "<spring:message code='start.date'/>",
                 ID: "startDate_jspTrainingOverTime",
                 required: true,
@@ -47,7 +46,6 @@
                     }
                 }],
                 textAlign: "center",
-                // colSpan: 2,
                 changed: function (form, item, value) {
                     var dateCheck;
                     // var endDate = form.getValue("endDate");
@@ -97,35 +95,46 @@
                 startRow: false,
                 endRow: false,
                 click(form) {
-                    form.validate();
-                    if (form.hasErrors()) {
-                        return
+                    if(DynamicForm_TrainingOverTime.getValuesAsAdvancedCriteria()==null || DynamicForm_TrainingOverTime.getValuesAsAdvancedCriteria().criteria.size() <= 1) {
+                        createDialog("info","فیلتری انتخاب نشده است.");
+                        return;
                     }
-                    var training_over_time_wait = createDialog("wait");
-                    setTimeout(function () {
-                        let url = trainingOverTimeReportUrl + "/list?startDate=" + form.getValue("startDate") + "&endDate=" + form.getValue("endDate");
-                        RestDataSource_Class_JspTrainingOverTime.fetchDataURL = url;
 
-                        ListGrid_TrainingOverTime_TrainingOverTimeJSP.invalidateCache();
-                        ListGrid_TrainingOverTime_TrainingOverTimeJSP.fetchData();
-                        training_over_time_wait.close();
-
-                    }, 100);
+                    DynamicForm_TrainingOverTime.validate();
+                    if (DynamicForm_TrainingOverTime.hasErrors())
+                        return;
 
 
+                    else {
+                        var training_over_time_wait = createDialog("wait");
+                        setTimeout(function () {
+                            let url = trainingOverTimeReportUrl + "/list?startDate=" + form.getValue("startDate") + "&endDate=" + form.getValue("endDate");
+                            RestDataSource_Class_JspTrainingOverTime.fetchDataURL = url;
 
-                    /*ListGrid_TrainingOverTime_TrainingOverTimeJSP.setData([]);
-                    let url = trainingOverTimeReportUrl + "/list?startDate=" + form.getValue("startDate") + "&endDate=" + form.getValue("endDate");
-                    isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
-                        training_over_time_wait.close();
-                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                            ListGrid_TrainingOverTime_TrainingOverTimeJSP.setData(JSON.parse(resp.data));
-                        }
-                    }))*/
+                            ListGrid_TrainingOverTime_TrainingOverTimeJSP.invalidateCache();
+                            ListGrid_TrainingOverTime_TrainingOverTimeJSP.fetchData();
+                            training_over_time_wait.close();
 
-                    //ListGrid_TrainingOverTime_TrainingOverTimeJSP.implicitCriteria = DynamicForm_TrainingOverTime.getValuesAsAdvancedCriteria();
+                        }, 100);
 
+                        // data_values = DynamicForm_TrainingOverTime.getValuesAsAdvancedCriteria();
+                        // for (let i = 0; i < data_values.criteria.size(); i++) {
+                        //
+                        //     if (data_values.criteria[i].fieldName == "startDate") {
+                        //         data_values.criteria[i].fieldName = "date";
+                        //         data_values.criteria[i].operator = "greaterThan";
+                        //     } else if (data_values.criteria[i].fieldName == "endDate") {
+                        //         data_values.criteria[i].fieldName = "date";
+                        //         data_values.criteria[i].operator = "lessThan";
+                        //     }
+                        // }
+                        //
+                        //     ListGrid_TrainingOverTime_TrainingOverTimeJSP.invalidateCache();
+                        //     ListGrid_TrainingOverTime_TrainingOverTimeJSP.fetchData(data_values);
+                        //
+                        //     return;
 
+                    }
                 }
             },
             {
@@ -157,21 +166,9 @@
             isc.ToolStripButtonExcel.create({
                 margin:5,
                 click:function() {
-                    /*let criteria = ListGrid_TrainingOverTime_TrainingOverTimeJSP.getValuesAsAdvancedCriteria();
-
-                    if(criteria != null && Object.keys(criteria).length != 0) {
-                        criteria.criteria.push(0,0,{ fieldName: "endDate", operator: "iContains", value: DynamicForm_TrainingOverTime.getItem("endDate").getValue() });
-                        criteria.criteria.push(0,0,{ fieldName: "startDte", operator: "iContains", value: DynamicForm_TrainingOverTime.getItem("startDte").getValue() });
-
-                    }else{
-                        criteria={ operator: "and", _constructor: "AdvancedCriteria", criteria: [] };
-
-                        criteria.criteria.splice(0,0,{ fieldName: "endDate", operator: "iContains", value: DynamicForm_TrainingOverTime.getItem("endDate").getValue() });
-                        criteria.criteria.push(0,0,{ fieldName: "startDte", operator: "iContains", value: DynamicForm_TrainingOverTime.getItem("startDte").getValue() });
-                    }*/
                     let title="گزارش اضافه کاری آموزشی از تاریخ "+DynamicForm_TrainingOverTime.getItem("startDate").getValue()+ " الی "+DynamicForm_TrainingOverTime.getItem("endDate").getValue();
-                    ExportToFile.showDialog(null, ListGrid_TrainingOverTime_TrainingOverTimeJSP, 'trainingOverTime', 0, null, '',  title, DynamicForm_TrainingOverTime.getValuesAsAdvancedCriteria(), null);
-                  // ExportToFile.downloadExcelFromClient(ListGrid_TrainingOverTime_TrainingOverTimeJSP, null, '', "گزارش اضافه کاری آموزشی")
+
+                    ExportToFile.showDialog(null, ListGrid_TrainingOverTime_TrainingOverTimeJSP, 'trainingOverTime', 0, null, '', title, ListGrid_TrainingOverTime_TrainingOverTimeJSP.data.criteria, null);
                 }
             })
             , "header", "filterEditor", "body"],
@@ -209,7 +206,7 @@
                 }
             },
             {
-                name: "time",
+                name: "fixTime",
                 title: "<spring:message code="time.hour"/>",
                 includeInRecordSummary:false,
             },

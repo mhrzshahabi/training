@@ -798,12 +798,15 @@
     const postGradeUrl = rootUrl + "/postGrade";
     const postUrl = rootUrl + "/post";
     const trainingPostUrl = rootUrl + "/training-post";
+    const viewAllPostUrl = rootUrl + "/ViewAllPost";
     const competenceUrl = rootUrl + "/competence";
     const needAssessmentUrl = rootUrl + "/needAssessment";
     const skillUrl = rootUrl + "/skill";
     const attachmentUrl = rootUrl + "/attachment";
     const trainingPlaceUrl = rootUrl + "/trainingPlace";
     const personnelUrl = rootUrl + "/personnel";
+    const viewActivePersonnelUrl = rootUrl + "/view_active_personnel";
+    const viewActivePersonnelInRegisteringUrl = rootUrl + "/view-active-personnel-in-registering";
     const personnelRegUrl = rootUrl + "/personnelRegistered";
     const attendanceUrl = rootUrl + "/attendance";
     const parameterUrl = rootUrl + "/parameter";
@@ -819,6 +822,7 @@
     const questionnaireUrl = rootUrl + "/questionnaire";
     const questionnaireQuestionUrl = rootUrl + "/questionnaireQuestion";
     const tclassStudentUrl = rootUrl + "/class-student";
+    const trainingFileUrl = rootUrl + "/view-training_file";
     const teacherInformation = rootUrl + "/teacherInformation";
     const needsAssessmentUrl = rootUrl + "/needsAssessment";
     const workGroupUrl = rootUrl + "/work-group";
@@ -3125,7 +3129,7 @@
     <%--emptyMessage: "",--%>
     <%--loadingDataMessage: "<spring:message code="loading"/>"--%>
     <%--createTab("<spring:message code="post"/>", "<spring:url value="/web/post"/>");--%>
-    <%--createTab("<spring:message code="post"/>", "<spring:url value="/web/post"/>");--%>
+    <%--createTab("<spring:message code="class"/>", "<spring:url value="/tclass/show-form"/>");--%>
     <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="web/needsAssessment/"/>");--%>
 
     loadFrameworkMessageFa();

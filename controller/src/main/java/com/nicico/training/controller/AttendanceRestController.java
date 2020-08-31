@@ -14,6 +14,7 @@ import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.iservice.IAttendanceService;
+import com.nicico.training.mapper.attendance.AttendanceBeanMapper;
 import com.nicico.training.model.ParameterValue;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import request.attendance.AttendanceListSaveRequest;
+import response.attendance.AttendanceListSaveResponse;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -47,7 +50,7 @@ public class AttendanceRestController {
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
     private final ClassAlarmService classAlarmService;
-    // ------------------------------
+    private final AttendanceBeanMapper mapper;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -99,14 +102,15 @@ public class AttendanceRestController {
 
     @Loggable
     @PostMapping(value = "/save-attendance")
-    public ResponseEntity createAndSave(@RequestBody List<List<Map<String, String>>> req,
-                                        @RequestParam("classId") Long classId,
-                                        @RequestParam("date") String date) {
-        attendanceService.convertToModelAndSave(req, classId, date);
-        //// cancel alarms
-//        classAlarmService.alarmAttendanceUnjustifiedAbsence(classId);
-//        classAlarmService.saveAlarms();
-        return new ResponseEntity(HttpStatus.CREATED);
+    public ResponseEntity<AttendanceListSaveResponse> createAndSave(@RequestBody AttendanceListSaveRequest request) {
+      //  attendanceService.convertToModelAndSave(req, classId, date);
+ /*       classAlarmService.alarmAttendanceUnjustifiedAbsence(classId);
+        classAlarmService.saveAlarms();*/
+        attendanceService.saveOrUpdateList(mapper.ToAttendanceList(request));
+        AttendanceListSaveResponse response = new AttendanceListSaveResponse();
+        response.setStatus(HttpStatus.CREATED.value());
+        response.setMessage("با موفقیت ایجاد شد");
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @Loggable
@@ -115,7 +119,6 @@ public class AttendanceRestController {
         attendanceService.studentAttendanceSave(req);
         return new ResponseEntity(HttpStatus.CREATED);
     }
-
 
     @Loggable
     @GetMapping(value = "/session-date")

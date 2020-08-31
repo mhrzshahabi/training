@@ -67,7 +67,10 @@ public class ViewEvaluationStaticalReport extends Auditable {
     private String courseTitleFa;
 
     @Column(name = "COURSE_C_EVALUATION")
-    private String evaluation;
+    private String courseEvaluation;
+
+    @Column(name = "TCLASS_EVALUATION")
+    private String classEvaluation;
 
     @Column(name = "EVALUATIONANALYSIS_C_BEHAVIORAL_GRADE")
     private String evaluationBehavioralGrade;

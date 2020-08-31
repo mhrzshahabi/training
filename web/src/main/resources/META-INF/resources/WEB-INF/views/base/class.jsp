@@ -1344,6 +1344,7 @@
                 },
                 change: function (form, item, value, oldValue) {
                     if (value === "371") {
+                        var selectedSocieties = [];
                         // form.getItem("addtargetSociety").hide();
                         DataSource_TargetSociety_List.testData.forEach(function (currentValue, index, arr) {
                             DataSource_TargetSociety_List.removeData(currentValue)
@@ -1351,8 +1352,10 @@
                         form.getItem("targetSocieties").valueField = "societyId";
                         form.getItem("targetSocieties").clearValue();
                         singleTargetScoiety.forEach(function (currentValue, index, arr) {
-                            DataSource_TargetSociety_List.addData(currentValue);
+                            DataSource_TargetSociety_List.addData({societyId: currentValue.societyId, title: currentValue.title});
+                            selectedSocieties.add(currentValue.societyId);
                         });
+                        DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(selectedSocieties);
                     } else if (value === "372") {
                         // form.getItem("addtargetSociety").show();
                         DataSource_TargetSociety_List.testData.forEach(function (currentValue, index, arr) {
@@ -1363,6 +1366,7 @@
                         etcTargetSociety.forEach(function (currentValue, index, arr) {
                             DataSource_TargetSociety_List.addData({societyId: index, title: currentValue});
                         });
+                        DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(etcTargetSociety);
                     } else
                         return false;
                 }
@@ -1406,10 +1410,13 @@
                         isc.askForValue("لطفا جامعه هدف مورد نظر را وارد کنید",
                             function (value) {
                                 if (value !== "" && value !== null && value !== undefined) {
+                                    const found = etcTargetSociety.some(st => st === value);
+                                    if(!found){
                                     DataSource_TargetSociety_List.addData({societyId: i, title: value});
                                     etcTargetSociety.add(value);
                                     DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(etcTargetSociety);
                                     i += 1;
+                                    }
                                 }
                             });
                     } else if (DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").getValue() === "371") {
@@ -1523,10 +1530,9 @@
             {
                 name: "behavioralLevel",
                 title: "<spring:message code="behavioral.Level"/>:",
-                colSpan: 3,
+                colSpan: 2,
                 type: "radioGroup",
                 vertical: false,
-                endRow: true,
                 fillHorizontalSpace: true,
                 valueMap: {
                     "1": "مشاهده",
@@ -1534,31 +1540,14 @@
                     "3": "کار پروژه ای"
                 }
             },
-            <%--{--%>
-            <%--    name: "startEvaluation",--%>
-            <%--    title: "<spring:message code="start.evaluation"/>",--%>
-            <%--    colSpan: 2,--%>
-            <%--    textAlign: "center",--%>
-            <%--    hint: "&nbsp;ماه",--%>
-            <%--    valueMap: {--%>
-            <%--        "1": "1",--%>
-            <%--        "2": "2",--%>
-            <%--        "3": "3",--%>
-            <%--        "4": "4",--%>
-            <%--        "5": "5",--%>
-            <%--        "6": "6",--%>
-            <%--        "7": "7",--%>
-            <%--        "8": "8",--%>
-            <%--        "9": "9",--%>
-            <%--        "10": "10",--%>
-            <%--        "11": "11",--%>
-            <%--        "12": "12"--%>
-            <%--    },--%>
-            <%--    pickListProperties: {--%>
-            <%--        showFilterEditor: false,--%>
-            <%--        sortField: 1--%>
-            <%--    },--%>
-            <%--},--%>
+            {name: "evaluationScore",
+                canEdit:false,
+                title:"نمره ارزیابی مدرس کلاس: ",
+                calSpan:2,
+                // align:"center",
+                defaultValue: " _ ",
+                type: "StaticTextItem",
+            }
             //------------------------ DONE BY ROYA---------------------------------------------------------------------
         ],
         itemChanged: function () {
@@ -2699,7 +2688,9 @@
 
     loadjs.ready('load_Attachments', function () {
         oLoadAttachments_class = new loadAttachments();
-        TabSet_Class.updateTab(classAttachmentsTab, oLoadAttachments_class.VLayout_Body_JspAttachment)
+        setTimeout(()=> {
+            TabSet_Class.updateTab(classAttachmentsTab, oLoadAttachments_class.VLayout_Body_JspAttachment);
+        },0);
     });
     </sec:authorize>
     let HLayout_Tab_Class = isc.HLayout.create({
@@ -2775,7 +2766,7 @@
                     DynamicForm1_Class_JspClass.getItem("termId").enable();
                     DynamicForm1_Class_JspClass.getItem("startDate").enable();
                     DynamicForm1_Class_JspClass.getItem("endDate").enable();
-                    if (resp.data === "true") {
+                    if (resp.data === "true" && a === 0) {
                         DynamicForm1_Class_JspClass.getItem("termId").disable();
                         DynamicForm1_Class_JspClass.getItem("startDate").disable();
                         DynamicForm1_Class_JspClass.getItem("endDate").disable();
@@ -2815,9 +2806,9 @@
                         DynamicForm_Class_JspClass.getItem("scoringMethod").change(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("scoringMethod"), DynamicForm_Class_JspClass.getValue("scoringMethod"));
                         DynamicForm_Class_JspClass.itemChanged();
                         if (ListGrid_Class_JspClass.getSelectedRecord().scoringMethod === "1") {
-
                             DynamicForm_Class_JspClass.setValue("acceptancelimit_a", ListGrid_Class_JspClass.getSelectedRecord().acceptancelimit);
-                        } else {
+                        }
+                        else {
                             DynamicForm_Class_JspClass.setValue("acceptancelimit", ListGrid_Class_JspClass.getSelectedRecord().acceptancelimit);
                         }
                         //================
@@ -2829,9 +2820,23 @@
                             DynamicForm_Class_JspClass.getItem("preCourseTest").show();
                         wait.show()
                         isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "classHasAnySession/" + record.id, "GET", null, (resp) => {
-                            wait.close()
                             let result = resp.httpResponseText == Boolean(true).toString() ? true : false;
                             autoTimeActivation(result ? false : true);
+                            let cr = {fieldName: "tclassId", operator: "equals", value: record.id};
+                            isc.RPCManager.sendRequest(TrDSRequest(
+                                viewEvaluationStaticalReportUrl + "/iscList?operator=or&_constructor=AdvancedCriteria&criteria=" + JSON.stringify(cr),
+                                "GET",
+                                null,
+                                (resp) => {
+                                    wait.close();
+                                    let record = JSON.parse(resp.data).response.data[0];
+                                    if(record.evaluationTeacherGrade !== undefined) {
+                                        DynamicForm_Class_JspClass.setValue(
+                                            "evaluationScore",
+                                            getFormulaMessage(record.evaluationTeacherGrade, "2", "red", "b")
+                                        )
+                                    }
+                            }));
                         }));
                         highlightClassStauts(DynamicForm_Class_JspClass.getField("classStatus").getValue(), 1200);
                     } else {
@@ -3769,15 +3774,20 @@
 
     function setSocieties() {
         var selectedSocieties = [];
+        selectedSocieties.addAll(DynamicForm_Class_JspClass.getItem("targetSocieties").getValue());
         chosenDepartments_JspOC.data.forEach(function (currentValue, index, arr) {
-            DataSource_TargetSociety_List.addData({societyId: currentValue.id, title: currentValue.title});
-            singleTargetScoiety.add({societyId: currentValue.id, title: currentValue.title});
-            // selectedSocieties.add(currentValue.id);//don't delet !!!!
+            const found = singleTargetScoiety.some(st => st.id === currentValue.id);
+            if (!found){
+                DataSource_TargetSociety_List.addData({societyId: currentValue.id, title: currentValue.title});
+                singleTargetScoiety.add({societyId: currentValue.id, title: currentValue.title});
+                selectedSocieties.add(currentValue.id);
+                DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(selectedSocieties);
+            }
         });
-        singleTargetScoiety.forEach(function (currentValue, index, arr) {
-            selectedSocieties.add(currentValue.societyId);
-        });
-        DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(selectedSocieties);
+        // singleTargetScoiety.forEach(function (currentValue, index, arr) {
+        //     selectedSocieties.add(currentValue.societyId);
+        // });
+        // DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(selectedSocieties);
     }
 
     function autoTimeActivation(active = true) {

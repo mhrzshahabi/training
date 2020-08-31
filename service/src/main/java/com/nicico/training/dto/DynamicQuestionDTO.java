@@ -19,6 +19,8 @@ public class DynamicQuestionDTO implements Serializable {
     private Integer order;
     private String question;
     private Long typeId;
+    private Long skillId;
+    private Long goalId;
 
     @Getter
     @Setter

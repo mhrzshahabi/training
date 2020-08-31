@@ -10,7 +10,6 @@
     var score_value = null;//بر اساس روش نمره دهی که از 100 یا 20 باشد مقدار 100 یا 20 داخل این متغیر قرار می گیرد
     var classRecord_acceptancelimit = null;
     var scoresState_value = null;
-var mosayeb;
     var score_change = false;
     var failureReason_value = null;
     var failureReason_change = false;
@@ -18,7 +17,7 @@ var mosayeb;
     var acceptancelimitPrint = null;
     var refresh_special = 0;
     var valence_value = null;
-    var score_windows_dynamicForm_value=null
+    var score_windows_dynamicForm_value=null;
     var valence_value_failureReason = null;
     var map = {"1": "ارزشی", "2": "نمره از صد", "3": "نمره از بیست", "4": "بدون نمره"};
     var myMap = new Map(Object.entries(map));
@@ -577,6 +576,7 @@ var mosayeb;
                                             ListGrid_Cell_score_Update(record, newValue, 2)
                                             return
                                         } else {
+
                                             failureReason_change = false
                                             ListGrid_Cell_score_Update(record, newValue, 3)
                                             return
@@ -735,10 +735,12 @@ var mosayeb;
         } else if (a == 3) {
 
             record.scoresStateId = 403;
+            record.failureReasonId = 409;
             record.failureReasonId = record.failureReasonId;
         } else if (a == 4) {
             record.scoresStateId = 403;
             record.failureReasonId = 409;
+
 
         } else if (a == 5) {
           record.failureReasonId = failureReason_value
@@ -746,6 +748,7 @@ var mosayeb;
         scoresState_value = null;
         failureReason_value = null;
         failureReason_change = false;
+
         isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_score_Update(rpcResponse)"));
 
 
@@ -782,7 +785,7 @@ var mosayeb;
 
 
     function ListGrid_Remove_All_Cell(record) {
-        record.scoresStateId = null;
+        record.scoresStateId = 410;
         record.failureReasonId = null;
         record.score = null;
         record.valence = null;

@@ -502,7 +502,7 @@
                         criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "Job"});
                         criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
 
-                        ExportToFile.showDialog(null, NALG_Job, "NeedsAssessment", 0, null, '', "لیست نیازسنجی - آموزش", criteria, null);
+                        ExportToFile.showDialog(null, NALG_Job, "NeedsAssessmentReport", 0, null, '', "لیست نیازسنجی - آموزش", criteria, null);
                     }
                 })
             ]

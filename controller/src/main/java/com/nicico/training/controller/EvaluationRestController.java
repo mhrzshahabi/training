@@ -19,6 +19,7 @@ import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +34,7 @@ import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -55,6 +57,7 @@ public class EvaluationRestController {
     private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
     private final DynamicQuestionDAO dynamicQuestionDAO;
     private final ClassStudentDAO classStudentDAO;
+    private final ClassEvaluationGoalsService classEvaluationGoalsService;
 
     @Loggable
     @PostMapping("/printWithCriteria")
@@ -230,7 +233,7 @@ public class EvaluationRestController {
         return new ResponseEntity<>(evaluationService.search(request), HttpStatus.OK);
     }
 
-    private void studentEvaluationRegister(EvaluationDTO.Info evaluation){
+  /*  private void studentEvaluationRegister(EvaluationDTO.Info evaluation){
         if(evaluation.getQuestionnaireTypeId().equals(139L)){
             Integer x;
             if(evaluation.getEvaluationFull()) {
@@ -250,7 +253,7 @@ public class EvaluationRestController {
                 classStudentService.update(classStudent.getId(), classStudent.setEvaluationStatusResults(x), ClassStudentDTO.ClassStudentInfo.class);
             }
         }
-    }
+    }*/
 
     @Loggable
     @GetMapping(value = "/class-spec-list")
@@ -340,6 +343,27 @@ public class EvaluationRestController {
         evaluationService.deleteEvaluation(req);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @Loggable
+    @GetMapping(value = "/getClassGoalsQuestions/{classId}")
+    public ResponseEntity<ISC<ClassEvaluationGoalsDTO.Info>> getClassGoalsQuestions(@PathVariable Long classId, HttpServletRequest iscRq) throws IOException {
+        List<ClassEvaluationGoalsDTO.Info> classGoals = classEvaluationGoalsService.getClassGoals(classId);
+        if (classGoals == null || classGoals.isEmpty()) {
+            return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
+        }
+        SearchDTO.SearchRs<ClassEvaluationGoalsDTO.Info> searchRs = new SearchDTO.SearchRs<>();
+        searchRs.setList(classGoals);
+        searchRs.setTotalCount(Long.valueOf(classGoals.size()));
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
+    }
+
+    @Loggable
+    @PostMapping(value = "/editClassGoalsQuestions")
+    public void editClassGoalsQuestions(@RequestBody ArrayList<LinkedHashMap> request) throws IOException {
+        classEvaluationGoalsService.editClassGoalsQuestions(request);
+    }
+
+
 
     //--------------------------------------------- Calender -----------------------------------------------------------
     private static double greg_len = 365.2425;

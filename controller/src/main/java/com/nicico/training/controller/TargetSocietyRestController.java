@@ -7,6 +7,7 @@ import com.nicico.training.model.TargetSociety;
 import com.nicico.training.service.MasterDataService;
 import com.nicico.training.service.ParameterValueService;
 import com.nicico.training.service.TargetSocietyService;
+import com.nicico.training.service.TclassService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ import java.util.List;
 @RequestMapping("/api/target-society")
 public class TargetSocietyRestController {
 
-    private final TargetSocietyService societyService;
+    private final TclassService tclassService;
     private final MasterDataService masterDataService;
     private final ParameterValueService parameterValueService;
 
@@ -40,20 +41,22 @@ public class TargetSocietyRestController {
     @GetMapping("/getListById/{id}")
     public ResponseEntity<List<TargetSocietyDTO.Info>> getListById(@PathVariable Long id){
         Long type = parameterValueService.getId("single");
+        Long targetType = tclassService.getTargetSocietyTypeById(id).getId();
         Integer count = 0;
         try{
             String criteria = "{\"fieldName\":\"id\",\"operator\":\"inSet\",\"value\":[";//]}
             List<TargetSocietyDTO.Info> infoList = new ArrayList<>();
-            Iterator<TargetSocietyDTO.Info> infoIterator = societyService.getListById(id).iterator();
+            Iterator<TargetSocietyDTO.Info> infoIterator = tclassService.getTargetSocietiesListById(id).iterator();
             while (infoIterator.hasNext()){
                 TargetSocietyDTO.Info info = infoIterator.next();
-                if(type.equals(info.getTargetSocietyTypeId())) {
+                if(type.equals(targetType)) {
                     criteria += info.getSocietyId().toString();
                     count++;
                     if(infoIterator.hasNext()) {
                         criteria += ",";
                     }
                 }else{
+                    info.setTargetSocietyTypeId(targetType);
                     infoList.add(info);
                     if(criteria.substring(criteria.length()-1).equals(","))
                         criteria = criteria.substring(0,criteria.length()-2);
@@ -65,7 +68,7 @@ public class TargetSocietyRestController {
             TargetSocietyDTO.Info info = new TargetSocietyDTO.Info();
             info.setSocietyId(deparment.getId());
             info.setTitle(deparment.getTitle());
-            info.setTargetSocietyTypeId(type);
+            info.setTargetSocietyTypeId(targetType);
             infoList.add(info);
         }
         return new ResponseEntity<List<TargetSocietyDTO.Info>>(infoList, HttpStatus.OK);

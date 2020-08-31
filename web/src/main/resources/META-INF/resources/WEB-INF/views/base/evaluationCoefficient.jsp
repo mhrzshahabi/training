@@ -232,7 +232,7 @@
             {type: "RowSpacerItem"},
             {
                 type: "BlurbItem",
-                value: "<p style='font-size:14px;color:blue'>4- فرمول ارزیابی تغییر رفتار= ( نمره ارزیابی فراگیران)*Z2 + ( نمره ارزیابی بالا دست)*Z1</p>"
+                value: "<p style='font-size:14px;color:blue'>4- فرمول ارزیابی تغییر رفتار= ( نمره ارزیابی همکاران)*Z4 + ( نمره ارزیابی مسئول آموزش)*Z3 + (ضریب نمره ارزیابی فراگیران)*Z2 +  (ضریب نمره ارزیابی بالا دست)*Z1</p>"
             },
             {
                 width: "200",
@@ -253,6 +253,32 @@
                  mask: "###",
                 name: "z8",
                 title: "(ضریب نمره ارزیابی فراگیران)Z2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%",
+
+                change: function (form, item, value) {
+                    if (value > 100) {
+                        item.setValue()
+                    }
+                }
+            },
+            {
+                width: "200",
+                ////hint: "%",
+                mask: "###",
+                name: "scoreEvaluationRTEB",
+                title: "(نمره ارزیابی مسئول آموزش)Z3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%",
+
+                change: function (form, item, value) {
+                    if (value > 100) {
+                        item.setValue()
+                    }
+                }
+            },
+            {
+                width: "200",
+                ////hint: "%",
+                mask: "###",
+                name: "scoreEvaluationPartnersEB",
+                title: "(نمره ارزیابی همکاران)Z4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%",
 
                 change: function (form, item, value) {
                     if (value > 100) {
@@ -300,6 +326,7 @@
                     }
                 }
             },
+
 //==================================================================================================
             {type: "RowSpacerItem"},
             {type: "BlurbItem", value: "<p style='font-size:14px;color:blue'>5- فرمول اثربخشی کلاس _ واکنشی=( نمره ارزیابی واکنشی کلاس)*Z1</p>"},
@@ -489,9 +516,11 @@
                            createDialog("info", "جمع ضرایب فرمول دو باید 100 شود", "<spring:message code="message"/>")
                            }
 
-                    } else if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z7")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z8")) != 100) {
+                    } else if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z7")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z8")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("scoreEvaluationRTEB")) +  parseFloat(DynamicForm_Evaluation_Coefficient.getValue("scoreEvaluationPartnersEB")) != 100) {
                         var str7 = DynamicForm_Evaluation_Coefficient.getItem("z7").title
                         var str8 = DynamicForm_Evaluation_Coefficient.getItem("z8").title
+                        var str9 = DynamicForm_Evaluation_Coefficient.getItem("scoreEvaluationRTEB").title
+                        var str10 = DynamicForm_Evaluation_Coefficient.getItem("scoreEvaluationPartnersEB").title
                         if (DynamicForm_Evaluation_Coefficient.getItem("z7").getValue() == null)
                           {
                              DynamicForm_Evaluation_Coefficient.getItem("z7").focusInItem()
@@ -501,6 +530,16 @@
                              DynamicForm_Evaluation_Coefficient.getItem("z8").focusInItem()
                              createDialog("info", "فیلد ' " + str8.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
                           }
+                        else if (DynamicForm_Evaluation_Coefficient.getItem("scoreEvaluationRTEB").getValue() == null)
+                        {
+                            DynamicForm_Evaluation_Coefficient.getItem("scoreEvaluationRTEB").focusInItem()
+                            createDialog("info", "فیلد ' " + str9.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                        }
+                        else if (DynamicForm_Evaluation_Coefficient.getItem("scoreEvaluationPartnersEB").getValue() == null)
+                        {
+                            DynamicForm_Evaluation_Coefficient.getItem("scoreEvaluationPartnersEB").focusInItem()
+                            createDialog("info", "فیلد ' " + str10.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                        }
                           else{
                              createDialog("info", "جمع ضرایب فرمول چهارباید 100 شود", "<spring:message code="message"/>")
                              return;
@@ -610,7 +649,8 @@
 
                         DynamicForm_Evaluation_Coefficient.getItem("minQusEB").focusInItem()
                         return;
-                    }else if (DynamicForm_Evaluation_Coefficient.getItem("minScoreFECR").getValue() == null) {
+                    }
+                     else if (DynamicForm_Evaluation_Coefficient.getItem("minScoreFECR").getValue() == null) {
                         var str = DynamicForm_Evaluation_Coefficient.getItem("minScoreFECR").title
                         createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
                         DynamicForm_Evaluation_Coefficient.getItem("minScoreFECR").focusInItem()

@@ -1,9 +1,10 @@
 package com.nicico.training.iservice;
 
-import com.nicico.training.dto.AttendanceReportDTO;
+import com.nicico.copper.common.dto.search.SearchDTO;
 
-import java.util.List;
+import java.util.function.Function;
 
 public interface IAttendanceReportService {
-    List<AttendanceReportDTO.Info> getAbsentList(String startDate, String endDate,String absentType);
+
+    <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Function converter);
 }

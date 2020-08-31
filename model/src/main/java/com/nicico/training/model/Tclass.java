@@ -213,6 +213,9 @@ public class Tclass extends Auditable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "alternativeClass")
     private Set<Tclass> canceledClasses;
 
+    @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Evaluation> evaluations;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_alternative_class", insertable = false, updatable = false)
     private Tclass alternativeClass;
@@ -222,4 +225,11 @@ public class Tclass extends Auditable {
 
     @Column(name = "c_postpone_start_date")
     private String postponeStartDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_targetsociety_type_id", insertable = false, updatable = false)
+    private ParameterValue targetSocietyType;
+
+    @Column(name = "f_targetsociety_type_id")
+    private Long targetSocietyTypeId;
 }

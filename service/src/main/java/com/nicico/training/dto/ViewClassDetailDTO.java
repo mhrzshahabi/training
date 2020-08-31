@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -53,5 +54,12 @@ public class ViewClassDetailDTO implements Serializable {
         private String postPoneDate;
         private String alternativeClassCode;
         private Boolean reHoldingStatus;
+        private String teacherFirstName;
+        private String teacherLastName;
+        private Date behavioralDueDate;
+
+        public String getTeacherFullName() {
+            return (teacherFirstName + " " + teacherLastName);
+        }
     }
 }

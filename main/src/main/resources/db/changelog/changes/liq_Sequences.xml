@@ -268,5 +268,8 @@
     <changeSet author="golrokhi (generated)" id="1596986495722-483">
         <createSequence sequenceName="seq_question_bank_test_question_id"/>
     </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1598260979293-491">
+        <createSequence sequenceName="seq_class_evaluation_goals_id"/>
+    </changeSet>
 
 </databaseChangeLog>

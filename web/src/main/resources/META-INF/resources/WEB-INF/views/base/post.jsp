@@ -718,7 +718,7 @@
                     criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "Post"});
                     criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
 
-                    ExportToFile.showDialog(null, CoursesLG_POST , "NeedsAssessment", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
+                    ExportToFile.showDialog(null, CoursesLG_POST , "NeedsAssessmentReport", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
                 }
             })
         ]

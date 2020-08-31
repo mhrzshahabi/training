@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -57,6 +58,7 @@ public class TclassService implements ITclassService {
     private final AttendanceDAO attendanceDAO;
     private final ParameterValueDAO parameterValueDAO;
     private final TrainingClassBeanMapper trainingClassBeanMapper;
+    private DecimalFormat numberFormat = new DecimalFormat("#.00");
 
     @Transactional(readOnly = true)
     @Override
@@ -129,7 +131,7 @@ public class TclassService implements ITclassService {
                 tclass.setTrainingPlaceSet(set);
             }
             Tclass save = tclassDAO.save(tclass);
-            saveTargetSocieties(request.gettargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
+            save.setTargetSocietyList(saveTargetSocieties(request.gettargetSocieties(), request.getTargetSocietyTypeId(), save.getId()));
             return modelMapper.map(save, TclassDTO.Info.class);
         } else {
             try {
@@ -178,7 +180,12 @@ public class TclassService implements ITclassService {
                 c.setPostponeStartDate(mappedClass.getStartDate());
             }
         }
+
         Tclass updatedClass = tclassDAO.save(mappedClass);
+
+        //TODO CHANGE THE WAY OF MAPPING ASAP
+            //updateTargetSocieties(request.getTargetSocieties(), request.getTargetSocietyTypeId(), updatedClass);
+            //updatedClass.setTargetSocietyTypeId(request.getTargetSocietyTypeId());
         //--------------------DONE BY ROYA---------------------
         if(classOldSupervisor!= null && request.getSupervisor() != null){
             if(!classOldSupervisor.equals(request.getSupervisor())){
@@ -208,8 +215,6 @@ public class TclassService implements ITclassService {
         }
         //-----------------------------------------------------
 
-        //TODO CHANGE THE WAY OF MAPPING ASAP
-        //   updateTargetSocieties(save.getTargetSocietyList(), request.getTargetSocieties(), request.getTargetSocietyTypeId(), save.getId());
         TclassDTO.Info info = new TclassDTO.Info();
         info.setId(updatedClass.getId());
         return info;
@@ -321,12 +326,13 @@ public class TclassService implements ITclassService {
     }
 
     // ------------------------------
-    private List<TargetSociety> updateTargetSocieties(List<TargetSociety> targets, List<Object> societies, Long typeId, Long tclassId) {
-        List<Long> deleteList = new ArrayList<>();
+    private List<TargetSociety> updateTargetSocieties(List<Object> societies, Long typeId, Tclass tclass) {
+        List<TargetSociety> targets = tclass.getTargetSocietyList();
         String type = parameterValueService.get(typeId).getCode();
         for (int i = 0; i < targets.size(); i++) {
+
             TargetSociety society = targets.get(i);
-            if (!society.getTargetSocietyTypeId().equals(typeId)) {
+            if (tclass.getTargetSocietyTypeId() == null || !tclass.getTargetSocietyTypeId().equals(typeId)) {
 
             } else if (type.equals("single")) {
                 Object id = societies.stream().filter(s -> ((Integer) s).longValue() == society.getSocietyId()).findFirst().orElse(null);
@@ -343,7 +349,8 @@ public class TclassService implements ITclassService {
             }
             targets.set(i, null);
         }
-        return saveTargetSocieties(societies, typeId, tclassId);
+        targets.addAll(saveTargetSocieties(societies, typeId, tclass.getId()));
+        return targets;
     }
 
     private List<TargetSociety> saveTargetSocieties(List<Object> societies, Long typeId, Long tclassId) {
@@ -355,11 +362,21 @@ public class TclassService implements ITclassService {
                 create.setSocietyId(((Integer) society).longValue());
             else if (type.equals("etc"))
                 create.setTitle((String) society);
-            create.setTargetSocietyTypeId(new Long(typeId));
             create.setTclassId(tclassId);
-            result.add(societyDAO.save(create));
+            result.add(create);
         }
         return result;
+    }
+
+    public ParameterValue getTargetSocietyTypeById(Long id){
+        Tclass tclass = tclassDAO.findById(id).orElse(null);
+        return tclass != null ? tclass.getTargetSocietyType() : null;
+    }
+
+    @Transactional()
+    public List<TargetSocietyDTO.Info> getTargetSocietiesListById(Long id){
+        Tclass tclass = tclassDAO.findById(id).orElse(null);
+        return tclass != null ? modelMapper.map(tclass.getTargetSocietyList(),new TypeToken<List<TargetSocietyDTO.Info>>(){}.getType()) : null;
     }
 
     private TclassDTO.Info save(Tclass tclass) {
@@ -485,6 +502,7 @@ public class TclassService implements ITclassService {
         double percenetOfFilledReactionEvaluationForms = 0.0;
         Integer studentCount = 0;
 
+
         Tclass tclass = getTClass(classId);
         classStudents = tclass.getClassStudents();
         teacherId = tclass.getTeacherId();
@@ -528,28 +546,29 @@ public class TclassService implements ITclassService {
         minScoreFECR = (double) FECRResult.get("minScoreFECR");
 
         evaluationResult.setStudentCount(studentCount);
-        evaluationResult.setFERGrade(FERGrade);
+        evaluationResult.setFERGrade(Double.parseDouble(numberFormat.format(FERGrade).toString()));
         evaluationResult.setFERPass(FERPass);
-        evaluationResult.setFETGrade(FETGrade);
+        evaluationResult.setFETGrade(Double.parseDouble(numberFormat.format(FETGrade).toString()));
         evaluationResult.setFETPass(FETPass);
-        evaluationResult.setFECRGrade(FECRGrade);
+        evaluationResult.setFECRGrade(Double.parseDouble(numberFormat.format(FECRGrade).toString()));
         evaluationResult.setFECRPass(FECRPass);
         evaluationResult.setMinScore_ER(minScore_ER);
         evaluationResult.setMinScore_ET(minScore_ET);
         evaluationResult.setMinScoreFECR(minScoreFECR);
 
+
         evaluationResult.setNumberOfEmptyReactionEvaluationForms(getNumberOfEmptyReactionEvaluationForms(classStudents));
         evaluationResult.setNumberOfFilledReactionEvaluationForms(getNumberOfFilledReactionEvaluationForms(classStudents));
         evaluationResult.setNumberOfInCompletedReactionEvaluationForms(getNumberOfInCompletedReactionEvaluationForms(classStudents));
-        evaluationResult.setPercenetOfFilledReactionEvaluationForms(getPercenetOfFilledReactionEvaluationForms(classStudents));
+        evaluationResult.setPercenetOfFilledReactionEvaluationForms(Double.parseDouble(numberFormat.format(getPercenetOfFilledReactionEvaluationForms(classStudents)).toString()));
         evaluationResult.setNumberOfExportedReactionEvaluationForms(getNumberOfExportedEvaluationForms(classStudents));
 
 
-        evaluationResult.setStudentsGradeToFacility(studentsGradeToFacility);
-        evaluationResult.setStudentsGradeToGoals(studentsGradeToGoals);
-        evaluationResult.setStudentsGradeToTeacher(studentsGradeToTeacher);
-        evaluationResult.setTrainingGradeToTeacher(trainingGradeToTeacher);
-        evaluationResult.setTeacherGradeToClass(teacherGradeToClass);
+        evaluationResult.setStudentsGradeToFacility(Double.parseDouble(numberFormat.format(studentsGradeToFacility).toString()));
+        evaluationResult.setStudentsGradeToGoals(Double.parseDouble(numberFormat.format(studentsGradeToGoals).toString()));
+        evaluationResult.setStudentsGradeToTeacher(Double.parseDouble(numberFormat.format(studentsGradeToTeacher).toString()));
+        evaluationResult.setTrainingGradeToTeacher(Double.parseDouble(numberFormat.format(trainingGradeToTeacher).toString()));
+        evaluationResult.setTeacherGradeToClass(Double.parseDouble(numberFormat.format(teacherGradeToClass).toString()));
         return evaluationResult;
     }
 
@@ -685,7 +704,7 @@ public class TclassService implements ITclassService {
         result.put("FERGrade",FERGradeResult.get("FERGrade"));
         result.put("FERPass",FERGradeResult.get("FERPass"));
 
-        double trainingGradeToTeacher = getTrainingGradeToTeacher(classId, null, tclass.getTeacherId());
+        double trainingGradeToTeacher = getTrainingGradeToTeacher(classId, tclass.getSupervisor(), tclass.getTeacherId());
         Map<String,Object> FETGradeResult = getFETGrade(studentsGradeToTeacher,trainingGradeToTeacher,percenetOfFilledReactionEvaluationForms);
         result.put("FETGrade", FETGradeResult.get("FETGrade"));
         result.put("FETPass", FETGradeResult.get("FETPass"));
@@ -789,7 +808,7 @@ public class TclassService implements ITclassService {
             else if (parameterValue.getCode().equalsIgnoreCase("minScoreFECR"))
                 minScoreFECR = Double.parseDouble(parameterValue.getValue());
         }
-        FECRGrade = FERGrade * FECRZ;
+        FECRGrade = (FERGrade * FECRZ) / 100;
         if (FECRGrade >= minScoreFECR)
             FECRPass = true;
 

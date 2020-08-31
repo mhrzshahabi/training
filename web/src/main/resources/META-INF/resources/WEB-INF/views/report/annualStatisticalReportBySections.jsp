@@ -33,15 +33,15 @@
             };
             return this.Super("transformRequest", arguments);
         },
-        fields: [{name: "id", primaryKey: true},
-            {name: "instituteId",hidden:true},
-            {name: "instituteTitle"},
-            {name: "categoryTitle"},
-            {name: "classStatus"},
-            {name: "countCourses"},
-            {name: "countStudents"},
-            {name: "sumHours"},
-            {name: "sumHoursPerPerson"},
+        fields: [
+            {name: "institute_id",hidden:true},
+            {name: "institute_title_fa"},
+            {name: "category_id"},
+            {name: "finished_class_count"},
+            {name: "canceled_class_count"},
+            {name: "sum_of_duration"},
+            {name: "student_count"},
+            {name: "sum_of_student_hour"},
         ], dataFormat: "json",
       });
 
@@ -137,24 +137,17 @@
     var List_Grid_Reaport_annualStatisticalReportBySection = isc.TrLG.create({
         width: "100%",
         height: "100%",
-     // dataSource: RestDataSource_annualStatisticalReportBySection,
+      dataSource: RestDataSource_annualStatisticalReportBySection,
         showRowNumbers: true,
         fields: [
-            {name: "instituteId",hidden:true},
-            {name: "instituteTitle", title:"<spring:message code="institute"/>", align: "center", filterOperator: "iContains",autoFitWidth:true},
-            {name: "categoryTitle",  title:"<spring:message code="category"/>", align: "center", filterOperator: "iContains",autoFitWidth:true},
-
-            {name: "classStatus",  title:"نوع دوره", align: "center", filterOperator: "iContains",autoFitWidth:true,
-                valueMap: {
-                    "1": "برگزار شده",
-                    "4": "لغو شده"
-                }
-            },
-
-            {name: "countCourses",  title:"تعداد دوره ها", align: "center", filterOperator: "iContains",autoFitWidth:true},
-            {name: "countStudents",  title:"تعداد نفر آموزش داده", align: "center", filterOperator: "iContains",autoFitWidth:true},
-            {name: "sumHours",  title:"ساعت آموزشی ارائه شده", align: "center", filterOperator: "iContains",autoFitWidth:true},
-            {name: "sumHoursPerPerson",  title:"نقر ساعت آموزشي", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "institute_id",hidden:true},
+            {name: "institute_title_fa", title:"<spring:message code="institute"/>", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "category_id",  title:"<spring:message code="category"/>", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "finished_class_count",  title:"تعداد دوره ها", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "canceled_class_count",  title:"تعداد نفر آموزش داده", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "sum_of_duration",  title:"ساعت آموزشی ارائه شده", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "student_count",  title:"نقر ساعت آموزشي", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "sum_of_student_hour",  title:"نقر ساعت آموزشي", align: "center", filterOperator: "iContains",autoFitWidth:true},
 
         ],
         recordDoubleClick: function () {
@@ -426,6 +419,8 @@
                 valueField: "year",
                 displayField: "year",
                 filterFields: ["year"],
+                textAlign:"center",
+                titleAlign:"center",
                 filterLocally: true,
                 initialSort: [
                     {property: "year", direction: "descending", primarySort: true}
@@ -468,6 +463,8 @@
                 disabled: true,
                 valueField: "id",
                 displayField: "titleFa",
+                textAlign:"center",
+                titleAlign:"center",
                 filterLocally: true,
                 icons:[
                     {
@@ -689,7 +686,7 @@
                  endRow:false,
                 startRow: false,
                 click:function () {
-
+                    console.log('nmbvmkjhgbvkjgvkjhgmkjhgvmjhgvkmhgvkmjhgjhgmkjhgv')
 
                     if (endDateCheckReportASRBS == false)
                         return;
@@ -698,8 +695,11 @@
                         return;
                     }
                     modalDialog=createDialog('wait');
-                   isc.RPCManager.sendRequest(TrDSRequest(annualStatisticsReportUrl+"/list" ,"POST",
-                       JSON.stringify(DynamicForm_Report_annualStatisticalReportBySection.getValues()), "callback: fill_control_result(rpcResponse)"));
+                    RestDataSource_annualStatisticalReportBySection.fetchDataURL=annualStatisticsReportUrl+"/list" + "?data=" + JSON.stringify(DynamicForm_Report_annualStatisticalReportBySection.getValues())
+                    List_Grid_Reaport_annualStatisticalReportBySection.invalidateCache()
+                    List_Grid_Reaport_annualStatisticalReportBySection.fetchData()
+                    // isc.RPCManager.sendRequest(TrDSRequest(annualStatisticsReportUrl+"/list" ,"POST",
+                       //JSON.stringify(DynamicForm_Report_annualStatisticalReportBySection.getValues()), "callback: fill_control_result(rpcResponse)"));
                 }
             },
 

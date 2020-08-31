@@ -20,7 +20,7 @@
             {name: "className"},
             {name: "attendanceStatus"},
             {name: "date"},
-            {name: "time"},
+            {name: "fixTime"},
         ]
     });
 
@@ -195,7 +195,7 @@
                 }
             },
             {
-                name: "time",
+                name: "fixTime",
                 title: "<spring:message code="time.hour"/>",
                 includeInRecordSummary:false,
             },

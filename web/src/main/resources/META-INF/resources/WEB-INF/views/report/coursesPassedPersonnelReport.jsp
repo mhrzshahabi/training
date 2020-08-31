@@ -3,6 +3,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 // <script>
+
+    $(document).ready(()=>{
+        setTimeout(()=>{
+        $("input[name='personnelNo']").attr("disabled","disabled");
+        },0)}
+    );
+
     var startDate1Check_JspcoursesPassedPersonnel = true;
     var startDate2Check_JspcoursesPassedPersonnel = true;
     var startDateCheck_Order_JspcoursesPassedPersonnel = true;
@@ -337,7 +344,7 @@
             {
                 name: "personnelNo",
                 title: "شماره پرسنلي",
-                hint: "شماره پرسنلي را با , از یکدیگر جدا کنید",
+                hint: "شماره پرسنلي را انتخاب نمایید",
                 showHintInField: true,
                 icons: [{
                     src: "[SKIN]/pickers/search_picker.png",
@@ -824,7 +831,7 @@
                 criteriaDisplayValues = uniqueNames.join(",");
             }
 
-            criteriaDisplayValues = criteriaDisplayValues == ";undefined" ? "" : criteriaDisplayValues;
+            criteriaDisplayValues = criteriaDisplayValues == "undefined" ? "" : criteriaDisplayValues;
 
             DynamicForm_CriteriaForm_JspCoursesPassedPersonnel.getField("personnelNo").setValue(criteriaDisplayValues);
             Window_SelectPeople_JspUnitReport.close();

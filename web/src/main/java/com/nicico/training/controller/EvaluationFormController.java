@@ -77,6 +77,11 @@ public class EvaluationFormController {
         return "evaluation/behavioralEvaluation";
     }
 
+    @RequestMapping("/edit-goal-questions-form")
+    public String loadPageEditGoalQuestions() {
+        return "evaluation/editGoalQuestions";
+    }
+
     @PostMapping("/printEvaluationForm")
     public ResponseEntity<?> printEvaluationForm(final HttpServletRequest request) {
 

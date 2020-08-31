@@ -15,203 +15,51 @@
 
     var studentsGradeToGoals = 0;
 
-    var userId = "<%= SecurityUtil.getUserId()%>";
-
-    var listGrid_record = null;
-
     var evalWait_JspEvaluationAnalysis;
+
 
     //----------------------------------------------------Rest Data Sources---------------------------------------------
     var RestDataSource_evaluationAnalysis_class = isc.TrDS.create({
         fields: [
-            {name: "id", primaryKey: true},
-            {name: "titleClass"},
-            {name: "startDate"},
-            {name: "endDate"},
-            {name: "code"},
-            {name: "term.titleFa"},
-            {name: "course.titleFa"},
-            {name: "course.id"},
-            {name: "course.code"},
-            {name: "institute.titleFa"},
-            {name: "studentCount",canFilter:false,canSort:false},
-            {name: "numberOfStudentEvaluation"},
-            {name: "classStatus"},
-            {name: "trainingPlaceIds"},
+            {name: "id"},
+            {name: "termId"},
             {name: "instituteId"},
-            {name: "workflowEndingStatusCode"},
-            {name: "workflowEndingStatus"},
-            {name: "scoringMethod"},
-            {name: "preCourseTest"},
-            {name: "teacher"},
+            {name: "teacherId"},
+            {name: "tclassStudentsCount"},
+            {name: "tclassCode"},
+            {name: "tclassStartDate"},
+            {name: "tclassEndDate"},
+            {name: "tclassYear"},
+            {name: "courseCode"},
+            {name: "courseCategory"},
+            {name: "courseSubCategory"},
+            {name: "courseTitleFa"},
             {name: "evaluation"},
-            {name: "startEvaluation"},
-            {name: "behavioralLevel"}
+            {name: "tclassDuration"},
+            {name: "tclassOrganizerId"},
+            {name: "tclassStatus"},
+            {name: "tclassEndingStatus"},
+            {name: "tclassPlanner"},
+            {name: "termTitleFa"},
+            {name: "instituteTitleFa"},
+            {name: "classScoringMethod"},
+            {name: "classPreCourseTest"},
+            {name: "courseId"},
+            {name: "teacherEvalStatus"},
+            {name: "trainingEvalStatus"},
+            {name: "tclassSupervisor"},
+            {name: "teacherFullName"}
         ],
-        fetchDataURL: evaluationUrl + "/class-spec-list"
-    });
-
-    var RestDataSource_Year_Filter_EvaluationAnalysis = isc.TrDS.create({
-        fields: [
-            {name: "year"}
-        ],
-        fetchDataURL: termUrl + "years",
-        autoFetchData: true
-    });
-
-    var RestDataSource_Term_Filter_EvaluationAnalysis = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true},
-            {name: "code"},
-            {name: "startDate"},
-            {name: "endDate"}
-        ]
+        fetchDataURL: viewClassDetailUrl + "/iscList",
+        implicitCriteria: {
+            _constructor: "AdvancedCriteria",
+            operator: "and",
+            criteria: [{fieldName: "tclassStudentsCount", operator: "notEqual", value: 0},
+                        {fieldName: "evaluation", operator: "notNull"}]
+        },
     });
 
     //----------------------------------------------------List Grid-----------------------------------------------------
-    var DynamicForm_Evalution_Term_Filter_EvaluationAnalysis = isc.DynamicForm.create({
-        width: "85%",
-        height: "100%",
-        numCols: 4,
-        colWidths: ["5%", "35%", "5%", "55%"],
-        fields: [
-            {
-                name: "yearFilter",
-                title: "<spring:message code='year'/>",
-                width: "100%",
-                textAlign: "center",
-                editorType: "ComboBoxItem",
-                displayField: "year",
-                valueField: "year",
-                optionDataSource: RestDataSource_Year_Filter_EvaluationAnalysis,
-                filterFields: ["year"],
-                sortField: ["year"],
-                sortDirection: "descending",
-                defaultToFirstOption: true,
-                useClientFiltering: true,
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
-                },
-                pickListFields: [
-                    {
-                        name: "year",
-                        title: "<spring:message code='year'/>",
-                        filterOperator: "iContains",
-                        filterEditorProperties: {
-                            keyPressFilter: "[0-9]"
-                        }
-                    }
-                ],
-                changed: function (form, item, value) {
-                    load_term_by_year(value);
-                },
-                dataArrived:function (startRow, endRow, data) {
-                    if(data.allRows[0].year !== undefined)
-                    {
-                        load_term_by_year(data.allRows[0].year);
-                    }
-                }
-            },
-            {
-                name: "termFilter",
-                title: "<spring:message code='term'/>",
-                width: "100%",
-                textAlign: "center",
-                type: "SelectItem",
-                multiple: true,
-                filterLocally: true,
-                displayField: "code",
-                valueField: "id",
-                optionDataSource: RestDataSource_Term_Filter_EvaluationAnalysis,
-                filterFields: ["code"],
-                sortField: ["code"],
-                sortDirection: "descending",
-                defaultToFirstOption: true,
-                useClientFiltering: true,
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
-                },
-                pickListFields: [
-                    {
-                        name: "code",
-                        title: "<spring:message code='term.code'/>",
-                        filterOperator: "iContains",
-                        filterEditorProperties: {
-                            keyPressFilter: "[0-9]"
-                        }
-                    },
-                    {
-                        name: "startDate",
-                        title: "<spring:message code='start.date'/>",
-                        filterOperator: "iContains",
-                        filterEditorProperties: {
-                            keyPressFilter: "[0-9/]"
-                        }
-                    },
-                    {
-                        name: "endDate",
-                        title: "<spring:message code='end.date'/>",
-                        filterOperator: "iContains",
-                        filterEditorProperties: {
-                            keyPressFilter: "[0-9/]"
-                        }
-                    }
-                ],
-                pickListProperties: {
-                    gridComponents: [
-                        isc.ToolStrip.create({
-                            autoDraw: false,
-                            height: 30,
-                            width: "100%",
-                            members: [
-                                isc.ToolStripButton.create({
-                                    width: "50%",
-                                    icon: "[SKIN]/actions/approve.png",
-                                    title: "انتخاب همه",
-                                    click: function () {
-                                        var item = DynamicForm_Evalution_Term_Filter_EvaluationAnalysis.getField("termFilter"),
-                                            fullData = item.pickList.data,
-                                            cache = fullData.localData,
-                                            values = [];
-
-                                        for (var i = 0; i < cache.length; i++) {
-                                            values[i] = cache[i].id;
-                                        }
-                                        item.setValue(values);
-                                        item.pickList.hide();
-                                        load_classes_by_term(values);
-                                    }
-                                }),
-                                isc.ToolStripButton.create({
-                                    width: "50%",
-                                    icon: "[SKIN]/actions/close.png",
-                                    title: "حذف همه",
-                                    click: function () {
-                                        var item = DynamicForm_Evalution_Term_Filter_EvaluationAnalysis.getField("termFilter");
-                                        item.setValue([]);
-                                        item.pickList.hide();
-                                        load_classes_by_term([]);
-                                    }
-                                })
-                            ]
-                        }),
-                        "header", "body"
-                    ]
-                },
-                changed: function (form, item, value) {
-                    load_classes_by_term(value);
-                },
-                dataArrived:function (startRow, endRow, data) {
-                    if(data.allRows[0].id !== undefined)
-                    {
-                        DynamicForm_Evalution_Term_Filter_EvaluationAnalysis.getItem("termFilter").clearValue();
-                        DynamicForm_Evalution_Term_Filter_EvaluationAnalysis.getItem("termFilter").setValue(data.allRows[0].code);
-                        load_classes_by_term(data.allRows[0].id);
-                    }
-                }
-            }
-        ]
-    });
 
     ListGrid_evaluationAnalysis_class = isc.TrLG.create({
         width: "100%",
@@ -226,34 +74,26 @@
         allowFilterExpressions: true,
         filterOnKeypress: false,
         initialSort: [
-            {property: "startDate", direction: "descending", primarySort: true}
+            {property: "tclassStartDate", direction: "descending", primarySort: true}
         ],
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {
-                name: "code",
+                name: "tclassCode",
                 title: "<spring:message code='class.code'/>",
                 align: "center",
                 filterOperator: "iContains",
                 autoFitWidth: true
             },
             {
-                name: "titleClass",
-                title: "titleClass",
-                align: "center",
-                filterOperator: "iContains",
-                autoFitWidth: true,
-                hidden: true
-            },
-            {
-                name: "course.code",
+                name: "courseCode",
                 title: "<spring:message code='course.code'/>",
                 align: "center",
                 filterOperator: "iContains",
                 autoFithWidth: true
             },
             {
-                name: "course.titleFa",
+                name: "courseTitleFa",
                 title: "<spring:message code='course.title'/>",
                 align: "center",
                 filterOperator: "iContains",
@@ -263,14 +103,14 @@
                 }
             },
             {
-                name: "term.titleFa",
+                name: "termTitleFa",
                 title: "term",
                 align: "center",
                 filterOperator: "iContains",
                 hidden: true
             },
             {
-                name: "startDate",
+                name: "tclassStartDate",
                 title: "<spring:message code='start.date'/>",
                 align: "center",
                 filterOperator: "iContains",
@@ -280,7 +120,7 @@
                 autoFithWidth: true
             },
             {
-                name: "endDate",
+                name: "tclassEndDate",
                 title: "<spring:message code='end.date'/>",
                 align: "center",
                 filterOperator: "iContains",
@@ -290,21 +130,13 @@
                 autoFithWidth: true
             },
             {
-                name: "studentCount",
+                name: "tclassStudentsCount",
                 title: "<spring:message code='student.count'/>",
-                filterOperator: "iContains",
+                filterOperator: "equals",
                 autoFitWidth: true,
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
                 }
-            },
-            {
-                name: "institute.titleFa",
-                title: "<spring:message code='presenter'/>",
-                align: "center",
-                filterOperator: "iContains",
-                autoFitWidth: true,
-                hidden: true
             },
             {
                 name: "evaluation",
@@ -331,7 +163,7 @@
                 },
             },
             {
-                name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
+                name: "tclassStatus", title: "<spring:message code='class.status'/>", align: "center",
                 autoFithWidth: true,
                 filterEditorProperties:{
                     pickListProperties: {
@@ -351,37 +183,31 @@
                     "4": "لغو شده"
                 }
             },
-            {
-                name: "teacher",
-                title: "<spring:message code='teacher'/>",
-                align: "center",
-                canFilter: false,
-                filterOperator: "iContains"
-             },
-            {name: "createdBy", hidden: true},
-            {name: "createdDate", hidden: true},
-            {
-                name: "workflowEndingStatusCode",
-                title: "workflowCode",
-                align: "center",
-                filterOperator: "iContains",
-                hidden: true
-            },
-            {
-                name: "workflowEndingStatus",
-                title: "<spring:message code="ending.class.status"/>",
-                align: "center",
-                filterOperator: "iContains",
-                autoFithWidth: true
-            },
-            {name: "scoringMethod", hidden: true},
-            {name: "preCourseTest", hidden: true}
+            {name: "classScoringMethod", hidden: true},
+            {name: "classPreCourseTest", hidden: true},
+            {name: "teacherId", hidden: true},
+            {name: "teacherFullName", hidden:true}
         ],
-        selectionUpdated: function (record) {
-            listGrid_record = ListGrid_evaluationAnalysis_class.getSelectedRecord();
-            set_evaluation_analysis_tabset_status();
+        rowDoubleClick: function(record, recordNum, fieldNum) {
+            Window_Evaluation_Analysis.title = "نتایج ارزیابی کلاس " + record.courseTitleFa;
+            Window_Evaluation_Analysis.show();
+            evalWait_JspEvaluationAnalysis = createDialog("wait");
+            set_evaluation_analysis_tabset_status(record);
             Detail_Tab_Evaluation_Analysis.selectTab(0);
-        }
+        },
+        getCellCSSText: function (record, rowNum, colNum) {
+            if ((!ListGrid_evaluationAnalysis_class.getFieldByName("evaluation").hidden && record.evaluation === "1"))
+                return "background-color : #c9fecf";
+
+            if ((!ListGrid_evaluationAnalysis_class.getFieldByName("evaluation").hidden && record.evaluation === "2"))
+                return "background-color : #d3f4fe";
+
+            if ((!ListGrid_evaluationAnalysis_class.getFieldByName("evaluation").hidden && record.evaluation === "3"))
+                return "background-color : #fedee9";
+
+            if ((!ListGrid_evaluationAnalysis_class.getFieldByName("evaluation").hidden && record.evaluation === "4"))
+                return "background-color : #fefad1";
+        },
     });
 
     //----------------------------------------------------ToolStrips & Page Layout--------------------------------------
@@ -442,7 +268,6 @@
         width: "100%",
         membersMargin: 5,
         members: [
-            DynamicForm_Evalution_Term_Filter_EvaluationAnalysis,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -475,46 +300,53 @@
         ]
     });
 
+    var Window_Evaluation_Analysis = isc.Window.create({
+        title: "پنجره ی نتایج ارزیابی",
+        overflow: "auto",
+        placement: "fillScreen",
+        items: [
+            Hlayout_Tab_Evaluation_Analysis
+        ]
+    });
+
+
     var VLayout_Body_Evaluation_Analysis = isc.VLayout.create({
         width: "100%",
         height: "100%",
-        members: [HLayout_Actions_Evaluation_Analysis, Hlayout_Grid_Evaluation_Analysis,
-            Hlayout_Tab_Evaluation_Analysis]
+        members: [HLayout_Actions_Evaluation_Analysis, Hlayout_Grid_Evaluation_Analysis]
     });
 
     //----------------------------------------------------Functions-----------------------------------------------------
-    function set_evaluation_analysis_tabset_status() {
+    function set_evaluation_analysis_tabset_status(record) {
 
-        var classRecord = ListGrid_evaluationAnalysis_class.getSelectedRecord();
-        var evaluationType = classRecord.evaluation;
+        let evaluationType = record.evaluation;
 
         Detail_Tab_Evaluation_Analysis.enable();
-        evalWait_JspEvaluationAnalysis = createDialog("wait");
         if (evaluationType === "1" || evaluationType === "واکنشی") {
-            fill_reaction_evaluation_result();
+            fill_reaction_evaluation_result(record);
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.disableTab(1);
             Detail_Tab_Evaluation_Analysis.disableTab(2);
             Detail_Tab_Evaluation_Analysis.disableTab(3);
         } else if (evaluationType === "2" || evaluationType === "یادگیری") {
-            fill_reaction_evaluation_result();
-            evaluationAnalysist_learning();
+            fill_reaction_evaluation_result(record);
+            evaluationAnalysist_learning(record);
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.enableTab(1);
             Detail_Tab_Evaluation_Analysis.disableTab(2);
             Detail_Tab_Evaluation_Analysis.disableTab(3);
         } else if (evaluationType === "3" || evaluationType === "رفتاری") {
-            fill_reaction_evaluation_result();
-            evaluationAnalysist_learning();
-            fill_behavioral_evaluation_result();
+            fill_reaction_evaluation_result(record);
+            evaluationAnalysist_learning(record);
+            fill_behavioral_evaluation_result(record);
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.enableTab(1);
             Detail_Tab_Evaluation_Analysis.enableTab(2);
             Detail_Tab_Evaluation_Analysis.disableTab(3);
         } else if (evaluationType === "4" || evaluationType === "نتایج") {
-            fill_reaction_evaluation_result();
-            evaluationAnalysist_learning();
-            fill_behavioral_evaluation_result();
+            fill_reaction_evaluation_result(record);
+            evaluationAnalysist_learning(record);
+            fill_behavioral_evaluation_result(record);
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.enableTab(1);
             Detail_Tab_Evaluation_Analysis.enableTab(2);
@@ -523,12 +355,17 @@
     }
 
     function load_reaction_evluation_analysis_data(record) {
+        let filledFormsInfo = "";
+        let numberOfCompletedReactionEvaluationForms = record.numberOfFilledReactionEvaluationForms - record.numberOfInCompletedReactionEvaluationForms;
+        filledFormsInfo += record.numberOfFilledReactionEvaluationForms + " - " +
+            record.numberOfInCompletedReactionEvaluationForms+ "ناقص و " + numberOfCompletedReactionEvaluationForms + " کامل ";
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("studentCount").setValue(record.studentCount);
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfFilledReactionEvaluationForms").setValue(record.numberOfFilledReactionEvaluationForms);
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfInCompletedReactionEvaluationForms").setValue(record.numberOfInCompletedReactionEvaluationForms);
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfEmptyReactionEvaluationForms").setValue(record.numberOfEmptyReactionEvaluationForms);
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("percenetOfFilledReactionEvaluationForms").setValue(record.percenetOfFilledReactionEvaluationForms);
         DynamicForm_Reaction_EvaluationAnalysis_Header.getField("numberOfExportedReactionEvaluationForms").setValue(record.numberOfExportedReactionEvaluationForms);
+        DynamicForm_Reaction_EvaluationAnalysis_Header.getField("filledFormsInfo").setValue(filledFormsInfo);
 
         DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FERGrade").setValue(record.fergrade);
         DynamicForm_Reaction_EvaluationAnalysis_Footer.getField("FETGrade").setValue(record.fetgrade);
@@ -597,13 +434,14 @@
         evalWait_JspEvaluationAnalysis.close();
     }
 
-    function fill_reaction_evaluation_result() {
+    function fill_reaction_evaluation_result(record) {
         DynamicForm_Reaction_EvaluationAnalysis_Header.show();
         DynamicForm_Reaction_EvaluationAnalysis_Footer.show();
         IButton_Print_ReactionEvaluation_Evaluation_Analysis.show();
         chartSelector.show();
         ReactionEvaluationChart.show();
-        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "reactionEvaluationResult/" + ListGrid_evaluationAnalysis_class.getSelectedRecord().id , "GET", null,
+        classRecord_evaluationAnalysist_reaction = record;
+        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "reactionEvaluationResult/" + record.id , "GET", null,
             "callback: fill_reaction_evaluation_result_resp(rpcResponse)"));
     }
 
@@ -611,8 +449,9 @@
         load_reaction_evluation_analysis_data(JSON.parse(resp.data));
     }
 
-    function fill_behavioral_evaluation_result() {
-        isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getBehavioralEvaluationResult/" + ListGrid_evaluationAnalysis_class.getSelectedRecord().id , "GET", null,
+    function fill_behavioral_evaluation_result(record) {
+        behavioralEvaluationClassId = record.id;
+        isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getBehavioralEvaluationResult/" + record.id , "GET", null,
             "callback: fill_behavioral_evaluation_result_resp(rpcResponse)"));
     }
 
@@ -620,32 +459,7 @@
         load_behavioral_evluation_analysis_data(JSON.parse(resp.data));
     }
 
-    function load_term_by_year(value) {
-        let criteria= '{"fieldName":"startDate","operator":"iStartsWith","value":"' + value + '"}';
-        RestDataSource_Term_Filter_EvaluationAnalysis.fetchDataURL = termUrl + "spec-list?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria;
-        DynamicForm_Evalution_Term_Filter_EvaluationAnalysis.getItem("termFilter").fetchData();
-    }
-
-    function load_classes_by_term(value) {
-        if(value !== undefined) {
-            let criteria = {
-                _constructor:"AdvancedCriteria",
-                operator:"or",
-                criteria:[
-                    { fieldName:"term.id", operator:"inSet", value: value},
-                    { fieldName:"classStatus", operator:"notEqual", value: "3"}
-                ]
-            };
-            RestDataSource_evaluationAnalysis_class.fetchDataURL = classUrl + "spec-list-evaluated";
-            ListGrid_evaluationAnalysis_class.implicitCriteria = criteria;
-            ListGrid_evaluationAnalysis_class.invalidateCache();
-            ListGrid_evaluationAnalysis_class.fetchData();
-        }
-        else
-        {
-            createDialog("info", "<spring:message code="msg.select.term.ask"/>", "<spring:message code="message"/>")
-        }
-    }
+    Window_Evaluation_Analysis.hide();
 
 
 

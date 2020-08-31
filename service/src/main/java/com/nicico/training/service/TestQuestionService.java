@@ -134,13 +134,16 @@ public class TestQuestionService implements ITestQuestionService {
 
         for(QuestionBankDTO.Exam q : testQuestionBanks){
             if(q.getQuestionType().getCode().equals("Descriptive")){
-                q.setQuestion(q.getQuestion() + "\n\n\n\n");
+                for(int i = 0; i <= q.getLines(); i ++){
+                    q.setQuestion(q.getQuestion() + "\n");
+                }
             }
         }
 
         String data = mapper.writeValueAsString(testQuestionBanks);
         params.put("today", DateUtil.todayDate());
-        params.put("class", model.getTclass().getTitleClass());
+        params.put("course", model.getTclass().getTitleClass());
+        params.put("class_code", model.getTclass().getCode());
         params.put("date", model.getDate() != null ? model.getDate() : null);
         params.put("time", model.getTime() != null ? model.getTime() : null);
         params.put("duration", model.getDuration() != null ? model.getDuration().toString() + " دقیقه" : null);
