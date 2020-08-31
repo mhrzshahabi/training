@@ -63,7 +63,7 @@ public class QuestionBankDTO {
 
         private SubcategoryDTO.SubCategoryInfoTuple subCategory;
 
-        private TclassDTO.Info tclass;
+        private TclassDTO.InfoForQB tclass;
 
         private CourseDTO.InfoTuple course;
 
