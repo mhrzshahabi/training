@@ -806,6 +806,7 @@
     const trainingPlaceUrl = rootUrl + "/trainingPlace";
     const personnelUrl = rootUrl + "/personnel";
     const viewActivePersonnelUrl = rootUrl + "/view_active_personnel";
+    const viewActivePersonnelInRegisteringUrl = rootUrl + "/view-active-personnel-in-registering";
     const personnelRegUrl = rootUrl + "/personnelRegistered";
     const attendanceUrl = rootUrl + "/attendance";
     const parameterUrl = rootUrl + "/parameter";

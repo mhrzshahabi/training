@@ -2,6 +2,9 @@ package com.nicico.training.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.ibm.icu.text.ArabicShaping;
+import com.ibm.icu.text.ArabicShapingException;
+import com.ibm.icu.text.Bidi;
 import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
@@ -413,6 +416,18 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         JsonDataSource jsonDataSource = null;
         jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
+    }
+
+    private static String bidiReorder(String text)
+    {
+        try {
+            Bidi bidi = new Bidi((new ArabicShaping(ArabicShaping.LETTERS_SHAPE)).shape(text), 127);
+            bidi.setReorderingMode(0);
+            return bidi.writeReordered(2);
+        }
+        catch (ArabicShapingException ase3) {
+            return text;
+        }
     }
 
 }

@@ -555,9 +555,26 @@
                         return (value === 1 ? "هست" : "نیست");
                     }
                 },
-                {name: "isNeedsAssessment", type: "boolean", canEdit: false, title:"نیازسنجی"},
+                {
+                    name: "isInNA",
+                    title: "نیازسنجی",
+                    filterOperator: "equals",
+                    type: "boolean",
+                    filterOnKeypress: true
+                },{
+                    name: "scoreState",
+                    title: "سوابق",
+                    filterOperator: "equals",
+                    filterOnKeypress: true,
+                    valueMap: {
+                        400: "قبول با نمره",
+                        401: "قبول بدون نمره",
+                        410: "ثبت نام شده",
+                    }
+                },
+                /*{name: "isNeedsAssessment", type: "boolean", canEdit: false, title:"نیازسنجی"},
                 {name: "isPassed", type: "boolean", canEdit: false, title:"گذرانده"},
-                {name: "isRunning", type: "boolean", canEdit: false, title:"در حال گذراندن"},
+                {name: "isRunning", type: "boolean", canEdit: false, title:"در حال گذراندن"},*/
                 <%--{name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},--%>
                 <%--{name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},--%>
                 <%--{name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},--%>
@@ -641,12 +658,12 @@
                 }
                 return result;
             },
-            dataChanged(){
+            /*dataChanged(){
                 if(checkRefresh === 0) {
                     checkRefresh = 1
                     checkExistInNeedsAssessment(ListGrid_Class_JspClass.getSelectedRecord().courseId)
                 }
-            }
+            }*/
         });
 
         let PersonnelDS_student = isc.TrDS.create({
@@ -727,8 +744,25 @@
                     title: "<spring:message code="reward.cost.center.unit"/>",
                     filterOperator: "iContains"
                 },
+                {
+                    name: "isInNA",
+                    title: "نیازسنجی",
+                    filterOperator: "equals",
+                    type: "boolean",
+                    filterOnKeypress: true
+                },{
+                    name: "scoreState",
+                    title: "سوابق",
+                    filterOperator: "equals",
+                    filterOnKeypress: true,
+                    valueMap: {
+                        400: "قبول با نمره",
+                        401: "قبول بدون نمره",
+                        410: "ثبت نام شده",
+                    }
+                },
             ],
-            fetchDataURL: viewActivePersonnelUrl + "/iscList",
+            fetchDataURL: viewActivePersonnelInRegisteringUrl + "/spec-list",
         });
 
         let PersonnelsLG_student = isc.TrLG.create({
@@ -763,6 +797,8 @@
                 {name: "ccpAffairs", hidden: true},
                 {name: "ccpSection", hidden: true},
                 {name: "ccpUnit", hidden: true},
+                {name:"isInNA"},
+                {name:"scoreState"},
             ],
             gridComponents: [PersonnelsTS_student, "filterEditor", "header", "body"],
             selectionAppearance: "checkbox",
@@ -1368,7 +1404,13 @@
                 return;
             }
             ClassStudentWin_student.setTitle("<spring:message code="add.student.to.class"/> \'" + classRecord.titleClass + "\'");
+            let cr = {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [{fieldName: "courseId", operator: "equals", value: classRecord.courseId}]
+            };
             PersonnelsLG_student.invalidateCache();
+            PersonnelsLG_student.setImplicitCriteria(cr);
             PersonnelsLG_student.fetchData();
             PersonnelsRegLG_student.invalidateCache();
             PersonnelsRegLG_student.fetchData();

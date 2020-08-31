@@ -126,6 +126,42 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             </sec:authorize>
         ]
     });
+    var ToolStrip_NeedsAssessmentTree_JspNeedAssessment = isc.ToolStrip.create({
+        members: [
+            isc.ToolStripButtonPrint.create({
+                click: function () {
+                    // isc.Canvas.showPrintPreview(printContainer)
+                    let rec = ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord()
+                    let advancedCriteria = {
+                        _constructor:"AdvancedCriteria",
+                        operator:"and",
+                        criteria:[
+                            { fieldName:"objectId", operator:"equals", value:rec.objectId },
+                            { fieldName:"objectType", operator:"equals", value:rec.objectType }
+                        ]
+                    };
+                    let params = {};
+                    params.title = priorityList[rec.objectType] + ": " + rec.objectName + "        " +(rec.objectCode ? "کد: " + rec.objectCode : "");
+                    printWithCriteria(advancedCriteria, params, "oneNeedsAssessment.jasper")
+                }
+            }),
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    isc.ToolStripButtonRefresh.create({
+                        click: function () {
+                        }
+                    })
+                ]
+            })
+        ]
+    });
+    var Label_Title_JspNeedsAssessment = isc.LgLabel.create({
+        contents:"",
+        customEdges: ["R","L","T", "B"]});
+
     var ListGrid_NeedsAssessment_JspNeedAssessment = isc.TrLG.create({
         // groupByField:["objectName"],
         // groupByField:["objectType", "objectName"],
@@ -199,43 +235,6 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
     });
 
 
-    var ToolStrip_NeedsAssessmentTree_JspNeedAssessment = isc.ToolStrip.create({
-        members: [
-            <sec:authorize access="hasAuthority('NeedAssessment_C')">
-            isc.ToolStripButtonPrint.create({
-                click: function () {
-                    // isc.Canvas.showPrintPreview(printContainer)
-                    let rec = ListGrid_NeedsAssessment_JspNeedAssessment.getSelectedRecord()
-                    let advancedCriteria = {
-                        _constructor:"AdvancedCriteria",
-                        operator:"and",
-                        criteria:[
-                            { fieldName:"objectId", operator:"equals", value:rec.objectId },
-                            { fieldName:"objectType", operator:"equals", value:rec.objectType }
-                        ]
-                    };
-                    let params = {};
-                    params.title = priorityList[rec.objectType] + ": " + rec.objectName + "        " +(rec.objectCode ? "کد: " + rec.objectCode : "");
-                    printWithCriteria(advancedCriteria, params, "oneNeedsAssessment.jasper")
-                }
-            }),
-            </sec:authorize>
-            isc.ToolStrip.create({
-                width: "100%",
-                align: "left",
-                border: '0px',
-                members: [
-                    isc.ToolStripButtonRefresh.create({
-                        click: function () {
-                        }
-                    })
-                ]
-            })
-        ]
-    });
-    var Label_Title_JspNeedsAssessment = isc.LgLabel.create({
-        contents:"",
-        customEdges: ["R","L","T", "B"]});
 
     var ListGrid_MoreInformation_JspNeedAssessment = isc.ListGrid.create({
         // groupByField:["objectType"],
@@ -509,9 +508,9 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
             isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="skills.list"/>" + "</b></span>", customEdges: ["B"]}),
             "filterEditor", "header", "body"
         ],
-        // canHover: true,
-        // showHoverComponents: true,
-        // hoverMode: "details",
+        canHover: true,
+        showHoverComponents: true,
+        hoverMode: "details",
         canDragRecordsOut: true,
         dataArrived:function(){
             setTimeout(function(){ $("tbody tr td:nth-child(1)").css({direction:'ltr'});},300);
@@ -1017,7 +1016,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                             // };
                             let criteria = '{"fieldName":"id","operator":"equals","value":"'+record.id+'"}';
                             PostDs_needsAssessment.fetchDataURL = postUrl + "/iscList?operator=or&_constructor=AdvancedCriteria&criteria="+ criteria;
-                            let needsAssessment_wait = createDialog("wait");
+                            wait.show();
                             NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").fetchData(function () {
                                 NeedsAssessmentTargetDF_needsAssessment.setValue("objectId", record.id);
                                 editNeedsAssessmentRecord(record.id, "Post");
@@ -1028,7 +1027,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
                                     + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "معاونت: " + record.assistance
                                     + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "امور: " + record.affairs
                                 );
-                                needsAssessment_wait.close();
+                                wait.close();
                             });
                             // NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").pickListCriteria = {"id" : record.id};
                             refreshPersonnelLG(record);
