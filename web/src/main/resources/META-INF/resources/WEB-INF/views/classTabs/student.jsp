@@ -550,6 +550,7 @@
                     displayField: "title",
                     filterOnKeypress: true,
                 },
+                {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, hidden: true},
                 {name: "registerTypeId", title: "پرسنل", canEdit: false,
                     formatCellValue(value){
                         return (value === 1 ? "هست" : "نیست");
@@ -561,7 +562,8 @@
                     filterOperator: "equals",
                     type: "boolean",
                     filterOnKeypress: true
-                },{
+                },
+                {
                     name: "scoreState",
                     title: "سوابق",
                     filterOperator: "equals",
@@ -572,11 +574,20 @@
                         410: "ثبت نام شده",
                     }
                 },
+                {
+                    name: "departmentCode",
+                    title: "کد دپارتمان",
+                    hidden: true
+                },
+                {
+                    name: "postCode",
+                    title: "کد پست",
+                    hidden: true
+                },
                 /*{name: "isNeedsAssessment", type: "boolean", canEdit: false, title:"نیازسنجی"},
                 {name: "isPassed", type: "boolean", canEdit: false, title:"گذرانده"},
                 {name: "isRunning", type: "boolean", canEdit: false, title:"در حال گذراندن"},*/
                 <%--{name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-                <%--{name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},--%>
                 <%--{name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},--%>
                 <%--{name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},--%>
                 <%--{name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains"},--%>
@@ -750,7 +761,8 @@
                     filterOperator: "equals",
                     type: "boolean",
                     filterOnKeypress: true
-                },{
+                },
+                {
                     name: "scoreState",
                     title: "سوابق",
                     filterOperator: "equals",
@@ -761,6 +773,8 @@
                         410: "ثبت نام شده",
                     }
                 },
+                {name: "departmentCode", hidden: true},
+                {name: "postCode", hidden: true},
             ],
             fetchDataURL: viewActivePersonnelInRegisteringUrl + "/spec-list",
         });

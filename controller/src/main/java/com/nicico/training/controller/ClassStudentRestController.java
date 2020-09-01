@@ -255,9 +255,9 @@ public class ClassStudentRestController {
             }
 
             if (classId != null) {
-                classAlarmService.alarmClassCapacity(classId);
-                classAlarmService.alarmStudentConflict(classId);
-                classAlarmService.saveAlarms();
+//                classAlarmService.alarmClassCapacity(classId);
+//                classAlarmService.alarmStudentConflict(classId);
+//                classAlarmService.saveAlarms();
             }
 
             return new ResponseEntity<>(HttpStatus.OK);
