@@ -1,31 +1,24 @@
 package com.nicico.training.service;
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
-import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassStudentDTO;
-import com.nicico.training.dto.TclassDTO;
-import com.nicico.training.iservice.*;
+import com.nicico.training.iservice.IClassStudentService;
+import com.nicico.training.iservice.IEvaluationAnalysisService;
+import com.nicico.training.iservice.IPersonnelRegisteredService;
+import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.Student;
 import com.nicico.training.model.Tclass;
 import com.nicico.training.repository.ClassStudentDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.modelmapper.TypeToken;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
-
-import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Service
 @RequiredArgsConstructor
@@ -33,11 +26,12 @@ public class ClassStudentService implements IClassStudentService {
 
     private final ClassStudentDAO classStudentDAO;
     private final ITclassService tclassService;
-    private final IStudentService studentService;
-    private final IPersonnelService personnelService;
+    private final StudentService studentService;
+//    private final IPersonnelService personnelService;
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final ModelMapper mapper;
     private final IEvaluationAnalysisService evaluationAnalysisService;
+    private final ViewActivePersonnelService activePersonnelService;
 
 
 
@@ -60,25 +54,49 @@ public class ClassStudentService implements IClassStudentService {
         List<String> invalStudents = new ArrayList<>();
         Tclass tclass = tclassService.getTClass(classId);
 
-        for (ClassStudentDTO.Create create : request) {
-            Student student = studentService.getStudentByPersonnelNo(create.getPersonnelNo());
-            if (student == null) {
-                student = new Student();
-                if (create.getRegisterTypeId() == 1) {
-                    mapper.map(personnelService.getByPersonnelCode(create.getPersonnelNo()), student);
-                } else if (create.getRegisterTypeId() == 2) {
-                    mapper.map(personnelRegisteredService.getByPersonnelCode(create.getPersonnelNo()), student);
+        for (ClassStudentDTO.Create c : request) {
+            List<Student> list = studentService.getStudentByPostCodeAndPersonnelNoAndDepartmentCodeAndFirstNameAndLastName(c.getPostCode(), c.getPersonnelNo(), c.getDepartmentCode(), c.getFirstName(), c.getLastName());
+            Student student = null;
+            int size = list.size();
+            for (int i=0; i<size; i++) {
+                if(list.get(i).getActive().equals(1)){
+                    student = list.get(i);
+                    break;
+                }
+                if(i==size-1) {
+                    student = list.get(i);
                 }
             }
+            if(student == null) {
+                student = new Student();
+                if (c.getRegisterTypeId() == 1) {
+                    mapper.map(activePersonnelService.getByPersonnelCode(c.getPersonnelNo()), student);
+                    student.setDeleted(null);
+                } else if (c.getRegisterTypeId() == 2) {
+                    mapper.map(personnelRegisteredService.getByPersonnelCode(c.getPersonnelNo()), student);
+                }
+
+                /*SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+//                SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+                SearchDTO.CriteriaRq rq = makeNewCriteria("nationalCode", student.getNationalCode(), EOperator.equals, null);
+                SearchDTO.SearchRs<StudentDTO.Info> search = studentService.search(searchRq.setCriteria(rq));
+                List<StudentDTO.Info> studentsByNationalCode = search.getList();*/
+                List<Student> studentByNationalCode = studentService.getStudentByNationalCode(student.getNationalCode());
+
+                for (Student student1 : studentByNationalCode) {
+                    student1.setActive(0);
+                }
+
+            }
             ClassStudent classStudent = new ClassStudent();
-            if(create.getApplicantCompanyName() != null)
-                classStudent.setApplicantCompanyName(create.getApplicantCompanyName());
+            if(c.getApplicantCompanyName() != null)
+                classStudent.setApplicantCompanyName(c.getApplicantCompanyName());
             else {
                 invalStudents.add(student.getFirstName()+ " " + student.getLastName());
                 continue;
             }
-            if(create.getPresenceTypeId() != null)
-                classStudent.setPresenceTypeId(create.getPresenceTypeId());
+            if(c.getPresenceTypeId() != null)
+                classStudent.setPresenceTypeId(c.getPresenceTypeId());
             classStudent.setTclass(tclass);
             classStudent.setStudent(student);
             classStudentDAO.saveAndFlush(classStudent);

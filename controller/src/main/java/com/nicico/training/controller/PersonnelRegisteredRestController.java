@@ -165,9 +165,9 @@ public class PersonnelRegisteredRestController {
     }
 
     @Loggable
-    @PostMapping(value = "checkPersonnelNos")
-    public ResponseEntity<List<PersonnelRegisteredDTO.Info>> checkPersonnelNos(@RequestBody List<String> personnelNos) {
-        List<PersonnelRegisteredDTO.Info> list=personnelRegisteredService.checkPersonnelNos(personnelNos);
+    @PostMapping(value = "/checkPersonnelNos/{courseId}")
+    public ResponseEntity<List<PersonnelRegisteredDTO.InfoForStudent>> checkPersonnelNos(@PathVariable Long courseId,@RequestBody List<String> personnelNos) {
+        List<PersonnelRegisteredDTO.InfoForStudent> list=personnelRegisteredService.checkPersonnelNos(personnelNos,courseId);
         return new ResponseEntity<>(list,HttpStatus.OK);
     }
 
