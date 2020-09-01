@@ -405,7 +405,7 @@ public class EvaluationService implements IEvaluationService {
                     Question = goal.getTitleFa();
                 Long type = 201L;
                 DynamicQuestionDTO.Info dynamicQuestion;
-                List<DynamicQuestion> list = dynamicQuestionDAO.findByQuestionAndTypeId(Question,type);
+                List<DynamicQuestion> list = dynamicQuestionDAO.findByQuestionAndTypeIdAndGoalIdAndSkillId(Question,type,goal.getId(),null);
                 if(list != null && list.size() >0){
                     dynamicQuestion = modelMapper.map(list.get(0),DynamicQuestionDTO.Info.class);
                 }
@@ -436,7 +436,7 @@ public class EvaluationService implements IEvaluationService {
 
                 Long type = 200L;
                 DynamicQuestionDTO.Info dynamicQuestion;
-                List<DynamicQuestion> list = dynamicQuestionDAO.findByQuestionAndTypeId(Question,type);
+                List<DynamicQuestion> list = dynamicQuestionDAO.findByQuestionAndTypeIdAndGoalIdAndSkillId(Question,type,null,skill.getId());
                 if(list != null && list.size() >0){
                     dynamicQuestion = modelMapper.map(list.get(0),DynamicQuestionDTO.Info.class);
                 }
@@ -503,7 +503,7 @@ public class EvaluationService implements IEvaluationService {
                     Question = goal.getTitleFa();
                 Long type = 201L;
                 DynamicQuestionDTO.Info dynamicQuestion;
-                List<DynamicQuestion> list = dynamicQuestionDAO.findByQuestionAndTypeId(Question,type);
+                List<DynamicQuestion> list = dynamicQuestionDAO.findByQuestionAndTypeIdAndGoalIdAndSkillId(Question,type,goal.getId(),null);
                 if(list != null && list.size() >0){
                     dynamicQuestion = modelMapper.map(list.get(0),DynamicQuestionDTO.Info.class);
                 }
@@ -532,7 +532,7 @@ public class EvaluationService implements IEvaluationService {
                     Question = skill.getTitleFa();
                 Long type = 200L;
                 DynamicQuestionDTO.Info dynamicQuestion;
-                List<DynamicQuestion> list = dynamicQuestionDAO.findByQuestionAndTypeId(Question,type);
+                List<DynamicQuestion> list = dynamicQuestionDAO.findByQuestionAndTypeIdAndGoalIdAndSkillId(Question,type,null,skill.getId());
                 if(list != null && list.size() >0){
                     dynamicQuestion = modelMapper.map(list.get(0),DynamicQuestionDTO.Info.class);
                 }
@@ -773,9 +773,6 @@ public class EvaluationService implements IEvaluationService {
                 }
                 if(index1!=0)
                     res = res/index1;
-
-
-
                 //////////////////////////////////////////////////////
                 if(evaluation.getEvaluatorTypeId().equals(189L)) {
                     coWorkersGradeNum++;
