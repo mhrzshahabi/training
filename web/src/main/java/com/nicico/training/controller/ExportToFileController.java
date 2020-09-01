@@ -514,6 +514,19 @@ public class ExportToFileController {
 
                 generalList = (List<Object>)((Object) personnelService.search(searchRq).getList());
                 break;
+
+            case "teacherTrainingClasses":
+                Long teacherId = null;
+                SearchDTO.CriteriaRq removeCriterion = null;
+                for (SearchDTO.CriteriaRq criterion : searchRq.getCriteria().getCriteria()) {
+                    if(criterion.getFieldName().equalsIgnoreCase("teacherId")){
+                        teacherId = ((Integer) criterion.getValue().get(0)).longValue();
+                        removeCriterion = criterion;
+                    }
+                }
+                searchRq.getCriteria().getCriteria().remove(removeCriterion);
+                generalList = (List<Object>) ((Object) tclassService.searchByTeachingHistory(searchRq, teacherId).getList());
+                break;
         }
 
         //End Of Query
