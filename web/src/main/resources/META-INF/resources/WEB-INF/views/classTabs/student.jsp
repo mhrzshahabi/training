@@ -452,8 +452,6 @@
                         postCode: record.student.postCode
                     };
 
-                    //console.log(selectedRecord_addStudent_class);
-
                     let window_class_Information = isc.Window.create({
                         title: "<spring:message code="personnel.information"/>",
                         width: "70%",
@@ -1256,7 +1254,7 @@
                                     isc.ToolStripButtonAdd.create({
                                         title: 'اضافه کردن گروهي',
                                         click: function () {
-                                            groupFilter("اضافه کردن گروهی", personnelUrl + "/checkPersonnelNos/", checkPersonnelNosResponse, true);
+                                           groupFilter("اضافه کردن گروهی", personnelUrl + "/checkPersonnelNos", checkPersonnelNosResponse, true, true, ListGrid_Class_JspClass.getSelectedRecord().courseId);
                                         }
                                     })
                                 ]
@@ -1286,7 +1284,7 @@
                                 isc.ToolStripButtonAdd.create({
                                     title: 'اضافه کردن گروهي',
                                     click: function () {
-                                        groupFilter("اضافه کردن گروهی", personnelRegUrl + "/checkPersonnelNos/", checkPersonnelNosResponse, true);
+                                        groupFilter("اضافه کردن گروهی", personnelRegUrl + "/checkPersonnelNos", checkPersonnelNosResponse, true, true, ListGrid_Class_JspClass.getSelectedRecord().courseId);
                                     }
                                 })
                             ]
@@ -1671,7 +1669,7 @@
 
         function checkPersonnelNosResponse(url, result, addStudentsInGroupInsert) {
             isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(result)
-                , "callback: checkPersonnelNos(rpcResponse," + JSON.stringify(result) + ",'" + url + "'," + addStudentsInGroupInsert + ")"));
+                , "callback: checkPersonnelNos(rpcResponse," + JSON.stringify(result) + ",'" + url + "'," + addStudentsInGroupInsert +")"));
         }
 
         function checkPersonnelNos(resp, result, url, insert) {
@@ -1717,6 +1715,8 @@
                                     list[i].nationalCode = person.nationalCode;
                                     list[i].personnelNo1 = person.personnelNo;
                                     list[i].personnelNo2 = person.personnelNo2;
+                                    list[i].isInNA = person.isInNA;
+                                    list[i].scoreState = person.scoreState;
                                     list[i].error = true;
                                     list[i].hasWarning = "warning";
                                     list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">اطلاعات شخص مورد نظر ناقص است. کد ملی برای این شخص وارد نشده است.</span>";
@@ -1727,6 +1727,8 @@
                                     list[i].nationalCode = person.nationalCode;
                                     list[i].personnelNo1 = person.personnelNo;
                                     list[i].personnelNo2 = person.personnelNo2;
+                                    list[i].isInNA = person.isInNA;
+                                    list[i].scoreState = person.scoreState;
                                     list[i].error = true;
                                     list[i].hasWarning = "warning";
                                     list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">این شخص قبلا اضافه شده است.</span>";
@@ -1736,6 +1738,8 @@
                                     list[i].nationalCode = person.nationalCode;
                                     list[i].personnelNo1 = person.personnelNo;
                                     list[i].personnelNo2 = person.personnelNo2;
+                                    list[i].isInNA = person.isInNA;
+                                    list[i].scoreState = person.scoreState;
                                     list[i].error = false;
                                     list[i].hasWarning = "check";
                                     list[i].description = "";
@@ -1769,7 +1773,7 @@
                             }
                         }*/
                         //if (students.getLength() > 0)
-                        wait.show()
+                        wait.show();
                         isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST", JSON.stringify(students), class_add_students_result));
 
                         SelectedPersonnelsLG_student.data.clearAll();

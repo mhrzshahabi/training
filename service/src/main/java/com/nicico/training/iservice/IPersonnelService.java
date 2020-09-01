@@ -21,7 +21,7 @@ public interface IPersonnelService {
 
     TotalResponse<PersonnelDTO.Info> search(NICICOCriteria request);
 
-    List<PersonnelDTO.Info> checkPersonnelNos(List<String> personnelNos);
+    List<PersonnelDTO.InfoForStudent> checkPersonnelNos(List<String> personnelNos,Long courseId);
 
     List<PersonnelDTO.Info> getByPostCode(Long postId);
 
