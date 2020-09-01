@@ -1336,21 +1336,21 @@
                                         title: "<spring:message code='save'/>",
                                         align: "center",
                                         icon: "[SKIN]/actions/save.png",
-                                        click: function () {
-                                            let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
-                                            // for (let i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
-                                            //     students.add({
-                                            //         "personnelNo": SelectedPersonnelsLG_student.data[i].personnelNo,
-                                            //         "applicantCompanyName": SelectedPersonnelsLG_student.data[i].applicantCompanyName,
-                                            //         "presenceTypeId": SelectedPersonnelsLG_student.data[i].presenceTypeId,
-                                            //         "registerTypeId": SelectedPersonnelsLG_student.data[i].registerTypeId
-                                            //     });
-                                            // }
-                                            if (SelectedPersonnelsLG_student.data.toArray().getLength() > 0) {
-                                                wait.show()
-                                                isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST", JSON.stringify(SelectedPersonnelsLG_student.data.toArray()), class_add_students_result));
-                                            }
-                                            SelectedPersonnelsLG_student.data.clearAll();
+                                        click:function () {
+                                                let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
+                                                // for (let i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
+                                                //     students.add({
+                                                //         "personnelNo": SelectedPersonnelsLG_student.data[i].personnelNo,
+                                                //         "applicantCompanyName": SelectedPersonnelsLG_student.data[i].applicantCompanyName,
+                                                //         "presenceTypeId": SelectedPersonnelsLG_student.data[i].presenceTypeId,
+                                                //         "registerTypeId": SelectedPersonnelsLG_student.data[i].registerTypeId
+                                                //     });
+                                                // }
+                                                if (SelectedPersonnelsLG_student.data.toArray().getLength() > 0) {
+                                                    wait.show()
+                                                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST", JSON.stringify(SelectedPersonnelsLG_student.data.toArray()), class_add_students_result));
+                                                }
+                                                SelectedPersonnelsLG_student.data.clearAll();
                                         }
                                     }),
                                     isc.IButtonCancel.create({
