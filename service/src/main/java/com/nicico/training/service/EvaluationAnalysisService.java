@@ -347,57 +347,56 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         List<Map> studentsList = new ArrayList();
         for (ClassStudent student : tclass.getClassStudents()) {
             Map<String,String> std = new HashMap<>();
-
-            String name = student.getStudent().getFirstName() + " " + student.getStudent().getLastName();
-            String code = student.getStudent().getPersonnelNo();
-
-            std.put("studentFullName", name);
-            std.put("personnelCode",code);
+            std.put("studentFullName",student.getStudent().getFirstName() + " " + student.getStudent().getLastName());
+            std.put("personnelCode",student.getStudent().getPersonnelNo());
             studentsList.add(std);
         }
 
+        EvaluationDTO.BehavioralResult result = evaluationService.getBehavioralEvaluationResult(classId);
         List<Map> indicesList = new ArrayList();
+        List<Map> behavioralChart = new ArrayList();
         int i = 1;
         for (Goal goal : tclass.getCourse().getGoalSet()) {
             Map<String,String> indice = new HashMap<>();
             indice.put("indicatorEx",goal.getTitleFa());
             indice.put("indicatorNo", "شاخص " +i);
-            indice.put("goalId",goal.getId()+"");
-            indice.put("skillId",null);
             indicesList.add(indice);
+
+            Map<String,Object> behavior = new HashMap<>();
+            behavior.put("behaviorVal",result.getIndicesGrade().get("g"+goal.getId()));
+            behavior.put("behaviorCat","ﺺﺧﺎﺷ " +i);
+            behavioralChart.add(behavior);
+
             i++;
         }
         for (Skill skill : tclass.getCourse().getSkillSet()) {
             Map<String,String> indice = new HashMap<>();
             indice.put("indicatorEx",skill.getTitleFa());
             indice.put("indicatorNo", "شاخص " + i);
-            indice.put("goalId",null);
-            indice.put("skillId",skill.getId()+"");
             indicesList.add(indice);
+
+            Map<String,Object> behavior = new HashMap<>();
+            behavior.put("behaviorVal",result.getIndicesGrade().get("s"+skill.getId()));
+            behavior.put("behaviorCat","ﺺﺧﺎﺷ " + i);
+            behavioralChart.add(behavior);
+
             i++;
         }
 
-        List<Map> behavioralChart = new ArrayList();
-        for(int j=0;j<indicesList.size();j++){
-            Map<String,Object> behavior = new HashMap<>();
-
-            String cat = indicesList.get(j).get("indicatorNo").toString();
-
-            behavior.put("behaviorVal",50.0);
-            behavior.put("behaviorCat",bidiReorder(cat));
-            behavioralChart.add(behavior);
-        }
-
         List<Map> behavioralScoreChart = new ArrayList();
-        for (ClassStudent student : tclass.getClassStudents()) {
+        String[] classStudentsName = result.getClassStudentsName();
+        Double[] behavioralGrades = result.getBehavioralGrades();
+        for(int z=0;z<result.getClassStudentsName().length;z++){
             Map<String,Object> behavior = new HashMap<>();
-
-            String cat = student.getStudent().getFirstName() + " " + student.getStudent().getLastName();
-
-            behavior.put("scoreVal",50.0);
-            behavior.put("scoreCat",bidiReorder(cat));
+            behavior.put("scoreVal",behavioralGrades[z]);
+            behavior.put("scoreCat",bidiReorder(classStudentsName[z]));
             behavioralScoreChart.add(behavior);
         }
+
+        Map<String,Object> behavior = new HashMap<>();
+        behavior.put("scoreVal",result.getBehavioralGrade());
+        behavior.put("scoreCat","میانگین تغییر رفتار دوره");
+        behavioralScoreChart.add(behavior);
 
         final Gson gson = new Gson();
         Type resultType = new TypeToken<HashMap<String, Object>>() {

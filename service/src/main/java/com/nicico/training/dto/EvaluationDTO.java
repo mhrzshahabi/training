@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -165,12 +166,15 @@ public class EvaluationDTO implements Serializable {
        private Double[] trainingGrade;
        private Double[] coWorkersGrade;
        private String[] classStudentsName;
+       private Double[] behavioralGrades;
        private Double studentGradeMean;
        private Double supervisorGradeMean;
        private Double trainingGradeMean;
        private Double coWorkersGradeMean;
        private Double behavioralGrade;
        private Boolean behavioralPass;
+       private Map<String,Double> indicesGrade;
     }
+
 
 }

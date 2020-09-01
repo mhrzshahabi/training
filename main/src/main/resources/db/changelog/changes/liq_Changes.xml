@@ -1215,4 +1215,16 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet author="razmnoosh (generated)" id="1598868939010-496">
+        <addColumn tableName="tbl_dynamic_question">
+            <column name="goal_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1598868939010-497">
+        <addColumn tableName="tbl_dynamic_question">
+            <column name="skill_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
