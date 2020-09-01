@@ -1119,7 +1119,7 @@
                     }
                     criteria.criteria.push({fieldName: "objectId", operator: "equals", value: ListGrid_Job_Group_Jsp.getSelectedRecord().id});
                     criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "JobGroup"});
-                    criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
+                    // criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
 
                     ExportToFile.showDialog(null, NALG_JobGroup , "NeedsAssessmentReport", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
                 }

@@ -17,6 +17,7 @@ import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.PersonnelRegisteredDAO;
 import com.nicico.training.repository.StudentClassReportViewDAO;
 import com.nicico.training.service.*;
+import com.nicico.training.utility.CriteriaConverter;
 import lombok.*;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
@@ -379,12 +380,14 @@ public class ExportToFileController {
                 break;
 
             case "NeedsAssessmentReport":
-                Long objectId = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
-                String objectType = searchRq.getCriteria().getCriteria().get(1).getValue().get(0).toString();
-                Long personnelId = searchRq.getCriteria().getCriteria().get(2).getValue().get(0) == null ? null : (Long)searchRq.getCriteria().getCriteria().get(2).getValue().get(0);
-                searchRq.getCriteria().getCriteria().remove(0);
-                searchRq.getCriteria().getCriteria().remove(0);
-                searchRq.getCriteria().getCriteria().remove(0);
+                Map<String,Object[]> params = new HashMap<>();
+                CriteriaConverter.criteria2ParamsMap(searchRq.getCriteria(), params);
+                CriteriaConverter.removeCriteriaByfieldName(searchRq.getCriteria(),"objectId");
+                CriteriaConverter.removeCriteriaByfieldName(searchRq.getCriteria(),"objectType");
+                CriteriaConverter.removeCriteriaByfieldName(searchRq.getCriteria(),"personnelId");
+                Long objectId = ((Integer)params.get("objectId")[0]).longValue();
+                String objectType = (String) params.get("objectType")[0];
+                Long personnelId = params.get("personnelId") == null ? null : ((Integer)params.get("personnelId")[0]).longValue();
                 generalList = (List<Object>) ((Object) needsAssessmentReportsService.search(searchRq, objectId, objectType, personnelId).getList());
                 break;
 

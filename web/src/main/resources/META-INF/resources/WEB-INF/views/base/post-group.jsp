@@ -1756,7 +1756,7 @@
                     }
                     criteria.criteria.push({fieldName: "objectId", operator: "equals", value: ListGrid_Post_Group_Jsp.getSelectedRecord().id});
                     criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "PostGroup"});
-                    criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
+                    // criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
 
                     ExportToFile.showDialog(null, CourseLG_Post_Group_Jsp , "NeedsAssessmentReport", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
                 }
