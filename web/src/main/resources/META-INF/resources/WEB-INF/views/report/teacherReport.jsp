@@ -176,7 +176,7 @@
                 align: "center",
                 filterOnKeypress: true,
                 filterLocally: true,
-                sortField: 1,
+                sortField: 3,
                 sortDirection: "descending",
                 dataPageSize: 50,
                 autoFetchData: true,
@@ -325,7 +325,7 @@
                     "false" : "<spring:message code='external.teacher'/>"
                 },
                 vertical: false,
-                defaultValue: "false"
+                defaultValue: "true"
             },
             {
                 name: "temp1",
