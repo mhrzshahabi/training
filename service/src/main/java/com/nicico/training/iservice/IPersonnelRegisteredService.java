@@ -27,7 +27,7 @@ public interface IPersonnelRegisteredService {
 
     SearchDTO.SearchRs<PersonnelRegisteredDTO.Info> search(SearchDTO.SearchRq request);
 
-    List<PersonnelRegisteredDTO.Info> checkPersonnelNos(List<String> personnelNos);
+    List<PersonnelRegisteredDTO.InfoForStudent> checkPersonnelNos(List<String> personnelNos, Long courseId);
 
     TotalResponse<PersonnelRegisteredDTO.Info> search(NICICOCriteria request);
 

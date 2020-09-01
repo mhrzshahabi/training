@@ -66,7 +66,7 @@
             return replaceString;
         };
 
-        function groupFilter(title,inputURL,func,isCheck=false,addStudentsInGroupInsert=false){
+        function groupFilter(title,inputURL,func,isCheck=false,addStudentsInGroupInsert=false, courseId=0){
             TabSet_GroupInsert_JspStudent=isc.TabSet.create({
                 ID:"leftTabSet",
                 autoDraw:false,
@@ -135,7 +135,7 @@
                                             GroupSelectedPersonnelsLG_student.fetchData();
 
                                             if(records.length > 0 && isCheck){
-                                                func(inputURL,records.map(function(item) {return item.personnelNo;}),addStudentsInGroupInsert);
+                                                func(inputURL+"/"+courseId,records.map(function(item) {return item.personnelNo;}),false);
                                             }
 
                                             DynamicForm_GroupInsert_Textbox_JspStudent.setValue('');
@@ -223,7 +223,7 @@
                                                             GroupSelectedPersonnelsLG_student.fetchData();
 
                                                             if(isCheck){
-                                                                func(inputURL,records.map(function(item) {return item.personnelNo;}));
+                                                                func(inputURL+"/"+courseId,records.map(function(item) {return item.personnelNo;}),false);
                                                             }
 
                                                             createDialog("info", "فایل به لیست اضافه شد.");
@@ -271,7 +271,7 @@
             });
 
             ClassStudentWin_student_GroupInsert = isc.Window.create({
-                width: 900,
+                width: 1050,
                 height: 750,
                 minWidth: 700,
                 minHeight: 500,
@@ -313,7 +313,7 @@
                                                 }).length==0){
 
                                                     if(isCheck){
-                                                        func(inputURL,[newValue]);
+                                                        func(inputURL+"/"+courseId,[newValue],false);
                                                     }
                                                     return true;
                                                 }
@@ -340,7 +340,14 @@
                                 {name: "lastName", title: "<spring:message code="lastName"/>", canEdit: false ,autoFithWidth:true},
                                 {name: "nationalCode", title: "<spring:message code="national.code"/>", canEdit: false ,autoFithWidth:true},
                                 {name: "personnelNo1", title: "<spring:message code="personnel.no"/>", canEdit: false ,autoFithWidth:true},
-                                {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", canEdit: false ,autoFithWidth:true},
+                                {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", canEdit: false ,autoFithWidth:true,},
+                                {name: "isInNA", title: "نیازسنجی", canEdit: false ,autoFithWidth:true ,type: "boolean"},
+                                {name: "scoreState", title: "سوابق", canEdit: false ,autoFithWidth:true,valueMap: {
+                                        400: "قبول با نمره",
+                                        401: "قبول بدون نمره",
+                                        410: "ثبت نام شده",
+                                    }
+                                },
                                 {name: "description", title: "<spring:message code="description"/>", canEdit: false ,width:300, align: "left"},
                                 {name: "error", canEdit: false ,hidden:true,autoFithWidth:true},
                                 {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".png", canEdit: false}
@@ -394,7 +401,7 @@
                                     }
 
                                     if (func) {
-                                        func(inputURL,result,true);
+                                        func(inputURL+"/"+courseId,result,true);
                                     }
                                 }
                             }), isc.IButtonCancel.create({

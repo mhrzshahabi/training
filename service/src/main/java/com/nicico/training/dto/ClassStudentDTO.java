@@ -102,6 +102,10 @@ public class ClassStudentDTO implements Serializable {
         private Long id;
         private String nationalCode;
         private String personnelNo;
+        private String postCode;
+        private String departmentCode;
+        private String firstName;
+        private String lastName;
         private Integer registerTypeId;
         private String applicantCompanyName;
         private Long presenceTypeId;
