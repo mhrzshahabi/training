@@ -163,6 +163,7 @@
                     isc.ToolStripButton.create({
                         margin:5,
                         title: "نمایش جزئیات مدرس",
+                        baseStyle: "buttonDetail",
                         click: function() {
                             let record = ListGrid_Result_JspTeacherReport.getSelectedRecord();
                             if (record == null) {
