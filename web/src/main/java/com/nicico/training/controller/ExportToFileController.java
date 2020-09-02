@@ -316,14 +316,6 @@ public class ExportToFileController {
                 SearchDTO.SearchRs result = attendanceReportService.search(request, o -> modelMapper.map(o, ViewAttendanceReportDTO.Info.class));
 
                 List<ViewAttendanceReportDTO.Info> attendanceReportServiceAbsentList = result.getList();
-                attendanceReportServiceAbsentList.forEach(x ->
-                        {
-                            if (x.getAttendanceStatus().equals("3"))
-                                x.setAttendanceStatus("غیر موجه");
-                            if (x.getAttendanceStatus().equals("4"))
-                                x.setAttendanceStatus("موجه");
-                        }
-                );
                 generalList = (List<Object>) ((Object) attendanceReportServiceAbsentList);
                 break;
             }
