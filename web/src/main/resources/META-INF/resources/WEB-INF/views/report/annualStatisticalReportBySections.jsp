@@ -144,11 +144,11 @@
             {name: "institute_id",hidden:true},
             {name: "institute_title_fa", title:"<spring:message code="institute"/>", align: "center", filterOperator: "iContains",autoFitWidth:true},
             {name: "category_id",  title:"<spring:message code="category"/>", align: "center", filterOperator: "iContains",autoFitWidth:true},
-            {name: "finished_class_count",  title:"تعداد دوره ها", align: "center", filterOperator: "iContains",autoFitWidth:true},
-            {name: "canceled_class_count",  title:"تعداد نفر آموزش داده", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "finished_class_count",  title:"تعداد کلاس", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "canceled_class_count",  title:"تعداد کلاس لغو شده", align: "center", filterOperator: "iContains",autoFitWidth:true},
             {name: "sum_of_duration",  title:"ساعت آموزشی ارائه شده", align: "center", filterOperator: "iContains",autoFitWidth:true},
-            {name: "student_count",  title:"نقر ساعت آموزشي", align: "center", filterOperator: "iContains",autoFitWidth:true},
-            {name: "sum_of_student_hour",  title:"نقر ساعت آموزشي", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "student_count",  title:"تعداد فراگیر", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "sum_of_student_hour",  title:"جمع نفر ساعت آموزشي", align: "center", filterOperator: "iContains",autoFitWidth:true},
 
         ],
         recordDoubleClick: function () {
