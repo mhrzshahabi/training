@@ -1500,17 +1500,17 @@
             case "TabPane_Post_JobGroup":{
                 if (postJob_JobGroup === jobGroup.id)
                     return;
-                postJob_JobGroup = jobGroup.id;
-                PostLG_JobGroup.setImplicitCriteria({
-                    _constructor: "AdvancedCriteria",
-                    operator: "and",
-                    criteria: [{fieldName: "jobGroup", operator: "equals", value: jobGroup.id}]
-                });
-                PostLG_JobGroup.invalidateCache();
-                PostLG_JobGroup.fetchData();
-                // PostDS_JobGroup.fetchDataURL = jobGroupUrl + "postIscList/" + jobGroup.id;
+                // postJob_JobGroup = jobGroup.id;
+                // PostLG_JobGroup.setImplicitCriteria({
+                //     _constructor: "AdvancedCriteria",
+                //     operator: "and",
+                //     criteria: [{fieldName: "jobGroup", operator: "equals", value: jobGroup.id}]
+                // });
                 // PostLG_JobGroup.invalidateCache();
                 // PostLG_JobGroup.fetchData();
+                PostDS_JobGroup.fetchDataURL = jobGroupUrl + "postIscList/" + jobGroup.id;
+                PostLG_JobGroup.invalidateCache();
+                PostLG_JobGroup.fetchData();
                 break;
             }
             case "TabPane_Personnel_JobGroup":{

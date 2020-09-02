@@ -796,9 +796,9 @@
                     if(typeof(criteria.criteria)=='undefined'){
                         criteria.criteria=[];
                     }
-                    criteria.criteria.push({fieldName: "trainingPost", operator: "equals", value: ListGrid_TrainingPost_Jsp.getSelectedRecord().id});
+                    criteria.criteria.push({fieldName: "trainingPostSet", operator: "equals", value: ListGrid_TrainingPost_Jsp.getSelectedRecord().id});
 
-                    ExportToFile.showDialog(null, ListGrid_TrainingPost_Posts , "Post_Group_Post", 0, null, '',"لیست رده پستی - آموزش"  , criteria, null);
+                    ExportToFile.showDialog(null, ListGrid_TrainingPost_Posts , "trainingPost_Post", 0, null, '',"لیست رده پستی - آموزش"  , criteria, null);
                 }
             })
         ]

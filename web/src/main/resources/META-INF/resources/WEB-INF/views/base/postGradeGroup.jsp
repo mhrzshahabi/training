@@ -1340,11 +1340,12 @@
                 if (post_PGG === postGradeGroup.id)
                     return;
                 post_PGG = postGradeGroup.id;
-                PostLG_PGG.setImplicitCriteria({
-                    _constructor: "AdvancedCriteria",
-                    operator: "and",
-                    criteria: [{fieldName: "postGGI", operator: "equals", value: postGradeGroup.id}]
-                });
+                // PostLG_PGG.setImplicitCriteria({
+                //     _constructor: "AdvancedCriteria",
+                //     operator: "and",
+                //     criteria: [{fieldName: "postGGI", operator: "equals", value: postGradeGroup.id}]
+                // });
+                PostDS_PGG.fetchDataURL = postGradeGroupUrl + "postIscList/" + postGradeGroup.id;
                 PostLG_PGG.invalidateCache();
                 PostLG_PGG.fetchData();
                 break;
