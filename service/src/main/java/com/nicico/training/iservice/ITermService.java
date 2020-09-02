@@ -42,5 +42,8 @@ public interface ITermService {
     @Transactional(readOnly = true)
     SearchDTO.SearchRs<TermDTO.Info> searchByYear(SearchDTO.SearchRq request, String year);
 
+    @Transactional(readOnly = true)
+    SearchDTO.SearchRs<TermDTO.Info> searchYearCurrentTerm(String year);
+
     List<TermDTO.Years> years();
 }

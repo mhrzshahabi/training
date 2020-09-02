@@ -2384,7 +2384,7 @@
                 filterFields: ["year"],
                 sortField: ["year"],
                 sortDirection: "descending",
-                defaultToFirstOption: true,
+                // defaultToFirstOption: true,
                 useClientFiltering: true,
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
@@ -2404,7 +2404,6 @@
                 },
                 dataArrived: function (startRow, endRow, data) {
                     if (data.allRows[0].year !== undefined) {
-
                         load_term_by_year(data.allRows[0].year);
                     }
                 }
@@ -2424,7 +2423,7 @@
                 filterFields: ["code"],
                 sortField: ["code"],
                 sortDirection: "descending",
-                defaultToFirstOption: true,
+                // defaultToFirstOption: true,
                 useClientFiltering: true,
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]",
@@ -2500,15 +2499,30 @@
                     load_classes_by_term(value);
                 },
                 dataArrived: function (startRow, endRow, data) {
-                    if (data.allRows[0].id !== undefined) {
-                        DynamicForm_Term_Filter.getItem("termFilter").clearValue();
-                        DynamicForm_Term_Filter.getItem("termFilter").setValue(data.allRows[0].code);
-                        load_classes_by_term(data.allRows[0].id);
-                    }
+                    isc.RPCManager.sendRequest({
+                        actionURL: termUrl + "getCurrentTerm/" + DynamicForm_Term_Filter.getField("yearFilter").getValue(),
+                        httpMethod: "GET",
+                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                        useSimpleHttp: true,
+                        contentType: "application/json; charset=utf-8",
+                        showPrompt: false,
+                        serverOutputAsString: false,
+                        callback: function (resp) {
+                                DynamicForm_Term_Filter.getItem("termFilter").clearValue();
+                                DynamicForm_Term_Filter.getField("termFilter").setValue(resp.httpResponseText);
+                                load_classes_by_term(resp.httpResponseText);
+                        }
+                    });
+
                 }
             }
         ]
     });
+
+    DynamicForm_Term_Filter.getField("yearFilter").setValue(todayDate.substring(0, 4));
+    load_term_by_year(todayDate.substring(0, 4));
+
+
 
     var ToolStrip_Excel_JspClass = isc.ToolStripButtonExcel.create({
         click: function () {
@@ -3145,7 +3159,6 @@
     }
 
     function alternativeClass_JspClass(record) {
-        console.log(record)
         let WindowAlternativeClass = isc.Window.create({
             title: "جایگزین کلاس های لغو شده",
             items: [isc.VLayout.create({
