@@ -76,7 +76,6 @@ public class ControlFormController {
                 .thenComparing(ClassSession::getSessionStartHour))
                 .collect(Collectors.toList());
 
-
         int maxSessions=0;
 
         String dayDate = sessionList.get(0).getSessionDate() != null ? sessionList.get(0).getSessionDate() : "";
@@ -134,24 +133,26 @@ public class ControlFormController {
                         z = ztemp;
                     }
 
-                    List<AttendanceDTO> attendanceDTOS = modelMapper.map(attendanceDOA.findBySessionIdAndStudentId(classSession.getId(), studentId),
-                            new TypeToken<List<AttendanceDTO>>() {
-                            }.getType());
+                    Optional<Attendance> attendance=attendanceDOA.findBySessionIdAndStudentId(classSession.getId(), studentId);
 
-                    AttendanceDTO attendanceDTO = attendanceDTOS.size() != 0 && attendanceDTOS.get(0) != null ? attendanceDTOS.get(0) : null;
+                    if (attendance.isPresent()) {
+                        List<AttendanceDTO> attendanceDTOS = modelMapper.map(attendance, new TypeToken<List<AttendanceDTO>>() {}.getType());
 
-                    if (attendanceDTO != null) {
-                        String tempZ="";
-                        if (z<=9)
-                            tempZ="0"+z;
-                        else
-                            tempZ=z+"";
+                        AttendanceDTO attendanceDTO = attendanceDTOS.size() != 0 && attendanceDTOS.get(0) != null ? attendanceDTOS.get(0) : null;
 
-                        if (dataStatus.equals("true"))
-                            statePerStudent.put("z"+tempZ, attendanceDTO.statusName(Integer.parseInt(attendanceDTO.getState())));
-                        else
-                            statePerStudent.put("z"+tempZ, "");
-                    }//end if
+                        if (attendanceDTO != null) {
+                            String tempZ = "";
+                            if (z <= 9)
+                                tempZ = "0" + z;
+                            else
+                                tempZ = z + "";
+
+                            if (dataStatus.equals("true"))
+                                statePerStudent.put("z" + tempZ, attendanceDTO.statusName(Integer.parseInt(attendanceDTO.getState())));
+                            else
+                                statePerStudent.put("z" + tempZ, "");
+                        }//end if
+                    }
 
                 }//end if
                 z++;
@@ -444,18 +445,20 @@ public class ControlFormController {
                                 z = ztemp;
                             }
 
-                            List<AttendanceDTO> attendanceDTOS = modelMapper.map(attendanceDOA.findBySessionIdAndStudentId(classSession.getId(), studentId),
-                                    new TypeToken<List<AttendanceDTO>>() {
-                                    }.getType());
+                            Optional<Attendance> attendance=attendanceDOA.findBySessionIdAndStudentId(classSession.getId(), studentId);
 
-                            AttendanceDTO attendanceDTO = attendanceDTOS.size() != 0 && attendanceDTOS.get(0) != null ? attendanceDTOS.get(0) : null;
+                            if (attendance.isPresent()) {
+                                List<AttendanceDTO> attendanceDTOS = modelMapper.map(attendance, new TypeToken<List<AttendanceDTO>>() {}.getType());
 
-                            if (attendanceDTO != null) {
-                                if (dataStatus.equals("true"))
-                                    statePerStudent.put(z, attendanceDTO.statusName(Integer.parseInt(attendanceDTO.getState())));
-                                else
-                                    statePerStudent.put(z, "");
-                            }//end if
+                                AttendanceDTO attendanceDTO = attendanceDTOS.size() != 0 && attendanceDTOS.get(0) != null ? attendanceDTOS.get(0) : null;
+
+                                if (attendanceDTO != null) {
+                                    if (dataStatus.equals("true"))
+                                        statePerStudent.put(z, attendanceDTO.statusName(Integer.parseInt(attendanceDTO.getState())));
+                                    else
+                                        statePerStudent.put(z, "");
+                                }//end if
+                            }
 
                         }//end if
                         z++;
@@ -707,18 +710,20 @@ public class ControlFormController {
                                 z = ztemp;
                             }
 
-                            List<AttendanceDTO> attendanceDTOS = modelMapper.map(attendanceDOA.findBySessionIdAndStudentId(classSession.getId(), studentId),
-                                    new TypeToken<List<AttendanceDTO>>() {
-                                    }.getType());
+                            Optional<Attendance> attendance=attendanceDOA.findBySessionIdAndStudentId(classSession.getId(), studentId);
 
-                            AttendanceDTO attendanceDTO = attendanceDTOS.size() != 0 && attendanceDTOS.get(0) != null ? attendanceDTOS.get(0) : null;
+                            if (attendance.isPresent()) {
+                                List<AttendanceDTO> attendanceDTOS = modelMapper.map(attendance, new TypeToken<List<AttendanceDTO>>() {}.getType());
 
-                            if (attendanceDTO != null) {
-                                if (dataStatus.equals("true"))
-                                    statePerStudent.put(z, attendanceDTO.statusName(Integer.parseInt(attendanceDTO.getState())));
-                                else
-                                    statePerStudent.put(z, "");
-                            }//end if
+                                AttendanceDTO attendanceDTO = attendanceDTOS.size() != 0 && attendanceDTOS.get(0) != null ? attendanceDTOS.get(0) : null;
+
+                                if (attendanceDTO != null) {
+                                    if (dataStatus.equals("true"))
+                                        statePerStudent.put(z, attendanceDTO.statusName(Integer.parseInt(attendanceDTO.getState())));
+                                    else
+                                        statePerStudent.put(z, "");
+                                }//end if
+                            }
 
                         }//end if
                         z++;
