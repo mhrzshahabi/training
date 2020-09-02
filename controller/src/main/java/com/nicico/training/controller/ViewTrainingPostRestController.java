@@ -73,6 +73,9 @@ public class ViewTrainingPostRestController {
                 List<List<Object>> lists = criteriaRq.getCriteria().stream().filter(a -> (a.getFieldName().equals("jobGroup"))).map(a -> a.getValue()).collect(Collectors.toList());
                 List<JobDTO.Info> jobs = jobGroupService.getJobs(Long.parseLong(lists.get(0).get(0).toString()));
                 List<Long> jobIds = jobs.stream().map(a -> a.getId()).collect(Collectors.toList());
+                if(jobIds.size()==0){
+                    jobIds.add(-1L);
+                }
 //                ArrayList<SearchDTO.CriteriaRq> listCR = new ArrayList<>();
                 criteriaRq.getCriteria().add(makeNewCriteria("jobId", jobIds, EOperator.inSet, null));
 //                listCR.add(criteriaRq1);
@@ -82,6 +85,10 @@ public class ViewTrainingPostRestController {
                 List<List<Object>> lists = criteriaRq.getCriteria().stream().filter(a -> (a.getFieldName().equals("postGGI"))).map(a -> a.getValue()).collect(Collectors.toList());
                 List<PostGradeDTO.Info> postGrades = postGradeGroupService.getPostGrades(Long.parseLong(lists.get(0).get(0).toString()));
                 List<Long> ids = postGrades.stream().map(a -> a.getId()).collect(Collectors.toList());
+
+                if(ids.size()==0){
+                    ids.add(-1L);
+                }
 //                ArrayList<SearchDTO.CriteriaRq> listCR = new ArrayList<>();
                 criteriaRq.getCriteria().add(makeNewCriteria("postGradeId", ids, EOperator.inSet, null));
 //                listCR.add(criteriaRq1);
