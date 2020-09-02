@@ -340,7 +340,7 @@ public class NeedsAssessmentReportsService {
             case "educationLevelTitle":
                 map.put("eduLevelTitle", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
                 break;
-            case "jobTitle":
+            case "jobId":
                 map.put("jobId", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
                 break;
         }
