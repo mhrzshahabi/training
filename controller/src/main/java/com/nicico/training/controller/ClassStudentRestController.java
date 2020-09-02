@@ -11,11 +11,9 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationAnalysisService;
+import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.mapper.student.ClassStudentBeanMapper;
-import com.nicico.training.model.EvaluationAnalysis;
-import com.nicico.training.model.ViewPersonnelCourseNaReport;
 import com.nicico.training.repository.ClassStudentDAO;
-import com.nicico.training.repository.EvaluationAnalysisDAO;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +24,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import request.student.UpdatePreTestScoreResponse;
+import response.student.UpdatePreTestScoreResponse;
 import request.student.UpdateStudentScoreRequest;
-import response.student.UpdatePreTestScoreRequest;
+import request.student.UpdatePreTestScoreRequest;
 import response.student.UpdateStudentScoreResponse;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +37,6 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -56,7 +53,6 @@ public class ClassStudentRestController {
     private final ModelMapper modelMapper;
     private final ParameterService parameterService;
     private final ClassAlarmService classAlarmService;
-    private final IEvaluationAnalysisService evaluationAnalysisService;
     private final ViewCoursesPassedPersonnelReportService iViewCoursesPassedPersonnelReportService;
     private final ViewPersonnelCourseNaReportService viewPersonnelCourseNaReportService;
     private final ContinuousStatusReportViewService continuousStatusReportViewService;
@@ -159,9 +155,9 @@ public class ClassStudentRestController {
         try {
             Map<String, String> result;
             result = classStudentService.registerStudents(request, classId);
-            classAlarmService.alarmClassCapacity(classId);
-            classAlarmService.alarmStudentConflict(classId);
-            classAlarmService.saveAlarms();
+            //classAlarmService.alarmClassCapacity(classId);
+            //classAlarmService.alarmStudentConflict(classId);
+            //classAlarmService.saveAlarms();
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
@@ -259,9 +255,9 @@ public class ClassStudentRestController {
             }
 
             if (classId != null) {
-                classAlarmService.alarmClassCapacity(classId);
-                classAlarmService.alarmStudentConflict(classId);
-                classAlarmService.saveAlarms();
+//                classAlarmService.alarmClassCapacity(classId);
+//                classAlarmService.alarmStudentConflict(classId);
+//                classAlarmService.saveAlarms();
             }
 
             return new ResponseEntity<>(HttpStatus.OK);

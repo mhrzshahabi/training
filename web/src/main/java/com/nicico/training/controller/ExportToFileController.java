@@ -227,7 +227,12 @@ public class ExportToFileController {
 
                 SearchDTO.SearchRq request = new SearchDTO.SearchRq();
                 request.setStartIndex(null);
-                request.setSortBy("personalNum2");
+
+                if(req.getParameter("_sortBy")==null){
+                    request.setSortBy("personalNum");
+                }else{
+                    request.setSortBy(req.getParameter("_sortBy"));
+                }
 
 
                 List<SearchDTO.CriteriaRq> listOfCriteria = new ArrayList<>();
@@ -508,6 +513,19 @@ public class ExportToFileController {
                 searchRq.getCriteria().getCriteria().add(makeNewCriteria("deleted", 0, EOperator.equals, null));
 
                 generalList = (List<Object>)((Object) personnelService.search(searchRq).getList());
+                break;
+
+            case "teacherTrainingClasses":
+                Long teacherId = null;
+                SearchDTO.CriteriaRq removeCriterion = null;
+                for (SearchDTO.CriteriaRq criterion : searchRq.getCriteria().getCriteria()) {
+                    if(criterion.getFieldName().equalsIgnoreCase("teacherId")){
+                        teacherId = ((Integer) criterion.getValue().get(0)).longValue();
+                        removeCriterion = criterion;
+                    }
+                }
+                searchRq.getCriteria().getCriteria().remove(removeCriterion);
+                generalList = (List<Object>) ((Object) tclassService.searchByTeachingHistory(searchRq, teacherId).getList());
                 break;
         }
 

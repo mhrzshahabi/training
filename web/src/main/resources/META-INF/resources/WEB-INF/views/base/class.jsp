@@ -2688,7 +2688,9 @@
 
     loadjs.ready('load_Attachments', function () {
         oLoadAttachments_class = new loadAttachments();
-        TabSet_Class.updateTab(classAttachmentsTab, oLoadAttachments_class.VLayout_Body_JspAttachment)
+        setTimeout(()=> {
+            TabSet_Class.updateTab(classAttachmentsTab, oLoadAttachments_class.VLayout_Body_JspAttachment);
+        },0);
     });
     </sec:authorize>
     let HLayout_Tab_Class = isc.HLayout.create({

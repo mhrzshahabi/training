@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class UpdateStudentScoreRequest implements Serializable {
     private static final long serialVersionUID = -2127040011027785973L;
 
-    private long scoresStateId;
-    private float score;
+    private Long scoresStateId;
+    private Float score;
     private long failureReasonId;
 }

@@ -10,7 +10,6 @@
     var score_value = null;//بر اساس روش نمره دهی که از 100 یا 20 باشد مقدار 100 یا 20 داخل این متغیر قرار می گیرد
     var classRecord_acceptancelimit = null;
     var scoresState_value = null;
-var mosayeb;
     var score_change = false;
     var failureReason_value = null;
     var failureReason_change = false;
@@ -18,7 +17,7 @@ var mosayeb;
     var acceptancelimitPrint = null;
     var refresh_special = 0;
     var valence_value = null;
-    var score_windows_dynamicForm_value=null
+    var score_windows_dynamicForm_value=null;
     var valence_value_failureReason = null;
     var map = {"1": "ارزشی", "2": "نمره از صد", "3": "نمره از بیست", "4": "بدون نمره"};
     var myMap = new Map(Object.entries(map));

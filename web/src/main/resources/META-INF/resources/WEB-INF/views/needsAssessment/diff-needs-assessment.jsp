@@ -895,7 +895,7 @@
             }],
         fields: [{name: "title", title: "<spring:message code="title"/>"}, {name: "competenceType.title", title: "<spring:message code="type"/>"}],
         gridComponents: [
-            isc.LgLabel.create({contents: "<span><h3><b>" + "نیزسنجی موجود سیستم" + "</b></h3></span>", customEdges: ["B"]}),
+            isc.LgLabel.create({contents: "<span><h3><b>" + "نیازسنجی موجود سیستم" + "</b></h3></span>", customEdges: ["B"]}),
             "header", "body"
         ],
         // canRemoveRecords:true,
