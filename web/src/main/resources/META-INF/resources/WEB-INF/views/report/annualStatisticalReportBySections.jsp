@@ -148,6 +148,7 @@
             {name: "canceled_class_count",  title:"تعداد کلاس لغو شده", align: "center", filterOperator: "iContains",autoFitWidth:true},
             {name: "sum_of_duration",  title:"ساعت آموزشی ارائه شده", align: "center", filterOperator: "iContains",autoFitWidth:true},
             {name: "student_count",  title:"تعداد فراگیر", align: "center", filterOperator: "iContains",autoFitWidth:true},
+
             {name: "sum_of_student_hour",  title:"جمع نفر ساعت آموزشي", align: "center", filterOperator: "iContains",autoFitWidth:true},
 
         ],
