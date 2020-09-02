@@ -43,7 +43,8 @@
             {name: "student_count"},
             {name: "sum_of_student_hour"},
         ], dataFormat: "json",
-      });
+        autoFetchData:false,
+    });
 
 
     var RestDataSource_Assistant_MSReport = isc.TrDS.create({
@@ -137,7 +138,7 @@
     var List_Grid_Reaport_annualStatisticalReportBySection = isc.TrLG.create({
         width: "100%",
         height: "100%",
-      dataSource: RestDataSource_annualStatisticalReportBySection,
+        dataSource: RestDataSource_annualStatisticalReportBySection,
         showRowNumbers: true,
         fields: [
             {name: "institute_id",hidden:true},
@@ -153,12 +154,12 @@
         recordDoubleClick: function () {
 
         },
-            gridComponents: [ToolStrip_Actions,"filterEditor", "header", "body"],
+        gridComponents: [ToolStrip_Actions,"filterEditor", "header", "body"],
 
-       dataArrived: function ()
+        dataArrived: function ()
         {
-            modalDialog.close();
 
+            totalsCount_Rows.setContents("&nbsp;");
             let totalRows = this.data.getLength();
             if (totalRows >= 0 && this.data.lengthIsKnown())
                 totalsCount_Rows.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
@@ -178,24 +179,24 @@
         overflow:"auto",
         padding: 5,
         cellPadding: 5,
-       // titleWidth: 0,
-       // titleAlign: "center",
+        // titleWidth: 0,
+        // titleAlign: "center",
         numCols: 4,
-       // colWidths: ["3"],
+        // colWidths: ["3"],
         items: [
             {
 
                 name: "startDate",
                 //height: 35,
                 //   titleColSpan: 1,
-               // colSpan: 2,
-               // titleAlign:"center",
+                // colSpan: 2,
+                // titleAlign:"center",
                 title: "تاریخ شروع : از",
                 ID: "startDate_jspReport",
                 type: 'text',
                 textAlign:"center",
                 titleAlign:"center",
-               // required: true,
+                // required: true,
                 hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
@@ -218,10 +219,10 @@
                     dateCheck = checkDate(DynamicForm_Report_annualStatisticalReportBySection.getValue("startDate"));
                     if (dateCheck == false)
                         DynamicForm_Report_annualStatisticalReportBySection.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
-                        endDateCheckReportASRBS = false;
+                    endDateCheckReportASRBS = false;
                     if (dateCheck == true)
                         DynamicForm_Report_annualStatisticalReportBySection.clearFieldErrors("startDate", true);
-                        endDateCheckReportASRBS = true;
+                    endDateCheckReportASRBS = true;
                     var endDate = DynamicForm_Report_annualStatisticalReportBySection.getValue("endDate");
                     var startDate = DynamicForm_Report_annualStatisticalReportBySection.getValue("startDate");
                     if (endDate != undefined && startDate > endDate) {
@@ -232,20 +233,20 @@
                 }
             },
 
-                {
+            {
                 name: "endDate",
-               // height: 35,
-                  //  width:"1%",
-              //  titleColSpan: 1,
-               title: "تا",
-               titleAlign:"center",
+                // height: 35,
+                //  width:"1%",
+                //  titleColSpan: 1,
+                title: "تا",
+                titleAlign:"center",
                 ID: "endDate_jspReport",
-               // required: true,
+                // required: true,
                 hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 textAlign: "center",
-               // colSpan: 2,
+                // colSpan: 2,
                 // focus: function () {
                 //     displayDatePicker('endDate_jspReport', this, 'ymd', '/');
                 // },
@@ -257,13 +258,13 @@
 
                     }
                 }],
-                    editorExit:function(){
-                        let result=reformat(DynamicForm_Report_annualStatisticalReportBySection.getValue("endDate"));
-                        if (result){
-                            DynamicForm_Report_annualStatisticalReportBySection.getItem("endDate").setValue(result);
-                            DynamicForm_Report_annualStatisticalReportBySection.clearFieldErrors("endDate", true);
-                        }
-                    },
+                editorExit:function(){
+                    let result=reformat(DynamicForm_Report_annualStatisticalReportBySection.getValue("endDate"));
+                    if (result){
+                        DynamicForm_Report_annualStatisticalReportBySection.getItem("endDate").setValue(result);
+                        DynamicForm_Report_annualStatisticalReportBySection.clearFieldErrors("endDate", true);
+                    }
+                },
                 blur: function () {
 
                     var dateCheck;
@@ -278,8 +279,8 @@
                     if (dateCheck == true) {
                         if (startDate == undefined)
                             DynamicForm_Report_annualStatisticalReportBySection.clearFieldErrors("endDate", true);
-                            DynamicForm_Report_annualStatisticalReportBySection.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
-                           endDateCheckReportASRBS = false;
+                        DynamicForm_Report_annualStatisticalReportBySection.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                        endDateCheckReportASRBS = false;
                         if (startDate != undefined && startDate > endDate) {
                             DynamicForm_Report_annualStatisticalReportBySection.clearFieldErrors("endDate", true);
                             DynamicForm_Report_annualStatisticalReportBySection.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
@@ -298,7 +299,7 @@
 
                 name: "startDate2",
                 //height: 35,
-               // width:"5%",
+                // width:"5%",
                 //   titleColSpan: 1,
                 //   colSpan: 2,
                 titleAlign:"center",
@@ -306,7 +307,7 @@
                 ID: "startDate2_jspReport",
                 type: 'text',
                 textAlign: "center",
-               // required: true,
+                // required: true,
                 hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
@@ -351,12 +352,12 @@
             {
                 name: "endDate2",
                 // height: 35,
-              //  width:"5%",
+                //  width:"5%",
                 // titleColSpan: 1,
                 title: "تا",
                 titleAlign:"center",
                 ID: "endDate2_jspReport",
-               // required: true,
+                // required: true,
                 hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
@@ -408,7 +409,7 @@
                         }
                     }
                 }
-                    },
+            },
 
 
             {
@@ -421,6 +422,7 @@
                 filterFields: ["year"],
                 textAlign:"center",
                 titleAlign:"center",
+                multiple: true,
                 filterLocally: true,
                 initialSort: [
                     {property: "year", direction: "descending", primarySort: true}
@@ -444,14 +446,16 @@
                 ],
 
                 changed: function (form, item, value) {
-                    if (value != null && value != undefined) {
+                    if (value != null && value != undefined  && value.size() == 1) {
+                        DynamicForm_Report_annualStatisticalReportBySection.getField("termId").clearValue()
                         RestDataSource_Term_JspControlReport.fetchDataURL = termUrl + "listByYear/" + value;
                         DynamicForm_Report_annualStatisticalReportBySection.getField("termId").optionDataSource = RestDataSource_Term_JspControlReport;
                         DynamicForm_Report_annualStatisticalReportBySection.getField("termId").fetchData();
                         DynamicForm_Report_annualStatisticalReportBySection.getField("termId").enable();
                     } else {
-                        form.getField("termId").disabled = true;
-                        form.getField("termId").clearValue();
+                        DynamicForm_Report_annualStatisticalReportBySection.getField("termId").clearValue();
+                        DynamicForm_Report_annualStatisticalReportBySection.getField("termId").setDisabled(true)
+
                     }
                 }
             },
@@ -459,12 +463,14 @@
                 name: "termId",
                 title: "ترم",
                 type: "SelectItem",
+                width:160,
                 filterOperator: "equals",
                 disabled: true,
                 valueField: "id",
                 displayField: "titleFa",
                 textAlign:"center",
                 titleAlign:"center",
+                multiple: true,
                 filterLocally: true,
                 icons:[
                     {
@@ -486,8 +492,8 @@
             {
                 name: "institute",
                 ID: "institute",
-              //  emptyDisplayValue: "همه",
-              //  required: true,
+                //  emptyDisplayValue: "همه",
+                //  required: true,
                 endRow:false,
                 startRow:true,
                 title: "<spring:message code="institute"/>",
@@ -500,6 +506,7 @@
                 valueField: "id",
                 textAlign:"center",
                 titleAlign:"center",
+                multiple: true,
                 textMatchStyle: "substring",
                 icons:[
                     {
@@ -532,6 +539,7 @@
                 displayField: "titleFa",
                 valueField: "id",
                 textAlign:"center",
+                multiple: true,
                 titleAlign:"center",
                 pickListFields: [
                     {name: "titleFa", filterOperator: "iContains"},
@@ -557,7 +565,7 @@
             {
                 name: "complex_MSReport",
                 ID: "complex_MSReport",
-               // emptyDisplayValue: "همه",
+                // emptyDisplayValue: "همه",
                 multiple: false,
                 title: "<spring:message code="complex"/>",
                 autoFetchData: false,
@@ -579,14 +587,27 @@
                             item.clearValue();
                             item.focusInItem();
                             form.setValue(null);
+                            DynamicForm_Report_annualStatisticalReportBySection.getField("category").enable()
                         }
                     }
                 ],
+
+                changed: function (form, item, value) {
+                    if (value != null && value != undefined && value.includes('شهربابک')) {
+                        DynamicForm_Report_annualStatisticalReportBySection.getField("category").clearValue()
+                        DynamicForm_Report_annualStatisticalReportBySection.getField("category").setValue(null)
+                        DynamicForm_Report_annualStatisticalReportBySection.getField("category").setDisabled(true)
+                    } else
+                    {
+                        DynamicForm_Report_annualStatisticalReportBySection.getField("category").enable()
+                    }
+
+                }
             },
             {
                 name: "Assistant",
                 ID: "Assistant",
-               // emptyDisplayValue: "همه",
+                // emptyDisplayValue: "همه",
                 multiple: false,
                 width: 160,
                 title: "<spring:message code="assistance"/>",
@@ -616,7 +637,7 @@
             {
                 name: "Affairs",
                 ID: "Affairs",
-               // emptyDisplayValue: "همه",
+                // emptyDisplayValue: "همه",
                 multiple: false,
                 title: "<spring:message code="affairs"/>",
                 autoFetchData: false,
@@ -676,40 +697,36 @@
             {type: "SpacerItem"},
             {type: "SpacerItem",colSpan:3},
             {type: "SpacerItem"},
-                   {
+            {
                 type: "button",
                 title: "تهیه گزارش",
-                 width:418,
-                 colSpan:3,
+                width:418,
+                colSpan:3,
                 // align:"left",
-                 titleAlign:"center",
-                 endRow:false,
+                titleAlign:"center",
+                endRow:false,
                 startRow: false,
                 click:function () {
-                    console.log('nmbvmkjhgbvkjgvkjhgmkjhgvmjhgvkmhgvkmjhgjhgmkjhgv')
-
+                    totalsCount_Rows.setContents("&nbsp;");
                     if (endDateCheckReportASRBS == false)
                         return;
 
                     if (!DynamicForm_Report_annualStatisticalReportBySection.validate()) {
                         return;
                     }
-                    modalDialog=createDialog('wait');
-                    RestDataSource_annualStatisticalReportBySection.fetchDataURL=annualStatisticsReportUrl+"/list" + "?data=" + JSON.stringify(DynamicForm_Report_annualStatisticalReportBySection.getValues())
-                    List_Grid_Reaport_annualStatisticalReportBySection.invalidateCache()
-                    List_Grid_Reaport_annualStatisticalReportBySection.fetchData()
-                    // isc.RPCManager.sendRequest(TrDSRequest(annualStatisticsReportUrl+"/list" ,"POST",
-                       //JSON.stringify(DynamicForm_Report_annualStatisticalReportBySection.getValues()), "callback: fill_control_result(rpcResponse)"));
-                }
-            },
 
-         ]
+                    RestDataSource_annualStatisticalReportBySection.fetchDataURL=annualStatisticsReportUrl+"/list" + "?data=" + JSON.stringify(DynamicForm_Report_annualStatisticalReportBySection.getValues())
+                    refreshLG(List_Grid_Reaport_annualStatisticalReportBySection);
+
+                }
+            }
+        ]
     });
 
     function fill_control_result(resp) {
         if (resp.httpResponseCode === 200) {
-           modalDialog.close();
-           List_Grid_Reaport_annualStatisticalReportBySection.setData(JSON.parse(resp.data).response.data);
+            modalDialog.close();
+            List_Grid_Reaport_annualStatisticalReportBySection.setData(JSON.parse(resp.data).response.data);
         }
     }
 
@@ -749,37 +766,37 @@
     })
 
     function Print(startDate,endDate) {
-            var criteriaForm = isc.DynamicForm.create({
-                method: "POST",
-                action: "<spring:url value="/unjustified/unjustifiedabsence"/>" +"/"+startDate + "/" + endDate,
-                target: "_Blank",
-                canSubmit: true,
-                fields:
-                    [
-                       {name: "token", type: "hidden"}
-                    ]
-            })
-            criteriaForm.setValue("token", "<%= accessToken %>")
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="/unjustified/unjustifiedabsence"/>" +"/"+startDate + "/" + endDate,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "token", type: "hidden"}
+                ]
+        })
+        criteriaForm.setValue("token", "<%= accessToken %>")
         criteriaForm.show();
         criteriaForm.submitForm();
-        }
+    }
 
-        function  PrintPreTest(startDate,endDate)
-        {
-            var criteriaForm = isc.DynamicForm.create({
-                method: "POST",
-                action: "<spring:url value="/preTestScoreReport/printPreTestScore"/>" +"/"+startDate + "/" + endDate,
-                target: "_Blank",
-                canSubmit: true,
-                fields:
-                    [
-                        {name: "token", type: "hidden"}
-                    ]
-            })
-            criteriaForm.setValue("token", "<%= accessToken %>")
-            criteriaForm.show();
-            criteriaForm.submitForm();
-        }
+    function  PrintPreTest(startDate,endDate)
+    {
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="/preTestScoreReport/printPreTestScore"/>" +"/"+startDate + "/" + endDate,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "token", type: "hidden"}
+                ]
+        })
+        criteriaForm.setValue("token", "<%= accessToken %>")
+        criteriaForm.show();
+        criteriaForm.submitForm();
+    }
 
     function load_term_by_year(value)
     {
