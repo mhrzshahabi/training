@@ -24,7 +24,7 @@ public class ViewAttendanceReportDTO {
     String className;
     String date;
     Integer attendanceStatus;
-    Integer time;
+    String time;
 
     @Getter
     @Setter
@@ -32,12 +32,6 @@ public class ViewAttendanceReportDTO {
     @ApiModel("AttendanceReportDTOInfo")
     public static class Info extends ViewAttendanceReportDTO {
 
-        @Getter(AccessLevel.NONE)
-        private String fixTime;
-
-        public String getFixTime() {
-            return time == null ? "0" : (time / 60) + ((time % 60) == 0 ? "" : (":" + (time % 60)));
-        }
     }
 
     @Getter

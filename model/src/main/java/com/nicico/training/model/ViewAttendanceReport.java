@@ -63,6 +63,6 @@ public class ViewAttendanceReport implements Serializable {
     private Integer attendanceStatus;
 
     @Column(name = "time")
-    private Integer time;
+    private String time;
 
 }

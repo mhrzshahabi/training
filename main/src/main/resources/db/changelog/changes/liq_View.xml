@@ -2441,10 +2441,19 @@ WHERE  rn = 1) s left join  tbl_evaluation_analysis evaluation ON evaluation.F_T
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_ATTENDANCE_REPORT-006">
+    <changeSet author="NICICO" id="VIEW_ATTENDANCE_REPORT-007">
         <createView viewName="VIEW_ATTENDANCE_REPORT" replaceIfExists="true">
             <![CDATA[
-  SELECT distinct
+  SELECT atten.personalnum,atten.personalnum2,atten.nationalcode,atten.name,atten.ccparea,atten.ccpaffairs,atten.peopleType,atten.classcode,atten.classname,atten.c_session_date,atten.c_state,
+case
+    when atten.time>=360 then
+        FLOOR((atten.time+120)/60)||(CASE WHEN MOD(atten.time+120,60)<>0 THEN ':'|| MOD(atten.time+120,60) END)
+    else
+        FLOOR(atten.time/60)||(CASE WHEN MOD(atten.time,60)<>0 THEN ':'|| MOD(atten.time,60) END)
+    end time
+FROM
+(
+SELECT distinct
     std.personnel_no AS personalnum,
     std.emp_no  AS personalnum2,
     std.national_code AS nationalcode,
@@ -2484,6 +2493,7 @@ WHERE  rn = 1) s left join  tbl_evaluation_analysis evaluation ON evaluation.F_T
     class.c_title_class,
     csession.c_session_date,
     att.c_state
+) atten
     ]]>
         </createView>
     </changeSet>

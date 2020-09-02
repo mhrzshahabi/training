@@ -202,7 +202,7 @@
                 }
             },
             {
-                name: "fixTime",
+                name: "time",
                 title: "<spring:message code="time.hour"/>",
                 includeInRecordSummary:false,
             },
