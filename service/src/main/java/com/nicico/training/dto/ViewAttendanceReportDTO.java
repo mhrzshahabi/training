@@ -19,11 +19,12 @@ public class ViewAttendanceReportDTO {
     String name;
     String ccpArea;
     String ccpAffairs;
+    String peopleType;
     String classCode;
     String className;
     String date;
-    String attendanceStatus;
-    String time;
+    Integer attendanceStatus;
+    Integer time;
 
     @Getter
     @Setter
@@ -34,8 +35,8 @@ public class ViewAttendanceReportDTO {
         @Getter(AccessLevel.NONE)
         private String fixTime;
 
-        public String getFixTime(){
-            return time != null ? time.toString().split(":")[1].equals("0") ? time.toString().split(":")[0] : time.toString() : null;
+        public String getFixTime() {
+            return time == null ? "0" : (time / 60) + ((time % 60) == 0 ? "" : (":" + (time % 60)));
         }
     }
 
