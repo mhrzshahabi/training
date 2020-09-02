@@ -1,14 +1,17 @@
 package com.nicico.training.service;
 
+import com.ibm.icu.util.PersianCalendar;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.GridResponse;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.TermDTO;
 import com.nicico.training.iservice.ITermService;
+import com.nicico.training.model.Tclass;
 import com.nicico.training.model.Term;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.repository.TermDAO;
@@ -20,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -170,6 +175,36 @@ public class TermService implements ITermService {
         request.setCriteria(new SearchDTO.CriteriaRq());
         request.getCriteria().setCriteria(criteriaRqList);
         request.getCriteria().setOperator(EOperator.or);
+        return SearchUtil.search(termDAO, request, term -> mapper.map(term, TermDTO.Info.class));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<TermDTO.Info> searchYearCurrentTerm(String year) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        String todayDate = DateUtil.convertMiToKh(dateFormat.format(date));
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        if(year.equalsIgnoreCase(todayDate.substring(0,4))) {
+            SearchDTO.CriteriaRq criteriaRq1 = makeNewCriteria("startDate", year, EOperator.contains, null);
+            SearchDTO.CriteriaRq criteriaRq2 = makeNewCriteria("startDate", todayDate, EOperator.lessOrEqual, null);
+            SearchDTO.CriteriaRq criteriaRq3 = makeNewCriteria("endDate", todayDate, EOperator.greaterOrEqual, null);
+            List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+            criteriaRqList.add(criteriaRq1);
+            criteriaRqList.add(criteriaRq2);
+            criteriaRqList.add(criteriaRq3);
+            request.setCriteria(new SearchDTO.CriteriaRq());
+            request.getCriteria().setCriteria(criteriaRqList);
+            request.getCriteria().setOperator(EOperator.and);
+        }
+        else{
+            SearchDTO.CriteriaRq criteriaRq1 = makeNewCriteria("startDate", year, EOperator.contains, null);
+            List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+            criteriaRqList.add(criteriaRq1);
+            request.setCriteria(new SearchDTO.CriteriaRq());
+            request.getCriteria().setCriteria(criteriaRqList);
+            request.getCriteria().setOperator(EOperator.and);
+        }
         return SearchUtil.search(termDAO, request, term -> mapper.map(term, TermDTO.Info.class));
     }
 
