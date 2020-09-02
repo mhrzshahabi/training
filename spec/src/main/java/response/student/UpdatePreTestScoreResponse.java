@@ -1,4 +1,4 @@
-package request.student;
+package response.student;
 
 import response.BaseResponse;
 

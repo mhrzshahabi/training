@@ -11,6 +11,7 @@
     //----------------------------------------- Variables --------------------------------------------------------------
     var questionsSelection=false;
     var classId_preTest;
+    var scoringMethod_preTest;
     //----------------------------------------- DataSources ------------------------------------------------------------
     var RestDataSource_PreTest = isc.TrDS.create({
         fields: [
@@ -675,7 +676,7 @@
                         }
                     },
                     {
-                        name: "testQuestion.tclass.teacher.fullNameFa",
+                        name: "testQuestion.tclass.teacher",
                         title: "<spring:message code="teacher"/>",
                         filterOperator: "iContains", autoFitWidth: true
                     },
@@ -740,7 +741,7 @@
                 placement: "fillScreen",
                 items: [
                     isc.ViewLoader.create({autoDraw: true, viewURL: "registerScorePreTest/show-form", viewLoaded() {
-                            eval('call_registerScorePreTest(classId_preTest)');}})
+                            eval('call_registerScorePreTest(classId_preTest,scoringMethod_preTest)');}})
                 ]
             });
             Window_registerScorePreTest.show();

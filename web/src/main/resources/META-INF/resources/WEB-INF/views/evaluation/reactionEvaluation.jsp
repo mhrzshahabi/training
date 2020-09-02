@@ -290,6 +290,8 @@
                                         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/deleteEvaluation", "POST", JSON.stringify(data), function (resp) {
                                             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                                 ListGrid_student_RE.invalidateCache();
+                                                isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
+                                                    classRecord_RE.id,"GET", null, null));
                                                 const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
                                                 setTimeout(() => {
                                                     msg.close();
@@ -866,10 +868,10 @@
                                                                     setTimeout(() => {
                                                                         msg.close();
                                                                     }, 3000);
+                                                                    isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
+                                                                        classRecord_RE.id,"GET", null, null));
                                                                     classRecord_RE.teacherEvalStatus = 0;
-// ToolStrip_SendForms_RE.getField("sendButtonTeacher").disableIcon("ok");
                                                                     ToolStrip_SendForms_RE.getField("sendButtonTeacher").hideIcon("ok");
-// ToolStrip_SendForms_RE.getField("registerButtonTeacher").disableIcon("ok");
                                                                     ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
                                                                     ToolStrip_SendForms_RE.redraw();
                                                                 } else {
@@ -984,10 +986,10 @@
                                                                     setTimeout(() => {
                                                                         msg.close();
                                                                     }, 3000);
+                                                                    isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
+                                                                        classRecord_RE.id,"GET", null, null));
                                                                     classRecord_RE.trainingEvalStatus = 0;
-// ToolStrip_SendForms_RE.getField("sendButtonTraining").disableIcon("ok");
                                                                     ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
-// ToolStrip_SendForms_RE.getField("registerButtonTraining").disableIcon("ok");
                                                                     ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
                                                                     ToolStrip_SendForms_RE.redraw();
                                                                 } else {

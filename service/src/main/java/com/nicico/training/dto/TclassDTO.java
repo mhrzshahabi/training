@@ -78,6 +78,26 @@ public class TclassDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("InfoForQB")
+    public static class InfoForQB extends TclassDTO {
+        private Long courseId;
+        private String lastModifiedBy;
+        private Long id;
+        private CourseDTO.CourseInfoTuple course;
+        @Getter(AccessLevel.NONE)
+        private TeacherDTO.TeacherFullNameTuple teacher;
+
+        public String getTeacher() {
+            if (teacher != null)
+                return teacher.getPersonality().getFirstNameFa() + " " + teacher.getPersonality().getLastNameFa();
+            else
+                return " ";
+        }
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("TclassInfo")
     public static class Info extends TclassDTO {
         private Long courseId;

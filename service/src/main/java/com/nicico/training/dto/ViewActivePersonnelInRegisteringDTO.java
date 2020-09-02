@@ -17,7 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class PersonnelDTO implements Serializable {
+public class ViewActivePersonnelInRegisteringDTO implements Serializable {
 
     @Getter
     @Setter
@@ -118,68 +118,16 @@ public class PersonnelDTO implements Serializable {
         private String address;
         private String phone;
         private String mobile;
+        private String departmentCode;
         private String email;
         private Long postId;
-
-        @Getter(AccessLevel.NONE)
-        private String fullName;
-
-        public String getFullName() {
-            return (firstName + " " + lastName).compareTo("null null") == 0 ? null : firstName + " " + lastName;
-        }
-    }
-
-    @Getter
-    @Setter
-    @Accessors
-    @ApiModel("Personnel - Info For Student")
-    public static class InfoForStudent {
-        private Long id;
-        private String firstName;
-        private String lastName;
-        private String nationalCode;
-        private String companyName;
-        private String personnelNo;
-        private String personnelNo2;
-        private String postTitle;
-        private String ccpArea;
-        private String ccpAssistant;
-        private String ccpAffairs;
-        private String ccpSection;
-        private String ccpUnit;
-        private String ccpTitle;
-        private String fatherName;
-        private String jobNo;
-        private String jobTitle;
-        private String postCode;
-        private String postGradeTitle;
-        private String workPlace;
-        private String workYears;
-        private String workMonths;
-        private String workDays;
-        private String employmentType;
-        private String employmentStatus;
-        private String educationLevelTitle;
-        private String educationMajorTitle;
-        private String workTurnTitle;
-        private String workPlaceTitle;
-        private String complexTitle;
-        private String address;
-        private String phone;
-        private String mobile;
-        private String email;
-        private Long postId;
+        private Long courseId;
+        private String courseCode;
+        private String courseTitle;
         private Boolean isInNA;
         private Long scoreState;
-
-
-        @Getter(AccessLevel.NONE)
-        private String fullName;
-
-        public String getFullName() {
-            return (firstName + " " + lastName).compareTo("null null") == 0 ? null : firstName + " " + lastName;
-        }
     }
+
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -196,7 +144,7 @@ public class PersonnelDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("PersonnelSpecRs")
     public static class PersonnelSpecRs {
-        private PersonnelDTO.SpecRs response;
+        private ViewActivePersonnelInRegisteringDTO.SpecRs response;
     }
 
     //*********************************

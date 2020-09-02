@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="preTestForm" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5c7879da-4fe6-4e43-878c-062f863d8266">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="preTestForm" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Error" uuid="5c7879da-4fe6-4e43-878c-062f863d8266">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<subDataset name="content" uuid="81142457-8391-4b66-adcf-4c129665a1be">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
@@ -40,7 +40,7 @@
 	<title>
 		<band height="97" splitType="Stretch">
 			<rectangle radius="5">
-				<reportElement x="-1" y="-1" width="560" height="89" backcolor="#D4FFFE" uuid="b0bdc503-f4b4-4cad-8290-051117f53873"/>
+				<reportElement x="-1" y="-1" width="560" height="89" backcolor="#FFD7A7" uuid="b0bdc503-f4b4-4cad-8290-051117f53873"/>
 			</rectangle>
 			<image>
 				<reportElement x="490" y="8" width="61" height="62" uuid="96d9dc3a-881d-4d3f-b7e5-45330306b6fa"/>
@@ -201,7 +201,7 @@ new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 						<textFieldExpression><![CDATA[$F{option1}]]></textFieldExpression>
 					</textField>
 					<rectangle radius="5">
-						<reportElement x="110" y="2" width="15" height="15" backcolor="#FFFFFF" uuid="edc9de9a-34bf-42a9-b8cd-9f55c749dd8d">
+						<reportElement x="110" y="2" width="15" height="15" forecolor="#FE9D2A" backcolor="#FFFFFF" uuid="edc9de9a-34bf-42a9-b8cd-9f55c749dd8d">
 							<property name="com.jaspersoft.studio.element.name" value="h"/>
 						</reportElement>
 					</rectangle>
@@ -218,7 +218,7 @@ new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 						<textFieldExpression><![CDATA[$F{option2}]]></textFieldExpression>
 					</textField>
 					<rectangle radius="5">
-						<reportElement x="110" y="2" width="15" height="15" backcolor="#FFFFFF" uuid="da937291-8f8e-46af-9374-f191df8b69ec">
+						<reportElement x="110" y="2" width="15" height="15" forecolor="#FE9D2A" backcolor="#FFFFFF" uuid="da937291-8f8e-46af-9374-f191df8b69ec">
 							<property name="com.jaspersoft.studio.element.name" value="h"/>
 						</reportElement>
 					</rectangle>
@@ -235,7 +235,7 @@ new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 						<textFieldExpression><![CDATA[$F{option3}]]></textFieldExpression>
 					</textField>
 					<rectangle radius="5">
-						<reportElement x="110" y="2" width="15" height="15" backcolor="#FFFFFF" uuid="46e2b034-e3c9-43a7-88d6-b3eae5b562de">
+						<reportElement x="110" y="2" width="15" height="15" forecolor="#FE9D2A" backcolor="#FFFFFF" uuid="46e2b034-e3c9-43a7-88d6-b3eae5b562de">
 							<property name="com.jaspersoft.studio.element.name" value="h"/>
 						</reportElement>
 					</rectangle>
@@ -252,7 +252,7 @@ new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 						<textFieldExpression><![CDATA[$F{option4}]]></textFieldExpression>
 					</textField>
 					<rectangle radius="5">
-						<reportElement x="110" y="2" width="15" height="15" backcolor="#FFFFFF" uuid="a0df97a7-0466-49da-ba78-d8aab5b27d13">
+						<reportElement x="110" y="2" width="15" height="15" forecolor="#FE9D2A" backcolor="#FFFFFF" uuid="a0df97a7-0466-49da-ba78-d8aab5b27d13">
 							<property name="com.jaspersoft.studio.element.name" value="h"/>
 						</reportElement>
 					</rectangle>
@@ -274,7 +274,7 @@ new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 					<textFieldExpression><![CDATA[$F{option1}]]></textFieldExpression>
 				</textField>
 				<rectangle radius="5">
-					<reportElement x="520" y="2" width="15" height="15" backcolor="#FFFFFF" uuid="55322b80-e5ba-4849-afe2-807901e00afa">
+					<reportElement x="520" y="2" width="15" height="15" forecolor="#FE9D2A" backcolor="#FFFFFF" uuid="55322b80-e5ba-4849-afe2-807901e00afa">
 						<property name="com.jaspersoft.studio.element.name" value="v"/>
 					</reportElement>
 				</rectangle>
@@ -295,7 +295,7 @@ new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 					<textFieldExpression><![CDATA[$F{option2}]]></textFieldExpression>
 				</textField>
 				<rectangle radius="5">
-					<reportElement x="520" y="2" width="15" height="15" backcolor="#FFFFFF" uuid="7f8a3e89-6f53-491e-b930-be3f80a5da4a">
+					<reportElement x="520" y="2" width="15" height="15" forecolor="#FE9D2A" backcolor="#FFFFFF" uuid="7f8a3e89-6f53-491e-b930-be3f80a5da4a">
 						<property name="com.jaspersoft.studio.element.name" value="v"/>
 					</reportElement>
 				</rectangle>
@@ -316,7 +316,7 @@ new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 					<textFieldExpression><![CDATA[$F{option3}]]></textFieldExpression>
 				</textField>
 				<rectangle radius="5">
-					<reportElement x="520" y="2" width="15" height="15" backcolor="#FFFFFF" uuid="b9764214-332a-47f1-b92a-6a6f4d411cf1">
+					<reportElement x="520" y="2" width="15" height="15" forecolor="#FE9D2A" backcolor="#FFFFFF" uuid="b9764214-332a-47f1-b92a-6a6f4d411cf1">
 						<property name="com.jaspersoft.studio.element.name" value="v"/>
 					</reportElement>
 				</rectangle>
@@ -337,7 +337,7 @@ new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 					<textFieldExpression><![CDATA[$F{option4}]]></textFieldExpression>
 				</textField>
 				<rectangle radius="5">
-					<reportElement x="521" y="2" width="15" height="15" backcolor="#FFFFFF" uuid="ed63c824-1bce-4ff1-a8fa-3c61463feb7d">
+					<reportElement x="521" y="2" width="15" height="15" forecolor="#FE9D2A" backcolor="#FFFFFF" uuid="ed63c824-1bce-4ff1-a8fa-3c61463feb7d">
 						<property name="com.jaspersoft.studio.element.name" value="v"/>
 					</reportElement>
 				</rectangle>

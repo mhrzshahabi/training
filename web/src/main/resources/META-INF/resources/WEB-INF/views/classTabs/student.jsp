@@ -452,8 +452,6 @@
                         postCode: record.student.postCode
                     };
 
-                    //console.log(selectedRecord_addStudent_class);
-
                     let window_class_Information = isc.Window.create({
                         title: "<spring:message code="personnel.information"/>",
                         width: "70%",
@@ -550,16 +548,44 @@
                     displayField: "title",
                     filterOnKeypress: true,
                 },
+                {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, hidden: true},
                 {name: "registerTypeId", title: "پرسنل", canEdit: false,
                     formatCellValue(value){
                         return (value === 1 ? "هست" : "نیست");
                     }
                 },
-                {name: "isNeedsAssessment", type: "boolean", canEdit: false, title:"نیازسنجی"},
+                {
+                    name: "isInNA",
+                    title: "نیازسنجی",
+                    filterOperator: "equals",
+                    type: "boolean",
+                    filterOnKeypress: true
+                },
+                {
+                    name: "scoreState",
+                    title: "سوابق",
+                    filterOperator: "equals",
+                    filterOnKeypress: true,
+                    valueMap: {
+                        400: "قبول با نمره",
+                        401: "قبول بدون نمره",
+                        410: "ثبت نام شده",
+                    }
+                },
+                {
+                    name: "departmentCode",
+                    title: "کد دپارتمان",
+                    hidden: true
+                },
+                {
+                    name: "postCode",
+                    title: "کد پست",
+                    hidden: true
+                },
+                /*{name: "isNeedsAssessment", type: "boolean", canEdit: false, title:"نیازسنجی"},
                 {name: "isPassed", type: "boolean", canEdit: false, title:"گذرانده"},
-                {name: "isRunning", type: "boolean", canEdit: false, title:"در حال گذراندن"},
+                {name: "isRunning", type: "boolean", canEdit: false, title:"در حال گذراندن"},*/
                 <%--{name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-                <%--{name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},--%>
                 <%--{name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},--%>
                 <%--{name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},--%>
                 <%--{name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains"},--%>
@@ -641,12 +667,12 @@
                 }
                 return result;
             },
-            dataChanged(){
+            /*dataChanged(){
                 if(checkRefresh === 0) {
                     checkRefresh = 1
                     checkExistInNeedsAssessment(ListGrid_Class_JspClass.getSelectedRecord().courseId)
                 }
-            }
+            }*/
         });
 
         let PersonnelDS_student = isc.TrDS.create({
@@ -727,8 +753,28 @@
                     title: "<spring:message code="reward.cost.center.unit"/>",
                     filterOperator: "iContains"
                 },
+                {
+                    name: "isInNA",
+                    title: "نیازسنجی",
+                    filterOperator: "equals",
+                    type: "boolean",
+                    filterOnKeypress: true
+                },
+                {
+                    name: "scoreState",
+                    title: "سوابق",
+                    filterOperator: "equals",
+                    filterOnKeypress: true,
+                    valueMap: {
+                        400: "قبول با نمره",
+                        401: "قبول بدون نمره",
+                        410: "ثبت نام شده",
+                    }
+                },
+                {name: "departmentCode", hidden: true},
+                {name: "postCode", hidden: true},
             ],
-            fetchDataURL: viewActivePersonnelUrl + "/iscList",
+            fetchDataURL: viewActivePersonnelInRegisteringUrl + "/spec-list",
         });
 
         let PersonnelsLG_student = isc.TrLG.create({
@@ -763,6 +809,8 @@
                 {name: "ccpAffairs", hidden: true},
                 {name: "ccpSection", hidden: true},
                 {name: "ccpUnit", hidden: true},
+                {name:"isInNA"},
+                {name:"scoreState"},
             ],
             gridComponents: [PersonnelsTS_student, "filterEditor", "header", "body"],
             selectionAppearance: "checkbox",
@@ -1206,7 +1254,7 @@
                                     isc.ToolStripButtonAdd.create({
                                         title: 'اضافه کردن گروهي',
                                         click: function () {
-                                            groupFilter("اضافه کردن گروهی", personnelUrl + "/checkPersonnelNos/", checkPersonnelNosResponse, true);
+                                           groupFilter("اضافه کردن گروهی", personnelUrl + "/checkPersonnelNos", checkPersonnelNosResponse, true, true, ListGrid_Class_JspClass.getSelectedRecord().courseId);
                                         }
                                     })
                                 ]
@@ -1236,7 +1284,7 @@
                                 isc.ToolStripButtonAdd.create({
                                     title: 'اضافه کردن گروهي',
                                     click: function () {
-                                        groupFilter("اضافه کردن گروهی", personnelRegUrl + "/checkPersonnelNos/", checkPersonnelNosResponse, true);
+                                        groupFilter("اضافه کردن گروهی", personnelRegUrl + "/checkPersonnelNos", checkPersonnelNosResponse, true, true, ListGrid_Class_JspClass.getSelectedRecord().courseId);
                                     }
                                 })
                             ]
@@ -1288,21 +1336,21 @@
                                         title: "<spring:message code='save'/>",
                                         align: "center",
                                         icon: "[SKIN]/actions/save.png",
-                                        click: function () {
-                                            let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
-                                            // for (let i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
-                                            //     students.add({
-                                            //         "personnelNo": SelectedPersonnelsLG_student.data[i].personnelNo,
-                                            //         "applicantCompanyName": SelectedPersonnelsLG_student.data[i].applicantCompanyName,
-                                            //         "presenceTypeId": SelectedPersonnelsLG_student.data[i].presenceTypeId,
-                                            //         "registerTypeId": SelectedPersonnelsLG_student.data[i].registerTypeId
-                                            //     });
-                                            // }
-                                            if (SelectedPersonnelsLG_student.data.toArray().getLength() > 0) {
-                                                wait.show()
-                                                isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST", JSON.stringify(SelectedPersonnelsLG_student.data.toArray()), class_add_students_result));
-                                            }
-                                            SelectedPersonnelsLG_student.data.clearAll();
+                                        click:function () {
+                                                let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
+                                                // for (let i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
+                                                //     students.add({
+                                                //         "personnelNo": SelectedPersonnelsLG_student.data[i].personnelNo,
+                                                //         "applicantCompanyName": SelectedPersonnelsLG_student.data[i].applicantCompanyName,
+                                                //         "presenceTypeId": SelectedPersonnelsLG_student.data[i].presenceTypeId,
+                                                //         "registerTypeId": SelectedPersonnelsLG_student.data[i].registerTypeId
+                                                //     });
+                                                // }
+                                                if (SelectedPersonnelsLG_student.data.toArray().getLength() > 0) {
+                                                    wait.show()
+                                                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST", JSON.stringify(SelectedPersonnelsLG_student.data.toArray()), class_add_students_result));
+                                                }
+                                                SelectedPersonnelsLG_student.data.clearAll();
                                         }
                                     }),
                                     isc.IButtonCancel.create({
@@ -1368,7 +1416,13 @@
                 return;
             }
             ClassStudentWin_student.setTitle("<spring:message code="add.student.to.class"/> \'" + classRecord.titleClass + "\'");
+            let cr = {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [{fieldName: "courseId", operator: "equals", value: classRecord.courseId}]
+            };
             PersonnelsLG_student.invalidateCache();
+            PersonnelsLG_student.setImplicitCriteria(cr);
             PersonnelsLG_student.fetchData();
             PersonnelsRegLG_student.invalidateCache();
             PersonnelsRegLG_student.fetchData();
@@ -1615,7 +1669,7 @@
 
         function checkPersonnelNosResponse(url, result, addStudentsInGroupInsert) {
             isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(result)
-                , "callback: checkPersonnelNos(rpcResponse," + JSON.stringify(result) + ",'" + url + "'," + addStudentsInGroupInsert + ")"));
+                , "callback: checkPersonnelNos(rpcResponse," + JSON.stringify(result) + ",'" + url + "'," + addStudentsInGroupInsert +")"));
         }
 
         function checkPersonnelNos(resp, result, url, insert) {
@@ -1661,6 +1715,8 @@
                                     list[i].nationalCode = person.nationalCode;
                                     list[i].personnelNo1 = person.personnelNo;
                                     list[i].personnelNo2 = person.personnelNo2;
+                                    list[i].isInNA = person.isInNA;
+                                    list[i].scoreState = person.scoreState;
                                     list[i].error = true;
                                     list[i].hasWarning = "warning";
                                     list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">اطلاعات شخص مورد نظر ناقص است. کد ملی برای این شخص وارد نشده است.</span>";
@@ -1671,6 +1727,8 @@
                                     list[i].nationalCode = person.nationalCode;
                                     list[i].personnelNo1 = person.personnelNo;
                                     list[i].personnelNo2 = person.personnelNo2;
+                                    list[i].isInNA = person.isInNA;
+                                    list[i].scoreState = person.scoreState;
                                     list[i].error = true;
                                     list[i].hasWarning = "warning";
                                     list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">این شخص قبلا اضافه شده است.</span>";
@@ -1680,6 +1738,8 @@
                                     list[i].nationalCode = person.nationalCode;
                                     list[i].personnelNo1 = person.personnelNo;
                                     list[i].personnelNo2 = person.personnelNo2;
+                                    list[i].isInNA = person.isInNA;
+                                    list[i].scoreState = person.scoreState;
                                     list[i].error = false;
                                     list[i].hasWarning = "check";
                                     list[i].description = "";
@@ -1713,7 +1773,7 @@
                             }
                         }*/
                         //if (students.getLength() > 0)
-                        wait.show()
+                        wait.show();
                         isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST", JSON.stringify(students), class_add_students_result));
 
                         SelectedPersonnelsLG_student.data.clearAll();

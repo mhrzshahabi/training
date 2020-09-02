@@ -35,5 +35,11 @@ public class DynamicQuestion extends Auditable {
 
     @Column(name="f_type")
     private Long typeId;
+
+    @Column(name = "skill_id")
+    private Long skillId;
+
+    @Column(name = "goal_id")
+    private Long goalId;
 }
 
