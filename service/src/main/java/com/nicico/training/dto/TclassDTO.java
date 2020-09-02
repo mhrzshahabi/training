@@ -458,6 +458,8 @@ public class TclassDTO {
         double studentsGradeToFacility;
         double studentsGradeToGoals;
         double trainingGradeToTeacher;
+        double z1;
+        double z2;
     }
 
     @Getter

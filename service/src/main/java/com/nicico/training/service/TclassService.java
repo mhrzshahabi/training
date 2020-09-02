@@ -569,6 +569,9 @@ public class TclassService implements ITclassService {
         evaluationResult.setStudentsGradeToTeacher(Double.parseDouble(numberFormat.format(studentsGradeToTeacher).toString()));
         evaluationResult.setTrainingGradeToTeacher(Double.parseDouble(numberFormat.format(trainingGradeToTeacher).toString()));
         evaluationResult.setTeacherGradeToClass(Double.parseDouble(numberFormat.format(teacherGradeToClass).toString()));
+
+        evaluationResult.setZ1(Double.parseDouble(FETGradeResult.get("z1").toString()));
+        evaluationResult.setZ2(Double.parseDouble(FETGradeResult.get("z2").toString()));
         return evaluationResult;
     }
 
@@ -789,6 +792,8 @@ public class TclassService implements ITclassService {
         result.put("FETPass", FETPass);
         result.put("minScore_ET", minScore_ET);
         result.put("minQus_ET", minQus_ET);
+        result.put("z1",z1);
+        result.put("z2",z2);
 
         return result;
     }
