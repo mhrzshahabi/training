@@ -3504,110 +3504,101 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_TRAINING_OVER_TIME_REPORT-005">
+    <changeSet author="NICICO" id="VIEW_TRAINING_OVER_TIME_REPORT-006">
         <createView viewName="VIEW_TRAINING_OVER_TIME_REPORT" replaceIfExists="true">
             <![CDATA[
- SELECT DISTINCT
-    std.personnel_no      AS personalnum,
-    std.emp_no            AS personalnum2,
-    std.national_code     AS nationalcode,
-    std.first_name
-    || ' '
-    || std.last_name AS name,
-    dep.c_hoze_title      AS ccparea,
-    dep.c_omor_title      AS ccpaffairs,
-    class.c_code          AS classcode,
-    class.c_title_class   AS classname,
-    csession.c_session_date,
-    CASE
-            WHEN floor(SUM(round(to_number(to_date((
-                CASE
-                    WHEN substr(csession.c_session_end_hour, 1, 2) > 23 THEN
-                        '23:59'
-                    ELSE
-                        csession.c_session_end_hour
-                END
-            ), 'HH24:MI') - to_date((
-                CASE
-                    WHEN substr(csession.c_session_start_hour, 1, 2) > 23 THEN
-                        '23:59'
-                    ELSE
-                        csession.c_session_start_hour
-                END
-            ), 'HH24:MI')) * 24 * 60, 0)) / 60) >= 6 THEN
-                floor(SUM(round(to_number(to_date((
-                    CASE
-                        WHEN substr(csession.c_session_end_hour, 1, 2) > 23 THEN
-                            '23:59'
-                        ELSE
-                            csession.c_session_end_hour
-                    END
-                ), 'HH24:MI') - to_date((
-                    CASE
-                        WHEN substr(csession.c_session_start_hour, 1, 2) > 23 THEN
-                            '23:59'
-                        ELSE
-                            csession.c_session_start_hour
-                    END
-                ), 'HH24:MI')) * 24 * 60, 0)) / 60) + 2
-            ELSE
-                floor(SUM(round(to_number(to_date((
-                    CASE
-                        WHEN substr(csession.c_session_end_hour, 1, 2) > 23 THEN
-                            '23:59'
-                        ELSE
-                            csession.c_session_end_hour
-                    END
-                ), 'HH24:MI') - to_date((
-                    CASE
-                        WHEN substr(csession.c_session_start_hour, 1, 2) > 23 THEN
-                            '23:59'
-                        ELSE
-                            csession.c_session_start_hour
-                    END
-                ), 'HH24:MI')) * 24 * 60, 0)) / 60)
-        END
-    || ':'
-    || mod(SUM(round(to_number(to_date((
+ SELECT
+        atten.personalnum,
+        atten.personalnum2,
+        atten.nationalcode,
+        atten.name,
+        atten.ccparea,
+        atten.ccpaffairs,
+        atten.peopletype,
+        atten.classcode,
+        atten.classname,
+        atten.c_session_date,
         CASE
-            WHEN substr(csession.c_session_end_hour, 1, 2) > 23 THEN
-                '23:59'
+            WHEN atten.time >= 360 THEN
+                floor((atten.time + 120) / 60)
+                || (
+                    CASE
+                        WHEN mod(atten.time + 120, 60) <> 0 THEN
+                            ':'
+                            || mod(atten.time + 120, 60)
+                    END
+                )
             ELSE
-                csession.c_session_end_hour
-        END
-    ), 'HH24:MI') - to_date((
-        CASE
-            WHEN substr(csession.c_session_start_hour, 1, 2) > 23 THEN
-                '23:59'
-            ELSE
-                csession.c_session_start_hour
-        END
-    ), 'HH24:MI')) * 24 * 60)), 60) AS time
-FROM
-   tbl_attendance   att
-    INNER JOIN tbl_student      std ON att.f_student = std.id
-    INNER JOIN (
-        SELECT
-            *
-        FROM
-            view_active_personnel
-    ) personnel ON std.national_code = personnel.national_code
-    LEFT JOIN tbl_department   dep ON dep.id = personnel.f_department_id
-    INNER JOIN tbl_session      csession ON att.f_session = csession.id
-    INNER JOIN tbl_class        class ON csession.f_class_id = class.id
-WHERE
-    att.c_state = '2'
-GROUP BY std.personnel_no,
-std.emp_no,
-std.national_code,
-std.first_name
-|| ' '
-   || std.last_name,
-dep.c_hoze_title,
-dep.c_omor_title,
-class.c_code,
-class.c_title_class,
-csession.c_session_date
+                floor(atten.time / 60)
+                || (
+                    CASE
+                        WHEN mod(atten.time, 60) <> 0 THEN
+                            ':'
+                            || mod(atten.time, 60)
+                    END
+                )
+        END time
+    FROM
+        (
+            SELECT DISTINCT
+                std.personnel_no         AS personalnum,
+                std.emp_no               AS personalnum2,
+                std.national_code        AS nationalcode,
+                std.first_name
+                || ' '
+                   || std.last_name AS name,
+                dep.c_hoze_title         AS ccparea,
+                dep.c_omor_title         AS ccpaffairs,
+                personnel.personeltype   AS peopletype,
+                class.c_code             AS classcode,
+                class.c_title_class      AS classname,
+                csession.c_session_date,
+                SUM((to_number(substr(csession.c_session_end_hour, 1, 2)) * 60 + to_number(substr(csession.c_session_end_hour, 4,
+                2))) -(to_number(substr(csession.c_session_start_hour, 1, 2)) * 60 + to_number(substr(csession.c_session_start_hour
+                , 4, 2)))) AS time
+            FROM
+                tbl_attendance   att
+                INNER JOIN tbl_student      std ON att.f_student = std.id
+                INNER JOIN (
+                    SELECT
+                        CAST("P_TYPE" AS VARCHAR2(50)) personeltype,
+                        "PERSONNEL_NO",
+                        national_code,
+                        first_name,
+                        last_name,
+                        f_department_id
+                    FROM
+                        view_active_personnel
+                    UNION ALL
+                    SELECT
+                        CAST('personnel_registered' AS VARCHAR2(50)) personeltype,
+                        "PERSONNEL_NO",
+                        national_code,
+                        first_name,
+                        last_name,
+                        f_department_id
+                    FROM
+                        tbl_personnel_registered
+                ) personnel ON std.national_code = personnel.national_code
+                LEFT JOIN tbl_department   dep ON dep.id = personnel.f_department_id
+                INNER JOIN tbl_session      csession ON att.f_session = csession.id
+                INNER JOIN tbl_class        class ON csession.f_class_id = class.id
+            WHERE
+                att.c_state = '2'
+            GROUP BY
+                std.personnel_no,
+                std.emp_no,
+                std.national_code,
+                std.first_name
+                || ' '
+                   || std.last_name,
+                dep.c_hoze_title,
+                dep.c_omor_title,
+                personnel.personeltype,
+                class.c_code,
+                class.c_title_class,
+                csession.c_session_date
+        ) atten
             ]]>
         </createView>
     </changeSet>

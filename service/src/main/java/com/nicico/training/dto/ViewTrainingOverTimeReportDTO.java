@@ -23,19 +23,13 @@ public class ViewTrainingOverTimeReportDTO {
     String className;
     String date;
     String time;
+    String peopleType;
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("TrainingOverTimeReportDTOInfo")
     public static class Info extends ViewTrainingOverTimeReportDTO {
-
-        @Getter(AccessLevel.NONE)
-        private String fixTime;
-
-        public String getFixTime(){
-            return time != null ? time.toString().split(":")[1].equals("0") ? time.toString().split(":")[0] : time.toString() : null;
-        }
     }
 
     @Getter
