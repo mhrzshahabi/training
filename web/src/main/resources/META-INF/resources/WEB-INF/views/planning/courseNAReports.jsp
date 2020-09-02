@@ -454,7 +454,7 @@
                 break;
 
             case 7:
-                nameField="job.id";
+                nameField="jobId";
                 break;
         }
 
