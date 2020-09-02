@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.Collectors;
@@ -74,7 +75,16 @@ public class ViewTrainingPostRestController {
                 List<JobDTO.Info> jobs = jobGroupService.getJobs(Long.parseLong(lists.get(0).get(0).toString()));
                 List<Long> jobIds = jobs.stream().map(a -> a.getId()).collect(Collectors.toList());
                 if(jobIds.size()==0){
-                    jobIds.add(-1L);
+                    CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
+                    specResponse.setData(new ArrayList())
+                            .setStartRow(0)
+                            .setEndRow(0)
+                            .setTotalRows(0);
+
+                    final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
+                    specRs.setResponse(specResponse);
+
+                    return new ResponseEntity<>(specRs, HttpStatus.OK);
                 }
 //                ArrayList<SearchDTO.CriteriaRq> listCR = new ArrayList<>();
                 criteriaRq.getCriteria().add(makeNewCriteria("jobId", jobIds, EOperator.inSet, null));
@@ -87,7 +97,16 @@ public class ViewTrainingPostRestController {
                 List<Long> ids = postGrades.stream().map(a -> a.getId()).collect(Collectors.toList());
 
                 if(ids.size()==0){
-                    ids.add(-1L);
+                    CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
+                    specResponse.setData(new ArrayList())
+                            .setStartRow(0)
+                            .setEndRow(0)
+                            .setTotalRows(0);
+
+                    final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
+                    specRs.setResponse(specResponse);
+
+                    return new ResponseEntity<>(specRs, HttpStatus.OK);
                 }
 //                ArrayList<SearchDTO.CriteriaRq> listCR = new ArrayList<>();
                 criteriaRq.getCriteria().add(makeNewCriteria("postGradeId", ids, EOperator.inSet, null));
