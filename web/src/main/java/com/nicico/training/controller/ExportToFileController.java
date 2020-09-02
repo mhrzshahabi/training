@@ -519,7 +519,7 @@ public class ExportToFileController {
                 Long teacherId = null;
                 SearchDTO.CriteriaRq removeCriterion = null;
                 for (SearchDTO.CriteriaRq criterion : searchRq.getCriteria().getCriteria()) {
-                    if(criterion.getFieldName().equalsIgnoreCase("teacherId")){
+                    if(criterion.getFieldName() != null && criterion.getFieldName().equalsIgnoreCase("teacherId")){
                         teacherId = ((Integer) criterion.getValue().get(0)).longValue();
                         removeCriterion = criterion;
                     }
