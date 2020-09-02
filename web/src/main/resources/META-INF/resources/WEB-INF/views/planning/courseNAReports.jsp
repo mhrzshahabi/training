@@ -508,7 +508,7 @@
             data: [
                 {title: "<spring:message code='company'/>", click: function () {Show_Personnel_Window_CNAR(8)}},
                 {title: "<spring:message code='area'/>", click: function () {Show_Personnel_Window_CNAR(9)}},
-                {title: "<spring:message code='complex'/>", click: function () {Show_Personnel_Window_CNAR(10)}},
+                <%--{title: "<spring:message code='complex'/>", click: function () {Show_Personnel_Window_CNAR(10)}},--%>
                 {title: "<spring:message code='assistance'/>", click: function () {Show_Personnel_Window_CNAR(11)}},
                 {title: "<spring:message code='affairs'/>", click: function () {Show_Personnel_Window_CNAR(12)}},
                 {title: "<spring:message code='unit'/>", click: function () {Show_Personnel_Window_CNAR(13)}},

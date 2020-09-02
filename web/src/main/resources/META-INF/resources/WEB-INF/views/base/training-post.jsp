@@ -238,8 +238,7 @@
             ListGrid_TrainingPost_edit();
         },
         getCellCSSText: function (record) {
-            if (record.competenceCount === 0)
-                return "color:red;font-size: 12px;";
+            return setColorForListGrid(record);
         },
     });
 

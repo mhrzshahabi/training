@@ -3,8 +3,8 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.training.dto.NeedsAssessmentReportsDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.NeedsAssessmentReportsDTO;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.iservice.ICourseService;
@@ -43,6 +43,7 @@ public class NeedsAssessmentReportsService {
     private final PostGradeGroupDAO postGradeGroupDAO;
     private final NeedsAssessmentDAO needsAssessmentDAO;
     private final NeedsAssessmentTempDAO needsAssessmentTempDAO;
+    private final PersonnelCoursePassedNAReportViewDAO personnelCoursePassedNAReportViewDAO;
 
     private final ClassStudentReportService classStudentReportService;
     private final IPersonnelService personnelService;
@@ -289,41 +290,120 @@ public class NeedsAssessmentReportsService {
         return searchRs;
     }
 
+    private void convertCriteriaToParams(SearchDTO.CriteriaRq criteria,
+                                         HashMap<String, String> map) {
+        if (criteria == null)
+            return;
+        if (criteria.getFieldName() == null) {
+            if (criteria.getCriteria() != null && !criteria.getCriteria().isEmpty()) {
+                for (int i = 0; i < criteria.getCriteria().size(); i++) {
+                    convertCriteriaToParams(criteria.getCriteria().get(i),
+                            map);
+                }
+            }
+            return;
+        }
+        switch (criteria.getFieldName()) {
+            case "ccpArea":
+                map.put("personnelCppArea", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
+                break;
+            case "ccpAreaCode":
+                map.put("personnelCppAreaCode", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
+                break;
+            case "ccpAssistant":
+                map.put("personnelCcpAssistant", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
+                break;
+            case "ccpAssistantCode":
+                map.put("personnelCcpAssistantCode", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
+                break;
+            case "ccpAffairs":
+                map.put("personnelCppAffairs", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
+                break;
+            case "ccpAffairsCode":
+                map.put("personnelCppAffairsCode", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
+                break;
+            case "ccpSection":
+                map.put("personnelCcpSection", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
+                break;
+            case "ccpSectionCode":
+                map.put("personnelCcpSectionCode", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
+                break;
+            case "ccpUnit":
+                map.put("personnelCcpUnit", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
+                break;
+            case "ccpUnitCode":
+                map.put("personnelCcpUnitCode", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
+                break;
+            case "companyName":
+                map.put("personnelCompanyName", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
+                break;
+            case "educationLevelTitle":
+                map.put("eduLevelTitle", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
+                break;
+            case "jobTitle":
+                map.put("jobId", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
+                break;
+        }
+    }
+
     @Transactional(readOnly = true)
 //    @Override
     public SearchDTO.SearchRs<NeedsAssessmentReportsDTO.CourseNAS> getCourseNA(SearchDTO.SearchRq request, Long courseId, Boolean passedReport) {
 
+        HashMap<String, String> map = new HashMap<>();
+        if (request.getCriteria() != null)
+            convertCriteriaToParams(request.getCriteria(), map);
+
+        List<List<Integer>> personnelCountByPriority = personnelCoursePassedNAReportViewDAO.getPersonnelCountByPriority(
+                courseId,
+                map.get("personnelCppArea"),
+                map.get("personnelCppAreaCode"),
+                map.get("personnelCcpAssistant"),
+                map.get("personnelCcpAssistantCode"),
+                map.get("personnelCppAffairs"),
+                map.get("personnelCppAffairsCode"),
+                map.get("personnelCcpSection"),
+                map.get("personnelCcpSectionCode"),
+                map.get("personnelCcpUnit"),
+                map.get("personnelCcpUnitCode"),
+                map.get("personnelCompanyName"),
+                map.get("eduLevelTitle"),
+                map.get("jobId") != null ? Long.parseLong(map.get("jobId")) : -1);
+
         List<NeedsAssessmentReportsDTO.CourseNAS> result = new ArrayList<>();
         needsAssessmentPriorityCodes.forEach(code -> {
-            Long pId = parameterValueService.getId(code);
-            result.add(new NeedsAssessmentReportsDTO.CourseNAS().setNeedsAssessmentPriorityId(pId));
+            NeedsAssessmentReportsDTO.CourseNAS courseNAS = new NeedsAssessmentReportsDTO.CourseNAS().setNeedsAssessmentPriorityId(parameterValueService.getId(code));
+            courseNAS.setTotalPersonnelCount(personnelCountByPriority.get(0).get(2 * (courseNAS.getNeedsAssessmentPriorityId().intValue() - 111)));
+            courseNAS.setPassedPersonnelCount(personnelCountByPriority.get(0).get(2 * (courseNAS.getNeedsAssessmentPriorityId().intValue() - 111) + 1));
+            result.add(courseNAS);
         });
-        Course course = courseService.getCourse(courseId);
-        List<NeedsAssessment> needsAssessments = new ArrayList<>();
-        course.getSkillSet().forEach(skill -> needsAssessments.addAll(skill.getNeedsAssessments().stream().filter(na -> na.getDeleted() == null).collect(Collectors.toList())));
-        Comparator<NeedsAssessment> comparator = Comparator.comparing(na -> NeedsAssessment.priorityList.indexOf(na.getObjectType()));
-        comparator = comparator.thenComparing(NeedsAssessment::getNeedsAssessmentPriorityId);
-        needsAssessments.sort(comparator);
-        MultiValueMap postsGByPriority = getNAPostsGByPriority(needsAssessments);
-        postsGByPriority.forEach((priority, postList) -> {
-            SearchDTO.CriteriaRq personnelCriteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-            if (request.getCriteria() != null)
-                personnelCriteria.getCriteria().add(request.getCriteria());
-            for (int i = 0; i < ((List<Post>) postList).size(); i += 900) {
-                int endIndex = i + 900 >= ((List<Post>) postList).size() ? ((List<Post>) postList).size() - 1 : i + 900;
-                personnelCriteria.getCriteria().add(makeNewCriteria("postCode", ((List<Post>) postList).subList(i, endIndex).stream().map(Post::getCode).collect(Collectors.toList()), EOperator.inSet, null));
-            }
-            List<PersonnelDTO.Info> personnelInfoList = personnelService.search(new SearchDTO.SearchRq().setCriteria(personnelCriteria).setDistinct(true)).getList();
-            NeedsAssessmentReportsDTO.CourseNAS courseNAS = result.stream().filter(courseNAS1 -> courseNAS1.getNeedsAssessmentPriorityId().equals((Long) priority)).findFirst().orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-            courseNAS.setTotalPersonnelCount(personnelInfoList.size());
-            if (passedReport) {
-                personnelInfoList.forEach(p -> {
-                    if (classStudentReportService.isPassed(course, p.getNationalCode()))
-                        courseNAS.setPassedPersonnelCount(courseNAS.getPassedPersonnelCount() + 1);
-                });
-            }
-//            result.add(courseNAS);
-        });
+
+//        Course course = courseService.getCourse(courseId);
+//        List<NeedsAssessment> needsAssessments = new ArrayList<>();
+//        course.getSkillSet().forEach(skill -> needsAssessments.addAll(skill.getNeedsAssessments().stream().filter(na -> na.getDeleted() == null).collect(Collectors.toList())));
+//        Comparator<NeedsAssessment> comparator = Comparator.comparing(na -> NeedsAssessment.priorityList.indexOf(na.getObjectType()));
+//        comparator = comparator.thenComparing(NeedsAssessment::getNeedsAssessmentPriorityId);
+//        needsAssessments.sort(comparator);
+//        MultiValueMap postsGByPriority = getNAPostsGByPriority(needsAssessments);
+//        postsGByPriority.forEach((priority, postList) -> {
+//            SearchDTO.CriteriaRq personnelCriteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+//            if (request.getCriteria() != null)
+//                personnelCriteria.getCriteria().add(request.getCriteria());
+//            for (int i = 0; i < ((List<Post>) postList).size(); i += 900) {
+//                int endIndex = i + 900 >= ((List<Post>) postList).size() ? ((List<Post>) postList).size() - 1 : i + 900;
+//                personnelCriteria.getCriteria().add(makeNewCriteria("postCode", ((List<Post>) postList).subList(i, endIndex).stream().map(Post::getCode).collect(Collectors.toList()), EOperator.inSet, null));
+//            }
+//            List<PersonnelDTO.Info> personnelInfoList = personnelService.search(new SearchDTO.SearchRq().setCriteria(personnelCriteria).setDistinct(true)).getList();
+//            NeedsAssessmentReportsDTO.CourseNAS courseNAS = result.stream().filter(courseNAS1 -> courseNAS1.getNeedsAssessmentPriorityId().equals((Long) priority)).findFirst().orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+//            courseNAS.setTotalPersonnelCount(personnelInfoList.size());
+//            if (passedReport) {
+//                personnelInfoList.forEach(p -> {
+//                    if (classStudentReportService.isPassed(course, p.getNationalCode()))
+//                        courseNAS.setPassedPersonnelCount(courseNAS.getPassedPersonnelCount() + 1);
+//                });
+//            }
+////            result.add(courseNAS);
+//        });
         SearchDTO.SearchRs<NeedsAssessmentReportsDTO.CourseNAS> searchRs = new SearchDTO.SearchRs<>();
         searchRs.setTotalCount((long) result.size());
         searchRs.setList(result);
