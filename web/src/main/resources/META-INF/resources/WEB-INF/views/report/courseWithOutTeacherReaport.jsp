@@ -41,6 +41,7 @@
         fields: [{name: "id", primaryKey: true},
             {name: "code"},
             {name: "title"},
+            {name: "max_start_date"},
         ], dataFormat: "json",
 
        // autoFetchData: true,
@@ -70,7 +71,26 @@
     var ButtonExcel =isc.ToolStripButtonExcel.create({
         margin:5,
         click: function () {
-            ExportToFile.downloadExcelFromClient(List_Grid_Reaport_CourseWithOutTeacher, null, '', "دوره های بدون استاد");
+            let rows = List_Grid_Reaport_CourseWithOutTeacher.data.getAllLoadedRows();
+            let result = ExportToFile.getAllFields(List_Grid_Reaport_CourseWithOutTeacher);
+            result.fields.splice(1, 0, {name:"titleClass",title:"عنوان کلاس"});
+            result.isValueMap.splice(1, 0, false);
+            let fields = result.fields;
+            let isValueMaps = result.isValueMap;
+            let data = [];
+            for (let i = 0; i < rows.length; i++) {
+                data[i] = {};
+                for (let j = 0; j < fields.length; j++) {
+                    if (fields[j].name == 'rowNum') {
+                        data[i][fields[j].name] = (i + 1).toString();
+                    } else {
+                        let tmpStr = ExportToFile.getData(rows[i], fields[j].name.split('.'), 0);
+                        data[i][fields[j].name] = typeof (tmpStr) == 'undefined' ? '' : ((!isValueMaps[j]) ? tmpStr : listGrid.getDisplayValue(fields[j].name, tmpStr));
+                    }
+                }
+            }
+            ExportToFile.exportToExcelFromClient(fields, data, '', "دوره های بدون کلاس")
+         ;
         }
     })
     var ToolStrip_Actions = isc.ToolStrip.create({
@@ -115,6 +135,7 @@
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
+        useClientFiltering:true,
         filterOnKeypress: true,
         sortField: 0,
     });

@@ -271,5 +271,8 @@
     <changeSet author="razmnoosh (generated)" id="1598260979293-491">
         <createSequence sequenceName="seq_class_evaluation_goals_id"/>
     </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1598941297227-495">
+        <createSequence sequenceName="seq_annual_id"/>
+    </changeSet>
 
 </databaseChangeLog>

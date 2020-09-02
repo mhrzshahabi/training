@@ -43,6 +43,7 @@
             {name: "student_count"},
             {name: "sum_of_student_hour"},
         ], dataFormat: "json",
+        autoFetchData:false,
       });
 
 
@@ -157,8 +158,8 @@
 
        dataArrived: function ()
         {
-            modalDialog.close();
 
+            totalsCount_Rows.setContents("&nbsp;");
             let totalRows = this.data.getLength();
             if (totalRows >= 0 && this.data.lengthIsKnown())
                 totalsCount_Rows.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
@@ -421,6 +422,7 @@
                 filterFields: ["year"],
                 textAlign:"center",
                 titleAlign:"center",
+                multiple: true,
                 filterLocally: true,
                 initialSort: [
                     {property: "year", direction: "descending", primarySort: true}
@@ -444,27 +446,31 @@
                 ],
 
                 changed: function (form, item, value) {
-                    if (value != null && value != undefined) {
+                    if (value != null && value != undefined  && value.size() == 1) {
+                        DynamicForm_Report_annualStatisticalReportBySection.getField("termId").clearValue()
                         RestDataSource_Term_JspControlReport.fetchDataURL = termUrl + "listByYear/" + value;
                         DynamicForm_Report_annualStatisticalReportBySection.getField("termId").optionDataSource = RestDataSource_Term_JspControlReport;
                         DynamicForm_Report_annualStatisticalReportBySection.getField("termId").fetchData();
                         DynamicForm_Report_annualStatisticalReportBySection.getField("termId").enable();
                     } else {
-                        form.getField("termId").disabled = true;
-                        form.getField("termId").clearValue();
+                        DynamicForm_Report_annualStatisticalReportBySection.getField("termId").clearValue();
+                        DynamicForm_Report_annualStatisticalReportBySection.getField("termId").setDisabled(true)
+
                     }
                 }
-            },
+                 },
             {
                 name: "termId",
                 title: "ترم",
                 type: "SelectItem",
+                width:160,
                 filterOperator: "equals",
                 disabled: true,
                 valueField: "id",
                 displayField: "titleFa",
                 textAlign:"center",
                 titleAlign:"center",
+                multiple: true,
                 filterLocally: true,
                 icons:[
                     {
@@ -500,6 +506,7 @@
                 valueField: "id",
                 textAlign:"center",
                 titleAlign:"center",
+                multiple: true,
                 textMatchStyle: "substring",
                 icons:[
                     {
@@ -532,6 +539,7 @@
                 displayField: "titleFa",
                 valueField: "id",
                 textAlign:"center",
+                multiple: true,
                 titleAlign:"center",
                 pickListFields: [
                     {name: "titleFa", filterOperator: "iContains"},
@@ -579,9 +587,22 @@
                             item.clearValue();
                             item.focusInItem();
                             form.setValue(null);
+                            DynamicForm_Report_annualStatisticalReportBySection.getField("category").enable()
                         }
                     }
                 ],
+
+                changed: function (form, item, value) {
+                    if (value != null && value != undefined && value.includes('شهربابک')) {
+                        DynamicForm_Report_annualStatisticalReportBySection.getField("category").clearValue()
+                        DynamicForm_Report_annualStatisticalReportBySection.getField("category").setValue(null)
+                        DynamicForm_Report_annualStatisticalReportBySection.getField("category").setDisabled(true)
+                    } else
+                    {
+                        DynamicForm_Report_annualStatisticalReportBySection.getField("category").enable()
+                    }
+
+                }
             },
             {
                 name: "Assistant",
@@ -686,23 +707,19 @@
                  endRow:false,
                 startRow: false,
                 click:function () {
-                    console.log('nmbvmkjhgbvkjgvkjhgmkjhgvmjhgvkmhgvkmjhgjhgmkjhgv')
-
+                    totalsCount_Rows.setContents("&nbsp;");
                     if (endDateCheckReportASRBS == false)
                         return;
 
                     if (!DynamicForm_Report_annualStatisticalReportBySection.validate()) {
                         return;
                     }
-                    modalDialog=createDialog('wait');
-                    RestDataSource_annualStatisticalReportBySection.fetchDataURL=annualStatisticsReportUrl+"/list" + "?data=" + JSON.stringify(DynamicForm_Report_annualStatisticalReportBySection.getValues())
-                    List_Grid_Reaport_annualStatisticalReportBySection.invalidateCache()
-                    List_Grid_Reaport_annualStatisticalReportBySection.fetchData()
-                    // isc.RPCManager.sendRequest(TrDSRequest(annualStatisticsReportUrl+"/list" ,"POST",
-                       //JSON.stringify(DynamicForm_Report_annualStatisticalReportBySection.getValues()), "callback: fill_control_result(rpcResponse)"));
-                }
-            },
 
+                    RestDataSource_annualStatisticalReportBySection.fetchDataURL=annualStatisticsReportUrl+"/list" + "?data=" + JSON.stringify(DynamicForm_Report_annualStatisticalReportBySection.getValues())
+                    refreshLG(List_Grid_Reaport_annualStatisticalReportBySection);
+
+                }
+            }
          ]
     });
 

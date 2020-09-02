@@ -1,4 +1,5 @@
 package com.nicico.training.controller;
+import com.google.gson.Gson;
 import com.nicico.copper.common.Loggable;
 import com.nicico.training.dto.AnnualStatisticalReportDTO;
 import com.nicico.training.model.AnnualStatisticalReport;
@@ -7,6 +8,8 @@ import com.nicico.training.service.AnnualStatisticalService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.activiti.engine.impl.util.json.JSONObject;
+import org.apache.tomcat.util.json.JSONParser;
+import org.hibernate.validator.constraints.Length;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -36,7 +43,7 @@ public class AnnualRestController {
             JSONObject jsonObject = new JSONObject(data);
            List<Object> list= new ArrayList<>();
             List<AnnualStatisticalReportDTO> DTOList = null;
-
+           JSONParser parser = null;
             String startDate1 = null;
 
             String startDate2 = null;
@@ -61,6 +68,14 @@ public class AnnualRestController {
 
             String complex_MSReport = null;
 
+            List<String> listYear = null;
+
+            List<Long> listTerm = null;
+
+            List<Long> listCategory = null;
+
+            List<Long> listInstituteid = null;
+
             if (!jsonObject.isNull("startDate"))
                 startDate1 = modelMapper.map(jsonObject.get("startDate"), String.class);
 
@@ -74,18 +89,33 @@ public class AnnualRestController {
                 endDate2 = modelMapper.map(jsonObject.get("endDate2"), String.class);
 
             if (!jsonObject.isNull("institute"))
+            {
                 institute = modelMapper.map(jsonObject.get("institute"), String.class);
+                String[] instituteid = institute.substring(1, institute.length() - 1).split(",");
+                listInstituteid = Arrays.stream(instituteid).map(x -> Long.parseLong(x)).collect(Collectors.toList());
+            }
 
             if (!jsonObject.isNull("category"))
+            {
                 courseCategory = modelMapper.map(jsonObject.get("category"), String.class);
+                String[] Category = courseCategory.substring(1, courseCategory.length() - 1).split(",");
+                listCategory = Arrays.stream(Category).map(x -> Long.parseLong(x)).collect(Collectors.toList());
+            }
 
             if (!jsonObject.isNull("classYear"))
+            {
                 classYear = modelMapper.map(jsonObject.get("classYear"), String.class);
-
+                Gson converter = new Gson();
+                Type type = new TypeToken<List<String>>(){}.getType();
+                 listYear =  converter.fromJson(classYear, type );
+            }
             if (!jsonObject.isNull("termId"))
+            {
                 termId = modelMapper.map(jsonObject.get("termId"), String.class);
-
-            if (!jsonObject.isNull("Unit"))
+                String[] term = termId.substring(1, termId.length() - 1).split(",");
+                listTerm = Arrays.stream(term).map(x -> Long.parseLong(x)).collect(Collectors.toList());
+            }
+        if (!jsonObject.isNull("Unit"))
                 Unit = modelMapper.map(jsonObject.get("Unit"), String.class);
 
             if (!jsonObject.isNull("Affairs"))
@@ -97,7 +127,7 @@ public class AnnualRestController {
             if (!jsonObject.isNull("complex_MSReport"))
                 complex_MSReport = modelMapper.map(jsonObject.get("complex_MSReport"), String.class);
 
-         list= Collections.singletonList(annualStatisticalService.list(termId != null ? Long.parseLong(termId) : null, classYear, complex_MSReport,institute != null ? Long.parseLong(institute) : null, Assistant, Affairs,Unit, null, courseCategory != null ? Long.parseLong(courseCategory) : null, startDate1, endDate1, startDate2, endDate2));
+         list= Collections.singletonList(annualStatisticalService.list(listTerm != null ? listTerm : null, listYear != null ? listYear : null, complex_MSReport,listInstituteid != null ? listInstituteid: null, Assistant, Affairs,Unit, null, listCategory != null ? listCategory : null, startDate1, endDate1, startDate2, endDate2));
 
             if (list != null) {
                 DTOList = new ArrayList<>(list.size());
