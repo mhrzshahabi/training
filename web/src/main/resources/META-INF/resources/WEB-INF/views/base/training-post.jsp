@@ -1310,7 +1310,7 @@
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     let criteria = ListGrid_TrainingPost_Jsp.getCriteria();
-                    ExportToFile.showDialog(null, ListGrid_TrainingPost_Jsp , "View_Post_Group", 0, null, '',"لیست گروه پست - آموزش"  , criteria, null);
+                    ExportToFile.showDialog(null, ListGrid_TrainingPost_Jsp , "trainingPost", 0, null, '',"لیست پست - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -1404,9 +1404,9 @@
                     if(typeof(criteria.criteria)=='undefined'){
                         criteria.criteria=[];
                     }
-                    criteria.criteria.push({fieldName: "postCode", operator: "equals", value:TrainingPost_PostList_TrainingPost_Jsp.map(p => p.code)});
+                    criteria.criteria.push({fieldName: "trainingPostId", operator: "equals", value:ListGrid_TrainingPost_Jsp.getSelectedRecord().id});
 
-                    ExportToFile.showDialog(null, PersonnelLG_TrainingPost_Jsp , "Personnel", 0, null, '',"لیست پرسنل - آموزش"  , criteria, null);
+                    ExportToFile.showDialog(null, PersonnelLG_TrainingPost_Jsp , "trainingPostPersonnel", 0, null, '',"لیست پرسنل - آموزش"  , criteria, null);
                 }
             })
         ]

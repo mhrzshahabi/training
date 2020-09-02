@@ -319,15 +319,10 @@
                         if (typeof (criteria.criteria) == 'undefined') {
                             criteria.criteria = [];
                         }
-                        criteria.criteria.push({
-                            fieldName: "jobNo",
-                            operator: "equals",
-                            value: JobLG_job.getSelectedRecord().code
-                        });
-                        criteria.criteria.push({fieldName: "active", operator: "equals", value: 1});
-                        criteria.criteria.push({fieldName: "employmentStatusId", operator: "equals", value: 5});
 
-                        ExportToFile.showDialog(null, PersonnelLG_Job, "Personnel", 0, null, '', "لیست پرسنل - آموزش", criteria, null);
+                        criteria.criteria.push({fieldName: "jobId", operator: "equals", value: JobLG_job.getSelectedRecord().id});
+
+                        ExportToFile.showDialog(null, PersonnelLG_Job, "jobPersonnel", 0, null, '', "لیست پرسنل - آموزش", criteria, null);
                     }
                 })
             ]
@@ -677,6 +672,8 @@
                             operator: "equals",
                             value: JobLG_job.getSelectedRecord().code
                         });
+
+                        criteria.push({fieldName: "jobId", operator: "equals", value: job.id});
 
                         ExportToFile.showDialog(null, PostLG_Job, "View_Post", 0, null, '', "لیست پست - آموزش", criteria, null);
                     }

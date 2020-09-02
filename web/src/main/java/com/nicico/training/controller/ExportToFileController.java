@@ -75,6 +75,7 @@ public class ExportToFileController {
     private final PostGradeService postGradeService;
     private final PostService postService;
     private final ViewJobGroupService viewJobGroupService;
+    private final JobService jobService;
     private final JobGroupService jobGroupService;
     private final ViewPostGradeGroupService viewPostGradeGroupService;
     private final PostGradeGroupService postGradeGroupService;
@@ -99,6 +100,7 @@ public class ExportToFileController {
 
     private final ViewUnfinishedClassesReportService viewUnfinishedClassesReportService;
     private final ViewUnjustifiedAbsenceReportService viewUnjustifiedAbsenceReportService;
+    private final TrainingPostService trainingPostService;
     private final ViewTrainingPostService viewTrainingPostService;
 
     private final ModelMapper modelMapper;
@@ -376,8 +378,53 @@ public class ExportToFileController {
                 generalList = (List<Object>) ((Object) viewJobService.search(searchRq).getList());
                 break;
 
-            case "Personnel":
-                generalList = (List<Object>) ((Object) personnelService.search(searchRq).getList());
+            case "jobPersonnel":
+                Map<String,Object[]> jobPersonnelParams = new HashMap<>();
+                CriteriaConverter.criteria2ParamsMap(searchRq.getCriteria(), jobPersonnelParams);
+                Long jobId = ((Integer) jobPersonnelParams.get("jobId")[0]).longValue();
+                CriteriaConverter.removeCriteriaByfieldName(searchRq.getCriteria(),"jobId");
+                List<PostDTO.Info> jobPostList = jobService.getPostsWithTrainingPost(jobId);
+                if (jobPostList.isEmpty()) {
+                    generalList = new ArrayList<>(0);
+                    break;
+                }
+                SearchDTO.SearchRq coustomSearchRq5 = ISC.convertToSearchRq(req, jobPostList.stream().map(PostDTO.Info::getId).collect(Collectors.toList()), "postId", EOperator.inSet);
+                coustomSearchRq5.getCriteria().getCriteria().add(makeNewCriteria("deleted", 0, EOperator.equals, null));
+                coustomSearchRq5.setDistinct(true);
+                coustomSearchRq5.getCriteria().getCriteria().addAll(searchRq.getCriteria().getCriteria());
+                generalList = (List<Object>) ((Object) personnelService.search(coustomSearchRq5).getList());
+                break;
+
+            case "postGradePersonnel":
+                Map<String,Object[]> postGradePersonnelParams = new HashMap<>();
+                CriteriaConverter.criteria2ParamsMap(searchRq.getCriteria(), postGradePersonnelParams);
+                Long postGradeId = ((Integer) postGradePersonnelParams.get("postGradeId")[0]).longValue();
+                CriteriaConverter.removeCriteriaByfieldName(searchRq.getCriteria(),"postGradeId");
+                List<PostDTO.TupleInfo> postList = postGradeService.getPosts(postGradeId);
+                if (postList.isEmpty()) {
+                    generalList = new ArrayList<>(0);
+                    break;
+                }
+                SearchDTO.SearchRq coustomSearchRq4 = ISC.convertToSearchRq(req, postList.stream().filter(post -> post.getDeleted() == null).map(PostDTO.TupleInfo::getId).collect(Collectors.toList()), "postId", EOperator.inSet);
+                coustomSearchRq4.getCriteria().getCriteria().add(makeNewCriteria("deleted", 0, EOperator.equals, null));
+                coustomSearchRq4.getCriteria().getCriteria().addAll(searchRq.getCriteria().getCriteria());
+                generalList = (List<Object>) ((Object) personnelService.search(coustomSearchRq4).getList());
+                break;
+
+            case "trainingPostPersonnel":
+                Map<String,Object[]> trainingPostPersonnelParams = new HashMap<>();
+                CriteriaConverter.criteria2ParamsMap(searchRq.getCriteria(), trainingPostPersonnelParams);
+                Long trainingPostId = ((Integer) trainingPostPersonnelParams.get("trainingPostId")[0]).longValue();
+                CriteriaConverter.removeCriteriaByfieldName(searchRq.getCriteria(),"trainingPostId");
+                List<PostDTO.Info> trainingPostList = trainingPostService.getPosts(trainingPostId);
+                if (trainingPostList.isEmpty()) {
+                    generalList = new ArrayList<>(0);
+                    break;
+                }
+                SearchDTO.SearchRq coustomSearchRq6 = ISC.convertToSearchRq(req, trainingPostList.stream().map(PostDTO.Info::getId).collect(Collectors.toList()), "postId", EOperator.inSet);
+                coustomSearchRq6.getCriteria().getCriteria().add(makeNewCriteria("deleted", 0, EOperator.equals, null));
+                coustomSearchRq6.getCriteria().getCriteria().addAll(searchRq.getCriteria().getCriteria());
+                generalList = (List<Object>) ((Object) personnelService.search(coustomSearchRq6).getList());
                 break;
 
             case "NeedsAssessmentReport":
@@ -405,6 +452,7 @@ public class ExportToFileController {
                 break;
 
             case "Post_Grade_Without_Permission":
+                BaseService.setCriteriaToNotSearchDeleted(searchRq);
                 generalList = (List<Object>) ((Object) postGradeService.searchWithoutPermission(searchRq).getList());
                 break;
 
@@ -486,7 +534,6 @@ public class ExportToFileController {
                 }
                 coustomSearchRq2 = ISC.convertToSearchRq(req, postGradeGroupPersonnelPostList.getList().stream().map(PostDTO.TupleInfo::getId).collect(Collectors.toList()), "postId", EOperator.inSet);
                 coustomSearchRq2.getCriteria().getCriteria().add(makeNewCriteria("deleted", 0, EOperator.equals, null));
-                SearchDTO.SearchRs<PersonnelDTO.Info> searchRs = personnelService.search(coustomSearchRq2);
                 coustomSearchRq2.getCriteria().getCriteria().addAll(searchRq.getCriteria().getCriteria());
                 generalList = (List<Object>) ((Object) personnelService.search(coustomSearchRq2).getList());
                 break;
@@ -529,10 +576,18 @@ public class ExportToFileController {
                 generalList = (List<Object>) ((Object) postGroupService.getPosts(group));
                 break;
 
+            case "trainingPost":
+                BaseService.setCriteriaToNotSearchDeleted(searchRq);
+                generalList = (List<Object>) ((Object) viewTrainingPostService.search(searchRq).getList());
+                break;
+
             case "trainingPost_Post":
                 BaseService.setCriteriaToNotSearchDeleted(searchRq);
-
                 generalList = (List<Object>) postService.searchWithoutPermission(searchRq, p -> modelMapper.map(p, PostDTO.Info.class)).getList();
+                break;
+
+            case "Training_Post_Group_Post":
+                generalList = (List<Object>) ((Object) trainingPostService.search(searchRq).getList());
                 break;
 
             case "viewPersonnelTrainingStatusReport":

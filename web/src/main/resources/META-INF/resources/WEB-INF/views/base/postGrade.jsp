@@ -216,11 +216,11 @@
                         criteria.criteria=[];
                     }
 
-                    criteria.criteria.push({fieldName: "postGradeCode", operator: "equals", value: PostGradeLG_postGrade.getSelectedRecord().code});
-                    criteria.criteria.push({fieldName: "active", operator: "equals", value: 1});
-                    criteria.criteria.push({fieldName: "employmentStatusId", operator: "equals", value: 5});
+                    criteria.criteria.push({fieldName: "postGradeId", operator: "equals", value: PostGradeLG_postGrade.getSelectedRecord().id});
+                    // criteria.criteria.push({fieldName: "active", operator: "equals", value: 1});
+                    // criteria.criteria.push({fieldName: "employmentStatusId", operator: "equals", value: 5});
 
-                    ExportToFile.showDialog(null, PersonnelLG_PostGrade , "Personnel", 0, null, '',"لیست پرسنل - آموزش"  , criteria, null);
+                    ExportToFile.showDialog(null, PersonnelLG_PostGrade , "postGradePersonnel", 0, null, '',"لیست پرسنل - آموزش"  , criteria, null);
                 }
             })
         ]
