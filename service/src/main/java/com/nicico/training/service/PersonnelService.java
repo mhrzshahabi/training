@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -235,7 +236,7 @@ public class PersonnelService implements IPersonnelService {
 
     @Override
     @Transactional
-    public Personnel findPersonnelByPersonnelId(Long personnelId, String personnelNo) {
+    public PersonnelDTO.DetailInfo findPersonnelByPersonnelId(Long personnelId, String personnelNo) {
 
         Long personnel_Id = personnelId != 0 ? personnelId : personnelDAO.getPersonnelIdByPersonnelNo(personnelNo);
         PersonnelRegistered personnelRegistered = new PersonnelRegistered();
@@ -253,8 +254,31 @@ public class PersonnelService implements IPersonnelService {
             personnelRegistered.setWorkYears(trainingTime == null ? "عدم آموزش در سال " + DateUtil.getYear() : trainingTime.toString() + " ساعت آموزش در سال " + DateUtil.getYear());
 
         }
+        PersonnelDTO.DetailInfo result=null;
 
-        return personnel != null ? personnel : modelMapper.map(personnelRegistered, Personnel.class);
+        if(personnel != null){
+            result=modelMapper.map(personnel, PersonnelDTO.DetailInfo.class);
+
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+            if(personnel.getBirthDate()!=null){
+                result.setBirthDate(DateUtil.convertMiToKh(formatter.format(personnel.getBirthDate())));
+            }
+
+            if(personnel.getEmploymentDate()!=null){
+                result.setEmploymentDate(DateUtil.convertMiToKh(formatter.format(personnel.getEmploymentDate())));
+            }
+
+            if(personnel.getPostAssignmentDate()!=null){
+                result.setPostAssignmentDate(DateUtil.convertMiToKh(formatter.format(personnel.getPostAssignmentDate())));
+            }
+
+        }else{
+            result=modelMapper.map(personnelRegistered, PersonnelDTO.DetailInfo.class);
+        }
+
+
+        return result;
     }
 
     @Override
