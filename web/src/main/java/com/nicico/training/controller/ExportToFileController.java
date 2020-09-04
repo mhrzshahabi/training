@@ -548,10 +548,10 @@ public class ExportToFileController {
                     generalList = new ArrayList<>(0);
                     break;
                 }
-                SearchDTO.SearchRq coustomSearchRq3 = ISC.convertToSearchRq(req, postGradePosts.stream().filter(pg -> pg.getDeleted() == null).map(PostGradeDTO.Info::getId).collect(Collectors.toList()), "postGrade", EOperator.inSet);
-                BaseService.setCriteriaToNotSearchDeleted(coustomSearchRq3);
-                coustomSearchRq3.getCriteria().getCriteria().addAll(searchRq.getCriteria().getCriteria());
-                generalList = (List<Object>) postService.searchWithoutPermission(coustomSearchRq3, p -> modelMapper.map(p, PostDTO.Info.class)).getList();
+
+                searchRq.getCriteria().getCriteria().add(makeNewCriteria("postGrade",postGradePosts.stream().filter(pg -> pg.getDeleted() == null).map(PostGradeDTO.Info::getId).collect(Collectors.toList()),EOperator.inSet,null));
+                BaseService.setCriteriaToNotSearchDeleted(searchRq);
+                generalList = (List<Object>) postService.searchWithoutPermission(searchRq, p -> modelMapper.map(p, PostDTO.Info.class)).getList();
                 break;
 
             case "View_Post_Group":
