@@ -1184,7 +1184,7 @@
                     if(typeof(criteria.criteria)=='undefined'){
                         criteria.criteria=[];
                     }
-                    criteria.criteria.push({fieldName: "postGroup", operator: "equals", value: ListGrid_Post_Group_Jsp.getSelectedRecord().id});
+                    criteria.criteria.push({fieldName: "postGroupSet", operator: "inSet", value: ListGrid_Post_Group_Jsp.getSelectedRecord().id});
 
                     ExportToFile.showDialog(null, ListGrid_Post_Group_TrainingPosts , "Training_Post_Group_Post", 0, null, '',"لیست پست ها - گروه پستی"  , criteria, null);
                 }
@@ -1756,7 +1756,7 @@
                     }
                     criteria.criteria.push({fieldName: "objectId", operator: "equals", value: ListGrid_Post_Group_Jsp.getSelectedRecord().id});
                     criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "PostGroup"});
-                    criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
+                    // criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
 
                     ExportToFile.showDialog(null, CourseLG_Post_Group_Jsp , "NeedsAssessmentReport", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
                 }

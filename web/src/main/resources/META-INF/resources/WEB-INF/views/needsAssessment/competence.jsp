@@ -128,8 +128,9 @@
                 // }
                 // autoFitWidth: true
             },
-            {name: "code", title: "کد", autoFitWidth: true},
+            {name: "code", title: "کد", autoFitWidth: true, filterOperator: "iContains"},
             {name: "workFlowStatusCode", title: "وضعیت گردش کار",
+                filterOperator: "equals",
                 filterOnKeypress: true,
             },
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},

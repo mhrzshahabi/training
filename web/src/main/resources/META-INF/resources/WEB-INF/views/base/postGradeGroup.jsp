@@ -927,7 +927,7 @@
                     }
                     criteria.criteria.push({fieldName: "objectId", operator: "equals", value: ListGrid_Post_Grade_Group_Jsp.getSelectedRecord().id});
                     criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "PostGradeGroup"});
-                    criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
+                    // criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
 
                     ExportToFile.showDialog(null, NALG_PGG , "NeedsAssessmentReport", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
                 }
@@ -1106,6 +1106,7 @@
                     if(typeof(criteria.criteria)=='undefined'){
                         criteria.criteria=[];
                     }
+
                     criteria.criteria.push({fieldName: "PostGradeGroup", operator: "equals", value: ListGrid_Post_Grade_Group_Jsp.getSelectedRecord().id});
 
                     ExportToFile.showDialog(null, PostLG_PGG , "Post_Grade_Group_Post", 0, null, '',"لیست پست ها - آموزش"  , criteria, null);
@@ -1340,11 +1341,12 @@
                 if (post_PGG === postGradeGroup.id)
                     return;
                 post_PGG = postGradeGroup.id;
-                PostLG_PGG.setImplicitCriteria({
-                    _constructor: "AdvancedCriteria",
-                    operator: "and",
-                    criteria: [{fieldName: "postGGI", operator: "equals", value: postGradeGroup.id}]
-                });
+                // PostLG_PGG.setImplicitCriteria({
+                //     _constructor: "AdvancedCriteria",
+                //     operator: "and",
+                //     criteria: [{fieldName: "postGGI", operator: "equals", value: postGradeGroup.id}]
+                // });
+                PostDS_PGG.fetchDataURL = postGradeGroupUrl + "postIscList/" + postGradeGroup.id;
                 PostLG_PGG.invalidateCache();
                 PostLG_PGG.fetchData();
                 break;
