@@ -32,6 +32,41 @@
     font-family: BYekan;
 }
 
+.buttonDetail,
+.buttonDetailOver,
+.buttonDetailFocused,
+.buttonDetailFocusedOver,
+.buttonDetailDown,
+.buttonDetailFocusedDown,
+.buttonDetailSelected,
+.buttonDetailSelectedFocused,
+.buttonDetailSelectedDown,
+.buttonDetailSelectedFocusedDown,
+.buttonDetailSelectedOver,
+.buttonDetailSelectedFocusedOver,
+.buttonDetailDisabled,
+.buttonDetailSelectedDisabled,
+.buttonDetailOpened,
+.buttonDetailOverOpened,
+.buttonDetailDownOpened,
+.buttonDetailFocusedOpened,
+.buttonDetailFocusedDownOpened,
+.buttonDetailFocusedOverOpened,
+.buttonDetailSelectedOpened,
+.buttonDetailSelectedDownOpened,
+.buttonDetailSelectedOverOpened {
+    border: 1px solid transparent;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    border-radius: 0px;
+    color: #000000;
+    font-size: 12px;
+    padding: 3px 4px 3px 4px;
+    border-radius: 3px;
+    background-color: #F3A938;
+    border: solid 1px #fe9d2a;
+}
+
 
 .sendFile,
 .sendFileOver,
