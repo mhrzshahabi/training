@@ -577,12 +577,27 @@
                             canEdit: false
                         },
                         {
+                            name: "companyName",
+                            title: "<spring:message code="company.name"/> : ",
+                            canEdit: false
+                        },
+                        {
+                            name: "ccpArea",
+                            title: "<spring:message code="complex"/> : ",
+                            canEdit: false
+                        },
+                        {
                             name: "ccpAssistant",
-                            title: "<spring:message code="area"/> : ",
+                            title: "<spring:message code="assistance"/> : ",
                             canEdit: false
                         },
                         {
                             name: "ccpAffairs",
+                            title: "<spring:message code="affairs"/> : ",
+                            canEdit: false
+                        },
+                        {
+                            name: "ccpUnit",
                             title: "<spring:message code="unit"/> : ",
                             canEdit: false
                         },
@@ -592,17 +607,12 @@
                             canEdit: false
                         },
                         {
-                            name: "companyName",
-                            title: "<spring:message code="branch"/> : ",
-                            canEdit: false
-                        },
-                        {
-                            name: "postTitle",
+                            name: "jobTitle",
                             title: "<spring:message code="job"/> : ",
                             canEdit: false
                         },
                         {
-                            name: "jobTitle",
+                            name: "postTitle",
                             title: "<spring:message code="post"/> : ",
                             canEdit: false
                         },

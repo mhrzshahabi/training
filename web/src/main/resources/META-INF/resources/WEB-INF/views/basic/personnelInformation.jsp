@@ -13,13 +13,16 @@
             var ToolStripButton_Refresh_PI = isc.ToolStripButtonRefresh.create({
                 title: "<spring:message code="refresh"/>",
                 click: function () {
-                    if (typeof (set_PersonnelInfo_Details) != 'undefined') {
-                        if (PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel") {
-                            PersonnelInfoListGrid_PersonnelList.invalidateCache();
-                            set_PersonnelInfo_Details(PersonnelInfoListGrid_PersonnelList);
-                        } else {
-                            PersonnelInfoListGrid_RegisteredPersonnelList.invalidateCache();
-                            set_PersonnelInfo_Details(PersonnelInfoListGrid_RegisteredPersonnelList);
+
+                    if (PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel") {
+                        PersonnelInfoListGrid_PersonnelList.invalidateCache();
+                        if (oPersonnelInformationDetails!=null && typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
+                            oPersonnelInformationDetails.set_PersonnelInfo_Details(null);
+                        }
+                    } else {
+                        PersonnelInfoListGrid_RegisteredPersonnelList.invalidateCache();
+                        if (oPersonnelInformationDetails!=null && typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
+                            oPersonnelInformationDetails.set_PersonnelInfo_Details(null);
                         }
                     }
                 }
@@ -260,7 +263,8 @@
                 _constructor: "AdvancedCriteria",
                 operator: "and",
                 criteria: [
-                    {fieldName: "active", operator: "equals", value: 1}
+                    {fieldName: "active", operator: "equals", value: 1},
+                    {fieldName: "deleted", operator: "equals", value: 0}
                 ]
             };
 
