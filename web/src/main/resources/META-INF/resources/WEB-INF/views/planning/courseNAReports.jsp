@@ -4,7 +4,9 @@
 
 // <script>
 
-    var selectedGroup_CNAR = null;
+    let selectedGroup_CNAR = null;
+    let valuePersonnelGroup;
+    let data_values;
 
     //--------------------------------------------------------------------------------------------------------------------//
     //*course form*/
@@ -40,7 +42,7 @@
         ],
         rowDoubleClick: function () {
             Window_Course_CNAR.close();
-            Select_Course_Or_Personnel_Group_CNAR();
+            Select_Course_Or_Personnel_Group_CNAR(valuePersonnelGroup);
         }
     });
 
@@ -52,7 +54,7 @@
                 return;
             }
             Window_Course_CNAR.close();
-            Select_Course_Or_Personnel_Group_CNAR();
+            Select_Course_Or_Personnel_Group_CNAR(valuePersonnelGroup);
         }
     });
 
@@ -97,35 +99,8 @@
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
-    //*personnel form*/
+    //*REST DataSources*/
     //--------------------------------------------------------------------------------------------------------------------//
-
-    PersonnelDS_CNAR = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true, hidden: true},
-            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
-
-            {name: "companyName", title: "<spring:message code="company"/>", filterOperator: "equals"},
-            {name: "ccpArea", title: "<spring:message code="area"/>", filterOperator: "equals"},
-            {name: "complexTitle", title: "<spring:message code="complex"/>", filterOperator: "equals"},
-            {name: "ccpAssistant", title: "<spring:message code="assistance"/>", filterOperator: "equals"},
-            {name: "ccpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "equals"},
-            <%--{name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "equals"},--%>
-            {name: "ccpUnit", title: "<spring:message code="unit"/>", filterOperator: "equals"},
-            {name: "educationLevelTitle", title: "<spring:message code="education.level"/>", filterOperator: "equals"},
-            {name: "jobTitle", title: "<spring:message code="job.title"/>", filterOperator: "equals"},
-            <%--{name: "jobNo", title: "<spring:message code="job.code"/>", filterOperator: "iContains"},--%>
-        ],
-        autoCacheAllData: true,
-        fetchDataURL: personnelUrl + "/iscList"
-    });
-
     CompanyDS_CNAR = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="company"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -139,7 +114,7 @@
             {name: "value", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpArea"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpArea"
     });
 
     ComplexDS_CNAR = isc.TrDS.create({
@@ -147,7 +122,7 @@
             {name: "value", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=complexTitle"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=complexTitle"
     });
 
     AssistantDS_CNAR = isc.TrDS.create({
@@ -155,7 +130,7 @@
             {name: "value", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpAssistant"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAssistant"
     });
 
     AffairsDS_CNAR = isc.TrDS.create({
@@ -163,7 +138,7 @@
             {name: "value", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpAffairs"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAffairs"
     });
 
     UnitDS_CNAR = isc.TrDS.create({
@@ -171,7 +146,7 @@
             {name: "value", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=ccpUnit"
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpUnit"
     });
 
     EduLevelDS_CNAR = isc.TrDS.create({
@@ -192,261 +167,6 @@
         autoCacheAllData: true,
         fetchDataURL: jobUrl + "/iscList"
     });
-
-    Menu_Personnel_CNAR = isc.Menu.create({
-        data: [{
-            title: "<spring:message code="refresh"/>", click: function () {
-                refreshLG(PersonnelsLG_CNAR);
-            }
-        }]
-    });
-
-    PersonnelsLG_CNAR = isc.TrLG.create({
-        dataSource: PersonnelDS_CNAR,
-        contextMenu: Menu_Personnel_CNAR,
-        selectionType: "none",
-        allowAdvancedCriteria: true,
-        fields: [
-            {name: "firstName"},
-            {name: "lastName"},
-            {name: "nationalCode"},
-            {name: "personnelNo"},
-            {name: "personnelNo2"},
-            {name: "postTitle"},
-            {name: "postCode"},
-            {
-                name: "companyName",
-                hidden: true,
-                filterOnKeypress: true,
-                filterEditorType: "ComboBoxItem",
-                filterEditorProperties:{
-                    optionDataSource: CompanyDS_CNAR,
-                    displayField: "value",
-                    valueField: "value",
-                    autoFetchData: true,
-                    filterFields: ["value"],
-                    textMatchStyle: "substring",
-                    useClientFiltering: true,
-                    generateExactMatchCriteria: true,
-                    pickListProperties: {
-                        showFilterEditor: false,
-                        autoFitWidthApproach: "both",
-                    },
-                    pickListFields: [
-                        {name: "value"},
-                    ],
-                },
-            },
-            {
-                name: "ccpArea",
-                filterOnKeypress: true,
-                filterEditorType: "ComboBoxItem",
-                filterEditorProperties:{
-                    optionDataSource: AreaDS_CNAR,
-                    displayField: "value",
-                    valueField: "value",
-                    autoFetchData: true,
-                    filterFields: ["value"],
-                    textMatchStyle: "substring",
-                    useClientFiltering: true,
-                    generateExactMatchCriteria: true,
-                    pickListProperties: {
-                        showFilterEditor: false,
-                        autoFitWidthApproach: "both",
-                    },
-                    pickListFields: [
-                        {name: "value"},
-                    ],
-                },
-            },
-            {
-                name: "complexTitle",
-                filterOnKeypress: true,
-                filterEditorType: "ComboBoxItem",
-                filterEditorProperties:{
-                    optionDataSource: ComplexDS_CNAR,
-                    displayField: "value",
-                    valueField: "value",
-                    autoFetchData: true,
-                    filterFields: ["value"],
-                    textMatchStyle: "substring",
-                    useClientFiltering: true,
-                    generateExactMatchCriteria: true,
-                    pickListProperties: {
-                        showFilterEditor: false,
-                        autoFitWidthApproach: "both",
-                    },
-                    pickListFields: [
-                        {name: "value"},
-                    ],
-                },
-            },
-            {
-                name: "ccpAssistant",
-                filterOnKeypress: true,
-                filterEditorType: "ComboBoxItem",
-                filterEditorProperties:{
-                    optionDataSource: AssistantDS_CNAR,
-                    displayField: "value",
-                    valueField: "value",
-                    autoFetchData: true,
-                    filterFields: ["value"],
-                    textMatchStyle: "substring",
-                    useClientFiltering: true,
-                    generateExactMatchCriteria: true,
-                    pickListProperties: {
-                        showFilterEditor: false,
-                        autoFitWidthApproach: "both",
-                    },
-                    pickListFields: [
-                        {name: "value"},
-                    ],
-                },
-            },
-            {
-                name: "ccpAffairs",
-                filterOnKeypress: true,
-                filterEditorType: "ComboBoxItem",
-                filterEditorProperties:{
-                    optionDataSource: AffairsDS_CNAR,
-                    displayField: "value",
-                    valueField: "value",
-                    autoFetchData: true,
-                    filterFields: ["value"],
-                    textMatchStyle: "substring",
-                    useClientFiltering: true,
-                    generateExactMatchCriteria: true,
-                    pickListProperties: {
-                        showFilterEditor: false,
-                        autoFitWidthApproach: "both",
-                    },
-                    pickListFields: [
-                        {name: "value"},
-                    ],
-                },
-            },
-            // {name: "ccpSection"},
-            {
-                name: "ccpUnit",
-                filterOnKeypress: true,
-                filterEditorType: "ComboBoxItem",
-                filterEditorProperties:{
-                    optionDataSource: UnitDS_CNAR,
-                    displayField: "value",
-                    valueField: "value",
-                    autoFetchData: true,
-                    filterFields: ["value"],
-                    textMatchStyle: "substring",
-                    useClientFiltering: true,
-                    generateExactMatchCriteria: true,
-                    pickListProperties: {
-                        showFilterEditor: false,
-                        autoFitWidthApproach: "both",
-                    },
-                    pickListFields: [
-                        {name: "value"},
-                    ],
-                },
-            },
-            {
-                name: "educationLevelTitle",
-                filterOnKeypress: true,
-                filterEditorType: "ComboBoxItem",
-                filterEditorProperties:{
-                    optionDataSource: EduLevelDS_CNAR,
-                    displayField: "titleFa",
-                    valueField: "titleFa",
-                    autoFetchData: true,
-                    filterFields: ["titleFa", "titleFa"],
-                    textMatchStyle: "substring",
-                    generateExactMatchCriteria: true,
-                    pickListProperties: {
-                        showFilterEditor: false,
-                        autoFitWidthApproach: "both",
-                    },
-                    pickListFields: [
-                        {name: "titleFa"},
-                    ],
-                },
-            },
-            {
-                name: "jobTitle",
-                filterOnKeypress: true,
-                filterEditorType: "ComboBoxItem",
-                filterEditorProperties:{
-                    optionDataSource: JobDS_CNAR,
-                    displayField: "titleFa",
-                    valueField: "titleFa",
-                    autoFetchData: true,
-                    filterFields: ["titleFa", "code"],
-                    textMatchStyle: "substring",
-                    generateExactMatchCriteria: true,
-                    pickListProperties: {
-                        showFilterEditor: false,
-                        autoFitWidthApproach: "both",
-                    },
-                    pickListFields: [
-                        {name: "titleFa"},
-                        {name: "code"},
-                    ],
-                },
-            },
-            // {name: "jobNo"},
-        ],
-    });
-
-    IButton_Personnel_Ok_CNAR = isc.IButtonSave.create({
-        title: "<spring:message code="select"/>",
-        click: function () {
-            if (PersonnelsLG_CNAR.getCriteria() === undefined || PersonnelsLG_CNAR.getCriteria().operator === undefined || PersonnelsLG_CNAR.getCriteria().criteria[0].value === undefined) {
-                createDialog("info", "<spring:message code='msg.no.filter.selected'/>");
-                return;
-            }
-            Window_Personnel_CNAR.close();
-            Select_Course_Or_Personnel_Group_CNAR();
-        }
-    });
-
-    HLayout_Personnel_Ok_CNAR = isc.TrHLayoutButtons.create({
-        layoutMargin: 5,
-        showEdges: false,
-        edgeImage: "",
-        padding: 10,
-        members: [IButton_Personnel_Ok_CNAR]
-    });
-
-    ToolStripButton_Personnel_Refresh_CNAR = isc.ToolStripButtonRefresh.create({
-        click: function () {
-            refreshLG(PersonnelsLG_CNAR);
-        }
-    });
-
-    ToolStrip_Personnel_Actions_CNAR = isc.ToolStrip.create({
-        width: "100%",
-        align: "left",
-        border: '0px',
-        members: [
-            ToolStripButton_Personnel_Refresh_CNAR
-        ]
-    });
-
-    Window_Personnel_CNAR = isc.Window.create({
-        placement: "fillScreen",
-        title: "<spring:message code="personnel"/>",
-        canDragReposition: true,
-        align: "center",
-        autoDraw: false,
-        border: "1px solid gray",
-        minWidth: 1024,
-        items: [isc.TrVLayout.create({
-            members: [
-                ToolStrip_Personnel_Actions_CNAR,
-                PersonnelsLG_CNAR,
-                HLayout_Personnel_Ok_CNAR
-            ]
-        })]
-    });
-
     //--------------------------------------------------------------------------------------------------------------------//
     //*courses form*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -477,23 +197,6 @@
             title: "<spring:message code="refresh"/>", click: function () {
                 refreshLG_CNAR();
             }
-        <%--}, {--%>
-        <%--    isSeparator: true--%>
-        <%--}, {--%>
-        <%--    title: "<spring:message code="format.pdf"/>",--%>
-        <%--    click: function () {--%>
-        <%--        print_CNAR("pdf");--%>
-        <%--    }--%>
-        <%--}, {--%>
-        <%--    title: "<spring:message code="format.excel"/>",--%>
-        <%--    click: function () {--%>
-        <%--        print_CNAR("excel");--%>
-        <%--    }--%>
-        <%--}, {--%>
-        <%--    title: "<spring:message code="format.html"/>",--%>
-        <%--    click: function () {--%>
-        <%--        print_CNAR("html");--%>
-        <%--    }--%>
         }]
     });
 
@@ -506,28 +209,46 @@
             showShadow: true,
             shadowDepth: 10,
             data: [
-                {title: "<spring:message code='company'/>", click: function () {Show_Personnel_Window_CNAR(8)}},
-                {title: "<spring:message code='area'/>", click: function () {Show_Personnel_Window_CNAR(9)}},
-                {title: "<spring:message code='complex'/>", click: function () {Show_Personnel_Window_CNAR(10)}},
-                {title: "<spring:message code='assistance'/>", click: function () {Show_Personnel_Window_CNAR(11)}},
-                {title: "<spring:message code='affairs'/>", click: function () {Show_Personnel_Window_CNAR(12)}},
-                {title: "<spring:message code='unit'/>", click: function () {Show_Personnel_Window_CNAR(13)}},
-                {title: "<spring:message code='education.level'/>", click: function () {Show_Personnel_Window_CNAR(14)}},
-                {title: "<spring:message code='job'/>", click: function () {Show_Personnel_Window_CNAR(15)}},
+                {title: "<spring:message code='company'/>", click: function () {changeSourcePersonnelGroup(0);}},
+                {title: "<spring:message code='area'/>", click: function () {changeSourcePersonnelGroup(1);}},
+                {title: "<spring:message code='complex'/>", click: function () {changeSourcePersonnelGroup(2);}},
+                {title: "<spring:message code='assistance'/>", click: function () {changeSourcePersonnelGroup(3);}},
+                {title: "<spring:message code='affairs'/>", click: function () {changeSourcePersonnelGroup(4);}},
+                {title: "<spring:message code='unit'/>", click: function () {changeSourcePersonnelGroup(5);}},
+                {title: "<spring:message code='education.level'/>", click: function () {changeSourcePersonnelGroup(6);}},
+                {title: "<spring:message code='job'/>", click: function () {changeSourcePersonnelGroup(7);}},
             ]
         }),
     });
 
-    HeaderDF_CNAR = isc.DynamicForm.create({
+    HeaderDF_CNAR = isc.IButton.create({
+        name: "courseId",
+        align : "center",
+        title: "<spring:message code='course.select'/>",
+        type: "ButtonItem",
+        height: 27,
+        click() {
+            CourseLG_CNAR.fetchData();
+            Window_Course_CNAR.show();
+        }
+    });
+
+    PersonnelGroup_CNAR = isc.DynamicForm.create({
+        width: "350",
+        numCols: 2,
+        paddingLeft:20,
+        colWidths: ["10%", "90%"],
         fields: [
             {
-                name: "courseId",
-                title: "<spring:message code='course.select'/>",
-                type: "ButtonItem",
-                height: 27,
-                click() {
-                    CourseLG_CNAR.fetchData();
-                    Window_Course_CNAR.show();
+                name: "personnelGroup",
+                title: "گروه",
+                valueField: "value",
+                displayField: "value",
+                disabled:true,
+                changed: function (form, item, value) {
+                    valuePersonnelGroup=value;
+                    setCriteria(selectedGroup_CNAR,valuePersonnelGroup);
+                    Select_Course_Or_Personnel_Group_CNAR(valuePersonnelGroup);
                 }
             },
         ]
@@ -535,7 +256,7 @@
 
     Buttoms_HLayout_CNAR = isc.TrHLayout.create({
         height: "50px",
-        members: [MenuButton_GroupType_CNAR, HeaderDF_CNAR]
+        members: [MenuButton_GroupType_CNAR,PersonnelGroup_CNAR,HeaderDF_CNAR]
     });
 
     DynamicForm_Title_CNAR = isc.DynamicForm.create({
@@ -586,19 +307,12 @@
             refreshLG_CNAR();
         }
     });
-    <%--ToolStripButton_Print_CNAR = isc.ToolStripButtonPrint.create({--%>
-    <%--    title: "<spring:message code='print'/>",--%>
-    <%--    click: function () {--%>
-    <%--        print_CNAR("pdf");--%>
-    <%--    }--%>
-    <%--});--%>
 
     ToolStrip_Actions_CNAR = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
         members:
             [
-                // ToolStripButton_Print_CNAR,
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
@@ -624,29 +338,22 @@
     //--------------------------------------------------------------------------------------------------------------------//
 
     function refreshLG_CNAR() {
-        if (CourseLG_CNAR.getSelectedRecord() !== null && PersonnelsLG_CNAR.getCriteria() !== undefined && PersonnelsLG_CNAR.getCriteria().operator !== undefined){
+        if (CourseLG_CNAR.getSelectedRecord() !== null && data_values){
             CourseNAReportLG_CNAR.invalidateCache();
-            CourseNAReportLG_CNAR.fetchData(PersonnelsLG_CNAR.getCriteria());
+            CourseNAReportLG_CNAR.fetchData(data_values);
         }
     }
 
-    function Show_Personnel_Window_CNAR (groupType) {
-        selectedGroup_CNAR = groupType - 8;
-        PersonnelsLG_CNAR.getAllFields().subList(8,16).forEach(field => PersonnelsLG_CNAR.hideField(field));
-        PersonnelsLG_CNAR.getAllFields().forEach(field => field.canFilter = false);
-        PersonnelsLG_CNAR.showField(PersonnelsLG_CNAR.getAllFields()[groupType]);
-        PersonnelsLG_CNAR.getAllFields()[groupType].canFilter = true;
-        PersonnelsLG_CNAR.sort(PersonnelsLG_CNAR.getAllFields()[groupType].name, "ascending");
-        PersonnelsLG_CNAR.clearCriteria();
-        PersonnelsLG_CNAR.fetchData();
-        Window_Personnel_CNAR.show();
-    }
-
-    function Select_Course_Or_Personnel_Group_CNAR () {
+    function Select_Course_Or_Personnel_Group_CNAR (value) {
         let courseTitle = getFormulaMessage(CourseLG_CNAR.getSelectedRecord() !== null ? CourseLG_CNAR.getSelectedRecord().titleFa : "...", 2, "red", "b");
         let groupTitle = getFormulaMessage("...", 2, "red", "b");
-        if (PersonnelsLG_CNAR.getCriteria() !== undefined && PersonnelsLG_CNAR.getCriteria().operator !== undefined)
-            groupTitle = getFormulaMessage(MenuButton_GroupType_CNAR.menu.data[selectedGroup_CNAR].title + " " + PersonnelsLG_CNAR.getCriteria().criteria[0].value, 2, "red", "b");
+
+        if (selectedGroup_CNAR==7)
+            value=PersonnelGroup_CNAR.getField("personnelGroup").getDisplayValue();
+
+        if (value)
+            groupTitle = getFormulaMessage(MenuButton_GroupType_CNAR.menu.data[selectedGroup_CNAR].title + " " + value, 2, "red", "b");
+
         DynamicForm_Title_CNAR.getItem("title").title = "<spring:message code='needsAssessmentReport'/>" + " <spring:message code='course'/> " + courseTitle + " <spring:message code='personnel.for'/> " + groupTitle;
         DynamicForm_Title_CNAR.getItem("title").redraw();
 
@@ -654,6 +361,106 @@
             CourseNAReportDS_CNAR.fetchDataURL = needsAssessmentReportsUrl + "/courseNA?courseId=" + CourseLG_CNAR.getSelectedRecord().id + "&passedReport=true";
             refreshLG_CNAR();
         }
+    }
+
+    function changeSourcePersonnelGroup(groupType){
+        selectedGroup_CNAR=groupType;
+
+        PersonnelGroup_CNAR.getField("personnelGroup").setDisabled(false);
+        PersonnelGroup_CNAR.getField("personnelGroup").setValue("");
+        let title=MenuButton_GroupType_CNAR.menu.data[groupType].title;
+
+        switch(groupType) {
+            case 0:
+                PersonnelGroup_CNAR.dataSource = CompanyDS_CNAR;
+                break;
+
+            case 1:
+                PersonnelGroup_CNAR.dataSource = AreaDS_CNAR;
+                break;
+
+            case 2:
+                PersonnelGroup_CNAR.dataSource = ComplexDS_CNAR;
+                break;
+
+            case 3:
+                PersonnelGroup_CNAR.dataSource = AssistantDS_CNAR;
+                break;
+
+            case 4:
+                PersonnelGroup_CNAR.dataSource = AffairsDS_CNAR;
+                break;
+
+            case 5:
+                PersonnelGroup_CNAR.dataSource = UnitDS_CNAR;
+                break;
+
+            case 6:
+                PersonnelGroup_CNAR.dataSource = EduLevelDS_CNAR;
+                break;
+
+            case 7:
+                PersonnelGroup_CNAR.dataSource = JobDS_CNAR;
+                break;
+        }
+
+        if (groupType==6){
+            PersonnelGroup_CNAR.getField("personnelGroup").displayField="titleFa";
+            PersonnelGroup_CNAR.getField("personnelGroup").valueField="titleFa";
+        }else if (groupType==7){
+            PersonnelGroup_CNAR.getField("personnelGroup").displayField="titleFa";
+            PersonnelGroup_CNAR.getField("personnelGroup").valueField="id";
+        }
+        else{
+            PersonnelGroup_CNAR.getField("personnelGroup").displayField="value";
+            PersonnelGroup_CNAR.getField("personnelGroup").valueField="value";
+        }
+
+        PersonnelGroup_CNAR.getField("personnelGroup").title=title;
+        PersonnelGroup_CNAR.getField("personnelGroup").redraw();
+    }
+
+    function setCriteria(groupType,value){
+        data_values=PersonnelGroup_CNAR.getValuesAsAdvancedCriteria();
+        let nameField;
+
+        switch(groupType) {
+            case 0:
+                nameField="companyName";
+                break;
+
+            case 1:
+                nameField="ccpArea";
+                break;
+
+            case 2:
+                nameField="complexTitle";
+                break;
+
+            case 3:
+                nameField="ccpAssistant";
+                break;
+
+            case 4:
+                nameField="ccpAffairs";
+                break;
+
+            case 5:
+                nameField="ccpUnit";
+                break;
+
+            case 6:
+                nameField="educationLevelTitle";
+                break;
+
+            case 7:
+                nameField="jobId";
+                break;
+        }
+
+        data_values.criteria[0].operator = "equals";
+        data_values.criteria[0].value = value;
+        data_values.criteria[0].fieldName = nameField;
     }
 
     //</script>
