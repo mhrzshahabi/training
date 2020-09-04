@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -35,6 +36,8 @@ public class PersonnelCoursePassedNAReportViewService implements IPersonnelCours
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<PersonnelCoursePassedNAReportViewDTO.Grid> searchCourseList(SearchDTO.SearchRq request) {
+        HashMap<String, String> map = new HashMap<>();
+        convertCriteriaToParams(request.getCriteria(), map);
         List<PersonnelCoursePassedNAReportView> personnelCourseList = personnelCoursePassedNAReportViewDAO.findAll(NICICOSpecification.of(request.getCriteria()));
         Long isPassed = parameterValueService.get(parameterValueService.getId("Passed")).getId();
         List<PersonnelCoursePassedNAReportViewDTO.Grid> result = new ArrayList<>();
@@ -55,5 +58,47 @@ public class PersonnelCoursePassedNAReportViewService implements IPersonnelCours
         searchRs.setList(result);
         searchRs.setTotalCount((long) personnelCourseMap.keySet().size());
         return searchRs;
+    }
+
+    private void convertCriteriaToParams(SearchDTO.CriteriaRq criteria, HashMap<String, String> map) {
+        if (criteria == null)
+            return;
+        if (criteria.getFieldName() == null) {
+            if (criteria.getCriteria() != null && !criteria.getCriteria().isEmpty()) {
+                for (int i = 0; i < criteria.getCriteria().size(); i++) {
+                    convertCriteriaToParams(criteria.getCriteria().get(i), map);
+                }
+            }
+            return;
+        }
+        switch (criteria.getFieldName()) {
+            case "personnelNationalCode":
+                map.put("personnelCppArea", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
+                break;
+            case "ccpAreaCode":
+                map.put("postGradeId", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
+                break;
+            case "ccpAssistant":
+                map.put("personnelCompanyName", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
+                break;
+            case "ccpAssistantCode":
+                map.put("personnelCcpArea", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
+                break;
+            case "ccpAffairs":
+                map.put("personnelCcpAssistant", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
+                break;
+            case "ccpAffairsCode":
+                map.put("personnelCcpSection", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
+                break;
+            case "ccpSection":
+                map.put("personnelCcpUnit", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
+                break;
+            case "ccpSectionCode":
+                map.put("personnelCcpAffairs", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
+                break;
+            case "ccpUnit":
+                map.put("courseId", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
+                break;
+        }
     }
 }
