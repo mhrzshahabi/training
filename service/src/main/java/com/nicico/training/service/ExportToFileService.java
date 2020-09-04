@@ -76,7 +76,7 @@ public class ExportToFileService implements IExportToFileService {
             //third row
             rCellStyle = setCellStyle(workbook, "Tahoma", (short) 12, new Color(0,0,0), null,VerticalAlignment.CENTER,HorizontalAlignment.CENTER);
 
-            if (columns.length > 3) {
+            if (columns.length > 4) {
                 cellAddress = new CellReference(2, fields1.size() - 1);
                 sheet.addMergedRegion(CellRangeAddress.valueOf("D3:" + cellAddress.formatAsString()));
             }

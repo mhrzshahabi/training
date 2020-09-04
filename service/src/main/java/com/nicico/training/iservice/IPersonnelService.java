@@ -21,7 +21,7 @@ public interface IPersonnelService {
 
     TotalResponse<PersonnelDTO.Info> search(NICICOCriteria request);
 
-    List<PersonnelDTO.Info> checkPersonnelNos(List<String> personnelNos);
+    List<PersonnelDTO.InfoForStudent> checkPersonnelNos(List<String> personnelNos,Long courseId);
 
     List<PersonnelDTO.Info> getByPostCode(Long postId);
 
@@ -35,7 +35,7 @@ public interface IPersonnelService {
 
     List<PersonnelDTO.Info> findAllStatisticalReportFilter(String reportType);
 
-    Personnel findPersonnelByPersonnelId(Long personnelId, String personnelNo);
+    PersonnelDTO.DetailInfo findPersonnelByPersonnelId(Long personnelId, String personnelNo);
 
     SearchDTO.SearchRs<PersonnelDTO.FieldValue> findAllValuesOfOneFieldFromPersonnel(String fieldName);
 

@@ -1472,6 +1472,7 @@
             //------------------------ DONE BY ROYA---------------------------------------------------------------------
             {
                 name: "evaluation",
+                required: true,
                 title: "<spring:message code="evaluation.level"/>:",
                 textAlign: "center",
                 startRow: true,
@@ -2384,7 +2385,7 @@
                 filterFields: ["year"],
                 sortField: ["year"],
                 sortDirection: "descending",
-                defaultToFirstOption: true,
+                // defaultToFirstOption: true,
                 useClientFiltering: true,
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
@@ -2404,7 +2405,6 @@
                 },
                 dataArrived: function (startRow, endRow, data) {
                     if (data.allRows[0].year !== undefined) {
-
                         load_term_by_year(data.allRows[0].year);
                     }
                 }
@@ -2424,7 +2424,7 @@
                 filterFields: ["code"],
                 sortField: ["code"],
                 sortDirection: "descending",
-                defaultToFirstOption: true,
+                // defaultToFirstOption: true,
                 useClientFiltering: true,
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]",
@@ -2500,15 +2500,30 @@
                     load_classes_by_term(value);
                 },
                 dataArrived: function (startRow, endRow, data) {
-                    if (data.allRows[0].id !== undefined) {
-                        DynamicForm_Term_Filter.getItem("termFilter").clearValue();
-                        DynamicForm_Term_Filter.getItem("termFilter").setValue(data.allRows[0].code);
-                        load_classes_by_term(data.allRows[0].id);
-                    }
+                    isc.RPCManager.sendRequest({
+                        actionURL: termUrl + "getCurrentTerm/" + DynamicForm_Term_Filter.getField("yearFilter").getValue(),
+                        httpMethod: "GET",
+                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                        useSimpleHttp: true,
+                        contentType: "application/json; charset=utf-8",
+                        showPrompt: false,
+                        serverOutputAsString: false,
+                        callback: function (resp) {
+                                DynamicForm_Term_Filter.getItem("termFilter").clearValue();
+                                DynamicForm_Term_Filter.getField("termFilter").setValue(resp.httpResponseText);
+                                load_classes_by_term(resp.httpResponseText);
+                        }
+                    });
+
                 }
             }
         ]
     });
+
+    DynamicForm_Term_Filter.getField("yearFilter").setValue(todayDate.substring(0, 4));
+    load_term_by_year(todayDate.substring(0, 4));
+
+
 
     var ToolStrip_Excel_JspClass = isc.ToolStripButtonExcel.create({
         click: function () {
@@ -2669,6 +2684,11 @@
                 // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})
             },
             </sec:authorize>
+            {
+                ID: "classEvaluationInfo",
+                title: "مشاهده وضعیت ارزیابی کلاس",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/evaluation-info-tab"})
+            },
             <%--{--%>
             <%--ID: "costClassTab",--%>
             <%--title: "<spring:message code='cost.class'/>",--%>
@@ -3145,7 +3165,6 @@
     }
 
     function alternativeClass_JspClass(record) {
-        console.log(record)
         let WindowAlternativeClass = isc.Window.create({
             title: "جایگزین کلاس های لغو شده",
             items: [isc.VLayout.create({
@@ -3454,6 +3473,13 @@
                 case "classDocumentsTab": {
                     if (typeof loadPage_classDocuments !== "undefined")
                         loadPage_classDocuments(ListGrid_Class_JspClass.getSelectedRecord().id);
+                    break;
+                }
+                case "classEvaluationInfo": {
+                    if (typeof loadPage_classEvaluationInfo !== "undefined")
+                        loadPage_classEvaluationInfo(ListGrid_Class_JspClass.getSelectedRecord().id,
+                                                    ListGrid_Class_JspClass.getSelectedRecord().studentCount,
+                                                    ListGrid_Class_JspClass.getSelectedRecord().evaluation);
                     break;
                 }
             }
@@ -3961,11 +3987,15 @@
                 let evaluationAnswerList = [];
                 let data = {};
                 let evaluationFull = true;
+                let evaluationEmpty = true;
 
                 let questions = DynamicForm_Questions_Body_JspEvaluation.getFields();
                 for (let i = 0; i < questions.length; i++) {
                     if (DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name) === undefined) {
                         evaluationFull = false;
+                    }
+                    else{
+                        evaluationEmpty = false;
                     }
                     let evaluationAnswer = {};
                     evaluationAnswer.answerID = DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name);
@@ -3982,19 +4012,24 @@
                 data.evaluatedTypeId = 187;
                 data.questionnaireTypeId = 141;
                 data.evaluationLevelId = 154;
-                isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
-                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                        Window_Questions_JspEvaluation.close();
-                        isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
-                            classRecord.id, "GET", null, null));
-                        const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                        setTimeout(() => {
-                            msg.close();
-                        }, 3000);
-                    } else {
-                        createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
-                    }
-                }))
+                if(evaluationEmpty == false){
+                    isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
+                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                            Window_Questions_JspEvaluation.close();
+                            isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
+                                classRecord.id, "GET", null, null));
+                            const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                            setTimeout(() => {
+                                msg.close();
+                            }, 3000);
+                        } else {
+                            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                        }
+                    }))
+                }
+                else{
+                    createDialog("info", "حداقل به یکی از سوالات فرم ارزیابی باید جواب داده شود", "<spring:message code="error"/>");
+                }
             }
         });
 

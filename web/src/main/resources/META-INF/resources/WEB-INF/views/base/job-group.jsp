@@ -1119,7 +1119,7 @@
                     }
                     criteria.criteria.push({fieldName: "objectId", operator: "equals", value: ListGrid_Job_Group_Jsp.getSelectedRecord().id});
                     criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "JobGroup"});
-                    criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
+                    // criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
 
                     ExportToFile.showDialog(null, NALG_JobGroup , "NeedsAssessmentReport", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
                 }
@@ -1500,17 +1500,17 @@
             case "TabPane_Post_JobGroup":{
                 if (postJob_JobGroup === jobGroup.id)
                     return;
-                postJob_JobGroup = jobGroup.id;
-                PostLG_JobGroup.setImplicitCriteria({
-                    _constructor: "AdvancedCriteria",
-                    operator: "and",
-                    criteria: [{fieldName: "jobGroup", operator: "equals", value: jobGroup.id}]
-                });
-                PostLG_JobGroup.invalidateCache();
-                PostLG_JobGroup.fetchData();
-                // PostDS_JobGroup.fetchDataURL = jobGroupUrl + "postIscList/" + jobGroup.id;
+                // postJob_JobGroup = jobGroup.id;
+                // PostLG_JobGroup.setImplicitCriteria({
+                //     _constructor: "AdvancedCriteria",
+                //     operator: "and",
+                //     criteria: [{fieldName: "jobGroup", operator: "equals", value: jobGroup.id}]
+                // });
                 // PostLG_JobGroup.invalidateCache();
                 // PostLG_JobGroup.fetchData();
+                PostDS_JobGroup.fetchDataURL = jobGroupUrl + "postIscList/" + jobGroup.id;
+                PostLG_JobGroup.invalidateCache();
+                PostLG_JobGroup.fetchData();
                 break;
             }
             case "TabPane_Personnel_JobGroup":{

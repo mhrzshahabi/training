@@ -153,6 +153,5 @@
         criteriaForm.setValue("opinion", opinion);
         criteriaForm.show();
         criteriaForm.submitForm();
-        console.log(criteriaForm);
     }
 

@@ -19,10 +19,11 @@ public class ViewAttendanceReportDTO {
     String name;
     String ccpArea;
     String ccpAffairs;
+    String peopleType;
     String classCode;
     String className;
     String date;
-    String attendanceStatus;
+    Integer attendanceStatus;
     String time;
 
     @Getter
@@ -31,12 +32,6 @@ public class ViewAttendanceReportDTO {
     @ApiModel("AttendanceReportDTOInfo")
     public static class Info extends ViewAttendanceReportDTO {
 
-        @Getter(AccessLevel.NONE)
-        private String fixTime;
-
-        public String getFixTime(){
-            return time != null ? time.toString().split(":")[1].equals("0") ? time.toString().split(":")[0] : time.toString() : null;
-        }
     }
 
     @Getter

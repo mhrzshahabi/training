@@ -81,7 +81,8 @@
             {name:"lastClass"},
             {name:"lastClassGrade"},
             {name:"teacherTermTitles"},
-            {name: "educationMajorTitle"}
+            {name: "educationMajorTitle"},
+            {name: "teacherId"}
         ],
         fetchDataURL: viewTeacherReportUrl + "iscList"
     });
@@ -121,7 +122,8 @@
             {name:"classCounts", title: "تعداد دوره های تدریسی در شرکت" ,  filterOperator: "equals"},
             {name:"lastClass", title: "نام آخرین دوره ی تدریسی در شرکت" ,  filterOperator: "iContains"},
             {name:"lastClassGrade", title: "نمره ارزیابی کلاسی آخرین دوره ی تدریسی در شرکت" ,  filterOperator: "equals"},
-            {name:"teacherTermTitles",title: "ترم های تدریسی در شرکت" ,  filterOperator: "iContains"}
+            {name:"teacherTermTitles",title: "ترم های تدریسی در شرکت" ,  filterOperator: "iContains"},
+            {name: "teacherId", hidden: true}
         ],
         cellHeight: 43,
         filterOnKeypress: false,
@@ -156,6 +158,103 @@
                         margin:5,
                         click: function() {
                             ExportToFile.showDialog(null, ListGrid_Result_JspTeacherReport, 'teacherReport', 0, null, '',  "گزارش اساتيد", ListGrid_Result_JspTeacherReport.data.criteria, null);
+                        }
+                    }),
+                    isc.ToolStripButton.create({
+                        margin:5,
+                        title: "نمایش جزئیات مدرس",
+                        baseStyle: "buttonDetail",
+                        click: function() {
+                            let record = ListGrid_Result_JspTeacherReport.getSelectedRecord();
+                            if (record == null) {
+                                createDialog("info", "<spring:message code='msg.not.selected.record'/>");
+                            }
+                            else{
+                                let RestDataSource_TrainingClasses_JspTeacherReport = isc.TrDS.create({
+                                    fields: [
+                                        {name: "id", primaryKey: true, hidden: true},
+                                        {name: "course.code", filterOperator: "iContains"},
+                                        {name: "course.titleFa", filterOperator: "equals"},
+                                        {name: "startDate"},
+                                        {name: "endDate"},
+                                        {name: "evaluationGrade"}
+                                    ]
+                                });
+                                let ListGrid_TrainingClasses_JspTeacherReport = isc.TrLG.create({
+                                    height: 500,
+                                    dataSource: RestDataSource_TrainingClasses_JspTeacherReport,
+                                    fields: [
+                                        {name: "id",hidden: true},
+                                        {
+                                            name: "course.code",
+                                            title: "کد دوره",
+                                            filterOperator: "iContains"
+                                        },
+                                        {
+                                            name: "course.titleFa",
+                                            title: "نام دوره",
+                                            filterOperator: "iContains"
+                                        },
+                                        {
+                                            name: "startDate",
+                                            title: "تاریخ شروع",
+                                            filterOperator: "iContains",
+                                            filterEditorProperties: {
+                                                keyPressFilter: "[0-9/]"
+                                            }
+                                        },
+                                        {
+                                            name: "endDate",
+                                            title: "تاریخ خاتمه",
+                                            filterOperator: "iContains",
+                                            filterEditorProperties: {
+                                                keyPressFilter: "[0-9/]"
+                                            }
+                                        },
+                                        {
+                                            name: "evaluationGrade",
+                                            title: "نمره ارزیابی فراگیران به مدرس",
+                                            canFilter: false
+                                        }
+                                    ],
+                                    align: "center",
+                                    filterOnKeypress: true,
+                                    sortField: 3,
+                                    sortDirection: "descending",
+                                });
+                                let Window_TrainingClasses_JspTeacherReport = isc.Window.create({
+                                    ID: "Window_TrainingClasses_JspTeacherReport",
+                                    title: "لیست کلاسهای مدرس " + record.firstName + " " + record.lastName,
+                                    width: 1200,
+                                    height: 520,
+                                    border: "1px solid gray",
+                                    closeClick: function () {
+                                        this.Super("closeClick", arguments);
+                                    },
+                                    items: [ isc.TrVLayout.create({
+                                        members: [
+                                            isc.ToolStripButtonExcel.create({
+                                                margin:5,
+                                                click: function() {
+                                                    let criteria = new Object();
+                                                    criteria.operator = "and";
+                                                    criteria._constructor = "AdvancedCriteria";
+                                                    criteria.criteria = [];
+                                                    criteria.criteria.push(ListGrid_TrainingClasses_JspTeacherReport.getCriteria());
+                                                    criteria.criteria.push({fieldName: "teacherId", operator: "equals", value: record.teacherId});
+
+                                                    ExportToFile.showDialog(null, ListGrid_TrainingClasses_JspTeacherReport, 'teacherTrainingClasses', 0, null, '',  "لیست کلاسهای مدرس " + record.firstName + " " + record.lastName, criteria, null);
+                                                }
+                                            }),
+                                            ListGrid_TrainingClasses_JspTeacherReport
+                                        ]
+                                    })]
+                                });
+                                RestDataSource_TrainingClasses_JspTeacherReport.fetchDataURL = classUrl + "listByteacherID/" + record.teacherId;
+                                ListGrid_TrainingClasses_JspTeacherReport.fetchData();
+                                ListGrid_TrainingClasses_JspTeacherReport.invalidateCache();
+                                Window_TrainingClasses_JspTeacherReport.show()
+                            }
                         }
                     }),
                     ListGrid_Result_JspTeacherReport
@@ -221,7 +320,7 @@
                     "false" : "<spring:message code='external.teacher'/>"
                 },
                 vertical: false,
-                defaultValue: "false"
+                defaultValue: "true"
             },
             {
                 name: "temp1",

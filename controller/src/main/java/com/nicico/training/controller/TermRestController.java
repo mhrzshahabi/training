@@ -250,4 +250,14 @@ public class TermRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
+    @Loggable
+    @GetMapping(value = "/getCurrentTerm/{year}")
+    public ResponseEntity<Long> getCurrentTerm(@PathVariable String year) {
+        Long result = null;
+        SearchDTO.SearchRs<TermDTO.Info> termsResult =  termService.searchYearCurrentTerm(year);
+        if(termsResult.getList() != null && termsResult.getList().size()!=0)
+            result = termsResult.getList().get(0).getId();
+        return new ResponseEntity<>(result,HttpStatus.OK);
+    }
+
 }

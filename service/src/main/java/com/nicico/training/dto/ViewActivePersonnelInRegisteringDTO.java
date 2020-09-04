@@ -118,6 +118,7 @@ public class ViewActivePersonnelInRegisteringDTO implements Serializable {
         private String address;
         private String phone;
         private String mobile;
+        private String departmentCode;
         private String email;
         private Long postId;
         private Long courseId;

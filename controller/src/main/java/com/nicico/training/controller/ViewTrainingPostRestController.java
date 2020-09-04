@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.Collectors;
@@ -73,6 +74,18 @@ public class ViewTrainingPostRestController {
                 List<List<Object>> lists = criteriaRq.getCriteria().stream().filter(a -> (a.getFieldName().equals("jobGroup"))).map(a -> a.getValue()).collect(Collectors.toList());
                 List<JobDTO.Info> jobs = jobGroupService.getJobs(Long.parseLong(lists.get(0).get(0).toString()));
                 List<Long> jobIds = jobs.stream().map(a -> a.getId()).collect(Collectors.toList());
+                if(jobIds.size()==0){
+                    CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
+                    specResponse.setData(new ArrayList())
+                            .setStartRow(0)
+                            .setEndRow(0)
+                            .setTotalRows(0);
+
+                    final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
+                    specRs.setResponse(specResponse);
+
+                    return new ResponseEntity<>(specRs, HttpStatus.OK);
+                }
 //                ArrayList<SearchDTO.CriteriaRq> listCR = new ArrayList<>();
                 criteriaRq.getCriteria().add(makeNewCriteria("jobId", jobIds, EOperator.inSet, null));
 //                listCR.add(criteriaRq1);
@@ -82,6 +95,19 @@ public class ViewTrainingPostRestController {
                 List<List<Object>> lists = criteriaRq.getCriteria().stream().filter(a -> (a.getFieldName().equals("postGGI"))).map(a -> a.getValue()).collect(Collectors.toList());
                 List<PostGradeDTO.Info> postGrades = postGradeGroupService.getPostGrades(Long.parseLong(lists.get(0).get(0).toString()));
                 List<Long> ids = postGrades.stream().map(a -> a.getId()).collect(Collectors.toList());
+
+                if(ids.size()==0){
+                    CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
+                    specResponse.setData(new ArrayList())
+                            .setStartRow(0)
+                            .setEndRow(0)
+                            .setTotalRows(0);
+
+                    final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
+                    specRs.setResponse(specResponse);
+
+                    return new ResponseEntity<>(specRs, HttpStatus.OK);
+                }
 //                ArrayList<SearchDTO.CriteriaRq> listCR = new ArrayList<>();
                 criteriaRq.getCriteria().add(makeNewCriteria("postGradeId", ids, EOperator.inSet, null));
 //                listCR.add(criteriaRq1);

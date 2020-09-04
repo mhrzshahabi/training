@@ -2,9 +2,6 @@ package com.nicico.training.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.ibm.icu.text.ArabicShaping;
-import com.ibm.icu.text.ArabicShapingException;
-import com.ibm.icu.text.Bidi;
 import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
@@ -19,16 +16,15 @@ import com.nicico.training.iservice.IEvaluationAnalysisService;
 import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.*;
-import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.EvaluationAnalysisDAO;
 import com.nicico.training.repository.TclassDAO;
+import com.nicico.training.utility.PersianCharachtersUnicode;
 import lombok.RequiredArgsConstructor;;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.modelmapper.TypeToken;
-
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Type;
@@ -395,7 +391,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
         Map<String,Object> behavior = new HashMap<>();
         behavior.put("scoreVal",result.getBehavioralGrade());
-        behavior.put("scoreCat","میانگین تغییر رفتار دوره");
+        behavior.put("scoreCat","  ﻩﺭﻭﺩ ﺭﺎﺘﻓﺭ ﺮﯿﯿﻐﺗ ﻦﯿﮕﻧﺎﯿﻣ");
         behavioralScoreChart.add(behavior);
 
         final Gson gson = new Gson();
@@ -420,14 +416,40 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
     private static String bidiReorder(String text)
     {
-        try {
-            Bidi bidi = new Bidi((new ArabicShaping(ArabicShaping.LETTERS_SHAPE)).shape(text), 127);
-            bidi.setReorderingMode(0);
-            return bidi.writeReordered(2);
+//        try {
+//            Bidi bidi = new Bidi((new ArabicShaping(ArabicShaping.LETTERS_SHAPE)).shape(text), 127);
+//            bidi.setReorderingMode(0);
+//            return bidi.writeReordered(2);
+//        }
+//        catch (ArabicShapingException ase3) {
+//            return text;
+//        }
+
+        PersianCharachtersUnicode unicode = new PersianCharachtersUnicode();
+        String textinverse = "";
+        int k = 0;
+        int i = 0;
+        for(int j= text.length() - 1; j >= 0; j--) {
+            unicode.setCharc(text.charAt(j));
+            k = j + 1;
+            i = j - 1;
+            if(j == text.length() - 1 && PersianCharachtersUnicode.getNextInitial(text.charAt(i)))
+                textinverse += unicode.getIsolatedForm_Unicode();
+            else if(j == text.length() - 1)
+                textinverse += unicode.getFinalForm_Unicode();
+            else if(j == 0)
+                textinverse += unicode.getInitialFom_Unicode();
+            else if(PersianCharachtersUnicode.getPrevInitial(text.charAt(k)) && PersianCharachtersUnicode.getNextInitial(text.charAt(i)))
+                textinverse += unicode.getIsolatedForm_Unicode();
+            else if(PersianCharachtersUnicode.getPrevInitial(text.charAt(k)))
+                textinverse += unicode.getFinalForm_Unicode();
+            else if(PersianCharachtersUnicode.getNextInitial(text.charAt(i)))
+                textinverse += unicode.getInitialFom_Unicode();
+            else
+                textinverse += unicode.getMedialForm_Unicode();
         }
-        catch (ArabicShapingException ase3) {
-            return text;
-        }
+
+        return textinverse;
     }
 
 }

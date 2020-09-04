@@ -202,6 +202,21 @@ public class ClassStudentRestController {
             return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
         }
     }
+    @Loggable
+    @PutMapping(value = "/update-presence-type-id/{id}/{presenceTypeId}")
+    public ResponseEntity<UpdateStudentScoreResponse> update(@PathVariable Long id, @PathVariable Long presenceTypeId ) {
+        UpdateStudentScoreResponse response = new UpdateStudentScoreResponse();
+        try {
+            classStudentService.setPeresenceTypeId(presenceTypeId,id);
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("ویرایش موفقیت آمیز");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (TrainingException ex) {
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+            response.setMessage("بروز خطا در سیستم");
+            return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
 
     @Loggable
     @PutMapping(value = "/score-pre-test/{id}")

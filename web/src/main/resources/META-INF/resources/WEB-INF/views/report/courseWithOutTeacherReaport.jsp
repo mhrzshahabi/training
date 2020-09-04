@@ -41,9 +41,10 @@
         fields: [{name: "id", primaryKey: true},
             {name: "code"},
             {name: "title"},
+            {name: "max_start_date"},
         ], dataFormat: "json",
 
-       // autoFetchData: true,
+        // autoFetchData: true,
     });
 
     var RestDataSource_Teacher_JspcourseWithOutClass = isc.TrDS.create({
@@ -70,7 +71,26 @@
     var ButtonExcel =isc.ToolStripButtonExcel.create({
         margin:5,
         click: function () {
-            ExportToFile.downloadExcelFromClient(List_Grid_Reaport_CourseWithOutTeacher, null, '', "دوره های بدون استاد");
+            let rows = List_Grid_Reaport_CourseWithOutTeacher.data.getAllLoadedRows();
+            let result = ExportToFile.getAllFields(List_Grid_Reaport_CourseWithOutTeacher);
+            result.fields.splice(1, 0, {name:"titleClass",title:"عنوان کلاس"});
+            result.isValueMap.splice(1, 0, false);
+            let fields = result.fields;
+            let isValueMaps = result.isValueMap;
+            let data = [];
+            for (let i = 0; i < rows.length; i++) {
+                data[i] = {};
+                for (let j = 0; j < fields.length; j++) {
+                    if (fields[j].name == 'rowNum') {
+                        data[i][fields[j].name] = (i + 1).toString();
+                    } else {
+                        let tmpStr = ExportToFile.getData(rows[i], fields[j].name.split('.'), 0);
+                        data[i][fields[j].name] = typeof (tmpStr) == 'undefined' ? '' : ((!isValueMaps[j]) ? tmpStr : listGrid.getDisplayValue(fields[j].name, tmpStr));
+                    }
+                }
+            }
+            ExportToFile.exportToExcelFromClient(fields, data, '', "دوره های بدون کلاس")
+            ;
         }
     })
     var ToolStrip_Actions = isc.ToolStrip.create({
@@ -85,9 +105,9 @@
     var List_Grid_Reaport_CourseWithOutTeacher = isc.TrLG.create({
         width: "100%",
         height: "100%",
-      dataSource: RestDataSource_CourseWithOutTeacher,
+        dataSource: RestDataSource_CourseWithOutTeacher,
         showRowNumbers: true,
-       //autoFetchData: true,
+        //autoFetchData: true,
 
         fields: [
             {name: "code", title: "<spring:message code="code"/>", align: "center", filterOperator: "iContains",autoFitWidth:true},
@@ -98,7 +118,7 @@
         recordDoubleClick: function () {
 
         },
-            gridComponents: [ToolStrip_Actions,"filterEditor", "header", "body"],
+        gridComponents: [ToolStrip_Actions,"filterEditor", "header", "body"],
 
 
 
@@ -115,6 +135,7 @@
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
+        useClientFiltering:true,
         filterOnKeypress: true,
         sortField: 0,
     });
@@ -125,23 +146,23 @@
         overflow:"auto",
         padding: 5,
         cellPadding: 5,
-       // titleWidth: 0,
-       // titleAlign: "center",
+        // titleWidth: 0,
+        // titleAlign: "center",
         numCols: 4,
-       // colWidths: ["3"],
+        // colWidths: ["3"],
         items: [
             {
 
                 name: "startDate",
                 //height: 35,
                 //   titleColSpan: 1,
-               // colSpan: 2,
-               // titleAlign:"center",
+                // colSpan: 2,
+                // titleAlign:"center",
                 title: "تاریخ شروع : از",
                 ID: "startDate_jspReport",
                 type: 'text',
                 textAlign: "center",
-               // required: true,
+                // required: true,
                 hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
@@ -164,10 +185,10 @@
                     dateCheck = checkDate(DynamicForm_Report_CourseWithOutTeacher.getValue("startDate"));
                     if (dateCheck == false)
                         DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
-                        endDateCheckReportCWOT = false;
+                    endDateCheckReportCWOT = false;
                     if (dateCheck == true)
                         DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("startDate", true);
-                        endDateCheckReportCWOT = true;
+                    endDateCheckReportCWOT = true;
                     var endDate = DynamicForm_Report_CourseWithOutTeacher.getValue("endDate");
                     var startDate = DynamicForm_Report_CourseWithOutTeacher.getValue("startDate");
                     if (endDate != undefined && startDate > endDate) {
@@ -178,20 +199,20 @@
                 }
             },
 
-                {
+            {
                 name: "endDate",
-               // height: 35,
-                  //  width:"1%",
-              //  titleColSpan: 1,
-               title: "تا",
-               titleAlign:"center",
+                // height: 35,
+                //  width:"1%",
+                //  titleColSpan: 1,
+                title: "تا",
+                titleAlign:"center",
                 ID: "endDate_jspReport",
-               // required: true,
+                // required: true,
                 hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 textAlign: "center",
-               // colSpan: 2,
+                // colSpan: 2,
                 // focus: function () {
                 //     displayDatePicker('endDate_jspReport', this, 'ymd', '/');
                 // },
@@ -203,13 +224,13 @@
 
                     }
                 }],
-                    editorExit:function(){
-                        let result=reformat(DynamicForm_Report_CourseWithOutTeacher.getValue("endDate"));
-                        if (result){
-                            DynamicForm_Report_CourseWithOutTeacher.getItem("endDate").setValue(result);
-                            DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate", true);
-                        }
-                    },
+                editorExit:function(){
+                    let result=reformat(DynamicForm_Report_CourseWithOutTeacher.getValue("endDate"));
+                    if (result){
+                        DynamicForm_Report_CourseWithOutTeacher.getItem("endDate").setValue(result);
+                        DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate", true);
+                    }
+                },
                 blur: function () {
 
                     var dateCheck;
@@ -224,8 +245,8 @@
                     if (dateCheck == true) {
                         if (startDate == undefined)
                             DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate", true);
-                            DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
-                           endDateCheckReportCWOT = false;
+                        DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                        endDateCheckReportCWOT = false;
                         if (startDate != undefined && startDate > endDate) {
                             DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate", true);
                             DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
@@ -244,7 +265,7 @@
 
                 name: "startDate2",
                 //height: 35,
-               // width:"5%",
+                // width:"5%",
                 //   titleColSpan: 1,
                 //   colSpan: 2,
                 titleAlign:"center",
@@ -252,7 +273,7 @@
                 ID: "startDate2_jspReport",
                 type: 'text',
                 textAlign: "center",
-               // required: true,
+                // required: true,
                 hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
@@ -297,12 +318,12 @@
             {
                 name: "endDate2",
                 // height: 35,
-              //  width:"5%",
+                //  width:"5%",
                 // titleColSpan: 1,
                 title: "تا",
                 titleAlign:"center",
                 ID: "endDate2_jspReport",
-               // required: true,
+                // required: true,
                 hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
@@ -354,7 +375,7 @@
                         }
                     }
                 }
-                    },
+            },
 
 
             {
@@ -408,8 +429,8 @@
                                         var item =DynamicForm_Report_CourseWithOutTeacher.getField("tclassYears");
                                         item.setValue([]);
                                         item.pickList.hide();
-                                      //  DynamicForm_Report_CourseWithOutTeacher.getField("termFilters").setValue([]);
-                                       // DynamicForm_Report_CourseWithOutTeacher.getField("termFilters").pickList.hide();
+                                        //  DynamicForm_Report_CourseWithOutTeacher.getField("termFilters").setValue([]);
+                                        // DynamicForm_Report_CourseWithOutTeacher.getField("termFilters").pickList.hide();
                                     }
                                 })
                             ]
@@ -423,9 +444,9 @@
                         DynamicForm_Report_CourseWithOutTeacher.getField("termFilters").setValue([])
                         let criteria= '{"fieldName":"startDate","operator":"iStartsWith","value":"' + value[0] + '"}';
                         RestDataSource_Term_Filter.fetchDataURL = termUrl + "spec-list?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria;
-                       DynamicForm_Report_CourseWithOutTeacher.getField("termFilters").optionDataSource = RestDataSource_Term_Filter;
-                       DynamicForm_Report_CourseWithOutTeacher.getField("termFilters").fetchData();
-                       DynamicForm_Report_CourseWithOutTeacher.getField("termFilters").enable();
+                        DynamicForm_Report_CourseWithOutTeacher.getField("termFilters").optionDataSource = RestDataSource_Term_Filter;
+                        DynamicForm_Report_CourseWithOutTeacher.getField("termFilters").fetchData();
+                        DynamicForm_Report_CourseWithOutTeacher.getField("termFilters").enable();
                     } else {
                         DynamicForm_Report_CourseWithOutTeacher.getField("termFilters").setDisabled(true)
                         DynamicForm_Report_CourseWithOutTeacher.getField("termFilters").setValue([])
@@ -456,8 +477,8 @@
                 colSpan:4,
                 textAlign:"center",
                 titleAlign:"center",
-               endRow:false,
-               startRow:true,
+                endRow:false,
+                startRow:true,
                 textAlign: "center",
                 type: "SelectItem",
                 multiple: true,
@@ -529,7 +550,7 @@
                                     title: "حذف همه",
                                     click: function () {
                                         DynamicForm_Report_CourseWithOutTeacher.getField("termFilters").setValue([])
-                                       }
+                                    }
                                 })
                             ]
                         }),
@@ -541,11 +562,11 @@
                 },
                 dataArrived:function (startRow, endRow, data) {
                     //if(data.allRows[0].id !== undefined)
-                  //  {
-                        // DynamicForm_Term_Filter.getItem("termFilters").clearValue();
-                        // DynamicForm_Term_Filter.getItem("termFilters").setValue(data.allRows[0].code);
-                        // load_classes_by_term(data.allRows[0].id);
-                   // }
+                    //  {
+                    // DynamicForm_Term_Filter.getItem("termFilters").clearValue();
+                    // DynamicForm_Term_Filter.getItem("termFilters").setValue(data.allRows[0].code);
+                    // load_classes_by_term(data.allRows[0].id);
+                    // }
                 },
                 icons:[
                     {
@@ -557,7 +578,7 @@
                         prompt: "پاک کردن",
                         click : function (form, item, icon) {
                             item.clearValue();
-                           // item.focusInItem();
+                            // item.focusInItem();
                             item.setValue([])
                         }
                     }
@@ -611,7 +632,7 @@
                 titleAlign:"center",
                 width:430,
                 colSpan:4,
-               // operator: "inSet",
+                // operator: "inSet",
                 textAlign:"center",
                 titleAlign:"center",
                 endRow:false,
@@ -624,7 +645,7 @@
                 displayField: ["code"],
                 comboBoxWidth: 200,
                 pickListProperties: {
-                showFilterEditor: true,
+                    showFilterEditor: true,
                 },
                 pickListFields: [
                     {name: "titleFa", title: "<spring:message code="title"/>"},
@@ -650,14 +671,14 @@
             {type: "SpacerItem"},
             {type: "SpacerItem",colSpan:3},
             {type: "SpacerItem"},
-                   {
+            {
                 type: "button",
                 title: "تهیه گزارش",
-                 width:418,
-                 colSpan:3,
+                width:418,
+                colSpan:3,
                 // align:"left",
-                 titleAlign:"center",
-                 endRow:false,
+                titleAlign:"center",
+                endRow:false,
                 startRow: false,
                 click:function () {
 
@@ -683,7 +704,7 @@
                 }
             },
 
-         ]
+        ]
     })
 
     var ToolStrip_ToolStrip_Personnel_Info_Training_Action = isc.ToolStrip.create({
@@ -722,37 +743,37 @@
     })
 
     function Print(startDate,endDate) {
-            var criteriaForm = isc.DynamicForm.create({
-                method: "POST",
-                action: "<spring:url value="/unjustified/unjustifiedabsence"/>" +"/"+startDate + "/" + endDate,
-                target: "_Blank",
-                canSubmit: true,
-                fields:
-                    [
-                       {name: "token", type: "hidden"}
-                    ]
-            })
-            criteriaForm.setValue("token", "<%= accessToken %>")
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="/unjustified/unjustifiedabsence"/>" +"/"+startDate + "/" + endDate,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "token", type: "hidden"}
+                ]
+        })
+        criteriaForm.setValue("token", "<%= accessToken %>")
         criteriaForm.show();
         criteriaForm.submitForm();
-        }
+    }
 
-        function  PrintPreTest(startDate,endDate)
-        {
-            var criteriaForm = isc.DynamicForm.create({
-                method: "POST",
-                action: "<spring:url value="/preTestScoreReport/printPreTestScore"/>" +"/"+startDate + "/" + endDate,
-                target: "_Blank",
-                canSubmit: true,
-                fields:
-                    [
-                        {name: "token", type: "hidden"}
-                    ]
-            })
-            criteriaForm.setValue("token", "<%= accessToken %>")
-            criteriaForm.show();
-            criteriaForm.submitForm();
-        }
+    function  PrintPreTest(startDate,endDate)
+    {
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="/preTestScoreReport/printPreTestScore"/>" +"/"+startDate + "/" + endDate,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "token", type: "hidden"}
+                ]
+        })
+        criteriaForm.setValue("token", "<%= accessToken %>")
+        criteriaForm.show();
+        criteriaForm.submitForm();
+    }
 
     function load_term_by_year(value)
     {

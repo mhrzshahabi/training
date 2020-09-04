@@ -49,6 +49,17 @@ public class StudentService implements IStudentService {
     }
 
     @Transactional(readOnly = true)
+    public List<Student> getStudentByPostCodeAndPersonnelNoAndDepartmentCodeAndFirstNameAndLastName(String postCode, String personnelNo, String depCode, String fName, String lName) {
+        List<Student> list = studentDAO.findByPostCodeAndPersonnelNoAndDepartmentCodeAndFirstNameAndLastName(postCode, personnelNo, depCode, fName, lName);
+        return list;
+    }
+    @Transactional(readOnly = true)
+    public List<Student> getStudentByNationalCode(String nationalCode) {
+        List<Student> list = studentDAO.findByNationalCode(nationalCode);
+        return list;
+    }
+
+    @Transactional(readOnly = true)
     @Override
     public List<StudentDTO.Info> list() {
         final List<Student> gAll = studentDAO.findAll();
