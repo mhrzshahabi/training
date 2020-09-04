@@ -65,6 +65,10 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
     Integer countClassStudentsByTclassId(Long classId);
 
     @Modifying
+    @Query(value = "update TBL_CLASS_STUDENT set TBL_CLASS_STUDENT.PRESENCE_TYPE_ID =:presenceTypeId where id =:id", nativeQuery = true)
+    public void setPeresenceTypeId(Long presenceTypeId, Long id);
+
+    @Modifying
     @Query(value = "update TBL_CLASS_STUDENT set " +
             "evaluation_audience_id = :AudienceId " +
             "where id = :idClassStudent", nativeQuery = true)

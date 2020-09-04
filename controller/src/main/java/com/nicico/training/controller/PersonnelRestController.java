@@ -157,7 +157,7 @@ public class PersonnelRestController {
     }
 
     @GetMapping(value = "/byPersonnelNo/{personnelId}/{personnelNo}")
-    public ResponseEntity<Personnel> findPersonnelByPersonnelId(@PathVariable Long personnelId, @PathVariable String personnelNo) {
+    public ResponseEntity<PersonnelDTO.DetailInfo> findPersonnelByPersonnelId(@PathVariable Long personnelId, @PathVariable String personnelNo) {
         return new ResponseEntity<>(personnelService.findPersonnelByPersonnelId(personnelId, personnelNo), HttpStatus.OK);
     }
 

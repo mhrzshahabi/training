@@ -184,4 +184,9 @@ public class ClassStudentService implements IClassStudentService {
         return result;
     }
 
+    @Transactional
+    public void setPeresenceTypeId(Long peresenceTypeId, Long id) {
+        classStudentDAO.setPeresenceTypeId(peresenceTypeId, id);
+    }
+
 }

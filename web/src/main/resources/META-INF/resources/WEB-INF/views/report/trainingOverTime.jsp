@@ -16,6 +16,7 @@
             {name: "name"},
             {name: "ccpArea"},
             {name: "ccpAffairs"},
+            {name: "peopleType"},
             {name: "classCode"},
             {name: "className"},
             {name: "date"},
@@ -168,7 +169,7 @@
                 click:function() {
                     let title="گزارش اضافه کاری آموزشی از تاریخ "+DynamicForm_TrainingOverTime.getItem("startDate").getValue()+ " الی "+DynamicForm_TrainingOverTime.getItem("endDate").getValue();
 
-                    ExportToFile.showDialog(null, ListGrid_TrainingOverTime_TrainingOverTimeJSP, 'trainingOverTime', 0, null, '', title, ListGrid_TrainingOverTime_TrainingOverTimeJSP.data.criteria, null);
+                    ExportToFile.showDialog(null, ListGrid_TrainingOverTime_TrainingOverTimeJSP, 'trainingOverTime', 0, null, '', title, DynamicForm_TrainingOverTime.getValuesAsAdvancedCriteria(), null);
                 }
             })
             , "header", "filterEditor", "body"],
@@ -196,6 +197,13 @@
                 }
             },
             {name: "name", title: "<spring:message code='student'/>",},
+            {name: "peopleType", title: "نوع فراگیر",valueMap:
+                    {
+                        "personnel_registered": "متفرقه",
+                        "Personal": "شرکتی",
+                        "ContractorPersonal": "پیمانکار"
+                    }
+            },
             {name: "ccpArea", title: "<spring:message code='area'/>"},
             {name: "ccpAffairs", title: "<spring:message code='affairs'/>"},
             {name: "classCode", title: "<spring:message code="class.code"/>"},
@@ -206,7 +214,7 @@
                 }
             },
             {
-                name: "fixTime",
+                name: "time",
                 title: "<spring:message code="time.hour"/>",
                 includeInRecordSummary:false,
             },
