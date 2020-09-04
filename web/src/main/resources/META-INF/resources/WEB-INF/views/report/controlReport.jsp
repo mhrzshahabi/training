@@ -132,7 +132,7 @@
                             if (sessions==null || sessions.length==0)
                             {
                                 isc.Dialog.create({
-                                    message: "<spring:message code="attendance.class.nomeeting"/>",
+                                    message: "<spring:message code="no.sessions.was.for.class"/>",
                                     icon: "[SKIN]ask.png",
                                     title: "<spring:message code="message"/>",
                                     buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],

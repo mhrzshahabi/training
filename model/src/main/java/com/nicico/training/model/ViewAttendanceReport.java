@@ -44,8 +44,11 @@ public class ViewAttendanceReport implements Serializable {
     @Column(name = "ccparea")
     private String ccpArea;
 
-    @Column(name = "ccpafairs")
-    private String ccpAfairs;
+    @Column(name = "ccpaffairs")
+    private String ccpAffairs;
+
+    @Column(name = "peopletype")
+    private String peopleType;
 
     @Column(name = "classcode", insertable = false, updatable = false)
     private String classCode;

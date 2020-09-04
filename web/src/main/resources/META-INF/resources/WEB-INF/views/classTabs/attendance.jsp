@@ -1084,16 +1084,20 @@
                     sendObject.serialVersionUID = 7710786106266650447;
                     let sendList = [];
                     sessionInOneDate.forEach(a=>{
-                        let record = {};
-                        record.studentId = a.studentId;
-                        record.sessionId = Object.keys(a).find(b=>b.substr(0,2)==="se").substr(2);
-                        record.state = a[Object.keys(a).find(b=>b.substr(0,2)==="se")];
-                        console.log(record);
-                        sendList.push(record);
-                    })
+                        let sessions = Object.keys(a).findAll(b=>b.substr(0,2)==="se");
+                        sessions.forEach( b => {
+                            let record = {};
+                            record.studentId = a.studentId;
+                            record.sessionId = b.substr(2);
+                            record.state = a[b];
+                            sendList.push(record);
+                        });
+                    });
                     causeOfAbsence.forEach(c=>{
-                        sendList.find(d => (c.sessionId === d.sessionId) && (c.studentId === d.studentId)).description = c.description;
-                    })
+                        let findList = sendList.find(d => (c.sessionId === d.sessionId) && (c.studentId === d.studentId));
+                        if(findList != null)
+                            findList.description = c.description;
+                    });
                     // if(causeOfAbsence.length !== 0) {
                     //     let cause = causeOfAbsence.find(c => ((c.sessionId === record.sessionId) && (c.studentId === record.studentId)));
                     //     console.log(record);

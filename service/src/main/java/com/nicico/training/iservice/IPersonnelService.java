@@ -35,7 +35,7 @@ public interface IPersonnelService {
 
     List<PersonnelDTO.Info> findAllStatisticalReportFilter(String reportType);
 
-    Personnel findPersonnelByPersonnelId(Long personnelId, String personnelNo);
+    PersonnelDTO.DetailInfo findPersonnelByPersonnelId(Long personnelId, String personnelNo);
 
     SearchDTO.SearchRs<PersonnelDTO.FieldValue> findAllValuesOfOneFieldFromPersonnel(String fieldName);
 

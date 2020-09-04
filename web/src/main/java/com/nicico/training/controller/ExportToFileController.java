@@ -220,8 +220,45 @@ public class ExportToFileController {
                 generalList = (List<Object>)((Object) viewUnfinishedClassesReportService.search(searchRq).getList());
                 break;
             case "trainingOverTime":
-                searchRq.setSortBy("id");
-                generalList = (List<Object>)((Object) viewTrainingOverTimeReportService.search(searchRq,o -> modelMapper.map(o, ViewTrainingOverTimeReportDTO.Info.class)).getList());
+                String startDate3 = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
+                searchRq.getCriteria().getCriteria().remove(0);
+                String endDate3 = ((String) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).trim();
+                searchRq.getCriteria().getCriteria().remove(0);
+
+                SearchDTO.SearchRq request3 = new SearchDTO.SearchRq();
+                request3.setStartIndex(null);
+
+                if(req.getParameter("_sortBy")==null){
+                    request3.setSortBy("personalNum");
+                }else{
+                    request3.setSortBy(req.getParameter("_sortBy"));
+                }
+
+                List<SearchDTO.CriteriaRq> listOfCriteria3 = new ArrayList<>();
+
+                SearchDTO.CriteriaRq criteriaRq3 = null;
+
+                criteriaRq3 = new SearchDTO.CriteriaRq();
+                criteriaRq3.setOperator(EOperator.greaterOrEqual);
+                criteriaRq3.setFieldName("date");
+                criteriaRq3.setValue(startDate3);
+
+                listOfCriteria3.add(criteriaRq3);
+
+                criteriaRq3 = new SearchDTO.CriteriaRq();
+                criteriaRq3.setOperator(EOperator.lessOrEqual);
+                criteriaRq3.setFieldName("date");
+                criteriaRq3.setValue(endDate3);
+
+                listOfCriteria3.add(criteriaRq3);
+
+                criteriaRq3 = new SearchDTO.CriteriaRq();
+                criteriaRq3.setCriteria(listOfCriteria3);
+                criteriaRq3.setOperator(EOperator.and);
+
+                request3.setCriteria(criteriaRq3);
+
+                generalList = (List<Object>)((Object) viewTrainingOverTimeReportService.search(request3,o -> modelMapper.map(o, ViewTrainingOverTimeReportDTO.Info.class)).getList());
                 break;
 
             case "attendanceReport": {
@@ -635,7 +672,7 @@ public class ExportToFileController {
                 Long teacherId = null;
                 SearchDTO.CriteriaRq removeCriterion = null;
                 for (SearchDTO.CriteriaRq criterion : searchRq.getCriteria().getCriteria()) {
-                    if(criterion.getFieldName().equalsIgnoreCase("teacherId")){
+                    if(criterion.getFieldName() != null && criterion.getFieldName().equalsIgnoreCase("teacherId")){
                         teacherId = ((Integer) criterion.getValue().get(0)).longValue();
                         removeCriterion = criterion;
                     }

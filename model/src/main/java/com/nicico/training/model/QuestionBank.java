@@ -31,8 +31,8 @@ public class QuestionBank extends Auditable {
     @Column(name = "c_question", nullable = false)
     private String question;
 
-    @Column(name = "n_lines", nullable = false,columnDefinition = "int default 1" )
-    private Integer lines;
+    @Column(name = "n_lines", nullable = false)
+    private Integer lines = 1;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_parameter_value_question_type", nullable = false, insertable = false, updatable = false)

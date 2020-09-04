@@ -177,13 +177,6 @@
         cacheAllData: true,
         fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpArea"
     });
-    ComplexDS_PCNR = isc.TrDS.create({
-        fields: [
-            {name: "value", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
-        ],
-        cacheAllData: true,
-        fetchDataURL: departmentUrl + "/all-field-values?fieldName=complexTitle"
-    });
     AssistantDS_PCNR = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -328,24 +321,6 @@
                 },
             },
             {
-                name: "personnelComplexTitle",
-                title: "<spring:message code="complex"/>",
-                optionDataSource: ComplexDS_PCNR,
-                autoFetchData: false,
-                filterFields: ["value", "value"],
-                pickListWidth: 300,
-                type: "ComboBoxItem",
-                textMatchStyle: "substring",
-                pickListProperties: {
-                    showFilterEditor: false,
-                    showClippedValuesOnHover: true,
-                },
-                valueField: "value",
-                displayField: "value",
-                specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
-            },
-            {
                 name: "personnelCompanyName",
                 title: "<spring:message code="company"/>",
                 filterFields: ["value", "value"],
@@ -361,7 +336,22 @@
                 valueField: "value",
                 displayField: "value",
                 specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
+                separateSpecialValues: true,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "personnelCcpArea",
@@ -379,7 +369,22 @@
                 valueField: "value",
                 displayField: "value",
                 specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
+                separateSpecialValues: true,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "personnelCcpAssistant",
@@ -397,7 +402,22 @@
                 valueField: "value",
                 displayField: "value",
                 specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
+                separateSpecialValues: true,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "personnelCcpSection",
@@ -415,7 +435,22 @@
                 valueField: "value",
                 displayField: "value",
                 specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
+                separateSpecialValues: true,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "personnelCcpUnit",
@@ -433,7 +468,22 @@
                 valueField: "value",
                 displayField: "value",
                 specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
+                separateSpecialValues: true,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "personnelCcpAffairs",
@@ -450,7 +500,22 @@
                 valueField: "value",
                 displayField: "value",
                 specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
+                separateSpecialValues: true,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "courseId",

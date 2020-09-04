@@ -3114,5 +3114,19 @@
             <column name="n_skill" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1598941297227-496">
+        <createTable tableName="tbl_annual_statistical">
+            <column name="institute_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_annual_statisticalPK"/>
+            </column>
+            <column name="canceled_class_count" type="NUMBER(19, 0)"/>
+            <column name="category_id" type="NUMBER(19, 0)"/>
+            <column name="finished_class_count" type="NUMBER(19, 0)"/>
+            <column name="institute_title_fa" type="VARCHAR2(255 CHAR)"/>
+            <column name="student_count" type="NUMBER(19, 0)"/>
+            <column name="sum_of_duration" type="NUMBER(19, 0)"/>
+            <column name="sum_of_student_hour" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
 
 </databaseChangeLog>

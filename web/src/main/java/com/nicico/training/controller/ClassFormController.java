@@ -132,6 +132,11 @@ public class ClassFormController {
         return "classTabs/teacherInformation";
     }
 
+    @RequestMapping("/evaluation-info-tab")
+    public String evaluationInfoTab() {
+        return "classTabs/classEvaluationInfo";
+    }
+
     @PostMapping("/reportPrint/{type}")
     public ResponseEntity<?> reportPrint(final HttpServletRequest request, @PathVariable String type) {
         String token = request.getParameter("token");

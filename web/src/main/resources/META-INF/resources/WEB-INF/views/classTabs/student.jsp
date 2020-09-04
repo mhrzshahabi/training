@@ -1336,21 +1336,21 @@
                                         title: "<spring:message code='save'/>",
                                         align: "center",
                                         icon: "[SKIN]/actions/save.png",
-                                        click: function () {
-                                            let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
-                                            // for (let i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
-                                            //     students.add({
-                                            //         "personnelNo": SelectedPersonnelsLG_student.data[i].personnelNo,
-                                            //         "applicantCompanyName": SelectedPersonnelsLG_student.data[i].applicantCompanyName,
-                                            //         "presenceTypeId": SelectedPersonnelsLG_student.data[i].presenceTypeId,
-                                            //         "registerTypeId": SelectedPersonnelsLG_student.data[i].registerTypeId
-                                            //     });
-                                            // }
-                                            if (SelectedPersonnelsLG_student.data.toArray().getLength() > 0) {
-                                                wait.show()
-                                                isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST", JSON.stringify(SelectedPersonnelsLG_student.data.toArray()), class_add_students_result));
-                                            }
-                                            SelectedPersonnelsLG_student.data.clearAll();
+                                        click:function () {
+                                                let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
+                                                // for (let i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
+                                                //     students.add({
+                                                //         "personnelNo": SelectedPersonnelsLG_student.data[i].personnelNo,
+                                                //         "applicantCompanyName": SelectedPersonnelsLG_student.data[i].applicantCompanyName,
+                                                //         "presenceTypeId": SelectedPersonnelsLG_student.data[i].presenceTypeId,
+                                                //         "registerTypeId": SelectedPersonnelsLG_student.data[i].registerTypeId
+                                                //     });
+                                                // }
+                                                if (SelectedPersonnelsLG_student.data.toArray().getLength() > 0) {
+                                                    wait.show()
+                                                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST", JSON.stringify(SelectedPersonnelsLG_student.data.toArray()), class_add_students_result));
+                                                }
+                                                SelectedPersonnelsLG_student.data.clearAll();
                                         }
                                     }),
                                     isc.IButtonCancel.create({
@@ -1523,16 +1523,16 @@
         };
 
         function ListGrid_Cell_Update_Student(record, newValue, item) {
-            var updating = {};
-            if (item.name === "applicantCompanyName") {
-                updating.applicantCompanyName = newValue;
-                updating.presenceTypeId = record.presenceTypeId;
-            } else if (item.name === "presenceTypeId") {
-                updating.applicantCompanyName = record.applicantCompanyName;
-                updating.presenceTypeId = newValue;
-            }
+            // var updating = {};
+            // if (item.name === "applicantCompanyName") {
+            //     updating.applicantCompanyName = newValue;
+            //     updating.presenceTypeId = record.presenceTypeId;
+            // } else if (item.name === "presenceTypeId") {
+            //     updating.applicantCompanyName = record.applicantCompanyName;
+            //     updating.presenceTypeId = newValue;
+            // }
             wait.show();
-            isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + record.id, "PUT", JSON.stringify(updating), class_student_update_student_result));
+            isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/update-presence-type-id/" + record.id + "/" + newValue, "PUT", null, class_student_update_student_result));
         }
 
         function class_student_update_student_result(resp) {
@@ -1540,13 +1540,14 @@
             let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
             if (resp.httpResponseCode === 200) {
                 refreshLG(StudentsLG_student);
-            } else {
-                isc.Dialog.create({
-                    message: "<spring:message code='msg.operation.error'/>",
-                    icon: "[SKIN]stop.png",
-                    title: "<spring:message code='message'/>"
-                });
             }
+            <%--else {--%>
+                <%--isc.Dialog.create({--%>
+                    <%--message: "<spring:message code='msg.operation.error'/>",--%>
+                    <%--icon: "[SKIN]stop.png",--%>
+                    <%--title: "<spring:message code='message'/>"--%>
+                <%--});--%>
+            <%--}--%>
         }
 
         function loadPage_student() {

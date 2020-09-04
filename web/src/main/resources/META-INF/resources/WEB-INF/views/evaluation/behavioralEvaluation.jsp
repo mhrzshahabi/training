@@ -789,11 +789,15 @@
                             let evaluationAnswerList = [];
                             let data = {};
                             let evaluationFull = true;
+                            let evaluationEmpty = true;
 
                             let questions = DynamicForm_Questions_Body_JspEvaluation.getFields();
                             for (let i = 0; i < questions.length; i++) {
                                 if (DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name) === undefined) {
                                     evaluationFull = false;
+                                }
+                                else{
+                                    evaluationEmpty = false;
                                 }
                                 let evaluationAnswer = {};
                                 evaluationAnswer.answerID = DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name);
@@ -814,21 +818,27 @@
                             data.questionnaireTypeId = 230;
                             data.evaluationLevelId = 156;
                             data.status = true;
-                            isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
-                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                                    Window_Questions_JspEvaluation.close();
-                                    isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateBehavioralEvaluation" + "/" +
-                                        classRecord_BE.id,"GET", null, null));
-                                    ListGrid_student_BE.invalidateCache();
-                                    Listgrid_BehavioralRegisteration_JSPEvaluation.invalidateCache();
-                                    const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                                    setTimeout(() => {
-                                        msg.close();
-                                    }, 3000);
-                                } else {
-                                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
-                                }
-                            }))
+                            if(evaluationEmpty == false){
+                                isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
+                                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                        Window_Questions_JspEvaluation.close();
+                                        isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateBehavioralEvaluation" + "/" +
+                                            classRecord_BE.id,"GET", null, null));
+                                        ListGrid_student_BE.invalidateCache();
+                                        Listgrid_BehavioralRegisteration_JSPEvaluation.invalidateCache();
+                                        const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                                        setTimeout(() => {
+                                            msg.close();
+                                        }, 3000);
+                                    } else {
+                                        createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                    }
+                                }))
+                            }
+                            else{
+                                createDialog("info", "حداقل به یکی از سوالات فرم ارزیابی باید جواب داده شود", "<spring:message code="error"/>");
+                            }
+
                         }
                     });
 
