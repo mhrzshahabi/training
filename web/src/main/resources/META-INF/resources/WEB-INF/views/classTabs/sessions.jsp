@@ -765,30 +765,26 @@
                 });
             } else {
                 if (ListGrid_Class_JspClass.getSelectedRecord().classStatus !== "3") {
-                    DynamicForm_Session.getItem("instituteId").setDisabled(false);
-                    DynamicForm_Session.getItem("instituteId").setRequired(false);
-
-                    DynamicForm_Session.getItem("trainingPlaceId").setDisabled(true);
-                    DynamicForm_Session.getItem("trainingPlaceId").setRequired(false);
-
                     let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
-                    const {trainingPlaceIds,teacherId,...record}=classRecord;
-                    const essentialRecord={instituteId:record.instituteId ,trainingPlaceId:trainingPlaceIds[0],teacherId};
+                    const {trainingPlaceIds,teacherId,instituteId,teachingType,...record}=classRecord;
+                    const essentialRecord={instituteId,trainingPlaceId:trainingPlaceIds[0],teacherId};
 
                     DynamicForm_Session.clearValues();
 
                     const teachingTypes=[ "غیر حضوری", "مجازی"];
                     let checkInstitute=false;
 
-                    if (teachingTypes.includes(record.teachingType)){
+                    if (teachingTypes.includes(teachingType)){
                         changeStatusInstituteId(!checkInstitute);
                     }
-                    else
+                    else {
                         changeStatusInstituteId(checkInstitute);
+                        checkInstitute=!checkInstitute;
+                    }
 
-                    if (checkInstitute && record.instituteId!=0) {
+                    if (checkInstitute && instituteId!=0) {
                         DynamicForm_Session.getField("instituteId").fetchData();
-                        RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + essentialRecord.instituteId + "/trainingPlaces";
+                        RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + instituteId + "/trainingPlaces";
                     }
 
                     RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + classRecord.courseId+"/"+teacherId;
