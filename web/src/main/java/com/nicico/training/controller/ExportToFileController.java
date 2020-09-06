@@ -268,7 +268,7 @@ public class ExportToFileController {
                 CriteriaConverter.removeCriteriaByfieldName(searchRq.getCriteria(),"startDate");
                 String endDate2 = (String) attendanceParams.get("endDate")[0];
                 CriteriaConverter.removeCriteriaByfieldName(searchRq.getCriteria(),"endDate");
-                int absentType = (Integer) attendanceParams.get("absentType")[0];
+                Integer absentType = Integer.parseInt(attendanceParams.get("absentType")[0].toString());
                 CriteriaConverter.removeCriteriaByfieldName(searchRq.getCriteria(),"absentType");
 
                 SearchDTO.SearchRq request = new SearchDTO.SearchRq();

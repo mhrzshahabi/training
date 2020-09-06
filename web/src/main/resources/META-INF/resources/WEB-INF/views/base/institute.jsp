@@ -315,31 +315,36 @@
                 name: "titleFa",
                 title: "<spring:message code='global.titleFa'/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "iContains",
+                filterOnKeypress: false,
             },
             {
                 name: "titleEn",
                 title: "<spring:message code='global.titleEn'/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "iContains",
+                filterOnKeypress: false,
             },
             {
                 name: "manager.firstNameFa",
                 title: "<spring:message code='manager.name'/>",
                 align: "center",
                 filterOperator: "iContains",
+                filterOnKeypress: false,
             },
             {
                 name: "manager.lastNameFa",
                 title: "<spring:message code='manager.family'/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "iContains",
+                filterOnKeypress: false,
             },
             {
                 name: "parentInstitute.titleFa",
                 title: "<spring:message code='institute.parent'/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "iContains",
+                filterOnKeypress: false,
             },
             <%--{--%>
             <%--    name: "parentInstituteId",--%>
@@ -1230,21 +1235,21 @@
             }
         ],
 
-    /*    itemChanged: function (item, newValue) {
-            if (item.name === "contactInfo.workAddress.stateId") {
-                if (newValue === undefined) {
-                    DynamicForm_Institute_Institute_Address.clearValue("contactInfo.workAddress.cityId");
-                } else {
-                    RestDataSource_Institute_City.fetchDataURL = stateUrl + "spec-list-by-stateId/" + newValue;
-                    DynamicForm_Institute_Institute_Address.getField("contactInfo.workAddress.cityId").optionDataSource = RestDataSource_Institute_City;
-                    DynamicForm_Institute_Institute_Address.getField("contactInfo.workAddress.cityId").fetchData();
-                    DynamicForm_Institute_Institute_Address.clearValue("contactInfo.workAddress.cityId");
+        /*    itemChanged: function (item, newValue) {
+                if (item.name === "contactInfo.workAddress.stateId") {
+                    if (newValue === undefined) {
+                        DynamicForm_Institute_Institute_Address.clearValue("contactInfo.workAddress.cityId");
+                    } else {
+                        RestDataSource_Institute_City.fetchDataURL = stateUrl + "spec-list-by-stateId/" + newValue;
+                        DynamicForm_Institute_Institute_Address.getField("contactInfo.workAddress.cityId").optionDataSource = RestDataSource_Institute_City;
+                        DynamicForm_Institute_Institute_Address.getField("contactInfo.workAddress.cityId").fetchData();
+                        DynamicForm_Institute_Institute_Address.clearValue("contactInfo.workAddress.cityId");
+                    }
                 }
-            }
-            if (item.name === "e_mail") {
-            }
+                if (item.name === "e_mail") {
+                }
 
-        }*/
+            }*/
 
     });
 
@@ -2083,14 +2088,14 @@
             {
                 name: "bank",
                 title: "<spring:message code='bank'/>",
-                keyPressFilter: "[A-Z|a-z|0-9|-| ]",
+                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 width: "*",
                 required:true
             },
             {
                 name: "bankBranch",
                 title: "<spring:message code='bank.branch'/>",
-                keyPressFilter: "[A-Z|a-z|0-9|-| ]",
+                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 width: "*",
             },
             {
@@ -2279,7 +2284,7 @@
             reqMethod = "POST";
 // DynamicForm_Institute_Institute.clearValues();
             DynamicForm_Institute_Institute_Account.getField("isEnable").setValue(1);
-          //  DynamicForm_Institute_Institute_Account.getField("isEnableVal").setValue(true);
+            //  DynamicForm_Institute_Institute_Account.getField("isEnableVal").setValue(true);
 
             DynamicForm_Institute_Institute_Account.getItem("instituteId").setValue(record.id);
             DynamicForm_Institute_Institute_Account.getItem("bankBranch").setOptionDataSource(null);
@@ -3359,10 +3364,10 @@
         } else {
             ValuesManager_Institute_InstituteValue.clearValues();
             ValuesManager_Institute_InstituteValue.clearErrors();
-           // DynamicForm_Institute_Institute_Address.getItem("contactInfo.workAddress.cityId").setOptionDataSource(null);
-           // DynamicForm_Institute_Institute_Address.getItem("contactInfo.workAddress.stateId").fetchData();
+            // DynamicForm_Institute_Institute_Address.getItem("contactInfo.workAddress.cityId").setOptionDataSource(null);
+            // DynamicForm_Institute_Institute_Address.getItem("contactInfo.workAddress.stateId").fetchData();
 
-             ValuesManager_Institute_InstituteValue.editRecord(record);
+            ValuesManager_Institute_InstituteValue.editRecord(record);
             //DynamicForm_Institute_Institute.getItem("parentInstitute.titleFa").setValue(record.titleFa);
 
             if (record != null && record.contactInfo!=null && record.contactInfo.workAddress.stateId !== undefined)
@@ -3378,8 +3383,8 @@
         ValuesManager_Institute_InstituteValue.clearValues();
         ValuesManager_Institute_InstituteValue.clearErrors(true);
         instituteMethod = "POST";
-       // DynamicForm_Institute_Institute_Address.getItem("contactInfo.workAddress.cityId").setOptionDataSource(null);
-      //  ;
+        // DynamicForm_Institute_Institute_Address.getItem("contactInfo.workAddress.cityId").setOptionDataSource(null);
+        //  ;
         Window_Institute_Institute.setTitle("ایجاد مرکز آموزشی جدید");
         Window_Institute_Institute.show();
         Window_Institute_Institute.bringToFront();
@@ -3462,17 +3467,17 @@
 
     function checkEmail(email) {
         if (email !== undefined)
-        return !(email.indexOf("@") === -1 || email.indexOf(".") === -1 || email.lastIndexOf(".") < email.indexOf("@"));
+            return !(email.indexOf("@") === -1 || email.indexOf(".") === -1 || email.lastIndexOf(".") < email.indexOf("@"));
     }
 
     function checkMobile(mobile) {
         if (mobile !== undefined)
-        return mobile[0] === "0" && mobile[1] === "9" && mobile.length === 11;
+            return mobile[0] === "0" && mobile[1] === "9" && mobile.length === 11;
     }
 
     function checkPhone(phone) {
         if (phone!== undefined)
-        return (phone[0] === "0" && phone.length === 11) || (phone[0] !== "0" && phone.length === 8);
+            return (phone[0] === "0" && phone.length === 11) || (phone[0] !== "0" && phone.length === 8);
     }
 
     function fillAddressFields(postalCode) {
@@ -3487,7 +3492,7 @@
         }
         let data = JSON.parse(resp.data);
 
-      //  DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.id", data.id)
+        //  DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.id", data.id)
         DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.postalCode", data.postalCode);
         DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.restAddr", data.restAddr);
         DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.phone", data.phone);

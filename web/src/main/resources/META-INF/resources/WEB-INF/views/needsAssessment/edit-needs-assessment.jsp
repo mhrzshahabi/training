@@ -11,15 +11,7 @@
     var selectedRecord = {};
     var editing = false;
     var isChanged = false;
-    var priorityList = {
-        "Post": "پست انفرادی",
-        "PostGroup": "گروه پستی",
-        "Job": "شغل",
-        "JobGroup": "گروه شغلی",
-        "PostGrade": "رده پستی",
-        "PostGradeGroup": "گروه رده پستی",
-        "TrainingPost": "پست"
-    };
+
     var skillData = [];
     var competenceData = [];
     var peopleTypeMap ={
@@ -1314,7 +1306,7 @@
         <%--// showDetailFields: true--%>
     <%--});--%>
 
-    var Window_AddCompetence = isc.Window.create({
+    let Window_AddCompetence = isc.Window.create({
         title: "<spring:message code="competence.list"/>",
         width: "80%",
         height: "70%",
@@ -1327,7 +1319,17 @@
                     ListGrid_AllCompetence_JspNeedsAssessment,
                     ListGrid_NeedsAssessment_JspENA
                 ]
-            })]
+            })],
+        show(){
+            this.Super("show", arguments);
+            let criteria = {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [{fieldName: "workFlowStatusCode", operator: "equals", value: 2}]
+            };
+            ListGrid_AllCompetence_JspNeedsAssessment.setImplicitCriteria(criteria);
+            ListGrid_AllCompetence_JspNeedsAssessment.fetchData();
+        }
     });
 
     let DynamicForm_JspEditNeedsAssessment = isc.DynamicForm.create({
@@ -2017,8 +2019,7 @@
                             "workFlowName": "NeedAssessment",
                             "cType": DynamicForm_JspEditNeedsAssessment.getValue("objectType")
                         }];
-
-                        wait.show()
+                        wait.show();
                         isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
 
                     }

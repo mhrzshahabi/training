@@ -13,15 +13,7 @@
     const red = "#ff8abc";
     const green = "#5dd851";
     var editing = false;
-    var priorityList = {
-        "Post": "پست انفرادی",
-        "PostGroup": "گروه پستی",
-        "Job": "شغل",
-        "JobGroup": "گروه شغلی",
-        "PostGrade": "رده پستی",
-        "PostGradeGroup": "گروه رده پستی",
-        "TrainingPost": "پست"
-    };
+
     var skillTopData = [];
     var skillBottomData = [];
     var competenceTopData = [];
@@ -1072,8 +1064,8 @@
             return priorityColor(record);
         },
     });
-    var Window_AddCompetence = isc.Window.create({
-        title: "<spring:message code="skill.plural.list"/>",
+    let Window_AddCompetence = isc.Window.create({
+        title: "لیست شایستگی ها",
         width: "40%",
         height: "50%",
         keepInParentRect: true,
@@ -1084,7 +1076,17 @@
                 members: [
                     ListGrid_AllCompetence_JspDiffNeedsAssessment
                 ]
-            })]
+            })],
+        show(){
+            this.Super("show", arguments);
+            let criteria = {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [{fieldName: "workFlowStatusCode", operator: "equals", value: 2}]
+            }
+            ListGrid_AllCompetence_JspDiffNeedsAssessment.setImplicitCriteria(criteria);
+            ListGrid_AllCompetence_JspDiffNeedsAssessment.fetchData();
+        }
     });
     var Window_AddSkill_Diff = isc.Window.create({
         title: "<spring:message code="skill.plural.list"/>",

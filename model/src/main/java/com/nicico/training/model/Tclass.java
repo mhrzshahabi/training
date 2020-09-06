@@ -152,7 +152,7 @@ public class Tclass extends Auditable {
     @Column(name = "c_workflow_ending_status_code")
     private Integer workflowEndingStatusCode;
 
-    @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<ClassStudent> classStudents;
 
     @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -232,4 +232,10 @@ public class Tclass extends Auditable {
 
     @Column(name = "f_targetsociety_type_id")
     private Long targetSocietyTypeId;
+
+    @Column(name = "c_student_cost")
+    private String studentCost;
+
+    @Column(name = "f_student_cost_currency")
+    private Long studentCostCurrency;
 }

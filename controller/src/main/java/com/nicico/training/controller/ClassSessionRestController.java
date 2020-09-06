@@ -8,10 +8,8 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.TclassDTO;
-import com.nicico.training.model.ClassSession;
 import com.nicico.training.model.Tclass;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.ClassAlarmService;
@@ -22,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +31,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -59,7 +59,6 @@ public class ClassSessionRestController {
     @PostMapping(value = "/generateSessions/{classId}")
     public void generateSessions(@PathVariable Long classId, @Validated @RequestBody TclassDTO.Create autoSessionsRequirement, HttpServletResponse response) {
         classSessionService.generateSessions(classId, autoSessionsRequirement, response);
-        //// cancel alarms
 //        classAlarmService.alarmSumSessionsTimes(classId);
 //        classAlarmService.alarmTeacherConflict(classId);
 //        classAlarmService.alarmTrainingPlaceConflict(classId);
@@ -90,7 +89,6 @@ public class ClassSessionRestController {
         ClassSessionDTO.ManualSession create = modelMapper.map(req, ClassSessionDTO.ManualSession.class);
         ResponseEntity<ClassSessionDTO.Info> infoResponseEntity = new ResponseEntity<>(classSessionService.create(create, response), HttpStatus.CREATED);
         //*****check alarms*****
-        //// cancel alarms
 //        if (infoResponseEntity.getStatusCodeValue() == 201) {
 //            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getClassId());
 //            classAlarmService.alarmTeacherConflict(infoResponseEntity.getBody().getClassId());
@@ -110,7 +108,6 @@ public class ClassSessionRestController {
         ClassSessionDTO.Update update = modelMapper.map(request, ClassSessionDTO.Update.class);
         ResponseEntity<ClassSessionDTO.Info> infoResponseEntity = new ResponseEntity<>(classSessionService.update(id, update, response), HttpStatus.OK);
         //*****check alarms*****
-        //// cancel alarms
 //        if (infoResponseEntity.getStatusCodeValue() == 200) {
 //            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getClassId());
 //            classAlarmService.alarmTeacherConflict(infoResponseEntity.getBody().getClassId());
@@ -129,7 +126,6 @@ public class ClassSessionRestController {
         Long classId = classSessionService.getClassIdBySessionId(id);
         classSessionService.delete(id, response);
         //*****check alarms*****
-        //// cancel alarms
 //        classAlarmService.alarmSumSessionsTimes(classId);
 //        classAlarmService.alarmTeacherConflict(classId);
 //        classAlarmService.alarmStudentConflict(classId);

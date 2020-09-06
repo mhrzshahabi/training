@@ -533,6 +533,8 @@ public class InstituteRestController {
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
 
+        searchRq.setSortBy("-id");
+
         final SearchDTO.SearchRs<InstituteDTO.Info> searchRs = instituteService.search(searchRq);
 
         final Map<String, Object> params = new HashMap<>();

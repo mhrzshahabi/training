@@ -238,3 +238,12 @@ var peopleTypeMap ={
     // "Company" : "شرکتی",
     // "OrgCostCenter" : "پیمان کار"
 };
+var priorityList = {
+    "Post": "پست انفرادی",
+    "PostGroup": "گروه پستی",
+    "Job": "شغل",
+    "JobGroup": "گروه شغلی",
+    "PostGrade": "رده پستی",
+    "PostGradeGroup": "گروه رده پستی",
+    "TrainingPost": "پست"
+};
