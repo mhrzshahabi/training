@@ -1326,7 +1326,7 @@
                 _constructor: "AdvancedCriteria",
                 operator: "and",
                 criteria: [{fieldName: "workFlowStatusCode", operator: "equals", value: 2}]
-            }
+            };
             ListGrid_AllCompetence_JspNeedsAssessment.setImplicitCriteria(criteria);
             ListGrid_AllCompetence_JspNeedsAssessment.fetchData();
         }
