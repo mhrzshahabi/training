@@ -541,7 +541,7 @@
                         // editorType: "TrComboAutoRefresh",
                         type: "ComboBoxItem",
                         multiple: false,
-                        title: "<spring:message code="presenter"/>",
+                        title: "<spring:message code="training.place"/>",
                         autoFetchData: false,
                         useClientFiltering: true,
                         optionDataSource: RestDataSource_Institute_JspSession,
@@ -624,7 +624,7 @@
                     {
                         name: "trainingPlaceId",
                         editorType: "TrComboAutoRefresh",
-                        title: "<spring:message code="present.location"/>",
+                        title: "<spring:message code="training.location"/>",
                         align: "center",
                         optionDataSource: RestDataSource_TrainingPlace_JspSession,
                         displayField: "titleFa",
