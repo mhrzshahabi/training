@@ -1238,14 +1238,4 @@
         </addColumn>
     </changeSet>
 
-    <changeSet author="razmnoosh (generated)" id="1599300236215-624">
-        <dropColumn columnName="D_LAST_MODIFIED_DATE_NA" tableName="TBL_JOB"/>
-    </changeSet>
-
-    <changeSet author="razmnoosh (generated)" id="1599301343137-497">
-        <addColumn tableName="tbl_job">
-            <column name="d_last_modified_date_na" type="varchar2(255 CHAR)"/>
-        </addColumn>
-    </changeSet>
-
 </databaseChangeLog>
