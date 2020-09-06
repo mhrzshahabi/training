@@ -902,7 +902,15 @@ public class TclassRestController {
         return new ResponseEntity<>(tClassService.hasSessions(classId),HttpStatus.OK);
     }
 
+    @Loggable
+    @PutMapping(value = "/updateCostInfo/{id}")
+//    @PreAuthorize("hasAuthority('u_tclass')")
+    public ResponseEntity<Void> updateCostInfo(@PathVariable Long id, @RequestBody TclassDTO.Update request) {
 
+        tClassService.updateCostInfo(id, request);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 
     }
