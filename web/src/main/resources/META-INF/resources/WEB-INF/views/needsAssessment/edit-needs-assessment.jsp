@@ -4,8 +4,6 @@
 
 // <script>
 
-    var mostafa;
-
     // var view_ENA = null;
     const yellow ="#d6d216";
     const red = "#ff8abc";
@@ -2011,7 +2009,6 @@
                             "workFlowName": "NeedAssessment",
                             "cType": DynamicForm_JspEditNeedsAssessment.getValue("objectType")
                         }];
-                        mostafa = varParams;
                         wait.show();
                         isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
 
