@@ -1306,7 +1306,7 @@
         <%--// showDetailFields: true--%>
     <%--});--%>
 
-    var Window_AddCompetence = isc.Window.create({
+    let Window_AddCompetence = isc.Window.create({
         title: "<spring:message code="competence.list"/>",
         width: "80%",
         height: "70%",
@@ -1319,7 +1319,17 @@
                     ListGrid_AllCompetence_JspNeedsAssessment,
                     ListGrid_NeedsAssessment_JspENA
                 ]
-            })]
+            })],
+        show(){
+            this.Super("show", arguments);
+            let criteria = {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [{fieldName: "workFlowStatusCode", operator: "equals", value: 2}]
+            }
+            ListGrid_AllCompetence_JspNeedsAssessment.setImplicitCriteria(criteria);
+            ListGrid_AllCompetence_JspNeedsAssessment.fetchData();
+        }
     });
 
     let DynamicForm_JspEditNeedsAssessment = isc.DynamicForm.create({
