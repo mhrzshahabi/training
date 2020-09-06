@@ -41,7 +41,7 @@ public class Job extends Auditable {
     private Set<TrainingPost> trainingPostSet;
 
     @Column(name = "d_last_modified_date_na")
-    private Date lastModifiedDateNA;
+    private String lastModifiedDateNA;
 
     @Column(name = "c_modified_by_na")
     private String modifiedByNA;
