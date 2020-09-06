@@ -3,7 +3,6 @@ package com.nicico.training.service;
 @Author:roya
 */
 
-import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.NICICOPageable;
 import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.domain.criteria.SearchUtil;

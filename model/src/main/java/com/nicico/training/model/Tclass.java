@@ -152,7 +152,7 @@ public class Tclass extends Auditable {
     @Column(name = "c_workflow_ending_status_code")
     private Integer workflowEndingStatusCode;
 
-    @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<ClassStudent> classStudents;
 
     @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
