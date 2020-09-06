@@ -30,11 +30,6 @@
     },
 
 
-
-
-
-
-
     {
       "code": "Menu_NeedAssessment",
       "title": "منوی نیازسنجی"
@@ -114,8 +109,6 @@
 
 
 
-
-
     {
       "code": "Menu_Run",
       "title": "منوی اجرا"
@@ -136,7 +129,6 @@
       "code": "Menu_Run_Institute",
       "title": "منوی اجرا - مرکز آموزشي"
     },
-
 
 
 
@@ -174,8 +166,6 @@
     },
 
 
-
-
     {
       "code": "Menu_Cartable",
       "title": "منوی کارپوشه"
@@ -204,8 +194,6 @@
       "code": "Menu_Cartable_StudentPortal",
       "title": "منوی کارپوشه - پرتال دانشجو"
     },
-
-
 
 
 
