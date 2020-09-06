@@ -187,7 +187,7 @@ public class TclassRestController {
                                                        @RequestParam(value = "_constructor", required = false) String constructor,
                                                        @RequestParam(value = "operator", required = false) String operator,
                                                        @RequestParam(value = "criteria", required = false) String criteria,
-                                                       @RequestParam(value = "id", required = false) Long id,
+                                                       @RequestParam(value = "id", required = false) List<Long> ids,
                                                        @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException, NoSuchFieldException, IllegalAccessException {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
@@ -207,7 +207,7 @@ public class TclassRestController {
         //criteriaRq=(SearchDTO.SearchRq[])request.getCriteria().getCriteria().stream().filter(p->p.getFieldName().equals("term.id")&&p.getValue().get(0).equals("[]")).toArray();
 
         if(request.getCriteria() != null) {
-            if (request.getCriteria().getCriteria().stream().filter(p -> p.getFieldName().equals("term.id") && p.getValue().size() == 0).toArray().length > 0) {
+            if (request.getCriteria().getCriteria().stream().filter(p -> (p.getFieldName() == null ? false : p.getFieldName().equals("term.id")) && p.getValue().size() == 0).toArray().length > 0) {
                 ArrayList list = new ArrayList<>();
                 list.add("-1000");
                 ((SearchDTO.CriteriaRq) request.getCriteria().getCriteria().stream().filter(p -> p.getFieldName().equals("term.id") && p.getValue().size() == 0).toArray()[0]).setValue(list);
@@ -216,14 +216,14 @@ public class TclassRestController {
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
         }
-        if (id != null) {
+        if (ids != null) {
             criteriaRq = new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.equals)
+            criteriaRq.setOperator(EOperator.inSet)
                     .setFieldName("id")
-                    .setValue(id);
+                    .setValue(ids);
             request.setCriteria(criteriaRq);
             startRow = 0;
-            endRow = 1;
+            endRow = ids.size();
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);

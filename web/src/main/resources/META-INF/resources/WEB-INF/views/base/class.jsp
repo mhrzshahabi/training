@@ -3244,6 +3244,10 @@
                                             },
                                             {fieldName: "id", operator: "notEqual", value: record.id},
                                             {fieldName: "classStatus", operator: "equals", value: "4"},
+                                            {operator: "or", criteria: [
+                                                    {fieldName: "alternativeClassId", operator: "isNull"},
+                                                    {fieldName: "alternativeClassId", operator: "equals", value: record.id},
+                                                ]}
                                         ]
                                     };
                                     item.pickListCriteria = criteria;
