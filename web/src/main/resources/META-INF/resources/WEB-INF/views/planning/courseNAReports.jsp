@@ -163,6 +163,8 @@
             {name: "id", primaryKey: true, hidden: true},
             {name: "code", title: "<spring:message code="job.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains"},
+            {name: "peopleType",  title: "نوع فراگیر",valueMap: {"personnel_registered": "متفرقه", "Personal": "شرکتی", "ContractorPersonal": "پیمانکار"}},
+            {name: "enabled", title: "فعال/غیرفعال", valueMap: {"undefined": "فعال", "74": "غیرفعال"}}
         ],
         autoCacheAllData: true,
         fetchDataURL: jobUrl + "/iscList"
@@ -405,13 +407,20 @@
         }
 
         if (groupType==6){
+            PersonnelGroup_CNAR.getField("personnelGroup").pickListWidth=350;
+            PersonnelGroup_CNAR.getField("personnelGroup").pickListFields=null;
             PersonnelGroup_CNAR.getField("personnelGroup").displayField="titleFa";
             PersonnelGroup_CNAR.getField("personnelGroup").valueField="titleFa";
         }else if (groupType==7){
-            PersonnelGroup_CNAR.getField("personnelGroup").displayField="titleFa";
+            PersonnelGroup_CNAR.getField("personnelGroup").pickListWidth=550;
+            PersonnelGroup_CNAR.getField("personnelGroup").pickListFields=[{name:"titleFa"},{name:"code"},{name:"peopleType",canFilter: false},{name:"enabled"}];
+            PersonnelGroup_CNAR.getField("personnelGroup").filterFields=[{name:"titleFa"},{name:"code"},{name:"enabled"}];
+            PersonnelGroup_CNAR.getField("personnelGroup").displayField=["titleFa"];
             PersonnelGroup_CNAR.getField("personnelGroup").valueField="id";
         }
         else{
+            PersonnelGroup_CNAR.getField("personnelGroup").pickListWidth=350
+            PersonnelGroup_CNAR.getField("personnelGroup").pickListFields=null;
             PersonnelGroup_CNAR.getField("personnelGroup").displayField="value";
             PersonnelGroup_CNAR.getField("personnelGroup").valueField="value";
         }
