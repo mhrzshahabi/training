@@ -13,15 +13,7 @@
     const red = "#ff8abc";
     const green = "#5dd851";
     var editing = false;
-    var priorityList = {
-        "Post": "پست انفرادی",
-        "PostGroup": "گروه پستی",
-        "Job": "شغل",
-        "JobGroup": "گروه شغلی",
-        "PostGrade": "رده پستی",
-        "PostGradeGroup": "گروه رده پستی",
-        "TrainingPost": "پست"
-    };
+
     var skillTopData = [];
     var skillBottomData = [];
     var competenceTopData = [];

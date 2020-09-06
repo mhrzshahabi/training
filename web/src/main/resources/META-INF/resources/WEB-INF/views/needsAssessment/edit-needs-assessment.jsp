@@ -4,6 +4,8 @@
 
 // <script>
 
+    var mostafa;
+
     // var view_ENA = null;
     const yellow ="#d6d216";
     const red = "#ff8abc";
@@ -11,15 +13,7 @@
     var selectedRecord = {};
     var editing = false;
     var isChanged = false;
-    var priorityList = {
-        "Post": "پست انفرادی",
-        "PostGroup": "گروه پستی",
-        "Job": "شغل",
-        "JobGroup": "گروه شغلی",
-        "PostGrade": "رده پستی",
-        "PostGradeGroup": "گروه رده پستی",
-        "TrainingPost": "پست"
-    };
+
     var skillData = [];
     var competenceData = [];
     var peopleTypeMap ={
@@ -2017,8 +2011,8 @@
                             "workFlowName": "NeedAssessment",
                             "cType": DynamicForm_JspEditNeedsAssessment.getValue("objectType")
                         }];
-
-                        wait.show()
+                        mostafa = varParams;
+                        wait.show();
                         isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
 
                     }

@@ -9,14 +9,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
 // <script>
 
     var editing = false;
-    var priorityList = {
-        "Post": "پست",
-        "PostGroup": "گروه پستی",
-        "Job": "شغل",
-        "JobGroup": "گروه شغلی",
-        "PostGrade": "رده پستی",
-        "PostGradeGroup": "گروه رده پستی",
-    };
+
     var skillData = [];
     var competenceData = [];
 
