@@ -1480,15 +1480,7 @@ final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOK
 
     }
 
-    function checkSelectedRecord(lg) {
-        if(lg.getSelectedRecord() === undefined){
-            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
-            return false;
-        }
-        else{
-            return true;
-        }
-    }
+
 
     function sendToWorkflowAfterUpdate_needsAssessment(selectedRecord, workflowType) {
 
