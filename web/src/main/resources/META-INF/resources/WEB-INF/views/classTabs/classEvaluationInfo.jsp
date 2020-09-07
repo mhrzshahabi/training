@@ -59,26 +59,31 @@
                 null,
                 (resp) => {
                     let result = JSON.parse(resp.httpResponseText);
-                    if(result.teacherGradeToClass == 0)
+
+                    if(result.teacherGradeToClass == undefined)
                         DynamicForm_JspClassEvaluationInfo.setValue("teacherGradeToClass", val2);
                     else
                         DynamicForm_JspClassEvaluationInfo.setValue("teacherGradeToClass", getFormulaMessage(result.teacherGradeToClass , "2", "black", "b"));
-                    if(result.trainingGradeToTeacher == 0)
+                    if(result.trainingGradeToTeacher == undefined)
                         DynamicForm_JspClassEvaluationInfo.setValue("trainingGradeToTeacher", val2);
                     else
                         DynamicForm_JspClassEvaluationInfo.setValue("trainingGradeToTeacher", getFormulaMessage(result.trainingGradeToTeacher , "2", "black", "b"));
-                    if(result.fergrade == 0)
+                    if(result.fergrade == undefined)
                         DynamicForm_JspClassEvaluationInfo.setValue("studentsGradeToClass", val2);
                     else
                         DynamicForm_JspClassEvaluationInfo.setValue("studentsGradeToClass", getFormulaMessage(result.fergrade , "2", "black", "b"));
-                    if(result.trainingGradeToTeacher == 0 && result.studentsGradeToTeacher == 0)
+
+                    if(result.trainingGradeToTeacher == undefined && result.studentsGradeToTeacher == undefined)
                             DynamicForm_JspClassEvaluationInfo.setValue("teacherTotalGrade", val2);
-                    else{
-                        let val = result.trainingGradeToTeacher + " * " + result.z1 + "% + " + result.studentsGradeToTeacher + " * " + result.z2 + "% = " + result.fetgrade;
-                        DynamicForm_JspClassEvaluationInfo.setValue("teacherTotalGrade", getFormulaMessage(val , "2", "black", "b"));
-                    }
+                    else if(result.trainingGradeToTeacher == undefined){
+                            let val = "0 " + " * " + result.z1 + "% + " + result.studentsGradeToTeacher + " * " + result.z2 + "% = " + result.fetgrade;
+                            DynamicForm_JspClassEvaluationInfo.setValue("teacherTotalGrade", getFormulaMessage(val , "2", "black", "b"));
+                        }
+                    else if(result.studentsGradeToTeacher == undefined){
+                            let val = result.trainingGradeToTeacher + " * " + result.z1 + "% + " + "0 " + " * " + result.z2 + "% = " + result.fetgrade;
+                            DynamicForm_JspClassEvaluationInfo.setValue("teacherTotalGrade", getFormulaMessage(val , "2", "black", "b"));
+                        }
+                    }));
                     Wait_JspClassEvaluationInfo.close();
                 }
-            ));
-        }
-    }
+        };

@@ -67,12 +67,10 @@ public interface ITclassService {
     public TclassDTO.ReactionEvaluationResult getReactionEvaluationResult(Long classId);
 
     @Transactional
-    double getJustFERGrade(Long classId);
+    Double getJustFERGrade(Long classId);
 
     @Transactional
     public Map<String, Object> getFERAndFETGradeResult(Long classId);
-
-    public TclassDTO.BehavioralEvaluationResult getBehavioralEvaluationResult(Long classId);
 
     public List<TclassDTO.PersonnelClassInfo> findAllPersonnelClass(String national_code, String personnel_no);
 

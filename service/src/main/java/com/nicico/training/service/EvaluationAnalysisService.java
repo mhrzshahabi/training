@@ -147,27 +147,69 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         EvaluationAnalysis evaluationAnalysis = new EvaluationAnalysis();
         if(evaluationAnalyses != null && evaluationAnalyses.size() > 0){
             evaluationAnalysis = evaluationAnalyses.get(0);
-            evaluationAnalysis.setReactionGrade(reactionResult.get("FERGrade").toString());
-            evaluationAnalysis.setReactionPass(Boolean.parseBoolean(reactionResult.get("FERPass").toString()));
-            evaluationAnalysis.setTeacherGrade(reactionResult.get("FETGrade").toString());
-            evaluationAnalysis.setTeacherPass(Boolean.parseBoolean(reactionResult.get("FETPass").toString()));
-            Map<String,Object> effectivenessResult = calculateEffectivenessEvaluation(reactionResult.get("FERGrade").toString(),
+
+            if(reactionResult.containsKey("FERGrade") && reactionResult.get("FERGrade") != null)
+                evaluationAnalysis.setReactionGrade(reactionResult.get("FERGrade").toString());
+            else
+                evaluationAnalysis.setReactionGrade(null);
+
+            if(reactionResult.containsKey("FERPass") && reactionResult.get("FERPass") != null)
+                evaluationAnalysis.setReactionPass(Boolean.parseBoolean(reactionResult.get("FERPass").toString()));
+            else
+                evaluationAnalysis.setReactionPass(null);
+
+            if(reactionResult.containsKey("FETGrade") && reactionResult.get("FETGrade") != null)
+                evaluationAnalysis.setTeacherGrade(reactionResult.get("FETGrade").toString());
+            else
+                evaluationAnalysis.setTeacherGrade(null);
+
+            if(reactionResult.containsKey("FETPass") && reactionResult.get("FETPass") != null)
+                evaluationAnalysis.setTeacherPass(Boolean.parseBoolean(reactionResult.get("FETPass").toString()));
+            else
+                evaluationAnalysis.setTeacherPass(null);
+
+            Map<String,Object> effectivenessResult = null;
+
+            if(reactionResult.containsKey("FERGrade") && reactionResult.get("FERGrade") != null)
+                effectivenessResult = calculateEffectivenessEvaluation(reactionResult.get("FERGrade").toString(),
                     evaluationAnalysis.getLearningGrade(),evaluationAnalysis.getBehavioralGrade(), tclass.getEvaluation());
-            if(effectivenessResult != null) {
+            else
+                effectivenessResult = calculateEffectivenessEvaluation(null,
+                        evaluationAnalysis.getLearningGrade(),evaluationAnalysis.getBehavioralGrade(), tclass.getEvaluation());
+
+            if(effectivenessResult != null && effectivenessResult.containsKey("EffectivenessGrade") && effectivenessResult.containsKey("EffectivenessPass")){
                 evaluationAnalysis.setEffectivenessGrade(effectivenessResult.get("EffectivenessGrade").toString());
                 evaluationAnalysis.setEffectivenessPass(Boolean.parseBoolean(effectivenessResult.get("EffectivenessPass").toString()));
             }
+            else {
+                evaluationAnalysis.setEffectivenessGrade(null);
+                evaluationAnalysis.setEffectivenessPass(null);
+            }
         }
         else{
-            evaluationAnalysis.setReactionGrade(reactionResult.get("FERGrade").toString());
-            evaluationAnalysis.setReactionPass(Boolean.parseBoolean(reactionResult.get("FERPass").toString()));
-            evaluationAnalysis.setTeacherGrade(reactionResult.get("FETGrade").toString());
-            evaluationAnalysis.setTeacherPass(Boolean.parseBoolean(reactionResult.get("FETPass").toString()));
+            if(reactionResult.containsKey("FERGrade") && reactionResult.get("FERGrade") != null)
+                evaluationAnalysis.setReactionGrade(reactionResult.get("FERGrade").toString());
+
+            if(reactionResult.containsKey("FERPass") && reactionResult.get("FERPass") != null)
+                evaluationAnalysis.setReactionPass(Boolean.parseBoolean(reactionResult.get("FERPass").toString()));
+
+            if(reactionResult.containsKey("FETGrade") && reactionResult.get("FETGrade") != null)
+                evaluationAnalysis.setTeacherGrade(reactionResult.get("FETGrade").toString());
+
+            if(reactionResult.containsKey("FETPass") && reactionResult.get("FETPass") != null)
+                evaluationAnalysis.setTeacherPass(Boolean.parseBoolean(reactionResult.get("FETPass").toString()));
+
             evaluationAnalysis.setTClassId(classId);
             evaluationAnalysis.setTClass(tclassDAO.getOne(classId));
-            Map<String,Object> effectivenessResult = calculateEffectivenessEvaluation(reactionResult.get("FERGrade").toString(),
+            Map<String,Object> effectivenessResult = null;
+
+            if(reactionResult.containsKey("FERGrade") && reactionResult.get("FERGrade") != null)
+                effectivenessResult = calculateEffectivenessEvaluation(reactionResult.get("FERGrade").toString(),
                     null,null, tclass.getEvaluation());
-            if(effectivenessResult != null) {
+            else
+                effectivenessResult = calculateEffectivenessEvaluation(null,
+                        null,null, tclass.getEvaluation());
+            if(effectivenessResult != null && effectivenessResult.containsKey("EffectivenessGrade") && effectivenessResult.containsKey("EffectivenessPass")) {
                 evaluationAnalysis.setEffectivenessGrade(effectivenessResult.get("EffectivenessGrade").toString());
                 evaluationAnalysis.setEffectivenessPass(Boolean.parseBoolean(effectivenessResult.get("EffectivenessPass").toString()));
             }
@@ -329,8 +371,10 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
                 effectivenessPass = false;
         }
 
-        finalResult.put("EffectivenessGrade", effectivenessGrade);
-        finalResult.put("EffectivenessPass",effectivenessPass);
+        if(effectivenessGrade != 0) {
+            finalResult.put("EffectivenessGrade", effectivenessGrade);
+            finalResult.put("EffectivenessPass", effectivenessPass);
+        }
         return finalResult;
     }
 

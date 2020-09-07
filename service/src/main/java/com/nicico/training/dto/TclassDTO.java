@@ -438,28 +438,28 @@ public class TclassDTO {
     @Accessors(chain = true)
     @ApiModel("ReactionEvaluationResult")
     public static class ReactionEvaluationResult {
-        boolean FERPass;
-        boolean FETPass;
-        boolean FECRPass;
+        Boolean FERPass;
+        Boolean FETPass;
+        Boolean FECRPass;
         Integer studentCount;
-        double FERGrade;
-        double FETGrade;
-        double FECRGrade;
+        Double FERGrade;
+        Double FETGrade;
+        Double FECRGrade;
         Integer numberOfFilledReactionEvaluationForms;
         Integer numberOfInCompletedReactionEvaluationForms;
         Integer numberOfEmptyReactionEvaluationForms;
         Integer numberOfExportedReactionEvaluationForms;
-        double percenetOfFilledReactionEvaluationForms;
-        double minScore_ER;
-        double minScore_ET;
-        double minScoreFECR;
-        double teacherGradeToClass;
-        double studentsGradeToTeacher;
-        double studentsGradeToFacility;
-        double studentsGradeToGoals;
-        double trainingGradeToTeacher;
-        double z1;
-        double z2;
+        Double percenetOfFilledReactionEvaluationForms;
+        Double minScore_ER;
+        Double minScore_ET;
+        Double minScoreFECR;
+        Double teacherGradeToClass;
+        Double studentsGradeToTeacher;
+        Double studentsGradeToFacility;
+        Double studentsGradeToGoals;
+        Double trainingGradeToTeacher;
+        Double z1;
+        Double z2;
     }
 
     @Getter

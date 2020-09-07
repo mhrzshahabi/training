@@ -95,9 +95,18 @@ public class EvaluationAnalysisRestController {
         params.put("FETGrade", FETGrade);
         params.put("FECRGrade", FECRGrade);
 
-        params.put("FERPass", Boolean.parseBoolean(FERPass));
-        params.put("FETPass", Boolean.parseBoolean(FETPass));
-        params.put("FECRPass", Boolean.parseBoolean(FECRPass));
+        if(!FERPass.equalsIgnoreCase(""))
+            params.put("FERPass", Boolean.parseBoolean(FERPass));
+        else
+            params.put("FERPass", false);
+        if(!FETPass.equalsIgnoreCase(""))
+            params.put("FETPass", Boolean.parseBoolean(FETPass));
+        else
+            params.put("FETPass", false);
+        if(!FECRPass.equalsIgnoreCase(""))
+            params.put("FECRPass", Boolean.parseBoolean(FECRPass));
+        else
+            params.put("FECRPass", false);
 
         params.put("minScore_ER", minScore_ER);
         params.put("minScore_ET", minScore_ET);
@@ -105,22 +114,50 @@ public class EvaluationAnalysisRestController {
         params.put("differFER", differFER);
         params.put("differFET", differFET);
 
-        params.put("teacherGradeToClass", Double.parseDouble(teacherGradeToClass));
-        params.put("studentsGradeToTeacher", Double.parseDouble(studentsGradeToTeacher));
-        params.put("studentsGradeToFacility", Double.parseDouble(studentsGradeToFacility));
-        params.put("studentsGradeToGoals", Double.parseDouble(studentsGradeToGoals));
-        params.put("trainingGradeToTeacher", Double.parseDouble(trainingGradeToTeacher));
+        if(!teacherGradeToClass.equalsIgnoreCase(""))
+            params.put("teacherGradeToClass", Double.parseDouble(teacherGradeToClass));
+        else
+            params.put("teacherGradeToClass", 0.0);
+        if(!studentsGradeToTeacher.equalsIgnoreCase(""))
+            params.put("studentsGradeToTeacher", Double.parseDouble(studentsGradeToTeacher));
+        else
+            params.put("studentsGradeToTeacher", 0.0);
+        if(!studentsGradeToFacility.equalsIgnoreCase(""))
+            params.put("studentsGradeToFacility", Double.parseDouble(studentsGradeToFacility));
+        else
+            params.put("studentsGradeToFacility", 0.0);
+        if(!studentsGradeToGoals.equalsIgnoreCase(""))
+            params.put("studentsGradeToGoals", Double.parseDouble(studentsGradeToGoals));
+        else
+            params.put("studentsGradeToGoals", 0.0);
+        if(!trainingGradeToTeacher.equalsIgnoreCase(""))
+            params.put("trainingGradeToTeacher", Double.parseDouble(trainingGradeToTeacher));
+        else
+            params.put("trainingGradeToTeacher", 0.0);
 
         HashMap<Double,String> doubleArrayList = new HashMap<>();
-        doubleArrayList.put(Double.parseDouble(trainingGradeToTeacher),"نمره مسئول آموزش به مدرس");
-        doubleArrayList.put(Double.parseDouble(studentsGradeToTeacher),"نمره فراگیران به مدرس");
-        params.put("teacherEvaluationAnalysis", getMinFactor(doubleArrayList));
+        if(!trainingGradeToTeacher.equalsIgnoreCase(""))
+            doubleArrayList.put(Double.parseDouble(trainingGradeToTeacher),"نمره مسئول آموزش به مدرس");
+        if(!studentsGradeToTeacher.equalsIgnoreCase(""))
+            doubleArrayList.put(Double.parseDouble(studentsGradeToTeacher),"نمره فراگیران به مدرس");
+        if(doubleArrayList.size() != 0)
+            params.put("teacherEvaluationAnalysis", getMinFactor(doubleArrayList).toString());
+        else
+            params.put("teacherEvaluationAnalysis", "");
+
         doubleArrayList = new HashMap<>();
-        doubleArrayList.put(Double.parseDouble(studentsGradeToTeacher),"نمره فراگیران به مدرس");
-        doubleArrayList.put(Double.parseDouble(studentsGradeToFacility),"نمره فراگیران به امکانات");
-        doubleArrayList.put(Double.parseDouble(studentsGradeToGoals),"نمره فراگیران به محتوای دوره");
-        doubleArrayList.put(Double.parseDouble(teacherGradeToClass),"نمره مدرس به کلاس");
-        params.put("reactionEvaluationAnalysis", getMinFactor(doubleArrayList));
+        if(!studentsGradeToTeacher.equalsIgnoreCase(""))
+            doubleArrayList.put(Double.parseDouble(studentsGradeToTeacher),"نمره فراگیران به مدرس");
+        if(!studentsGradeToFacility.equalsIgnoreCase(""))
+            doubleArrayList.put(Double.parseDouble(studentsGradeToFacility),"نمره فراگیران به امکانات");
+        if(!studentsGradeToGoals.equalsIgnoreCase(""))
+            doubleArrayList.put(Double.parseDouble(studentsGradeToGoals),"نمره فراگیران به محتوای دوره");
+        if(!teacherGradeToClass.equalsIgnoreCase(""))
+            doubleArrayList.put(Double.parseDouble(teacherGradeToClass),"نمره مدرس به کلاس");
+        if(doubleArrayList.size() != 0)
+            params.put("reactionEvaluationAnalysis", getMinFactor(doubleArrayList).toString());
+        else
+            params.put("reactionEvaluationAnalysis", "");
 
         ArrayList<String> list = new ArrayList();
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(list) + "}";
@@ -243,7 +280,11 @@ public class EvaluationAnalysisRestController {
         if(result != null && result.length > 2)
             felGrade = result[3];
         Double ferGrade = tclassService.getJustFERGrade(classId);
-        Double feclGradeLong = (felGrade * FECLZ2 + ferGrade * FECLZ1)/100;
+        Double feclGradeLong = null;
+        if(ferGrade != null)
+            feclGradeLong = (felGrade * FECLZ2 + ferGrade * FECLZ1)/100;
+        else
+            feclGradeLong = (felGrade * FECLZ2 + 0 * FECLZ1)/100;
         Double feclGrade = Double.parseDouble(numberFormat.format(feclGradeLong).toString());
 
         resultSet.setFelgrade(numberFormat.format(felGrade).toString());
