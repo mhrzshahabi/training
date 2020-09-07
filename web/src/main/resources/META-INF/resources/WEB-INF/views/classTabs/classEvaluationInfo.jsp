@@ -76,13 +76,17 @@
                     if(result.trainingGradeToTeacher == undefined && result.studentsGradeToTeacher == undefined)
                             DynamicForm_JspClassEvaluationInfo.setValue("teacherTotalGrade", val2);
                     else if(result.trainingGradeToTeacher == undefined){
-                            let val = "0 " + " * " + result.z1 + "% + " + result.studentsGradeToTeacher + " * " + result.z2 + "% = " + result.fetgrade;
-                            DynamicForm_JspClassEvaluationInfo.setValue("teacherTotalGrade", getFormulaMessage(val , "2", "black", "b"));
+                            let val3 = "0 " + " * " + result.z1 + "% + " + result.studentsGradeToTeacher + " * " + result.z2 + "% = " + result.fetgrade;
+                            DynamicForm_JspClassEvaluationInfo.setValue("teacherTotalGrade", getFormulaMessage(val3 , "2", "black", "b"));
                         }
                     else if(result.studentsGradeToTeacher == undefined){
-                            let val = result.trainingGradeToTeacher + " * " + result.z1 + "% + " + "0 " + " * " + result.z2 + "% = " + result.fetgrade;
-                            DynamicForm_JspClassEvaluationInfo.setValue("teacherTotalGrade", getFormulaMessage(val , "2", "black", "b"));
+                            let val4 = result.trainingGradeToTeacher + " * " + result.z1 + "% + " + "0 " + " * " + result.z2 + "% = " + result.fetgrade;
+                            DynamicForm_JspClassEvaluationInfo.setValue("teacherTotalGrade", getFormulaMessage(val4 , "2", "black", "b"));
                         }
+                    else{
+                            let val4 = result.trainingGradeToTeacher + " * " + result.z1 + "% + " + result.studentsGradeToTeacher + " * " + result.z2 + "% = " + result.fetgrade;
+                            DynamicForm_JspClassEvaluationInfo.setValue("teacherTotalGrade", getFormulaMessage(val4 , "2", "black", "b"));
+                    }
                     }));
                     Wait_JspClassEvaluationInfo.close();
                 }
