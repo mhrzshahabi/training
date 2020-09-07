@@ -153,7 +153,7 @@ function defineWindowTreeNeedsAssessment() {
     });
 }
 
-function showWindowDiffNeedsAssessment(objectId, objectType) {
+function showWindowDiffNeedsAssessment(objectId, objectType, unchangeable = false) {
     let Window_NeedsAssessment_Diff = isc.Window.create({
         ID: "Window_NeedsAssessment_Diff",
         title: "اختلاف نیازسنجی",
@@ -170,11 +170,25 @@ function showWindowDiffNeedsAssessment(objectId, objectType) {
     });
     let interval = setInterval(()=>{
         if(Window_NeedsAssessment_Diff !== undefined) {
+            clearInterval(interval);
             Window_NeedsAssessment_Diff.showUs(objectId, objectType);
+            if(unchangeable) {
+                DynamicForm_JspEditNeedsAssessment.disable();
+                CompetenceTS_diffNeedsAssessment.disable();
+                ListGridTop_Knowledge_JspDiffNeedsAssessment.disable();
+                ListGridTop_Ability_JspDiffNeedsAssessment.disable();
+                ListGridTop_Attitude_JspDiffNeedsAssessment.disable();
+            }
+            else{
+                DynamicForm_JspEditNeedsAssessment.enable();
+                CompetenceTS_diffNeedsAssessment.enable();
+                ListGridTop_Knowledge_JspDiffNeedsAssessment.enable();
+                ListGridTop_Ability_JspDiffNeedsAssessment.enable();
+                ListGridTop_Attitude_JspDiffNeedsAssessment.enable();
+            }
             if(typeof Window_NeedsAssessment_Edit !== "undefined"){
                 Window_NeedsAssessment_Edit.close();
             }
-            clearInterval(interval);
         }
     },50)
 }
@@ -246,4 +260,13 @@ var priorityList = {
     "PostGrade": "رده پستی",
     "PostGradeGroup": "گروه رده پستی",
     "TrainingPost": "پست"
+};
+function checkSelectedRecord(lg) {
+    if(lg == null || lg.getSelectedRecord() == null){
+        createDialog("info", "رکوردی انتخاب نشده است!");
+        return false;
+    }
+    else{
+        return true;
+    }
 };
