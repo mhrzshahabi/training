@@ -11,8 +11,8 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.oauth.common.domain.CustomUserDetails;
 import com.nicico.training.dto.*;
-import com.nicico.training.iservice.IPersonnelCourseNotPassedReportViewService;
-import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.iservice.*;
+import com.nicico.training.model.TrainingPlace;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.PersonnelRegisteredDAO;
 import com.nicico.training.repository.StudentClassReportViewDAO;
@@ -102,6 +102,9 @@ public class ExportToFileController {
     private final ViewUnjustifiedAbsenceReportService viewUnjustifiedAbsenceReportService;
     private final TrainingPostService trainingPostService;
     private final ViewTrainingPostService viewTrainingPostService;
+    private final IInstituteService instituteService;
+    private final ITrainingPlaceService trainingPlaceService;
+    private final IInstituteAccountService accountService;
 
     private final ModelMapper modelMapper;
     private final MessageSource messageSource;
@@ -680,6 +683,47 @@ public class ExportToFileController {
                 searchRq.getCriteria().getCriteria().remove(removeCriterion);
                 generalList = (List<Object>) ((Object) tclassService.searchByTeachingHistory(searchRq, teacherId).getList());
                 break;
+
+            case "institute":
+                generalList = (List<Object>) ((Object) instituteService.search(searchRq).getList());
+                break;
+
+            case "institute_trainingPlace":
+
+                Long instituteId = ((Integer)searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                searchRq.getCriteria().getCriteria().remove(0);
+
+                SearchDTO.CriteriaRq criteriaTP =  new SearchDTO.CriteriaRq();
+
+                criteriaTP.setOperator(EOperator.equals);
+                criteriaTP.setFieldName("instituteId");
+                criteriaTP.setValue(instituteId);
+
+                searchRq.setCriteria(criteriaTP);
+                searchRq.setSortBy("-id");
+                generalList = (List<Object>)((Object) trainingPlaceService.search(searchRq).getList());
+                break;
+
+            case "institute_trainingPlace_equipment":
+                Long trainingPlaceId = ((Integer)searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                generalList = (List<Object>)((Object) trainingPlaceService.getEquipments(trainingPlaceId));
+                break;
+
+            case "institute_teacher":
+                Long instituteIdTeacher = ((Integer)searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                generalList = (List<Object>) ((Object) instituteService.getTeachers(instituteIdTeacher));
+                break;
+
+            case "institute_account":
+                Long instituteIdAcount= ((Integer)searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                generalList = (List<Object>) ((Object) accountService.getAllAccountForExcel(instituteIdAcount));
+                break;
+
+            case "institute-equipment":
+                Long instituteIdEquipment = ((Integer)searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                generalList = (List<Object>)((Object) instituteService.getEquipments(instituteIdEquipment));
+                break;
+
         }
 
         //End Of Query
