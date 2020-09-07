@@ -538,7 +538,7 @@
                     }
                     criteria.criteria.push({fieldName: "postGradeGroup", operator: "inSet", value: [ListGrid_Post_Grade_Group_Jsp.getSelectedRecord().id]});
 
-                    ExportToFile.showDialog(null, ListGrid_Grades_Post_Grade_Group_Jsp , "Post_Grade_Without_Permission", 0, null, '',"لیست رده پستی - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, ListGrid_Grades_Post_Grade_Group_Jsp , "Post_Grade_Without_Permission", 0, null, '',"لیست رده پستی - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -721,7 +721,7 @@
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     let criteria = ListGrid_Post_Grade_Group_Jsp.getCriteria();
-                    ExportToFile.showDialog(null, ListGrid_Post_Grade_Group_Jsp , "View_Post_Grade_Group", 0, null, '',"لیست پست ها- آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, ListGrid_Post_Grade_Group_Jsp , "View_Post_Grade_Group", 0, null, '',"لیست پست ها- آموزش"  , criteria, null);
                 }
             })
         ]
@@ -808,7 +808,7 @@
                     }
                     criteria.criteria.push({fieldName: "PostGradeGroupId", operator: "equals", value:ListGrid_Post_Grade_Group_Jsp.getSelectedRecord().id});
 
-                    ExportToFile.showDialog(null, PersonnelLG_PGG , "Post_Grade_Group_Personnel", 0, null, '',"لیست پرسنل - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, PersonnelLG_PGG , "Post_Grade_Group_Personnel", 0, null, '',"لیست پرسنل - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -929,7 +929,7 @@
                     criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "PostGradeGroup"});
                     // criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
 
-                    ExportToFile.showDialog(null, NALG_PGG , "NeedsAssessmentReport", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, NALG_PGG , "NeedsAssessmentReport", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -1109,7 +1109,7 @@
 
                     criteria.criteria.push({fieldName: "PostGradeGroup", operator: "equals", value: ListGrid_Post_Grade_Group_Jsp.getSelectedRecord().id});
 
-                    ExportToFile.showDialog(null, PostLG_PGG , "Post_Grade_Group_Post", 0, null, '',"لیست پست ها - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, PostLG_PGG , "Post_Grade_Group_Post", 0, null, '',"لیست پست ها - آموزش"  , criteria, null);
                 }
             })
         ]

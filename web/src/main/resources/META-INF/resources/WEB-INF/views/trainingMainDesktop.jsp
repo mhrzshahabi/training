@@ -44,15 +44,6 @@
 
     <script>
 
-       /* jQuery.loadScript = function (url, callback) {
-            jQuery.ajax({
-                url: url,
-                dataType: 'script',
-                success: callback,
-                async: false
-            });
-        }*/
-
         String.prototype.toEnglishDigit = function() {
             var find = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
             var replace = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
@@ -488,7 +479,6 @@
                             let tmpStr = ExportToFile.getData(rows[i], fields[j].name.split('.'), 0);
                             data[i][fields[j].name] = typeof (tmpStr) == 'undefined' ? '' : ((!isValueMaps[j]) ? tmpStr : listGrid.getDisplayValue(fields[j].name, tmpStr));
                         }
-
                     }
                 }
                 return {data, fields};
@@ -573,6 +563,49 @@
                 downloadForm.submitForm();
             }
 
+            static exportToExcelFromRestUrl(fields, restUrl, criteria, sortBy,startRow, len, titr, pageName, valueMaps) {
+
+                let downloadForm = isc.DynamicForm.create({
+                    method: "POST",
+                    action: "/training/export-to-file/exportExcelFromRestController/",
+                    target: "_Blank",
+                    canSubmit: true,
+                    fields:
+                        [
+                            //{name: "myToken", type: "hidden"},
+                            {name: "fields", type: "hidden"},
+                            {name: "titr", type: "hidden"},
+                            {name: "restUrl", type: "hidden"},
+                            {name: "pageName", type: "hidden"},
+                            {name: "_sortBy", type: "hidden"},
+                            {name: "_len", type: "hidden"},
+                            {name: "_startRow", type: "hidden"},
+                            {name: "valueMaps", type: "hidden"}
+                        ]
+                });
+
+                downloadForm.setValue("fields", JSON.stringify(fields.toArray()));
+                downloadForm.setValue("titr", titr);
+                downloadForm.setValue("restUrl", restUrl);
+                downloadForm.setValue("pageName", pageName);
+                downloadForm.setValue("_sortBy", sortBy);
+                downloadForm.setValue("_len", len);
+                downloadForm.setValue("_startRow", startRow);
+                downloadForm.setValue("valueMaps", JSON.stringify(valueMaps));
+
+                for (let i = 0; i < criteria.length ; i++) {
+                    downloadForm.addField({name: criteria[i].name, type: "hidden"});
+                    if(criteria[i].name=='criteria'){
+                        downloadForm.setValue(criteria[i].name, JSON.stringify(criteria[i].value));
+                    }else{
+                        downloadForm.setValue(criteria[i].name, criteria[i].value);
+                    }
+                }
+
+                downloadForm.show();
+                downloadForm.submitForm();
+            }
+
             //Get Data For Send
             static downloadExcelFromClient(listGrid, parentListGrid, titr, pageName) {
 
@@ -619,6 +652,13 @@
 
                     if(sort.size() == 1){
                         sortStr=(listGrid.getSort()[0].direction=='descending'?'-':'')+listGrid.getSort()[0].property
+
+                        /*let sortField=NALG_PGG.getFields().filter(p=>p.name==NALG_PGG.getSort()[0].property);
+                        if(sortField){
+                            if(sortField.valueMap&&!sortField.optionDataSource){
+                                showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد ممکن است مرتب سازي اعمال شده برروي .');
+                            }
+                        }*/
                     }else{
                         let listSort=[];
                         for (var i = 0; i <sort.size() ; i++) {
@@ -630,6 +670,49 @@
                 }
 
                 this.exportToExcelFromServer(fields.fields, fileName, criteria, sortStr ,startRow, len, tmptitr, pageName, valueMaps);
+            }
+
+            static downloadExcelFromRestUrl(listGrid, restUrl,startRow, len, parentListGrid, titr, pageName, criteria) {
+
+                let tmptitr = '';
+
+                if ((titr.length === 0) && parentListGrid != null) {
+                    tmptitr = this.generateTitle(parentListGrid);
+                    tmptitr = '';
+                } else {
+                    tmptitr = titr;
+                }
+
+                let fields = this.getAllFields(listGrid);
+                //let criteria=JSON.stringify(listGrid.data.criteria.criteria);
+                let sort = listGrid.getSort();
+                let sortStr='';
+
+                let valueMaps =[];
+
+                for (var v = 0; v <fields.isValueMap.length ; v++) {
+                    if(fields.isValueMap[v]){
+                        let parameter = fields.fields[v].name;
+                        valueMaps.add({value : parameter, map : listGrid.getField(parameter).valueMap});
+                    }
+                }
+
+
+                if (sort != null && sort.size() != 0){
+
+                    if(sort.size() == 1){
+                        sortStr=(listGrid.getSort()[0].direction=='descending'?'-':'')+listGrid.getSort()[0].property
+                    }else{
+                        let listSort=[];
+                        for (var i = 0; i <sort.size() ; i++) {
+                            listSort.push((listGrid.getSort()[i].direction=='descending'?'-':'')+listGrid.getSort()[i].property)
+                        }
+
+                        sortStr=JSON.stringify(listSort);
+                    }
+                }
+
+                this.exportToExcelFromRestUrl(fields.fields, restUrl, criteria, sortStr ,startRow, len, tmptitr, pageName, valueMaps);
             }
 
             static showDialog(title, listgrid, fileName, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate){
@@ -756,6 +839,187 @@
                 exportExcelWindow.show();
             }
 
+            static showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate){
+                let size = listgrid.data.size();
+                let maxCount=5000;
+
+                size = Math.min(maxCount,size);
+                if(isValidate==null){
+                    isValidate=function (len) {
+                        return true;
+                    }
+                }
+
+                if(title==null){
+                    title = "خروجی اکسل";
+                }
+
+                isc.Window.create({
+                    ID: "exportExcelWindow",
+                    title: title,
+                    autoSize: true,
+                    width: 400,
+                    items: [
+                        isc.DynamicForm.create({
+                            ID: "exportExcelForm",
+                            numCols: 2,
+                            colWidths: ["80%","20%"],
+                            padding: 10,
+                            fields: [
+                                {
+                                    title: "سطرهاي موجود: " + listgrid.data.size(),
+                                    type: 'staticText',
+                                    width: "150",
+                                    colSpan:2,
+                                    height: 30
+                                },
+                                {
+                                    name: "startRow",
+                                    startRow: true,
+                                    colSpan:2,
+                                    width: "100%",
+                                    titleOrientation: "top",
+                                    title: "از کدام سطر شروع شود:",
+                                    value: 1,
+                                    suppressBrowserClearIcon: true,
+                                    icons: [{
+                                        name: "clear",
+                                        src: "[SKIN]actions/close.png",
+                                        width: 10,
+                                        height: 10,
+                                        inline: true,
+                                        prompt: "پاک کردن",
+                                        click: function (form, item, icon) {
+                                            item.clearValue();
+                                            item.focusInItem();
+                                        }
+                                    }],
+                                    iconWidth: 16,
+                                    iconHeight: 16
+                                },
+                                {
+                                    name: "maxRow",
+                                    startRow: true,
+                                    colSpan:2,
+                                    width: "100%",
+                                    titleOrientation: "top",
+                                    title: "لطفا حداکثر تعداد سطرهای موجود در اکسل را وارد نمایید:",
+                                    value: size,
+                                    hint: "حداکثر سطرهاي قابل چاپ: " + size,
+                                    minHintWidth:'100%',
+                                    suppressBrowserClearIcon: true,
+                                    icons: [{
+                                        name: "clear",
+                                        src: "[SKIN]actions/close.png",
+                                        width: 10,
+                                        height: 10,
+                                        inline: true,
+                                        prompt: "پاک کردن",
+                                        click: function (form, item, icon) {
+                                            item.clearValue();
+                                            item.focusInItem();
+                                        }
+                                    }],
+                                    iconWidth: 16,
+                                    iconHeight: 16
+                                }
+                            ]
+                        }),
+                        isc.TrHLayoutButtons.create({
+                            members: [
+                                isc.IButton.create({
+                                    title: "تایید",
+                                    click: function () {
+                                        if (trTrim(exportExcelForm.getValue("maxRow")) != "") {
+
+                                            /*if(Number(trTrim(exportExcelForm.getValue("maxRow")))+Number(trTrim(exportExcelForm.getValue("startRow"))) > Number(listgrid.data.size())){
+                                                createDialog("info", "مجمع سطر شروع و تعداد سطر ها در خواستي براي خروجي بيشتر از تعداد کل سطرهاي موجود است");
+                                                return;
+                                            }else if(Number(trTrim(exportExcelForm.getValue("maxRow"))) > size){
+                                                createDialog("info", "تعداد سطرهاي وارد شده جهت خروجي، بيشتر از حداکثر تعداد سطرهاي قابل چاپ است");
+                                                return;
+                                            }*/
+
+                                            if(isValidate(trTrim(exportExcelForm.getValue("maxRow")))) {
+                                                ExportToFile.downloadExcelFromRestUrl(listgrid, restUrl, parseInt(trTrim(exportExcelForm.getValue("startRow")))-1, parseInt(trTrim(exportExcelForm.getValue("maxRow"))), parentListGrid, titr, pageName, Object.keys(criteria).map(function(key) {return {'name':key, 'value':criteria[key]};}));
+                                                exportExcelWindow.close();
+                                            }
+                                        }
+                                    }
+                                }),
+                                isc.IButton.create({
+                                    title: "لغو",
+                                    click: function () {
+                                        exportExcelWindow.close();
+                                    }
+                                }),
+                            ]
+                        })
+                    ]
+                });
+
+                exportExcelWindow.show();
+            }
+
+            static downloadExcel(title, listgrid, fileName, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate,warning){
+
+                if(listgrid.data.totalRows > listgrid.data.getAllLoadedRows().length){
+
+                    let showDialog=null;
+
+                    if(warning==1){
+                        showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>نحوه مرتب سازي</b> و <b>فيلتر هاي اعمال شده</b> بر روي ليست گريد در خروجي اکسل اعمال نخواهند شد.');
+                    }else if(warning ==2){
+                        showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>فيلتر هاي اعمال شده</b> بر روي ليست گريد در خروجي اکسل اعمال خواهند شد.');
+                    }else if(warning ==3){
+                        showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>نحوه مرتب سازي</b> بر روي ليست گريد در خروجي اکسل اعمال خواهند شد.');
+                    }
+
+                    if(showDialog != null){
+                        let me=this;
+                        showDialog.addProperties({
+                            buttonClick: function (button, index) {
+                                this.close();
+                                me.showDialog(title, listgrid, fileName, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate);
+                            }
+                        });
+                    }else{
+                        this.showDialog(title, listgrid, fileName, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate);
+                    }
+                }else{
+                    this.downloadExcelFromClient(listgrid, parentListGrid, titr, pageName);
+                }
+            }
+
+            static downloadExcelRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate,warning){
+
+                if(listgrid.data.totalRows > listgrid.data.getAllLoadedRows().length){
+
+                    let showDialog=null;
+
+                    if(warning == 1){
+                        showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>نحوه مرتب سازي</b> و <b>فيلتر هاي اعمال شده</b> بر روي ليست گريد در خروجي اکسل اعمال نخواهند شد.');
+                    }else if(warning == 2){
+                        showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>فيلتر هاي اعمال شده</b> بر روي ليست گريد در خروجي اکسل اعمال خواهند شد.');
+                    }else if(warning == 3){
+                        showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>نحوه مرتب سازي</b> بر روي ليست گريد در خروجي اکسل اعمال خواهند شد.');
+                    }
+
+                    if(showDialog != null){
+                        let me=this;
+                        showDialog.addPropcerties({
+                            buttonClick: function (button, index) {
+                                this.close();
+                                me.showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate);
+                            }
+                        });
+                    }else{
+                        this.showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate);
+                    }
+                }else{
+                    this.downloadExcelFromClient(listgrid, parentListGrid, titr, pageName);
+                }
+            }
         }
 
         function generalGetResp(resp) {

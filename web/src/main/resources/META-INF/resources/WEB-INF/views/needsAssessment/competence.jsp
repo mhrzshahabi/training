@@ -39,7 +39,7 @@
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     let criteria = CompetenceLG_competence.getCriteria();
-                    ExportToFile.showDialog(null, CompetenceLG_competence , "Competence", 0, null, '',"لیست شایستگی ها - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, CompetenceLG_competence , "Competence", 0, null, '',"لیست شایستگی ها - آموزش"  , criteria, null);
                 }
             })
         ]

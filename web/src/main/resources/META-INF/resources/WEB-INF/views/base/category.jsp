@@ -416,7 +416,7 @@
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     let criteria = ListGrid_Category.getCriteria();
-                    ExportToFile.showDialog(null, ListGrid_Category , "Category", 0, null, '',"لیست گروه ها - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, ListGrid_Category , "Category", 0, null, '',"لیست گروه ها - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -919,7 +919,7 @@
                         criteria.criteria=[];
                     }
                     criteria.criteria.push({fieldName:'categoryId',operator:'equals',value:ListGrid_Category.getSelectedRecord().id});
-                    ExportToFile.showDialog(null, ListGrid_Sub_Category , "SubCategory", 0, null, '',"لیست زیر گروه ها - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, ListGrid_Sub_Category , "SubCategory", 0, null, '',"لیست زیر گروه ها - آموزش"  , criteria, null);
                 }
             })
         ]

@@ -50,6 +50,8 @@ public class ExportToFileService implements IExportToFileService {
             sheet.setRightToLeft(true);
 
             XSSFCellStyle headerCellStyle = setCellStyle(workbook, "Tahoma", (short) 12, new Color(0,0,0), null,VerticalAlignment.CENTER,HorizontalAlignment.CENTER);
+            headerCellStyle.getFont().setBold(true);
+
 
             XSSFCellStyle bodyCellStyle = setCellStyle(workbook, "Tahoma", (short) 12, null, null,VerticalAlignment.CENTER,HorizontalAlignment.CENTER);
 
@@ -60,7 +62,7 @@ public class ExportToFileService implements IExportToFileService {
             sheet.addMergedRegion(CellRangeAddress.valueOf("A1:" + cellAddress.formatAsString()));
             XSSFRow row = sheet.createRow(0);
             XSSFCell cellOfRow = row.createCell(0);
-            cellOfRow.setCellValue("شركت ملي صنايع مس ايران- امور آموزش و تجهيز نيروي انساني");
+            cellOfRow.setCellValue("شركت ملي صنايع مس ايران- امور آموزش و تجهيز نيروی انسانی");
             cellOfRow.setCellStyle(rCellStyle);
 
             //second row
@@ -108,8 +110,12 @@ public class ExportToFileService implements IExportToFileService {
                 for (int i = 0; i < columns.length; i++) {
                     XSSFCell cell = tempRow.createCell(i);
                     tmpCell = map.get(columns[i]) == null ? "" : map.get(columns[i]);
+                    tmpCell=tmpCell.replaceAll("(<a)([^>href]+)(href)([ ])(=)([ ])\"([^\"])\"([^>]+)(>)([^<])(<\\/a>)", "[link href=$7]$10[/link]").replaceAll("<[^>ابپتثجچحخدذرزژصضسشطظکگفقعغونيي]*>", "");
 
-                    cell.setCellValue(tmpCell.replaceAll("(<a)([^>href]+)(href)([ ])(=)([ ])\"([^\"])\"([^>]+)(>)([^<])(<\\/a>)", "[link href=$7]$10[/link]").replaceAll("<[^>]*>", ""));
+                    /*if(tmpCell.matches("([ابپتثجچحخدذرزژصضسشطظکگفقعغونيي])")){
+                        tmpCell="\u200F" + tmpCell;
+                    }*/
+                    cell.setCellValue(tmpCell);
                     cell.setCellStyle(bodyCellStyle);
                 }
             }
