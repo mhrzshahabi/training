@@ -30,6 +30,27 @@
         fetchDataURL: parameterValueUrl + "/iscList/103",
 
     });
+    let PostDS_TrainingPost = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap},
+            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postGradeTitleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+
+        ],
+        fetchDataURL: viewTrainingPostUrl + "/spec-list"
+    });
     let JobDs_diffNeedsAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -603,7 +624,7 @@
         canDragRecordsOut: true,
         dragDataAction: "none",
         removeRecordClick(rowNum){
-            let Dialog_Competence_remove = createDialog("ask", "هشدار: در صورت حذف شایستگی تمام مهارت های مربوط به آن حذف خواهند شد.",
+            let Dialog_Competence_remove = createDialog("ask",  "هشدار: در صورت حذف شایستگی تمام مهارت های با مرجع " + '<b><u>'+priorityList[type]+'</b></u>' + " آن حذف خواهند شد.",
                 "<spring:message code="verify.delete"/>");
             Dialog_Competence_remove.addProperties({
                 buttonClick: function (button, index) {
@@ -635,7 +656,7 @@
             this.Super("dataChanged",arguments);
         },
         selectionUpdated(record){
-            fetchDataDomainsTopGrid();
+            fetchDataDomainsTopGrid_diff();
         }
     });
     var ListGridTop_Knowledge_JspDiffNeedsAssessment = isc.NaLG.create({
@@ -690,7 +711,7 @@
                 if (sourceWidget.ID === 'ListGrid_SkillAll_JspDiffNeedsAssessment') {
                     for (let i = 0; i < dropRecords.length; i++) {
                         createNeedsAssessmentRecords_Diff(createData_JspDiffNeedsAssessment(dropRecords[i], 108));
-                        // fetchDataDomainsTopGrid();
+                        // fetchDataDomainsTopGrid_diff();
                         // this.fetchData();
                     }
                 }
@@ -768,7 +789,7 @@
                         // DataSource_Skill_Top_JspDiffNeedsAssessment.addData(data);
                         // createNeedsAssessmentRecords_Diff(data);
                         // this.fetchData();
-                        // fetchDataDomainsTopGrid();
+                        // fetchDataDomainsTopGrid_diff();
                     }
                 }
             }
@@ -845,7 +866,7 @@
                         // DataSource_Skill_Top_JspDiffNeedsAssessment.addData(data);
                         // createNeedsAssessmentRecords_Diff(data);
                         // this.fetchData();
-                        // fetchDataDomainsTopGrid()
+                        // fetchDataDomainsTopGrid_diff()
                     }
                 }
             }
@@ -1241,6 +1262,13 @@
                 // form.getItem("objectId").canEdit = false;
                 // PostDs_diffNeedsAssessment.fetchDataURL = postUrl + "/spec-list";
                 break;
+            case 'TrainingPost':
+                form.getItem("objectId").optionDataSource = PostDS_TrainingPost;
+                form.getItem("objectId").pickListFields = [
+                    {name: "code", keyPressFilter: false}, {name: "titleFa"}, {name: "job.titleFa"}, {name: "postGrade.titleFa"}, {name: "area"}, {name: "assistance"}, {name: "affairs"},
+                    {name: "section"}, {name: "unit"}, {name: "costCenterCode"}, {name: "costCenterTitleFa"}
+                ];
+                break;
             case 'PostGroup':
                 form.getItem("objectId").optionDataSource = PostGroupDs_diffNeedsAssessment;
                 form.getItem("objectId").pickListFields = [{name: "titleFa", title: "<spring:message code="title"/>", autoFitWidth: false}, {name: "code", title: "<spring:message code="code"/>", autoFitWidth: false}];
@@ -1289,7 +1317,7 @@
             return true;
         }
     }
-    function fetchDataDomainsTopGrid(){
+    function fetchDataDomainsTopGrid_diff(){
         let record = ListGridTop_Competence_JspDiffNeedsAssessment.getSelectedRecord();
         if(record != null) {
             ListGridTop_Knowledge_JspDiffNeedsAssessment.fetchData({"competenceId":record.id});
@@ -1330,7 +1358,7 @@
         }
         else{
             if(state === 0) {
-                createDialog("info", "فقط نیازسنجی های مرتبط با " + priorityList[NeedsAssessmentTargetDF_diffNeedsAssessment.getValue("objectType")] + " قابل حذف است.")
+                createDialog("info", "فقط نیازسنجی های با مرجع " +'<u><b>'+ priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] +'</u></b>'+ " قابل حذف است.")
             }
             return 2;
         }
@@ -1424,7 +1452,7 @@
                 ListGridTop_Competence_JspDiffNeedsAssessment.emptyMessage = "<spring:message code="msg.no.records.for.show"/>";
                 // NeedsAssessmentTargetDF_diffNeedsAssessment.setValue("objectId", objectId);
                 // NeedsAssessmentTargetDF_diffNeedsAssessment.setValue("objectType", objectType);
-                fetchDataDomainsTopGrid();
+                fetchDataDomainsTopGrid_diff();
             }))
         }))
     }
@@ -1446,7 +1474,7 @@
             data.id = JSON.parse(resp.data).id;
             DataSource_Skill_Top_JspDiffNeedsAssessment.addData(data);
             // DataSource_Skill_Bottom_JspDiffNeedsAssessment.addData(data);
-            fetchDataDomainsTopGrid();
+            fetchDataDomainsTopGrid_diff();
             // fetchDataDomainsBottomGrid();
         }))
     }

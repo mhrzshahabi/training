@@ -491,7 +491,7 @@
         title:"مشاهده تغییرات",
         margin: 1,
         click(){
-            showWindowDiffNeedsAssessment(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"))
+            showWindowDiffNeedsAssessment(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"), true)
         }
     });
 
@@ -761,7 +761,9 @@
             {
                 title: "جزییات شایستگی",
                 click: function () {
-                    ListGrid_Competence_JspNeedsAssessment.rowDoubleClick(ListGrid_Competence_JspNeedsAssessment.getSelectedRecord())
+                    if(checkSelectedRecord(ListGrid_Competence_JspNeedsAssessment)) {
+                        ListGrid_Competence_JspNeedsAssessment.rowDoubleClick(ListGrid_Competence_JspNeedsAssessment.getSelectedRecord())
+                    }
                 }
             },
         ]
@@ -908,7 +910,7 @@
                     createDialog("info", "<spring:message code='read.only.na.message'/>");
                 }
                 else {
-                    let Dialog_Competence_remove = createDialog("ask", "هشدار: در صورت حذف شایستگی تمام مهارت های مربوط به آن حذف خواهند شد.",
+                    let Dialog_Competence_remove = createDialog("ask", "هشدار: در صورت حذف شایستگی تمام مهارت های با مرجع " + '<b><u>'+priorityList[type]+'</b></u>' + " آن حذف خواهند شد.",
                         "<spring:message code="verify.delete"/>");
                     Dialog_Competence_remove.addProperties({
                         buttonClick: function (button, index) {
@@ -1741,7 +1743,7 @@
         }
         else{
             if(state === 0) {
-                createDialog("info", "فقط نیازسنجی های مرتبط با " + priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] + " قابل حذف است.")
+                createDialog("info", "فقط نیازسنجی های با مرجع " +'<u><b>'+ priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] +'</u></b>'+ " قابل حذف است.")
             }
             return 2;
         }
