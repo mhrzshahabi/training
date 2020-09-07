@@ -5,18 +5,18 @@
 
 // <script>
 
-    var method = "POST";
-    var url;
-    var wait_PostGradeGroup;
-    var postGrade_PGG = null;
-    var naJob_PGG = null;
-    var personnelJob_PGG = null;
-    var post_PGG = null;
-    var postGradesSelection=false;
+    let method = "POST";
+    let url;
+    let wait_PostGradeGroup;
+    let postGrade_PGG = null;
+    let naJob_PGG = null;
+    let personnelJob_PGG = null;
+    let post_PGG = null;
+    let postGradesSelection=false;
     let oLoadAttachments_PostGradeGroup = null;
 
     <%--if(Window_NeedsAssessment_Edit === undefined) {--%>
-        <%--var Window_NeedsAssessment_Edit = isc.Window.create({--%>
+        <%--let Window_NeedsAssessment_Edit = isc.Window.create({--%>
             <%--title: "<spring:message code="needs.assessment"/>",--%>
             <%--placement: "fillScreen",--%>
             <%--minWidth: 1024,--%>
@@ -30,7 +30,7 @@
 
     //////////////////////////////////////////////////////////////////////////////////////////////
 
-    var RestDataSource_PostGradeGroup_Jsp = isc.TrDS.create({
+    let RestDataSource_PostGradeGroup_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", title: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "<spring:message code='post.grade.group.titleFa'/>", filterOperator: "iContains"},
@@ -45,7 +45,7 @@
         fetchDataURL: viewPostGradeGroupUrl + "/iscList"
     });
 
-    var RestDataSource_Post_Grade_Group_PostGradeGroup_Jsp = isc.TrDS.create({
+    let RestDataSource_Post_Grade_Group_PostGradeGroup_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "code"},
@@ -61,7 +61,7 @@
         ],
         fetchDataURL: postGradeUrl + "/iscList"
     });
-    var RestDataSource_All_PostGrades_PostGradeGroup_Jsp = isc.TrDS.create({
+    let RestDataSource_All_PostGrades_PostGradeGroup_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "code"},
@@ -77,7 +77,7 @@
         ],
         fetchDataURL: postGradeUrl + "/iscList"
     });
-    var RestDataSource_ForThisPostGroup_GetPosts_PostGradeGroup_Jsp = isc.TrDS.create({
+    let RestDataSource_ForThisPostGroup_GetPosts_PostGradeGroup_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "code"},
@@ -130,7 +130,7 @@
         ]
     });
 
-    var ListGrid_Post_Grade_Group_Jsp = isc.TrLG.create({
+    let ListGrid_Post_Grade_Group_Jsp = isc.TrLG.create({
         selectionType: "single",
         autoFetchData: true,
         dataSource: RestDataSource_PostGradeGroup_Jsp,
@@ -144,7 +144,7 @@
             return setColorForListGrid(record)
         },
         selectionUpdated: function () {
-            selectionUpdated_PostGrade();
+            selectionUpdated_PostGradeGroup();
         },
         doubleClick: function () {
             ListGrid_Post_Grade_Group_edit();
@@ -154,7 +154,7 @@
     defineWindowsEditNeedsAssessment(ListGrid_Post_Grade_Group_Jsp);
     defineWindowTreeNeedsAssessment();
 
-    var DynamicForm_thisPostGradeGroupHeader_Jsp = isc.DynamicForm.create({
+    let DynamicForm_thisPostGradeGroupHeader_Jsp = isc.DynamicForm.create({
         titleWidth: "400",
         width: "700",
         align: "right",
@@ -169,7 +169,7 @@
         ]
     });
 
-    var ListGrid_AllPostGrades = isc.TrLG.create({
+    let ListGrid_AllPostGrades = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_All_PostGrades_PostGradeGroup_Jsp,
@@ -207,16 +207,16 @@
             findRows.setProperty("enabled", false);
         },
         createRecordComponent: function (record, colNum) {
-            var fieldName = this.getFieldName(colNum);
+            let fieldName = this.getFieldName(colNum);
             if (fieldName == "OnAdd") {
-                var recordCanvas = isc.HLayout.create({
+                let recordCanvas = isc.HLayout.create({
                     height: "100%",
                     width: "100%",
                     layoutMargin: 5,
                     membersMargin: 10,
                     align: "center"
                 });
-                var addIcon = isc.ImgButton.create({
+                let addIcon = isc.ImgButton.create({
                     showDown: false,
                     showRollOver: false,
                     layoutAlign: "center",
@@ -271,7 +271,7 @@
         }
     });
 
-    var ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa = isc.TrLG.create({
+    let ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa = isc.TrLG.create({
         width: "100%",
         height: "100%",
         canDragRecordsOut: true,
@@ -307,16 +307,16 @@
             }
         },
         createRecordComponent: function (record, colNum) {
-            var fieldName = this.getFieldName(colNum);
+            let fieldName = this.getFieldName(colNum);
             if (fieldName === "OnDelete") {
-                var recordCanvas = isc.HLayout.create({
+                let recordCanvas = isc.HLayout.create({
                     height: 20,
                     width: "100%",
                     layoutMargin: 5,
                     membersMargin: 10,
                     align: "center"
                 });
-                var removeIcon = isc.ImgButton.create({
+                let removeIcon = isc.ImgButton.create({
                     showDown: false,
                     showRollOver: false,
                     layoutAlign: "center",
@@ -355,7 +355,7 @@
         }
     });
 
-    var SectionStack_All_Posts_Jsp = isc.SectionStack.create({
+    let SectionStack_All_Posts_Jsp = isc.SectionStack.create({
         visibilityMode: "multiple",
         width: "50%",
         sections: [
@@ -376,9 +376,9 @@
                                 buttonClick: function (button, index) {
                                     this.close();
                                     if (index == 0) {
-                                        var ids = ListGrid_AllPostGrades.getSelection().filter(function(x){return x.enabled!=false}).map(function(item) {return item.id;});
-                                        var activeGroup = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
-                                        var activeGroupId = activeGroup.id;
+                                        let ids = ListGrid_AllPostGrades.getSelection().filter(function(x){return x.enabled!=false}).map(function(item) {return item.id;});
+                                        let activeGroup = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
+                                        let activeGroupId = activeGroup.id;
                                         let JSONObj = {"ids": ids};
 
                                         isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + "addPostGrades/" + activeGroupId + "/" + ids,
@@ -415,7 +415,7 @@
         ]
     });
 
-    var SectionStack_Current_Post_Grade_Jsp = isc.SectionStack.create({
+    let SectionStack_Current_Post_Grade_Jsp = isc.SectionStack.create({
         visibilityMode: "multiple",
         width: "50%",
         sections: [
@@ -435,9 +435,9 @@
                                 buttonClick: function (button, index) {
                                     this.close();
                                     if (index == 0) {
-                                        var ids = ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.getSelection().map(function(item) {return item.id;});
-                                        var activeGroup = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
-                                        var activeGroupId = activeGroup.id;
+                                        let ids = ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.getSelection().map(function(item) {return item.id;});
+                                        let activeGroup = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
+                                        let activeGroupId = activeGroup.id;
                                         let JSONObj = {"ids": ids};
 
 
@@ -477,7 +477,7 @@
         ]
     });
 
-    var HStack_thisPostGradeGroup_AddPostGrade_Jsp = isc.HStack.create({
+    let HStack_thisPostGradeGroup_AddPostGrade_Jsp = isc.HStack.create({
         membersMargin: 10,
         height: 500,
         members: [
@@ -486,7 +486,7 @@
         ]
     });
 
-    var HLayOut_thisPostGradeGroup_AddPostGrade_Jsp = isc.TrHLayout.create({
+    let HLayOut_thisPostGradeGroup_AddPostGrade_Jsp = isc.TrHLayout.create({
         height: "10%",
         border: "0px solid yellow",
         layoutMargin: 5,
@@ -497,7 +497,7 @@
         ]
     });
 
-    var VLayOut_PostGradeGroup_PostGrades_Jsp = isc.TrVLayout.create({
+    let VLayOut_PostGradeGroup_PostGrades_Jsp = isc.TrVLayout.create({
         border: "3px solid gray",
         layoutMargin: 5,
         members: [
@@ -506,7 +506,7 @@
         ]
     });
 
-    var Window_Add_PostGrade_to_PostGradeGroup_Jsp = isc.Window.create({
+    let Window_Add_PostGrade_to_PostGradeGroup_Jsp = isc.Window.create({
         title: "<spring:message code="post.grade.list"/>",
         width: "900",
         height: "400",
@@ -551,7 +551,7 @@
         ]
     });
 
-    var ListGrid_Grades_Post_Grade_Group_Jsp = isc.TrLG.create({
+    let ListGrid_Grades_Post_Grade_Group_Jsp = isc.TrLG.create({
         dataSource: RestDataSource_Post_Grade_Group_PostGradeGroup_Jsp,
         autoFetchData: false,
         gridComponents: [ActionsTS_Post_Grade_Group_Grades, "header", "filterEditor", "body",],
@@ -579,7 +579,7 @@
         ]
     });
 
-    var DynamicForm_Post_Grade_Group_Jsp = isc.DynamicForm.create({
+    let DynamicForm_Post_Grade_Group_Jsp = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
         align: "center",
@@ -622,29 +622,29 @@
     });
 
 
-    var IButton_Post_Grade_Group_Exit_Jsp = isc.IButtonCancel.create({
+    let IButton_Post_Grade_Group_Exit_Jsp = isc.IButtonCancel.create({
         click: function () {
             Window_Post_Grade_Group_Jsp.close();
         }
     });
 
-    var IButton_Post_Grade_Group_Save_Jsp = isc.IButtonSave.create({
+    let IButton_Post_Grade_Group_Save_Jsp = isc.IButtonSave.create({
         click: function () {
             DynamicForm_Post_Grade_Group_Jsp.validate();
             if (DynamicForm_Post_Grade_Group_Jsp.hasErrors()) {
                 return;
             }
-            var data = DynamicForm_Post_Grade_Group_Jsp.getValues();
+            let data = DynamicForm_Post_Grade_Group_Jsp.getValues();
             isc.RPCManager.sendRequest(TrDSRequest(url, method, JSON.stringify(data),
                 "callback: post_grade_group_save_result(rpcResponse)"));
         }
     });
 
-    var HLayOut_Post_Grade_GroupSaveOrExit_Jsp = isc.TrHLayoutButtons.create({
+    let HLayOut_Post_Grade_GroupSaveOrExit_Jsp = isc.TrHLayoutButtons.create({
         members: [IButton_Post_Grade_Group_Save_Jsp, IButton_Post_Grade_Group_Exit_Jsp]
     });
 
-    var Window_Post_Grade_Group_Jsp = isc.Window.create({
+    let Window_Post_Grade_Group_Jsp = isc.Window.create({
         title: "<spring:message code='post.grade.group'/>",
         width: 700,
         align: "center",
@@ -685,28 +685,28 @@
         members: [ToolStripButton_EditNA_PGG, ToolStripButton_TreeNA_PGG]
     });
 
-    var ToolStripButton_Refresh_Post_Grade_Group_Jsp = isc.ToolStripButtonRefresh.create({
+    let ToolStripButton_Refresh_Post_Grade_Group_Jsp = isc.ToolStripButtonRefresh.create({
         click: function () {
             ListGrid_Post_Grade_Group_refresh();
         }
     });
-    var ToolStripButton_Edit_Post_Grade_Group_Jsp = isc.ToolStripButtonEdit.create({
+    let ToolStripButton_Edit_Post_Grade_Group_Jsp = isc.ToolStripButtonEdit.create({
         click: function () {
             ListGrid_Post_Grade_Group_edit();
         }
     });
-    var ToolStripButton_Add_Post_Grade_Group_Jsp = isc.ToolStripButtonCreate.create({
+    let ToolStripButton_Add_Post_Grade_Group_Jsp = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_Post_Grade_Group_add();
         }
     });
-    var ToolStripButton_Remove_Post_Grade_Group_Jsp = isc.ToolStripButtonRemove.create({
+    let ToolStripButton_Remove_Post_Grade_Group_Jsp = isc.ToolStripButtonRemove.create({
         click: function () {
             ListGrid_Post_Grade_Group_remove();
         }
     });
 
-    var ToolStripButton_Add_Post_Grade_Group_AddPostGrade_Jsp = isc.ToolStripButton.create({
+    let ToolStripButton_Add_Post_Grade_Group_AddPostGrade_Jsp = isc.ToolStripButton.create({
         <%--icon: "<spring:url value="post.png"/>",--%>
         title: "<spring:message code="post.grade.list"/>",
         click: function () {
@@ -729,7 +729,7 @@
 
     /////////////////////////////////////////////////////////////////////////////////////////////
 
-    var ToolStrip_Actions_Post_Grade_Group_Jsp = isc.ToolStrip.create({
+    let ToolStrip_Actions_Post_Grade_Group_Jsp = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
         members: [
@@ -750,7 +750,7 @@
         ]
     });
 
-    var HLayout_Actions_Post_Grade_Group_Jsp = isc.VLayout.create({
+    let HLayout_Actions_Post_Grade_Group_Jsp = isc.VLayout.create({
         width: "100%",
         members: [ToolStrip_Actions_Post_Grade_Group_Jsp, ToolStrip_NA_PGG]
     });
@@ -1132,7 +1132,7 @@
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var Detail_Tab_Post_Grade_Group = isc.TabSet.create({
+    let Detail_Tab_Post_Grade_Group = isc.TabSet.create({
         tabBarPosition: "top",
         tabs: [
             {name: "TabPane_Post_Grade_PGG", title: "<spring:message code='post.grade.list'/>", pane: ListGrid_Grades_Post_Grade_Group_Jsp},
@@ -1146,20 +1146,20 @@
             },
         ],
         tabSelected: function (){
-            selectionUpdated_PostGrade();
+            selectionUpdated_PostGradeGroup();
         }
     });
 
-    var HLayout_Tab_Post_Grade_Group = isc.TrHLayout.create({
+    let HLayout_Tab_Post_Grade_Group = isc.TrHLayout.create({
         members: [Detail_Tab_Post_Grade_Group]
     });
 
-    var HLayout_Grid_Post_Grade_Group_Jsp = isc.TrHLayout.create({
+    let HLayout_Grid_Post_Grade_Group_Jsp = isc.TrHLayout.create({
         showResizeBar:true,
         members: [ListGrid_Post_Grade_Group_Jsp]
     });
 
-    var VLayout_Body_Post_Grade_Group_Jsp = isc.TrVLayout.create({
+    let VLayout_Body_Post_Grade_Group_Jsp = isc.TrVLayout.create({
         members: [
             HLayout_Actions_Post_Grade_Group_Jsp,
             HLayout_Grid_Post_Grade_Group_Jsp,
@@ -1192,9 +1192,9 @@
 
     function post_grade_group_save_result(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            var responseID = JSON.parse(resp.data).id;
-            var gridState = "[{id:" + responseID + "}]";
-            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+            let responseID = JSON.parse(resp.data).id;
+            let gridState = "[{id:" + responseID + "}]";
+            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
             setTimeout(function () {
                 OK.close();
@@ -1217,7 +1217,7 @@
     }
 
     function Add_Post_Grade_Group_AddPostGrade_Jsp() {
-        var record = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
+        let record = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
@@ -1233,7 +1233,7 @@
     }
 
     function ListGrid_Post_Grade_Group_edit() {
-        var record = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
+        let record = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
@@ -1246,11 +1246,11 @@
     }
 
     function ListGrid_Post_Grade_Group_remove() {
-        var record = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
+        let record = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
         if (record == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            var Dialog_Post_Grade_Group_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+            let Dialog_Post_Grade_Group_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
                 "<spring:message code='global.warning'/>");
             Dialog_Post_Grade_Group_remove.addProperties({
                 buttonClick: function (button, index) {
@@ -1269,7 +1269,7 @@
         wait_PostGradeGroup.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             ListGrid_Post_Grade_Group_Jsp.invalidateCache();
-            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
             ListGrid_Grades_Post_Grade_Group_Jsp.setData([]);
             setTimeout(function () {
@@ -1315,7 +1315,7 @@
         }
     }
 
-    function selectionUpdated_PostGrade(){
+    function selectionUpdated_PostGradeGroup(){
         let postGradeGroup = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
         let tab = Detail_Tab_Post_Grade_Group.getSelectedTab();
         if (postGradeGroup == null && tab.pane != null){
