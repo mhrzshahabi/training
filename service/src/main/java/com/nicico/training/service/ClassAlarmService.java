@@ -925,6 +925,7 @@ public class ClassAlarmService implements IClassAlarm {
     public void setClassHasWarningStatus(Long class_id) {
 
         //*****this method check all not ended class and set alarm status for them*****
+        if(class_id!=null)
         tclassDAO.updateAllClassHasWarning(class_id);
 //        if (class_id == 0L) {
 //            //*****this method check all not ended class and set alarm status for them*****

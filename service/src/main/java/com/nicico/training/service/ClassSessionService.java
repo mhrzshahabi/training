@@ -312,15 +312,15 @@ public class ClassSessionService implements IClassSession {
 
         if(deletableIds.size() > 0) {
             attendanceDAO.deleteAllBySessionId(deletableIds);
-            classAlarmService.deleteAllAlarmsBySessionIds(deletableIds);
+//            classAlarmService.deleteAllAlarmsBySessionIds(deletableIds);
             successes = classSessionDAO.deleteAllById(deletableIds);
 
             //*****check alarms*****
-            classAlarmService.alarmSumSessionsTimes(classId);
-            classAlarmService.alarmTeacherConflict(classId);
-            classAlarmService.alarmStudentConflict(classId);
-            classAlarmService.alarmTrainingPlaceConflict(classId);
-            classAlarmService.saveAlarms();
+//            classAlarmService.alarmSumSessionsTimes(classId);
+//            classAlarmService.alarmTeacherConflict(classId);
+//            classAlarmService.alarmStudentConflict(classId);
+//            classAlarmService.alarmTrainingPlaceConflict(classId);
+//            classAlarmService.saveAlarms();
         }
 
         ClassSessionDTO.DeleteStatus deleteStatus = new ClassSessionDTO.DeleteStatus();

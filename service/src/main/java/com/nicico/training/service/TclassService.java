@@ -3,7 +3,6 @@ package com.nicico.training.service;
 @Author:roya
 */
 
-import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.NICICOPageable;
 import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
@@ -163,7 +162,7 @@ public class TclassService implements ITclassService {
 
         mappedClass.setTrainingPlaceSet(set);
 
-        if(!mappedClass.getClassStatus().equals("4")){
+        if(mappedClass.getClassStatus() != null && !mappedClass.getClassStatus().equals("4")){
             mappedClass.setClassCancelReasonId(null);
             mappedClass.setAlternativeClassId(null);
             mappedClass.setPostponeStartDate(null);
@@ -1367,5 +1366,17 @@ public class TclassService implements ITclassService {
     @Transactional(readOnly = true)
     public Boolean hasSessions(Long id){
         return classSessionDAO.existsByClassId(id);
+    }
+
+    @Transactional
+    @Override
+    public void updateCostInfo(Long id, TclassDTO.Update request) {
+        final Optional<Tclass> cById = tclassDAO.findById(id);
+        final Tclass tclass = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+        tclass.setStudentCost(request.getStudentCost());
+        tclass.setStudentCostCurrency(request.getStudentCostCurrency());
+
+        Tclass updatedClass = tclassDAO.save(tclass);
     }
 }

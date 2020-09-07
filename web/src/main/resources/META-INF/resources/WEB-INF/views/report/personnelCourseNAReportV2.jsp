@@ -248,9 +248,10 @@
                 name: "code",
                 title: "<spring:message code="post.grade.code"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
             },
             {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
+            {name: "peopleType",  title: "نوع فراگیر",valueMap: {"personnel_registered": "متفرقه", "Personal": "شرکتی", "ContractorPersonal": "پیمانکار"}},
+            {name: "enabled", title: "فعال/غیرفعال", valueMap: {"undefined": "فعال", "74": "غیرفعال"}}
         ],
         fetchDataURL: viewPostGradeUrl + "/iscList"
     });
@@ -309,11 +310,14 @@
                 layoutStyle: "horizontal",
                 comboBoxProperties: {
                     hint: "",
-                    pickListWidth: 300,
+                    pickListWidth: 550,
                     pickListFields: [
                         {name: "titleFa"},
+                        {name: "code"},
+                        {name: "peopleType",canFilter: false},
+                        {name: "enabled"}
                     ],
-                    filterFields: ["titleFa"],
+                    filterFields: ["titleFa", "code", "enabled"],
                     pickListProperties: {
                         sortField: 1,
                         showFilterEditor: true},

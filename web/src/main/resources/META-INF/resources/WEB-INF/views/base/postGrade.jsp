@@ -2,9 +2,9 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 // <script>
-    var naJob_PostGrade = null;
-    var personnelJob_PostGrade = null;
-    var postJob_PostGrade = null;
+    let naJob_PostGrade = null;
+    let personnelJob_PostGrade = null;
+    let postJob_PostGrade = null;
     let oLoadAttachments_PostGrade = null;
     // ------------------------------------------- Menu -------------------------------------------
     PostGradeMenu_postGrade = isc.Menu.create({

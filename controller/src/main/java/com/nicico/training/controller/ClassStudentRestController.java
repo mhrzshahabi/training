@@ -10,8 +10,6 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
-import com.nicico.training.iservice.IEvaluationAnalysisService;
-import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.mapper.student.ClassStudentBeanMapper;
 import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.service.*;
@@ -24,9 +22,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import response.student.UpdatePreTestScoreResponse;
-import request.student.UpdateStudentScoreRequest;
 import request.student.UpdatePreTestScoreRequest;
+import request.student.UpdateStudentScoreRequest;
+import response.student.UpdatePreTestScoreResponse;
 import response.student.UpdateStudentScoreResponse;
 
 import javax.servlet.http.HttpServletRequest;
@@ -155,9 +153,10 @@ public class ClassStudentRestController {
         try {
             Map<String, String> result;
             result = classStudentService.registerStudents(request, classId);
-            //classAlarmService.alarmClassCapacity(classId);
-            //classAlarmService.alarmStudentConflict(classId);
-            //classAlarmService.saveAlarms();
+            //// cancel alarms
+//            classAlarmService.alarmClassCapacity(classId);
+//            classAlarmService.alarmStudentConflict(classId);
+//            classAlarmService.saveAlarms();
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
@@ -269,11 +268,12 @@ public class ClassStudentRestController {
                 classStudentService.delete(studentId);
             }
 
-            if (classId != null) {
+//// cancel alarms
+//            if (classId != null) {
 //                classAlarmService.alarmClassCapacity(classId);
 //                classAlarmService.alarmStudentConflict(classId);
 //                classAlarmService.saveAlarms();
-            }
+//            }
 
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException | DataIntegrityViolationException e) {
