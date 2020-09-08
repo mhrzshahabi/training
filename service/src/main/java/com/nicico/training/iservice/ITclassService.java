@@ -92,4 +92,7 @@ public interface ITclassService {
 
     @Transactional(readOnly = true)
     SearchDTO.SearchRs<TclassDTO.InfoTuple> searchInfoTuple(SearchDTO.SearchRq request);
+
+    @Transactional
+    void updateCostInfo(Long id, TclassDTO.Update request);
 }

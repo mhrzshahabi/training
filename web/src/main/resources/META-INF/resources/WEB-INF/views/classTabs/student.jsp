@@ -96,8 +96,12 @@
                 <sec:authorize access="hasAnyAuthority('TclassStudentsTab_P','TclassStudentsTab_classStatus')">
                 isc.ToolStripButtonExcel.create({
                     click: function () {
-                        ExportToFile.downloadExcelFromClient(StudentsLG_student, ListGrid_Class_JspClass, '', "کلاس - فراگيران");
-                    }
+
+                        let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                        if (!(classRecord === undefined || classRecord == null)) {
+                            ExportToFile.downloadExcelRestUrl(null, StudentsLG_student, tclassStudentUrl + "/students-iscList/" + classRecord.id, 0, ListGrid_Class_JspClass, '', "کلاس - فراگيران", StudentsLG_student.getCriteria(), null);
+                        }
+                   }
                 }),
                 isc.ToolStripButton.create({
                     icon: "[SKIN]/RichTextEditor/print.png",
@@ -1337,6 +1341,7 @@
                                         align: "center",
                                         icon: "[SKIN]/actions/save.png",
                                         click:function () {
+                                                SelectedPersonnelsLG_student.endEditing();
                                                 let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
                                                 // for (let i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
                                                 //     students.add({

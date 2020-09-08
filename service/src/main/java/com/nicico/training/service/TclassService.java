@@ -158,7 +158,7 @@ public class TclassService implements ITclassService {
 
         mappedClass.setTrainingPlaceSet(set);
 
-        if(!mappedClass.getClassStatus().equals("4")){
+        if(mappedClass.getClassStatus() != null && !mappedClass.getClassStatus().equals("4")){
             mappedClass.setClassCancelReasonId(null);
             mappedClass.setAlternativeClassId(null);
             mappedClass.setPostponeStartDate(null);
@@ -813,6 +813,17 @@ public class TclassService implements ITclassService {
         return result;
     }
 
+    public Double getTeacherGradeToClass(Long classId, Long teacherId) {
+        EvaluationDTO.Info evaluationDTO =  evaluationService.getEvaluationByData(140L, classId, teacherId,
+                187L, classId, 504L, 154L);
+        if(evaluationDTO != null) {
+            Evaluation evaluation = modelMapper.map(evaluationDTO, Evaluation.class);
+            return evaluationService.getEvaluationFormGrade(evaluation);
+        }
+        else
+            return 0.0;
+    }
+
     public Double getTrainingGradeToTeacher(Long classId, Long trainingId, Long teacherId) {
         EvaluationDTO.Info evaluationDTO =  evaluationService.getEvaluationByData(141L, classId, trainingId,
                 454L, teacherId, 187L, 154L);
@@ -1199,4 +1210,16 @@ public class TclassService implements ITclassService {
         return classSessionDAO.existsByClassId(id);
     }
 
+
+    @Transactional
+    @Override
+    public void updateCostInfo(Long id, TclassDTO.Update request) {
+        final Optional<Tclass> cById = tclassDAO.findById(id);
+        final Tclass tclass = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+        tclass.setStudentCost(request.getStudentCost());
+        tclass.setStudentCostCurrency(request.getStudentCostCurrency());
+
+        Tclass updatedClass = tclassDAO.save(tclass);
+    }
 }

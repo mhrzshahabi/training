@@ -5,6 +5,7 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@ page import="com.nicico.copper.core.SecurityUtil" %>
 
+//<script>
     var Wait_JspClassEvaluationInfo = null;
 
     var DynamicForm_JspClassEvaluationInfo = isc.DynamicForm.create({
@@ -14,6 +15,27 @@
         numCols: 2,
         margin: 5,
         fields: [
+            {
+                type: "button",
+                title: "ارسال به Excel",
+                width: 160,
+                height: "30",
+                startRow: false,
+                endRow: true,
+                click: function () {
+                    let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                    if (!(classRecord === undefined || classRecord == null)) {
+
+                        let fields = [{name:'title',title:'عنوان'},{name:'value',title:''}]
+                        let allRows = [{title:DynamicForm_JspClassEvaluationInfo.getItem('teacherGradeToClass').getTitle(),value:DynamicForm_JspClassEvaluationInfo.getItem('teacherGradeToClass').getValue()},
+                                        {title:DynamicForm_JspClassEvaluationInfo.getItem('trainingGradeToTeacher').getTitle(),value:DynamicForm_JspClassEvaluationInfo.getItem('trainingGradeToTeacher').getValue()},
+                                        {title:DynamicForm_JspClassEvaluationInfo.getItem('studentsGradeToClass').getTitle(),value:DynamicForm_JspClassEvaluationInfo.getItem('studentsGradeToClass').getValue()},
+                                        {title:DynamicForm_JspClassEvaluationInfo.getItem('teacherTotalGrade').getTitle(),value:DynamicForm_JspClassEvaluationInfo.getItem('teacherTotalGrade').getValue()},];
+
+                        ExportToFile.exportToExcelFromClient(fields,allRows,ExportToFile.generateTitle(ListGrid_Class_JspClass),"کلاس - مشاهده وضعيت ارزيابي کلاس");
+                    }
+                }
+            },
             {name: "teacherGradeToClass", title: "نمره ارزیابی مدرس به کلاس", canEdit: false, type: "StaticTextItem"},
             {name: "trainingGradeToTeacher", title: "نمره ارزیابی مسئول آموزش به مدرس", canEdit: false, type: "StaticTextItem"},
             {name: "studentsGradeToClass", title: "نمره ارزیابی واکنشی کلاس", canEdit: false, type: "StaticTextItem"},

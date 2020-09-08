@@ -733,9 +733,23 @@
                 width: 160,
                 height: "30",
                 startRow: false,
-                endRow: true,
+                endRow: false,
                 click: function () {
                     Window_CheckList_Design.show();
+                }
+            },
+            {
+                type: "button",
+                title: "ارسال به Excel",
+                width: 160,
+                height: "30",
+                startRow: false,
+                endRow: true,
+                click: function () {
+                    let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                    if (!(classRecord === undefined || classRecord == null)) {
+                        ExportToFile.downloadExcelRestUrl(null, ListGrid_ClassCheckList, checklistUrl + "getchecklist" + "/" + classRecord.id, 0, ListGrid_Class_JspClass, '', "کلاس - چک ليست", ListGrid_ClassCheckList.getCriteria(), null);
+                    }
                 }
             },
             </sec:authorize>

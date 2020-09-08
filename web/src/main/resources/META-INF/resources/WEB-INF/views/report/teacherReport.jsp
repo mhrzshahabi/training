@@ -157,7 +157,7 @@
                     isc.ToolStripButtonExcel.create({
                         margin:5,
                         click: function() {
-                            ExportToFile.showDialog(null, ListGrid_Result_JspTeacherReport, 'teacherReport', 0, null, '',  "گزارش اساتيد", ListGrid_Result_JspTeacherReport.data.criteria, null);
+                            ExportToFile.downloadExcel(null, ListGrid_Result_JspTeacherReport, 'teacherReport', 0, null, '',  "گزارش اساتيد", ListGrid_Result_JspTeacherReport.data.criteria, null);
                         }
                     }),
                     isc.ToolStripButton.create({
@@ -246,10 +246,12 @@
                                                     criteria.operator = "and";
                                                     criteria._constructor = "AdvancedCriteria";
                                                     criteria.criteria = [];
-                                                    criteria.criteria.push(ListGrid_TrainingClasses_JspTeacherReport.getCriteria());
+                                                    let LGObj = ListGrid_TrainingClasses_JspTeacherReport.getCriteria();
+                                                    if(isEmpty(LGObj) == false)
+                                                        criteria.criteria.push(ListGrid_TrainingClasses_JspTeacherReport.getCriteria());
                                                     criteria.criteria.push({fieldName: "teacherId", operator: "equals", value: record.teacherId});
 
-                                                    ExportToFile.showDialog(null, ListGrid_TrainingClasses_JspTeacherReport, 'teacherTrainingClasses', 0, null, '',  "لیست کلاسهای مدرس " + record.firstName + " " + record.lastName, criteria, null);
+                                                    ExportToFile.downloadExcel(null, ListGrid_TrainingClasses_JspTeacherReport, 'teacherTrainingClasses', 0, null, '',  "لیست کلاسهای مدرس " + record.firstName + " " + record.lastName, criteria, null);
                                                 }
                                             }),
                                             ListGrid_TrainingClasses_JspTeacherReport
@@ -948,3 +950,12 @@
     });
     //----------------------------------------------------End-----------------------------------------------------------
     Window_Result_JspTeacherReport.hide();
+
+    function isEmpty(obj) {
+        for(var prop in obj) {
+            if(obj.hasOwnProperty(prop))
+                return false;
+        }
+
+        return true;
+    }

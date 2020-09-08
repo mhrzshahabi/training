@@ -111,7 +111,9 @@
             {name: "organizerName"},
             {name: "evaluation"},
             {name: "startEvaluation"},
-            {name: "behavioralLevel"}
+            {name: "behavioralLevel"},
+            {name: "studentCost"},
+            {name: "studentCostCurrency"}
         ]
     });
 
@@ -635,7 +637,9 @@
             {name: "teacherId", hidden: true},
             {name: "evaluation", hidden: true},
             {name: "startEvaluation", hidden: true},
-            {name: "behavioralLevel", hidden: true}
+            {name: "behavioralLevel", hidden: true},
+            {name: "studentCost", hidden: true},
+            {name: "studentCostCurrency", hidden: true}
         ],
         getCellCSSText: function (record, rowNum, colNum) {
             if (this.isSelected(record)) {
@@ -2546,7 +2550,7 @@
                 };
             }
 
-            ExportToFile.showDialog(null, ListGrid_Class_JspClass, "class", 0, null, '', "اجرا - کلاس", criteria, null);
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_Class_JspClass, classUrl + "spec-list", 0, null, '', "اجرا - کلاس", criteria, null);
         }
     });
 
@@ -2688,6 +2692,11 @@
                 ID: "classEvaluationInfo",
                 title: "مشاهده وضعیت ارزیابی کلاس",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/evaluation-info-tab"})
+            },
+            {
+                ID: "classCosts",
+                title: "ثبت هزینه کلاس",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/class-costs-tab"})
             },
             <%--{--%>
             <%--ID: "costClassTab",--%>
@@ -3235,6 +3244,10 @@
                                             },
                                             {fieldName: "id", operator: "notEqual", value: record.id},
                                             {fieldName: "classStatus", operator: "equals", value: "4"},
+                                            {operator: "or", criteria: [
+                                                    {fieldName: "alternativeClassId", operator: "isNull"},
+                                                    {fieldName: "alternativeClassId", operator: "equals", value: record.id},
+                                                ]}
                                         ]
                                     };
                                     item.pickListCriteria = criteria;
@@ -3480,6 +3493,13 @@
                         loadPage_classEvaluationInfo(ListGrid_Class_JspClass.getSelectedRecord().id,
                                                     ListGrid_Class_JspClass.getSelectedRecord().studentCount,
                                                     ListGrid_Class_JspClass.getSelectedRecord().evaluation);
+                    break;
+                }
+                case "classCosts": {
+                    if (typeof loadPage_classCosts !== "undefined")
+                        loadPage_classCosts(ListGrid_Class_JspClass.getSelectedRecord().studentCost,
+                            ListGrid_Class_JspClass.getSelectedRecord().studentCostCurrency,
+                            ListGrid_Class_JspClass.getSelectedRecord().id);
                     break;
                 }
             }

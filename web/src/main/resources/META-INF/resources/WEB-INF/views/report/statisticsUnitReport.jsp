@@ -269,7 +269,7 @@
         title: "گزارش اکسل",
         width: 300,
         click: function () {
-            ExportToFile.showDialog(null, ListGrid_JspUnitReport, 'statisticsUnitReport', 0, null, '',  "گزارش واحد آمار", ListGrid_JspUnitReport.data.criteria, null);
+            ExportToFile.downloadExcel(null, ListGrid_JspUnitReport, 'statisticsUnitReport', 0, null, '',  "گزارش واحد آمار", ListGrid_JspUnitReport.data.criteria, null);
         }
     });
 

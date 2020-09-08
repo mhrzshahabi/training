@@ -248,9 +248,10 @@
                 name: "code",
                 title: "<spring:message code="post.grade.code"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
             },
             {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
+            {name: "peopleType",  title: "نوع فراگیر",valueMap: {"personnel_registered": "متفرقه", "Personal": "شرکتی", "ContractorPersonal": "پیمانکار"}},
+            {name: "enabled", title: "فعال/غیرفعال", valueMap: {"undefined": "فعال", "74": "غیرفعال"}}
         ],
         fetchDataURL: viewPostGradeUrl + "/iscList"
     });
@@ -309,11 +310,14 @@
                 layoutStyle: "horizontal",
                 comboBoxProperties: {
                     hint: "",
-                    pickListWidth: 300,
+                    pickListWidth: 550,
                     pickListFields: [
                         {name: "titleFa"},
+                        {name: "code"},
+                        {name: "peopleType",canFilter: false},
+                        {name: "enabled"}
                     ],
-                    filterFields: ["titleFa"],
+                    filterFields: ["titleFa", "code", "enabled"],
                     pickListProperties: {
                         sortField: 1,
                         showFilterEditor: true},
@@ -614,7 +618,7 @@
                             ExportToFile.downloadExcelFromClient(CourseLG_PCNR,null,"","آمار دوره های نیازسنجی افراد - آماری");
                         }
                         else if(FilterDF_PCNR.getItem("reportType").getValue() === "2"){
-                            ExportToFile.showDialog(null, CourseLG_MinPCNR, "personnelCourseNAR", 0, null, '',"آمار دوره های نیازسنجی افراد - لیستی"  , criteria, null);
+                            ExportToFile.downloadExcel(null, CourseLG_MinPCNR, "personnelCourseNAR", 0, null, '',"آمار دوره های نیازسنجی افراد - لیستی"  , criteria, null);
                             // ExportToFile.downloadExcelFromClient(CourseLG_MinPCNR,null,"","آمار دوره های نیازسنجی افراد - لیستی");
                         }
                     }

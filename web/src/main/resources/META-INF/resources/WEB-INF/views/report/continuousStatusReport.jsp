@@ -188,7 +188,7 @@
         title: "گزارش اکسل",
         width: 300,
         click: function () {
-            ExportToFile.showDialog(null, ListGrid_JspcontinuousPersonnel, 'continuousPersonnel', 0, null, '',  "گزارش مستمر", ListGrid_JspcontinuousPersonnel.data.criteria, null);
+            ExportToFile.downloadExcel(null, ListGrid_JspcontinuousPersonnel, 'continuousPersonnel', 0, null, '',  "گزارش مستمر", ListGrid_JspcontinuousPersonnel.data.criteria, null);
         }
     });
 

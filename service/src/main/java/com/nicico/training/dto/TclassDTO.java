@@ -73,6 +73,8 @@ public class TclassDTO {
     private Long classCancelReasonId;
     private Long alternativeClassId;
     private String postponeStartDate;
+    private String studentCost;
+    private Long studentCostCurrency;
 
 
     @Getter

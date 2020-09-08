@@ -296,7 +296,7 @@
 
                     criteria.criteria.push({fieldName: "nationalCode", operator: "equals", value: userNationalCode_JspWeeklyTrainingSchedule});
 
-                    ExportToFile.showDialog(null, ListGrid_Result_JspWeeklyTrainingSchedule, 'weeklyTrainingSchedule', 0, null, '',  "برنامه ريزي آموزشي هفته", criteria, null);
+                    ExportToFile.downloadExcel(null, ListGrid_Result_JspWeeklyTrainingSchedule, 'weeklyTrainingSchedule', 0, null, '',  "برنامه ريزي آموزشي هفته", criteria, null);
                 }
             }),
             HLayout_ListGrid_JspWeeklyTrainingSchedule

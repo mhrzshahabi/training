@@ -304,6 +304,26 @@
                     this.ToolStripButton_Remove_JspAttachment,
                     </sec:authorize>
 
+                    isc.ToolStripButtonExcel.create({
+                        click: function () {
+
+                            if (!(objectIdAttachment === undefined || objectIdAttachment == null)) {
+
+                                let url= attachmentUrl + "/iscList/";
+
+                                if (objectTypeAttachment != null)
+                                    url += objectTypeAttachment;
+
+                                url += ",";
+
+                                if (objectTypeAttachment != null)
+                                    url += objectIdAttachment;
+
+                                ExportToFile.downloadExcelRestUrl(null, this.ListGrid_JspAttachment, url, 0, null, '', "پيوست ها", this.ListGrid_JspAttachment.getCriteria(), null);
+                            }
+                        }.bind(this)
+                    }),
+
                     <sec:authorize access="hasAnyAuthority('TclassAttachmentsTab_R','TclassAttachmentsTab_classStatus')">
                     isc.ToolStrip.create({
                         width: "100%",
@@ -471,11 +491,15 @@
             objectTypeAttachment = inputObjectType;
             objectIdAttachment = inputObjectId;
             this.RestDataSource_Attachments_JspAttachments.fetchDataURL = attachmentUrl + "/iscList/";
+
             if (objectTypeAttachment != null)
-            this.RestDataSource_Attachments_JspAttachments.fetchDataURL += objectTypeAttachment;
+                this.RestDataSource_Attachments_JspAttachments.fetchDataURL += objectTypeAttachment;
+
             this.RestDataSource_Attachments_JspAttachments.fetchDataURL += ",";
+
             if (objectTypeAttachment != null)
                 this.RestDataSource_Attachments_JspAttachments.fetchDataURL += objectIdAttachment;
+
             this.ListGrid_JspAttachment.getField("fileTypeId").valueMap = valueMap_EAttachmentType;
             this.DynamicForm_JspAttachments.getField("fileTypeId").valueMap = valueMap_EAttachmentType;
             this.Window_JspAttachments.title = inputTitleAttachment;
