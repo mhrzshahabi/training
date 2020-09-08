@@ -2032,7 +2032,9 @@
 
     <sec:authorize access="hasAuthority('Menu_ReportMaker')">
     jasperMenu = isc.ToolStripMenuButton.create({
-            title: "<span>" + isc.Canvas.imgHTML("<spring:url value="/static/img/pieces/report.png" />", 15, 15) + "&nbsp; </span>"+"<spring:message code="training.jasper.soft.server.title"/>",
+            title: "<span>" +
+                <%--isc.Canvas.imgHTML("<spring:url value="/static/img/pieces/report.png" />", 15, 15) + "&nbsp; </span>"+--%>
+                "<spring:message code="training.jasper.soft.server.title"/>",
     menu: isc.Menu.create({
         autoDraw: false,
         showShadow: true,
@@ -2040,7 +2042,7 @@
         data: [
 <%--            <sec:authorize access="hasAuthority('V_JASPER_ADHOC_SHOW')">--%>
             {
-                title: "<spring:message code="training.jasper.adhoc.show"/>", icon: "pieces/report.png",
+                title: "<spring:message code="training.jasper.adhoc.show"/>",// icon: "pieces/report.png",
                 click: function () {
                     createTab("<spring:message code='training.jasper.adhoc.show'/>", "<spring:url value="/jasperSoft/adhocsShow"/>", false);
                 }
@@ -2048,7 +2050,7 @@
 <%--            </sec:authorize>--%>
 <%--            <sec:authorize access="hasAuthority('C_JASPER_ADHOC_CREATE')">--%>
             {
-                title: "<spring:message code="training.jasper.adhoc.create"/>", icon: "pieces/report.png",
+                title: "<spring:message code="training.jasper.adhoc.create"/>", //icon: "pieces/report.png",
                 click: function () {
                     createTab("<spring:message code='training.jasper.adhoc.create'/>", "<spring:url value="/jasperSoft/adhocCreate"/>", false);
                 }
@@ -2056,7 +2058,7 @@
 <%--            </sec:authorize>--%>
 <%--            <sec:authorize access="hasAuthority('V_JASPER_REPORT_LIST_SHOW')">--%>
             {
-                title: "<spring:message code='training.jasper.report'/>", icon: "pieces/report.png",
+                title: "<spring:message code='training.jasper.report'/>", //icon: "pieces/report.png",
                 click: function () {
                     createTab("<spring:message code='training.jasper.report'/>", "<spring:url value="/jasperSoft/reports"/>", false);
                 }
@@ -2064,7 +2066,7 @@
 <%--            </sec:authorize>--%>
 <%--            <sec:authorize access="hasAuthority('V_JASPER_DASHBOARD_SHOW')">--%>
             {
-                title: "<spring:message code='training.jasper.dashboard'/>", icon: "pieces/report.png",
+                title: "<spring:message code='training.jasper.dashboard'/>", //icon: "pieces/report.png",
                 click: function () {
                     createTab("<spring:message code='training.jasper.dashboard'/>", "<spring:url value="/jasperSoft/dashboards"/>", false);
                 }
@@ -2072,12 +2074,12 @@
 <%--            </sec:authorize>--%>
 <%--            <sec:authorize access="hasAuthority('V_JASPER_REPORTBUILDER_MANAGEMENT')">--%>
             {
-                title: "<spring:message code='training.jasper.report.builder.management'/>", icon: "pieces/report.png"
+                title: "<spring:message code='training.jasper.report.builder.management'/>"//, icon: "pieces/report.png"
                 , submenu: [
 <%--                    <sec:authorize access="hasAuthority('V_JASPER_DATASOURCE_LINK')">--%>
 
                     {
-                        title: "<spring:message code='training.jasper.dataSource'/>", icon: "pieces/report.png",
+                        title: "<spring:message code='training.jasper.dataSource'/>", //icon: "pieces/report.png",
                         click: function () {
                             createTab("<spring:message code='training.jasper.dataSource'/>", "<spring:url value="/jasperSoft/dataSources"/>", false);
                         }
@@ -2085,7 +2087,7 @@
 <%--                    </sec:authorize>--%>
 <%--                    <sec:authorize access="hasAuthority('JASPER_DOMAINS_LINK')">--%>
                     {
-                        title: "<spring:message code='training.jasper.domains'/>", icon: "pieces/report.png",
+                        title: "<spring:message code='training.jasper.domains'/>", //icon: "pieces/report.png",
                         click: function () {
                             createTab("<spring:message code='training.jasper.domains'/>", "<spring:url value="/jasperSoft/domains"/>", false);
                         }
