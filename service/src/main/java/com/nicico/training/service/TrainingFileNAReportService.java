@@ -7,6 +7,7 @@
 package com.nicico.training.service;
 
 import com.google.gson.Gson;
+import com.nicico.training.dto.TrainingFileNAReportDTO;
 import com.nicico.training.iservice.IExportToFileService;
 import com.nicico.training.iservice.ITrainingFileNAReportService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,6 +35,12 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
     @Override
     public void generateReport(HttpServletResponse response, List<String> personnelNos) throws Exception {
 
+        TrainingFileNAReportDTO.GenerateReport generateReport=new TrainingFileNAReportDTO.GenerateReport();
+/*        List<TrainingFileNAReportDTO.Row> headers=new ArrayList<>();
+        headers.add(new TrainingFileNAReportDTO.Row());*/
+
+
+        //generateReport.setHeaders()
     }
 
     private XSSFFont setFont(XSSFWorkbook workbook, String fontFamily, Short size, Color color) {
