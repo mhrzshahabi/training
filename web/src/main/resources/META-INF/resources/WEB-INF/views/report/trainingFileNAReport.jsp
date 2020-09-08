@@ -11,7 +11,7 @@
     );
 
     //----------------------------------------------------Rest DataSource-----------------------------------------------
-    let RestDataSource_JspAttendanceReport = isc.TrDS.create({
+    let RestDataSource_JspTrainingFileNAReport = isc.TrDS.create({
         fields: [
             {name: "presenceHour", title:"حضور بر حسب ساعت", filterOperator: "equals", autoFitWidth: true},
             {name: "presenceMinute", title:"حضور بر حسب دقیقه", filterOperator: "equals", autoFitWidth: true},
@@ -74,8 +74,7 @@
         },
     });
 
-    let RestDataSource_Course_JspAttendanceReport = isc.TrDS.create({
-        ID: "courseDS",
+    let RestDataSource_Course_JspTrainingFileNAReport = isc.TrDS.create({
         fields: [
             {name: "id", type: "Integer", primaryKey: true},
             {name: "code"},
@@ -84,8 +83,7 @@
         fetchDataURL: courseUrl + "info-tuple-list"
     });
 
-    let RestDataSource_Class_JspAttendanceReport = isc.TrDS.create({
-        ID: "classDS",
+    let RestDataSource_Class_JspTrainingFileNAReport = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "titleClass"},
@@ -146,10 +144,10 @@
         fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpUnit"
     });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
-    let ListGrid_JspAttendanceReport = isc.TrLG.create({
+    let ListGrid_JspTrainingFileNAReport = isc.TrLG.create({
         width: "100%",
         height: "100%",
-        dataSource : RestDataSource_JspAttendanceReport,
+        dataSource : RestDataSource_JspTrainingFileNAReport,
         cellHeight: 43,
         sortField: 0,
         showFilterEditor: false,
@@ -158,27 +156,27 @@
         showRecordComponentsByCell: true
     });
 
-    let IButton_JspAttendanceReport_FullExcel = isc.IButtonSave.create({
+    let IButton_JspTrainingFileNAReport_FullExcel = isc.IButtonSave.create({
         top: 260,
         title: "گزارش اکسل",
         width: 300,
         click: function () {
-            ExportToFile.downloadExcelFromClient(ListGrid_JspAttendanceReport, null, '', 'گزارش حضور و غياب کلاس های آموزشي')
+            ExportToFile.downloadExcelFromClient(ListGrid_JspTrainingFileNAReport, null, '', 'گزارش حضور و غياب کلاس های آموزشي')
         }
     });
 
-    let HLayOut_CriteriaForm_JspAttendanceReport_Details = isc.TrHLayoutButtons.create({
+    let HLayOut_CriteriaForm_JspTrainingFileNAReport_Details = isc.TrHLayoutButtons.create({
         showEdges: false,
         edgeImage: "",
         width: "100%",
         height: "100%",
         alignLayout: "center",
         members: [
-            ListGrid_JspAttendanceReport
+            ListGrid_JspTrainingFileNAReport
         ]
     });
 
-    let HLayOut_Confirm_JspAttendanceReport_AttendanceExcel = isc.TrHLayoutButtons.create({
+    let HLayOut_Confirm_JspTrainingFileNAReport_AttendanceExcel = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
@@ -187,11 +185,11 @@
         alignLayout: "center",
         padding: 10,
         members: [
-            IButton_JspAttendanceReport_FullExcel
+            IButton_JspTrainingFileNAReport_FullExcel
         ]
     });
 
-    let Window_JspAttendanceReport = isc.Window.create({
+    let Window_JspTrainingFileNAReport = isc.Window.create({
         placement: "fillScreen",
         title: "گزارش حضور و غیاب کلاسهای آموزشی",
         canDragReposition: true,
@@ -202,13 +200,13 @@
         items: [
             isc.TrVLayout.create({
                 members: [
-                    HLayOut_CriteriaForm_JspAttendanceReport_Details,HLayOut_Confirm_JspAttendanceReport_AttendanceExcel
+                    HLayOut_CriteriaForm_JspTrainingFileNAReport_Details,HLayOut_Confirm_JspTrainingFileNAReport_AttendanceExcel
                 ]
             })
         ]
     });
     //----------------------------------------------------Criteria Form------------------------------------------------
-    let DynamicForm_CriteriaForm_JspAttendanceReport = isc.DynamicForm.create({
+    let DynamicForm_CriteriaForm_JspTrainingFileNAReport = isc.DynamicForm.create({
         align: "right",
         titleWidth: 0,
         titleAlign: "center",
@@ -285,7 +283,7 @@
     });
 
     var initialLayoutStyle = "vertical";
-    let DynamicForm_SelectCourses_JspAttendanceReport = isc.DynamicForm.create({
+    let DynamicForm_SelectCourses_JspTrainingFileNAReport = isc.DynamicForm.create({
         align: "center",
         titleWidth: 0,
         titleAlign: "center",
@@ -305,28 +303,28 @@
                 comboBoxWidth: 500,
                 valueField: "code",
                 layoutStyle: initialLayoutStyle,
-                optionDataSource: RestDataSource_Course_JspAttendanceReport
+                optionDataSource: RestDataSource_Course_JspTrainingFileNAReport
             }
         ]
     });
-    DynamicForm_SelectCourses_JspAttendanceReport.getField("course.code").comboBox.setHint("دوره های مورد نظر را انتخاب کنید");
-    DynamicForm_SelectCourses_JspAttendanceReport.getField("course.code").comboBox.pickListFields =
+    DynamicForm_SelectCourses_JspTrainingFileNAReport.getField("course.code").comboBox.setHint("دوره های مورد نظر را انتخاب کنید");
+    DynamicForm_SelectCourses_JspTrainingFileNAReport.getField("course.code").comboBox.pickListFields =
         [{name: "titleFa", title: "نام دوره", width: "30%", filterOperator: "iContains"},
             {
                 name: "code", title: "کد دوره", width: "30%", filterOperator: "iContains"
             }];
-    DynamicForm_SelectCourses_JspAttendanceReport.getField("course.code").comboBox.filterFields = ["titleFa", "code"];
+    DynamicForm_SelectCourses_JspTrainingFileNAReport.getField("course.code").comboBox.filterFields = ["titleFa", "code"];
 
-    let IButton_ConfirmCourseSelections_JspAttendanceReport = isc.IButtonSave.create({
+    let IButton_ConfirmCourseSelections_JspTrainingFileNAReport = isc.IButtonSave.create({
         top: 260,
         title: "تائید",
         width: 300,
         click: function () {
             var criteriaDisplayValues = "";
-            var selectorDisplayValues = DynamicForm_SelectCourses_JspAttendanceReport.getItem("course.code").getValue();
-            if (DynamicForm_CriteriaForm_JspAttendanceReport.getField("courseCode").getValue() != undefined
-                && DynamicForm_CriteriaForm_JspAttendanceReport.getField("courseCode").getValue() != "") {
-                criteriaDisplayValues = DynamicForm_CriteriaForm_JspAttendanceReport.getField("courseCode").getValue();
+            var selectorDisplayValues = DynamicForm_SelectCourses_JspTrainingFileNAReport.getItem("course.code").getValue();
+            if (DynamicForm_CriteriaForm_JspTrainingFileNAReport.getField("courseCode").getValue() != undefined
+                && DynamicForm_CriteriaForm_JspTrainingFileNAReport.getField("courseCode").getValue() != "") {
+                criteriaDisplayValues = DynamicForm_CriteriaForm_JspTrainingFileNAReport.getField("courseCode").getValue();
                 var ALength = criteriaDisplayValues.length;
                 var lastChar = criteriaDisplayValues.charAt(ALength - 1);
                 if (lastChar != ";")
@@ -338,12 +336,12 @@
                 }
                 criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
             }
-            DynamicForm_CriteriaForm_JspAttendanceReport.getField("courseCode").setValue(criteriaDisplayValues);
-            Window_SelectCourses_JspAttendanceReport.close();
+            DynamicForm_CriteriaForm_JspTrainingFileNAReport.getField("courseCode").setValue(criteriaDisplayValues);
+            Window_SelectCourses_JspTrainingFileNAReport.close();
         }
     });
 
-    let Window_SelectCourses_JspAttendanceReport = isc.Window.create({
+    let Window_SelectCourses_JspTrainingFileNAReport = isc.Window.create({
         placement: "center",
         title: "انتخاب دوره ها",
         canDragReposition: true,
@@ -355,14 +353,14 @@
         items: [
             isc.TrVLayout.create({
                 members: [
-                    DynamicForm_SelectCourses_JspAttendanceReport,
-                    IButton_ConfirmCourseSelections_JspAttendanceReport
+                    DynamicForm_SelectCourses_JspTrainingFileNAReport,
+                    IButton_ConfirmCourseSelections_JspTrainingFileNAReport
                 ]
             })
         ]
     });
 
-    let DynamicForm_SelectClasses_JspAttendanceReport = isc.DynamicForm.create({
+    let DynamicForm_SelectClasses_JspTrainingFileNAReport = isc.DynamicForm.create({
         align: "center",
         titleWidth: 0,
         titleAlign: "center",
@@ -382,28 +380,28 @@
                 comboBoxWidth: 500,
                 valueField: "code",
                 layoutStyle: initialLayoutStyle,
-                optionDataSource: RestDataSource_Class_JspAttendanceReport
+                optionDataSource: RestDataSource_Class_JspTrainingFileNAReport
             }
         ]
     });
 
-    DynamicForm_SelectClasses_JspAttendanceReport.getField("class.code").comboBox.setHint("کلاسهای مورد نظر را انتخاب کنید");
-    DynamicForm_SelectClasses_JspAttendanceReport.getField("class.code").comboBox.pickListFields =
+    DynamicForm_SelectClasses_JspTrainingFileNAReport.getField("class.code").comboBox.setHint("کلاسهای مورد نظر را انتخاب کنید");
+    DynamicForm_SelectClasses_JspTrainingFileNAReport.getField("class.code").comboBox.pickListFields =
         [
             {name: "titleClass", title: "نام کلاس", width: "30%", filterOperator: "iContains"},
             {name: "code", title: "کد کلاس", width: "30%", filterOperator: "iContains"},
             {name: "course.titleFa", title: "نام دوره", width: "30%", filterOperator: "iContains"}];
-    DynamicForm_SelectClasses_JspAttendanceReport.getField("class.code").comboBox.filterFields = ["titleClass", "code", "course.titleFa"];
+    DynamicForm_SelectClasses_JspTrainingFileNAReport.getField("class.code").comboBox.filterFields = ["titleClass", "code", "course.titleFa"];
 
-    let IButton_ConfirmClassesSelections_JspAttendanceReport = isc.IButtonSave.create({
+    let IButton_ConfirmClassesSelections_JspTrainingFileNAReport = isc.IButtonSave.create({
         top: 260,
         title: "تائید",
         width: 300,
         click: function () {
             let criteriaDisplayValues = "";
-            let selectorDisplayValues = DynamicForm_SelectClasses_JspAttendanceReport.getItem("class.code").getValue();
-            if (DynamicForm_SelectClasses_JspAttendanceReport.getField("class.code").getValue() != undefined && DynamicForm_SelectClasses_JspAttendanceReport.getField("class.code").getValue() != "") {
-                criteriaDisplayValues = DynamicForm_SelectClasses_JspAttendanceReport.getField("class.code").getValue().join(",");
+            let selectorDisplayValues = DynamicForm_SelectClasses_JspTrainingFileNAReport.getItem("class.code").getValue();
+            if (DynamicForm_SelectClasses_JspTrainingFileNAReport.getField("class.code").getValue() != undefined && DynamicForm_SelectClasses_JspTrainingFileNAReport.getField("class.code").getValue() != "") {
+                criteriaDisplayValues = DynamicForm_SelectClasses_JspTrainingFileNAReport.getField("class.code").getValue().join(",");
                 let ALength = criteriaDisplayValues.length;
                 let lastChar = criteriaDisplayValues.charAt(ALength - 1);
                 if (lastChar != ";")
@@ -427,12 +425,12 @@
 
             criteriaDisplayValues = criteriaDisplayValues == "undefined" ? "" : criteriaDisplayValues;
 
-            DynamicForm_CriteriaForm_JspAttendanceReport.getField("classCode").setValue(criteriaDisplayValues);
-            Window_SelectClasses_JspAttendanceReport.close();
+            DynamicForm_CriteriaForm_JspTrainingFileNAReport.getField("classCode").setValue(criteriaDisplayValues);
+            Window_SelectClasses_JspTrainingFileNAReport.close();
         }
     });
 
-    let Window_SelectClasses_JspAttendanceReport = isc.Window.create({
+    let Window_SelectClasses_JspTrainingFileNAReport = isc.Window.create({
         placement: "center",
         title: "انتخاب کلاس ها",
         canDragReposition: true,
@@ -444,8 +442,8 @@
         items: [
             isc.TrVLayout.create({
                 members: [
-                    DynamicForm_SelectClasses_JspAttendanceReport,
-                    IButton_ConfirmClassesSelections_JspAttendanceReport,
+                    DynamicForm_SelectClasses_JspTrainingFileNAReport,
+                    IButton_ConfirmClassesSelections_JspTrainingFileNAReport,
                 ]
             })
         ]
@@ -520,7 +518,7 @@
 
             criteriaDisplayValues = criteriaDisplayValues == "undefined" ? "" : criteriaDisplayValues;
 
-            DynamicForm_CriteriaForm_JspAttendanceReport.getField("studentPersonnelNo").setValue(criteriaDisplayValues);
+            DynamicForm_CriteriaForm_JspTrainingFileNAReport.getField("studentPersonnelNo").setValue(criteriaDisplayValues);
             Window_SelectPeople_JspUnitReport.close();
         }
     });
@@ -544,22 +542,22 @@
         ]
     });
 
-    let IButton_JspAttendanceReport = isc.IButtonSave.create({
+    let IButton_JspTrainingFileNAReport = isc.IButtonSave.create({
         top: 260,
         title: "چاپ گزارش",
         width: 300,
         click: function () {
-            if(DynamicForm_CriteriaForm_JspAttendanceReport.getValuesAsAdvancedCriteria()==null) {
+            if(DynamicForm_CriteriaForm_JspTrainingFileNAReport.getValuesAsAdvancedCriteria()==null) {
                 createDialog("info","فیلتری انتخاب نشده است.");
                 return;
             }
 
-            DynamicForm_CriteriaForm_JspAttendanceReport.validate();
-            if (DynamicForm_CriteriaForm_JspAttendanceReport.hasErrors())
+            DynamicForm_CriteriaForm_JspTrainingFileNAReport.validate();
+            if (DynamicForm_CriteriaForm_JspTrainingFileNAReport.hasErrors())
                 return;
 
             else{
-                data_values = DynamicForm_CriteriaForm_JspAttendanceReport.getValuesAsAdvancedCriteria();
+                data_values = DynamicForm_CriteriaForm_JspTrainingFileNAReport.getValuesAsAdvancedCriteria();
                 for (let i = 0; i < data_values.criteria.size(); i++) {
                     if (data_values.criteria[i].fieldName == "classCode") {
                         let codesString = data_values.criteria[i].value;
@@ -653,15 +651,15 @@
                     }
                 }
 
-                ListGrid_JspAttendanceReport.invalidateCache();
-                ListGrid_JspAttendanceReport.fetchData(data_values);
-                Window_JspAttendanceReport.show();
+                ListGrid_JspTrainingFileNAReport.invalidateCache();
+                ListGrid_JspTrainingFileNAReport.fetchData(data_values);
+                Window_JspTrainingFileNAReport.show();
             }
         }
     });
 
     //----------------------------------- functions --------------------------------------------------------------------
-    let Window_CriteriaForm_JspAttendanceReport = isc.Window.create({
+    let Window_CriteriaForm_JspTrainingFileNAReport = isc.Window.create({
         placement: "fillScreen",
         title: "",
         showCloseButton: false,
@@ -671,21 +669,21 @@
         canDragResize: false,
         closeClick: false,
         minimize: false,
-        items: [DynamicForm_CriteriaForm_JspAttendanceReport]
+        items: [DynamicForm_CriteriaForm_JspTrainingFileNAReport]
     });
     //----------------------------------- layOut -----------------------------------------------------------------------
-    let HLayOut_CriteriaForm_JspAttendanceReport = isc.TrHLayoutButtons.create({
+    let HLayOut_CriteriaForm_JspTrainingFileNAReport = isc.TrHLayoutButtons.create({
         showEdges: false,
         edgeImage: "",
         width: "100%",
         height: "100%",
         alignLayout: "center",
         members: [
-            Window_CriteriaForm_JspAttendanceReport
+            Window_CriteriaForm_JspTrainingFileNAReport
         ]
     });
 
-    let HLayOut_Confirm_JspAttendanceReport = isc.TrHLayoutButtons.create({
+    let HLayOut_Confirm_JspTrainingFileNAReport = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
@@ -694,15 +692,15 @@
         alignLayout: "center",
         padding: 10,
         members: [
-            IButton_JspAttendanceReport
+            IButton_JspTrainingFileNAReport
         ]
     });
 
-    let VLayout_Body_JspAttendanceReport = isc.TrVLayout.create({
+    let VLayout_Body_JspTrainingFileNAReport = isc.TrVLayout.create({
         members: [
-            HLayOut_CriteriaForm_JspAttendanceReport,
-            HLayOut_Confirm_JspAttendanceReport
+            HLayOut_CriteriaForm_JspTrainingFileNAReport,
+            HLayOut_Confirm_JspTrainingFileNAReport
         ]
     });
     //----------------------------------------------------End-----------------------------------------------------------
-    Window_JspAttendanceReport.hide();
+    Window_JspTrainingFileNAReport.hide();

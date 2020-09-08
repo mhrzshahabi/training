@@ -187,7 +187,7 @@ function showWindowDiffNeedsAssessment(objectId, objectType, unchangeable = fals
                 ListGridTop_Attitude_JspDiffNeedsAssessment.enable();
             }
             if(typeof Window_NeedsAssessment_Edit !== "undefined"){
-                Window_NeedsAssessment_Edit.close();
+                Window_NeedsAssessment_Edit.close(0);
             }
         }
     },50)
