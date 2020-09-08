@@ -109,7 +109,10 @@
 
         var ToolStripButton_ExportToExcel = isc.ToolStripButtonExcel.create({
             click: function () {
-                ExportToFile.downloadExcelFromClient(ListGrid_alarm, ListGrid_Class_JspClass, '', "کلاس - هشدارها");
+                let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                if (!(classRecord === undefined || classRecord == null)) {
+                    ExportToFile.downloadExcelRestUrl(null, ListGrid_alarm, classAlarm + "list" + "/" + ListGrid_Class_JspClass.getSelectedRecord().id, 0, ListGrid_Class_JspClass, '', "کلاس - هشدارها", ListGrid_alarm.getCriteria(), null);
+                }
             }
         })
 

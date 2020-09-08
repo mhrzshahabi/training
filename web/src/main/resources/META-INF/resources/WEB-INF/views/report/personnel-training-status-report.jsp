@@ -250,7 +250,7 @@
         title: "گزارش اکسل",
         width: 300,
         click: function () {
-            ExportToFile.showDialog(null, ListGrid_JspPersonnelTrainingStatusPersonnel, "viewPersonnelTrainingStatusReport", 0, null, '',"گزارش وضعیت آموزشی افراد"  , ListGrid_JspPersonnelTrainingStatusPersonnel.data.criteria, null);
+            ExportToFile.downloadExcel(null, ListGrid_JspPersonnelTrainingStatusPersonnel, "viewPersonnelTrainingStatusReport", 0, null, '',"گزارش وضعیت آموزشی افراد"  , ListGrid_JspPersonnelTrainingStatusPersonnel.data.criteria, null);
         }
     });
 

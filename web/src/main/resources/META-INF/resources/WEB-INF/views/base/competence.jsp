@@ -59,7 +59,7 @@
                         criteria.criteria=[];
                     }
 
-                    ExportToFile.showDialog(null, CompetenceLG_competence , "Competence", 0, null, '',"لیست شایستگی ها - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, CompetenceLG_competence , "Competence", 0, null, '',"لیست شایستگی ها - آموزش"  , criteria, null);
                 }
             })
         ]

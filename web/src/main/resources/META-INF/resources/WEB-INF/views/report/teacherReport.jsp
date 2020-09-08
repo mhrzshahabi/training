@@ -157,7 +157,7 @@
                     isc.ToolStripButtonExcel.create({
                         margin:5,
                         click: function() {
-                            ExportToFile.showDialog(null, ListGrid_Result_JspTeacherReport, 'teacherReport', 0, null, '',  "گزارش اساتيد", ListGrid_Result_JspTeacherReport.data.criteria, null);
+                            ExportToFile.downloadExcel(null, ListGrid_Result_JspTeacherReport, 'teacherReport', 0, null, '',  "گزارش اساتيد", ListGrid_Result_JspTeacherReport.data.criteria, null);
                         }
                     }),
                     isc.ToolStripButton.create({
@@ -245,7 +245,7 @@
                                                         criteria.criteria.push(ListGrid_TrainingClasses_JspTeacherReport.getCriteria());
                                                     criteria.criteria.push({fieldName: "teacherId", operator: "equals", value: record.teacherId});
 
-                                                    ExportToFile.showDialog(null, ListGrid_TrainingClasses_JspTeacherReport, 'teacherTrainingClasses', 0, null, '',  "لیست کلاسهای مدرس " + record.firstName + " " + record.lastName, criteria, null);
+                                                    ExportToFile.downloadExcel(null, ListGrid_TrainingClasses_JspTeacherReport, 'teacherTrainingClasses', 0, null, '',  "لیست کلاسهای مدرس " + record.firstName + " " + record.lastName, criteria, null);
                                                 }
                                             }),
                                             ListGrid_TrainingClasses_JspTeacherReport
