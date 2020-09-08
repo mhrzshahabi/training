@@ -841,6 +841,7 @@
     const studentPortalUrl = rootUrl + "/student-portal";
     const studentClassReportUrl = rootUrl + "/student-class-report-view";
     const personnelCourseNAReportUrl = rootUrl + "/personnel-course-na-report";
+    const personnelNAFullReportUrl = rootUrl + "/training-file-na-report";
     const personnelCourseNotPassedReportUrl = rootUrl + "/personnel-course-not-passed-report";
     const classContractUrl = rootUrl + "/class-contract";
     const evaluationAnalysisUrl = rootUrl + "/evaluationAnalysis";
@@ -1939,6 +1940,14 @@
                                 title: "آمار دوره های نیازسنجی افراد",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/personnel-course-NA-report"/>");
+                                }
+                            },
+                            </sec:authorize>
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsNeedsAssessment_People')">
+                            {
+                                title: "گزارش مقایسه نیازسنجی با پرونده آموزشی",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/training-file-na-report"/>");
                                 }
                             },
                             </sec:authorize>
@@ -3135,7 +3144,7 @@
     <%--autoFitFieldText: "<spring:message code="auto.fit"/>",--%>
     <%--emptyMessage: "",--%>
     <%--loadingDataMessage: "<spring:message code="loading"/>"--%>
-    <%--createTab("<spring:message code="post"/>", "<spring:url value="/web/post"/>");--%>
+    <%--createTab("<spring:message code="post"/>", "<spring:url value="/web/training-post"/>");--%>
     <%--createTab("<spring:message code="class"/>", "<spring:url value="/tclass/show-form"/>");--%>
     <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="web/needsAssessment/"/>");--%>
 
