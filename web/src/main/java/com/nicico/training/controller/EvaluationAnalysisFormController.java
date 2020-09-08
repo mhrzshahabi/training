@@ -42,6 +42,11 @@ public class EvaluationAnalysisFormController {
         return "evaluationAnalysis/evaluationAnalysist_reaction";
     }
 
+    @RequestMapping("/evaluationAnalysis-learningTab")
+    public String learningTab() {
+        return "evaluationAnalysis/evaluationAnalysist_learning";
+    }
+
     @PostMapping("/printReactionEvaluation")
     public ResponseEntity<?> printReactionEvaluation(final HttpServletRequest request) {
         String token = request.getParameter("token");
@@ -135,7 +140,6 @@ public class EvaluationAnalysisFormController {
         return restTemplate.exchange(restApiUrl + "/api/evaluationAnalysis/printReactionEvaluation" , HttpMethod.POST, entity, byte[].class);
     }
 
-
     @PostMapping("/printBehavioralEvaluation")
     public ResponseEntity<?> printBehavioralEvaluation(final HttpServletRequest request) {
         String token = request.getParameter("token");
@@ -183,5 +187,24 @@ public class EvaluationAnalysisFormController {
                       @RequestParam(value = "opinion") String opinion
     ) throws Exception {
         evaluationAnalysisService.print(response, type, fileName, ClassId, Params, suggestions, opinion);
+    }
+
+    @PostMapping(value = "/evaluaationAnalysist-learningReport")
+    public ResponseEntity<?> printLearningEvaluation(final HttpServletRequest request) {
+        String token = (String) request.getParameter("token");
+        String recordId=(String)request.getParameter("recordId");
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        map.add("recordId",recordId);
+        map.add("Record",request.getParameter("record"));
+        map.add("minScoreLearning",(String)request.getParameter("minScore"));
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map,headers);
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
+        return restTemplate.exchange(restApiUrl + "/api/evaluationAnalysis/printLearningEvaluation", HttpMethod.POST, entity, byte[].class);
     }
 }

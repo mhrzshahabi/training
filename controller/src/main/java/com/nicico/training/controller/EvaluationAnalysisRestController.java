@@ -44,13 +44,7 @@ import java.util.*;
 public class EvaluationAnalysisRestController {
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
-    private final EvaluationAnalysistLearningService evaluationAnalysistLearningService;
-    private final ParameterService parameterService;
-    private final ITclassService tclassService;
-    private final ClassStudentDAO classStudentDAO;
-    private final TclassDAO tclassDAO;
     private final IEvaluationAnalysisService evaluationAnalysisService;
-    private DecimalFormat numberFormat = new DecimalFormat("#.00");
 
     @Loggable
     @PostMapping(value = {"/printReactionEvaluation"})
@@ -214,6 +208,60 @@ public class EvaluationAnalysisRestController {
         reportUtil.export("/reports/BehavioralEvaluationResult.jasper", params, jsonDataSource, response);
     }
 
+
+
+    @PostMapping(value = "/printLearningEvaluation")
+    public void printLearningEvaluation(HttpServletResponse response, @RequestParam(value = "recordId") String recordId,@RequestParam(value = "minScoreLearning") String minScoreLearning, @RequestParam(value = "Record") String Record) throws Exception {
+        Map<String, Object> params = new HashMap();
+        Map<String, String> map = new HashMap<>();
+        map.put("1", "ارزشی");
+        map.put("2", "نمره از صد");
+        map.put("3", "نمره از بیست");
+        map.put("4", "بدون نمره");
+        JSONObject json = new JSONObject(Record);
+        params.put("code", json.getString("tclassCode").toString());
+        params.put("studentCount", json.getString("tclassStudentsCount").toString());
+        params.put("endDate", json.getString("tclassEndDate").toString());
+        params.put("startDate", json.getString("tclassStartDate").toString());
+        params.put("teacher", json.getString("teacherFullName").toString());
+        params.put("courseCode", json.getString("courseCode").toString());
+        params.put("coursetitleFa", json.getString("courseTitleFa").toString());
+        if(json.has("classScoringMethod"))
+            params.put("scoringMethod", map.get(json.getString("classScoringMethod")));
+        else
+            params.put("scoringMethod", "");
+        params.put("minScoreLearning",minScoreLearning.toString());
+        String scoringMethod = "3";
+        if(json.has("classScoringMethod"))
+            scoringMethod = json.getString("classScoringMethod");
+        EvaluationDTO.EvaluationLearningResult result = evaluationAnalysisService.evaluationAnalysistLearningResultTemp(Long.parseLong(recordId),scoringMethod);
+
+        params.put("score", result.getPostTestMeanScore());
+        params.put("preTestScore", result.getPreTestMeanScore());
+        params.put("ScoreEvaluation",result.getFelgrade());
+        if(result.getFelpass() != null && result.getFelpass().equalsIgnoreCase("true"))
+        {
+            params.put("resault","تایید");
+        }
+        else
+        {
+            params.put("resault","عدم تایید");
+        }
+
+
+        params.put("ScoreEffective", result.getFeclgrade());
+        if(result.getFeclpass() != null && result.getFeclpass().equalsIgnoreCase("true"))
+            params.put("resultEffective", "تایید");
+        else
+            params.put("resultEffective", "عدم تایید");
+
+        List<?> list=evaluationAnalysisService.getStudentWithOutPreTest(Long.parseLong(recordId));
+        String data = "{" + "\"studentWithOutPreTest\": " + objectMapper.writeValueAsString(list) + "}";
+        params.put(ConstantVARs.REPORT_TYPE, "pdf");
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        reportUtil.export("/reports/evaluationAnalysistLearning.jasper", params, jsonDataSource, response);
+    }
+
     @GetMapping("/updateLearningEvaluation/{classId}/{scoringMethod}")
     public void updateLearningEvaluation(@PathVariable Long classId, @PathVariable String scoringMethod) {
         evaluationAnalysisService.updateLearningEvaluation(classId,scoringMethod);
@@ -232,252 +280,8 @@ public class EvaluationAnalysisRestController {
     @GetMapping("/evaluationAnalysistLearningResult/{classId}/{scoringMethod}")
     public ResponseEntity<EvaluationDTO.EvaluationLearningResult> evaluationAnalysistLearningResult(@PathVariable Long classId,
                                                                                                     @PathVariable String scoringMethod) {
-        Float[] result =  evaluationAnalysistLearningService.getStudents(classId,scoringMethod);
-        EvaluationDTO.EvaluationLearningResult resultSet = new EvaluationDTO.EvaluationLearningResult();
-
-        Double minScoreEL = 0.0;
-        Double minPasTestEL = 0.0;
-        Double minPreTestEL = 0.0;
-        Double FECLZ1 = 0.0;
-        Double FECLZ2 = 0.0;
-        Double minScoreFECR = 0.0;
-
-        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("FEL");
-        List<ParameterValueDTO.Info> parameterValues = parameters.getResponse().getData();
-        for (ParameterValueDTO.Info parameterValue : parameterValues) {
-            if (parameterValue.getCode().equalsIgnoreCase("minScoreEL"))
-                minScoreEL = Double.parseDouble(parameterValue.getValue());
-            else if (parameterValue.getCode().equalsIgnoreCase("minPasTestEL"))
-                minPasTestEL = Double.parseDouble(parameterValue.getValue());
-            else if (parameterValue.getCode().equalsIgnoreCase("minPreTestEL"))
-                minPreTestEL = Double.parseDouble(parameterValue.getValue());
-        }
-
-        parameters = parameterService.getByCode("FEC_L");
-        parameterValues = parameters.getResponse().getData();
-        for (ParameterValueDTO.Info parameterValue : parameterValues) {
-            if (parameterValue.getCode().equalsIgnoreCase("FECLZ1"))
-                FECLZ1 = Double.parseDouble(parameterValue.getValue());
-            else if (parameterValue.getCode().equalsIgnoreCase("FECLZ2"))
-                FECLZ2 = Double.parseDouble(parameterValue.getValue());
-        }
-
-        parameters = parameterService.getByCode("FEC_R");
-        parameterValues = parameters.getResponse().getData();
-        for (ParameterValueDTO.Info parameterValue : parameterValues) {
-            if (parameterValue.getCode().equalsIgnoreCase("minScoreFECR"))
-                minScoreFECR = Double.parseDouble(parameterValue.getValue());
-        }
-
-        float postTestMeanGrade = 0;
-        float preTestMeanGrade = 0;
-        float felGrade = 0;
-
-        if(result != null && result.length > 0)
-            postTestMeanGrade = result[0];
-        if(result != null && result.length > 1)
-            preTestMeanGrade = result[1];
-        if(result != null && result.length > 2)
-            felGrade = result[3];
-        Double ferGrade = tclassService.getJustFERGrade(classId);
-        Double feclGradeLong = null;
-        if(ferGrade != null)
-            feclGradeLong = (felGrade * FECLZ2 + ferGrade * FECLZ1)/100;
-        else
-            feclGradeLong = (felGrade * FECLZ2 + 0 * FECLZ1)/100;
-        Double feclGrade = Double.parseDouble(numberFormat.format(feclGradeLong).toString());
-
-        resultSet.setFelgrade(numberFormat.format(felGrade).toString());
-        if(felGrade >= minScoreEL)
-            resultSet.setFelpass("true");
-        else
-            resultSet.setFelpass("false");
-        resultSet.setLimit(minScoreEL + "");
-        resultSet.setPostTestMeanScore(numberFormat.format(postTestMeanGrade).toString());
-        resultSet.setPreTestMeanScore(numberFormat.format(preTestMeanGrade).toString());
-        resultSet.setFeclgrade(feclGrade.floatValue() + "");
-        if(feclGrade >= minScoreFECR)
-            resultSet.setFeclpass("true");
-        else
-            resultSet.setFeclpass("false");
-
-        Integer classHasPreTest = tclassDAO.checkIfClassHasPreTest(classId);
-        if(classHasPreTest != null && classHasPreTest.equals(new Integer(1)))
-            resultSet.setHavePreTest("true");
-        else
-            resultSet.setHavePreTest("false");
-
-        resultSet.setHavePostTest("false");
-
-        resultSet.setStudentCount(result[2]);
-
-        List<ClassStudent> classStudents = classStudentDAO.findByTclassId(classId);
-        HashMap<String, Integer> map = new HashMap<String, Integer>();
-        map.put("0", 0);
-        map.put("1001", 40);
-        map.put("1002", 60);
-        map.put("1003", 80);
-        map.put("1004", 100);
-
-        int studentCount = 0;
-        List<Double> preScores = new ArrayList<>();
-        List<Double> postScores = new ArrayList<>();
-
-        for (ClassStudent classStudent : classStudents) {
-            if(classStudent.getScore() != null || classStudent.getValence() != null)
-                resultSet.setHavePostTest("true");
-
-            if(scoringMethod.equalsIgnoreCase("1") && classStudent.getValence()!=null) {
-                if(classStudent.getPreTestScore() != null)
-                    preScores.add(Double.valueOf(classStudent.getPreTestScore()));
-                else
-                    preScores.add(0.0);
-                postScores.add(Double.valueOf(map.get(classStudent.getValence())));
-                studentCount++;
-            }
-            else if(scoringMethod.equalsIgnoreCase("3") && classStudent.getScore()!=null) {
-                postScores.add(Double.valueOf(classStudent.getScore()) * 5);
-                if(classStudent.getPreTestScore() != null)
-                    preScores.add(Double.valueOf(classStudent.getPreTestScore()));
-                else preScores.add(0.0);
-                studentCount++;
-            }
-            else if(classStudent.getScore() != null) {
-                postScores.add(Double.valueOf(classStudent.getScore()));
-                if(classStudent.getPreTestScore() != null)
-                    preScores.add(Double.valueOf(classStudent.getPreTestScore()));
-                else  preScores.add(0.0);
-                studentCount++;
-            }
-        }
-
-        Map<String, Boolean> tStudentResult = new HashMap<String, Boolean>();
-        if(studentCount != 0)
-            tStudentResult = calculateTStudentResult(preScores, postScores,studentCount);
-        if(tStudentResult.containsKey("hasDiffer") && tStudentResult.get("hasDiffer")){
-            if(tStudentResult.get("positiveDiffer"))
-                resultSet.setTstudent("بر اساس توزیع تی استیودنت  با ضریب اطمینان 95 درصد فراگیران بعد از شرکت در کلاس پیشرفت چشمگیر مثبتی داشته اند.");
-            else
-                resultSet.setTstudent("بر اساس توزیع تی استیودنت با ضریب اطمینان 95 درصد فراگیران بعد از شرکت در کلاس پیشرفت  چشمگیر منفی داشته اند.");
-        }
-        else
-            resultSet.setTstudent("بر اساس توزیع تی استیودنت با ضریب اطمینان 95 درصد فراگیران بعد از شرکت در کلاس پیشرفت چشمگیری نداشته اند.");
-
+        EvaluationDTO.EvaluationLearningResult resultSet = evaluationAnalysisService.evaluationAnalysistLearningResultTemp(classId,scoringMethod);
         return new ResponseEntity<>(resultSet,HttpStatus.OK);
     }
-
-    //------------------------------------------------TStudent----------------------------------------------------------
-    //Confidence Level = 95%
-    public Map<String, Boolean> calculateTStudentResult(List<Double> preScores, List<Double> postScores,int studentCount){
-        HashMap<Integer, Double> tStudentTable = new HashMap<>();
-        tStudentTable.put(1,12.71);
-        tStudentTable.put(2,4.303);
-        tStudentTable.put(3,3.182);
-        tStudentTable.put(4,2.776);
-        tStudentTable.put(5,2.571);
-        tStudentTable.put(6,2.447);
-        tStudentTable.put(7,2.365);
-        tStudentTable.put(8,2.306);
-        tStudentTable.put(9,2.262);
-        tStudentTable.put(10,2.228);
-        tStudentTable.put(11,2.201);
-        tStudentTable.put(12,2.179);
-        tStudentTable.put(13,2.160);
-        tStudentTable.put(14,2.145);
-        tStudentTable.put(15,2.131);
-        tStudentTable.put(16,2.120);
-        tStudentTable.put(17,2.110);
-        tStudentTable.put(18,2.101);
-        tStudentTable.put(19,2.093);
-        tStudentTable.put(20,2.086);
-        tStudentTable.put(21,2.080);
-        tStudentTable.put(22,2.074);
-        tStudentTable.put(23,2.069);
-        tStudentTable.put(24,2.064);
-        tStudentTable.put(25,2.060);
-        tStudentTable.put(26,2.056);
-        tStudentTable.put(27,2.052);
-        tStudentTable.put(28,2.048);
-        tStudentTable.put(29,2.045);
-        tStudentTable.put(30,2.042);
-        tStudentTable.put(40,2.021);
-        tStudentTable.put(60,2.000);
-        tStudentTable.put(80,1.990);
-        tStudentTable.put(100,1.984);
-
-        Double preScores_mean = getMean(preScores,studentCount);
-        Double postScores_mean = getMean(postScores, studentCount);
-
-        Double preScores_deviation = getDeviation(preScores, studentCount,preScores_mean);
-        Double postScores_deviation = getDeviation(postScores, studentCount, postScores_mean);
-
-        Double difference_sum = getDifference(preScores,postScores,studentCount);
-        Double difference_average = difference_sum/studentCount;
-        Double difference_deviation = getDifferenceDeviation(preScores,postScores,studentCount,difference_sum);
-        Double t = difference_sum / difference_deviation;
-        Double t_table=0.0;
-        if(studentCount<=30)
-            t_table = tStudentTable.get(studentCount);
-        else if(studentCount>30 && studentCount<=40)
-            t_table = tStudentTable.get(40);
-        else if(studentCount>40 && studentCount<=60)
-            t_table = tStudentTable.get(60);
-        else if(studentCount>60 && studentCount<=80)
-            t_table = tStudentTable.get(80);
-        else if(studentCount>80 && studentCount<=100)
-            t_table = tStudentTable.get(100);
-        Boolean hasDiffer = false;
-        if(Math.abs(t) < t_table)
-            hasDiffer = false;
-        else if(Math.abs(t) >= t_table)
-            hasDiffer = true;
-        Boolean positiveDiffer = false;
-        if(t<0)
-            positiveDiffer = true;
-        else if(t>0)
-            positiveDiffer = false;
-
-        Map<String, Boolean> result = new HashMap<>();
-        result.put("positiveDiffer",positiveDiffer);
-        result.put("hasDiffer",hasDiffer);
-        return  result;
-    }
-
-    public Double getMean(List<Double> list, int n){
-        Double sum = 0.0;
-        for (Double aDouble : list) {
-            sum += aDouble;
-        }
-        return  sum/n;
-    }
-
-    public Double getDeviation(List<Double> list, int n,Double average){
-        Double dv = 0.0;
-        for (Double aDouble : list) {
-            double dm = aDouble - average;
-            dv += dm * dm;
-        }
-        return Math.sqrt(dv / n);
-    }
-
-    public Double getDifference(List<Double> list1, List<Double> list2, int n){
-        Double sum = 0.0;
-        for(int i=0;i<n;i++){
-            sum += list1.get(i) - list2.get(i);
-
-        }
-        return sum;
-    }
-
-    public Double getDifferenceDeviation(List<Double> list1, List<Double> list2, int n, Double differenceSum){
-        Double t1 = 0.0;
-        for (int i=0;i<n;i++){
-            Double dm = list1.get(i) - list2.get(i);
-            t1 += dm * dm;
-        }
-        return Math.sqrt( ((n*t1) - (differenceSum*differenceSum))/(n-1) );
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
 
     }

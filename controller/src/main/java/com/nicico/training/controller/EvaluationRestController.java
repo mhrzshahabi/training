@@ -233,27 +233,6 @@ public class EvaluationRestController {
         return new ResponseEntity<>(evaluationService.search(request), HttpStatus.OK);
     }
 
-  /*  private void studentEvaluationRegister(EvaluationDTO.Info evaluation){
-        if(evaluation.getQuestionnaireTypeId().equals(139L)){
-            Integer x;
-            if(evaluation.getEvaluationFull()) {
-                x = 2;
-            }
-            else {
-                x = 3;
-            }
-            ClassStudent classStudent = classStudentService.getClassStudent(evaluation.getEvaluatorId());
-            if (evaluation.getEvaluationLevelId() == 154L) {
-                classStudentService.update(classStudent.getId(), classStudent.setEvaluationStatusReaction(x), ClassStudentDTO.ClassStudentInfo.class);
-            } else if (evaluation.getEvaluationLevelId() == 155L) {
-                classStudentService.update(classStudent.getId(), classStudent.setEvaluationStatusLearning(x), ClassStudentDTO.ClassStudentInfo.class);
-            } else if (evaluation.getEvaluationLevelId() == 156L) {
-                classStudentService.update(classStudent.getId(), classStudent.setEvaluationStatusBehavior(x), ClassStudentDTO.ClassStudentInfo.class);
-            } else if (evaluation.getEvaluationLevelId() == 157L) {
-                classStudentService.update(classStudent.getId(), classStudent.setEvaluationStatusResults(x), ClassStudentDTO.ClassStudentInfo.class);
-            }
-        }
-    }*/
 
     @Loggable
     @GetMapping(value = "/class-spec-list")
@@ -285,16 +264,6 @@ public class EvaluationRestController {
                 .setCount(endRow - startRow);
 
         SearchDTO.SearchRs<TclassDTO.Info> response = tclassService.search(request);
-
-        //*********************************
-        //******old code for alarms********
-////        for (TclassDTO.Info tclassDTO : response.getList()) {
-////            if (classAlarmService.hasAlarm(tclassDTO.getId(), httpResponse).size() > 0)
-////                tclassDTO.setHasWarning("alarm");
-////           else
-////              tclassDTO.setHasWarning("");
-////        }
-        //*********************************
 
         final TclassDTO.SpecRs specResponse = new TclassDTO.SpecRs();
         final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();

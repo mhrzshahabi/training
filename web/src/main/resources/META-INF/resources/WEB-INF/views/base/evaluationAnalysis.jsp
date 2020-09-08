@@ -228,7 +228,7 @@
                 ID: "TabPane_Learning_Evaluation_Analysis",
                 enabled: false,
                 title: "<spring:message code="evaluation.learning"/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluationAnalysist-learning/evaluationAnalysis-learningTab"})
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluationAnalysis/evaluationAnalysis-learningTab"})
             },
             {
                 ID: "TabPane_Behavioral_Evaluation_Analysis",

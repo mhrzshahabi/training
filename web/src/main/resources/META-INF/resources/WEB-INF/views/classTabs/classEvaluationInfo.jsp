@@ -21,15 +21,10 @@
         ]
     });
 
-    // DynamicForm_JspClassEvaluationInfo.getItem('teacherGradeToClass').setCellStyle('evaluation-code-label');
     DynamicForm_JspClassEvaluationInfo.getItem('teacherGradeToClass').titleStyle = 'evaluation-code-title';
-    // DynamicForm_JspClassEvaluationInfo.getItem('trainingGradeToTeacher').setCellStyle('evaluation-code-label');
     DynamicForm_JspClassEvaluationInfo.getItem('trainingGradeToTeacher').titleStyle = 'evaluation-code-title';
-    // DynamicForm_JspClassEvaluationInfo.getItem('studentsGradeToClass').setCellStyle('evaluation-code-label');
     DynamicForm_JspClassEvaluationInfo.getItem('studentsGradeToClass').titleStyle = 'evaluation-code-title';
-    // DynamicForm_JspClassEvaluationInfo.getItem('teacherTotalGrade').setCellStyle('evaluation-code-label');
     DynamicForm_JspClassEvaluationInfo.getItem('teacherTotalGrade').titleStyle = 'evaluation-code-title';
-
 
     var VLayout_Body_JspClassEvaluationInfo = isc.TrVLayout.create({
         width: "100%",
@@ -87,7 +82,8 @@
                             let val4 = result.trainingGradeToTeacher + " * " + result.z1 + "% + " + result.studentsGradeToTeacher + " * " + result.z2 + "% = " + result.fetgrade;
                             DynamicForm_JspClassEvaluationInfo.setValue("teacherTotalGrade", getFormulaMessage(val4 , "2", "black", "b"));
                     }
-                    }));
                     Wait_JspClassEvaluationInfo.close();
+                    }
+                    ));
                 }
         };

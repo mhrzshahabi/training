@@ -250,6 +250,7 @@ public class TclassDTO {
         private String endDate;
         private Double evaluationGrade;
         private CourseDTO.CourseClassReport course;
+        private String code;
     }
 
     @Getter

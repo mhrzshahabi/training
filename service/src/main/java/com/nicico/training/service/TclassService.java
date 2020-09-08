@@ -46,10 +46,8 @@ public class TclassService implements ITclassService {
     private final TrainingPlaceDAO trainingPlaceDAO;
     private final AttachmentService attachmentService;
     private final IEvaluationService evaluationService;
-    private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
     private final ParameterService parameterService;
     private final ParameterValueService parameterValueService;
-    private final EvaluationAnalysistLearningService evaluationAnalysistLearningService;
     private final CourseDAO courseDAO;
     private final MessageSource messageSource;
     private final TargetSocietyService societyService;
@@ -143,9 +141,7 @@ public class TclassService implements ITclassService {
         return null;
     }
 
-
     @Transactional
-//    @Override
     public TclassDTO.Info update(Long id, TclassDTO.Update request, List<Long> cancelClassesIds) {
         final Optional<Tclass> cById = tclassDAO.findById(id);
         final Tclass tclass = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
@@ -220,7 +216,6 @@ public class TclassService implements ITclassService {
     }
 
     @Transactional
-//    @Override
     public void delete(Long id, HttpServletResponse resp) throws IOException {
         Optional<Tclass> byId = tclassDAO.findById(id);
         Tclass tclass = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
@@ -250,7 +245,6 @@ public class TclassService implements ITclassService {
     }
 
     @Transactional
-//    @Override
     public SearchDTO.SearchRs<TclassDTO.Info> mainSearch(SearchDTO.SearchRq request) {
         return SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.Info.class));
     }
@@ -324,7 +318,6 @@ public class TclassService implements ITclassService {
         return SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass, TclassDTO.Info.class));
     }
 
-    // ------------------------------
     private List<TargetSociety> updateTargetSocieties(List<Object> societies, Long typeId, Tclass tclass) {
         List<TargetSociety> targets = tclass.getTargetSocietyList();
         String type = parameterValueService.get(typeId).getCode();
@@ -401,16 +394,13 @@ public class TclassService implements ITclassService {
         return studentInfoSet;
     }
 
-
     @Transactional
-//    @Override
     public void delete(TclassDTO.Delete request, HttpServletResponse resp) throws IOException {
         final List<Tclass> gAllById = tclassDAO.findAllById(request.getIds());
         for (Tclass tclass : gAllById) {
             delete(tclass.getId(), resp);
         }
     }
-
 
     @Transactional(readOnly = true)
     @Override
@@ -427,7 +417,6 @@ public class TclassService implements ITclassService {
         }
         return sum;
     }
-
 
     @Transactional
     @Override
@@ -462,7 +451,6 @@ public class TclassService implements ITclassService {
         criteriaRq.setCriteria(criteriaRqList);
         return criteriaRq;
     }
-
 
     public boolean compareTodayDate(Long id) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -1107,7 +1095,9 @@ public class TclassService implements ITclassService {
             Tclass tclass = getTClass(aClass.getId());
             Set<ClassStudent> classStudents = tclass.getClassStudents();
             Map<String, Double> reactionEvaluationResult = calculateStudentsReactionEvaluationResult(classStudents);
-            double studentsGradeToTeacher = (Double) reactionEvaluationResult.get("studentsGradeToTeacher");
+            Double studentsGradeToTeacher = null;
+            if(reactionEvaluationResult.get("studentsGradeToTeacher") != null)
+                studentsGradeToTeacher = (Double) reactionEvaluationResult.get("studentsGradeToTeacher");
             aClass.setEvaluationGrade(studentsGradeToTeacher);
         }
         return response;
@@ -1208,4 +1198,5 @@ public class TclassService implements ITclassService {
     public Boolean hasSessions(Long id){
         return classSessionDAO.existsByClassId(id);
     }
+
 }
