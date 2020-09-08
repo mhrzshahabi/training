@@ -48,8 +48,8 @@ public class TeacherDTO {
         private SubcategoryDTO.SubCategoryInfoTuple majorSubCategory;
         private Integer version;
 
-        public String getFullName(){
-            return personality.getFirstNameFa()+" "+personality.getLastNameFa();
+        public String getFullName() {
+            return personality.getFirstNameFa() + " " + personality.getLastNameFa();
         }
     }
 
@@ -58,16 +58,31 @@ public class TeacherDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("TeacherInformation")
-    public static class TeacherInformation{
+    public static class TeacherInformation {
+
         private PersonalInfoDTO.contractInfo personality;
         private String personnelCode;
+
+        /*public String getFullName() {
+
+            return personality.getFirstNameFa() + " " + personality.getLastNameFa();
+        }
+
+        public String getAddress() {
+
+            if (personality.getContactInfo().getHomeAddress().getState().getName() != null) {
+                return personality.getContactInfo().getHomeAddress().getState().getName() + "-" + personality.getContactInfo().getHomeAddress().getCity().getName() + "-" + personality.getContactInfo().getHomeAddress().getRestAddr() + "- کد پستی: " + personality.getContactInfo().getHomeAddress().getPostalCode();
+            } else {
+                return "";
+            }
+        }*/
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("TeacherGrid")
-    public static class Grid{
+    public static class Grid {
         private Long id;
         private String teacherCode;
         private String personnelCode;
@@ -79,8 +94,8 @@ public class TeacherDTO {
         private Set<SubcategoryDTO.Info> subCategories;
         private Integer version;
 
-        public String getFullName(){
-            return personality.getFirstNameFa()+" "+personality.getLastNameFa();
+        public String getFullName() {
+            return personality.getFirstNameFa() + " " + personality.getLastNameFa();
         }
 
         public List<Long> getCategories() {
@@ -101,7 +116,7 @@ public class TeacherDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("TeacherReport")
-    public static class Report{
+    public static class Report {
         private Long id;
         private String teacherCode;
         private String personnelCode;
@@ -255,6 +270,7 @@ public class TeacherDTO {
         private Long id;
         private PersonalInfoDTO personality;
         private String grade;
+
         public String getFullNameFa() {
             return String.format("%s %s", personality.getFirstNameFa(), personality.getLastNameFa());
         }
@@ -266,6 +282,7 @@ public class TeacherDTO {
     public static class TeacherInfoTuple {
         private Long id;
         private PersonalInfoDTO.PersonalInfoCustom personality;
+
         public String getFullNameFa() {
             return String.format("%s %s", personality.getFirstNameFa(), personality.getLastNameFa());
         }

@@ -47,10 +47,10 @@ let classRecord;
         autoFetchData: true,
         fields: [
 
-            {name: "teacher.personality.firstNameFa", title: "<spring:message code="teacher"/>", align: "center", filterOperator: "iContains",
-                formatCellValue: function (value, record) {
+            {name: "teacher.fullName", title: "<spring:message code="teacher"/>", align: "center", filterOperator: "iContains",
+                /*formatCellValue: function (value, record) {
                                 return record.teacher.personality.firstNameFa+" "+record.teacher.personality.lastNameFa
-                }
+                }*/
             },
             {name: "teacher.personality.contactInfo.mobile", title: "<spring:message code="mobile"/>", align: "center", filterOperator: "iContains",
                 filterEditorProperties: {
@@ -62,10 +62,10 @@ let classRecord;
                 keyPressFilter: "[0-9]"
                 }
             },
-            {name: "teacher.personality.contactInfo.homeAddress.state.name", title: "<spring:message code="address"/>", align: "center", filterOperator: "iContains",
-                formatCellValue: function (value, record) {
+            {name: "teacher.address", title: "<spring:message code="address"/>", align: "center", filterOperator: "iContains",
+/*                formatCellValue: function (value, record) {
                    return(value != null ? value +"-"+ record.teacher.personality.contactInfo.homeAddress.city.name+"-"+ record.teacher.personality.contactInfo.homeAddress.restAddr +"-"+ "کد پستی :"+record.teacher.personality.contactInfo.homeAddress.postalCode : "")
-                }
+                }*/
             }
               ],
 
