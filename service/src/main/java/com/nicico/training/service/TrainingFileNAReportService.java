@@ -6,36 +6,43 @@
 
 package com.nicico.training.service;
 
-import com.google.gson.Gson;
+import com.nicico.copper.common.domain.criteria.SearchUtil;
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.TrainingFileNAReportDTO;
-import com.nicico.training.iservice.IExportToFileService;
 import com.nicico.training.iservice.ITrainingFileNAReportService;
+import com.nicico.training.repository.TrainingFileNAReportDAO;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.ss.util.CellReference;
-import org.apache.poi.xssf.usermodel.*;
-import org.modelmapper.TypeToken;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
-import java.lang.reflect.Type;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
 public class TrainingFileNAReportService implements ITrainingFileNAReportService {
 
+    private final TrainingFileNAReportDAO trainingFileNAReportDAO;
+
+    @Transactional(readOnly = true)
+    @Override
+    public <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Function converter) {
+        return SearchUtil.search(trainingFileNAReportDAO, request, converter);
+    }
+
     @Override
     public void generateReport(HttpServletResponse response, List<String> personnelNos) throws Exception {
 
-        TrainingFileNAReportDTO.GenerateReport generateReport=new TrainingFileNAReportDTO.GenerateReport();
+        TrainingFileNAReportDTO.GenerateReport generateReport = new TrainingFileNAReportDTO.GenerateReport();
 /*        List<TrainingFileNAReportDTO.Row> headers=new ArrayList<>();
         headers.add(new TrainingFileNAReportDTO.Row());*/
 

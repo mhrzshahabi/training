@@ -22,6 +22,53 @@ public class TrainingFileNAReportDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("Info")
+    public static class Info {
+
+        private Long id;
+
+        private Long priorityId;
+        private Boolean isInNA;
+
+        private long personnelId;
+        private String personnelPersonnelNo;
+        private String personnelFirstName;
+        private String personnelLastName;
+        private String personnelFullName;
+        private String personnelNationalCode;
+        private String personnelPostTitle;
+        private String personnelPostCode;
+        private String personnelCompanyName;
+        private String personnelPersonnelNo2;
+        private String personnelCcpArea;
+        private String personnelCcpAssistant;
+        private String personnelCcpAffairs;
+        private String personnelCcpUnit;
+
+        private Long courseId;
+        private String courseCode;
+        private String courseTitleFa;
+        private Float theoryDuration;
+        private Integer technicalType;
+
+        private Long skillId;
+        private String skillCode;
+        private String skillTitleFa;
+
+        private Long classId;
+        private String classCode;
+        private String classStartDate;
+        private String classEndDate;
+        private String location;
+
+        private Float score;
+        private Long scoreStateId;
+
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("GenerateReport")
     public static class GenerateReport {
 
