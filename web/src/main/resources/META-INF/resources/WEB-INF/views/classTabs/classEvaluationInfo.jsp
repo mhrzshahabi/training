@@ -43,15 +43,10 @@
         ]
     });
 
-    // DynamicForm_JspClassEvaluationInfo.getItem('teacherGradeToClass').setCellStyle('evaluation-code-label');
     DynamicForm_JspClassEvaluationInfo.getItem('teacherGradeToClass').titleStyle = 'evaluation-code-title';
-    // DynamicForm_JspClassEvaluationInfo.getItem('trainingGradeToTeacher').setCellStyle('evaluation-code-label');
     DynamicForm_JspClassEvaluationInfo.getItem('trainingGradeToTeacher').titleStyle = 'evaluation-code-title';
-    // DynamicForm_JspClassEvaluationInfo.getItem('studentsGradeToClass').setCellStyle('evaluation-code-label');
     DynamicForm_JspClassEvaluationInfo.getItem('studentsGradeToClass').titleStyle = 'evaluation-code-title';
-    // DynamicForm_JspClassEvaluationInfo.getItem('teacherTotalGrade').setCellStyle('evaluation-code-label');
     DynamicForm_JspClassEvaluationInfo.getItem('teacherTotalGrade').titleStyle = 'evaluation-code-title';
-
 
     var VLayout_Body_JspClassEvaluationInfo = isc.TrVLayout.create({
         width: "100%",
@@ -81,26 +76,36 @@
                 null,
                 (resp) => {
                     let result = JSON.parse(resp.httpResponseText);
-                    if(result.teacherGradeToClass == 0)
+
+                    if(result.teacherGradeToClass == undefined)
                         DynamicForm_JspClassEvaluationInfo.setValue("teacherGradeToClass", val2);
                     else
                         DynamicForm_JspClassEvaluationInfo.setValue("teacherGradeToClass", getFormulaMessage(result.teacherGradeToClass , "2", "black", "b"));
-                    if(result.trainingGradeToTeacher == 0)
+                    if(result.trainingGradeToTeacher == undefined)
                         DynamicForm_JspClassEvaluationInfo.setValue("trainingGradeToTeacher", val2);
                     else
                         DynamicForm_JspClassEvaluationInfo.setValue("trainingGradeToTeacher", getFormulaMessage(result.trainingGradeToTeacher , "2", "black", "b"));
-                    if(result.fergrade == 0)
+                    if(result.fergrade == undefined)
                         DynamicForm_JspClassEvaluationInfo.setValue("studentsGradeToClass", val2);
                     else
                         DynamicForm_JspClassEvaluationInfo.setValue("studentsGradeToClass", getFormulaMessage(result.fergrade , "2", "black", "b"));
-                    if(result.trainingGradeToTeacher == 0 && result.studentsGradeToTeacher == 0)
+
+                    if(result.trainingGradeToTeacher == undefined && result.studentsGradeToTeacher == undefined)
                             DynamicForm_JspClassEvaluationInfo.setValue("teacherTotalGrade", val2);
+                    else if(result.trainingGradeToTeacher == undefined){
+                            let val3 = "0 " + " * " + result.z1 + "% + " + result.studentsGradeToTeacher + " * " + result.z2 + "% = " + result.fetgrade;
+                            DynamicForm_JspClassEvaluationInfo.setValue("teacherTotalGrade", getFormulaMessage(val3 , "2", "black", "b"));
+                        }
+                    else if(result.studentsGradeToTeacher == undefined){
+                            let val4 = result.trainingGradeToTeacher + " * " + result.z1 + "% + " + "0 " + " * " + result.z2 + "% = " + result.fetgrade;
+                            DynamicForm_JspClassEvaluationInfo.setValue("teacherTotalGrade", getFormulaMessage(val4 , "2", "black", "b"));
+                        }
                     else{
-                        let val = result.trainingGradeToTeacher + " * " + result.z1 + "% + " + result.studentsGradeToTeacher + " * " + result.z2 + "% = " + result.fetgrade;
-                        DynamicForm_JspClassEvaluationInfo.setValue("teacherTotalGrade", getFormulaMessage(val , "2", "black", "b"));
+                            let val4 = result.trainingGradeToTeacher + " * " + result.z1 + "% + " + result.studentsGradeToTeacher + " * " + result.z2 + "% = " + result.fetgrade;
+                            DynamicForm_JspClassEvaluationInfo.setValue("teacherTotalGrade", getFormulaMessage(val4 , "2", "black", "b"));
                     }
                     Wait_JspClassEvaluationInfo.close();
+                    }
+                    ));
                 }
-            ));
-        }
-    }
+        };

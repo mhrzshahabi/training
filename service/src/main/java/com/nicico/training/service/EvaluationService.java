@@ -6,18 +6,14 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationService;
-import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.collections.ArrayStack;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import javax.transaction.TransactionScoped;
 import java.util.*;
 
 @Service
@@ -127,14 +123,6 @@ public class EvaluationService implements IEvaluationService {
     }
 
     private EvaluationDTO.Info save(Evaluation evaluation) {
-//        if(evaluation.getReturnDate() == null){
-//            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-//            Date date = new Date();
-//            Calendar calendar = Calendar.getInstance();
-//            calendar.setTime(date);
-//            calendar.add(Calendar.MONTH, 1);
-//            evaluation.setReturnDate(DateUtil.convertMiToKh(formatter.format(calendar.getTime())));
-//        }
         final Evaluation saved = evaluationDAO.saveAndFlush(evaluation);
         Long evaluationId = saved.getId();
         if(evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(139L)) {
@@ -555,55 +543,6 @@ public class EvaluationService implements IEvaluationService {
         return evaluationAnswers;
     }
 
-    public String getGoalQuestion(Long id) {
-        final Optional<Goal> gById = goalDAO.findById(id);
-        final Goal goal = gById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.GoalNotFound));
-
-        String question = "";
-
-        if (goal.getTitleFa().trim().indexOf("همایش")>-1||goal.getTitleFa().trim().indexOf("کنگره")>-1||goal.getTitleFa().trim().indexOf("هم اندیشی")>-1||goal.getTitleFa().trim().indexOf("کارگاه")>-1||goal.getTitleFa().trim().indexOf("سمینار")>-1) {
-            question = "میزان تسلط بر مفاهیم " + goal.getTitleFa();
-        } else if (goal.getTitleFa().trim().indexOf("مناقصات")>-1) {
-            question = "میزان آشنایی با " +  goal.getTitleFa();
-        }else{
-            question = "میزان آشنایی با " + goal.getTitleFa();
-        }
-
-        return question;
-
-    }
-
-    public String getSkillQuestion(Long id) {
-        final Optional<Skill> gById = skillDAO.findById(id);
-        final Skill skill = gById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        String skillLevel = skill.getSkillLevel().getTitleFa();
-        String question = "";
-
-
-        switch(skillLevel){
-            case "آشنایی":
-                skillLevel+=" با";
-                break;
-            case "توانایی":
-                //skillLevel+=" بر";
-                break;
-            case "تسلط":
-                skillLevel+=" بر";
-                break;
-        }
-        question=skill.getTitleFa().trim();
-        question=question.replace("آشنائی","آشنایی");
-
-        if (!question.startsWith(skillLevel)) {
-            question = "میزان " + skillLevel + " " + question;
-        } else {
-            question = "میزان " + question;
-        }
-
-        return question;
-
-    }
-
     @Override
     public double getEvaluationFormGrade(Evaluation evaluation){
         double result = 0.0;
@@ -660,27 +599,6 @@ public class EvaluationService implements IEvaluationService {
         }
 
         return res;
-    }
-
-    public double getBehavioralEvaluationFormGrade(Evaluation evaluation){
-        double result = 0.0;
-        int index = 0;
-
-        List<EvaluationAnswerDTO.EvaluationAnswerFullData> res =  getEvaluationFormAnswerDetail(evaluation);
-
-        for (EvaluationAnswerDTO.EvaluationAnswerFullData re : res) {
-            if(re.getAnswerId() != null) {
-                if(re.getWeight() != null)
-                    index += re.getWeight();
-                else
-                    index ++;
-                result += (Double.parseDouble(parameterValueDAO.findFirstById(re.getAnswerId()).getValue()))*re.getWeight();
-            }
-        }
-        if(index!=0)
-            result = result/index;
-
-        return result;
     }
 
     @Override
@@ -740,8 +658,6 @@ public class EvaluationService implements IEvaluationService {
             Integer coWorkersGradeNum = 0;
 
             for (Evaluation evaluation : evaluations) {
-//                double res = getBehavioralEvaluationFormGrade(evaluation);
-                ////////////////////////////////////////////////////////
                 int index1 = 0;
                 double res = 0.0;
                 List<EvaluationAnswerDTO.EvaluationAnswerFullData> res1 =  getEvaluationFormAnswerDetail(evaluation);
@@ -774,7 +690,6 @@ public class EvaluationService implements IEvaluationService {
                 }
                 if(index1!=0)
                     res = res/index1;
-                //////////////////////////////////////////////////////
                 if(evaluation.getEvaluatorTypeId().equals(189L)) {
                     coWorkersGradeNum++;
                     coWorkersGradeMeanNum++;
