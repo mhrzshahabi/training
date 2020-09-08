@@ -377,7 +377,7 @@
             {
                 name: "categoryId",
                 title: "<spring:message code="course_category"/>",
-                align: "center",
+                align: "center", filterOnKeypress:true,
                 filterOperator: "equals",
                 optionDataSource: RestDataSource_category,
                 displayField: "titleFa",
@@ -474,7 +474,7 @@
                 filterOperator: "iContains"
             },
             {
-                name: "behavioralLevel", title: "سطح رفتاری",
+                name: "behavioralLevel", title: "سطح رفتاری", filterOnKeypress:true,
                 // hidden:true,
                 valueMap: {
                     "1": "مشاهده",
@@ -483,7 +483,7 @@
                 }
             },
             {
-                name: "evaluation", title: "<spring:message code="evaluation.level"/>",
+                name: "evaluation", title: "<spring:message code="evaluation.level"/>", filterOnKeypress:true,
                 valueMap: {
                     "1": "واکنشی",
                     "2": "یادگیری",
@@ -507,7 +507,7 @@
         autoFetchData: true,
         showFilterEditor: true,
         allowFilterExpressions: true,
-        filterOnKeypress: true,
+        filterOnKeypress: false,
         getCellCSSText: function (record, rowNum, colNum) {
             // if (record.attitude==0 && record.knowledge==0 && record.skill==0) {
             // if (!record.hasGoal && !record.hasSkill) {
@@ -533,7 +533,7 @@
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: true,
+        filterOnKeypress: false,
         selectionType: "single",
         showResizeBar: false,
 
@@ -555,7 +555,7 @@
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: true,
+        filterOnKeypress: false,
         showResizeBar: false,
 
     });
@@ -593,14 +593,13 @@
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: true,
+        filterOnKeypress: false,
         sortField: 0,
         sortDirection: "descending",
 
     });
 
     var ListGrid_CourseSyllabus = isc.TrLG.create({
-
         dataSource: RestDataSource_Syllabus,
         groupByField: "goal.titleFa",
         groupStartOpen: "none",
@@ -626,9 +625,8 @@
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: true,
+        filterOnKeypress: false,
         showResizeBar: false,
-
     });
 
     <sec:authorize access="hasAuthority('Course_R')">
@@ -707,19 +705,17 @@
                         ID: "ListGrid_AllSkill_mainObjective_JspCourse",
                         dataSource: RestDataSource_Skill_JspCourse,
                         selectionType: "single",
-                        filterOnKeypress: true,
+                        filterOnKeypress: false,
                         canDragRecordsOut: true,
                         dragDataAction: "none",
                         canAcceptDroppedRecords: true,
                         fields: [
                             {name: "titleFa", title: "عنوان"},
                             {name: "code", title: "کد",
-                                filterEditorProperties: {
-                                    keyPressFilter: "[0-9]"
-                                }
+
                             },
-                            {name: "categoryId",canFilter:false},
-                            {name: "subCategoryId",canFilter:false
+                            {name: "categoryId",canFilter:false, filterOnKeypress:true},
+                            {name: "subCategoryId",canFilter:false, filterOnKeypress:true
                             },
                         ],
                         gridComponents: ["filterEditor", "header", "body"],
@@ -742,7 +738,7 @@
                         ID: "ListGrid_AllSkill_JspCourse",
                         dataSource: RestDataSource_Skill_JspCourse,
                         selectionType: "single",
-                        filterOnKeypress: true,
+                        filterOnKeypress: false,
                         canDragRecordsOut: true,
                         dragDataAction: "none",
                         canAcceptDroppedRecords: true,
@@ -754,9 +750,9 @@
                                 }
                             },
                             {
-                                name: "categoryId",
+                                name: "categoryId", filterOnKeypress:true,
                             },
-                            {name: "subCategoryId"}
+                            {name: "subCategoryId", filterOnKeypress:true}
                         ],
                         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
                             if (ListGridOwnSkill_JspCourse.getSelectedRecord() == null) {
@@ -854,7 +850,7 @@
                         ID: "ListGridOwnSkill_JspCourse",
                         dataSource: RestDataSource_Skill_JspCourse,
                         selectionType: "single",
-                        filterOnKeypress: true,
+                        filterOnKeypress: false,
                         canDragRecordsOut: true,
                         dragDataAction: "none",
                         canAcceptDroppedRecords: true,
@@ -865,7 +861,7 @@
                                     keyPressFilter: "[0-9/]"
                                 }
                             },
-                            {name: "categoryId"},
+                            {name: "categoryId", filterOnKeypress:true},
                             {name: "courseMainObjectiveId", type: "boolean", title: "هدف کلی", canFilter: false}
                         ],
                         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
@@ -2249,7 +2245,7 @@
                             editorType: "ListGridItem",
 // height: "400",
                             allowAdvancedCriteria: true,
-                            filterOnKeypress: true,
+                            filterOnKeypress: false,
                             showFilterEditor: true,
                             gridDataSource: "courseDS",
                             gridFields: [{name: "titleFa", title: "نام دوره"}, {name: "code", title: "کد دوره"}],
@@ -2333,7 +2329,7 @@
                             editorType: "ListGridItem",
                             allowAdvancedCriteria: true,
                             gridComponents: ["header", "filterEditor", "body"],
-                            filterOnKeypress: true,
+                            filterOnKeypress: false,
                             showFilterEditor: true,
                             gridDataSource: "courseDS",
                             gridFields: [{name: "titleFa", title: "نام دوره"}, {name: "code", title: "کد دوره"}],
