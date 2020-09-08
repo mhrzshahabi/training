@@ -245,6 +245,15 @@
 
             <sec:authorize access="hasAnyAuthority('TclassScoresTab_P','TclassScoresTab_classStatus')">
             print_score,
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+
+                    let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                    if (!(classRecord === undefined || classRecord == null)) {
+                        ExportToFile.downloadExcelRestUrl(null, ListGrid_Class_Student, tclassStudentUrl + "/scores-iscList/" + classRecord.id, 0, ListGrid_Class_JspClass, '', "کلاس - ثبت نمرات", ListGrid_Class_Student.getCriteria(), null);
+                    }
+                }
+            }),
             </sec:authorize>
 
             <sec:authorize access="hasAnyAuthority('TclassScoresTab_R','TclassScoresTab_classStatus')">

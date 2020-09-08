@@ -5,6 +5,7 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@ page import="com.nicico.copper.core.SecurityUtil" %>
 
+//<script>
     var Wait_JspClassEvaluationInfo = null;
 
     var DynamicForm_JspClassEvaluationInfo = isc.DynamicForm.create({
@@ -14,6 +15,27 @@
         numCols: 2,
         margin: 5,
         fields: [
+            {
+                type: "button",
+                title: "ارسال به Excel",
+                width: 160,
+                height: "30",
+                startRow: false,
+                endRow: true,
+                click: function () {
+                    let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                    if (!(classRecord === undefined || classRecord == null)) {
+
+                        let fields = [{name:'title',title:'عنوان'},{name:'value',title:''}]
+                        let allRows = [{title:DynamicForm_JspClassEvaluationInfo.getItem('teacherGradeToClass').getTitle(),value:DynamicForm_JspClassEvaluationInfo.getItem('teacherGradeToClass').getValue()},
+                                        {title:DynamicForm_JspClassEvaluationInfo.getItem('trainingGradeToTeacher').getTitle(),value:DynamicForm_JspClassEvaluationInfo.getItem('trainingGradeToTeacher').getValue()},
+                                        {title:DynamicForm_JspClassEvaluationInfo.getItem('studentsGradeToClass').getTitle(),value:DynamicForm_JspClassEvaluationInfo.getItem('studentsGradeToClass').getValue()},
+                                        {title:DynamicForm_JspClassEvaluationInfo.getItem('teacherTotalGrade').getTitle(),value:DynamicForm_JspClassEvaluationInfo.getItem('teacherTotalGrade').getValue()},];
+
+                        ExportToFile.exportToExcelFromClient(fields,allRows,ExportToFile.generateTitle(ListGrid_Class_JspClass),"کلاس - مشاهده وضعيت ارزيابي کلاس");
+                    }
+                }
+            },
             {name: "teacherGradeToClass", title: "نمره ارزیابی مدرس به کلاس", canEdit: false, type: "StaticTextItem"},
             {name: "trainingGradeToTeacher", title: "نمره ارزیابی مسئول آموزش به مدرس", canEdit: false, type: "StaticTextItem"},
             {name: "studentsGradeToClass", title: "نمره ارزیابی واکنشی کلاس", canEdit: false, type: "StaticTextItem"},
@@ -21,15 +43,10 @@
         ]
     });
 
-    // DynamicForm_JspClassEvaluationInfo.getItem('teacherGradeToClass').setCellStyle('evaluation-code-label');
     DynamicForm_JspClassEvaluationInfo.getItem('teacherGradeToClass').titleStyle = 'evaluation-code-title';
-    // DynamicForm_JspClassEvaluationInfo.getItem('trainingGradeToTeacher').setCellStyle('evaluation-code-label');
     DynamicForm_JspClassEvaluationInfo.getItem('trainingGradeToTeacher').titleStyle = 'evaluation-code-title';
-    // DynamicForm_JspClassEvaluationInfo.getItem('studentsGradeToClass').setCellStyle('evaluation-code-label');
     DynamicForm_JspClassEvaluationInfo.getItem('studentsGradeToClass').titleStyle = 'evaluation-code-title';
-    // DynamicForm_JspClassEvaluationInfo.getItem('teacherTotalGrade').setCellStyle('evaluation-code-label');
     DynamicForm_JspClassEvaluationInfo.getItem('teacherTotalGrade').titleStyle = 'evaluation-code-title';
-
 
     var VLayout_Body_JspClassEvaluationInfo = isc.TrVLayout.create({
         width: "100%",
@@ -59,26 +76,36 @@
                 null,
                 (resp) => {
                     let result = JSON.parse(resp.httpResponseText);
-                    if(result.teacherGradeToClass == 0)
+
+                    if(result.teacherGradeToClass == undefined)
                         DynamicForm_JspClassEvaluationInfo.setValue("teacherGradeToClass", val2);
                     else
                         DynamicForm_JspClassEvaluationInfo.setValue("teacherGradeToClass", getFormulaMessage(result.teacherGradeToClass , "2", "black", "b"));
-                    if(result.trainingGradeToTeacher == 0)
+                    if(result.trainingGradeToTeacher == undefined)
                         DynamicForm_JspClassEvaluationInfo.setValue("trainingGradeToTeacher", val2);
                     else
                         DynamicForm_JspClassEvaluationInfo.setValue("trainingGradeToTeacher", getFormulaMessage(result.trainingGradeToTeacher , "2", "black", "b"));
-                    if(result.fergrade == 0)
+                    if(result.fergrade == undefined)
                         DynamicForm_JspClassEvaluationInfo.setValue("studentsGradeToClass", val2);
                     else
                         DynamicForm_JspClassEvaluationInfo.setValue("studentsGradeToClass", getFormulaMessage(result.fergrade , "2", "black", "b"));
-                    if(result.trainingGradeToTeacher == 0 && result.studentsGradeToTeacher == 0)
+
+                    if(result.trainingGradeToTeacher == undefined && result.studentsGradeToTeacher == undefined)
                             DynamicForm_JspClassEvaluationInfo.setValue("teacherTotalGrade", val2);
+                    else if(result.trainingGradeToTeacher == undefined){
+                            let val3 = "0 " + " * " + result.z1 + "% + " + result.studentsGradeToTeacher + " * " + result.z2 + "% = " + result.fetgrade;
+                            DynamicForm_JspClassEvaluationInfo.setValue("teacherTotalGrade", getFormulaMessage(val3 , "2", "black", "b"));
+                        }
+                    else if(result.studentsGradeToTeacher == undefined){
+                            let val4 = result.trainingGradeToTeacher + " * " + result.z1 + "% + " + "0 " + " * " + result.z2 + "% = " + result.fetgrade;
+                            DynamicForm_JspClassEvaluationInfo.setValue("teacherTotalGrade", getFormulaMessage(val4 , "2", "black", "b"));
+                        }
                     else{
-                        let val = result.trainingGradeToTeacher + " * " + result.z1 + "% + " + result.studentsGradeToTeacher + " * " + result.z2 + "% = " + result.fetgrade;
-                        DynamicForm_JspClassEvaluationInfo.setValue("teacherTotalGrade", getFormulaMessage(val , "2", "black", "b"));
+                            let val4 = result.trainingGradeToTeacher + " * " + result.z1 + "% + " + result.studentsGradeToTeacher + " * " + result.z2 + "% = " + result.fetgrade;
+                            DynamicForm_JspClassEvaluationInfo.setValue("teacherTotalGrade", getFormulaMessage(val4 , "2", "black", "b"));
                     }
                     Wait_JspClassEvaluationInfo.close();
+                    }
+                    ));
                 }
-            ));
-        }
-    }
+        };

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 public class JasperSoftWebController {
 
-    public static final String ORGANIZATIONS_NICICO_ACCOUNTING = "/organizations/nicico_accounting";
+    public static final String ORGANIZATIONS_NICICO_TRAINING = "/organizations/nicico_education";
     private final JasperServerConfigs jasperServerConfig;
     public static final String JASPER_SOFT_MAP_MODEL = "jasperSoftUrl";
     public static final String REPORT_JASPER_SOFT_SERVER_PAGE = "/report/jasperSoftServer";
@@ -20,7 +20,7 @@ public class JasperSoftWebController {
 //    @PreAuthorize("hasAuthority('Adhocs_View')")
     public String showAdhocsList(ModelMap model) {
 
-        model.addAttribute(JASPER_SOFT_MAP_MODEL, jasperServerConfig.getHttpApiUrl() + "?_flowId=searchFlow&folderUri=" + ORGANIZATIONS_NICICO_ACCOUNTING + "/adhoc_1/topics&userLocale=fa&" + jasperServerConfig.getDefaultAuthentication());
+        model.addAttribute(JASPER_SOFT_MAP_MODEL, jasperServerConfig.getHttpApiUrl() + "?_flowId=searchFlow&folderUri=" + ORGANIZATIONS_NICICO_TRAINING + "/adhoc_1/topics&userLocale=fa&" + jasperServerConfig.getDefaultAuthentication());
         return REPORT_JASPER_SOFT_SERVER_PAGE;
     }
 
@@ -36,7 +36,7 @@ public class JasperSoftWebController {
 //    @PreAuthorize("hasAuthority('Domains_View')")
     public String showDomains(ModelMap model) {
 
-        model.addAttribute(JASPER_SOFT_MAP_MODEL, jasperServerConfig.getHttpApiUrl() + "?_flowId=searchFlow&folderUri=" + ORGANIZATIONS_NICICO_ACCOUNTING + "/Domain&userLocale=fa&" + jasperServerConfig.getDefaultAuthentication());
+        model.addAttribute(JASPER_SOFT_MAP_MODEL, jasperServerConfig.getHttpApiUrl() + "?_flowId=searchFlow&folderUri=" + ORGANIZATIONS_NICICO_TRAINING + "/Domain&userLocale=fa&" + jasperServerConfig.getDefaultAuthentication());
         return REPORT_JASPER_SOFT_SERVER_PAGE;
     }
 
@@ -44,7 +44,7 @@ public class JasperSoftWebController {
 //    @PreAuthorize("hasAuthority('DataSources_View')")
     public String showDataSources(ModelMap model) {
 
-        model.addAttribute(JASPER_SOFT_MAP_MODEL, jasperServerConfig.getHttpApiUrl() + "?_flowId=searchFlow&folderUri=" + ORGANIZATIONS_NICICO_ACCOUNTING + "/DataSource&userLocale=fa&" + jasperServerConfig.getDefaultAuthentication());
+        model.addAttribute(JASPER_SOFT_MAP_MODEL, jasperServerConfig.getHttpApiUrl() + "?_flowId=searchFlow&folderUri=" + ORGANIZATIONS_NICICO_TRAINING + "/DataSource&userLocale=fa&" + jasperServerConfig.getDefaultAuthentication());
         return REPORT_JASPER_SOFT_SERVER_PAGE;
     }
 
@@ -52,7 +52,7 @@ public class JasperSoftWebController {
 //    @PreAuthorize("hasAuthority('Reports_View')")
     public String showReports(ModelMap model) {
 
-        model.addAttribute(JASPER_SOFT_MAP_MODEL, jasperServerConfig.getHttpApiUrl() + "?_flowId=searchFlow&folderUri=" + ORGANIZATIONS_NICICO_ACCOUNTING + "/Reports&userLocale=fa&" + jasperServerConfig.getDefaultAuthentication());
+        model.addAttribute(JASPER_SOFT_MAP_MODEL, jasperServerConfig.getHttpApiUrl() + "?_flowId=searchFlow&folderUri=" + ORGANIZATIONS_NICICO_TRAINING + "/Reports&userLocale=fa&" + jasperServerConfig.getDefaultAuthentication());
         return REPORT_JASPER_SOFT_SERVER_PAGE;
     }
 
@@ -60,7 +60,7 @@ public class JasperSoftWebController {
 //    @PreAuthorize("hasAuthority('Dashboards_View')")
     public String showDashboards(ModelMap model) {
 
-        model.addAttribute(JASPER_SOFT_MAP_MODEL, jasperServerConfig.getHttpApiUrl() + "?_flowId=searchFlow&folderUri=" + ORGANIZATIONS_NICICO_ACCOUNTING + "/Dashboard&userLocale=fa&" + jasperServerConfig.getDefaultAuthentication());
+        model.addAttribute(JASPER_SOFT_MAP_MODEL, jasperServerConfig.getHttpApiUrl() + "?_flowId=searchFlow&folderUri=" + ORGANIZATIONS_NICICO_TRAINING + "/Dashboard&userLocale=fa&" + jasperServerConfig.getDefaultAuthentication());
         return REPORT_JASPER_SOFT_SERVER_PAGE;
     }
 

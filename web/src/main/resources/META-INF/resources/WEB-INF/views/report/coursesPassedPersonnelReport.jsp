@@ -287,7 +287,7 @@
         title: "گزارش اکسل",
         width: 300,
         click: function () {
-            ExportToFile.showDialog(null, ListGrid_JspCoursesPassedPersonnel, 'coursesPassedPersonnel', 0, null, '',  "گزارش دوره های گذرانده فرد", ListGrid_JspCoursesPassedPersonnel.data.criteria, null);
+            ExportToFile.downloadExcel(null, ListGrid_JspCoursesPassedPersonnel, 'coursesPassedPersonnel', 0, null, '',  "گزارش دوره های گذرانده فرد", ListGrid_JspCoursesPassedPersonnel.data.criteria, null);
         }
     });
 
