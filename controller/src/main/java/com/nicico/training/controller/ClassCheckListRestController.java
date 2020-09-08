@@ -1,30 +1,24 @@
 package com.nicico.training.controller;
 
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
-import com.nicico.copper.common.dto.grid.TotalResponse;
-import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.ClassCheckListDTO;
 import com.nicico.training.service.ClassAlarmService;
 import com.nicico.training.service.ClassCheckListService;
-import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -149,10 +143,10 @@ public class ClassCheckListRestController {
         ResponseEntity<ClassCheckListDTO.Info> infoResponseEntity = new ResponseEntity(classCheckListService.updateDescriptionCheck(body), HttpStatus.OK);
 
         //*****check alarms*****
-        if (infoResponseEntity.getStatusCodeValue() == 200) {
-            classAlarmService.alarmCheckListConflict(infoResponseEntity.getBody().getTclassId());
-            classAlarmService.saveAlarms();
-        }
+//        if (infoResponseEntity.getStatusCodeValue() == 200) {
+//            classAlarmService.alarmCheckListConflict(infoResponseEntity.getBody().getTclassId());
+//            classAlarmService.saveAlarms();
+//        }
 
         return infoResponseEntity;
     }

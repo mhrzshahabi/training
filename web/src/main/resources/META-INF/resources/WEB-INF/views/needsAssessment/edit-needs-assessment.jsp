@@ -11,15 +11,7 @@
     var selectedRecord = {};
     var editing = false;
     var isChanged = false;
-    var priorityList = {
-        "Post": "پست انفرادی",
-        "PostGroup": "گروه پستی",
-        "Job": "شغل",
-        "JobGroup": "گروه شغلی",
-        "PostGrade": "رده پستی",
-        "PostGradeGroup": "گروه رده پستی",
-        "TrainingPost": "پست"
-    };
+
     var skillData = [];
     var competenceData = [];
     var peopleTypeMap ={
@@ -499,7 +491,7 @@
         title:"مشاهده تغییرات",
         margin: 1,
         click(){
-            showWindowDiffNeedsAssessment(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"))
+            showWindowDiffNeedsAssessment(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"), true)
         }
     });
 
@@ -769,7 +761,9 @@
             {
                 title: "جزییات شایستگی",
                 click: function () {
-                    ListGrid_Competence_JspNeedsAssessment.rowDoubleClick(ListGrid_Competence_JspNeedsAssessment.getSelectedRecord())
+                    if(checkSelectedRecord(ListGrid_Competence_JspNeedsAssessment)) {
+                        ListGrid_Competence_JspNeedsAssessment.rowDoubleClick(ListGrid_Competence_JspNeedsAssessment.getSelectedRecord())
+                    }
                 }
             },
         ]
@@ -916,7 +910,7 @@
                     createDialog("info", "<spring:message code='read.only.na.message'/>");
                 }
                 else {
-                    let Dialog_Competence_remove = createDialog("ask", "هشدار: در صورت حذف شایستگی تمام مهارت های مربوط به آن حذف خواهند شد.",
+                    let Dialog_Competence_remove = createDialog("ask", "هشدار: در صورت حذف شایستگی تمام مهارت های با مرجع " + '<b><u>'+priorityList[type]+'</b></u>' + " آن حذف خواهند شد.",
                         "<spring:message code="verify.delete"/>");
                     Dialog_Competence_remove.addProperties({
                         buttonClick: function (button, index) {
@@ -1314,7 +1308,7 @@
         <%--// showDetailFields: true--%>
     <%--});--%>
 
-    var Window_AddCompetence = isc.Window.create({
+    let Window_AddCompetence = isc.Window.create({
         title: "<spring:message code="competence.list"/>",
         width: "80%",
         height: "70%",
@@ -1327,7 +1321,17 @@
                     ListGrid_AllCompetence_JspNeedsAssessment,
                     ListGrid_NeedsAssessment_JspENA
                 ]
-            })]
+            })],
+        show(){
+            this.Super("show", arguments);
+            let criteria = {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [{fieldName: "workFlowStatusCode", operator: "equals", value: 2}]
+            };
+            ListGrid_AllCompetence_JspNeedsAssessment.setImplicitCriteria(criteria);
+            ListGrid_AllCompetence_JspNeedsAssessment.fetchData();
+        }
     });
 
     let DynamicForm_JspEditNeedsAssessment = isc.DynamicForm.create({
@@ -1739,7 +1743,7 @@
         }
         else{
             if(state === 0) {
-                createDialog("info", "فقط نیازسنجی های مرتبط با " + priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] + " قابل حذف است.")
+                createDialog("info", "فقط نیازسنجی های با مرجع " +'<u><b>'+ priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] +'</u></b>'+ " قابل حذف است.")
             }
             return 2;
         }
@@ -2017,8 +2021,7 @@
                             "workFlowName": "NeedAssessment",
                             "cType": DynamicForm_JspEditNeedsAssessment.getValue("objectType")
                         }];
-
-                        wait.show()
+                        wait.show();
                         isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
 
                     }

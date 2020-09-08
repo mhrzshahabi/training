@@ -90,7 +90,7 @@
                         print_SessionListGrid("html");
                     }
                 }
-               </sec:authorize>
+                </sec:authorize>
             ]
         })
     }
@@ -126,7 +126,7 @@
                     {name: "sessionStateFa"},
                     {name: "description"}
                 ],
-                fetchDataURL: sessionServiceUrl + "spec-list"
+            fetchDataURL: sessionServiceUrl + "spec-list"
         });
 
 
@@ -137,7 +137,7 @@
             <sec:authorize access="hasAnyAuthority('TclassSessionsTab_R','TclassSessionsTab_classStatus')">
             dataSource: RestDataSource_session,
             </sec:authorize>
-           // contextMenu: Menu_ListGrid_session,
+            // contextMenu: Menu_ListGrid_session,
             canAddFormulaFields: false,
             // autoFetchData: true,
             showFilterEditor: true,
@@ -262,42 +262,42 @@
                 show_SessionEditForm();
             },
             getCellCSSText: function (record, rowNum, colNum) {
-                    let result="background-color : ";
-                    let blackColor="; color:black";
+                let result="background-color : ";
+                let blackColor="; color:black";
 
                 if (this.isSelected(record)) {
                     return "background-color: #fe9d2a;";
                 }
 
-                    switch (record.dayCode) {
-                        case 'Sat':
-                            result+="#989899";
-                            break;
+                switch (record.dayCode) {
+                    case 'Sat':
+                        result+="#989899";
+                        break;
 
-                        case 'Sun':
-                            result+="#ffd1f2"+blackColor;
-                            break;
+                    case 'Sun':
+                        result+="#ffd1f2"+blackColor;
+                        break;
 
-                        case 'Mon':
-                            result+="#FFFAF0"+blackColor;
-                            break;
+                    case 'Mon':
+                        result+="#FFFAF0"+blackColor;
+                        break;
 
-                        case 'Tue':
-                            result+="#cdb7a3"+blackColor;
-                            break;
+                    case 'Tue':
+                        result+="#cdb7a3"+blackColor;
+                        break;
 
-                        case 'Wed':
-                            result+="#80cd86";
-                            break;
+                    case 'Wed':
+                        result+="#80cd86";
+                        break;
 
-                        case 'Thu':
-                            result+="#ffff77"+blackColor;
-                            break;
+                    case 'Thu':
+                        result+="#ffff77"+blackColor;
+                        break;
 
-                        case 'Fri':
-                            result+="#bedae6"+blackColor;
-                            break;
-                    }//end switch-case
+                    case 'Fri':
+                        result+="#bedae6"+blackColor;
+                        break;
+                }//end switch-case
                 return result;
             }//end getCellCSSText
         });
@@ -544,7 +544,7 @@
                         // editorType: "TrComboAutoRefresh",
                         type: "ComboBoxItem",
                         multiple: false,
-                        title: "<spring:message code="presenter"/>",
+                        title: "<spring:message code="training.place"/>",
                         autoFetchData: false,
                         useClientFiltering: true,
                         optionDataSource: RestDataSource_Institute_JspSession,
@@ -627,7 +627,7 @@
                     {
                         name: "trainingPlaceId",
                         editorType: "TrComboAutoRefresh",
-                        title: "<spring:message code="present.location"/>",
+                        title: "<spring:message code="training.location"/>",
                         align: "center",
                         optionDataSource: RestDataSource_TrainingPlace_JspSession,
                         displayField: "titleFa",
@@ -768,30 +768,26 @@
                 });
             } else {
                 if (ListGrid_Class_JspClass.getSelectedRecord().classStatus !== "3") {
-                    DynamicForm_Session.getItem("instituteId").setDisabled(false);
-                    DynamicForm_Session.getItem("instituteId").setRequired(false);
-
-                    DynamicForm_Session.getItem("trainingPlaceId").setDisabled(true);
-                    DynamicForm_Session.getItem("trainingPlaceId").setRequired(false);
-
                     let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
-                    const {trainingPlaceIds,teacherId,...record}=classRecord;
-                    const essentialRecord={instituteId:record.instituteId ,trainingPlaceId:trainingPlaceIds[0],teacherId};
+                    const {trainingPlaceIds,teacherId,instituteId,teachingType,...record}=classRecord;
+                    const essentialRecord={instituteId,trainingPlaceId:trainingPlaceIds[0],teacherId};
 
                     DynamicForm_Session.clearValues();
 
                     const teachingTypes=[ "غیر حضوری", "مجازی"];
                     let checkInstitute=false;
 
-                    if (teachingTypes.includes(record.teachingType)){
+                    if (teachingTypes.includes(teachingType)){
                         changeStatusInstituteId(!checkInstitute);
                     }
-                    else
+                    else {
                         changeStatusInstituteId(checkInstitute);
+                        checkInstitute=!checkInstitute;
+                    }
 
-                    if (checkInstitute && record.instituteId!=0) {
+                    if (checkInstitute && instituteId!=0) {
                         DynamicForm_Session.getField("instituteId").fetchData();
-                        RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + essentialRecord.instituteId + "/trainingPlaces";
+                        RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + instituteId + "/trainingPlaces";
                     }
 
                     RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + classRecord.courseId+"/"+teacherId;
@@ -861,6 +857,18 @@
                     let ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();
                     let courseId = ClassRecord.course.id;
                     let teacherId =ClassRecord.teacherId;
+
+                    const teachingTypes=[ "غیر حضوری", "مجازی"];
+                    let checkInstitute=false;
+
+                    if (teachingTypes.includes(ClassRecord.teachingType)){
+                        changeStatusInstituteId(!checkInstitute);
+                        record.instituteId=null;
+                        record.trainingPlaceId=null;
+                    }
+                    else {
+                        changeStatusInstituteId(checkInstitute);
+                    }
 
                     let startHour_ = record.sessionStartHour.split(':')[0].trim();
                     record["sessionTime"] = (startHour_ === "08" ? "1" : startHour_ === "10" ? "2" : startHour_ === "14" ? "3" : "");
@@ -977,11 +985,11 @@
                         });
                     }
                 } else {
-                        MyOkDialog_Session = isc.Dialog.create({
-                            message: "<spring:message code="global.form.request.successful"/>",
-                            icon: "[SKIN]say.png",
-                            title: "<spring:message code="ok"/>",
-                        });
+                    MyOkDialog_Session = isc.Dialog.create({
+                        message: "<spring:message code="global.form.request.successful"/>",
+                        icon: "[SKIN]say.png",
+                        title: "<spring:message code="ok"/>",
+                    });
                 }
 
                 setTimeout(function () {
@@ -1086,7 +1094,7 @@
 
 
         function loadPage_session() {
-           let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+            let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
             if (!(classRecord == undefined || classRecord == null)) {
                 //RestDataSource_session.fetchDataURL = sessionServiceUrl + "load-sessions" + "/" + ListGrid_Class_JspClass.getSelectedRecord().id;
                 RestDataSource_session.fetchDataURL = sessionServiceUrl + "iscList/" + classRecord.id;

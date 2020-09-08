@@ -1341,6 +1341,7 @@
                                         align: "center",
                                         icon: "[SKIN]/actions/save.png",
                                         click:function () {
+                                                SelectedPersonnelsLG_student.endEditing();
                                                 let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
                                                 // for (let i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
                                                 //     students.add({

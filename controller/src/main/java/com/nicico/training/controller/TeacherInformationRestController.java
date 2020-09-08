@@ -9,7 +9,6 @@ import com.nicico.training.service.TclassService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -58,7 +58,7 @@ public class TeacherInformationRestController {
             }
         }
         newList1.setList(newList);
-        newList1.setTotalCount(tclassService.search1(searchRq,infoClass).getTotalCount());
+        newList1.setTotalCount((long) newList.size());
         SearchDTO.SearchRs<T> searchRs1 = (SearchDTO.SearchRs<T>) newList1;
 
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs1, startRow), HttpStatus.OK);

@@ -2482,8 +2482,19 @@
                         displayField: "titleFa",
                         valueField: "titleFa",
                         optionDataSource: RestDataSourceEducationCourseJsp,
-                        filterFields: ["titleFa"],
                         sortField: ["id"],
+                        type: "ComboBoxItem",
+                        filterFields: ["titleFa","titleFa"],
+                        textMatchStyle: "substring",
+                        generateExactMatchCriteria: true,
+                        pickListProperties: {
+                            showFilterEditor: false,
+                            autoFitWidthApproach: "both"
+                        },
+                        pickListFields: [
+                            {name: "titleFa"}
+                        ],
+
                         click: function (form, item) {
                             item.fetchData();
                         }
