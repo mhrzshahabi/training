@@ -57,7 +57,7 @@ public class TeacherInformationRestController {
                 newList.add(listTotal.get(i));
             }
         }
-    newList1.setList(newList);
+        newList1.setList(newList);
         newList1.setTotalCount(tclassService.search1(searchRq,infoClass).getTotalCount());
         SearchDTO.SearchRs<T> searchRs1 = (SearchDTO.SearchRs<T>) newList1;
 

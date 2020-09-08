@@ -378,7 +378,10 @@
             members: [
                 isc.ToolStripButtonExcel.create({
                     click: function () {
-                        ExportToFile.downloadExcelFromClient(ListGrid_session, ListGrid_Class_JspClass, '', "کلاس - جلسات");
+                        let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                        if (!(classRecord === undefined || classRecord == null)) {
+                            ExportToFile.downloadExcelRestUrl(null, ListGrid_session, sessionServiceUrl + "iscList/" + classRecord.id, 0, ListGrid_Class_JspClass, '', "کلاس - جلسات", ListGrid_session.getCriteria(), null);
+                        }
                     }
                 })]
         });

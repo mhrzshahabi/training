@@ -124,6 +124,15 @@ let classRecord;
                 align: "left",
                 border: '0px',
                 members: [
+                    isc.ToolStripButtonExcel.create({
+                        click: function () {
+                            let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                            if (!(classRecord === undefined || classRecord == null)) {
+                                ExportToFile.downloadExcelRestUrl(null, ListGrid_teacherInformation, teacherInformation +"/teacher-information-iscList" + "/"+classRecord.code.split('-')[0], 0, ListGrid_Class_JspClass, '', "کلاس - اساتيدي که اين دوره را تدريس کرده اند", ListGrid_teacherInformation.getCriteria(), null);
+                            }
+                        }
+                    }),
+                    isc.LayoutSpacer.create({width: "*"}),
                     infoButton,
                     ToolStripButton_Refresh,
                 ]

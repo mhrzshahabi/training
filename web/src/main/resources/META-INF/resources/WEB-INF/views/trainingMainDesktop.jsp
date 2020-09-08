@@ -437,7 +437,7 @@
                 //let nameOfFields = [];
 
                 for (let i = 1; i < len; i++) {
-                    if (typeof (data[i].showIf) == "undefined" || data[i].showIf == "true") {
+                    if (typeof (data[i].showIf) == "undefined" || data[i].showIf == "true"|| data[i].showIf == null) {
                         fields.push({'title': data[i].title, 'name': data[i].name});
                         isValueMap.push((typeof (data[i].valueMap) == "undefined") ? false : true);
                     }
@@ -518,7 +518,6 @@
                             {name: "pageName", type: "hidden"}
                         ]
                 });
-                <%--downloadForm.setValue("myToken", "<%=accessToken%>");--%>
                 downloadForm.setValue("fields", JSON.stringify(fields.toArray()));
                 downloadForm.setValue("data", JSON.stringify(data.toArray()));
                 downloadForm.setValue("titr", titr);
@@ -963,7 +962,7 @@
 
             static downloadExcel(title, listgrid, fileName, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate,warning){
 
-                if(listgrid.data.totalRows > listgrid.data.getAllLoadedRows().length){
+                if(listgrid.data.localData.length > listgrid.data.getAllLoadedRows().length){
 
                     let showDialog=null;
 
@@ -993,7 +992,7 @@
 
             static downloadExcelRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate,warning){
 
-                if(listgrid.data.totalRows > listgrid.data.getAllLoadedRows().length){
+                if(listgrid.data.localData.length > listgrid.data.getAllLoadedRows().length){
 
                     let showDialog=null;
 
