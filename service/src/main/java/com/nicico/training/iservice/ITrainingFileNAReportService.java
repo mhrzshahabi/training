@@ -11,5 +11,5 @@ import java.util.List;
 
 public interface ITrainingFileNAReportService {
 
-    void exportToExcel(final HttpServletResponse response, List<String> personnelNos) throws Exception;
+    void generateReport(final HttpServletResponse response, List<String> personnelNos) throws Exception;
 }

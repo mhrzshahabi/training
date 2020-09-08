@@ -31,7 +31,7 @@ import java.util.List;
 public class TrainingFileNAReportService implements ITrainingFileNAReportService {
 
     @Override
-    public void exportToExcel(HttpServletResponse response, List<String> personnelNos) throws Exception {
+    public void generateReport(HttpServletResponse response, List<String> personnelNos) throws Exception {
 
     }
 

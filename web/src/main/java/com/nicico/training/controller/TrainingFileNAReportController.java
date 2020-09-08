@@ -66,7 +66,7 @@ public class TrainingFileNAReportController {
 
 
     @PostMapping(value = {"/export-report"})
-    public void exportReport(final HttpServletRequest req,
+    public void generateReport(final HttpServletRequest req,
                                       final HttpServletResponse response,
                                       @RequestParam(value = "personnelNos") List<String> personnelNos) throws Exception {
 
