@@ -6,10 +6,12 @@
 
 package com.nicico.training.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.dto.grid.GridResponse;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.dto.CompetenceDTO;
@@ -17,15 +19,23 @@ import com.nicico.training.dto.CompetenceWebserviceDTO;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.ViewPostDTO;
 import com.nicico.training.iservice.IMasterDataService;
+import io.swagger.annotations.ApiModel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+import org.activiti.engine.test.mock.Mocks;
+import org.apache.catalina.connector.Request;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -38,19 +48,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class MasterDataService implements IMasterDataService {
 
-    @Value("${spring.security.oauth2.client.provider.oserver.token-uri}")
-    private String authorizationUri;
-
-    @Value("${nicico.security.sys-uri}")
-    private String uri;
-
-    @Value("${nicico.security.sys-username}")
-    private String username;
-
-    @Value("${nicico.security.sys-password}")
-    private String password;
-
-    private interface PreReqProcess {
+    private interface PreReqProcess{
 
         public String preCriteria(String criteria);
 
@@ -59,11 +57,11 @@ public class MasterDataService implements IMasterDataService {
         public <T> T json2Object(JsonNode jsonNode);
     }
 
-    private class PrePeopleProcess implements PreReqProcess {
+    private class PrePeopleProcess implements PreReqProcess{
 
         @Override
         public String preCriteria(String criteria) {
-            return criteria.replace("id", "id")
+            return  criteria.replace("id", "id")
                     .replace("firstName", "people.firstName").replace("lastName", "people.lastName").replace("nationalCode", "people.nationalCode")
                     .replace("personnelNo", "emNum10")
                     .replace("postTitle", "post.title")
@@ -109,7 +107,7 @@ public class MasterDataService implements IMasterDataService {
 
     }
 
-    private class PreCompetenciesProccess implements PreReqProcess {
+    private class PreCompetenciesProccess implements PreReqProcess{
 
         @Override
         public String preCriteria(String criteria) {
@@ -145,7 +143,7 @@ public class MasterDataService implements IMasterDataService {
         }
     }
 
-    private class PrePostProccess implements PreReqProcess {
+    private class PrePostProccess implements PreReqProcess{
 
         @Override
         public String preCriteria(String criteria) {
@@ -191,7 +189,7 @@ public class MasterDataService implements IMasterDataService {
         }
     }
 
-    private class PreDepartmentProcess implements PreReqProcess {
+    private class PreDepartmentProcess implements PreReqProcess{
 
         @Override
         public String preCriteria(String criteria) {
@@ -276,7 +274,7 @@ public class MasterDataService implements IMasterDataService {
         }
     }
 
-    private class PreParentEmployeeProcess implements PreReqProcess {
+    private class PreParentEmployeeProcess implements PreReqProcess{
 
         @Override
         public String preCriteria(String criteria) {
@@ -321,52 +319,7 @@ public class MasterDataService implements IMasterDataService {
         }
     }
 
-    /*private class PreChilderenEmployeeProcess implements PreReqProcess {
-
-        @Override
-        public String preCriteria(String criteria) {
-            return criteria;
-        }
-
-        @Override
-        public String preSortBy(String sortBy) {
-            return sortBy;
-        }
-
-        @Override
-        public PersonnelDTO.Info json2Object(JsonNode jsonNode) {
-            PersonnelDTO.Info tmp = new PersonnelDTO.Info();
-
-            if (jsonNode.get("people") != null) {
-                tmp.setId(jsonNode.get("people").get("id").asLong());
-                tmp.setFirstName(jsonNode.get("people").get("firstName").asText());
-                tmp.setLastName(jsonNode.get("people").get("lastName").asText());
-                tmp.setNationalCode(jsonNode.get("people").get("nationalCode").asText());
-                tmp.setFatherName(jsonNode.get("people").get("fatherName").asText());
-            }
-
-            tmp.setPersonnelNo(jsonNode.get("emNum10").asText());
-            tmp.setPersonnelNo2(jsonNode.get("emNum").asText());
-
-            if (!jsonNode.get("post").asText().equals("null")) {
-                tmp.setPostTitle(jsonNode.get("post").get("title").asText());
-                tmp.setPostCode(jsonNode.get("post").get("code").asText());
-            }
-
-            if (!jsonNode.get("department").asText().equals("null")) {
-                tmp.setCcpTitle(jsonNode.get("department").get("title").asText());
-                tmp.setCcpAffairs(jsonNode.get("department").get("omorTitle").asText());
-                tmp.setCcpSection(jsonNode.get("department").get("ghesmatTitle").asText());
-                tmp.setCcpAssistant(jsonNode.get("department").get("moavenatTitle").asText());
-                tmp.setCcpArea(jsonNode.get("department").get("hozeTitle").asText());
-                tmp.setCcpUnit(jsonNode.get("department").get("vahedTitle").asText());
-            }
-
-            return tmp;
-        }
-    }*/
-
-    private class PreSiblingsEmployeeProcess implements PreReqProcess {
+    private class PreChilderenEmployeeProcess implements PreReqProcess{
 
         @Override
         public String preCriteria(String criteria) {
@@ -411,7 +364,52 @@ public class MasterDataService implements IMasterDataService {
         }
     }
 
-    private class PrePersonByNationalCodeProcess implements PreReqProcess {
+    private class PreSiblingsEmployeeProcess implements PreReqProcess{
+
+        @Override
+        public String preCriteria(String criteria) {
+            return criteria;
+        }
+
+        @Override
+        public String preSortBy(String sortBy) {
+            return sortBy;
+        }
+
+        @Override
+        public PersonnelDTO.Info json2Object(JsonNode jsonNode) {
+            PersonnelDTO.Info tmp = new PersonnelDTO.Info();
+
+            if (jsonNode.get("people") != null) {
+                tmp.setId(jsonNode.get("people").get("id").asLong());
+                tmp.setFirstName(jsonNode.get("people").get("firstName").asText());
+                tmp.setLastName(jsonNode.get("people").get("lastName").asText());
+                tmp.setNationalCode(jsonNode.get("people").get("nationalCode").asText());
+                tmp.setFatherName(jsonNode.get("people").get("fatherName").asText());
+            }
+
+            tmp.setPersonnelNo(jsonNode.get("emNum10").asText());
+            tmp.setPersonnelNo2(jsonNode.get("emNum").asText());
+
+            if (!jsonNode.get("post").asText().equals("null")) {
+                tmp.setPostTitle(jsonNode.get("post").get("title").asText());
+                tmp.setPostCode(jsonNode.get("post").get("code").asText());
+            }
+
+            if (!jsonNode.get("department").asText().equals("null")) {
+                tmp.setCcpTitle(jsonNode.get("department").get("title").asText());
+                tmp.setCcpAffairs(jsonNode.get("department").get("omorTitle").asText());
+                tmp.setCcpSection(jsonNode.get("department").get("ghesmatTitle").asText());
+                tmp.setCcpAssistant(jsonNode.get("department").get("moavenatTitle").asText());
+                tmp.setCcpArea(jsonNode.get("department").get("hozeTitle").asText());
+                tmp.setCcpUnit(jsonNode.get("department").get("vahedTitle").asText());
+            }
+
+            return tmp;
+        }
+    }
+
+    private class PrePersonByNationalCodeProcess implements PreReqProcess{
 
         @Override
         public String preCriteria(String criteria) {
@@ -464,7 +462,7 @@ public class MasterDataService implements IMasterDataService {
     @Override
     public String authorize() throws IOException {
 
-        URL obj = new URL(authorizationUri);
+        URL obj = new URL("http://devapp01.icico.net.ir/oauth/token");
         HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
         postConnection.setDoOutput(true);
         postConnection.setDoInput(true);
@@ -475,7 +473,7 @@ public class MasterDataService implements IMasterDataService {
         postConnection.setRequestProperty("charset", "utf-8");
         postConnection.setRequestProperty("authorization", "Basic TWFzdGVyRGF0YTpwYXNzd29yZA==");
 
-        String urlParameters = "grant_type=password&username=" + username + "&password=" + password;
+        String urlParameters = "grant_type=password&username=devadmin&password=password";
         byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
         int postDataLength = postData.length;
 
@@ -497,6 +495,8 @@ public class MasterDataService implements IMasterDataService {
                 response.append(inputLine);
             }
             in.close();
+
+            PersonnelDTO.Info tmp = null;
 
             ObjectMapper objectMapper = new ObjectMapper();
 
@@ -532,7 +532,7 @@ public class MasterDataService implements IMasterDataService {
                 ObjectMapper objectMapper = new ObjectMapper();
                 PrePeopleProcess prePeopleProcess = new PrePeopleProcess();
                 Map<String, String> parameters = prepareParameters(iscRq, objectMapper, prePeopleProcess);
-                HttpURLConnection postConnection = createConnection(uri + "people/get/all", "POST", searchRq, parameters);
+                HttpURLConnection postConnection = createConnection("http://devapp01.icico.net.ir/master-data/api/v1/people/get/all", "POST", searchRq, parameters);
                 int responseCode = postConnection.getResponseCode();
 
                 GridResponse<PersonnelDTO.Info> list = new GridResponse<PersonnelDTO.Info>(new ArrayList<PersonnelDTO.Info>());
@@ -567,7 +567,6 @@ public class MasterDataService implements IMasterDataService {
         }
     }
 
-    @Override
     public TotalResponse<CompetenceDTO.Info> getCompetencies(HttpServletRequest iscRq, HttpServletResponse resp) throws IOException {
         if (token == "") {
             authorize();
@@ -591,7 +590,7 @@ public class MasterDataService implements IMasterDataService {
                 ObjectMapper objectMapper = new ObjectMapper();
                 PreCompetenciesProccess preCompetenciesProccess = new PreCompetenciesProccess();
                 Map<String, String> parameters = prepareParameters(iscRq, objectMapper, preCompetenciesProccess);
-                HttpURLConnection postConnection = createConnection(uri + "Competencies/getAll", "POST", searchRq, parameters);
+                HttpURLConnection postConnection = createConnection("http://devapp01.icico.net.ir/master-data/api/v1/Competencies/getAll", "POST", searchRq, parameters);
                 int responseCode = postConnection.getResponseCode();
 
                 GridResponse<CompetenceDTO.Info> list = new GridResponse<>(new ArrayList<>());
@@ -626,7 +625,6 @@ public class MasterDataService implements IMasterDataService {
         }
     }
 
-    @Override
     public TotalResponse<ViewPostDTO.Info> getPosts(HttpServletRequest iscRq, HttpServletResponse resp) throws IOException {
         if (token == "") {
             authorize();
@@ -651,7 +649,7 @@ public class MasterDataService implements IMasterDataService {
                 PrePostProccess prePostProccess = new PrePostProccess();
                 String type = iscRq.getParameter("type");
 
-                URL obj = new URL(uri + "post/get/byPeopleType?peopleType=" + type);
+                URL obj = new URL("http://devapp01.icico.net.ir/master-data/api/v1/post/get/byPeopleType?peopleType=" + type);
                 HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
                 postConnection.setDoOutput(true);
                 postConnection.setDoInput(true);
@@ -693,7 +691,6 @@ public class MasterDataService implements IMasterDataService {
         }
     }
 
-    @Override
     public TotalResponse<CompetenceWebserviceDTO> getDepartments(HttpServletRequest iscRq, HttpServletResponse resp) throws IOException {
         if (token == "") {
             authorize();
@@ -715,7 +712,7 @@ public class MasterDataService implements IMasterDataService {
                 ObjectMapper objectMapper = new ObjectMapper();
                 PreDepartmentProcess PreDepartmentProcess = new PreDepartmentProcess();
                 Map<String, String> parameters = prepareParameters(iscRq, objectMapper, null);
-                HttpURLConnection postConnection = createConnection(uri + "department/get/all", "POST", searchRq, parameters);
+                HttpURLConnection postConnection = createConnection("http://devapp01.icico.net.ir/master-data/api/v1/department/get/all", "POST", searchRq, parameters);
                 int responseCode = postConnection.getResponseCode();
 
                 GridResponse<CompetenceWebserviceDTO> list = new GridResponse<>(new ArrayList<>());
@@ -749,7 +746,6 @@ public class MasterDataService implements IMasterDataService {
         }
     }
 
-    @Override
     public List<CompetenceWebserviceDTO> getDepartmentsByParentCode(String xUrl) throws IOException {
         if (token == "") {
             authorize();
@@ -762,7 +758,7 @@ public class MasterDataService implements IMasterDataService {
                 index++;
                 ObjectMapper objectMapper = new ObjectMapper();
                 PreDepartmentProcess PreDepartmentProcess = new PreDepartmentProcess();
-                HttpURLConnection postConnection = createConnection(uri + "department/get/" + xUrl, "GET", null, null);
+                HttpURLConnection postConnection = createConnection("http://devapp01.icico.net.ir/master-data/api/v1/department/get/" + xUrl, "GET", null, null);
                 int responseCode = postConnection.getResponseCode();
                 List<CompetenceWebserviceDTO> list = new ArrayList<>();
 
@@ -777,7 +773,6 @@ public class MasterDataService implements IMasterDataService {
         }
     }
 
-    @Override
     public List<CompetenceWebserviceDTO> getDepartmentsChilderenByParentCode(List<Long> xUrl) throws IOException {
         if (token == "") {
             authorize();
@@ -793,7 +788,7 @@ public class MasterDataService implements IMasterDataService {
                 List<CompetenceWebserviceDTO> result = new ArrayList<>();
 
                 for (Long id : xUrl) {
-                    HttpURLConnection postConnection = createConnection(uri + "department/get/ParentId?parentId=" + id.toString(), "GET", null, null);
+                    HttpURLConnection postConnection = createConnection("http://devapp01.icico.net.ir/master-data/api/v1/department/get/ParentId?parentId=" + id.toString(), "GET", null, null);
                     int responseCode = postConnection.getResponseCode();
                     List<CompetenceWebserviceDTO> list = new ArrayList<>();
                     if (responseCode == HttpURLConnection.HTTP_OK) { //success
@@ -809,7 +804,6 @@ public class MasterDataService implements IMasterDataService {
         }
     }
 
-    @Override
     public List<CompetenceWebserviceDTO> getDepartmentsByParams(String convertedCriteriaStr, String count, String operator, String startIndex, String sortBy) throws IOException {
         if (token == "") {
             authorize();
@@ -828,10 +822,10 @@ public class MasterDataService implements IMasterDataService {
                 searchRq.setStartIndex(Integer.parseInt(startIndex));
                 Map<String, String> parameters = new HashMap<>();
                 parameters.put("operator", operator);
-                parameters.put("convertedCriteriaStr", convertedCriteriaStr);
+                parameters.put("convertedCriteriaStr",convertedCriteriaStr);
                 parameters.put("sortBy", sortBy);
 
-                HttpURLConnection postConnection = createConnection(uri + "department/get/all", "POST", searchRq, parameters);
+                HttpURLConnection postConnection = createConnection("http://devapp01.icico.net.ir/master-data/api/v1/department/get/all", "POST", searchRq, parameters);
                 int responseCode = postConnection.getResponseCode();
                 List<CompetenceWebserviceDTO> result = new ArrayList<>();
 
@@ -851,7 +845,6 @@ public class MasterDataService implements IMasterDataService {
         }
     }
 
-    @Override
     public CompetenceWebserviceDTO getDepartmentsById(Long id) throws IOException {
         if (token == "") {
             authorize();
@@ -865,7 +858,7 @@ public class MasterDataService implements IMasterDataService {
                 index++;
                 ObjectMapper objectMapper = new ObjectMapper();
                 PreDepartmentProcess PreDepartmentProcess = new PreDepartmentProcess();
-                HttpURLConnection postConnection = createConnection(uri + "department/get/single?id=" + id.toString(), "GET", null, null);
+                HttpURLConnection postConnection = createConnection("http://devapp01.icico.net.ir/master-data/api/v1/department/get/single?id=" + id.toString(), "GET", null, null);
 
                 int responseCode = postConnection.getResponseCode();
                 List<CompetenceWebserviceDTO> list = new ArrayList<>();
@@ -879,7 +872,6 @@ public class MasterDataService implements IMasterDataService {
         return null;
     }
 
-    @Override
     public PersonnelDTO.Info getParentEmployee(Long id) throws IOException {
         if (token == "") {
             authorize();
@@ -892,7 +884,7 @@ public class MasterDataService implements IMasterDataService {
                 index++;
                 ObjectMapper objectMapper = new ObjectMapper();
                 PreParentEmployeeProcess preParentEmployeeProcess = new PreParentEmployeeProcess();
-                HttpURLConnection postConnection = createConnection(uri + "employees/parentEmployee/" + id, "GET", null, null);
+                HttpURLConnection postConnection = createConnection("http://devapp01.icico.net.ir/master-data/api/v1/employees/parentEmployee/" + id, "GET", null, null);
                 int responseCode = postConnection.getResponseCode();
                 List<PersonnelDTO.Info> list = new ArrayList<>();
 
@@ -905,8 +897,6 @@ public class MasterDataService implements IMasterDataService {
         return new PersonnelDTO.Info();
     }
 
-/*
-    @Override
     public List<PersonnelDTO.Info> getChildrenEmployee(Long id) throws IOException {
         if (token == "") {
             authorize();
@@ -919,7 +909,7 @@ public class MasterDataService implements IMasterDataService {
                 index++;
                 ObjectMapper objectMapper = new ObjectMapper();
                 PreChilderenEmployeeProcess preChilderenEmployeeProcess = new PreChilderenEmployeeProcess();
-                HttpURLConnection postConnection = createConnection(uri + "employees/childrenEmployee/" + id, "GET", null, null);
+                HttpURLConnection postConnection = createConnection("http://devapp01.icico.net.ir/master-data/api/v1/employees/childrenEmployee/" + id, "GET", null, null);
                 int responseCode = postConnection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) { //success
                     List<PersonnelDTO.Info> list = new ArrayList<>();
@@ -930,9 +920,7 @@ public class MasterDataService implements IMasterDataService {
         }
         return new ArrayList<>(0);
     }
-*/
 
-    @Override
     public List<PersonnelDTO.Info> getSiblingsEmployee(Long id) throws IOException {
         if (token == "") {
             authorize();
@@ -945,7 +933,7 @@ public class MasterDataService implements IMasterDataService {
                 index++;
                 ObjectMapper objectMapper = new ObjectMapper();
                 PreSiblingsEmployeeProcess PreDepartmentProcess = new PreSiblingsEmployeeProcess();
-                HttpURLConnection postConnection = createConnection(uri + "employees/siblingsEmployee/" + id.toString(), "GET", null, null);
+                HttpURLConnection postConnection = createConnection("http://devapp01.icico.net.ir/master-data/api/v1/employees/siblingsEmployee/" + id.toString(), "GET", null, null);
                 int responseCode = postConnection.getResponseCode();
 
                 if (responseCode == HttpURLConnection.HTTP_OK) { //success
@@ -958,7 +946,6 @@ public class MasterDataService implements IMasterDataService {
         return new ArrayList<>(0);
     }
 
-    @Override
     public List<PersonnelDTO.Info> getPersonByNationalCode(String nationalCode) throws IOException {
         if (token == "") {
             authorize();
@@ -971,7 +958,7 @@ public class MasterDataService implements IMasterDataService {
                 index++;
                 ObjectMapper objectMapper = new ObjectMapper();
                 PrePersonByNationalCodeProcess prePersonByNationalCodeProcess = new PrePersonByNationalCodeProcess();
-                HttpURLConnection postConnection = createConnection(uri + "employees/get/byNationalCode/" + nationalCode, "GET", null, null);
+                HttpURLConnection postConnection = createConnection("http://devapp01.icico.net.ir/master-data/api/v1/employees/get/byNationalCode/" + nationalCode, "GET", null, null);
                 int responseCode = postConnection.getResponseCode();
 
                 if (responseCode == HttpURLConnection.HTTP_OK) { //success
@@ -984,13 +971,13 @@ public class MasterDataService implements IMasterDataService {
         return new ArrayList<>(0);
     }
 
-    private SearchDTO.SearchRq convertToSearchRq(HttpServletRequest rq) throws IOException {
+    public static SearchDTO.SearchRq convertToSearchRq(HttpServletRequest rq) throws IOException {
         SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
         String startRowStr = rq.getParameter("_startRow");
         String endRowStr = rq.getParameter("_endRow");
-        //String constructor = rq.getParameter("_constructor");
+        String constructor = rq.getParameter("_constructor");
         String sortBy = rq.getParameter("_sortBy");
-        //String operator = rq.getParameter("operator");
+        String operator = rq.getParameter("operator");
 
         Integer startRow = (startRowStr != null) ? Integer.parseInt(startRowStr) : 0;
         Integer endRow = (endRowStr != null) ? Integer.parseInt(endRowStr) : 50;
@@ -1109,7 +1096,7 @@ public class MasterDataService implements IMasterDataService {
         return convertedCriteriaStr;
     }
 
-    private String convertSortBy(String sortBy, PreReqProcess preReqProcess) {
+    private String convertSortBy(String sortBy, PreReqProcess preReqProcess){
         return preReqProcess != null ? preReqProcess.preSortBy(sortBy) : sortBy;
     }
 }

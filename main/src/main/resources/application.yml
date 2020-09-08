@@ -225,8 +225,6 @@ spring:
             user-name-attribute: username
 nicico:
   security:
-    sys-uri: http://devapp01.icico.net.ir/master-data/api/v1/
-    sys-username: "#training#"
     sys-password: password
   upload:
     dir: c:/nicico/${spring.application.name}/upload
