@@ -778,6 +778,7 @@ public class EvaluationRestController {
 
                 if (evaluationAnswerFullData.getQuestionSourceId().equals(199L)) {
                     QuestionnaireQuestion questionnaireQuestion = questionnaireQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
+                    evaluationAnswerFullData.setOrder(questionnaireQuestion.getOrder());
                     if(questionnaireQuestion.getEvaluationQuestion().getDomainId().equals(54L))
                         evaluationAnswerFullData.setQuestion("امکانات: "+questionnaireQuestion.getEvaluationQuestion().getQuestion());
                     else if(questionnaireQuestion.getEvaluationQuestion().getDomainId().equals(53L) || questionnaireQuestion.getEvaluationQuestion().getDomainId().equals(1L))
@@ -789,15 +790,21 @@ public class EvaluationRestController {
                 } else if (evaluationAnswerFullData.getQuestionSourceId().equals(200L)) {
                     DynamicQuestion dynamicQuestion = dynamicQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
                     evaluationAnswerFullData.setQuestion("هدف اصلی: " + dynamicQuestion.getQuestion());
+                    evaluationAnswerFullData.setOrder(dynamicQuestion.getOrder());
                 }
                 else if (evaluationAnswerFullData.getQuestionSourceId().equals(201L)) {
                     DynamicQuestion dynamicQuestion = dynamicQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
                     evaluationAnswerFullData.setQuestion("هدف: " + dynamicQuestion.getQuestion());
+                    evaluationAnswerFullData.setOrder(dynamicQuestion.getOrder());
                 }
 
                 result.add(evaluationAnswerFullData);
             }
         }
+
+        Comparator<EvaluationAnswerDTO.EvaluationAnswerFullData> compareByOrder = (EvaluationAnswerDTO.EvaluationAnswerFullData o1, EvaluationAnswerDTO.EvaluationAnswerFullData o2) ->
+                o1.getOrder().compareTo( o2.getOrder() );
+        Collections.sort(result, compareByOrder);
 
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", dateUtil.todayDate());

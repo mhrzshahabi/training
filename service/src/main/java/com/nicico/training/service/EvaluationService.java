@@ -689,7 +689,6 @@ public class EvaluationService implements IEvaluationService {
                 }
                 if(index1!=0)
                     res = res/index1;
-                //////////////////////////////////////////////////////
                 if(evaluation.getEvaluatorTypeId().equals(189L)) {
                     coWorkersGradeNum++;
                     coWorkersGradeMeanNum++;

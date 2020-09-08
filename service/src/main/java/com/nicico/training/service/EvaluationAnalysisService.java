@@ -261,26 +261,47 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         EvaluationAnalysis evaluationAnalysis = new EvaluationAnalysis();
         if(evaluationAnalyses != null && evaluationAnalyses.size() > 0){
             evaluationAnalysis = evaluationAnalyses.get(0);
-            evaluationAnalysis.setBehavioralGrade(behavioralResult.getBehavioralGrade().toString());
-            evaluationAnalysis.setBehavioralPass(behavioralResult.getBehavioralPass());
-            Map<String,Object> effectivenessResult = calculateEffectivenessEvaluation(evaluationAnalysis.getReactionGrade(),
+            if(behavioralResult.getBehavioralGrade() != 0) {
+                evaluationAnalysis.setBehavioralGrade(behavioralResult.getBehavioralGrade().toString());
+                evaluationAnalysis.setBehavioralPass(behavioralResult.getBehavioralPass());
+            }
+            else {
+                evaluationAnalysis.setBehavioralGrade(null);
+                evaluationAnalysis.setBehavioralPass(null);
+            }
+
+            Map<String,Object> effectivenessResult = null;
+            if(behavioralResult.getBehavioralGrade() != 0)
+                effectivenessResult = calculateEffectivenessEvaluation(evaluationAnalysis.getReactionGrade(),
                     evaluationAnalysis.getLearningGrade(),behavioralResult.getBehavioralGrade().toString(), tclass.getEvaluation());
-            if(effectivenessResult != null) {
+            else
+                effectivenessResult =  calculateEffectivenessEvaluation(evaluationAnalysis.getReactionGrade(),
+                        evaluationAnalysis.getLearningGrade(),null, tclass.getEvaluation());
+
+            if(effectivenessResult != null && effectivenessResult.containsKey("EffectivenessGrade") && effectivenessResult.containsKey("EffectivenessPass")) {
                 evaluationAnalysis.setEffectivenessGrade(effectivenessResult.get("EffectivenessGrade").toString());
                 evaluationAnalysis.setEffectivenessPass(Boolean.parseBoolean(effectivenessResult.get("EffectivenessPass").toString()));
+            }
+            else {
+                evaluationAnalysis.setEffectivenessGrade(null);
+                evaluationAnalysis.setEffectivenessPass(null);
             }
         }
         else{
-            evaluationAnalysis.setBehavioralGrade(behavioralResult.getBehavioralGrade().toString());
-            evaluationAnalysis.setBehavioralPass(behavioralResult.getBehavioralPass());
+            if(behavioralResult.getBehavioralGrade() != 0) {
+                evaluationAnalysis.setBehavioralGrade(behavioralResult.getBehavioralGrade().toString());
+                evaluationAnalysis.setBehavioralPass(behavioralResult.getBehavioralPass());
+            }
+
             evaluationAnalysis.setTClassId(classId);
             evaluationAnalysis.setTClass(tclassDAO.getOne(classId));
-            Map<String,Object> effectivenessResult = calculateEffectivenessEvaluation(evaluationAnalysis.getReactionGrade(),
-                    evaluationAnalysis.getLearningGrade(),behavioralResult.getBehavioralGrade().toString(), tclass.getEvaluation());
-            if(effectivenessResult != null) {
-                evaluationAnalysis.setEffectivenessGrade(effectivenessResult.get("EffectivenessGrade").toString());
-                evaluationAnalysis.setEffectivenessPass(Boolean.parseBoolean(effectivenessResult.get("EffectivenessPass").toString()));
-            }
+            Map<String,Object> effectivenessResult = null;
+            if(behavioralResult.getBehavioralGrade() != 0)
+                effectivenessResult = calculateEffectivenessEvaluation(evaluationAnalysis.getReactionGrade(),
+                        evaluationAnalysis.getLearningGrade(),behavioralResult.getBehavioralGrade().toString(), tclass.getEvaluation());
+            else
+                effectivenessResult =  calculateEffectivenessEvaluation(evaluationAnalysis.getReactionGrade(),
+                        evaluationAnalysis.getLearningGrade(),null, tclass.getEvaluation());
             create(evaluationAnalysis);
         }
     }
