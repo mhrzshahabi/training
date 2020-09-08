@@ -63,19 +63,26 @@ public class TeacherDTO {
         private PersonalInfoDTO.contractInfo personality;
         private String personnelCode;
 
-        /*public String getFullName() {
+        public String getFullName() {
 
             return personality.getFirstNameFa() + " " + personality.getLastNameFa();
         }
 
         public String getAddress() {
+            AddressDTO.Info homeAddress = null;
 
-            if (personality.getContactInfo().getHomeAddress().getState().getName() != null) {
-                return personality.getContactInfo().getHomeAddress().getState().getName() + "-" + personality.getContactInfo().getHomeAddress().getCity().getName() + "-" + personality.getContactInfo().getHomeAddress().getRestAddr() + "- کد پستی: " + personality.getContactInfo().getHomeAddress().getPostalCode();
+            if (personality.getContactInfo() != null && personality.getContactInfo().getHomeAddress() != null) {
+                homeAddress = personality.getContactInfo().getHomeAddress();
+            }else{
+                return "";
+            }
+
+            if (homeAddress.getState() != null && homeAddress.getState().getName() != null) {
+                return ((homeAddress.getState() == null) ? "" : homeAddress.getState().getName()) + "-" + ((homeAddress.getCity() == null) ? "" : homeAddress.getCity().getName()) + "-" + homeAddress.getRestAddr() + "- کد پستی: " + homeAddress.getPostalCode();
             } else {
                 return "";
             }
-        }*/
+        }
     }
 
     @Getter

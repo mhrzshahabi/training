@@ -66,9 +66,11 @@ let classRecord;
 /*                formatCellValue: function (value, record) {
                    return(value != null ? value +"-"+ record.teacher.personality.contactInfo.homeAddress.city.name+"-"+ record.teacher.personality.contactInfo.homeAddress.restAddr +"-"+ "کد پستی :"+record.teacher.personality.contactInfo.homeAddress.postalCode : "")
                 }*/
-            }
-              ],
-
+            },
+        ],
+        initialSort: [
+            {property: "teacher.personality.lastNameFa", direction: "ascending"},
+        ],
         recordDoubleClick: function () {
 
          
