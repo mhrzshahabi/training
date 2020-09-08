@@ -1,222 +1,55 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 // <script>
+    $(document).ready(()=>{
+        setTimeout(()=>{
+            $("input[name='studentPersonnelNo']").attr("disabled","disabled");
+            $("input[name='classCode']").attr("disabled","disabled");
+        },0)}
+    );
 
-    //--------------------------------------------------------------------------------------------------------------------//
-    //*personnel form*/
-    //--------------------------------------------------------------------------------------------------------------------//
-
-    PriorityDS_PCNR = isc.TrDS.create({
-        fields:
-            [
-                {name: "id", primaryKey: true, hidden: true},
-                {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
-                {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
-            ],
-        autoCacheAllData: true,
-        fetchDataURL: parameterUrl + "/iscList/NeedsAssessmentPriority"
-    });
-
-    isPassedDS_PCNR = isc.TrDS.create({
-        fields:
-            [
-                {name: "id", primaryKey: true, hidden: true},
-                {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidthApproach: "both", autoFitWidth: true},
-                {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
-            ],
-        autoCacheAllData: true,
-        fetchDataURL: parameterUrl + "/iscList/PassedStatus"
-    });
-
-    PersonnelDS_PCNR = isc.TrDS.create({
+    //----------------------------------------------------Rest DataSource-----------------------------------------------
+    let RestDataSource_JspAttendanceReport = isc.TrDS.create({
         fields: [
-            {name: "personnelId", primaryKey: true, hidden: true},
-            {name: "personnelPersonnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelPersonnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelFirstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelLastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelPostTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelCcpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelCcpSection", title: "<spring:message code='section'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelCcpUnit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "priorityId", title: "<spring:message code='priority'/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "personnelPostGradeTitle", title: "<spring:message code='post.grade'/>", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
-        ],
-        fetchDataURL: personnelCourseNAReportUrl + "/personnel-list"
-    });
-
-    Menu_Personnel_PCNR = isc.Menu.create({
-        data: [{
-            title: "<spring:message code="refresh"/>", click: function () {
-                refreshLG(PersonnelsLG_PCNR);
-            }
-        }]
-    });
-
-    PersonnelsLG_PCNR = isc.TrLG.create({
-        dataSource: PersonnelDS_PCNR,
-        contextMenu: Menu_Personnel_PCNR,
-        selectionType: "none",
-        allowAdvancedCriteria: true,
-        autoFetchData: false,
-        fields: [
-            {name: "personnelPersonnelNo"},
-            {name: "personnelPersonnelNo2"},
-            {name: "personnelNationalCode"},
-            {name: "personnelFirstName"},
-            {name: "personnelLastName"},
-            {
-                name: "priorityId",
-                filterOnKeypress: true,
-                editorType: "ComboBoxItem",
-                displayField: "title",
-                valueField: "id",
-                optionDataSource: PriorityDS_PCNR,
-                pickListProperties: {
-                    showFilterEditor: false,
-                    autoFitWidthApproach: "both",
-                },
-                pickListFields: [
-                    {name: "title", width: "30%"}
-                ],
-            },
-            {name: "personnelPostTitle"},
-            {name: "personnelPostGradeTitle"},
-            {name: "personnelCcpAffairs"},
-            {name: "personnelCcpSection"},
-            {name: "personnelCcpUnit"},
-        ],
-    });
-
-    ToolStripButton_Personnel_Refresh_PCNR = isc.ToolStripButtonRefresh.create({
-        click: function () {
-            refreshLG(PersonnelsLG_PCNR);
-        }
-    });
-
-    ToolStrip_Personnel_Actions_PCNR = isc.ToolStrip.create({
-        width: "100%",
-        align: "left",
-        border: '0px',
-        members: [
-            ToolStripButton_Personnel_Refresh_PCNR
-        ]
-    });
-
-    Window_Personnel_PCNR = isc.Window.create({
-        placement: "fillScreen",
-        title: "لیست پرسنل",
-        canDragReposition: true,
-        align: "center",
-        autoDraw: false,
-        border: "1px solid gray",
-        minWidth: 1024,
-        items: [isc.TrVLayout.create({
-            members: [
-                ToolStrip_Personnel_Actions_PCNR,
-                PersonnelsLG_PCNR
-            ]
-        })]
-    });
-
-    //--------------------------------------------------------------------------------------------------------------------//
-    //*course form*/
-    //--------------------------------------------------------------------------------------------------------------------//
-    NAMinCourseDS_PCNR = isc.TrDS.create({
-        fields: [
-            {name: "courseId", primaryKey: true, hidden: true},
+            {name: "presenceHour", title:"حضور بر حسب ساعت", filterOperator: "equals", autoFitWidth: true},
+            {name: "presenceMinute", title:"حضور بر حسب دقیقه", filterOperator: "equals", autoFitWidth: true},
+            {name: "absenceHour", title:"غیبت بر حسب ساعت", filterOperator: "equals", autoFitWidth: true},
+            {name: "absenceMinute", title:"غیبت بر حسب دقیقه", filterOperator: "equals", autoFitWidth: true},
+            {name: "classId", hidden: true, filterOperator: "equals", autoFitWidth: true},
+            {name: "classCode", title:"<spring:message code="class.code"/>", filterOperator: "inSet", autoFitWidth: true},
+            {name: "classStartDate", title:"<spring:message code="start.date"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classEndDate", title:"<spring:message code="end.date"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classTeachingType", title:"<spring:message code="teaching.type"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "sessionDate", title:"تاریخ جلسه", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentId", hidden: true, filterOperator: "equals", autoFitWidth: true},
+            {name: "studentPersonnelNo", title:"<spring:message code='personnel.no'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentPersonnelNo2", title:"<spring:message code='personnel.no.6.digits'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentFirstName", title:"<spring:message code='firstName'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentLastName", title:"<spring:message code='lastName'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentNationalCode", title:"<spring:message code='national.code'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentCcpAssistant", title:"<spring:message code='assistance'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentCcpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentCcpSection", title:"<spring:message code='section'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentCcpUnit", title:"<spring:message code='unit'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classStudentApplicantCompanyName", title:"<spring:message code='company.applicant'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelAreaTitle", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "courseId", hidden: true, title:"<spring:message code='identity'/>", filterOperator: "equals", autoFitWidth: true},
             {name: "courseCode", title:"<spring:message code='course.code'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "courseTitleFa", title:"<spring:message code='course.title'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelFirstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "personnelLastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "personnelNationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "personnelPersonnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "personnelPersonnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "personnelPostTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "personnelPostCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "personnelCcpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "personnelCcpSection", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "personnelCcpUnit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "priorityId", title: "<spring:message code='priority'/>", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "isPassed", title: "<spring:message code='status'/>", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "personnelPostGradeTitle", title: "<spring:message code='post.grade'/>", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "courseTitleFa", title:"<spring:message code='course'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "categoryId", title:"<spring:message code='category'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "courseRunType", title:"<spring:message code='course_eruntype'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "courseTheoType", title:"<spring:message code='course_etheoType'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "courseLevelType", title:"<spring:message code='cousre_elevelType'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "courseTechnicalType", title: "<spring:message code="technical.type"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "instituteId", hidden: true, title: "<spring:message code="identity"/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "instituteTitleFa", title: "<spring:message code="institute"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
-        fetchDataURL: personnelCourseNAReportUrl + "/minList"
+        fetchDataURL: presenceReportUrl
     });
 
-
-    NACourseDS_PCNR = isc.TrDS.create({
-        fields: [
-            {name: "courseId", primaryKey: true, hidden: true},
-            {name: "courseCode", title:"<spring:message code='course.code'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "courseTitleFa", title:"<spring:message code='course.title'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "totalEssentialPersonnelCount", title: "تعداد کل پرسنل در اولویت ضروری", filterOperator: "equals", autoFitWidth: true},
-            {name: "notPassedEssentialPersonnelCount", title:"تعداد پرسنل نگذرانده در اولویت ضروری", filterOperator: "equals", autoFitWidth: true},
-            {name: "totalImprovingPersonnelCount", title: "تعداد کل پرسنل در اولویت کل بهبود", filterOperator: "equals", autoFitWidth: true},
-            {name: "notPassedImprovingPersonnelCount", title:"تعداد پرسنل نگذرانده در اولویت بهبود", filterOperator: "equals", autoFitWidth: true},
-            {name: "totalDevelopmentalPersonnelCount", title: "تعداد کل پرسنل در اولویت توسعه ای", filterOperator: "equals", autoFitWidth: true},
-            {name: "notPassedDevelopmentalPersonnelCount", title:"تعداد پرسنل نگذرانده در اولویت توسعه ای", filterOperator: "equals", autoFitWidth: true},
-        ],
-        fetchDataURL: personnelCourseNAReportUrl
-    });
-
-    CompanyDS_PCNR = isc.TrDS.create({
-        fields: [
-            {name: "value", title: "<spring:message code="company"/>", filterOperator: "iContains", autoFitWidth: true},
-        ],
-        cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=companyName"
-    });
-    AreaDS_PCNR = isc.TrDS.create({
-        fields: [
-            {name: "value", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
-        ],
-        cacheAllData: true,
-        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpArea"
-    });
-    AssistantDS_PCNR = isc.TrDS.create({
-        fields: [
-            {name: "value", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
-        ],
-        cacheAllData: true,
-        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAssistant"
-    });
-    AffairsDS_PCNR = isc.TrDS.create({
-        fields: [
-            {name: "value", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
-        ],
-        cacheAllData: true,
-        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAffairs"
-    });
-
-    UnitDS_PCNR = isc.TrDS.create({
-        fields: [
-            {name: "value", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
-        ],
-        cacheAllData: true,
-        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpUnit"
-    });
-    SectionDS_PCNR = isc.TrDS.create({
-        fields: [
-            {name: "value", title: "<spring:message code="term.code"/>", filterOperator: "iContains", autoFitWidth: true},
-        ],
-        cacheAllData: true,
-        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpSection"
-    });
-
-    CourseDS_PCNR = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true},
-            {name: "code", title: "<spring:message code="course.code"/>"},
-            {name: "titleFa", title: "<spring:message code="course.title"/>"},
-        ],
-        fetchDataURL: courseUrl + "spec-list",
-    });
-
-    PersonnelDS_PCNR_DF = isc.TrDS.create({
+    let PersonnelDS_PTSR_DF = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -241,537 +74,635 @@
         },
     });
 
-    var RestDataSource_PostGradeLvl_PCNR = isc.TrDS.create({
+    let RestDataSource_Course_JspAttendanceReport = isc.TrDS.create({
+        ID: "courseDS",
         fields: [
-            {name: "id", primaryKey: true, hidden: true},
-            {
-                name: "code",
-                title: "<spring:message code="post.grade.code"/>",
-                filterOperator: "iContains",
-            },
-            {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
-            {name: "peopleType",  title: "نوع فراگیر",valueMap: {"personnel_registered": "متفرقه", "Personal": "شرکتی", "ContractorPersonal": "پیمانکار"}},
-            {name: "enabled", title: "فعال/غیرفعال", valueMap: {"undefined": "فعال", "74": "غیرفعال"}}
+            {name: "id", type: "Integer", primaryKey: true},
+            {name: "code"},
+            {name: "titleFa"}
         ],
-        fetchDataURL: viewPostGradeUrl + "/iscList"
+        fetchDataURL: courseUrl + "info-tuple-list"
     });
 
-    FilterDF_PCNR = isc.DynamicForm.create({
-        border: "1px solid black",
-        numCols: 10,
-        padding: 10,
-        margin:0,
-        titleAlign:"left",
-        wrapItemTitles: true,
+    let RestDataSource_Class_JspAttendanceReport = isc.TrDS.create({
+        ID: "classDS",
         fields: [
-            {
-                name: "personnelNationalCode",
-
-                title:"انتخاب پرسنل",
-                operator: "inSet",
-                textAlign: "center",
-                optionDataSource: PersonnelDS_PCNR_DF,
-                autoFetchData: false,
-                type: "MultiComboBoxItem",
-                valueField: "nationalCode",
-                displayField: "personnelNo",
-                endRow: false,
-                colSpan: 3,
-                // comboBoxWidth: 200,
-                layoutStyle: "horizontal",
-                comboBoxProperties: {
-                    hint: "",
-                    pickListWidth: 550,
-                    pickListFields: [
-                        {name: "personnelNo2"},
-                        {name: "firstName"},
-                        {name: "lastName"},
-                        {name: "nationalCode"},
-                        {name: "personnelNo"}
-                    ],
-                    filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
-                    pickListProperties: {sortField: "personnelNo"},
-                    textMatchStyle: "substring",
-                },
-            },
-            {
-                name: "postGradeId",
-                title:"<spring:message code='post.grade'/>",
-                operator: "inSet",
-                textAlign: "center",
-                optionDataSource: RestDataSource_PostGradeLvl_PCNR,
-                autoFetchData: false,
-                type: "MultiComboBoxItem",
-                valueField: "id",
-                displayField: "titleFa",
-                endRow: false,
-                colSpan: 4,
-                width: 300,
-                layoutStyle: "horizontal",
-                comboBoxProperties: {
-                    hint: "",
-                    pickListWidth: 550,
-                    pickListFields: [
-                        {name: "titleFa"},
-                        {name: "code"},
-                        {name: "peopleType",canFilter: false},
-                        {name: "enabled"}
-                    ],
-                    filterFields: ["titleFa", "code", "enabled"],
-                    pickListProperties: {
-                        sortField: 1,
-                        showFilterEditor: true},
-                    textMatchStyle: "substring",
-                },
-            },
-            {
-                name: "personnelCompanyName",
-                title: "<spring:message code="company"/>",
-                filterFields: ["value", "value"],
-                pickListWidth: 300,
-                type: "ComboBoxItem",
-                textMatchStyle: "substring",
-                pickListProperties: {
-                    showFilterEditor: false,
-                    showClippedValuesOnHover: true,
-                },
-                optionDataSource: CompanyDS_PCNR,
-                autoFetchData: false,
-                valueField: "value",
-                displayField: "value",
-                specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true,
-                icons:[
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click : function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                            form.setValue(null);
-                        }
-                    }
-                ],
-            },
-            {
-                name: "personnelCcpArea",
-                title: "<spring:message code="area"/>",
-                filterFields: ["value", "value"],
-                pickListWidth: 300,
-                type: "ComboBoxItem",
-                textMatchStyle: "substring",
-                pickListProperties: {
-                    showFilterEditor: false,
-                    showClippedValuesOnHover: true,
-                },
-                optionDataSource: AreaDS_PCNR,
-                autoFetchData: false,
-                valueField: "value",
-                displayField: "value",
-                specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true,
-                icons:[
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click : function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                            form.setValue(null);
-                        }
-                    }
-                ],
-            },
-            {
-                name: "personnelCcpAssistant",
-                title: "<spring:message code="assistance"/>",
-                filterFields: ["value", "value"],
-                pickListWidth: 300,
-                type: "ComboBoxItem",
-                textMatchStyle: "substring",
-                pickListProperties: {
-                    showFilterEditor: false,
-                    showClippedValuesOnHover: true,
-                },
-                optionDataSource: AssistantDS_PCNR,
-                autoFetchData: false,
-                valueField: "value",
-                displayField: "value",
-                specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true,
-                icons:[
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click : function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                            form.setValue(null);
-                        }
-                    }
-                ],
-            },
-            {
-                name: "personnelCcpSection",
-                title: "<spring:message code="section.cost"/>",
-                filterFields: ["value", "value"],
-                pickListWidth: 300,
-                type: "ComboBoxItem",
-                textMatchStyle: "substring",
-                pickListProperties: {
-                    showFilterEditor: false,
-                    showClippedValuesOnHover: true,
-                },
-                optionDataSource: SectionDS_PCNR,
-                autoFetchData: false,
-                valueField: "value",
-                displayField: "value",
-                specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true,
-                icons:[
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click : function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                            form.setValue(null);
-                        }
-                    }
-                ],
-            },
-            {
-                name: "personnelCcpUnit",
-                title: "<spring:message code="unitName"/>",
-                filterFields: ["value", "value"],
-                pickListWidth: 300,
-                type: "ComboBoxItem",
-                textMatchStyle: "substring",
-                pickListProperties: {
-                    showFilterEditor: false,
-                    showClippedValuesOnHover: true,
-                },
-                optionDataSource: UnitDS_PCNR,
-                autoFetchData: false,
-                valueField: "value",
-                displayField: "value",
-                specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true,
-                icons:[
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click : function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                            form.setValue(null);
-                        }
-                    }
-                ],
-            },
-            {
-                name: "personnelCcpAffairs",
-                title: "<spring:message code="affairs"/>",
-                optionDataSource: AffairsDS_PCNR,
-                autoFetchData: false,
-                filterFields: ["value", "value"],
-                type: "ComboBoxItem",
-                textMatchStyle: "substring",
-                pickListProperties: {
-                    showFilterEditor: false,
-                    showClippedValuesOnHover: true,
-                },
-                valueField: "value",
-                displayField: "value",
-                specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true,
-                icons:[
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click : function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                            form.setValue(null);
-                        }
-                    }
-                ],
-            },
-            {
-                name: "courseId",
-                title: "<spring:message code="course"/>",
-                operator: "inSet",
-                optionDataSource: CourseDS_PCNR,
-                autoFetchData: false,
-                type: "MultiComboBoxItem",
-                valueField: "id",
-                displayField: "code",
-                endRow: false,
-                layoutStyle: "horizontal",
-                // comboBoxWidth: 200,
-                // layoutStyle: "horizontal",
-                comboBoxProperties: {
-                    hint: "",
-                    pickListWidth: 400,
-                    pickListFields: [
-                        {name: "code", autoFitWidth: true},
-                        {name: "titleFa"},
-                    ],
-                    filterFields: ["titleFa", "code"],
-                    pickListProperties: {},
-                    textMatchStyle: "substring",
-                },
-            },
-            {
-                ID: "reportType",
-                name: "reportType",
-                colSpan: 1,
-                // rowSpan: 1,
-                title: "نوع گزارش :",
-                wrapTitle: false,
-                type: "radioGroup",
-                vertical: false,
-                endRow: true,
-                fillHorizontalSpace: true,
-                defaultValue: "2",
-                valueMap: {
-                    "1": "آماری",
-                    "2": "لیستی",
-                },
-                change: function (form, item, value, oldValue) {
-
-
-                    if (value === "1"){
-                        VLayout_Body_PCNR.addMember(CourseLG_PCNR);
-                        VLayout_Body_PCNR.removeMember(CourseLG_MinPCNR);
-                    }
-                    else if(value === "2"){
-                        VLayout_Body_PCNR.removeMember(CourseLG_PCNR);
-                        VLayout_Body_PCNR.addMember(CourseLG_MinPCNR);
-                    }
-                    else
-                        return false;
-
-                }
-            },
-            {type: "SpacerItem"},
-            {
-                name: "reportBottom",
-                title: "گزارش گیری",
-                type: "ButtonItem",
-                align: "right",
-                endRow: false,
-                click: function () {
-                    if(!hasFilters()) {
-                        createDialog("info","فیلتری انتخاب نشده است.");
-                    } else{
-                        var criteria = FilterDF_PCNR.getValuesAsAdvancedCriteria();
-                        criteria.criteria.remove(criteria.criteria.find({fieldName: "reportType"}));
-
-                        CourseLG_PCNR.implicitCriteria = criteria;
-                        CourseLG_PCNR.invalidateCache();
-                        CourseLG_PCNR.fetchData();
-
-                        CourseLG_MinPCNR.implicitCriteria = criteria;
-                        CourseLG_MinPCNR.invalidateCache();
-                        CourseLG_MinPCNR.fetchData();
-                    }
-                }
-            },
-            {
-                title: "<spring:message code="global.form.print.excel"/>",
-                type: "ButtonItem",
-                startRow: false,
-                click: function () {
-                    if(!hasFilters()) {
-                        createDialog("info","فیلتری انتخاب نشده است.");
-                    } else{
-                        let criteria = FilterDF_PCNR.getValuesAsAdvancedCriteria();
-                        criteria.criteria.remove(criteria.criteria.find({fieldName: "reportType"}));
-
-                        if (FilterDF_PCNR.getItem("reportType").getValue() === "1"){
-                            // ExportToFile.showDialog(null, CourseLG_PCNR, "personnelCourseNAR", 0, null, '',"آمار دوره های نیازسنجی افراد - آماری"  , criteria, null);
-                            ExportToFile.downloadExcelFromClient(CourseLG_PCNR,null,"","آمار دوره های نیازسنجی افراد - آماری");
-                        }
-                        else if(FilterDF_PCNR.getItem("reportType").getValue() === "2"){
-                            ExportToFile.showDialog(null, CourseLG_MinPCNR, "personnelCourseNAR", 0, null, '',"آمار دوره های نیازسنجی افراد - لیستی"  , criteria, null);
-                            // ExportToFile.downloadExcelFromClient(CourseLG_MinPCNR,null,"","آمار دوره های نیازسنجی افراد - لیستی");
-                        }
-                    }
-                }
-            }
+            {name: "id", primaryKey: true},
+            {name: "titleClass"},
+            {name: "code"},
+            {name: "course.titleFa"}
         ],
+        fetchDataURL: classUrl + "info-tuple-list"
     });
 
-    CourseLG_PCNR = isc.TrLG.create({
-        dynamicTitle: true,
-        autoFetchData: false,
-        allowAdvancedCriteria: true,
-        dataSource: NACourseDS_PCNR,
-        filterLocally: true,
-        filterOnKeypress: false,
-        showFilterEditor: true,
+    let CourseDS_PresenceReport = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "code", title: "<spring:message code="corse_code"/>"},
+            {name: "titleFa", title: "<spring:message code="course_fa_name"/>"},
+        ],
+        fetchDataURL: courseUrl + "spec-list"
+    });
+
+    let CompanyDS_PresenceReport = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="company"/>", filterOperator: "iContains", autoFitWidth: true, primaryKey:true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: personnelUrl + "/all-field-values?fieldName=companyName"
+    });
+    let AreaDS_PresenceReport = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpArea"
+    });
+    let AssistantDS_PresenceReport = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAssistant"
+    });
+    let AffairsDS_PresenceReport = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAffairs"
+    });
+    let SectionDS_PresenceReport = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="term.code"/>", filterOperator: "iContains", autoFitWidth: true, primaryKey: true},
+        ],
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpSection"
+    });
+    let UnitDS_PresenceReport = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpUnit"
+    });
+    //----------------------------------------------------ListGrid Result-----------------------------------------------
+    let ListGrid_JspAttendanceReport = isc.TrLG.create({
+        width: "100%",
+        height: "100%",
+        dataSource : RestDataSource_JspAttendanceReport,
+        cellHeight: 43,
+        sortField: 0,
+        showFilterEditor: false,
+        selectionType: "single",
         showRecordComponents: true,
-        showRecordComponentsByCell: true,
-        useClientFiltering: true,
-        gridComponents: [ "header", "filterEditor", "body"],
-        fields:[
-            {name: "courseCode"},
-            {name: "courseTitleFa"},
-            {name: "totalEssentialPersonnelCount"},
-            {name: "notPassedEssentialPersonnelCount"},
-            {name: "totalImprovingPersonnelCount"},
-            {name: "notPassedImprovingPersonnelCount"},
-            {name: "totalDevelopmentalPersonnelCount"},
-            {name: "notPassedDevelopmentalPersonnelCount"},
+        showRecordComponentsByCell: true
+    });
+
+    let IButton_JspAttendanceReport_FullExcel = isc.IButtonSave.create({
+        top: 260,
+        title: "گزارش اکسل",
+        width: 300,
+        click: function () {
+            ExportToFile.downloadExcelFromClient(ListGrid_JspAttendanceReport, null, '', 'گزارش حضور و غياب کلاس های آموزشي')
+        }
+    });
+
+    let HLayOut_CriteriaForm_JspAttendanceReport_Details = isc.TrHLayoutButtons.create({
+        showEdges: false,
+        edgeImage: "",
+        width: "100%",
+        height: "100%",
+        alignLayout: "center",
+        members: [
+            ListGrid_JspAttendanceReport
+        ]
+    });
+
+    let HLayOut_Confirm_JspAttendanceReport_AttendanceExcel = isc.TrHLayoutButtons.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        width: "70%",
+        height: "10%",
+        alignLayout: "center",
+        padding: 10,
+        members: [
+            IButton_JspAttendanceReport_FullExcel
+        ]
+    });
+
+    let Window_JspAttendanceReport = isc.Window.create({
+        placement: "fillScreen",
+        title: "گزارش حضور و غیاب کلاسهای آموزشی",
+        canDragReposition: true,
+        align: "center",
+        autoDraw: false,
+        border: "1px solid gray",
+        minWidth: 1024,
+        items: [
+            isc.TrVLayout.create({
+                members: [
+                    HLayOut_CriteriaForm_JspAttendanceReport_Details,HLayOut_Confirm_JspAttendanceReport_AttendanceExcel
+                ]
+            })
+        ]
+    });
+    //----------------------------------------------------Criteria Form------------------------------------------------
+    let DynamicForm_CriteriaForm_JspAttendanceReport = isc.DynamicForm.create({
+        align: "right",
+        titleWidth: 0,
+        titleAlign: "center",
+        showInlineErrors: true,
+        showErrorText: false,
+        numCols: 6,
+        colWidths: ["5%", "25%", "5%", "25%","5%","25%"],
+        fields: [
             {
-                name: "totalNotPassed",
-                title: "جمع کل پرسنل نگذرانده",
-                filterOperator: "equals",
-                autoFitWidth: true,
-                formatCellValue: function (value, record) {
-                    return record.notPassedEssentialPersonnelCount + record.notPassedImprovingPersonnelCount + record.notPassedDevelopmentalPersonnelCount;
-                },
-                sortNormalizer: function (record) {
-                    return record.notPassedEssentialPersonnelCount + record.notPassedImprovingPersonnelCount + record.notPassedDevelopmentalPersonnelCount;
-                }
-            },
-            { name: "personnelList", title: "لیست پرسنل", align: "center", width: 130, canFilter: false},
-        ],
-        createRecordComponent : function (record, colNum) {
-            let fieldName = this.getFieldName(colNum);
-            if (fieldName === "personnelList") {
-                return isc.IButton.create({
-                    width: 120,
-                    layoutAlign: "center",
-                    title: "مشاهده لیست پرسنل",
+                name: "studentPersonnelNo",
+                title: "شماره پرسنلي",
+                hint: "شماره پرسنلي را انتخاب نمائيد",
+                showHintInField: true,
+                icons: [{
+                    src: "[SKIN]/pickers/search_picker.png",
                     click: function () {
-                        Window_Personnel_PCNR.show();
+                        Window_SelectPeople_JspUnitReport.show();
+                    }}],
+                keyPressFilter: "[A-Z|0-9|,-]"
+            },
+            {
+                name: "temp0",
+                title: "",
+                canEdit: false
+            },
+            {
+                name: "temp1",
+                title: "",
+                canEdit: false
+            },
+            {
+                name: "personnelAreaTitle",
+                title: "<spring:message code="area"/>",
+                optionDataSource: AreaDS_PresenceReport,
+                valueField: "value",
+                displayField: "value",
+            },
+            {
+                name: "classStudentApplicantCompanyName",
+                title: "<spring:message code="company"/>",
+                valueField: "value",
+                displayField: "value",
+                optionDataSource: CompanyDS_PresenceReport,
+            },
+            {
+                name: "studentCcpAssistant",
+                title: "<spring:message code="assistance"/>",
+                valueField: "value",
+                displayField: "value",
+                optionDataSource: AssistantDS_PresenceReport,
+            },
+            {
+                name: "studentCcpSection",
+                title: "<spring:message code="section.cost"/>",
+                valueField: "value",
+                displayField: "value",
+                optionDataSource: SectionDS_PresenceReport,
+            },
+            {
+                name: "studentCcpUnit",
+                title: "<spring:message code="unitName"/>",
+                optionDataSource: UnitDS_PresenceReport,
+                valueField: "value",
+                displayField: "value",
+            },
+            {
+                name: "studentCcpAffairs",
+                title: "<spring:message code="affairs"/>",
+                optionDataSource: AffairsDS_PresenceReport,
+                valueField: "value",
+                displayField: "value",
+            },
+        ]
+    });
 
-                        var criteria = FilterDF_PCNR.getValuesAsAdvancedCriteria();
-                        criteria.criteria.remove(criteria.criteria.find({fieldName: "reportType"}));
+    var initialLayoutStyle = "vertical";
+    let DynamicForm_SelectCourses_JspAttendanceReport = isc.DynamicForm.create({
+        align: "center",
+        titleWidth: 0,
+        titleAlign: "center",
+        width: 500,
+        height: 300,
+        fields: [
+            {
+                name: "course.code",
+                align: "center",
+                title: "",
+                editorType: "MultiComboBoxItem",
+                multiple: true,
+                defaultValue: null,
+                changeOnKeypress: true,
+                showHintInField: true,
+                displayField: "code",
+                comboBoxWidth: 500,
+                valueField: "code",
+                layoutStyle: initialLayoutStyle,
+                optionDataSource: RestDataSource_Course_JspAttendanceReport
+            }
+        ]
+    });
+    DynamicForm_SelectCourses_JspAttendanceReport.getField("course.code").comboBox.setHint("دوره های مورد نظر را انتخاب کنید");
+    DynamicForm_SelectCourses_JspAttendanceReport.getField("course.code").comboBox.pickListFields =
+        [{name: "titleFa", title: "نام دوره", width: "30%", filterOperator: "iContains"},
+            {
+                name: "code", title: "کد دوره", width: "30%", filterOperator: "iContains"
+            }];
+    DynamicForm_SelectCourses_JspAttendanceReport.getField("course.code").comboBox.filterFields = ["titleFa", "code"];
 
-                        PersonnelsLG_PCNR.implicitCriteria = criteria;
-                        PersonnelsLG_PCNR.implicitCriteria.criteria.addAll([
-                            {fieldName: "isPassed" ,operator: "equals", value: isPassedDS_PCNR.cacheResultSet.allRows.find({code:"false"}).id},
-                            {fieldName: "courseId", operator: "equals", value: record.courseId}
-                        ]);
-                        PersonnelsLG_PCNR.invalidateCache();
-                        PersonnelsLG_PCNR.fetchData();
-                    }
+    let IButton_ConfirmCourseSelections_JspAttendanceReport = isc.IButtonSave.create({
+        top: 260,
+        title: "تائید",
+        width: 300,
+        click: function () {
+            var criteriaDisplayValues = "";
+            var selectorDisplayValues = DynamicForm_SelectCourses_JspAttendanceReport.getItem("course.code").getValue();
+            if (DynamicForm_CriteriaForm_JspAttendanceReport.getField("courseCode").getValue() != undefined
+                && DynamicForm_CriteriaForm_JspAttendanceReport.getField("courseCode").getValue() != "") {
+                criteriaDisplayValues = DynamicForm_CriteriaForm_JspAttendanceReport.getField("courseCode").getValue();
+                var ALength = criteriaDisplayValues.length;
+                var lastChar = criteriaDisplayValues.charAt(ALength - 1);
+                if (lastChar != ";")
+                    criteriaDisplayValues += ";";
+            }
+            if (selectorDisplayValues != undefined) {
+                for (var i = 0; i < selectorDisplayValues.size() - 1; i++) {
+                    criteriaDisplayValues += selectorDisplayValues [i] + ";";
+                }
+                criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
+            }
+            DynamicForm_CriteriaForm_JspAttendanceReport.getField("courseCode").setValue(criteriaDisplayValues);
+            Window_SelectCourses_JspAttendanceReport.close();
+        }
+    });
+
+    let Window_SelectCourses_JspAttendanceReport = isc.Window.create({
+        placement: "center",
+        title: "انتخاب دوره ها",
+        canDragReposition: true,
+        align: "center",
+        autoDraw: false,
+        border: "2px solid gray",
+        width: 500,
+        height: 300,
+        items: [
+            isc.TrVLayout.create({
+                members: [
+                    DynamicForm_SelectCourses_JspAttendanceReport,
+                    IButton_ConfirmCourseSelections_JspAttendanceReport
+                ]
+            })
+        ]
+    });
+
+    let DynamicForm_SelectClasses_JspAttendanceReport = isc.DynamicForm.create({
+        align: "center",
+        titleWidth: 0,
+        titleAlign: "center",
+        width: 500,
+        height: 300,
+        fields: [
+            {
+                name: "class.code",
+                align: "center",
+                title: "",
+                editorType: "MultiComboBoxItem",
+                multiple: true,
+                defaultValue: null,
+                changeOnKeypress: true,
+                showHintInField: true,
+                displayField: "code",
+                comboBoxWidth: 500,
+                valueField: "code",
+                layoutStyle: initialLayoutStyle,
+                optionDataSource: RestDataSource_Class_JspAttendanceReport
+            }
+        ]
+    });
+
+    DynamicForm_SelectClasses_JspAttendanceReport.getField("class.code").comboBox.setHint("کلاسهای مورد نظر را انتخاب کنید");
+    DynamicForm_SelectClasses_JspAttendanceReport.getField("class.code").comboBox.pickListFields =
+        [
+            {name: "titleClass", title: "نام کلاس", width: "30%", filterOperator: "iContains"},
+            {name: "code", title: "کد کلاس", width: "30%", filterOperator: "iContains"},
+            {name: "course.titleFa", title: "نام دوره", width: "30%", filterOperator: "iContains"}];
+    DynamicForm_SelectClasses_JspAttendanceReport.getField("class.code").comboBox.filterFields = ["titleClass", "code", "course.titleFa"];
+
+    let IButton_ConfirmClassesSelections_JspAttendanceReport = isc.IButtonSave.create({
+        top: 260,
+        title: "تائید",
+        width: 300,
+        click: function () {
+            let criteriaDisplayValues = "";
+            let selectorDisplayValues = DynamicForm_SelectClasses_JspAttendanceReport.getItem("class.code").getValue();
+            if (DynamicForm_SelectClasses_JspAttendanceReport.getField("class.code").getValue() != undefined && DynamicForm_SelectClasses_JspAttendanceReport.getField("class.code").getValue() != "") {
+                criteriaDisplayValues = DynamicForm_SelectClasses_JspAttendanceReport.getField("class.code").getValue().join(",");
+                let ALength = criteriaDisplayValues.length;
+                let lastChar = criteriaDisplayValues.charAt(ALength - 1);
+                if (lastChar != ";")
+                    criteriaDisplayValues += ",";
+            }
+            if (selectorDisplayValues != undefined) {
+                for (let i = 0; i < selectorDisplayValues.size() - 1; i++) {
+                    criteriaDisplayValues += selectorDisplayValues [i] + ",";
+                }
+                criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
+            }
+
+            if (typeof criteriaDisplayValues != "undefined") {
+                let uniqueNames = [];
+
+                $.each(criteriaDisplayValues.split(","), function (i, el) {
+                    if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
                 });
-            } else {
-                return null;
+                criteriaDisplayValues = uniqueNames.join(",");
+            }
+
+            criteriaDisplayValues = criteriaDisplayValues == "undefined" ? "" : criteriaDisplayValues;
+
+            DynamicForm_CriteriaForm_JspAttendanceReport.getField("classCode").setValue(criteriaDisplayValues);
+            Window_SelectClasses_JspAttendanceReport.close();
+        }
+    });
+
+    let Window_SelectClasses_JspAttendanceReport = isc.Window.create({
+        placement: "center",
+        title: "انتخاب کلاس ها",
+        canDragReposition: true,
+        align: "center",
+        autoDraw: false,
+        border: "2px solid gray",
+        width: 500,
+        height: 300,
+        items: [
+            isc.TrVLayout.create({
+                members: [
+                    DynamicForm_SelectClasses_JspAttendanceReport,
+                    IButton_ConfirmClassesSelections_JspAttendanceReport,
+                ]
+            })
+        ]
+    });
+
+    var initialLayoutStyle = "vertical";
+    let DynamicForm_SelectPeople_JspUnitReport = isc.DynamicForm.create({
+        align: "center",
+        titleWidth: 0,
+        titleAlign: "center",
+        width: 500,
+        height: 300,
+        fields: [
+            {
+                name: "people.code",
+                align: "center",
+                title: "",
+                editorType: "MultiComboBoxItem",
+                multiple: true,
+                defaultValue: null,
+                changeOnKeypress: true,
+                showHintInField: true,
+                displayField: "personnelNo",
+                comboBoxWidth: 500,
+                valueField: "personnelNo",
+                layoutStyle: initialLayoutStyle,
+                optionDataSource: PersonnelDS_PTSR_DF
+            }
+        ]
+    });
+
+    DynamicForm_SelectPeople_JspUnitReport.getField("people.code").comboBox.setHint("پرسنل مورد نظر را انتخاب کنید");
+    DynamicForm_SelectPeople_JspUnitReport.getField("people.code").comboBox.pickListFields =
+        [
+            {name: "firstName", title: "نام", width: "30%", filterOperator: "iContains"},
+            {name: "lastName", title: "نام خانوادگي", width: "30%", filterOperator: "iContains"},
+            {name: "nationalCode", title: "کدملي", width: "30%", filterOperator: "iContains"},
+            {name: "personnelNo", title: "کد پرسنلي", width: "30%", filterOperator: "iContains"},
+            {name: "personnelNo2", title: "کد پرسنلي 6 رقمي", width: "30%", filterOperator: "iContains"},
+        ];
+    DynamicForm_SelectPeople_JspUnitReport.getField("people.code").comboBox.filterFields = ["firstName","lastName","nationalCode","personnelNo","personnelNo2"];
+
+    let IButton_ConfirmPeopleSelections_JspUnitReport = isc.IButtonSave.create({
+        top: 260,
+        title: "تائید",
+        width: 300,
+        click: function () {
+            let criteriaDisplayValues = "";
+            let selectorDisplayValues = DynamicForm_SelectPeople_JspUnitReport.getItem("people.code").getValue();
+            if (DynamicForm_SelectPeople_JspUnitReport.getField("people.code").getValue() != undefined && DynamicForm_SelectPeople_JspUnitReport.getField("people.code").getValue() != "") {
+                criteriaDisplayValues = DynamicForm_SelectPeople_JspUnitReport.getField("people.code").getValue().join(",");
+                let ALength = criteriaDisplayValues.length;
+                let lastChar = criteriaDisplayValues.charAt(ALength - 1);
+                if (lastChar != ";")
+                    criteriaDisplayValues += ",";
+            }
+            if (selectorDisplayValues != undefined) {
+                for (let i = 0; i < selectorDisplayValues.size() - 1; i++) {
+                    criteriaDisplayValues += selectorDisplayValues [i] + ",";
+                }
+                criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
+            }
+
+            if (typeof criteriaDisplayValues != "undefined") {
+                let uniqueNames = [];
+
+                $.each(criteriaDisplayValues.split(","), function (i, el) {
+                    if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+                });
+                criteriaDisplayValues = uniqueNames.join(",");
+            }
+
+            criteriaDisplayValues = criteriaDisplayValues == "undefined" ? "" : criteriaDisplayValues;
+
+            DynamicForm_CriteriaForm_JspAttendanceReport.getField("studentPersonnelNo").setValue(criteriaDisplayValues);
+            Window_SelectPeople_JspUnitReport.close();
+        }
+    });
+
+    let Window_SelectPeople_JspUnitReport = isc.Window.create({
+        placement: "center",
+        title: "انتخاب پرسنل",
+        canDragReposition: true,
+        align: "center",
+        autoDraw: false,
+        border: "2px solid gray",
+        width: 500,
+        height: 300,
+        items: [
+            isc.TrVLayout.create({
+                members: [
+                    DynamicForm_SelectPeople_JspUnitReport,
+                    IButton_ConfirmPeopleSelections_JspUnitReport,
+                ]
+            })
+        ]
+    });
+
+    let IButton_JspAttendanceReport = isc.IButtonSave.create({
+        top: 260,
+        title: "چاپ گزارش",
+        width: 300,
+        click: function () {
+            if(DynamicForm_CriteriaForm_JspAttendanceReport.getValuesAsAdvancedCriteria()==null) {
+                createDialog("info","فیلتری انتخاب نشده است.");
+                return;
+            }
+
+            DynamicForm_CriteriaForm_JspAttendanceReport.validate();
+            if (DynamicForm_CriteriaForm_JspAttendanceReport.hasErrors())
+                return;
+
+            else{
+                data_values = DynamicForm_CriteriaForm_JspAttendanceReport.getValuesAsAdvancedCriteria();
+                for (let i = 0; i < data_values.criteria.size(); i++) {
+                    if (data_values.criteria[i].fieldName == "classCode") {
+                        let codesString = data_values.criteria[i].value;
+                        let codesArray;
+                        codesArray = codesString.split(",");
+                        for (var j = 0; j < codesArray.length; j++) {
+                            if (codesArray[j] == "" || codesArray[j] == " ") {
+                                codesArray.remove(codesArray[j]);
+                            }
+                        }
+                        data_values.criteria[i].operator = "inSet";
+                        data_values.criteria[i].value = codesArray;
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "studentPersonnelNo") {
+                        let codesString = data_values.criteria[i].value;
+                        let codesArray;
+                        codesArray = codesString.split(",");
+                        for (var j = 0; j < codesArray.length; j++) {
+                            if (codesArray[j] == "" || codesArray[j] == " ") {
+                                codesArray.remove(codesArray[j]);
+                            }
+                        }
+                        data_values.criteria[i].operator = "inSet";
+                        data_values.criteria[i].value = codesArray;
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "personnelAreaTitle") {
+                        data_values.criteria[i].fieldName = "personnelAreaTitle";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "classStudentApplicantCompanyName") {
+                        data_values.criteria[i].fieldName = "classStudentApplicantCompanyName";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "studentCcpAssistant") {
+                        data_values.criteria[i].fieldName = "studentCcpAssistant";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "studentCcpUnit") {
+                        data_values.criteria[i].fieldName = "studentCcpUnit";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "studentCcpAffairs") {
+                        data_values.criteria[i].fieldName = "studentCcpAffairs";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "studentCcpSection") {
+                        data_values.criteria[i].fieldName = "studentCcpSection";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "classStartDate") {
+                        data_values.criteria[i].fieldName = "classStartDate";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "classEndDate") {
+                        data_values.criteria[i].fieldName = "classEndDate";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "sessionDate") {
+                        data_values.criteria[i].fieldName = "sessionDate";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "studentPersonnelNo") {
+                        data_values.criteria[i].fieldName = "studentPersonnelNo";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "studentPersonnelNo2") {
+                        data_values.criteria[i].fieldName = "studentPersonnelNo2";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "studentNationalCode") {
+                        data_values.criteria[i].fieldName = "studentNationalCode";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "studentFirstName") {
+                        data_values.criteria[i].fieldName = "studentFirstName";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "studentLastName") {
+                        data_values.criteria[i].fieldName = "studentLastName";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                }
+
+                ListGrid_JspAttendanceReport.invalidateCache();
+                ListGrid_JspAttendanceReport.fetchData(data_values);
+                Window_JspAttendanceReport.show();
             }
         }
     });
 
-    CourseLG_MinPCNR = isc.TrLG.create({
-        dynamicTitle: true,
-        autoFetchData: false,
-        allowAdvancedCriteria: true,
-        hidden:true,
-        dataSource: NAMinCourseDS_PCNR,
-        filterOnKeypress: false,
-        showFilterEditor: true,
-        showRecordComponents: true,
-        showRecordComponentsByCell: true,
-        useClientFiltering: true,
-        gridComponents: [ "header", "filterEditor", "body"],
-        // FilterDF_PCNR
-        fields:[
-            {name: "personnelPersonnelNo"},
-            {name: "personnelPersonnelNo2"},
-            {name: "personnelNationalCode"},
-            {name: "personnelFirstName"},
-            {name: "personnelLastName"},
-            {name: "courseCode"},
-            {name: "courseTitleFa"},
-            {
-                name: "priorityId",
-                filterOnKeypress: true,
-                editorType: "ComboBoxItem",
-                displayField: "title",
-                valueField: "id",
-                optionDataSource: PriorityDS_PCNR,
-                pickListProperties: {
-                    autoFitWidthApproach: "both",
-                },
-                pickListFields: [
-                    {name: "title", width: "30%"}
-                ],
-            },
-            {
-                name: "isPassed",
-                filterOnKeypress: true,
-                editorType: "ComboBoxItem",
-                displayField: "title",
-                valueField: "id",
-                optionDataSource: isPassedDS_PCNR,
-                pickListProperties: {
-                    autoFitWidthApproach: "both",
-                    autoFitWidth: true,
-                },
-                pickListFields: [
-                    {name: "title", width: "30%"}
-                ],
-            },
-            {name: "personnelPostCode"},
-            {name: "personnelPostTitle"},
-            {name: "personnelCcpAffairs"},
-            {name: "personnelCcpSection"},
-            {name: "personnelCcpUnit"},
-            {name: "personnelPostGradeTitle"},
-        ],
+    //----------------------------------- functions --------------------------------------------------------------------
+    let Window_CriteriaForm_JspAttendanceReport = isc.Window.create({
+        placement: "fillScreen",
+        title: "",
+        showCloseButton: false,
+        showMaximizeButton: false,
+        canDragReposition: false,
+        showMinimizeButton: false,
+        canDragResize: false,
+        closeClick: false,
+        minimize: false,
+        items: [DynamicForm_CriteriaForm_JspAttendanceReport]
     });
-
-    VLayout_Body_PCNR = isc.VLayout.create({
+    //----------------------------------- layOut -----------------------------------------------------------------------
+    let HLayOut_CriteriaForm_JspAttendanceReport = isc.TrHLayoutButtons.create({
+        showEdges: false,
+        edgeImage: "",
         width: "100%",
         height: "100%",
+        alignLayout: "center",
         members: [
-            FilterDF_PCNR,
-            CourseLG_MinPCNR,
+            Window_CriteriaForm_JspAttendanceReport
         ]
     });
 
+    let HLayOut_Confirm_JspAttendanceReport = isc.TrHLayoutButtons.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        width: "70%",
+        height: "10%",
+        alignLayout: "center",
+        padding: 10,
+        members: [
+            IButton_JspAttendanceReport
+        ]
+    });
 
-    //##--------------------#Functions#---------------------------------##
-
-    function hasFilters(){
-        let state = FilterDF_PCNR.getValuesAsCriteria().criteria;
-        let arry = state !== undefined ? state : Object.keys(FilterDF_PCNR.getValuesAsCriteria());
-        if(state === undefined && arry.length < 2)
-            return false;
-        else if(state === undefined)
-            return true;
-        else if(state.length < 2 && arry.length < 3)
-            return false;
-        else
-            return true;
-    }
-
-    //</script>
+    let VLayout_Body_JspAttendanceReport = isc.TrVLayout.create({
+        members: [
+            HLayOut_CriteriaForm_JspAttendanceReport,
+            HLayOut_Confirm_JspAttendanceReport
+        ]
+    });
+    //----------------------------------------------------End-----------------------------------------------------------
+    Window_JspAttendanceReport.hide();
