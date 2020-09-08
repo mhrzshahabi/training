@@ -68,12 +68,7 @@ public class TrainingFileNAReportController {
     @PostMapping(value = {"/export-report"})
     public void exportReport(final HttpServletRequest req,
                                       final HttpServletResponse response,
-                                      @RequestParam(value = "fields") String fields,
-                                      @RequestParam(value = "titr") String titr,
-                                      @RequestParam(value = "pageName") String pageName,
-                                      @RequestParam(value = "fileName") String fileName,
-                                      @RequestParam(value = "criteriaStr") String criteriaStr,
-                                      @RequestParam(value = "valueMaps") String valueMaps) throws Exception {
+                                      @RequestParam(value = "personnelNos") List<String> personnelNos) throws Exception {
 
 
         /*SearchDTO.SearchRq searchRq = convertToSearchRq(req);
