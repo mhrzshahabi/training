@@ -601,76 +601,6 @@ public class EvaluationService implements IEvaluationService {
         return res;
     }
 
-    public double getBehavioralEvaluationFormGrade(Evaluation evaluation){
-        double result = 0.0;
-        int index = 0;
-
-        List<EvaluationAnswerDTO.EvaluationAnswerFullData> res =  getEvaluationFormAnswerDetail(evaluation);
-
-        for (EvaluationAnswerDTO.EvaluationAnswerFullData re : res) {
-            if(re.getAnswerId() != null) {
-                if(re.getWeight() != null)
-                    index += re.getWeight();
-                else
-                    index ++;
-                result += (Double.parseDouble(parameterValueDAO.findFirstById(re.getAnswerId()).getValue()))*re.getWeight();
-            }
-        }
-        if(index!=0)
-            result = result/index;
-
-        return result;
-    }
-
-    public String getGoalQuestion(Long id) {
-        final Optional<Goal> gById = goalDAO.findById(id);
-        final Goal goal = gById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.GoalNotFound));
-
-        String question = "";
-
-        if (goal.getTitleFa().trim().indexOf("همایش")>-1||goal.getTitleFa().trim().indexOf("کنگره")>-1||goal.getTitleFa().trim().indexOf("هم اندیشی")>-1||goal.getTitleFa().trim().indexOf("کارگاه")>-1||goal.getTitleFa().trim().indexOf("سمینار")>-1) {
-            question = "میزان تسلط بر مفاهیم " + goal.getTitleFa();
-        } else if (goal.getTitleFa().trim().indexOf("مناقصات")>-1) {
-            question = "میزان آشنایی با " +  goal.getTitleFa();
-        }else{
-            question = "میزان آشنایی با " + goal.getTitleFa();
-        }
-
-        return question;
-
-    }
-
-    public String getSkillQuestion(Long id) {
-        final Optional<Skill> gById = skillDAO.findById(id);
-        final Skill skill = gById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        String skillLevel = skill.getSkillLevel().getTitleFa();
-        String question = "";
-
-
-        switch(skillLevel){
-            case "آشنایی":
-                skillLevel+=" با";
-                break;
-            case "توانایی":
-                //skillLevel+=" بر";
-                break;
-            case "تسلط":
-                skillLevel+=" بر";
-                break;
-        }
-        question=skill.getTitleFa().trim();
-        question=question.replace("آشنائی","آشنایی");
-
-        if (!question.startsWith(skillLevel)) {
-            question = "میزان " + skillLevel + " " + question;
-        } else {
-            question = "میزان " + question;
-        }
-
-        return question;
-
-    }
-
     @Override
     @Transactional
     public EvaluationDTO.BehavioralResult getBehavioralEvaluationResult(Long classId){
@@ -728,8 +658,6 @@ public class EvaluationService implements IEvaluationService {
             Integer coWorkersGradeNum = 0;
 
             for (Evaluation evaluation : evaluations) {
-//                double res = getBehavioralEvaluationFormGrade(evaluation);
-                ////////////////////////////////////////////////////////
                 int index1 = 0;
                 double res = 0.0;
                 List<EvaluationAnswerDTO.EvaluationAnswerFullData> res1 =  getEvaluationFormAnswerDetail(evaluation);
