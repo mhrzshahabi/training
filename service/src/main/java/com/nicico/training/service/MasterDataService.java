@@ -20,7 +20,6 @@ import com.nicico.training.iservice.IMasterDataService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
@@ -38,19 +37,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class MasterDataService implements IMasterDataService {
 
-    @Value("${spring.security.oauth2.client.provider.oserver.token-uri}")
-    private String authorizationUri;
-
-    @Value("${nicico.security.sys-uri}")
-    private String uri;
-
-    @Value("${nicico.security.sys-username}")
-    private String username;
-
-    @Value("${nicico.security.sys-password}")
-    private String password;
-
-    private interface PreReqProcess {
+    private interface PreReqProcess{
 
         public String preCriteria(String criteria);
 
@@ -59,11 +46,11 @@ public class MasterDataService implements IMasterDataService {
         public <T> T json2Object(JsonNode jsonNode);
     }
 
-    private class PrePeopleProcess implements PreReqProcess {
+    private class PrePeopleProcess implements PreReqProcess{
 
         @Override
         public String preCriteria(String criteria) {
-            return criteria.replace("id", "id")
+            return  criteria.replace("id", "id")
                     .replace("firstName", "people.firstName").replace("lastName", "people.lastName").replace("nationalCode", "people.nationalCode")
                     .replace("personnelNo", "emNum10")
                     .replace("postTitle", "post.title")
@@ -109,7 +96,7 @@ public class MasterDataService implements IMasterDataService {
 
     }
 
-    private class PreCompetenciesProccess implements PreReqProcess {
+    private class PreCompetenciesProccess implements PreReqProcess{
 
         @Override
         public String preCriteria(String criteria) {
@@ -145,7 +132,7 @@ public class MasterDataService implements IMasterDataService {
         }
     }
 
-    private class PrePostProccess implements PreReqProcess {
+    private class PrePostProccess implements PreReqProcess{
 
         @Override
         public String preCriteria(String criteria) {
@@ -191,7 +178,7 @@ public class MasterDataService implements IMasterDataService {
         }
     }
 
-    private class PreDepartmentProcess implements PreReqProcess {
+    private class PreDepartmentProcess implements PreReqProcess{
 
         @Override
         public String preCriteria(String criteria) {
@@ -276,7 +263,7 @@ public class MasterDataService implements IMasterDataService {
         }
     }
 
-    private class PreParentEmployeeProcess implements PreReqProcess {
+    private class PreParentEmployeeProcess implements PreReqProcess{
 
         @Override
         public String preCriteria(String criteria) {
