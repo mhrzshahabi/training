@@ -706,16 +706,7 @@ public class TclassService implements ITclassService {
             return null;
     }
 
-    public Double getTeacherGradeToClass(Long classId, Long teacherId) {
-        EvaluationDTO.Info evaluationDTO =  evaluationService.getEvaluationByData(140L, classId, teacherId,
-                187L, classId, 504L, 154L);
-        if(evaluationDTO != null) {
-            Evaluation evaluation = modelMapper.map(evaluationDTO, Evaluation.class);
-            return evaluationService.getEvaluationFormGrade(evaluation);
-        }
-        else
-            return null;
-    }
+
 
     public Double getStudentsGradeToTeacher(Set<ClassStudent> classStudentList) {
         Map<String, Double> result = calculateStudentsReactionEvaluationResult(classStudentList);
