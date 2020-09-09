@@ -66,13 +66,13 @@ public class TrainingFileNAReportController {
     protected EntityManager entityManager;
 
 
-    @GetMapping(value = {"/generate-report"})
+    /*@GetMapping(value = {"/generate-report"})
     public void generateReport(final HttpServletRequest req,
                                       final HttpServletResponse response,
                                       @RequestParam(value = "personnelNos") List<String> personnelNos) throws Exception {
 
         trainingFileNAReportService.generateReport(response,personnelNos);
 
-    }
+    }*/
 
 }

@@ -18,7 +18,7 @@ public interface ITrainingFileNAReportService {
 
     <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Function converter);
 
-    void generateReport(final HttpServletResponse response, List<String> personnelNos) throws Exception;
+    void generateReport(final HttpServletResponse response, List<TrainingFileNAReportDTO.Info> data) throws Exception;
 
     void exportExcel(HttpServletResponse response, List<TrainingFileNAReportDTO.GenerateReport> data) throws Exception;
 }
