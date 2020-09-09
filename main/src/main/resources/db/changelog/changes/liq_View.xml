@@ -4890,5 +4890,27 @@ FROM
         </createView>
     </changeSet>
 
+    <changeSet author="NICICO" id="VIEW_PERSONNEL_DURATION_NA_REPORT-001">
+        <createView viewName="VIEW_PERSONNEL_DURATION_NA_REPORT" replaceIfExists="true">
+            <![CDATA[
+                SELECT
+                    na_passed.personnel_id,
+                    SUM(CASE WHEN na_passed.na_priority_id = 111 THEN course.n_theory_duration ELSE 0 END) AS essential,
+                    SUM(CASE WHEN na_passed.na_priority_id = 111 and na_passed.is_passed = 216 THEN course.n_theory_duration ELSE 0 END) AS essential_passed,
+                    SUM(CASE WHEN na_passed.na_priority_id = 112 THEN course.n_theory_duration ELSE 0 END) AS improving,
+                    SUM(CASE WHEN na_passed.na_priority_id = 112 and na_passed.is_passed = 216 THEN course.n_theory_duration ELSE 0 END) AS improving_passed,
+                    SUM(CASE WHEN na_passed.na_priority_id = 113 THEN course.n_theory_duration ELSE 0 END) AS developmental,
+                    SUM(CASE WHEN na_passed.na_priority_id = 113 and na_passed.is_passed = 216 THEN course.n_theory_duration ELSE 0 END) AS developmental_passed,
+                    SUM(course.n_theory_duration) AS duration,
+                    SUM(CASE WHEN na_passed.is_passed = 216 THEN course.n_theory_duration ELSE 0 END) AS passed
+                FROM
+                    view_personnel_course_passed_na_report   na_passed
+                    INNER JOIN tbl_course                    course ON course.id = na_passed.course_id
+                GROUP BY
+                    na_passed.personnel_id
+            ]]>
+        </createView>
+    </changeSet>
+
 
 </databaseChangeLog>
