@@ -859,6 +859,7 @@
     const studentClassReportUrl = rootUrl + "/student-class-report-view";
     const personnelCourseNAReportUrl = rootUrl + "/personnel-course-na-report";
     const trainingFileNAReportUrl = rootUrl + "/training-file-na-report";
+    const personnelDurationNAReportUrl = rootUrl + "/personnel_duration-na-report";
     const personnelCourseNotPassedReportUrl = rootUrl + "/personnel-course-not-passed-report";
     const classContractUrl = rootUrl + "/class-contract";
     const evaluationAnalysisUrl = rootUrl + "/evaluationAnalysis";
@@ -3147,10 +3148,10 @@
         }
     }
     if(sayBrowser[0] === "Chrome"){
-        createDialog("warning", "بهتر است با مرورگر فایرفاکس وارد شوید.", "اخطار")
+        createDialog("warning", "بهتر است با مرورگر فایرفاکس وارد شوید.", "اخطار");
     }
     else if(sayBrowser[0] !== "Firefox"){
-        let warn = createDialog("warning", "لطفا با مرورگر فایرفاکس وارد شوید.", "اخطار")
+        let warn = createDialog("warning", "لطفا با مرورگر فایرفاکس وارد شوید.", "اخطار");
         warn.setProperties({
             showCloseButton: false
         })

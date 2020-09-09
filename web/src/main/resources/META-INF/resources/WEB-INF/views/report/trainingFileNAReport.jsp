@@ -15,6 +15,20 @@
         ],
         fetchDataURL: enumUrl + "eTechnicalType/spec-list",
     });
+    let RestDataSource_PersonnelDurationNa = isc.TrDS.create({
+        fields: [
+            {name: "personnelId", primaryKey: true, hidden:true},
+            {name: "duration", title:"جمع کل"},
+            {name: "passed", title:"جمع گذرانده"},
+            {name: "essential", title:"جمع عملکردی ضروری"},
+            {name: "essentialPassed", title:"گذرانده عملکردی ضروری"},
+            {name: "improving", title:"جمع عملکردی بهبود"},
+            {name: "improvingPassed", title:"گذرانده عملکردی بهبود"},
+            {name: "developmental", title:"جمع عملکردی توسعه ای"},
+            {name: "developmentalPassed", title:"گذرانده عملکردی توسعه ای"},
+        ],
+        fetchDataURL: personnelDurationNAReportUrl,
+    });
 
     let RestDataSource_ScoreState = isc.TrDS.create({
         fields: [
@@ -171,7 +185,7 @@
         fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpUnit"
     });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
-    var ListGrid_Personnel_JspTrainingFileNAReport = isc.TrLG.create({
+    let ListGrid_Personnel_JspTrainingFileNAReport = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource : RestDataSource_Personnel_JspTrainingFileNAReport,
@@ -188,8 +202,9 @@
                 operator: "and",
                 criteria: [{fieldName: "personnelId", operator: "equals", value: record.id}]
             };
-            ListGrid_TrainingFile_JspTrainingFileNAReport.setImplicitCriteria(cr);
-            ListGrid_TrainingFile_JspTrainingFileNAReport.fetchData(cr);
+            // ListGrid_TrainingFile_JspTrainingFileNAReport.setImplicitCriteria(cr);
+            // ListGrid_TrainingFile_JspTrainingFileNAReport.fetchData(cr);
+            detailView.fetchData(cr);
         }
     });
     let ListGrid_TrainingFile_JspTrainingFileNAReport = isc.TrLG.create({
@@ -199,8 +214,9 @@
         cellHeight: 43,
         sortField: 1,
         autoFetchData: false,
-        showRowNumbers: false,
+        // showRowNumbers: false,
         showFilterEditor: false,
+        showResizeBar: true,
         selectionType: "single",
         fields:[
             {name: "courseCode"},
@@ -248,21 +264,23 @@
         }
     });
 
+    let detailView = isc.DetailViewer.create({
+        minWidth: 150,
+        width: "15%",
+        height: "100%",
+        autoDraw: false,
+        // border: "2px solid black",
+        layoutMargin: 5,
+        vAlign: "center",
+        autoFetchData: false,
+        dataSource: RestDataSource_PersonnelDurationNa,
+        emptyMessage:"رکورد مرتبطی وجود ندارد",
+    });
+
     let HLayout_CriteriaForm = isc.TrHLayout.create({
         members:[
             ListGrid_TrainingFile_JspTrainingFileNAReport,
-            isc.DetailViewer.create({
-                width: 430,
-                height: "90%",
-                autoDraw: false,
-                border: "2px solid black",
-                layoutMargin: 5,
-                // fields: field,
-                minWidth: 150,
-                // data: record,
-                // autoFetchData: true,
-                // width: 700
-            })
+            detailView
         ]
     });
 
