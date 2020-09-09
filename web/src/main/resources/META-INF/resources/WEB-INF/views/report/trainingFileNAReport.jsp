@@ -212,6 +212,7 @@
         height: "100%",
         dataSource : RestDataSource_TrainingFile_JspTrainingFileNAReport,
         cellHeight: 43,
+        titleAlign: "center",
         sortField: 1,
         autoFetchData: false,
         // showRowNumbers: false,
@@ -344,7 +345,15 @@
                     src: "[SKIN]/pickers/search_picker.png",
                     click: function () {
                         Window_SelectPeople_JspUnitReport.show();
-                    }}],
+                    }},
+                    {
+                        src: "[SKIN]/pickers/groupSearch.png",
+                        prompt: "جستجوی گروهی",
+                        showPrompt: true,
+                        // hint: "جستجوی گروهی",
+                        click: function () {
+                            alert(2);
+                        }}],
                 keyPressFilter: "[A-Z|0-9|,-]"
             },
             {
