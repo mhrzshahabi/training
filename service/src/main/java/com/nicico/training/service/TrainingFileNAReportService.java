@@ -7,7 +7,9 @@
 package com.nicico.training.service;
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.PersonnelDurationNAReportDTO;
 import com.nicico.training.dto.TrainingFileNAReportDTO;
 import com.nicico.training.iservice.ITrainingFileNAReportService;
 import com.nicico.training.repository.TrainingFileNAReportDAO;
@@ -19,6 +21,8 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.*;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,12 +32,17 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Service
 @RequiredArgsConstructor
 public class TrainingFileNAReportService implements ITrainingFileNAReportService {
 
     private final TrainingFileNAReportDAO trainingFileNAReportDAO;
+    private final PersonnelDurationNAReportService personnelDurationNAReportService;
+    private final ModelMapper modelMapper;
 
     @Transactional(readOnly = true)
     @Override
@@ -42,157 +51,174 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
     }
 
     @Override
-    public void generateReport(HttpServletResponse response, List<String> personnelNos) throws Exception {
+    public void generateReport(HttpServletResponse response, List<TrainingFileNAReportDTO.Info> data) throws Exception {
 
         TrainingFileNAReportDTO.GenerateReport generateReport = new TrainingFileNAReportDTO.GenerateReport();
         List<List<TrainingFileNAReportDTO.Cell>> headers = new ArrayList<>();
         List<TrainingFileNAReportDTO.Cell> rowsOfHeader = new ArrayList<>();
+        List<TrainingFileNAReportDTO.GenerateReport> result = new ArrayList<>();
 
-        rowsOfHeader.add(new TrainingFileNAReportDTO.Cell("محسن شریفی سرخانیJobCode=21032417(5404626295)", false));
-        headers.add(rowsOfHeader);
+        SearchDTO.SearchRq searchRq=new SearchDTO.SearchRq();
+        searchRq.setStartIndex(null);
+        searchRq.setCriteria(new SearchDTO.CriteriaRq());
+        searchRq.getCriteria().setOperator(EOperator.and);
+        searchRq.getCriteria().setCriteria(new ArrayList<>());
+        searchRq.getCriteria().getCriteria().add(makeNewCriteria("personnelId",data.stream().map(p->p.getPersonnelId()).collect(Collectors.toList()),EOperator.inSet,null));
 
-        rowsOfHeader = new ArrayList<>();
-        rowsOfHeader.add(new TrainingFileNAReportDTO.Cell("شغل:", true));
-        rowsOfHeader.add(new TrainingFileNAReportDTO.Cell("مسئول روابط صنعتی و خدمات پشتیبانی", false));
-        headers.add(rowsOfHeader);
-
-        rowsOfHeader = new ArrayList<>();
-        rowsOfHeader.add(new TrainingFileNAReportDTO.Cell("امور:", true));
-        rowsOfHeader.add(new TrainingFileNAReportDTO.Cell("معاونت توسعه سرمایه انسانی و سیستم های اطلاعاتی", false));
-        headers.add(rowsOfHeader);
-
-        generateReport.setHeaders(headers);
-
-        List<String> titlesOfGrid = new ArrayList<>();
-        titlesOfGrid.add("رديف");
-        titlesOfGrid.add("كد استاندارد");
-        titlesOfGrid.add("شرح استاندارد");
-        titlesOfGrid.add("اولويت");
-        titlesOfGrid.add("كد دوره");
-        titlesOfGrid.add("نام دوره");
-        titlesOfGrid.add("مدت دوره");
-        titlesOfGrid.add("وضعيت قبولي");
-
-        generateReport.setTitlesOfGrid(titlesOfGrid);
-
-        List<List<String>> dataOfGrid = new ArrayList<>();
-        List<String> row = new ArrayList<>();
-
-        row.add("");
-        row.add("CO1097");
-        row.add("آشنایی با سیستم عامل ویندوز");
-        row.add("اولویت : 1");
-        row.add("CO1C4M06");
-        row.add("استفاده از کامپیوتر و مدیریت فایلها");
-        row.add("30");
-        row.add("*");
-
-        dataOfGrid.add(row);
-        generateReport.setDataOfGrid(dataOfGrid);
-
-        titlesOfGrid = new ArrayList<>();
-        titlesOfGrid.add("اولویت");
-        titlesOfGrid.add("نیازسنجی");
-        titlesOfGrid.add("گذرانده");
-
-        generateReport.setTitlesOfSummaryGrid(titlesOfGrid);
-
-        dataOfGrid = new ArrayList<>();
-        row = new ArrayList<>();
-
-        row.add("اولویت : 1");
-        row.add("202");
-        row.add("148");
-
-        dataOfGrid.add(row);
-
-        row = new ArrayList<>();
-
-        row.add("اولویت : 2");
-        row.add("72");
-        row.add("0");
-
-        dataOfGrid.add(row);
-        generateReport.setDataOfSummaryGrid(dataOfGrid);
-
-        List<TrainingFileNAReportDTO.GenerateReport> data = new ArrayList<>();
-        data.add(generateReport);
+        List<PersonnelDurationNAReportDTO.Info> personnelDurations = modelMapper.map(personnelDurationNAReportService.search(searchRq, e -> modelMapper.map(e, PersonnelDurationNAReportDTO.Info.class)).getList(), new TypeToken<List<PersonnelDurationNAReportDTO.Info>>() {
+        }.getType());
 
 
-        generateReport = new TrainingFileNAReportDTO.GenerateReport();
-        headers = new ArrayList<>();
-        rowsOfHeader = new ArrayList<>();
+        int cnt = data.size();
 
-        rowsOfHeader.add(new TrainingFileNAReportDTO.Cell("محسن شریفی سرخانیJobCode=21032417(5404626295)", false));
-        headers.add(rowsOfHeader);
+        for (int i = 0; i < cnt; i++) {
+            TrainingFileNAReportDTO.Info TFNR = data.get(i);
 
-        rowsOfHeader = new ArrayList<>();
-        rowsOfHeader.add(new TrainingFileNAReportDTO.Cell("شغل:", true));
-        rowsOfHeader.add(new TrainingFileNAReportDTO.Cell("مسئول روابط صنعتی و خدمات پشتیبانی", false));
-        headers.add(rowsOfHeader);
 
-        rowsOfHeader = new ArrayList<>();
-        rowsOfHeader.add(new TrainingFileNAReportDTO.Cell("امور:", true));
-        rowsOfHeader.add(new TrainingFileNAReportDTO.Cell("معاونت توسعه سرمایه انسانی و سیستم های اطلاعاتی", false));
-        headers.add(rowsOfHeader);
+            rowsOfHeader = new ArrayList<>();
+            rowsOfHeader.add(new TrainingFileNAReportDTO.Cell(TFNR.getPersonnelFullName()+"("+TFNR.getPersonnelPersonnelNo()+")", false));
+            headers.add(rowsOfHeader);
 
-        generateReport.setHeaders(headers);
+            rowsOfHeader = new ArrayList<>();
+            rowsOfHeader.add(new TrainingFileNAReportDTO.Cell("پست:", true));
+            rowsOfHeader.add(new TrainingFileNAReportDTO.Cell(TFNR.getPersonnelPostTitle()+"("+TFNR.getPersonnelPostCode()+")", false));
+            headers.add(rowsOfHeader);
 
-        titlesOfGrid = new ArrayList<>();
-        titlesOfGrid.add("رديف");
-        titlesOfGrid.add("كد استاندارد");
-        titlesOfGrid.add("شرح استاندارد");
-        titlesOfGrid.add("اولويت");
-        titlesOfGrid.add("كد دوره");
-        titlesOfGrid.add("نام دوره");
-        titlesOfGrid.add("مدت دوره");
-        titlesOfGrid.add("وضعيت قبولي");
 
-        generateReport.setTitlesOfGrid(titlesOfGrid);
+            rowsOfHeader = new ArrayList<>();
+            rowsOfHeader.add(new TrainingFileNAReportDTO.Cell("امور:", true));
+            rowsOfHeader.add(new TrainingFileNAReportDTO.Cell(TFNR.getLocation(), false));
+            headers.add(rowsOfHeader);
 
-        dataOfGrid = new ArrayList<>();
-        row = new ArrayList<>();
+            generateReport.setHeaders(headers);
 
-        row.add("");
-        row.add("CO1097");
-        row.add("آشنایی با سیستم عامل ویندوز");
-        row.add("اولویت : 1");
-        row.add("CO1C4M06");
-        row.add("استفاده از کامپیوتر و مدیریت فایلها");
-        row.add("30");
-        row.add("*");
+            List<String> titlesOfGrid = new ArrayList<>();
+            titlesOfGrid.add("رديف");
+            titlesOfGrid.add("كد دوره");
+            titlesOfGrid.add("نام دوره");
+            titlesOfGrid.add("مدت دوره");
+            titlesOfGrid.add("نوع تخصص");
+            titlesOfGrid.add("کد مهارت");
+            titlesOfGrid.add("نام مهارت");
+            titlesOfGrid.add("اولویت");
+            titlesOfGrid.add("نیازسنجی");
+            titlesOfGrid.add("کد کلاس");
+            titlesOfGrid.add("شروع کلاس");
+            titlesOfGrid.add("پایان کلاس");
+            titlesOfGrid.add("محل برگزاری");
+            titlesOfGrid.add("نمره");
+            titlesOfGrid.add("وضعیت نمره");
 
-        dataOfGrid.add(row);
-        generateReport.setDataOfGrid(dataOfGrid);
+            generateReport.setTitlesOfGrid(titlesOfGrid);
 
-        titlesOfGrid = new ArrayList<>();
-        titlesOfGrid.add("اولویت");
-        titlesOfGrid.add("نیازسنجی");
-        titlesOfGrid.add("گذرانده");
+            List<List<String>> dataOfGrid = new ArrayList<>();
+            List<String> row = new ArrayList<>();
 
-        generateReport.setTitlesOfSummaryGrid(titlesOfGrid);
+            row.add(((Integer)(i+1)).toString());
+            row.add(TFNR.getCourseCode());
+            row.add(TFNR.getCourseTitleFa());
+            row.add(TFNR.getTheoryDuration().toString());
+            row.add(TFNR.getTechnicalType().toString());
+            row.add(TFNR.getSkillCode());
+            row.add(TFNR.getSkillTitleFa());
+            row.add(TFNR.getPriorityId().toString());//
+            row.add(TFNR.getIsInNA()?"*":"");
+            row.add(TFNR.getClassCode());
+            row.add(TFNR.getClassStartDate());
+            row.add(TFNR.getClassEndDate());
+            row.add(TFNR.getLocation());
+            row.add(TFNR.getScore().toString());
+            row.add(TFNR.getScoreStateId().toString());
 
-        dataOfGrid = new ArrayList<>();
-        row = new ArrayList<>();
+            dataOfGrid.add(row);
+            generateReport.setDataOfGrid(dataOfGrid);
 
-        row.add("اولویت : 1");
-        row.add("202");
-        row.add("148");
 
-        dataOfGrid.add(row);
+            titlesOfGrid = new ArrayList<>();
+            titlesOfGrid.add("اولویت");
+            titlesOfGrid.add("نیازسنجی");
+            titlesOfGrid.add("گذرانده");
 
-        row = new ArrayList<>();
+            generateReport.setTitlesOfSummaryGrid(titlesOfGrid);
 
-        row.add("اولویت : 2");
-        row.add("72");
-        row.add("0");
+            dataOfGrid = new ArrayList<>();
+            ///////////////
+            List<PersonnelDurationNAReportDTO.Info> filterOfPersonnelDurations = personnelDurations.stream().filter(p->p.getPersonnelId()==TFNR.getPersonnelId()).collect(Collectors.toList());
 
-        dataOfGrid.add(row);
-        generateReport.setDataOfSummaryGrid(dataOfGrid);
+            if(filterOfPersonnelDurations!=null&&filterOfPersonnelDurations.size()!=0){
+                ///////////////
+                row = new ArrayList<>();
 
-        data.add(generateReport);
+                row.add("عملکردی ضروری");
+                row.add(filterOfPersonnelDurations.get(0).getEssential().toString());
+                row.add(filterOfPersonnelDurations.get(0).getEssentialPassed().toString());
 
-        exportExcel(response, data);
+                dataOfGrid.add(row);
+                ///////////////
+                row = new ArrayList<>();
+
+                row.add("عملکردی بهبودی");
+                row.add(filterOfPersonnelDurations.get(0).getImproving().toString());
+                row.add(filterOfPersonnelDurations.get(0).getImprovingPassed().toString());
+
+                dataOfGrid.add(row);
+                row = new ArrayList<>();
+
+                row.add("توسعه ای");
+                row.add(filterOfPersonnelDurations.get(0).getDevelopmental().toString());
+                row.add(filterOfPersonnelDurations.get(0).getDevelopmentalPassed().toString());
+
+                dataOfGrid.add(row);
+                ///////////////
+                row = new ArrayList<>();
+
+                row.add("جمع");
+                row.add(filterOfPersonnelDurations.get(0).getDuration().toString());
+                row.add(filterOfPersonnelDurations.get(0).getPassed().toString());
+
+                dataOfGrid.add(row);
+                ///////////////
+            }else{
+                ///////////////
+                row = new ArrayList<>();
+
+                row.add("عملکردی ضروری");
+                row.add("0");
+                row.add("0");
+
+                dataOfGrid.add(row);
+                ///////////////
+                row = new ArrayList<>();
+
+                row.add("عملکردی بهبودی");
+                row.add("0");
+                row.add("0");
+
+                dataOfGrid.add(row);
+                row = new ArrayList<>();
+
+                row.add("توسعه ای");
+                row.add("0");
+                row.add("0");
+
+                dataOfGrid.add(row);
+                ///////////////
+                row = new ArrayList<>();
+
+                row.add("جمع");
+                row.add("0");
+                row.add("0");
+
+                dataOfGrid.add(row);
+                ///////////////
+            }
+
+            generateReport.setDataOfSummaryGrid(dataOfGrid);
+
+            result.add(generateReport);
+        }
+
+        exportExcel(response, result);
 
     }
 

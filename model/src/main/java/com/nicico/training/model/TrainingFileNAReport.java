@@ -28,6 +28,9 @@ public class TrainingFileNAReport implements Serializable {
     @Column(name = "na_priority_id")
     private Long priorityId;
 
+    @Column(name = "na_priority_title")
+    private String priority;
+
     @Column(name = "is_in_na")
     private Boolean isInNA;
 
@@ -127,4 +130,7 @@ public class TrainingFileNAReport implements Serializable {
 
     @Column(name = "class_student_scores_state_id")
     private Long scoreStateId;
+
+    @Column(name = "class_student_scores_state_title")
+    private String scoreState;
 }
