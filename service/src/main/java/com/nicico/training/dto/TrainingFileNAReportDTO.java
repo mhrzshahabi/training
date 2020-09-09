@@ -7,7 +7,9 @@
 package com.nicico.training.dto;
 
 import io.swagger.annotations.ApiModel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -84,6 +86,8 @@ public class TrainingFileNAReportDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("Cell")
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class Cell {
 
         private String title;
