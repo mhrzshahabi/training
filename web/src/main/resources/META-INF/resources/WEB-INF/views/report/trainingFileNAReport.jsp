@@ -5,48 +5,80 @@
 // <script>
     $(document).ready(()=>{
         setTimeout(()=>{
-            $("input[name='studentPersonnelNo']").attr("disabled","disabled");
-            $("input[name='classCode']").attr("disabled","disabled");
+            $("input[name='personnelNo']").attr("disabled","disabled");
         },0)}
     );
 
     //----------------------------------------------------Rest DataSource-----------------------------------------------
-    let RestDataSource_JspTrainingFileNAReport = isc.TrDS.create({
-        fields: [
-            {name: "presenceHour", title:"حضور بر حسب ساعت", filterOperator: "equals", autoFitWidth: true},
-            {name: "presenceMinute", title:"حضور بر حسب دقیقه", filterOperator: "equals", autoFitWidth: true},
-            {name: "absenceHour", title:"غیبت بر حسب ساعت", filterOperator: "equals", autoFitWidth: true},
-            {name: "absenceMinute", title:"غیبت بر حسب دقیقه", filterOperator: "equals", autoFitWidth: true},
-            {name: "classId", hidden: true, filterOperator: "equals", autoFitWidth: true},
-            {name: "classCode", title:"<spring:message code="class.code"/>", filterOperator: "inSet", autoFitWidth: true},
-            {name: "classStartDate", title:"<spring:message code="start.date"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "classEndDate", title:"<spring:message code="end.date"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "classTeachingType", title:"<spring:message code="teaching.type"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "sessionDate", title:"تاریخ جلسه", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentId", hidden: true, filterOperator: "equals", autoFitWidth: true},
-            {name: "studentPersonnelNo", title:"<spring:message code='personnel.no'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentPersonnelNo2", title:"<spring:message code='personnel.no.6.digits'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentFirstName", title:"<spring:message code='firstName'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentLastName", title:"<spring:message code='lastName'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentNationalCode", title:"<spring:message code='national.code'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentCcpAssistant", title:"<spring:message code='assistance'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentCcpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentCcpSection", title:"<spring:message code='section'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentCcpUnit", title:"<spring:message code='unit'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "classStudentApplicantCompanyName", title:"<spring:message code='company.applicant'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelAreaTitle", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "courseId", hidden: true, title:"<spring:message code='identity'/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "courseCode", title:"<spring:message code='course.code'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "courseTitleFa", title:"<spring:message code='course'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "categoryId", title:"<spring:message code='category'/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "courseRunType", title:"<spring:message code='course_eruntype'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "courseTheoType", title:"<spring:message code='course_etheoType'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "courseLevelType", title:"<spring:message code='cousre_elevelType'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "courseTechnicalType", title: "<spring:message code="technical.type"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "instituteId", hidden: true, title: "<spring:message code="identity"/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "instituteTitleFa", title: "<spring:message code="institute"/>", filterOperator: "iContains", autoFitWidth: true},
+    let RestDataSource_eTechnicalType = isc.TrDS.create({
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ],
-        fetchDataURL: presenceReportUrl
+        fetchDataURL: enumUrl + "eTechnicalType/spec-list",
+    });
+
+    let RestDataSource_ScoreState = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+        ],
+        cacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/StudentScoreState"
+    });
+
+    let RestDataSource_PriorityId = isc.TrDS.create({
+        fields:
+            [
+                {name: "id", primaryKey: true, hidden: true},
+                {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+                {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+            ],
+        autoFetchData: false,
+        autoCacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/NeedsAssessmentPriority"
+    });
+
+    let RestDataSource_Personnel_JspTrainingFileNAReport = isc.TrDS.create({
+        fields: [
+            {name: "personnelNo", title:"شماره پرسنلی", autoFitWidth: true},
+            {name: "firstName", title:"نام", autoFitWidth: true},
+            {name: "lastName", title:"نام خانوادگی", autoFitWidth: true},
+            // {name: "personnelFullName", title:"نام و نام خانوادگی", autoFitWidth: true},
+            {name: "nationalCode", title:"کد ملی", autoFitWidth: true},
+            {name: "postTitle", title:"عنوان پست", autoFitWidth: true},
+            {name: "postCode", title:"کد پست", autoFitWidth: true},
+            {name: "companyName", title:"شرکت", autoFitWidth: true},
+            {name: "personnelNo2", title:"پرسنلی 6 رقمی", autoFitWidth: true},
+            {name: "ccpArea", title:"<spring:message code='area'/>", autoFitWidth: true},
+            {name: "ccpAssistant", title:"معاونت", autoFitWidth: true},
+            {name: "ccpAffairs", title:"امور", autoFitWidth: true},
+            {name: "ccpUnit", title:"<spring:message code='unit'/>", autoFitWidth: true},
+        ],
+        fetchDataURL: viewActivePersonnelUrl + "/iscList"
+    });
+    let RestDataSource_TrainingFile_JspTrainingFileNAReport = isc.TrDS.create({
+        fields: [
+            {name: "courseId", autoFitWidth: true},
+            {name: "courseCode", title:"کد دوره", autoFitWidth: true},
+            {name: "courseTitleFa", title:"نام دوره", autoFitWidth: true},
+            {name: "theoryDuration", title:"مدت دوره", autoFitWidth: true},
+            {name: "technicalType", title:"نوع تخصصی", autoFitWidth: true, optionDataSource: RestDataSource_eTechnicalType, displayField: "titleFa", valueField:"id"},
+
+            {name: "skillId", autoFitWidth: true},
+            {name: "skillCode", title:"کد مهارت", autoFitWidth: true},
+            {name: "skillTitleFa", title:"نام مهارت", autoFitWidth: true},
+            {name: "priorityId", title:"اولویت", autoFitWidth: true, optionDataSource: RestDataSource_PriorityId, displayField: "title", valueField:"id"},
+            {name: "isInNA", title:"نیازسنجی", autoFitWidth: true, type:"boolean"},
+
+            {name: "classId", autoFitWidth: true},
+            {name: "classCode", title:"کد کلاس", autoFitWidth: true},
+            {name: "classStartDate", title:"شروع کلاس", autoFitWidth: true},
+            {name: "classEndDate", title:"پایان کلاس", autoFitWidth: true},
+            {name: "location", title:"محل برگزاری", autoFitWidth: true},
+            {name: "score", title:"نمره", autoFitWidth: true},
+            {name: "scoreStateId", title:"وضعیت نمره", autoFitWidth: true, optionDataSource: RestDataSource_ScoreState, displayField: "title", valueField:"id"},
+        ],
+        fetchDataURL: trainingFileNAReportUrl
     });
 
     let PersonnelDS_PTSR_DF = isc.TrDS.create({
@@ -66,12 +98,7 @@
             {name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
         ],
-        fetchDataURL: personnelUrl + "/iscList",
-        implicitCriteria: {
-            _constructor:"AdvancedCriteria",
-            operator:"and",
-            criteria:[{ fieldName: "active", operator: "equals", value: 1}]
-        },
+        fetchDataURL: viewActivePersonnelUrl + "/iscList",
     });
 
     let RestDataSource_Course_JspTrainingFileNAReport = isc.TrDS.create({
@@ -144,14 +171,70 @@
         fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpUnit"
     });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
-    let ListGrid_JspTrainingFileNAReport = isc.TrLG.create({
+    var ListGrid_Personnel_JspTrainingFileNAReport = isc.TrLG.create({
         width: "100%",
         height: "100%",
-        dataSource : RestDataSource_JspTrainingFileNAReport,
+        dataSource : RestDataSource_Personnel_JspTrainingFileNAReport,
         cellHeight: 43,
-        sortField: 0,
+        sortField: 1,
         showFilterEditor: false,
         selectionType: "single",
+        showResizeBar: true,
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
+        rowClick(record){
+            let cr = {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [{fieldName: "personnelId", operator: "equals", value: record.id}]
+            };
+            ListGrid_TrainingFile_JspTrainingFileNAReport.setImplicitCriteria(cr);
+            ListGrid_TrainingFile_JspTrainingFileNAReport.fetchData(cr);
+        }
+    });
+    let ListGrid_TrainingFile_JspTrainingFileNAReport = isc.TrLG.create({
+        width: "100%",
+        height: "100%",
+        dataSource : RestDataSource_TrainingFile_JspTrainingFileNAReport,
+        cellHeight: 43,
+        sortField: 1,
+        autoFetchData: false,
+        showRowNumbers: false,
+        showFilterEditor: false,
+        selectionType: "single",
+        fields:[
+            {name: "courseCode"},
+            {name: "courseTitleFa"},
+            {name: "theoryDuration"},
+            {name: "technicalType"},
+
+            {name: "skillCode"},
+            {name: "skillTitleFa"},
+            {name: "priorityId"},
+            {name: "isInNA"},
+
+            {name: "classCode"},
+            {name: "classStartDate"},
+            {name: "classEndDate"},
+            {name: "location"},
+            {name: "score"},
+            {name: "scoreStateId"},
+        ],
+        headerSpans: [
+            {
+                fields: ["skillCode", "skillTitleFa","priorityId","isInNA"],
+                title: "نیازسنجی"
+            },
+            {
+                fields: ["classCode", "classStartDate","classEndDate","location","score","scoreStateId"],
+                title: "پرونده آموزشی"
+            },
+            {
+                fields: ["courseCode","courseTitleFa","theoryDuration","technicalType"],
+                title: ""
+            }
+        ],
+        headerHeight: 60,
         showRecordComponents: true,
         showRecordComponentsByCell: true
     });
@@ -161,18 +244,37 @@
         title: "گزارش اکسل",
         width: 300,
         click: function () {
-            ExportToFile.downloadExcelFromClient(ListGrid_JspTrainingFileNAReport, null, '', 'گزارش حضور و غياب کلاس های آموزشي')
+            ExportToFile.downloadExcelFromClient(ListGrid_Personnel_JspTrainingFileNAReport, null, '', 'گزارش مقایسه نیازسنجی با پرونده آموزشی')
         }
     });
 
-    let HLayOut_CriteriaForm_JspTrainingFileNAReport_Details = isc.TrHLayoutButtons.create({
+    let HLayout_CriteriaForm = isc.TrHLayout.create({
+        members:[
+            ListGrid_TrainingFile_JspTrainingFileNAReport,
+            isc.DetailViewer.create({
+                width: 430,
+                height: "90%",
+                autoDraw: false,
+                border: "2px solid black",
+                layoutMargin: 5,
+                // fields: field,
+                minWidth: 150,
+                // data: record,
+                // autoFetchData: true,
+                // width: 700
+            })
+        ]
+    });
+
+    let VLayOut_CriteriaForm_JspTrainingFileNAReport_Details = isc.TrVLayout.create({
         showEdges: false,
         edgeImage: "",
         width: "100%",
         height: "100%",
         alignLayout: "center",
         members: [
-            ListGrid_JspTrainingFileNAReport
+            ListGrid_Personnel_JspTrainingFileNAReport,
+            HLayout_CriteriaForm
         ]
     });
 
@@ -191,8 +293,8 @@
 
     let Window_JspTrainingFileNAReport = isc.Window.create({
         placement: "fillScreen",
-        title: "گزارش حضور و غیاب کلاسهای آموزشی",
-        canDragReposition: true,
+        title: "گزارش مقایسه نیازسنجی با پرونده آموزشی",
+        canDragReposition: false,
         align: "center",
         autoDraw: false,
         border: "1px solid gray",
@@ -200,7 +302,7 @@
         items: [
             isc.TrVLayout.create({
                 members: [
-                    HLayOut_CriteriaForm_JspTrainingFileNAReport_Details,HLayOut_Confirm_JspTrainingFileNAReport_AttendanceExcel
+                    VLayOut_CriteriaForm_JspTrainingFileNAReport_Details,HLayOut_Confirm_JspTrainingFileNAReport_AttendanceExcel
                 ]
             })
         ]
@@ -216,7 +318,7 @@
         colWidths: ["5%", "25%", "5%", "25%","5%","25%"],
         fields: [
             {
-                name: "studentPersonnelNo",
+                name: "personnelNo",
                 title: "شماره پرسنلي",
                 hint: "شماره پرسنلي را انتخاب نمائيد",
                 showHintInField: true,
@@ -238,214 +340,47 @@
                 canEdit: false
             },
             {
-                name: "personnelAreaTitle",
+                name: "ccpArea",
                 title: "<spring:message code="area"/>",
                 optionDataSource: AreaDS_PresenceReport,
                 valueField: "value",
                 displayField: "value",
             },
             {
-                name: "classStudentApplicantCompanyName",
+                name: "companyName",
                 title: "<spring:message code="company"/>",
                 valueField: "value",
                 displayField: "value",
                 optionDataSource: CompanyDS_PresenceReport,
             },
             {
-                name: "studentCcpAssistant",
+                name: "ccpAssistant",
                 title: "<spring:message code="assistance"/>",
                 valueField: "value",
                 displayField: "value",
                 optionDataSource: AssistantDS_PresenceReport,
             },
             {
-                name: "studentCcpSection",
+                name: "ccpSection",
                 title: "<spring:message code="section.cost"/>",
                 valueField: "value",
                 displayField: "value",
                 optionDataSource: SectionDS_PresenceReport,
             },
             {
-                name: "studentCcpUnit",
+                name: "ccpUnit",
                 title: "<spring:message code="unitName"/>",
                 optionDataSource: UnitDS_PresenceReport,
                 valueField: "value",
                 displayField: "value",
             },
             {
-                name: "studentCcpAffairs",
+                name: "ccpAffairs",
                 title: "<spring:message code="affairs"/>",
                 optionDataSource: AffairsDS_PresenceReport,
                 valueField: "value",
                 displayField: "value",
             },
-        ]
-    });
-
-    var initialLayoutStyle = "vertical";
-    let DynamicForm_SelectCourses_JspTrainingFileNAReport = isc.DynamicForm.create({
-        align: "center",
-        titleWidth: 0,
-        titleAlign: "center",
-        width: 500,
-        height: 300,
-        fields: [
-            {
-                name: "course.code",
-                align: "center",
-                title: "",
-                editorType: "MultiComboBoxItem",
-                multiple: true,
-                defaultValue: null,
-                changeOnKeypress: true,
-                showHintInField: true,
-                displayField: "code",
-                comboBoxWidth: 500,
-                valueField: "code",
-                layoutStyle: initialLayoutStyle,
-                optionDataSource: RestDataSource_Course_JspTrainingFileNAReport
-            }
-        ]
-    });
-    DynamicForm_SelectCourses_JspTrainingFileNAReport.getField("course.code").comboBox.setHint("دوره های مورد نظر را انتخاب کنید");
-    DynamicForm_SelectCourses_JspTrainingFileNAReport.getField("course.code").comboBox.pickListFields =
-        [{name: "titleFa", title: "نام دوره", width: "30%", filterOperator: "iContains"},
-            {
-                name: "code", title: "کد دوره", width: "30%", filterOperator: "iContains"
-            }];
-    DynamicForm_SelectCourses_JspTrainingFileNAReport.getField("course.code").comboBox.filterFields = ["titleFa", "code"];
-
-    let IButton_ConfirmCourseSelections_JspTrainingFileNAReport = isc.IButtonSave.create({
-        top: 260,
-        title: "تائید",
-        width: 300,
-        click: function () {
-            var criteriaDisplayValues = "";
-            var selectorDisplayValues = DynamicForm_SelectCourses_JspTrainingFileNAReport.getItem("course.code").getValue();
-            if (DynamicForm_CriteriaForm_JspTrainingFileNAReport.getField("courseCode").getValue() != undefined
-                && DynamicForm_CriteriaForm_JspTrainingFileNAReport.getField("courseCode").getValue() != "") {
-                criteriaDisplayValues = DynamicForm_CriteriaForm_JspTrainingFileNAReport.getField("courseCode").getValue();
-                var ALength = criteriaDisplayValues.length;
-                var lastChar = criteriaDisplayValues.charAt(ALength - 1);
-                if (lastChar != ";")
-                    criteriaDisplayValues += ";";
-            }
-            if (selectorDisplayValues != undefined) {
-                for (var i = 0; i < selectorDisplayValues.size() - 1; i++) {
-                    criteriaDisplayValues += selectorDisplayValues [i] + ";";
-                }
-                criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
-            }
-            DynamicForm_CriteriaForm_JspTrainingFileNAReport.getField("courseCode").setValue(criteriaDisplayValues);
-            Window_SelectCourses_JspTrainingFileNAReport.close();
-        }
-    });
-
-    let Window_SelectCourses_JspTrainingFileNAReport = isc.Window.create({
-        placement: "center",
-        title: "انتخاب دوره ها",
-        canDragReposition: true,
-        align: "center",
-        autoDraw: false,
-        border: "2px solid gray",
-        width: 500,
-        height: 300,
-        items: [
-            isc.TrVLayout.create({
-                members: [
-                    DynamicForm_SelectCourses_JspTrainingFileNAReport,
-                    IButton_ConfirmCourseSelections_JspTrainingFileNAReport
-                ]
-            })
-        ]
-    });
-
-    let DynamicForm_SelectClasses_JspTrainingFileNAReport = isc.DynamicForm.create({
-        align: "center",
-        titleWidth: 0,
-        titleAlign: "center",
-        width: 500,
-        height: 300,
-        fields: [
-            {
-                name: "class.code",
-                align: "center",
-                title: "",
-                editorType: "MultiComboBoxItem",
-                multiple: true,
-                defaultValue: null,
-                changeOnKeypress: true,
-                showHintInField: true,
-                displayField: "code",
-                comboBoxWidth: 500,
-                valueField: "code",
-                layoutStyle: initialLayoutStyle,
-                optionDataSource: RestDataSource_Class_JspTrainingFileNAReport
-            }
-        ]
-    });
-
-    DynamicForm_SelectClasses_JspTrainingFileNAReport.getField("class.code").comboBox.setHint("کلاسهای مورد نظر را انتخاب کنید");
-    DynamicForm_SelectClasses_JspTrainingFileNAReport.getField("class.code").comboBox.pickListFields =
-        [
-            {name: "titleClass", title: "نام کلاس", width: "30%", filterOperator: "iContains"},
-            {name: "code", title: "کد کلاس", width: "30%", filterOperator: "iContains"},
-            {name: "course.titleFa", title: "نام دوره", width: "30%", filterOperator: "iContains"}];
-    DynamicForm_SelectClasses_JspTrainingFileNAReport.getField("class.code").comboBox.filterFields = ["titleClass", "code", "course.titleFa"];
-
-    let IButton_ConfirmClassesSelections_JspTrainingFileNAReport = isc.IButtonSave.create({
-        top: 260,
-        title: "تائید",
-        width: 300,
-        click: function () {
-            let criteriaDisplayValues = "";
-            let selectorDisplayValues = DynamicForm_SelectClasses_JspTrainingFileNAReport.getItem("class.code").getValue();
-            if (DynamicForm_SelectClasses_JspTrainingFileNAReport.getField("class.code").getValue() != undefined && DynamicForm_SelectClasses_JspTrainingFileNAReport.getField("class.code").getValue() != "") {
-                criteriaDisplayValues = DynamicForm_SelectClasses_JspTrainingFileNAReport.getField("class.code").getValue().join(",");
-                let ALength = criteriaDisplayValues.length;
-                let lastChar = criteriaDisplayValues.charAt(ALength - 1);
-                if (lastChar != ";")
-                    criteriaDisplayValues += ",";
-            }
-            if (selectorDisplayValues != undefined) {
-                for (let i = 0; i < selectorDisplayValues.size() - 1; i++) {
-                    criteriaDisplayValues += selectorDisplayValues [i] + ",";
-                }
-                criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
-            }
-
-            if (typeof criteriaDisplayValues != "undefined") {
-                let uniqueNames = [];
-
-                $.each(criteriaDisplayValues.split(","), function (i, el) {
-                    if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
-                });
-                criteriaDisplayValues = uniqueNames.join(",");
-            }
-
-            criteriaDisplayValues = criteriaDisplayValues == "undefined" ? "" : criteriaDisplayValues;
-
-            DynamicForm_CriteriaForm_JspTrainingFileNAReport.getField("classCode").setValue(criteriaDisplayValues);
-            Window_SelectClasses_JspTrainingFileNAReport.close();
-        }
-    });
-
-    let Window_SelectClasses_JspTrainingFileNAReport = isc.Window.create({
-        placement: "center",
-        title: "انتخاب کلاس ها",
-        canDragReposition: true,
-        align: "center",
-        autoDraw: false,
-        border: "2px solid gray",
-        width: 500,
-        height: 300,
-        items: [
-            isc.TrVLayout.create({
-                members: [
-                    DynamicForm_SelectClasses_JspTrainingFileNAReport,
-                    IButton_ConfirmClassesSelections_JspTrainingFileNAReport,
-                ]
-            })
         ]
     });
 
@@ -518,7 +453,7 @@
 
             criteriaDisplayValues = criteriaDisplayValues == "undefined" ? "" : criteriaDisplayValues;
 
-            DynamicForm_CriteriaForm_JspTrainingFileNAReport.getField("studentPersonnelNo").setValue(criteriaDisplayValues);
+            DynamicForm_CriteriaForm_JspTrainingFileNAReport.getField("personnelNo").setValue(criteriaDisplayValues);
             Window_SelectPeople_JspUnitReport.close();
         }
     });
@@ -559,7 +494,9 @@
             else{
                 data_values = DynamicForm_CriteriaForm_JspTrainingFileNAReport.getValuesAsAdvancedCriteria();
                 for (let i = 0; i < data_values.criteria.size(); i++) {
-                    if (data_values.criteria[i].fieldName == "classCode") {
+
+
+                    if (data_values.criteria[i].fieldName == "personnelNo") {
                         let codesString = data_values.criteria[i].value;
                         let codesArray;
                         codesArray = codesString.split(",");
@@ -572,87 +509,55 @@
                         data_values.criteria[i].value = codesArray;
                     }
 
-                    else if (data_values.criteria[i].fieldName == "studentPersonnelNo") {
-                        let codesString = data_values.criteria[i].value;
-                        let codesArray;
-                        codesArray = codesString.split(",");
-                        for (var j = 0; j < codesArray.length; j++) {
-                            if (codesArray[j] == "" || codesArray[j] == " ") {
-                                codesArray.remove(codesArray[j]);
-                            }
-                        }
-                        data_values.criteria[i].operator = "inSet";
-                        data_values.criteria[i].value = codesArray;
-                    }
-
-                    else if (data_values.criteria[i].fieldName == "personnelAreaTitle") {
-                        data_values.criteria[i].fieldName = "personnelAreaTitle";
+                    else if (data_values.criteria[i].fieldName == "ccpArea") {
+                        data_values.criteria[i].fieldName = "ccpArea";
                         data_values.criteria[i].operator = "iContains";
                     }
 
-                    else if (data_values.criteria[i].fieldName == "classStudentApplicantCompanyName") {
-                        data_values.criteria[i].fieldName = "classStudentApplicantCompanyName";
+                    else if (data_values.criteria[i].fieldName == "companyName") {
+                        data_values.criteria[i].fieldName = "companyName";
                         data_values.criteria[i].operator = "iContains";
                     }
-                    else if (data_values.criteria[i].fieldName == "studentCcpAssistant") {
-                        data_values.criteria[i].fieldName = "studentCcpAssistant";
+                    else if (data_values.criteria[i].fieldName == "ccpAssistant") {
+                        data_values.criteria[i].fieldName = "ccpAssistant";
                         data_values.criteria[i].operator = "iContains";
                     }
-                    else if (data_values.criteria[i].fieldName == "studentCcpUnit") {
-                        data_values.criteria[i].fieldName = "studentCcpUnit";
+                    else if (data_values.criteria[i].fieldName == "ccpUnit") {
+                        data_values.criteria[i].fieldName = "ccpUnit";
                         data_values.criteria[i].operator = "iContains";
                     }
-                    else if (data_values.criteria[i].fieldName == "studentCcpAffairs") {
-                        data_values.criteria[i].fieldName = "studentCcpAffairs";
+                    else if (data_values.criteria[i].fieldName == "ccpAffairs") {
+                        data_values.criteria[i].fieldName = "ccpAffairs";
                         data_values.criteria[i].operator = "iContains";
                     }
-                    else if (data_values.criteria[i].fieldName == "studentCcpSection") {
-                        data_values.criteria[i].fieldName = "studentCcpSection";
-                        data_values.criteria[i].operator = "iContains";
-                    }
-
-                    else if (data_values.criteria[i].fieldName == "classStartDate") {
-                        data_values.criteria[i].fieldName = "classStartDate";
-                        data_values.criteria[i].operator = "iContains";
-                    }
-                    else if (data_values.criteria[i].fieldName == "classEndDate") {
-                        data_values.criteria[i].fieldName = "classEndDate";
+                    else if (data_values.criteria[i].fieldName == "ccpSection") {
+                        data_values.criteria[i].fieldName = "ccpSection";
                         data_values.criteria[i].operator = "iContains";
                     }
 
-                    else if (data_values.criteria[i].fieldName == "sessionDate") {
-                        data_values.criteria[i].fieldName = "sessionDate";
+                    else if (data_values.criteria[i].fieldName == "personnelNo2") {
+                        data_values.criteria[i].fieldName = "personnelNo2";
                         data_values.criteria[i].operator = "iContains";
                     }
 
-                    else if (data_values.criteria[i].fieldName == "studentPersonnelNo") {
-                        data_values.criteria[i].fieldName = "studentPersonnelNo";
+                    else if (data_values.criteria[i].fieldName == "nationalCode") {
+                        data_values.criteria[i].fieldName = "nationalCode";
                         data_values.criteria[i].operator = "iContains";
                     }
 
-                    else if (data_values.criteria[i].fieldName == "studentPersonnelNo2") {
-                        data_values.criteria[i].fieldName = "studentPersonnelNo2";
+                    else if (data_values.criteria[i].fieldName == "firstName") {
+                        data_values.criteria[i].fieldName = "firstName";
                         data_values.criteria[i].operator = "iContains";
                     }
 
-                    else if (data_values.criteria[i].fieldName == "studentNationalCode") {
-                        data_values.criteria[i].fieldName = "studentNationalCode";
-                        data_values.criteria[i].operator = "iContains";
-                    }
-
-                    else if (data_values.criteria[i].fieldName == "studentFirstName") {
-                        data_values.criteria[i].fieldName = "studentFirstName";
-                        data_values.criteria[i].operator = "iContains";
-                    }
-
-                    else if (data_values.criteria[i].fieldName == "studentLastName") {
-                        data_values.criteria[i].fieldName = "studentLastName";
+                    else if (data_values.criteria[i].fieldName == "lastName") {
+                        data_values.criteria[i].fieldName = "lastName";
                         data_values.criteria[i].operator = "iContains";
                     }
                 }
 
-                ListGrid_JspTrainingFileNAReport.invalidateCache();
-                ListGrid_JspTrainingFileNAReport.fetchData(data_values);
+                ListGrid_Personnel_JspTrainingFileNAReport.invalidateCache();
+                ListGrid_Personnel_JspTrainingFileNAReport.fetchData(data_values);
                 Window_JspTrainingFileNAReport.show();
             }
         }

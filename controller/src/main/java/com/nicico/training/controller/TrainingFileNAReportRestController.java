@@ -19,7 +19,7 @@ import java.io.IOException;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/trining-file-na-report")
+@RequestMapping(value = "/api/training-file-na-report")
 public class TrainingFileNAReportRestController {
 
     private final ITrainingFileNAReportService trainingFileNAReportService;
