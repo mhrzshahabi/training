@@ -128,7 +128,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
             if(learningResult.get("felGrade") != null)
                 effectivenessResult = calculateEffectivenessEvaluation(evaluationAnalysis.getReactionGrade(),
-                                                    learningResult.get("felGrade").toString(),evaluationAnalysis.getBehavioralGrade(), tclass.getEvaluation());
+                        learningResult.get("felGrade").toString(),evaluationAnalysis.getBehavioralGrade(), tclass.getEvaluation());
             else
                 effectivenessResult = calculateEffectivenessEvaluation(evaluationAnalysis.getReactionGrade(),
                         null,evaluationAnalysis.getBehavioralGrade(), tclass.getEvaluation());
@@ -205,7 +205,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
             if(reactionResult.containsKey("FERGrade") && reactionResult.get("FERGrade") != null)
                 effectivenessResult = calculateEffectivenessEvaluation(reactionResult.get("FERGrade").toString(),
-                    evaluationAnalysis.getLearningGrade(),evaluationAnalysis.getBehavioralGrade(), tclass.getEvaluation());
+                        evaluationAnalysis.getLearningGrade(),evaluationAnalysis.getBehavioralGrade(), tclass.getEvaluation());
             else
                 effectivenessResult = calculateEffectivenessEvaluation(null,
                         evaluationAnalysis.getLearningGrade(),evaluationAnalysis.getBehavioralGrade(), tclass.getEvaluation());
@@ -238,7 +238,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
             if(reactionResult.containsKey("FERGrade") && reactionResult.get("FERGrade") != null)
                 effectivenessResult = calculateEffectivenessEvaluation(reactionResult.get("FERGrade").toString(),
-                    null,null, tclass.getEvaluation());
+                        null,null, tclass.getEvaluation());
             else
                 effectivenessResult = calculateEffectivenessEvaluation(null,
                         null,null, tclass.getEvaluation());
@@ -273,7 +273,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
             Map<String,Object> effectivenessResult = null;
             if(behavioralResult.getBehavioralGrade() != 0)
                 effectivenessResult = calculateEffectivenessEvaluation(evaluationAnalysis.getReactionGrade(),
-                    evaluationAnalysis.getLearningGrade(),behavioralResult.getBehavioralGrade().toString(), tclass.getEvaluation());
+                        evaluationAnalysis.getLearningGrade(),behavioralResult.getBehavioralGrade().toString(), tclass.getEvaluation());
             else
                 effectivenessResult =  calculateEffectivenessEvaluation(evaluationAnalysis.getReactionGrade(),
                         evaluationAnalysis.getLearningGrade(),null, tclass.getEvaluation());
@@ -302,6 +302,11 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
             else
                 effectivenessResult =  calculateEffectivenessEvaluation(evaluationAnalysis.getReactionGrade(),
                         evaluationAnalysis.getLearningGrade(),null, tclass.getEvaluation());
+
+            if(effectivenessResult != null && effectivenessResult.containsKey("EffectivenessGrade") && effectivenessResult.containsKey("EffectivenessPass")) {
+                evaluationAnalysis.setEffectivenessGrade(effectivenessResult.get("EffectivenessGrade").toString());
+                evaluationAnalysis.setEffectivenessPass(Boolean.parseBoolean(effectivenessResult.get("EffectivenessPass").toString()));
+            }
             create(evaluationAnalysis);
         }
     }
