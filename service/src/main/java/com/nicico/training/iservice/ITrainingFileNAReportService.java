@@ -6,6 +6,8 @@
 
 package com.nicico.training.iservice;
 
+import com.nicico.training.dto.TrainingFileNAReportDTO;
+
 import com.nicico.copper.common.dto.search.SearchDTO;
 
 import javax.servlet.http.HttpServletResponse;
@@ -17,4 +19,6 @@ public interface ITrainingFileNAReportService {
     <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Function converter);
 
     void generateReport(final HttpServletResponse response, List<String> personnelNos) throws Exception;
+
+    void exportExcel(HttpServletResponse response, List<TrainingFileNAReportDTO.GenerateReport> data) throws Exception;
 }
