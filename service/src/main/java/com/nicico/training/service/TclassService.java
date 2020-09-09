@@ -812,7 +812,7 @@ public class TclassService implements ITclassService {
             return evaluationService.getEvaluationFormGrade(evaluation);
         }
         else
-            return 0.0;
+            return null;
     }
 
     public Double getTrainingGradeToTeacher(Long classId, Long trainingId, Long teacherId) {
