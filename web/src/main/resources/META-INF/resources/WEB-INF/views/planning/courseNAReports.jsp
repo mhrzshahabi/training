@@ -309,7 +309,28 @@
             refreshLG_CNAR();
         }
     });
+    var ToolStripButton_Export2EXcel_CNAR = isc.ToolStripButtonExcel.create({
+        click: function () {
+            if (CourseLG_CNAR.getSelectedRecord() !== null) {
+                let restUrl = needsAssessmentReportsUrl + "/courseNA?courseId=" + CourseLG_CNAR.getSelectedRecord().id + "&passedReport=true";
+                let fileTitr = "لیست نیازسنجی دوره «" +  CourseLG_CNAR.getSelectedRecord().titleFa+"»";
+                ExportToFile.downloadExcelRestUrl(null, CourseNAReportLG_CNAR,restUrl, 0, CourseLG_CNAR, '', fileTitr, CourseNAReportLG_CNAR.getCriteria(), null);
+            }
+            else
+            {
+                isc.Dialog.create({
+                        message:  " برای ايجاد فايل اکسل دوره ای انتخاب نشده است" ,
+                        icon: "[SKIN]ask.png",
+                        title: "توجه",
+                        buttons: [isc.IButtonSave.create({title: "تائید"})],
+                        buttonClick: function (button, index) {
+                            this.close();
+                        }
+                    });
 
+                }
+        }
+    });
     ToolStrip_Actions_CNAR = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -320,7 +341,8 @@
                     align: "left",
                     border: '0px',
                     members: [
-                        ToolStripButton_Refresh_CNAR
+                        ToolStripButton_Refresh_CNAR,
+                        ToolStripButton_Export2EXcel_CNAR
                     ]
                 })
             ]
