@@ -106,8 +106,6 @@ spring:
             user-info-uri: http://apps.icico.net.ir/user/info
             user-name-attribute: username
 nicico:
-  security:
-    sys-password: password
   upload:
     dir: /var/nicico/${spring.application.name}/upload
   dirs:
