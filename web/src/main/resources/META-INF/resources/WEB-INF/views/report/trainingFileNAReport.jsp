@@ -202,8 +202,8 @@
                 operator: "and",
                 criteria: [{fieldName: "personnelId", operator: "equals", value: record.id}]
             };
-            // ListGrid_TrainingFile_JspTrainingFileNAReport.setImplicitCriteria(cr);
-            // ListGrid_TrainingFile_JspTrainingFileNAReport.fetchData(cr);
+            ListGrid_TrainingFile_JspTrainingFileNAReport.setImplicitCriteria(cr);
+            ListGrid_TrainingFile_JspTrainingFileNAReport.fetchData(cr);
             detailView.fetchData(cr);
         }
     });
