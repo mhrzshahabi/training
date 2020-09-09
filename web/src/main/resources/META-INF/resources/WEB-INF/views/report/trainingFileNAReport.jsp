@@ -185,7 +185,7 @@
         fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpUnit"
     });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
-    let ListGrid_Personnel_JspTrainingFileNAReport = isc.TrLG.create({
+    var ListGrid_Personnel_JspTrainingFileNAReport = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource : RestDataSource_Personnel_JspTrainingFileNAReport,
@@ -261,7 +261,10 @@
         title: "گزارش اکسل",
         width: 300,
         click: function () {
-            ExportToFile.downloadExcelFromClient(ListGrid_Personnel_JspTrainingFileNAReport, null, '', 'گزارش مقایسه نیازسنجی با پرونده آموزشی')
+            let cr = ListGrid_Personnel_JspTrainingFileNAReport.getCriteria().criteria
+            console.log(cr)
+            isc.RPCManager.sendRequest(TrDSRequest(trainingFileNAReportUrl + "/generate-report?operator=or&_constructor=AdvancedCriteria&criteria=" + JSON.stringify(cr), "GET", null,
+                "callback: teacher_get_one_result(rpcResponse)"));
         }
     });
 
