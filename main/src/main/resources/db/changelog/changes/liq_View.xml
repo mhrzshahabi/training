@@ -4818,96 +4818,101 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_TRAINING_FILE_NA_REPORT-001">
+    <changeSet author="NICICO" id="VIEW_TRAINING_FILE_NA_REPORT-002">
         <createView viewName="VIEW_TRAINING_FILE_NA_REPORT" replaceIfExists="true">
             <![CDATA[
-  WITH r AS (
-        SELECT
-            nvl(passed.personnel_id, na.personnel_id) AS personnel_id,
-            nvl(passed.course_id, na.course_id) AS course_id,
-            na.skill_id,
-            na.skill_code,
-            na.skill_title_fa,
-            nvl2(na.na_priority_id, 1, 0) is_in_na,
-            na.na_priority_id,
-            passed.class_id,
-            passed.class_code,
-            passed.class_start_date,
-            passed.class_end_date,
-            passed.class_student_score,
-            passed.class_student_scores_state_id,
-            institute.c_title_fa AS class_location
-        FROM
-            devtraining.view_student_classstudent_class_term_course   passed
-            FULL JOIN devtraining.view_personnel_course_skill_na_report         na ON na.personnel_id = passed.personnel_id
-                                                                              AND na.course_id = passed.course_id
-            LEFT JOIN devtraining.tbl_institute                                 institute ON institute.id = passed.class_institute
-    )
-    SELECT
-        ROWNUM AS id,
-        prs.id                     AS personnel_id,
-        prs.first_name             AS personnel_first_name,
-        prs.last_name              AS personnel_last_name,
-        prs.first_name
-        || ' '
-        || prs.last_name AS personnel_full_name,
-        prs.national_code          AS personnel_national_code,
-        prs.personnel_no           AS personnel_personnel_no,
-        prs.emp_no                 AS personnel_emp_no,
-        prs.company_name           AS personnel_company_name,
-        dep.c_hoze_title           AS personnel_hoze_title,
-        dep.c_moavenat_title       AS personnel_moavenat_title,
-        dep.c_omor_title           AS personnel_omor_title,
-        dep.c_vahed_title          AS personnel_vahed_title,
-        post.c_title_fa            AS post_title,
-        post.c_code                AS post_code,
-        course.id                  AS course_id,
-        course.c_code              AS course_code,
-        course.c_title_fa          AS course_title_fa,
-        course.n_theory_duration   AS course_theory_duration,
-        course.e_technical_type    AS course_technical_type,
-        r.skill_id,
-        r.skill_code,
-        r.skill_title_fa,
-        r.is_in_na,
-        r.na_priority_id,
-        r.class_id,
-        r.class_code,
-        r.class_start_date,
-        r.class_end_date,
-        r.class_student_score,
-        r.class_student_scores_state_id,
-        r.class_location
-    FROM
-        r
-        INNER JOIN tbl_course       course ON r.course_id = course.id
-        INNER JOIN tbl_personnel    prs ON r.personnel_id = prs.id
-        LEFT JOIN tbl_post         post ON prs.f_post_id = post.id
-        LEFT JOIN tbl_department   dep ON prs.f_department_id = dep.id
-    ORDER BY
-        prs.id
+                  WITH r AS (
+                        SELECT
+                            nvl(passed.personnel_id, na.personnel_id) AS personnel_id,
+                            nvl(passed.course_id, na.course_id) AS course_id,
+                            na.skill_id,
+                            na.skill_code,
+                            na.skill_title_fa,
+                            nvl2(na.na_priority_id, 1, 0) is_in_na,
+                            na.na_priority_id,
+                            passed.class_id,
+                            passed.class_code,
+                            passed.class_start_date,
+                            passed.class_end_date,
+                            passed.class_student_score,
+                            passed.class_student_scores_state_id,
+                            institute.c_title_fa AS class_location
+                        FROM
+                            devtraining.view_student_classstudent_class_term_course   passed
+                            FULL JOIN devtraining.view_personnel_course_skill_na_report         na ON na.personnel_id = passed.personnel_id
+                                                                                              AND na.course_id = passed.course_id
+                            LEFT JOIN devtraining.tbl_institute                                 institute ON institute.id = passed.class_institute
+                    )
+                    SELECT
+                        ROWNUM AS id,
+                        prs.id                     AS personnel_id,
+                        prs.first_name             AS personnel_first_name,
+                        prs.last_name              AS personnel_last_name,
+                        prs.first_name
+                        || ' '
+                        || prs.last_name AS personnel_full_name,
+                        prs.national_code          AS personnel_national_code,
+                        prs.personnel_no           AS personnel_personnel_no,
+                        prs.emp_no                 AS personnel_emp_no,
+                        prs.company_name           AS personnel_company_name,
+                        dep.c_hoze_title           AS personnel_hoze_title,
+                        dep.c_moavenat_title       AS personnel_moavenat_title,
+                        dep.c_omor_title           AS personnel_omor_title,
+                        dep.c_vahed_title          AS personnel_vahed_title,
+                        post.c_title_fa            AS post_title,
+                        post.c_code                AS post_code,
+                        course.id                  AS course_id,
+                        course.c_code              AS course_code,
+                        course.c_title_fa          AS course_title_fa,
+                        course.n_theory_duration   AS course_theory_duration,
+                        course.e_technical_type    AS course_technical_type,
+                        r.skill_id,
+                        r.skill_code,
+                        r.skill_title_fa,
+                        r.is_in_na,
+                        r.na_priority_id,
+                        na_priority.c_title        AS na_priority_title,
+                        r.class_id,
+                        r.class_code,
+                        r.class_start_date,
+                        r.class_end_date,
+                        r.class_student_score,
+                        r.class_student_scores_state_id,
+                        score_state.c_title        AS class_student_scores_state_title,
+                        r.class_location
+                    FROM
+                        r
+                        INNER JOIN tbl_course            course ON r.course_id = course.id
+                        INNER JOIN tbl_personnel         prs ON r.personnel_id = prs.id
+                        LEFT JOIN tbl_post              post ON prs.f_post_id = post.id
+                        LEFT JOIN tbl_department        dep ON prs.f_department_id = dep.id
+                        LEFT JOIN tbl_parameter_value   na_priority ON na_priority.id = r.na_priority_id
+                        LEFT JOIN tbl_parameter_value   score_state ON score_state.id = r.class_student_scores_state_id
+                    ORDER BY
+                        prs.id
             ]]>
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_PERSONNEL_DURATION_NA_REPORT-001">
+    <changeSet author="NICICO" id="VIEW_PERSONNEL_DURATION_NA_REPORT-002">
         <createView viewName="VIEW_PERSONNEL_DURATION_NA_REPORT" replaceIfExists="true">
             <![CDATA[
                 SELECT
-                    na_passed.personnel_id,
-                    SUM(CASE WHEN na_passed.na_priority_id = 111 THEN course.n_theory_duration ELSE 0 END) AS essential,
-                    SUM(CASE WHEN na_passed.na_priority_id = 111 and na_passed.is_passed = 216 THEN course.n_theory_duration ELSE 0 END) AS essential_passed,
-                    SUM(CASE WHEN na_passed.na_priority_id = 112 THEN course.n_theory_duration ELSE 0 END) AS improving,
-                    SUM(CASE WHEN na_passed.na_priority_id = 112 and na_passed.is_passed = 216 THEN course.n_theory_duration ELSE 0 END) AS improving_passed,
-                    SUM(CASE WHEN na_passed.na_priority_id = 113 THEN course.n_theory_duration ELSE 0 END) AS developmental,
-                    SUM(CASE WHEN na_passed.na_priority_id = 113 and na_passed.is_passed = 216 THEN course.n_theory_duration ELSE 0 END) AS developmental_passed,
-                    SUM(course.n_theory_duration) AS duration,
-                    SUM(CASE WHEN na_passed.is_passed = 216 THEN course.n_theory_duration ELSE 0 END) AS passed
+                    prs.id,
+                    NVL(SUM(CASE WHEN na_passed.na_priority_id = 111 THEN course.n_theory_duration ELSE 0 END),0) AS essential,
+                    NVL(SUM(CASE WHEN na_passed.na_priority_id = 111 and na_passed.is_passed = 216 THEN course.n_theory_duration ELSE 0 END),0) AS essential_passed,
+                    NVL(SUM(CASE WHEN na_passed.na_priority_id = 112 THEN course.n_theory_duration ELSE 0 END),0) AS improving,
+                    NVL(SUM(CASE WHEN na_passed.na_priority_id = 112 and na_passed.is_passed = 216 THEN course.n_theory_duration ELSE 0 END),0) AS improving_passed,
+                    NVL(SUM(CASE WHEN na_passed.na_priority_id = 113 THEN course.n_theory_duration ELSE 0 END),0) AS developmental,
+                    NVL(SUM(CASE WHEN na_passed.na_priority_id = 113 and na_passed.is_passed = 216 THEN course.n_theory_duration ELSE 0 END),0) AS developmental_passed,
+                    NVL(SUM(course.n_theory_duration),0) AS duration,
+                    NVL(SUM(CASE WHEN na_passed.is_passed = 216 THEN course.n_theory_duration ELSE 0 END),0) AS passed
                 FROM
-                    view_personnel_course_passed_na_report   na_passed
-                    INNER JOIN tbl_course                    course ON course.id = na_passed.course_id
+                    VIEW_ACTIVE_PERSONNEL prs
+                    LEFT JOIN view_personnel_course_passed_na_report   na_passed on na_passed.personnel_id = prs.id
+                    LEFT JOIN tbl_course                    course ON course.id = na_passed.course_id
                 GROUP BY
-                    na_passed.personnel_id
+                    prs.id
             ]]>
         </createView>
     </changeSet>

@@ -54,6 +54,7 @@ public class TrainingFileNAReportDTO implements Serializable {
         private String skillCode;
         private String skillTitleFa;
         private Long priorityId;
+        private String priority;
         private Boolean isInNA;
 
         private Long classId;
@@ -63,6 +64,7 @@ public class TrainingFileNAReportDTO implements Serializable {
         private String location;
         private Float score;
         private Long scoreStateId;
+        private String scoreState;
 
     }
 

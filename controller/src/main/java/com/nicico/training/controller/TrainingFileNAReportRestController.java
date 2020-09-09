@@ -29,6 +29,7 @@ public class TrainingFileNAReportRestController {
     @GetMapping
     public ResponseEntity<ISC<TrainingFileNAReportDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        return new ResponseEntity<>(ISC.convertToIscRs(trainingFileNAReportService.search(searchRq, e -> modelMapper.map(e, TrainingFileNAReportDTO.Info.class)), searchRq.getStartIndex()), HttpStatus.OK);
+        searchRq.setStartIndex(null);
+        return new ResponseEntity<>(ISC.convertToIscRs(trainingFileNAReportService.search(searchRq, e -> modelMapper.map(e, TrainingFileNAReportDTO.Info.class)), 0), HttpStatus.OK);
     }
 }
