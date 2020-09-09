@@ -247,7 +247,7 @@
             },
             {
                 fields: ["courseCode","courseTitleFa","theoryDuration","technicalType"],
-                title: ""
+                title: "مشخصات دوره"
             }
         ],
         headerHeight: 60,
