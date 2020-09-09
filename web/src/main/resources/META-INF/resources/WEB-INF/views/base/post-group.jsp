@@ -691,7 +691,7 @@
                     }
                     criteria.criteria.push({fieldName: "postGroup", operator: "equals", value: ListGrid_Post_Group_Jsp.getSelectedRecord().id});
 
-                    ExportToFile.showDialog(null, ListGrid_Post_Group_Posts , "Post_Group_Post", 0, null, '',"لیست پست های انفرادی - گروه پستی"  , criteria, null);
+                    ExportToFile.downloadExcel(null, ListGrid_Post_Group_Posts , "Post_Group_Post", 0, null, '',"لیست پست های انفرادی - گروه پستی"  , criteria, null);
                 }
             })
         ]
@@ -1186,7 +1186,7 @@
                     }
                     criteria.criteria.push({fieldName: "postGroupSet", operator: "inSet", value: ListGrid_Post_Group_Jsp.getSelectedRecord().id});
 
-                    ExportToFile.showDialog(null, ListGrid_Post_Group_TrainingPosts , "Training_Post_Group_Post", 0, null, '',"لیست پست ها - گروه پستی"  , criteria, null);
+                    ExportToFile.downloadExcel(null, ListGrid_Post_Group_TrainingPosts , "Training_Post_Group_Post", 0, null, '',"لیست پست ها - گروه پستی"  , criteria, null);
                 }
             })
         ]
@@ -1557,7 +1557,7 @@
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     let criteria = ListGrid_Post_Group_Jsp.getCriteria();
-                    ExportToFile.showDialog(null, ListGrid_Post_Group_Jsp , "View_Post_Group", 0, null, '',"لیست گروه پست - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, ListGrid_Post_Group_Jsp , "View_Post_Group", 0, null, '',"لیست گروه پست - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -1640,7 +1640,7 @@
                     criteria.criteria.push({fieldName: "postGroupId", operator: "equals", value:ListGrid_Post_Group_Jsp.getSelectedRecord().id});
 
                     console.log(criteria);
-                    ExportToFile.showDialog(null, PersonnelLG_Post_Group_Jsp , "PersonnelPostGroup", 0, null, '',"لیست پرسنل - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, PersonnelLG_Post_Group_Jsp , "PersonnelPostGroup", 0, null, '',"لیست پرسنل - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -1758,7 +1758,7 @@
                     criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "PostGroup"});
                     // criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
 
-                    ExportToFile.showDialog(null, CourseLG_Post_Group_Jsp , "NeedsAssessmentReport", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, CourseLG_Post_Group_Jsp , "NeedsAssessmentReport", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
                 }
             })
         ]

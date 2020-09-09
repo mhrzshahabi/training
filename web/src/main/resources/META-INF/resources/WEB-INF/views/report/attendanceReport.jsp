@@ -155,7 +155,7 @@
                 margin:5,
                 click:function() {
                     let title="گزارش غیبت ها از تاریخ "+DynamicForm_AttendanceReport.getItem("startDate").getValue()+ " الی "+DynamicForm_AttendanceReport.getItem("endDate").getValue();
-                    ExportToFile.showDialog(null, ListGrid_AttendanceReport_AttendanceReportJSP , 'attendanceReport', 0, null, '',title  , DynamicForm_AttendanceReport.getValuesAsAdvancedCriteria(), null);
+                    ExportToFile.downloadExcel(null, ListGrid_AttendanceReport_AttendanceReportJSP , 'attendanceReport', 0, null, '',title  , DynamicForm_AttendanceReport.getValuesAsAdvancedCriteria(), null,2);
                    //ExportToFile.downloadExcelFromClient(ListGrid_AttendanceReport_AttendanceReportJSP, null, '', title)
                 }
             })

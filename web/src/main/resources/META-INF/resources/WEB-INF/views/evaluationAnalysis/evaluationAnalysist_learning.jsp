@@ -327,7 +327,7 @@
     function printEvaluationAnalysistLearning(a) {
         var criteriaForm = isc.DynamicForm.create({
             method: "POST",
-            action: "<spring:url value="/evaluationAnalysist-learning/evaluaationAnalysist-learningReport"/>",
+            action: "<spring:url value="/evaluationAnalysis/evaluaationAnalysist-learningReport"/>",
             target: "_Blank",
             canSubmit: true,
             fields:

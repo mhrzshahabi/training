@@ -16,7 +16,8 @@
             {name: "course.titleFa", filterOperator: "equals"},
             {name: "startDate"},
             {name: "endDate"},
-            {name: "evaluationGrade"}
+            {name: "evaluationGrade"},
+            {name: "code"}
         ]
     });
 
@@ -36,6 +37,11 @@
             {
                 name: "course.titleFa",
                 title: "نام دوره",
+                filterOperator: "iContains"
+            },
+            {
+                name: "code",
+                title: "کد کلاس",
                 filterOperator: "iContains"
             },
             {
@@ -87,12 +93,10 @@
 
 
     function loadPage_InternalTeachingHistory(id) {
-        if (teacherIdInternalTeachingHistory !== id) {
             teacherIdInternalTeachingHistory = id;
             RestDataSource_JspInternalTeachingHistory.fetchDataURL = classUrl + "listByteacherID/" + teacherIdInternalTeachingHistory;
             ListGrid_JspInternalTeachingHistory.fetchData();
             ListGrid_InternalTeachingHistory_refresh();
-        }
     }
 
     function clear_InternalTeachingHistory() {

@@ -797,7 +797,7 @@
                     }
                     criteria.criteria.push({fieldName: "trainingPostSet", operator: "equals", value: ListGrid_TrainingPost_Jsp.getSelectedRecord().id});
 
-                    ExportToFile.showDialog(null, ListGrid_TrainingPost_Posts , "trainingPost_Post", 0, null, '',"لیست رده پستی - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, ListGrid_TrainingPost_Posts , "trainingPost_Post", 0, null, '',"لیست رده پستی - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -1309,7 +1309,7 @@
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     let criteria = ListGrid_TrainingPost_Jsp.getCriteria();
-                    ExportToFile.showDialog(null, ListGrid_TrainingPost_Jsp , "trainingPost", 0, null, '',"لیست پست - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, ListGrid_TrainingPost_Jsp , "trainingPost", 0, null, '',"لیست پست - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -1405,7 +1405,7 @@
                     }
                     criteria.criteria.push({fieldName: "trainingPostId", operator: "equals", value:ListGrid_TrainingPost_Jsp.getSelectedRecord().id});
 
-                    ExportToFile.showDialog(null, PersonnelLG_TrainingPost_Jsp , "trainingPostPersonnel", 0, null, '',"لیست پرسنل - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, PersonnelLG_TrainingPost_Jsp , "trainingPostPersonnel", 0, null, '',"لیست پرسنل - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -1525,7 +1525,7 @@
                     criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "PostGroup"});
                     criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
 
-                    ExportToFile.showDialog(null, CourseLG_TrainingPost_Jsp , "NeedsAssessment", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, CourseLG_TrainingPost_Jsp , "NeedsAssessment", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
                 }
             })
         ]

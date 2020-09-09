@@ -157,7 +157,7 @@
                     isc.ToolStripButtonExcel.create({
                         margin:5,
                         click: function() {
-                            ExportToFile.showDialog(null, ListGrid_Result_JspTeacherReport, 'teacherReport', 0, null, '',  "گزارش اساتيد", ListGrid_Result_JspTeacherReport.data.criteria, null);
+                            ExportToFile.downloadExcel(null, ListGrid_Result_JspTeacherReport, 'teacherReport', 0, null, '',  "گزارش اساتيد", ListGrid_Result_JspTeacherReport.data.criteria, null);
                         }
                     }),
                     isc.ToolStripButton.create({
@@ -173,11 +173,12 @@
                                 let RestDataSource_TrainingClasses_JspTeacherReport = isc.TrDS.create({
                                     fields: [
                                         {name: "id", primaryKey: true, hidden: true},
-                                        {name: "course.code", filterOperator: "iContains"},
-                                        {name: "course.titleFa", filterOperator: "equals"},
+                                        {name: "course.code"},
+                                        {name: "course.titleFa"},
                                         {name: "startDate"},
                                         {name: "endDate"},
-                                        {name: "evaluationGrade"}
+                                        {name: "evaluationGrade"},
+                                        {name: "code"}
                                     ]
                                 });
                                 let ListGrid_TrainingClasses_JspTeacherReport = isc.TrLG.create({
@@ -193,6 +194,11 @@
                                         {
                                             name: "course.titleFa",
                                             title: "نام دوره",
+                                            filterOperator: "iContains"
+                                        },
+                                        {
+                                            name: "code",
+                                            title: "کد کلاس",
                                             filterOperator: "iContains"
                                         },
                                         {
@@ -245,7 +251,7 @@
                                                         criteria.criteria.push(ListGrid_TrainingClasses_JspTeacherReport.getCriteria());
                                                     criteria.criteria.push({fieldName: "teacherId", operator: "equals", value: record.teacherId});
 
-                                                    ExportToFile.showDialog(null, ListGrid_TrainingClasses_JspTeacherReport, 'teacherTrainingClasses', 0, null, '',  "لیست کلاسهای مدرس " + record.firstName + " " + record.lastName, criteria, null);
+                                                    ExportToFile.downloadExcel(null, ListGrid_TrainingClasses_JspTeacherReport, 'teacherTrainingClasses', 0, null, '',  "لیست کلاسهای مدرس " + record.firstName + " " + record.lastName, criteria, null);
                                                 }
                                             }),
                                             ListGrid_TrainingClasses_JspTeacherReport

@@ -48,7 +48,7 @@
         click: function () {
             let title="گزارش غيبت ناموجه از تاریخ "+DynamicForm_Report.getItem("startDate").getValue()+ " الی "+DynamicForm_Report.getItem("endDate").getValue();
 
-            ExportToFile.showDialog(null, List_Grid_Reaport, 'unjustifiedAbsence', 0, null, '', title, List_Grid_Reaport.data.criteria, null);
+            ExportToFile.downloadExcel(null, List_Grid_Reaport, 'unjustifiedAbsence', 0, null, '', title, List_Grid_Reaport.data.criteria, null);
         }
     })
 

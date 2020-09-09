@@ -554,7 +554,16 @@
             isc.ToolStripButtonExcel.create({
                 margin:5,
                 click:function() {
-                    ExportToFile.showDialog(null, PersonnelCourseLG_PCNP, 'personnelCourseNotPassed', 0, null, '',  "گزارش عدم آموزش", FilterDF_PCNP.getValuesAsCriteria(), null);
+                    let implicitCriteria = JSON.parse(JSON.stringify(FilterDF_PCNP.getValuesAsCriteria())) ;
+                    let criteria = PersonnelCourseLG_PCNP.getCriteria();
+
+                    if(PersonnelCourseLG_PCNP.getCriteria().criteria){
+                        for (let i = 0; i < criteria.criteria.length ; i++) {
+                            implicitCriteria.criteria.push(criteria.criteria[i]);
+                        }
+                    }
+
+                    ExportToFile.downloadExcelRestUrl(null, PersonnelCourseLG_PCNP, personnelCourseNotPassedReportUrl, 0, null, '',  "گزارش عدم آموزش", FilterDF_PCNP.getValuesAsCriteria(), null);
                 }
             }), "header", "filterEditor", "body"],
         fields: [
@@ -580,7 +589,11 @@
 
             {name: "courseCode"},
             {name: "courseTitleFa"},
-        ]
+        ],
+        initialSort: [
+            {property: "personnelPersonnelNo2", direction: "ascending"},
+            {property: "courseCode", direction: "ascending"}
+        ],
     });
 
     VLayout_Body_PCNP = isc.VLayout.create({

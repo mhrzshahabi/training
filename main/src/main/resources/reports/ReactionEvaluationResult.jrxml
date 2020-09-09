@@ -7,35 +7,35 @@
 			<![CDATA[]]>
 		</queryString>
 	</subDataset>
-	<parameter name="studentCount" class="java.lang.String"/>
-	<parameter name="logo_nicico" class="java.lang.Object"/>
-	<parameter name="todayDate" class="java.lang.String"/>
-	<parameter name="code" class="java.lang.String"/>
-	<parameter name="titleClass" class="java.lang.String"/>
-	<parameter name="term" class="java.lang.String"/>
-	<parameter name="classStatus" class="java.lang.String"/>
-	<parameter name="teacher" class="java.lang.String"/>
-	<parameter name="numberOfExportedReactionEvaluationForms" class="java.lang.String"/>
-	<parameter name="numberOfFilledReactionEvaluationForms" class="java.lang.String"/>
-	<parameter name="numberOfInCompletedReactionEvaluationForms" class="java.lang.String"/>
-	<parameter name="percenetOfFilledReactionEvaluationForms" class="java.lang.String"/>
-	<parameter name="FERGrade" class="java.lang.String"/>
-	<parameter name="FETGrade" class="java.lang.String"/>
-	<parameter name="FECRGrade" class="java.lang.String"/>
-	<parameter name="FERPass" class="java.lang.Boolean"/>
-	<parameter name="FETPass" class="java.lang.Boolean"/>
-	<parameter name="FECRPass" class="java.lang.Boolean"/>
-	<parameter name="minScore_ER" class="java.lang.String"/>
-	<parameter name="minScore_ET" class="java.lang.String"/>
-	<parameter name="differFER" class="java.lang.String"/>
-	<parameter name="differFET" class="java.lang.String"/>
-	<parameter name="teacherGradeToClass" class="java.lang.Double"/>
-	<parameter name="studentsGradeToTeacher" class="java.lang.Double"/>
-	<parameter name="studentsGradeToFacility" class="java.lang.Double"/>
-	<parameter name="studentsGradeToGoals" class="java.lang.Double"/>
-	<parameter name="trainingGradeToTeacher" class="java.lang.Double"/>
-	<parameter name="teacherEvaluationAnalysis" class="java.lang.String"/>
-	<parameter name="reactionEvaluationAnalysis" class="java.lang.String"/>
+	<parameter name="studentCount" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="logo_nicico" class="java.lang.Object" isForPrompting="false"/>
+	<parameter name="todayDate" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="code" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="titleClass" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="term" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="classStatus" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="teacher" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="numberOfExportedReactionEvaluationForms" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="numberOfFilledReactionEvaluationForms" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="numberOfInCompletedReactionEvaluationForms" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="percenetOfFilledReactionEvaluationForms" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="FERGrade" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="FETGrade" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="FECRGrade" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="FERPass" class="java.lang.Boolean" isForPrompting="false"/>
+	<parameter name="FETPass" class="java.lang.Boolean" isForPrompting="false"/>
+	<parameter name="FECRPass" class="java.lang.Boolean" isForPrompting="false"/>
+	<parameter name="minScore_ER" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="minScore_ET" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="differFER" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="differFET" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="teacherGradeToClass" class="java.lang.Double" isForPrompting="false"/>
+	<parameter name="studentsGradeToTeacher" class="java.lang.Double" isForPrompting="false"/>
+	<parameter name="studentsGradeToFacility" class="java.lang.Double" isForPrompting="false"/>
+	<parameter name="studentsGradeToGoals" class="java.lang.Double" isForPrompting="false"/>
+	<parameter name="trainingGradeToTeacher" class="java.lang.Double" isForPrompting="false"/>
+	<parameter name="teacherEvaluationAnalysis" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="reactionEvaluationAnalysis" class="java.lang.String" isForPrompting="false"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>

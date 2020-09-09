@@ -288,7 +288,7 @@
             }
             criteria.criteria.push({fieldName:'student.nationalCode',operator:'equals',value:DynamicForm_TrainingFile.getField("nationalCode").getValue()});
 
-            ExportToFile.showDialog(null, ListGrid_TrainingFile_TrainingFileJSP, 'trainingFile', 0, null, '',  "پرونده آموزشی", criteria, null);
+            ExportToFile.downloadExcel(null, ListGrid_TrainingFile_TrainingFileJSP, 'trainingFile', 0, null, '',  "پرونده آموزشی", criteria, null);
         }
     });
 

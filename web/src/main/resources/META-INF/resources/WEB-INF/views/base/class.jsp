@@ -2550,7 +2550,7 @@
                 };
             }
 
-            ExportToFile.showDialog(null, ListGrid_Class_JspClass, "class", 0, null, '', "اجرا - کلاس", criteria, null);
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_Class_JspClass, classUrl + "spec-list", 0, null, '', "اجرا - کلاس", criteria, null);
         }
     });
 
@@ -3444,7 +3444,7 @@
                             2: "لیست نمرات",
                             3: "لیست حضور و غیاب",
                             4: "نامه غیبت موجه"
-                        }, false);l
+                        }, false);
                     break;
                 }
                 case "classScoresTab": {

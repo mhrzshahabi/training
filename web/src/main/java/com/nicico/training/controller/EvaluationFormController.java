@@ -24,29 +24,6 @@ public class EvaluationFormController {
         return "base/evaluation";
     }
 
-    @PostMapping("/printWithCriteria")
-    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request) {
-
-        String token = request.getParameter("myToken");
-
-        final RestTemplate restTemplate = new RestTemplate();
-        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
-
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + token);
-
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-        map.add("printData", request.getParameter("printData"));
-
-        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
-
-        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
-
-        return restTemplate.exchange(restApiUrl + "/api/evaluation/printWithCriteria", HttpMethod.POST, entity, byte[].class);
-    }
-
     @RequestMapping("/reaction-form")
     public String loadPageReaction() {
         return "evaluation/reaction";
@@ -80,6 +57,29 @@ public class EvaluationFormController {
     @RequestMapping("/edit-goal-questions-form")
     public String loadPageEditGoalQuestions() {
         return "evaluation/editGoalQuestions";
+    }
+
+    @PostMapping("/printWithCriteria")
+    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request) {
+
+        String token = request.getParameter("myToken");
+
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
+
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        map.add("printData", request.getParameter("printData"));
+
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
+
+        return restTemplate.exchange(restApiUrl + "/api/evaluation/printWithCriteria", HttpMethod.POST, entity, byte[].class);
     }
 
     @PostMapping("/printEvaluationForm")

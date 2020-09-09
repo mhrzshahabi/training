@@ -331,6 +331,15 @@ var saveActionUrlClassDocument;
                 ToolStripButton_Add_JspClassDocuments,
                 ToolStripButton_Edit_JspClassDocuments,
                 ToolStripButton_Remove_JspClassDocuments,
+                isc.ToolStripButtonExcel.create({
+                    click: function () {
+
+                        let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                        if (!(classRecord === undefined || classRecord == null)) {
+                            ExportToFile.downloadExcelRestUrl(null, ListGrid_JspClassDocuments, classDocumentUrl  + "iscList/" + classRecord.id, 0, ListGrid_Class_JspClass, '', "کلاس - مستندات کلاس", ListGrid_JspClassDocuments.getCriteria(), null);
+                        }
+                    }
+                }),
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",

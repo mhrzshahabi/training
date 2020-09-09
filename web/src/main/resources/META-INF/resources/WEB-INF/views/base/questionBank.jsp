@@ -63,7 +63,7 @@
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     let criteria = QuestionBankLG_questionBank.getCriteria();
-                    ExportToFile.showDialog(null, QuestionBankLG_questionBank, "questionBank", 0, null, '', "بانک سوالات", criteria, null);
+                    ExportToFile.downloadExcel(null, QuestionBankLG_questionBank, "questionBank", 0, null, '', "بانک سوالات", criteria, null);
                 }
             }),
 
