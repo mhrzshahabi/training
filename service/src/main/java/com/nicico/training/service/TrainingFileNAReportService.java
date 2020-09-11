@@ -74,6 +74,7 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
         List<String> sortBy=new ArrayList<>();
         sortBy.add("-isInNA");
         sortBy.add("-classCode");
+        sortBy.add("priorityId");
         searchRq.setSortBy(sortBy);
 
         List<TrainingFileNAReportDTO.Info> ListOfTFNR = modelMapper.map(search(searchRq, e -> modelMapper.map(e, TrainingFileNAReportDTO.Info.class)).getList(), new TypeToken<List<TrainingFileNAReportDTO.Info>>() {
