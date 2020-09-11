@@ -11,7 +11,9 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.PersonnelDurationNAReportDTO;
 import com.nicico.training.dto.TrainingFileNAReportDTO;
+import com.nicico.training.dto.ViewActivePersonnelDTO;
 import com.nicico.training.iservice.ITrainingFileNAReportService;
+import com.nicico.training.model.enums.ETechnicalType;
 import com.nicico.training.repository.TrainingFileNAReportDAO;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.BorderStyle;
@@ -20,6 +22,7 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.usermodel.*;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -28,8 +31,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
+import java.lang.reflect.Array;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -51,43 +56,54 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
     }
 
     @Override
-    public void generateReport(HttpServletResponse response, List<TrainingFileNAReportDTO.Info> data) throws Exception {
-
+    public void generateReport(HttpServletResponse response, List<ViewActivePersonnelDTO.Info> data) throws Exception {
         TrainingFileNAReportDTO.GenerateReport generateReport = new TrainingFileNAReportDTO.GenerateReport();
         List<List<TrainingFileNAReportDTO.Cell>> headers = new ArrayList<>();
         List<TrainingFileNAReportDTO.Cell> rowsOfHeader = new ArrayList<>();
         List<TrainingFileNAReportDTO.GenerateReport> result = new ArrayList<>();
 
-        SearchDTO.SearchRq searchRq=new SearchDTO.SearchRq();
+        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
         searchRq.setStartIndex(null);
         searchRq.setCriteria(new SearchDTO.CriteriaRq());
         searchRq.getCriteria().setOperator(EOperator.and);
         searchRq.getCriteria().setCriteria(new ArrayList<>());
-        searchRq.getCriteria().getCriteria().add(makeNewCriteria("personnelId",data.stream().map(p->p.getPersonnelId()).collect(Collectors.toList()),EOperator.inSet,null));
+        searchRq.getCriteria().getCriteria().add(makeNewCriteria("personnelId", data.stream().map(p -> p.getId()).collect(Collectors.toList()), EOperator.inSet, null));
+
 
         List<PersonnelDurationNAReportDTO.Info> personnelDurations = modelMapper.map(personnelDurationNAReportService.search(searchRq, e -> modelMapper.map(e, PersonnelDurationNAReportDTO.Info.class)).getList(), new TypeToken<List<PersonnelDurationNAReportDTO.Info>>() {
+        }.getType());
+
+        List<String> sortBy=new ArrayList<>();
+        sortBy.add("-isInNA");
+        sortBy.add("-classCode");
+        searchRq.setSortBy(sortBy);
+
+        List<TrainingFileNAReportDTO.Info> ListOfTFNR = modelMapper.map(search(searchRq, e -> modelMapper.map(e, TrainingFileNAReportDTO.Info.class)).getList(), new TypeToken<List<TrainingFileNAReportDTO.Info>>() {
         }.getType());
 
 
         int cnt = data.size();
 
         for (int i = 0; i < cnt; i++) {
-            TrainingFileNAReportDTO.Info TFNR = data.get(i);
+            generateReport = new TrainingFileNAReportDTO.GenerateReport();
+            ViewActivePersonnelDTO.Info VAPD = data.get(i);
 
+            List<TrainingFileNAReportDTO.Info> TFNR = ListOfTFNR.stream().filter(p -> p.getPersonnelId() == VAPD.getId()).collect(Collectors.toList());
 
+            headers = new ArrayList<>();
             rowsOfHeader = new ArrayList<>();
-            rowsOfHeader.add(new TrainingFileNAReportDTO.Cell(TFNR.getPersonnelFullName()+"("+TFNR.getPersonnelPersonnelNo()+")", false));
+            rowsOfHeader.add(new TrainingFileNAReportDTO.Cell(VAPD.getFullName() + "(" + VAPD.getPersonnelNo() + ")", false));
             headers.add(rowsOfHeader);
 
             rowsOfHeader = new ArrayList<>();
             rowsOfHeader.add(new TrainingFileNAReportDTO.Cell("پست:", true));
-            rowsOfHeader.add(new TrainingFileNAReportDTO.Cell(TFNR.getPersonnelPostTitle()+"("+TFNR.getPersonnelPostCode()+")", false));
+            rowsOfHeader.add(new TrainingFileNAReportDTO.Cell(VAPD.getPostTitle() + "(" + VAPD.getPostCode() + ")", false));
             headers.add(rowsOfHeader);
 
 
             rowsOfHeader = new ArrayList<>();
             rowsOfHeader.add(new TrainingFileNAReportDTO.Cell("امور:", true));
-            rowsOfHeader.add(new TrainingFileNAReportDTO.Cell(TFNR.getLocation(), false));
+            rowsOfHeader.add(new TrainingFileNAReportDTO.Cell(VAPD.getCcpAffairs(), false));
             headers.add(rowsOfHeader);
 
             generateReport.setHeaders(headers);
@@ -114,23 +130,31 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
             List<List<String>> dataOfGrid = new ArrayList<>();
             List<String> row = new ArrayList<>();
 
-            row.add(((Integer)(i+1)).toString());
-            row.add(TFNR.getCourseCode());
-            row.add(TFNR.getCourseTitleFa());
-            row.add(TFNR.getTheoryDuration().toString());
-            row.add(TFNR.getTechnicalType().toString());
-            row.add(TFNR.getSkillCode());
-            row.add(TFNR.getSkillTitleFa());
-            row.add(TFNR.getPriorityId().toString());//
-            row.add(TFNR.getIsInNA()?"*":"");
-            row.add(TFNR.getClassCode());
-            row.add(TFNR.getClassStartDate());
-            row.add(TFNR.getClassEndDate());
-            row.add(TFNR.getLocation());
-            row.add(TFNR.getScore().toString());
-            row.add(TFNR.getScoreStateId().toString());
+            int cnt2 = TFNR.size();
 
-            dataOfGrid.add(row);
+            for (int j = 0; j < cnt2; j++) {
+                row = new ArrayList<>();
+                final TrainingFileNAReportDTO.Info tmpTFNR = TFNR.get(j);
+
+                row.add(((Integer) (j + 1)).toString());
+                row.add(tmpTFNR.getCourseCode());
+                row.add(tmpTFNR.getCourseTitleFa());
+                row.add(tmpTFNR.getTheoryDuration().toString());
+                row.add(((ETechnicalType)Arrays.asList(ETechnicalType.values()).stream().filter(p -> p.getId() == tmpTFNR.getTechnicalType()).toArray()[0]).getTitleFa());
+                row.add(tmpTFNR.getSkillCode());
+                row.add(tmpTFNR.getSkillTitleFa());
+                row.add(tmpTFNR.getPriority());
+                row.add(tmpTFNR.getIsInNA() ? "*" : "");
+                row.add(tmpTFNR.getClassCode());
+                row.add(tmpTFNR.getClassStartDate());
+                row.add(tmpTFNR.getClassEndDate());
+                row.add(tmpTFNR.getLocation());
+                row.add(tmpTFNR.getScore()==null?"0":tmpTFNR.getScore().toString());
+                row.add(tmpTFNR.getScoreState());
+
+                dataOfGrid.add(row);
+            }
+
             generateReport.setDataOfGrid(dataOfGrid);
 
 
@@ -143,9 +167,9 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
 
             dataOfGrid = new ArrayList<>();
             ///////////////
-            List<PersonnelDurationNAReportDTO.Info> filterOfPersonnelDurations = personnelDurations.stream().filter(p->p.getPersonnelId()==TFNR.getPersonnelId()).collect(Collectors.toList());
+            List<PersonnelDurationNAReportDTO.Info> filterOfPersonnelDurations = personnelDurations.stream().filter(p -> p.getPersonnelId() == VAPD.getId()).collect(Collectors.toList());
 
-            if(filterOfPersonnelDurations!=null&&filterOfPersonnelDurations.size()!=0){
+            if (filterOfPersonnelDurations != null && filterOfPersonnelDurations.size() != 0) {
                 ///////////////
                 row = new ArrayList<>();
 
@@ -178,7 +202,7 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
 
                 dataOfGrid.add(row);
                 ///////////////
-            }else{
+            } else {
                 ///////////////
                 row = new ArrayList<>();
 
@@ -231,6 +255,10 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
             XSSFSheet sheet = workbook.createSheet("گزارش");
             sheet.setRightToLeft(true);
 
+            XSSFCellStyle headerCellStyle = setCellStyle(workbook, "Tahoma", (short) 14, null,  new Color(226,121,0), VerticalAlignment.CENTER, HorizontalAlignment.CENTER);
+            XSSFCellStyle headerBoldCellStyle = setCellStyle(workbook, "Tahoma", (short) 14, null,  new Color(226,121,0), VerticalAlignment.CENTER, HorizontalAlignment.CENTER);
+            headerBoldCellStyle.getFont().setBold(true);
+
             XSSFCellStyle bodyCellStyle = setCellStyle(workbook, "Tahoma", (short) 12, null, null, VerticalAlignment.CENTER, HorizontalAlignment.CENTER);
             XSSFCellStyle bodyBoldCellStyle = setCellStyle(workbook, "Tahoma", (short) 12, null, null, VerticalAlignment.CENTER, HorizontalAlignment.CENTER);
             bodyBoldCellStyle.getFont().setBold(true);
@@ -264,7 +292,7 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
                 for (int j = 0; j < cntOfRows; j++) {
                     cntOfCells = row.getHeaders().get(j).size();
                     excelRow = sheet.createRow(currentRow);
-                    excelRow.setHeight(heightRow);
+                    excelRow.setHeight((short)(heightRow*1.5));
 
                     for (int k = 0; k < cntOfCells; k++) {
                         excelCellOfRow = excelRow.createCell(k);
@@ -276,9 +304,9 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
 
                         excelCellOfRow.setCellValue(row.getHeaders().get(j).get(k).getTitle());
                         if (row.getHeaders().get(j).get(k).isBold()) {
-                            excelCellOfRow.setCellStyle(bodyBoldCellStyle);
+                            excelCellOfRow.setCellStyle(headerBoldCellStyle);
                         } else {
-                            excelCellOfRow.setCellStyle(bodyCellStyle);
+                            excelCellOfRow.setCellStyle(headerCellStyle);
                         }
 
                     }
@@ -288,6 +316,27 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
 
                 //Grid
                 cntOfRows = row.getTitlesOfGrid().size();
+
+                excelRow = sheet.createRow(currentRow);
+                excelRow.setHeight(heightRow);
+
+                excelCellOfRow = excelRow.createCell(1);
+                sheet.addMergedRegion(CellRangeAddress.valueOf(new CellReference(currentRow, 1).formatAsString() + ":" + new CellReference(currentRow, 4).formatAsString()));
+                excelCellOfRow.setCellValue("مشخصات دوره");
+                excelCellOfRow.setCellStyle(bodyBoldCellStyle);
+
+                excelCellOfRow = excelRow.createCell(5);
+                sheet.addMergedRegion(CellRangeAddress.valueOf(new CellReference(currentRow, 5).formatAsString() + ":" + new CellReference(currentRow, 8).formatAsString()));
+                excelCellOfRow.setCellValue("نیازسنجی");
+                excelCellOfRow.setCellStyle(bodyBoldCellStyle);
+
+                excelCellOfRow = excelRow.createCell(9);
+                sheet.addMergedRegion(CellRangeAddress.valueOf(new CellReference(currentRow, 9).formatAsString() + ":" + new CellReference(currentRow, 14).formatAsString()));
+                excelCellOfRow.setCellValue("پرونده آموزشی");
+                excelCellOfRow.setCellStyle(bodyBoldCellStyle);
+                currentRow++;
+
+
                 excelRow = sheet.createRow(currentRow);
                 excelRow.setHeight(heightRow);
 

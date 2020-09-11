@@ -263,8 +263,30 @@
         click: function () {
             let cr = ListGrid_Personnel_JspTrainingFileNAReport.getCriteria().criteria
             console.log(cr)
-            isc.RPCManager.sendRequest(TrDSRequest(trainingFileNAReportUrl + "/generate-report?operator=or&_constructor=AdvancedCriteria&criteria=" + JSON.stringify(cr), "GET", null,
-                "callback: teacher_get_one_result(rpcResponse)"));
+            let strCr=JSON.stringify(cr);
+            strCr=strCr.substring(1,strCr.length-1);
+
+/*            isc.RPCManager.sendRequest(TrDSRequest(trainingFileNAReportUrl + "/generate-report?operator=or&_constructor=AdvancedCriteria&criteria=" + strCr, "GET", null,
+                "callback: teacher_get_one_result(rpcResponse)"));*/
+
+            let downloadForm = isc.DynamicForm.create({
+                method: "GET",
+                action: "<spring:url value="/training-file-na-report/generate-report"/>",
+                target: "_Blank",
+                canSubmit: true,
+                fields:
+                    [
+                        {name: "operator", type: "hidden"},
+                        {name: "_constructor", type: "hidden"},
+                        {name: "criteria", type: "hidden"},
+                    ]
+            });
+
+            downloadForm.setValue("operator", ListGrid_Personnel_JspTrainingFileNAReport.getCriteria().operator);
+            downloadForm.setValue("_constructor", "AdvancedCriteria");
+            downloadForm.setValue("criteria", strCr);
+            downloadForm.show();
+            downloadForm.submitForm();
         }
     });
 
