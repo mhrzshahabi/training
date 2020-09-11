@@ -90,6 +90,7 @@ public class ISC<T> {
     }
 
     public static <T> ISC<T> convertToIscRs(SearchDTO.SearchRs<T> searchRs, Integer startRow) {
+        startRow = startRow != null ? startRow : 0;
         Response<T> response = new Response<T>();
         response.setData(searchRs.getList()).setStartRow(startRow)
                 .setEndRow(startRow + searchRs.getList().size())
