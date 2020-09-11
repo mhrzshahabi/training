@@ -859,7 +859,7 @@
     const studentClassReportUrl = rootUrl + "/student-class-report-view";
     const personnelCourseNAReportUrl = rootUrl + "/personnel-course-na-report";
     const trainingFileNAReportUrl = rootUrl + "/training-file-na-report";
-    const personnelDurationNAReportUrl = rootUrl + "/personnel_duration-na-report";
+    const personnelDurationNAReportUrl = rootUrl + "/personnel-duration-na-report";
     const personnelCourseNotPassedReportUrl = rootUrl + "/personnel-course-not-passed-report";
     const classContractUrl = rootUrl + "/class-contract";
     const evaluationAnalysisUrl = rootUrl + "/evaluationAnalysis";
