@@ -73,7 +73,7 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
         List<PersonnelDurationNAReportDTO.Info> personnelDurations = modelMapper.map(personnelDurationNAReportService.search(searchRq, e -> modelMapper.map(e, PersonnelDurationNAReportDTO.Info.class)).getList(), new TypeToken<List<PersonnelDurationNAReportDTO.Info>>() {
         }.getType());
 
-        List<String> sortBy=new ArrayList<>();
+        List<String> sortBy = new ArrayList<>();
         sortBy.add("-isInNA");
         sortBy.add("-classCode");
         searchRq.setSortBy(sortBy);
@@ -140,7 +140,7 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
                 row.add(tmpTFNR.getCourseCode());
                 row.add(tmpTFNR.getCourseTitleFa());
                 row.add(tmpTFNR.getTheoryDuration().toString());
-                row.add(((ETechnicalType)Arrays.asList(ETechnicalType.values()).stream().filter(p -> p.getId() == tmpTFNR.getTechnicalType()).toArray()[0]).getTitleFa());
+                row.add(tmpTFNR.getTechnicalType() == null ? "" : ((ETechnicalType) Arrays.asList(ETechnicalType.values()).stream().filter(p -> p.getId() == tmpTFNR.getTechnicalType()).toArray()[0]).getTitleFa());
                 row.add(tmpTFNR.getSkillCode());
                 row.add(tmpTFNR.getSkillTitleFa());
                 row.add(tmpTFNR.getPriority());
@@ -149,7 +149,7 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
                 row.add(tmpTFNR.getClassStartDate());
                 row.add(tmpTFNR.getClassEndDate());
                 row.add(tmpTFNR.getLocation());
-                row.add(tmpTFNR.getScore()==null?"0":tmpTFNR.getScore().toString());
+                row.add(tmpTFNR.getScore() == null ? "" : tmpTFNR.getScore().toString());
                 row.add(tmpTFNR.getScoreState());
 
                 dataOfGrid.add(row);
@@ -255,8 +255,8 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
             XSSFSheet sheet = workbook.createSheet("گزارش");
             sheet.setRightToLeft(true);
 
-            XSSFCellStyle headerCellStyle = setCellStyle(workbook, "Tahoma", (short) 14, null,  new Color(226,121,0), VerticalAlignment.CENTER, HorizontalAlignment.CENTER);
-            XSSFCellStyle headerBoldCellStyle = setCellStyle(workbook, "Tahoma", (short) 14, null,  new Color(226,121,0), VerticalAlignment.CENTER, HorizontalAlignment.CENTER);
+            XSSFCellStyle headerCellStyle = setCellStyle(workbook, "Tahoma", (short) 14, null, new Color(226, 121, 0), VerticalAlignment.CENTER, HorizontalAlignment.CENTER);
+            XSSFCellStyle headerBoldCellStyle = setCellStyle(workbook, "Tahoma", (short) 14, null, new Color(226, 121, 0), VerticalAlignment.CENTER, HorizontalAlignment.CENTER);
             headerBoldCellStyle.getFont().setBold(true);
 
             XSSFCellStyle bodyCellStyle = setCellStyle(workbook, "Tahoma", (short) 12, null, null, VerticalAlignment.CENTER, HorizontalAlignment.CENTER);
@@ -292,7 +292,7 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
                 for (int j = 0; j < cntOfRows; j++) {
                     cntOfCells = row.getHeaders().get(j).size();
                     excelRow = sheet.createRow(currentRow);
-                    excelRow.setHeight((short)(heightRow*1.5));
+                    excelRow.setHeight((short) (heightRow * 1.5));
 
                     for (int k = 0; k < cntOfCells; k++) {
                         excelCellOfRow = excelRow.createCell(k);
@@ -436,10 +436,20 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
 
             }
 
+            sheet.setColumnWidth(1,2800);
+            sheet.setColumnWidth(2,18250);
+            sheet.setColumnWidth(3,2500);
+            sheet.setColumnWidth(4,3000);
+            sheet.setColumnWidth(5,2800);
+            sheet.setColumnWidth(6,18250);
+            sheet.setColumnWidth(7,4500);
+            sheet.setColumnWidth(8,2800);
+            sheet.setColumnWidth(9,4500);
+            sheet.setColumnWidth(10,3000);
+            sheet.setColumnWidth(11,3000);
+            sheet.setColumnWidth(12,8000);
+            sheet.setColumnWidth(14,9625);
 
-            for (int i = 0; i < maxCellsOfRows; i++) {
-                sheet.autoSizeColumn(i);
-            }
 
 
             String mimeType = "application/octet-stream";

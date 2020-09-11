@@ -278,11 +278,13 @@
                     [
                         {name: "operator", type: "hidden"},
                         {name: "_constructor", type: "hidden"},
+                        //{name: "_sortBy", type: "hidden"},
                         {name: "criteria", type: "hidden"},
                     ]
             });
 
             downloadForm.setValue("operator", ListGrid_Personnel_JspTrainingFileNAReport.getCriteria().operator);
+            //downloadForm.setValue("_sortBy", ListGrid_Personnel_JspTrainingFileNAReport.getSortBy());
             downloadForm.setValue("_constructor", "AdvancedCriteria");
             downloadForm.setValue("criteria", strCr);
             downloadForm.show();
