@@ -22,7 +22,6 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
-import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.usermodel.*;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -31,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
-import java.lang.reflect.Array;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,6 +74,7 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
         List<String> sortBy = new ArrayList<>();
         sortBy.add("-isInNA");
         sortBy.add("-classCode");
+        sortBy.add("priorityId");
         searchRq.setSortBy(sortBy);
 
         List<TrainingFileNAReportDTO.Info> ListOfTFNR = modelMapper.map(search(searchRq, e -> modelMapper.map(e, TrainingFileNAReportDTO.Info.class)).getList(), new TypeToken<List<TrainingFileNAReportDTO.Info>>() {

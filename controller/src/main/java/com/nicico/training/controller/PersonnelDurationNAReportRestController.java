@@ -19,7 +19,7 @@ import java.io.IOException;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/personnel_duration-na-report")
+@RequestMapping(value = "/api/personnel-duration-na-report")
 public class PersonnelDurationNAReportRestController {
 
     private final IPersonnelDurationNAReportService personnelDurationNAReportService;
