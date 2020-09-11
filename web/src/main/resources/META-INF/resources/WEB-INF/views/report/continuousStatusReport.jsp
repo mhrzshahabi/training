@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 // <script>
+
     $(document).ready(()=>{
         setTimeout(()=>{
             $("input[name='personnelNo']").attr("disabled","disabled");
