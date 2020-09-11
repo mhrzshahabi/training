@@ -261,13 +261,16 @@
         title: "گزارش اکسل",
         width: 300,
         click: function () {
+            if(ListGrid_Personnel_JspTrainingFileNAReport.data.totalRows>1000){
+                createDialog("info", "لطفا فيلتر انتخابي را عوض نماييد. تعداد پرسنل بيشتر از 1000 نفر مي باشد.");
+                return;
+            }
+
+
             let cr = ListGrid_Personnel_JspTrainingFileNAReport.getCriteria().criteria
-            console.log(cr)
+
             let strCr=JSON.stringify(cr);
             strCr=strCr.substring(1,strCr.length-1);
-
-/*            isc.RPCManager.sendRequest(TrDSRequest(trainingFileNAReportUrl + "/generate-report?operator=or&_constructor=AdvancedCriteria&criteria=" + strCr, "GET", null,
-                "callback: teacher_get_one_result(rpcResponse)"));*/
 
             let downloadForm = isc.DynamicForm.create({
                 method: "GET",
@@ -278,13 +281,30 @@
                     [
                         {name: "operator", type: "hidden"},
                         {name: "_constructor", type: "hidden"},
-                        //{name: "_sortBy", type: "hidden"},
+                        {name: "_sortBy", type: "hidden"},
                         {name: "criteria", type: "hidden"},
                     ]
             });
 
+            let sort = ListGrid_Personnel_JspTrainingFileNAReport.getSort();
+            let sortStr='';
+
+            if (sort != null && sort.size() != 0){
+
+                if(sort.size() == 1){
+                    sortStr=(ListGrid_Personnel_JspTrainingFileNAReport.getSort()[0].direction=='descending'?'-':'')+ListGrid_Personnel_JspTrainingFileNAReport.getSort()[0].property
+                }else{
+                    let listSort=[];
+                    for (var i = 0; i <sort.size() ; i++) {
+                        listSort.push((ListGrid_Personnel_JspTrainingFileNAReport.getSort()[i].direction=='descending'?'-':'')+ListGrid_Personnel_JspTrainingFileNAReport.getSort()[i].property)
+                    }
+
+                    sortStr=JSON.stringify(listSort);
+                }
+            }
+
             downloadForm.setValue("operator", ListGrid_Personnel_JspTrainingFileNAReport.getCriteria().operator);
-            //downloadForm.setValue("_sortBy", ListGrid_Personnel_JspTrainingFileNAReport.getSortBy());
+            downloadForm.setValue("_sortBy", sortStr);
             downloadForm.setValue("_constructor", "AdvancedCriteria");
             downloadForm.setValue("criteria", strCr);
             downloadForm.show();
