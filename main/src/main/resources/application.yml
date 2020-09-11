@@ -10,7 +10,7 @@ spring:
       connection-timeout: 60000
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto:validation
     properties:
       hibernate:
         dialect: org.hibernate.dialect.Oracle12cDialect

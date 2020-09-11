@@ -43,19 +43,4 @@ public class TrainingFileNAReportRestController {
         return new ResponseEntity<>(ISC.convertToIscRs(trainingFileNAReportService.search(searchRq, e -> modelMapper.map(e, TrainingFileNAReportDTO.Info.class)), 0), HttpStatus.OK);
     }
 
-
-    @GetMapping(value = {"/generate-report"})
-    public void generateReport(@RequestParam MultiValueMap<String, String> criteria,
-                               final HttpServletResponse response) throws Exception {
-        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
-        nicicoCriteria.set_startRow(null);
-
-        List<ViewActivePersonnelDTO.Info> list = modelMapper.map(personnelService.search(nicicoCriteria).getResponse().getData(), new TypeToken<List<ViewActivePersonnelDTO.Info>>() {
-        }.getType());
-
-        trainingFileNAReportService.generateReport(response, list);
-
-
-    }
-
 }
