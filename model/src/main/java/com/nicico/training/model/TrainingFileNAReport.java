@@ -39,45 +39,6 @@ public class TrainingFileNAReport implements Serializable {
     @Column(name = "personnel_id")
     private long personnelId;
 
-    @Column(name = "personnel_personnel_no")
-    private String personnelPersonnelNo;
-
-    @Column(name = "personnel_first_name")
-    private String personnelFirstName;
-
-    @Column(name = "personnel_last_name")
-    private String personnelLastName;
-
-    @Column(name = "personnel_full_name")
-    private String personnelFullName;
-
-    @Column(name = "personnel_national_code")
-    private String personnelNationalCode;
-
-    @Column(name = "post_title")
-    private String personnelPostTitle;
-
-    @Column(name = "post_code")
-    private String personnelPostCode;
-
-    @Column(name = "personnel_company_name")
-    private String personnelCompanyName;
-
-    @Column(name = "personnel_emp_no")
-    private String personnelPersonnelNo2;
-
-    @Column(name = "personnel_hoze_title")
-    private String personnelCcpArea;
-
-    @Column(name = "personnel_moavenat_title")
-    private String personnelCcpAssistant;
-
-    @Column(name = "personnel_omor_title")
-    private String personnelCcpAffairs;
-
-    @Column(name = "personnel_vahed_title")
-    private String personnelCcpUnit;
-
     ///////////////////////////////////////////////////course///////////////////////////////////////
 
     @Column(name = "course_id")
