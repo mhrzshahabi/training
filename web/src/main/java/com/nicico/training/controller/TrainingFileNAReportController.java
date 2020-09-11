@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
@@ -36,6 +37,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,21 +60,24 @@ import static net.minidev.json.parser.JSONParser.DEFAULT_PERMISSIVE_MODE;
 public class TrainingFileNAReportController {
 
     private final TrainingFileNAReportService trainingFileNAReportService;
+    private final ViewActivePersonnelService personnelService;
 
     private final ModelMapper modelMapper;
-    private final MessageSource messageSource;
-    private final ObjectMapper objectMapper;
-    @Autowired
-    protected EntityManager entityManager;
 
 
-    /*@GetMapping(value = {"/generate-report"})
-    public void generateReport(final HttpServletRequest req,
-                                      final HttpServletResponse response,
-                                      @RequestParam(value = "personnelNos") List<String> personnelNos) throws Exception {
+    @GetMapping(value = {"/generate-report"})
+    public void generateReport(@RequestParam MultiValueMap<String, String> criteria,
+                               final HttpServletResponse response) throws Exception {
+        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
+        nicicoCriteria.set_startRow(null);
 
-        trainingFileNAReportService.generateReport(response,personnelNos);
+        List<ViewActivePersonnelDTO.Info> list = modelMapper.map(personnelService.search(nicicoCriteria).getResponse().getData(), new TypeToken<List<ViewActivePersonnelDTO.Info>>() {
+        }.getType());
 
-    }*/
+        trainingFileNAReportService.generateReport(response, list);
+
+
+    }
+
 
 }
