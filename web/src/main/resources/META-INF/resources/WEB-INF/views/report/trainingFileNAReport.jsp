@@ -339,24 +339,27 @@
         numCols: 6,
         colWidths: ["5%", "25%", "5%", "25%","5%","25%"],
         fields: [
+            { type:"header", defaultValue:"جستجو:" },
             {
                 name: "personnelNo",
                 title: "شماره پرسنلي",
                 hint: "شماره پرسنلي را انتخاب نمائيد",
                 showHintInField: true,
+                // operator: "inSet",
                 icons: [{
                     src: "[SKIN]/pickers/search_picker.png",
                     click: function () {
                         Window_SelectPeople_JspUnitReport.show();
                     }},
-                    {
-                        src: "[SKIN]/pickers/groupSearch.png",
-                        prompt: "جستجوی گروهی",
-                        showPrompt: true,
-                        // hint: "جستجوی گروهی",
-                        click: function () {
-                            alert(2);
-                        }}],
+                    // {
+                    //     src: "[SKIN]/pickers/groupSearch.png",
+                    //     prompt: "جستجوی گروهی",
+                    //     showPrompt: true,
+                    //     // hint: "جستجوی گروهی",
+                    //     click: function () {
+                    //         alert(2);
+                    //     }}
+                        ],
                 keyPressFilter: "[A-Z|0-9|,-]"
             },
             {
@@ -411,6 +414,28 @@
                 valueField: "value",
                 displayField: "value",
             },
+            { type:"header", defaultValue:"جستجوی دسته ای:" },
+            {name: "source", title:"گزارش گیری براساس",
+                valueMap:{
+                "personnelNo2":"پرسنلی 6 رقمی",
+                "personnelNo":"پرسنلی 10 رقمی",
+                "nationalCode":"کد ملی",
+                },
+                defaultValue: "personnelNo2",
+                pickListProperties:{
+                    showFilterEditor: false
+                },
+            },
+            {name: "hamed", showTitle:false, colSpan:3,
+                // type:"TextAreaItem",
+                textAlign: "center",
+                keyPressFilter: "[0-9, ]",
+                changed (form, item, value){
+                    let res = value.split(" ");
+                    item.setValue(res.toString())
+                }
+            }
+
         ]
     });
 
@@ -512,84 +537,81 @@
         title: "چاپ گزارش",
         width: 300,
         click: function () {
-            if(DynamicForm_CriteriaForm_JspTrainingFileNAReport.getValuesAsAdvancedCriteria()==null) {
-                createDialog("info","فیلتری انتخاب نشده است.");
-                return;
-            }
-
-            DynamicForm_CriteriaForm_JspTrainingFileNAReport.validate();
-            if (DynamicForm_CriteriaForm_JspTrainingFileNAReport.hasErrors())
-                return;
-
-            else{
-                data_values = DynamicForm_CriteriaForm_JspTrainingFileNAReport.getValuesAsAdvancedCriteria();
-                for (let i = 0; i < data_values.criteria.size(); i++) {
-
-
-                    if (data_values.criteria[i].fieldName == "personnelNo") {
-                        let codesString = data_values.criteria[i].value;
-                        let codesArray;
-                        codesArray = codesString.split(",");
-                        for (var j = 0; j < codesArray.length; j++) {
-                            if (codesArray[j] == "" || codesArray[j] == " ") {
-                                codesArray.remove(codesArray[j]);
-                            }
-                        }
-                        data_values.criteria[i].operator = "inSet";
-                        data_values.criteria[i].value = codesArray;
-                    }
-
-                    else if (data_values.criteria[i].fieldName == "ccpArea") {
-                        data_values.criteria[i].fieldName = "ccpArea";
-                        data_values.criteria[i].operator = "iContains";
-                    }
-
-                    else if (data_values.criteria[i].fieldName == "companyName") {
-                        data_values.criteria[i].fieldName = "companyName";
-                        data_values.criteria[i].operator = "iContains";
-                    }
-                    else if (data_values.criteria[i].fieldName == "ccpAssistant") {
-                        data_values.criteria[i].fieldName = "ccpAssistant";
-                        data_values.criteria[i].operator = "iContains";
-                    }
-                    else if (data_values.criteria[i].fieldName == "ccpUnit") {
-                        data_values.criteria[i].fieldName = "ccpUnit";
-                        data_values.criteria[i].operator = "iContains";
-                    }
-                    else if (data_values.criteria[i].fieldName == "ccpAffairs") {
-                        data_values.criteria[i].fieldName = "ccpAffairs";
-                        data_values.criteria[i].operator = "iContains";
-                    }
-                    else if (data_values.criteria[i].fieldName == "ccpSection") {
-                        data_values.criteria[i].fieldName = "ccpSection";
-                        data_values.criteria[i].operator = "iContains";
-                    }
-
-                    else if (data_values.criteria[i].fieldName == "personnelNo2") {
-                        data_values.criteria[i].fieldName = "personnelNo2";
-                        data_values.criteria[i].operator = "iContains";
-                    }
-
-                    else if (data_values.criteria[i].fieldName == "nationalCode") {
-                        data_values.criteria[i].fieldName = "nationalCode";
-                        data_values.criteria[i].operator = "iContains";
-                    }
-
-                    else if (data_values.criteria[i].fieldName == "firstName") {
-                        data_values.criteria[i].fieldName = "firstName";
-                        data_values.criteria[i].operator = "iContains";
-                    }
-
-                    else if (data_values.criteria[i].fieldName == "lastName") {
-                        data_values.criteria[i].fieldName = "lastName";
-                        data_values.criteria[i].operator = "iContains";
-                    }
+            let form = DynamicForm_CriteriaForm_JspTrainingFileNAReport;
+            let data_values = form.getValuesAsAdvancedCriteria();
+            data_values.criteria = data_values.criteria.filter(a=>a.fieldName !== "source");
+            console.log(data_values)
+            if(form.getValue("hamed") === undefined) {
+                if (data_values.criteria.length == 0) {
+                    createDialog("info", "فیلتری انتخاب نشده است.");
+                    return;
                 }
+                form.validate();
+                if (form.hasErrors())
+                    return;
+                else {
+                    for (let i = 0; i < data_values.criteria.size(); i++) {
+                        if (data_values.criteria[i].fieldName == "personnelNo") {
+                            let codesString = data_values.criteria[i].value;
+                            let codesArray;
+                            codesArray = codesString.split(",");
+                            for (let j = 0; j < codesArray.length; j++) {
+                                if (codesArray[j] == "" || codesArray[j] == " ") {
+                                    codesArray.remove(codesArray[j]);
+                                }
+                            }
+                            data_values.criteria[i].operator = "inSet";
+                            data_values.criteria[i].value = codesArray;
+                        } else if (data_values.criteria[i].fieldName == "ccpArea") {
+                            data_values.criteria[i].fieldName = "ccpArea";
+                            data_values.criteria[i].operator = "iContains";
+                        } else if (data_values.criteria[i].fieldName == "companyName") {
+                            data_values.criteria[i].fieldName = "companyName";
+                            data_values.criteria[i].operator = "iContains";
+                        } else if (data_values.criteria[i].fieldName == "ccpAssistant") {
+                            data_values.criteria[i].fieldName = "ccpAssistant";
+                            data_values.criteria[i].operator = "iContains";
+                        } else if (data_values.criteria[i].fieldName == "ccpUnit") {
+                            data_values.criteria[i].fieldName = "ccpUnit";
+                            data_values.criteria[i].operator = "iContains";
+                        } else if (data_values.criteria[i].fieldName == "ccpAffairs") {
+                            data_values.criteria[i].fieldName = "ccpAffairs";
+                            data_values.criteria[i].operator = "iContains";
+                        } else if (data_values.criteria[i].fieldName == "ccpSection") {
+                            data_values.criteria[i].fieldName = "ccpSection";
+                            data_values.criteria[i].operator = "iContains";
+                        } else if (data_values.criteria[i].fieldName == "personnelNo2") {
+                            data_values.criteria[i].fieldName = "personnelNo2";
+                            data_values.criteria[i].operator = "iContains";
+                        } else if (data_values.criteria[i].fieldName == "nationalCode") {
+                            data_values.criteria[i].fieldName = "nationalCode";
+                            data_values.criteria[i].operator = "iContains";
+                        } else if (data_values.criteria[i].fieldName == "firstName") {
+                            data_values.criteria[i].fieldName = "firstName";
+                            data_values.criteria[i].operator = "iContains";
+                        } else if (data_values.criteria[i].fieldName == "lastName") {
+                            data_values.criteria[i].fieldName = "lastName";
+                            data_values.criteria[i].operator = "iContains";
+                        }
+                    }
 
-                ListGrid_Personnel_JspTrainingFileNAReport.invalidateCache();
-                ListGrid_Personnel_JspTrainingFileNAReport.fetchData(data_values);
-                Window_JspTrainingFileNAReport.show();
+                    ListGrid_Personnel_JspTrainingFileNAReport.invalidateCache();
+                    ListGrid_Personnel_JspTrainingFileNAReport.fetchData(data_values);
+                    Window_JspTrainingFileNAReport.show();
+                }
             }
+            else{
+                data_values = {
+                    _constructor: "AdvancedCriteria",
+                    operator: "and",
+                    criteria: [
+                        {fieldName: form.getValue("source"), operator:"inSet", value: form.getValue("hamed").split(',').toArray()}
+                    ]
+                };
+            }
+            ListGrid_Personnel_JspTrainingFileNAReport.invalidateCache();
+            ListGrid_Personnel_JspTrainingFileNAReport.fetchData(data_values);
+            Window_JspTrainingFileNAReport.show();
         }
     });
 
