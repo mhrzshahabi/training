@@ -270,7 +270,7 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
             Integer cntOfRows = 0;
             Integer cntOfCells = 0;
             Integer maxCells = 0;
-            Integer maxCellsOfRows = 0;
+            //Integer maxCellsOfRows = 0;
             Integer currentRow = 0;
             Short heightRow = (short) 375;
 
@@ -280,11 +280,11 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
             for (int i = 0; i < cnt; i++) {
                 row = data.get(i);
 
-                maxCells = row.getDataOfGrid().stream().max((n1, n2) -> n1.size()).orElse(null).size();
+                maxCells = row.getTitlesOfGrid().size();
 
-                if (maxCellsOfRows < maxCells) {
+                /*if (maxCellsOfRows < maxCells) {
                     maxCellsOfRows = maxCells;
-                }
+                }*/
 
                 //Headers
                 cntOfRows = row.getHeaders().size();
