@@ -116,6 +116,13 @@
         fetchDataURL: teacherUrl + "spec-list"
     });
     //----------------------------------------------------Menu-------------------------------------------------------
+    let ToolStripExcel_JspTeacher = isc.ToolStripButtonExcel.create({
+        click: function () {
+            //ExportToFile.downloadExcel(null, ListGrid_Teacher_JspTeacher, "teacher", 0, null, '', "اجرا - استاد", ListGrid_Teacher_JspTeacher.getCriteria(), null);
+           ExportToFile.downloadExcelRestUrl(null, ListGrid_Teacher_JspTeacher, teacherUrl + "spec-list-grid", 0, null, '', "اجرا - استاد", ListGrid_Teacher_JspTeacher.getCriteria(), null);
+    }
+    });
+
     var Menu_ListGrid_Teacher_JspTeacher = isc.Menu.create({
         width: 150,
         data: [
@@ -802,6 +809,7 @@
 
             <sec:authorize access="hasAuthority('Teacher_P')">
             ToolStripButton_Print_JspTeacher,
+            ToolStripExcel_JspTeacher,
             ToolStripButton_Print_InfoForm_JspTeacher,
             ToolStripButton_Print_Empty_InfoForm_JspTeacher,
             </sec:authorize>
@@ -820,7 +828,6 @@
                 ]
             })
             </sec:authorize>
-
         ]
     });
 
