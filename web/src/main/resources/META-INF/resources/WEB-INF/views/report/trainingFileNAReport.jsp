@@ -92,7 +92,7 @@
             {name: "score", title:"نمره", autoFitWidth: true},
             {name: "scoreStateId", title:"وضعیت نمره", autoFitWidth: true, optionDataSource: RestDataSource_ScoreState, displayField: "title", valueField:"id"},
         ],
-        fetchDataURL: trainingFileNAReportUrl
+        fetchDataURL: trainingFileNAReportUrl,
     });
 
     let PersonnelDS_PTSR_DF = isc.TrDS.create({
@@ -185,7 +185,7 @@
         fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpUnit"
     });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
-    var ListGrid_Personnel_JspTrainingFileNAReport = isc.TrLG.create({
+    let ListGrid_Personnel_JspTrainingFileNAReport = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource : RestDataSource_Personnel_JspTrainingFileNAReport,
@@ -387,7 +387,12 @@
                     VLayOut_CriteriaForm_JspTrainingFileNAReport_Details,HLayOut_Confirm_JspTrainingFileNAReport_AttendanceExcel
                 ]
             })
-        ]
+        ],
+        close(){
+            this.Super("close", arguments);
+            ListGrid_Personnel_JspTrainingFileNAReport.setFilterEditorCriteria({});
+
+        }
     });
     //----------------------------------------------------Criteria Form------------------------------------------------
     let DynamicForm_CriteriaForm_JspTrainingFileNAReport = isc.DynamicForm.create({
@@ -398,172 +403,14 @@
         showErrorText: false,
         numCols: 6,
         colWidths: ["5%", "25%", "5%", "25%","5%","25%"],
+        minWidth:1024,
         fields: [
-            { type:"header", defaultValue:"جستجو:" },
-            {
-                name: "personnelNo",
-                title: "شماره پرسنلي",
-                hint: "شماره پرسنلي را انتخاب نمائيد",
-                showHintInField: true,
-                // operator: "inSet",
-                icons: [{
-                    src: "[SKIN]/pickers/search_picker.png",
-                    click: function () {
-                        Window_SelectPeople_JspUnitReport.show();
-                    }},
-                    // {
-                    //     src: "[SKIN]/pickers/groupSearch.png",
-                    //     prompt: "جستجوی گروهی",
-                    //     showPrompt: true,
-                    //     // hint: "جستجوی گروهی",
-                    //     click: function () {
-                    //         alert(2);
-                    //     }}
-                        ],
-                keyPressFilter: "[A-Z|0-9|,-]"
-            },
-            {
-                name: "temp0",
-                title: "",
-                canEdit: false
-            },
-            {
-                name: "temp1",
-                title: "",
-                canEdit: false
-            },
-            {
-                name: "ccpArea",
-                title: "<spring:message code="area"/>",
-                optionDataSource: AreaDS_PresenceReport,
-                valueField: "value",
-                displayField: "value",
-                icons:[
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click : function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                        }
-                    }
-                ],
-            },
-            {
-                name: "companyName",
-                title: "<spring:message code="company"/>",
-                valueField: "value",
-                displayField: "value",
-                icons:[
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click : function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                        }
-                    }
-                ],
-                optionDataSource: CompanyDS_PresenceReport,
-            },
-            {
-                name: "ccpAssistant",
-                title: "<spring:message code="assistance"/>",
-                valueField: "value",
-                displayField: "value",
-                icons:[
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click : function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                        }
-                    }
-                ],
-                optionDataSource: AssistantDS_PresenceReport,
-            },
-            {
-                name: "ccpSection",
-                title: "<spring:message code="section.cost"/>",
-                valueField: "value",
-                displayField: "value",
-                icons:[
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click : function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                        }
-                    }
-                ],
-                optionDataSource: SectionDS_PresenceReport,
-            },
-            {
-                name: "ccpUnit",
-                title: "<spring:message code="unitName"/>",
-                optionDataSource: UnitDS_PresenceReport,
-                valueField: "value",
-                icons:[
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click : function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                        }
-                    }
-                ],
-                displayField: "value",
-            },
-            {
-                name: "ccpAffairs",
-                title: "<spring:message code="affairs"/>",
-                optionDataSource: AffairsDS_PresenceReport,
-                valueField: "value",
-                icons:[
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click : function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                        }
-                    }
-                ],
-                displayField: "value",
-            },
             { type:"header", defaultValue:"جستجوی دسته ای:" },
             {name: "source", title:"گزارش گیری براساس",
                 valueMap:{
-                "personnelNo2":"پرسنلی 6 رقمی",
-                "personnelNo":"پرسنلی 10 رقمی",
-                "nationalCode":"کد ملی",
+                    "personnelNo2":"پرسنلی 6 رقمی",
+                    "personnelNo":"پرسنلی 10 رقمی",
+                    "nationalCode":"کد ملی",
                 },
                 defaultValue: "personnelNo2",
                 pickListProperties:{
@@ -594,7 +441,160 @@
                     let res = value.split(" ");
                     item.setValue(res.toString())
                 }
-            }
+            },
+            { type:"header", defaultValue:"جستجو:" },
+            {
+                name: "personnelNo",
+                title: "شماره پرسنلي",
+                hint: "شماره پرسنلي را انتخاب نمائيد",
+                showHintInField: true,
+                // operator: "inSet",
+                icons: [{
+                    src: "[SKIN]/pickers/search_picker.png",
+                    click: function () {
+                        Window_SelectPeople_JspUnitReport.show();
+                    }},
+                    // {
+                    //     src: "[SKIN]/pickers/groupSearch.png",
+                    //     prompt: "جستجوی گروهی",
+                    //     showPrompt: true,
+                    //     // hint: "جستجوی گروهی",
+                    //     click: function () {
+                    //         alert(2);
+                    //     }}
+                        ],
+                keyPressFilter: "[A-Z|0-9|,-]"
+            },
+            {
+                type:"SpacerItem",
+                colSpan: 4
+            },
+            {
+                name: "companyName",
+                title: "<spring:message code="company"/>",
+                valueField: "value",
+                displayField: "value",
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                        }
+                    }
+                ],
+                optionDataSource: CompanyDS_PresenceReport,
+            },
+            {
+                name: "ccpArea",
+                title: "<spring:message code="area"/>",
+                optionDataSource: AreaDS_PresenceReport,
+                valueField: "value",
+                displayField: "value",
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                        }
+                    }
+                ],
+            },
+            {
+                name: "ccpAssistant",
+                title: "<spring:message code="assistance"/>",
+                valueField: "value",
+                displayField: "value",
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                        }
+                    }
+                ],
+                optionDataSource: AssistantDS_PresenceReport,
+            },
+            {
+                name: "ccpAffairs",
+                title: "<spring:message code="affairs"/>",
+                optionDataSource: AffairsDS_PresenceReport,
+                valueField: "value",
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                        }
+                    }
+                ],
+                displayField: "value",
+            },
+            {
+                name: "ccpUnit",
+                title: "<spring:message code="unitName"/>",
+                optionDataSource: UnitDS_PresenceReport,
+                valueField: "value",
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                        }
+                    }
+                ],
+                displayField: "value",
+            },
+            {
+                name: "ccpSection",
+                title: "<spring:message code="section.cost"/>",
+                valueField: "value",
+                displayField: "value",
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                        }
+                    }
+                ],
+                optionDataSource: SectionDS_PresenceReport,
+            },
         ],
         itemKeyPress: function(item, keyName) {
             if(keyName == "Enter"){
@@ -771,6 +771,7 @@
             ListGrid_TrainingFile_JspTrainingFileNAReport.setData([]);
             ListGrid_Personnel_JspTrainingFileNAReport.clearFilterValues();
             detailView.setData({});
+
             ListGrid_Personnel_JspTrainingFileNAReport.invalidateCache();
             ListGrid_Personnel_JspTrainingFileNAReport.fetchData(data_values);
             Window_JspTrainingFileNAReport.show();
