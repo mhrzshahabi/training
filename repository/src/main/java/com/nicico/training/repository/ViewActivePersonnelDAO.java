@@ -68,5 +68,8 @@ public interface ViewActivePersonnelDAO extends JpaRepository<ViewActivePersonne
     @Query(value = "SELECT DISTINCT POST_GRADE_TITLE FROM view_active_personnel WHERE POST_GRADE_TITLE IS NOT NULL", nativeQuery = true)
     List<String> findAllPostGrade();
 
+    ViewActivePersonnel findFirstByPostId(Long postId);
+
+
 }
 

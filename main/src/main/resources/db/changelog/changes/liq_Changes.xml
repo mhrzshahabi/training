@@ -1237,5 +1237,10 @@
             <column name="f_student_cost_currency" type="number(19, 0)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1599894112446-497">
+        <addColumn tableName="tbl_post">
+            <column name="n_parent_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
