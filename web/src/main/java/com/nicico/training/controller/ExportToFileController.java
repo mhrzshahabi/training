@@ -877,7 +877,7 @@ public class ExportToFileController {
                 tmpName = getData(jsonObject, aList, 0);
 
                 if (parameters.containsKey(fieldName)) {
-                    if (tmpName.charAt(0) == '[') {
+                    if (tmpName != null && tmpName.charAt(0) == '[') {
 
                         ObjectMapper objectMapper = new ObjectMapper();
                         JsonNode jsonNode = objectMapper.readTree(tmpName);

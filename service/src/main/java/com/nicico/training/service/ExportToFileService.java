@@ -87,9 +87,10 @@ public class ExportToFileService implements IExportToFileService {
 
             row = sheet.createRow(2);
 
-            row.setHeight((short) 975);
+            row.setHeight((short) 1350);
             cellOfRow = row.createCell(0);
             cellOfRow.setCellValue(titr);
+            rCellStyle.setWrapText(true);
             cellOfRow.setCellStyle(rCellStyle);
 
 
@@ -124,6 +125,16 @@ public class ExportToFileService implements IExportToFileService {
 
             for (int i = 0; i < columns.length; i++) {
                 sheet.autoSizeColumn(i);
+            }
+
+            int sumWidth = 0;
+
+            for (int i = 0; i < columns.length; i++) {
+                sumWidth += sheet.getColumnWidth(i);
+            }
+
+            if (sumWidth < 26000) {
+                sheet.setColumnWidth(columns.length - 1, 26000 - sumWidth);
             }
 
             //CellStyle mine = workbook.createCellStyle();
