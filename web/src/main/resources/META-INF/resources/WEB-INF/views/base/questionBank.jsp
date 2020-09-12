@@ -287,7 +287,6 @@
         fields: [
             {name: "code",
                 sortNormalizer: function (record) {
-                    console.log(record.code,parseInt(record.code))
                     return parseInt(record.code);
                 }
             },
