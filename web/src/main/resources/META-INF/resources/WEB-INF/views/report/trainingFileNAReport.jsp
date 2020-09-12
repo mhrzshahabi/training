@@ -434,12 +434,31 @@
                         click : function (form, item, icon) {
                             item.clearValue();
                             item.focusInItem();
+                            item.changed(form, item, null);
                         }
                     }
                 ],
                 changed (form, item, value){
+                    if(value != null){
+                        form.getItems().forEach(a=>{
+                            let name = a.name;
+                            if(name !== "hamed") {
+                                if(name !== "source"){
+                                    a.disable();
+                                    a.clearValue();
+                                }
+                            }
+                        })
+                    }
+                    else{
+                        form.getItems().forEach(a=>{
+                            a.enable();
+                        })
+                    }
+
                     let res = value.split(" ");
-                    item.setValue(res.toString())
+                    item.setValue(res.toString());
+
                 }
             },
             { type:"header", defaultValue:"جستجو:" },
