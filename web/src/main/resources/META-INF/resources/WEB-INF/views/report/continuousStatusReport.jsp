@@ -981,8 +981,6 @@
         title: "چاپ گزارش",
         width: 300,
         click: function () {
-            console.log(criteriaDisplayValuesPostGrade)
-
             if(DynamicForm_CriteriaForm_JspcontinuousPersonnel.getValuesAsAdvancedCriteria().criteria.size() <= 2 ) {
                 createDialog("info","فیلتری انتخاب نشده است.");
                 return;
