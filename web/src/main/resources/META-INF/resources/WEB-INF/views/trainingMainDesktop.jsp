@@ -120,17 +120,25 @@
                                                 }
                                             }
 
-                                            GroupSelectedPersonnelsLG_student.setData(GroupSelectedPersonnelsLG_student.data.concat(records));
+                                            let uniqueRecords = [];
+
+                                            for (let i=0; i < records.length; i++) {
+                                                if (uniqueRecords.filter(function (item) {return item.personnelNo == records[i].personnelNo;}).length==0) {
+                                                    uniqueRecords.push(records[i]);
+                                                }
+                                            }
+
+                                            GroupSelectedPersonnelsLG_student.setData(GroupSelectedPersonnelsLG_student.data.concat(uniqueRecords));
 
                                             GroupSelectedPersonnelsLG_student.invalidateCache();
                                             GroupSelectedPersonnelsLG_student.fetchData();
 
-                                            if(records.length > 0 && isCheck){
-                                                func(inputURL+"/"+courseId,records.map(function(item) {return item.personnelNo;}),false);
+                                            if(uniqueRecords.length > 0 && isCheck){
+                                                func(inputURL+"/"+courseId,uniqueRecords.map(function(item) {return item.personnelNo;}),false);
                                             }
 
                                             DynamicForm_GroupInsert_Textbox_JspStudent.setValue('');
-                                            if(records.length > 0){
+                                            if(uniqueRecords.length > 0){
                                                 createDialog("info", "کدهای پرسنلی به لیست اضافه شدند.");
                                             }
                                             else{
@@ -209,12 +217,21 @@
 
                                                         if(records.length > 0){
 
-                                                            GroupSelectedPersonnelsLG_student.setData(GroupSelectedPersonnelsLG_student.data.concat(records));
+                                                            let uniqueRecords = [];
+
+                                                            for (let i=0; i < records.length; i++) {
+                                                                if (uniqueRecords.filter(function (item) {return item.personnelNo == records[i].personnelNo;}).length==0) {
+                                                                    uniqueRecords.push(records[i]);
+                                                                }
+                                                            }
+
+
+                                                            GroupSelectedPersonnelsLG_student.setData(GroupSelectedPersonnelsLG_student.data.concat(uniqueRecords));
                                                             GroupSelectedPersonnelsLG_student.invalidateCache();
                                                             GroupSelectedPersonnelsLG_student.fetchData();
 
                                                             if(isCheck){
-                                                                func(inputURL+"/"+courseId,records.map(function(item) {return item.personnelNo;}),false);
+                                                                func(inputURL+"/"+courseId,uniqueRecords.map(function(item) {return item.personnelNo;}),false);
                                                             }
 
                                                             createDialog("info", "فایل به لیست اضافه شد.");
@@ -387,7 +404,9 @@
                                     for (let index = 0; index < len; index++) {
                                         if(list[index].personnelNo != "" && list[index].personnelNo != null && typeof(list[index].personnelNo) != "undefined")
                                         {
-                                            result.push(list[index].personnelNo)
+                                            if (result.filter(function (item) {return item.personnelNo2 == GroupSelectedPersonnelsLG_student.data[index].personnelNo2||item.personnelNo1 == GroupSelectedPersonnelsLG_student.data[index].personnelNo1;}).length==0) {
+                                                result.push(list[index].personnelNo)
+                                            }
                                         }
                                     }
 
