@@ -115,32 +115,21 @@
         fetchDataURL: viewActivePersonnelUrl + "/iscList",
     });
 
-    let RestDataSource_Course_JspTrainingFileNAReport = isc.TrDS.create({
+    let RestDataSource_PostGrade = isc.TrDS.create({
         fields: [
-            {name: "id", type: "Integer", primaryKey: true},
-            {name: "code"},
-            {name: "titleFa"}
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
         ],
-        fetchDataURL: courseUrl + "info-tuple-list"
+        fetchDataURL: postGradeUrl + "/spec-list"
     });
-
-    let RestDataSource_Class_JspTrainingFileNAReport = isc.TrDS.create({
+    let RestDataSource_Job = isc.TrDS.create({
         fields: [
-            {name: "id", primaryKey: true},
-            {name: "titleClass"},
-            {name: "code"},
-            {name: "course.titleFa"}
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
         ],
-        fetchDataURL: classUrl + "info-tuple-list"
-    });
-
-    let CourseDS_PresenceReport = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true},
-            {name: "code", title: "<spring:message code="corse_code"/>"},
-            {name: "titleFa", title: "<spring:message code="course_fa_name"/>"},
-        ],
-        fetchDataURL: courseUrl + "spec-list"
+        fetchDataURL: jobUrl + "/spec-list"
     });
 
     let CompanyDS_PresenceReport = isc.TrDS.create({
@@ -184,6 +173,7 @@
         cacheAllData: true,
         fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpUnit"
     });
+
     //----------------------------------------------------ListGrid Result-----------------------------------------------
     let ListGrid_Personnel_JspTrainingFileNAReport = isc.TrLG.create({
         width: "100%",
@@ -394,6 +384,7 @@
 
         }
     });
+
     //----------------------------------------------------Criteria Form------------------------------------------------
     let DynamicForm_CriteriaForm_JspTrainingFileNAReport = isc.DynamicForm.create({
         align: "right",
@@ -405,7 +396,7 @@
         colWidths: ["5%", "25%", "5%", "25%","5%","25%"],
         minWidth:1024,
         fields: [
-            { type:"header", defaultValue:"جستجوی دسته ای:" },
+            { type:"header", defaultValue:"جستجوی دسته ای:"},
             {name: "source", title:"گزارش گیری براساس",
                 valueMap:{
                     "personnelNo2":"پرسنلی 6 رقمی",
@@ -614,6 +605,52 @@
                 ],
                 optionDataSource: SectionDS_PresenceReport,
             },
+            {name: "postGradeCode", title: "رده پستی",
+                optionDataSource: RestDataSource_PostGrade,
+                valueField: "code",
+                displayField: "titleFa",
+                pickListFields:[
+                    {name: "titleFa", title: "عنوان"},
+                    {name: "code", title: "کد"}
+                ],
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                        }
+                    }
+                ]
+            },
+            {name: "jobNo", title: "شغل", optionDataSource: RestDataSource_Job,
+                valueField: "code",
+                operator: "equals",
+                displayField: "titleFa",
+                pickListFields:[
+                    {name: "titleFa", title: "عنوان"},
+                    {name: "code", title: "کد"}
+                ],
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                        }
+                    }
+                ]
+            }
         ],
         itemKeyPress: function(item, keyName) {
             if(keyName == "Enter"){
@@ -649,8 +686,7 @@
     });
 
     DynamicForm_SelectPeople_JspUnitReport.getField("people.code").comboBox.setHint("پرسنل مورد نظر را انتخاب کنید");
-    DynamicForm_SelectPeople_JspUnitReport.getField("people.code").comboBox.pickListFields =
-        [
+    DynamicForm_SelectPeople_JspUnitReport.getField("people.code").comboBox.pickListFields = [
             {name: "firstName", title: "نام", width: "30%", filterOperator: "iContains"},
             {name: "lastName", title: "نام خانوادگي", width: "30%", filterOperator: "iContains"},
             {name: "nationalCode", title: "کدملي", width: "30%", filterOperator: "iContains"},
@@ -798,6 +834,7 @@
     });
 
     //----------------------------------- functions --------------------------------------------------------------------
+
     let Window_CriteriaForm_JspTrainingFileNAReport = isc.Window.create({
         placement: "fillScreen",
         title: "",
@@ -810,7 +847,9 @@
         minimize: false,
         items: [DynamicForm_CriteriaForm_JspTrainingFileNAReport]
     });
+
     //----------------------------------- layOut -----------------------------------------------------------------------
+
     let HLayOut_CriteriaForm_JspTrainingFileNAReport = isc.TrHLayoutButtons.create({
         showEdges: false,
         edgeImage: "",
@@ -841,5 +880,7 @@
             HLayOut_Confirm_JspTrainingFileNAReport
         ]
     });
+
     //----------------------------------------------------End-----------------------------------------------------------
+
     Window_JspTrainingFileNAReport.hide();
