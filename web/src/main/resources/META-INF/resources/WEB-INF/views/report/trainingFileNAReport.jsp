@@ -75,14 +75,14 @@
             {name: "courseId", autoFitWidth: true},
             {name: "courseCode", title:"کد دوره", autoFitWidth: true},
             {name: "courseTitleFa", title:"نام دوره", autoFitWidth: true},
-            {name: "theoryDuration", title:"مدت دوره", autoFitWidth: true},
-            {name: "technicalType", title:"نوع تخصصی", autoFitWidth: true, optionDataSource: RestDataSource_eTechnicalType, displayField: "titleFa", valueField:"id"},
+            {name: "theoryDuration", title:"مدت دوره", autoFitWidth: true, operator:"equals"},
+            {name: "technicalType", title:"نوع تخصصی", autoFitWidth: true, optionDataSource: RestDataSource_eTechnicalType, displayField: "titleFa", valueField:"id", operator:"equals"},
 
             {name: "skillId", autoFitWidth: true},
             {name: "skillCode", title:"کد مهارت", autoFitWidth: true},
             {name: "skillTitleFa", title:"نام مهارت", autoFitWidth: true},
             {name: "priorityId", title:"اولویت", autoFitWidth: true, optionDataSource: RestDataSource_PriorityId, displayField: "title", valueField:"id"},
-            {name: "isInNA", title:"نیازسنجی", autoFitWidth: true, type:"boolean"},
+            {name: "isInNA", title:"نیازسنجی", autoFitWidth: true, type:"boolean", operator:"equals", canFilter:false},
 
             {name: "classId", autoFitWidth: true},
             {name: "classCode", title:"کد کلاس", autoFitWidth: true},
@@ -191,7 +191,9 @@
         dataSource : RestDataSource_Personnel_JspTrainingFileNAReport,
         cellHeight: 43,
         sortField: 1,
-        showFilterEditor: false,
+        // showFilterEditor: false,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
         selectionType: "single",
         showResizeBar: true,
         showRecordComponents: true,
@@ -202,8 +204,14 @@
                 operator: "and",
                 criteria: [{fieldName: "personnelId", operator: "equals", value: record.id}]
             };
+            ListGrid_TrainingFile_JspTrainingFileNAReport.setSort([
+                {property: "isInNA", direction: "descending"},
+                {property: "classCode", direction: "descending"},
+                {property: "priorityId", direction: "ascending"}
+            ]);
+            // ListGrid_TrainingFile_JspTrainingFileNAReport.clearFilterValues();
             ListGrid_TrainingFile_JspTrainingFileNAReport.setImplicitCriteria(cr);
-            ListGrid_TrainingFile_JspTrainingFileNAReport.fetchData(cr);
+            ListGrid_TrainingFile_JspTrainingFileNAReport.fetchData();
             detailView.fetchData(cr);
         }
     });
@@ -216,9 +224,17 @@
         sortField: 1,
         autoFetchData: false,
         // showRowNumbers: false,
-        showFilterEditor: false,
+        // showFilterEditor: false,
+        // filterLocalData :true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
         showResizeBar: true,
         selectionType: "single",
+        canMultiSort: true,
+        initialSort: [
+            {property: "isInNA", direction: "descending"},
+            {property: "classCode", direction: "ascending"}
+        ],
         fields:[
             {name: "courseCode"},
             {name: "courseTitleFa"},
@@ -422,12 +438,40 @@
                 optionDataSource: AreaDS_PresenceReport,
                 valueField: "value",
                 displayField: "value",
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                        }
+                    }
+                ],
             },
             {
                 name: "companyName",
                 title: "<spring:message code="company"/>",
                 valueField: "value",
                 displayField: "value",
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                        }
+                    }
+                ],
                 optionDataSource: CompanyDS_PresenceReport,
             },
             {
@@ -435,6 +479,20 @@
                 title: "<spring:message code="assistance"/>",
                 valueField: "value",
                 displayField: "value",
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                        }
+                    }
+                ],
                 optionDataSource: AssistantDS_PresenceReport,
             },
             {
@@ -442,6 +500,20 @@
                 title: "<spring:message code="section.cost"/>",
                 valueField: "value",
                 displayField: "value",
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                        }
+                    }
+                ],
                 optionDataSource: SectionDS_PresenceReport,
             },
             {
@@ -449,6 +521,20 @@
                 title: "<spring:message code="unitName"/>",
                 optionDataSource: UnitDS_PresenceReport,
                 valueField: "value",
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                        }
+                    }
+                ],
                 displayField: "value",
             },
             {
@@ -456,6 +542,20 @@
                 title: "<spring:message code="affairs"/>",
                 optionDataSource: AffairsDS_PresenceReport,
                 valueField: "value",
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                        }
+                    }
+                ],
                 displayField: "value",
             },
             { type:"header", defaultValue:"جستجوی دسته ای:" },
@@ -470,17 +570,37 @@
                     showFilterEditor: false
                 },
             },
-            {name: "hamed", showTitle:false, colSpan:3,
+            {name: "hamed", showTitle:false, colSpan:4,
                 // type:"TextAreaItem",
                 textAlign: "center",
                 keyPressFilter: "[0-9, ]",
+                // length: 5500,
+                enforceLength: false,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                        }
+                    }
+                ],
                 changed (form, item, value){
                     let res = value.split(" ");
                     item.setValue(res.toString())
                 }
             }
-
-        ]
+        ],
+        itemKeyPress: function(item, keyName) {
+            if(keyName == "Enter"){
+                IButton_JspTrainingFileNAReport.click();
+            }
+        }
     });
 
     var initialLayoutStyle = "vertical";
@@ -582,9 +702,8 @@
         width: 300,
         click: function () {
             let form = DynamicForm_CriteriaForm_JspTrainingFileNAReport;
-            let data_values = form.getValuesAsAdvancedCriteria();
+            let data_values = {...form.getValuesAsAdvancedCriteria()};
             data_values.criteria = data_values.criteria.filter(a=>a.fieldName !== "source");
-            console.log(data_values)
             if(form.getValue("hamed") === undefined) {
                 if (data_values.criteria.length == 0) {
                     createDialog("info", "فیلتری انتخاب نشده است.");
@@ -638,10 +757,6 @@
                             data_values.criteria[i].operator = "iContains";
                         }
                     }
-
-                    ListGrid_Personnel_JspTrainingFileNAReport.invalidateCache();
-                    ListGrid_Personnel_JspTrainingFileNAReport.fetchData(data_values);
-                    Window_JspTrainingFileNAReport.show();
                 }
             }
             else{
@@ -653,6 +768,9 @@
                     ]
                 };
             }
+            ListGrid_TrainingFile_JspTrainingFileNAReport.setData([]);
+            ListGrid_Personnel_JspTrainingFileNAReport.clearFilterValues();
+            detailView.setData({});
             ListGrid_Personnel_JspTrainingFileNAReport.invalidateCache();
             ListGrid_Personnel_JspTrainingFileNAReport.fetchData(data_values);
             Window_JspTrainingFileNAReport.show();
