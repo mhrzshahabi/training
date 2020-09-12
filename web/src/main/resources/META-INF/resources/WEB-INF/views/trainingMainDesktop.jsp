@@ -436,8 +436,13 @@
 
                 //let nameOfFields = [];
 
+                if((typeof (data[0].showIf) == "undefined" || data[0].showIf == "true" || data[0].showIf == null) && data[0].rowNumberStart==null) {
+                    fields.push({'title': data[0].title, 'name': data[0].name});
+                    isValueMap.push((typeof (data[0].valueMap) == "undefined") ? false : true);
+                }
+
                 for (let i = 1; i < len; i++) {
-                    if (typeof (data[i].showIf) == "undefined" || data[i].showIf == "true"|| data[i].showIf == null) {
+                    if ((typeof (data[i].showIf) == "undefined" || data[i].showIf == "true" || data[i].showIf == null) && data[i].rowNumberStart==null) {
                         fields.push({'title': data[i].title, 'name': data[i].name});
                         isValueMap.push((typeof (data[i].valueMap) == "undefined") ? false : true);
                     }
