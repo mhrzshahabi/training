@@ -10,10 +10,12 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.PersonnelDurationNAReportDTO;
+import com.nicico.training.dto.PostDTO;
 import com.nicico.training.dto.TrainingFileNAReportDTO;
 import com.nicico.training.dto.ViewActivePersonnelDTO;
 import com.nicico.training.iservice.ITrainingFileNAReportService;
 import com.nicico.training.model.enums.ETechnicalType;
+import com.nicico.training.repository.PostDAO;
 import com.nicico.training.repository.TrainingFileNAReportDAO;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.BorderStyle;
@@ -45,6 +47,7 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
 
     private final TrainingFileNAReportDAO trainingFileNAReportDAO;
     private final PersonnelDurationNAReportService personnelDurationNAReportService;
+    private final PostDAO postDAO;
     private final ModelMapper modelMapper;
 
     @Transactional(readOnly = true)
@@ -55,9 +58,9 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
 
     @Override
     public void generateReport(HttpServletResponse response, List<ViewActivePersonnelDTO.Info> data) throws Exception {
-        TrainingFileNAReportDTO.GenerateReport generateReport = new TrainingFileNAReportDTO.GenerateReport();
-        List<List<TrainingFileNAReportDTO.Cell>> headers = new ArrayList<>();
-        List<TrainingFileNAReportDTO.Cell> rowsOfHeader = new ArrayList<>();
+        TrainingFileNAReportDTO.GenerateReport generateReport = null;
+        List<List<TrainingFileNAReportDTO.Cell>> headers = null;
+        List<TrainingFileNAReportDTO.Cell> rowsOfHeader = null;
         List<TrainingFileNAReportDTO.GenerateReport> result = new ArrayList<>();
 
         SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
@@ -80,6 +83,16 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
         List<TrainingFileNAReportDTO.Info> ListOfTFNR = modelMapper.map(search(searchRq, e -> modelMapper.map(e, TrainingFileNAReportDTO.Info.class)).getList(), new TypeToken<List<TrainingFileNAReportDTO.Info>>() {
         }.getType());
 
+        searchRq = new SearchDTO.SearchRq();
+        searchRq.setStartIndex(null);
+        searchRq.setCriteria(new SearchDTO.CriteriaRq());
+        searchRq.getCriteria().setOperator(EOperator.and);
+        searchRq.getCriteria().setCriteria(new ArrayList<>());
+        searchRq.getCriteria().getCriteria().add(makeNewCriteria("id", data.stream().map(p -> p.getPostId()).collect(Collectors.toList()), EOperator.inSet, null));
+
+        List<PostDTO.TupleInfo> posts = modelMapper.map(SearchUtil.search(postDAO, searchRq, post -> modelMapper.map(post, PostDTO.TupleInfo.class)).getList(), new TypeToken<List<PostDTO.TupleInfo>>() {
+        }.getType());
+
 
         int cnt = data.size();
 
@@ -96,7 +109,15 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
 
             rowsOfHeader = new ArrayList<>();
             rowsOfHeader.add(new TrainingFileNAReportDTO.Cell("پست:", true));
-            rowsOfHeader.add(new TrainingFileNAReportDTO.Cell(VAPD.getPostTitle() + "(" + VAPD.getPostCode() + ")", false));
+
+            List<PostDTO.TupleInfo> post = posts.stream().filter(p -> p.getId().equals(VAPD.getPostId())).collect(Collectors.toList());
+
+            if (post != null && post.size() > 0) {
+                rowsOfHeader.add(new TrainingFileNAReportDTO.Cell(post.get(0).getTitleFa() + "(" + post.get(0).getCode() + ")", false));
+            } else {
+                rowsOfHeader.add(new TrainingFileNAReportDTO.Cell("", false));
+            }
+
             headers.add(rowsOfHeader);
 
 
@@ -139,7 +160,7 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
                 row.add(tmpTFNR.getCourseCode());
                 row.add(tmpTFNR.getCourseTitleFa());
                 row.add(tmpTFNR.getTheoryDuration().toString());
-                row.add(tmpTFNR.getTechnicalType() == null ? "" : ((ETechnicalType) Arrays.asList(ETechnicalType.values()).stream().filter(p -> p.getId() == tmpTFNR.getTechnicalType()).toArray()[0]).getTitleFa());
+                row.add(tmpTFNR.getTechnicalType() == null ? "" : ((ETechnicalType) Arrays.asList(ETechnicalType.values()).stream().filter(p -> p.getId().equals(tmpTFNR.getTechnicalType())).toArray()[0]).getTitleFa());
                 row.add(tmpTFNR.getSkillCode());
                 row.add(tmpTFNR.getSkillTitleFa());
                 row.add(tmpTFNR.getPriority());
@@ -435,20 +456,19 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
 
             }
 
-            sheet.setColumnWidth(1,2800);
-            sheet.setColumnWidth(2,18250);
-            sheet.setColumnWidth(3,2500);
-            sheet.setColumnWidth(4,3000);
-            sheet.setColumnWidth(5,2800);
-            sheet.setColumnWidth(6,18250);
-            sheet.setColumnWidth(7,4500);
-            sheet.setColumnWidth(8,2800);
-            sheet.setColumnWidth(9,4500);
-            sheet.setColumnWidth(10,3000);
-            sheet.setColumnWidth(11,3000);
-            sheet.setColumnWidth(12,8000);
-            sheet.setColumnWidth(14,9625);
-
+            sheet.setColumnWidth(1, 2800);
+            sheet.setColumnWidth(2, 18250);
+            sheet.setColumnWidth(3, 2500);
+            sheet.setColumnWidth(4, 3000);
+            sheet.setColumnWidth(5, 2800);
+            sheet.setColumnWidth(6, 18250);
+            sheet.setColumnWidth(7, 4500);
+            sheet.setColumnWidth(8, 2800);
+            sheet.setColumnWidth(9, 4500);
+            sheet.setColumnWidth(10, 3000);
+            sheet.setColumnWidth(11, 3000);
+            sheet.setColumnWidth(12, 8000);
+            sheet.setColumnWidth(14, 9625);
 
 
             String mimeType = "application/octet-stream";
