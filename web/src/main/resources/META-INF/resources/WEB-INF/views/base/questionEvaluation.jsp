@@ -435,6 +435,10 @@
                                 item.name = "Q" + result[i].id;
                                 item.title = "محتواي کلاس: " + result[i].question;
                                 break;
+                            case 659:
+                                item.name = "Q" + result[i].id;
+                                item.title = "فراگیر: " + result[i].question;
+                                break;
                             default:
                                 item.name = "Q" + result[i].id;
                                 item.title = result[i].question;
@@ -513,3 +517,4 @@
             }));
         }
     }
+    //
