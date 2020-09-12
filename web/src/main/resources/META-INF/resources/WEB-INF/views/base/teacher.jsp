@@ -118,7 +118,6 @@
     //----------------------------------------------------Menu-------------------------------------------------------
     let ToolStripExcel_JspTeacher = isc.ToolStripButtonExcel.create({
         click: function () {
-            //ExportToFile.downloadExcel(null, ListGrid_Teacher_JspTeacher, "teacher", 0, null, '', "اجرا - استاد", ListGrid_Teacher_JspTeacher.getCriteria(), null);
            ExportToFile.downloadExcelRestUrl(null, ListGrid_Teacher_JspTeacher, teacherUrl + "spec-list-grid", 0, null, '', "اجرا - استاد", ListGrid_Teacher_JspTeacher.getCriteria(), null);
     }
     });
