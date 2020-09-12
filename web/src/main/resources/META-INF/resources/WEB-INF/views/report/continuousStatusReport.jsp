@@ -981,8 +981,16 @@
         title: "چاپ گزارش",
         width: 300,
         click: function () {
-            if(DynamicForm_CriteriaForm_JspcontinuousPersonnel.getValuesAsAdvancedCriteria().criteria.size() <= 2) {
+            console.log(criteriaDisplayValuesPostGrade)
+
+            if(DynamicForm_CriteriaForm_JspcontinuousPersonnel.getValuesAsAdvancedCriteria().criteria.size() <= 2 ) {
                 createDialog("info","فیلتری انتخاب نشده است.");
+                return;
+            }
+
+            if (!criteriaDisplayValuesPostGrade || criteriaDisplayValuesPostGrade.length<1)
+            {
+                createDialog("info","حداقل يک رده پستی را انتخاب نماييد");
                 return;
             }
 
