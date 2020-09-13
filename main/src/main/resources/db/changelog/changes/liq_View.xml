@@ -4873,7 +4873,7 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_TRAINING_FILE_NA_REPORT-003">
+    <changeSet author="NICICO" id="VIEW_TRAINING_FILE_NA_REPORT-004">
         <createView viewName="VIEW_TRAINING_FILE_NA_REPORT" replaceIfExists="true">
             <![CDATA[
                 SELECT
