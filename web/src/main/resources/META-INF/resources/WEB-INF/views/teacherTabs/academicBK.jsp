@@ -335,6 +335,11 @@
                 ToolStripButton_Add_JspAcademicBK,
                 ToolStripButton_Edit_JspAcademicBK,
                 ToolStripButton_Remove_JspAcademicBK,
+                isc.ToolStripButtonExcel.create({
+                    click: function () {
+                        ExportToFile.downloadExcelRestUrl(null, ListGrid_JspAcademicBK, academicBKUrl + "/iscList/" + teacherIdAcademicBK, 0,null, '', "استاد - اطلاعات پايه - سوابق تحصيلی", ListGrid_JspAcademicBK.getCriteria(), null)
+                    }
+                }),
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
@@ -342,7 +347,7 @@
                     members: [
                         ToolStripButton_Refresh_JspAcademicBK
                     ]
-                })
+                }),
             ]
     });
 

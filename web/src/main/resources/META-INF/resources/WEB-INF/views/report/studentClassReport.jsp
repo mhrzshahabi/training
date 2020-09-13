@@ -582,7 +582,7 @@
                     return ;
                 }
 
-                ExportToFile.showDialog(null, ListGrid_StudentClass_StudentClassJSP, 'studentClassReport', 0, null, '',  "دوره هاي گذراننده پرسنل", criteria, null);
+                ExportToFile.downloadExcel(null, ListGrid_StudentClass_StudentClassJSP, 'studentClassReport', 0, null, '',  "دوره هاي گذراننده پرسنل", criteria, null);
             }
         }), "header", "filterEditor", "body"],
         fields:[

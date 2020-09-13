@@ -96,8 +96,12 @@
                 <sec:authorize access="hasAnyAuthority('TclassStudentsTab_P','TclassStudentsTab_classStatus')">
                 isc.ToolStripButtonExcel.create({
                     click: function () {
-                        ExportToFile.downloadExcelFromClient(StudentsLG_student, ListGrid_Class_JspClass, '', "کلاس - فراگيران");
-                    }
+
+                        let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                        if (!(classRecord === undefined || classRecord == null)) {
+                            ExportToFile.downloadExcelRestUrl(null, StudentsLG_student, tclassStudentUrl + "/students-iscList/" + classRecord.id, 0, ListGrid_Class_JspClass, '', "کلاس - فراگيران", StudentsLG_student.getCriteria(), null);
+                        }
+                   }
                 }),
                 isc.ToolStripButton.create({
                     icon: "[SKIN]/RichTextEditor/print.png",
@@ -1670,6 +1674,7 @@
         }
 
         function checkPersonnelNosResponse(url, result, addStudentsInGroupInsert) {
+            wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(result)
                 , "callback: checkPersonnelNos(rpcResponse," + JSON.stringify(result) + ",'" + url + "'," + addStudentsInGroupInsert +")"));
         }
@@ -1748,12 +1753,14 @@
 
                                     if (!checkIfAlreadyExist(person)) {
 
-                                        students.add({
-                                            "personnelNo": person.personnelNo,
-                                            "applicantCompanyName": person.companyName,
-                                            "presenceTypeId": studentDefaultPresenceId,
-                                            "registerTypeId": url.indexOf(personnelUrl) > -1 ? 1 : 2
-                                        });
+                                        if (students.filter(function (item) {return item.personnelNo2 == person.personnelNo2||item.personnelNo == person.personnelNo;}).length==0) {
+                                            students.add({
+                                                "personnelNo": person.personnelNo,
+                                                "applicantCompanyName": person.companyName,
+                                                "presenceTypeId": studentDefaultPresenceId,
+                                                "registerTypeId": url.indexOf(personnelUrl) > -1 ? 1 : 2
+                                            });
+                                        }
                                     }
                                 }
                             }
@@ -1785,10 +1792,16 @@
                     } else {
                         GroupSelectedPersonnelsLG_student.invalidateCache();
                         GroupSelectedPersonnelsLG_student.fetchData();
+
+                        wait.close();
                     }
 
 
+                }else{
+                    wait.close();
                 }
+            }else{
+                wait.close();
             }
         }
 

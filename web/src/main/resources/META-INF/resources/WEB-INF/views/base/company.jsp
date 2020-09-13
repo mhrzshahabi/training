@@ -494,6 +494,11 @@
             show_CompanyRemoveForm();
         }
     });
+   var ToolStripButton_Export2EXcel = isc.ToolStripButtonExcel.create({
+        click: function () {
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_Company,  companyUrl + "spec-list", 0, null, '',"لیست شرکت ها", ListGrid_Company.getCriteria(), null);
+        }
+    });
     // ToolStripButton_Print = isc.TrPrintBtn.create({
     //     click: function () {
     //     }
@@ -507,6 +512,7 @@
             ToolStripButton_Add,
             ToolStripButton_Edit,
             ToolStripButton_Remove,
+            ToolStripButton_Export2EXcel,
             //ToolStripButton_Print,
             isc.ToolStrip.create({
                 width: "100%",

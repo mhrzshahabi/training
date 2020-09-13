@@ -373,6 +373,11 @@
                 ToolStripButton_Add_JspForeignLangKnowledge,
                 ToolStripButton_Edit_JspForeignLangKnowledge,
                 ToolStripButton_Remove_JspForeignLangKnowledge,
+                isc.ToolStripButtonExcel.create({
+                    click: function () {
+                        ExportToFile.downloadExcelRestUrl(null, ListGrid_JspForeignLangKnowledge, foreignLangKnowledgeUrl + "/iscList/" + teacherIdForeignLangKnowledge, 0,null, '', "استاد - اطلاعات پايه - زبان هاي خارجي", ListGrid_JspForeignLangKnowledge.getCriteria(), null)
+                    }
+                }),
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",

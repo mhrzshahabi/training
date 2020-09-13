@@ -2543,7 +2543,7 @@
                 };
             }
 
-            ExportToFile.showDialog(null, ListGrid_Class_JspClass, "class", 0, null, '', "اجرا - کلاس", criteria, null);
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_Class_JspClass, classUrl + "spec-list", 0, null, '', "اجرا - کلاس", criteria, null);
         }
     });
 

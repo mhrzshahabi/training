@@ -227,7 +227,7 @@
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     let criteria = ListGrid_EducationOrientation.getCriteria();
-                    ExportToFile.showDialog(null, ListGrid_EducationOrientation , "EducationOrientation", 0, null, '',"لیست مقاطع تحصیلی - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, ListGrid_EducationOrientation , "EducationOrientation", 0, null, '',"لیست مقاطع تحصیلی - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -457,7 +457,7 @@
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     let criteria = ListGrid_EducationMajor.getCriteria();
-                    ExportToFile.showDialog(null, ListGrid_EducationMajor , "EducationMajor", 0, null, '',"لیست رشته های تحصیلی - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, ListGrid_EducationMajor , "EducationMajor", 0, null, '',"لیست رشته های تحصیلی - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -703,7 +703,7 @@
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     let criteria = ListGrid_EducationLevel.getCriteria();
-                    ExportToFile.showDialog(null, ListGrid_EducationLevel , "EducationLevel", 0, null, '',"لیست گرایش های تحصیلی - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, ListGrid_EducationLevel , "EducationLevel", 0, null, '',"لیست گرایش های تحصیلی - آموزش"  , criteria, null);
                 }
             })
         ]

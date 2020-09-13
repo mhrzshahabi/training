@@ -525,9 +525,18 @@
                         title: 'ارسال لیست فیلتر شده به اکسل',
                         click: function () {
                             if (PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel") {
-                                ExportToFile.showDialog(null, PersonnelInfoListGrid_PersonnelList, 'personnelInformationReport', 0, null, '', "گزارش پرسنل شرکتي", PersonnelInfoListGrid_PersonnelList.data.criteria, null);
+                                let implicitCriteria = JSON.parse(JSON.stringify(PersonnelInfoListGrid_PersonnelList.getImplicitCriteria())) ;
+                                let criteria = PersonnelInfoListGrid_PersonnelList.getCriteria();
+
+                                if(PersonnelInfoListGrid_PersonnelList.getCriteria().criteria){
+                                    for (let i = 0; i < criteria.criteria.length ; i++) {
+                                        implicitCriteria.criteria.push(criteria.criteria[i]);
+                                    }
+                                }
+
+                                ExportToFile.downloadExcelRestUrl(null, PersonnelInfoListGrid_PersonnelList, personnelUrl + "/iscList", 0, null, '', "گزارش پرسنل شرکتي", implicitCriteria, null);
                             } else {
-                                ExportToFile.showDialog(null, PersonnelInfoListGrid_RegisteredPersonnelList, 'registeredPersonnelInformationReport', 0, null, '', "گزارش پرسنل افراد متفرقه", PersonnelInfoListGrid_RegisteredPersonnelList.data.criteria, null);
+                                ExportToFile.downloadExcel(null, PersonnelInfoListGrid_RegisteredPersonnelList, 'registeredPersonnelInformationReport', 0, null, '', "گزارش پرسنل افراد متفرقه", PersonnelInfoListGrid_RegisteredPersonnelList.data.criteria, null);
                             }
                         }
                     }),

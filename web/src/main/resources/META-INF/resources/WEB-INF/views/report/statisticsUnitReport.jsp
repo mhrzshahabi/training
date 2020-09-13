@@ -217,7 +217,7 @@
         implicitCriteria: {
             _constructor:"AdvancedCriteria",
             operator:"and",
-            criteria:[{ fieldName: "active", operator: "equals", value: 1}]
+            criteria:[{ fieldName: "active", operator: "equals", value: 1},{ fieldName: "deleted", operator: "equals", value: 0}]
         }
     });
 
@@ -234,7 +234,7 @@
         implicitCriteria: {
             _constructor:"AdvancedCriteria",
             operator:"and",
-            criteria:[{ fieldName: "active", operator: "equals", value: 1}]
+            criteria:[{ fieldName: "active", operator: "equals", value: 1},{ fieldName: "deleted", operator: "equals", value: 0}]
         }
     });
 
@@ -269,7 +269,7 @@
         title: "گزارش اکسل",
         width: 300,
         click: function () {
-            ExportToFile.showDialog(null, ListGrid_JspUnitReport, 'statisticsUnitReport', 0, null, '',  "گزارش واحد آمار", ListGrid_JspUnitReport.data.criteria, null);
+            ExportToFile.downloadExcel(null, ListGrid_JspUnitReport, 'statisticsUnitReport', 0, null, '',  "گزارش واحد آمار", ListGrid_JspUnitReport.data.criteria, null);
         }
     });
 

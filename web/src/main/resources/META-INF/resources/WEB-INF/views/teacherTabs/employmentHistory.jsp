@@ -452,6 +452,11 @@
                 ToolStripButton_Add_JspEmploymentHistory,
                 ToolStripButton_Edit_JspEmploymentHistory,
                 ToolStripButton_Remove_JspEmploymentHistory,
+                isc.ToolStripButtonExcel.create({
+                    click: function () {
+                        ExportToFile.downloadExcelRestUrl(null, ListGrid_JspEmploymentHistory, employmentHistoryUrl + "/iscList/" + teacherIdEmploymentHistory, 0,null, '', "استاد - اطلاعات پايه - سابقه کاری", ListGrid_JspEmploymentHistory.getCriteria(), null)
+                    }
+                }),
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",

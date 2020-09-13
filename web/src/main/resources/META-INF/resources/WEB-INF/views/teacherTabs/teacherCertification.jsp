@@ -480,6 +480,11 @@
                 ToolStripButton_Add_JspTeacherCertification,
                 ToolStripButton_Edit_JspTeacherCertification,
                 ToolStripButton_Remove_JspTeacherCertification,
+                isc.ToolStripButtonExcel.create({
+                    click: function () {
+                        ExportToFile.downloadExcelRestUrl(null, ListGrid_JspTeacherCertification, teacherCertificationUrl + "/iscList/" + teacherIdTeacherCertification, 0,null, '', "استاد - اطلاعات پايه - دوره های گذرانده شده", ListGrid_JspTeacherCertification.getCriteria(), null)
+                    }
+                }),
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",

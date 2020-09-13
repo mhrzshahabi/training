@@ -16,7 +16,8 @@
             {name: "course.titleFa", filterOperator: "equals"},
             {name: "startDate"},
             {name: "endDate"},
-            {name: "evaluationGrade"}
+            {name: "evaluationGrade"},
+            {name: "code"}
         ]
     });
 
@@ -36,6 +37,11 @@
             {
                 name: "course.titleFa",
                 title: "نام دوره",
+                filterOperator: "iContains"
+            },
+            {
+                name: "code",
+                title: "کد کلاس",
                 filterOperator: "iContains"
             },
             {
@@ -76,6 +82,17 @@
 
     VLayout_Body_JspInternalTeachingHistory = isc.TrVLayout.create({
         members: [
+            isc.HLayout.create({
+                width: "100%",
+                height: "1%",
+                margin: 10,
+                members: [ isc.ToolStripButtonExcel.create({
+                    click: function () {
+                        ExportToFile.downloadExcelRestUrl(null, ListGrid_JspInternalTeachingHistory, classUrl + "listByteacherID/" + teacherIdInternalTeachingHistory, 0,null, '', "استاد - اطلاعات پايه - سوابق تدریس در این مرکز", ListGrid_JspInternalTeachingHistory.getCriteria(), null)
+                    }
+                })
+                ]
+            }),
             ListGrid_JspInternalTeachingHistory
         ]
     });
@@ -87,12 +104,10 @@
 
 
     function loadPage_InternalTeachingHistory(id) {
-        if (teacherIdInternalTeachingHistory !== id) {
             teacherIdInternalTeachingHistory = id;
             RestDataSource_JspInternalTeachingHistory.fetchDataURL = classUrl + "listByteacherID/" + teacherIdInternalTeachingHistory;
             ListGrid_JspInternalTeachingHistory.fetchData();
             ListGrid_InternalTeachingHistory_refresh();
-        }
     }
 
     function clear_InternalTeachingHistory() {

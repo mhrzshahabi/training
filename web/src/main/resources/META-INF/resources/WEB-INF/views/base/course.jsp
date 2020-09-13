@@ -377,7 +377,7 @@
             {
                 name: "categoryId",
                 title: "<spring:message code="course_category"/>",
-                align: "center",
+                align: "center", filterOnKeypress:true,
                 filterOperator: "equals",
                 optionDataSource: RestDataSource_category,
                 displayField: "titleFa",
@@ -474,7 +474,7 @@
                 filterOperator: "iContains"
             },
             {
-                name: "behavioralLevel", title: "سطح رفتاری",
+                name: "behavioralLevel", title: "سطح رفتاری", filterOnKeypress:true,
                 // hidden:true,
                 valueMap: {
                     "1": "مشاهده",
@@ -483,7 +483,7 @@
                 }
             },
             {
-                name: "evaluation", title: "<spring:message code="evaluation.level"/>",
+                name: "evaluation", title: "<spring:message code="evaluation.level"/>", filterOnKeypress:true,
                 valueMap: {
                     "1": "واکنشی",
                     "2": "یادگیری",
@@ -507,7 +507,7 @@
         autoFetchData: true,
         showFilterEditor: true,
         allowFilterExpressions: true,
-        filterOnKeypress: true,
+        filterOnKeypress: false,
         getCellCSSText: function (record, rowNum, colNum) {
             // if (record.attitude==0 && record.knowledge==0 && record.skill==0) {
             // if (!record.hasGoal && !record.hasSkill) {
@@ -533,7 +533,7 @@
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: true,
+        filterOnKeypress: false,
         selectionType: "single",
         showResizeBar: false,
 
@@ -555,7 +555,7 @@
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: true,
+        filterOnKeypress: false,
         showResizeBar: false,
 
     });
@@ -593,14 +593,13 @@
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: true,
+        filterOnKeypress: false,
         sortField: 0,
         sortDirection: "descending",
 
     });
 
     var ListGrid_CourseSyllabus = isc.TrLG.create({
-
         dataSource: RestDataSource_Syllabus,
         groupByField: "goal.titleFa",
         groupStartOpen: "none",
@@ -626,9 +625,8 @@
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: true,
+        filterOnKeypress: false,
         showResizeBar: false,
-
     });
 
     <sec:authorize access="hasAuthority('Course_R')">
@@ -677,8 +675,7 @@
     <sec:authorize access="hasAuthority('Course_P')">
     var ToolStripExcel_JspCourse = isc.ToolStripButtonExcel.create({
         click: function () {
-            let criteria = ListGrid_Course.getCriteria();
-            ExportToFile.showDialog(null, ListGrid_Course , "course", 0, null, '',"طراحی و برنامه ریزی - دوره"  , criteria, null);
+            ExportToFile.downloadExcel(null, ListGrid_Course, "course", 0, null, '', "طراحی و برنامه ریزی - دوره", ListGrid_Course.getCriteria(), null);
         }
     });
     </sec:authorize>
@@ -707,19 +704,17 @@
                         ID: "ListGrid_AllSkill_mainObjective_JspCourse",
                         dataSource: RestDataSource_Skill_JspCourse,
                         selectionType: "single",
-                        filterOnKeypress: true,
+                        filterOnKeypress: false,
                         canDragRecordsOut: true,
                         dragDataAction: "none",
                         canAcceptDroppedRecords: true,
                         fields: [
                             {name: "titleFa", title: "عنوان"},
                             {name: "code", title: "کد",
-                                filterEditorProperties: {
-                                    keyPressFilter: "[0-9]"
-                                }
+
                             },
-                            {name: "categoryId",canFilter:false},
-                            {name: "subCategoryId",canFilter:false
+                            {name: "categoryId",canFilter:false, filterOnKeypress:true},
+                            {name: "subCategoryId",canFilter:false, filterOnKeypress:true
                             },
                         ],
                         gridComponents: ["filterEditor", "header", "body"],
@@ -742,7 +737,7 @@
                         ID: "ListGrid_AllSkill_JspCourse",
                         dataSource: RestDataSource_Skill_JspCourse,
                         selectionType: "single",
-                        filterOnKeypress: true,
+                        filterOnKeypress: false,
                         canDragRecordsOut: true,
                         dragDataAction: "none",
                         canAcceptDroppedRecords: true,
@@ -754,9 +749,9 @@
                                 }
                             },
                             {
-                                name: "categoryId",
+                                name: "categoryId", filterOnKeypress:true,
                             },
-                            {name: "subCategoryId"}
+                            {name: "subCategoryId", filterOnKeypress:true}
                         ],
                         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
                             if (ListGridOwnSkill_JspCourse.getSelectedRecord() == null) {
@@ -854,7 +849,7 @@
                         ID: "ListGridOwnSkill_JspCourse",
                         dataSource: RestDataSource_Skill_JspCourse,
                         selectionType: "single",
-                        filterOnKeypress: true,
+                        filterOnKeypress: false,
                         canDragRecordsOut: true,
                         dragDataAction: "none",
                         canAcceptDroppedRecords: true,
@@ -865,7 +860,7 @@
                                     keyPressFilter: "[0-9/]"
                                 }
                             },
-                            {name: "categoryId"},
+                            {name: "categoryId", filterOnKeypress:true},
                             {name: "courseMainObjectiveId", type: "boolean", title: "هدف کلی", canFilter: false}
                         ],
                         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
@@ -2249,7 +2244,7 @@
                             editorType: "ListGridItem",
 // height: "400",
                             allowAdvancedCriteria: true,
-                            filterOnKeypress: true,
+                            filterOnKeypress: false,
                             showFilterEditor: true,
                             gridDataSource: "courseDS",
                             gridFields: [{name: "titleFa", title: "نام دوره"}, {name: "code", title: "کد دوره"}],
@@ -2333,7 +2328,7 @@
                             editorType: "ListGridItem",
                             allowAdvancedCriteria: true,
                             gridComponents: ["header", "filterEditor", "body"],
-                            filterOnKeypress: true,
+                            filterOnKeypress: false,
                             showFilterEditor: true,
                             gridDataSource: "courseDS",
                             gridFields: [{name: "titleFa", title: "نام دوره"}, {name: "code", title: "کد دوره"}],
@@ -2622,39 +2617,61 @@
             {
                 ID: "tabGoal",
                 title: "<spring:message code="syllabus"/>",
-                pane: ListGrid_CourseSyllabus
+                pane:ListGrid_CourseSyllabus
             },
             </sec:authorize>
 
-            <sec:authorize access="hasAuthority('Course_Job')">
-            {
-                ID: "tabJobJspCourse",
-                title: "<spring:message code="job"/>",
-                pane: ListGrid_CourseJob
-            },
-            </sec:authorize>
+            <%--<sec:authorize access="hasAuthority('Course_Job')">--%>
+            <%--{--%>
+                <%--ID: "tabJobJspCourse",--%>
+                <%--title: "<spring:message code="job"/>",--%>
+                <%--pane: ListGrid_CourseJob--%>
+            <%--},--%>
+            <%--</sec:authorize>--%>
 
             <sec:authorize access="hasAuthority('Course_Post')">
             {
                 ID: "tabPostJspCourse",
                 title: "<spring:message code="post"/>",
-                pane: isc.TrLG.create({
-                    ID: "ListGrid_Post_JspCourse",
-                    showResizeBar: false,
-                    dataSource: isc.TrDS.create({
-                        fields: [
-                            {name: "id", primaryKey: true, hidden: true},
-                            {name: "titleFa", title: "نام فارسی", align: "center"},
-                            {name: "code", title: "کد", align: "center",
-                                filterEditorProperties: {
-                                    keyPressFilter: "[0-9/]"
-                                }
-                            }
-                        ],
-                        ID: "RestData_Post_JspCourse",
-                        fetchDataURL: courseUrl + "post/" + courseRecord.id,
-                    }),
-                })
+                pane:
+                    isc.TrVLayout.create({
+                        width: "100%",
+                        height: "100%",
+                        overflow: "scroll",
+                        members: [
+                            isc.HLayout.create({
+                                width: "100%",
+                                height: "1%",
+                                margin: 10,
+                                members: [ isc.ToolStripButtonExcel.create({
+                                    click: function () {
+                                        let courseRecord = ListGrid_Course.getSelectedRecord();
+                                        if (!(courseRecord === undefined || courseRecord == null)) {
+                                            ExportToFile.downloadExcelRestUrl(null, ListGrid_Post_JspCourse, courseUrl + "post/" + courseRecord.id, 0, ListGrid_Course, '', "دوره - پست", ListGrid_Post_JspCourse.getCriteria(), null);
+                                        }
+                                    }
+                                })
+                                ]
+                            }),
+
+                            isc.TrLG.create({
+                                ID: "ListGrid_Post_JspCourse",
+                                showResizeBar: false,
+                                dataSource: isc.TrDS.create({
+                                    fields: [
+                                        {name: "id", primaryKey: true, hidden: true},
+                                        {name: "titleFa", title: "نام فارسی", align: "center"},
+                                        {name: "code", title: "کد", align: "center",
+                                            filterEditorProperties: {
+                                                keyPressFilter: "[0-9/]"
+                                            }
+                                        }
+                                    ],
+                                    ID: "RestData_Post_JspCourse",
+                                    fetchDataURL: courseUrl + "post/" + courseRecord.id,
+                                })})
+                        ]
+                    })
             },
             </sec:authorize>
 
@@ -2662,8 +2679,28 @@
             {
                 ID: "tabSkillJspCourse",
                 title: "<spring:message code="skill"/>",
-                pane: ListGrid_CourseSkill
-
+                pane:
+                    isc.TrVLayout.create({
+                        width: "100%",
+                        height: "100%",
+                        overflow: "scroll",
+                        members: [
+                            isc.HLayout.create({
+                                width: "100%",
+                                height: "1%",
+                                margin: 10,
+                                members: [ isc.ToolStripButtonExcel.create({
+                                    click: function () {
+                                        let courseRecord = ListGrid_Course.getSelectedRecord();
+                                        if (!(courseRecord === undefined || courseRecord == null)) {
+                                            ExportToFile.downloadExcelRestUrl(null, ListGrid_CourseSkill, courseUrl + "skill/" + courseRecord.id, 0, ListGrid_Course, '', "دوره - مهارت", ListGrid_CourseSkill.getCriteria(), null);
+                                        }
+                                    }
+                                })
+                                ]
+                            }), ListGrid_CourseSkill
+                        ]
+                    })
             },
             </sec:authorize>
             // {

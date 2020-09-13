@@ -123,7 +123,7 @@
         implicitCriteria: {
             _constructor:"AdvancedCriteria",
             operator:"and",
-            criteria:[{ fieldName: "active", operator: "equals", value: 1}]
+            criteria:[{ fieldName: "active", operator: "equals", value: 1},  { fieldName: "deleted", operator: "equals", value: 0}]
         },
     });
 
@@ -180,7 +180,9 @@
                             criteriaVal += ",";
                         }
                         criteriaVal += '"' + value[value.length-1] + '"' +  ']';
-                        let criteria= '{"fieldName":"postGradeCode","operator":"inSet","value":' + criteriaVal + '}';
+                        let criteria= '{"fieldName":"postGradeCode","operator":"inSet","value":' + criteriaVal + '}' +
+                            ',{"fieldName": "active", "operator": "equals", "value": "1"}'+
+                            ',{"fieldName": "deleted", "operator": "equals", "value": "0"}';
                         // let criteria = new Object();
                         // criteria.fieldName = "postGradeCode";
                         // criteria.operator = "inSet";
@@ -554,7 +556,16 @@
             isc.ToolStripButtonExcel.create({
                 margin:5,
                 click:function() {
-                    ExportToFile.showDialog(null, PersonnelCourseLG_PCNP, 'personnelCourseNotPassed', 0, null, '',  "گزارش عدم آموزش", FilterDF_PCNP.getValuesAsCriteria(), null);
+                    let implicitCriteria = JSON.parse(JSON.stringify(FilterDF_PCNP.getValuesAsCriteria())) ;
+                    let criteria = PersonnelCourseLG_PCNP.getCriteria();
+
+                    if(PersonnelCourseLG_PCNP.getCriteria().criteria){
+                        for (let i = 0; i < criteria.criteria.length ; i++) {
+                            implicitCriteria.criteria.push(criteria.criteria[i]);
+                        }
+                    }
+
+                    ExportToFile.downloadExcelRestUrl(null, PersonnelCourseLG_PCNP, personnelCourseNotPassedReportUrl, 0, null, '',  "گزارش عدم آموزش", FilterDF_PCNP.getValuesAsCriteria(), null);
                 }
             }), "header", "filterEditor", "body"],
         fields: [
@@ -580,7 +591,11 @@
 
             {name: "courseCode"},
             {name: "courseTitleFa"},
-        ]
+        ],
+        initialSort: [
+            {property: "personnelPersonnelNo2", direction: "ascending"},
+            {property: "courseCode", direction: "ascending"}
+        ],
     });
 
     VLayout_Body_PCNP = isc.VLayout.create({

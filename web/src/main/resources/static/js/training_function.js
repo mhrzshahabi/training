@@ -169,7 +169,7 @@ function showWindowDiffNeedsAssessment(objectId, objectType, unchangeable = fals
         },
     });
     let interval = setInterval(()=>{
-        if(Window_NeedsAssessment_Diff !== undefined) {
+        if(Window_NeedsAssessment_Diff != null) {
             clearInterval(interval);
             Window_NeedsAssessment_Diff.showUs(objectId, objectType);
             if(unchangeable) {

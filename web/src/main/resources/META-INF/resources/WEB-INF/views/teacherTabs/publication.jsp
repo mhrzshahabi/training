@@ -388,6 +388,11 @@
                 ToolStripButton_Add_JspPublication,
                 ToolStripButton_Edit_JspPublication,
                 ToolStripButton_Remove_JspPublication,
+                isc.ToolStripButtonExcel.create({
+                    click: function () {
+                        ExportToFile.downloadExcelRestUrl(null, ListGrid_JspPublication, publicationUrl + "/iscList/" + teacherIdPublication, 0,null, '', "استاد - اطلاعات پايه - تاليفات", ListGrid_JspPublication.getCriteria(), null)
+                    }
+                }),
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",

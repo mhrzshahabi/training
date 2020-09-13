@@ -69,8 +69,8 @@
                                 _constructor:"AdvancedCriteria",
                                 operator:"and",
                                 criteria:[
-                                    {fieldName:"tclassEndDate", operator:"equals", value: todayDate},
-                                    {fieldName:"evaluation", operator:"equals", value: "1"}
+                                    {fieldName:"tclassEndDate", operator:"equals", value: todayDate}
+                                    // {fieldName:"evaluation", operator:"equals", value: "1"}
                                 ]
                             };
                             RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
@@ -83,7 +83,7 @@
                                 operator:"and",
                                 criteria:[
                                     {fieldName:"tclassStartDate", operator:"equals", value: todayDate},
-                                    {fieldName:"evaluation", operator:"equals", value: "2"}
+                                    {fieldName:"evaluation", operator:"notEqual", value: "1"}
                                 ]
                             };
                             RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
@@ -285,7 +285,6 @@
             width: "100%",
             membersMargin: 5,
             members: [
-                <sec:authorize access="hasAuthority('Evaluation_R')">
                 DynamicForm_AlarmSelection,
                 isc.ToolStrip.create({
                     width: "5%",
@@ -295,7 +294,6 @@
                         ToolStripButton_Refresh_Evaluation
                     ]
                 })
-                </sec:authorize>
             ]
         });
 
