@@ -332,6 +332,13 @@ public class EvaluationRestController {
         classEvaluationGoalsService.editClassGoalsQuestions(request);
     }
 
+    @Loggable
+    @GetMapping(value = "/deleteAllReactionEvaluationForms/{classId}")
+    public ResponseEntity<Void> deleteAllReactionEvaluationForms(@PathVariable Long classId, HttpServletRequest iscRq) throws IOException {
+        evaluationService.deleteAllReactionEvaluationForms(classId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
 
     //--------------------------------------------- Calender -----------------------------------------------------------
