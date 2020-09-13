@@ -15,10 +15,12 @@ import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.dto.ViewEvaluationStaticalReportDTO;
 import com.nicico.training.iservice.IInstituteService;
-import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.Institute;
 import com.nicico.training.model.Personnel;
-import com.nicico.training.repository.*;
+import com.nicico.training.repository.InstituteDAO;
+import com.nicico.training.repository.PersonnelDAO;
+import com.nicico.training.repository.StudentDAO;
+import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -545,46 +547,11 @@ public class TclassRestController {
     public ResponseEntity<InstituteDTO.Info> defaultExecutor(@PathVariable String parameterCode, @PathVariable String cTitle){
         TotalResponse<ParameterValueDTO.Info> totalResponse = parameterService.getByCode(parameterCode);
         ParameterValueDTO.Info parameterInfo = totalResponse.getResponse().getData().stream().filter(i -> i.getTitle().equals(cTitle)).findFirst().orElse(null);
-        SearchDTO.SearchRs<InstituteDTO.Info> infoSearchRs = instituteService.search(new SearchDTO.SearchRq().setCriteria(makeNewCriteria("titleFa",parameterInfo.getValue(),EOperator.equals,null)));
-        return new ResponseEntity<InstituteDTO.Info>(infoSearchRs.getList().get(0), HttpStatus.OK);
-    }
-
-    private SearchDTO.SearchRq setSearchCriteria(@RequestParam(value = "_startRow", required = false) Integer startRow,
-                                                 @RequestParam(value = "_endRow", required = false) Integer endRow,
-                                                 @RequestParam(value = "_constructor", required = false) String constructor,
-                                                 @RequestParam(value = "operator", required = false) String operator,
-                                                 @RequestParam(value = "criteria", required = false) String criteria,
-                                                 @RequestParam(value = "id", required = false) Long id,
-                                                 @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
-        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-
-        SearchDTO.CriteriaRq criteriaRq;
-        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
-            criteria = "[" + criteria + "]";
-            criteriaRq = new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.valueOf(operator))
-                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
-                    }));
-
-
-            request.setCriteria(criteriaRq);
+        SearchDTO.SearchRs<InstituteDTO.Info> infoSearchRs = null;
+        if (parameterInfo != null) {
+            infoSearchRs = instituteService.search(new SearchDTO.SearchRq().setCriteria(makeNewCriteria("titleFa",parameterInfo.getValue(),EOperator.equals,null)));
         }
-
-        if (StringUtils.isNotEmpty(sortBy)) {
-            request.setSortBy(sortBy);
-        }
-        if (id != null) {
-            criteriaRq = new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.equals)
-                    .setFieldName("id")
-                    .setValue(id);
-            request.setCriteria(criteriaRq);
-            startRow = 0;
-            endRow = 1;
-        }
-        request.setStartIndex(startRow)
-                .setCount(endRow - startRow);
-        return request;
+        return new ResponseEntity<>((infoSearchRs == null || infoSearchRs.getList().size() == 0) ? new InstituteDTO.Info() : infoSearchRs.getList().get(0), HttpStatus.OK);
     }
 
     @Loggable

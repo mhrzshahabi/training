@@ -2185,15 +2185,6 @@
                             </sec:authorize>
                             <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">
                             {
-                                title: "غيبت ناموجه",
-                                click: function () {
-                                    createTab(this.title, "<spring:url value="/unjustifiedAbsenceReport/show-form"/>");
-                                }
-                            },
-                            {isSeparator: true},
-                            </sec:authorize>
-                            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">
-                            {
                             title: "کنترل",
                             click: function () {
                             createTab(this.title, "<spring:url value="web/controlReport/"/>");
@@ -3438,7 +3429,7 @@
     var workflowParameters = null;
     var todayDate = JalaliDate.JalaliTodayDate();
     var userPersonInfo = null;
-    isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/get-user-info", "GET", null, setUserPersonInfo));
+    isc.RPCManager.sendRequest(TrDSRequest(viewActivePersonnelUrl + "/get-user-info", "GET", null, setUserPersonInfo));
 
     function setUserPersonInfo(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
