@@ -44,6 +44,32 @@
 
     <script>
 
+        var sayBrowser = (function(){
+            var ua= navigator.userAgent, tem,
+                M= ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+            if(/trident/i.test(M[1])){
+                tem=  /\brv[ :]+(\d+)/g.exec(ua) || [];
+                return 'IE '+(tem[1] || '');
+            }
+            if(M[1]=== 'Chrome'){
+                tem= ua.match(/\b(OPR|Edge?)\/(\d+)/);
+                if(tem!= null) return tem.slice(1).join(' ').replace('OPR', 'Opera').replace('Edg ', 'Edge ');
+            }
+            M= M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
+            if((tem= ua.match(/version\/(\d+)/i))!= null) M.splice(1, 1, tem[1]);
+            return M;
+        })();
+
+
+       /* jQuery.loadScript = function (url, callback) {
+            jQuery.ajax({
+                url: url,
+                dataType: 'script',
+                success: callback,
+                async: false
+            });
+        }*/
+
         String.prototype.toEnglishDigit = function() {
             var find = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
             var replace = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
@@ -1104,6 +1130,8 @@
     const studentPortalUrl = rootUrl + "/student-portal";
     const studentClassReportUrl = rootUrl + "/student-class-report-view";
     const personnelCourseNAReportUrl = rootUrl + "/personnel-course-na-report";
+    const trainingFileNAReportUrl = rootUrl + "/training-file-na-report";
+    const personnelDurationNAReportUrl = rootUrl + "/personnel-duration-na-report";
     const personnelCourseNotPassedReportUrl = rootUrl + "/personnel-course-not-passed-report";
     const classContractUrl = rootUrl + "/class-contract";
     const evaluationAnalysisUrl = rootUrl + "/evaluationAnalysis";
@@ -2202,6 +2230,14 @@
                                 title: "آمار دوره های نیازسنجی افراد",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/personnel-course-NA-report"/>");
+                                }
+                            },
+                            </sec:authorize>
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsNeedsAssessment_People')">
+                            {
+                                title: "گزارش مقایسه نیازسنجی با پرونده آموزشی",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/training-file-na-report"/>");
                                 }
                             },
                             </sec:authorize>
@@ -3385,6 +3421,15 @@
             userPersonInfo = (JSON.parse(resp.data));
         }
     }
+    if(sayBrowser[0] === "Chrome"){
+        createDialog("warning", "بهتر است با مرورگر فایرفاکس وارد شوید.", "اخطار");
+    }
+    else if(sayBrowser[0] !== "Firefox"){
+        let warn = createDialog("warning", "لطفا با مرورگر فایرفاکس وارد شوید.", "اخطار");
+        warn.setProperties({
+            showCloseButton: false
+        })
+    }
 
 
 
@@ -3400,7 +3445,7 @@
     <%--autoFitFieldText: "<spring:message code="auto.fit"/>",--%>
     <%--emptyMessage: "",--%>
     <%--loadingDataMessage: "<spring:message code="loading"/>"--%>
-    <%--createTab("<spring:message code="post"/>", "<spring:url value="/web/post"/>");--%>
+    <%--createTab("<spring:message code="post"/>", "<spring:url value="/web/training-post"/>");--%>
     <%--createTab("<spring:message code="class"/>", "<spring:url value="/tclass/show-form"/>");--%>
     <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="web/needsAssessment/"/>");--%>
 
