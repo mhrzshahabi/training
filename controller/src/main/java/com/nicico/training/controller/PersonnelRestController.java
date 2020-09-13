@@ -25,6 +25,7 @@ import com.nicico.training.model.ViewActivePersonnel;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.PostDAO;
 import com.nicico.training.repository.ViewActivePersonnelDAO;
+import com.nicico.training.service.CourseService;
 import com.nicico.training.service.PersonnelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
