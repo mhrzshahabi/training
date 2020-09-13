@@ -142,7 +142,7 @@
         wrapItemTitles: true,
         fields: [
             {
-                name: "startDate",
+                name: "start_data",
                 titleColSpan: 1,
                 title: "<spring:message code='start.date'/>",
                 ID: "startDate_SICC",
@@ -154,7 +154,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('startDate_SICCv', this, 'ymd', '/');
+                        displayDatePicker('startDate_SICC', this, 'ymd', '/');
                     }
                 }],
                 textAlign: "center",
@@ -169,10 +169,10 @@
                 }
             },
             {
-                name: "endDate",
+                name: "end_data",
                 titleColSpan: 1,
                 title: "<spring:message code='end.date'/>",
-                ID: "endDate_SICCv",
+                ID: "endDate_SICC",
                 type: 'text', required: true,
                 hint: "--/--/----",
                 keyPressFilter: "[0-9/]",
