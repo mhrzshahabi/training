@@ -41,7 +41,6 @@ public class ContinuousStatusReportView {
     private String lastName;
 
     //////////////////////////////////////////////////////////////////////
-
     @Column(name = "class_id")
     private Long classId;
 
@@ -73,7 +72,6 @@ public class ContinuousStatusReportView {
     private String classYear;
 
     ////////////////////////////////////////////////////////////////////////
-
     @Column(name = "term_code")
     private String termCode;
 
@@ -84,9 +82,14 @@ public class ContinuousStatusReportView {
     private Long termId;
 
     ////////////////////////////////////////////////////////////////////////
-
     @Column(name = "personnel_post_title")
     private String postTitle;
+
+    @Column(name = "personnel_post_grade_id")
+    private Long pgId;
+
+    @Column(name = "personnel_post_grade_title")
+    private String postGradeTitle;
 
     @Column(name = "personnel_ccp_affairs")
     private String affairs;

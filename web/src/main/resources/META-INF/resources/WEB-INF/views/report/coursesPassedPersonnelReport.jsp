@@ -79,29 +79,8 @@
         implicitCriteria: {
             _constructor:"AdvancedCriteria",
             operator:"and",
-            criteria:[{ fieldName: "active", operator: "equals", value: 1}]
+            criteria:[{ fieldName: "active", operator: "equals", value: 1},{ fieldName: "deleted", operator: "equals", value: 0}]
         },
-    });
-
-    var RestDataSource_Course_JspCoursesPassedPersonnel = isc.TrDS.create({
-        ID: "courseDS",
-        fields: [
-            {name: "id", type: "Integer", primaryKey: true},
-            {name: "code"},
-            {name: "titleFa"}
-        ],
-        fetchDataURL: courseUrl + "info-tuple-list"
-    });
-
-    var RestDataSource_Class_JspCoursesPassedPersonnel = isc.TrDS.create({
-        ID: "classDS",
-        fields: [
-            {name: "id", primaryKey: true},
-            {name: "titleClass"},
-            {name: "code"},
-            {name: "course.titleFa"}
-        ],
-        fetchDataURL: classUrl + "info-tuple-list"
     });
 
     CourseDS_PresenceReport = isc.TrDS.create({
@@ -160,27 +139,6 @@
         fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpUnit"
     });
 
-    var RestDataSource_Course_JspCoursesPassedPersonnelReport = isc.TrDS.create({
-        ID: "courseDS",
-        fields: [
-            {name: "id", type: "Integer", primaryKey: true},
-            {name: "code"},
-            {name: "titleFa"}
-        ],
-        fetchDataURL: courseUrl + "spec-safe-list"
-    });
-
-    var RestDataSource_Teacher_JspCoursesPassedPersonnel = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true},
-            {name: "personality.firstNameFa", filterOperator: "iContains"},
-            {name: "personality.lastNameFa", filterOperator: "iContains"},
-            {name: "personality.nationalCode", filterOperator: "iContains"},
-            {name: "fullNameFa"}
-        ],
-        fetchDataURL: teacherUrl + "fullName"
-    });
-
     var RestDataSource_Term_JspCoursesPassedPersonnel = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -196,65 +154,6 @@
         ],
         fetchDataURL: termUrl + "yearList"
     });
-
-    var RestDataSource_Category_JspCoursesPassedPersonnel = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleFa"}],
-        fetchDataURL: categoryUrl + "spec-list"
-    });
-
-    var RestDataSource_SubCategory_JspCoursesPassedPersonnel = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleFa"}],
-        fetchDataURL: subCategoryUrl + "iscList"
-    });
-
-    var RestDataSource_SupervisorDS_JspTClassReport = isc.TrDS.create({
-        fields: [
-            {name: "id", filterOperator: "equals", primaryKey: true, hidden: true},
-            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
-            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-        ],
-        fetchDataURL: personnelUrl + "/iscList",
-        implicitCriteria: {
-            _constructor:"AdvancedCriteria",
-            operator:"and",
-            criteria:[{ fieldName: "active", operator: "equals", value: 1}]
-        }
-    });
-
-    var RestDataSource_PlannerDS_JspTClassReport = isc.TrDS.create({
-        fields: [
-            {name: "id", filterOperator: "equals", primaryKey: true, hidden: true},
-            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
-            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-        ],
-        fetchDataURL: personnelUrl + "/iscList",
-        implicitCriteria: {
-            _constructor:"AdvancedCriteria",
-            operator:"and",
-            criteria:[{ fieldName: "active", operator: "equals", value: 1}]
-        }
-    });
-
-    var RestDataSource_Institute_JspTClassReport = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true},
-            {name: "titleFa", title: "نام موسسه"},
-            {name: "manager.firstNameFa", title: "نام مدیر"},
-            {name: "manager.lastNameFa", title: "نام خانوادگی مدیر"},
-            {name: "mobile", title: "موبایل"},
-            {name: "restAddress", title: "آدرس"},
-            {name: "phone", title: "تلفن"}
-        ],
-        fetchDataURL: instituteUrl + "spec-list",
-        allowAdvancedCriteria: true
-    });
-
 
     let RestDataSource_PostGradeLvl_PCNR = isc.TrDS.create({
         fields: [
