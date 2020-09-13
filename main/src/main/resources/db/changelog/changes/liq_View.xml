@@ -1625,10 +1625,10 @@ WITH result AS (
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_PERSONNEL_COURSE_NOT_PASSED_REPORT-007">
+    <changeSet author="NICICO" id="VIEW_PERSONNEL_COURSE_NOT_PASSED_REPORT-011">
         <createView viewName="VIEW_PERSONNEL_COURSE_NOT_PASSED_REPORT" replaceIfExists="true">
             <![CDATA[
-    SELECT
+      SELECT
         must_pass.course_id,
         must_pass.course_code,
         must_pass.course_title_fa,
@@ -1637,33 +1637,33 @@ WITH result AS (
         must_pass.personnel_first_name,
         must_pass.personnel_last_name,
         must_pass.personnel_national_code,
-        must_pass.personnel_cpp_affairs,
-        must_pass.personnel_cpp_area,
-        must_pass.personnel_cpp_assistant,
-        must_pass.personnel_cpp_code,
-        must_pass.personnel_cpp_section,
-        must_pass.personnel_cpp_title,
-        must_pass.personnel_cpp_unit,
+        department.c_omor_title       AS personnel_ccp_affairs,
+        department.c_hoze_title       AS personnel_ccp_area,
+        department.c_moavenat_title   AS personnel_ccp_assistant,
+        department.c_code             AS personnel_cpp_code,
+        department.c_ghesmat_title    AS personnel_ccp_section,
+        department.c_title            AS personnel_cpp_title,
+        department.c_vahed_title      AS personnel_ccp_unit,
         must_pass.personnel_company_name,
-        must_pass.personnel_complex_title,
+        department.c_hoze_title       AS personnel_complex_title,
         must_pass.personnel_education_level_title,
         must_pass.personnel_id,
         must_pass.personnel_job_no,
         must_pass.personnel_job_title,
         must_pass.personnel_emp_no,
-        must_pass.personnel_post_code,
-        must_pass.personnel_post_grade_code,
-        must_pass.personnel_post_grade_title,
-        must_pass.personnel_post_title,
-        passed.class_student_id,
-        pg.c_code
+        post.c_code as personnel_post_code,
+        postGrade.c_code as personnel_post_grade_code,
+        post.c_title_fa as personnel_post_title,
+        passed.class_student_id       AS class_student_id,
+        postGrade.id                         AS personnel_post_grade_id,
+        postGrade.c_title_fa                 AS personnel_post_grade_title
     FROM
         view_sub_active_personnel_must_pass_course   must_pass
         LEFT JOIN tbl_department                               department ON department.id = must_pass.personnel_f_department_id
         LEFT JOIN view_sub_active_personnel_passed_course      passed ON passed.f_course = must_pass.course_id
                                                                     AND passed.national_code = must_pass.personnel_national_code
-        LEFT JOIN tbl_post                                     p ON must_pass.personnel_f_post_id = p.id
-        LEFT JOIN tbl_post_grade                               pg ON p.f_post_grade_id = pg.id
+        LEFT JOIN tbl_post                                     post ON must_pass.personnel_f_post_id = post.id
+        LEFT JOIN tbl_post_grade                               postGrade ON post.f_post_grade_id = postGrade.id
     WHERE
         passed.class_student_id IS NULL
     			]]>
