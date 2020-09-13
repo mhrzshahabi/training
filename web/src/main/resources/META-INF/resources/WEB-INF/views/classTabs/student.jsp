@@ -1674,6 +1674,7 @@
         }
 
         function checkPersonnelNosResponse(url, result, addStudentsInGroupInsert) {
+            wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(result)
                 , "callback: checkPersonnelNos(rpcResponse," + JSON.stringify(result) + ",'" + url + "'," + addStudentsInGroupInsert +")"));
         }
@@ -1752,12 +1753,14 @@
 
                                     if (!checkIfAlreadyExist(person)) {
 
-                                        students.add({
-                                            "personnelNo": person.personnelNo,
-                                            "applicantCompanyName": person.companyName,
-                                            "presenceTypeId": studentDefaultPresenceId,
-                                            "registerTypeId": url.indexOf(personnelUrl) > -1 ? 1 : 2
-                                        });
+                                        if (students.filter(function (item) {return item.personnelNo2 == person.personnelNo2||item.personnelNo == person.personnelNo;}).length==0) {
+                                            students.add({
+                                                "personnelNo": person.personnelNo,
+                                                "applicantCompanyName": person.companyName,
+                                                "presenceTypeId": studentDefaultPresenceId,
+                                                "registerTypeId": url.indexOf(personnelUrl) > -1 ? 1 : 2
+                                            });
+                                        }
                                     }
                                 }
                             }
@@ -1789,10 +1792,16 @@
                     } else {
                         GroupSelectedPersonnelsLG_student.invalidateCache();
                         GroupSelectedPersonnelsLG_student.fetchData();
+
+                        wait.close();
                     }
 
 
+                }else{
+                    wait.close();
                 }
+            }else{
+                wait.close();
             }
         }
 
