@@ -26,6 +26,7 @@ public class ViewActivePersonnelDTO implements Serializable {
     public static class PersonalityInfo {
         private Long id;
         private String personnelNo;
+        private String fullName;
         private String firstName;
         private String lastName;
         private String fatherName;
@@ -86,6 +87,7 @@ public class ViewActivePersonnelDTO implements Serializable {
     @ApiModel("Personnel - Info")
     public static class Info {
         private Long id;
+        private String fullName;
         private String firstName;
         private String lastName;
         private String nationalCode;
@@ -121,12 +123,12 @@ public class ViewActivePersonnelDTO implements Serializable {
         private String email;
         private Long postId;
 
-        @Getter(AccessLevel.NONE)
-        private String fullName;
-
-        public String getFullName() {
-            return (firstName + " " + lastName).compareTo("null null") == 0 ? null : firstName + " " + lastName;
-        }
+//        @Getter(AccessLevel.NONE)
+//        private String fullName;
+//
+//        public String getFullName() {
+//            return (firstName + " " + lastName).compareTo("null null") == 0 ? null : firstName + " " + lastName;
+//        }
     }
 
     @Getter

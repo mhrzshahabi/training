@@ -198,7 +198,7 @@
         fetchDataURL: parameterValueUrl + "/iscList/438"
     });
 
-    SupervisorDS_JspClass = isc.TrDS.create({
+    let SupervisorDS_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", filterOperator: "equals", primaryKey: true, hidden: true},
             {
@@ -209,6 +209,7 @@
                 autoFitWidthApproach: "both"
             },
             {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
+            {name: "fullName", title: "نام و نام خانوادگی", filterOperator: "iContains", autoFitWidth: true},
             {
                 name: "nationalCode",
                 title: "<spring:message code="national.code"/>",
@@ -231,15 +232,10 @@
                 autoFitWidthApproach: "both"
             },
         ],
-        fetchDataURL: personnelUrl + "/iscList",
-        implicitCriteria: {
-            _constructor: "AdvancedCriteria",
-            operator: "and",
-            criteria: [{fieldName: "active", operator: "equals", value: 1},{fieldName: "deleted", operator: "equals", value: 0}]
-        },
+        fetchDataURL: viewActivePersonnelUrl + "/iscList",
     });
 
-    PlannerDS_JspClass = isc.TrDS.create({
+    let PlannerDS_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", filterOperator: "equals", primaryKey: true, hidden: true},
             {
@@ -250,6 +246,7 @@
                 autoFitWidthApproach: "both"
             },
             {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
+            {name: "fullName", title: "نام و نام خانوادگی", filterOperator: "iContains", autoFitWidth: true},
             {
                 name: "nationalCode",
                 title: "<spring:message code="national.code"/>",
@@ -272,12 +269,7 @@
                 autoFitWidthApproach: "both"
             },
         ],
-        fetchDataURL: personnelUrl + "/iscList",
-        implicitCriteria: {
-            _constructor: "AdvancedCriteria",
-            operator: "and",
-            criteria: [{fieldName: "active", operator: "equals", value: 1},{fieldName: "deleted", operator: "equals", value: 0}]
-        },
+        fetchDataURL: viewActivePersonnelUrl + "/iscList",
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -527,8 +519,8 @@
                 name: "plannerFullName",
                 title: "<spring:message code="planner"/>",
                 // displayValueFromRecord: false,
-                canFilter: false,
-                canSort: false,
+                // canFilter: false,
+                // canSort: false,
                 type: "TextItem",
                 align: "center",
                 filterOperator: "iContains",
@@ -1053,7 +1045,7 @@
                 autoFetchData: false,
                 valueField: "id",
                 pickListWidth: 550,
-                pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "nationalCode"}, {name: "personnelNo"}],
+                pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "fullName"}, {name: "nationalCode"}, {name: "personnelNo"}],
                 // filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
                 pickListProperties: {sortField: "personnelNo2", showFilterEditor: true},
                 formatValue: function (value, record, form, item) {
@@ -1078,7 +1070,7 @@
                 autoFetchData: false,
                 valueField: "id",
                 pickListWidth: 550,
-                pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "nationalCode"}, {name: "personnelNo"}],
+                pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "fullName"}, {name: "nationalCode"}, {name: "personnelNo"}],
                 // filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
                 pickListProperties: {sortField: "personnelNo2", showFilterEditor: true},
                 formatValue: function (value, record, form, item) {
@@ -1341,7 +1333,7 @@
                 type: "radioGroup",
                 vertical: false,
                 fillHorizontalSpace: true,
-                defaultValue: "371",
+                defaultValue: "372",
                 valueMap: {
                     "371": "واحد",
                     "372": "سایر",
@@ -1392,6 +1384,7 @@
                 optionDataSource: DataSource_TargetSociety_List,
                 displayField: "title",
                 valueField: "societyId",
+                defaultValue: "سایر",
                 <%--validate: function(){--%>
                 <%--if(this._value === null || this._value.length <= 0){--%>
                 <%--DynamicForm_Class_JspClass.addFieldErrors("targetSocieties", "<spring:message code="validator.field.is.required"/>", true);--%>
