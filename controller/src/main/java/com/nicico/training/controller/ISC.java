@@ -70,15 +70,19 @@ public class ISC<T> {
 
         if (stringIds != null) {
             List<Long> ids = new ArrayList<>();
-            for (String stringId : stringIds) {
-                ids.add(Long.valueOf(stringId));
+            try {
+                for (String stringId : stringIds) {
+                    ids.add(Long.valueOf(stringId));
+                }
+                SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+                criteria.getCriteria().add(makeNewCriteria("id", ids, EOperator.inSet, null));
+                if (searchRq.getCriteria() != null) {
+                    criteria.getCriteria().add(searchRq.getCriteria());
+                }
+                searchRq.setCriteria(criteria);
+            } catch (Exception ex) {
+
             }
-            SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-            criteria.getCriteria().add(makeNewCriteria("id", ids, EOperator.inSet, null));
-            if (searchRq.getCriteria() != null) {
-                criteria.getCriteria().add(searchRq.getCriteria());
-            }
-            searchRq.setCriteria(criteria);
         }
         return searchRq;
     }
