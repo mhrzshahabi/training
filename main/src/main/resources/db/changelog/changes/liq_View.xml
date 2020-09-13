@@ -4899,10 +4899,10 @@ FROM
                     score_state.c_title    AS class_student_scores_state_title,
                     institute.c_title_fa   AS class_location
                 FROM
-                    devtraining.view_student_classstudent_class_term_course   passed
-                    FULL JOIN devtraining.view_personnel_course_skill_na_report         na ON na.personnel_id = passed.personnel_id
+                    view_student_classstudent_class_term_course   passed
+                    FULL JOIN view_personnel_course_skill_na_report         na ON na.personnel_id = passed.personnel_id
                                                                                       AND na.course_id = passed.course_id
-                    LEFT JOIN devtraining.tbl_institute                                 institute ON institute.id = passed.class_institute
+                    LEFT JOIN tbl_institute                                 institute ON institute.id = passed.class_institute
                     LEFT JOIN tbl_parameter_value                                       na_priority ON na_priority.id = na.na_priority_id
                     LEFT JOIN tbl_parameter_value                                       score_state ON score_state.id = passed.class_student_scores_state_id
             ]]>
