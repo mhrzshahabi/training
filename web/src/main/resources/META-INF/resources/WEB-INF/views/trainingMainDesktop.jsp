@@ -2177,6 +2177,13 @@
                             },
                             {isSeparator: true},
                             </sec:authorize>
+                            {
+                                title: "گزارش کلاس های حذف شده",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="/students-in-canceled-class-report/show-form"/>");
+                                }
+                            },
+                            {isSeparator: true},
                         ]
                 },
                 {isSeparator: true},
