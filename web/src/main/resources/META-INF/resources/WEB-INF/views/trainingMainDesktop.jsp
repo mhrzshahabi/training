@@ -3438,7 +3438,7 @@
     var workflowParameters = null;
     var todayDate = JalaliDate.JalaliTodayDate();
     var userPersonInfo = null;
-    isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/get-user-info", "GET", null, setUserPersonInfo));
+    isc.RPCManager.sendRequest(TrDSRequest(viewActivePersonnelUrl + "/get-user-info", "GET", null, setUserPersonInfo));
 
     function setUserPersonInfo(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
