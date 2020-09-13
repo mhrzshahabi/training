@@ -32,6 +32,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,16 +62,16 @@ public class ViewActivePersonnelRestController {
     }
 
     @GetMapping(value = "iscList")
-    public ResponseEntity<TotalResponse<ViewActivePersonnelDTO.Info>> list(@RequestParam MultiValueMap<String, String> criteria) {
-        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
-        return new ResponseEntity<>(personnelService.search(nicicoCriteria), HttpStatus.OK);
+    public ResponseEntity<ISC<ViewActivePersonnelDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(personnelService.search(searchRq), searchRq.getStartIndex()), HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping(value = "checkPersonnelNos")
     public ResponseEntity<List<ViewActivePersonnelDTO.Info>> checkPersonnelNos(@RequestBody List<String> personnelNos) {
         List<ViewActivePersonnelDTO.Info> list = personnelService.checkPersonnelNos(personnelNos);
-        return new ResponseEntity<>(list,HttpStatus.OK);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @Loggable
@@ -174,7 +175,7 @@ public class ViewActivePersonnelRestController {
         List<PersonnelRegisteredDTO.Info> personnelRegisteredList = personnelRegisteredService.search(new SearchDTO.SearchRq().setCriteria(criteria)).getList();
         if (!personnelRegisteredList.isEmpty())
             return new ResponseEntity<>(personnelRegisteredList.get(0), HttpStatus.OK);
-        else if(nationalCode.equalsIgnoreCase("null"))
+        else if (nationalCode.equalsIgnoreCase("null"))
             return new ResponseEntity<>("اطلاعات کاربر در سیستم ناقص می باشد", HttpStatus.NOT_FOUND);
         else
             return new ResponseEntity<>("پرسنلی با این کد ملی در سیستم پیدا نشد", HttpStatus.NOT_FOUND);
@@ -191,31 +192,32 @@ public class ViewActivePersonnelRestController {
 
     @GetMapping(value = "getParentEmployee/{personnelNationalCode}")
     public ResponseEntity<ISC<ViewActivePersonnelDTO.Info>> getParentEmployee(@RequestParam MultiValueMap<String, String> criteria, @PathVariable String personnelNationalCode) throws IOException {
-        List<ViewActivePersonnelDTO.Info> tempResult1 = modelMapper.map(masterDataService.getPersonByNationalCode(personnelNationalCode), new TypeToken<List<ViewActivePersonnelDTO.Info>>(){}.getType());
-        if(tempResult1 != null && tempResult1.size() != 0) {
+        List<ViewActivePersonnelDTO.Info> tempResult1 = modelMapper.map(masterDataService.getPersonByNationalCode(personnelNationalCode), new TypeToken<List<ViewActivePersonnelDTO.Info>>() {
+        }.getType());
+        if (tempResult1 != null && tempResult1.size() != 0) {
             ViewActivePersonnelDTO.Info tempResult2 = modelMapper.map(masterDataService.getParentEmployee(tempResult1.get(0).getId()), new TypeToken<ViewActivePersonnelDTO.Info>() {
             }.getType());
-            if(tempResult2 != null && tempResult2.getNationalCode()!=null) {
+            if (tempResult2 != null && tempResult2.getNationalCode() != null) {
                 ViewActivePersonnelDTO.Info result = modelMapper.map(personnelDAO.findByNationalCode(tempResult2.getNationalCode())[0], ViewActivePersonnelDTO.Info.class);
                 SearchDTO.SearchRs<ViewActivePersonnelDTO.Info> searchRs = new SearchDTO.SearchRs<>();
                 searchRs.setList(new ArrayList<>());
                 searchRs.getList().add(result);
                 searchRs.setTotalCount((long) 1);
                 return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
-            }
-            else
+            } else
                 return new ResponseEntity<>(null, HttpStatus.OK);
-        }
-        else
+        } else
             return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @GetMapping(value = "getSiblingsEmployee/{personnelNationalCode}")
     public ResponseEntity<ISC<ViewActivePersonnelDTO.Info>> getSiblingsEmployee(@RequestParam MultiValueMap<String, String> criteria, @PathVariable String personnelNationalCode) throws IOException {
-        List<ViewActivePersonnelDTO.Info> tempResult1 = modelMapper.map(masterDataService.getPersonByNationalCode(personnelNationalCode), new TypeToken<List<ViewActivePersonnelDTO.Info>>(){}.getType());
-        if(tempResult1 != null && tempResult1.size() != 0) {
-            List<ViewActivePersonnelDTO.Info> tempResult2 = modelMapper.map(masterDataService.getSiblingsEmployee(tempResult1.get(0).getId()), new TypeToken<List<ViewActivePersonnelDTO.Info>>(){}.getType());
-            if(tempResult2 != null && tempResult2.size() !=0) {
+        List<ViewActivePersonnelDTO.Info> tempResult1 = modelMapper.map(masterDataService.getPersonByNationalCode(personnelNationalCode), new TypeToken<List<ViewActivePersonnelDTO.Info>>() {
+        }.getType());
+        if (tempResult1 != null && tempResult1.size() != 0) {
+            List<ViewActivePersonnelDTO.Info> tempResult2 = modelMapper.map(masterDataService.getSiblingsEmployee(tempResult1.get(0).getId()), new TypeToken<List<ViewActivePersonnelDTO.Info>>() {
+            }.getType());
+            if (tempResult2 != null && tempResult2.size() != 0) {
                 SearchDTO.SearchRs<ViewActivePersonnelDTO.Info> searchRs = new SearchDTO.SearchRs<>();
                 searchRs.setList(new ArrayList<>());
                 int count = 0;
@@ -226,48 +228,44 @@ public class ViewActivePersonnelRestController {
                 }
                 searchRs.setTotalCount((long) count);
                 return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
-            }
-            else
+            } else
                 return new ResponseEntity<>(null, HttpStatus.OK);
-        }
-        else
+        } else
             return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @GetMapping(value = "getTraining/{trainorNationalCode}")
     public ResponseEntity<ISC<ViewActivePersonnelDTO.Info>> getTraining(@RequestParam MultiValueMap<String, String> criteria, @PathVariable String trainorNationalCode) throws IOException {
-                ViewActivePersonnel[] tempResult = personnelDAO.findByNationalCode(trainorNationalCode);
-                if(tempResult != null && tempResult.length != 0) {
-                    ViewActivePersonnelDTO.Info result = modelMapper.map(tempResult[0], ViewActivePersonnelDTO.Info.class);
-                    SearchDTO.SearchRs<ViewActivePersonnelDTO.Info> searchRs = new SearchDTO.SearchRs<>();
-                    searchRs.setList(new ArrayList<>());
-                    searchRs.getList().add(result);
-                    searchRs.setTotalCount((long) 1);
-                    return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
-                }
-                else
-                    return new ResponseEntity<>(null, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "getStudent/{studentNationalCode}")
-    public ResponseEntity<ISC<ViewActivePersonnelDTO.Info>> getStudent(@RequestParam MultiValueMap<String, String> criteria, @PathVariable String studentNationalCode) throws IOException {
-        ViewActivePersonnel[] tempResult = personnelDAO.findByNationalCode(studentNationalCode);
-        if(tempResult != null && tempResult.length != 0) {
+        ViewActivePersonnel[] tempResult = personnelDAO.findByNationalCode(trainorNationalCode);
+        if (tempResult != null && tempResult.length != 0) {
             ViewActivePersonnelDTO.Info result = modelMapper.map(tempResult[0], ViewActivePersonnelDTO.Info.class);
             SearchDTO.SearchRs<ViewActivePersonnelDTO.Info> searchRs = new SearchDTO.SearchRs<>();
             searchRs.setList(new ArrayList<>());
             searchRs.getList().add(result);
             searchRs.setTotalCount((long) 1);
             return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
-        }
-        else
+        } else
+            return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "getStudent/{studentNationalCode}")
+    public ResponseEntity<ISC<ViewActivePersonnelDTO.Info>> getStudent(@RequestParam MultiValueMap<String, String> criteria, @PathVariable String studentNationalCode) throws IOException {
+        ViewActivePersonnel[] tempResult = personnelDAO.findByNationalCode(studentNationalCode);
+        if (tempResult != null && tempResult.length != 0) {
+            ViewActivePersonnelDTO.Info result = modelMapper.map(tempResult[0], ViewActivePersonnelDTO.Info.class);
+            SearchDTO.SearchRs<ViewActivePersonnelDTO.Info> searchRs = new SearchDTO.SearchRs<>();
+            searchRs.setList(new ArrayList<>());
+            searchRs.getList().add(result);
+            searchRs.setTotalCount((long) 1);
+            return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
+        } else
             return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/personnelFullName/{id}")
-    public ResponseEntity<String> personnelFullName(@PathVariable Long id){
-        String result =  personnelDAO.getPersonnelFullName(id);
+    public ResponseEntity<String> personnelFullName(@PathVariable Long id) {
+        String result = personnelDAO.getPersonnelFullName(id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

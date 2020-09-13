@@ -2,7 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
-// <script>
+<!-- <script> -->
     {
         var studentRemoveWait;
         var studentDefaultPresenceId = 103;
@@ -1769,18 +1769,7 @@
                     if (students.getLength() > 0/*allRowsOK*/ && insert) {
                         var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
 
-                        /*for (var i=0;i<data.length;i++) {
-                            let current = data[i];
 
-                            if (!checkIfAlreadyExist(current)) {
-                                students.add({
-                                    "personnelNo": current.personnelNo,
-                                    "applicantCompanyName": current.companyName,
-                                    "presenceTypeId": studentDefaultPresenceId,
-                                    "registerTypeId": 1
-                                });
-                            }
-                        }*/
                         //if (students.getLength() > 0)
                         wait.show();
                         isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST", JSON.stringify(students), class_add_students_result));
@@ -1829,4 +1818,4 @@
             }));
         }
     }
-    //
+<!-- </script> -->
