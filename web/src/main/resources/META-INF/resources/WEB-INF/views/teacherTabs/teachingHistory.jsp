@@ -509,6 +509,11 @@
                 ToolStripButton_Add_JspTeachingHistory,
                 ToolStripButton_Edit_JspTeachingHistory,
                 ToolStripButton_Remove_JspTeachingHistory,
+                isc.ToolStripButtonExcel.create({
+                    click: function () {
+                        ExportToFile.downloadExcelRestUrl(null, ListGrid_JspTeachingHistory, teachingHistoryUrl + "/iscList/" + teacherIdTeachingHistory, 0,null, '', "استاد - اطلاعات پايه - سوابق تدريس خارجي", ListGrid_JspTeachingHistory.getCriteria(), null)
+                    }
+                }),
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
