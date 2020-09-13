@@ -148,7 +148,7 @@
         implicitCriteria: {
             _constructor:"AdvancedCriteria",
             operator:"and",
-            criteria:[{ fieldName: "active", operator: "equals", value: 1}]
+            criteria:[{ fieldName: "active", operator: "equals", value: 1},{ fieldName: "deleted", operator: "equals", value: 0}]
         }
     });
 
@@ -165,7 +165,7 @@
         implicitCriteria: {
             _constructor:"AdvancedCriteria",
             operator:"and",
-            criteria:[{ fieldName: "active", operator: "equals", value: 1}]
+            criteria:[{ fieldName: "active", operator: "equals", value: 1},{ fieldName: "deleted", operator: "equals", value: 0}]
         }
     });
 

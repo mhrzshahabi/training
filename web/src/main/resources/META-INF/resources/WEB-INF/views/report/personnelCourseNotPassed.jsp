@@ -123,7 +123,7 @@
         implicitCriteria: {
             _constructor:"AdvancedCriteria",
             operator:"and",
-            criteria:[{ fieldName: "active", operator: "equals", value: 1}]
+            criteria:[{ fieldName: "active", operator: "equals", value: 1},  { fieldName: "deleted", operator: "equals", value: 0}]
         },
     });
 
@@ -180,7 +180,9 @@
                             criteriaVal += ",";
                         }
                         criteriaVal += '"' + value[value.length-1] + '"' +  ']';
-                        let criteria= '{"fieldName":"postGradeCode","operator":"inSet","value":' + criteriaVal + '}';
+                        let criteria= '{"fieldName":"postGradeCode","operator":"inSet","value":' + criteriaVal + '}' +
+                            ',{"fieldName": "active", "operator": "equals", "value": "1"}'+
+                            ',{"fieldName": "deleted", "operator": "equals", "value": "0"}';
                         // let criteria = new Object();
                         // criteria.fieldName = "postGradeCode";
                         // criteria.operator = "inSet";
