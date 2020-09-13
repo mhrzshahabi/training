@@ -229,9 +229,9 @@
                 }
             },
             {name: "titleFa", title: "نام شغل", align: "center", width: "60%"},
-            {name: "titleEn", title: "نام لاتین شغل", align: "center", hidden: true},
-            {name: "description", title: "توضیحات", align: "center", hidden: true},
-            {name: "version", title: "version", canEdit: false, hidden: true},
+            //{name: "titleEn", title: "نام لاتین شغل", align: "center", hidden: true},
+            //{name: "description", title: "توضیحات", align: "center", hidden: true},
+            //{name: "version", title: "version", canEdit: false, hidden: true},
             {name: "enabled",
                 valueMap:{
                   //  "undefined" : "فعال",
@@ -310,6 +310,7 @@
                                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                         ListGrid_AllJobs.selectRecord(findRows);
                                         findRows.setProperty("enabled", false);
+
                                         ListGrid_AllJobs.redraw();
 
                                         ListGrid_ForThisJobGroup_GetJobs.invalidateCache();
