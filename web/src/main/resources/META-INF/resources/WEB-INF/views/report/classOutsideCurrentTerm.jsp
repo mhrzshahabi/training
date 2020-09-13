@@ -120,7 +120,7 @@
                      criteria.criteria.push({fieldName: "course.category.id", operator: "equals", value: cat});
                      criteria.criteria.push({ operator:"or", criteria:[  {fieldName: "course.subCategory.id", operator: "equals", value: subCat?subCat:subCat=[]}]});
 
-                    ExportToFile.showDialog(null, List_Grid_Reaport_classOutsideCurrentTerm, 'classOutsideCurrentTerm', 0, null, '',  "کلاس هاي برگزار شده خارج از تقويم جاري", criteria, null);
+                    ExportToFile.downloadExcel(null, List_Grid_Reaport_classOutsideCurrentTerm, 'classOutsideCurrentTerm', 0, null, '',  "کلاس هاي برگزار شده خارج از تقويم جاري", criteria, null);
                 }
             }),ToolStrip_Actions,"filterEditor", "header", "body"],
         showFilterEditor: true,

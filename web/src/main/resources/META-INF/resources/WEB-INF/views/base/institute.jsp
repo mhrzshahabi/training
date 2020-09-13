@@ -1695,11 +1695,19 @@
             }
         }
     });
+    var ToolStripButton_Institute_Equipment_Export2EXcel =isc.ToolStripButtonExcel.create({
+        click: function () {
+            Function_Institute_Export2Excel(ListGrid_Institute_Institute,"مرکز آموزشي");
+            let fileTitr = "ليست تجهيزات مرکز آموزشي «" + ListGrid_Institute_Institute.getSelectedRecord().titleFa+"»";
+            let restUrl =  institute_Institute_Url + ListGrid_Institute_Institute.getSelectedRecord().id + "/equipments";
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_Institute_Attached_Equipment, restUrl, 0, ListGrid_Institute_Institute, '',fileTitr, ListGrid_Institute_Attached_Equipment.getCriteria(), null);
+        }
+    });
     var ToolStrip_Institute_Equipment = isc.ToolStrip.create({
         width: "20",
         center: true,
         members: [
-            ToolStripButton_Institute_Equipment_Add, ToolStripButton_Institute_Equipment_Delete
+            ToolStripButton_Institute_Equipment_Add, ToolStripButton_Institute_Equipment_Delete, ToolStripButton_Institute_Equipment_Export2EXcel
         ]
     });
 
@@ -1852,6 +1860,7 @@
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Institute_Institite_UnAttachedTeacher,
+        selectionType:"single",
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "teacherCode", title: "<spring:message code='code'/>", align: "center"},
@@ -1927,11 +1936,21 @@
             }
         }
     });
+
+    var ToolStripButton_Institute_Teacher_Export2EXcel = isc.ToolStripButtonExcel.create({
+        click: function () {
+            Function_Institute_Export2Excel(ListGrid_Institute_Institute,"مرکز آموزشي");
+            let fileTitr = "ليست اساتيد مرکز آموزشي «" + ListGrid_Institute_Institute.getSelectedRecord().titleFa+"»";
+            let restUrl = institute_Institute_Url +  ListGrid_Institute_Institute.getSelectedRecord().id  + "/teachers";
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_Institute_Attached_Teacher, restUrl, 0, ListGrid_Institute_Institute, '',fileTitr, ListGrid_Institute_Attached_Teacher.getCriteria(), null);
+
+        }
+    });
     var ToolStrip_Institute_Teacher = isc.ToolStrip.create({
         width: "20",
         center: true,
         members: [
-            ToolStripButton_Institute_Teacher_Add, ToolStripButton_Institute_Teacher_Delete
+            ToolStripButton_Institute_Teacher_Add, ToolStripButton_Institute_Teacher_Delete, ToolStripButton_Institute_Teacher_Export2EXcel
         ]
     });
 
@@ -2199,11 +2218,20 @@
             Function_Institute_Account_Edit();
         }
     });
+
+    var ToolStripButton_Institute_Account_Export2EXcel = isc.ToolStripButtonExcel.create({
+        click: function () {
+            Function_Institute_Export2Excel(ListGrid_Institute_Institute,"مرکز آموزشي");
+            let fileTitr = "ليست حساب هاي مرکز آموزشي «" + ListGrid_Institute_Institute.getSelectedRecord().titleFa+"»";
+            let restUrl =  institute_Institute_Account_Url + ListGrid_Institute_Institute.getSelectedRecord().id + "/accounts";
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_Institute_Institute_Account, restUrl, 0, ListGrid_Institute_Institute, '',fileTitr, ListGrid_Institute_Institute_Account.getCriteria(), null);
+        }
+    });
     var ToolStrip_Institute_Account = isc.ToolStrip.create({
         width: "20",
         center: true,
         members: [
-            ToolStripButton_Institute_Account_Add, ToolStripButton_Institute_Account_Edit, ToolStripButton_Institute_Account_Remove
+            ToolStripButton_Institute_Account_Add, ToolStripButton_Institute_Account_Edit, ToolStripButton_Institute_Account_Remove,ToolStripButton_Institute_Account_Export2EXcel
         ]
     });
 
@@ -2538,6 +2566,15 @@
             Function_Institute_TrainingPlace_Edit();
         }
     });
+    var ToolStripButton_Institute_TrainingPlace_Export2EXcel =  isc.ToolStripButtonExcel.create({
+        click: function () {
+
+            Function_Institute_Export2Excel(ListGrid_Institute_Institute,"مرکز آموزشي");
+            let fileTitr = "ليست محل هاي مرکز آموزشي «" + ListGrid_Institute_Institute.getSelectedRecord().titleFa+"»";
+            let restUrl = institute_Institute_Url + ListGrid_Institute_Institute.getSelectedRecord().id + "/trainingPlaces";
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_Institute_TrainingPlace, restUrl, 0, ListGrid_Institute_Institute, '',fileTitr, ListGrid_Institute_TrainingPlace.getCriteria(), null);
+        }
+    });
 
     var ToolStrip_Institute_TrainingPlace = isc.ToolStrip.create({
         width: "20",
@@ -2545,7 +2582,8 @@
         members: [
             ToolStripButton_Institute_TrainingPlace_Add,
             ToolStripButton_Institute_TrainingPlace_Edit,
-            ToolStripButton_Institute_TrainingPlace_Remove
+            ToolStripButton_Institute_TrainingPlace_Remove,
+            ToolStripButton_Institute_TrainingPlace_Export2EXcel
         ]
     });
 
@@ -3113,12 +3151,21 @@
             Function_Institute_TrainingPlace_Equipment_Remove();
         }
     });
+    var ToolStripButton_Institute_TrainingPlace_Equipment_Export2EXcel =
+        isc.ToolStripButtonExcel.create({
+            click: function () {
+                Function_Institute_Export2Excel(ListGrid_Institute_TrainingPlace, "محل آموزشی");
+                let fileTitr = "ليست تجهيزات محل آموزشي « " + ListGrid_Institute_TrainingPlace.getSelectedRecord().titleFa + "» مربوط به مرکز آموزشي «" + ListGrid_Institute_Institute.getSelectedRecord().titleFa + "»";
+                let restUrl = institute_Institute_TrainingPlace_Url + ListGrid_Institute_TrainingPlace.getSelectedRecord.id + "/equipments";
+                ExportToFile.downloadExcelRestUrl(null, ListGrid_Institute_TrainingPlece_Equipment, restUrl, 0, ListGrid_Institute_TrainingPlace, '', fileTitr, ListGrid_Institute_TrainingPlece_Equipment.getCriteria(), null);
+            }
+        });
 
     var ToolStrip_Institute_TrainingPlace_Equipment = isc.ToolStrip.create({
         width: "20",
         center: true,
         members: [
-            ToolStripButton_Institute_TrainingPlace_Equipment_Add, ToolStripButton_Institute_TrainingPlace_Equipment_Remove
+            ToolStripButton_Institute_TrainingPlace_Equipment_Add, ToolStripButton_Institute_TrainingPlace_Equipment_Remove,ToolStripButton_Institute_TrainingPlace_Equipment_Export2EXcel
         ]
     });
 
@@ -3187,6 +3234,11 @@
             ListGrid_institute_print("pdf");
         }
     });
+    var ToolStripButton_Institute_Institute_Export2EXcel =isc.ToolStripButtonExcel.create({
+                click: function () {
+                    ExportToFile.downloadExcelRestUrl(null, ListGrid_Institute_Institute, institute_Institute_Url + "spec-list", 0, null, '',"لیست مراکز آموزشی", ListGrid_Institute_Institute.getCriteria(), null);
+                }
+     });
 
     var ToolStrip_Institute_Institute_Actions = isc.ToolStrip.create({
         width: "100%",
@@ -3196,6 +3248,7 @@
             ToolStripButton_Institute_Institute_Edit,
             ToolStripButton_Institute_Institute_Remove,
             ToolStripButton_Institute_Institute_Print,
+            ToolStripButton_Institute_Institute_Export2EXcel,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -3501,4 +3554,22 @@
         DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.stateId",data.stateId);
         DynamicForm_Institute_Institute_Address.getItem("contactInfo.workAddress.stateId").changed(null, null, data.stateId);
         DynamicForm_Institute_Institute_Address.setValue("contactInfo.workAddress.cityId", data.cityId);
+    }
+
+    function Function_Institute_Export2Excel(ParentListGridName, parentName) {
+        var record = ParentListGridName.getSelectedRecord();
+        console.log(record);
+        if (record == null || record.id == null) {
+            console.log("123")
+            isc.Dialog.create({
+                message: parentName + " برای ايجاد فايل اکسل انتخاب نشده است" ,
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+
+        }
     }

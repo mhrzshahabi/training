@@ -1,7 +1,9 @@
 package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.EvaluationAnalysisDTO;
+import com.nicico.training.dto.EvaluationDTO;
 import com.nicico.training.model.EvaluationAnalysis;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,4 +32,12 @@ public interface IEvaluationAnalysisService {
     void updateBehavioral(Long classId);
 
     void print (HttpServletResponse response, String type , String fileName, Long testQuestionId, String receiveParams,  String suggestions, String opinion) throws Exception;
+
+    @Transactional
+    Float[] getStudents(Long id, String scoringMethod);
+
+    @Transactional
+    List<ClassStudentDTO.evaluationAnalysistLearning> getStudentWithOutPreTest(Long id);
+
+    EvaluationDTO.EvaluationLearningResult evaluationAnalysistLearningResultTemp(Long classId, String scoringMethod);
 }

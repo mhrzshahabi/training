@@ -3338,10 +3338,10 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_CONTINUOUS_STATUS_REPORT-005">
+    <changeSet author="NICICO" id="VIEW_CONTINUOUS_STATUS_REPORT-008">
         <createView viewName="VIEW_CONTINUOUS_STATUS_REPORT" replaceIfExists="true">
             <![CDATA[
-            SELECT
+ SELECT
         tbl_class.c_status                               AS class_status,
         view_active_personnel.id                         AS personnel_id,
         view_active_personnel.emp_no                     AS personnel_emp_no,
@@ -3349,7 +3349,7 @@ FROM
         view_active_personnel.national_code              AS personnel_national_code,
         view_active_personnel.first_name                 AS personnel_first_name,
         view_active_personnel.last_name                  AS personnel_last_name,
-        view_active_personnel.post_title                 AS personnel_post_title,
+        tbl_post.c_title_fa                              AS personnel_post_title,
         tbl_class.id                                     AS class_id,
         tbl_class.c_code                                 AS class_code,
         tbl_course.id                                    AS course_id,
@@ -3369,9 +3369,11 @@ FROM
         department.c_omor_title                          AS personnel_ccp_affairs,
         department.c_vahed_title                         AS personnel_ccp_unit,
         department.c_ghesmat_title                       AS personnel_ccp_section,
+        tbl_post_grade.c_title_fa                        AS personnel_post_grade_title,
+        tbl_post_grade.id                                AS personnel_post_grade_id,
         CASE
             WHEN view_personnel_course_na_report.na_priority_id IS NOT NULL THEN
-             'نیازسنجی'
+                'نیازسنجی'
             ELSE
                 'غیر نیازسنجی'
         END AS coursetype,
@@ -3396,49 +3398,62 @@ FROM
         LEFT JOIN tbl_department department ON department.id = view_active_personnel.f_department_id
         LEFT JOIN view_personnel_course_na_report ON view_active_personnel.id = view_personnel_course_na_report.personnel_id
                                                      AND tbl_course.id = view_personnel_course_na_report.course_id
-  UNION ALL
-  SELECT
-   tbl_class.c_status as class_status,
-    TBL_PERSONNEL_REGISTERED.id as PERSONNEL_ID,
-    TBL_PERSONNEL_REGISTERED.emp_no as PERSONNEL_EMP_NO,
-    TBL_PERSONNEL_REGISTERED.personnel_no as PERSONNEL_PERSONNEL_NO,
-    TBL_PERSONNEL_REGISTERED.national_code as PERSONNEL_NATIONAL_CODE,
-    TBL_PERSONNEL_REGISTERED.first_name as PERSONNEL_FIRST_NAME,
-    TBL_PERSONNEL_REGISTERED.last_name as PERSONNEL_LAST_NAME,
-    TBL_PERSONNEL_REGISTERED.post_title as PERSONNEL_POST_TITLE,
+        LEFT JOIN tbl_post ON view_active_personnel.f_post_id = tbl_post.id
+        LEFT JOIN tbl_post_grade ON tbl_post.f_post_grade_id = tbl_post_grade.id
+UNION ALL
 
-    tbl_class.id as class_id,
-    tbl_class.c_code as class_code,
-
-    tbl_course.id AS course_id,
-    tbl_course.c_code AS course_code,
-    tbl_course.c_title_fa as course_title_fa,
-    tbl_class.c_start_date as class_start_date,
-    tbl_class.c_end_date as class_end_date,
-    tbl_class.n_h_duration as class_h_duration,
-    substr(tbl_class.c_start_date, 1, 4) AS class_year,
-
-    tbl_term.c_code AS term_code,
-    tbl_term.c_title_fa AS term_title_fa,
-    tbl_term.id AS term_id,
-
-    department.c_hoze_title AS personnel_complex_title,
-    TBL_PERSONNEL_REGISTERED.company_name AS personnel_company_name,
-    department.c_hoze_title as personnel_cccp_area,
-    department.c_moavenat_title as personnel_ccp_assistant,
-    department.c_omor_title as ccp_affairs,
-    department.c_vahed_title as ccp_unit,
-    department.c_ghesmat_title  AS personnel_ccp_section,
-    null as coursetype,
-    null as na_priority_id
-FROM
-    (select * from tbl_class where c_status in (1,2)) tbl_class
-    INNER JOIN tbl_course ON tbl_course.id = tbl_class.f_course
-    INNER JOIN tbl_term ON tbl_term.id = tbl_class.f_term
-    INNER JOIN tbl_class_student ON tbl_class_student.CLASS_ID = tbl_class.id
-    INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.student_id
-    INNER JOIN TBL_PERSONNEL_REGISTERED on TBL_PERSONNEL_REGISTERED.national_code = tbl_student.national_code
-    LEFT JOIN tbl_department department ON department.id=TBL_PERSONNEL_REGISTERED.f_department_id
+    SELECT
+        tbl_class.c_status                       AS class_status,
+        tbl_personnel_registered.id              AS personnel_id,
+        tbl_personnel_registered.emp_no          AS personnel_emp_no,
+        tbl_personnel_registered.personnel_no    AS personnel_personnel_no,
+        tbl_personnel_registered.national_code   AS personnel_national_code,
+        tbl_personnel_registered.first_name      AS personnel_first_name,
+        tbl_personnel_registered.last_name       AS personnel_last_name,
+        tbl_post.c_title_fa                      AS personnel_post_title,
+        tbl_class.id                             AS class_id,
+        tbl_class.c_code                         AS class_code,
+        tbl_course.id                            AS course_id,
+        tbl_course.c_code                        AS course_code,
+        tbl_course.c_title_fa                    AS course_title_fa,
+        tbl_class.c_start_date                   AS class_start_date,
+        tbl_class.c_end_date                     AS class_end_date,
+        tbl_class.n_h_duration                   AS class_h_duration,
+        substr(tbl_class.c_start_date, 1, 4) AS class_year,
+        tbl_term.c_code                          AS term_code,
+        tbl_term.c_title_fa                      AS term_title_fa,
+        tbl_term.id                              AS term_id,
+        department.c_hoze_title                  AS personnel_complex_title,
+        tbl_personnel_registered.company_name    AS personnel_company_name,
+        department.c_hoze_title                  AS personnel_cccp_area,
+        department.c_moavenat_title              AS personnel_ccp_assistant,
+        department.c_omor_title                  AS ccp_affairs,
+        department.c_vahed_title                 AS ccp_unit,
+        department.c_ghesmat_title               AS personnel_ccp_section,
+        tbl_post_grade.c_title_fa                AS personnel_post_grade_title,
+        tbl_post_grade.id                        AS personnel_post_grade_id,
+        NULL AS coursetype,
+        NULL AS na_priority_id
+    FROM
+     (
+            SELECT
+                *
+            FROM
+                tbl_class
+            WHERE
+                c_status IN (
+                    1,
+                    2
+                )
+        ) tbl_class
+        INNER JOIN tbl_course ON tbl_course.id = tbl_class.f_course
+        INNER JOIN tbl_term ON tbl_term.id = tbl_class.f_term
+        INNER JOIN tbl_class_student ON tbl_class_student.class_id = tbl_class.id
+        INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.student_id
+        INNER JOIN tbl_personnel_registered ON tbl_personnel_registered.national_code = tbl_student.national_code
+        LEFT JOIN tbl_department                               department ON department.id = tbl_personnel_registered.f_department_id
+        LEFT JOIN tbl_post ON tbl_personnel_registered.f_post_id = tbl_post.id
+        LEFT JOIN tbl_post_grade ON tbl_post.f_post_grade_id = tbl_post_grade.id
             ]]>
         </createView>
     </changeSet>

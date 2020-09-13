@@ -332,6 +332,11 @@
 
         }
     });
+    var ToolStripButton_Export2EXcel = isc.ToolStripButtonExcel.create({
+        click: function () {
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_Term,  termUrl + "spec-list", 0, null, '',"لیست ترم ها", ListGrid_Term.getCriteria(), null);
+        }
+    });
 
 
     var ToolStrip_Actions = isc.ToolStrip.create({
@@ -341,6 +346,7 @@
             ToolStripButton_Edit,
             ToolStripButton_Remove,
             ToolStripButton_Print,
+            ToolStripButton_Export2EXcel,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
