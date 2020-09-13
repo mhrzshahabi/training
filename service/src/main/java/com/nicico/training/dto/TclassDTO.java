@@ -31,8 +31,8 @@ public class TclassDTO {
     private String titleClass;
     private String teachingType;//روش آموزش
     private Long hDuration;
-    private Long supervisor;
-    private Long planner;
+    private Long supervisorId;
+    private Long plannerId;
     private String reason;
     private String classStatus;
     private Date classStatusDate;
@@ -356,8 +356,8 @@ public class TclassDTO {
         private String endDate;
         private Long hDuration;
         private TermDTO term;
-        private Long supervisor;
-        private Long planner;
+        private Long supervisorId;
+        private Long plannerId;
         @Getter(AccessLevel.NONE)
         private TeacherDTO.TeacherFullNameTuple teacher;
 

@@ -385,43 +385,14 @@
         dataPageSize: 15,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        // filterOnKeypress: true,
-        // selectionType: "single",
-        // showRecordComponents: true,
-        // showRecordComponentsByCell: true,
         selectionType: "single",
-        <%--filterUsingText: "<spring:message code='filterUsingText'/>",--%>
-        <%--groupByText: "<spring:message code='groupByText'/>",--%>
-        <%--freezeFieldText: "<spring:message code='freezeFieldText'/>",--%>
-        // styleName: 'expandList-tapBar',
-        // cellHeight: 43,
+
         autoFetchData: false,
-        // alternateRecordStyles: true,
-        // canExpandRecords: true,
-        // canExpandMultipleRecords: false,
-        // wrapCells: true,
-        // showRollOver: false,
-        // showRecordComponents: true,
-        // showRecordComponentsByCell: true,
-        // expansionMode: "related",
-        // autoFitExpandField: true,
-        // virtualScrolling: true,
-        // loadOnExpand: true,
-        // loaded: false,
+
         initialSort: [
-// {property: "createdBy", direction: "ascending"},
             {property: "startDate", direction: "descending", primarySort: true}
         ],
         selectionUpdated: function (record) {
-
-            <%--<sec:authorize access="hasAuthority('TclassScoresTab')">--%>
-            <%--if(record.classStatus == "3")--%>
-            <%--{--%>
-            <%--TabSet_Class.enableTab("classScoresTab")--%>
-            <%--}--%>
-            <%--else{TabSet_Class.disableTab("classScoresTab");--%>
-            <%--}--%>
-            <%--</sec:authorize>--%>
 
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
         },
@@ -497,7 +468,6 @@
                 filterOperator: "equals",
                 autoFitWidth: true
             },
-            <%--{name: "reason", title: "<spring:message code='training.request'/>", align: "center"},--%>
             {
                 name: "teacher",
                 title: "<spring:message code='teacher'/>",
@@ -511,9 +481,6 @@
                 align: "center",
                 filterOperator: "iContains",
                 autoFitWidth: true,
-                // sortNormalizer(record) {
-                //     return record.teacher.personality.lastNameFa;
-                // }
             },
             {
                 name: "plannerFullName",
@@ -521,9 +488,9 @@
                 // displayValueFromRecord: false,
                 // canFilter: false,
                 // canSort: false,
-                type: "TextItem",
+                // type: "TextItem",
                 align: "center",
-                filterOperator: "iContains",
+                // filterOperator: "iContains",
                 autoFitWidth: true,
 
             },

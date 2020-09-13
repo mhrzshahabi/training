@@ -489,8 +489,8 @@ public class EvaluationRestController {
                 res.setClassEndDate(classStudentInfo.getTclass().getEndDate());
                 res.setClassDuration(classStudentInfo.getTclass().getHDuration());
                 res.setClassYear(classStudentInfo.getTclass().getStartDate().substring(0,4));
-                final Optional<Personnel> pByID1 = personnelDAO.findById(classStudentInfo.getTclass().getSupervisor());
-                final Optional<Personnel> pByID2 = personnelDAO.findById(classStudentInfo.getTclass().getPlanner());
+                final Optional<Personnel> pByID1 = personnelDAO.findById(classStudentInfo.getTclass().getSupervisorId());
+                final Optional<Personnel> pByID2 = personnelDAO.findById(classStudentInfo.getTclass().getPlannerId());
                 Personnel personnel1 = null;
                 Personnel personnel2 = null;
                 if(pByID1.isPresent())
@@ -527,8 +527,8 @@ public class EvaluationRestController {
                             res.setClassEndDate(classStudentInfo.getTclass().getEndDate());
                             res.setClassDuration(classStudentInfo.getTclass().getHDuration());
                             res.setClassYear(classStudentInfo.getTclass().getStartDate().substring(0,4));
-                            final Optional<Personnel> pByID1 = personnelDAO.findById(classStudentInfo.getTclass().getSupervisor());
-                            final Optional<Personnel> pByID2 = personnelDAO.findById(classStudentInfo.getTclass().getPlanner());
+                            final Optional<Personnel> pByID1 = personnelDAO.findById(classStudentInfo.getTclass().getSupervisorId());
+                            final Optional<Personnel> pByID2 = personnelDAO.findById(classStudentInfo.getTclass().getPlannerId());
                             Personnel personnel1 = null;
                             Personnel personnel2 = null;
                             if(pByID1.isPresent())
@@ -578,8 +578,8 @@ public class EvaluationRestController {
                 res.setClassEndDate(tclass.getEndDate());
                 res.setClassDuration(tclass.getHDuration());
                 res.setClassYear(tclass.getStartDate().substring(0,4));
-                final Optional<Personnel> pByID1 = personnelDAO.findById(tclass.getSupervisor());
-                final Optional<Personnel> pByID2 = personnelDAO.findById(tclass.getPlanner());
+                final Optional<Personnel> pByID1 = personnelDAO.findById(tclass.getSupervisorId());
+                final Optional<Personnel> pByID2 = personnelDAO.findById(tclass.getPlannerId());
                 Personnel personnel1 = null;
                 Personnel personnel2 = null;
                 if(pByID1.isPresent())
@@ -624,8 +624,8 @@ public class EvaluationRestController {
                 res.setClassEndDate(tclass.getEndDate());
                 res.setClassDuration(tclass.getHDuration());
                 res.setClassYear(tclass.getStartDate().substring(0,4));
-                final Optional<Personnel> pByID1 = personnelDAO.findById(tclass.getSupervisor());
-                final Optional<Personnel> pByID2 = personnelDAO.findById(tclass.getPlanner());
+                final Optional<Personnel> pByID1 = personnelDAO.findById(tclass.getSupervisorId());
+                final Optional<Personnel> pByID2 = personnelDAO.findById(tclass.getPlannerId());
                 Personnel personnel1 = null;
                 Personnel personnel2 = null;
                 if(pByID1.isPresent())
@@ -670,8 +670,8 @@ public class EvaluationRestController {
                 res.setClassEndDate(tclass.getEndDate());
                 res.setClassDuration(tclass.getHDuration());
                 res.setClassYear(tclass.getStartDate().substring(0,4));
-                final Optional<Personnel> pByID1 = personnelDAO.findById(tclass.getSupervisor());
-                final Optional<Personnel> pByID2 = personnelDAO.findById(tclass.getPlanner());
+                final Optional<Personnel> pByID1 = personnelDAO.findById(tclass.getSupervisorId());
+                final Optional<Personnel> pByID2 = personnelDAO.findById(tclass.getPlannerId());
                 Personnel personnel1 = null;
                 Personnel personnel2 = null;
                 if(pByID1.isPresent())
@@ -730,8 +730,8 @@ public class EvaluationRestController {
                 res.setClassEndDate(classInfo.getEndDate());
                 res.setClassDuration(classInfo.getHDuration());
                 res.setClassYear(classInfo.getStartDate().substring(0,4));
-                final Optional<Personnel> pByID1 = personnelDAO.findById(classInfo.getSupervisor());
-                final Optional<Personnel> pByID2 = personnelDAO.findById(classInfo.getPlanner());
+                final Optional<Personnel> pByID1 = personnelDAO.findById(classInfo.getSupervisorId());
+                final Optional<Personnel> pByID2 = personnelDAO.findById(classInfo.getPlannerId());
                 Personnel personnel1 = null;
                 Personnel personnel2 = null;
                 if(pByID1.isPresent())
