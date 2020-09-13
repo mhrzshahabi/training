@@ -90,7 +90,9 @@
             {name: "description"},
             {name: "version"},
             {
-                name: "enabled", autoFitWidth: true, autoFitWidthApproach: "both",
+                name: "enabled",
+                width:80,
+                title: "<spring:message code="active.status"/>"
             },
         ]
     });
@@ -203,8 +205,6 @@
     });
 
     var DynamicForm_thisJobGroupHeader_Jsp = isc.DynamicForm.create({
-        titleWidth: "400",
-        width: "700",
         align: "right",
         autoDraw: false,
         fields: [
@@ -212,8 +212,6 @@
                 name: "sgTitle",
                 type: "staticText",
                 title: "افزودن شغل به گروه شغل:",
-                wrapTitle: false,
-                width: 250
             }
         ]
     });
@@ -233,14 +231,16 @@
             {name: "titleFa", title: "نام شغل", align: "center", width: "60%"},
             {name: "titleEn", title: "نام لاتین شغل", align: "center", hidden: true},
             {name: "description", title: "توضیحات", align: "center", hidden: true},
-            {name: "OnAdd", title: " ", align: "center",canSort:false,canFilter:false},
             {name: "version", title: "version", canEdit: false, hidden: true},
             {name: "enabled",
                 valueMap:{
-                    // undefined : "فعال",
-                    74 : "غیر فعال"
+                  //  "undefined" : "فعال",
+                    74 : "غیر فعال",
+                    // "false" : "",
+                    // "true" : "",
                 },filterOnKeypress: true,
             },
+            {name: "OnAdd", title: " ", align: "center",canSort:false,canFilter:false}
         ],
         sortField: 1,
         sortDirection: "descending",
@@ -444,12 +444,16 @@
                         height:25,
                         title:"اضافه کردن گروهی",
                         click: function () {
+                            let jobIds = ListGrid_AllJobs.getSelection().filter(function(x){return x.enabled!=false}).map(function(item) {return item.id;});
+
+                            if (!jobIds || jobIds==0)
+                                return;
+
                             let dialog = createDialog('ask', "<spring:message code="msg.record.adds.ask"/>");
                             dialog.addProperties({
                                 buttonClick: function (button, index) {
                                     this.close();
                                     if (index == 0) {
-                                        var jobIds = ListGrid_AllJobs.getSelection().filter(function(x){return x.enabled!=false}).map(function(item) {return item.id;});
                                         var activeJobGroup = ListGrid_Job_Group_Jsp.getSelectedRecord();
                                         var activeJobGroupId = activeJobGroup.id;
                                         let JSONObj = {"ids": jobIds};
@@ -505,12 +509,16 @@
                         height:25,
                         title:"حذف گروهی",
                         click: function () {
+                            let jobIds = ListGrid_ForThisJobGroup_GetJobs.getSelection().map(function(item) {return item.id;});
+
+                            if (!jobIds || jobIds==0)
+                                return;
+
                             let dialog = createDialog('ask', "<spring:message code="msg.record.remove.ask"/>");
                             dialog.addProperties({
                                 buttonClick: function (button, index) {
                                     this.close();
                                     if (index == 0) {
-                                        var jobIds = ListGrid_ForThisJobGroup_GetJobs.getSelection().map(function(item) {return item.id;});
                                         var activeJobGroup = ListGrid_Job_Group_Jsp.getSelectedRecord();
                                         var activeJobGroupId = activeJobGroup.id;
                                         let JSONObj = {"ids": jobIds};
@@ -896,6 +904,7 @@
                 jobsSelection=true;
                 ListGrid_ForThisJobGroup_GetJobs.invalidateCache();
                 ListGrid_ForThisJobGroup_GetJobs.fetchData();
+
                 DynamicForm_thisJobGroupHeader_Jsp.setValue("sgTitle", getFormulaMessage(record.titleFa, "2", "red", "B"));
 
                 Window_Add_Job_to_JobGroup.show();
