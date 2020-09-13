@@ -19,7 +19,7 @@
             {name: "personnelComplexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelCcpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelCompanyName", title: "<spring:message code="company"/>", filterOperator: "iContains", autoFitWidth: true},
-
+            {name: "personnelPostGradeTitle", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "courseId", hidden: true},
             {name: "courseCode", title: "<spring:message code='course.code'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "courseTitleFa", title: "<spring:message code='course.title'/>", filterOperator: "iContains", autoFitWidth: true},
@@ -586,6 +586,8 @@
             {name: "personnelComplexTitle"},
             {name: "personnelCcpAffairs"},
             {name: "personnelCompanyName"},
+
+            {name: "personnelPostGradeTitle"},
 
             {name: "courseCode"},
             {name: "courseTitleFa"},

@@ -23,6 +23,7 @@ public class PersonnelCourseNotPassedReportViewDTO {
         private String personnelNationalCode;
         private String personnelPersonnelNo2;
         private String personnelPostTitle;
+        private String personnelPostGradeTitle;
         private String personnelComplexTitle;
         private String personnelCompanyName;
         private String personnelCcpCode;
