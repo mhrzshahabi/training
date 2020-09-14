@@ -20,24 +20,28 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-@AllArgsConstructor
-@NoArgsConstructor
-public class ViewStudentsInCanceledClassDTO {
-    private String sessionDate;
-    private String lastName;
-    private String firstName;
-    private String titleClass;
-    private String startDate;
-    private String endDate;
-    private String code;
-    private String endHour;
-    private String startHour;
+public class ViewStudentsInCanceledClassReportDTO {
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("ViewsStudentsInCanceledClassDTOInfo")
-    public static class Info extends ViewStudentsInCanceledClassDTO {
+    @ApiModel("ViewsStudentsInCanceledClass-Info")
+    public static class Info {
+        private String personalNum;
+        private String personalNum2;
+        private String nationalCode;
+        private String name;
+        private String ccpComplex;
+        private String ccpAssistant;
+        private String ccpAffairs;
+        private String ccpUnit;
+        private String ccpSection;
+        private String classCode;
+        private String className;
+        private String startDate;
+        private String endDate;
+        private String personelType;
+
     }
 
     @Getter
@@ -46,7 +50,7 @@ public class ViewStudentsInCanceledClassDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("ViewsStudentsInCanceledClassDTOSpecRs")
     public static class ViewStudentsInCanceledClassDTOSpecRs {
-        private ViewStudentsInCanceledClassDTO.SpecRs response;
+        private ViewStudentsInCanceledClassReportDTO.SpecRs response;
     }
 
     @Getter
@@ -54,7 +58,7 @@ public class ViewStudentsInCanceledClassDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<ViewStudentsInCanceledClassDTO.Info> data;
+        private List<ViewStudentsInCanceledClassReportDTO.Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;

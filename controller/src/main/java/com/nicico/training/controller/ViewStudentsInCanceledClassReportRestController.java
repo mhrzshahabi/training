@@ -9,6 +9,7 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
+import com.nicico.training.iservice.IViewStudentsInCanceledClassReportService;
 import com.nicico.training.service.ViewStudentsInCanceledClassReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,25 +26,25 @@ import java.io.IOException;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/unjustifiedAbsenceReport")
+@RequestMapping(value = "/api/view-students-in-canceled-class-report")
 public class ViewStudentsInCanceledClassReportRestController {
-    private final ViewStudentsInCanceledClassReportService viewStudentsInCanceledClassService;
+    private final IViewStudentsInCanceledClassReportService viewStudentsInCanceledClassService;
     private final ModelMapper modelMapper;
 
     @Loggable
     @GetMapping(value = "/spec-list")
     //@PreAuthorize("hasAuthority('Course_R')")
-    public ResponseEntity<ViewStudentsInCanceledClassDTO.ViewStudentsInCanceledClassDTOSpecRs> list(HttpServletRequest req) throws IOException {
+    public ResponseEntity<ViewStudentsInCanceledClassReportDTO.ViewStudentsInCanceledClassDTOSpecRs> list(HttpServletRequest req) throws IOException {
         SearchDTO.SearchRq request =ISC.convertToSearchRq(req);
-        SearchDTO.SearchRs<ViewStudentsInCanceledClassDTO.Info> response = viewStudentsInCanceledClassService.search(request);
+        SearchDTO.SearchRs<ViewStudentsInCanceledClassReportDTO.Info> response = viewStudentsInCanceledClassService.search(request,o -> modelMapper.map(o, ViewStudentsInCanceledClassReportDTO.Info.class));
 
-        final ViewStudentsInCanceledClassDTO.SpecRs specResponse = new ViewStudentsInCanceledClassDTO.SpecRs();
+        final ViewStudentsInCanceledClassReportDTO.SpecRs specResponse = new ViewStudentsInCanceledClassReportDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(request.getStartIndex())
                 .setEndRow(request.getStartIndex() + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
 
-        final ViewStudentsInCanceledClassDTO.ViewStudentsInCanceledClassDTOSpecRs specRs = new ViewStudentsInCanceledClassDTO.ViewStudentsInCanceledClassDTOSpecRs();
+        final ViewStudentsInCanceledClassReportDTO.ViewStudentsInCanceledClassDTOSpecRs specRs = new ViewStudentsInCanceledClassReportDTO.ViewStudentsInCanceledClassDTOSpecRs();
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);

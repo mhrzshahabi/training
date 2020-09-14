@@ -75,62 +75,25 @@
         fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpSection"
     });
 
-    CourseDS_SICC = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true},
-            {name: "code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"}
-        ],
-        fetchDataURL: courseUrl + "spec-list"
-    });
 
-    CategoryDS_SICC = isc.TrDS.create({
+    StudentInClassDS_SICC = isc.TrDS.create({
         fields: [
-            {name: "id", primaryKey: true},
-            {name: "titleFa", title: "<spring:message code="category"/>", filterOperator: "iContains"},
-            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true}
+            {name: "personalNum", title: "<spring:message code='personnel.no'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personalNum2", title: "<spring:message code='personnel.no.6.digits'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "nationalCode", title: "<spring:message code='national.code'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "name", title: "<spring:message code='student'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpComplex", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpAssistant", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpUnit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpSection", title: "<spring:message code="section"/>", filterOperator: "iContains"},
+            {name: "classCode", title: "<spring:message code="class.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "className", title: "<spring:message code="class.title"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "startDate", title: "<spring:message code="start.date"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "endDate", title: "<spring:message code="end.date"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personelType", title: "نوع فراگیر", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
         ],
-        cacheAllData: true,
-        fetchDataURL: categoryUrl + "spec-list"
-    });
-
-    PostGradeDS_SICC = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true, hidden: true},
-            {
-                name: "code",
-                title: "<spring:message code="post.grade.code"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
-        ],
-        fetchDataURL: viewPostGradeUrl + "/iscList"
-    });
-
-    PersonnelDS_SICC = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true, hidden: true},
-            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
-            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-        ],
-        fetchDataURL: personnelUrl + "/iscList",
-        implicitCriteria: {
-            _constructor:"AdvancedCriteria",
-            operator:"and",
-            criteria:[{ fieldName: "active", operator: "equals", value: 1}]
-        },
+        fetchDataURL: viewStudentsInCanceledClassReportUrl + "/spec-list",
     });
 
     FilterDF_SICC = isc.DynamicForm.create({
@@ -142,11 +105,11 @@
         wrapItemTitles: true,
         fields: [
             {
-                name: "start_data",
+                name: "startDate",
                 titleColSpan: 1,
                 title: "<spring:message code='start.date'/>",
                 ID: "startDate_SICC",
-                required: true,
+                //required: true,
                 hint: "--/--/----",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
@@ -169,11 +132,12 @@
                 }
             },
             {
-                name: "end_data",
+                name: "endDate",
                 titleColSpan: 1,
                 title: "<spring:message code='end.date'/>",
                 ID: "endDate_SICC",
-                type: 'text', required: true,
+                type: 'text',
+                //required: true,
                 hint: "--/--/----",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
@@ -198,112 +162,116 @@
                 }
             },
             {
-                name: "personnelComplexTitle",
-                title: "<spring:message code="complex"/>",
+                name: "ccpComplex",
+                title: "<spring:message code="area"/>",
                 optionDataSource: ComplexDS_SICC,
-                autoFetchData: false,
-                filterFields: ["value", "value"],
-                pickListWidth: 300,
-                type: "ComboBoxItem",
-                textMatchStyle: "substring",
                 startRow: true,
-                pickListProperties: {
-                    showFilterEditor: false,
-                    showClippedValuesOnHover: true,
-                },
                 valueField: "value",
                 displayField: "value",
-                specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
-            },
-            {
-                name: "personnelCcpAssistant",
-                title: "<spring:message code="assistance"/>",
-                filterFields: ["value", "value"],
-                pickListWidth: 300,
-                type: "ComboBoxItem",
-                textMatchStyle: "substring",
-                pickListProperties: {
-                    showFilterEditor: false,
-                    showClippedValuesOnHover: true,
-                },
-                optionDataSource: AssistantDS_SICC,
-                autoFetchData: false,
-                valueField: "value",
-                displayField: "value",
-                specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
-            },
-            {
-                name: "personnelCcpAffairs",
-                title: "<spring:message code="affairs"/>",
-                optionDataSource: AffairsDS_SICC,
-                autoFetchData: false,
-                operator: "inSet",
-                multiple: true,
-                filterFields: ["value", "value"],
-                type: "SelectItem",
-                textMatchStyle: "substring",
-                pickListFields: [
+                icons:[
                     {
-                        name: "value",
-                        title: "<spring:message code="affairs"/>",
-                        filterOperator: "iContains",
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
                     }
                 ],
-                pickListProperties: {
-                    showFilterEditor: true,
-                    showClippedValuesOnHover: true,
-                },
+            },
+            {
+                name: "ccpAssistant",
+                title: "<spring:message code="assistance"/>",
+                optionDataSource: AssistantDS_SICC,
                 valueField: "value",
                 displayField: "value",
-                specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
+            },
+            {
+                name: "ccpAffairs",
+                title: "<spring:message code="affairs"/>",
+                optionDataSource: AffairsDS_SICC,
+                valueField: "value",
+                displayField: "value",
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
 
             {
-                name: "personnelCcpUnit",
+                name: "ccpUnit",
                 title: "<spring:message code="unitName"/>",
-                filterFields: ["value", "value"],
-                pickListWidth: 300,
-                multiple: true,
-                type: "SelectItem",
-                textMatchStyle: "substring",
-                pickListFields: [
+                optionDataSource: UnitDS_SICC,
+                valueField: "value",
+                displayField: "value",
+                icons:[
                     {
-                        name: "value",
-                        title: "<spring:message code="unit"/>",
-                        filterOperator: "iContains",
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
                     }
                 ],
-                pickListProperties: {
-                    showFilterEditor: true,
-                    showClippedValuesOnHover: true,
-                },
-                optionDataSource: UnitDS_SICC,
-                autoFetchData: false,
-                valueField: "value",
-                displayField: "value",
-                specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
             },
             {
-                name: "personnelCcpSection",
+                name: "ccpSection",
                 title: "<spring:message code="section"/>",
-                filterFields: ["value", "value"],
-                pickListWidth: 300,
-                type: "ComboBoxItem",
-                textMatchStyle: "substring",
-                pickListProperties: {
-                    showFilterEditor: false,
-                    showClippedValuesOnHover: true,
-                },
                 optionDataSource: SectionDS_SICC,
-                autoFetchData: false,
                 valueField: "value",
                 displayField: "value",
-                specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {type: "SpacerItem"},
             {
@@ -313,22 +281,38 @@
                 align: "right",
                 startRow: true,
                 click: function () {
-                    let tmp=FilterDF_SICC.getValuesAsAdvancedCriteria();
+                    let tmp = FilterDF_SICC.getValuesAsAdvancedCriteria();
 
-                    if(tmp==null)
+                    if(tmp == null)
                     {
                         createDialog("info", "فیلتری انتخاب نشده است.");
                         return;
                     }
 
-                    /*let indexOf=tmp.criteria.indexOf(tmp.criteria.filter(p=>p.fieldName=="postGrade")[0]);
-                    if(indexOf>=0)
-                        tmp.criteria.splice(indexOf,1);*/
+                    let indexOf=tmp.criteria.filter(p=>p.fieldName=="startDate");
+                    if(indexOf.length==0) {
+                        createDialog("info", "فیلتری انتخاب نشده است.");
+                        return;
+                    }
+
+                    indexOf=tmp.criteria.filter(p=>p.fieldName=="endDate");
+                    if(indexOf.length==0) {
+                        createDialog("info", "فیلتری انتخاب نشده است.");
+                        return;
+                    }
 
                     if (tmp.criteria.length === 0) {
                         createDialog("info", "فیلتری انتخاب نشده است.");
                     } else {
 
+                        for (let i = 0; i < tmp.criteria.size(); i++) {
+
+                            if (tmp.criteria[i].fieldName == "startDate") {
+                                tmp.criteria[i].operator = "greaterOrEqual";
+                            } else if (tmp.criteria[i].fieldName == "endDate") {
+                                tmp.criteria[i].operator = "lessOrEqual";
+                            }
+                        }
 
                         PersonnelCourseLG_SICC.implicitCriteria = tmp;
 
@@ -344,52 +328,96 @@
         dynamicTitle: true,
         autoFetchData: false,
         allowAdvancedCriteria: true,
-        dataSource: PersonnelCourseDS_SICC,
+        dataSource: StudentInClassDS_SICC,
         // filterOnKeypress: true,
         // showFilterEditor: false,
         gridComponents: [FilterDF_SICC,
             isc.ToolStripButtonExcel.create({
                 margin:5,
                 click:function() {
-                    let implicitCriteria = JSON.parse(JSON.stringify(FilterDF_SICC.getValuesAsCriteria())) ;
-                    let criteria = PersonnelCourseLG_SICC.getCriteria();
 
-                    if(PersonnelCourseLG_SICC.getCriteria().criteria){
-                        for (let i = 0; i < criteria.criteria.length ; i++) {
-                            implicitCriteria.criteria.push(criteria.criteria[i]);
-                        }
+                    let implicitCriteria = JSON.parse(JSON.stringify(PersonnelCourseLG_SICC.getImplicitCriteria())) ;
+
+                    if(implicitCriteria == null)
+                    {
+                        createDialog("info", "فیلتری انتخاب نشده است.");
+                        return;
                     }
 
-                    ExportToFile.downloadExcelRestUrl(null, PersonnelCourseLG_SICC, personnelCourseNotPassedReportUrl, 0, null, '',  "گزارش عدم آموزش", FilterDF_SICC.getValuesAsCriteria(), null);
+                    let indexOf=implicitCriteria.criteria.filter(p=>p.fieldName=="startDate");
+                    if(indexOf.length==0) {
+                        createDialog("info", "فیلتری انتخاب نشده است.");
+                        return;
+                    }
+
+                    indexOf=implicitCriteria.criteria.filter(p=>p.fieldName=="endDate");
+                    if(indexOf.length==0) {
+                        createDialog("info", "فیلتری انتخاب نشده است.");
+                        return;
+                    }
+
+
+                    if (implicitCriteria.criteria.length === 0) {
+                        createDialog("info", "فیلتری انتخاب نشده است.");
+                    } else {
+
+                        for (let i = 0; i < implicitCriteria.criteria.size(); i++) {
+
+                            if (implicitCriteria.criteria[i].fieldName == "startDate") {
+                                implicitCriteria.criteria[i].operator = "greaterOrEqual";
+                            } else if (implicitCriteria.criteria[i].fieldName == "endDate") {
+                                implicitCriteria.criteria[i].operator = "lessOrEqual";
+                            }
+                        }
+
+
+                        let criteria = PersonnelCourseLG_SICC.getCriteria();
+
+                        if(PersonnelCourseLG_SICC.getCriteria().criteria){
+                            for (let i = 0; i < criteria.criteria.length ; i++) {
+                                implicitCriteria.criteria.push(criteria.criteria[i]);
+                            }
+                        }
+
+
+                        ExportToFile.downloadExcelRestUrl(null, PersonnelCourseLG_SICC, viewStudentsInCanceledClassReportUrl + "/spec-list", 0, null, '',  "گزارش کلاس های حذف شده", criteria, null);
+
+
+                    }
+
                 }
             }), "header", "filterEditor", "body"],
         fields: [
-            {name: "personnelPersonnelNo2",
+            {name: "personalNum",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
                 }
             },
-            {name: "personnelNationalCode",
+            {name: "personalNum2",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
                 }
             },
-            {name: "personnelFirstName"},
-            {name: "personnelLastName"},
-            {name: "personnelCcpUnit",filterOperator: "inSet"},
-            {name: "personnelCcpSection"},
-            {name: "personnelCcpAssistant"},
-            {name: "personnelCcpArea"},
-            {name: "personnelComplexTitle"},
-            {name: "personnelCcpAffairs"},
-            {name: "personnelCompanyName"},
-
-            {name: "courseCode"},
-            {name: "courseTitleFa"},
+            {name: "nationalCode"},
+            {name: "name"},
+            {name: "personelType",valueMap:
+                    {
+                        "personnel_registered": "متفرقه",
+                        "Personal": "شرکتی",
+                        "ContractorPersonal": "پیمانکار"
+                    }},
+            {name: "ccpComplex"},
+            {name: "ccpAssistant"},
+            {name: "ccpAffairs"},
+            {name: "ccpUnit"},
+            {name: "classCode"},
+            {name: "className"},
+            {name: "startDate"},
+            {name: "endDate"},
         ],
         initialSort: [
-            {property: "personnelPersonnelNo2", direction: "ascending"},
-            {property: "courseCode", direction: "ascending"}
+            {property: "personalNum", direction: "ascending"},
+            {property: "classCode", direction: "ascending"}
         ],
     });
 

@@ -3874,4 +3874,64 @@ FROM
         </createView>
     </changeSet>
 
+    <changeSet author="NICICO" id="VIEW_STUDENTS_IN_CANCELED_CLASS_REPORT-001">
+        <createView viewName="VIEW_STUDENTS_IN_CANCELED_CLASS_REPORT" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    DISTINCT
+    std.emp_no             AS personalnum2,
+    std.personnel_no       AS personalnum,
+    personnel.first_name
+    || ' '
+    || personnel.last_name AS name,
+    personnel.personeltype,
+    personnel.national_code,
+    dep.c_ghesmat_title    AS ccp_section,
+    dep.c_vahed_title      AS ccp_unit,
+    dep.c_omor_title       AS ccp_affairs,
+    dep.c_moavenat_title   AS ccp_assistant,
+    dep.c_hoze_title       AS complex_title,
+    cls.c_code             AS class_code,
+    crs.c_title_fa         AS class_title,
+    cls.c_end_date         AS end_date,
+    cls.c_start_date       AS start_date
+
+FROM
+    tbl_course  crs
+    INNER JOIN (
+        SELECT
+            *
+        FROM
+            tbl_class
+        WHERE
+            tbl_class.c_status = '4'
+    )   cls ON crs.id = cls.f_course
+    INNER JOIN tbl_class_student    cls_std ON cls.id = cls_std.class_id
+    INNER JOIN tbl_student  std ON std.id = cls_std.student_id
+    INNER JOIN (
+        SELECT
+            CAST(view_active_personnel.p_type AS VARCHAR2(50)) personeltype,
+            view_active_personnel.personnel_no,
+            view_active_personnel.national_code,
+            view_active_personnel.first_name,
+            view_active_personnel.last_name,
+            view_active_personnel.f_department_id
+        FROM
+            view_active_personnel
+        UNION ALL
+        SELECT
+            CAST('personnel_registered' AS VARCHAR2(50)) personeltype,
+            tbl_personnel_registered.personnel_no,
+            tbl_personnel_registered.national_code,
+            tbl_personnel_registered.first_name,
+            tbl_personnel_registered.last_name,
+            tbl_personnel_registered.f_department_id
+        FROM
+            tbl_personnel_registered
+    ) personnel ON std.national_code = personnel.national_code
+    LEFT JOIN tbl_department    dep ON dep.id = personnel.f_department_id
+            ]]>
+        </createView>
+    </changeSet>
+
 </databaseChangeLog>

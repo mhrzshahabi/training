@@ -19,7 +19,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode(of = {"studentId","classId", "sessionId"}, callSuper = false)
+@EqualsAndHashCode(of = {"personalNum","classCode"}, callSuper = false)
 @Embeddable
 public class ViewStudentsInCanceledClassReportKey implements Serializable {
 

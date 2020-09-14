@@ -25,7 +25,7 @@ import java.io.Serializable;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Subselect("select * from view_students_in_canceled_class_report")
-public class ViewStudentsInCanceledReportClass implements Serializable {
+public class ViewStudentsInCanceledClassReport implements Serializable {
 
     @EmbeddedId
     private ViewStudentsInCanceledClassReportKey id;
@@ -36,7 +36,7 @@ public class ViewStudentsInCanceledReportClass implements Serializable {
     @Column(name = "personalnum2")
     private String personalNum2;
 
-    @Column(name = "nationalcode")
+    @Column(name = "national_code")
     private String nationalCode;
 
     @Column(name = "name")
@@ -63,10 +63,10 @@ public class ViewStudentsInCanceledReportClass implements Serializable {
     @Column(name = "class_title")
     private String className;
 
-    @Column(name = "start_data")
+    @Column(name = "start_date")
     private String startDate;
 
-    @Column(name = "end_data")
+    @Column(name = "end_date")
     private String endDate;
 
     @Column(name = "personeltype")
