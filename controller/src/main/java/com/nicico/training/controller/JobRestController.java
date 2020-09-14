@@ -57,6 +57,21 @@ public class JobRestController {
         if (iscRq.getParameter("_startRow") != null)
             startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+
+        //don't touch
+        if (searchRq.getCriteria() != null && searchRq.getCriteria().getCriteria() != null)
+        {
+            for (SearchDTO.CriteriaRq criterion : searchRq.getCriteria().getCriteria()) {
+                if(criterion.getFieldName().equals("isEnabled")) {
+                    criterion.setFieldName("enabled");
+
+                    if (criterion.getValue().get(0).equals("undefined")){
+                        criterion.setOperator(EOperator.isNull);
+                    }
+                }
+            }
+        }
+
         BaseService.setCriteriaToNotSearchDeleted(searchRq);
         SearchDTO.SearchRs<JobDTO.Info> searchRs = jobService.searchWithoutPermission(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);

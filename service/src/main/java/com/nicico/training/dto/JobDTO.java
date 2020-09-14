@@ -28,5 +28,13 @@ public class JobDTO implements Serializable {
         private String peopleType;
         private Long enabled;
         private Long deleted;
+
+        //don't touch
+        @Getter(AccessLevel.NONE)
+        private Long isEnabled;
+
+        public Long getIsEnabled(){
+            return enabled;
+        }
     }
 }
