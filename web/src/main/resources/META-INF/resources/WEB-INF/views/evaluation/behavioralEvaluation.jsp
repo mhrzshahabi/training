@@ -51,12 +51,6 @@
                     autoFitWidth: true
                 },
                 {
-                    name: "companyName",
-                    title: "<spring:message code="company.name"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
-                },
-                {
                     name: "personnelNo",
                     title: "<spring:message code="personnel.no"/>",
                     filterOperator: "iContains",
@@ -72,34 +66,8 @@
                     title: "<spring:message code="post"/>",
                     filterOperator: "iContains",
                     autoFitWidth: true
-                },
-                {
-                    name: "ccpArea",
-                    title: "<spring:message code="reward.cost.center.area"/>",
-                    filterOperator: "iContains"
-                },
-                {
-                    name: "ccpAssistant",
-                    title: "<spring:message code="reward.cost.center.assistant"/>",
-                    filterOperator: "iContains"
-                },
-                {
-                    name: "ccpAffairs",
-                    title: "<spring:message code="reward.cost.center.affairs"/>",
-                    filterOperator: "iContains"
-                },
-                {
-                    name: "ccpSection",
-                    title: "<spring:message code="reward.cost.center.section"/>",
-                    filterOperator: "iContains"
-                },
-                {
-                    name: "ccpUnit",
-                    title: "<spring:message code="reward.cost.center.unit"/>",
-                    filterOperator: "iContains"
                 }
             ],
-            // fetchDataURL: personnelUrl + "/iscList"
         });
 
         var RestDataSource_student_BE = isc.TrDS.create({
@@ -235,15 +203,9 @@
                 {name: "firstName"},
                 {name: "lastName"},
                 {name: "nationalCode"},
-                {name: "companyName"},
                 {name: "personnelNo"},
                 {name: "personnelNo2"},
                 {name: "postTitle"},
-                {name: "ccpArea"},
-                {name: "ccpAssistant"},
-                {name: "ccpAffairs"},
-                {name: "ccpSection"},
-                {name: "ccpUnit"}
             ],
             selectionAppearance: "checkbox"
         });
@@ -418,15 +380,15 @@
                         displayField: "title",
                         changed: function (form, item, value) {
                             if(value == 190)
-                                EvaluationDS_PersonList_BE.fetchDataURL =  personnelUrl + "/getParentEmployee/" + record.student.nationalCode;
+                                EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getParentEmployee/" + record.student.nationalCode;
                             else if(value == 189)
-                                EvaluationDS_PersonList_BE.fetchDataURL =  personnelUrl + "/getSiblingsEmployee/" + record.student.nationalCode;
+                                EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getSiblingsEmployee/" + record.student.nationalCode;
                             else if(value == 454)
-                                EvaluationDS_PersonList_BE.fetchDataURL =  personnelUrl + "/getTraining/" +  "<%= SecurityUtil.getNationalCode()%>";
+                                EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getTraining/" +  "<%= SecurityUtil.getNationalCode()%>";
                             else if(value == 188)
-                                EvaluationDS_PersonList_BE.fetchDataURL =  personnelUrl + "/getStudent/" + record.student.nationalCode;
+                                EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getStudent/" + record.student.nationalCode;
                             else
-                                EvaluationDS_PersonList_BE.fetchDataURL =  personnelUrl + "/iscList";
+                                EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
                             EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
                             EvaluationListGrid_PeronalLIst_BE.fetchData();
                             EvaluationListGrid_PeronalLIst_BE.invalidateCache();
