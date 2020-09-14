@@ -71,7 +71,7 @@
             {name: "description", filterOperator: "iContains"},
             {name: "version"},
             {
-                name: "enabled",
+                name: "isEnabled",
                 title: "<spring:message code="active.status"/>",
                 align: "center",
                 filterOperator: "equals",
@@ -90,7 +90,7 @@
             {name: "description"},
             {name: "version"},
             {
-                name: "enabled",
+                name: "isEnabled",
                 width:80,
                 title: "<spring:message code="active.status"/>"
             },
@@ -146,6 +146,7 @@
             }
         ]
     });
+
     var ListGrid_Job_Group_Jsp = isc.TrLG.create({
         color: "red",
         dataSource: RestDataSource_Job_Group_Jsp,
@@ -232,13 +233,11 @@
             //{name: "titleEn", title: "نام لاتین شغل", align: "center", hidden: true},
             //{name: "description", title: "توضیحات", align: "center", hidden: true},
             //{name: "version", title: "version", canEdit: false, hidden: true},
-            {name: "enabled",
+            {name: "isEnabled",
                 valueMap:{
-                  //  "undefined" : "فعال",
+                    "undefined" : "فعال",
                     74 : "غیر فعال",
-                    // "false" : "",
-                    // "true" : "",
-                },filterOnKeypress: true,
+                },filterOnKeypress: true,canSort:false
             },
             {name: "OnAdd", title: " ", align: "center",canSort:false,canFilter:false}
         ],
@@ -348,11 +347,14 @@
                 }
             },
             {name: "titleFa", title: "نام شغل", align: "center", width: "70%"},
-            {name: "enabled",
+            {name: "isEnabled",
                 valueMap:{
-                    // undefined : "فعال",
-                    74 : "غیر فعال"
-                },filterOnKeypress: true,
+                    74 : "غیر فعال",
+                    undefined : "فعال"
+                },
+                canFilter:false,
+                filterOnKeypress: true,
+                canSort:false,
             },
             {name: "OnDelete", title: " ", align: "center",canSort:false,canFilter:false}
         ],
