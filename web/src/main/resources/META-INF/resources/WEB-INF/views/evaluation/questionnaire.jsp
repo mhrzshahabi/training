@@ -8,6 +8,7 @@
     let questionnaireQuestionMethod_questionnaire;
     let waitQuestionnaire;
     var isDelete_questionnaire=false;
+    let selectedRecord;
 
     // ------------------------------------------- Menu -------------------------------------------
     isc.Menu.create({
@@ -115,6 +116,15 @@
             Button2,
             </sec:authorize>
 
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    if (QuestionnaireLG_questionnaire.data.size()<1)
+                        return;
+
+                    ExportToFile.downloadExcelRestUrl(null, QuestionnaireLG_questionnaire, questionnaireUrl + "/iscList", 0, null, '', "ارزیابی - پرسشنامه", QuestionnaireLG_questionnaire.getCriteria(), null);
+                }
+            }),
+
             isc.LayoutSpacer.create({width: "*"}),
             <sec:authorize access="hasAuthority('Questionnaire_R')">
             isc.Label.create({ID: "QuestionnaireLGCountLabel_questionnaire"}),
@@ -140,6 +150,16 @@
             <sec:authorize access="hasAuthority('QuestionnaireQuestion_D')">
             isc.ToolStripButtonRemove.create({click: function () {removeQuestionnaireQuestion_questionnaire(); }}),
             </sec:authorize>
+
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    if (QuestionnaireQuestionLG_questionnaire.data.size()<1)
+                        return;
+
+                    ExportToFile.downloadExcelRestUrl(null, QuestionnaireQuestionLG_questionnaire, questionnaireQuestionUrl + "/iscList/" + selectedRecord, 0, null, '', "ارزیابی - پرسشنامه - سوالات", QuestionnaireLG_questionnaire.getCriteria(), null);
+                }
+            }),
+
             isc.LayoutSpacer.create({width: "*"}),
 
             <sec:authorize access="hasAuthority('QuestionnaireQuestion_R')">
@@ -401,6 +421,7 @@
     function refreshQuestionnaireQuestionLG_questionnaire() {
         var record = QuestionnaireLG_questionnaire.getSelectedRecord();
         if (checkRecordAsSelected(record, false)) {
+            selectedRecord=record.id;
             refreshLgDs(QuestionnaireQuestionLG_questionnaire, QuestionnaireQuestionDS_questionnaire, questionnaireQuestionUrl + "/iscList/" + record.id)
         }
     }
