@@ -350,11 +350,10 @@
             {name: "isEnabled",
                 valueMap:{
                     74 : "غیر فعال",
-                    undefined : "فعال"
                 },
-                canFilter:false,
                 filterOnKeypress: true,
                 canSort:false,
+                emptyDisplayValue:"فعال",
             },
             {name: "OnDelete", title: " ", align: "center",canSort:false,canFilter:false}
         ],
