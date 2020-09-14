@@ -321,9 +321,10 @@ public class TclassService implements ITclassService {
     private List<TargetSociety> updateTargetSocieties(List<Object> societies, Long typeId, Tclass tclass) {
         List<TargetSociety> targets = tclass.getTargetSocietyList();
         String type = parameterValueService.get(typeId).getCode();
-        for (int i = 0; i < targets.size(); i++) {
+        Iterator<TargetSociety> societyIterator = targets.iterator();
+        while (societyIterator.hasNext()) {
 
-            TargetSociety society = targets.get(i);
+            TargetSociety society = societyIterator.next();
             if (tclass.getTargetSocietyTypeId() == null || !tclass.getTargetSocietyTypeId().equals(typeId)) {
 
             } else if (type.equals("single")) {
@@ -339,7 +340,7 @@ public class TclassService implements ITclassService {
                     continue;
                 }
             }
-            targets.set(i, null);
+            societyIterator.remove();
         }
         targets.addAll(saveTargetSocieties(societies, typeId, tclass.getId()));
         return targets;

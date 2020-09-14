@@ -14,6 +14,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -35,4 +36,6 @@ public interface PostDAO extends JpaRepository<Post, Long>, JpaSpecificationExec
     @Modifying
     @Query(value = "update TBL_POST set D_LAST_MODIFIED_DATE_NA = :modificationDate, C_MODIFIED_BY_NA = :userName where ID = :objectId", nativeQuery = true)
     public int updateModifications(Long objectId, Date modificationDate, String userName);
+
+    List<Post> findByParentID(Long parentID);
 }

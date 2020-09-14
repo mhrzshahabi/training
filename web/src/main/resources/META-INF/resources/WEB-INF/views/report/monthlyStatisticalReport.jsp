@@ -97,7 +97,12 @@
                 {name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains"},
                 {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains"},
             ],
-            fetchDataURL: studentUrl + "spec-list/"
+            implicitCriteria: {
+                _constructor:"AdvancedCriteria",
+                operator:"and",
+                criteria:[{ fieldName: "active", operator: "equals", value: 1},{ fieldName: "deleted", operator: "equals", value: 0}]
+            },
+            fetchDataURL: personnelUrl + "/iscList",
         });
 
         var RestDataSource_Course_MSReport = isc.TrDS.create({

@@ -11,6 +11,8 @@
 
         var classRecord_BE;
 
+        var selected_questionnaire_BE = null;
+
     //----------------------------------------- DataSources ------------------------------------------------------------
         var AudienceTypeDS_BE = isc.TrDS.create({
             fields: [
@@ -49,12 +51,6 @@
                     autoFitWidth: true
                 },
                 {
-                    name: "companyName",
-                    title: "<spring:message code="company.name"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
-                },
-                {
                     name: "personnelNo",
                     title: "<spring:message code="personnel.no"/>",
                     filterOperator: "iContains",
@@ -70,34 +66,8 @@
                     title: "<spring:message code="post"/>",
                     filterOperator: "iContains",
                     autoFitWidth: true
-                },
-                {
-                    name: "ccpArea",
-                    title: "<spring:message code="reward.cost.center.area"/>",
-                    filterOperator: "iContains"
-                },
-                {
-                    name: "ccpAssistant",
-                    title: "<spring:message code="reward.cost.center.assistant"/>",
-                    filterOperator: "iContains"
-                },
-                {
-                    name: "ccpAffairs",
-                    title: "<spring:message code="reward.cost.center.affairs"/>",
-                    filterOperator: "iContains"
-                },
-                {
-                    name: "ccpSection",
-                    title: "<spring:message code="reward.cost.center.section"/>",
-                    filterOperator: "iContains"
-                },
-                {
-                    name: "ccpUnit",
-                    title: "<spring:message code="reward.cost.center.unit"/>",
-                    filterOperator: "iContains"
                 }
             ],
-            // fetchDataURL: personnelUrl + "/iscList"
         });
 
         var RestDataSource_student_BE = isc.TrDS.create({
@@ -233,15 +203,9 @@
                 {name: "firstName"},
                 {name: "lastName"},
                 {name: "nationalCode"},
-                {name: "companyName"},
                 {name: "personnelNo"},
                 {name: "personnelNo2"},
                 {name: "postTitle"},
-                {name: "ccpArea"},
-                {name: "ccpAssistant"},
-                {name: "ccpAffairs"},
-                {name: "ccpSection"},
-                {name: "ccpUnit"}
             ],
             selectionAppearance: "checkbox"
         });
@@ -398,7 +362,6 @@
         });
 
     //----------------------------------------- New Funsctions ---------------------------------------------------------
-
         function Training_Behavioral_Form_Inssurance_BE(record){
             let evaluation_Audience_Type = isc.DynamicForm.create({
                 fields: [
@@ -417,15 +380,15 @@
                         displayField: "title",
                         changed: function (form, item, value) {
                             if(value == 190)
-                                EvaluationDS_PersonList_BE.fetchDataURL =  personnelUrl + "/getParentEmployee/" + record.student.nationalCode;
+                                EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getParentEmployee/" + record.student.nationalCode;
                             else if(value == 189)
-                                EvaluationDS_PersonList_BE.fetchDataURL =  personnelUrl + "/getSiblingsEmployee/" + record.student.nationalCode;
+                                EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getSiblingsEmployee/" + record.student.nationalCode;
                             else if(value == 454)
-                                EvaluationDS_PersonList_BE.fetchDataURL =  personnelUrl + "/getTraining/" +  "<%= SecurityUtil.getNationalCode()%>";
+                                EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getTraining/" +  "<%= SecurityUtil.getNationalCode()%>";
                             else if(value == 188)
-                                EvaluationDS_PersonList_BE.fetchDataURL =  personnelUrl + "/getStudent/" + record.student.nationalCode;
+                                EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getStudent/" + record.student.nationalCode;
                             else
-                                EvaluationDS_PersonList_BE.fetchDataURL =  personnelUrl + "/iscList";
+                                EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
                             EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
                             EvaluationListGrid_PeronalLIst_BE.fetchData();
                             EvaluationListGrid_PeronalLIst_BE.invalidateCache();
@@ -442,19 +405,19 @@
                 membersMargin: 5,
                 members: [
                     isc.IButton.create({
-                        title: "صدور/ارسال به کارتابل",
+                        title: "انتخاب",
                         click: function () {
                             if((evaluation_Audience_Type.getValue("audiencePost") !== null && evaluation_Audience_Type.getValue("audiencePost") !== undefined) && evaluation_Audience_Type.getValue("audiencePost") == 188){
-                                    create_evaluation_form_BE(null,null, record.id, 188, record.id, 188, 230, 156);
+                                    Select_Questionnarie_BE(null,null, record.id, 188, record.id, 188, 230, 156);
                                     EvaluationWin_PersonList.close();
                             }
                             else if (EvaluationListGrid_PeronalLIst_BE.getSelectedRecord() !== null && (evaluation_Audience_Type.getValue("audiencePost") !== null && evaluation_Audience_Type.getValue("audiencePost") !== undefined)) {
                                 if(evaluation_Audience_Type.getValue("audiencePost") == 190)
-                                    create_evaluation_form_BE(null,null, EvaluationListGrid_PeronalLIst_BE.getSelectedRecord().id, 190, record.id, 188, 230, 156);
+                                    Select_Questionnarie_BE(null,null, EvaluationListGrid_PeronalLIst_BE.getSelectedRecord().id, 190, record.id, 188, 230, 156);
                                 else if(evaluation_Audience_Type.getValue("audiencePost") == 189)
-                                    create_evaluation_form_BE(null,null, EvaluationListGrid_PeronalLIst_BE.getSelectedRecord().id, 189, record.id, 188, 230, 156);
+                                    Select_Questionnarie_BE(null,null, EvaluationListGrid_PeronalLIst_BE.getSelectedRecord().id, 189, record.id, 188, 230, 156);
                                 else if(evaluation_Audience_Type.getValue("audiencePost") == 454)
-                                    create_evaluation_form_BE(null,null, EvaluationListGrid_PeronalLIst_BE.getSelectedRecord().id, 454, record.id, 188, 230, 156);
+                                    Select_Questionnarie_BE(null,null, EvaluationListGrid_PeronalLIst_BE.getSelectedRecord().id, 454, record.id, 188, 230, 156);
                             } else if(evaluation_Audience_Type.getValue("audiencePost") === null || evaluation_Audience_Type.getValue("audiencePost") === undefined){
                                 createDialog('info', "<spring:message code="select.audience.post.ask"/>", "<spring:message code="global.message"/>");
                             } else {
@@ -517,6 +480,94 @@
             EvaluationWin_PersonList.show();
             EvaluationListGrid_PeronalLIst_BE.invalidateCache();
             EvaluationListGrid_PeronalLIst_BE.fetchData();
+        }
+
+        function Select_Questionnarie_BE(id,questionnarieId, evaluatorId,
+                                         evaluatorTypeId, evaluatedId, evaluatedTypeId, questionnarieTypeId,
+                                         evaluationLevel) {
+            let IButtonSave_SelectQuestionnarie_BE = isc.IButtonSave.create({
+                title: "صدور/ارسال به کارتابل",
+                width: 150,
+                click: function () {
+                    if (ListGrid_SelectQuestionnarie_BE.getSelectedRecord() == null || ListGrid_SelectQuestionnarie_BE.getSelectedRecord() == undefined) {
+                        createDialog("info", "پرسشنامه ای انتخاب نشده است.");
+                    } else {
+                        Window_SelectQuestionnarie_BE.close();
+                        ListGrid_SelectQuestionnarie_BE.getSelectedRecord().id;
+                        create_evaluation_form_BE(id, evaluatorId,
+                            evaluatorTypeId, evaluatedId, evaluatedTypeId, questionnarieTypeId,
+                            evaluationLevel,ListGrid_SelectQuestionnarie_BE.getSelectedRecord().id);
+                    }
+                }
+            });
+            let RestDataSource_Questionnarie_BE = isc.TrDS.create({
+                fields: [
+                    {name: "id", primaryKey: true, hidden: true},
+                    {
+                        name: "title",
+                        title: "<spring:message code="title"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {name: "questionnaireTypeId", hidden: true},
+                    {
+                        name: "questionnaireType.title",
+                        title: "<spring:message code="type"/>",
+                        required: true,
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
+                ],
+                fetchDataURL: questionnaireUrl + "/iscList"
+            });
+            let ListGrid_SelectQuestionnarie_BE = isc.TrLG.create({
+                width: "100%",
+                dataSource: RestDataSource_Questionnarie_BE,
+                selectionType: "single",
+                selectionAppearance: "checkbox",
+                fields: [{name: "title"}, {name: "questionnaireType.title"}, {name: "description"}, {
+                    name: "id",
+                    hidden: true
+                }]
+            });
+            let Window_SelectQuestionnarie_BE = isc.Window.create({
+                width: 1024,
+                placement: "fillScreen",
+                keepInParentRect: true,
+                title: "انتخاب پرسشنامه",
+                items: [
+                    isc.HLayout.create({
+                        width: "100%",
+                        height: "90%",
+                        members: [ListGrid_SelectQuestionnarie_BE]
+                    }),
+                    isc.TrHLayoutButtons.create({
+                        width: "100%",
+                        height: "5%",
+                        members: [
+                            IButtonSave_SelectQuestionnarie_BE,
+                            isc.IButtonCancel.create({
+                                click: function () {
+                                    Window_SelectQuestionnarie_BE.close();
+                                }
+                            })
+                        ]
+                    })
+                ],
+                minWidth: 1024
+            });
+            let criteria = {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [
+                    {fieldName: "enabled", operator: "isNull"},
+                    {fieldName: "questionnaireTypeId", operator: "equals", value: 230}
+                ]
+            };
+            ListGrid_SelectQuestionnarie_BE.fetchData(criteria);
+            ListGrid_SelectQuestionnarie_BE.invalidateCache();
+            Window_SelectQuestionnarie_BE.show();
         }
 
         function register_Behavioral_Form_BE(StdRecord){
@@ -935,6 +986,10 @@
                                             item.name = "Q" + result[i].id;
                                             item.title = "محتواي کلاس: " + result[i].question;
                                             break;
+                                        case 659:
+                                            item.name = "Q" + result[i].id;
+                                            item.title = "فراگیر: " + result[i].question;
+                                            break;
                                         default:
                                             item.name = "Q" + result[i].id;
                                             item.title = result[i].question;
@@ -1045,9 +1100,10 @@
             }
         }
 
-        function create_evaluation_form_BE(id,questionnarieId, evaluatorId,
+        function create_evaluation_form_BE(id, evaluatorId,
                                         evaluatorTypeId, evaluatedId, evaluatedTypeId, questionnarieTypeId,
-                                        evaluationLevel){
+                                        evaluationLevel,questionnaireId){
+
             let data = {};
             data.classId = classRecord_BE.id;
             data.status = false;
@@ -1058,7 +1114,7 @@
             data.evaluatorTypeId = evaluatorTypeId;
             data.evaluatedId = evaluatedId;
             data.evaluatedTypeId = evaluatedTypeId;
-            data.questionnaireId =questionnarieId;
+            data.questionnaireId = questionnaireId;
             data.questionnaireTypeId = questionnarieTypeId;
             data.evaluationLevelId = evaluationLevel;
             data.evaluationFull = false;

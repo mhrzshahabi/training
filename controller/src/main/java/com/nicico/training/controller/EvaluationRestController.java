@@ -52,12 +52,13 @@ public class EvaluationRestController {
     private final ClassStudentService classStudentService;
     private final TclassService tclassService;
     private final EvaluationDAO evaluationDAO;
-    private final PersonnelDAO personnelDAO;
+    private final ViewActivePersonnelDAO viewActivePersonnelDAO;
     private final ParameterValueDAO parameterValueDAO;
     private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
     private final DynamicQuestionDAO dynamicQuestionDAO;
     private final ClassStudentDAO classStudentDAO;
     private final ClassEvaluationGoalsService classEvaluationGoalsService;
+    private final PersonnelDAO personnelDAO;
 
     @Loggable
     @PostMapping("/printWithCriteria")
@@ -332,6 +333,13 @@ public class EvaluationRestController {
         classEvaluationGoalsService.editClassGoalsQuestions(request);
     }
 
+    @Loggable
+    @GetMapping(value = "/deleteAllReactionEvaluationForms/{classId}")
+    public ResponseEntity<Void> deleteAllReactionEvaluationForms(@PathVariable Long classId, HttpServletRequest iscRq) throws IOException {
+        evaluationService.deleteAllReactionEvaluationForms(classId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
 
     //--------------------------------------------- Calender -----------------------------------------------------------
@@ -426,7 +434,7 @@ public class EvaluationRestController {
                 behavioralForms.setEvaluatorName(classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName());
             }
             else {
-                Personnel personnel = personnelDAO.findById(evaluation.getEvaluatorId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                ViewActivePersonnel personnel = viewActivePersonnelDAO.findById(evaluation.getEvaluatorId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                 behavioralForms.setEvaluatorId(personnel.getId());
                 behavioralForms.setEvaluatorName(personnel.getFirstName() + " " + personnel.getLastName());
             }

@@ -92,6 +92,9 @@ public class ViewActivePersonnel {
     @Column(name = "job_no")
     private String jobNo;
 
+    @Column(name = "c_full_name")
+    private String fullName;
+
     @Column(name = "job_title")
     private String jobTitle;
 

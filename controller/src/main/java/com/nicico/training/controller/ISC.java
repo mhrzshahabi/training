@@ -40,6 +40,7 @@ public class ISC<T> {
         String constructor = rq.getParameter("_constructor");
         String[] criteriaList = rq.getParameterValues("criteria");
         String operator = rq.getParameter("operator");
+        String[] stringIds = rq.getParameterValues("id");
 
         Integer startRow = (startRowStr != null) ? Integer.parseInt(startRowStr) : 0;
         Integer endRow = (endRowStr != null) ? Integer.parseInt(endRowStr) : 50;
@@ -66,6 +67,23 @@ public class ISC<T> {
             convertDate(criteriaRq);
             searchRq.setCriteria(criteriaRq);
         }
+
+        if (stringIds != null) {
+            List<Long> ids = new ArrayList<>();
+            try {
+                for (String stringId : stringIds) {
+                    ids.add(Long.valueOf(stringId));
+                }
+                SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+                criteria.getCriteria().add(makeNewCriteria("id", ids, EOperator.inSet, null));
+                if (searchRq.getCriteria() != null) {
+                    criteria.getCriteria().add(searchRq.getCriteria());
+                }
+                searchRq.setCriteria(criteria);
+            } catch (Exception ex) {
+
+            }
+        }
         return searchRq;
     }
 
@@ -90,6 +108,7 @@ public class ISC<T> {
     }
 
     public static <T> ISC<T> convertToIscRs(SearchDTO.SearchRs<T> searchRs, Integer startRow) {
+        startRow = startRow != null ? startRow : 0;
         Response<T> response = new Response<T>();
         response.setData(searchRs.getList()).setStartRow(startRow)
                 .setEndRow(startRow + searchRs.getList().size())

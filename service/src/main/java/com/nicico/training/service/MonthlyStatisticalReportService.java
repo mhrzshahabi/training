@@ -108,7 +108,7 @@ public class MonthlyStatisticalReportService implements IMonthlyStatisticalRepor
             reportScript += "                 AND PG.id in(" + StringUtils.join(PostGrade, ",") + ")";
 
         if ((Personnel.size() != 0))
-            reportScript += "                 AND ST.id in(" + StringUtils.join(Personnel, ",") + ")";
+            reportScript += "                 AND personnel.id in(" + StringUtils.join(Personnel, ",") + ")";
 
         reportScript += "                 GROUP BY A.c_state, department.c_vahed_title, department.c_hoze_title,department.c_moavenat_title,department.c_omor_title, department.c_ghesmat_title)  " +
                 "                 PIVOT(  " +
