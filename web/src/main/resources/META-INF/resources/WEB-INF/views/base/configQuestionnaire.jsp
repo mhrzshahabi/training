@@ -286,6 +286,15 @@
                 ToolStripButton_Remove_JspConfigQuestionnaire,
                 </sec:authorize>
 
+                isc.ToolStripButtonExcel.create({
+                    click: function () {
+                        if (ListGrid_JspConfigQuestionnaire.data.size() < 1)
+                            return;
+
+                        ExportToFile.downloadExcelRestUrl(null, ListGrid_JspConfigQuestionnaire, configQuestionnaireUrl + "/iscList", 0, null, '', "ارزیابی - پرسشنامه - بانک سوال", ListGrid_JspConfigQuestionnaire.getCriteria(), null);
+                    }
+                }),
+
                 <sec:authorize access="hasAuthority('EvaluationQuestion_R')">
                 isc.ToolStrip.create({
                     width: "100%",
