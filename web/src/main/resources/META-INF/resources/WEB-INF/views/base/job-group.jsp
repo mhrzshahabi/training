@@ -235,7 +235,7 @@
             //{name: "version", title: "version", canEdit: false, hidden: true},
             {name: "isEnabled",
                 valueMap:{
-                    "undefined" : "فعال",
+                    90000 : "فعال",
                     74 : "غیر فعال",
                 },filterOnKeypress: true,canSort:false
             },
@@ -349,11 +349,11 @@
             {name: "titleFa", title: "نام شغل", align: "center", width: "70%"},
             {name: "isEnabled",
                 valueMap:{
+                    90000 : "فعال",
                     74 : "غیر فعال",
                 },
                 filterOnKeypress: true,
-                canSort:false,
-                emptyDisplayValue:"فعال",
+                canSort:false
             },
             {name: "OnDelete", title: " ", align: "center",canSort:false,canFilter:false}
         ],

@@ -65,7 +65,7 @@ public class JobRestController {
                 if(criterion.getFieldName().equals("isEnabled")) {
                     criterion.setFieldName("enabled");
 
-                    if (criterion.getValue().get(0).equals("undefined")){
+                    if (criterion.getValue().get(0).equals("90000")){
                         criterion.setOperator(EOperator.isNull);
                     }
                 }

@@ -3,7 +3,6 @@ ghazanfari_f, 8/29/2019, 10:48 AM
 */
 package com.nicico.training.dto;
 
-import com.nicico.training.model.ParameterValue;
 import io.swagger.annotations.ApiModel;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -34,7 +33,8 @@ public class JobDTO implements Serializable {
         private Long isEnabled;
 
         public Long getIsEnabled(){
-            return enabled;
+            //90000 is a fake number
+            return enabled==null ? 90000 : enabled;
         }
     }
 }
