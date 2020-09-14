@@ -59,6 +59,11 @@
                     showRemoveForm_finalTest();
                 }
             }),
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                     ExportToFile.downloadExcelRestUrl(null, FinalTestLG_finalTest,  testQuestionUrl + "/spec-list" , 0, null, '',"لیست آزمون های پایانی", FinalTestLG_finalTest.getCriteria(), null);
+                }
+             }),
 
             isc.LayoutSpacer.create({
                 width: "*"
