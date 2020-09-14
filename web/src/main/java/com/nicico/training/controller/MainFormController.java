@@ -270,6 +270,10 @@ public class MainFormController {
     public String showPersonnelCourseNAReportForm() {
         return "report/personnelCourseNAReportV2";
     }
+    @RequestMapping("/training-file-na-report")
+    public String showTrainingFileNAReport() {
+        return "report/trainingFileNAReport";
+    }
 
     @PostMapping("/personnel-needs-assessment-report-print/{type}")
     public ResponseEntity<?> printPersonnelNeedsAssessmentReport(final HttpServletRequest request, @PathVariable String type) {

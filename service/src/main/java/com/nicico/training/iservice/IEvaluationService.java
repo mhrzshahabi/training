@@ -37,17 +37,16 @@ public interface IEvaluationService {
 
     Evaluation getBehavioralEvaluationByStudent(Long studentId, Long classId);
 
-    @Transactional
     EvaluationDTO.Info getEvaluationByData(Long questionnaireTypeId, Long classId, Long evaluatorId, Long evaluatorTypeId, Long evaluatedId, Long evaluatedTypeId, Long evaluationLevelId);
 
-    @Transactional
     Boolean deleteEvaluation(@RequestBody HashMap req);
+
+    void deleteAllReactionEvaluationForms(Long classId);
 
     double getEvaluationFormGrade(Evaluation evaluation);
 
     List<EvaluationAnswerDTO.EvaluationAnswerFullData> getEvaluationFormAnswerDetail(Evaluation evaluation);
 
-    @Transactional
     EvaluationDTO.BehavioralResult getBehavioralEvaluationResult(Long classId);
 
 }

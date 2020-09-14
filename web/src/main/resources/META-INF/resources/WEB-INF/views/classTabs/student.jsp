@@ -2,7 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
-// <script>
+<!-- <script> -->
     {
         var studentRemoveWait;
         var studentDefaultPresenceId = 103;
@@ -1674,6 +1674,7 @@
         }
 
         function checkPersonnelNosResponse(url, result, addStudentsInGroupInsert) {
+            wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(result)
                 , "callback: checkPersonnelNos(rpcResponse," + JSON.stringify(result) + ",'" + url + "'," + addStudentsInGroupInsert +")"));
         }
@@ -1752,12 +1753,14 @@
 
                                     if (!checkIfAlreadyExist(person)) {
 
-                                        students.add({
-                                            "personnelNo": person.personnelNo,
-                                            "applicantCompanyName": person.companyName,
-                                            "presenceTypeId": studentDefaultPresenceId,
-                                            "registerTypeId": url.indexOf(personnelUrl) > -1 ? 1 : 2
-                                        });
+                                        if (students.filter(function (item) {return item.personnelNo2 == person.personnelNo2||item.personnelNo == person.personnelNo;}).length==0) {
+                                            students.add({
+                                                "personnelNo": person.personnelNo,
+                                                "applicantCompanyName": person.companyName,
+                                                "presenceTypeId": studentDefaultPresenceId,
+                                                "registerTypeId": url.indexOf(personnelUrl) > -1 ? 1 : 2
+                                            });
+                                        }
                                     }
                                 }
                             }
@@ -1766,18 +1769,7 @@
                     if (students.getLength() > 0/*allRowsOK*/ && insert) {
                         var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
 
-                        /*for (var i=0;i<data.length;i++) {
-                            let current = data[i];
 
-                            if (!checkIfAlreadyExist(current)) {
-                                students.add({
-                                    "personnelNo": current.personnelNo,
-                                    "applicantCompanyName": current.companyName,
-                                    "presenceTypeId": studentDefaultPresenceId,
-                                    "registerTypeId": 1
-                                });
-                            }
-                        }*/
                         //if (students.getLength() > 0)
                         wait.show();
                         isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST", JSON.stringify(students), class_add_students_result));
@@ -1789,10 +1781,16 @@
                     } else {
                         GroupSelectedPersonnelsLG_student.invalidateCache();
                         GroupSelectedPersonnelsLG_student.fetchData();
+
+                        wait.close();
                     }
 
 
+                }else{
+                    wait.close();
                 }
+            }else{
+                wait.close();
             }
         }
 
@@ -1820,4 +1818,4 @@
             }));
         }
     }
-    //
+<!-- </script> -->

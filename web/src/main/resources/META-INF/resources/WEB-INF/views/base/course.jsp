@@ -675,8 +675,7 @@
     <sec:authorize access="hasAuthority('Course_P')">
     var ToolStripExcel_JspCourse = isc.ToolStripButtonExcel.create({
         click: function () {
-            let criteria = ListGrid_Course.getCriteria();
-            ExportToFile.downloadExcel(null, ListGrid_Course , "course", 0, null, '',"طراحی و برنامه ریزی - دوره"  , criteria, null);
+            ExportToFile.downloadExcel(null, ListGrid_Course, "course", 0, null, '', "طراحی و برنامه ریزی - دوره", ListGrid_Course.getCriteria(), null);
         }
     });
     </sec:authorize>
@@ -2618,39 +2617,61 @@
             {
                 ID: "tabGoal",
                 title: "<spring:message code="syllabus"/>",
-                pane: ListGrid_CourseSyllabus
+                pane:ListGrid_CourseSyllabus
             },
             </sec:authorize>
 
-            <sec:authorize access="hasAuthority('Course_Job')">
-            {
-                ID: "tabJobJspCourse",
-                title: "<spring:message code="job"/>",
-                pane: ListGrid_CourseJob
-            },
-            </sec:authorize>
+            <%--<sec:authorize access="hasAuthority('Course_Job')">--%>
+            <%--{--%>
+                <%--ID: "tabJobJspCourse",--%>
+                <%--title: "<spring:message code="job"/>",--%>
+                <%--pane: ListGrid_CourseJob--%>
+            <%--},--%>
+            <%--</sec:authorize>--%>
 
             <sec:authorize access="hasAuthority('Course_Post')">
             {
                 ID: "tabPostJspCourse",
                 title: "<spring:message code="post"/>",
-                pane: isc.TrLG.create({
-                    ID: "ListGrid_Post_JspCourse",
-                    showResizeBar: false,
-                    dataSource: isc.TrDS.create({
-                        fields: [
-                            {name: "id", primaryKey: true, hidden: true},
-                            {name: "titleFa", title: "نام فارسی", align: "center"},
-                            {name: "code", title: "کد", align: "center",
-                                filterEditorProperties: {
-                                    keyPressFilter: "[0-9/]"
-                                }
-                            }
-                        ],
-                        ID: "RestData_Post_JspCourse",
-                        fetchDataURL: courseUrl + "post/" + courseRecord.id,
-                    }),
-                })
+                pane:
+                    isc.TrVLayout.create({
+                        width: "100%",
+                        height: "100%",
+                        overflow: "scroll",
+                        members: [
+                            isc.HLayout.create({
+                                width: "100%",
+                                height: "1%",
+                                margin: 10,
+                                members: [ isc.ToolStripButtonExcel.create({
+                                    click: function () {
+                                        let courseRecord = ListGrid_Course.getSelectedRecord();
+                                        if (!(courseRecord === undefined || courseRecord == null)) {
+                                            ExportToFile.downloadExcelRestUrl(null, ListGrid_Post_JspCourse, courseUrl + "post/" + courseRecord.id, 0, ListGrid_Course, '', "دوره - پست", ListGrid_Post_JspCourse.getCriteria(), null);
+                                        }
+                                    }
+                                })
+                                ]
+                            }),
+
+                            isc.TrLG.create({
+                                ID: "ListGrid_Post_JspCourse",
+                                showResizeBar: false,
+                                dataSource: isc.TrDS.create({
+                                    fields: [
+                                        {name: "id", primaryKey: true, hidden: true},
+                                        {name: "titleFa", title: "نام فارسی", align: "center"},
+                                        {name: "code", title: "کد", align: "center",
+                                            filterEditorProperties: {
+                                                keyPressFilter: "[0-9/]"
+                                            }
+                                        }
+                                    ],
+                                    ID: "RestData_Post_JspCourse",
+                                    fetchDataURL: courseUrl + "post/" + courseRecord.id,
+                                })})
+                        ]
+                    })
             },
             </sec:authorize>
 
@@ -2658,8 +2679,28 @@
             {
                 ID: "tabSkillJspCourse",
                 title: "<spring:message code="skill"/>",
-                pane: ListGrid_CourseSkill
-
+                pane:
+                    isc.TrVLayout.create({
+                        width: "100%",
+                        height: "100%",
+                        overflow: "scroll",
+                        members: [
+                            isc.HLayout.create({
+                                width: "100%",
+                                height: "1%",
+                                margin: 10,
+                                members: [ isc.ToolStripButtonExcel.create({
+                                    click: function () {
+                                        let courseRecord = ListGrid_Course.getSelectedRecord();
+                                        if (!(courseRecord === undefined || courseRecord == null)) {
+                                            ExportToFile.downloadExcelRestUrl(null, ListGrid_CourseSkill, courseUrl + "skill/" + courseRecord.id, 0, ListGrid_Course, '', "دوره - مهارت", ListGrid_CourseSkill.getCriteria(), null);
+                                        }
+                                    }
+                                })
+                                ]
+                            }), ListGrid_CourseSkill
+                        ]
+                    })
             },
             </sec:authorize>
             // {

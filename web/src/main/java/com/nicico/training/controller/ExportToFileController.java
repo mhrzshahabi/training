@@ -11,8 +11,8 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.oauth.common.domain.CustomUserDetails;
 import com.nicico.training.dto.*;
-import com.nicico.training.iservice.IPersonnelCourseNotPassedReportViewService;
-import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.iservice.*;
+import com.nicico.training.model.TrainingPlace;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.PersonnelRegisteredDAO;
 import com.nicico.training.repository.StudentClassReportViewDAO;
@@ -107,6 +107,9 @@ public class ExportToFileController {
     private final ViewUnjustifiedAbsenceReportService viewUnjustifiedAbsenceReportService;
     private final TrainingPostService trainingPostService;
     private final ViewTrainingPostService viewTrainingPostService;
+    private final IInstituteService instituteService;
+    private final ITrainingPlaceService trainingPlaceService;
+    private final IInstituteAccountService accountService;
 
     private final ModelMapper modelMapper;
     private final MessageSource messageSource;
@@ -271,9 +274,9 @@ public class ExportToFileController {
                 String startDate2 = (String) attendanceParams.get("startDate")[0];
                 CriteriaConverter.removeCriteriaByfieldName(searchRq.getCriteria(), "startDate");
                 String endDate2 = (String) attendanceParams.get("endDate")[0];
-                CriteriaConverter.removeCriteriaByfieldName(searchRq.getCriteria(),"endDate");
+                CriteriaConverter.removeCriteriaByfieldName(searchRq.getCriteria(), "endDate");
                 Integer absentType = Integer.parseInt(attendanceParams.get("absentType")[0].toString());
-                CriteriaConverter.removeCriteriaByfieldName(searchRq.getCriteria(),"absentType");
+                CriteriaConverter.removeCriteriaByfieldName(searchRq.getCriteria(), "absentType");
 
                 SearchDTO.SearchRq request = new SearchDTO.SearchRq();
                 request.setStartIndex(null);
@@ -429,7 +432,7 @@ public class ExportToFileController {
                     generalList = new ArrayList<>(0);
                     break;
                 }
-                searchRq.getCriteria().getCriteria().add(makeNewCriteria("postId",jobPostList.stream().map(PostDTO.Info::getId).collect(Collectors.toList()),EOperator.inSet,null));
+                searchRq.getCriteria().getCriteria().add(makeNewCriteria("postId", jobPostList.stream().map(PostDTO.Info::getId).collect(Collectors.toList()), EOperator.inSet, null));
                 searchRq.getCriteria().getCriteria().add(makeNewCriteria("deleted", 0, EOperator.equals, null));
                 searchRq.setDistinct(true);
                 generalList = (List<Object>) ((Object) personnelService.search(searchRq).getList());
@@ -445,7 +448,7 @@ public class ExportToFileController {
                     generalList = new ArrayList<>(0);
                     break;
                 }
-                searchRq.getCriteria().getCriteria().add(makeNewCriteria("postId",postList.stream().filter(post -> post.getDeleted() == null).map(PostDTO.TupleInfo::getId).collect(Collectors.toList()),EOperator.inSet,null));
+                searchRq.getCriteria().getCriteria().add(makeNewCriteria("postId", postList.stream().filter(post -> post.getDeleted() == null).map(PostDTO.TupleInfo::getId).collect(Collectors.toList()), EOperator.inSet, null));
                 searchRq.getCriteria().getCriteria().add(makeNewCriteria("deleted", 0, EOperator.equals, null));
                 generalList = (List<Object>) ((Object) personnelService.search(searchRq).getList());
                 break;
@@ -460,7 +463,7 @@ public class ExportToFileController {
                     generalList = new ArrayList<>(0);
                     break;
                 }
-                searchRq.getCriteria().getCriteria().add(makeNewCriteria("postId",trainingPostList.stream().map(PostDTO.Info::getId).collect(Collectors.toList()),EOperator.inSet,null) );
+                searchRq.getCriteria().getCriteria().add(makeNewCriteria("postId", trainingPostList.stream().map(PostDTO.Info::getId).collect(Collectors.toList()), EOperator.inSet, null));
                 searchRq.getCriteria().getCriteria().add(makeNewCriteria("deleted", 0, EOperator.equals, null));
                 generalList = (List<Object>) ((Object) personnelService.search(searchRq).getList());
                 break;
@@ -537,7 +540,7 @@ public class ExportToFileController {
                     generalList = new ArrayList<>(0);
                     break;
                 }
-                searchRq.getCriteria().getCriteria().add(makeNewCriteria("job",jobsPosts.stream().filter(job -> job.getDeleted() == null).map(JobDTO.Info::getId).collect(Collectors.toList()) , EOperator.inSet,null));
+                searchRq.getCriteria().getCriteria().add(makeNewCriteria("job", jobsPosts.stream().filter(job -> job.getDeleted() == null).map(JobDTO.Info::getId).collect(Collectors.toList()), EOperator.inSet, null));
                 BaseService.setCriteriaToNotSearchDeleted(searchRq);
                 generalList = (List<Object>) postService.searchWithoutPermission(searchRq, p -> modelMapper.map(p, PostDTO.Info.class)).getList();
                 break;
@@ -680,6 +683,47 @@ public class ExportToFileController {
                 searchRq.getCriteria().getCriteria().remove(removeCriterion);
                 generalList = (List<Object>) ((Object) tclassService.searchByTeachingHistory(searchRq, teacherId).getList());
                 break;
+
+            case "institute":
+                generalList = (List<Object>) ((Object) instituteService.search(searchRq).getList());
+                break;
+
+            case "institute_trainingPlace":
+
+                Long instituteId = ((Integer)searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                searchRq.getCriteria().getCriteria().remove(0);
+
+                SearchDTO.CriteriaRq criteriaTP =  new SearchDTO.CriteriaRq();
+
+                criteriaTP.setOperator(EOperator.equals);
+                criteriaTP.setFieldName("instituteId");
+                criteriaTP.setValue(instituteId);
+
+                searchRq.setCriteria(criteriaTP);
+                searchRq.setSortBy("-id");
+                generalList = (List<Object>)((Object) trainingPlaceService.search(searchRq).getList());
+                break;
+
+            case "institute_trainingPlace_equipment":
+                Long trainingPlaceId = ((Integer)searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                generalList = (List<Object>)((Object) trainingPlaceService.getEquipments(trainingPlaceId));
+                break;
+
+            case "institute_teacher":
+                Long instituteIdTeacher = ((Integer)searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                generalList = (List<Object>) ((Object) instituteService.getTeachers(instituteIdTeacher));
+                break;
+
+            case "institute_account":
+                Long instituteIdAcount= ((Integer)searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                generalList = (List<Object>) ((Object) accountService.getAllAccountForExcel(instituteIdAcount));
+                break;
+
+            case "institute-equipment":
+                Long instituteIdEquipment = ((Integer)searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                generalList = (List<Object>)((Object) instituteService.getEquipments(instituteIdEquipment));
+                break;
+
         }
 
         //End Of Query
@@ -769,13 +813,13 @@ public class ExportToFileController {
         String query = String.format("_endRow=%s&", URLEncoder.encode(((Integer) (Integer.parseInt(startRow) + Integer.parseInt(len))).toString(), charset));
         query += String.format("_startRow=%s&", URLEncoder.encode(startRow, charset));
 
-        if(sortBy.startsWith("[")){
-            String[] listOfSort=sortBy.substring(1,sortBy.length()-1).split(",");
+        if (sortBy.startsWith("[")) {
+            String[] listOfSort = sortBy.substring(1, sortBy.length() - 1).split(",");
 
-            for (int i = 0; i <listOfSort.length ; i++) {
-                query += String.format("_sortBy=%s&", URLEncoder.encode(listOfSort[i].substring(1,listOfSort[i].length()-1), charset));
+            for (int i = 0; i < listOfSort.length; i++) {
+                query += String.format("_sortBy=%s&", URLEncoder.encode(listOfSort[i].substring(1, listOfSort[i].length() - 1), charset));
             }
-        }else{
+        } else {
             query += String.format("_sortBy=%s&", URLEncoder.encode(sortBy, charset));
         }
 
@@ -793,9 +837,9 @@ public class ExportToFileController {
 
         for (Map.Entry<String, String[]> item : data1.entrySet()) {
             if (!exceptList.contains(item.getKey())) {
-                if((item.getKey().equals("criteria"))&&item.getValue()[0].startsWith("[")){
-                    query += String.format("%s=%s&", item.getKey(), URLEncoder.encode(item.getValue()[0].substring(1,item.getValue()[0].length()-1), charset));
-                }else{
+                if ((item.getKey().equals("criteria")) && item.getValue()[0].startsWith("[")) {
+                    query += String.format("%s=%s&", item.getKey(), URLEncoder.encode(item.getValue()[0].substring(1, item.getValue()[0].length() - 1), charset));
+                } else {
                     query += String.format("%s=%s&", item.getKey(), URLEncoder.encode(item.getValue()[0], charset));
                 }
 
@@ -805,9 +849,9 @@ public class ExportToFileController {
         query = query.substring(0, query.length() - 1);
 
         String token = (String) req.getSession().getAttribute("AccessToken");
-        String restApiUrl = req.getRequestURL().toString().replace(req.getServletPath(), "").replace(req.getContextPath(),"");
+        String restApiUrl = req.getRequestURL().toString().replace(req.getServletPath(), "").replace(req.getContextPath(), "");
 
-        URL obj = new URL(restApiUrl+restUrl + "?" + query);
+        URL obj = new URL(restApiUrl + restUrl + "?" + query);
         HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
         postConnection.setDoOutput(true);
         postConnection.setDoInput(true);
@@ -833,12 +877,11 @@ public class ExportToFileController {
             in.close();
 
             JsonNode jsonNode = objectMapper.readTree(result.toString());
+            count[0] = jsonNode.get("response").get("endRow").asInt() - jsonNode.get("response").get("startRow").asInt();
             jsonNode = jsonNode.get("response").get("data");
 
             if (jsonNode.isArray()) {
-                resultType = new TypeToken<List<Object>>() {
-                }.getType();
-                generalList.addAll(gson.fromJson(jsonNode.toString(), resultType));
+                jsonString[0] = jsonNode.toString();
             }
 
         } else {
@@ -851,7 +894,6 @@ public class ExportToFileController {
 
         //End Of Query
         //Start Parse
-        setExcelValues(jsonString, count, generalList);
         net.minidev.json.JSONArray jsonArray = (JSONArray) parser.parse(jsonString[0]);
         net.minidev.json.JSONObject jsonObject = null;
         int sizeOfFields = fields1.size();
@@ -879,7 +921,21 @@ public class ExportToFileController {
                 tmpName = getData(jsonObject, aList, 0);
 
                 if (parameters.containsKey(fieldName)) {
-                    tmpName = parameters.get(fieldName).get(tmpName);
+                    if (tmpName != null && tmpName.charAt(0) == '[') {
+
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        JsonNode jsonNode = objectMapper.readTree(tmpName);
+                        tmpName = "";
+                        for (final JsonNode objNode : jsonNode) {
+                            tmpName += parameters.get(fieldName).get(objNode.toString()) + ",";
+                        }
+                        if (tmpName.length() > 0) {
+                            tmpName = tmpName.substring(0, tmpName.length() - 1);
+                        }
+
+                    } else {
+                        tmpName = parameters.get(fieldName).get(tmpName);
+                    }
                 }
 
                 tmpData.put(fields1.get(j).get("name"), tmpName);

@@ -3,13 +3,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 // <script>
+
     $(document).ready(()=>{
         setTimeout(()=>{
             $("input[name='personnelNo']").attr("disabled","disabled");
             $("input[name='classCode']").attr("disabled","disabled");
+            $("input[name='postGrade']").attr("disabled","disabled");
         },0)}
     );
 
+    let criteriaDisplayValuesPostGrade;
     var startDate1Check_JspcontinuousPersonnel = true;
     var startDate2Check_JspcontinuousPersonnel = true;
     var startDateCheck_Order_JspcontinuousPersonnel = true;
@@ -31,6 +34,7 @@
             {name: "unit", title:"<spring:message code='unit'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "postTitle", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postGradeTitle", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
 
             {name: "courseCode", title:"<spring:message code='course.code'/>", autoFitWidth: true},
             {name: "courseTitleFa", title:"<spring:message code='course'/>", filterOperator: "iContains", autoFitWidth: true},
@@ -72,6 +76,7 @@
             {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "postGradeTitle", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -83,7 +88,9 @@
         implicitCriteria: {
             _constructor:"AdvancedCriteria",
             operator:"and",
-            criteria:[{ fieldName: "active", operator: "equals", value: 1}]
+            criteria:[{fieldName: "active", operator: "equals", value: 1},
+                      {fieldName: "deleted", operator: "equals", value: 0}
+                      ]
         },
     });
 
@@ -168,6 +175,21 @@
             {name: "year", primaryKey: true}
         ],
         fetchDataURL: termUrl + "yearList"
+    });
+
+    var RestDataSource_PostGradeLvl_PCNR = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {
+                name: "code",
+                title: "<spring:message code="post.grade.code"/>",
+                filterOperator: "iContains",
+            },
+            {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
+            {name: "peopleType",  title: "نوع فراگیر",valueMap: {"personnel_registered": "متفرقه", "Personal": "شرکتی", "ContractorPersonal": "پیمانکار"}},
+            {name: "enabled", title: "فعال/غیرفعال", valueMap: {"undefined": "فعال", "74": "غیرفعال"}}
+        ],
+        fetchDataURL: viewPostGradeUrl + "/iscList"
     });
 
     //----------------------------------------------------ListGrid Result-----------------------------------------------
@@ -255,9 +277,16 @@
                 keyPressFilter: "[A-Z|0-9|,-]"
             },
             {
-                name: "temp0",
-                title: "",
-                canEdit: false
+                name: "postGrade",
+                title: "رده پستی",
+                hint: "رده پستی را انتخاب نمایید",
+                showHintInField: true,
+                icons: [{
+                    src: "[SKIN]/pickers/search_picker.png",
+                    click: function () {
+                        Window_SelectPostGrade_JspUnitReport.show();
+                    }}],
+                keyPressFilter: "[A-Z|0-9|,-]"
             },
             {
                 name: "temp1",
@@ -858,13 +887,110 @@
         ]
     });
 
+    var DynamicForm_SelectPostGrade_JspUnitReport = isc.DynamicForm.create({
+        align: "center",
+        titleWidth: 0,
+        titleAlign: "center",
+        width: 500,
+        height: 300,
+        fields: [
+            {
+                name: "PostGrade.code",
+                align: "center",
+                title: "",
+                editorType: "MultiComboBoxItem",
+                multiple: true,
+                defaultValue: null,
+                changeOnKeypress: true,
+                showHintInField: true,
+                displayField: "titleFa",
+                comboBoxWidth: 500,
+                valueField: "id",
+                layoutStyle: initialLayoutStyle,
+                optionDataSource: RestDataSource_PostGradeLvl_PCNR
+            }
+        ]
+    });
+
+    DynamicForm_SelectPostGrade_JspUnitReport.getField("PostGrade.code").comboBox.setHint("رده پستی مورد نظر را انتخاب کنید");
+    DynamicForm_SelectPostGrade_JspUnitReport.getField("PostGrade.code").comboBox.pickListFields =
+        [
+            {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
+            {name: "peopleType",  title: "نوع فراگیر",valueMap: {"personnel_registered": "متفرقه", "Personal": "شرکتی", "ContractorPersonal": "پیمانکار"}},
+            {name: "enabled", title: "فعال/غیرفعال", valueMap: {"undefined": "فعال", "74": "غیرفعال"}}
+        ];
+    DynamicForm_SelectPostGrade_JspUnitReport.getField("PostGrade.code").comboBox.filterFields = ["titleFa","peopleType","enabled"];
+
+    IButton_ConfirmPostGradeSelections_JspUnitReport = isc.IButtonSave.create({
+        top: 260,
+        title: "تائید",
+        width: 300,
+        click: function () {
+            let criteriaDisplayValues = "";
+            let selectorDisplayValues = DynamicForm_SelectPostGrade_JspUnitReport.getItem("PostGrade.code").getValue();
+            if (DynamicForm_SelectPostGrade_JspUnitReport.getField("PostGrade.code").getValue() != undefined && DynamicForm_SelectPostGrade_JspUnitReport.getField("PostGrade.code").getValue() != "") {
+                criteriaDisplayValues = DynamicForm_SelectPostGrade_JspUnitReport.getField("PostGrade.code").getValue().join(",");
+                let ALength = criteriaDisplayValues.length;
+                let lastChar = criteriaDisplayValues.charAt(ALength - 1);
+                if (lastChar != ";")
+                    criteriaDisplayValues += ",";
+            }
+            if (selectorDisplayValues != undefined) {
+                for (let i = 0; i < selectorDisplayValues.size() - 1; i++) {
+                    criteriaDisplayValues += selectorDisplayValues [i] + ",";
+                }
+                criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
+            }
+
+            if (typeof criteriaDisplayValues != "undefined") {
+                let uniqueNames = [];
+
+                $.each(criteriaDisplayValues.split(","), function (i, el) {
+                    if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+                });
+                criteriaDisplayValues = uniqueNames.join(",");
+            }
+
+            criteriaDisplayValues = criteriaDisplayValues == "undefined" ? "" : criteriaDisplayValues;
+
+            criteriaDisplayValuesPostGrade=criteriaDisplayValues;
+            DynamicForm_CriteriaForm_JspcontinuousPersonnel.getField("postGrade").setValue(DynamicForm_SelectPostGrade_JspUnitReport.getItem("PostGrade.code").getDisplayValue().join(","));
+            Window_SelectPostGrade_JspUnitReport.close();
+        }
+    });
+
+    var Window_SelectPostGrade_JspUnitReport = isc.Window.create({
+        placement: "center",
+        title: "انتخاب رده پستی",
+        canDragReposition: true,
+        align: "center",
+        autoDraw: false,
+        border: "2px solid gray",
+        width: 500,
+        height: 300,
+        items: [
+            isc.TrVLayout.create({
+                members: [
+                    DynamicForm_SelectPostGrade_JspUnitReport,
+                    IButton_ConfirmPostGradeSelections_JspUnitReport,
+                ]
+            })
+        ]
+    });
+
     IButton_JspcontinuousPersonnel = isc.IButtonSave.create({
         top: 260,
         title: "چاپ گزارش",
         width: 300,
         click: function () {
-            if(DynamicForm_CriteriaForm_JspcontinuousPersonnel.getValuesAsAdvancedCriteria().criteria.size() <= 2) {
+            if(DynamicForm_CriteriaForm_JspcontinuousPersonnel.getValuesAsAdvancedCriteria().criteria.size() <= 2 ) {
                 createDialog("info","فیلتری انتخاب نشده است.");
+                return;
+            }
+
+            if (!criteriaDisplayValuesPostGrade || criteriaDisplayValuesPostGrade.length<1)
+            {
+                createDialog("info","حداقل يک رده پستی را انتخاب نماييد");
                 return;
             }
 
@@ -897,6 +1023,21 @@
                                 codesArray.remove(codesArray[j]);
                             }
                         }
+                        data_values.criteria[i].operator = "inSet";
+                        data_values.criteria[i].value = codesArray;
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "postGrade") {
+                        var codesString = criteriaDisplayValuesPostGrade;
+                        var codesArray;
+                        codesArray = codesString.split(",");
+                        for (var j = 0; j < codesArray.length; j++) {
+                            if (codesArray[j] == "" || codesArray[j] == " ") {
+                                codesArray.remove(codesArray[j]);
+                            }
+                        }
+
+                        data_values.criteria[i].fieldName = "pgId";
                         data_values.criteria[i].operator = "inSet";
                         data_values.criteria[i].value = codesArray;
                     }

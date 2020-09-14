@@ -57,6 +57,10 @@ public class ContinuousStatusReportViewDTO implements Serializable {
 
         private String postTitle;
 
+        private Long pgId;
+
+        private String postGradeTitle;
+
         private String affairs;
 
         private String area;

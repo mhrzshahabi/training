@@ -19,7 +19,7 @@
             {name: "personnelComplexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelCcpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelCompanyName", title: "<spring:message code="company"/>", filterOperator: "iContains", autoFitWidth: true},
-
+            {name: "personnelPostGradeTitle", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "courseId", hidden: true},
             {name: "courseCode", title: "<spring:message code='course.code'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "courseTitleFa", title: "<spring:message code='course.title'/>", filterOperator: "iContains", autoFitWidth: true},
@@ -123,7 +123,7 @@
         implicitCriteria: {
             _constructor:"AdvancedCriteria",
             operator:"and",
-            criteria:[{ fieldName: "active", operator: "equals", value: 1}]
+            criteria:[{ fieldName: "active", operator: "equals", value: 1},  { fieldName: "deleted", operator: "equals", value: 0}]
         },
     });
 
@@ -180,7 +180,9 @@
                             criteriaVal += ",";
                         }
                         criteriaVal += '"' + value[value.length-1] + '"' +  ']';
-                        let criteria= '{"fieldName":"postGradeCode","operator":"inSet","value":' + criteriaVal + '}';
+                        let criteria= '{"fieldName":"postGradeCode","operator":"inSet","value":' + criteriaVal + '}' +
+                            ',{"fieldName": "active", "operator": "equals", "value": "1"}'+
+                            ',{"fieldName": "deleted", "operator": "equals", "value": "0"}';
                         // let criteria = new Object();
                         // criteria.fieldName = "postGradeCode";
                         // criteria.operator = "inSet";
@@ -586,6 +588,8 @@
             {name: "personnelComplexTitle"},
             {name: "personnelCcpAffairs"},
             {name: "personnelCompanyName"},
+
+            {name: "personnelPostGradeTitle"},
 
             {name: "courseCode"},
             {name: "courseTitleFa"},
