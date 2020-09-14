@@ -138,6 +138,7 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
             titlesOfGrid.add("نام مهارت");
             titlesOfGrid.add("اولویت");
             titlesOfGrid.add("نیازسنجی");
+            titlesOfGrid.add("گذرانده/ نگذرانده");
             titlesOfGrid.add("کد کلاس");
             titlesOfGrid.add("شروع کلاس");
             titlesOfGrid.add("پایان کلاس");
@@ -165,6 +166,7 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
                 row.add(tmpTFNR.getSkillTitleFa());
                 row.add(tmpTFNR.getPriority());
                 row.add(tmpTFNR.getIsInNA() ? "*" : "");
+                row.add(tmpTFNR.getScoreStateId() == null || tmpTFNR.getScoreStateId() == 400 || tmpTFNR.getScoreStateId() == 401 ? "*" : "");
                 row.add(tmpTFNR.getClassCode());
                 row.add(tmpTFNR.getClassStartDate());
                 row.add(tmpTFNR.getClassEndDate());
@@ -351,7 +353,7 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
                 excelCellOfRow.setCellStyle(bodyBoldCellStyle);
 
                 excelCellOfRow = excelRow.createCell(9);
-                sheet.addMergedRegion(CellRangeAddress.valueOf(new CellReference(currentRow, 9).formatAsString() + ":" + new CellReference(currentRow, 14).formatAsString()));
+                sheet.addMergedRegion(CellRangeAddress.valueOf(new CellReference(currentRow, 9).formatAsString() + ":" + new CellReference(currentRow, 15).formatAsString()));
                 excelCellOfRow.setCellValue("پرونده آموزشی");
                 excelCellOfRow.setCellStyle(bodyBoldCellStyle);
                 currentRow++;
@@ -465,10 +467,11 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
             sheet.setColumnWidth(7, 4500);
             sheet.setColumnWidth(8, 2800);
             sheet.setColumnWidth(9, 4500);
-            sheet.setColumnWidth(10, 3000);
+            sheet.setColumnWidth(10, 4500);
             sheet.setColumnWidth(11, 3000);
-            sheet.setColumnWidth(12, 8000);
-            sheet.setColumnWidth(14, 9625);
+            sheet.setColumnWidth(12, 3000);
+            sheet.setColumnWidth(13, 8000);
+            sheet.setColumnWidth(15, 9625);
 
 
             String mimeType = "application/octet-stream";
