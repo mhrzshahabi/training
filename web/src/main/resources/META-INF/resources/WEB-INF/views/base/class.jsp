@@ -113,7 +113,8 @@
             {name: "startEvaluation"},
             {name: "behavioralLevel"},
             {name: "studentCost"},
-            {name: "studentCostCurrency"}
+            {name: "studentCostCurrency"},
+            {name: "planner"},
         ]
     });
 
@@ -483,24 +484,18 @@
                 autoFitWidth: true,
             },
             {
-                name: "plannerFullName",
+                name: "planner.lastName",
                 title: "<spring:message code="planner"/>",
-                // displayValueFromRecord: false,
-                // canFilter: false,
-                // canSort: false,
-                // type: "TextItem",
+                canSort: false,
                 align: "center",
-                // filterOperator: "iContains",
+                filterOperator: "iContains",
                 autoFitWidth: true,
 
             },
             {
-                name: "supervisorFullName",
+                name: "supervisor.lastName",
                 title: "<spring:message code="supervisor"/>",
-                displayValueFromRecord: false,
-                canFilter: false,
                 canSort: false,
-                type: "TextItem",
                 align: "center",
                 filterOperator: "iContains",
                 autoFitWidth: true,
@@ -1002,7 +997,7 @@
 // }
             },
             {
-                name: "supervisor",
+                name: "supervisorId",
                 colSpan: 3,
                 required: true,
                 title: "<spring:message code="supervisor"/>:",
@@ -1026,7 +1021,7 @@
                 }
             },
             {
-                name: "planner",
+                name: "plannerId",
                 colSpan: 1,
                 required: true,
                 wrapTitle: false,

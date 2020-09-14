@@ -112,6 +112,7 @@ public class TclassDTO {
         @Getter(AccessLevel.NONE)
         private TeacherDTO.TeacherFullNameTuple teacher;
         private String plannerFullName;
+        private PersonalInfoDTO.Info planner;
         private String supervisorFullName;
         private String organizerName;
         private List<TclassDTO.InfoTuple> canceledClasses;

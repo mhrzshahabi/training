@@ -64,14 +64,14 @@ public class Tclass extends Auditable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_supervisor", insertable = false, updatable = false)
-    private ViewActivePersonnel supervisor;
+    private Personnel supervisor;
 
     @Column(name = "f_supervisor")
     private Long supervisorId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_planner", insertable = false, updatable = false)
-    private ViewActivePersonnel planner;
+    private Personnel planner;
 
     @Column(name = "f_planner")
     private Long plannerId;
