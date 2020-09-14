@@ -46,7 +46,7 @@
                 }
             }
         ],
-        fetchDataURL: personnelUrl + "/iscList"
+        fetchDataURL: viewActivePersonnelUrl + "/iscList"
     });
 
 

@@ -4084,7 +4084,7 @@
         isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "teacherFullName/" + classRecord.teacherId, "GET", null, function (resp1) {
             DynamicForm_Questions_Title_JspEvaluation.getItem("teacher").setValue(resp1.httpResponseText);
             DynamicForm_Questions_Title_JspEvaluation.setValue("evaluated", resp1.httpResponseText);
-            isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/personnelFullName/" + classRecord.supervisor, "GET", null, function (resp2) {
+            isc.RPCManager.sendRequest(TrDSRequest(viewActivePersonnelUrl + "/personnelFullName/" + classRecord.supervisor, "GET", null, function (resp2) {
                 DynamicForm_Questions_Title_JspEvaluation.setValue("evaluator", resp2.httpResponseText);
                 load_evaluation_form_RTr2();
             }));

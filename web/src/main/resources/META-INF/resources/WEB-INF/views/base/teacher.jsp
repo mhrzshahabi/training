@@ -1334,12 +1334,12 @@
     }
 
     function fillPersonalInfoByPersonnelNumber(personnelCode) {
-        isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byPersonnelCode/" + personnelCode, "GET", null,
+        isc.RPCManager.sendRequest(TrDSRequest(viewActivePersonnelUrl + "/byPersonnelCode/" + personnelCode, "GET", null,
             "callback: personnel_findOne_result(rpcResponse)"));
     }
 
     // function  fillPersonalInfoByNationalCode(nationalCode){
-    //     isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byNationalCode/" + nationalCode, "GET", null,
+    //     isc.RPCManager.sendRequest(TrDSRequest(viewActivePersonnelUrl + "/byNationalCode/" + nationalCode, "GET", null,
     //         "callback: personnel_findOne_result(rpcResponse)"));
     // }
 

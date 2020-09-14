@@ -134,7 +134,7 @@
         fetchDataURL: instituteUrl + "spec-list",
         allowAdvancedCriteria: true
     });
-
+/**/
     var RestDataSource_SupervisorDS_JspTClassReport = isc.TrDS.create({
         fields: [
             {name: "id", filterOperator: "equals", primaryKey: true, hidden: true},
@@ -144,7 +144,7 @@
             {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
         ],
-        fetchDataURL: personnelUrl + "/iscList",
+        fetchDataURL: viewActivePersonnelUrl + "/iscList",
         implicitCriteria: {
             _constructor:"AdvancedCriteria",
             operator:"and",
@@ -161,7 +161,7 @@
             {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
         ],
-        fetchDataURL: personnelUrl + "/iscList",
+        fetchDataURL: viewActivePersonnelUrl + "/iscList",
         implicitCriteria: {
             _constructor:"AdvancedCriteria",
             operator:"and",

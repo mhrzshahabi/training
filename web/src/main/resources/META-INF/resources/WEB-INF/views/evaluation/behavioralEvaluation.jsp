@@ -409,7 +409,6 @@
                         click: function () {
                             if((evaluation_Audience_Type.getValue("audiencePost") !== null && evaluation_Audience_Type.getValue("audiencePost") !== undefined) && evaluation_Audience_Type.getValue("audiencePost") == 188){
                                     Select_Questionnarie_BE(null,null, record.id, 188, record.id, 188, 230, 156);
-                                    EvaluationWin_PersonList.close();
                             }
                             else if (EvaluationListGrid_PeronalLIst_BE.getSelectedRecord() !== null && (evaluation_Audience_Type.getValue("audiencePost") !== null && evaluation_Audience_Type.getValue("audiencePost") !== undefined)) {
                                 if(evaluation_Audience_Type.getValue("audiencePost") == 190)
