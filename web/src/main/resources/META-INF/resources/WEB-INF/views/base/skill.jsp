@@ -522,8 +522,10 @@
         selectionType: "single",
         showResizeBar: true,
         dataArrived:function(){
-            setTimeout(function(){ $("tbody tr td:last-child").css({direction:'ltr'});
-            $("tbody tr td:nth-child(2)").css({direction:'ltr'});
+            setTimeout(function(){
+                $("tbody tr td:nth-child(8)").css({direction:'ltr'});
+                $("tbody tr td:nth-child(2)").css({direction:'ltr'});
+                $("td.toolStripButtonExcel").css({direction:'rtl'}); //fix excel bug
             },100);
         },
         fields: [
@@ -599,7 +601,7 @@
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     let criteria = SkillLG_Skill.getCriteria();
-                    ExportToFile.downloadExcel(null, SkillLG_Skill , "Skill", 0, null, '',"لیست مهارت ها - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcelRestUrl(null, SkillLG_Skill , "Skill", 0, null, '',"لیست مهارت ها - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -620,7 +622,7 @@
             CreateTSB_Skill,
             EditTSB_Skill,
             RemoveTSB_Skill,
-            PrintTSB_Skill,
+           // PrintTSB_Skill,
             CourseTSB_Skill,
             ToolStrip_Skill_Export2EXcel,
             isc.ToolStrip.create({
@@ -888,8 +890,9 @@
                     " .cellDeselectedOverAltCol, .cellDeselectedOverDarkAltCol, .cellDisabledAltCol, .cellDisabledDarkAltCol";
         setTimeout(function() {
             $(classes).css({'direction': 'ltr!important'});
-            $("tbody tr td:nth-child(2)").css({'direction':'ltr'});
-            $("tbody tr td:last-child").css({'direction':'ltr'});
+            $("tbody tr td:nth-child(8)").css({direction:'ltr'});
+            $("tbody tr td:nth-child(2)").css({direction:'ltr'});
+            $("td.toolStripButtonExcel").css({direction:'rtl'}); //fix excel bug
         },10);
     };
 
