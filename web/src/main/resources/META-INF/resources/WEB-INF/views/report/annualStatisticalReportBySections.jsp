@@ -144,11 +144,12 @@
             {name: "institute_id",hidden:true},
             {name: "institute_title_fa", title:"<spring:message code="institute"/>", align: "center", filterOperator: "iContains",autoFitWidth:true},
             {name: "category_id",  title:"<spring:message code="category"/>", align: "center", filterOperator: "iContains",autoFitWidth:true},
-            {name: "finished_class_count",  title:"تعداد دوره ها", align: "center", filterOperator: "iContains",autoFitWidth:true},
-            {name: "canceled_class_count",  title:"تعداد نفر آموزش داده", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "finished_class_count",  title:"تعداد کلاس", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "canceled_class_count",  title:"تعداد کلاس لغو شده", align: "center", filterOperator: "iContains",autoFitWidth:true},
             {name: "sum_of_duration",  title:"ساعت آموزشی ارائه شده", align: "center", filterOperator: "iContains",autoFitWidth:true},
-            {name: "student_count",  title:"نقر ساعت آموزشي", align: "center", filterOperator: "iContains",autoFitWidth:true},
-            {name: "sum_of_student_hour",  title:"نقر ساعت آموزشي", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "student_count",  title:"تعداد فراگیر", align: "center", filterOperator: "iContains",autoFitWidth:true},
+
+            {name: "sum_of_student_hour",  title:"جمع نفر ساعت آموزشي", align: "center", filterOperator: "iContains",autoFitWidth:true},
 
         ],
         recordDoubleClick: function () {
@@ -218,17 +219,19 @@
                     var dateCheck;
                     dateCheck = checkDate(DynamicForm_Report_annualStatisticalReportBySection.getValue("startDate"));
                     if (dateCheck == false)
-                        DynamicForm_Report_annualStatisticalReportBySection.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
-                    endDateCheckReportASRBS = false;
+                        //DynamicForm_Report_annualStatisticalReportBySection.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                        DynamicForm_Report_annualStatisticalReportBySection.getItem("startDate").setValue();
+                       // endDateCheckReportASRBS = false;
                     if (dateCheck == true)
                         DynamicForm_Report_annualStatisticalReportBySection.clearFieldErrors("startDate", true);
                     endDateCheckReportASRBS = true;
                     var endDate = DynamicForm_Report_annualStatisticalReportBySection.getValue("endDate");
                     var startDate = DynamicForm_Report_annualStatisticalReportBySection.getValue("startDate");
                     if (endDate != undefined && startDate > endDate) {
-                        DynamicForm_Report_annualStatisticalReportBySection.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
-                        DynamicForm_Report_annualStatisticalReportBySection.getItem("endDate").setValue("");
-                        endDateCheckReportASRBS = false;
+                       // DynamicForm_Report_annualStatisticalReportBySection.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
+                        DynamicForm_Report_annualStatisticalReportBySection.getItem("endDate").setValue();
+                       // endDateCheckReportASRBS = false;
+
                     }
                 }
             },
@@ -260,6 +263,7 @@
                 }],
                 editorExit:function(){
                     let result=reformat(DynamicForm_Report_annualStatisticalReportBySection.getValue("endDate"));
+
                     if (result){
                         DynamicForm_Report_annualStatisticalReportBySection.getItem("endDate").setValue(result);
                         DynamicForm_Report_annualStatisticalReportBySection.clearFieldErrors("endDate", true);
@@ -272,19 +276,21 @@
                     var endDate = DynamicForm_Report_annualStatisticalReportBySection.getValue("endDate");
                     var startDate = DynamicForm_Report_annualStatisticalReportBySection.getValue("startDate");
                     if (dateCheck == false) {
-                        DynamicForm_Report_annualStatisticalReportBySection.clearFieldErrors("endDate", true);
-                        DynamicForm_Report_annualStatisticalReportBySection.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
-                        endDateCheckReportASRBS = false;
+                     //   DynamicForm_Report_annualStatisticalReportBySection.clearFieldErrors("endDate", true);
+                       // DynamicForm_Report_annualStatisticalReportBySection.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
+                      //  endDateCheckReportASRBS = false;
+                        DynamicForm_Report_annualStatisticalReportBySection.getItem("endDate").setValue();
                     }
                     if (dateCheck == true) {
-                        if (startDate == undefined)
-                            DynamicForm_Report_annualStatisticalReportBySection.clearFieldErrors("endDate", true);
-                        DynamicForm_Report_annualStatisticalReportBySection.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
-                        endDateCheckReportASRBS = false;
+                       // if (startDate == undefined)
+                       // DynamicForm_Report_annualStatisticalReportBySection.clearFieldErrors("endDate", true);
+                       // DynamicForm_Report_annualStatisticalReportBySection.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                      //  endDateCheckReportASRBS = false;
                         if (startDate != undefined && startDate > endDate) {
-                            DynamicForm_Report_annualStatisticalReportBySection.clearFieldErrors("endDate", true);
-                            DynamicForm_Report_annualStatisticalReportBySection.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
-                            endDateCheckReportASRBS = false;
+                            DynamicForm_Report_annualStatisticalReportBySection.getItem("endDate").setValue();
+                          // DynamicForm_Report_annualStatisticalReportBySection.clearFieldErrors("endDate", true);
+                          // DynamicForm_Report_annualStatisticalReportBySection.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
+                          // endDateCheckReportASRBS = false;
                         }
                         if (startDate != undefined && startDate < endDate) {
                             DynamicForm_Report_annualStatisticalReportBySection.clearFieldErrors("endDate", true);
@@ -334,17 +340,18 @@
                     var dateCheck;
                     dateCheck = checkDate(DynamicForm_Report_annualStatisticalReportBySection.getValue("startDate2"));
                     if (dateCheck == false)
-                        DynamicForm_Report_annualStatisticalReportBySection.addFieldErrors("startDate2", "<spring:message code='msg.correct.date'/>", true);
-                    endDateCheckReportASRBS = false;
+                     //   DynamicForm_Report_annualStatisticalReportBySection.addFieldErrors("startDate2", "<spring:message code='msg.correct.date'/>", true);
+                   // endDateCheckReportASRBS = false;
+                        DynamicForm_Report_annualStatisticalReportBySection.getItem("startDate2").setValue();
                     if (dateCheck == true)
                         DynamicForm_Report_annualStatisticalReportBySection.clearFieldErrors("startDate2", true);
                     endDateCheckReportASRBS = true;
                     var endDate = DynamicForm_Report_annualStatisticalReportBySection.getValue("endDate2");
                     var startDate = DynamicForm_Report_annualStatisticalReportBySection.getValue("startDate2");
                     if (endDate != undefined && startDate > endDate) {
-                        DynamicForm_Report_annualStatisticalReportBySection.addFieldErrors("endDate2", "<spring:message code='msg.date.order'/>", true);
-                        DynamicForm_Report_annualStatisticalReportBySection.getItem("endDate2").setValue("");
-                        endDateCheckReportASRBS = false;
+                       // DynamicForm_Report_annualStatisticalReportBySection.addFieldErrors("endDate2", "<spring:message code='msg.date.order'/>", true);
+                        DynamicForm_Report_annualStatisticalReportBySection.getItem("endDate2").setValue();
+                       // endDateCheckReportASRBS = false;
                     }
                 }
             },
@@ -388,19 +395,23 @@
                     var endDate = DynamicForm_Report_annualStatisticalReportBySection.getValue("endDate2");
                     var startDate = DynamicForm_Report_annualStatisticalReportBySection.getValue("startDate2");
                     if (dateCheck == false) {
-                        DynamicForm_Report_annualStatisticalReportBySection.clearFieldErrors("endDate2", true);
-                        DynamicForm_Report_annualStatisticalReportBySection.addFieldErrors("endDate2", "<spring:message code='msg.correct.date'/>", true);
-                        endDateCheckReportASRBS = false;
+                        DynamicForm_Report_annualStatisticalReportBySection.getItem("endDate2").setValue();
+                      //  DynamicForm_Report_annualStatisticalReportBySection.clearFieldErrors("endDate2", true);
+                       // DynamicForm_Report_annualStatisticalReportBySection.addFieldErrors("endDate2", "<spring:message code='msg.correct.date'/>", true);
+                      //  endDateCheckReportASRBS = false;
+
                     }
                     if (dateCheck == true) {
-                        if (startDate == undefined)
-                            DynamicForm_Report_annualStatisticalReportBySection.clearFieldErrors("endDate2", true);
-                        DynamicForm_Report_annualStatisticalReportBySection.addFieldErrors("startDate2", "<spring:message code='msg.correct.date'/>", true);
-                        endDateCheckReportASRBS = false;
+
+                        //if (startDate == undefined)
+                         //   DynamicForm_Report_annualStatisticalReportBySection.clearFieldErrors("endDate2", true);
+                       // DynamicForm_Report_annualStatisticalReportBySection.addFieldErrors("startDate2", "<spring:message code='msg.correct.date'/>", true);
+                       // endDateCheckReportASRBS = false;
                         if (startDate != undefined && startDate > endDate) {
-                            DynamicForm_Report_annualStatisticalReportBySection.clearFieldErrors("endDate2", true);
-                            DynamicForm_Report_annualStatisticalReportBySection.addFieldErrors("endDate2", "<spring:message code='msg.date.order'/>", true);
-                            endDateCheckReportASRBS = false;
+                            DynamicForm_Report_annualStatisticalReportBySection.getItem("endDate2").setValue();
+                           // DynamicForm_Report_annualStatisticalReportBySection.clearFieldErrors("endDate2", true);
+                           // DynamicForm_Report_annualStatisticalReportBySection.addFieldErrors("endDate2", "<spring:message code='msg.date.order'/>", true);
+                            //endDateCheckReportASRBS = false;
                         }
                         if (startDate != undefined && startDate < endDate) {
                             DynamicForm_Report_annualStatisticalReportBySection.clearFieldErrors("endDate2", true);

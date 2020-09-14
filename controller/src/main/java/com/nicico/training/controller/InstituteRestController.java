@@ -11,7 +11,9 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
+import com.nicico.training.model.TrainingPlace;
 import com.nicico.training.service.InstituteService;
+import com.nicico.training.service.TrainingPlaceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -46,6 +48,8 @@ public class InstituteRestController {
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
+    private final TrainingPlaceService trainingPlaceService;
+
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -492,18 +496,27 @@ public class InstituteRestController {
     @GetMapping(value = "{instituteId}/trainingPlaces")
 //    @PreAuthorize("hasAnyAuthority('r_teacher')")
     public ResponseEntity<TrainingPlaceDTO.TrainingPlaceSpecRs> getTrainingPlaces(@PathVariable Long instituteId) {
-        List<TrainingPlaceDTO.Info> trainingPlaces = new ArrayList<>();
-        if (instituteId != 0) {
-            trainingPlaces = instituteService.getTrainingPlaces(instituteId);
-        }
+        SearchDTO.SearchRq request=new SearchDTO.SearchRq();
+        request.setStartIndex(null);
+        request.setSortBy("-id");
+        SearchDTO.CriteriaRq criteriaRq = null;
+
+        criteriaRq =new SearchDTO.CriteriaRq();
+        criteriaRq.setOperator(EOperator.equals);
+        criteriaRq.setFieldName("instituteId");
+        criteriaRq.setValue(instituteId);
+
+        request.setCriteria(criteriaRq);
+        SearchDTO.SearchRs<TrainingPlaceDTO.Info> response = trainingPlaceService.search(request);
 
         final TrainingPlaceDTO.SpecRs specResponse = new TrainingPlaceDTO.SpecRs();
-        specResponse.setData(trainingPlaces)
-                .setStartRow(0)
-                .setEndRow(trainingPlaces.size())
-                .setTotalRows(trainingPlaces.size());
-
         final TrainingPlaceDTO.TrainingPlaceSpecRs specRs = new TrainingPlaceDTO.TrainingPlaceSpecRs();
+
+        specResponse.setData(response.getList())
+                .setStartRow(0)
+                .setEndRow(response.getList().size())
+                .setTotalRows(response.getList().size());
+
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
@@ -532,6 +545,8 @@ public class InstituteRestController {
             criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
+
+        searchRq.setSortBy("-id");
 
         final SearchDTO.SearchRs<InstituteDTO.Info> searchRs = instituteService.search(searchRq);
 

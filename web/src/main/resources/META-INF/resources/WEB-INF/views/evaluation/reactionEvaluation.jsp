@@ -149,6 +149,7 @@
             this.close();
         },
     });
+
     //----------------------------------------- ListGrids --------------------------------------------------------------
     var ListGrid_student_RE = isc.TrLG.create({
         width: "100%",
@@ -762,6 +763,36 @@
         }
     });
 
+    var ToolStripButton_FormIssuanceDeleteForAll_RE = isc.ToolStripButton.create({
+        title: "حذف فرم ارزیابی واکنشی برای همه فراگیران",
+        baseStyle: "sendFile",
+        click: function () {
+            let Dialog_remove = createDialog("ask", "آیا از حذف فرم مطمئن هستید؟",
+                "<spring:message code="verify.delete"/>");
+            Dialog_remove.addProperties({
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/deleteAllReactionEvaluationForms/" +
+                            classRecord_RE.id, "GET", null, function (resp) {
+                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                ListGrid_student_RE.invalidateCache();
+                                isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
+                                    classRecord_RE.id,"GET", null, null));
+                                const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                                setTimeout(() => {
+                                    msg.close();
+                                }, 3000);
+                            } else {
+                                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                            }
+                        }))
+                    }
+                }
+            });
+        }
+    });
+
     var ToolStripButton_RefreshIssuance_RE = isc.ToolStripButtonRefresh.create({
         title: "<spring:message code="refresh"/>",
         click: function () {
@@ -1027,10 +1058,16 @@
                 layoutAlign: "center",
                 defaultLayoutAlign: "center",
                 members: [
-                    ToolStripButton_FormIssuanceForAll_RE,
+                    isc.VLayout.create({
+                        membersMargin: 5,
+                        members: [
+                            ToolStripButton_FormIssuanceForAll_RE,
+                            ToolStripButton_FormIssuanceDeleteForAll_RE
+                        ]
+                    }),
                     isc.DynamicForm.create({
                         height: "100%",
-                        width:300,
+                        width: 300,
                         margin: 0,
                         fields: [
                             {
@@ -1043,7 +1080,7 @@
                                 valueMap: {
                                     1: "ارسال پیام به فراگیران کلاس",
                                     2: "ارسال پیام به مدرس کلاس",
-                                    //3: "ارسال پیام به فراگیرانی که فرم ارزیابی مدرس را تکمیل نکرده&zwnj;اند"
+                                    //3: "ارسال پیام به فراگیرانی که فرم ارزیابی مدرس را تکمیل نکرده<spring:message code="title"/>اند"
                                 },
                                 defaultValue: 1
                             }
@@ -1118,11 +1155,6 @@
     });
 
     //----------------------------------- New Funsctions ---------------------------------------------------------------
-    function print_Reaction_Form_RE(questionnarieId, evaluatorId, evaluatorTypeId, evaluatedId, evaluatedTypeId,
-                                    questionnarieTypeId, evaluationLevel) {
-    }
-
-
     function Student_Reaction_Form_Inssurance_RE(studentRecord) {
         let IButtonSave_SelectQuestionnarie_RE = isc.IButtonSave.create({
             title: "صدور/ارسال به کارتابل",
@@ -1141,7 +1173,7 @@
                 {name: "id", primaryKey: true, hidden: true},
                 {
                     name: "title",
-                    title: "<spring:message code="title"/>",
+                    title: "",
                     filterOperator: "iContains",
                     autoFitWidth: true
                 },
@@ -1590,11 +1622,15 @@
                 let evaluationAnswerList = [];
                 let data = {};
                 let evaluationFull = true;
+                let evaluationEmpty = true;
 
                 let questions = DynamicForm_Questions_Body_JspEvaluation.getFields();
                 for (let i = 0; i < questions.length; i++) {
                     if (DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name) === undefined) {
                         evaluationFull = false;
+                    }
+                    else{
+                        evaluationEmpty = false;
                     }
                     let evaluationAnswer = {};
                     evaluationAnswer.answerID = DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name);
@@ -1612,20 +1648,29 @@
                 data.questionnaireTypeId = 139;
                 data.evaluationLevelId = 154;
                 data.status = true;
-                isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
-                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                        Window_Questions_JspEvaluation.close();
-                        ListGrid_student_RE.invalidateCache();
-                        isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
-                         classRecord_RE.id,"GET", null, null));
-                        const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                        setTimeout(() => {
-                            msg.close();
-                        }, 3000);
-                    } else {
-                        createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
-                    }
-                }))
+                if(evaluationEmpty == false && evaluationFull == true){
+                    isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
+                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                            Window_Questions_JspEvaluation.close();
+                            ListGrid_student_RE.invalidateCache();
+                            isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
+                                classRecord_RE.id,"GET", null, null));
+                            const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                            setTimeout(() => {
+                                msg.close();
+                            }, 3000);
+                        } else {
+                            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                        }
+                    }))
+                }
+                else if(evaluationFull == false){
+                    createDialog("info", "لطفا به تمام سوالات فرم ارزیابی پاسخ دهید", "<spring:message code="error"/>");
+                }
+                else{
+                    createDialog("info", "حداقل به یکی از سوالات فرم ارزیابی باید جواب داده شود", "<spring:message code="error"/>");
+                }
+
             }
         });
 
@@ -1718,6 +1763,10 @@
                             case 183:
                                 item.name = "Q" + result[i].id;
                                 item.title = "محتواي کلاس: " + result[i].question;
+                                break;
+                            case 659:
+                                item.name = "Q" + result[i].id;
+                                item.title = "فراگیر: " + result[i].question;
                                 break;
                             default:
                                 item.name = "Q" + result[i].id;
@@ -1956,11 +2005,15 @@
                 let evaluationAnswerList = [];
                 let data = {};
                 let evaluationFull = true;
+                let evaluationEmpty = true;
 
                 let questions = DynamicForm_Questions_Body_JspEvaluation.getFields();
                 for (let i = 0; i < questions.length; i++) {
                     if (DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name) === undefined) {
                         evaluationFull = false;
+                    }
+                    else{
+                        evaluationEmpty = false;
                     }
                     let evaluationAnswer = {};
                     evaluationAnswer.answerID = DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name);
@@ -1977,25 +2030,34 @@
                 data.evaluatedTypeId = 187;
                 data.questionnaireTypeId = 141;
                 data.evaluationLevelId = 154;
-                isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
-                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                        Window_Questions_JspEvaluation.close();
-                        if (evaluationFull == true)
-                            classRecord_RE.trainingEvalStatus = 2;
-                        else
-                            classRecord_RE.trainingEvalStatus = 3;
-                        isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
-                        classRecord_RE.id,"GET", null, null));
-                        ToolStrip_SendForms_RE.getField("registerButtonTraining").showIcon("ok");
-                        ToolStrip_SendForms_RE.redraw();
-                        const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                        setTimeout(() => {
-                            msg.close();
-                        }, 3000);
-                    } else {
-                        createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
-                    }
-                }))
+                if(evaluationEmpty == false && evaluationFull == true){
+                    isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
+                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                            Window_Questions_JspEvaluation.close();
+                            if (evaluationFull == true)
+                                classRecord_RE.trainingEvalStatus = 2;
+                            else
+                                classRecord_RE.trainingEvalStatus = 3;
+                            isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
+                                classRecord_RE.id,"GET", null, null));
+                            ToolStrip_SendForms_RE.getField("registerButtonTraining").showIcon("ok");
+                            ToolStrip_SendForms_RE.redraw();
+                            const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                            setTimeout(() => {
+                                msg.close();
+                            }, 3000);
+                        } else {
+                            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                        }
+                    }))
+                }
+                else if(evaluationFull == false){
+                    createDialog("info", "لطفا به تمام سوالات فرم ارزیابی پاسخ دهید", "<spring:message code="error"/>");
+                }
+                else{
+                    createDialog("info", "حداقل به یکی از سوالات فرم ارزیابی باید جواب داده شود", "<spring:message code="error"/>");
+                }
+
             }
         });
 
@@ -2090,6 +2152,10 @@
                             case 183:
                                 item.name = "Q" + result[i].id;
                                 item.title = "محتواي کلاس: " + result[i].question;
+                                break;
+                            case 659:
+                                item.name = "Q" + result[i].id;
+                                item.title = "فراگیر: " + result[i].question;
                                 break;
                             default:
                                 item.name = "Q" + result[i].id;
@@ -2328,11 +2394,15 @@
                 let evaluationAnswerList = [];
                 let data = {};
                 let evaluationFull = true;
+                let evaluationEmpty = true;
 
                 let questions = DynamicForm_Questions_Body_JspEvaluation.getFields();
                 for (let i = 0; i < questions.length; i++) {
                     if (DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name) === undefined) {
                         evaluationFull = false;
+                    }
+                    else{
+                        evaluationEmpty = false;
                     }
                     let evaluationAnswer = {};
                     evaluationAnswer.answerID = DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name);
@@ -2349,7 +2419,8 @@
                 data.evaluatedTypeId = 504;
                 data.questionnaireTypeId = 140;
                 data.evaluationLevelId = 154;
-                isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
+                if(evaluationEmpty == false && evaluationFull == true){
+                    isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                         Window_Questions_JspEvaluation.close();
                         if (evaluationFull == true)
@@ -2357,7 +2428,7 @@
                         else
                             classRecord_RE.teacherEvalStatus = 3;
                         isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
-                        classRecord_RE.id,"GET", null, null));
+                            classRecord_RE.id,"GET", null, null));
                         ToolStrip_SendForms_RE.getField("registerButtonTeacher").showIcon("ok");
                         ToolStrip_SendForms_RE.redraw();
                         const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
@@ -2368,6 +2439,13 @@
                         createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                     }
                 }))
+                }
+                else if(evaluationFull == false){
+                    createDialog("info", "لطفا به تمام سوالات فرم ارزیابی پاسخ دهید", "<spring:message code="error"/>");
+                }
+                else{
+                    createDialog("info", "حداقل به یکی از سوالات فرم ارزیابی باید جواب داده شود", "<spring:message code="error"/>");
+                }
             }
         });
 
@@ -2460,6 +2538,10 @@
                             case 183:
                                 item.name = "Q" + result[i].id;
                                 item.title = "محتواي کلاس: " + result[i].question;
+                                break;
+                            case 659:
+                                item.name = "Q" + result[i].id;
+                                item.title = "فراگیر: " + result[i].question;
                                 break;
                             default:
                                 item.name = "Q" + result[i].id;
@@ -2705,6 +2787,5 @@
             })
         );
     }
-
 
     //

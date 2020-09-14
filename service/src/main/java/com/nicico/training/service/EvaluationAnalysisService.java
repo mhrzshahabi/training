@@ -9,6 +9,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.EvaluationAnalysisDTO;
 import com.nicico.training.dto.EvaluationDTO;
 import com.nicico.training.dto.ParameterValueDTO;
@@ -16,6 +17,7 @@ import com.nicico.training.iservice.IEvaluationAnalysisService;
 import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.*;
+import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.EvaluationAnalysisDAO;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.utility.PersianCharachtersUnicode;
@@ -29,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.text.DecimalFormat;
 import java.util.*;
 
 @Service
@@ -37,13 +40,14 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
     private final ModelMapper modelMapper;
     private final EvaluationAnalysisDAO evaluationAnalysisDAO;
-    private final EvaluationAnalysistLearningService evaluationAnalysistLearningService;
     private final ParameterService parameterService;
     private final TclassDAO tclassDAO;
     private final ITclassService tclassService;
     private final IEvaluationService evaluationService;
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
+    private final ClassStudentDAO classStudentDAO;
+    private DecimalFormat numberFormat = new DecimalFormat("#.00");
 
     @Transactional(readOnly = true)
     @Override
@@ -111,26 +115,55 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         EvaluationAnalysis evaluationAnalysis = new EvaluationAnalysis();
         if(evaluationAnalyses != null && evaluationAnalyses.size() > 0){
             evaluationAnalysis = evaluationAnalyses.get(0);
-            evaluationAnalysis.setLearningGrade(learningResult.get("felGrade").toString());
-            evaluationAnalysis.setLearningPass(Boolean.parseBoolean(learningResult.get("felPass").toString()));
-            Map<String,Object> effectivenessResult = calculateEffectivenessEvaluation(evaluationAnalysis.getReactionGrade(),
-                                                    learningResult.get("felGrade").toString(),evaluationAnalysis.getBehavioralGrade(), tclass.getEvaluation());
-            if(effectivenessResult != null) {
+            if(learningResult.get("felGrade") != null)
+                evaluationAnalysis.setLearningGrade(learningResult.get("felGrade").toString());
+            else
+                evaluationAnalysis.setLearningGrade(null);
+            if(learningResult.get("felPass") != null)
+                evaluationAnalysis.setLearningPass(Boolean.parseBoolean(learningResult.get("felPass").toString()));
+            else
+                evaluationAnalysis.setLearningPass(null);
+
+            Map<String,Object> effectivenessResult = null;
+
+            if(learningResult.get("felGrade") != null)
+                effectivenessResult = calculateEffectivenessEvaluation(evaluationAnalysis.getReactionGrade(),
+                        learningResult.get("felGrade").toString(),evaluationAnalysis.getBehavioralGrade(), tclass.getEvaluation());
+            else
+                effectivenessResult = calculateEffectivenessEvaluation(evaluationAnalysis.getReactionGrade(),
+                        null,evaluationAnalysis.getBehavioralGrade(), tclass.getEvaluation());
+
+            if(effectivenessResult != null && effectivenessResult.containsKey("EffectivenessGrade") && effectivenessResult.containsKey("EffectivenessPass")) {
                 evaluationAnalysis.setEffectivenessGrade(effectivenessResult.get("EffectivenessGrade").toString());
                 evaluationAnalysis.setEffectivenessPass(Boolean.parseBoolean(effectivenessResult.get("EffectivenessPass").toString()));
+            }
+            else {
+                evaluationAnalysis.setEffectivenessGrade(null);
+                evaluationAnalysis.setEffectivenessPass(null);
             }
         }
         else{
-            evaluationAnalysis.setLearningGrade(learningResult.get("felGrade").toString());
-            evaluationAnalysis.setLearningPass(Boolean.parseBoolean(learningResult.get("felPass").toString()));
+            if(learningResult.containsKey("felGrade") && learningResult.get("felGrade") != null)
+                evaluationAnalysis.setLearningGrade(learningResult.get("felGrade").toString());
+            if(learningResult.containsKey("felPass") && learningResult.get("felPass") != null)
+                evaluationAnalysis.setLearningPass(Boolean.parseBoolean(learningResult.get("felPass").toString()));
             evaluationAnalysis.setTClassId(classId);
             evaluationAnalysis.setTClass(tclassDAO.getOne(classId));
-            Map<String,Object> effectivenessResult =  calculateEffectivenessEvaluation(null,
-                    learningResult.get("felGrade").toString(),null, tclass.getEvaluation());
-            if(effectivenessResult != null) {
+
+            Map<String,Object> effectivenessResult = null;
+
+            if(learningResult.get("felGrade") != null)
+                effectivenessResult = calculateEffectivenessEvaluation(evaluationAnalysis.getReactionGrade(),
+                        learningResult.get("felGrade").toString(),evaluationAnalysis.getBehavioralGrade(), tclass.getEvaluation());
+            else
+                effectivenessResult = calculateEffectivenessEvaluation(evaluationAnalysis.getReactionGrade(),
+                        null,evaluationAnalysis.getBehavioralGrade(), tclass.getEvaluation());
+
+            if(effectivenessResult != null && effectivenessResult.containsKey("EffectivenessGrade") && effectivenessResult.containsKey("EffectivenessPass")) {
                 evaluationAnalysis.setEffectivenessGrade(effectivenessResult.get("EffectivenessGrade").toString());
                 evaluationAnalysis.setEffectivenessPass(Boolean.parseBoolean(effectivenessResult.get("EffectivenessPass").toString()));
             }
+
             create(evaluationAnalysis);
         }
     }
@@ -147,27 +180,69 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         EvaluationAnalysis evaluationAnalysis = new EvaluationAnalysis();
         if(evaluationAnalyses != null && evaluationAnalyses.size() > 0){
             evaluationAnalysis = evaluationAnalyses.get(0);
-            evaluationAnalysis.setReactionGrade(reactionResult.get("FERGrade").toString());
-            evaluationAnalysis.setReactionPass(Boolean.parseBoolean(reactionResult.get("FERPass").toString()));
-            evaluationAnalysis.setTeacherGrade(reactionResult.get("FETGrade").toString());
-            evaluationAnalysis.setTeacherPass(Boolean.parseBoolean(reactionResult.get("FETPass").toString()));
-            Map<String,Object> effectivenessResult = calculateEffectivenessEvaluation(reactionResult.get("FERGrade").toString(),
-                    evaluationAnalysis.getLearningGrade(),evaluationAnalysis.getBehavioralGrade(), tclass.getEvaluation());
-            if(effectivenessResult != null) {
+
+            if(reactionResult.containsKey("FERGrade") && reactionResult.get("FERGrade") != null)
+                evaluationAnalysis.setReactionGrade(reactionResult.get("FERGrade").toString());
+            else
+                evaluationAnalysis.setReactionGrade(null);
+
+            if(reactionResult.containsKey("FERPass") && reactionResult.get("FERPass") != null)
+                evaluationAnalysis.setReactionPass(Boolean.parseBoolean(reactionResult.get("FERPass").toString()));
+            else
+                evaluationAnalysis.setReactionPass(null);
+
+            if(reactionResult.containsKey("FETGrade") && reactionResult.get("FETGrade") != null)
+                evaluationAnalysis.setTeacherGrade(reactionResult.get("FETGrade").toString());
+            else
+                evaluationAnalysis.setTeacherGrade(null);
+
+            if(reactionResult.containsKey("FETPass") && reactionResult.get("FETPass") != null)
+                evaluationAnalysis.setTeacherPass(Boolean.parseBoolean(reactionResult.get("FETPass").toString()));
+            else
+                evaluationAnalysis.setTeacherPass(null);
+
+            Map<String,Object> effectivenessResult = null;
+
+            if(reactionResult.containsKey("FERGrade") && reactionResult.get("FERGrade") != null)
+                effectivenessResult = calculateEffectivenessEvaluation(reactionResult.get("FERGrade").toString(),
+                        evaluationAnalysis.getLearningGrade(),evaluationAnalysis.getBehavioralGrade(), tclass.getEvaluation());
+            else
+                effectivenessResult = calculateEffectivenessEvaluation(null,
+                        evaluationAnalysis.getLearningGrade(),evaluationAnalysis.getBehavioralGrade(), tclass.getEvaluation());
+
+            if(effectivenessResult != null && effectivenessResult.containsKey("EffectivenessGrade") && effectivenessResult.containsKey("EffectivenessPass")){
                 evaluationAnalysis.setEffectivenessGrade(effectivenessResult.get("EffectivenessGrade").toString());
                 evaluationAnalysis.setEffectivenessPass(Boolean.parseBoolean(effectivenessResult.get("EffectivenessPass").toString()));
             }
+            else {
+                evaluationAnalysis.setEffectivenessGrade(null);
+                evaluationAnalysis.setEffectivenessPass(null);
+            }
         }
         else{
-            evaluationAnalysis.setReactionGrade(reactionResult.get("FERGrade").toString());
-            evaluationAnalysis.setReactionPass(Boolean.parseBoolean(reactionResult.get("FERPass").toString()));
-            evaluationAnalysis.setTeacherGrade(reactionResult.get("FETGrade").toString());
-            evaluationAnalysis.setTeacherPass(Boolean.parseBoolean(reactionResult.get("FETPass").toString()));
+            if(reactionResult.containsKey("FERGrade") && reactionResult.get("FERGrade") != null)
+                evaluationAnalysis.setReactionGrade(reactionResult.get("FERGrade").toString());
+
+            if(reactionResult.containsKey("FERPass") && reactionResult.get("FERPass") != null)
+                evaluationAnalysis.setReactionPass(Boolean.parseBoolean(reactionResult.get("FERPass").toString()));
+
+            if(reactionResult.containsKey("FETGrade") && reactionResult.get("FETGrade") != null)
+                evaluationAnalysis.setTeacherGrade(reactionResult.get("FETGrade").toString());
+
+            if(reactionResult.containsKey("FETPass") && reactionResult.get("FETPass") != null)
+                evaluationAnalysis.setTeacherPass(Boolean.parseBoolean(reactionResult.get("FETPass").toString()));
+
             evaluationAnalysis.setTClassId(classId);
             evaluationAnalysis.setTClass(tclassDAO.getOne(classId));
-            Map<String,Object> effectivenessResult = calculateEffectivenessEvaluation(reactionResult.get("FERGrade").toString(),
-                    null,null, tclass.getEvaluation());
-            if(effectivenessResult != null) {
+            Map<String,Object> effectivenessResult = null;
+
+            if(reactionResult.containsKey("FERGrade") && reactionResult.get("FERGrade") != null)
+                effectivenessResult = calculateEffectivenessEvaluation(reactionResult.get("FERGrade").toString(),
+                        null,null, tclass.getEvaluation());
+            else
+                effectivenessResult = calculateEffectivenessEvaluation(null,
+                        null,null, tclass.getEvaluation());
+            if(effectivenessResult != null && effectivenessResult.containsKey("EffectivenessGrade") && effectivenessResult.containsKey("EffectivenessPass")) {
                 evaluationAnalysis.setEffectivenessGrade(effectivenessResult.get("EffectivenessGrade").toString());
                 evaluationAnalysis.setEffectivenessPass(Boolean.parseBoolean(effectivenessResult.get("EffectivenessPass").toString()));
             }
@@ -186,23 +261,49 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         EvaluationAnalysis evaluationAnalysis = new EvaluationAnalysis();
         if(evaluationAnalyses != null && evaluationAnalyses.size() > 0){
             evaluationAnalysis = evaluationAnalyses.get(0);
-            evaluationAnalysis.setBehavioralGrade(behavioralResult.getBehavioralGrade().toString());
-            evaluationAnalysis.setBehavioralPass(behavioralResult.getBehavioralPass());
-            Map<String,Object> effectivenessResult = calculateEffectivenessEvaluation(evaluationAnalysis.getReactionGrade(),
-                    evaluationAnalysis.getLearningGrade(),behavioralResult.getBehavioralGrade().toString(), tclass.getEvaluation());
-            if(effectivenessResult != null) {
+            if(behavioralResult.getBehavioralGrade() != 0) {
+                evaluationAnalysis.setBehavioralGrade(behavioralResult.getBehavioralGrade().toString());
+                evaluationAnalysis.setBehavioralPass(behavioralResult.getBehavioralPass());
+            }
+            else {
+                evaluationAnalysis.setBehavioralGrade(null);
+                evaluationAnalysis.setBehavioralPass(null);
+            }
+
+            Map<String,Object> effectivenessResult = null;
+            if(behavioralResult.getBehavioralGrade() != 0)
+                effectivenessResult = calculateEffectivenessEvaluation(evaluationAnalysis.getReactionGrade(),
+                        evaluationAnalysis.getLearningGrade(),behavioralResult.getBehavioralGrade().toString(), tclass.getEvaluation());
+            else
+                effectivenessResult =  calculateEffectivenessEvaluation(evaluationAnalysis.getReactionGrade(),
+                        evaluationAnalysis.getLearningGrade(),null, tclass.getEvaluation());
+
+            if(effectivenessResult != null && effectivenessResult.containsKey("EffectivenessGrade") && effectivenessResult.containsKey("EffectivenessPass")) {
                 evaluationAnalysis.setEffectivenessGrade(effectivenessResult.get("EffectivenessGrade").toString());
                 evaluationAnalysis.setEffectivenessPass(Boolean.parseBoolean(effectivenessResult.get("EffectivenessPass").toString()));
             }
+            else {
+                evaluationAnalysis.setEffectivenessGrade(null);
+                evaluationAnalysis.setEffectivenessPass(null);
+            }
         }
         else{
-            evaluationAnalysis.setBehavioralGrade(behavioralResult.getBehavioralGrade().toString());
-            evaluationAnalysis.setBehavioralPass(behavioralResult.getBehavioralPass());
+            if(behavioralResult.getBehavioralGrade() != 0) {
+                evaluationAnalysis.setBehavioralGrade(behavioralResult.getBehavioralGrade().toString());
+                evaluationAnalysis.setBehavioralPass(behavioralResult.getBehavioralPass());
+            }
+
             evaluationAnalysis.setTClassId(classId);
             evaluationAnalysis.setTClass(tclassDAO.getOne(classId));
-            Map<String,Object> effectivenessResult = calculateEffectivenessEvaluation(evaluationAnalysis.getReactionGrade(),
-                    evaluationAnalysis.getLearningGrade(),behavioralResult.getBehavioralGrade().toString(), tclass.getEvaluation());
-            if(effectivenessResult != null) {
+            Map<String,Object> effectivenessResult = null;
+            if(behavioralResult.getBehavioralGrade() != 0)
+                effectivenessResult = calculateEffectivenessEvaluation(evaluationAnalysis.getReactionGrade(),
+                        evaluationAnalysis.getLearningGrade(),behavioralResult.getBehavioralGrade().toString(), tclass.getEvaluation());
+            else
+                effectivenessResult =  calculateEffectivenessEvaluation(evaluationAnalysis.getReactionGrade(),
+                        evaluationAnalysis.getLearningGrade(),null, tclass.getEvaluation());
+
+            if(effectivenessResult != null && effectivenessResult.containsKey("EffectivenessGrade") && effectivenessResult.containsKey("EffectivenessPass")) {
                 evaluationAnalysis.setEffectivenessGrade(effectivenessResult.get("EffectivenessGrade").toString());
                 evaluationAnalysis.setEffectivenessPass(Boolean.parseBoolean(effectivenessResult.get("EffectivenessPass").toString()));
             }
@@ -212,7 +313,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
     @Transactional
     public Map<String,Object> evaluationAnalysistLearningResult(Long classId, String scoringMethod) {
-        Float[] result =  evaluationAnalysistLearningService.getStudents(classId,scoringMethod);
+        Float[] result =  getStudents(classId,scoringMethod);
         Map<String,Object> finalResult = new HashMap<>();
 
         Double minScoreEL = 0.0;
@@ -226,18 +327,19 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
         Float felGrade = null;
 
-        if(result != null && result.length > 2)
+        if(result != null && result.length > 2 && result[3] != null)
             felGrade = result[3];
 
         finalResult.put("felGrade",felGrade);
-        if(felGrade >= minScoreEL)
+        if(felGrade != null && felGrade >= minScoreEL)
             finalResult.put("felPass",true);
-        else
+        else if(felGrade != null && felGrade < minScoreEL)
             finalResult.put("felPass",false);
+        else
+            finalResult.put("felPass",null);
 
         return finalResult;
     }
-
 
     @Transactional
     public Map<String,Object> calculateEffectivenessEvaluation(String reactionGrade_s,String learningGrade_s, String behavioralGrade_s, String classEvaluation){
@@ -329,8 +431,10 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
                 effectivenessPass = false;
         }
 
-        finalResult.put("EffectivenessGrade", effectivenessGrade);
-        finalResult.put("EffectivenessPass",effectivenessPass);
+        if(effectivenessGrade != 0 && effectivenessGrade != 0.0) {
+            finalResult.put("EffectivenessGrade", effectivenessGrade);
+            finalResult.put("EffectivenessPass", effectivenessPass);
+        }
         return finalResult;
     }
 
@@ -414,17 +518,8 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
     }
 
-    private static String bidiReorder(String text)
-    {
-//        try {
-//            Bidi bidi = new Bidi((new ArabicShaping(ArabicShaping.LETTERS_SHAPE)).shape(text), 127);
-//            bidi.setReorderingMode(0);
-//            return bidi.writeReordered(2);
-//        }
-//        catch (ArabicShapingException ase3) {
-//            return text;
-//        }
 
+    private static String bidiReorder(String text) {
         PersianCharachtersUnicode unicode = new PersianCharachtersUnicode();
         String textinverse = "";
         int k = 0;
@@ -451,5 +546,448 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
         return textinverse;
     }
+
+
+    @Transactional
+    @Override
+    public Float[] getStudents(Long id, String scoringMethod) {
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
+        map.put("0", 0);
+        map.put("1001", 40);
+        map.put("1002", 60);
+        map.put("1003", 80);
+        map.put("1004", 100);
+        DecimalFormat df = new DecimalFormat("0.00");
+        Float[] ans = new Float[4];
+        Float sumScore = Float.valueOf(0);
+        Float sumPreScore = Float.valueOf(0);
+        Float ScoreEvaluation=Float.valueOf(0);
+        Float sumValence = Float.valueOf(0);
+        int preTestVariable=0;
+        int pastTestVariable=0;
+        int scoreEvaluationVariable=0;
+        List<ClassStudent> classStudents = classStudentDAO.findByTclassId(id);
+        List<ClassStudentDTO.evaluationAnalysistLearning> list = new ArrayList<>();
+        for (ClassStudent classStudent : classStudents) {
+            list.add(modelMapper.map(classStudent,ClassStudentDTO.evaluationAnalysistLearning.class));
+        }
+        if (list.size() == 0)
+        {
+            ans[0] = null;
+            ans[1] = null;
+            ans[2] = null;
+            ans[3] = null;
+            return ans;
+        }
+
+        if (scoringMethod.equals("1")) {
+            for (ClassStudentDTO.evaluationAnalysistLearning score : list) {
+
+                if(score.getValence() != null && score.getPreTestScore() != null)
+                {
+                    ScoreEvaluation = ScoreEvaluation + map.get(score.getValence())- score.getPreTestScore();
+                    scoreEvaluationVariable++;
+                    sumValence += map.get(score.getValence());
+                    sumPreScore += score.getPreTestScore();
+                }
+
+                else  if(score.getValence() != null && score.getPreTestScore() == null)
+                {
+                    ScoreEvaluation = ScoreEvaluation + map.get(score.getValence());
+                    scoreEvaluationVariable++;
+                    sumValence += map.get(score.getValence());
+                }
+
+            }
+            if(scoreEvaluationVariable != 0) {
+                ans[0] = Float.valueOf(df.format(sumValence / scoreEvaluationVariable));
+                ans[1] = Float.valueOf(df.format(sumPreScore / scoreEvaluationVariable));
+                ans[2] = Float.valueOf(scoreEvaluationVariable);
+                ans[3] = Float.valueOf(df.format(ScoreEvaluation / (scoreEvaluationVariable)));
+            }
+            else{
+                ans[0] = null;
+                ans[1] = null;
+                ans[2] = null;
+                ans[3] = null;
+            }
+
+            pastTestVariable=0;
+            preTestVariable=0;
+            return ans;
+        }
+
+
+        if (scoringMethod.equals("2")) {
+            for (ClassStudentDTO.evaluationAnalysistLearning score : list) {
+
+                if(score.getScore() != null && score.getPreTestScore() != null)
+                {
+                    ScoreEvaluation += Math.abs((score.getScore()- score.getPreTestScore()));
+                    scoreEvaluationVariable++;
+                    sumScore += score.getScore();
+                    sumPreScore += score.getPreTestScore();
+                }
+                else if(score.getScore() != null && score.getPreTestScore() == null){
+                    ScoreEvaluation += Math.abs(score.getScore());
+                    scoreEvaluationVariable++;
+                    sumScore += score.getScore();
+                }
+
+            }
+
+            ans[0]=Float.valueOf(df.format(sumScore / (list.size()-pastTestVariable)));
+            ans[1]=Float.valueOf(df.format(sumPreScore /(list.size()-preTestVariable) ));
+            ans[2]=Float.valueOf(scoreEvaluationVariable);
+            if(scoreEvaluationVariable != 0)
+                ans[3]= Float.valueOf(df.format(ScoreEvaluation /scoreEvaluationVariable));
+            else
+                ans[3]= null;
+            pastTestVariable=0;
+            preTestVariable=0;
+            scoreEvaluationVariable=0;
+            return ans;
+        }
+        if(scoringMethod.equals("3"))
+        {
+            for (ClassStudentDTO.evaluationAnalysistLearning score : list) {
+
+                if(score.getScore() != null && score.getPreTestScore() != null)
+                {
+                    ScoreEvaluation = ScoreEvaluation + ((score.getScore()*5)- score.getPreTestScore());
+                    scoreEvaluationVariable++;
+                    sumScore += (score.getScore()*5);
+                    sumPreScore += score.getPreTestScore();
+                }
+                else  if(score.getScore() != null && score.getPreTestScore() == null)
+                {
+                    ScoreEvaluation = ScoreEvaluation + ((score.getScore()*5));
+                    scoreEvaluationVariable++;
+                    sumScore += (score.getScore()*5);
+                }
+            }
+            if(scoreEvaluationVariable != 0) {
+                ans[0] = Float.valueOf(df.format(sumScore / scoreEvaluationVariable));
+                ans[1] = Float.valueOf(df.format(sumPreScore / scoreEvaluationVariable));
+                ans[2] = Float.valueOf(scoreEvaluationVariable);
+                ans[3] = Float.valueOf(df.format(ScoreEvaluation / scoreEvaluationVariable));
+            }
+            else{
+                ans[0] = null;
+                ans[1] = null;
+                ans[2] = null;
+                ans[3] = null;
+            }
+            return ans;
+        }
+        if (scoringMethod.equals("4"))
+        {
+            for (ClassStudentDTO.evaluationAnalysistLearning score : list) {
+
+                if(score.getPreTestScore() != null) {
+                    sumPreScore += score.getPreTestScore();
+                    scoreEvaluationVariable++;
+                }
+                else  if(score.getPreTestScore() == null) {
+                    scoreEvaluationVariable++;
+                }
+            }
+
+            ans[0] = null;
+            if(scoreEvaluationVariable != 0)
+                ans[1]=Float.valueOf(df.format(sumPreScore / scoreEvaluationVariable));
+            else
+                ans[1] = null;
+            ans[2] = Float.valueOf(scoreEvaluationVariable);
+            ans[3] =  null;
+            return ans;
+        }
+
+        return null;
+    }
+
+    @Transactional
+    @Override
+    public List<ClassStudentDTO.evaluationAnalysistLearning> getStudentWithOutPreTest(Long id)
+    {
+        List<ClassStudent> classStudents = classStudentDAO.findByTclassIdAndPreTestScoreIsNull(id);
+        return(modelMapper.map(classStudents, new TypeToken<List<ClassStudentDTO.evaluationAnalysistLearning>>() {}.getType()));
+    }
+
+    @Override
+    public EvaluationDTO.EvaluationLearningResult evaluationAnalysistLearningResultTemp(Long classId, String scoringMethod) {
+        Float[] result =  getStudents(classId,scoringMethod);
+        EvaluationDTO.EvaluationLearningResult resultSet = new EvaluationDTO.EvaluationLearningResult();
+
+        Double minScoreEL = 0.0;
+        Double minPasTestEL = 0.0;
+        Double minPreTestEL = 0.0;
+        Double FECLZ1 = 0.0;
+        Double FECLZ2 = 0.0;
+        Double minScoreFECR = 0.0;
+
+        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("FEL");
+        List<ParameterValueDTO.Info> parameterValues = parameters.getResponse().getData();
+        for (ParameterValueDTO.Info parameterValue : parameterValues) {
+            if (parameterValue.getCode().equalsIgnoreCase("minScoreEL"))
+                minScoreEL = Double.parseDouble(parameterValue.getValue());
+            else if (parameterValue.getCode().equalsIgnoreCase("minPasTestEL"))
+                minPasTestEL = Double.parseDouble(parameterValue.getValue());
+            else if (parameterValue.getCode().equalsIgnoreCase("minPreTestEL"))
+                minPreTestEL = Double.parseDouble(parameterValue.getValue());
+        }
+
+        parameters = parameterService.getByCode("FEC_L");
+        parameterValues = parameters.getResponse().getData();
+        for (ParameterValueDTO.Info parameterValue : parameterValues) {
+            if (parameterValue.getCode().equalsIgnoreCase("FECLZ1"))
+                FECLZ1 = Double.parseDouble(parameterValue.getValue());
+            else if (parameterValue.getCode().equalsIgnoreCase("FECLZ2"))
+                FECLZ2 = Double.parseDouble(parameterValue.getValue());
+        }
+
+        parameters = parameterService.getByCode("FEC_R");
+        parameterValues = parameters.getResponse().getData();
+        for (ParameterValueDTO.Info parameterValue : parameterValues) {
+            if (parameterValue.getCode().equalsIgnoreCase("minScoreFECR"))
+                minScoreFECR = Double.parseDouble(parameterValue.getValue());
+        }
+
+        Float postTestMeanGrade = null;
+        Float preTestMeanGrade = null;
+        Float felGrade = null;
+
+        if(result != null && result.length > 0 )
+            postTestMeanGrade = result[0];
+        if(result != null && result.length > 1)
+            preTestMeanGrade = result[1];
+        if(result != null && result.length > 2)
+            felGrade = result[3];
+        Double ferGrade = tclassService.getJustFERGrade(classId);
+        Double feclGradeLong = null;
+        if(ferGrade != null && felGrade == null)
+            feclGradeLong = (0 * FECLZ2 + ferGrade * FECLZ1)/100;
+        else if(ferGrade == null && felGrade != null)
+            feclGradeLong = (felGrade * FECLZ2 + 0 * FECLZ1)/100;
+        else if(ferGrade != null && felGrade != null)
+            feclGradeLong = (felGrade * FECLZ2 + ferGrade * FECLZ1)/100;
+
+        Double feclGrade = null;
+
+        if(feclGradeLong != null)
+            feclGrade = Double.parseDouble(numberFormat.format(feclGradeLong).toString());
+
+        if(felGrade != null)
+            resultSet.setFelgrade(numberFormat.format(felGrade).toString());
+        else
+            resultSet.setFelgrade(null);
+
+        if(felGrade != null && felGrade >= minScoreEL)
+            resultSet.setFelpass("true");
+        else
+            resultSet.setFelpass("false");
+        resultSet.setLimit(minScoreEL + "");
+
+        if(postTestMeanGrade != null)
+            resultSet.setPostTestMeanScore(numberFormat.format(postTestMeanGrade).toString());
+        else
+            resultSet.setPostTestMeanScore(null);
+        if(preTestMeanGrade != null)
+            resultSet.setPreTestMeanScore(numberFormat.format(preTestMeanGrade).toString());
+        else
+            resultSet.setPreTestMeanScore(null);
+
+        if(feclGrade != null)
+            resultSet.setFeclgrade(feclGrade.floatValue() + "");
+        else
+            resultSet.setFeclgrade(null);
+
+        if(feclGrade != null && feclGrade >= minScoreFECR)
+            resultSet.setFeclpass("true");
+        else
+            resultSet.setFeclpass("false");
+
+        Integer classHasPreTest = tclassDAO.checkIfClassHasPreTest(classId);
+        if(classHasPreTest != null && classHasPreTest.equals(new Integer(1)))
+            resultSet.setHavePreTest("true");
+        else
+            resultSet.setHavePreTest("false");
+
+        resultSet.setHavePostTest("false");
+
+        if(result[2] != null)
+            resultSet.setStudentCount(result[2]);
+        else
+            resultSet.setStudentCount(new Float(0));
+
+        List<ClassStudent> classStudents = classStudentDAO.findByTclassId(classId);
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
+        map.put("0", 0);
+        map.put("1001", 40);
+        map.put("1002", 60);
+        map.put("1003", 80);
+        map.put("1004", 100);
+
+        int studentCount = 0;
+        List<Double> preScores = new ArrayList<>();
+        List<Double> postScores = new ArrayList<>();
+
+        for (ClassStudent classStudent : classStudents) {
+            if(classStudent.getScore() != null || classStudent.getValence() != null)
+                resultSet.setHavePostTest("true");
+
+            if(scoringMethod.equalsIgnoreCase("1") && classStudent.getValence()!=null) {
+                if(classStudent.getPreTestScore() != null)
+                    preScores.add(Double.valueOf(classStudent.getPreTestScore()));
+                else
+                    preScores.add(new Double(0));
+                postScores.add(Double.valueOf(map.get(classStudent.getValence())));
+                studentCount++;
+            }
+            else if(scoringMethod.equalsIgnoreCase("3") && classStudent.getScore()!=null) {
+                postScores.add(Double.valueOf(classStudent.getScore()) * 5);
+                if(classStudent.getPreTestScore() != null)
+                    preScores.add(Double.valueOf(classStudent.getPreTestScore()));
+                else
+                    preScores.add(new Double(0));
+                studentCount++;
+            }
+            else if(classStudent.getScore() != null) {
+                postScores.add(Double.valueOf(classStudent.getScore()));
+                if(classStudent.getPreTestScore() != null)
+                    preScores.add(Double.valueOf(classStudent.getPreTestScore()));
+                else
+                    preScores.add(new Double(0));
+                studentCount++;
+            }
+        }
+
+        Map<String, Boolean> tStudentResult = new HashMap<String, Boolean>();
+        if(studentCount != 0)
+            tStudentResult = calculateTStudentResult(preScores, postScores,studentCount);
+        if(tStudentResult.containsKey("hasDiffer") && tStudentResult.get("hasDiffer")){
+            if(tStudentResult.get("positiveDiffer"))
+                resultSet.setTstudent("بر اساس توزیع تی استیودنت  با ضریب اطمینان 95 درصد فراگیران بعد از شرکت در کلاس پیشرفت چشمگیر مثبتی داشته اند.");
+            else
+                resultSet.setTstudent("بر اساس توزیع تی استیودنت با ضریب اطمینان 95 درصد فراگیران بعد از شرکت در کلاس پیشرفت  چشمگیر منفی داشته اند.");
+        }
+        else
+            resultSet.setTstudent("بر اساس توزیع تی استیودنت با ضریب اطمینان 95 درصد فراگیران بعد از شرکت در کلاس پیشرفت چشمگیری نداشته اند.");
+        return resultSet;
+    }
+
+    //------------------------------------------------TStudent----------------------------------------------------------
+    //Confidence Level = 95%
+    public Map<String, Boolean> calculateTStudentResult(List<Double> preScores, List<Double> postScores,int studentCount){
+        HashMap<Integer, Double> tStudentTable = new HashMap<>();
+        tStudentTable.put(1,12.71);
+        tStudentTable.put(2,4.303);
+        tStudentTable.put(3,3.182);
+        tStudentTable.put(4,2.776);
+        tStudentTable.put(5,2.571);
+        tStudentTable.put(6,2.447);
+        tStudentTable.put(7,2.365);
+        tStudentTable.put(8,2.306);
+        tStudentTable.put(9,2.262);
+        tStudentTable.put(10,2.228);
+        tStudentTable.put(11,2.201);
+        tStudentTable.put(12,2.179);
+        tStudentTable.put(13,2.160);
+        tStudentTable.put(14,2.145);
+        tStudentTable.put(15,2.131);
+        tStudentTable.put(16,2.120);
+        tStudentTable.put(17,2.110);
+        tStudentTable.put(18,2.101);
+        tStudentTable.put(19,2.093);
+        tStudentTable.put(20,2.086);
+        tStudentTable.put(21,2.080);
+        tStudentTable.put(22,2.074);
+        tStudentTable.put(23,2.069);
+        tStudentTable.put(24,2.064);
+        tStudentTable.put(25,2.060);
+        tStudentTable.put(26,2.056);
+        tStudentTable.put(27,2.052);
+        tStudentTable.put(28,2.048);
+        tStudentTable.put(29,2.045);
+        tStudentTable.put(30,2.042);
+        tStudentTable.put(40,2.021);
+        tStudentTable.put(60,2.000);
+        tStudentTable.put(80,1.990);
+        tStudentTable.put(100,1.984);
+
+        Double preScores_mean = getMean(preScores,studentCount);
+        Double postScores_mean = getMean(postScores, studentCount);
+
+        Double preScores_deviation = getDeviation(preScores, studentCount,preScores_mean);
+        Double postScores_deviation = getDeviation(postScores, studentCount, postScores_mean);
+
+        Double difference_sum = getDifference(preScores,postScores,studentCount);
+        Double difference_average = difference_sum/studentCount;
+        Double difference_deviation = getDifferenceDeviation(preScores,postScores,studentCount,difference_sum);
+        Double t = difference_sum / difference_deviation;
+        Double t_table=0.0;
+        if(studentCount<=30)
+            t_table = tStudentTable.get(studentCount);
+        else if(studentCount>30 && studentCount<=40)
+            t_table = tStudentTable.get(40);
+        else if(studentCount>40 && studentCount<=60)
+            t_table = tStudentTable.get(60);
+        else if(studentCount>60 && studentCount<=80)
+            t_table = tStudentTable.get(80);
+        else if(studentCount>80 && studentCount<=100)
+            t_table = tStudentTable.get(100);
+        Boolean hasDiffer = false;
+        if(Math.abs(t) < t_table)
+            hasDiffer = false;
+        else if(Math.abs(t) >= t_table)
+            hasDiffer = true;
+        Boolean positiveDiffer = false;
+        if(t<0)
+            positiveDiffer = true;
+        else if(t>0)
+            positiveDiffer = false;
+
+        Map<String, Boolean> result = new HashMap<>();
+        result.put("positiveDiffer",positiveDiffer);
+        result.put("hasDiffer",hasDiffer);
+        return  result;
+    }
+
+    public Double getMean(List<Double> list, int n){
+        Double sum = 0.0;
+        for (Double aDouble : list) {
+            sum += aDouble;
+        }
+        return  sum/n;
+    }
+
+    public Double getDeviation(List<Double> list, int n,Double average){
+        Double dv = 0.0;
+        for (Double aDouble : list) {
+            double dm = aDouble - average;
+            dv += dm * dm;
+        }
+        return Math.sqrt(dv / n);
+    }
+
+    public Double getDifference(List<Double> list1, List<Double> list2, int n){
+        Double sum = 0.0;
+        for(int i=0;i<n;i++){
+            sum += list1.get(i) - list2.get(i);
+
+        }
+        return sum;
+    }
+
+    public Double getDifferenceDeviation(List<Double> list1, List<Double> list2, int n, Double differenceSum){
+        Double t1 = 0.0;
+        for (int i=0;i<n;i++){
+            Double dm = list1.get(i) - list2.get(i);
+            t1 += dm * dm;
+        }
+        return Math.sqrt( ((n*t1) - (differenceSum*differenceSum))/(n-1) );
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
 
 }

@@ -3,6 +3,8 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.AccountInfoDTO;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 public interface IInstituteAccountService {
@@ -19,5 +21,7 @@ public interface IInstituteAccountService {
     void delete(AccountInfoDTO.Delete request);
 
     SearchDTO.SearchRs<AccountInfoDTO.Info> search(SearchDTO.SearchRq request);
+
+    List<AccountInfoDTO.Info> getAllAccountForExcel(Long instituteId);
 
 }

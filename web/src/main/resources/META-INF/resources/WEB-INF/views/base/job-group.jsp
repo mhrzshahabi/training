@@ -613,7 +613,7 @@
                     }
                     criteria.criteria.push({fieldName: "jobGroupSet", operator: "equals", value: ListGrid_Job_Group_Jsp.getSelectedRecord().id});
 
-                    ExportToFile.showDialog(null, ListGrid_Job_Group_Jobs , "View_Job", 0, null, '',"لیست شغل ها - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, ListGrid_Job_Group_Jobs , "View_Job", 0, null, '',"لیست شغل ها - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -911,7 +911,7 @@
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     let criteria = ListGrid_Job_Group_Jsp.getCriteria();
-                    ExportToFile.showDialog(null, ListGrid_Job_Group_Jsp , "View_Job_Group", 0, null, '',"لیست گروه شغلی ها- آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, ListGrid_Job_Group_Jsp , "View_Job_Group", 0, null, '',"لیست گروه شغلی ها- آموزش"  , criteria, null);
                 }
             })
         ]
@@ -1001,7 +1001,7 @@
                     }
                     criteria.criteria.push({fieldName: "jobGroupId", operator: "equals", value: ListGrid_Job_Group_Jsp.getSelectedRecord().id});
 
-                    ExportToFile.showDialog(null, PersonnelLG_JobGroup , "Job_Group_Personnel", 0, null, '',"لیست پرسنل - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, PersonnelLG_JobGroup , "Job_Group_Personnel", 0, null, '',"لیست پرسنل - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -1119,9 +1119,9 @@
                     }
                     criteria.criteria.push({fieldName: "objectId", operator: "equals", value: ListGrid_Job_Group_Jsp.getSelectedRecord().id});
                     criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "JobGroup"});
-                    criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
+                    // criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
 
-                    ExportToFile.showDialog(null, NALG_JobGroup , "NeedsAssessmentReport", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, NALG_JobGroup , "NeedsAssessmentReport", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -1288,7 +1288,7 @@
         members: [
             isc.ToolStripButtonExcel.create({
                 click: function () {
-                    let criteria = PostLG_JobGroup.getCriteria();
+                    let criteria = JSON.parse(JSON.stringify(PostLG_JobGroup.getCriteria()));
 
                     if(typeof(criteria.operator)=='undefined'){
                         criteria._constructor="AdvancedCriteria";
@@ -1300,7 +1300,7 @@
                     }
                     criteria.criteria.push({fieldName: "jobGroup", operator: "equals", value: ListGrid_Job_Group_Jsp.getSelectedRecord().id});
 
-                    ExportToFile.showDialog(null, PostLG_JobGroup, "Job_Group_Post", 0, null, '',"لیست پست - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, PostLG_JobGroup, "Job_Group_Post", 0, null, '',"لیست پست - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -1500,17 +1500,17 @@
             case "TabPane_Post_JobGroup":{
                 if (postJob_JobGroup === jobGroup.id)
                     return;
-                postJob_JobGroup = jobGroup.id;
-                PostLG_JobGroup.setImplicitCriteria({
-                    _constructor: "AdvancedCriteria",
-                    operator: "and",
-                    criteria: [{fieldName: "jobGroup", operator: "equals", value: jobGroup.id}]
-                });
-                PostLG_JobGroup.invalidateCache();
-                PostLG_JobGroup.fetchData();
-                // PostDS_JobGroup.fetchDataURL = jobGroupUrl + "postIscList/" + jobGroup.id;
+                // postJob_JobGroup = jobGroup.id;
+                // PostLG_JobGroup.setImplicitCriteria({
+                //     _constructor: "AdvancedCriteria",
+                //     operator: "and",
+                //     criteria: [{fieldName: "jobGroup", operator: "equals", value: jobGroup.id}]
+                // });
                 // PostLG_JobGroup.invalidateCache();
                 // PostLG_JobGroup.fetchData();
+                PostDS_JobGroup.fetchDataURL = jobGroupUrl + "postIscList/" + jobGroup.id;
+                PostLG_JobGroup.invalidateCache();
+                PostLG_JobGroup.fetchData();
                 break;
             }
             case "TabPane_Personnel_JobGroup":{

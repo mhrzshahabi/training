@@ -8,14 +8,7 @@
     var recJspTreeNeedsAssessment = null;
     var paramsJspTreeNeedsAssessment = {};
     var treeNeedsAssessmentList = [];
-    var priorityList = {
-        "Post": "پست",
-        "PostGroup": "گروه پستی",
-        "Job": "شغل",
-        "JobGroup": "گروه شغلی",
-        "PostGrade": "رده پستی",
-        "PostGradeGroup": "گروه رده پستی",
-    };
+
 
     var DataSource_JspTreeNeedsAssessment = isc.DataSource.create({
         // autoCacheAllData:true,

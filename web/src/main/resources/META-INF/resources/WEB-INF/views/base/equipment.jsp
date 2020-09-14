@@ -384,7 +384,7 @@
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     let criteria = ListGrid_Equipment.getCriteria();
-                    ExportToFile.showDialog(null, ListGrid_Equipment , "Equipment", 0, null, '',"لیست تجهیزات کمک آموزشی - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, ListGrid_Equipment , "Equipment", 0, null, '',"لیست تجهیزات کمک آموزشی - آموزش"  , criteria, null);
                 }
             })
         ]

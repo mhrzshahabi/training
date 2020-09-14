@@ -269,21 +269,34 @@
                 margin:5,
                 click: function() {
 
-                    let criteria=DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule.getValuesAsAdvancedCriteria();
+                    // let criteria=DynamicForm_CriteriaForm_JspWeeklyTrainingSchedule.getValuesAsAdvancedCriteria();
+                    //
+                    // if(criteria==null){
+                    //     criteria = {
+                    //         _constructor: "AdvancedCriteria",
+                    //         operator: "and",
+                    //         criteria: [
+                    //             {fieldName: "nationalCode", operator: "equals", value: userNationalCode_JspWeeklyTrainingSchedule}
+                    //         ]
+                    //     };
+                    // }else{
+                    //     criteria.criteria.splice(0,0,{fieldName: "nationalCode", operator: "equals", value: userNationalCode_JspWeeklyTrainingSchedule});
+                    // }
 
-                    if(criteria==null){
-                        criteria = {
-                            _constructor: "AdvancedCriteria",
-                            operator: "and",
-                            criteria: [
-                                {fieldName: "nationalCode", operator: "equals", value: userNationalCode_JspWeeklyTrainingSchedule}
-                            ]
-                        };
-                    }else{
-                        criteria.criteria.splice(0,0,{fieldName: "nationalCode", operator: "equals", value: userNationalCode_JspWeeklyTrainingSchedule});
+                    let criteria = ListGrid_Result_JspWeeklyTrainingSchedule.getCriteria();
+
+                    if (typeof (criteria.operator) == 'undefined') {
+                        criteria._constructor = "AdvancedCriteria";
+                        criteria.operator = "and";
                     }
 
-                    ExportToFile.showDialog(null, ListGrid_Result_JspWeeklyTrainingSchedule, 'weeklyTrainingSchedule', 0, null, '',  "برنامه ريزي آموزشي هفته", criteria, null);
+                    if (typeof (criteria.criteria) == 'undefined') {
+                        criteria.criteria = [];
+                    }
+
+                    criteria.criteria.push({fieldName: "nationalCode", operator: "equals", value: userNationalCode_JspWeeklyTrainingSchedule});
+
+                    ExportToFile.downloadExcel(null, ListGrid_Result_JspWeeklyTrainingSchedule, 'weeklyTrainingSchedule', 0, null, '',  "برنامه ريزي آموزشي هفته", criteria, null);
                 }
             }),
             HLayout_ListGrid_JspWeeklyTrainingSchedule

@@ -42,6 +42,11 @@ public class EvaluationAnalysisFormController {
         return "evaluationAnalysis/evaluationAnalysist_reaction";
     }
 
+    @RequestMapping("/evaluationAnalysis-learningTab")
+    public String learningTab() {
+        return "evaluationAnalysis/evaluationAnalysist_learning";
+    }
+
     @PostMapping("/printReactionEvaluation")
     public ResponseEntity<?> printReactionEvaluation(final HttpServletRequest request) {
         String token = request.getParameter("token");
@@ -68,33 +73,72 @@ public class EvaluationAnalysisFormController {
         params.add("numberOfInCompletedReactionEvaluationForms", object.get("numberOfInCompletedReactionEvaluationForms").toString());
         params.add("percenetOfFilledReactionEvaluationForms", object.get("percenetOfFilledReactionEvaluationForms").toString());
 
-        params.add("FERGrade", object.get("FERGrade").toString());
-        params.add("FETGrade", object.get("FETGrade").toString());
-        params.add("FECRGrade", object.get("FECRGrade").toString());
-
-        params.add("FERPass", object.get("FERPass").toString());
-        params.add("FETPass", object.get("FETPass").toString());
-        params.add("FECRPass", object.get("FECRPass").toString());
-
-        params.add("minScore_ER", object.get("minScore_ER").toString());
-        params.add("minScore_ET", object.get("minScore_ET").toString());
-
-        params.add("differFER", "" + (Double.parseDouble(object.get("minScore_ER").toString())-Double.parseDouble(object.get("FERGrade").toString())) + "");
-        params.add("differFET", "" + (Double.parseDouble(object.get("minScore_ET").toString())-Double.parseDouble(object.get("FETGrade").toString())) + "");
-
-        params.add("teacherGradeToClass", object.get("teacherGradeToClass").toString());
-        params.add("studentsGradeToTeacher", object.get("studentsGradeToTeacher").toString());
-        params.add("studentsGradeToFacility", object.get("studentsGradeToFacility").toString());
-        params.add("studentsGradeToGoals", object.get("studentsGradeToGoals").toString());
-        params.add("trainingGradeToTeacher", object.get("trainingGradeToTeacher").toString());
-
+        if(!object.isNull("FERGrade"))
+            params.add("FERGrade", object.get("FERGrade").toString());
+        else
+            params.add("FERGrade", "");
+        if(!object.isNull("FETGrade"))
+            params.add("FETGrade", object.get("FETGrade").toString());
+        else
+            params.add("FETGrade", "");
+        if(!object.isNull("FECRGrade"))
+            params.add("FECRGrade", object.get("FECRGrade").toString());
+        else
+            params.add("FECRGrade", "");
+        if(!object.isNull("FERPass"))
+            params.add("FERPass", object.get("FERPass").toString());
+        else
+            params.add("FERPass", "");
+        if(!object.isNull("FETPass"))
+            params.add("FETPass", object.get("FETPass").toString());
+        else
+            params.add("FETPass", "");
+        if(!object.isNull("FECRPass"))
+            params.add("FECRPass", object.get("FECRPass").toString());
+        else
+            params.add("FECRPass", "");
+        if(!object.isNull("minScore_ER"))
+            params.add("minScore_ER", object.get("minScore_ER").toString());
+        else
+            params.add("minScore_ER", "");
+        if(!object.isNull("minScore_ET"))
+            params.add("minScore_ET", object.get("minScore_ET").toString());
+        else
+            params.add("minScore_ET", "");
+        if(!object.isNull("FERGrade"))
+            params.add("differFER", "" + (Double.parseDouble(object.get("minScore_ER").toString())-Double.parseDouble(object.get("FERGrade").toString())) + "");
+        else
+            params.add("differFER", "");
+        if(!object.isNull("FETGrade"))
+            params.add("differFET", "" + (Double.parseDouble(object.get("minScore_ET").toString())-Double.parseDouble(object.get("FETGrade").toString())) + "");
+        else
+            params.add("differFET",  "");
+        if(!object.isNull("teacherGradeToClass"))
+            params.add("teacherGradeToClass", object.get("teacherGradeToClass").toString());
+        else
+            params.add("teacherGradeToClass", "");
+        if(!object.isNull("studentsGradeToTeacher"))
+            params.add("studentsGradeToTeacher", object.get("studentsGradeToTeacher").toString());
+        else
+            params.add("studentsGradeToTeacher", "");
+        if(!object.isNull("studentsGradeToFacility"))
+            params.add("studentsGradeToFacility", object.get("studentsGradeToFacility").toString());
+        else
+            params.add("studentsGradeToFacility", "");
+        if(!object.isNull("studentsGradeToGoals"))
+            params.add("studentsGradeToGoals", object.get("studentsGradeToGoals").toString());
+        else
+            params.add("studentsGradeToGoals","");
+        if(!object.isNull("trainingGradeToTeacher"))
+            params.add("trainingGradeToTeacher", object.get("trainingGradeToTeacher").toString());
+        else
+            params.add("trainingGradeToTeacher", "");
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers);
 
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
 
         return restTemplate.exchange(restApiUrl + "/api/evaluationAnalysis/printReactionEvaluation" , HttpMethod.POST, entity, byte[].class);
     }
-
 
     @PostMapping("/printBehavioralEvaluation")
     public ResponseEntity<?> printBehavioralEvaluation(final HttpServletRequest request) {
@@ -143,5 +187,24 @@ public class EvaluationAnalysisFormController {
                       @RequestParam(value = "opinion") String opinion
     ) throws Exception {
         evaluationAnalysisService.print(response, type, fileName, ClassId, Params, suggestions, opinion);
+    }
+
+    @PostMapping(value = "/evaluaationAnalysist-learningReport")
+    public ResponseEntity<?> printLearningEvaluation(final HttpServletRequest request) {
+        String token = (String) request.getParameter("token");
+        String recordId=(String)request.getParameter("recordId");
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        map.add("recordId",recordId);
+        map.add("Record",request.getParameter("record"));
+        map.add("minScoreLearning",(String)request.getParameter("minScore"));
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map,headers);
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
+        return restTemplate.exchange(restApiUrl + "/api/evaluationAnalysis/printLearningEvaluation", HttpMethod.POST, entity, byte[].class);
     }
 }

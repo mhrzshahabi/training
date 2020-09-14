@@ -177,13 +177,6 @@
         cacheAllData: true,
         fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpArea"
     });
-    ComplexDS_PCNR = isc.TrDS.create({
-        fields: [
-            {name: "value", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
-        ],
-        cacheAllData: true,
-        fetchDataURL: departmentUrl + "/all-field-values?fieldName=complexTitle"
-    });
     AssistantDS_PCNR = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -244,7 +237,7 @@
         implicitCriteria: {
             _constructor:"AdvancedCriteria",
             operator:"and",
-            criteria:[{ fieldName: "active", operator: "equals", value: 1}]
+            criteria:[{ fieldName: "active", operator: "equals", value: 1},{ fieldName: "deleted", operator: "equals", value: 0}]
         },
     });
 
@@ -255,9 +248,10 @@
                 name: "code",
                 title: "<spring:message code="post.grade.code"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
             },
             {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
+            {name: "peopleType",  title: "نوع فراگیر",valueMap: {"personnel_registered": "متفرقه", "Personal": "شرکتی", "ContractorPersonal": "پیمانکار"}},
+            {name: "enabled", title: "فعال/غیرفعال", valueMap: {"undefined": "فعال", "74": "غیرفعال"}}
         ],
         fetchDataURL: viewPostGradeUrl + "/iscList"
     });
@@ -316,34 +310,19 @@
                 layoutStyle: "horizontal",
                 comboBoxProperties: {
                     hint: "",
-                    pickListWidth: 300,
+                    pickListWidth: 550,
                     pickListFields: [
                         {name: "titleFa"},
+                        {name: "code"},
+                        {name: "peopleType",canFilter: false},
+                        {name: "enabled"}
                     ],
-                    filterFields: ["titleFa"],
+                    filterFields: ["titleFa", "code", "enabled"],
                     pickListProperties: {
                         sortField: 1,
                         showFilterEditor: true},
                     textMatchStyle: "substring",
                 },
-            },
-            {
-                name: "personnelComplexTitle",
-                title: "<spring:message code="complex"/>",
-                optionDataSource: ComplexDS_PCNR,
-                autoFetchData: false,
-                filterFields: ["value", "value"],
-                pickListWidth: 300,
-                type: "ComboBoxItem",
-                textMatchStyle: "substring",
-                pickListProperties: {
-                    showFilterEditor: false,
-                    showClippedValuesOnHover: true,
-                },
-                valueField: "value",
-                displayField: "value",
-                specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
             },
             {
                 name: "personnelCompanyName",
@@ -361,7 +340,22 @@
                 valueField: "value",
                 displayField: "value",
                 specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
+                separateSpecialValues: true,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "personnelCcpArea",
@@ -379,7 +373,22 @@
                 valueField: "value",
                 displayField: "value",
                 specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
+                separateSpecialValues: true,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "personnelCcpAssistant",
@@ -397,7 +406,22 @@
                 valueField: "value",
                 displayField: "value",
                 specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
+                separateSpecialValues: true,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "personnelCcpSection",
@@ -415,7 +439,22 @@
                 valueField: "value",
                 displayField: "value",
                 specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
+                separateSpecialValues: true,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "personnelCcpUnit",
@@ -433,7 +472,22 @@
                 valueField: "value",
                 displayField: "value",
                 specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
+                separateSpecialValues: true,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "personnelCcpAffairs",
@@ -450,7 +504,22 @@
                 valueField: "value",
                 displayField: "value",
                 specialValues: { "**emptyValue**": ""},
-                separateSpecialValues: true
+                separateSpecialValues: true,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "courseId",
@@ -549,7 +618,7 @@
                             ExportToFile.downloadExcelFromClient(CourseLG_PCNR,null,"","آمار دوره های نیازسنجی افراد - آماری");
                         }
                         else if(FilterDF_PCNR.getItem("reportType").getValue() === "2"){
-                            ExportToFile.showDialog(null, CourseLG_MinPCNR, "personnelCourseNAR", 0, null, '',"آمار دوره های نیازسنجی افراد - لیستی"  , criteria, null);
+                            ExportToFile.downloadExcel(null, CourseLG_MinPCNR, "personnelCourseNAR", 0, null, '',"آمار دوره های نیازسنجی افراد - لیستی"  , criteria, null);
                             // ExportToFile.downloadExcelFromClient(CourseLG_MinPCNR,null,"","آمار دوره های نیازسنجی افراد - لیستی");
                         }
                     }

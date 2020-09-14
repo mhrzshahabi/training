@@ -77,6 +77,9 @@ public class Post extends Auditable {
     @Column(name = "c_modified_by_na")
     private String modifiedByNA;
 
+    @Column(name = "n_parent_id")
+    private Long parentID;
+
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "f_department_id", insertable = false, updatable = false)
 //    private Department department;

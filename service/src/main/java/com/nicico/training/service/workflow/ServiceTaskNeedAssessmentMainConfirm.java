@@ -79,7 +79,7 @@ public class ServiceTaskNeedAssessmentMainConfirm implements JavaDelegate {
                 needsAssessmentTempService.updateNeedsAssessmentTempMainWorkflow(objectType, objectId, -3, "حذف گردش کار اصلی");
                 exe.setVariable("C_WORKFLOW_ENDING_STATUS", "حذف گردش کار اصلی");
                 exe.setVariable("C_WORKFLOW_ENDING_STATUS_CODE", "-3");
-                needsAssessmentTempService.rollback(objectType, objectId);
+                needsAssessmentTempService.deleteAllTempNA(objectType, objectId);
 
             } else if (exe.getVariable("REJECT").toString().equals("N")) {
 

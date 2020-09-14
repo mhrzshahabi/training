@@ -47,13 +47,13 @@ public class AnnualStatisticalService implements IAnnualStatisticalReport {
         if(StringUtils.isEmpty(hozeh) || !hozeh.contains("شهربابک"))
         {
             List<AnnualStatisticalReport> AnnualList = annualStatisticalReportDAO.AnnualStatistical(termId,termNull,year,yearNull,
-                    hozeh, institute,instituteNull, moavenat, omor, vahed, ghesmat, categoryId,categoryNull, startDate, enddate, startDate2, enddate2);
+                    hozeh, institute,instituteNull, moavenat, omor, vahed, null, categoryId,categoryNull, startDate, enddate, startDate2, enddate2);
             return mapper.map(AnnualList, new TypeToken<List<AnnualStatisticalReportDTO.Info>>() {
             }.getType());
         }
         else {
             List<AnnualStatisticalReport> AnnualList1 = annualStatisticalReportDAO.AnnualStatisticalReportShahrBabak(termId, termNull, year, yearNull,
-                    hozeh, institute, instituteNull, moavenat, omor, vahed, ghesmat, startDate, enddate, startDate2, enddate2);
+                    hozeh, institute, instituteNull, moavenat, omor, vahed, null, startDate, enddate, startDate2, enddate2);
             return mapper.map(AnnualList1, new TypeToken<List<AnnualStatisticalReportDTO.Info>>() {
             }.getType());
         }

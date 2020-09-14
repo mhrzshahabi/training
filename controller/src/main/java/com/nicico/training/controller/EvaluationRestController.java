@@ -52,12 +52,13 @@ public class EvaluationRestController {
     private final ClassStudentService classStudentService;
     private final TclassService tclassService;
     private final EvaluationDAO evaluationDAO;
-    private final PersonnelDAO personnelDAO;
+    private final ViewActivePersonnelDAO viewActivePersonnelDAO;
     private final ParameterValueDAO parameterValueDAO;
     private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
     private final DynamicQuestionDAO dynamicQuestionDAO;
     private final ClassStudentDAO classStudentDAO;
     private final ClassEvaluationGoalsService classEvaluationGoalsService;
+    private final PersonnelDAO personnelDAO;
 
     @Loggable
     @PostMapping("/printWithCriteria")
@@ -233,27 +234,6 @@ public class EvaluationRestController {
         return new ResponseEntity<>(evaluationService.search(request), HttpStatus.OK);
     }
 
-  /*  private void studentEvaluationRegister(EvaluationDTO.Info evaluation){
-        if(evaluation.getQuestionnaireTypeId().equals(139L)){
-            Integer x;
-            if(evaluation.getEvaluationFull()) {
-                x = 2;
-            }
-            else {
-                x = 3;
-            }
-            ClassStudent classStudent = classStudentService.getClassStudent(evaluation.getEvaluatorId());
-            if (evaluation.getEvaluationLevelId() == 154L) {
-                classStudentService.update(classStudent.getId(), classStudent.setEvaluationStatusReaction(x), ClassStudentDTO.ClassStudentInfo.class);
-            } else if (evaluation.getEvaluationLevelId() == 155L) {
-                classStudentService.update(classStudent.getId(), classStudent.setEvaluationStatusLearning(x), ClassStudentDTO.ClassStudentInfo.class);
-            } else if (evaluation.getEvaluationLevelId() == 156L) {
-                classStudentService.update(classStudent.getId(), classStudent.setEvaluationStatusBehavior(x), ClassStudentDTO.ClassStudentInfo.class);
-            } else if (evaluation.getEvaluationLevelId() == 157L) {
-                classStudentService.update(classStudent.getId(), classStudent.setEvaluationStatusResults(x), ClassStudentDTO.ClassStudentInfo.class);
-            }
-        }
-    }*/
 
     @Loggable
     @GetMapping(value = "/class-spec-list")
@@ -285,16 +265,6 @@ public class EvaluationRestController {
                 .setCount(endRow - startRow);
 
         SearchDTO.SearchRs<TclassDTO.Info> response = tclassService.search(request);
-
-        //*********************************
-        //******old code for alarms********
-////        for (TclassDTO.Info tclassDTO : response.getList()) {
-////            if (classAlarmService.hasAlarm(tclassDTO.getId(), httpResponse).size() > 0)
-////                tclassDTO.setHasWarning("alarm");
-////           else
-////              tclassDTO.setHasWarning("");
-////        }
-        //*********************************
 
         final TclassDTO.SpecRs specResponse = new TclassDTO.SpecRs();
         final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();
@@ -361,6 +331,13 @@ public class EvaluationRestController {
     @PostMapping(value = "/editClassGoalsQuestions")
     public void editClassGoalsQuestions(@RequestBody ArrayList<LinkedHashMap> request) throws IOException {
         classEvaluationGoalsService.editClassGoalsQuestions(request);
+    }
+
+    @Loggable
+    @GetMapping(value = "/deleteAllReactionEvaluationForms/{classId}")
+    public ResponseEntity<Void> deleteAllReactionEvaluationForms(@PathVariable Long classId, HttpServletRequest iscRq) throws IOException {
+        evaluationService.deleteAllReactionEvaluationForms(classId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
@@ -457,7 +434,7 @@ public class EvaluationRestController {
                 behavioralForms.setEvaluatorName(classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName());
             }
             else {
-                Personnel personnel = personnelDAO.findById(evaluation.getEvaluatorId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                ViewActivePersonnel personnel = viewActivePersonnelDAO.findById(evaluation.getEvaluatorId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                 behavioralForms.setEvaluatorId(personnel.getId());
                 behavioralForms.setEvaluatorName(personnel.getFirstName() + " " + personnel.getLastName());
             }
@@ -809,6 +786,7 @@ public class EvaluationRestController {
 
                 if (evaluationAnswerFullData.getQuestionSourceId().equals(199L)) {
                     QuestionnaireQuestion questionnaireQuestion = questionnaireQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
+                    evaluationAnswerFullData.setOrder(questionnaireQuestion.getOrder());
                     if(questionnaireQuestion.getEvaluationQuestion().getDomainId().equals(54L))
                         evaluationAnswerFullData.setQuestion("امکانات: "+questionnaireQuestion.getEvaluationQuestion().getQuestion());
                     else if(questionnaireQuestion.getEvaluationQuestion().getDomainId().equals(53L) || questionnaireQuestion.getEvaluationQuestion().getDomainId().equals(1L))
@@ -820,15 +798,21 @@ public class EvaluationRestController {
                 } else if (evaluationAnswerFullData.getQuestionSourceId().equals(200L)) {
                     DynamicQuestion dynamicQuestion = dynamicQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
                     evaluationAnswerFullData.setQuestion("هدف اصلی: " + dynamicQuestion.getQuestion());
+                    evaluationAnswerFullData.setOrder(dynamicQuestion.getOrder());
                 }
                 else if (evaluationAnswerFullData.getQuestionSourceId().equals(201L)) {
                     DynamicQuestion dynamicQuestion = dynamicQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
                     evaluationAnswerFullData.setQuestion("هدف: " + dynamicQuestion.getQuestion());
+                    evaluationAnswerFullData.setOrder(dynamicQuestion.getOrder());
                 }
 
                 result.add(evaluationAnswerFullData);
             }
         }
+
+        Comparator<EvaluationAnswerDTO.EvaluationAnswerFullData> compareByOrder = (EvaluationAnswerDTO.EvaluationAnswerFullData o1, EvaluationAnswerDTO.EvaluationAnswerFullData o2) ->
+                o1.getOrder().compareTo( o2.getOrder() );
+        Collections.sort(result, compareByOrder);
 
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", dateUtil.todayDate());

@@ -2,7 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
-// <script>
+<!-- <script> -->
     {
         var studentRemoveWait;
         var studentDefaultPresenceId = 103;
@@ -96,8 +96,12 @@
                 <sec:authorize access="hasAnyAuthority('TclassStudentsTab_P','TclassStudentsTab_classStatus')">
                 isc.ToolStripButtonExcel.create({
                     click: function () {
-                        ExportToFile.downloadExcelFromClient(StudentsLG_student, ListGrid_Class_JspClass, '', "کلاس - فراگيران");
-                    }
+
+                        let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                        if (!(classRecord === undefined || classRecord == null)) {
+                            ExportToFile.downloadExcelRestUrl(null, StudentsLG_student, tclassStudentUrl + "/students-iscList/" + classRecord.id, 0, ListGrid_Class_JspClass, '', "کلاس - فراگيران", StudentsLG_student.getCriteria(), null);
+                        }
+                   }
                 }),
                 isc.ToolStripButton.create({
                     icon: "[SKIN]/RichTextEditor/print.png",
@@ -1337,6 +1341,7 @@
                                         align: "center",
                                         icon: "[SKIN]/actions/save.png",
                                         click:function () {
+                                                SelectedPersonnelsLG_student.endEditing();
                                                 let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
                                                 // for (let i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
                                                 //     students.add({
@@ -1523,16 +1528,16 @@
         };
 
         function ListGrid_Cell_Update_Student(record, newValue, item) {
-            var updating = {};
-            if (item.name === "applicantCompanyName") {
-                updating.applicantCompanyName = newValue;
-                updating.presenceTypeId = record.presenceTypeId;
-            } else if (item.name === "presenceTypeId") {
-                updating.applicantCompanyName = record.applicantCompanyName;
-                updating.presenceTypeId = newValue;
-            }
+            // var updating = {};
+            // if (item.name === "applicantCompanyName") {
+            //     updating.applicantCompanyName = newValue;
+            //     updating.presenceTypeId = record.presenceTypeId;
+            // } else if (item.name === "presenceTypeId") {
+            //     updating.applicantCompanyName = record.applicantCompanyName;
+            //     updating.presenceTypeId = newValue;
+            // }
             wait.show();
-            isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + record.id, "PUT", JSON.stringify(updating), class_student_update_student_result));
+            isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/update-presence-type-id/" + record.id + "/" + newValue, "PUT", null, class_student_update_student_result));
         }
 
         function class_student_update_student_result(resp) {
@@ -1540,13 +1545,14 @@
             let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
             if (resp.httpResponseCode === 200) {
                 refreshLG(StudentsLG_student);
-            } else {
-                isc.Dialog.create({
-                    message: "<spring:message code='msg.operation.error'/>",
-                    icon: "[SKIN]stop.png",
-                    title: "<spring:message code='message'/>"
-                });
             }
+            <%--else {--%>
+                <%--isc.Dialog.create({--%>
+                    <%--message: "<spring:message code='msg.operation.error'/>",--%>
+                    <%--icon: "[SKIN]stop.png",--%>
+                    <%--title: "<spring:message code='message'/>"--%>
+                <%--});--%>
+            <%--}--%>
         }
 
         function loadPage_student() {
@@ -1668,6 +1674,7 @@
         }
 
         function checkPersonnelNosResponse(url, result, addStudentsInGroupInsert) {
+            wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(result)
                 , "callback: checkPersonnelNos(rpcResponse," + JSON.stringify(result) + ",'" + url + "'," + addStudentsInGroupInsert +")"));
         }
@@ -1746,12 +1753,14 @@
 
                                     if (!checkIfAlreadyExist(person)) {
 
-                                        students.add({
-                                            "personnelNo": person.personnelNo,
-                                            "applicantCompanyName": person.companyName,
-                                            "presenceTypeId": studentDefaultPresenceId,
-                                            "registerTypeId": url.indexOf(personnelUrl) > -1 ? 1 : 2
-                                        });
+                                        if (students.filter(function (item) {return item.personnelNo2 == person.personnelNo2||item.personnelNo == person.personnelNo;}).length==0) {
+                                            students.add({
+                                                "personnelNo": person.personnelNo,
+                                                "applicantCompanyName": person.companyName,
+                                                "presenceTypeId": studentDefaultPresenceId,
+                                                "registerTypeId": url.indexOf(personnelUrl) > -1 ? 1 : 2
+                                            });
+                                        }
                                     }
                                 }
                             }
@@ -1760,18 +1769,7 @@
                     if (students.getLength() > 0/*allRowsOK*/ && insert) {
                         var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
 
-                        /*for (var i=0;i<data.length;i++) {
-                            let current = data[i];
 
-                            if (!checkIfAlreadyExist(current)) {
-                                students.add({
-                                    "personnelNo": current.personnelNo,
-                                    "applicantCompanyName": current.companyName,
-                                    "presenceTypeId": studentDefaultPresenceId,
-                                    "registerTypeId": 1
-                                });
-                            }
-                        }*/
                         //if (students.getLength() > 0)
                         wait.show();
                         isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST", JSON.stringify(students), class_add_students_result));
@@ -1783,10 +1781,16 @@
                     } else {
                         GroupSelectedPersonnelsLG_student.invalidateCache();
                         GroupSelectedPersonnelsLG_student.fetchData();
+
+                        wait.close();
                     }
 
 
+                }else{
+                    wait.close();
                 }
+            }else{
+                wait.close();
             }
         }
 
@@ -1814,4 +1818,4 @@
             }));
         }
     }
-    //
+<!-- </script> -->

@@ -13,13 +13,16 @@
             var ToolStripButton_Refresh_PI = isc.ToolStripButtonRefresh.create({
                 title: "<spring:message code="refresh"/>",
                 click: function () {
-                    if (typeof (set_PersonnelInfo_Details) != 'undefined') {
-                        if (PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel") {
-                            PersonnelInfoListGrid_PersonnelList.invalidateCache();
-                            set_PersonnelInfo_Details(PersonnelInfoListGrid_PersonnelList);
-                        } else {
-                            PersonnelInfoListGrid_RegisteredPersonnelList.invalidateCache();
-                            set_PersonnelInfo_Details(PersonnelInfoListGrid_RegisteredPersonnelList);
+
+                    if (PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel") {
+                        PersonnelInfoListGrid_PersonnelList.invalidateCache();
+                        if (oPersonnelInformationDetails!=null && typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
+                            oPersonnelInformationDetails.set_PersonnelInfo_Details(null);
+                        }
+                    } else {
+                        PersonnelInfoListGrid_RegisteredPersonnelList.invalidateCache();
+                        if (oPersonnelInformationDetails!=null && typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
+                            oPersonnelInformationDetails.set_PersonnelInfo_Details(null);
                         }
                     }
                 }
@@ -260,7 +263,8 @@
                 _constructor: "AdvancedCriteria",
                 operator: "and",
                 criteria: [
-                    {fieldName: "active", operator: "equals", value: 1}
+                    {fieldName: "active", operator: "equals", value: 1},
+                    {fieldName: "deleted", operator: "equals", value: 0}
                 ]
             };
 
@@ -521,9 +525,18 @@
                         title: 'ارسال لیست فیلتر شده به اکسل',
                         click: function () {
                             if (PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel") {
-                                ExportToFile.showDialog(null, PersonnelInfoListGrid_PersonnelList, 'personnelInformationReport', 0, null, '', "گزارش پرسنل شرکتي", PersonnelInfoListGrid_PersonnelList.data.criteria, null);
+                                let implicitCriteria = JSON.parse(JSON.stringify(PersonnelInfoListGrid_PersonnelList.getImplicitCriteria())) ;
+                                let criteria = PersonnelInfoListGrid_PersonnelList.getCriteria();
+
+                                if(PersonnelInfoListGrid_PersonnelList.getCriteria().criteria){
+                                    for (let i = 0; i < criteria.criteria.length ; i++) {
+                                        implicitCriteria.criteria.push(criteria.criteria[i]);
+                                    }
+                                }
+
+                                ExportToFile.downloadExcelRestUrl(null, PersonnelInfoListGrid_PersonnelList, personnelUrl + "/iscList", 0, null, '', "گزارش پرسنل شرکتي", implicitCriteria, null);
                             } else {
-                                ExportToFile.showDialog(null, PersonnelInfoListGrid_RegisteredPersonnelList, 'registeredPersonnelInformationReport', 0, null, '', "گزارش پرسنل افراد متفرقه", PersonnelInfoListGrid_RegisteredPersonnelList.data.criteria, null);
+                                ExportToFile.downloadExcel(null, PersonnelInfoListGrid_RegisteredPersonnelList, 'registeredPersonnelInformationReport', 0, null, '', "گزارش پرسنل افراد متفرقه", PersonnelInfoListGrid_RegisteredPersonnelList.data.criteria, null);
                             }
                         }
                     }),

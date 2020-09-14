@@ -73,7 +73,7 @@ nicico:
     update:
       mode: false
   training:
-    version: '1.27'
+    version: '1.38'
   sms:
     magfa:
       username: 'maaden_81794'
@@ -161,8 +161,6 @@ spring:
             user-name-attribute: username
 nicico:
   security:
-    sys-url: http://devapp01.icico.net.ir/master-data/api/v1/
-    sys-username: "#training#"
     sys-password: password
   upload:
     dir: /var/nicico/${spring.application.name}/upload
@@ -221,8 +219,6 @@ spring:
             user-name-attribute: username
 nicico:
   security:
-    sys-uri: http://devapp01.icico.net.ir/master-data/api/v1/
-    sys-username: "#training#"
     sys-password: password
   upload:
     dir: c:/nicico/${spring.application.name}/upload

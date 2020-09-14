@@ -103,7 +103,7 @@
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     let criteria = PostLG_post.getCriteria();
-                    ExportToFile.showDialog(null, PostLG_post , "View_Post", 0, null, '',"لیست پست ها- آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, PostLG_post , "View_Post", 0, null, '',"لیست پست ها- آموزش"  , criteria, null);
                 }
             })
         ]
@@ -716,9 +716,9 @@
                     }
                     criteria.criteria.push({fieldName: "objectId", operator: "equals", value: PostLG_post.getSelectedRecord().id});
                     criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "Post"});
-                    criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
+                    // criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
 
-                    ExportToFile.showDialog(null, CoursesLG_POST , "NeedsAssessmentReport", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, CoursesLG_POST , "NeedsAssessmentReport", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
                 }
             })
         ]

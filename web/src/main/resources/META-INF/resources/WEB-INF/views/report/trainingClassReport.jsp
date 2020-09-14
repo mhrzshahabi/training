@@ -148,7 +148,7 @@
         implicitCriteria: {
             _constructor:"AdvancedCriteria",
             operator:"and",
-            criteria:[{ fieldName: "active", operator: "equals", value: 1}]
+            criteria:[{ fieldName: "active", operator: "equals", value: 1},{ fieldName: "deleted", operator: "equals", value: 0}]
         }
     });
 
@@ -165,7 +165,7 @@
         implicitCriteria: {
             _constructor:"AdvancedCriteria",
             operator:"and",
-            criteria:[{ fieldName: "active", operator: "equals", value: 1}]
+            criteria:[{ fieldName: "active", operator: "equals", value: 1},{ fieldName: "deleted", operator: "equals", value: 0}]
         }
     });
 
@@ -293,7 +293,7 @@
                         margin:5,
                         click: function() {
                             // ListGrid_Result_JspTClassReport.sortFieldNum=6;
-                            ExportToFile.showDialog(null, ListGrid_Result_JspTClassReport, 'trainingClassReport', 0, null, '',  "گزارش کلاس هاي آموزشي", ListGrid_Result_JspTClassReport.data.criteria, null);
+                            ExportToFile.downloadExcelRestUrl(null, ListGrid_Result_JspTClassReport, viewEvaluationStaticalReportUrl + "/iscList", 0, null, '',  "گزارش کلاس هاي آموزشي", ListGrid_Result_JspTClassReport.data.criteria, null);
                         }
                     }),
                     isc.ToolStripButtonPrint.create({

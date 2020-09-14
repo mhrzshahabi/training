@@ -19,6 +19,8 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 
@@ -49,22 +51,24 @@ public class ExportToFileService implements IExportToFileService {
             XSSFSheet sheet = workbook.createSheet("گزارش");
             sheet.setRightToLeft(true);
 
-            XSSFCellStyle headerCellStyle = setCellStyle(workbook, "Tahoma", (short) 12, new Color(0,0,0), null,VerticalAlignment.CENTER,HorizontalAlignment.CENTER);
+            XSSFCellStyle headerCellStyle = setCellStyle(workbook, "Tahoma", (short) 12, new Color(0, 0, 0), null, VerticalAlignment.CENTER, HorizontalAlignment.CENTER);
+            headerCellStyle.getFont().setBold(true);
 
-            XSSFCellStyle bodyCellStyle = setCellStyle(workbook, "Tahoma", (short) 12, null, null,VerticalAlignment.CENTER,HorizontalAlignment.CENTER);
+
+            XSSFCellStyle bodyCellStyle = setCellStyle(workbook, "Tahoma", (short) 12, null, null, VerticalAlignment.CENTER, HorizontalAlignment.CENTER);
 
             //first row
-            XSSFCellStyle rCellStyle = setCellStyle(workbook, "Tahoma", (short) 16, new Color(0,0,0), null,VerticalAlignment.CENTER,HorizontalAlignment.CENTER);
+            XSSFCellStyle rCellStyle = setCellStyle(workbook, "Tahoma", (short) 16, new Color(0, 0, 0), null, VerticalAlignment.CENTER, HorizontalAlignment.CENTER);
 
             CellReference cellAddress = new CellReference(0, fields1.size() - 1);
             sheet.addMergedRegion(CellRangeAddress.valueOf("A1:" + cellAddress.formatAsString()));
             XSSFRow row = sheet.createRow(0);
             XSSFCell cellOfRow = row.createCell(0);
-            cellOfRow.setCellValue("شركت ملي صنايع مس ايران- امور آموزش و تجهيز نيروي انساني");
+            cellOfRow.setCellValue("شركت ملي صنايع مس ايران- امور آموزش و تجهيز نيروی انسانی");
             cellOfRow.setCellStyle(rCellStyle);
 
             //second row
-            rCellStyle = setCellStyle(workbook, "Tahoma", (short) 14, new Color(0,0,0), null,VerticalAlignment.CENTER,HorizontalAlignment.CENTER);
+            rCellStyle = setCellStyle(workbook, "Tahoma", (short) 14, new Color(0, 0, 0), null, VerticalAlignment.CENTER, HorizontalAlignment.CENTER);
 
             cellAddress = new CellReference(1, fields1.size() - 1);
             sheet.addMergedRegion(CellRangeAddress.valueOf("A2:" + cellAddress.formatAsString()));
@@ -74,18 +78,19 @@ public class ExportToFileService implements IExportToFileService {
             cellOfRow.setCellStyle(rCellStyle);
 
             //third row
-            rCellStyle = setCellStyle(workbook, "Tahoma", (short) 12, new Color(0,0,0), null,VerticalAlignment.CENTER,HorizontalAlignment.CENTER);
+            rCellStyle = setCellStyle(workbook, "Tahoma", (short) 12, new Color(0, 0, 0), null, VerticalAlignment.CENTER, HorizontalAlignment.CENTER);
 
-            if (columns.length > 3) {
-                cellAddress = new CellReference(2, fields1.size() - 1);
-                sheet.addMergedRegion(CellRangeAddress.valueOf("D3:" + cellAddress.formatAsString()));
-            }
+            //if (columns.length > 4) {
+            cellAddress = new CellReference(2, fields1.size() - 1);
+            sheet.addMergedRegion(CellRangeAddress.valueOf("A3:" + cellAddress.formatAsString()));
+            //}
 
             row = sheet.createRow(2);
 
-            row.setHeight((short) 975);
-            cellOfRow = row.createCell(3);
+            row.setHeight((short) 1350);
+            cellOfRow = row.createCell(0);
             cellOfRow.setCellValue(titr);
+            rCellStyle.setWrapText(true);
             cellOfRow.setCellStyle(rCellStyle);
 
 
@@ -108,14 +113,28 @@ public class ExportToFileService implements IExportToFileService {
                 for (int i = 0; i < columns.length; i++) {
                     XSSFCell cell = tempRow.createCell(i);
                     tmpCell = map.get(columns[i]) == null ? "" : map.get(columns[i]);
+                    tmpCell = tmpCell.replaceAll("(<a)([^>href]+)(href)([ ])(=)([ ])\"([^\"])\"([^>]+)(>)([^<])(<\\/a>)", "[link href=$7]$10[/link]").replaceAll("<[^>ابپتثجچحخدذرزژصضسشطظکگفقعغونيي]*>", "");
 
-                    cell.setCellValue(tmpCell.replaceAll("(<a)([^>href]+)(href)([ ])(=)([ ])\"([^\"])\"([^>]+)(>)([^<])(<\\/a>)", "[link href=$7]$10[/link]").replaceAll("<[^>]*>", ""));
+                    /*if(tmpCell.matches(".*[ابپتثجچحخدذرزژصضسشطظکگفقعغونيي].*")){
+                        tmpCell="\u200F" + tmpCell;
+                    }*/
+                    cell.setCellValue(tmpCell);
                     cell.setCellStyle(bodyCellStyle);
                 }
             }
 
             for (int i = 0; i < columns.length; i++) {
                 sheet.autoSizeColumn(i);
+            }
+
+            int sumWidth = 0;
+
+            for (int i = 0; i < columns.length; i++) {
+                sumWidth += sheet.getColumnWidth(i);
+            }
+
+            if (sumWidth < 26000) {
+                sheet.setColumnWidth(columns.length - 1, 26000 - sumWidth);
             }
 
             //CellStyle mine = workbook.createCellStyle();

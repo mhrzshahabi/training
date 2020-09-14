@@ -11,14 +11,7 @@
         3: "حذف گردش کار",
         4: "اصلاح شایستگی و ارسال به گردش کار"
     }
-    var priorityList = {
-        "Post": "پست",
-        "PostGroup": "گروه پستی",
-        "Job": "شغل",
-        "JobGroup": "گروه شغلی",
-        "PostGrade": "رده پستی",
-        "PostGradeGroup": "گروه رده پستی",
-    };
+
 
     // ------------------------------------------- Menu -------------------------------------------
     isc.Menu.create({
@@ -39,7 +32,7 @@
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     let criteria = CompetenceLG_competence.getCriteria();
-                    ExportToFile.showDialog(null, CompetenceLG_competence , "Competence", 0, null, '',"لیست شایستگی ها - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, CompetenceLG_competence , "Competence", 0, null, '',"لیست شایستگی ها - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -128,8 +121,9 @@
                 // }
                 // autoFitWidth: true
             },
-            {name: "code", title: "کد", autoFitWidth: true},
+            {name: "code", title: "کد", autoFitWidth: true, filterOperator: "iContains"},
             {name: "workFlowStatusCode", title: "وضعیت گردش کار",
+                filterOperator: "equals",
                 filterOnKeypress: true,
             },
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},

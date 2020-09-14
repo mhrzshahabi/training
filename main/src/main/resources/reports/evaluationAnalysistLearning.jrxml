@@ -76,8 +76,8 @@
 		<field name="student.personnelNo" class="java.lang.String"/>
 	</subDataset>
 	<parameter name="logo_nicico" class="java.lang.Object"/>
-	<parameter name="score" class="java.lang.Float"/>
-	<parameter name="preTestScore" class="java.lang.Float"/>
+	<parameter name="score" class="java.lang.String"/>
+	<parameter name="preTestScore" class="java.lang.String"/>
 	<parameter name="studentCount" class="java.lang.String"/>
 	<parameter name="code" class="java.lang.String"/>
 	<parameter name="endDate" class="java.lang.String"/>
@@ -86,9 +86,11 @@
 	<parameter name="courseCode" class="java.lang.String"/>
 	<parameter name="coursetitleFa" class="java.lang.String"/>
 	<parameter name="scoringMethod" class="java.lang.String"/>
-	<parameter name="ScoreEvaluation" class="java.lang.Float"/>
+	<parameter name="ScoreEvaluation" class="java.lang.String"/>
 	<parameter name="minScoreLearning" class="java.lang.String"/>
 	<parameter name="resault" class="java.lang.String"/>
+	<parameter name="ScoreEffective" class="java.lang.String"/>
+	<parameter name="resultEffective" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[]]>
 	</queryString>
@@ -188,49 +190,49 @@
 				</textElement>
 				<text><![CDATA[مدرس :]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="627" y="47" width="100" height="30" uuid="12c253f5-3813-4ba1-a2f2-1605312ebb77"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{code}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="136" y="45" width="153" height="30" uuid="374f83c1-acd4-4a6f-ac7f-c16871b39c17"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{coursetitleFa}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="5" y="45" width="35" height="30" uuid="1d591c06-8b5f-45d0-8d1d-b8651eb317b0"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{studentCount}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="618" y="99" width="100" height="30" uuid="23fb1aa5-2abe-4116-9988-3a7d707e56fa"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{startDate}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="383" y="100" width="100" height="30" uuid="89033283-635c-419e-ab81-ecef494ce6fa"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{endDate}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="191" y="99" width="100" height="30" uuid="7bb1f5ec-8889-444f-8238-57355a7a26ef"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{teacher}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="388" y="47" width="100" height="30" uuid="a3816462-647d-4fbc-894a-b664977d94cd"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="12" isBold="true"/>
@@ -248,7 +250,7 @@
 				</textElement>
 				<text><![CDATA[میانگین نمرات پیش آزمون :]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="258" y="17" width="134" height="30" uuid="72e8a288-60eb-4825-b924-d4cc0583b81f"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="12" isBold="true"/>
@@ -262,7 +264,7 @@
 				</textElement>
 				<text><![CDATA[میانگین نمرات پس آزمون :]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="540" y="16" width="100" height="30" uuid="ff883376-8275-4b14-a809-bb41a728581a"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="12" isBold="true"/>
@@ -276,7 +278,7 @@
 				</textElement>
 				<text><![CDATA[روش نمره دهی :]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="16" y="15" width="129" height="30" uuid="357ba37a-e786-4b4a-9fec-eedccc3e61d2"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="12" isBold="true"/>
@@ -290,7 +292,7 @@
 				</textElement>
 				<text><![CDATA[نمره ارزیابی یادگیری :]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="540" y="53" width="130" height="30" uuid="3137841c-ed05-4589-9919-d56b2dd7331f"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="12" isBold="true"/>
@@ -325,14 +327,14 @@
 				</textElement>
 				<text><![CDATA[نتیجه اثر بخشی : ]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="307" y="52" width="149" height="30" uuid="95fbf0f6-9aad-49d0-b562-3431dbc9d1d6"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{minScoreLearning}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="52" y="51" width="100" height="30" uuid="489d7e92-6388-4c3b-bdef-c69875456035"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="12" isBold="true"/>
@@ -439,6 +441,20 @@
 					</jr:column>
 				</jr:table>
 			</componentElement>
+			<textField isBlankWhenNull="true">
+				<reportElement x="550" y="92" width="130" height="30" uuid="a6b3b00a-579a-4349-baa3-582c768d52e9"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ScoreEffective}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="270" y="92" width="170" height="30" uuid="fffd21ec-8449-4714-acf0-e32ece049b2d"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{resultEffective}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 </jasperReport>

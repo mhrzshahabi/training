@@ -599,7 +599,7 @@
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     let criteria = SkillLG_Skill.getCriteria();
-                    ExportToFile.showDialog(null, SkillLG_Skill , "Skill", 0, null, '',"لیست مهارت ها - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, SkillLG_Skill , "Skill", 0, null, '',"لیست مهارت ها - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -653,7 +653,7 @@
                     }
                     criteria.criteria.push({fieldName:'skillId',operator:'equals',value:SkillLG_Skill.getSelectedRecord().id});
 
-                    ExportToFile.showDialog(null, PostLG_Skill , "Skill_Post", 0, null, '',"لیست پست - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, PostLG_Skill , "Skill_Post", 0, null, '',"لیست پست - آموزش"  , criteria, null);
                 }
             })
         ]

@@ -169,11 +169,11 @@
     ],
         cacheAllData: true,
         fetchDataURL: parameterValueUrl + "/iscList/143",
-        implicitCriteria: {
-            _constructor:"AdvancedCriteria",
-            operator:"and",
-            criteria:[{ fieldName: "id", operator: "inSet", value: ["140","139","141"]}]
-        }
+        // implicitCriteria: {
+        //     _constructor:"AdvancedCriteria",
+        //     operator:"and",
+        //     criteria:[{ fieldName: "id", operator: "inSet", value: ["140","139","141"]}]
+        // }
     });
 
     QuestionnaireLG_questionnaire = isc.TrLG.create({

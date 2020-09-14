@@ -73,6 +73,10 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
         needsAssessments.forEach(needsAssessment -> {
             NeedsAssessmentTemp needsAssessmentTemp = new NeedsAssessmentTemp();
             modelMapper.map(needsAssessment, needsAssessmentTemp);
+            needsAssessmentTemp.setWorkflowStatus(null);
+            needsAssessmentTemp.setWorkflowStatusCode(null);
+            needsAssessmentTemp.setMainWorkflowStatus(null);
+            needsAssessmentTemp.setMainWorkflowStatusCode(null);
             dao.saveAndFlush(needsAssessmentTemp);
         });
     }
@@ -114,20 +118,19 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
             SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
             PersonnelDTO.Info person = personnelService.search(searchRq.setCriteria(makeNewCriteria("userName", createdBy, EOperator.equals, null))).getList().get(0);
             createdBy = person.getFirstName() + " " + person.getLastName();
-        }catch (IndexOutOfBoundsException e){
+        } catch (IndexOutOfBoundsException e) {
             createdBy = needsAssessmentTemps.get(0).getCreatedBy();
-        }
-        catch (Exception e ){
+        } catch (Exception e) {
             createdBy = "anonymous";
         }
         needsAssessmentTemps.forEach(needsAssessmentTemp -> {
             Optional<NeedsAssessment> optional = needsAssessmentDAO.findById(needsAssessmentTemp.getId());
             if (optional.isPresent()) {
+                NeedsAssessment na = optional.get();
                 if (needsAssessmentTemp.getDeleted() != null && needsAssessmentTemp.getDeleted().equals(75L))
                     needsAssessmentDAO.deleteById(needsAssessmentTemp.getId());
                 else {
-                    modelMapper.map(needsAssessmentTemp, optional.get());
-                    needsAssessmentDAO.saveAndFlush(optional.get());
+                    needsAssessmentDAO.updateNeedsAssessmentPriority(na.getId(), needsAssessmentTemp.getNeedsAssessmentPriorityId());
                 }
             } else {
                 NeedsAssessment needsAssessment = new NeedsAssessment();
@@ -143,8 +146,13 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
     public Boolean rollback(String objectType, Long objectId) {
         if (readOnlyStatus(objectType, objectId) > 1)
             return false;
-        dao.deleteAllByObjectIdAndObjectType(objectId, objectType);
+        deleteAllTempNA(objectType, objectId);
         return true;
+    }
+
+    @Transactional
+    public void deleteAllTempNA(String objectType, Long objectId) {
+        dao.deleteAllByObjectIdAndObjectType(objectId, objectType);
     }
 
     @Transactional(readOnly = true)
@@ -212,7 +220,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
         List<NeedsAssessmentTemp> needsAssessments = dao.findAll(NICICOSpecification.of(getCriteria(objectType, objectId, true)));
         if (needsAssessments == null || needsAssessments.isEmpty())
             return true;
-        if (needsAssessments.get(0).getMainWorkflowStatusCode() == null){
+        if (needsAssessments.get(0).getMainWorkflowStatusCode() == null) {
             dao.deleteAllByObjectIdAndObjectType(objectId, objectType);
             return true;
         }

@@ -244,26 +244,26 @@
     $(document).ready(function () {
         if(batch)
             getRootTreeData();
-        else
-            getAllTreeData();
+        // else
+        //     getAllTreeData();
     });
-
-    function getAllTreeData() {
-        var url = masterDataUrl + "/department/touple-iscList";
-        wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
-            wait.close();
-            if (resp.httpResponseCode != 200) {
-                return false;
-            } else {
-                let data = JSON.parse(resp.data);
-                setTreeData(organizationalTree, data, false);
-            }
-        }));
-    }
+    //
+    // function getAllTreeData() {
+    //     var url = masterDataUrl + "/department/touple-iscList";
+    //     wait.show();
+    //     isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
+    //         wait.close();
+    //         if (resp.httpResponseCode != 200) {
+    //             return false;
+    //         } else {
+    //             let data = JSON.parse(resp.data);
+    //             setTreeData(organizationalTree, data, false);
+    //         }
+    //     }));
+    // }
 
     function getchilderen(childeren) {
-        let url = masterDataUrl + "/department/getDepartmentsChilderen";
+        let url = departmentUrl + "/getDepartmentsChilderen";
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(childeren),function(resp){
             wait.close();
@@ -277,7 +277,7 @@
     }
 
     function getTreeData(parentId) {
-        var url = masterDataUrl + "/department/getDepartmentsByParentId/" + parentId;
+        var url = departmentUrl + "/getDepartmentsByParentId/" + parentId;
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
             wait.close();
@@ -291,7 +291,7 @@
     }
 
     function getRootTreeData() {
-        var url = masterDataUrl + "/department/getDepartmentsRoot";
+        var url = departmentUrl + "/getDepartmentsRoot";
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
             wait.close();
@@ -299,15 +299,16 @@
                 return false;
             } else {
                 let data = JSON.parse(resp.data);
-                var Treedata = setTreeData(organizationalTree, data, false);
+                let Treedata = setTreeData(organizationalTree, data, false);
                 Treedata.data[0]["isOpen"] = false;
                 getTreeData(Treedata.data[0].id);
+
             }
         }));
     }
 
     function getSearchData(criteria) {
-        var url = masterDataUrl + "/department/getDepartmentsChilderenAndParents" + "?operator=and&_constructor=AdvancedCriteria&criteria="+ JSON.stringify(criteria);
+        var url = departmentUrl + "/searchSocieties" + "?operator=and&_constructor=AdvancedCriteria&criteria="+ JSON.stringify(criteria);
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
             wait.close();
@@ -389,11 +390,20 @@
     }
 
     function searchWithCriteria(value) {
-        let AdvanceCriteria = [{"fieldName":"active","operator":"equals","value":true},
-            {"operator":"or",
-                "criteria":[ isNaN(value) ? {"fieldName":"title","operator":"iContains","value": value} : {"fieldName":"code","operator":"startsWith","value": value}]
 
-            }];
+        let  criteria = {};
+        criteria.operator = "or";
+        criteria.criteria = [];
+        criteria.criteria.push({fieldName: "title", operator: "iContains", value: value});
+        criteria.criteria.push({fieldName: "code", operator: "startsWith", value: value});
+
+        let  AdvanceCriteria = {};
+        AdvanceCriteria.operator = "and";
+        AdvanceCriteria._constructor = "AdvancedCriteria";
+        AdvanceCriteria.criteria = [];
+        AdvanceCriteria.criteria.push({fieldName: "enabled", operator: "isNull", value: null});
+        AdvanceCriteria.criteria.push(criteria);
+
         getSearchData(AdvanceCriteria);
     }
     // ------------------------------------------------- Functions ------------------------------------------>>

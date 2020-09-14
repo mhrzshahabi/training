@@ -16,6 +16,7 @@
             {name: "name"},
             {name: "ccpArea"},
             {name: "ccpAffairs"},
+            {name: "peopleType"},
             {name: "classCode"},
             {name: "className"},
             {name: "attendanceStatus"},
@@ -154,7 +155,7 @@
                 margin:5,
                 click:function() {
                     let title="گزارش غیبت ها از تاریخ "+DynamicForm_AttendanceReport.getItem("startDate").getValue()+ " الی "+DynamicForm_AttendanceReport.getItem("endDate").getValue();
-                    ExportToFile.showDialog(null, ListGrid_AttendanceReport_AttendanceReportJSP , 'attendanceReport', 0, null, '',title  , DynamicForm_AttendanceReport.getValuesAsAdvancedCriteria(), null);
+                    ExportToFile.downloadExcel(null, ListGrid_AttendanceReport_AttendanceReportJSP , 'attendanceReport', 0, null, '',title  , DynamicForm_AttendanceReport.getValuesAsAdvancedCriteria(), null,2);
                    //ExportToFile.downloadExcelFromClient(ListGrid_AttendanceReport_AttendanceReportJSP, null, '', title)
                 }
             })
@@ -178,6 +179,12 @@
                 }
             },
             {name: "name", title: "<spring:message code='student'/>",},
+            {name: "peopleType", title: "نوع فراگیر",valueMap:
+                    {
+                        "personnel_registered": "متفرقه",
+                        "Personal": "شرکتی",
+                        "ContractorPersonal": "پیمانکار"
+                    }},
             {name: "ccpArea", title: "<spring:message code='area'/>"},
             {name: "ccpAffairs", title: "<spring:message code='affairs'/>"},
             {name: "classCode", title: "<spring:message code="class.code"/>"},
@@ -195,7 +202,7 @@
                 }
             },
             {
-                name: "fixTime",
+                name: "time",
                 title: "<spring:message code="time.hour"/>",
                 includeInRecordSummary:false,
             },

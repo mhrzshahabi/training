@@ -2,9 +2,9 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 // <script>
-    var naJob_PostGrade = null;
-    var personnelJob_PostGrade = null;
-    var postJob_PostGrade = null;
+    let naJob_PostGrade = null;
+    let personnelJob_PostGrade = null;
+    let postJob_PostGrade = null;
     let oLoadAttachments_PostGrade = null;
     // ------------------------------------------- Menu -------------------------------------------
     PostGradeMenu_postGrade = isc.Menu.create({
@@ -48,7 +48,7 @@
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     let criteria = PostGradeLG_postGrade.getCriteria();
-                    ExportToFile.showDialog(null, PostGradeLG_postGrade , "View_Post_Grade", 0, null, '',"لیست رده های پستی - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, PostGradeLG_postGrade , "View_Post_Grade", 0, null, '',"لیست رده های پستی - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -216,11 +216,11 @@
                         criteria.criteria=[];
                     }
 
-                    criteria.criteria.push({fieldName: "postGradeCode", operator: "equals", value: PostGradeLG_postGrade.getSelectedRecord().code});
-                    criteria.criteria.push({fieldName: "active", operator: "equals", value: 1});
-                    criteria.criteria.push({fieldName: "employmentStatusId", operator: "equals", value: 5});
+                    criteria.criteria.push({fieldName: "postGradeId", operator: "equals", value: PostGradeLG_postGrade.getSelectedRecord().id});
+                    // criteria.criteria.push({fieldName: "active", operator: "equals", value: 1});
+                    // criteria.criteria.push({fieldName: "employmentStatusId", operator: "equals", value: 5});
 
-                    ExportToFile.showDialog(null, PersonnelLG_PostGrade , "Personnel", 0, null, '',"لیست پرسنل - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, PersonnelLG_PostGrade , "postGradePersonnel", 0, null, '',"لیست پرسنل - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -338,9 +338,9 @@
                     }
                     criteria.criteria.push({fieldName: "objectId", operator: "equals", value: PostGradeLG_postGrade.getSelectedRecord().id});
                     criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "PostGrade"});
-                    criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
+                    // criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
 
-                    ExportToFile.showDialog(null, NALG_PostGrade , "NeedsAssessmentReport", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, NALG_PostGrade , "NeedsAssessmentReport", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
                 }
             })
         ]
@@ -511,7 +511,7 @@
                     }
                     criteria.criteria.push({fieldName: "postGrade", operator: "equals", value: PostGradeLG_postGrade.getSelectedRecord().id});
 
-                    ExportToFile.showDialog(null, PostLG_PostGrade , "Post", 0, null, '',"لیست پست - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcel(null, PostLG_PostGrade , "Post", 0, null, '',"لیست پست - آموزش"  , criteria, null);
                 }
             })
         ]

@@ -111,7 +111,9 @@
             {name: "organizerName"},
             {name: "evaluation"},
             {name: "startEvaluation"},
-            {name: "behavioralLevel"}
+            {name: "behavioralLevel"},
+            {name: "studentCost"},
+            {name: "studentCostCurrency"}
         ]
     });
 
@@ -196,7 +198,7 @@
         fetchDataURL: parameterValueUrl + "/iscList/438"
     });
 
-    SupervisorDS_JspClass = isc.TrDS.create({
+    let SupervisorDS_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", filterOperator: "equals", primaryKey: true, hidden: true},
             {
@@ -207,6 +209,7 @@
                 autoFitWidthApproach: "both"
             },
             {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
+            {name: "fullName", title: "نام و نام خانوادگی", filterOperator: "iContains", autoFitWidth: true},
             {
                 name: "nationalCode",
                 title: "<spring:message code="national.code"/>",
@@ -229,15 +232,10 @@
                 autoFitWidthApproach: "both"
             },
         ],
-        fetchDataURL: personnelUrl + "/iscList",
-        implicitCriteria: {
-            _constructor: "AdvancedCriteria",
-            operator: "and",
-            criteria: [{fieldName: "active", operator: "equals", value: 1}]
-        },
+        fetchDataURL: viewActivePersonnelUrl + "/iscList",
     });
 
-    PlannerDS_JspClass = isc.TrDS.create({
+    let PlannerDS_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", filterOperator: "equals", primaryKey: true, hidden: true},
             {
@@ -248,6 +246,7 @@
                 autoFitWidthApproach: "both"
             },
             {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
+            {name: "fullName", title: "نام و نام خانوادگی", filterOperator: "iContains", autoFitWidth: true},
             {
                 name: "nationalCode",
                 title: "<spring:message code="national.code"/>",
@@ -270,12 +269,7 @@
                 autoFitWidthApproach: "both"
             },
         ],
-        fetchDataURL: personnelUrl + "/iscList",
-        implicitCriteria: {
-            _constructor: "AdvancedCriteria",
-            operator: "and",
-            criteria: [{fieldName: "active", operator: "equals", value: 1}]
-        },
+        fetchDataURL: viewActivePersonnelUrl + "/iscList",
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -525,8 +519,8 @@
                 name: "plannerFullName",
                 title: "<spring:message code="planner"/>",
                 // displayValueFromRecord: false,
-                canFilter: false,
-                canSort: false,
+                // canFilter: false,
+                // canSort: false,
                 type: "TextItem",
                 align: "center",
                 filterOperator: "iContains",
@@ -635,7 +629,9 @@
             {name: "teacherId", hidden: true},
             {name: "evaluation", hidden: true},
             {name: "startEvaluation", hidden: true},
-            {name: "behavioralLevel", hidden: true}
+            {name: "behavioralLevel", hidden: true},
+            {name: "studentCost", hidden: true},
+            {name: "studentCostCurrency", hidden: true}
         ],
         getCellCSSText: function (record, rowNum, colNum) {
             if (this.isSelected(record)) {
@@ -1049,7 +1045,7 @@
                 autoFetchData: false,
                 valueField: "id",
                 pickListWidth: 550,
-                pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "nationalCode"}, {name: "personnelNo"}],
+                pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "fullName"}, {name: "nationalCode"}, {name: "personnelNo"}],
                 // filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
                 pickListProperties: {sortField: "personnelNo2", showFilterEditor: true},
                 formatValue: function (value, record, form, item) {
@@ -1074,7 +1070,7 @@
                 autoFetchData: false,
                 valueField: "id",
                 pickListWidth: 550,
-                pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "nationalCode"}, {name: "personnelNo"}],
+                pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "fullName"}, {name: "nationalCode"}, {name: "personnelNo"}],
                 // filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
                 pickListProperties: {sortField: "personnelNo2", showFilterEditor: true},
                 formatValue: function (value, record, form, item) {
@@ -1337,7 +1333,7 @@
                 type: "radioGroup",
                 vertical: false,
                 fillHorizontalSpace: true,
-                defaultValue: "371",
+                defaultValue: "372",
                 valueMap: {
                     "371": "واحد",
                     "372": "سایر",
@@ -1388,6 +1384,7 @@
                 optionDataSource: DataSource_TargetSociety_List,
                 displayField: "title",
                 valueField: "societyId",
+                defaultValue: "سایر",
                 <%--validate: function(){--%>
                 <%--if(this._value === null || this._value.length <= 0){--%>
                 <%--DynamicForm_Class_JspClass.addFieldErrors("targetSocieties", "<spring:message code="validator.field.is.required"/>", true);--%>
@@ -1472,6 +1469,7 @@
             //------------------------ DONE BY ROYA---------------------------------------------------------------------
             {
                 name: "evaluation",
+                required: true,
                 title: "<spring:message code="evaluation.level"/>:",
                 textAlign: "center",
                 startRow: true,
@@ -2545,7 +2543,7 @@
                 };
             }
 
-            ExportToFile.showDialog(null, ListGrid_Class_JspClass, "class", 0, null, '', "اجرا - کلاس", criteria, null);
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_Class_JspClass, classUrl + "spec-list", 0, null, '', "اجرا - کلاس", criteria, null);
         }
     });
 
@@ -2683,6 +2681,16 @@
                 // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})
             },
             </sec:authorize>
+            {
+                ID: "classEvaluationInfo",
+                title: "مشاهده وضعیت ارزیابی کلاس",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/evaluation-info-tab"})
+            },
+            {
+                ID: "classCosts",
+                title: "ثبت هزینه کلاس",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/class-costs-tab"})
+            },
             <%--{--%>
             <%--ID: "costClassTab",--%>
             <%--title: "<spring:message code='cost.class'/>",--%>
@@ -3229,6 +3237,10 @@
                                             },
                                             {fieldName: "id", operator: "notEqual", value: record.id},
                                             {fieldName: "classStatus", operator: "equals", value: "4"},
+                                            {operator: "or", criteria: [
+                                                    {fieldName: "alternativeClassId", operator: "isNull"},
+                                                    {fieldName: "alternativeClassId", operator: "equals", value: record.id},
+                                                ]}
                                         ]
                                     };
                                     item.pickListCriteria = criteria;
@@ -3467,6 +3479,20 @@
                 case "classDocumentsTab": {
                     if (typeof loadPage_classDocuments !== "undefined")
                         loadPage_classDocuments(ListGrid_Class_JspClass.getSelectedRecord().id);
+                    break;
+                }
+                case "classEvaluationInfo": {
+                    if (typeof loadPage_classEvaluationInfo !== "undefined")
+                        loadPage_classEvaluationInfo(ListGrid_Class_JspClass.getSelectedRecord().id,
+                                                    ListGrid_Class_JspClass.getSelectedRecord().studentCount,
+                                                    ListGrid_Class_JspClass.getSelectedRecord().evaluation);
+                    break;
+                }
+                case "classCosts": {
+                    if (typeof loadPage_classCosts !== "undefined")
+                        loadPage_classCosts(ListGrid_Class_JspClass.getSelectedRecord().studentCost,
+                            ListGrid_Class_JspClass.getSelectedRecord().studentCostCurrency,
+                            ListGrid_Class_JspClass.getSelectedRecord().id);
                     break;
                 }
             }
@@ -3974,11 +4000,15 @@
                 let evaluationAnswerList = [];
                 let data = {};
                 let evaluationFull = true;
+                let evaluationEmpty = true;
 
                 let questions = DynamicForm_Questions_Body_JspEvaluation.getFields();
                 for (let i = 0; i < questions.length; i++) {
                     if (DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name) === undefined) {
                         evaluationFull = false;
+                    }
+                    else{
+                        evaluationEmpty = false;
                     }
                     let evaluationAnswer = {};
                     evaluationAnswer.answerID = DynamicForm_Questions_Body_JspEvaluation.getValue(questions[i].name);
@@ -3995,19 +4025,24 @@
                 data.evaluatedTypeId = 187;
                 data.questionnaireTypeId = 141;
                 data.evaluationLevelId = 154;
-                isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
-                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                        Window_Questions_JspEvaluation.close();
-                        isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
-                            classRecord.id, "GET", null, null));
-                        const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                        setTimeout(() => {
-                            msg.close();
-                        }, 3000);
-                    } else {
-                        createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
-                    }
-                }))
+                if(evaluationEmpty == false){
+                    isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
+                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                            Window_Questions_JspEvaluation.close();
+                            isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
+                                classRecord.id, "GET", null, null));
+                            const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                            setTimeout(() => {
+                                msg.close();
+                            }, 3000);
+                        } else {
+                            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                        }
+                    }))
+                }
+                else{
+                    createDialog("info", "حداقل به یکی از سوالات فرم ارزیابی باید جواب داده شود", "<spring:message code="error"/>");
+                }
             }
         });
 

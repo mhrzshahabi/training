@@ -1227,4 +1227,20 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="razmnoosh (generated)" id="1599279853079-497">
+        <addColumn tableName="tbl_class">
+            <column name="c_student_cost" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1599279853079-498">
+        <addColumn tableName="tbl_class">
+            <column name="f_student_cost_currency" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1599894112446-497">
+        <addColumn tableName="tbl_post">
+            <column name="n_parent_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

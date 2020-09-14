@@ -205,7 +205,7 @@
                 align: "right",
                 members: [isc.ToolStripButtonExcel.create({
                     click: function() {
-                        ExportToFile.showDialog(null, ListGrid_UCReport, 'unfinishedClassesReport', 0, null, '',  "کلاس هاي پايان نيافته", ListGrid_UCReport.data.criteria, null);
+                        ExportToFile.downloadExcel(null, ListGrid_UCReport, 'unfinishedClassesReport', 0, null, '',  "کلاس هاي پايان نيافته", ListGrid_UCReport.data.criteria, null);
                     }
                 })]
             }),

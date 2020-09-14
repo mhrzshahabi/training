@@ -82,7 +82,9 @@
         implicitCriteria: {
             _constructor:"AdvancedCriteria",
             operator:"and",
-            criteria:[{ fieldName: "active", operator: "equals", value: 1}]
+            criteria:[{ fieldName: "active", operator: "equals", value: 1},
+                      { fieldName: "deleted", operator: "equals", value: 0}
+            ]
         },
     });
 
@@ -250,7 +252,7 @@
         title: "گزارش اکسل",
         width: 300,
         click: function () {
-            ExportToFile.showDialog(null, ListGrid_JspPersonnelTrainingStatusPersonnel, "viewPersonnelTrainingStatusReport", 0, null, '',"گزارش وضعیت آموزشی افراد"  , ListGrid_JspPersonnelTrainingStatusPersonnel.data.criteria, null);
+            ExportToFile.downloadExcel(null, ListGrid_JspPersonnelTrainingStatusPersonnel, "viewPersonnelTrainingStatusReport", 0, null, '',"گزارش وضعیت آموزشی افراد"  , ListGrid_JspPersonnelTrainingStatusPersonnel.data.criteria, null);
         }
     });
 

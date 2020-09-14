@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AttendanceDTO;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.StudentDTO;
@@ -13,8 +12,8 @@ import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.AttendanceDAO;
 import com.nicico.training.repository.PersonnelDAO;
-import com.nicico.training.repository.StudentDAO;
 import com.nicico.training.service.ControlReportService;
+import com.nicico.training.service.StudentService;
 import com.nicico.training.service.TclassService;
 import lombok.RequiredArgsConstructor;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -24,7 +23,10 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
@@ -44,20 +46,20 @@ public class ControlFormController {
     private final ObjectMapper objectMapper;
     private final TclassService tclassService;
     private final ModelMapper modelMapper;
-    private final StudentDAO studentDAO;
     private final AttendanceDAO attendanceDOA;
     private final ControlReportService controlReportService;
     private final MessageSource messageSource;
     private final PersonnelDAO personnelDAO;
+    private final StudentService studentService;
 
     @Transactional(readOnly = true)
     @PostMapping(value = {"/clear-print/{type}"})
     public void printAttendanceWithCriteria(HttpServletResponse response,
-                                  @PathVariable String type,
-                                  @RequestParam(value = "list") String list,
-                                  @RequestParam(value = "classId") Long classId,
-                                  @RequestParam(value = "page") String page,
-                                  @RequestParam(value = "dataStatus") String dataStatus
+                                            @PathVariable String type,
+                                            @RequestParam(value = "list") String list,
+                                            @RequestParam(value = "classId") Long classId,
+                                            @RequestParam(value = "page") String page,
+                                            @RequestParam(value = "dataStatus") String dataStatus
     ) throws Exception {
         //-------------------------------------
         Gson gson = new Gson();
@@ -67,15 +69,14 @@ public class ControlFormController {
 
         Tclass tClass = tclassService.getTClass(classId);
         TclassDTO.Info tclassDTO = modelMapper.map(tClass, TclassDTO.Info.class);
-        Set<ClassStudent> students = tClass.getClassStudents();
-        List<Long> studentsId = students.stream().map(s -> s.getStudent().getId()).collect(Collectors.toList());
+        Set<ClassStudent> classStudents = tClass.getClassStudents();
+        List<Student> students = classStudents.stream().map(classStudent -> studentService.getStudent(classStudent.getStudentId())).collect(Collectors.toList());
         List<StudentDTO.clearAttendance> studentArrayList = new ArrayList<>();
 
         Set<ClassSession> sessions = tClass.getClassSessions();
         List<ClassSession> sessionList = sessions.stream().sorted(Comparator.comparing(ClassSession::getSessionDate)
                 .thenComparing(ClassSession::getSessionStartHour))
                 .collect(Collectors.toList());
-
 
         int maxSessions=0;
 
@@ -101,9 +102,7 @@ public class ControlFormController {
 
         maxSessions= maxSessions >=5 ? 5 : (maxSessions >=0 && maxSessions <=3 ? 3 : maxSessions);
 
-        for (Long studentId : studentsId) {
-            Optional<Student> byId = studentDAO.findById(studentId);
-            Student student = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.StudentNotFound));
+        for (Student student : students) {
             StudentDTO.clearAttendanceWithState st = modelMapper.map(student, StudentDTO.clearAttendanceWithState.class);
 
             Personnel personnel=null;
@@ -134,24 +133,25 @@ public class ControlFormController {
                         z = ztemp;
                     }
 
-                    List<AttendanceDTO> attendanceDTOS = modelMapper.map(attendanceDOA.findBySessionIdAndStudentId(classSession.getId(), studentId),
-                            new TypeToken<List<AttendanceDTO>>() {
-                            }.getType());
+                    Optional<Attendance> attendance=attendanceDOA.findBySessionIdAndStudentId(classSession.getId(), student.getId());
 
-                    AttendanceDTO attendanceDTO = attendanceDTOS.size() != 0 && attendanceDTOS.get(0) != null ? attendanceDTOS.get(0) : null;
+                    if (attendance.isPresent()) {
+                        AttendanceDTO attendanceDTO = new AttendanceDTO();
+                        attendanceDTO.setDescription(attendance.get().getDescription());
+                        attendanceDTO.setState(attendance.get().getState());
 
-                    if (attendanceDTO != null) {
-                        String tempZ="";
-                        if (z<=9)
-                            tempZ="0"+z;
+                        String tempZ = "";
+                        if (z <= 9)
+                            tempZ = "0" + z;
                         else
-                            tempZ=z+"";
+                            tempZ = z + "";
 
                         if (dataStatus.equals("true"))
-                            statePerStudent.put("z"+tempZ, attendanceDTO.statusName(Integer.parseInt(attendanceDTO.getState())));
+                            statePerStudent.put("z" + tempZ, attendanceDTO.statusName(Integer.parseInt(attendanceDTO.getState())));
                         else
-                            statePerStudent.put("z"+tempZ, "");
-                    }//end if
+                            statePerStudent.put("z" + tempZ, "");
+
+                    }
 
                 }//end if
                 z++;
@@ -246,14 +246,14 @@ public class ControlFormController {
                 params.put("se" + strSe, session.getSessionStartHour() + " - " + session.getSessionEndHour());
 
                 IntStream.rangeClosed(se+1, se+maxSessions-1).forEach(i -> {
-                        String strSe1 = "";
-                        if (i <= 9)
-                            strSe1 = "0" + i;
-                        else
-                            strSe1 = i + "";
+                    String strSe1 = "";
+                    if (i <= 9)
+                        strSe1 = "0" + i;
+                    else
+                        strSe1 = i + "";
 
-                        params.put("se" + strSe1, "فاقد جلسه");
-                    });
+                    params.put("se" + strSe1, "فاقد جلسه");
+                });
             }
             se++;
         }
@@ -280,8 +280,7 @@ public class ControlFormController {
 
         int i=0;
         for (Long studentId : studentsId) {
-            Optional<Student> byId = studentDAO.findById(studentId);
-            Student student = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.StudentNotFound));
+            Student student = studentService.getStudent(studentId);
             StudentDTO.scoreAttendance st = modelMapper.map(student, StudentDTO.scoreAttendance.class);
 
             st.setFullName(st.getFirstName() + " " + st.getLastName());
@@ -322,8 +321,8 @@ public class ControlFormController {
     @Transactional(readOnly = true)
     @PostMapping(value = {"/control-print/{type}"})
     public void printScoreWithCriteria(HttpServletResponse response,
-                                  @PathVariable String type,
-                                  @RequestParam(value = "classId") Long classId
+                                       @PathVariable String type,
+                                       @RequestParam(value = "classId") Long classId
     ) throws Exception {
         //-------------------------------------
         Tclass tClass = tclassService.getTClass(classId);
@@ -338,8 +337,7 @@ public class ControlFormController {
 
         int i=0;
         for (Long studentId : studentsId) {
-            Optional<Student> byId = studentDAO.findById(studentId);
-            Student student = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.StudentNotFound));
+            Student student = studentService.getStudent(studentId);
             StudentDTO.controlAttendance st = modelMapper.map(student, StudentDTO.controlAttendance.class);
 
             Personnel personnel=null;
@@ -388,7 +386,7 @@ public class ControlFormController {
     public void exportExcelAttendance(final HttpServletResponse response,
                                       @RequestParam(value = "classId") String classId,
                                       @RequestParam(value = "dataStatus") String dataStatus
-                                      ) throws IOException {
+    ) throws IOException {
         Long[] idClasses= Arrays.stream(classId.split(",")).map(x->Long.valueOf(x)).toArray(Long[]::new);
         List<Map<String, String>> listMaps=new ArrayList<>();
         List<List<StudentDTO.clearAttendanceWithState>> listStudentArray=new ArrayList<>();
@@ -413,8 +411,7 @@ public class ControlFormController {
             listSessionList.add(sessionList);
 
             for (Long studentId : studentsId) {
-                Optional<Student> byId = studentDAO.findById(studentId);
-                Student student = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.StudentNotFound));
+                Student student = studentService.getStudent(studentId);
                 StudentDTO.clearAttendanceWithState st = modelMapper.map(student, StudentDTO.clearAttendanceWithState.class);
 
                 Personnel personnel=null;
@@ -428,40 +425,42 @@ public class ControlFormController {
 
                 st.setFullName(st.getFirstName() + " " + st.getLastName());
 
-                    String dayDate = sessionList.get(0).getSessionDate() != null ? sessionList.get(0).getSessionDate() : "";
+                String dayDate = sessionList.get(0).getSessionDate() != null ? sessionList.get(0).getSessionDate() : "";
 
-                    int z = 0;
-                    int ztemp = 0;
-                    Map<Integer, String> statePerStudent = new HashMap<>();
+                int z = 0;
+                int ztemp = 0;
+                Map<Integer, String> statePerStudent = new HashMap<>();
 
-                    for (int i = 0; i < sessionList.size(); i++) {
-                        ClassSession classSession = sessionList.get(i);
+                for (int i = 0; i < sessionList.size(); i++) {
+                    ClassSession classSession = sessionList.get(i);
 
-                        if (classSession != null) {
-                            if (!sessionList.get(i).getSessionDate().equals(dayDate)) {
-                                dayDate = sessionList.get(i).getSessionDate();
-                                ztemp += 5;
-                                z = ztemp;
-                            }
+                    if (classSession != null) {
+                        if (!sessionList.get(i).getSessionDate().equals(dayDate)) {
+                            dayDate = sessionList.get(i).getSessionDate();
+                            ztemp += 5;
+                            z = ztemp;
+                        }
 
-                            List<AttendanceDTO> attendanceDTOS = modelMapper.map(attendanceDOA.findBySessionIdAndStudentId(classSession.getId(), studentId),
-                                    new TypeToken<List<AttendanceDTO>>() {
-                                    }.getType());
+                        Optional<Attendance> attendance=attendanceDOA.findBySessionIdAndStudentId(classSession.getId(), studentId);
 
-                            AttendanceDTO attendanceDTO = attendanceDTOS.size() != 0 && attendanceDTOS.get(0) != null ? attendanceDTOS.get(0) : null;
+                        if (attendance.isPresent()) {
+                            AttendanceDTO attendanceDTO = new AttendanceDTO();
+                            attendanceDTO.setDescription(attendance.get().getDescription());
+                            attendanceDTO.setState(attendance.get().getState());
 
-                            if (attendanceDTO != null) {
-                                if (dataStatus.equals("true"))
-                                    statePerStudent.put(z, attendanceDTO.statusName(Integer.parseInt(attendanceDTO.getState())));
-                                else
-                                    statePerStudent.put(z, "");
-                            }//end if
 
-                        }//end if
-                        z++;
-                    }//end inner for
+                            if (dataStatus.equals("true"))
+                                statePerStudent.put(z, attendanceDTO.statusName(Integer.parseInt(attendanceDTO.getState())));
+                            else
+                                statePerStudent.put(z, "");
 
-                    st.setStates(statePerStudent);
+                        }
+
+                    }//end if
+                    z++;
+                }//end inner for
+
+                st.setStates(statePerStudent);
 
                 studentArrayList.add(st);
             }//end outer for
@@ -492,8 +491,8 @@ public class ControlFormController {
     @Transactional(readOnly = true)
     @PostMapping(value = {"/exportExcelScore"})
     public void exportExcelScore(final HttpServletResponse response,
-                                      @RequestParam(value = "classId") String classId,
-                                      @RequestParam(value = "dataStatus") String dataStatus
+                                 @RequestParam(value = "classId") String classId,
+                                 @RequestParam(value = "dataStatus") String dataStatus
     ) throws IOException {
         Long[] idClasses= Arrays.stream(classId.split(",")).map(x->Long.valueOf(x)).toArray(Long[]::new);
         List<List<StudentDTO.scoreAttendance>> listStudentArray=new ArrayList<>();
@@ -515,8 +514,7 @@ public class ControlFormController {
 
 
             for (Long studentId : studentsId) {
-                Optional<Student> byId = studentDAO.findById(studentId);
-                Student student = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.StudentNotFound));
+                Student student = studentService.getStudent(studentId);
                 StudentDTO.scoreAttendance st = modelMapper.map(student, StudentDTO.scoreAttendance.class);
                 st.setFullName(st.getFirstName() + " " + st.getLastName());
                 st.setScoreA(listClassStudents.get(i).getScore() != null && dataStatus.equals("true") ? listClassStudents.get(i).getScore().toString() : "");
@@ -560,8 +558,8 @@ public class ControlFormController {
     @Transactional(readOnly = true)
     @PostMapping(value = {"/exportExcelControl"})
     public void exportExcelControl(final HttpServletResponse response,
-                                 @RequestParam(value = "classId") String classId,
-                                 @RequestParam(value = "dataStatus") String dataStatus
+                                   @RequestParam(value = "classId") String classId,
+                                   @RequestParam(value = "dataStatus") String dataStatus
     ) throws IOException {
         Long[] idClasses= Arrays.stream(classId.split(",")).map(x->Long.valueOf(x)).toArray(Long[]::new);
         List<List<StudentDTO.controlAttendance>> listStudentArray=new ArrayList<>();
@@ -583,8 +581,7 @@ public class ControlFormController {
 
 
             for (Long studentId : studentsId) {
-                Optional<Student> byId = studentDAO.findById(studentId);
-                Student student = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.StudentNotFound));
+                Student student = studentService.getStudent(studentId);
                 StudentDTO.controlAttendance st = modelMapper.map(student, StudentDTO.controlAttendance.class);
                 st.setFullName(st.getFirstName() + " " + st.getLastName());
 
@@ -635,8 +632,8 @@ public class ControlFormController {
     @Transactional(readOnly = true)
     @PostMapping(value = {"/exportExcelAll"})
     public void exportExcelAll(final HttpServletResponse response,
-                                      @RequestParam(value = "classId") String classId,
-                                      @RequestParam(value = "dataStatus") String dataStatus
+                               @RequestParam(value = "classId") String classId,
+                               @RequestParam(value = "dataStatus") String dataStatus
     ) throws IOException {
         Long[] idClasses= Arrays.stream(classId.split(",")).map(x->Long.valueOf(x)).toArray(Long[]::new);
         List<Map<String, String>> listMaps=new ArrayList<>();
@@ -658,10 +655,10 @@ public class ControlFormController {
             List<ClassSession> sessionList=new ArrayList<>();
 
             if (sessions == null || sessions.size() == 0)
-              flag=false;
+                flag=false;
 
             if (flag) {
-                 sessionList = sessions.stream().sorted(Comparator.comparing(ClassSession::getSessionDate)
+                sessionList = sessions.stream().sorted(Comparator.comparing(ClassSession::getSessionDate)
                         .thenComparing(ClassSession::getSessionStartHour))
                         .collect(Collectors.toList());
             }
@@ -671,8 +668,7 @@ public class ControlFormController {
             int cnt=0;
 
             for (Long studentId : studentsId) {
-                Optional<Student> byId = studentDAO.findById(studentId);
-                Student student = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.StudentNotFound));
+                Student student = studentService.getStudent(studentId);
                 StudentDTO.fullAttendance st = modelMapper.map(student, StudentDTO.fullAttendance.class);
                 st.setFullName(st.getFirstName() + " " + st.getLastName());
 
@@ -707,18 +703,18 @@ public class ControlFormController {
                                 z = ztemp;
                             }
 
-                            List<AttendanceDTO> attendanceDTOS = modelMapper.map(attendanceDOA.findBySessionIdAndStudentId(classSession.getId(), studentId),
-                                    new TypeToken<List<AttendanceDTO>>() {
-                                    }.getType());
+                            Optional<Attendance> attendance=attendanceDOA.findBySessionIdAndStudentId(classSession.getId(), studentId);
 
-                            AttendanceDTO attendanceDTO = attendanceDTOS.size() != 0 && attendanceDTOS.get(0) != null ? attendanceDTOS.get(0) : null;
-
-                            if (attendanceDTO != null) {
+                            if (attendance.isPresent()) {
+                                AttendanceDTO attendanceDTO = new AttendanceDTO();
+                                attendanceDTO.setDescription(attendance.get().getDescription());
+                                attendanceDTO.setState(attendance.get().getState());
                                 if (dataStatus.equals("true"))
                                     statePerStudent.put(z, attendanceDTO.statusName(Integer.parseInt(attendanceDTO.getState())));
                                 else
                                     statePerStudent.put(z, "");
-                            }//end if
+
+                            }
 
                         }//end if
                         z++;
@@ -745,7 +741,7 @@ public class ControlFormController {
         }
 
         try {
-           controlReportService.exportToExcelFull(response,listMaps,listSessionList,listStudentArray);
+            controlReportService.exportToExcelFull(response,listMaps,listSessionList,listStudentArray);
         } catch (Exception ex) {
 
             Locale locale = LocaleContextHolder.getLocale();

@@ -1,5 +1,7 @@
 package com.nicico.training.service;
 
+import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.DepartmentDTO;
 import com.nicico.training.iservice.IDepartmentService;
@@ -12,8 +14,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @RequiredArgsConstructor
 @Service
@@ -130,5 +134,87 @@ public class DepartmentService extends GenericService<Department, Long, Departme
         values.forEach(value -> response.getList().add(new DepartmentDTO.FieldValue(value)));
         response.setTotalCount((long) response.getList().size());
         return response;
+    }
+
+    @Transactional(readOnly = true)
+    public List<DepartmentDTO.TSociety> getRoot(){
+        return modelMapper.map(departmentDAO.getRoot(), new TypeToken<List<DepartmentDTO.TSociety>>() {
+        }.getType());
+    }
+
+    @Override
+    public List<DepartmentDTO.TSociety> getDepartmentByParentId(Long parentId) {
+        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        criteriaRq.getCriteria().add(makeNewCriteria("parentId", parentId, EOperator.equals, null));
+        criteriaRq.getCriteria().add(makeNewCriteria("enabled", null, EOperator.isNull, null));
+        searchRq.setCriteria(criteriaRq);
+        List<DepartmentDTO.Info> infoList = search(searchRq).getList();
+        Iterator<DepartmentDTO.Info> iterator =infoList.iterator();
+        while(iterator.hasNext()) {
+            DepartmentDTO.Info removedObject = iterator.next();
+            if(removedObject.getId().equals(parentId))
+                iterator.remove();
+        }
+        return modelMapper.map(infoList,new TypeToken<List<DepartmentDTO.TSociety>>() {}.getType());
+    }
+
+    @Override
+    public List<DepartmentDTO.TSociety> getDepartmentsByParentIds(List<Long> parentsId) {
+        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+        if(parentsId.size() > 0) {
+            SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+            criteriaRq.getCriteria().add(makeNewCriteria("parentId", parentsId, EOperator.inSet, null));
+            criteriaRq.getCriteria().add(makeNewCriteria("enabled", null, EOperator.isNull, null));
+            searchRq.setCriteria(criteriaRq);
+            List<DepartmentDTO.Info> infoList = search(searchRq).getList();
+            Iterator<DepartmentDTO.Info> iterator = infoList.iterator();
+            while (iterator.hasNext()) {
+                DepartmentDTO.Info removedObject = iterator.next();
+                if (parentsId.contains(removedObject.getId()))
+                    iterator.remove();
+            }
+            return modelMapper.map(infoList,new TypeToken<List<DepartmentDTO.TSociety>>() {}.getType());
+        }else
+            return new ArrayList<>();
+    }
+
+    @Override
+    public List<DepartmentDTO.TSociety> searchSocieties(SearchDTO.SearchRq request) {
+        List<DepartmentDTO.TSociety> infoList = modelMapper.map(search(request).getList(),new TypeToken<List<DepartmentDTO.TSociety>>() {}.getType());
+        Set<DepartmentDTO.TSociety> departments = new HashSet<>();
+        Long anccestorId = null;
+        if(infoList.size() > 0) {
+            List<DepartmentDTO.TSociety> roots = getRoot();
+            DepartmentDTO.TSociety society = roots.get(0);
+            anccestorId = roots.get(0).getId();
+            society.setParentId(0L);
+            departments.add(society);
+        }
+        for(DepartmentDTO.TSociety child : infoList){
+            departments.addAll(findDeparmentAnccestor(anccestorId,child.getParentId()));
+            departments.add(child);
+        }
+        return new ArrayList<DepartmentDTO.TSociety>(departments);
+    }
+
+
+
+
+
+
+
+    private List<DepartmentDTO.TSociety> findDeparmentAnccestor(Long anccestorId, Long parentId){
+        List<DepartmentDTO.TSociety> parents = new ArrayList<>();
+        DepartmentDTO.TSociety parent = modelMapper.map(get(parentId), DepartmentDTO.TSociety.class);
+        if(parent.getParentId().equals(anccestorId)) {
+            parents.add(parent);
+            return parents;
+        }
+        else {
+            parents.add(parent);
+            parents.addAll(findDeparmentAnccestor(anccestorId, parent.getParentId()));
+        }
+        return parents;
     }
 }
