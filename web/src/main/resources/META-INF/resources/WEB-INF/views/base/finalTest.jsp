@@ -61,7 +61,15 @@
             }),
             isc.ToolStripButtonExcel.create({
                 click: function () {
-                     ExportToFile.downloadExcelRestUrl(null, FinalTestLG_finalTest,  testQuestionUrl + "/spec-list" , 0, null, '',"لیست آزمون های پایانی", FinalTestLG_finalTest.getCriteria(), null);
+                    let implicitCriteria = JSON.parse(JSON.stringify(FinalTestDS_finalTest.implicitCriteria)) ;
+                    let criteria = FinalTestLG_finalTest.getCriteria();
+
+                    if(criteria.criteria){
+                        for (let i = 0; i < criteria.criteria.length ; i++) {
+                            implicitCriteria.criteria.push(criteria.criteria[i]);
+                        }
+                    }
+                     ExportToFile.downloadExcelRestUrl(null, FinalTestLG_finalTest,  testQuestionUrl + "/spec-list" , 0, null, '',"لیست آزمون های پایانی", FinalTestDS_finalTest.implicitCriteria, null);
                 }
              }),
 
