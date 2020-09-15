@@ -682,6 +682,8 @@
         var contentDisable = "<div class='MSG-type-container-disable'  id='MSG_messageType_"+messageTypeID+"' ><img class='MSG-type-icon' src='static/img/msg/"+messageTypeID+".png'  ><span class='MSG-type-title'>"+faName+"</span></div>";
         MSG_typeHtmlFlow.setContents(isEnable ? contentEnable : contentDisable);
         MSG_sendTypesItems.push('MSG_messageType_sms');
+        MSG_msgContent.type = MSG_sendTypesItems;
+
 
         return MSG_typeHtmlFlow;
     }

@@ -556,7 +556,7 @@
             isc.ToolStripButtonExcel.create({
                 margin:5,
                 click:function() {
-                    let implicitCriteria = JSON.parse(JSON.stringify(FilterDF_PCNP.getValuesAsCriteria())) ;
+                    let implicitCriteria = JSON.parse(JSON.stringify(FilterDF_PCNP.getValuesAsAdvancedCriteria())) ;
                     let criteria = PersonnelCourseLG_PCNP.getCriteria();
 
                     if(PersonnelCourseLG_PCNP.getCriteria().criteria){
@@ -565,7 +565,7 @@
                         }
                     }
 
-                    ExportToFile.downloadExcelRestUrl(null, PersonnelCourseLG_PCNP, personnelCourseNotPassedReportUrl, 0, null, '',  "گزارش عدم آموزش", FilterDF_PCNP.getValuesAsCriteria(), null);
+                    ExportToFile.downloadExcelRestUrl(null, PersonnelCourseLG_PCNP, personnelCourseNotPassedReportUrl, 0, null, '',  "گزارش عدم آموزش", implicitCriteria, null);
                 }
             }), "header", "filterEditor", "body"],
         fields: [
