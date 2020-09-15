@@ -9,9 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import java.sql.ResultSet;
-import java.util.List;
-
 @Repository
 public interface PersonnelCoursePassedNAReportViewDAO extends JpaRepository<PersonnelCoursePassedNAReportView, PersonnelCourseKey>, JpaSpecificationExecutor<PersonnelCoursePassedNAReportView> {
 
@@ -28,27 +25,32 @@ public interface PersonnelCoursePassedNAReportViewDAO extends JpaRepository<Pers
             "FROM " +
             "    VIEW_PERSONNEL_COURSE_PASSED_NA_REPORT na " +
             "WHERE " +
-            "        (CASE WHEN :courseId = -1 OR na.course_id =:courseId THEN 1 END) IS NOT NULL " +
-            "        AND (CASE WHEN :personnelNationalCode IS NULL THEN 1 WHEN na.PERSONNEL_NATIONAL_CODE =:personnelNationalCode THEN 1 END) IS NOT NULL " +
-            "        AND (CASE WHEN :personnelPostGradeId = -1 OR na.PERSONNEL_POST_GRADE_ID =:personnelPostGradeId THEN 1 END) IS NOT NULL " +
-            "        AND (CASE WHEN :personnelCompanyName IS NULL THEN 1 WHEN na.PERSONNEL_COMPANY_NAME =:personnelCompanyName THEN 1 END) IS NOT NULL " +
-            "        AND (CASE WHEN :personnelCppArea IS NULL THEN 1 WHEN na.PERSONNEL_CPP_AREA =:personnelCppArea THEN 1 END) IS NOT NULL " +
-            "        AND (CASE WHEN :personnelCcpAssistantCode IS NULL THEN 1 WHEN na.PERSONNEL_CPP_ASSISTANT =:personnelCcpAssistantCode THEN 1 END) IS NOT NULL " +
-            "        AND (CASE WHEN :personnelCcpUnit IS NULL THEN 1 WHEN na.PERSONNEL_CPP_UNIT =:personnelCcpUnit THEN 1 END) IS NOT NULL " +
-            "        AND (CASE WHEN :personnelCppAffairs IS NULL THEN 1 WHEN na.PERSONNEL_CPP_AFFAIRS =:personnelCppAffairs THEN 1 END) IS NOT NULL " +
-            "        AND (CASE WHEN :personnelCppTitle IS NULL THEN 1 WHEN na.PERSONNEL_CPP_TITLE =:personnelCppTitle THEN 1 END) IS NOT NULL " +
+            "        (CASE WHEN :isCourseIdNull = 1 OR na.course_id IN (:courseId) THEN 1 END) IS NOT NULL " +
+            "        AND (CASE WHEN :isNationalCodeNull = 1 OR na.PERSONNEL_NATIONAL_CODE IN (:personnelNationalCode) THEN 1 END) IS NOT NULL " +
+            "        AND (CASE WHEN :isPostGradeIdNull = 1 OR na.personnel_post_grade_id IN (:postGradeId) THEN 1 END) IS NOT NULL " +
+            "        AND (CASE WHEN :personnelCompanyName IS NULL THEN 1 WHEN na.PERSONNEL_COMPANY_NAME like :personnelCompanyName THEN 1 END) IS NOT NULL " +
+            "        AND (CASE WHEN :personnelCcpArea IS NULL THEN 1 WHEN na.PERSONNEL_CPP_AREA like :personnelCcpArea THEN 1 END) IS NOT NULL " +
+            "        AND (CASE WHEN :personnelCcpAssistant IS NULL THEN 1 WHEN na.PERSONNEL_CPP_ASSISTANT like :personnelCcpAssistant THEN 1 END) IS NOT NULL " +
+            "        AND (CASE WHEN :personnelCcpSection IS NULL THEN 1 WHEN na.PERSONNEL_CPP_SECTION like :personnelCcpSection THEN 1 END) IS NOT NULL " +
+            "        AND (CASE WHEN :personnelCcpUnit IS NULL THEN 1 WHEN na.PERSONNEL_CPP_UNIT like :personnelCcpUnit THEN 1 END) IS NOT NULL " +
+            "        AND (CASE WHEN :personnelCcpAffairs IS NULL THEN 1 WHEN na.PERSONNEL_CPP_AFFAIRS like :personnelCcpAffairs THEN 1 END) IS NOT NULL " +
+            "        AND (CASE WHEN :personnelCppTitle IS NULL THEN 1 WHEN na.PERSONNEL_CPP_TITLE like :personnelCppTitle THEN 1 END) IS NOT NULL " +
             "GROUP BY " +
             "    na.course_id, " +
             "    na.course_code, " +
             "    na.course_title_fa", nativeQuery = true)
-    List<List<?>> getPersonnelCountByPriority(Long courseId,
-                                              String personnelNationalCode,
-                                              Long personnelPostGradeId,
+    List<List> getPersonnelCountByPriority(Object[] courseId,
+                                              int isCourseIdNull,
+                                              Object[] personnelNationalCode,
+                                              int isNationalCodeNull,
+                                              Object[] postGradeId,
+                                              int isPostGradeIdNull,
                                               String personnelCompanyName,
-                                              String personnelCppArea,
-                                              String personnelCcpAssistantCode,
+                                              String personnelCcpArea,
+                                              String personnelCcpAssistant,
+                                              String personnelCcpSection,
                                               String personnelCcpUnit,
-                                              String personnelCppAffairs,
+                                              String personnelCcpAffairs,
                                               String personnelCppTitle);
 
     @Query(value = "SELECT " +

@@ -1,31 +1,25 @@
 package com.nicico.training.service;
 
-import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.PersonnelCoursePassedNAReportViewDTO;
 import com.nicico.training.iservice.IPersonnelCoursePassedNAReportViewService;
-import com.nicico.training.model.PersonnelCoursePassedNAReportView;
 import com.nicico.training.repository.PersonnelCoursePassedNAReportViewDAO;
+import com.nicico.training.utility.CriteriaConverter;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class PersonnelCoursePassedNAReportViewService implements IPersonnelCoursePassedNAReportViewService {
 
     private final PersonnelCoursePassedNAReportViewDAO personnelCoursePassedNAReportViewDAO;
-    private final ModelMapper modelMapper;
-    private final ParameterValueService parameterValueService;
 
     @Transactional(readOnly = true)
     @Override
@@ -36,69 +30,42 @@ public class PersonnelCoursePassedNAReportViewService implements IPersonnelCours
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<PersonnelCoursePassedNAReportViewDTO.Grid> searchCourseList(SearchDTO.SearchRq request) {
-        HashMap<String, String> map = new HashMap<>();
-        convertCriteriaToParams(request.getCriteria(), map);
-        List<PersonnelCoursePassedNAReportView> personnelCourseList = personnelCoursePassedNAReportViewDAO.findAll(NICICOSpecification.of(request.getCriteria()));
-        Long isPassed = parameterValueService.get(parameterValueService.getId("Passed")).getId();
         List<PersonnelCoursePassedNAReportViewDTO.Grid> result = new ArrayList<>();
-        Map<Long, List<PersonnelCoursePassedNAReportView>> personnelCourseMap = personnelCourseList.stream().collect(Collectors.groupingBy(PersonnelCoursePassedNAReportView::getCourseId));
-        personnelCourseMap.forEach((courseId, personnelCourse) -> {
-            PersonnelCoursePassedNAReportViewDTO.Grid course = new PersonnelCoursePassedNAReportViewDTO.Grid()
-                    .setCourseId(courseId).setCourseCode(personnelCourse.get(0).getCourseCode())
-                    .setCourseTitleFa(personnelCourse.get(0).getCourseTitleFa())
-                    .setTotalEssentialPersonnelCount((int) personnelCourse.stream().filter(pc -> pc.getPriorityId() == 111L).count())
-                    .setNotPassedEssentialPersonnelCount((int) personnelCourse.stream().filter(pc -> pc.getPriorityId() == 111L && pc.getIsPassed() != isPassed).count())
-                    .setTotalImprovingPersonnelCount((int) personnelCourse.stream().filter(pc -> pc.getPriorityId() == 112L).count())
-                    .setNotPassedImprovingPersonnelCount((int) personnelCourse.stream().filter(pc -> pc.getPriorityId() == 112L && pc.getIsPassed() != isPassed).count())
-                    .setTotalDevelopmentalPersonnelCount((int) personnelCourse.stream().filter(pc -> pc.getPriorityId() == 113L).count())
-                    .setNotPassedDevelopmentalPersonnelCount((int) personnelCourse.stream().filter(pc -> pc.getPriorityId() == 113L && pc.getIsPassed() != isPassed).count());
-            result.add(course);
+        Map<String, Object[]> map = CriteriaConverter.criteria2ParamsMap(request.getCriteria());
+        Object[] nullList = {-1};
+        List<List> courseAndPersonnelCountList = personnelCoursePassedNAReportViewDAO.getPersonnelCountByPriority(
+                map.get("courseId") == null ? nullList : map.get("courseId"),
+                map.get("courseId") == null ? 1 : 0,
+                map.get("personnelNationalCode") == null ? nullList : map.get("personnelNationalCode"),
+                map.get("personnelNationalCode") == null ? 1 : 0,
+                map.get("postGradeId") == null ? nullList : map.get("postGradeId"),
+                map.get("postGradeId") == null ? 1 : 0,
+                map.get("personnelCompanyName") == null ? null : (String) map.get("personnelCompanyName")[0],
+                map.get("personnelCcpArea") == null ? null : (String) map.get("personnelCcpArea")[0],
+                map.get("personnelCcpAssistant") == null ? null : (String) map.get("personnelCcpAssistant")[0],
+                map.get("personnelCcpSection") == null ? null : (String) map.get("personnelCcpSection")[0],
+                map.get("personnelCcpUnit") == null ? null : (String) map.get("personnelCcpUnit")[0],
+                map.get("personnelCcpAffairs") == null ? null : (String) map.get("personnelCcpAffairs")[0],
+                map.get("personnelCppTitle") == null ? null : (String) map.get("personnelCppTitle")[0]
+        );
+
+        courseAndPersonnelCountList.forEach(courseAndPersonnelCount -> {
+            PersonnelCoursePassedNAReportViewDTO.Grid courseAndPersonnelCountDTO = new PersonnelCoursePassedNAReportViewDTO.Grid()
+                    .setCourseId(Long.parseLong(courseAndPersonnelCount.get(0).toString()))
+                    .setCourseCode(courseAndPersonnelCount.get(1).toString())
+                    .setCourseTitleFa(courseAndPersonnelCount.get(2).toString())
+                    .setTotalEssentialPersonnelCount(Integer.parseInt(courseAndPersonnelCount.get(3).toString()))
+                    .setNotPassedEssentialPersonnelCount(Integer.parseInt(courseAndPersonnelCount.get(4).toString()))
+                    .setTotalImprovingPersonnelCount(Integer.parseInt(courseAndPersonnelCount.get(5).toString()))
+                    .setNotPassedImprovingPersonnelCount(Integer.parseInt(courseAndPersonnelCount.get(6).toString()))
+                    .setTotalDevelopmentalPersonnelCount(Integer.parseInt(courseAndPersonnelCount.get(7).toString()))
+                    .setNotPassedDevelopmentalPersonnelCount(Integer.parseInt(courseAndPersonnelCount.get(8).toString()));
+            result.add(courseAndPersonnelCountDTO);
         });
+
         SearchDTO.SearchRs<PersonnelCoursePassedNAReportViewDTO.Grid> searchRs = new SearchDTO.SearchRs<>();
         searchRs.setList(result);
-        searchRs.setTotalCount((long) personnelCourseMap.keySet().size());
+        searchRs.setTotalCount((long) result.size());
         return searchRs;
-    }
-
-    private void convertCriteriaToParams(SearchDTO.CriteriaRq criteria, HashMap<String, String> map) {
-        if (criteria == null)
-            return;
-        if (criteria.getFieldName() == null) {
-            if (criteria.getCriteria() != null && !criteria.getCriteria().isEmpty()) {
-                for (int i = 0; i < criteria.getCriteria().size(); i++) {
-                    convertCriteriaToParams(criteria.getCriteria().get(i), map);
-                }
-            }
-            return;
-        }
-        switch (criteria.getFieldName()) {
-            case "personnelNationalCode":
-                map.put("personnelCppArea", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
-                break;
-            case "ccpAreaCode":
-                map.put("postGradeId", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
-                break;
-            case "ccpAssistant":
-                map.put("personnelCompanyName", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
-                break;
-            case "ccpAssistantCode":
-                map.put("personnelCcpArea", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
-                break;
-            case "ccpAffairs":
-                map.put("personnelCcpAssistant", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
-                break;
-            case "ccpAffairsCode":
-                map.put("personnelCcpSection", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
-                break;
-            case "ccpSection":
-                map.put("personnelCcpUnit", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
-                break;
-            case "ccpSectionCode":
-                map.put("personnelCcpAffairs", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
-                break;
-            case "ccpUnit":
-                map.put("courseId", criteria.getValue().toString().substring(1, criteria.getValue().toString().length() - 1));
-                break;
-        }
     }
 }
