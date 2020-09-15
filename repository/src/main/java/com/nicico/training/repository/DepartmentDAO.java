@@ -35,4 +35,7 @@ public interface DepartmentDAO extends JpaRepository<Department, Long>, JpaSpeci
 
     @Query(value = "SELECT DISTINCT tbl_department.c_ghesmat_title FROM tbl_department WHERE tbl_department.c_ghesmat_title IS NOT NULL ORDER BY  tbl_department.c_ghesmat_title", nativeQuery = true)
     List<String> findAllSectionsFromDepartment();
+
+    @Query(value = "select * from TBL_DEPARTMENT where id = f_parent and e_enabled is null", nativeQuery = true)
+    List<Department> getRoot();
 }

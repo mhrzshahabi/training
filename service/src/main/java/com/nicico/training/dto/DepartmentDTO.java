@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 import java.util.List;
@@ -40,6 +41,7 @@ public class DepartmentDTO implements Serializable {
         private String vahedTitle;
         private String type;
         private Long enabled;
+        public Long parentId;
     }
 
 
@@ -77,4 +79,30 @@ public class DepartmentDTO implements Serializable {
     public static class FieldValue {
         private String value;
     }
+
+    @Getter
+    @Setter
+    @ApiModel("TSociety")
+    public static class TSociety{
+
+        private Long id;
+        public String title;
+        public String code;
+        public Long parentId;
+
+        @Override
+        public int hashCode() {
+            return new HashCodeBuilder(17, 31).
+                    append(code).
+                    toHashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof CompetenceWebserviceDTO))
+                return false;
+            return (this.getId().equals(((CompetenceWebserviceDTO.TupleInfo) obj).getId()));
+        }
+    }
+
 }
