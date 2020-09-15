@@ -420,7 +420,8 @@
                         title: "<spring:message code='class.code'/>",
                         align: "center",
                         filterOperator: "iContains",
-                        autoFitWidth: true
+                        autoFitWidth: true,
+                        filterOnKeypress: false
                     },
                     {
                         name: "titleClass",
@@ -428,7 +429,8 @@
                         align: "center",
                         filterOperator: "iContains",
                         autoFitWidth: true,
-                        hidden: true
+                        hidden: true,
+                        filterOnKeypress: false
                     },
                     {
                         name: "course.titleFa",
@@ -438,32 +440,37 @@
                         autoFitWidth: true,
                         sortNormalizer: function (record) {
                             return record.course.titleFa;
-                        }.bind(this)
+                        }.bind(this),
+                        filterOnKeypress: false
                     },
                     {
                         name: "startDate",
                         title: "<spring:message code='start.date'/>",
                         align: "center",
-                        filterOperator: "iContains"
+                        filterOperator: "iContains",
+                        filterOnKeypress: false
                     },
                     {
                         name: "endDate",
                         title: "<spring:message code='end.date'/>",
                         align: "center",
-                        filterOperator: "iContains"
+                        filterOperator: "iContains",
+                        filterOnKeypress: false
                     },
                     {
                         name: "studentCount",
                         title: "<spring:message code='student.count'/>",
                         filterOperator: "iContains",
-                        autoFitWidth: true
+                        autoFitWidth: false,
+                        filterOnKeypress: false
                     },
                     {
                         name: "institute.titleFa",
                         title: "<spring:message code='presenter'/>",
                         align: "center",
                         filterOperator: "iContains",
-                        autoFitWidth: true
+                        autoFitWidth: true,
+                        filterOnKeypress: false
                     },
                     {
                         name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
@@ -478,14 +485,35 @@
                         title: "workflowCode",
                         align: "center",
                         filterOperator: "iContains",
-                        hidden: true
+                        hidden: true,
+                        filterOnKeypress: false
                     },
                     {
                         name: "workflowEndingStatus",
                         title: "<spring:message code="ending.class.status"/>",
                         align: "center",
-                        filterOperator: "iContains"
+                        filterOperator: "iContains",
+                        filterOnKeypress: false
                     }
+                ],
+                gridComponents: [
+                    isc.ToolStrip.create({
+                        width: "100%",
+                        membersMargin: 5,
+                        members: [
+                            isc.ToolStripButtonExcel.create({
+                                click: function () {
+                                    let courseId = me.ListGrid_PersonnelTraining.getSelectedRecord().courseId;
+                                    let pageName = "لیست سوابق برگزاری دوره «" + me.ListGrid_PersonnelTraining.getSelectedRecord().courseTitle+"»";
+                                    let restUrl = personnelInformationUrl + "/findClassByCourseId/" + courseId;
+                                    ExportToFile.downloadExcelRestUrl(null, me.ListGrid_PersonnelInfo_class,  restUrl, 0, null, '', pageName, me.ListGrid_PersonnelInfo_class.getCriteria(), null);
+                                }
+                            })
+                        ]
+                    }),
+                    "filterEditor",
+                    "header",
+                    "body"
                 ]
             });
 

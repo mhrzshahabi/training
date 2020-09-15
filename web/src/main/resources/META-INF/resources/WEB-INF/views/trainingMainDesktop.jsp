@@ -544,10 +544,10 @@
 
                 for (let j = 1; j < fields.length; j++) {
                     let tmpStr = ExportToFile.getData(classRecord, fields[j].name.split('.'), 0);
-                    titr += fields[j].title + ': ' + (typeof (tmpStr) == 'undefined' ? '' : ((!isValueMaps[j]) ? (tmpStr + ' ').trim() : parentlistGrid.getDisplayValue(fields[j].name, tmpStr).trim())) + ' - ';
+                    titr += fields[j].title + ': ' + (typeof (tmpStr) == 'undefined' ? '' : ((!isValueMaps[j]) ? (tmpStr + ' ').trim().replace(/(<a)([^>href]+)(href)([ ]*)(=)([ ]*)\"([^\"]*)\"([^>]*)(>)([^<]*)(<\/a>)/g, "[link href=$7]$10[/link]").replace(/<[^>ابپتثجچحخدذرزژصضسشطظکگفقعغونيي]*>/g, "") : parentlistGrid.getDisplayValue(fields[j].name, tmpStr).trim())) + ' - ';
                 }
 
-                titr = titr.substring(0, titr.length - 4);
+                titr = titr.substring(0, titr.length - 3);
 
                 return titr;
             }
