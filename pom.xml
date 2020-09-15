@@ -27,6 +27,7 @@
         <module>web</module>
         <module>main</module>
         <module>spec</module>
+        <module>jpa</module>
     </modules>
 
     <dependencies>
