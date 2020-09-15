@@ -66,19 +66,19 @@ public class SendMessageService implements ISendMessageService {
     @Override
     public void scheduling() {
 
-        List<Message> messages=messageDAO.findAll();
+        List<Message> messages = messageDAO.findAll();
         Integer cnt = messages.size();
 
         try {
             for (int i = 0; i < cnt; i++) {
-                if(messages.get(i).getMessageContactList().size()==0){
+                if (messages.get(i).getMessageContactList().size() == 0) {
                     messages.get(i).setSendWays(null);
                     messageDAO.save(messages.get(i));
 
                     messageDAO.deleteById(messages.get(i).getId());
                 }
             }
-        }catch (Exception ex){
+        } catch (Exception ex) {
 
         }
 
@@ -95,16 +95,16 @@ public class SendMessageService implements ISendMessageService {
 
         for (int i = 0; i < cnt; i++) {
 
-            if(masterList.get(i).getObjectType().equals("ClassStudent")){
-                ClassStudent model= classStudentDAO.findById(masterList.get(i).getObjectId()).orElse(null);
+            if (masterList.get(i).getObjectType().equals("ClassStudent")) {
+                ClassStudent model = classStudentDAO.findById(masterList.get(i).getObjectId()).orElse(null);
 
-                if(model!=null&&!model.getEvaluationStatusReaction().equals(1)){
+                if (model != null && !model.getEvaluationStatusReaction().equals(1)) {
                     messageContactDAO.deleteById(masterList.get(i).getMessageContactId());
                 }
-            }else if(masterList.get(i).getObjectType().equals("Teacher")){
-                Tclass model= tclassDAO.findById(masterList.get(i).getClassId()).orElse(null);
+            } else if (masterList.get(i).getObjectType().equals("Teacher")) {
+                Tclass model = tclassDAO.findById(masterList.get(i).getClassId()).orElse(null);
 
-                if(model!=null&& !model.getEvaluationStatusReactionTeacher().equals(1)){
+                if (model != null && !model.getEvaluationStatusReactionTeacher().equals(1)) {
                     messageContactDAO.deleteById(masterList.get(i).getMessageContactId());
                 }
             }
@@ -115,7 +115,7 @@ public class SendMessageService implements ISendMessageService {
 
             Long messageId = Long.valueOf(secureRandom.nextInt(Integer.MAX_VALUE));
 
-            magfaSMSService.asyncEnqueue(numbers, ++messageId,  masterList.get(i).getContextText());
+            magfaSMSService.asyncEnqueue(numbers, ++messageId, masterList.get(i).getContextText());
 
             MessageContact messageContact = messageContactDAO.findById(masterList.get(i).getMessageContactId()).orElse(null);
 

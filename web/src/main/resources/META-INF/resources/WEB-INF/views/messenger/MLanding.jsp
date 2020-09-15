@@ -12,6 +12,7 @@
 
 
     var MSG_textEditorValue = "";
+    var MSG_textEditorpid = "";
     var MSG_sendTypesItems = [];
     var MSG_msgContent = {};
     var MSG_attachFiles = [];
@@ -166,7 +167,7 @@
                 pickListWidth: 800,
                 autoFetchData: false,
                 filterOnKeypress: true,
-                optionDataSource: OAUserRestDataSource,
+                //optionDataSource: OAUserRestDataSource,
                 pickListFields: [
                     {name: "firstName", width: "10%", align: "center"},
                     {name: "lastName", width: "10%", align: "center"},
@@ -328,6 +329,7 @@
                         direction: 'rtl',
                         layoutAlign: 'right',
                         canDragResize:true,
+                        disabled:true,
                         controlGroups:["fontControls", "formatControls", "styleControls", "colorControls", "bulletControls"],
                         styleControls: ["alignRight", "boldSelection"],
                         value:MSG_textEditorValue
@@ -357,13 +359,13 @@
                 vAlign: "center",
                 layoutTopMargin: 10,
                 members: [
-                    MSG_selectDefaultMsgBtn,
+                    //MSG_selectDefaultMsgBtn,
 
                     isc.HLayout.create({
                         width: "80%",
                         height: "100%",
                         alignment: 'left',
-                        align: "left",
+                        align: "right",
                         vAlign: "center",
                         layoutTopMargin: -10,
                         members: [
@@ -676,9 +678,11 @@
             align: "right",
             contents: ""
         })
-        var contentEnable = "<div class='MSG-type-container'  id='MSG_messageType_"+messageTypeID+"' ><img class='MSG-type-icon' src='static/img/msg/"+messageTypeID+".png' onclick='selectSendMessageType(this)' ><span class='MSG-type-title'>"+faName+"</span></div>";
+        var contentEnable = "<div class='MSG-type-container MSG-select-icon'  id='MSG_messageType_"+messageTypeID+"' ><img class='MSG-type-icon' src='static/img/msg/"+messageTypeID+".png' onclick='selectSendMessageType(this)' ><span class='MSG-type-title'>"+faName+"</span></div>";
         var contentDisable = "<div class='MSG-type-container-disable'  id='MSG_messageType_"+messageTypeID+"' ><img class='MSG-type-icon' src='static/img/msg/"+messageTypeID+".png'  ><span class='MSG-type-title'>"+faName+"</span></div>";
-        MSG_typeHtmlFlow.setContents(isEnable ? contentEnable : contentDisable)
+        MSG_typeHtmlFlow.setContents(isEnable ? contentEnable : contentDisable);
+        MSG_sendTypesItems.push('MSG_messageType_sms');
+
         return MSG_typeHtmlFlow;
     }
 
@@ -694,7 +698,6 @@
 
     function MSG_toggleMessageType(messageTypeID, isEnable){
         var selectType = 'MSG_messageType_'+messageTypeID;
-        console.log(selectType)
         setTimeout(function(){
             var c = window[selectType].contents;
             var joinText = isEnable ? 'MSG-type-container': 'MSG-type-container-disable';
