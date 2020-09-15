@@ -69,7 +69,8 @@
                             implicitCriteria.criteria.push(criteria.criteria[i]);
                         }
                     }
-                     ExportToFile.downloadExcelRestUrl(null, FinalTestLG_finalTest,  testQuestionUrl + "/spec-list" , 0, null, '',"لیست آزمون های پایانی", FinalTestDS_finalTest.implicitCriteria, null);
+                    console.log(implicitCriteria);
+                     ExportToFile.downloadExcelRestUrl(null, FinalTestLG_finalTest,  testQuestionUrl + "/spec-list" , 0, null, '',"لیست آزمون های پایانی", implicitCriteria, null);
                 }
              }),
 
