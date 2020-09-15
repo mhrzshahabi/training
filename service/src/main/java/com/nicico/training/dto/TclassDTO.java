@@ -115,6 +115,7 @@ public class TclassDTO {
         private PersonalInfoDTO.Info planner;
         private String supervisorFullName;
         private String organizerName;
+        private InstituteDTO.InstituteInfoTuple organizer;
         private List<TclassDTO.InfoTuple> canceledClasses;
 
         //*********************************

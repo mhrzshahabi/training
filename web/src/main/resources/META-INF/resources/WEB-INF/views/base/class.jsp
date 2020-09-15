@@ -115,6 +115,7 @@
             {name: "studentCost"},
             {name: "studentCostCurrency"},
             {name: "planner"},
+            {name: "organizer"},
         ]
     });
 
@@ -387,14 +388,11 @@
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         selectionType: "single",
-
         autoFetchData: false,
-
         initialSort: [
             {property: "startDate", direction: "descending", primarySort: true}
         ],
         selectionUpdated: function (record) {
-
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
         },
         <sec:authorize access="hasAuthority('Tclass_U')">
@@ -501,14 +499,10 @@
                 autoFitWidth: true,
             },
             {
-                name: "organizerName",
+                name: "organizer.titleFa",
                 title: "<spring:message code="executer"/>",
-                displayValueFromRecord: false,
-                canFilter: false,
                 canSort: false,
-                type: "TextItem",
                 align: "center",
-                filterOperator: "iContains",
                 autoFitWidth: true,
             },
             {
