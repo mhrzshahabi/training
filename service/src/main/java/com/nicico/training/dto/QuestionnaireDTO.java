@@ -31,7 +31,7 @@ public class QuestionnaireDTO implements Serializable {
         private Integer version;
         private ParameterValueDTO.MinInfo questionnaireType;
         private Long enabled;
-//        private List<QuestionnaireQuestion> questionnaireQuestionList;
+        private List<QuestionnaireQuestionDTO.Info> questionnaireQuestionList;
     }
 
 

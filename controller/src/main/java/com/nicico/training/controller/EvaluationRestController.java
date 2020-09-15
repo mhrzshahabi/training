@@ -160,6 +160,17 @@ public class EvaluationRestController {
     }
 
     @Loggable
+    @PostMapping(value = "/groupCreate/{Ids}")
+    public ResponseEntity<EvaluationDTO.Info> groupCreate(@RequestBody Object req, @PathVariable Set<Long> Ids) {
+        for (Long id : Ids) {
+            EvaluationDTO.Create create = modelMapper.map(req, EvaluationDTO.Create.class);
+            create.setEvaluatorId(id);
+            evaluationService.create(create);
+        }
+        return new ResponseEntity<>(null, HttpStatus.CREATED);
+    }
+
+    @Loggable
     @PutMapping(value = "/{id}")
     public ResponseEntity<EvaluationDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
         EvaluationDTO.Update update = modelMapper.map(request, EvaluationDTO.Update.class);

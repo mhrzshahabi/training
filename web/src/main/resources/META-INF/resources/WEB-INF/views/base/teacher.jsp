@@ -1328,9 +1328,66 @@
             return mobile[0] === "0" && mobile[1] === "9" && mobile.length === 11;
     }
 
-    function fillPersonalInfoFields(nationalCode) {
-        isc.RPCManager.sendRequest(TrDSRequest(personalInfoUrl + "getOneByNationalCode/" + nationalCode, "GET", null,
-            "callback: personalInfo_findOne_result(rpcResponse)"));
+    function fillPersonalInfoFields(nationalCode,internalTeacher,personnelCode) {
+        isc.RPCManager.sendRequest(TrDSRequest(personalInfoUrl + "getOneByNationalCode/" + nationalCode, "GET", null,(resp) => {
+                if (resp !== null && resp !== undefined && resp.data !== "") {
+                    vm.clearValues();
+                    var personality = JSON.parse(resp.data);
+                    showAttach(personality.id);
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.nationalCode", personality.nationalCode);
+                    DynamicForm_BasicInfo_JspTeacher.setValue("teacherCode", personality.nationalCode);
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.id", personality.id);
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.firstNameFa", personality.firstNameFa);
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.lastNameFa", personality.lastNameFa);
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.firstNameEn", personality.firstNameEn);
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.lastNameEn", personality.lastNameEn);
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.fatherName", personality.fatherName);
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthDate", personality.birthDate);
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthLocation", personality.birthLocation);
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthCertificate", personality.birthCertificate);
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthCertificateLocation", personality.birthCertificateLocation);
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.nationality", personality.nationality);
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.description", personality.description);
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.genderId", personality.genderId);
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.marriedId", personality.marriedId);
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.militaryId", personality.militaryId);
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.educationLevelId", personality.educationLevelId);
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.educationMajorId", personality.educationMajorId);
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.educationOrientationId", personality.educationOrientationId);
+                    DynamicForm_JobInfo_JspTeacher.setValue("personality.jobTitle", personality.jobTitle);
+                    DynamicForm_JobInfo_JspTeacher.setValue("personality.jobLocation", personality.jobLocation);
+                    DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
+
+
+                    if (personality.contactInfo !== null && personality.contactInfo !== undefined) {
+                        DynamicForm_BasicInfo_JspTeacher.setValue("personality.contactInfo.mobile", personality.contactInfo.mobile);
+                        DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.email", personality.contactInfo.email);
+                        DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.personalWebSite", personality.contactInfo.personalWebSite);
+
+                        if (personality.contactInfo.workAddress !== null && personality.contactInfo.workAddress !== undefined) {
+                            setWorkAddressFields(personality.contactInfo.workAddress);
+                        }
+                        if (personality.contactInfo.homeAddress !== null && personality.contactInfo.homeAddress !== undefined) {
+                            setHomeAddressFields(personality.contactInfo.homeAddress);
+                        }
+                    }
+
+                    if (personality.accountInfo !== null && personality.accountInfo !== undefined) {
+                        DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.id", personality.accountInfo.id);
+                        DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.accountNumber", personality.accountInfo.accountNumber);
+                        DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bank", personality.accountInfo.bank);
+                        DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bankBranch", personality.accountInfo.bankBranch);
+                        DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bankBranchCode", personality.accountInfo.bankBranchCode);
+                        DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.cartNumber", personality.accountInfo.cartNumber);
+                        DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.shabaNumber", personality.accountInfo.shabaNumber);
+                    }
+                    if(internalTeacher == true){
+                        DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").setValue(personnelCode);
+                        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
+                    }
+                }
+
+        }));
     }
 
     function fillPersonalInfoByPersonnelNumber(personnelCode) {
@@ -1449,8 +1506,12 @@
                 DynamicForm_BasicInfo_JspTeacher.setValue("teacherCode", personnel.nationalCode);
             if (personnel.personnelNo != undefined && personnel.personnelNo != null)
                 DynamicForm_BasicInfo_JspTeacher.setValue("personnelCode", personnel.personnelNo);
-            if (personnel.birthDate != undefined && personnel.birthDate != null)
-                DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthDate", personnel.birthDate);
+            if (personnel.birthDate != undefined && personnel.birthDate != null){
+                let year = personnel.birthDate.substring(0,4);
+                let month = personnel.birthDate.substring(5,7);
+                let day = personnel.birthDate.substring(8,10);
+                DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthDate", JalaliDate.gregorianToJalali(year,month,day));
+            }
             if (personnel.birthCertificateNo != undefined && personnel.birthCertificateNo != null)
                 DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthCertificate", personnel.birthCertificateNo);
             if (personnel.jobTitle != undefined && personnel.jobTitle != null)
@@ -1493,64 +1554,6 @@
         DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
         DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
     }
-
-    function personalInfo_findOne_result(resp) {
-        if (resp !== null && resp !== undefined && resp.data !== "") {
-            vm.clearValues();
-            var personality = JSON.parse(resp.data);
-            showAttach(personality.id);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.nationalCode", personality.nationalCode);
-            DynamicForm_BasicInfo_JspTeacher.setValue("teacherCode", personality.nationalCode);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.id", personality.id);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.firstNameFa", personality.firstNameFa);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.lastNameFa", personality.lastNameFa);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.firstNameEn", personality.firstNameEn);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.lastNameEn", personality.lastNameEn);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.fatherName", personality.fatherName);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthDate", personality.birthDate);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthLocation", personality.birthLocation);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthCertificate", personality.birthCertificate);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthCertificateLocation", personality.birthCertificateLocation);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.nationality", personality.nationality);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.description", personality.description);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.genderId", personality.genderId);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.marriedId", personality.marriedId);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.militaryId", personality.militaryId);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.educationLevelId", personality.educationLevelId);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.educationMajorId", personality.educationMajorId);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.educationOrientationId", personality.educationOrientationId);
-            DynamicForm_JobInfo_JspTeacher.setValue("personality.jobTitle", personality.jobTitle);
-            DynamicForm_JobInfo_JspTeacher.setValue("personality.jobLocation", personality.jobLocation);
-
-
-
-            if (personality.contactInfo !== null && personality.contactInfo !== undefined) {
-                DynamicForm_BasicInfo_JspTeacher.setValue("personality.contactInfo.mobile", personality.contactInfo.mobile);
-                DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.email", personality.contactInfo.email);
-                DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.personalWebSite", personality.contactInfo.personalWebSite);
-
-                if (personality.contactInfo.workAddress !== null && personality.contactInfo.workAddress !== undefined) {
-                    setWorkAddressFields(personality.contactInfo.workAddress);
-                }
-                if (personality.contactInfo.homeAddress !== null && personality.contactInfo.homeAddress !== undefined) {
-                    setHomeAddressFields(personality.contactInfo.homeAddress);
-                }
-            }
-
-            if (personality.accountInfo !== null && personality.accountInfo !== undefined) {
-                DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.id", personality.accountInfo.id);
-                DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.accountNumber", personality.accountInfo.accountNumber);
-                DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bank", personality.accountInfo.bank);
-                DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bankBranch", personality.accountInfo.bankBranch);
-                DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bankBranchCode", personality.accountInfo.bankBranchCode);
-                DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.cartNumber", personality.accountInfo.cartNumber);
-                DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.shabaNumber", personality.accountInfo.shabaNumber);
-            }
-        }
-        DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
-    }
-
-
 
     function clearTabFilters(oLoadAttachments_Teacher) {
         ListGrid_JspAcademicBK.clearFilterValues();

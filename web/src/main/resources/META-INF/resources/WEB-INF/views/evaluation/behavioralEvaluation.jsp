@@ -518,7 +518,7 @@
                     },
                     {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
                 ],
-                fetchDataURL: questionnaireUrl + "/iscList"
+                fetchDataURL: questionnaireUrl + "/iscList/validQestionnaries"
             });
             let ListGrid_SelectQuestionnarie_BE = isc.TrLG.create({
                 width: "100%",

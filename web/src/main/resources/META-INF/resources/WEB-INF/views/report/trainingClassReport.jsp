@@ -144,12 +144,7 @@
             {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
         ],
-        fetchDataURL: viewActivePersonnelUrl + "/iscList",
-        implicitCriteria: {
-            _constructor:"AdvancedCriteria",
-            operator:"and",
-            criteria:[{ fieldName: "active", operator: "equals", value: 1},{ fieldName: "deleted", operator: "equals", value: 0}]
-        }
+        fetchDataURL: viewActivePersonnelUrl + "/iscList"
     });
 
     var RestDataSource_PlannerDS_JspTClassReport = isc.TrDS.create({
@@ -161,12 +156,7 @@
             {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
         ],
-        fetchDataURL: viewActivePersonnelUrl + "/iscList",
-        implicitCriteria: {
-            _constructor:"AdvancedCriteria",
-            operator:"and",
-            criteria:[{ fieldName: "active", operator: "equals", value: 1},{ fieldName: "deleted", operator: "equals", value: 0}]
-        }
+        fetchDataURL: viewActivePersonnelUrl + "/iscList"
     });
 
     var RestDataSource_TargetSociety_JspTClassReport =  isc.DataSource.create({
@@ -248,7 +238,8 @@
                 valueMap: {
                     "1": "برنامه ریزی",
                     "2": "در حال اجرا",
-                    "3": "پایان یافته"
+                    "3": "پایان یافته",
+                    "4": "لغو شده"
                 },
                 filterEditorProperties: {
                     pickListProperties: {
@@ -911,7 +902,8 @@
                     "1": "برنامه ریزی",
                     "2": "در حال اجرا",
                     "3": "پایان یافته",
-                    "4": "همه"
+                    "4": "لفو شده"  ,
+                    "5": "همه"
                 }
             },
             {
@@ -1422,7 +1414,7 @@
             else if (data_values.criteria[i].fieldName == "evaluationEffectivenessGrade") {
                 data_values.criteria[i].operator = DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationOperator").getValue();
             }
-            else if(data_values.criteria[i].fieldName == "tclassStatus" && data_values.criteria[i].value == "4")
+            else if(data_values.criteria[i].fieldName == "tclassStatus" && data_values.criteria[i].value == "5")
                 removedObjects.add(data_values.criteria[i]);
 
             //-----------------------------------TEMP----------------------------
