@@ -15,6 +15,7 @@
     var skill_SkillLevelUrl = rootUrl + "/skill-level/spec-list";
     var skillLevelSymbol_Skill = "";
     var temp;
+    let selectedSkillRecord;
 
     /////////////////////////////////////////////////TrDS/////////////////////////////////////////////////////////////////
 
@@ -57,7 +58,6 @@
             {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-
         ],
         fetchDataURL: null
     });
@@ -553,6 +553,7 @@
         },
         selectionUpdated: function () {
             skillChanged_Skill = true;
+            selectedSkillRecord=this.getSelectedRecord().id;
             PostDS_Skill.fetchDataURL = needsAssessmentReportsUrl + "/skillNA?skillId=" + this.getSelectedRecord().id;
             if ( DetailTS_Skill.getSelectedTab().name === "Post" ){
                 skillChanged_Skill = false;
@@ -600,8 +601,7 @@
         members: [
             isc.ToolStripButtonExcel.create({
                 click: function () {
-                    let criteria = SkillLG_Skill.getCriteria();
-                    ExportToFile.downloadExcelRestUrl(null, SkillLG_Skill , "Skill", 0, null, '',"لیست مهارت ها - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcelRestUrl(null, SkillLG_Skill , skillUrl + "/spec-list", 0, null, '',"لیست مهارت ها"  , SkillLG_Skill.getCriteria(), null);
                 }
             })
         ]
@@ -643,19 +643,7 @@
         members: [
             isc.ToolStripButtonExcel.create({
                 click: function () {
-                    let criteria = PostLG_Skill.getCriteria();
-
-                    if(typeof(criteria.operator)=='undefined'){
-                        criteria._constructor="AdvancedCriteria";
-                        criteria.operator="and";
-                    }
-
-                    if(typeof(criteria.criteria)=='undefined'){
-                        criteria.criteria=[];
-                    }
-                    criteria.criteria.push({fieldName:'skillId',operator:'equals',value:SkillLG_Skill.getSelectedRecord().id});
-
-                    ExportToFile.downloadExcel(null, PostLG_Skill , "Skill_Post", 0, null, '',"لیست پست - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcelRestUrl(null, PostLG_Skill , needsAssessmentReportsUrl + "/skillNA?skillId=" + selectedSkillRecord, 0, null, '',"لیست مهارت ها - پست های انفرادی"  , PostLG_Skill.getCriteria(), null);
                 }
             })
         ]
@@ -809,7 +797,7 @@
         url_Skill = skillUrl;
         SkillDF_Skill.clearValues();
         SkillDF_Skill.getItem("categoryId").setDisabled(false);
-        SkillDF_Skill.getItem("subCategoryId").setDisabled(false);
+        SkillDF_Skill.getItem("subCategoryId").setDisabled(true);
         SkillDF_Skill.getItem("skillLevelId").setDisabled(false);
         SkillWindow_Skill.show();
     }
