@@ -4,6 +4,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
 import com.nicico.training.model.Course;
 import org.springframework.transaction.annotation.Transactional;
+import response.course.dto.CourseDto;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -35,7 +36,7 @@ public interface ICourseService {
 
     void removeEqualCourse(EqualCourseDTO.Remove rq);
 
-    CourseDTO.Info create(CourseDTO.Create request, HttpServletResponse response);
+    CourseDto create(CourseDTO.Create request, HttpServletResponse response);
 
     CourseDTO.Info update(Long id, CourseDTO.Update request);
 

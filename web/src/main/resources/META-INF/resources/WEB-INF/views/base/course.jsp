@@ -1613,12 +1613,7 @@
                 textAlign: "center",
                 autoFetchData: false,
                 required: true,
-                // titleOrientation: "top",
-                // height: "30",
                 width: "*",
-                // editorType: "TrComboBoxItem",
-                // changeOnKeypress: true,
-                // filterOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_category,
@@ -1633,6 +1628,7 @@
                     RestDataSourceSubCategory.fetchDataURL = categoryUrl + value + "/sub-categories";
                     DynamicForm_course_GroupTab.getItem("subCategory.id").fetchData();
                     DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
+                    mainObjectiveGrid_Refresh("clear");
                 },
                 click: function (form, item) {
                     item.fetchData();
@@ -1659,6 +1655,7 @@
                 },
                 changed: function (form, item, value) {
                     DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
+                    mainObjectiveGrid_Refresh("clear");
                 }
             },
             {
@@ -2892,10 +2889,8 @@
         if (courseRecord == null || courseRecord.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            // IButton_course_Save.disable();
             vm_JspCourse.clearValues();
             vm_JspCourse.clearErrors();
-            // DynamicForm_course_GroupTab.clearValues();
             wait.show();
             isc.RPCManager.sendRequest({
                 actionURL: courseUrl + "preCourse/" + courseRecord.id,
@@ -2929,10 +2924,6 @@
             });
 
             mainObjectiveGrid_Refresh();
-            // RestDataSource_category.fetchDataURL = categoryUrl + "spec-list";
-            // DynamicForm_course_GroupTab.getItem("category.id").fetchData();
-
-           // alert(courseRecord.id);
 
             //Amin HK
             isc.RPCManager.sendRequest({
@@ -2953,10 +2944,8 @@
 
             course_method = "PUT";
             course_url = courseUrl + courseRecord.id;
-            // DynamicForm_course.getItem("epSection").enable();
             RestDataSourceSubCategory.fetchDataURL = categoryUrl + courseRecord.category.id + "/sub-categories";
             DynamicForm_course_GroupTab.getItem("subCategory.id").fetchData();
-            // sRecord.domainPercent = "دانشی: " + sRecord.knowledge + "%" + "، مهارتی: " + sRecord.skill + "%" + "، نگرشی: " + sRecord.attitude + "%";
             vm_JspCourse.editRecord(courseRecord);
             DynamicForm_course_GroupTab.setValue("subCategory.id", courseRecord.subCategory.id);
 //======================================================
@@ -2975,9 +2964,8 @@
             Window_course.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="course"/>");
             lblCourse.getField("domainCourse").setValue("");
             Window_course.show();
-            // ListSkillBtnMainObjective.setDisabled(false);
             if (courseRecord.scoringMethod === "1") {
-                DynamicForm_course_MainTab.getItem("acceptancelimit_a").setValue(courseRecord.acceptancelimit)
+                DynamicForm_course_MainTab.getItem("acceptancelimit_a").setValue(courseRecord.acceptancelimit);
             }
             DynamicForm_course_MainTab.getItem("scoringMethod").change(DynamicForm_course_MainTab, DynamicForm_course_MainTab.getItem("scoringMethod"), DynamicForm_course_MainTab.getValue("scoringMethod"));
             setTimeout(function () {
@@ -2985,22 +2973,16 @@
                 ListGrid_Syllabus_Goal_refresh();
                 TabSet_Goal_JspCourse.enable();
                 TabSet_Goal_JspCourse.selectTab(0);
-                // ToolStrip_Actions_Goal.enable();
-                // ToolStrip_Actions_Syllabus.enable();
                 lblCourse.show();
             }, 400)
-            // if (ListGrid_Course.getSelectedRecord().theoryDuration != ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration) {
-            // DynamicForm_course.getItem("theoryDuration").setErrors("جمع مدت زمان اجرای سرفصل ها برابر با: " + ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration + " است.");
-            // }
-            // DynamicForm_course.getFields().get(5).prompt = "  جمع مدت زمان اجرای سرفصل ها " + (ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration).toString() + " ساعت می باشد."
         }
-    };
+    }
 
     function mainObjectiveGrid_Refresh(x1 = 0) {
         mainObjectiveList.length = 0;
         mainObjectiveGrid.invalidateCache();
-        if (x1 == 0) {
-            wait.show()
+        if (x1 === 0) {
+            wait.show();
             isc.RPCManager.sendRequest({
                 actionURL: skillUrl + "/main-objective/" + courseRecord.id,
                 httpMethod: "GET",
@@ -3010,37 +2992,13 @@
                 showPrompt: false,
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    wait.close()
+                    wait.close();
                     for (let i = 0; i < JSON.parse(resp.data).length; i++) {
                         mainObjectiveDS.addData(JSON.parse(resp.data)[i]);
                     }
                 }
             });
         }
-    }
-
-    {
-        <%--function openTabGoal() {--%>
-        <%--if (courseRecord == null) {--%>
-        <%--isc.Dialog.create({--%>
-        <%--message: "<spring:message code="msg.no.records.selected"/>",--%>
-        <%--icon: "[SKIN]ask.png",--%>
-        <%--title: "<spring:message code="course_Warning"/>",--%>
-        <%--buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],--%>
-        <%--buttonClick: function (button, index) {--%>
-        <%--this.close();--%>
-        <%--}--%>
-        <%--});--%>
-        <%--} else {--%>
-        <%--for (j = 0; j < trainingTabSet.tabs.length; j++) {--%>
-        <%--if (trainingTabSet.getTab(j).title.substr(0, 5) == "اهداف") {--%>
-        <%--trainingTabSet.removeTab(j);--%>
-        <%--}--%>
-        <%--}--%>
-        <%--createTab("<spring:message code="course_goal_of_syllabus"/>" + " " + courseRecord.titleFa, "goal/show-form", false);--%>
-        <%--RestDataSource_CourseGoal.fetchDataURL = courseUrl + courseRecord.id + "/goal";--%>
-        <%--}--%>
-        <%--};--%>
     }
 
     function print_CourseListGrid(type) {

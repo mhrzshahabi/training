@@ -7,6 +7,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICourseService;
+import com.nicico.training.mapper.course.CourseBeanMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.*;
@@ -16,9 +17,9 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.course.dto.CourseDto;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
@@ -53,6 +54,8 @@ public class CourseService implements ICourseService {
     private final EnumsConverter.ERunTypeConverter eRunTypeConverter = new EnumsConverter.ERunTypeConverter();
     private final EnumsConverter.ETheoTypeConverter eTheoTypeConverter = new EnumsConverter.ETheoTypeConverter();
     private final MessageSource messageSource;
+    private final CourseBeanMapper beanMapper;
+
     @Autowired
     protected EntityManager entityManager;
 
@@ -205,9 +208,8 @@ public class CourseService implements ICourseService {
 
     @Transactional
     @Override
-    public CourseDTO.Info create(CourseDTO.Create request, HttpServletResponse response) {
+    public CourseDto create(CourseDTO.Create request, HttpServletResponse response) {
         if (courseDAO.existsByTitleFa(request.getTitleFa())) {
-
             try {
                 response.sendError(406, null);
                 return null;
@@ -235,7 +237,7 @@ public class CourseService implements ICourseService {
                     skillDAO.saveAndFlush(skill);
                 }
             }
-            return modelMapper.map(course1, CourseDTO.Info.class);
+            return beanMapper.toCourseDto(course1);
         } else
             return null;
     }
@@ -246,6 +248,11 @@ public class CourseService implements ICourseService {
         final Optional<Course> optionalCourse = courseDAO.findById(id);
         final Course currentCourse = optionalCourse.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
         CourseDTO.Update update = modelMapper.map(request, CourseDTO.Update.class);
+        if((currentCourse.getCode().length()!= 9) || !(update.getCode().substring(0,6).equals(currentCourse.getCode().substring(0,6)))){
+            String maxCourseCode = this.getMaxCourseCode(update.getCode());
+            int counter = Integer.valueOf(maxCourseCode) + 1;
+            update.setCode(update.getCode() + counter/100 + counter/10%10 + counter%10);
+        }
         Course course = new Course();
         modelMapper.map(currentCourse, course);
         modelMapper.map(update, course);
@@ -485,11 +492,11 @@ public class CourseService implements ICourseService {
     @Override
     public String getMaxCourseCode(String str) {
         List<Course> courseList = courseDAO.findByCodeStartingWith(str);
-        Integer max = 0;
+        int max = 0;
         if (courseList.size() == 0)
             return "0";
         for (Course course : courseList) {
-            if (max < Integer.parseInt(course.getCode().substring(6)))
+            if (max < (course.getCode().substring(6).equals("") ? 0 : Integer.parseInt(course.getCode().substring(6))))
                 max = Integer.parseInt(course.getCode().substring(6));
         }
         return String.valueOf(max);
