@@ -6,6 +6,7 @@
 package com.nicico.training.service;
 
 import com.nicico.copper.core.service.sms.magfa.MagfaSMSService;
+import com.nicico.copper.core.service.sms.nimad.NimadSMSService;
 import com.nicico.training.dto.MessageContactDTO;
 import com.nicico.training.iservice.ISendMessageService;
 import com.nicico.training.model.ClassStudent;
@@ -32,7 +33,8 @@ import java.util.*;
 @Service
 public class SendMessageService implements ISendMessageService {
 
-    private final MagfaSMSService magfaSMSService;
+    //private final MagfaSMSService magfaSMSService;
+    private final NimadSMSService nimadSMSService;
     //private static Long messageId = -1L;
     private static SecureRandom secureRandom = new SecureRandom();
 
@@ -56,8 +58,17 @@ public class SendMessageService implements ISendMessageService {
 
         Long messageId = Long.valueOf(secureRandom.nextInt(Integer.MAX_VALUE));
 
-        magfaSMSService.asyncEnqueue(recipientNos, ++messageId, message);
+        //magfaSMSService.asyncEnqueue(recipientNos, ++messageId, message);
 
+        Map<String, String> paramValMap=new HashMap<>();
+        paramValMap.put("XXX","مهران گلرخي");
+        paramValMap.put("YYY","yyyyy");
+        paramValMap.put("ZZZ","zzzzzzzzzzz");
+
+        List<String> recipients=new ArrayList<>();
+        recipients.add("9137454148");
+
+        nimadSMSService.syncEnqueue("c4l1a6dxef",paramValMap,recipients);
         return messageId;
     }
 
@@ -115,7 +126,7 @@ public class SendMessageService implements ISendMessageService {
 
             Long messageId = Long.valueOf(secureRandom.nextInt(Integer.MAX_VALUE));
 
-            magfaSMSService.asyncEnqueue(numbers, ++messageId, masterList.get(i).getContextText());
+            //magfaSMSService.asyncEnqueue(numbers, ++messageId, masterList.get(i).getContextText());
 
             MessageContact messageContact = messageContactDAO.findById(masterList.get(i).getMessageContactId()).orElse(null);
 
