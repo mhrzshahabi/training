@@ -65,28 +65,29 @@
 
             }
             else {
+
                 let questionnaireSaveUrl = questionnaireUrl;
                 waitQuestionnaire = createDialog("wait");
+                //
+                // isc.RPCManager.sendRequest(TrDSRequest(questionnaireUrl +
+                //     "/isLocked/" +
+                //     record.id,
+                //     "GET",
+                //     null,
+                //     function(resp){
+                //         if(resp.data=="true"){
+                //             createDialog("info", "پرسشنامه مورد نظر در ارزیابی استفاده شده است. بنابراین قابل تغییر نیست.");
+                //             waitQuestionnaire.close();
+                //
+                //             return ;
+                //         }
 
-                isc.RPCManager.sendRequest(TrDSRequest(questionnaireUrl +
-                    "/isLocked/" +
-                    record.id,
-                    "GET",
-                    null,
-                    function(resp){
-                        if(resp.data=="true"){
-                            createDialog("info", "پرسشنامه مورد نظر در ارزیابی استفاده شده است. بنابراین قابل تغییر نیست.");
-                            waitQuestionnaire.close();
-
-                            return ;
-                        }
-
-                        isc.RPCManager.sendRequest( TrDSRequest(questionnaireSaveUrl+"/enable/"+record.id ,"PUT",null, "callback: EnabledResponse(rpcResponse)"))
+                        isc.RPCManager.sendRequest( TrDSRequest(questionnaireSaveUrl+"/enable/"+record.id ,"PUT",null, "callback: EnabledResponse(rpcResponse)"));
 
                         //isc.RPCManager.sendRequest( TrDSRequest(questionnaireSaveUrl +"/list","GET",null, "callback: ListResponse(rpcResponse,'"+JSON.stringify(record)+"')"));
 
-                    })
-                );
+                //     })
+                // );
             }
 
         }

@@ -4,10 +4,7 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.dto.QuestionnaireDTO;
-import com.nicico.training.model.Questionnaire;
-import com.nicico.training.repository.QuestionnaireQuestionDAO;
 import com.nicico.training.service.QuestionnaireService;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -15,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @RestController
@@ -42,6 +41,28 @@ public class QuestionnaireRestController {
     public ResponseEntity<TotalResponse<QuestionnaireDTO.Info>> iscList(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
         return new ResponseEntity<>(questionnaireService.search(nicicoCriteria), HttpStatus.OK);
+    }
+
+
+
+    @Loggable
+    @GetMapping(value = "/iscList/validQestionnaries")
+    public ResponseEntity<TotalResponse<QuestionnaireDTO.Info>> iscListValidQuestionnarie(@RequestParam MultiValueMap<String, String> criteria) {
+        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
+        TotalResponse<QuestionnaireDTO.Info> result = questionnaireService.search(nicicoCriteria);
+        List<Object> removedObject = new ArrayList();
+        for (QuestionnaireDTO.Info info : result.getResponse().getData()) {
+            if(info.getQuestionnaireQuestionList() == null || info.getQuestionnaireQuestionList().size() == 0)
+                removedObject.add(info);
+        }
+
+        for (Object o : removedObject) {
+            result.getResponse().getData().remove(o);
+            result.getResponse().setTotalRows(result.getResponse().getTotalRows() -1);
+            result.getResponse().setEndRow(result.getResponse().getEndRow() -1);
+        }
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @Loggable

@@ -4231,7 +4231,7 @@
         isc.RPCManager.sendRequest(TrDSRequest(questionnaireUrl + "/getLastQuestionnarieId?criteria=" + JSON.stringify(criteria), "GET", null, function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 QId = resp.httpResponseText;
-                if (QId != null && classRecord.supervisor != undefined && classRecord.teacherId != undefined)
+                if (QId != null && QId != undefined && classRecord.supervisor != undefined && classRecord.teacherId != undefined)
                     create_evaluation_form_JspClass(null, QId, classRecord.supervisor, 454, classRecord.teacherId, 187, 141, 154, classRecord.id);
             }
         }));
