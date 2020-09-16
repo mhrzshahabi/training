@@ -68,14 +68,12 @@
 
     var RestDataSource_teacherInformation_Course = isc.TrDS.create({
         fields: [
-
             {name: "teacher.personality.firstNameFa"},
             {name: "teacher.personality.lastNameFa"},
             {name: "teacher.personality.nationalCode"},
             {name: "teacher.personality.contactInfo.mobile"},
             {name: "teacher.personality.contactInfo.homeAddress.state.name"},
             {name: "teacher.personality.contactInfo.homeAddress.city.name"},
-
         ]
     });
 
@@ -565,11 +563,7 @@
         // autoFetchData: true,
         fields: [
 
-            {name: "teacher.fullName", title: "<spring:message code="teacher"/>", align: "center", filterOperator: "iContains",
-                /*formatCellValue: function (value, record) {
-                                return record.teacher.personality.firstNameFa+" "+record.teacher.personality.lastNameFa
-                }*/
-            },
+            {name: "teacher.fullName", title: "<spring:message code="teacher"/>", align: "center", filterOperator: "iContains",canSort:false},
             {name: "teacher.personality.contactInfo.mobile", title: "<spring:message code="mobile"/>", align: "center", filterOperator: "iContains",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
@@ -580,11 +574,7 @@
                     keyPressFilter: "[0-9]"
                 }
             },
-            {name: "teacher.address", title: "<spring:message code="address"/>", align: "center", filterOperator: "iContains",
-                /*                formatCellValue: function (value, record) {
-                                   return(value != null ? value +"-"+ record.teacher.personality.contactInfo.homeAddress.city.name+"-"+ record.teacher.personality.contactInfo.homeAddress.restAddr +"-"+ "کد پستی :"+record.teacher.personality.contactInfo.homeAddress.postalCode : "")
-                                }*/
-            },
+            {name: "teacher.address", title: "<spring:message code="address"/>", align: "center", filterOperator: "iContains"},
         ],
         recordDoubleClick: function () {
 
@@ -2628,7 +2618,8 @@
                                 width: "100%",
                                 height: "1%",
                                 margin: 10,
-                                members: [ /*isc.ToolStripButtonExcel.create({
+                                members: [
+                                    /*isc.ToolStripButtonExcel.create({
                                     click: function () {
                                          let courseRecord = ListGrid_Course.getSelectedRecord();
                                          if (!(courseRecord === undefined || courseRecord == null)) {
