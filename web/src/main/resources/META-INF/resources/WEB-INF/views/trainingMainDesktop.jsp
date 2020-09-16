@@ -3461,7 +3461,7 @@
     <%--emptyMessage: "",--%>
     <%--loadingDataMessage: "<spring:message code="loading"/>"--%>
     <%--createTab("<spring:message code="post"/>", "<spring:url value="/web/training-post"/>");--%>
-    <%--createTab("<spring:message code="class"/>", "<spring:url value="/tclass/show-form"/>");--%>
+    createTab("<spring:message code="course"/>", "<spring:url value="/course/show-form"/>");
     <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="web/needsAssessment/"/>");--%>
 
     loadFrameworkMessageFa();

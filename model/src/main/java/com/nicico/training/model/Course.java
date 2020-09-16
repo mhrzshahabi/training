@@ -75,7 +75,7 @@ public class Course extends Auditable {
     @OneToMany(mappedBy = "course")
     private Set<Skill> skillSet;
 
-    @OneToMany(mappedBy = "courseMainObjective")
+    @OneToMany(mappedBy = "courseMainObjective", cascade = {CascadeType.MERGE})
     private Set<Skill> skillMainObjectiveSet;
 
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)

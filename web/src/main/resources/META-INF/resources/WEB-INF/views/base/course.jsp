@@ -350,7 +350,6 @@
             // }
         },
         fields: [
-            // {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {
                 name: "code", title: "<spring:message code="corse_code"/>",
                 align: "center",
@@ -372,7 +371,7 @@
                 hidden: true
             },
             {
-                name: "category.id",
+                name: "category.titleFa",
                 title: "<spring:message code="course_category"/>",
                 align: "center", filterOnKeypress:true,
                 // filterOperator: "iC",
@@ -384,7 +383,7 @@
                 }
             },
             {
-                name: "subCategory.id",
+                name: "subCategory.titleFa",
                 title: "<spring:message
         code="course_subcategory"/>",
                 align: "center",
@@ -1838,10 +1837,10 @@
                 x = courseCode();
                 wait.show()
                 DynamicForm_course_GroupTab.getItem('statusGroupTab').hide();
-                isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "getmaxcourse/" + x, "GET", null, function (resp) {
-                    let newCourseCounter = courseCounterCode(resp.data);
-                    x = x + newCourseCounter;
-                    DynamicForm_course_GroupTab.setValue('code', x);
+                // isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "getmaxcourse/" + x, "GET", null, function (resp) {
+                //     let newCourseCounter = courseCounterCode(resp.data);
+                //     x = x + newCourseCounter;
+                //     DynamicForm_course_GroupTab.setValue('code', x);
                     ChangeEtechnicalType = false;
                     let mainObjectiveIdList = [];
                     if (mainObjectiveGrid.data.localData !== undefined) {
@@ -1877,12 +1876,14 @@
                     isc.RPCManager.sendRequest(TrDSRequest(courseUrl, course_method, JSON.stringify(data), function (resp) {
                         wait.close();
                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                            Window_course.close();
                             TabSet_Goal_JspCourse.enable();
                             // ListGrid_Course_refresh();
                             // let responseID = JSON.parse(resp.data).id;
                             // let gridState = "[{id:" + responseID + "}]";
                             simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
                             courseRecord = JSON.parse(resp.data);
+                            console.log(courseRecord)
                             ListGrid_Course_Edit();
                             // setTimeout(function () {
                             //     ListGrid_Course.setSelectedState(gridState);
@@ -1900,14 +1901,14 @@
                             simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
                         }
                     }))
-                }));
+                // }));
             }
             // else if ((course_method == "PUT" && DynamicForm_course.valuesHaveChanged()) || (course_method == "PUT" || ChangeEtechnicalType == true)) {
             else if (course_method == "PUT") {
-                if (data.scoringMethod === "1") {
-                    data.acceptancelimit = data.acceptancelimit_a
+                let sendData = vm_JspCourse.getValues();
+                if (sendData.scoringMethod === "1") {
+                    sendData.acceptancelimit = sendData.acceptancelimit_a
                 }
-
                 ChangeEtechnicalType = false;
                 preCourseIdList = [];
                 equalCourseIdList = [];
@@ -1917,36 +1918,43 @@
                 for (let j = 0; j < equalCourse.length; j++) {
                     equalCourseIdList.add(equalCourse[j].idEC);
                 }
-                let mainObjectiveIdList = [];
+                let mainSkills = [];
                 for (let k = 0; k < mainObjectiveList.length; k++) {
-                    mainObjectiveIdList.add(mainObjectiveList[k].id);
+                    let skill = {};
+                    skill.id = mainObjectiveList[k].id
+                    mainSkills.add(skill);
                 }
-                data.mainObjectiveIds = mainObjectiveIdList;
-                data.equalCourseListId = equalCourseIdList;
-                data.preCourseListId = preCourseIdList;
-                delete data["subCategory"];
-                delete data["category"];
-                delete data["levelType"];
-                delete data["theoType"];
-                delete data["runType"];
-                delete data["technicalType"];
-                data.subCategoryId = DynamicForm_course_GroupTab.getValue("subCategory.id");
-                data.categoryId = DynamicForm_course_GroupTab.getValue("category.id");
-                data.eTechnicalTypeId = DynamicForm_course_GroupTab.getValue("technicalType.id");
+                sendData.mainSkills = mainSkills;
+                sendData.equalCourseListId = equalCourseIdList;
+                sendData.preCourseListId = preCourseIdList;
+                sendData.runType = sendData.runType.id;
+                sendData.theoType = sendData.theoType.id;
+                sendData.technicalType = sendData.technicalType.id;
+                sendData.levelType = sendData.levelType.id;
+                // delete data["subCategory"];
+                // delete data["category"];
+                // delete data["levelType"];
+                // delete data["theoType"];
 
-                data.eRunTypeId = DynamicForm_course_GroupTab.getValue("runType.id");
-                data.eLevelTypeId = DynamicForm_course_GroupTab.getValue("levelType.id");
-                data.eTheoTypeId = DynamicForm_course_GroupTab.getValue("theoType.id");
-                data.needText = DynamicForm_course_GroupTab.getValue("issueTitle");
-                data.theoryDuration = DynamicForm_course_GroupTab.getValue("duration");
+                // delete data["technicalType"];
+                // data.subCategoryId = DynamicForm_course_GroupTab.getValue("subCategory.id");
+                // data.categoryId = DynamicForm_course_GroupTab.getValue("category.id");
+                // data.eTechnicalTypeId = DynamicForm_course_GroupTab.getValue("technicalType.id");
+
+                // data.eRunTypeId = DynamicForm_course_GroupTab.getValue("runType.id");
+                // data.eLevelTypeId = DynamicForm_course_GroupTab.getValue("levelType.id");
+                // data.eTheoTypeId = DynamicForm_course_GroupTab.getValue("theoType.id");
+                // data.needText = DynamicForm_course_GroupTab.getValue("issueTitle");
+                // data.theoryDuration = DynamicForm_course_GroupTab.getValue("duration");
 
                 wait.show()
-                isc.RPCManager.sendRequest(TrDSRequest(course_url, course_method, JSON.stringify(data), function (resp) {
+                isc.RPCManager.sendRequest(TrDSRequest(course_url, course_method, JSON.stringify(sendData), function (resp) {
                     wait.close();
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                         sendToWorkflowAfterUpdate(JSON.parse(resp.data));
                         // ListGrid_Course_refresh();
                         courseRecord = JSON.parse(resp.data);
+                        DynamicForm_course_GroupTab.setValue("code", courseRecord.code);
                         // let gridState = "[{id:" + courseRecord.id + "}]";
                         simpleDialog("<spring:message code="edit"/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
                         ToolStripButton_addSkill.click();
@@ -2999,6 +3007,10 @@
                 }
             });
         }
+    }
+
+    let editingCourse = function () {
+
     }
 
     function print_CourseListGrid(type) {
