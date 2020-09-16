@@ -14,7 +14,6 @@
         var classRecord_BE;
 
         var selected_questionnaire_BE = null;
-        var dummy;
 
     //----------------------------------------- DataSources ------------------------------------------------------------
         var AudienceTypeDS_BE = isc.TrDS.create({
