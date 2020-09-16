@@ -14,6 +14,7 @@
         var classRecord_BE;
 
         var selected_questionnaire_BE = null;
+        var dummy;
 
     //----------------------------------------- DataSources ------------------------------------------------------------
         var AudienceTypeDS_BE = isc.TrDS.create({
@@ -354,6 +355,7 @@
             let EvaluationListGrid_PeronalLIst_BE = isc.TrLG.create({
                 dataSource: EvaluationDS_PersonList_BE,
                 selectionType: "single",
+                autoFetchData: false,
                 fields: [
                     {name: "id", hidden: true},
                     {name: "firstName"},
@@ -383,19 +385,65 @@
                         valueField: "id",
                         displayField: "title",
                         changed: function (form, item, value) {
-                            if(value == 190)
+                            if(value == 190){
                                 EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getParentEmployee/" + record.student.nationalCode;
-                            else if(value == 189)
+                                EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
+                                    if(resp.data.size() == 0){
+                                        EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
+                                        EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                        EvaluationListGrid_PeronalLIst_BE.fetchData();
+                                        EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                    }
+                                });
+                            }
+                            else if(value == 189){
                                 EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getSiblingsEmployee/" + record.student.nationalCode;
-                            else if(value == 454)
+                                EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
+                                    if(resp.data.size() == 0){
+                                        EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
+                                        EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                        EvaluationListGrid_PeronalLIst_BE.fetchData();
+                                        EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                    }
+                                });
+                            }
+                            else if(value == 454){
                                 EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getTraining/" +  "<%= SecurityUtil.getNationalCode()%>";
-                            else if(value == 188)
+                                EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
+                                    if(resp.data.size() == 0){
+                                        EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
+                                        EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                        EvaluationListGrid_PeronalLIst_BE.fetchData();
+                                        EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                    }
+                                });
+                            }
+                            else if(value == 188){
                                 EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getStudent/" + record.student.nationalCode;
-                            else
+                                EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
+                                    if(resp.data.size() == 0){
+                                        EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
+                                        EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                        EvaluationListGrid_PeronalLIst_BE.fetchData();
+                                        EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                    }
+                                });
+                            }
+                            else{
                                 EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
-                            EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
-                            EvaluationListGrid_PeronalLIst_BE.fetchData();
-                            EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                EvaluationListGrid_PeronalLIst_BE.fetchData();
+                                EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                            }
+
                         }
                     },
                 ],
@@ -483,7 +531,14 @@
             EvaluationWin_PersonList.show();
             EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getParentEmployee/" + record.student.nationalCode;
             EvaluationListGrid_PeronalLIst_BE.invalidateCache();
-            EvaluationListGrid_PeronalLIst_BE.fetchData();
+            EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
+                if(resp.data.size() == 0){
+                    EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
+                    EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                    EvaluationListGrid_PeronalLIst_BE.fetchData();
+                    EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                }
+            });
         }
 
         function Select_Questionnarie_BE(id,questionnarieId, evaluatorId,

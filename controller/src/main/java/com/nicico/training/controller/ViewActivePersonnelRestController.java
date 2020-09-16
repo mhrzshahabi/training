@@ -211,6 +211,9 @@ public class ViewActivePersonnelRestController {
     @Transactional
     public ResponseEntity<ISC<ViewActivePersonnelDTO.Info>> getParentEmployee(@RequestParam MultiValueMap<String, String> criteria, @PathVariable String personnelNationalCode) throws IOException {
         ViewActivePersonnel[] personnelArray = viewActivePersonnelDAO.findByNationalCode(personnelNationalCode);
+        SearchDTO.SearchRs<ViewActivePersonnelDTO.Info> searchRs = new SearchDTO.SearchRs<>();
+        searchRs.setList(new ArrayList<>());
+        searchRs.setTotalCount((long) 0);
         if (personnelArray != null && personnelArray.length != 0) {
             ViewActivePersonnel personnel = personnelArray[0];
 
@@ -229,21 +232,22 @@ public class ViewActivePersonnelRestController {
                     finalResult = modelMapper.map(result, ViewActivePersonnelDTO.Info.class);
             }
             if(finalResult != null) {
-                SearchDTO.SearchRs<ViewActivePersonnelDTO.Info> searchRs = new SearchDTO.SearchRs<>();
-                searchRs.setList(new ArrayList<>());
                 searchRs.getList().add(finalResult);
                 searchRs.setTotalCount((long) 1);
                 return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
             }
             else
-                return new ResponseEntity<>(null, HttpStatus.OK);
+                return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
         } else
-            return new ResponseEntity<>(null, HttpStatus.OK);
+            return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
     }
 
     @GetMapping(value = "getSiblingsEmployee/{personnelNationalCode}")
     public ResponseEntity<ISC<ViewActivePersonnelDTO.Info>> getSiblingsEmployee(@RequestParam MultiValueMap<String, String> criteria, @PathVariable String personnelNationalCode) throws IOException {
         ViewActivePersonnel[] personnelArray = viewActivePersonnelDAO.findByNationalCode(personnelNationalCode);
+        SearchDTO.SearchRs<ViewActivePersonnelDTO.Info> searchRs = new SearchDTO.SearchRs<>();
+        searchRs.setList(new ArrayList<>());
+        searchRs.setTotalCount((long) 0);
         List<ViewActivePersonnel> result = new ArrayList<>();
         if (personnelArray != null && personnelArray.length != 0) {
             ViewActivePersonnel personnel = personnelArray[0];
@@ -274,8 +278,6 @@ public class ViewActivePersonnelRestController {
 
             if (result != null && result.size() != 0) {
                 int count = 0;
-                SearchDTO.SearchRs<ViewActivePersonnelDTO.Info> searchRs = new SearchDTO.SearchRs<>();
-                searchRs.setList(new ArrayList<>());
                 for (ViewActivePersonnel info : result) {
                     searchRs.getList().add(modelMapper.map(info, ViewActivePersonnelDTO.Info.class));
                     count++;
@@ -284,39 +286,41 @@ public class ViewActivePersonnelRestController {
                 return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
             }
             else
-                return new ResponseEntity<>(null, HttpStatus.OK);
+                return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
 
         }else
-                return new ResponseEntity<>(null, HttpStatus.OK);
+            return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
     }
 
     @GetMapping(value = "getTraining/{trainorNationalCode}")
     public ResponseEntity<ISC<ViewActivePersonnelDTO.Info>> getTraining(@RequestParam MultiValueMap<String, String> criteria, @PathVariable String trainorNationalCode) throws IOException {
         ViewActivePersonnel[] tempResult = viewActivePersonnelDAO.findByNationalCode(trainorNationalCode);
+        SearchDTO.SearchRs<ViewActivePersonnelDTO.Info> searchRs = new SearchDTO.SearchRs<>();
+        searchRs.setList(new ArrayList<>());
+        searchRs.setTotalCount((long) 0);
         if (tempResult != null && tempResult.length != 0) {
             ViewActivePersonnelDTO.Info result = modelMapper.map(tempResult[0], ViewActivePersonnelDTO.Info.class);
-            SearchDTO.SearchRs<ViewActivePersonnelDTO.Info> searchRs = new SearchDTO.SearchRs<>();
-            searchRs.setList(new ArrayList<>());
             searchRs.getList().add(result);
             searchRs.setTotalCount((long) 1);
             return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
         } else
-            return new ResponseEntity<>(null, HttpStatus.OK);
+            return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
     }
 
     @GetMapping(value = "getStudent/{studentNationalCode}")
     public ResponseEntity<ISC<ViewActivePersonnelDTO.Info>> getStudent(@RequestParam MultiValueMap<String, String> criteria, @PathVariable String studentNationalCode) throws IOException {
         ViewActivePersonnel[] tempResult = viewActivePersonnelDAO.findByNationalCode(studentNationalCode);
+        SearchDTO.SearchRs<ViewActivePersonnelDTO.Info> searchRs = new SearchDTO.SearchRs<>();
+        searchRs.setList(new ArrayList<>());
+        searchRs.setTotalCount((long) 0);
         if (tempResult != null && tempResult.length != 0) {
             ViewActivePersonnelDTO.Info result = modelMapper.map(tempResult[0], ViewActivePersonnelDTO.Info.class);
-            SearchDTO.SearchRs<ViewActivePersonnelDTO.Info> searchRs = new SearchDTO.SearchRs<>();
-            searchRs.setList(new ArrayList<>());
             searchRs.getList().add(result);
             searchRs.setTotalCount((long) 1);
             return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
         }
         else
-            return new ResponseEntity<>(null, HttpStatus.OK);
+            return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
     }
 
 }
