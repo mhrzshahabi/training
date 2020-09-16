@@ -6,7 +6,7 @@
 <%@ page import="com.nicico.copper.core.SecurityUtil" %>
 
 //<script>
-    var Wait_JspClassEvaluationInfo = null;
+//     var Wait_JspClassEvaluationInfo = null;
 
     var DynamicForm_JspClassEvaluationInfo = isc.DynamicForm.create({
         titleAlign: "right",
@@ -26,7 +26,7 @@
                     let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
                     if (!(classRecord === undefined || classRecord == null)) {
 
-                        let fields = [{name:'title',title:'عنوان'},{name:'value',title:''}]
+                        let fields = [{name:'title',title:'عنوان'},{name:'value',title:''}];
                         let allRows = [{title:DynamicForm_JspClassEvaluationInfo.getItem('teacherGradeToClass').getTitle(),value:DynamicForm_JspClassEvaluationInfo.getItem('teacherGradeToClass').getValue()},
                                         {title:DynamicForm_JspClassEvaluationInfo.getItem('trainingGradeToTeacher').getTitle(),value:DynamicForm_JspClassEvaluationInfo.getItem('trainingGradeToTeacher').getValue()},
                                         {title:DynamicForm_JspClassEvaluationInfo.getItem('studentsGradeToClass').getTitle(),value:DynamicForm_JspClassEvaluationInfo.getItem('studentsGradeToClass').getValue()},
@@ -58,7 +58,8 @@
     });
 
     function loadPage_classEvaluationInfo(classId, studentCount, evaluation) {
-        Wait_JspClassEvaluationInfo = createDialog("wait");
+
+        // Wait_JspClassEvaluationInfo = createDialog("wait");
         if (studentCount == 0 || studentCount == undefined || evaluation == null || evaluation == undefined) {
             let msg1 = "تعداد فراگیران این کلاس صفر است یا کلاس فاقد نوع ارزیابی می باشد";
             let val1 = getFormulaMessage(msg1 , "2", "red", "b");
@@ -66,7 +67,7 @@
             DynamicForm_JspClassEvaluationInfo.setValue("trainingGradeToTeacher", val1);
             DynamicForm_JspClassEvaluationInfo.setValue("studentsGradeToClass", val1);
             DynamicForm_JspClassEvaluationInfo.setValue("teacherTotalGrade", val1);
-            Wait_JspClassEvaluationInfo.close();
+            // Wait_JspClassEvaluationInfo.close();
         } else {
             let msg2 = "برای این آیتم هیچ نمره ای وجود ندارد";
             let val2 = getFormulaMessage(msg2 , "2", "red", "b");
@@ -104,7 +105,7 @@
                             let val4 = result.trainingGradeToTeacher + " * " + result.z1 + "% + " + result.studentsGradeToTeacher + " * " + result.z2 + "% = " + result.fetgrade;
                             DynamicForm_JspClassEvaluationInfo.setValue("teacherTotalGrade", getFormulaMessage(val4 , "2", "black", "b"));
                     }
-                    Wait_JspClassEvaluationInfo.close();
+                    // Wait_JspClassEvaluationInfo.close();
                     }
                     ));
                 }

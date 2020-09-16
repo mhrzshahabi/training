@@ -53,12 +53,12 @@ public class EvaluationRestController {
     private final TclassService tclassService;
     private final EvaluationDAO evaluationDAO;
     private final ViewActivePersonnelDAO viewActivePersonnelDAO;
+    private final PersonnelDAO personnelDAO;
     private final ParameterValueDAO parameterValueDAO;
     private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
     private final DynamicQuestionDAO dynamicQuestionDAO;
     private final ClassStudentDAO classStudentDAO;
     private final ClassEvaluationGoalsService classEvaluationGoalsService;
-    private final PersonnelDAO personnelDAO;
 
     @Loggable
     @PostMapping("/printWithCriteria")
@@ -158,6 +158,17 @@ public class EvaluationRestController {
         EvaluationDTO.Create create = modelMapper.map(req, EvaluationDTO.Create.class);
         EvaluationDTO.Info info = evaluationService.create(create);
         return new ResponseEntity<>(info, HttpStatus.CREATED);
+    }
+
+    @Loggable
+    @PostMapping(value = "/groupCreate/{Ids}")
+    public ResponseEntity<EvaluationDTO.Info> groupCreate(@RequestBody Object req, @PathVariable Set<Long> Ids) {
+        for (Long id : Ids) {
+            EvaluationDTO.Create create = modelMapper.map(req, EvaluationDTO.Create.class);
+            create.setEvaluatorId(id);
+            evaluationService.create(create);
+        }
+        return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 
     @Loggable
@@ -549,8 +560,8 @@ public class EvaluationRestController {
             }
         }
 
-        final Optional<Personnel> pById = personnelDAO.findById(personnelId);
-        final Personnel personnel = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        final Optional<ViewActivePersonnel> pById = viewActivePersonnelDAO.findById(personnelId);
+        final ViewActivePersonnel personnel = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
         List<Evaluation> behavioralResultCoWorker = evaluationDAO.findByEvaluatorIdAndEvaluatorTypeIdAndEvaluationLevelIdAndQuestionnaireTypeId(
                 personnelId,

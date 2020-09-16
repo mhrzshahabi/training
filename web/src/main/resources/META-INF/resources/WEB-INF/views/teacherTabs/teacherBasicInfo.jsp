@@ -46,7 +46,7 @@
                 }
             }
         ],
-        fetchDataURL: personnelUrl + "/iscList"
+        fetchDataURL: viewActivePersonnelUrl + "/iscList"
     });
 
 
@@ -200,11 +200,12 @@
                     }
                 ],
                 changed: function () {
-                            var nationalCodeTemp = DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().nationalCode;
-                            fillPersonalInfoFields(nationalCodeTemp);
-                            DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").setValue(DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().personnelNo);
-                            DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
-                            DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
+                            if(DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord() != null &&
+                                DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord() != undefined &&
+                                DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().nationalCode != undefined){
+                                    let nationalCodeTemp = DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().nationalCode;
+                                    fillPersonalInfoFields(nationalCodeTemp,true,DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().personnelNo);
+                            }
                         },
                 validators : [{
                     type: "requiredIf",
