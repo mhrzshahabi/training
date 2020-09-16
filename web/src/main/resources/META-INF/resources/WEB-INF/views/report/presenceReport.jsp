@@ -91,7 +91,7 @@
         fetchDataURL: courseUrl + "info-tuple-list"
     });
 
-    var RestDataSource_Class_JspAttendanceReport = isc.TrDS.create({
+    var RestDataSource_Class_JspAttendancePresenceReport = isc.TrDS.create({
         ID: "classDS",
         fields: [
             {name: "id", primaryKey: true},
@@ -165,12 +165,12 @@
         showRecordComponentsByCell: true
     });
 
-    IButton_JspAttendanceReport_FullExcel = isc.IButtonSave.create({
+    IButton_JspAttendancePresenceReport_FullExcel = isc.IButtonSave.create({
         top: 260,
         title: "گزارش اکسل",
         width: 300,
         click: function () {
-            ExportToFile.downloadExcelFromClient(ListGrid_JspAttendanceReport, null, '', 'گزارش حضور و غياب کلاس های آموزشي')
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_JspAttendanceReport, presenceReportUrl, 0, null, '', "گزارش حضور و غياب کلاس های آموزشي", ListGrid_JspAttendanceReport.getCriteria(), null);
         }
     });
 
@@ -194,7 +194,7 @@
         alignLayout: "center",
         padding: 10,
         members: [
-            IButton_JspAttendanceReport_FullExcel
+            IButton_JspAttendancePresenceReport_FullExcel
         ]
     });
 
@@ -650,7 +650,7 @@
                 comboBoxWidth: 500,
                 valueField: "code",
                 layoutStyle: initialLayoutStyle,
-                optionDataSource: RestDataSource_Class_JspAttendanceReport
+                optionDataSource: RestDataSource_Class_JspAttendancePresenceReport
             }
         ]
     });
@@ -812,7 +812,7 @@
         ]
     });
 
-    IButton_JspAttendanceReport = isc.IButtonSave.create({
+    IButton_JspAttendancePresenceReport = isc.IButtonSave.create({
         top: 260,
         title: "چاپ گزارش",
         width: 300,
@@ -975,7 +975,7 @@
         alignLayout: "center",
         padding: 10,
         members: [
-            IButton_JspAttendanceReport
+            IButton_JspAttendancePresenceReport
         ]
     });
 
