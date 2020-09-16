@@ -36,6 +36,4 @@ public interface PostDAO extends JpaRepository<Post, Long>, JpaSpecificationExec
     @Modifying
     @Query(value = "update TBL_POST set D_LAST_MODIFIED_DATE_NA = :modificationDate, C_MODIFIED_BY_NA = :userName where ID = :objectId", nativeQuery = true)
     public int updateModifications(Long objectId, Date modificationDate, String userName);
-
-    List<Post> findByParentID(Long parentID);
 }

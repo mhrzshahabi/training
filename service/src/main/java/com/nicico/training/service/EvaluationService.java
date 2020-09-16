@@ -124,6 +124,7 @@ public class EvaluationService implements IEvaluationService {
         return SearchUtil.search(evaluationDAO, request, evaluation -> modelMapper.map(evaluation, EvaluationDTO.Info.class));
     }
 
+    @Transactional
     private EvaluationDTO.Info save(Evaluation evaluation) {
         final Evaluation saved = evaluationDAO.saveAndFlush(evaluation);
         Long evaluationId = saved.getId();
@@ -566,8 +567,8 @@ public class EvaluationService implements IEvaluationService {
     }
 
     @Override
-    public double getEvaluationFormGrade(Evaluation evaluation){
-        double result = 0.0;
+    public Double getEvaluationFormGrade(Evaluation evaluation){
+        Double result = null;
         int index = 0;
 
         List<EvaluationAnswerDTO.EvaluationAnswerFullData> res =  getEvaluationFormAnswerDetail(evaluation);
@@ -578,6 +579,8 @@ public class EvaluationService implements IEvaluationService {
                     index += re.getWeight();
                 else
                     index ++;
+                if(result == null)
+                    result = 0.0;
                 result += (Double.parseDouble(parameterValueDAO.findFirstById(re.getAnswerId()).getValue()))*re.getWeight();
             }
         }

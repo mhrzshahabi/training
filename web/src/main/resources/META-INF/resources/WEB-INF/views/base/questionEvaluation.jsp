@@ -310,7 +310,7 @@
                             data.questionnaireTypeId = questionnaireTypeId;
                             data.evaluationLevelId = evaluationLevelId;
                             data.status = true;
-                            if(evaluationEmpty == false && evaluationFull == true){
+                            if(evaluationEmpty == false){
                                 isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
                                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                         Window_Questions_JspEvaluation.close();
@@ -326,9 +326,6 @@
                                         createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                                     }
                                 }))
-                            }
-                            else if(evaluationFull == false){
-                                createDialog("info", "لطفا به تمام سوالات فرم ارزیابی پاسخ دهید", "<spring:message code="error"/>");
                             }
                             else{
                                 createDialog("info", "حداقل به یکی از سوالات فرم ارزیابی باید جواب داده شود", "<spring:message code="error"/>");

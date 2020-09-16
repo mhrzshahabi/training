@@ -15,13 +15,16 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PersonnelRegisteredDTO;
+import com.nicico.training.dto.PostDTO;
 import com.nicico.training.dto.ViewActivePersonnelDTO;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
+import com.nicico.training.iservice.IPostService;
 import com.nicico.training.model.Personnel;
 import com.nicico.training.model.Post;
 import com.nicico.training.model.ViewActivePersonnel;
 import com.nicico.training.repository.PostDAO;
 import com.nicico.training.repository.ViewActivePersonnelDAO;
+import com.nicico.training.service.BaseService;
 import com.nicico.training.service.CourseService;
 import com.nicico.training.service.MasterDataService;
 import com.nicico.training.service.ViewActivePersonnelService;
@@ -60,7 +63,7 @@ public class ViewActivePersonnelRestController {
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final ModelMapper modelMapper;
     private final ViewActivePersonnelDAO viewActivePersonnelDAO;
-    private final PostDAO postDAO;
+    private final IPostService postService;
 
     @GetMapping("list")
     public ResponseEntity<List<ViewActivePersonnelDTO.Info>> list() {
@@ -210,21 +213,30 @@ public class ViewActivePersonnelRestController {
         ViewActivePersonnel[] personnelArray = viewActivePersonnelDAO.findByNationalCode(personnelNationalCode);
         if (personnelArray != null && personnelArray.length != 0) {
             ViewActivePersonnel personnel = personnelArray[0];
-            Optional<Post> optional = postDAO.findById(personnel.getPostId());
-            Post personnelPost = null;
-            if(optional.isPresent())
-                personnelPost = optional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+            SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+            BaseService.setCriteriaToNotSearchDeleted(searchRq);
+            searchRq.getCriteria().getCriteria().add(makeNewCriteria("id", personnel.getPostId(), EOperator.equals, null));
+            SearchDTO.SearchRs<PostDTO.Info> searchRs1 = postService.searchWithoutPermission(searchRq, p -> modelMapper.map(p, PostDTO.Info.class));
+
+            PostDTO.Info personnelPost = null;
+            if(searchRs1.getList() != null && searchRs1.getList().size() != 0)
+                personnelPost = searchRs1.getList().get(0);
             ViewActivePersonnelDTO.Info finalResult = null;
-            if(personnelPost.getParentID() != null) {
+            if(personnelPost != null && personnelPost.getParentID() != null) {
                 ViewActivePersonnel result = viewActivePersonnelDAO.findFirstByPostId(personnelPost.getParentID());
                 if (result != null)
                     finalResult = modelMapper.map(result, ViewActivePersonnelDTO.Info.class);
             }
-            SearchDTO.SearchRs<ViewActivePersonnelDTO.Info> searchRs = new SearchDTO.SearchRs<>();
-            searchRs.setList(new ArrayList<>());
-            searchRs.getList().add(finalResult);
-            searchRs.setTotalCount((long) 1);
-            return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
+            if(finalResult != null) {
+                SearchDTO.SearchRs<ViewActivePersonnelDTO.Info> searchRs = new SearchDTO.SearchRs<>();
+                searchRs.setList(new ArrayList<>());
+                searchRs.getList().add(finalResult);
+                searchRs.setTotalCount((long) 1);
+                return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
+            }
+            else
+                return new ResponseEntity<>(null, HttpStatus.OK);
         } else
             return new ResponseEntity<>(null, HttpStatus.OK);
     }
@@ -232,18 +244,32 @@ public class ViewActivePersonnelRestController {
     @GetMapping(value = "getSiblingsEmployee/{personnelNationalCode}")
     public ResponseEntity<ISC<ViewActivePersonnelDTO.Info>> getSiblingsEmployee(@RequestParam MultiValueMap<String, String> criteria, @PathVariable String personnelNationalCode) throws IOException {
         ViewActivePersonnel[] personnelArray = viewActivePersonnelDAO.findByNationalCode(personnelNationalCode);
+        List<ViewActivePersonnel> result = new ArrayList<>();
         if (personnelArray != null && personnelArray.length != 0) {
             ViewActivePersonnel personnel = personnelArray[0];
-            Optional<Post> optional = postDAO.findById(personnel.getPostId());
-            Post personnelPost = null;
-            if (optional.isPresent())
-                personnelPost = optional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-            List<Post> siblingsPost = postDAO.findByParentID(personnelPost.getParentID());
-            List<ViewActivePersonnel> result = new ArrayList<>();
-            for (Post post : siblingsPost) {
-                ViewActivePersonnel personnel1 = viewActivePersonnelDAO.findFirstByPostId(post.getId());
-                if (personnel1 != null && !personnel1.getNationalCode().equalsIgnoreCase(personnelNationalCode))
-                    result.add(personnel1);
+
+            SearchDTO.SearchRq searchRq1 = new SearchDTO.SearchRq();
+            BaseService.setCriteriaToNotSearchDeleted(searchRq1);
+            searchRq1.getCriteria().getCriteria().add(makeNewCriteria("id", personnel.getPostId(), EOperator.equals, null));
+            SearchDTO.SearchRs<PostDTO.Info> searchRs1 = postService.searchWithoutPermission(searchRq1, p -> modelMapper.map(p, PostDTO.Info.class));
+
+            PostDTO.Info personnelPost = null;
+            if(searchRs1.getList() != null && searchRs1.getList().size() != 0)
+                personnelPost = searchRs1.getList().get(0);
+
+
+            if(personnelPost != null && personnelPost.getParentID() != null) {
+                SearchDTO.SearchRq searchRq2 = new SearchDTO.SearchRq();
+                BaseService.setCriteriaToNotSearchDeleted(searchRq2);
+                searchRq2.getCriteria().getCriteria().add(makeNewCriteria("parentID", personnelPost.getParentID(), EOperator.equals, null));
+                SearchDTO.SearchRs<PostDTO.Info> searchRs2 = postService.searchWithoutPermission(searchRq2, p -> modelMapper.map(p, PostDTO.Info.class));
+
+                List<PostDTO.Info> siblingsPost = searchRs2.getList();
+                for (PostDTO.Info post : siblingsPost) {
+                    ViewActivePersonnel personnel1 = viewActivePersonnelDAO.findFirstByPostId(post.getId());
+                    if (personnel1 != null && !personnel1.getNationalCode().equalsIgnoreCase(personnelNationalCode))
+                        result.add(personnel1);
+                }
             }
 
             if (result != null && result.size() != 0) {
