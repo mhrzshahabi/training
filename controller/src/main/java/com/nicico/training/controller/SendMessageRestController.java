@@ -32,9 +32,7 @@ import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -71,6 +69,8 @@ public class SendMessageRestController {
         Integer maxRepeat = 0;
         Integer timeBMessages = 0;
         String code = null;
+        Map<String, String> paramValMap = null;
+        String pid = "";
 
         TotalResponse<ParameterValueDTO.Info> parameter = null;
 
@@ -117,7 +117,6 @@ public class SendMessageRestController {
                 }
             }
         }
-
 
         if (ids.size() == 0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -207,19 +206,38 @@ public class SendMessageRestController {
             messageDAO.save(oMessageModel);
         }
         for (int i = 0; i < mobiles.size(); i++) {
+            paramValMap = new HashMap<>();
+
             String message = oMessage;
             message = message.replace("{prefix-full_name}", prefixFullName.get(i));
             message = message.replace("{full-name}", fullName.get(i));
             message = message.replace("{course-name}", courseName);
             message = message.replace("{start-date}", courseStartDate);
             message = message.replace("{end-date}", courseEndDate);
-            message = message.replace("{personel-address}", personelAdress);
+            message = message.replace("{personnel-address}", personelAdress);
             message += "\nواحد ارزیابی امور آموزش";
 
-            List<String> numbers = new ArrayList<>();
-            numbers.add(mobiles.get(i));
 
-            Long messageId = sendMessageService.asyncEnqueue(numbers, message);
+            List<String> numbers = new ArrayList<>();
+            //numbers.add(mobiles.get(i));
+            numbers.add("09137454148");
+
+            paramValMap.put("%prefix-full_name%", prefixFullName.get(i));
+            paramValMap.put("%full-name%", fullName.get(i));
+            paramValMap.put("%course-name%", courseName);
+            paramValMap.put("%start-date%", courseStartDate);
+            paramValMap.put("%end-date%", courseEndDate);
+            paramValMap.put("%personnel-address%", personelAdress);
+
+
+            if (type.equals("classStudent")) {
+                pid = "bkvqncws2h";
+            } else if (type.equals("classTeacher")) {
+                pid = "er7wvzn4l4";
+            }
+
+            sendMessageService.asyncEnqueue(pid, paramValMap, numbers);
+            Long messageId = 0L;
 
             if (maxRepeat > 0) {
 

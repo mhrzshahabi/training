@@ -54,22 +54,9 @@ public class SendMessageService implements ISendMessageService {
     protected ModelMapper modelMapper;
 
     @Override
-    public Long asyncEnqueue(List<String> recipientNos, String message) {
+    public List<String> asyncEnqueue(String pid, Map<String, String> paramValMap, List<String> recipients) {
 
-        Long messageId = Long.valueOf(secureRandom.nextInt(Integer.MAX_VALUE));
-
-        //magfaSMSService.asyncEnqueue(recipientNos, ++messageId, message);
-
-        Map<String, String> paramValMap=new HashMap<>();
-        paramValMap.put("XXX","مهران گلرخي");
-        paramValMap.put("YYY","yyyyy");
-        paramValMap.put("ZZZ","zzzzzzzzzzz");
-
-        List<String> recipients=new ArrayList<>();
-        recipients.add("9137454148");
-
-        nimadSMSService.syncEnqueue("c4l1a6dxef",paramValMap,recipients);
-        return messageId;
+        return nimadSMSService.syncEnqueue(pid,paramValMap,recipients);
     }
 
     @Scheduled(cron = "0 0 9 * * ?", zone = "Asia/Tehran")
