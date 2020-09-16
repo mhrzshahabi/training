@@ -53,6 +53,7 @@ public class EvaluationRestController {
     private final TclassService tclassService;
     private final EvaluationDAO evaluationDAO;
     private final ViewActivePersonnelDAO viewActivePersonnelDAO;
+    private final PersonnelDAO personnelDAO;
     private final ParameterValueDAO parameterValueDAO;
     private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
     private final DynamicQuestionDAO dynamicQuestionDAO;
@@ -500,10 +501,10 @@ public class EvaluationRestController {
                 res.setClassEndDate(classStudentInfo.getTclass().getEndDate());
                 res.setClassDuration(classStudentInfo.getTclass().getHDuration());
                 res.setClassYear(classStudentInfo.getTclass().getStartDate().substring(0,4));
-                final Optional<ViewActivePersonnel> pByID1 = viewActivePersonnelDAO.findById(classStudentInfo.getTclass().getSupervisor());
-                final Optional<ViewActivePersonnel> pByID2 = viewActivePersonnelDAO.findById(classStudentInfo.getTclass().getPlanner());
-                ViewActivePersonnel personnel1 = null;
-                ViewActivePersonnel personnel2 = null;
+                final Optional<Personnel> pByID1 = personnelDAO.findById(classStudentInfo.getTclass().getSupervisor());
+                final Optional<Personnel> pByID2 = personnelDAO.findById(classStudentInfo.getTclass().getPlanner());
+                Personnel personnel1 = null;
+                Personnel personnel2 = null;
                 if(pByID1.isPresent())
                     personnel1 = pByID1.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                 if(pByID2.isPresent())
@@ -538,10 +539,10 @@ public class EvaluationRestController {
                             res.setClassEndDate(classStudentInfo.getTclass().getEndDate());
                             res.setClassDuration(classStudentInfo.getTclass().getHDuration());
                             res.setClassYear(classStudentInfo.getTclass().getStartDate().substring(0,4));
-                            final Optional<ViewActivePersonnel> pByID1 = viewActivePersonnelDAO.findById(classStudentInfo.getTclass().getSupervisor());
-                            final Optional<ViewActivePersonnel> pByID2 = viewActivePersonnelDAO.findById(classStudentInfo.getTclass().getPlanner());
-                            ViewActivePersonnel personnel1 = null;
-                            ViewActivePersonnel personnel2 = null;
+                            final Optional<Personnel> pByID1 = personnelDAO.findById(classStudentInfo.getTclass().getSupervisor());
+                            final Optional<Personnel> pByID2 = personnelDAO.findById(classStudentInfo.getTclass().getPlanner());
+                            Personnel personnel1 = null;
+                            Personnel personnel2 = null;
                             if(pByID1.isPresent())
                                 personnel1 = pByID1.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                             if(pByID2.isPresent())
@@ -589,10 +590,10 @@ public class EvaluationRestController {
                 res.setClassEndDate(tclass.getEndDate());
                 res.setClassDuration(tclass.getHDuration());
                 res.setClassYear(tclass.getStartDate().substring(0,4));
-                final Optional<ViewActivePersonnel> pByID1 = viewActivePersonnelDAO.findById(tclass.getSupervisor());
-                final Optional<ViewActivePersonnel> pByID2 = viewActivePersonnelDAO.findById(tclass.getPlanner());
-                ViewActivePersonnel personnel1 = null;
-                ViewActivePersonnel personnel2 = null;
+                final Optional<Personnel> pByID1 = personnelDAO.findById(tclass.getSupervisor());
+                final Optional<Personnel> pByID2 = personnelDAO.findById(tclass.getPlanner());
+                Personnel personnel1 = null;
+                Personnel personnel2 = null;
                 if(pByID1.isPresent())
                     personnel1 = pByID1.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                 if(pByID2.isPresent())
@@ -635,10 +636,10 @@ public class EvaluationRestController {
                 res.setClassEndDate(tclass.getEndDate());
                 res.setClassDuration(tclass.getHDuration());
                 res.setClassYear(tclass.getStartDate().substring(0,4));
-                final Optional<ViewActivePersonnel> pByID1 = viewActivePersonnelDAO.findById(tclass.getSupervisor());
-                final Optional<ViewActivePersonnel> pByID2 = viewActivePersonnelDAO.findById(tclass.getPlanner());
-                ViewActivePersonnel personnel1 = null;
-                ViewActivePersonnel personnel2 = null;
+                final Optional<Personnel> pByID1 = personnelDAO.findById(tclass.getSupervisor());
+                final Optional<Personnel> pByID2 = personnelDAO.findById(tclass.getPlanner());
+                Personnel personnel1 = null;
+                Personnel personnel2 = null;
                 if(pByID1.isPresent())
                     personnel1 = pByID1.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                 if(pByID2.isPresent())
@@ -681,10 +682,10 @@ public class EvaluationRestController {
                 res.setClassEndDate(tclass.getEndDate());
                 res.setClassDuration(tclass.getHDuration());
                 res.setClassYear(tclass.getStartDate().substring(0,4));
-                final Optional<ViewActivePersonnel> pByID1 = viewActivePersonnelDAO.findById(tclass.getSupervisor());
-                final Optional<ViewActivePersonnel> pByID2 = viewActivePersonnelDAO.findById(tclass.getPlanner());
-                ViewActivePersonnel personnel1 = null;
-                ViewActivePersonnel personnel2 = null;
+                final Optional<Personnel> pByID1 = personnelDAO.findById(tclass.getSupervisor());
+                final Optional<Personnel> pByID2 = personnelDAO.findById(tclass.getPlanner());
+                Personnel personnel1 = null;
+                Personnel personnel2 = null;
                 if(pByID1.isPresent())
                     personnel1 = pByID1.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                 if(pByID2.isPresent())
@@ -741,10 +742,10 @@ public class EvaluationRestController {
                 res.setClassEndDate(classInfo.getEndDate());
                 res.setClassDuration(classInfo.getHDuration());
                 res.setClassYear(classInfo.getStartDate().substring(0,4));
-                final Optional<ViewActivePersonnel> pByID1 = viewActivePersonnelDAO.findById(classInfo.getSupervisor());
-                final Optional<ViewActivePersonnel> pByID2 = viewActivePersonnelDAO.findById(classInfo.getPlanner());
-                ViewActivePersonnel personnel1 = null;
-                ViewActivePersonnel personnel2 = null;
+                final Optional<Personnel> pByID1 = personnelDAO.findById(classInfo.getSupervisor());
+                final Optional<Personnel> pByID2 = personnelDAO.findById(classInfo.getPlanner());
+                Personnel personnel1 = null;
+                Personnel personnel2 = null;
                 if(pByID1.isPresent())
                     personnel1 = pByID1.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                 if(pByID2.isPresent())
@@ -841,9 +842,9 @@ public class EvaluationRestController {
         }
         else if(questionnarieTypeId.equals(141L)) {
             params.put("evaluationType", "واکنشی-ارزیابی مسئول آموزش از مدرس");
-            Optional<ViewActivePersonnel> tById = viewActivePersonnelDAO.findById(evaluatorId);
+            Optional<Personnel> tById = personnelDAO.findById(evaluatorId);
             if(tById.isPresent()){
-                ViewActivePersonnel personnel = tById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                Personnel personnel = tById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                 params.put("evaluatorName",personnel.getFirstName() + " " + personnel.getLastName());
             }
             params.put("evaluatedName",classInfo.getTeacher());
