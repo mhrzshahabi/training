@@ -549,7 +549,7 @@
                         titr += fields[j].title + ': ' + tmpStr + ' - ';
                 }
 
-                titr = titr.substring(0, titr.length - 4);
+                titr = titr.substring(0, titr.length - 3);
 
                 return titr;
             }
