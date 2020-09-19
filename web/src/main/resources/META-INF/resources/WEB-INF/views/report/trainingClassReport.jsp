@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 // <script>
+    var dummy;
     //----------------------------------------------------Variables-----------------------------------------------------
     var isCriteriaCategoriesChanged_JspTClassReport = false;
     var startDate1Check_JspTClassReport = true;
@@ -741,8 +742,9 @@
                                             values = [];
 
                                         for (var i = 0; i < cache.length; i++) {
-                                            values[i] = cache[i].titleFa;
+                                            values[i] = cache[i].id;
                                         }
+                                        dummy = values;
                                         item.setValue(values);
                                         item.pickList.hide();
                                     }
