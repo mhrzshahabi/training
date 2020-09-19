@@ -241,8 +241,8 @@ public class SendMessageRestController {
 
                 MessageContact messageContact = new MessageContact();
                 messageContact.setCountSent(0);
-                messageContact.setContextText(message);
-                messageContact.setContextHtml(message);
+                //messageContact.setContextText(message);
+                //messageContact.setContextHtml(message);
                 messageContact.setLastSentDate(new Date());
                 messageContact.setReturnMessageId(messageId);
                 messageContact.setStatusId((long) 588);
