@@ -1,34 +1,31 @@
-package response.course.dto;
+package request.course;
 
-import dto.CategoryDto;
-import dto.SubCategoryDto;
+import dto.*;
 import lombok.Getter;
 import lombok.Setter;
-import dto.LevelType;
-import dto.RunType;
-import dto.TechnicalType;
-import dto.TheoType;
+
+import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
-public class CourseDto {
+public class CourseUpdateRequest implements Serializable {
 
-    private long id;
+    private static final long serialVersionUID = -9206070659075221058L;
+
     private String code;
     private String titleFa;
     private CategoryDto category;
     private SubCategoryDto subCategory;
-    private RunType runType;
-    private LevelType levelType;
-    private TheoType theoType;
+    private int runType;
+    private int levelType;
+    private int theoType;
     private float duration;
-    private TechnicalType technicalType;
+    private int technicalType;
     private String workflowStatus;
     private String behavioralLevel;
     private String evaluation;
     private boolean hasGoal;
-    private String createdBy;
-    private String lastModifiedBy;
     private Integer startEvaluation;
     private String acceptancelimit;
     private String scoringMethod;
@@ -38,5 +35,5 @@ public class CourseDto {
     private String minTeacherDegree;
     private Long minTeacherExpYears;
     private Float minTeacherEvalScore;
-
+    private List<SkillDto> mainSkills;
 }

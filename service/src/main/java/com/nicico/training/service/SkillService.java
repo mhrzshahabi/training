@@ -40,9 +40,7 @@ import static com.nicico.training.service.BaseService.setCriteria;
 public class SkillService implements ISkillService {
     private final ModelMapper modelMapper;
     private final SkillDAO skillDAO;
-    private final SkillLevelDAO skillLevelDAO;
     private final CourseDAO courseDAO;
-    private final IWorkGroupService workGroupService;
     private final ICourseService courseService;
     private final ResourceBundleMessageSource messageSource;
 
@@ -270,52 +268,6 @@ public class SkillService implements ISkillService {
         return true;
     }
 
-
-//    @Transactional
-//    @Override
-//    public void removeCompetence(Long competenceId, Long skillId) {
-//        final Optional<Skill> optionalSkill=skillDAO.findById(skillId)  ;
-//        final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
-//        final Optional<CompetenceOld> optionalCompetence=competenceDAO.findById(competenceId)  ;
-//        final CompetenceOld competence=optionalCompetence.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
-//        competence.getSkillSet().remove(skill);
-//
-//    }
-//
-//    @Transactional
-//    @Override
-//    public void removeCompetences(List<Long> competenceIds, Long skillId) {
-//        final Optional<Skill> optionalSkill=skillDAO.findById(skillId)  ;
-//        final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
-//        List<CompetenceOld> gAllById = competenceDAO.findAllById(competenceIds);
-//        for (CompetenceOld competence : gAllById) {
-//            competence.getSkillSet().remove(skill);
-//        }
-//
-//    }
-//
-//    @Transactional
-//    @Override
-//    public void addCompetence(Long competenceId, Long skillId) {
-//        final Optional<Skill> optionalSkill=skillDAO.findById(skillId)  ;
-//        final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
-//        final Optional<CompetenceOld> optionalCompetence=competenceDAO.findById(competenceId)  ;
-//        final CompetenceOld competence=optionalCompetence.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
-//        competence.getSkillSet().add(skill);
-//
-//    }
-//
-//    @Transactional
-//    @Override
-//    public void addCompetences(List<Long> ids, Long skillId) {
-//        final Optional<Skill> optionalSkill=skillDAO.findById(skillId)  ;
-//        final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
-//        List<CompetenceOld> gAllById = competenceDAO.findAllById(ids);
-//        for (CompetenceOld competence : gAllById) {
-//            competence.getSkillSet().add(skill);
-//        }
-//
-//    }
 
     @Transactional
     @Override

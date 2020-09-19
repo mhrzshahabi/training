@@ -1,11 +1,11 @@
-package response.course.dto;
+package dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class SubCategoryDto {
+public class CategoryDto {
 
     private long id;
     private String titleFa;
