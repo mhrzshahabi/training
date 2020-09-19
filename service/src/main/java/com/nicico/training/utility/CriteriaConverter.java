@@ -6,8 +6,14 @@ import java.util.*;
 
 public class CriteriaConverter {
 
+    public static Map<String, Object[]> criteria2ParamsMap(SearchDTO.CriteriaRq criteria) {
+        Map<String, Object[]> map = new HashMap<>();
+        criteria2ParamsMap(criteria, map);
+        return map;
+    }
+
     public static void criteria2ParamsMap(SearchDTO.CriteriaRq criteria,
-                                         Map<String, Object[]> map) {
+                                          Map<String, Object[]> map) {
         if (criteria == null)
             return;
         if (criteria.getFieldName() == null) {
@@ -23,7 +29,7 @@ public class CriteriaConverter {
     }
 
     public static Boolean removeCriteriaByfieldName(SearchDTO.CriteriaRq criteria,
-                                                 String name) {
+                                                    String name) {
         if (criteria == null)
             return false;
         if (criteria.getFieldName() == null) {
@@ -37,7 +43,7 @@ public class CriteriaConverter {
             }
             return false;
         }
-        if(criteria.getFieldName().equals(name))
+        if (criteria.getFieldName().equals(name))
             return true;
         return false;
     }

@@ -605,10 +605,12 @@
                 valueMap: {
                     "1": "آماری",
                     "2": "لیستی",
+<<<<<<< HEAD
                 },
                 change: function (form, item, value, oldValue) {
-                    if (oldValue !== value)
-                        FilterDF_PCNR.getItem("printToExcel").setDisabled(true);
+                    if(oldValue !== value)
+                         FilterDF_PCNR.getItem("printToExcel").setDisabled(true);
+
                     if (value === "1"){
                         VLayout_Body_PCNR.addMember(CourseLG_PCNR);
                         VLayout_Body_PCNR.removeMember(CourseLG_MinPCNR);
@@ -621,6 +623,9 @@
                     }
                     else
                         return false;
+
+=======
+>>>>>>> aa356ea9551d5527a0d4709f2d2e9e9160a4c3fe
                 }
             },
             {type: "SpacerItem"},
@@ -634,6 +639,7 @@
                     if(!hasFilters()) {
                         createDialog("info","فیلتری انتخاب نشده است.");
                     } else{
+<<<<<<< HEAD
                         let criteria = FilterDF_PCNR.getValuesAsAdvancedCriteria();
                         let reportType = criteria.criteria.find({fieldName: "reportType"}).value;
                         criteria.criteria.remove(criteria.criteria.find({fieldName: "reportType"}));
@@ -644,6 +650,28 @@
                             CourseLG_PCNR.fetchData();
                         }
                         else {
+=======
+
+                        if (reportType.getValue() === "1"){
+                            VLayout_Body_PCNR.addMember(CourseLG_PCNR);
+                            VLayout_Body_PCNR.removeMember(CourseLG_MinPCNR);
+                        }
+                        else if(reportType.getValue() === "2"){
+                            VLayout_Body_PCNR.removeMember(CourseLG_PCNR);
+                            VLayout_Body_PCNR.addMember(CourseLG_MinPCNR);
+                        }
+                        else
+                            return false;
+
+                        var criteria = FilterDF_PCNR.getValuesAsAdvancedCriteria();
+                        criteria.criteria.remove(criteria.criteria.find({fieldName: "reportType"}));
+
+                        if (reportType.getValue() === "1") {
+                            CourseLG_PCNR.implicitCriteria = criteria;
+                            CourseLG_PCNR.invalidateCache();
+                            CourseLG_PCNR.fetchData();
+                        } else if (reportType.getValue() === "2") {
+>>>>>>> aa356ea9551d5527a0d4709f2d2e9e9160a4c3fe
                             CourseLG_MinPCNR.implicitCriteria = criteria;
                             CourseLG_MinPCNR.invalidateCache();
                             CourseLG_MinPCNR.fetchData();
@@ -677,6 +705,7 @@
     });
 
     CourseLG_PCNR = isc.TrLG.create({
+        dataFetchMode: "local",
         dynamicTitle: true,
         autoFetchData: false,
         allowAdvancedCriteria: true,

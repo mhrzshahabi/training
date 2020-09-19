@@ -144,6 +144,7 @@
                 align: "center",
                 filterOperator: "iContains",
                 autoFitWidth: true,
+                filterOnKeypress: true,
                 filterEditorProperties:{
                     pickListProperties: {
                         showFilterEditor: false
@@ -263,6 +264,22 @@
             Detail_Tab_Evaluation_Analysis.disableTab(3);
         }
     });
+    var ToolStripButton_Export2EXcel_Evaluation_Analysis = isc.ToolStripButtonExcel.create({
+        click: function () {
+            let restUrl = viewClassDetailUrl + "/iscList";
+
+            let implicitCriteria = JSON.parse(JSON.stringify(RestDataSource_evaluationAnalysis_class.implicitCriteria)) ;
+            let criteria = ListGrid_evaluationAnalysis_class.getCriteria();
+
+            if(criteria.criteria) {
+                for (let i = 0; i < criteria.criteria.length; i++) {
+                    implicitCriteria.criteria.push(criteria.criteria[i]);
+                }
+            }
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_evaluationAnalysis_class,  viewClassDetailUrl + "/iscList" , 0, null, '',"تحلیل ارزیابی", implicitCriteria, null);
+        }
+    });
+
 
     var ToolStrip_Evaluation_Analysis = isc.ToolStrip.create({
         width: "100%",
@@ -273,7 +290,8 @@
                 align: "left",
                 border: '0px',
                 members: [
-                    ToolStripButton_Refresh_Evaluation_Analysis
+                    ToolStripButton_Refresh_Evaluation_Analysis,
+                    ToolStripButton_Export2EXcel_Evaluation_Analysis
                 ]
             })
         ]
