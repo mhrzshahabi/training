@@ -145,7 +145,7 @@ public class TclassService implements ITclassService {
     public TclassDTO.Info update(Long id, TclassDTO.Update request, List<Long> cancelClassesIds) {
         final Optional<Tclass> cById = tclassDAO.findById(id);
         final Tclass tclass = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
-        Long classOldSupervisor = tclass.getSupervisor();
+        Long classOldSupervisor = tclass.getSupervisorId();
         Long classOldTeacher = tclass.getTeacherId();
 
         Tclass mappedClass = trainingClassBeanMapper.updateTClass(request, tclass);
@@ -182,8 +182,8 @@ public class TclassService implements ITclassService {
             //updateTargetSocieties(request.getTargetSocieties(), request.getTargetSocietyTypeId(), updatedClass);
             //updatedClass.setTargetSocietyTypeId(request.getTargetSocietyTypeId());
         //--------------------DONE BY ROYA---------------------
-        if(classOldSupervisor!= null && request.getSupervisor() != null){
-            if(!classOldSupervisor.equals(request.getSupervisor())){
+        if(classOldSupervisor!= null && request.getSupervisorId() != null){
+            if(!classOldSupervisor.equals(request.getSupervisorId())){
                 HashMap<String,Object> evaluation = new HashMap<>();
                 evaluation.put("questionnaireTypeId",141L);
                 evaluation.put("classId",id);
@@ -494,7 +494,7 @@ public class TclassService implements ITclassService {
         Tclass tclass = getTClass(classId);
         classStudents = tclass.getClassStudents();
         teacherId = tclass.getTeacherId();
-        trainingId = tclass.getSupervisor();
+        trainingId = tclass.getSupervisorId();
         TclassDTO.ReactionEvaluationResult evaluationResult = modelMapper.map(tclass, TclassDTO.ReactionEvaluationResult.class);
 
         Map<String, Double> reactionEvaluationResult = calculateStudentsReactionEvaluationResult(classStudents);
@@ -664,7 +664,7 @@ public class TclassService implements ITclassService {
         if(FERGradeResult.get("FERPass") != null)
             result.put("FERPass",FERGradeResult.get("FERPass"));
 
-        Double trainingGradeToTeacher = getTrainingGradeToTeacher(classId, tclass.getSupervisor(), tclass.getTeacherId());
+        Double trainingGradeToTeacher = getTrainingGradeToTeacher(classId, tclass.getSupervisorId(), tclass.getTeacherId());
         Map<String,Object> FETGradeResult = getFETGrade(studentsGradeToTeacher,trainingGradeToTeacher,percenetOfFilledReactionEvaluationForms);
         if(FETGradeResult.get("FETGrade") != null)
             result.put("FETGrade", FETGradeResult.get("FETGrade"));
