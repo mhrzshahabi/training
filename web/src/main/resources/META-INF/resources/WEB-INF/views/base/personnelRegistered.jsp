@@ -1361,6 +1361,12 @@
         }
     });
 
+    var ToolStripButton_Export2EXcel_JspPersonnelReg = isc.ToolStripButtonExcel.create({
+        click: function () {
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_PersonnelReg_JspPersonnelReg,  personnelRegUrl + "/spec-list" , 0, null, '',"لیست فراگیران متفرقه", ListGrid_PersonnelReg_JspPersonnelReg.getCriteria(), null);
+        }
+    });
+
     var ToolStrip_Actions_JspPersonnelReg = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -1370,6 +1376,7 @@
             ToolStripButton_Edit_JspPersonnelReg,
             ToolStripButton_Remove_JspPersonnelReg,
             // ToolStripButton_Print_JspPersonnelReg
+            ToolStripButton_Export2EXcel_JspPersonnelReg,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
