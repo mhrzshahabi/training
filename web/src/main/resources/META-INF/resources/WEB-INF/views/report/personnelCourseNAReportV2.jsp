@@ -7,7 +7,6 @@
     //--------------------------------------------------------------------------------------------------------------------//
     //*personnel form*/
     //--------------------------------------------------------------------------------------------------------------------//
-    let selectedCourse;
 
     PriorityDS_PCNR = isc.TrDS.create({
         fields:
@@ -97,22 +96,12 @@
             refreshLG(PersonnelsLG_PCNR);
         }
     });
-    ToolStripButton_Personnel_Export2EXcel_PCNR = isc.ToolStripButtonExcel.create({
-        click: function () {
-            let titr = null;
-            if(typeof(selectedCourse.courseCode) !== undefined) {
-                titr = "کد دوره: " + selectedCourse.courseCode + " نام دوره: " + selectedCourse.courseTitleFa;
-            }
-            ExportToFile.downloadExcelRestUrl(null, PersonnelsLG_PCNR, personnelCourseNAReportUrl + "/personnel-list" , 0, null, titr,"آمار دوره های نیازسنجی افراد - لیست پرسنل", PersonnelsLG_PCNR.getCriteria(), null);
-        }
-    });
+
     ToolStrip_Personnel_Actions_PCNR = isc.ToolStrip.create({
         width: "100%",
-        align: "right",
+        align: "left",
         border: '0px',
         members: [
-
-            ToolStripButton_Personnel_Export2EXcel_PCNR,
             ToolStripButton_Personnel_Refresh_PCNR
         ]
     });
@@ -304,9 +293,6 @@
                     pickListProperties: {sortField: "personnelNo"},
                     textMatchStyle: "substring",
                 },
-                changed: function (form, item, value) {
-                    FilterDF_PCNR.getItem("printToExcel").setDisabled(true);
-                }
             },
             {
                 name: "postGradeId",
@@ -337,9 +323,6 @@
                         showFilterEditor: true},
                     textMatchStyle: "substring",
                 },
-                changed: function () {
-                    FilterDF_PCNR.getItem("printToExcel").setDisabled(true);
-                }
             },
             {
                 name: "personnelCompanyName",
@@ -370,13 +353,9 @@
                             item.clearValue();
                             item.focusInItem();
                             form.setValue(null);
-                            FilterDF_PCNR.getItem("printToExcel").setDisabled(true);
                         }
                     }
                 ],
-                changed: function () {
-                    FilterDF_PCNR.getItem("printToExcel").setDisabled(true);
-                }
             },
             {
                 name: "personnelCcpArea",
@@ -407,13 +386,9 @@
                             item.clearValue();
                             item.focusInItem();
                             form.setValue(null);
-                            FilterDF_PCNR.getItem("printToExcel").setDisabled(true);
                         }
                     }
                 ],
-                changed: function () {
-                    FilterDF_PCNR.getItem("printToExcel").setDisabled(true);
-                }
             },
             {
                 name: "personnelCcpAssistant",
@@ -444,13 +419,9 @@
                             item.clearValue();
                             item.focusInItem();
                             form.setValue(null);
-                            FilterDF_PCNR.getItem("printToExcel").setDisabled(true);
                         }
                     }
                 ],
-                changed: function () {
-                    FilterDF_PCNR.getItem("printToExcel").setDisabled(true);
-                }
             },
             {
                 name: "personnelCcpSection",
@@ -481,13 +452,9 @@
                             item.clearValue();
                             item.focusInItem();
                             form.setValue(null);
-                            FilterDF_PCNR.getItem("printToExcel").setDisabled(true);
                         }
                     }
                 ],
-                changed: function () {
-                    FilterDF_PCNR.getItem("printToExcel").setDisabled(true);
-                }
             },
             {
                 name: "personnelCcpUnit",
@@ -518,13 +485,9 @@
                             item.clearValue();
                             item.focusInItem();
                             form.setValue(null);
-                            FilterDF_PCNR.getItem("printToExcel").setDisabled(true);
                         }
                     }
                 ],
-                changed: function () {
-                    FilterDF_PCNR.getItem("printToExcel").setDisabled(true);
-                }
             },
             {
                 name: "personnelCcpAffairs",
@@ -554,13 +517,9 @@
                             item.clearValue();
                             item.focusInItem();
                             form.setValue(null);
-                            FilterDF_PCNR.getItem("printToExcel").setDisabled(true);
                         }
                     }
                 ],
-                changed: function () {
-                    FilterDF_PCNR.getItem("printToExcel").setDisabled(true);
-                }
             },
             {
                 name: "courseId",
@@ -586,9 +545,6 @@
                     pickListProperties: {},
                     textMatchStyle: "substring",
                 },
-                changed: function () {
-                    FilterDF_PCNR.getItem("printToExcel").setDisabled(true);
-                }
             },
             {
                 ID: "reportType",
@@ -605,22 +561,6 @@
                 valueMap: {
                     "1": "آماری",
                     "2": "لیستی",
-                },
-                change: function (form, item, value, oldValue) {
-                    if (oldValue !== value)
-                        FilterDF_PCNR.getItem("printToExcel").setDisabled(true);
-                    if (value === "1"){
-                        VLayout_Body_PCNR.addMember(CourseLG_PCNR);
-                        VLayout_Body_PCNR.removeMember(CourseLG_MinPCNR);
-                        CourseLG_MinPCNR.setData([]);
-                    }
-                    else if(value === "2"){
-                        VLayout_Body_PCNR.removeMember(CourseLG_PCNR);
-                        VLayout_Body_PCNR.addMember(CourseLG_MinPCNR);
-                        CourseLG_PCNR.setData([]);
-                    }
-                    else
-                        return false;
                 }
             },
             {type: "SpacerItem"},
@@ -634,16 +574,26 @@
                     if(!hasFilters()) {
                         createDialog("info","فیلتری انتخاب نشده است.");
                     } else{
-                        let criteria = FilterDF_PCNR.getValuesAsAdvancedCriteria();
-                        let reportType = criteria.criteria.find({fieldName: "reportType"}).value;
+
+                        if (reportType.getValue() === "1"){
+                            VLayout_Body_PCNR.addMember(CourseLG_PCNR);
+                            VLayout_Body_PCNR.removeMember(CourseLG_MinPCNR);
+                        }
+                        else if(reportType.getValue() === "2"){
+                            VLayout_Body_PCNR.removeMember(CourseLG_PCNR);
+                            VLayout_Body_PCNR.addMember(CourseLG_MinPCNR);
+                        }
+                        else
+                            return false;
+
+                        var criteria = FilterDF_PCNR.getValuesAsAdvancedCriteria();
                         criteria.criteria.remove(criteria.criteria.find({fieldName: "reportType"}));
-                        FilterDF_PCNR.getItem("printToExcel").setDisabled(false);
-                        if(reportType == 1) {
+
+                        if (reportType.getValue() === "1") {
                             CourseLG_PCNR.implicitCriteria = criteria;
                             CourseLG_PCNR.invalidateCache();
                             CourseLG_PCNR.fetchData();
-                        }
-                        else {
+                        } else if (reportType.getValue() === "2") {
                             CourseLG_MinPCNR.implicitCriteria = criteria;
                             CourseLG_MinPCNR.invalidateCache();
                             CourseLG_MinPCNR.fetchData();
@@ -652,11 +602,9 @@
                 }
             },
             {
-                name: "printToExcel",
                 title: "<spring:message code="global.form.print.excel"/>",
                 type: "ButtonItem",
                 startRow: false,
-                disabled: true,
                 click: function () {
                     if(!hasFilters()) {
                         createDialog("info","فیلتری انتخاب نشده است.");
@@ -665,10 +613,12 @@
                         criteria.criteria.remove(criteria.criteria.find({fieldName: "reportType"}));
 
                         if (FilterDF_PCNR.getItem("reportType").getValue() === "1"){
-                            ExportToFile.downloadExcelRestUrl(null, CourseLG_PCNR, personnelCourseNAReportUrl , 0, null, '',"آمار دوره های نیازسنجی افراد - آماری",criteria, null);
+                            // ExportToFile.showDialog(null, CourseLG_PCNR, "personnelCourseNAR", 0, null, '',"آمار دوره های نیازسنجی افراد - آماری"  , criteria, null);
+                            ExportToFile.downloadExcelFromClient(CourseLG_PCNR,null,"","آمار دوره های نیازسنجی افراد - آماری",["totalNotPassed", "personnelList"]);
                         }
                         else if(FilterDF_PCNR.getItem("reportType").getValue() === "2"){
-                            ExportToFile.downloadExcelRestUrl(null, CourseLG_MinPCNR, personnelCourseNAReportUrl + "/minList", 0, null, '',"آمار دوره های نیازسنجی افراد - لیستی"  , criteria, null);
+                            ExportToFile.downloadExcel(null, CourseLG_MinPCNR, "personnelCourseNAR", 0, null, '',"آمار دوره های نیازسنجی افراد - لیستی"  , criteria, null);
+                            // ExportToFile.downloadExcelFromClient(CourseLG_MinPCNR,null,"","آمار دوره های نیازسنجی افراد - لیستی");
                         }
                     }
                 }
@@ -677,6 +627,7 @@
     });
 
     CourseLG_PCNR = isc.TrLG.create({
+        dataFetchMode: "local",
         dynamicTitle: true,
         autoFetchData: false,
         allowAdvancedCriteria: true,
@@ -699,14 +650,11 @@
             {name: "notPassedDevelopmentalPersonnelCount"},
             {
                 name: "totalNotPassed",
-                title: "تعداد کل پرسنل نگذرانده",
-                // filterOperator: "equals",
+                title: "جمع کل پرسنل نگذرانده",
+                filterOperator: "equals",
                 autoFitWidth: true,
-                canFilter: false,
                 formatCellValue: function (value, record) {
-                    if(record.notPassedEssentialPersonnelCount)
-                          return record.notPassedEssentialPersonnelCount + record.notPassedImprovingPersonnelCount + record.notPassedDevelopmentalPersonnelCount;
-                    return "";
+                    return record.notPassedEssentialPersonnelCount + record.notPassedImprovingPersonnelCount + record.notPassedDevelopmentalPersonnelCount;
                 },
                 sortNormalizer: function (record) {
                     return record.notPassedEssentialPersonnelCount + record.notPassedImprovingPersonnelCount + record.notPassedDevelopmentalPersonnelCount;
@@ -722,10 +670,9 @@
                     layoutAlign: "center",
                     title: "مشاهده لیست پرسنل",
                     click: function () {
-                        selectedCourse = record;
                         Window_Personnel_PCNR.show();
 
-                        let criteria = FilterDF_PCNR.getValuesAsAdvancedCriteria();
+                        var criteria = FilterDF_PCNR.getValuesAsAdvancedCriteria();
                         criteria.criteria.remove(criteria.criteria.find({fieldName: "reportType"}));
 
                         PersonnelsLG_PCNR.implicitCriteria = criteria;
