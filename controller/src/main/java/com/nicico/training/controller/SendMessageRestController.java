@@ -222,19 +222,19 @@ public class SendMessageRestController {
             //numbers.add(mobiles.get(i));
             numbers.add("09137454148");
 
-            paramValMap.put("%prefix-full_name%", prefixFullName.get(i));
-            paramValMap.put("%full-name%", fullName.get(i));
-            paramValMap.put("%course-name%", courseName);
-            paramValMap.put("%start-date%", courseStartDate);
-            paramValMap.put("%end-date%", courseEndDate);
-            paramValMap.put("%personnel-address%", personelAdress);
+            paramValMap.put("prefix-full_name", prefixFullName.get(i));
+            paramValMap.put("full-name", fullName.get(i));
+            paramValMap.put("course-name", courseName);
+            paramValMap.put("start-date", courseStartDate);
+            paramValMap.put("end-date", courseEndDate);
+            paramValMap.put("personel-address", personelAdress);
 
 
-            if (type.equals("classStudent")) {
-                pid = "bkvqncws2h";
-            } else if (type.equals("classTeacher")) {
+            //if (type.equals("classStudent")) {
+                //pid = "bkvqncws2h";
+            //} else if (type.equals("classTeacher")) {
                 pid = "er7wvzn4l4";
-            }
+            //}
 
             sendMessageService.asyncEnqueue(pid, paramValMap, numbers);
             Long messageId = 0L;
