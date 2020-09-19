@@ -63,6 +63,16 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
         PersonnelRegistered updating = new PersonnelRegistered();
         modelMapper.map(personnelRegistered, updating);
         modelMapper.map(request, updating);
+        updating.setActive(1);
+
+        if (updating.getEnabled() == 494) {
+            updating.setEnabled(null);
+        }
+
+        if (updating.getDeleted() == 76) {
+            updating.setDeleted(null);
+        }
+
         return save(updating);
     }
 
@@ -101,11 +111,11 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
 
         for (String personnelNo : personnelNos) {
 
-            if (list.stream().filter(p -> (p.getDeleted()==null || p.getDeleted().equals(0)) && (p.getPersonnelNo() != null && p.getPersonnelNo().equals(personnelNo)) || (p.getPersonnelNo2() != null && p.getPersonnelNo2().equals(personnelNo))).count() == 0) {
+            if (list.stream().filter(p -> (p.getDeleted() == null || p.getDeleted().equals(0)) && (p.getPersonnelNo() != null && p.getPersonnelNo().equals(personnelNo)) || (p.getPersonnelNo2() != null && p.getPersonnelNo2().equals(personnelNo))).count() == 0) {
                 result.add(new PersonnelRegisteredDTO.InfoForStudent());
 
             } else {
-                prs = list.stream().filter(p -> (p.getDeleted()==null || p.getDeleted().equals(0)) && (p.getPersonnelNo() != null && p.getPersonnelNo().equals(personnelNo)) || (p.getPersonnelNo2() != null && p.getPersonnelNo2().equals(personnelNo))).collect(Collectors.toList()).get(0);
+                prs = list.stream().filter(p -> (p.getDeleted() == null || p.getDeleted().equals(0)) && (p.getPersonnelNo() != null && p.getPersonnelNo().equals(personnelNo)) || (p.getPersonnelNo2() != null && p.getPersonnelNo2().equals(personnelNo))).collect(Collectors.toList()).get(0);
                 result.add(modelMapper.map(prs, PersonnelRegisteredDTO.InfoForStudent.class));
             }
         }

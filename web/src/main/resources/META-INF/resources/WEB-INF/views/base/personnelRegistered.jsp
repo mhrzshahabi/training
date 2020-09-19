@@ -1033,11 +1033,11 @@
 
             {name: "workDays", title: "<spring:message code='work.days'/>",  keyPressFilter: "[0-9]",
                 length: "2"},
-            {name: "active", title: "<spring:message code='active.status'/>",  valueMap:
-                    {"-1": "<spring:message code='active'/>", "0": "<spring:message code='deActive'/>"}
+            {name: "enabled", title: "<spring:message code='active.status'/>",  valueMap:
+                    {"494": "<spring:message code='active'/>", "74": "<spring:message code='deActive'/>"}
             },
             {name: "deleted", title: "<spring:message code='delete.status'/>",  valueMap:
-                    {"-1": "<spring:message code='deleted'/>", "0": "<spring:message code='notDeleted'/>"}
+                    {"75": "<spring:message code='deleted'/>", "76": "<spring:message code='notDeleted'/>"}
             }
         ]
 
@@ -1361,6 +1361,12 @@
         }
     });
 
+    var ToolStripButton_Export2EXcel_JspPersonnelReg = isc.ToolStripButtonExcel.create({
+        click: function () {
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_PersonnelReg_JspPersonnelReg,  personnelRegUrl + "/spec-list" , 0, null, '',"لیست فراگیران متفرقه", ListGrid_PersonnelReg_JspPersonnelReg.getCriteria(), null);
+        }
+    });
+
     var ToolStrip_Actions_JspPersonnelReg = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -1370,6 +1376,7 @@
             ToolStripButton_Edit_JspPersonnelReg,
             ToolStripButton_Remove_JspPersonnelReg,
             // ToolStripButton_Print_JspPersonnelReg
+            ToolStripButton_Export2EXcel_JspPersonnelReg,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",

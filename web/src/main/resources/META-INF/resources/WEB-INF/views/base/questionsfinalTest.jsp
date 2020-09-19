@@ -753,7 +753,14 @@
             print(data, params, "testForm.jasper");
         }
     });
-
+    var ToolStripButton_Export2EXcel = isc.ToolStripButtonExcel.create({
+        click: function () {
+            let record = FinalTestLG_finalTest.getSelectedRecord();
+            let restUrl = questionBankTestQuestionUrl +"/test/"+record.tclass.id+ "/spec-list";
+            let pageName = "آزمون پایانی- لیست سوالات(کلاس با کد "+ record.tclass.code+")";
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_FinalTest, restUrl , 0,FinalTestLG_finalTest , '',pageName, ListGrid_FinalTest.getCriteria(), null);
+        }
+    });
     var ToolStrip_Actions_FinalTest = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -761,6 +768,7 @@
             ToolStripButton_InsertQuestionFromQuestionBank_FinalTest,
             ToolStripButton_InsertQuestionFromLatestQuestions_FinalTest,
             ToolStripButton_PrintJasper,
+            ToolStripButton_Export2EXcel,
             //ToolStripButton_PrintJasper,
             isc.ToolStrip.create({
                 width: "100%",

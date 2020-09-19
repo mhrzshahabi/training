@@ -44,7 +44,7 @@
             {name: "titleFa", title: "عنوان"},
             {name: "courseId", hidden: true},
             {
-                name: "categoryId",
+                name: "category.id",
                 title: "گروه",
                 optionDataSource: RestDataSource_category,
                 displayField: "titleFa",
@@ -53,7 +53,7 @@
                 autoFitWidth: true,
             },
             {
-                name: "subCategoryId",
+                name: "subCategory.id",
                 title: "زیر گروه",
                 optionDataSource: RestDataSource_SubCategory,
                 displayField: "titleFa",
@@ -86,20 +86,17 @@
             {name: "code"},
             {name: "titleFa"},
             {name: "titleEn"},
-            {name: "categoryId"},
+            {name: "category"},
             {name: "subCategory.titleFa"},
-            {name: "erunType.titleFa"},
-            {name: "elevelType.titleFa"},
-            {name: "etheoType.titleFa"},
-            {name: "theoryDuration"},
-            {name: "etechnicalType.titleFa"},
+            {name: "runType.titleFa"},
+            {name: "levelType.titleFa"},
+            {name: "theoType.titleFa"},
+            {name: "duration"},
+            {name: "technicalType.titleFa"},
             {name: "minTeacherDegree"},
             {name: "minTeacherExpYears"},
             {name: "minTeacherEvalScore"},
-            // {name: "know   ledge"},
-            // {name: "skill"},
-            // {name: "attitude"},
-            {name: "needText"},
+            {name: "issueTitle"},
             {name: "description"},
             {name: "workflowStatus"},
             {name: "workflowStatusCode"},
@@ -113,7 +110,7 @@
             }
             // {name: "version"},
         ],
-        fetchDataURL: courseUrl + "spec-list",
+        fetchDataURL: courseUrl + "search",
     });
     var RestDataSource_eTechnicalType = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
@@ -145,8 +142,8 @@
             {name: "id", primaryKey: true},
             {name: "titleFa"},
             {name: "titleEn"},
-            {name: "categoryId"},
-            {name: "subCategoryId"},
+            {name: "category.id"},
+            {name: "subCategory.id"},
             ],
         // fetchDataURL: courseUrl + courseRecord.id + "/goal"
     });
@@ -375,19 +372,19 @@
                 hidden: true
             },
             {
-                name: "categoryId",
+                name: "category.id",
                 title: "<spring:message code="course_category"/>",
                 align: "center", filterOnKeypress:true,
-                filterOperator: "equals",
-                optionDataSource: RestDataSource_category,
-                displayField: "titleFa",
-                valueField: "id"
-                // sortNormalizer: function (record) {
-                //     return record.category.titleFa;
-                // }
+                // filterOperator: "iC",
+                // optionDataSource: RestDataSource_category,
+                // displayField: "titleFa",
+                // valueField: "id"
+                sortNormalizer: function (record) {
+                    return record.category.titleFa;
+                }
             },
             {
-                name: "subCategory.titleFa",
+                name: "subCategory.id",
                 title: "<spring:message
         code="course_subcategory"/>",
                 align: "center",
@@ -397,7 +394,7 @@
                 }
             },
             {
-                name: "erunType.titleFa",
+                name: "runType.titleFa",
                 title: "<spring:message code="course_eruntype"/>",
                 align: "center",
                 filterOperator: "iContains",
@@ -406,26 +403,26 @@
                 canSort: false,
             },
             {
-                name: "elevelType.titleFa", title: "<spring:message
+                name: "levelType.titleFa", title: "<spring:message
         code="cousre_elevelType"/>", align: "center", filterOperator: "iContains",
                 canFilter: false,
                 canSort: false
             },
             {
-                name: "etheoType.titleFa", title: "<spring:message
+                name: "theoType.titleFa", title: "<spring:message
         code="course_etheoType"/>", align: "center", filterOperator: "iContains",
                 canFilter: false,
                 canSort: false
             },
             {
-                name: "theoryDuration", title: "<spring:message
+                name: "duration", title: "<spring:message
                 code="course_theoryDuration"/>", align: "center", filterOperator: "equals",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
                 }
             },
             {
-                name: "etechnicalType.titleFa", title: "<spring:message
+                name: "technicalType.titleFa", title: "<spring:message
                  code="course_etechnicalType"/>", align: "center", filterOperator: "iContains",
                 canSort: false,
                 canFilter: false
@@ -464,7 +461,7 @@
             //     format: "%",
             //     width: "50"
             // },
-            {name: "needText", title: "شرح", hidden: true},
+            {name: "issueTitle", title: "شرح", hidden: true},
             {name: "description", title: "توضیحات", hidden: true},
             {
                 name: "workflowStatus",
@@ -675,7 +672,7 @@
     <sec:authorize access="hasAuthority('Course_P')">
     var ToolStripExcel_JspCourse = isc.ToolStripButtonExcel.create({
         click: function () {
-            ExportToFile.downloadExcel(null, ListGrid_Course, "course", 0, null, '', "طراحی و برنامه ریزی - دوره", ListGrid_Course.getCriteria(), null);
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_Course, courseUrl + "spec-list", 0, null, '', "طراحی و برنامه ریزی - دوره", ListGrid_Course.getCriteria(), null);
         }
     });
     </sec:authorize>
@@ -713,8 +710,8 @@
                             {name: "code", title: "کد",
 
                             },
-                            {name: "categoryId",canFilter:false, filterOnKeypress:true},
-                            {name: "subCategoryId",canFilter:false, filterOnKeypress:true
+                            {name: "category.id",canFilter:false, filterOnKeypress:true},
+                            {name: "subCategory.id",canFilter:false, filterOnKeypress:true
                             },
                         ],
                         gridComponents: ["filterEditor", "header", "body"],
@@ -749,9 +746,9 @@
                                 }
                             },
                             {
-                                name: "categoryId", filterOnKeypress:true,
+                                name: "category.id", filterOnKeypress:true,
                             },
-                            {name: "subCategoryId", filterOnKeypress:true}
+                            {name: "subCategory.id", filterOnKeypress:true}
                         ],
                         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
                             if (ListGridOwnSkill_JspCourse.getSelectedRecord() == null) {
@@ -793,8 +790,8 @@
                         //             // width: 250,
                         //             title: "مهارت های گروه",
                         //             click: function () {
-                        //                 let cat = DynamicForm_course_GroupTab.getField("categoryId").getValue()
-                        //                 RestDataSource_Skill_JspCourse.fetchDataURL = skillUrl + "/skillthisCourse" + "?categoryId=" + cat
+                        //                 let cat = DynamicForm_course_GroupTab.getField("category.id").getValue()
+                        //                 RestDataSource_Skill_JspCourse.fetchDataURL = skillUrl + "/skillthisCourse" + "?category.id=" + cat
                         //                 ListGrid_AllSkill_JspCourse.fetchData()
                         //                 ListGrid_AllSkill_JspCourse.invalidateCache()
                         //             }
@@ -860,7 +857,7 @@
                                     keyPressFilter: "[0-9/]"
                                 }
                             },
-                            {name: "categoryId", filterOnKeypress:true},
+                            {name: "category.id", filterOnKeypress:true},
                             {name: "courseMainObjectiveId", type: "boolean", title: "هدف کلی", canFilter: false}
                         ],
                         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
@@ -1177,7 +1174,7 @@
                 icon: "[SKIN]/actions/add.png",
                 prompt: "<spring:message code='add'/>",
                 click: function () {
-                    if(DynamicForm_course_GroupTab.getValue("categoryId") === undefined || DynamicForm_course_GroupTab.getValue("subCategory.id") === undefined){
+                    if(DynamicForm_course_GroupTab.getValue("category.id") === undefined || DynamicForm_course_GroupTab.getValue("subCategory.id") === undefined){
                         createDialog("warning", "ابتدا گروه و زیر گروه را انتخاب نمایید", "اخطار")
                         return;
                     }
@@ -1188,7 +1185,7 @@
                             operator: "and",
                             criteria: [
                                 {fieldName: "courseId", operator: "isNull"},
-                                {fieldName: "categoryId", operator: "equals", value: DynamicForm_course_GroupTab.getValue("categoryId")},
+                                {fieldName: "categoryId", operator: "equals", value: DynamicForm_course_GroupTab.getValue("category.id")},
                                 {fieldName: "subCategoryId", operator: "equals", value: DynamicForm_course_GroupTab.getValue("subCategory.id")},
                                 // {fieldName: "code", operator: "notInSet", value: mainObjectiveList.getProperty("code") },
                             ]
@@ -1199,7 +1196,7 @@
                             operator: "and",
                             criteria: [
                                 {fieldName: "courseMainObjectiveId", operator: "isNull"},
-                                {fieldName: "categoryId", operator: "equals", value: DynamicForm_course_GroupTab.getValue("categoryId")},
+                                {fieldName: "categoryId", operator: "equals", value: DynamicForm_course_GroupTab.getValue("category.id")},
                                 {fieldName: "subCategoryId", operator: "equals", value: DynamicForm_course_GroupTab.getValue("subCategory.id")},
                                 // {fieldName: "code", operator: "notInSet", value: mainObjectiveList.getProperty("code") },
                                 {
@@ -1572,7 +1569,7 @@
                 // height: "30",
             },
             {
-                name: "theoryDuration",
+                name: "duration",
                 colSpan: 1,
                 // endRow: true,
                 title: "<spring:message code="course_theoryDuration"/>",
@@ -1610,11 +1607,11 @@
                 baseStyle: "eval-code"
             },
             {
-                name: "categoryId",
+                name: "category.id",
                 colSpan: 1,
                 title: "<spring:message code="course_category"/>",
                 textAlign: "center",
-                // autoFetchData: true,
+                autoFetchData: false,
                 required: true,
                 // titleOrientation: "top",
                 // height: "30",
@@ -1665,7 +1662,7 @@
                 }
             },
             {
-                name: "erunType.id",
+                name: "runType.id",
                 colSpan: 1,
                 // titleOrientation: "top",
                 title: "<spring:message code="course_eruntype"/>",
@@ -1704,7 +1701,7 @@
                 }
             },
             {
-                name: "elevelType.id",
+                name: "levelType.id",
                 colSpan: 1,
                 title: "<spring:message code="cousre_elevelType"/>",
                 // editorType: "ComboBoxItem",
@@ -1742,7 +1739,7 @@
                 },
             },
             {
-                name: "etheoType.id",
+                name: "theoType.id",
                 colSpan: 1,
                 title: "<spring:message code="course_etheoType"/>",
                 required: true,
@@ -1763,7 +1760,7 @@
                 },
             },
             {
-                name: "etechnicalType.id",
+                name: "technicalType.id",
                 colSpan: 1,
                 title: "<spring:message code="course_etechnicalType"/>",
                 // editorType: "ComboBoxItem",
@@ -1796,7 +1793,7 @@
                 },
             },
             {
-                name: "needText",
+                name: "issueTitle",
                 title: "درخواست",
                 colSpan: 3,
                 rowSpan: 1,
@@ -1839,6 +1836,7 @@
                 return;
             }
 //------------------------------------
+            let data = vm_JspCourse.getValues();
             if (course_method == "POST") {
                 x = courseCode();
                 wait.show()
@@ -1847,27 +1845,39 @@
                     let newCourseCounter = courseCounterCode(resp.data);
                     x = x + newCourseCounter;
                     DynamicForm_course_GroupTab.setValue('code', x);
-                    let data2 = vm_JspCourse.getValues();
                     ChangeEtechnicalType = false;
                     let mainObjectiveIdList = [];
                     if (mainObjectiveGrid.data.localData !== undefined) {
                         for (let k = 0; k < mainObjectiveGrid.data.localData.length; k++) {
                             mainObjectiveIdList.add(mainObjectiveGrid.data.localData[k].id);
                         }
-                        data2.mainObjectiveIds = mainObjectiveIdList;
+                        data.mainObjectiveIds = mainObjectiveIdList;
                     } else {
                         createDialog("info", "دوره، بدون هدف اصلي نمي توان ايجاد کرد.");
                         return;
                     }
-                    if (data2.scoringMethod === "1") {
-                        data2.acceptancelimit = data2.acceptancelimit_a
+                    if (data.scoringMethod === "1") {
+                        data.acceptancelimit = data.acceptancelimit_a
                     }
-                    data2.workflowStatus = "ثبت اولیه";
-                    data2.workflowStatusCode = "0";
-                    delete data2.subCategory;
-                    data2.subCategoryId = DynamicForm_course_GroupTab.getValue("subCategory.id");
+                    data.workflowStatus = "ثبت اولیه";
+                    data.workflowStatusCode = "0";
+                    delete data["subCategory"];
+                    delete data["category"];
+                    delete data["levelType"];
+                    delete data["theoType"];
+                    delete data["runType"];
+                    delete data["technicalType"];
+                    data.subCategoryId = DynamicForm_course_GroupTab.getValue("subCategory.id");
+                    data.categoryId = DynamicForm_course_GroupTab.getValue("category.id");
+                    data.eTechnicalTypeId = DynamicForm_course_GroupTab.getValue("technicalType.id");
+
+                    data.eRunTypeId = DynamicForm_course_GroupTab.getValue("runType.id");
+                    data.eLevelTypeId = DynamicForm_course_GroupTab.getValue("levelType.id");
+                    data.eTheoTypeId = DynamicForm_course_GroupTab.getValue("theoType.id");
+                    data.needText = DynamicForm_course_GroupTab.getValue("issueTitle");
+                    data.theoryDuration = DynamicForm_course_GroupTab.getValue("duration");
                     wait.show()
-                    isc.RPCManager.sendRequest(TrDSRequest(courseUrl, course_method, JSON.stringify(data2), function (resp) {
+                    isc.RPCManager.sendRequest(TrDSRequest(courseUrl, course_method, JSON.stringify(data), function (resp) {
                         wait.close();
                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                             TabSet_Goal_JspCourse.enable();
@@ -1897,10 +1907,10 @@
             }
             // else if ((course_method == "PUT" && DynamicForm_course.valuesHaveChanged()) || (course_method == "PUT" || ChangeEtechnicalType == true)) {
             else if (course_method == "PUT") {
-                let data1 = vm_JspCourse.getValues();
-                if (data1.scoringMethod === "1") {
-                    data1.acceptancelimit = data1.acceptancelimit_a
+                if (data.scoringMethod === "1") {
+                    data.acceptancelimit = data.acceptancelimit_a
                 }
+
                 ChangeEtechnicalType = false;
                 preCourseIdList = [];
                 equalCourseIdList = [];
@@ -1914,24 +1924,27 @@
                 for (let k = 0; k < mainObjectiveList.length; k++) {
                     mainObjectiveIdList.add(mainObjectiveList[k].id);
                 }
-                data1.mainObjectiveIds = mainObjectiveIdList;
-                data1.equalCourseListId = equalCourseIdList;
-                data1.preCourseListId = preCourseIdList;
-                delete data1["subCategory"];
-                delete data1["category"];
-                delete data1["elevelType"];
-                delete data1["etheoType"];
-                delete data1["erunType"];
-                delete data1["etechnicalType"];
-                data1.subCategoryId = DynamicForm_course_GroupTab.getValue("subCategory.id");
-                data1.eTechnicalTypeId = DynamicForm_course_GroupTab.getValue("etechnicalType.id");
+                data.mainObjectiveIds = mainObjectiveIdList;
+                data.equalCourseListId = equalCourseIdList;
+                data.preCourseListId = preCourseIdList;
+                delete data["subCategory"];
+                delete data["category"];
+                delete data["levelType"];
+                delete data["theoType"];
+                delete data["runType"];
+                delete data["technicalType"];
+                data.subCategoryId = DynamicForm_course_GroupTab.getValue("subCategory.id");
+                data.categoryId = DynamicForm_course_GroupTab.getValue("category.id");
+                data.eTechnicalTypeId = DynamicForm_course_GroupTab.getValue("technicalType.id");
 
-                data1.eRunTypeId = DynamicForm_course_GroupTab.getValue("erunType.id");
-                data1.eLevelTypeId = DynamicForm_course_GroupTab.getValue("elevelType.id");
-                data1.eTheoTypeId = DynamicForm_course_GroupTab.getValue("etheoType.id");
+                data.eRunTypeId = DynamicForm_course_GroupTab.getValue("runType.id");
+                data.eLevelTypeId = DynamicForm_course_GroupTab.getValue("levelType.id");
+                data.eTheoTypeId = DynamicForm_course_GroupTab.getValue("theoType.id");
+                data.needText = DynamicForm_course_GroupTab.getValue("issueTitle");
+                data.theoryDuration = DynamicForm_course_GroupTab.getValue("duration");
 
                 wait.show()
-                isc.RPCManager.sendRequest(TrDSRequest(course_url, course_method, JSON.stringify(data1), function (resp) {
+                isc.RPCManager.sendRequest(TrDSRequest(course_url, course_method, JSON.stringify(data), function (resp) {
                     wait.close();
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                         sendToWorkflowAfterUpdate(JSON.parse(resp.data));
@@ -2756,10 +2769,10 @@
 
     function ListGrid_Course_add() {
         // IButton_course_Save.disable();
-        DynamicForm_course_GroupTab.getItem("categoryId").enable();
-        DynamicForm_course_GroupTab.getItem("erunType.id").enable();
-        DynamicForm_course_GroupTab.getItem("elevelType.id").enable();
-        DynamicForm_course_GroupTab.getItem("etheoType.id").enable();
+        DynamicForm_course_GroupTab.getItem("category.id").enable();
+        DynamicForm_course_GroupTab.getItem("runType.id").enable();
+        DynamicForm_course_GroupTab.getItem("levelType.id").enable();
+        DynamicForm_course_GroupTab.getItem("theoType.id").enable();
         course_method = "POST";
         DynamicForm_course_GroupTab.getItem('statusGroupTab').hide();
         course_url = courseUrl;
@@ -2857,11 +2870,11 @@
     };
 
     const toggleGroupTabs = status => {
-        DynamicForm_course_GroupTab.getItem("categoryId").setDisabled(status);
+        DynamicForm_course_GroupTab.getItem("category.id").setDisabled(status);
         DynamicForm_course_GroupTab.getItem("subCategory.id").setDisabled(status);
-        DynamicForm_course_GroupTab.getItem("erunType.id").setDisabled(status);
-        DynamicForm_course_GroupTab.getItem("elevelType.id").setDisabled(status);
-        DynamicForm_course_GroupTab.getItem("etheoType.id").setDisabled(status);
+        DynamicForm_course_GroupTab.getItem("runType.id").setDisabled(status);
+        DynamicForm_course_GroupTab.getItem("levelType.id").setDisabled(status);
+        DynamicForm_course_GroupTab.getItem("theoType.id").setDisabled(status);
         DynamicForm_course_GroupTab.getItem('statusGroupTab').hide();
 
         if (status){
@@ -2917,7 +2930,7 @@
 
             mainObjectiveGrid_Refresh();
             // RestDataSource_category.fetchDataURL = categoryUrl + "spec-list";
-            // DynamicForm_course_GroupTab.getItem("categoryId").fetchData();
+            // DynamicForm_course_GroupTab.getItem("category.id").fetchData();
 
            // alert(courseRecord.id);
 
@@ -2941,11 +2954,11 @@
             course_method = "PUT";
             course_url = courseUrl + courseRecord.id;
             // DynamicForm_course.getItem("epSection").enable();
-            RestDataSourceSubCategory.fetchDataURL = categoryUrl + courseRecord.categoryId + "/sub-categories";
+            RestDataSourceSubCategory.fetchDataURL = categoryUrl + courseRecord.category.id + "/sub-categories";
             DynamicForm_course_GroupTab.getItem("subCategory.id").fetchData();
             // sRecord.domainPercent = "دانشی: " + sRecord.knowledge + "%" + "، مهارتی: " + sRecord.skill + "%" + "، نگرشی: " + sRecord.attitude + "%";
             vm_JspCourse.editRecord(courseRecord);
-            DynamicForm_course_GroupTab.setValue("subCategory.id", courseRecord.subCategoryId);
+            DynamicForm_course_GroupTab.setValue("subCategory.id", courseRecord.subCategory.id);
 //======================================================
 //             if (courseRecord.hasGoal && DynamicForm_course_MainTab.getValue("evaluation") != null) {
 //                 Window_course.show();
@@ -3035,12 +3048,12 @@
     }
 
     function courseCode() {
-        var subCatDis = DynamicForm_course_GroupTab.getField("subCategory.id").isDisabled();
-        var cat = DynamicForm_course_GroupTab.getField("categoryId").getSelectedRecord();
-        var subCat = DynamicForm_course_GroupTab.getField("subCategory.id");
-        var eRun = DynamicForm_course_GroupTab.getField("erunType.id").getSelectedRecord();
-        var eLevel = DynamicForm_course_GroupTab.getField("elevelType.id").getSelectedRecord();
-        var eTheo = DynamicForm_course_GroupTab.getField("etheoType.id").getSelectedRecord();
+        let subCatDis = DynamicForm_course_GroupTab.getItem("subCategory.id").isDisabled();
+        let cat = DynamicForm_course_GroupTab.getItem("category.id").getSelectedRecord();
+        let subCat = DynamicForm_course_GroupTab.getItem("subCategory.id");
+        let eRun = DynamicForm_course_GroupTab.getItem("runType.id").getSelectedRecord();
+        let eLevel = DynamicForm_course_GroupTab.getItem("levelType.id").getSelectedRecord();
+        let eTheo = DynamicForm_course_GroupTab.getItem("theoType.id").getSelectedRecord();
         subCat = subCatDis ? "" : (subCat.getSelectedRecord() == undefined ? cat.code : subCat.getSelectedRecord().code);
         eRun = eRun == undefined ? "" : eRun.code;
         eLevel = eLevel == undefined ? "" : eLevel.code;
