@@ -1012,7 +1012,7 @@
 
             static downloadExcel(title, listgrid, fileName, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate,warning){
 
-                if(listgrid.data.localData.length > listgrid.data.getAllLoadedRows().length){
+                if(listgrid.data.localData.length > listgrid.data.getAllLoadedRows().length || listgrid.data.localData.length > 200){
 
                     let showDialog=null;
 
@@ -1042,7 +1042,7 @@
 
             static downloadExcelRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate,warning){
 
-                if(listgrid.data.localData.length > listgrid.data.getAllLoadedRows().length){
+                if(listgrid.data.localData.length > listgrid.data.getAllLoadedRows().length || listgrid.data.localData.length > 200){
 
                     let showDialog=null;
 
