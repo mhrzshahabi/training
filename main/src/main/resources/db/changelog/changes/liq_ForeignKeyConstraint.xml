@@ -1213,12 +1213,6 @@
     <changeSet author="razmnoosh (generated)" id="1598260979293-506">
         <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_class_evaluation_goals" constraintName="FKkj5l7g3vj5xxlkfe5kticvpkk" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
-    <changeSet author="jafari-h (generated)" id="1600053998260-507">
-        <addForeignKeyConstraint baseColumnNames="f_planner" baseTableName="tbl_class" constraintName="FK47n2qfbj4k3ydugf974mfksu6" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_personnel" validate="true"/>
-    </changeSet>
-    <changeSet author="jafari-h (generated)" id="1600053998260-508">
-        <addForeignKeyConstraint baseColumnNames="f_supervisor" baseTableName="tbl_class" constraintName="FKiiw2b2xw8e1untya6a1tipq1w" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_personnel" validate="true"/>
-    </changeSet>
     <!--<changeSet author="matin_ar (generated)" id="1598067280592-521">-->
         <!--<dropForeignKeyConstraint baseTableName="TBL_TARGET_SOCIETY" constraintName="FKGBWT8EEIHABEWSK5I46S8Q3LT"/>-->
     <!--</changeSet>-->

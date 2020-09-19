@@ -5,8 +5,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);%>
-
-
 // <script>
     //----------------------------------------- Variables --------------------------------------------------------------
         var evalWait_BE;
@@ -29,6 +27,47 @@
                 operator:"and",
                 criteria:[{ fieldName: "code", operator: "inSet", value: ["21","32","42","4"]}]
             }
+        });
+
+        var EvaluationDS_PersonList_BE = isc.TrDS.create({
+            fields: [
+                {name: "id", primaryKey: true, hidden: true},
+                {
+                    name: "firstName",
+                    title: "<spring:message code="firstName"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "lastName",
+                    title: "<spring:message code="lastName"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "nationalCode",
+                    title: "<spring:message code="national.code"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "personnelNo",
+                    title: "<spring:message code="personnel.no"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "personnelNo2",
+                    title: "<spring:message code="personnel.no.6.digits"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "postTitle",
+                    title: "<spring:message code="post"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                }
+            ],
         });
 
         var RestDataSource_student_BE = isc.TrDS.create({
@@ -156,6 +195,21 @@
     });
 
     //----------------------------------------- ListGrids --------------------------------------------------------------
+        var EvaluationListGrid_PeronalLIst_BE = isc.TrLG.create({
+            dataSource: EvaluationDS_PersonList_BE,
+            selectionType: "single",
+            fields: [
+                {name: "id", hidden: true},
+                {name: "firstName"},
+                {name: "lastName"},
+                {name: "nationalCode"},
+                {name: "personnelNo"},
+                {name: "personnelNo2"},
+                {name: "postTitle"},
+            ],
+            selectionAppearance: "checkbox"
+        });
+
         var ListGrid_student_BE = isc.TrLG.create({
             width: "100%",
             height: "100%",
@@ -309,64 +363,6 @@
 
     //----------------------------------------- New Funsctions ---------------------------------------------------------
         function Training_Behavioral_Form_Inssurance_BE(record){
-
-            let EvaluationDS_PersonList_BE = isc.TrDS.create({
-                fields: [
-                    {name: "id", primaryKey: true, hidden: true},
-                    {
-                        name: "firstName",
-                        title: "<spring:message code="firstName"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "lastName",
-                        title: "<spring:message code="lastName"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "nationalCode",
-                        title: "<spring:message code="national.code"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "personnelNo",
-                        title: "<spring:message code="personnel.no"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "personnelNo2",
-                        title: "<spring:message code="personnel.no.6.digits"/>",
-                        filterOperator: "iContains"
-                    },
-                    {
-                        name: "postTitle",
-                        title: "<spring:message code="post"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    }
-                ],
-            });
-
-            let EvaluationListGrid_PeronalLIst_BE = isc.TrLG.create({
-                dataSource: EvaluationDS_PersonList_BE,
-                selectionType: "single",
-                autoFetchData: false,
-                fields: [
-                    {name: "id", hidden: true},
-                    {name: "firstName"},
-                    {name: "lastName"},
-                    {name: "nationalCode"},
-                    {name: "personnelNo"},
-                    {name: "personnelNo2"},
-                    {name: "postTitle"},
-                ],
-                selectionAppearance: "checkbox"
-            });
-
             let evaluation_Audience_Type = isc.DynamicForm.create({
                 fields: [
                     {
@@ -374,7 +370,6 @@
                         type: "SelectItem",
                         optionDataSource: AudienceTypeDS_BE,
                         title: "نوع مخاطب : ",
-                        defaultValue: 190,
                         pickListProperties: {
                             showFilterEditor: false
                         },
@@ -384,68 +379,22 @@
                         valueField: "id",
                         displayField: "title",
                         changed: function (form, item, value) {
-                            if(value == 190){
+                            if(value == 190)
                                 EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getParentEmployee/" + record.student.nationalCode;
-                                EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
-                                EvaluationListGrid_PeronalLIst_BE.invalidateCache();
-                                EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
-                                    if(resp.data.size() == 0){
-                                        EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
-                                        EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
-                                        EvaluationListGrid_PeronalLIst_BE.fetchData();
-                                        EvaluationListGrid_PeronalLIst_BE.invalidateCache();
-                                    }
-                                });
-                            }
-                            else if(value == 189){
+                            else if(value == 189)
                                 EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getSiblingsEmployee/" + record.student.nationalCode;
-                                EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
-                                EvaluationListGrid_PeronalLIst_BE.invalidateCache();
-                                EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
-                                    if(resp.data.size() == 0){
-                                        EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
-                                        EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
-                                        EvaluationListGrid_PeronalLIst_BE.fetchData();
-                                        EvaluationListGrid_PeronalLIst_BE.invalidateCache();
-                                    }
-                                });
-                            }
-                            else if(value == 454){
+                            else if(value == 454)
                                 EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getTraining/" +  "<%= SecurityUtil.getNationalCode()%>";
-                                EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
-                                EvaluationListGrid_PeronalLIst_BE.invalidateCache();
-                                EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
-                                    if(resp.data.size() == 0){
-                                        EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
-                                        EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
-                                        EvaluationListGrid_PeronalLIst_BE.fetchData();
-                                        EvaluationListGrid_PeronalLIst_BE.invalidateCache();
-                                    }
-                                });
-                            }
-                            else if(value == 188){
+                            else if(value == 188)
                                 EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getStudent/" + record.student.nationalCode;
-                                EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
-                                EvaluationListGrid_PeronalLIst_BE.invalidateCache();
-                                EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
-                                    if(resp.data.size() == 0){
-                                        EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
-                                        EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
-                                        EvaluationListGrid_PeronalLIst_BE.fetchData();
-                                        EvaluationListGrid_PeronalLIst_BE.invalidateCache();
-                                    }
-                                });
-                            }
-                            else{
+                            else
                                 EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
-                                EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
-                                EvaluationListGrid_PeronalLIst_BE.fetchData();
-                                EvaluationListGrid_PeronalLIst_BE.invalidateCache();
-                            }
-
+                            EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                            EvaluationListGrid_PeronalLIst_BE.fetchData();
+                            EvaluationListGrid_PeronalLIst_BE.invalidateCache();
                         }
                     },
-                ],
+                ]
             });
             let Buttons_List_HLayout = isc.HLayout.create({
                 width: "100%",
@@ -528,16 +477,8 @@
             EvaluationDS_PersonList_BE.fetchDataURL =  "";
             EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
             EvaluationWin_PersonList.show();
-            EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getParentEmployee/" + record.student.nationalCode;
             EvaluationListGrid_PeronalLIst_BE.invalidateCache();
-            EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
-                if(resp.data.size() == 0){
-                    EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
-                    EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
-                    EvaluationListGrid_PeronalLIst_BE.fetchData();
-                    EvaluationListGrid_PeronalLIst_BE.invalidateCache();
-                }
-            });
+            EvaluationListGrid_PeronalLIst_BE.fetchData();
         }
 
         function Select_Questionnarie_BE(id,questionnarieId, evaluatorId,

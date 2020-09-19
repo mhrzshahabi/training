@@ -353,14 +353,6 @@
             ToolStripButton_Add,
             ToolStripButton_Edit,
             ToolStripButton_Remove,
-            isc.ToolStripButtonExcel.create({
-                click: function () {
-                    if (ListGrid_Evaluation_Index.data.size()<1)
-                        return;
-
-                    ExportToFile.downloadExcelRestUrl(null, ListGrid_Evaluation_Index,  evaluationIndexUrl + "/spec-list", 0, null, '',"ارزيابی - شاخص ارزیابی", ListGrid_Evaluation_Index.getCriteria(), null);
-                }
-            }),
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",

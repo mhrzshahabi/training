@@ -869,6 +869,8 @@ public class ExportToFileController {
         int responseCode = postConnection.getResponseCode();
 
         if (responseCode == HttpURLConnection.HTTP_OK) { //success
+            generalList = new ArrayList<>();
+
             BufferedReader in = new BufferedReader(new InputStreamReader(
                     postConnection.getInputStream()));
             String inputLine;

@@ -916,12 +916,10 @@
                 title: "",
                 canEdit: false
             },
-
             {
                 name: "reactionEvaluation",
                 title: "نمره ارزیابی واکنشی کلاس",
                 type: "checkbox",
-                hidden: true,
                 changed: function (form, item, value) {
                     if (value == true) {
                         form.getField("reactionEvaluationOperator").disabled = false;
@@ -937,7 +935,6 @@
             {
                 name: "reactionEvaluationOperator",
                 title: "",
-                hidden: true,
                 type: "SelectItem",
                 valueMap: {
                     "lessOrEqual": "کمتر از",
@@ -953,7 +950,6 @@
             {
                 name: "evaluationReactionGrade",
                 title: "",
-                hidden: true,
                 disabled: true,
                 hint: "نمره ی ارزیابی واکنشی مد نظر را وارد کنید",
                 showHintInField: true,
@@ -964,7 +960,6 @@
                 name: "learningEvaluation",
                 title: "نمره ارزیابی یادگیری کلاس",
                 type: "checkbox",
-                hidden: true,
                 changed: function (form, item, value) {
                     if (value == true) {
                         form.getField("learningEvaluationOperator").disabled = false;
@@ -980,7 +975,6 @@
             {
                 name: "learningEvaluationOperator",
                 title: "",
-                hidden: true,
                 type: "SelectItem",
                 valueMap: {
                     "lessOrEqual": "کمتر از",
@@ -996,7 +990,6 @@
             {
                 name: "evaluationLearningGrade",
                 title: "",
-                hidden: true,
                 disabled: true,
                 hint: "نمره ی ارزیابی یادگیری مد نظر را وارد کنید",
                 showHintInField: true,
@@ -1007,7 +1000,6 @@
                 name: "behavioralEvaluation",
                 title: "نمره ارزیابی رفتاری کلاس",
                 type: "checkbox",
-                hidden: true,
                 changed: function (form, item, value) {
                     if (value == true) {
                         form.getField("behavioralEvaluationOperator").disabled = false;
@@ -1023,7 +1015,6 @@
             {
                 name: "behavioralEvaluationOperator",
                 title: "",
-                hidden: true,
                 type: "SelectItem",
                 valueMap: {
                     "lessOrEqual": "کمتر از",
@@ -1039,7 +1030,6 @@
             {
                 name: "evaluationBehavioralGrade",
                 title: "",
-                hidden: true,
                 disabled: true,
                 hint: "نمره ی ارزیابی رفتاری مد نظر را وارد کنید",
                 showHintInField: true,
@@ -1050,7 +1040,6 @@
                 name: "evaluation",
                 title: "نمره اثربخشی کلاس",
                 type: "checkbox",
-                hidden: true,
                 changed: function (form, item, value) {
                     if (value == true) {
                         form.getField("evaluationOperator").disabled = false;
@@ -1066,7 +1055,6 @@
             {
                 name: "evaluationOperator",
                 title: "",
-                hidden: true,
                 type: "SelectItem",
                 valueMap: {
                     "lessOrEqual": "کمتر از",
@@ -1082,7 +1070,6 @@
             {
                 name: "evaluationEffectivenessGrade",
                 title: "",
-                hidden: true,
                 disabled: true,
                 hint: "نمره ی اثربخشی مد نظر را وارد کنید",
                 showHintInField: true,
