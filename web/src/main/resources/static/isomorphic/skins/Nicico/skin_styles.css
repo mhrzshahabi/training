@@ -358,7 +358,7 @@ ul {
   border: 2px solid #fe9d2a;
   -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  border-radius: 3px;
+  border-radius: 0px;
   padding-left: 5px;
   padding-right: 5px;
   line-height: 18px;
@@ -1358,7 +1358,7 @@ ul {
   font-family: BYekan;
   border: 2px solid #ffffff;
   border-bottom: none;
-  background: #ffffff;
+  background: #fe9d2a;
 }
 
 .tabButtonTopFocused,
@@ -1452,7 +1452,7 @@ ul {
   font-family: BYekan;
   border: 2px solid #ffffff;
   border-top: none;
-  background: #ffffff;
+  background: #fe9d2a;
 }
 
 .tabButtonBottomFocused,
@@ -1547,7 +1547,7 @@ ul {
   font-family: BYekan;
   border: 2px solid #ffffff;
   border-right: none;
-  background: #ffffff;
+  background: #fe9d2a;
 }
 
 .tabButtonLeftFocused,
@@ -1641,7 +1641,7 @@ ul {
   font-family: BYekan;
   border: 2px solid #ffffff;
   border-left: none;
-  background: #ffffff;
+  background: #fe9d2a;
 }
 
 .tabButtonRightFocused,
@@ -1739,7 +1739,7 @@ ul {
   font-family: BYekan;
   border: 2px solid #ffffff;
   border-bottom: none;
-  background: #ffffff;
+  background: #fe9d2a;
 }
 
 .iconOnlyTabButtonTopFocused,
@@ -1833,7 +1833,7 @@ ul {
   font-family: BYekan;
   border: 2px solid #ffffff;
   border-top: none;
-  background: #ffffff;
+  background: #fe9d2a;
 }
 
 .iconOnlyTabButtonBottomFocused,
@@ -1928,7 +1928,7 @@ ul {
   font-family: BYekan;
   border: 2px solid #ffffff;
   border-right: none;
-  background: #ffffff;
+  background: #fe9d2a;
 }
 
 .iconOnlyTabButtonLeftFocused,
@@ -2022,7 +2022,7 @@ ul {
   font-family: BYekan;
   border: 2px solid #ffffff;
   border-left: none;
-  background: #ffffff;
+  background: #fe9d2a;
 }
 
 .iconOnlyTabButtonRightFocused,
@@ -8998,6 +8998,7 @@ a.calMonthEventLink:active {
 
 .tabButtonTopDown, .tabButtonTopSelectedFocused, .tabButtonTopSelectedFocusedOver, .tabButtonTopSelectedFocusedDown, .tabButtonTopSelectedOver, .tabButtonTopSelectedDown, .tabButtonTopSelected {
   font-weight: bold;
+  background-color: white;
 }
 
 hr {
