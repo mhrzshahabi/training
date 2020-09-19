@@ -128,7 +128,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
             if (optional.isPresent()) {
                 NeedsAssessment na = optional.get();
                 if (needsAssessmentTemp.getDeleted() != null && needsAssessmentTemp.getDeleted().equals(75L))
-                    needsAssessmentDAO.deleteById(needsAssessmentTemp.getId());
+                    needsAssessmentDAO.updateDeleted(needsAssessmentTemp.getId(), 75L);
                 else {
                     needsAssessmentDAO.updateNeedsAssessmentPriority(na.getId(), needsAssessmentTemp.getNeedsAssessmentPriorityId());
                 }

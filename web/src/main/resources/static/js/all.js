@@ -827,3 +827,60 @@ function CorrectDateNew(obj) {
     }
     return obj;
 }
+
+
+var COLORS = [
+    {id: 1,name: 'red', hex:'#ff0000'},
+    {id: 2,name: 'green', hex:'#00ff00'},
+    {id: 3,name: 'blue', hex:'#0000ff'},
+    {id: 4,name: 'yellow', hex:'#ffff00'}
+]
+
+function mapColors(item){
+       return COLORS.find(function(f){
+            return f.id == item;
+       })
+}
+
+function labelList(key) {
+    var color = mapColors(key)
+    var recordCanvas = isc.HLayout.create({
+        height: "88%",
+        width: "100%",
+        align: "center"
+    });
+
+    var label = isc.Label.create({
+        height: "100%",
+        width: 6,
+        backgroundColor: color.hex,
+        align: "center",
+        valign: "center",
+        wrap: false,
+    })
+
+    return recordCanvas.addMember(label);
+}
+
+function labelGuide(valueMap) {
+
+    var HLayout_label_guide = isc.HLayout.create({
+        width: "100%",
+        height: 30,
+        members: []
+    });
+
+    Object.keys(valueMap).map(function (key) {
+        var color = mapColors(key)
+        if(color){
+            var htmlLabel = isc.HTMLFlow.create({
+                width: 80,
+                contents:"<div style=\"display:inline-block\"><div style=\"display: flex; flex-direction: row; justify-content: flex-start; align-items: center\"><span style=\"background-color:"+color['hex']+"; width: 8px; height: 8px\"></span><span style=\"margin-right: 5px\">"+valueMap[key]+"</span></div></div>"
+            })
+            HLayout_label_guide.addMembers(htmlLabel);
+         }
+
+    })
+    return HLayout_label_guide;
+}
+
