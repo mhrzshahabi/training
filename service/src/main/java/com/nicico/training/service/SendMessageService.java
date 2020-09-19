@@ -56,7 +56,7 @@ public class SendMessageService implements ISendMessageService {
     @Override
     public List<String> asyncEnqueue(String pid, Map<String, String> paramValMap, List<String> recipients) {
 
-        return nimadSMSService.syncEnqueue(pid,paramValMap,recipients);
+        return nimadSMSService.syncEnqueue(pid, paramValMap, recipients);
     }
 
     @Scheduled(cron = "0 0 9 * * ?", zone = "Asia/Tehran")

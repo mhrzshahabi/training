@@ -229,15 +229,13 @@ public class SendMessageRestController {
             paramValMap.put("end-date", courseEndDate);
             paramValMap.put("personel-address", personelAdress);
 
-
-            //if (type.equals("classStudent")) {
-                //pid = "bkvqncws2h";
-            //} else if (type.equals("classTeacher")) {
+            if (type.equals("classStudent")) {
+                pid = "bkvqncws2h";
+            } else if (type.equals("classTeacher")) {
                 pid = "er7wvzn4l4";
-            //}
+            }
 
-            sendMessageService.asyncEnqueue(pid, paramValMap, numbers);
-            Long messageId = 0L;
+            Long messageId = Long.parseLong(sendMessageService.asyncEnqueue(pid, paramValMap, numbers).get(0));
 
             if (maxRepeat > 0) {
 
