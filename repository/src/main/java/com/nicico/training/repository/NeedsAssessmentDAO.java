@@ -32,6 +32,10 @@ public interface NeedsAssessmentDAO extends BaseDAO<NeedsAssessment, Long> {
 
     Optional<NeedsAssessment> findFirstByCompetenceId(Long competenceId);
 
+    @Modifying
+    @Query(value = "update TBL_NEEDS_ASSESSMENT SET e_deleted = :deleted WHERE id = :id", nativeQuery = true)
+    public void updateDeleted(Long id, Long deleted);
+
     Boolean existsByCompetenceId(Long competenceId);
 
 }

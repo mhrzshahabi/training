@@ -1569,58 +1569,47 @@ WITH result AS (
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_PERSONNEL_COURSE_PASSED_NA_REPORT-010">
+    <changeSet author="NICICO" id="VIEW_PERSONNEL_COURSE_PASSED_NA_REPORT-013">
         <createView viewName="VIEW_PERSONNEL_COURSE_PASSED_NA_REPORT" replaceIfExists="true">
             <![CDATA[
-   SELECT
-        na."NA_PRIORITY_ID",
-        na."COURSE_ID",
-        na."COURSE_CODE",
-        na."COURSE_TITLE_FA",
-        na."PERSONNEL_PERSONNEL_NO",
-        na."PERSONNEL_CPP_AFFAIRS",
-        na."PERSONNEL_CPP_AREA",
-        na."PERSONNEL_CPP_ASSISTANT",
-        na."PERSONNEL_CPP_CODE",
-        na."PERSONNEL_CPP_SECTION",
-        na."PERSONNEL_CPP_TITLE",
-        na."PERSONNEL_CPP_UNIT",
-        na."PERSONNEL_COMPANY_NAME",
-        na."PERSONNEL_COMPLEX_TITLE",
-        na."PERSONNEL_EDUCATION_LEVEL_TITLE",
-        na."PERSONNEL_FIRST_NAME",
-        na."PERSONNEL_ID",
-        na."PERSONNEL_JOB_NO",
-        na."PERSONNEL_JOB_TITLE",
-        na."PERSONNEL_LAST_NAME",
-        na."PERSONNEL_NATIONAL_CODE",
-        na."PERSONNEL_EMP_NO",
-        na."PERSONNEL_POST_ID",
-        na."PERSONNEL_POST_CODE",
-        na."PERSONNEL_POST_GRADE_CODE",
-        na."PERSONNEL_POST_GRADE_TITLE",
-        na."PERSONNEL_POST_TITLE",
-        na."PERSONNEL_DEPARTMENT_ID",
-        CASE
-            WHEN passed.class_student_scores_state_id IN (
-                400,
-                401
-            ) THEN
-                216
-            ELSE
-                399
-        END AS is_passed,
-        pg.id as personnel_post_grade_id
-    FROM
-        view_personnel_course_na_report               na
-        LEFT JOIN view_student_classstudent_class_term_course   passed ON na.personnel_national_code = passed.student_national_code
-                                                                        AND na.course_id = passed.course_id
-                                                                        AND passed.class_student_scores_state_id IN (
-            400,
-            401
-        )
-        LEFT JOIN tbl_post                                      p ON na.personnel_post_id = p.id
-        LEFT JOIN tbl_post_grade                                pg ON p.f_post_grade_id = pg.id
+                    SELECT
+                            na."NA_PRIORITY_ID",
+                            na."COURSE_ID",
+                            na."COURSE_CODE",
+                            na."COURSE_TITLE_FA",
+                            na."PERSONNEL_PERSONNEL_NO",
+                            na."PERSONNEL_CPP_AFFAIRS",
+                            na."PERSONNEL_CPP_AREA",
+                            na."PERSONNEL_CPP_ASSISTANT",
+                            na."PERSONNEL_CPP_CODE",
+                            na."PERSONNEL_CPP_SECTION",
+                            na."PERSONNEL_CPP_TITLE",
+                            na."PERSONNEL_CPP_UNIT",
+                            na."PERSONNEL_COMPANY_NAME",
+                            na."PERSONNEL_COMPLEX_TITLE",
+                            na."PERSONNEL_EDUCATION_LEVEL_TITLE",
+                            na."PERSONNEL_FIRST_NAME",
+                            na."PERSONNEL_ID",
+                            na."PERSONNEL_JOB_NO",
+                            na."PERSONNEL_JOB_TITLE",
+                            na."PERSONNEL_LAST_NAME",
+                            na."PERSONNEL_NATIONAL_CODE",
+                            na."PERSONNEL_EMP_NO",
+                            na."PERSONNEL_POST_ID",
+                            p.c_code        AS personnel_post_code,
+                            pg.c_code       AS personnel_post_grade_code,
+                            pg.c_title_fa   AS personnel_post_grade_title,
+                            p.c_title_fa    AS personnel_post_title,
+                            na."PERSONNEL_DEPARTMENT_ID",
+                            CASE WHEN passed.class_student_scores_state_id IN (400,401) THEN 216 ELSE 399 END AS is_passed,
+                            pg.id           AS personnel_post_grade_id
+                        FROM
+                            view_personnel_course_na_report               na
+                            LEFT JOIN view_student_classstudent_class_term_course   passed ON na.personnel_id = passed.personnel_id
+                                                                                            AND na.course_id = passed.course_id
+                                                                                            AND class_student_scores_state_id IN (400,401)
+                            LEFT JOIN tbl_post                                      p ON na.personnel_post_id = p.id
+                            LEFT JOIN tbl_post_grade                                pg ON p.f_post_grade_id = pg.id
     			]]>
         </createView>
     </changeSet>
@@ -2529,59 +2518,6 @@ SELECT distinct
     csession.c_session_date,
     att.c_state
 ) atten
-    ]]>
-        </createView>
-    </changeSet>
-
-    <changeSet author="NICICO" id="view_personnel_course_passed_na_report_v2-001">
-        <createView viewName="view_personnel_course_passed_na_report_v2" replaceIfExists="true">
-            <![CDATA[
-    SELECT
-    na.na_priority_id,
-    na.course_id,
-    na.course_code,
-    na.course_title_fa,
-    na.personnel_personnel_no,
-    na.personnel_cpp_affairs,
-    na.personnel_cpp_area,
-    na.personnel_cpp_assistant,
-    na.personnel_cpp_code,
-    na.personnel_cpp_section,
-    na.personnel_cpp_title,
-    na.personnel_cpp_unit,
-    na.personnel_company_name,
-    na.personnel_complex_title,
-    na.personnel_education_level_title,
-    na.personnel_first_name,
-    na.personnel_id,
-    na.personnel_job_no,
-    na.personnel_job_title,
-    na.personnel_last_name,
-    na.personnel_national_code,
-    na.personnel_emp_no,
-    na.personnel_post_code,
-    na.personnel_post_grade_code,
-    na.personnel_post_grade_title,
-    na.personnel_post_title,
-    CASE
-            WHEN passed.class_student_scores_state_id IN (
-                400,
-                401
-            ) THEN 216
-            ELSE 399
-        END
-    AS is_passed,
-    tbl_post_grade.c_title_fa,
-    tbl_post_grade.c_code
-FROM
-    view_personnel_course_na_report na
-    LEFT JOIN view_student_classstudent_class_term_course passed ON na.personnel_national_code = passed.student_national_code
-                                                                    AND na.course_id = passed.course_id
-                                                                    AND passed.class_student_scores_state_id IN (
-        400,
-        401
-    )
-    LEFT JOIN tbl_post_grade ON passed.personnel_post_grade_code = tbl_post_grade.c_code
     ]]>
         </createView>
     </changeSet>
@@ -4939,5 +4875,65 @@ FROM
         </createView>
     </changeSet>
 
+
+    <changeSet author="NICICO" id="VIEW_STUDENTS_IN_CANCELED_CLASS_REPORT-001">
+        <createView viewName="VIEW_STUDENTS_IN_CANCELED_CLASS_REPORT" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    DISTINCT
+    std.emp_no             AS personalnum2,
+    std.personnel_no       AS personalnum,
+    personnel.first_name
+    || ' '
+    || personnel.last_name AS name,
+    personnel.personeltype,
+    personnel.national_code,
+    dep.c_ghesmat_title    AS ccp_section,
+    dep.c_vahed_title      AS ccp_unit,
+    dep.c_omor_title       AS ccp_affairs,
+    dep.c_moavenat_title   AS ccp_assistant,
+    dep.c_hoze_title       AS complex_title,
+    cls.c_code             AS class_code,
+    crs.c_title_fa         AS class_title,
+    cls.c_end_date         AS end_date,
+    cls.c_start_date       AS start_date
+
+FROM
+    tbl_course  crs
+    INNER JOIN (
+        SELECT
+            *
+        FROM
+            tbl_class
+        WHERE
+            tbl_class.c_status = '4'
+    )   cls ON crs.id = cls.f_course
+    INNER JOIN tbl_class_student    cls_std ON cls.id = cls_std.class_id
+    INNER JOIN tbl_student  std ON std.id = cls_std.student_id
+    INNER JOIN (
+        SELECT
+            CAST(view_active_personnel.p_type AS VARCHAR2(50)) personeltype,
+            view_active_personnel.personnel_no,
+            view_active_personnel.national_code,
+            view_active_personnel.first_name,
+            view_active_personnel.last_name,
+            view_active_personnel.f_department_id
+        FROM
+            view_active_personnel
+        UNION ALL
+        SELECT
+            CAST('personnel_registered' AS VARCHAR2(50)) personeltype,
+            tbl_personnel_registered.personnel_no,
+            tbl_personnel_registered.national_code,
+            tbl_personnel_registered.first_name,
+            tbl_personnel_registered.last_name,
+            tbl_personnel_registered.f_department_id
+        FROM
+            tbl_personnel_registered
+    ) personnel ON std.national_code = personnel.national_code
+    LEFT JOIN tbl_department    dep ON dep.id = personnel.f_department_id
+            ]]>
+        </createView>
+    </changeSet>
 
 </databaseChangeLog>

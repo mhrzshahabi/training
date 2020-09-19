@@ -425,7 +425,7 @@
             },
             {
                 name: "personnelCcpSection",
-                title: "<spring:message code="section.cost"/>",
+                title: "<spring:message code="section"/>",
                 filterFields: ["value", "value"],
                 pickListWidth: 300,
                 type: "ComboBoxItem",
@@ -561,21 +561,6 @@
                 valueMap: {
                     "1": "آماری",
                     "2": "لیستی",
-                },
-                change: function (form, item, value, oldValue) {
-
-
-                    if (value === "1"){
-                        VLayout_Body_PCNR.addMember(CourseLG_PCNR);
-                        VLayout_Body_PCNR.removeMember(CourseLG_MinPCNR);
-                    }
-                    else if(value === "2"){
-                        VLayout_Body_PCNR.removeMember(CourseLG_PCNR);
-                        VLayout_Body_PCNR.addMember(CourseLG_MinPCNR);
-                    }
-                    else
-                        return false;
-
                 }
             },
             {type: "SpacerItem"},
@@ -589,16 +574,30 @@
                     if(!hasFilters()) {
                         createDialog("info","فیلتری انتخاب نشده است.");
                     } else{
+
+                        if (reportType.getValue() === "1"){
+                            VLayout_Body_PCNR.addMember(CourseLG_PCNR);
+                            VLayout_Body_PCNR.removeMember(CourseLG_MinPCNR);
+                        }
+                        else if(reportType.getValue() === "2"){
+                            VLayout_Body_PCNR.removeMember(CourseLG_PCNR);
+                            VLayout_Body_PCNR.addMember(CourseLG_MinPCNR);
+                        }
+                        else
+                            return false;
+
                         var criteria = FilterDF_PCNR.getValuesAsAdvancedCriteria();
                         criteria.criteria.remove(criteria.criteria.find({fieldName: "reportType"}));
 
-                        CourseLG_PCNR.implicitCriteria = criteria;
-                        CourseLG_PCNR.invalidateCache();
-                        CourseLG_PCNR.fetchData();
-
-                        CourseLG_MinPCNR.implicitCriteria = criteria;
-                        CourseLG_MinPCNR.invalidateCache();
-                        CourseLG_MinPCNR.fetchData();
+                        if (reportType.getValue() === "1") {
+                            CourseLG_PCNR.implicitCriteria = criteria;
+                            CourseLG_PCNR.invalidateCache();
+                            CourseLG_PCNR.fetchData();
+                        } else if (reportType.getValue() === "2") {
+                            CourseLG_MinPCNR.implicitCriteria = criteria;
+                            CourseLG_MinPCNR.invalidateCache();
+                            CourseLG_MinPCNR.fetchData();
+                        }
                     }
                 }
             },
@@ -615,7 +614,7 @@
 
                         if (FilterDF_PCNR.getItem("reportType").getValue() === "1"){
                             // ExportToFile.showDialog(null, CourseLG_PCNR, "personnelCourseNAR", 0, null, '',"آمار دوره های نیازسنجی افراد - آماری"  , criteria, null);
-                            ExportToFile.downloadExcelFromClient(CourseLG_PCNR,null,"","آمار دوره های نیازسنجی افراد - آماری");
+                            ExportToFile.downloadExcelFromClient(CourseLG_PCNR,null,"","آمار دوره های نیازسنجی افراد - آماری",["totalNotPassed", "personnelList"]);
                         }
                         else if(FilterDF_PCNR.getItem("reportType").getValue() === "2"){
                             ExportToFile.downloadExcel(null, CourseLG_MinPCNR, "personnelCourseNAR", 0, null, '',"آمار دوره های نیازسنجی افراد - لیستی"  , criteria, null);
@@ -628,6 +627,7 @@
     });
 
     CourseLG_PCNR = isc.TrLG.create({
+        dataFetchMode: "local",
         dynamicTitle: true,
         autoFetchData: false,
         allowAdvancedCriteria: true,
