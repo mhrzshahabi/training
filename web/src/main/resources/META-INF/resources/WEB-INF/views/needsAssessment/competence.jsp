@@ -12,7 +12,6 @@
         4: "اصلاح شایستگی و ارسال به گردش کار"
     }
 
-
     // ------------------------------------------- Menu -------------------------------------------
     isc.Menu.create({
         ID: "CompetenceMenu_competence",
@@ -315,22 +314,27 @@
 
     function editCompetence_competence() {
         let record = CompetenceLG_competence.getSelectedRecord();
-        if(record.workFlowStatusCode === 0 || record.workFlowStatusCode === 4){
-            createDialog("warning", "بدلیل در گردش کار بودن شایستگی امکان ویرایش وجود ندارد")
-            return;
+        if (record) { //fix bug
+            if (record.workFlowStatusCode === 0 || record.workFlowStatusCode === 4) {
+                createDialog("warning", "بدلیل در گردش کار بودن شایستگی امکان ویرایش وجود ندارد")
+                return;
+            }
+            if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {
+                competenceMethod_competence = "PUT";
+                CompetenceDF_competence.clearValues();
+                CompetenceDF_competence.editRecord(record);
+                CompetenceWin_competence.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="competence"/>");
+                let inter = setInterval(function () {
+                    if (CompetenceDF_competence.getItem("competenceTypeId").getSelectedRecord() !== undefined) {
+                        clearInterval(inter)
+                        CompetenceWin_competence.show();
+                        actionCompetenceType();
+                    }
+                }, 100)
+            }
         }
-        if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {
-            competenceMethod_competence = "PUT";
-            CompetenceDF_competence.clearValues();
-            CompetenceDF_competence.editRecord(record);
-            CompetenceWin_competence.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="competence"/>");
-            let inter =setInterval(function () {
-                if(CompetenceDF_competence.getItem("competenceTypeId").getSelectedRecord()!== undefined){
-                    clearInterval(inter)
-                    CompetenceWin_competence.show();
-                    actionCompetenceType();
-                }
-            },100)
+        else {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         }
     }
 
@@ -353,8 +357,19 @@
                 wait.close();
                 if(resp.httpResponseCode !== 226) {
                     if(competenceMethod_competence === "POST") {
+                        if (resp.httpResponseCode === 401) { //bug fix
+                            simpleDialog("<spring:message code="message"/>", "<spring:message code='publication.title.duplicate'/>", 3000, "say");
+                            return;
+                        }
+
                         sendCompetenceToWorkflow(JSON.parse(resp.data));
+                    }//end post
+
+                    else if (resp.httpResponseCode === 401 && competenceMethod_competence === "PUT"){ //bug fix
+                        simpleDialog("<spring:message code="message"/>", "<spring:message code='publication.title.duplicate'/>", 3000, "say");
+                        return;
                     }
+
                     else if(JSON.parse(resp.data).workFlowStatusCode === 3 || JSON.parse(resp.data).workFlowStatusCode === 2){
                         sendCompetenceToWorkflow(JSON.parse(resp.data));
                     }
