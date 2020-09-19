@@ -21,7 +21,7 @@ import javax.persistence.*;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_message_parameter")
-public class MessageParameter<E> extends Auditable {
+public class MessageParameter extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "message_parameter_seq")

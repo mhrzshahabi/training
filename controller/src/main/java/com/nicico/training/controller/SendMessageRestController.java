@@ -15,10 +15,7 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
 import com.nicico.training.model.*;
-import com.nicico.training.repository.MessageContactDAO;
-import com.nicico.training.repository.MessageDAO;
-import com.nicico.training.repository.ParameterValueDAO;
-import com.nicico.training.repository.TclassDAO;
+import com.nicico.training.repository.*;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -50,6 +47,7 @@ public class SendMessageRestController {
     private final ParameterService parameterService;
     private final MessageDAO messageDAO;
     private final MessageContactDAO messageContactDAO;
+    private final MessageParameterDAO messageParameterDAO;
     private final ParameterValueDAO parameterValueDAO;
 
     @Loggable
@@ -219,8 +217,8 @@ public class SendMessageRestController {
 
 
             List<String> numbers = new ArrayList<>();
-            //numbers.add(mobiles.get(i));
-            numbers.add("09137454148");
+            numbers.add(mobiles.get(i));
+            //numbers.add("09137454148");
 
             paramValMap.put("prefix-full_name", prefixFullName.get(i));
             paramValMap.put("full-name", fullName.get(i));
@@ -238,11 +236,9 @@ public class SendMessageRestController {
             Long messageId = Long.parseLong(sendMessageService.asyncEnqueue(pid, paramValMap, numbers).get(0));
 
             if (maxRepeat > 0) {
-
                 MessageContact messageContact = new MessageContact();
                 messageContact.setCountSent(0);
-                //messageContact.setContextText(message);
-                //messageContact.setContextHtml(message);
+                //messageContact.setMessageParameterList(parameters);
                 messageContact.setLastSentDate(new Date());
                 messageContact.setReturnMessageId(messageId);
                 messageContact.setStatusId((long) 588);
@@ -258,10 +254,29 @@ public class SendMessageRestController {
                 messageContact.setObjectMobile(mobiles.get(i));
                 messageContact.setMessageId(oMessageModel.getId());
                 messageContactDAO.save(messageContact);
+
+                messageParameter("prefix-full_name", prefixFullName.get(i),messageContact.getId());
+                messageParameter("full-name", fullName.get(i),messageContact.getId());
+                messageParameter("course-name", courseName,messageContact.getId());
+                messageParameter("start-date", courseStartDate,messageContact.getId());
+                messageParameter("end-date", courseEndDate,messageContact.getId());
+                messageParameter("personel-address", personelAdress,messageContact.getId());
             }
         }
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    private MessageParameter messageParameter(String name, String value,Long messageContactId) {
+        MessageParameter parameter = new MessageParameter();
+        parameter.setName(name);
+        parameter.setValue(value);
+        parameter.setMessageContactId(messageContactId);
+
+        messageParameterDAO.save(parameter);
+
+        return parameter;
     }
 
 }

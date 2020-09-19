@@ -274,4 +274,7 @@
     <changeSet author="heydaripoor (generated)" id="1598941297227-495">
         <createSequence sequenceName="seq_annual_id"/>
     </changeSet>
+    <changeSet author="golrokhi (generated)" id="1600490278492-498">
+        <createSequence sequenceName="seq_message_parameter_id"/>
+    </changeSet>
 </databaseChangeLog>

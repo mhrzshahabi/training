@@ -1247,4 +1247,14 @@
         <!--<dropForeignKeyConstraint baseTableName="TBL_TARGET_SOCIETY" constraintName="FKGBWT8EEIHABEWSK5I46S8Q3LT"/>-->
     <!--</changeSet>-->
 
+    <changeSet author="golrokhi (generated)" id="1600490278492-510">
+        <addForeignKeyConstraint baseColumnNames="e_enabled" baseTableName="tbl_message_parameter" constraintName="FK98fcox52kw85wyqpt1fi71fqp" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1600490278492-511">
+        <addForeignKeyConstraint baseColumnNames="f_message_contact_id" baseTableName="tbl_message_parameter" constraintName="FKa7xpjckrj0jtr2x40hmretmrv" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_message_contact" validate="true"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1600490278492-512">
+        <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_message_parameter" constraintName="FKi93g4hs2p1q3dquo0k1040scq" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+
 </databaseChangeLog>
