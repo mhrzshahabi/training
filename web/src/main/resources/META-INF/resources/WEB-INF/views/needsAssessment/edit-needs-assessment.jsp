@@ -10,7 +10,7 @@
     const green = "#5dd851";
     var selectedRecord = {};
     var editing = false;
-    var isChanged = false;
+    var hasChanged = false;
 
     var skillData = [];
     var competenceData = [];
@@ -18,7 +18,6 @@
         "Personal" : "شرکتی",
         "ContractorPersonal" : "پیمان کار"
     };
-
 
     let NeedsAssessmentTargetDS_needsAssessment = isc.TrDS.create({
         ID: "NeedsAssessmentTargetDS_needsAssessment",
@@ -226,23 +225,6 @@
         ],
         fetchDataURL: subCategoryUrl + "spec-list",
     });
-    <%--let RestDataSource_Personnel_JspNeedsAssessment = isc.TrDS.create({--%>
-        <%--fields: [--%>
-            <%--{name: "id", hidden: true},--%>
-            <%--{name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-            <%--{name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-            <%--{name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-            <%--{name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-            <%--{name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-            <%--{name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true, width: "*"},--%>
-            <%--{name: "employmentStatus", title: "<spring:message code="employment.status"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-            <%--{name: "complexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-            <%--{name: "workPlaceTitle", title: "<spring:message code="work.place"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-            <%--{name: "workTurnTitle", title: "<spring:message code="work.turn"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-            <%--{name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains"},--%>
-        <%--],--%>
-        <%--fetchDataURL: personnelUrl + "/iscList"--%>
-    <%--});--%>
     var DataSource_Competence_JspNeedsAssessment = isc.DataSource.create({
         clientOnly: true,
         fields: [
@@ -325,34 +307,36 @@
             isc.Label.create({ID: "CompetenceLGCount_needsAssessment"}),
         ]
     });
+    let buttonSendToWorkFlow = isc.ToolStripButtonCreate.create({
+            title: "ارسال به گردش کار",
+            click: function () {
+                sendNeedsAssessmentToWorkflow();
+            }
+        });
+    let buttonChangeCancel = isc.ToolStripButtonRemove.create({
+            ID: "CancelChange_JspENA",
+            title: "بازخوانی / لغو تغییرات",
+            click: function () {
+                let id = DynamicForm_JspEditNeedsAssessment.getValue("objectId");
+                let type = DynamicForm_JspEditNeedsAssessment.getValue("objectType");
+                wait.show();
+                isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/rollBack/" + type + "/" + id, "PUT", null, (resp)=>{
+                    wait.close();
+                    if(resp.httpResponseCode === 200){
+                        hasChanged = false;
+                        editNeedsAssessmentRecord(id, type);
+                    }
+                }));
+            }
+        });
     let ToolStrip_JspNeedsAssessment = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
         align: "center",
         border: "1px solid gray",
         members: [
-            isc.ToolStripButtonCreate.create({
-                title: "ارسال به گردش کار",
-                click: function () {
-                    sendNeedsAssessmentToWorkflow();
-                }
-            }),
-            isc.ToolStripButtonRemove.create({
-                ID: "CancelChange_JspENA",
-                title: "بازخوانی / لغو تغییرات",
-                click: function () {
-                    let id = DynamicForm_JspEditNeedsAssessment.getValue("objectId");
-                    let type = DynamicForm_JspEditNeedsAssessment.getValue("objectType");
-                    wait.show();
-                    isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/rollBack/" + type + "/" + id, "PUT", null, (resp)=>{
-                        wait.close();
-                        if(resp.httpResponseCode === 200){
-                            isChanged = false;
-                            editNeedsAssessmentRecord(id, type);
-                        }
-                    }));
-                }
-            }),
+            buttonSendToWorkFlow,
+            buttonChangeCancel
         ]
     });
 
@@ -793,7 +777,7 @@
                         wait.close();
                         if(resp.data === "true"){
                             editNeedsAssessmentRecord(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"))
-                            isChanged = true;
+                            hasChanged = true;
                         }
                         else if(resp.data === "false"){
                             readOnly(true);
@@ -887,7 +871,6 @@
         // selectionAppearance: "checkbox",
         showHeaderContextMenu: false,
         showRowNumbers: false,
-        // border: "1px solid",
         fields: [{name: "title", title: "<spring:message code="title"/>"}, {name: "competenceType.title", title: "<spring:message code="type"/>"},],
         gridComponents: [
             isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="competence.list"/>" + "</b></span>", customEdges: ["B"]}),
@@ -910,7 +893,7 @@
                     createDialog("info", "<spring:message code='read.only.na.message'/>");
                 }
                 else {
-                    let Dialog_Competence_remove = createDialog("ask", "هشدار: در صورت حذف شایستگی تمام مهارت های با مرجع " + '<b><u>'+priorityList[type]+'</b></u>' + " آن حذف خواهند شد.",
+                    let Dialog_Competence_remove = createDialog("ask", "هشدار: در صورت حذف شایستگی تمام مهارت های با مرجع "  + getFormulaMessage(priorityList[type],"2","red","b") +  " آن حذف خواهند شد.",
                         "<spring:message code="verify.delete"/>");
                     Dialog_Competence_remove.addProperties({
                         buttonClick: function (button, index) {
@@ -945,7 +928,6 @@
         selectionUpdated(record){
             fetchDataDomainsGrid();
         },
-        // canHover: true,
         rowDoubleClick (record) {
             wait.show()
             isc.RPCManager.sendRequest(TrDSRequest(competenceUrl + "/spec-list?id=" + record.id, "GET", null, (resp) => {
@@ -1283,31 +1265,6 @@
                 selectedRecord = record;
             }
         }});
-    <%--let ListGrid_Personnel_JspNeedsAssessment = isc.TrLG.create({--%>
-        <%--width: "100%",--%>
-        <%--dataSource: RestDataSource_Personnel_JspNeedsAssessment,--%>
-        <%--fields: [--%>
-            <%--{name: "firstName"},--%>
-            <%--{name: "lastName"},--%>
-            <%--{name: "nationalCode"},--%>
-            <%--{name: "personnelNo"},--%>
-            <%--{name: "personnelNo2"},--%>
-            <%--{name: "companyName"},--%>
-            <%--{name: "ccpAffairs"},--%>
-            <%--{name: "employmentStatus"},--%>
-            <%--{name: "complexTitle"},--%>
-            <%--{name: "workPlaceTitle"},--%>
-            <%--{name: "workTurnTitle"},--%>
-        <%--],--%>
-        <%--autoFetchData: false,--%>
-        <%--gridComponents: [--%>
-            <%--isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="personnel.for"/>" + "</b></span>", customEdges: ["T","L","R","B"]}),--%>
-            <%--"header", "body"],--%>
-        <%--// canExpandRecords: true,--%>
-        <%--// expansionMode: "details",--%>
-        <%--// showDetailFields: true--%>
-    <%--});--%>
-
     let Window_AddCompetence = isc.Window.create({
         title: "<spring:message code="competence.list"/>",
         width: "80%",
@@ -1328,7 +1285,7 @@
                 _constructor: "AdvancedCriteria",
                 operator: "and",
                 criteria: [{fieldName: "workFlowStatusCode", operator: "equals", value: 2}]
-            };
+            }
             ListGrid_AllCompetence_JspNeedsAssessment.setImplicitCriteria(criteria);
             ListGrid_AllCompetence_JspNeedsAssessment.fetchData();
         }
@@ -1469,7 +1426,7 @@
                         wait.close();
                         if(resp.data === "true"){
                             editNeedsAssessmentRecord(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"))
-                            isChanged = true;
+                            hasChanged = true;
                         }
                         else if(resp.data === "false"){
                             readOnly(true);
@@ -1565,41 +1522,6 @@
             ToolStrip_JspNeedsAssessment],
     });
 
-    <%--Window_NeedsAssessment_Edit.addProperties({--%>
-        <%--hide(){--%>
-            <%--if(isChanged){--%>
-                <%--let dialog = isc.Dialog.create({--%>
-                    <%--ID: "dialog",--%>
-                    <%--icon:  'info.png',--%>
-                    <%--title: "<spring:message code="message"/>",--%>
-                    <%--message: "تغییراتی در پنجره ویرایش نیازسنجی ثبت شده است لطفا یکی از گزینه های زیر را با توجه به تغییرات اعمال شده انتخاب کنید.",--%>
-                    <%--buttons : [--%>
-                        <%--isc.Button.create({ title:"ارسال به گردش کار"}),--%>
-                        <%--isc.Button.create({ title:"لغو تغییرات"}),--%>
-                        <%--isc.Button.create({ title:"خروج از نیازسنجی"}),--%>
-                    <%--],--%>
-                    <%--buttonClick : function (button, index) {--%>
-                        <%--dialog.close();--%>
-                        <%--switch(index){--%>
-                            <%--case 0:--%>
-
-                                <%--break;--%>
-                            <%--case 1:--%>
-                                <%--CancelChange_JspENA.click();--%>
-                                <%--break;--%>
-                            <%--case 2:--%>
-                                <%--Window_NeedsAssessment_Edit.Super("hide", arguments);--%>
-                                <%--break;--%>
-                        <%--}--%>
-                    <%--}--%>
-                <%--});--%>
-            <%--}--%>
-            <%--else {--%>
-                <%--Window_NeedsAssessment_Edit.Super("hide", arguments);--%>
-            <%--}--%>
-        <%--},--%>
-    <%--})--%>
-
     function updateObjectIdLG(form, value) {
         // form.getItem("objectId").canEdit = true;
         switch (value) {
@@ -1658,44 +1580,7 @@
         ListGrid_Attitude_JspNeedsAssessment.setData([]);
         ListGrid_Ability_JspNeedsAssessment.setData([]);
     }
-    // function refreshPersonnelLG(pickListRecord) {
-    //     if (pickListRecord == null)
-    //         pickListRecord = DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord();
-    //     if (pickListRecord == null){
-    //         ListGrid_Personnel_JspNeedsAssessment.setData([]);
-    //         return;
-    //     }
-    //     let crt = {
-    //         _constructor: "AdvancedCriteria",
-    //         operator: "and",
-    //         criteria: []
-    //     };
-    //     switch (DynamicForm_JspEditNeedsAssessment.getItem("objectType").getValue()) {
-    //         case 'Job':
-    //             crt.criteria.add({fieldName: "jobNo", operator: "equals", value: pickListRecord.code});
-    //             break;
-    //         case 'JobGroup':
-    //             crt.criteria.add({fieldName: "jobNo", operator: "inSet", value: pickListRecord.jobSet.map(PG => PG.code)});
-    //             break;
-    //         case 'Post':
-    //             crt.criteria.add({fieldName: "postCode", operator: "equals", value: pickListRecord.code});
-    //             break;
-    //         case 'PostGroup':
-    //             // crt.criteria.add({fieldName: "postCode", operator: "inSet", value: pickListRecord.postSet.map(PG => PG.code)});
-    //             crt.criteria.add({fieldName: "postCode", operator: "inSet", value: pickListRecord.code});
-    //             break;
-    //         case 'PostGrade':
-    //             crt.criteria.add({fieldName: "postGradeCode", operator: "equals", value: pickListRecord.code});
-    //             break;
-    //         case 'PostGradeGroup':
-    //             crt.criteria.add({fieldName: "postGradeCode", operator: "inSet", value: pickListRecord.postGradeSet.map(PG => PG.code)});
-    //             break;
-    //     }
-    //     ListGrid_Personnel_JspNeedsAssessment.implicitCriteria = crt;
-    //     // refreshLG(ListGrid_Personnel_JspNeedsAssessment);
-    //     ListGrid_Personnel_JspNeedsAssessment.invalidateCache();
-    //     ListGrid_Personnel_JspNeedsAssessment.fetchData();
-    // }
+
     function checkSaveData(data, dataSource, field = "skillId", objectType = null) {
         if(!objectType) {
             if(dataSource.testData.find(f => f[field] === data[field]) != null) {
@@ -1737,7 +1622,7 @@
                     return 0;
                 }
                 DataSource_Skill_JspNeedsAssessment.removeData(record);
-                isChanged = true;
+                hasChanged = true;
                 return 1;
             }));
         }
@@ -1750,10 +1635,6 @@
     }
 
     function editNeedsAssessmentRecord(objectId, objectType) {
-        // let criteria = [
-        //     '{"fieldName":"objectType","operator":"equals","value":"'+objectType+'"}',
-        //     '{"fieldName":"objectId","operator":"equals","value":'+objectId+'}'
-        // ];
         updateObjectIdLG(DynamicForm_JspEditNeedsAssessment, objectType);
         clearAllGrid();
         wait.show();
@@ -1765,7 +1646,15 @@
             }
             let data = JSON.parse(resp.data).list;
             let flags  = [];
+            buttonSendToWorkFlow.enable();
+            buttonChangeCancel.enable();
+            canSendToWorkFlowNA = true;
             for (let i = 0; i < data.length; i++) {
+                if(canSendToWorkFlowNA && (data[i].mainWorkflowStatusCode === -1)){
+                    buttonSendToWorkFlow.disable();
+                    buttonChangeCancel.disable();
+                    canSendToWorkFlowNA = false;
+                }
                 let skill = {};
                 let competence = {};
                 skill.id = data[i].id;
@@ -1800,17 +1689,7 @@
             fetchDataDomainsGrid();
         }))
     }
-    <%--function updateSkillRecord(form, item) {--%>
-        <%--let record = form.getData();--%>
-        <%--record.needsAssessmentPriorityId = item.getSelectedRecord().id;--%>
-        <%--isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "PUT", JSON.stringify(record), function(resp) {--%>
-            <%--if(resp.httpResponseCode !== 200){--%>
-                <%--createDialog("info", "<spring:message code='error'/>");--%>
-            <%--}--%>
-            <%--DataSource_Skill_JspNeedsAssessment.updateData(record);--%>
-            <%--item.grid.endEditing();--%>
-        <%--}));--%>
-    <%--}--%>
+
     function createNeedsAssessmentRecords(data) {
         if(data === null){
             return;
@@ -1837,7 +1716,7 @@
             }
             data.id = JSON.parse(resp.data).id;
             DataSource_Skill_JspNeedsAssessment.addData(data);
-            isChanged = true;
+            hasChanged = true;
             fetchDataDomainsGrid();
         }))
     }
@@ -1911,7 +1790,7 @@
                 }
                 record.needsAssessmentPriorityId = record.needsAssessmentPriorityId + 1 > 113 ? 111 : record.needsAssessmentPriorityId + 1;
                 DataSource_Skill_JspNeedsAssessment.updateData(record);
-                isChanged = true;
+                hasChanged = true;
                 viewer.endEditing();
             }));
         }
@@ -1998,7 +1877,7 @@
 
     // <<---------------------------------------- Send To Workflow ----------------------------------------
     function sendNeedsAssessmentToWorkflow() {
-            if(isChanged){
+            if(hasChanged){
                 isc.MyYesNoDialog.create({
                 message: "<spring:message code="needs.assessment.sent.to.workflow.ask"/>",
                 title: "<spring:message code="message"/>",
@@ -2037,8 +1916,7 @@
         wait.close()
         if (resp.httpResponseCode === 200) {
             simpleDialog("<spring:message code="message"/>", "<spring:message code='course.set.on.workflow.engine'/>", 3000, "say");
-            Window_NeedsAssessment_Edit.close(2);
-
+            Window_NeedsAssessment_Edit.close(0);
         } else if (resp.httpResponseCode === 404) {
             simpleDialog("<spring:message code="message"/>", "<spring:message code='workflow.bpmn.not.uploaded'/>", 3000, "stop");
         } else {
