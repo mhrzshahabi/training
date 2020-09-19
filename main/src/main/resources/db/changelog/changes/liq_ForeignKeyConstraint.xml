@@ -1213,36 +1213,6 @@
     <changeSet author="razmnoosh (generated)" id="1598260979293-506">
         <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_class_evaluation_goals" constraintName="FKkj5l7g3vj5xxlkfe5kticvpkk" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
-
-    <changeSet author="poursalehi_mos (generated)" id="1600237247347-513">
-        <addForeignKeyConstraint baseColumnNames="f_geo_id" baseTableName="tbl_personnel" constraintName="FK3f865occptqrkl99knw6hnebc" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_geo_work" validate="true"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1600237247347-514">
-        <addForeignKeyConstraint baseColumnNames="f_post_id" baseTableName="tbl_student" constraintName="FK5k056orf9omovb1tjkdnv4oqy" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_post" validate="true"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1600237247347-515">
-        <addForeignKeyConstraint baseColumnNames="f_post_id" baseTableName="tbl_personnel" constraintName="FK6oyhb0t72a4jn4xnkl2097iak" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_post" validate="true"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1600237247347-516">
-        <addForeignKeyConstraint baseColumnNames="f_department_id" baseTableName="tbl_student" constraintName="FK9gl43dvw1wyg2xk5tm78pcuhy" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_department" validate="true"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1600237247347-517">
-        <addForeignKeyConstraint baseColumnNames="f_department_id" baseTableName="tbl_personnel_registered" constraintName="FKd3o2nijbqusyc671cqnbwircu" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_department" validate="true"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1600237247347-518">
-        <addForeignKeyConstraint baseColumnNames="f_department_id" baseTableName="tbl_personnel" constraintName="FKidakhhid79l0ffg7e0rajmhxx" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_department" validate="true"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1600237247347-519">
-        <addForeignKeyConstraint baseColumnNames="f_post_id" baseTableName="tbl_personnel_registered" constraintName="FKnymbl7li1txnrojl1yic3xgk4" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_post" validate="true"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1600237247347-520">
-        <addForeignKeyConstraint baseColumnNames="f_geo_id" baseTableName="tbl_personnel_registered" constraintName="FKpyp2uj2xosmr7gs0qqxqnepub" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_geo_work" validate="true"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1600237247347-521">
-        <addForeignKeyConstraint baseColumnNames="f_geo_id" baseTableName="tbl_student" constraintName="FKse0btn9wf3rpt2o44ercrge7n" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_geo_work" validate="true"/>
-    </changeSet>
-
-
     <!--<changeSet author="matin_ar (generated)" id="1598067280592-521">-->
         <!--<dropForeignKeyConstraint baseTableName="TBL_TARGET_SOCIETY" constraintName="FKGBWT8EEIHABEWSK5I46S8Q3LT"/>-->
     <!--</changeSet>-->
