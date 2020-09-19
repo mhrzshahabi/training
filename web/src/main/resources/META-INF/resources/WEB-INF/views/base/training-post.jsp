@@ -1808,15 +1808,14 @@
                 break;
             }
             case "TabPane_NA_TrainingPost_Jsp": {
-                //don't delete this part !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                // if (naTrainingPost_TrainingPost_Jsp === trainingPost.id)
-                //     return;
-                // naTrainingPost_TrainingPost_Jsp = trainingPost.id;
-                // CourseDS_TrainingPost_Jsp.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + trainingPost.id + "&objectType=TrainingPost";
-                // CourseDS_TrainingPost_Jsp.invalidateCache();
-                // CourseDS_TrainingPost_Jsp.fetchData();
-                // CourseLG_TrainingPost_Jsp.invalidateCache();
-                // CourseLG_TrainingPost_Jsp.fetchData();
+                if (naTrainingPost_TrainingPost_Jsp === trainingPost.id)
+                    return;
+                naTrainingPost_TrainingPost_Jsp = trainingPost.id;
+                CourseDS_TrainingPost_Jsp.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + trainingPost.id + "&objectType=TrainingPost";
+                CourseDS_TrainingPost_Jsp.invalidateCache();
+                CourseDS_TrainingPost_Jsp.fetchData();
+                CourseLG_TrainingPost_Jsp.invalidateCache();
+                CourseLG_TrainingPost_Jsp.fetchData();
                 break;
             }
             case "TabPane_manage_TrainingPost_Jsp": {
