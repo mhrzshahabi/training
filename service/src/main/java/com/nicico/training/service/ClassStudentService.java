@@ -59,7 +59,7 @@ public class ClassStudentService implements IClassStudentService {
             Student student = null;
             int size = list.size();
             for (int i=0; i<size; i++) {
-                if(list.get(i).getActive().equals(1)){
+                if(Objects.equals(1, list.get(i).getActive())){
                     student = list.get(i);
                     break;
                 }

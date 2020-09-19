@@ -55,7 +55,8 @@ public class PersonnelRegisteredDTO {
     private String workPlace;
     private String fatherName;
     private String age;
-    private String active;
+    //private String active;
+    private Long enabled;
     private Long deleted;
     private String employmentDate;
     private String postCode;
@@ -95,6 +96,14 @@ public class PersonnelRegisteredDTO {
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
+
+        public Long getDeleted(){
+            return super.deleted==null?76:super.deleted;
+        }
+
+        public Long getEnabled(){
+            return super.enabled==null?494:super.enabled;
+        }
     }
 
     @Getter

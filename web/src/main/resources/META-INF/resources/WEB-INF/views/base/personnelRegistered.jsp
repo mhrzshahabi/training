@@ -1033,11 +1033,11 @@
 
             {name: "workDays", title: "<spring:message code='work.days'/>",  keyPressFilter: "[0-9]",
                 length: "2"},
-            {name: "active", title: "<spring:message code='active.status'/>",  valueMap:
-                    {"-1": "<spring:message code='active'/>", "0": "<spring:message code='deActive'/>"}
+            {name: "enabled", title: "<spring:message code='active.status'/>",  valueMap:
+                    {"494": "<spring:message code='active'/>", "74": "<spring:message code='deActive'/>"}
             },
             {name: "deleted", title: "<spring:message code='delete.status'/>",  valueMap:
-                    {"-1": "<spring:message code='deleted'/>", "0": "<spring:message code='notDeleted'/>"}
+                    {"75": "<spring:message code='deleted'/>", "76": "<spring:message code='notDeleted'/>"}
             }
         ]
 
