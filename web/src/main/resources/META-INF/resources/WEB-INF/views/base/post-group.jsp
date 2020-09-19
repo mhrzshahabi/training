@@ -1659,7 +1659,7 @@
         members: [
             isc.ToolStripButtonExcel.create({
                 click: function () {
-                    let criteria = PersonnelLG_Post_Group_Jsp.getCriteria();
+                    let criteria = JSON.parse(JSON.stringify(PersonnelLG_Post_Group_Jsp.getCriteria()));
 
                     if(typeof(criteria.operator)=='undefined'){
                         criteria._constructor="AdvancedCriteria";
@@ -1669,10 +1669,12 @@
                     if(typeof(criteria.criteria)=='undefined'){
                         criteria.criteria=[];
                     }
-                    criteria.criteria.push({fieldName: "postGroupId", operator: "equals", value:ListGrid_Post_Group_Jsp.getSelectedRecord().id});
 
-                    console.log(criteria);
-                    ExportToFile.downloadExcel(null, PersonnelLG_Post_Group_Jsp , "PersonnelPostGroup", 0, null, '',"لیست پرسنل - آموزش"  , criteria, null);
+                    let postGroup = ListGrid_Post_Group_Jsp.getSelectedRecord();
+                    if (postGroup == null && tab.pane != null){
+                        return;
+                    }
+                    ExportToFile.downloadExcelRestUrl(null, PersonnelLG_Post_Group_Jsp , postGroupUrl + "/" + postGroup.id + "/getPersonnel", 0, null, '',"گروه پستي - لیست پرسنل"  , criteria, null);
                 }
             })
         ]
