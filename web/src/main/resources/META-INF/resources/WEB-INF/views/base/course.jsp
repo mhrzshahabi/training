@@ -68,14 +68,12 @@
 
     var RestDataSource_teacherInformation_Course = isc.TrDS.create({
         fields: [
-
             {name: "teacher.personality.firstNameFa"},
             {name: "teacher.personality.lastNameFa"},
             {name: "teacher.personality.nationalCode"},
             {name: "teacher.personality.contactInfo.mobile"},
             {name: "teacher.personality.contactInfo.homeAddress.state.name"},
             {name: "teacher.personality.contactInfo.homeAddress.city.name"},
-
         ]
     });
 
@@ -561,11 +559,7 @@
         // autoFetchData: true,
         fields: [
 
-            {name: "teacher.personality.firstNameFa", title: "<spring:message code="teacher"/>", align: "center", filterOperator: "iContains",
-                formatCellValue: function (value, record) {
-                    return record.teacher.personality.firstNameFa+" "+record.teacher.personality.lastNameFa
-                }
-            },
+            {name: "teacher.fullName", title: "<spring:message code="teacher"/>", align: "center", filterOperator: "iContains",canSort:false},
             {name: "teacher.personality.contactInfo.mobile", title: "<spring:message code="mobile"/>", align: "center", filterOperator: "iContains",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
@@ -576,11 +570,7 @@
                     keyPressFilter: "[0-9]"
                 }
             },
-            {name: "teacher.personality.contactInfo.homeAddress.state.name", title: "<spring:message code="address"/>", align: "center", filterOperator: "iContains",
-                formatCellValue: function (value, record) {
-                    return(value != null ? value +"-"+ record.teacher.personality.contactInfo.homeAddress.city.name+"-"+ record.teacher.personality.contactInfo.homeAddress.restAddr +"-"+ "کد پستی :"+record.teacher.personality.contactInfo.homeAddress.postalCode : "")
-                }
-            }
+            {name: "teacher.address", title: "<spring:message code="address"/>", align: "center", filterOperator: "iContains"},
         ],
         recordDoubleClick: function () {
 
@@ -590,7 +580,9 @@
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: false,
-        sortField: 0,
+        initialSort: [
+            {property: "teacher.personality.lastNameFa", direction: "ascending"},
+        ],
         sortDirection: "descending",
 
     });
@@ -2635,7 +2627,41 @@
             {
                 ID: "tabGoal",
                 title: "<spring:message code="syllabus"/>",
-                pane:ListGrid_CourseSyllabus
+                pane:isc.TrVLayout.create({
+                        width: "100%",
+                        height: "100%",
+                        overflow: "scroll",
+                        members: [
+                            isc.HLayout.create({
+                                width: "100%",
+                                height: "1%",
+                                margin: 10,
+                                members: [
+                                    /*isc.ToolStripButtonExcel.create({
+                                    click: function () {
+                                         let courseRecord = ListGrid_Course.getSelectedRecord();
+                                         if (!(courseRecord === undefined || courseRecord == null)) {
+
+                                             let criteria;
+
+                                             if (ListGrid_CourseSyllabus.getCriteria()==null) {
+                                                 criteria = {
+                                                     _constructor: "AdvancedCriteria",
+                                                     criteria: [],
+                                                     operator: "and"
+                                                 };
+                                             }
+                                             else
+                                                 criteria=ListGrid_CourseSyllabus.getCriteria();
+
+                                             ExportToFile.downloadExcelRestUrl(null, ListGrid_CourseSyllabus, syllabusUrl + "course/" + courseRecord.id, 0, ListGrid_Course, '', "دوره - سرفصل", criteria, null);
+                                         }
+                                    }
+                                })*/
+                                ]
+                            }),ListGrid_CourseSyllabus
+                            ]
+                })
             },
             </sec:authorize>
 
@@ -2731,7 +2757,30 @@
             {
                 ID: "teacherInformationCourse",
                 title: "<spring:message code='teacher.information'/>",
-                pane: ListGrid_teacherInformation_Course
+                pane:   isc.TrVLayout.create({
+                    width: "100%",
+                    height: "100%",
+                    overflow: "scroll",
+                    members: [
+                        isc.HLayout.create({
+                            width: "100%",
+                            height: "1%",
+                            margin: 10,
+                            members: [isc.ToolStripButtonExcel.create({
+                                click: function () {
+                                    if (ListGrid_teacherInformation_Course.data.size() < 1)
+                                        return;
+
+                                    let courseRecord = ListGrid_Course.getSelectedRecord();
+                                    if (!(courseRecord === undefined || courseRecord == null)) {
+                                        ExportToFile.downloadExcelRestUrl(null, ListGrid_teacherInformation_Course,teacherInformation + "/teacher-information-iscList" + "/" + courseRecord.code, 0, ListGrid_Course, '', "دوره - اساتیدی که این دوره را تدریس کرده اند", ListGrid_teacherInformation_Course.getCriteria(), null);
+                                    }
+                                }
+                            })
+                            ]
+                        }), ListGrid_teacherInformation_Course
+                    ]
+                })
             }
             </sec:authorize>
             <%-- {--%>
@@ -3250,9 +3299,11 @@
                     ListGrid_teacherInformation_Course.invalidateCache();
                     break;
                 case "tabGoal":
-                    RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseRecord.id;
-                    ListGrid_CourseSyllabus.fetchData();
-                    ListGrid_CourseSyllabus.invalidateCache();
+                    if (courseRecord) {
+                        RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseRecord.id;
+                        ListGrid_CourseSyllabus.fetchData();
+                        ListGrid_CourseSyllabus.invalidateCache();
+                    }
                     break;
                 case "tabJobJspCourse":
                     RestDataSource_CourseJob.fetchDataURL = courseUrl + "job/" + courseRecord.id;

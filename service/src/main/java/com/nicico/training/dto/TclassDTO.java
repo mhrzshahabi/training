@@ -31,8 +31,8 @@ public class TclassDTO {
     private String titleClass;
     private String teachingType;//روش آموزش
     private Long hDuration;
-    private Long supervisor;
-    private Long planner;
+    private Long supervisorId;
+    private Long plannerId;
     private String reason;
     private String classStatus;
     private Date classStatusDate;
@@ -112,8 +112,10 @@ public class TclassDTO {
         @Getter(AccessLevel.NONE)
         private TeacherDTO.TeacherFullNameTuple teacher;
         private String plannerFullName;
+        private PersonalInfoDTO.Info planner;
         private String supervisorFullName;
         private String organizerName;
+        private InstituteDTO.InstituteInfoTuple organizer;
         private List<TclassDTO.InfoTuple> canceledClasses;
 
         //*********************************
@@ -356,8 +358,8 @@ public class TclassDTO {
         private String endDate;
         private Long hDuration;
         private TermDTO term;
-        private Long supervisor;
-        private Long planner;
+        private Long supervisorId;
+        private Long plannerId;
         @Getter(AccessLevel.NONE)
         private TeacherDTO.TeacherFullNameTuple teacher;
 
