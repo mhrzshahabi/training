@@ -313,48 +313,4 @@ public class JobGroupRestController {
         params.put("jobGroupIds", jobGroupIds);
         reportUtil.export("/reports/selectedJobGroup.jasper", params, response);
     }
-
-
-//
-//    @Loggable
-//    @PostMapping(value = {"/printWithCriteria/{type}"})
-//    public void printWithCriteria(HttpServletResponse response,
-//                                  @PathVariable String type,
-//                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
-//
-//        final SearchDTO.CriteriaRq criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
-//        final SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
-//
-//        final SearchDTO.SearchRs<JobGroupDTO.Info> searchRs = jobGroupService.search(searchRq);
-//
-//        final Map<String, Object> params = new HashMap<>();
-//        params.put("todayDate", dateUtil.todayDate());
-//
-//        final List<SearchDTO.CriteriaRq> criteriaRqList = criteriaRq.getCriteria();
-//        criteriaRqList.forEach(criteriaRqFE -> {
-//            switch (criteriaRqFE.getFieldName()) {
-//                case "startDate":
-//                    params.put("startDate", criteriaRqFE.getValue().toString());
-//                    break;
-//                case "endDate":
-//                    params.put("endDate", criteriaRqFE.getValue().toString());
-//                    break;
-//                case "group":
-//                    params.put("group", criteriaRqFE.getValue().toString().replace(".0", "").replace("[", "").replace("]", ""));
-//                    break;
-//                case "course.id":
-//                    params.put("course.id", criteriaRqFE.getValue().toString().replace(".0", "").replace("[", "").replace("]", ""));
-//                    break;
-//                case "teacher.id":
-//                    params.put("teacher.id", criteriaRqFE.getValue().toString().replace(".0", "").replace("[", "").replace("]", ""));
-//                    break;
-//            }
-//        });
-//
-//        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
-//        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
-//
-//        params.put(ConstantVARs.REPORT_TYPE, type);
-//        reportUtil.export("/reports/ClassByCriteria.jasper", params, jsonDataSource, response);
-//    }
 }
