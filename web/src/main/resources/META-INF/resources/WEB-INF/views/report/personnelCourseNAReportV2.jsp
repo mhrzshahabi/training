@@ -425,7 +425,7 @@
             },
             {
                 name: "personnelCcpSection",
-                title: "<spring:message code="section.cost"/>",
+                title: "<spring:message code="section"/>",
                 filterFields: ["value", "value"],
                 pickListWidth: 300,
                 type: "ComboBoxItem",
@@ -561,21 +561,6 @@
                 valueMap: {
                     "1": "آماری",
                     "2": "لیستی",
-                },
-                change: function (form, item, value, oldValue) {
-
-
-                    if (value === "1"){
-                        VLayout_Body_PCNR.addMember(CourseLG_PCNR);
-                        VLayout_Body_PCNR.removeMember(CourseLG_MinPCNR);
-                    }
-                    else if(value === "2"){
-                        VLayout_Body_PCNR.removeMember(CourseLG_PCNR);
-                        VLayout_Body_PCNR.addMember(CourseLG_MinPCNR);
-                    }
-                    else
-                        return false;
-
                 }
             },
             {type: "SpacerItem"},
@@ -589,16 +574,30 @@
                     if(!hasFilters()) {
                         createDialog("info","فیلتری انتخاب نشده است.");
                     } else{
+
+                        if (reportType.getValue() === "1"){
+                            VLayout_Body_PCNR.addMember(CourseLG_PCNR);
+                            VLayout_Body_PCNR.removeMember(CourseLG_MinPCNR);
+                        }
+                        else if(reportType.getValue() === "2"){
+                            VLayout_Body_PCNR.removeMember(CourseLG_PCNR);
+                            VLayout_Body_PCNR.addMember(CourseLG_MinPCNR);
+                        }
+                        else
+                            return false;
+
                         var criteria = FilterDF_PCNR.getValuesAsAdvancedCriteria();
                         criteria.criteria.remove(criteria.criteria.find({fieldName: "reportType"}));
 
-                        CourseLG_PCNR.implicitCriteria = criteria;
-                        CourseLG_PCNR.invalidateCache();
-                        CourseLG_PCNR.fetchData();
-
-                        CourseLG_MinPCNR.implicitCriteria = criteria;
-                        CourseLG_MinPCNR.invalidateCache();
-                        CourseLG_MinPCNR.fetchData();
+                        if (reportType.getValue() === "1") {
+                            CourseLG_PCNR.implicitCriteria = criteria;
+                            CourseLG_PCNR.invalidateCache();
+                            CourseLG_PCNR.fetchData();
+                        } else if (reportType.getValue() === "2") {
+                            CourseLG_MinPCNR.implicitCriteria = criteria;
+                            CourseLG_MinPCNR.invalidateCache();
+                            CourseLG_MinPCNR.fetchData();
+                        }
                     }
                 }
             },
@@ -628,6 +627,7 @@
     });
 
     CourseLG_PCNR = isc.TrLG.create({
+        dataFetchMode: "local",
         dynamicTitle: true,
         autoFetchData: false,
         allowAdvancedCriteria: true,

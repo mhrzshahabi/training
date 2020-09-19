@@ -7,11 +7,51 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
 import java.util.List;
 
 @Repository
 public interface PersonnelCoursePassedNAReportViewDAO extends JpaRepository<PersonnelCoursePassedNAReportView, PersonnelCourseKey>, JpaSpecificationExecutor<PersonnelCoursePassedNAReportView> {
+
+    @Query(value = "SELECT " +
+            "    na.course_id, " +
+            "    na.course_code, " +
+            "    na.course_title_fa, " +
+            "    NVL(SUM(CASE WHEN na.NA_PRIORITY_ID = 111 THEN 1 ELSE 0 END),0) AS total_essential_personnel_count, " +
+            "    NVL(SUM(CASE WHEN na.NA_PRIORITY_ID = 111 AND na.IS_PASSED = 399 THEN 1 ELSE 0 END),0) AS not_passed_essential_personnel_count, " +
+            "    NVL(SUM(CASE WHEN na.NA_PRIORITY_ID = 112 THEN 1 ELSE 0 END),0) AS total_improving_personnel_count, " +
+            "    NVL(SUM(CASE WHEN na.NA_PRIORITY_ID = 112 AND na.IS_PASSED = 399 THEN 1 ELSE 0 END),0) AS not_passed_improving_personnel_count, " +
+            "    NVL(SUM(CASE WHEN na.NA_PRIORITY_ID = 113 THEN 1 ELSE 0 END),0) AS total_developmental_personnel_count, " +
+            "    NVL(SUM(CASE WHEN na.NA_PRIORITY_ID = 113 AND na.IS_PASSED = 399 THEN 1 ELSE 0 END),0) AS not_passed_developmental_personnel_count " +
+            "FROM " +
+            "    VIEW_PERSONNEL_COURSE_PASSED_NA_REPORT na " +
+            "WHERE " +
+            "        (CASE WHEN :isCourseIdNull = 1 OR na.course_id IN (:courseId) THEN 1 END) IS NOT NULL " +
+            "        AND (CASE WHEN :isNationalCodeNull = 1 OR na.PERSONNEL_NATIONAL_CODE IN (:personnelNationalCode) THEN 1 END) IS NOT NULL " +
+            "        AND (CASE WHEN :isPostGradeIdNull = 1 OR na.personnel_post_grade_id IN (:postGradeId) THEN 1 END) IS NOT NULL " +
+            "        AND (CASE WHEN :personnelCompanyName IS NULL THEN 1 WHEN na.PERSONNEL_COMPANY_NAME like :personnelCompanyName THEN 1 END) IS NOT NULL " +
+            "        AND (CASE WHEN :personnelCcpArea IS NULL THEN 1 WHEN na.PERSONNEL_CPP_AREA like :personnelCcpArea THEN 1 END) IS NOT NULL " +
+            "        AND (CASE WHEN :personnelCcpAssistant IS NULL THEN 1 WHEN na.PERSONNEL_CPP_ASSISTANT like :personnelCcpAssistant THEN 1 END) IS NOT NULL " +
+            "        AND (CASE WHEN :personnelCcpSection IS NULL THEN 1 WHEN na.PERSONNEL_CPP_SECTION like :personnelCcpSection THEN 1 END) IS NOT NULL " +
+            "        AND (CASE WHEN :personnelCcpUnit IS NULL THEN 1 WHEN na.PERSONNEL_CPP_UNIT like :personnelCcpUnit THEN 1 END) IS NOT NULL " +
+            "        AND (CASE WHEN :personnelCcpAffairs IS NULL THEN 1 WHEN na.PERSONNEL_CPP_AFFAIRS like :personnelCcpAffairs THEN 1 END) IS NOT NULL " +
+            "        AND (CASE WHEN :personnelCppTitle IS NULL THEN 1 WHEN na.PERSONNEL_CPP_TITLE like :personnelCppTitle THEN 1 END) IS NOT NULL " +
+            "GROUP BY " +
+            "    na.course_id, " +
+            "    na.course_code, " +
+            "    na.course_title_fa", nativeQuery = true)
+    List<List> getPersonnelCountByPriority(Object[] courseId,
+                                              int isCourseIdNull,
+                                              Object[] personnelNationalCode,
+                                              int isNationalCodeNull,
+                                              Object[] postGradeId,
+                                              int isPostGradeIdNull,
+                                              String personnelCompanyName,
+                                              String personnelCcpArea,
+                                              String personnelCcpAssistant,
+                                              String personnelCcpSection,
+                                              String personnelCcpUnit,
+                                              String personnelCcpAffairs,
+                                              String personnelCppTitle);
 
     @Query(value = "SELECT " +
             "    NVL(SUM(CASE WHEN na.na_priority_id = 111 THEN 1 ELSE 0 END),0) AS count_essential_total, " +
