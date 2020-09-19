@@ -8,12 +8,10 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.dto.JobDTO;
-import com.nicico.training.dto.JobGroupDTO;
-import com.nicico.training.dto.PersonnelDTO;
-import com.nicico.training.dto.PostDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.iservice.IPostService;
+import com.nicico.training.iservice.ITrainingPostService;
 import com.nicico.training.service.BaseService;
 import com.nicico.training.service.JobGroupService;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +47,7 @@ public class JobGroupRestController {
     private final ModelMapper modelMapper;
     private final DateUtil dateUtil;
     private final IPostService postService;
+    private final ITrainingPostService trainingPostService;
     private final IPersonnelService personnelService;
 
     // ------------------------------
@@ -87,13 +86,25 @@ public class JobGroupRestController {
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/training-post-isc-list/{id}")
+    public ResponseEntity<ISC<TrainingPostDTO.Info>> trainingPostList(HttpServletRequest iscRq, @PathVariable(value = "id") Long id) throws IOException {
+        List<Long> jobs = jobGroupService.getJobs(id).stream().filter(job -> job.getDeleted() == null).map(JobDTO.Info::getId).collect(Collectors.toList());
+        if (jobs == null || jobs.isEmpty()) {
+            return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
+        }
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq, jobs, "job", EOperator.inSet);
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
+        SearchDTO.SearchRs<TrainingPostDTO.Info> searchRs = trainingPostService.search(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
+    }
+
     @GetMapping(value = "/personnelIscList/{id}")
     public ResponseEntity<ISC<PersonnelDTO.Info>> personnelList(HttpServletRequest iscRq, @PathVariable(value = "id") Long id) throws IOException {
         List<JobDTO.Info> jobs = jobGroupService.getJobs(id);
         if (jobs.isEmpty()) {
             return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
         }
-        SearchDTO.CriteriaRq criteria=new SearchDTO.CriteriaRq();
+        SearchDTO.CriteriaRq criteria = new SearchDTO.CriteriaRq();
         criteria.setOperator(EOperator.and);
         criteria.setCriteria(new ArrayList<>());
 

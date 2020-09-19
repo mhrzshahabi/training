@@ -6,12 +6,10 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.PersonnelDTO;
-import com.nicico.training.dto.PostDTO;
-import com.nicico.training.dto.PostGradeDTO;
-import com.nicico.training.dto.PostGradeGroupDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.iservice.IPostService;
+import com.nicico.training.iservice.ITrainingPostService;
 import com.nicico.training.service.BaseService;
 import com.nicico.training.service.PostGradeGroupService;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +41,7 @@ public class PostGradeGroupRestController {
     private final ObjectMapper objectMapper;
     private final IPostService postService;
     private final IPersonnelService personnelService;
+    private final ITrainingPostService trainingPostService;
 
     @Loggable
     @GetMapping("/list")
@@ -71,20 +70,32 @@ public class PostGradeGroupRestController {
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/training-post-isc-list/{id}")
+    public ResponseEntity<ISC<TrainingPostDTO.Info>> trainingPostList(HttpServletRequest iscRq, @PathVariable(value = "id") Long id) throws IOException {
+        List<Long> postGrades = postGradeGroupService.getPostGrades(id).stream().filter(job -> job.getDeleted() == null).map(PostGradeDTO.Info::getId).collect(Collectors.toList());
+        if (postGrades == null || postGrades.isEmpty()) {
+            return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
+        }
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq, postGrades, "postGrade", EOperator.inSet);
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
+        SearchDTO.SearchRs<TrainingPostDTO.Info> searchRs = trainingPostService.search(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
+    }
+
     @GetMapping(value = "/personnelIscList/{id}")
     public ResponseEntity<ISC<PersonnelDTO.Info>> personnelList(HttpServletRequest iscRq, @PathVariable(value = "id") Long id) throws IOException {
         List<PostGradeDTO.Info> postGrades = postGradeGroupService.getPostGrades(id);
         if (postGrades == null || postGrades.isEmpty()) {
             return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
         }
-        SearchDTO.CriteriaRq criteriaRq=new SearchDTO.CriteriaRq();
+        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
         criteriaRq.setCriteria(new ArrayList<>());
         criteriaRq.setOperator(EOperator.and);
 
         SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
-        searchRq.getCriteria().getCriteria().add(makeNewCriteria("trainingPostSet.postGrade", postGrades.stream().filter(pg -> pg.getDeleted() == null).map(PostGradeDTO.Info::getId).collect(Collectors.toList()), EOperator.inSet, null)) ;
+        searchRq.getCriteria().getCriteria().add(makeNewCriteria("trainingPostSet.postGrade", postGrades.stream().filter(pg -> pg.getDeleted() == null).map(PostGradeDTO.Info::getId).collect(Collectors.toList()), EOperator.inSet, null));
         searchRq.getCriteria().getCriteria().add(makeNewCriteria("deleted", null, EOperator.isNull, null));
-        searchRq.getCriteria().getCriteria().add(makeNewCriteria("trainingPostSet.deleted",null, EOperator.isNull, null));
+        searchRq.getCriteria().getCriteria().add(makeNewCriteria("trainingPostSet.deleted", null, EOperator.isNull, null));
         SearchDTO.SearchRs<PostDTO.TupleInfo> postList = postService.searchWithoutPermission(searchRq, p -> modelMapper.map(p, PostDTO.TupleInfo.class));
         if (postList.getList() == null || postList.getList().isEmpty()) {
             return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
