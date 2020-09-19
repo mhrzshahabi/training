@@ -124,10 +124,13 @@
             allowAdvancedCriteria: true,
             allowFilterExpressions: true,
             filterOnKeypress: false,
+            showRecordComponents: true,
+            showRecordComponentsByCell: true,
             initialSort: [
                 {property: "tclassStartDate", direction: "descending", primarySort: true}
             ],
             fields: [
+                { name: "iconField", title: " ", width: 10 },
                 {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
                 {
                     name: "tclassCode",
@@ -258,19 +261,29 @@
                 loadSelectedTab_data(Detail_Tab_Evaluation.getSelectedTab());
                 set_Evaluation_Tabset_status();
             },
-            getCellCSSText: function (record, rowNum, colNum) {
-                if ((!ListGrid_class_Evaluation.getFieldByName("evaluation").hidden && record.evaluation === "1"))
-                    return "background-color : #c9fecf";
+            createRecordComponent: function (record, colNum) {
+                var fieldName = this.getFieldName(colNum);
+                if (fieldName == "iconField") {
 
-                if ((!ListGrid_class_Evaluation.getFieldByName("evaluation").hidden && record.evaluation === "2"))
-                    return "background-color : #d3f4fe";
-
-                if ((!ListGrid_class_Evaluation.getFieldByName("evaluation").hidden && record.evaluation === "3"))
-                    return "background-color : #fedee9";
-
-                if ((!ListGrid_class_Evaluation.getFieldByName("evaluation").hidden && record.evaluation === "4"))
-                    return "background-color : #fefad1";
+                        if ((!ListGrid_class_Evaluation.getFieldByName("evaluation").hidden && record.evaluation))
+                            return labelList(record.evaluation);
+                } else {
+                    return null;
+                }
             },
+            //     getCellCSSText: function (record, rowNum, colNum) {
+            //     if ((!ListGrid_class_Evaluation.getFieldByName("evaluation").hidden && record.evaluation === "1"))
+            //         return "background-color : #c9fecf";
+            //
+            //     if ((!ListGrid_class_Evaluation.getFieldByName("evaluation").hidden && record.evaluation === "2"))
+            //         return "background-color : #d3f4fe";
+            //
+            //     if ((!ListGrid_class_Evaluation.getFieldByName("evaluation").hidden && record.evaluation === "3"))
+            //         return "background-color : #fedee9";
+            //
+            //     if ((!ListGrid_class_Evaluation.getFieldByName("evaluation").hidden && record.evaluation === "4"))
+            //         return "background-color : #fefad1";
+            // },
         });
 
     //----------------------------------------- ToolStrips -------------------------------------------------------------
@@ -374,7 +387,10 @@
         var VLayout_Body_Evaluation = isc.VLayout.create({
             width: "100%",
             height: "100%",
-            members: [HLayout_Actions_Evaluation, Hlayout_Grid_Evaluation, Hlayout_Tab_Evaluation]
+            members: [HLayout_Actions_Evaluation,
+                labelGuide(ListGrid_class_Evaluation.getFieldByName("evaluation").valueMap),
+                Hlayout_Grid_Evaluation,
+                Hlayout_Tab_Evaluation]
         });
 
     //----------------------------------------- Functions --------------------------------------------------------------

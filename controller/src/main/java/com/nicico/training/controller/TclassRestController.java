@@ -228,13 +228,13 @@ public class TclassRestController {
             tclassDTO.setSupervisorFullName("");
             tclassDTO.setOrganizerName("");
 
-            if (tclassDTO.getPlannerId()!=null) {
-                Optional<Personnel> planner = personnelDAO.findById(tclassDTO.getPlannerId());
+            if (tclassDTO.getPlanner()!=null) {
+                Optional<Personnel> planner = personnelDAO.findById(tclassDTO.getPlanner());
                    if (planner.isPresent()) {
                        tclassDTO.setPlannerFullName(planner.get().getFirstName() + " " + planner.get().getLastName());
                    }
 
-                Optional<Personnel> supervisor = personnelDAO.findById(tclassDTO.getSupervisorId());
+                Optional<Personnel> supervisor = personnelDAO.findById(tclassDTO.getSupervisor());
                 if (supervisor.isPresent()) {
                     tclassDTO.setSupervisorFullName(supervisor.get().getFirstName() + " " + supervisor.get().getLastName());
                 }

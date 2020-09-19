@@ -511,18 +511,14 @@
     var ListGrid_Goal = isc.TrLG.create({
         width: "*",
         height: "100%",
-        // border: "2px solid gray",
         dataSource: RestDataSource_CourseGoal,
-        // dataSource: goalCourseDS,
         contextMenu: Menu_ListGrid_Goal,
-        // autoFitWidthApproach:"both",
+        autoFitWidthApproach:"both",
         doubleClick: function () {
             ListGrid_Goal_Edit();
         },
         fields: [
-            // {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleFa", title: "<spring:message code="goal.title.fa"/>", align: "center", autoFitWidth: true},
-            {name: "titleEn", title: "<spring:message code="goal.title.en"/>", align: "center"},
             {
                 name: "categoryId",
                 title: "گروه",
@@ -542,10 +538,9 @@
                 filterOperator: "equals",
                 autoFitWidth: true,
             },
-            // {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         selectionType: "multiple",
-        selectionChanged: function (record, state) {
+        selectionChanged: function (record) {
             selectedRecord = record.id;
             ListGrid_Syllabus_Goal.invalidateCache();
         },
@@ -636,7 +631,7 @@
         fields: [
             {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleFa", title: "كل اهداف", align: "center", width:"60%"},
-            {name: "titleEn", title: "نام لاتین هدف ", align: "center", hidden: true},
+            // {name: "titleEn", title: "نام لاتین هدف ", align: "center", hidden: true},
             {
                 name: "categoryId",
                 title: "گروه",
@@ -706,8 +701,8 @@
         fields: [
             {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleFa", title: "اهداف دوره", align: "center"},
-            {name: "titleEn", title: "نام لاتین هدف", align: "center", hidden: true},
-            {name: "version", title: "version", canEdit: false, hidden: true}
+            // {name: "titleEn", title: "نام لاتین هدف", align: "center", hidden: true},
+            // {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         selectionType: "multiple",
         sortField: 1,

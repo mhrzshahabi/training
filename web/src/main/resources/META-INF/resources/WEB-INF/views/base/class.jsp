@@ -113,9 +113,7 @@
             {name: "startEvaluation"},
             {name: "behavioralLevel"},
             {name: "studentCost"},
-            {name: "studentCostCurrency"},
-            {name: "planner"},
-            {name: "organizer"},
+            {name: "studentCostCurrency"}
         ]
     });
 
@@ -387,12 +385,44 @@
         dataPageSize: 15,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
+        // filterOnKeypress: true,
+        // selectionType: "single",
+        // showRecordComponents: true,
+        // showRecordComponentsByCell: true,
         selectionType: "single",
+        <%--filterUsingText: "<spring:message code='filterUsingText'/>",--%>
+        <%--groupByText: "<spring:message code='groupByText'/>",--%>
+        <%--freezeFieldText: "<spring:message code='freezeFieldText'/>",--%>
+        // styleName: 'expandList-tapBar',
+        // cellHeight: 43,
         autoFetchData: false,
+        // alternateRecordStyles: true,
+        // canExpandRecords: true,
+        // canExpandMultipleRecords: false,
+        // wrapCells: true,
+        // showRollOver: false,
+        // showRecordComponents: true,
+        // showRecordComponentsByCell: true,
+        // expansionMode: "related",
+        // autoFitExpandField: true,
+        // virtualScrolling: true,
+        // loadOnExpand: true,
+        // loaded: false,
         initialSort: [
+// {property: "createdBy", direction: "ascending"},
             {property: "startDate", direction: "descending", primarySort: true}
         ],
         selectionUpdated: function (record) {
+
+            <%--<sec:authorize access="hasAuthority('TclassScoresTab')">--%>
+            <%--if(record.classStatus == "3")--%>
+            <%--{--%>
+            <%--TabSet_Class.enableTab("classScoresTab")--%>
+            <%--}--%>
+            <%--else{TabSet_Class.disableTab("classScoresTab");--%>
+            <%--}--%>
+            <%--</sec:authorize>--%>
+
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
         },
         <sec:authorize access="hasAuthority('Tclass_U')">
@@ -467,6 +497,7 @@
                 filterOperator: "equals",
                 autoFitWidth: true
             },
+            <%--{name: "reason", title: "<spring:message code='training.request'/>", align: "center"},--%>
             {
                 name: "teacher",
                 title: "<spring:message code='teacher'/>",
@@ -480,29 +511,42 @@
                 align: "center",
                 filterOperator: "iContains",
                 autoFitWidth: true,
+                // sortNormalizer(record) {
+                //     return record.teacher.personality.lastNameFa;
+                // }
             },
             {
-                name: "planner.lastName",
+                name: "plannerFullName",
                 title: "<spring:message code="planner"/>",
-                canSort: false,
+                // displayValueFromRecord: false,
+                // canFilter: false,
+                // canSort: false,
+                type: "TextItem",
                 align: "center",
                 filterOperator: "iContains",
                 autoFitWidth: true,
 
             },
             {
-                name: "supervisor.lastName",
+                name: "supervisorFullName",
                 title: "<spring:message code="supervisor"/>",
+                displayValueFromRecord: false,
+                canFilter: false,
                 canSort: false,
+                type: "TextItem",
                 align: "center",
                 filterOperator: "iContains",
                 autoFitWidth: true,
             },
             {
-                name: "organizer.titleFa",
+                name: "organizerName",
                 title: "<spring:message code="executer"/>",
+                displayValueFromRecord: false,
+                canFilter: false,
                 canSort: false,
+                type: "TextItem",
                 align: "center",
+                filterOperator: "iContains",
                 autoFitWidth: true,
             },
             {
@@ -991,7 +1035,7 @@
 // }
             },
             {
-                name: "supervisorId",
+                name: "supervisor",
                 colSpan: 3,
                 required: true,
                 title: "<spring:message code="supervisor"/>:",
@@ -1015,7 +1059,7 @@
                 }
             },
             {
-                name: "plannerId",
+                name: "planner",
                 colSpan: 1,
                 required: true,
                 wrapTitle: false,

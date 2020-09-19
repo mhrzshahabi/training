@@ -473,7 +473,7 @@
             }
 
             //Base Methods
-            static getAllFields(listGrid, exceptColumn) {
+            static getAllFields(listGrid) {
                 let data = listGrid.getAllFields();
                 let len = data.length;
                 let fields = [{'title': 'رديف', 'name': 'rowNum'}];
@@ -481,13 +481,13 @@
 
                 //let nameOfFields = [];
 
-                if((typeof (data[0].showIf) == "undefined" || data[0].showIf == "true" || data[0].showIf == null) && data[0].rowNumberStart==null && (!exceptColumn || !exceptColumn.some(p=>p==data[0].name))) {
+                if((typeof (data[0].showIf) == "undefined" || data[0].showIf == "true" || data[0].showIf == null) && data[0].rowNumberStart==null) {
                     fields.push({'title': data[0].title, 'name': data[0].name});
                     isValueMap.push((typeof (data[0].valueMap) == "undefined") ? false : true);
                 }
 
                 for (let i = 1; i < len; i++) {
-                    if ((typeof (data[i].showIf) == "undefined" || data[i].showIf == "true" || data[i].showIf == null) && data[i].rowNumberStart==null && (!exceptColumn || !exceptColumn.some(p=>p==data[i].name))) {
+                    if ((typeof (data[i].showIf) == "undefined" || data[i].showIf == "true" || data[i].showIf == null) && data[i].rowNumberStart==null) {
                         fields.push({'title': data[i].title, 'name': data[i].name});
                         isValueMap.push((typeof (data[i].valueMap) == "undefined") ? false : true);
                     }
@@ -510,9 +510,9 @@
                 }
             }
 
-            static getAllData(listGrid, exceptColumn) {
+            static getAllData(listGrid) {
                 let rows = listGrid.data.getAllLoadedRows();
-                let result = this.getAllFields(listGrid, exceptColumn);
+                let result = this.getAllFields(listGrid);
                 let fields = result.fields;
                 let isValueMaps = result.isValueMap;
 
@@ -539,14 +539,12 @@
                 let result = this.getAllFields(parentlistGrid);
                 let fields = result.fields;
                 let isValueMaps = result.isValueMap;
+
                 var titr = "";
 
                 for (let j = 1; j < fields.length; j++) {
                     let tmpStr = ExportToFile.getData(classRecord, fields[j].name.split('.'), 0);
-                    tmpStr=(typeof (tmpStr) == 'undefined' ? '' : ((!isValueMaps[j]) ? (tmpStr + ' ').trim().replace(/(<a)([^>href]+)(href)([ ]*)(=)([ ]*)\"([^\"]*)\"([^>]*)(>)([^<]*)(<\/a>)/g, "[link href=$7]$10[/link]").replace(/<[^>ابپتثجچحخدذرزژصضسشطظکگفقعغونيي]*>/g, "") : parentlistGrid.getDisplayValue(fields[j].name, tmpStr).trim()));
-
-                    if(tmpStr && tmpStr != '')
-                        titr += fields[j].title + ': ' + tmpStr + ' - ';
+                    titr += fields[j].title + ': ' + (typeof (tmpStr) == 'undefined' ? '' : ((!isValueMaps[j]) ? (tmpStr + ' ').trim().replace(/(<a)([^>href]+)(href)([ ]*)(=)([ ]*)\"([^\"]*)\"([^>]*)(>)([^<]*)(<\/a>)/g, "[link href=$7]$10[/link]").replace(/<[^>ابپتثجچحخدذرزژصضسشطظکگفقعغونيي]*>/g, "") : parentlistGrid.getDisplayValue(fields[j].name, tmpStr).trim())) + ' - ';
                 }
 
                 titr = titr.substring(0, titr.length - 3);
@@ -555,7 +553,7 @@
             }
 
             //Send Data Methods
-            static exportToExcelFromClient(fields, data, titr, pageName, exceptColumn) {
+            static exportToExcelFromClient(fields, data, titr, pageName) {
                 let downloadForm = isc.DynamicForm.create({
                     method: "POST",
                     action: "/training/export-to-file/exportExcelFromClient/",
@@ -658,7 +656,7 @@
             }
 
             //Get Data For Send
-            static downloadExcelFromClient(listGrid, parentListGrid, titr, pageName, exceptColumn) {
+            static downloadExcelFromClient(listGrid, parentListGrid, titr, pageName) {
 
                 let tmptitr = '';
 
@@ -668,10 +666,9 @@
                     tmptitr = titr;
                 }
 
-                let result = this.getAllData(listGrid, exceptColumn);
+                let result = this.getAllData(listGrid);
 
-
-                this.exportToExcelFromClient(result.fields, result.data, tmptitr, pageName, exceptColumn);
+                this.exportToExcelFromClient(result.fields, result.data, tmptitr, pageName);
             }
 
             static downloadExcelFromServer(listGrid, fileName,startRow, len, parentListGrid, titr, pageName, criteria) {

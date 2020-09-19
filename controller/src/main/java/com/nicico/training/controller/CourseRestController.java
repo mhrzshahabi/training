@@ -19,7 +19,9 @@ import com.nicico.training.model.enums.ETheoType;
 import com.nicico.training.repository.SkillDAO;
 import com.nicico.training.service.CourseService;
 import com.nicico.training.service.GoalService;
+import com.nicico.training.service.SkillService;
 import com.nicico.training.service.WorkGroupService;
+import dto.SkillDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
@@ -31,6 +33,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import request.course.CourseUpdateRequest;
 import response.course.CourseListResponse;
 import response.course.dto.CourseDto;
 
@@ -57,9 +60,9 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     private final ICourseService iCourseService;
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
-    private final SkillDAO skillDAO;
     private final WorkGroupService workGroupService;
     private final CourseBeanMapper beanMapper;
+    private final SkillService skillService;
 
     // ---------------------------------
     @Loggable
@@ -101,10 +104,10 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     @Loggable
     @PostMapping
     //@PreAuthorize("hasAuthority('Course_C')")
-    public ResponseEntity<CourseDTO.Info> create(@RequestBody Object req, HttpServletResponse response) {
+    public ResponseEntity<CourseDto> create(@RequestBody Object req, HttpServletResponse response) {
         CourseDTO.Create request = (new ModelMapper()).map(req, CourseDTO.Create.class);
 //        return new ResponseEntity<>(courseService.create(create), HttpStatus.CREATED);
-        CourseDTO.Info courseInfo = courseService.create(request, response);
+        CourseDto courseInfo = courseService.create(request, response);
         if (courseInfo != null)
             return new ResponseEntity<>(courseInfo, HttpStatus.CREATED);
         else
@@ -141,12 +144,10 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
 
     @Loggable
     @PutMapping(value = "/{id}")
-    //@PreAuthorize("hasAuthority('Course_U')")
-//	public ResponseEntity<CourseDTO.Info> update(@PathVariable Long id,@Validated @RequestBody CourseDTO.Update request) {
-//		return new ResponseEntity<>(courseService.update(id, request), HttpStatus.OK);
-    public ResponseEntity<CourseDTO.Info> update(@PathVariable Long id, @RequestBody Object  request) {
-        CourseDTO.Update update = modelMapper.map(request, CourseDTO.Update.class);
-        return new ResponseEntity<>(courseService.update(id, update), HttpStatus.OK);
+    public ResponseEntity<CourseDTO.Info> update(@PathVariable Long id, @RequestBody CourseUpdateRequest request) {
+        return new ResponseEntity<>(courseService.update(beanMapper.updateCourse(request,
+                courseService.getCourse(id)), request.getMainSkills().stream().map(SkillDto::getId)
+                .collect(Collectors.toList())), HttpStatus.OK);
     }
 
     @Loggable
@@ -543,7 +544,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
             return "";
         }
         StringBuilder mainObjective = new StringBuilder();
-        List<Skill> skillList = skillDAO.findByCourseMainObjectiveId(courseId);
+        List<Skill> skillList = skillService.skillList(courseId);
 
         for (Skill skill : skillList) {
 
