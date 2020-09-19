@@ -1808,7 +1808,6 @@
                 break;
             }
             case "TabPane_NA_TrainingPost_Jsp": {
-                //don't delete this part !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 if (naTrainingPost_TrainingPost_Jsp === trainingPost.id)
                     return;
                 naTrainingPost_TrainingPost_Jsp = trainingPost.id;
