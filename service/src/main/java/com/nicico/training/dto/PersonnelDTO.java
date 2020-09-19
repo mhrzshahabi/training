@@ -157,8 +157,8 @@ public class PersonnelDTO implements Serializable {
         private String workPlaceTitle;
         private String workTurnTitle;
         private String educationLevelTitle;
-        //        private String jobNo;
-//        private String jobTitle;
+        private String jobNo;
+        private String jobTitle;
         private Integer employmentStatusId;
         private String employmentStatus;
         private String companyName;
@@ -175,8 +175,8 @@ public class PersonnelDTO implements Serializable {
         private String workDays;
         private String personnelNo2;
         private String insuranceCode;
-        //        private String postGradeTitle;
-//        private String postGradeCode;
+        private String postGradeTitle;
+        private String postGradeCode;
         private String ccpCode;
         private String ccpArea;
         private String ccpAssistant;
@@ -193,8 +193,6 @@ public class PersonnelDTO implements Serializable {
         private Long geoWorkId;
         private Long postId;
         private String userName;
-        private PostDTO.PersonnelInfo post;
-        private DepartmentDTO.Info department;
     }
 
     @Getter
