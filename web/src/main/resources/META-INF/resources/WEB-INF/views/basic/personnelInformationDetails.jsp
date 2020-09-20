@@ -589,16 +589,16 @@
                             colSpan: 6,
                             cellStyle: "lineField"
                         },
-                        {
-                            name: "notExists",
-                            title: "<spring:message code="boss"/> : ",
-                            canEdit: false
-                        },
-                        {
-                            name: "notExists",
-                            title: "<spring:message code="connective"/> : ",
-                            canEdit: false
-                        },
+                        <%--{--%>
+                        <%--name: "notExists",--%>
+                        <%--title: "<spring:message code="boss"/> : ",--%>
+                        <%--canEdit: false--%>
+                        <%--},--%>
+                        <%--{--%>
+                        <%--name: "notExists",--%>
+                        <%--title: "<spring:message code="connective"/> : ",--%>
+                        <%--canEdit: false--%>
+                        <%--},--%>
                         {
                             name: "employmentStatus",
                             title: "<spring:message code="employment.status"/> : ",
@@ -610,70 +610,85 @@
                             canEdit: false
                         },
                         {
-                            name: "ccpArea",
+                            name: "department.hozeTitle",
                             title: "<spring:message code="complex"/> : ",
                             canEdit: false
                         },
                         {
-                            name: "ccpAssistant",
+                            name: "department.moavenatTitle",
                             title: "<spring:message code="assistance"/> : ",
                             canEdit: false
                         },
                         {
-                            name: "ccpAffairs",
+                            name: "department.omorTitle",
                             title: "<spring:message code="affairs"/> : ",
                             canEdit: false
                         },
                         {
-                            name: "ccpUnit",
+                            name: "department.vahedTitle",
                             title: "<spring:message code="unit"/> : ",
                             canEdit: false
                         },
                         {
-                            name: "ccpSection",
+                            name: "department.ghesmatTitle",
                             title: "<spring:message code="section"/> : ",
                             canEdit: false
                         },
                         {
-                            name: "jobTitle",
-                            title: "<spring:message code="job"/> : ",
+                            name: "post.job.code",
+                            title: "<spring:message code="job.code"/> : ",
                             canEdit: false
                         },
                         {
-                            name: "postTitle",
-                            title: "<spring:message code="post"/> : ",
+                            name: "post.job.titleFa",
+                            title: "<spring:message code="job.title"/> : ",
                             canEdit: false
                         },
                         {
-                            name: "postGradeTitle",
+                            name: "post.code",
+                            title: "<spring:message code="post.code"/> : ",
+                            canEdit: false
+                        },
+                        {
+                            name: "post.titleFa",
+                            title: "<spring:message code="post.title"/> : ",
+                            canEdit: false
+                        },
+                        {
+                            name: "post.postGrade.code",
+                            title: "<spring:message code="post.code"/> : ",
+                            canEdit: false
+                        },
+                        {
+                            name: "post.postGrade.titleFa",
                             title: "<spring:message code="post.grade"/> : ",
                             canEdit: false
                         },
-                        {
-                            name: "notExists",
-                            title: "<spring:message code="job.group"/> : ",
-                            canEdit: false
-                        },
-                        {
-                            name: "notExists",
-                            title: "<spring:message code="business.class"/> : ",
-                            canEdit: false
-                        },
+                        <%--{--%>
+                        <%--name: "notExists",--%>
+                        <%--title: "<spring:message code="job.group"/> : ",--%>
+                        <%--canEdit: false--%>
+                        <%--},--%>
+                        <%--{--%>
+                        <%--name: "notExists",--%>
+                        <%--title: "<spring:message code="business.class"/> : ",--%>
+                        <%--canEdit: false--%>
+                        <%--},--%>
                         {
                             name: "personnelNo2",
                             title: "<spring:message code="personnel.code.six.digit"/> : ",
                             canEdit: false
                         },
-                        {
-                            name: "notExists",
-                            title: "<spring:message code="post.group"/> : ",
-                            canEdit: false
-                        },
-                        {
-                            name: "notExists",
-                            title: "<spring:message code="person.basic"/> : ",
-                            canEdit: false
-                        },
+                        <%--{--%>
+                        <%--name: "notExists",--%>
+                        <%--title: "<spring:message code="post.group"/> : ",--%>
+                        <%--canEdit: false--%>
+                        <%--},--%>
+                        <%--{--%>
+                        <%--name: "notExists",--%>
+                        <%--title: "<spring:message code="person.basic"/> : ",--%>
+                        <%--canEdit: false--%>
+                        <%--},--%>
                         {
                             name: "employmentTypeTitle",
                             title: "<spring:message code="employment.type"/> : ",
@@ -689,18 +704,18 @@
                             title: "<spring:message code="geographical.location.of.service"/> : ",
                             canEdit: false
                         },
-                        {
-                            name: "notExists",
-                            title: "<spring:message code="agents"/> : ",
-                            canEdit: false
-                        },
+                        <%--{--%>
+                        <%--name: "notExists",--%>
+                        <%--title: "<spring:message code="agents"/> : ",--%>
+                        <%--canEdit: false--%>
+                        <%--},--%>
                         {
                             name: "workTurnTitle",
                             title: "<spring:message code="division.of.staff"/> : ",
                             canEdit: false
                         },
                         {
-                            name: "notExists",
+                            name: "militaryStatus",
                             title: "<spring:message code="military"/> : ",
                             canEdit: false
                         },
