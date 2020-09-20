@@ -61,9 +61,7 @@ public class ViewEvaluationStaticalReportDTO implements Serializable {
         private String termTitleFa;
         private String teacherFirstName;
         private String teacherLastName;
-        public String getTeacherFullName(){
-            return teacherFirstName+" "+teacherLastName;
-        }
+        private String teacherFullName;
     }
 
     @Getter

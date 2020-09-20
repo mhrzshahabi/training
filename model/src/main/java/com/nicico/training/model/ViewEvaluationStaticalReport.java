@@ -150,6 +150,9 @@ public class ViewEvaluationStaticalReport extends Auditable {
    @Column(name = "TEACHER_LASTNAME")
    private String teacherLastName;
 
+    @Column(name = "TEACHER_FULLNAME")
+    private String teacherFullName;
+
 //   @Column(name = "COURSE_IN_NEEDASSESSMENT")
 //   private Long isCourseInNeedAssessment;
 }

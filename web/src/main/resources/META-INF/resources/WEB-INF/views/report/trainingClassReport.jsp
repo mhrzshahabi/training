@@ -223,7 +223,7 @@
             {name: "tclassCode", title: "کد کلاس"},
             {name: "courseCode", title: "کد دوره"},
             {name: "courseTitleFa", title: "نام دوره"},
-            {name: "tclassDuration", title: "مدت کلاس"},
+            {name: "tclassDuration", title: "مدت کلاس", filterOperator: "equals"},
             {name: "tclassStartDate", title: "تاریخ شروع"},
             {name: "tclassEndDate", title: "تاریخ پایان"},
             {name: "tclassYear", title: "سال کاری"},

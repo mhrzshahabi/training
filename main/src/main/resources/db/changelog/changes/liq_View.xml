@@ -1659,7 +1659,7 @@ WITH result AS (
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_EVALUATION_STATICAL_REPORT-011">
+    <changeSet author="NICICO" id="VIEW_EVALUATION_STATICAL_REPORT-012">
         <createView viewName="VIEW_EVALUATION_STATICAL_REPORT" replaceIfExists="true">
             <![CDATA[
 	 SELECT
@@ -1667,6 +1667,7 @@ WITH result AS (
         term.C_TITLE_FA as term_TitleFa,
         personal.C_FIRST_NAME_FA as teacher_FirstName,
         personal.C_LAST_NAME_FA as teacher_LastName,
+        CONCAT(CONCAT(personal.C_FIRST_NAME_FA,' '),personal.C_LAST_NAME_FA) as teacher_FullName,
         tclass.N_H_DURATION as tclass_n_duration,
         tclass.F_INSTITUTE_ORGANIZER as tclass_organizer,
         tclass.C_STATUS as tclass_status,
