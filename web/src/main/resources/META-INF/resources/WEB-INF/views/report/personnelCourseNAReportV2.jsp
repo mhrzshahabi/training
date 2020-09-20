@@ -677,6 +677,7 @@
     });
 
     CourseLG_PCNR = isc.TrLG.create({
+        dataFetchMode: "local",
         dynamicTitle: true,
         autoFetchData: false,
         allowAdvancedCriteria: true,
@@ -705,7 +706,7 @@
                 canFilter: false,
                 formatCellValue: function (value, record) {
                     if(record.notPassedEssentialPersonnelCount)
-                          return record.notPassedEssentialPersonnelCount + record.notPassedImprovingPersonnelCount + record.notPassedDevelopmentalPersonnelCount;
+                        return record.notPassedEssentialPersonnelCount + record.notPassedImprovingPersonnelCount + record.notPassedDevelopmentalPersonnelCount;
                     return "";
                 },
                 sortNormalizer: function (record) {

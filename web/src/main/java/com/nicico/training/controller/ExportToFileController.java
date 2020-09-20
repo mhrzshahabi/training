@@ -403,6 +403,16 @@ public class ExportToFileController {
                 break;
 
             case "teacherReport":
+                if(searchRq.getCriteria() != null && searchRq.getCriteria().getCriteria() != null){
+                    for (SearchDTO.CriteriaRq criterion : searchRq.getCriteria().getCriteria()) {
+                        if(criterion.getValue() != null && criterion.getValue().size() != 0){
+                            if(criterion.getValue().get(0).equals("false"))
+                                criterion.setValue(false);
+                            if(criterion.getValue().get(0).equals("true"))
+                                criterion.setValue(true);
+                        }
+                    }
+                }
                 generalList = (List<Object>) ((Object) viewTeacherReportService.search(searchRq).getList());
                 break;
 
@@ -869,8 +879,6 @@ public class ExportToFileController {
         int responseCode = postConnection.getResponseCode();
 
         if (responseCode == HttpURLConnection.HTTP_OK) { //success
-            generalList = new ArrayList<>();
-
             BufferedReader in = new BufferedReader(new InputStreamReader(
                     postConnection.getInputStream()));
             String inputLine;

@@ -75,7 +75,7 @@ function defineWindowsEditNeedsAssessment(grid = null) {
         showUs(record, objectType) {
             loadEditNeedsAssessment(record, objectType);
             // loadDiffNeedsAssessment(record, objectType);
-            isChanged = false;
+            hasChanged = false;
             this.Super("show", arguments);
         },
         close(x = 1){
@@ -83,35 +83,43 @@ function defineWindowsEditNeedsAssessment(grid = null) {
                 Window_AddCompetence.close();
             }
             if(x===1) {
-                if (isChanged) {
-                    const dialog = isc.Dialog.create({
-                        ID: "dialog",
-                        icon: 'info.png',
-                        title: "پیغام",
-                        message: "تغییراتی در پنجره ویرایش نیازسنجی ثبت شده است لطفا یکی از گزینه های زیر را با توجه به تغییرات اعمال شده انتخاب کنید.",
-                        buttons: [
-                            isc.Button.create({ title:"ارسال به گردش کار"}),
-                            isc.Button.create({title: "لغو تغییرات"}),
-                            isc.Button.create({title: "خروج از نیازسنجی"}),
-                        ],
-                        buttonClick: function (button, index) {
-                            dialog.close();
-                            switch (index) {
-                                case 0:
-                                    sendNeedsAssessmentToWorkflow();
-                                    break;
-                                case 1:
-                                    CancelChange_JspENA.click();
-                                    break;
-                                case 2:
-                                    Window_NeedsAssessment_Edit.Super("close", arguments);
-                                    if(grid != null) {
-                                        grid.invalidateCache();
-                                    }
-                                    break;
-                            }
+                if (hasChanged) {
+                    if(!canSendToWorkFlowNA){
+                        createDialog("info", "لطفا برای ارسال به گردش کار از کارتابل خود اقدام نمایید.")
+                        Window_NeedsAssessment_Edit.Super("close", arguments);
+                        if(grid != null) {
+                            grid.invalidateCache();
                         }
-                    });
+                    }else{
+                        const dialog = isc.Dialog.create({
+                            ID: "dialog",
+                            icon: 'info.png',
+                            title: "پیغام",
+                            message: "تغییراتی در پنجره ویرایش نیازسنجی ثبت شده است لطفا یکی از گزینه های زیر را با توجه به تغییرات اعمال شده انتخاب کنید.",
+                            buttons: [
+                                isc.Button.create({ title:"ارسال به گردش کار"}),
+                                isc.Button.create({title: "لغو تغییرات"}),
+                                isc.Button.create({title: "خروج از نیازسنجی"}),
+                            ],
+                            buttonClick: function (button, index) {
+                                dialog.close();
+                                switch (index) {
+                                    case 0:
+                                        sendNeedsAssessmentToWorkflow();
+                                        break;
+                                    case 1:
+                                        CancelChange_JspENA.click();
+                                        break;
+                                    case 2:
+                                        Window_NeedsAssessment_Edit.Super("close", arguments);
+                                        if(grid != null) {
+                                            grid.invalidateCache();
+                                        }
+                                        break;
+                                }
+                            }
+                        });
+                    }
                 } else {
                     Window_NeedsAssessment_Edit.Super("close", arguments);
                     if(grid != null) {

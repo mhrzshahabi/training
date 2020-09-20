@@ -1519,7 +1519,7 @@
                 // });
                 // PostLG_JobGroup.invalidateCache();
                 // PostLG_JobGroup.fetchData();
-                PostDS_JobGroup.fetchDataURL = jobGroupUrl + "postIscList/" + jobGroup.id;
+                PostDS_JobGroup.fetchDataURL = jobGroupUrl + "training-post-isc-list/" + jobGroup.id;
                 PostLG_JobGroup.invalidateCache();
                 PostLG_JobGroup.fetchData();
                 break;

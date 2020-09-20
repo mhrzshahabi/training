@@ -312,13 +312,13 @@
         fields: [
             {name: "id", primaryKey: true},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains"},
+            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains",autoFitWidth:true},
             {name: "titleEn", title: "<spring:message code="title.en"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "job.code", title: "<spring:message code="job.code"/>", filterOperator: "iContains"},
-            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains"},
-            {name: "postGrade.code", title: "<spring:message code="post.grade.code"/>", filterOperator: "iContains"},
-            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
+            {name: "job.code", title: "<spring:message code="job.code"/>", filterOperator: "iContains",autoFitWidth:true},
+            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains",autoFitWidth:true},
+            {name: "postGrade.code", title: "<spring:message code="post.grade.code"/>", filterOperator: "iContains",autoFitWidth:true},
+            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains",autoFitWidth:true},
             {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -334,13 +334,13 @@
         fields: [
             {name: "id", primaryKey: true},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains"},
+            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains",autoFitWidth:true},
             {name: "titleEn", title: "<spring:message code="title.en"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "job.code", title: "<spring:message code="job.code"/>", filterOperator: "iContains"},
-            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains"},
-            {name: "postGrade.code", title: "<spring:message code="post.grade.code"/>", filterOperator: "iContains"},
-            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
+            {name: "job.code", title: "<spring:message code="job.code"/>", filterOperator: "iContains",autoFitWidth:true},
+            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains",autoFitWidth:true},
+            {name: "postGrade.code", title: "<spring:message code="post.grade.code"/>", filterOperator: "iContains",autoFitWidth:true},
+            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains",autoFitWidth:true},
             {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -823,13 +823,13 @@
         fields: [
             {name: "id", primaryKey: true},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains"},
+            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleEn", title: "<spring:message code="title.en"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "job.code", title: "<spring:message code="job.code"/>", filterOperator: "iContains"},
-            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains"},
-            {name: "postGrade.code", title: "<spring:message code="post.grade.code"/>", filterOperator: "iContains"},
-            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
+            {name: "job.code", title: "<spring:message code="job.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postGrade.code", title: "<spring:message code="post.grade.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -845,13 +845,13 @@
         fields: [
             {name: "id", primaryKey: true},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains"},
+            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleEn", title: "<spring:message code="title.en"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "job.code", title: "<spring:message code="job.code"/>", filterOperator: "iContains"},
-            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains"},
-            {name: "postGrade.code", title: "<spring:message code="post.grade.code"/>", filterOperator: "iContains"},
-            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
+            {name: "job.code", title: "<spring:message code="job.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postGrade.code", title: "<spring:message code="post.grade.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -1659,7 +1659,7 @@
         members: [
             isc.ToolStripButtonExcel.create({
                 click: function () {
-                    let criteria = PersonnelLG_Post_Group_Jsp.getCriteria();
+                    let criteria = JSON.parse(JSON.stringify(PersonnelLG_Post_Group_Jsp.getCriteria()));
 
                     if(typeof(criteria.operator)=='undefined'){
                         criteria._constructor="AdvancedCriteria";
@@ -1669,10 +1669,12 @@
                     if(typeof(criteria.criteria)=='undefined'){
                         criteria.criteria=[];
                     }
-                    criteria.criteria.push({fieldName: "postGroupId", operator: "equals", value:ListGrid_Post_Group_Jsp.getSelectedRecord().id});
 
-                    console.log(criteria);
-                    ExportToFile.downloadExcel(null, PersonnelLG_Post_Group_Jsp , "PersonnelPostGroup", 0, null, '',"لیست پرسنل - آموزش"  , criteria, null);
+                    let postGroup = ListGrid_Post_Group_Jsp.getSelectedRecord();
+                    if (postGroup == null && tab.pane != null){
+                        return;
+                    }
+                    ExportToFile.downloadExcelRestUrl(null, PersonnelLG_Post_Group_Jsp , postGroupUrl + "/" + postGroup.id + "/getPersonnel", 0, null, '',"گروه پستي - لیست پرسنل"  , criteria, null);
                 }
             })
         ]
