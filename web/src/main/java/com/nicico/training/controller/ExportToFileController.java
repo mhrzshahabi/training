@@ -403,12 +403,12 @@ public class ExportToFileController {
                 break;
 
             case "teacherReport":
-                if(searchRq.getCriteria() != null && searchRq.getCriteria().getCriteria() != null){
+                if (searchRq.getCriteria() != null && searchRq.getCriteria().getCriteria() != null) {
                     for (SearchDTO.CriteriaRq criterion : searchRq.getCriteria().getCriteria()) {
-                        if(criterion.getValue() != null && criterion.getValue().size() != 0){
-                            if(criterion.getValue().get(0).equals("false"))
+                        if (criterion.getValue() != null && criterion.getValue().size() != 0) {
+                            if (criterion.getValue().get(0).equals("false"))
                                 criterion.setValue(false);
-                            if(criterion.getValue().get(0).equals("true"))
+                            if (criterion.getValue().get(0).equals("true"))
                                 criterion.setValue(true);
                         }
                     }
@@ -705,10 +705,10 @@ public class ExportToFileController {
 
             case "institute_trainingPlace":
 
-                Long instituteId = ((Integer)searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                Long instituteId = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
                 searchRq.getCriteria().getCriteria().remove(0);
 
-                SearchDTO.CriteriaRq criteriaTP =  new SearchDTO.CriteriaRq();
+                SearchDTO.CriteriaRq criteriaTP = new SearchDTO.CriteriaRq();
 
                 criteriaTP.setOperator(EOperator.equals);
                 criteriaTP.setFieldName("instituteId");
@@ -716,27 +716,27 @@ public class ExportToFileController {
 
                 searchRq.setCriteria(criteriaTP);
                 searchRq.setSortBy("-id");
-                generalList = (List<Object>)((Object) trainingPlaceService.search(searchRq).getList());
+                generalList = (List<Object>) ((Object) trainingPlaceService.search(searchRq).getList());
                 break;
 
             case "institute_trainingPlace_equipment":
-                Long trainingPlaceId = ((Integer)searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
-                generalList = (List<Object>)((Object) trainingPlaceService.getEquipments(trainingPlaceId));
+                Long trainingPlaceId = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                generalList = (List<Object>) ((Object) trainingPlaceService.getEquipments(trainingPlaceId));
                 break;
 
             case "institute_teacher":
-                Long instituteIdTeacher = ((Integer)searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                Long instituteIdTeacher = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
                 generalList = (List<Object>) ((Object) instituteService.getTeachers(instituteIdTeacher));
                 break;
 
             case "institute_account":
-                Long instituteIdAcount= ((Integer)searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                Long instituteIdAcount = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
                 generalList = (List<Object>) ((Object) accountService.getAllAccountForExcel(instituteIdAcount));
                 break;
 
             case "institute-equipment":
-                Long instituteIdEquipment = ((Integer)searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
-                generalList = (List<Object>)((Object) instituteService.getEquipments(instituteIdEquipment));
+                Long instituteIdEquipment = ((Integer) searchRq.getCriteria().getCriteria().get(0).getValue().get(0)).longValue();
+                generalList = (List<Object>) ((Object) instituteService.getEquipments(instituteIdEquipment));
                 break;
 
         }
@@ -866,7 +866,15 @@ public class ExportToFileController {
         String token = (String) req.getSession().getAttribute("AccessToken");
         String restApiUrl = req.getRequestURL().toString().replace(req.getServletPath(), "").replace(req.getContextPath(), "");
 
-        URL obj = new URL(restApiUrl + restUrl + "?" + query);
+        String url ="";
+
+        if(restUrl.contains("?")){
+            url=restApiUrl + restUrl + "&" + query;
+        }else{
+            url=restApiUrl + restUrl + "?" + query;
+        }
+
+        URL obj = new URL(url);
         HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
         postConnection.setDoOutput(true);
         postConnection.setDoInput(true);
