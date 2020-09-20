@@ -305,7 +305,11 @@
                     ListGrid_Result_JspTClassReport
                 ]
             })
-        ]
+        ],
+        close(){
+            ListGrid_Result_JspTClassReport.setFilterEditorCriteria({});
+            this.Super("close",arguments);
+        }
     });
     //----------------------------------------------------Criteria Form------------------------------------------------
     var DynamicForm_CriteriaForm_JspTClassReport = isc.DynamicForm.create({
