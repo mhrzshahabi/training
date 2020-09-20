@@ -63,7 +63,7 @@
                 isc.ToolStripButtonExcel.create({
                     click: function () {
                         let criteria = JobLG_job.getCriteria();
-                        ExportToFile.downloadExcelRestUrl(null, JobLG_job, viewJobUrl + "/iscList", 0, JobLG_job, '', "لیست شغل ها", criteria, null);
+                        ExportToFile.downloadExcelRestUrl(null, JobLG_job, viewJobUrl + "/iscList", 0, null, '', "لیست شغل ها", criteria, null);
                     }
                 })
             ]
@@ -479,25 +479,14 @@
             members: [
                 isc.ToolStripButtonExcel.create({
                     click: function () {
-                        let criteria = NALG_Job.getCriteria();
 
-                        if (typeof (criteria.operator) == 'undefined') {
-                            criteria._constructor = "AdvancedCriteria";
-                            criteria.operator = "and";
+                        let job = JobLG_job.getSelectedRecord();
+                        let tab = DetailTab_Job.getSelectedTab();
+                        if (job == null && tab.pane != null) {
+                            return;
                         }
 
-                        if (typeof (criteria.criteria) == 'undefined') {
-                            criteria.criteria = [];
-                        }
-                        criteria.criteria.push({
-                            fieldName: "objectId",
-                            operator: "equals",
-                            value: JobLG_job.getSelectedRecord().id
-                        });
-                        criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "Job"});
-                        // criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
-
-                        ExportToFile.downloadExcel(null, NALG_Job, "NeedsAssessmentReport", 0, JobLG_job, '', "شغل - نیازسنجی", criteria, null);
+                        ExportToFile.downloadExcelRestUrl(null, NALG_Job, needsAssessmentReportsUrl + "?objectId=" + job.id + "&objectType=Job", 0, JobLG_job, '', "شغل - نیازسنجی", null, null,0,true);
                     }
                 })
             ]

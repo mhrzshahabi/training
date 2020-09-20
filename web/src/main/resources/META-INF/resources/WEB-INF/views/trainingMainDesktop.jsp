@@ -555,16 +555,22 @@
             }
 
             static generateCriteria(listGrid){
-                let implicitCriteria = JSON.parse(JSON.stringify(listGrid.implicitCriteria)) ;
-                let criteria = listGrid.getCriteria();
 
-                if(criteria.criteria){
-                    for (let i = 0; i < criteria.criteria.length ; i++) {
-                        implicitCriteria.criteria.push(criteria.criteria[i]);
+                if(listGrid.implicitCriteria){
+                    let implicitCriteria = JSON.parse(JSON.stringify(listGrid.implicitCriteria)) ;
+                    let criteria = listGrid.getCriteria();
+
+                    if(criteria.criteria){
+                        for (let i = 0; i < criteria.criteria.length ; i++) {
+                            implicitCriteria.criteria.push(criteria.criteria[i]);
+                        }
                     }
+
+                    return implicitCriteria;
+                }else{
+                    return listGrid.getCriteria();
                 }
 
-                return implicitCriteria;
             }
 
             //Send Data Methods
