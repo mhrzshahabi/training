@@ -211,7 +211,6 @@
                 default: "125",
                 validateOnExit:true,
                 readonly: true,
-              //  keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 width: "300",
             },
             {
@@ -231,8 +230,6 @@
                 textAlign: "right",
                 type: "ComboBoxItem",
                 addUnknownValues: false,
-                // useClientFiltering: true,
-                // cachePickListResults: true,
                 changeOnKeypress: false,
                 filterOnKeypress: true,
                 pickListWidth: 300,
@@ -268,8 +265,6 @@
                 displayField: "titleFa",
                 valueField: "id",
                 addUnknownValues: false,
-                // useClientFiltering: true,
-                // cachePickListResults: true,
                 changeOnKeypress: false,
                 filterOnKeypress: true,
                 optionDataSource: SubCategoryDS_Skill,
@@ -354,7 +349,6 @@
                 filterOnKeypress: true,
                 autoFetchData: true,
                 textMatchStyle: "startsWith",
-                // generateExactMatchCriteria: true,
                 filterFields: ["titleFa", "code", "createdBy"],
                 pickListFields: [
                     {name: "code"},
@@ -411,8 +405,6 @@
                     sub_cat_code = SkillDF_Skill.getItem('subCategoryId').getSelectedRecord().code;
                 SkillDF_Skill.getItem('code').setValue(sub_cat_code + skillLevelSymbol_Skill);
             }
-
-
             wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(url_Skill, method_Skill, JSON.stringify(SkillDF_Skill.getValues()), Result_SaveSkill_Skill));
 
@@ -586,9 +578,7 @@
     PrintTSB_Skill = isc.ToolStripButtonPrint.create({
         title: "<spring:message code='print'/>",
         click: function () {
-          //  printWithCriteria(SkillLG_Skill.getCriteria(),{},"Skill_Report.jasper");
             print_SkillListGrid('pdf')
-
         }
     });
 
@@ -619,7 +609,6 @@
             CreateTSB_Skill,
             EditTSB_Skill,
             RemoveTSB_Skill,
-           // PrintTSB_Skill,
             CourseTSB_Skill,
             ToolStrip_Skill_Export2EXcel,
             isc.ToolStrip.create({
