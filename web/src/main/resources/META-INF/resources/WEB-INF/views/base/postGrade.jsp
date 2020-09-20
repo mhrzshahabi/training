@@ -417,6 +417,7 @@
     PostDS_PostGrade = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap: {"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار"}, filterOnKeypress: true},
             {
                 name: "code",
                 title: "<spring:message code="post.code"/>",
@@ -488,7 +489,8 @@
                 filterOperator: "equals",
                 autoFitWidth: true,
                 autoFitWidthApproach: "both"
-            }
+            },
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both", valueMap:{74 : "غیر فعال"},filterOnKeypress: true,}
         ],
         fetchDataURL: viewTrainingPostUrl + "/spec-list"
     });

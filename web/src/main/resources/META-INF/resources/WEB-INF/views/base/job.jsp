@@ -574,6 +574,8 @@
         PostDS_Job = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true, hidden: true},
+                {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap, filterOnKeypress: true},
+                {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
                 {
                     name: "code",
                     title: "<spring:message code="post.code"/>",
@@ -645,8 +647,7 @@
                     filterOperator: "equals",
                     autoFitWidth: true,
                     autoFitWidthApproach: "both"
-                },
-
+                }
             ],
             fetchDataURL: viewTrainingPostUrl + "/iscList"
         });
@@ -697,6 +698,9 @@
             dataSource: PostDS_Job,
             gridComponents: [ActionsTS_Post_Job, "header", "filterEditor", "body",],
             fields: [
+                {name: "peopleType",
+                    filterOnKeypress: true,
+                },
                 {
                     name: "code",
                     filterEditorProperties: {
@@ -719,7 +723,14 @@
                 },
                 {name: "costCenterTitleFa"},
                 {name: "competenceCount"},
-                {name: "personnelCount"}
+                {name: "personnelCount"},
+                {
+                    name: "enabled",
+                    valueMap:{
+                        // undefined : "فعال",
+                        74 : "غیر فعال"
+                    },filterOnKeypress: true,
+                }
             ],
             autoFetchData: false,
             showResizeBar: true,

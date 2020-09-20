@@ -47,6 +47,8 @@
     PostDS_Skill = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap, filterOnKeypress: true},
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -664,6 +666,9 @@
         autoFetchData: false,
         gridComponents: [ActionsTS_Post_Skill, "header", "filterEditor", "body",],
         fields: [
+            {name: "peopleType",
+                filterOnKeypress: true,
+            },
             {name: "code",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
@@ -676,7 +681,14 @@
             {name: "assistance"},
             {name: "affairs"},
             {name: "section"},
-            {name: "unit"}
+            {name: "unit"},
+            {
+                name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+            }
         ],
     });
 
