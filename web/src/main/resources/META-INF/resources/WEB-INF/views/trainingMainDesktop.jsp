@@ -554,6 +554,19 @@
                 return titr;
             }
 
+            static generateCriteria(listGrid){
+                let implicitCriteria = JSON.parse(JSON.stringify(listGrid.implicitCriteria)) ;
+                let criteria = listGrid.getCriteria();
+
+                if(criteria.criteria){
+                    for (let i = 0; i < criteria.criteria.length ; i++) {
+                        implicitCriteria.criteria.push(criteria.criteria[i]);
+                    }
+                }
+
+                return implicitCriteria;
+            }
+
             //Send Data Methods
             static exportToExcelFromClient(fields, data, titr, pageName, exceptColumn) {
                 let downloadForm = isc.DynamicForm.create({
@@ -680,7 +693,6 @@
 
                 if ((titr.length === 0) && parentListGrid != null) {
                     tmptitr = this.generateTitle(parentListGrid);
-                    tmptitr = '';
                 } else {
                     tmptitr = titr;
                 }
@@ -730,7 +742,6 @@
 
                 if ((titr.length === 0) && parentListGrid != null) {
                     tmptitr = this.generateTitle(parentListGrid);
-                    tmptitr = '';
                 } else {
                     tmptitr = titr;
                 }
@@ -1043,7 +1054,7 @@
                 }
             }
 
-            static downloadExcelRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate,warning){
+            static downloadExcelRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate,warning,generateCriteria = false){
 
                 if(listgrid.data.localData.length > listgrid.data.getAllLoadedRows().length || listgrid.data.localData.length > 200){
 
@@ -1055,6 +1066,10 @@
                         showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>فيلتر هاي اعمال شده</b> بر روي ليست گريد در خروجي اکسل اعمال خواهند شد.');
                     }else if(warning == 3){
                         showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>نحوه مرتب سازي</b> بر روي ليست گريد در خروجي اکسل اعمال خواهند شد.');
+                    }
+
+                    if(criteria == null && generateCriteria){
+                        criteria = this.generateCriteria(listgrid);
                     }
 
                     if(showDialog != null){

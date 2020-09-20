@@ -63,7 +63,7 @@
                 isc.ToolStripButtonExcel.create({
                     click: function () {
                         let criteria = JobLG_job.getCriteria();
-                        ExportToFile.downloadExcel(null, JobLG_job, "View_Job", 0, null, '', "لیست شغل ها - آموزش", criteria, null);
+                        ExportToFile.downloadExcelRestUrl(null, JobLG_job, viewJobUrl + "/iscList", 0, JobLG_job, '', "لیست شغل ها", criteria, null);
                     }
                 })
             ]
@@ -322,7 +322,7 @@
 
                         criteria.criteria.push({fieldName: "jobId", operator: "equals", value: JobLG_job.getSelectedRecord().id});
 
-                        ExportToFile.downloadExcel(null, PersonnelLG_Job, "jobPersonnel", 0, null, '', "لیست پرسنل - آموزش", criteria, null);
+                        ExportToFile.downloadExcel(null, PersonnelLG_Job, "jobPersonnel", 0, JobLG_job, '', "شغل - ٌلیست پرسنل", criteria, null);
                     }
                 })
             ]
@@ -497,7 +497,7 @@
                         criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "Job"});
                         // criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
 
-                        ExportToFile.downloadExcel(null, NALG_Job, "NeedsAssessmentReport", 0, null, '', "لیست نیازسنجی - آموزش", criteria, null);
+                        ExportToFile.downloadExcel(null, NALG_Job, "NeedsAssessmentReport", 0, JobLG_job, '', "شغل - نیازسنجی", criteria, null);
                     }
                 })
             ]
@@ -657,30 +657,13 @@
             members: [
                 isc.ToolStripButtonExcel.create({
                     click: function () {
-                        let criteria = PostLG_Job.getCriteria();
-
-                        if (typeof (criteria.operator) == 'undefined') {
-                            criteria._constructor = "AdvancedCriteria";
-                            criteria.operator = "and";
-                        }
-
-                        if (typeof (criteria.criteria) == 'undefined') {
-                            criteria.criteria = [];
-                        }
-                        criteria.criteria.push({
-                            fieldName: "jobCode",
-                            operator: "equals",
-                            value: JobLG_job.getSelectedRecord().code
-                        });
-
                         let job = JobLG_job.getSelectedRecord();
 
                         if (job == null) {
                             return;
                         }
-                        criteria.criteria.push({fieldName: "jobId", operator: "equals", value: job.id});
 
-                        ExportToFile.downloadExcel(null, PostLG_Job, "View_Post", 0, null, '', "لیست پست - آموزش", criteria, null);
+                        ExportToFile.downloadExcelRestUrl(null, PostLG_Job, viewTrainingPostUrl + "/iscList", 0, JobLG_job, '', "شغل - ليست پست ها", null, null,0,true);
                     }
                 })
             ]
