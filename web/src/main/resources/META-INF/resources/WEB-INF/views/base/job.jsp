@@ -322,7 +322,7 @@
 
                         criteria.criteria.push({fieldName: "jobId", operator: "equals", value: JobLG_job.getSelectedRecord().id});
 
-                        ExportToFile.downloadExcel(null, PersonnelLG_Job, "jobPersonnel", 0, JobLG_job, '', "شغل - ٌلیست پرسنل", criteria, null);
+                        ExportToFile.downloadExcel(null, PersonnelLG_Job, "jobPersonnel", 0, JobLG_job, '', "شغل - لیست پرسنل", criteria, null);
                     }
                 })
             ]
