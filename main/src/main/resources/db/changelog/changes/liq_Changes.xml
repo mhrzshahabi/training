@@ -1242,5 +1242,15 @@
             <column name="n_parent_id" type="number(19, 0)"/>
         </addColumn>
     </changeSet>
-
+    <changeSet author="golrokhi (generated)" id="1600570520012-448">
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="category_id" tableName="tbl_annual_statistical"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1600570520012-453">
+        <dropPrimaryKey tableName="tbl_annual_statistical"/>
+        <createIndex indexName="IX_tbl_annual_statisticalPK" tableName="tbl_annual_statistical" unique="true">
+            <column name="category_id"/>
+            <column name="institute_id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="category_id, institute_id" constraintName="tbl_annual_statisticalPK" forIndexName="IX_tbl_annual_statisticalPK" tableName="tbl_annual_statistical"/>
+    </changeSet>
 </databaseChangeLog>
