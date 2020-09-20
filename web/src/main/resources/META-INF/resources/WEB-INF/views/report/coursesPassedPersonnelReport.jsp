@@ -36,21 +36,13 @@
 
             {name: "courseCode", title:"<spring:message code='course.code'/>", autoFitWidth: true},
             {name: "courseTitleFa", title:"<spring:message code='course'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "classHDduration", title:"<spring:message code='course_theoryDuration'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classHDduration", title:"<spring:message code='course_theoryDuration'/>", filterOperator: "equals", autoFitWidth: true},
             {name: "classStartDate", title:"<spring:message code="start.date"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "classEndDate", title:"<spring:message code="end.date"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "classStudentScoresStateId", title:"وضعیت قبولی", filterOperator: "iContains", autoFitWidth: true, valueMap: {
-                    "400" : "قبولی با نمره",
-                    "401" : "قبولی بدون نمره",
-                }},
-            {name: "score",title:"<spring:message code="score"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classStudentScoresStateId", title:"وضعیت قبولی", filterOperator:"equals", filterOnKeypress: true,autoFitWidth: true, valueMap: {400 : "قبولی با نمره", 401 : "قبولی بدون نمره",}},
+            {name: "score",title:"<spring:message code="score"/>", filterOperator: "equals", autoFitWidth: true},
             {name: "courseType", title:"وضعیت نیازسنجی", filterOperator: "iContains", autoFitWidth: true},
-            {name: "naPriorityId", title:"اولویت نیازسنجی", filterOperator: "equals",  autoFitWidth: true, valueMap: {
-            "111" : "عملکردی ضروری",
-            "113" : "عملکردی توسعه",
-            "112" : "عملکردی بهبود",
-            "0" : ""
-            }},
+            {name: "naPriorityId", title:"اولویت نیازسنجی",filterOnKeypress: true, filterOperator:"equals" , autoFitWidth: true, valueMap: {111 : "عملکردی ضروری", 113 : "عملکردی توسعه", 112 : "عملکردی بهبود"}},
 
             {name: "termId", hidden: true, filterOperator: "equals"},
             {name: "courseId", hidden: true, filterOperator: "equals"},
@@ -62,7 +54,7 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
+            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains",autoFitWidth:true},
             {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -175,7 +167,8 @@
         dataSource : RestDataSource_JspCoursesPassedPersonnel,
         cellHeight: 43,
         sortField: 0,
-        showFilterEditor: false,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
         selectionType: "single",
         showRecordComponents: true,
         showRecordComponentsByCell: true
@@ -186,7 +179,7 @@
         title: "گزارش اکسل",
         width: 300,
         click: function () {
-            ExportToFile.downloadExcel(null, ListGrid_JspCoursesPassedPersonnel, 'coursesPassedPersonnel', 0, null, '',  "گزارش دوره های گذرانده فرد", ListGrid_JspCoursesPassedPersonnel.data.criteria, null);
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_JspCoursesPassedPersonnel, viewCoursesPassedPersonnelReportUrl, 0, null, '', "گزارش دوره های گذرانده فرد", ListGrid_JspCoursesPassedPersonnel.data.getCriteria(), null);
         }
     });
 
