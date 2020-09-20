@@ -33,9 +33,9 @@ public class ViewTeacherReportRestController {
         if(searchRq.getCriteria() != null && searchRq.getCriteria().getCriteria() != null){
             for (SearchDTO.CriteriaRq criterion : searchRq.getCriteria().getCriteria()) {
                 if(criterion.getValue() != null && criterion.getValue().size() != 0){
-                    if(criterion.getValue().get(0).equals("false"))
+                    if(criterion.getValue().get(0) != null && criterion.getValue().get(0).equals("false"))
                         criterion.setValue(false);
-                    if(criterion.getValue().get(0).equals("true"))
+                    if(criterion.getValue().get(0) != null && criterion.getValue().get(0).equals("true"))
                         criterion.setValue(true);
                 }
             }
