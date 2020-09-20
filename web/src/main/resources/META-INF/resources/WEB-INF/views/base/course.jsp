@@ -849,6 +849,7 @@
                                 }
                             },
                             {name: "category.id", filterOnKeypress:true},
+                            {name: "subCategory.id", filterOnKeypress:true},
                             {name: "courseMainObjectiveId", type: "boolean", title: "هدف کلی", canFilter: false}
                         ],
                         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
