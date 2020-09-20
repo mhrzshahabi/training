@@ -52,4 +52,19 @@ public class PostDTO implements Serializable {
         private Long enabled;
         private Long deleted;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("PersonnelInfo")
+    public static class PersonnelInfo {
+        private Long id;
+        private String code;
+        private String titleFa;
+        private String peopleType;
+        private Long enabled;
+        private Long deleted;
+        private JobDTO.Info job;
+        private PostGradeDTO.Info postGrade;
+    }
 }
