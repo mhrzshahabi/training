@@ -557,6 +557,7 @@
             PostDS_Skill.fetchDataURL = needsAssessmentReportsUrl + "/skillNA?skillId=" + this.getSelectedRecord().id;
             if ( DetailTS_Skill.getSelectedTab().name === "Post" ){
                 skillChanged_Skill = false;
+                PostLG_Skill.clearFilterValues();
                 refreshLG(PostLG_Skill);
             }
         }
