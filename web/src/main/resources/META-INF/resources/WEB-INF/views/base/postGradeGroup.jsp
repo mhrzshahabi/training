@@ -1346,7 +1346,7 @@
                 //     operator: "and",
                 //     criteria: [{fieldName: "postGGI", operator: "equals", value: postGradeGroup.id}]
                 // });
-                PostDS_PGG.fetchDataURL = postGradeGroupUrl + "postIscList/" + postGradeGroup.id;
+                PostDS_PGG.fetchDataURL = postGradeGroupUrl + "training-post-isc-list/" + postGradeGroup.id;
                 PostLG_PGG.invalidateCache();
                 PostLG_PGG.fetchData();
                 break;
