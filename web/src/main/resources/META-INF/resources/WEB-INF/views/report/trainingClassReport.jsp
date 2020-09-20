@@ -741,7 +741,7 @@
                                             values = [];
 
                                         for (var i = 0; i < cache.length; i++) {
-                                            values[i] = cache[i].titleFa;
+                                            values[i] = cache[i].id;
                                         }
                                         item.setValue(values);
                                         item.pickList.hide();
@@ -1572,7 +1572,9 @@
             classTimeInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("endDate2").getDisplayValue();
             classTimeInfo_print += ", " ;
         }
-        if (DynamicForm_CriteriaForm_JspTClassReport.getField("tclassYear").getValue() != undefined) {
+        if (DynamicForm_CriteriaForm_JspTClassReport.getField("tclassYear").getValue() != null &&
+            DynamicForm_CriteriaForm_JspTClassReport.getField("tclassYear").getValue() != undefined &&
+            DynamicForm_CriteriaForm_JspTClassReport.getField("tclassYear").getValue().size() != 0) {
             classTimeInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "سال کاری: " + "</span>";
             classTimeInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("tclassYear").getDisplayValue() + "</span>";
@@ -1582,7 +1584,9 @@
             classTimeInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("tclassYear").getValue();
             classTimeInfo_print += ", ";
         }
-        if (DynamicForm_CriteriaForm_JspTClassReport.getField("termId").getValue() != undefined) {
+        if (DynamicForm_CriteriaForm_JspTClassReport.getField("termId").getValue() != null &&
+            DynamicForm_CriteriaForm_JspTClassReport.getField("termId").getValue() != undefined &&
+            DynamicForm_CriteriaForm_JspTClassReport.getField("termId").getValue().size() != 0) {
             classTimeInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "ترم کاری: " + "</span>";
             classTimeInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("termId").getDisplayValue() + "</span>";
