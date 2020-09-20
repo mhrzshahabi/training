@@ -461,6 +461,11 @@
                                 return;
                             }
 
+                            MSG_sendTypesItems = [];
+                            MSG_msgContent.type = [];
+                            MSG_sendTypesItems.push('MSG_messageType_sms');
+                            MSG_msgContent.type = MSG_sendTypesItems;
+
                             sendMessageFunc = sendMessage_evaluation;
                             RestDataSource_student_RE.fetchDataURL = tclassStudentUrl + "/students-iscList/" + row.id;
                             MSG_selectUsersForm.getItem("multipleSelect").optionDataSource = RestDataSource_student_RE;
@@ -532,7 +537,6 @@
                             MSG_selectUsersForm.getItem("multipleSelect").fetchData();
 
                             MSG_textEditorValue = "{prefix-full_name} {full-name}<br>\n پرسشنامه مربوط به ارزیابی دوره «{course-name}» که از تاریخ {start-date} تا {end-date} برگزارشده است و جنابعالی در آن شرکت داشته اید به پرتال پرسنلی شما در سیستم جامع آموزش به آدرس {personel-address} ارسال گردیده است ولی متاسفانه تاکنون تکمیل نشده است.لطفا در اسرع وقت آن را تکمیل نمایید بدیهی است تایید نهایی دوره جنابعالی منوط به تکمیل این پرسشنامه می باشد"
-                            MSG_textEditorpid = 'dfgdfgdfg';
                             MSG_contentEditor.setValue(MSG_textEditorValue);
 
                             if (JSON.parse(resp.data).response.data.filter(p => !p.student.mobile && (p.evaluationStatusReaction == 1)).length != 0) {
@@ -544,6 +548,9 @@
                             }
                             MSG_userType = "classStudent";
                             MSG_classID = row.id;
+
+                            MSG_repeatOptions.getItem('maxRepeat').setValue(0);
+                            MSG_repeatOptions.getItem('timeBMessages').setValue(1);
                             MSG_Window_MSG_Main.show();
 
                             /*setTimeout(function () {
@@ -569,6 +576,10 @@
                         if (resp.httpResponseCode == 200) {
                             let id = [];
                             JSON.parse(resp.data).response.data.filter(p => p.personality?.contactInfo?.mobile).forEach(p => id.push(p.id));
+                            MSG_sendTypesItems = [];
+                            MSG_msgContent.type = [];
+                            MSG_sendTypesItems.push('MSG_messageType_sms');
+                            MSG_msgContent.type = MSG_sendTypesItems;
 
                             sendMessageFunc = sendMessage_evaluation;
                             RestDataSource_student_RE.fetchDataURL = teacherUrl + "spec-list";
@@ -647,6 +658,8 @@
                             }
                             MSG_userType = "classTeacher";
                             MSG_classID = row.id;
+                            MSG_repeatOptions.getItem('maxRepeat').setValue(0);
+                            MSG_repeatOptions.getItem('timeBMessages').setValue(1);
                             MSG_Window_MSG_Main.show();
 
                             setTimeout(function () {

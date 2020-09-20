@@ -12,7 +12,6 @@
 
 
     var MSG_textEditorValue = "";
-    var MSG_textEditorpid = "";
     var MSG_sendTypesItems = [];
     var MSG_msgContent = {};
     var MSG_attachFiles = [];
@@ -190,6 +189,9 @@
 
 
     function MSG_getMessageTypes(){
+        MSG_sendTypesItems = [];
+        MSG_msgContent.type = [];
+
         return  MSG_messageTypes = isc.HLayout.create({
             width: "80%",
             height: "100%",
