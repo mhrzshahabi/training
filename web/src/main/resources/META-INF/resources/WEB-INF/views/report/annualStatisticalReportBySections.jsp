@@ -120,6 +120,15 @@
         fetchDataURL: courseUrl + "spec-list"
     });
 
+    var RestDataSource_category_annualStatistical= isc.TrDS.create({
+        ID: "categoryDS",
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa", type: "text"}
+        ],
+        fetchDataURL: categoryUrl + "spec-list",
+    });
+
     var ButtonExcel =isc.ToolStripButtonExcel.create({
         margin:5,
         click: function () {
@@ -143,7 +152,34 @@
         fields: [
             {name: "institute_id",hidden:true},
             {name: "institute_title_fa", title:"<spring:message code="institute"/>", align: "center", filterOperator: "iContains",autoFitWidth:true},
-            {name: "category_id",  title:"<spring:message code="category"/>", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {
+                name: "category_id",
+                title:"<spring:message code="category"/>",
+                align: "center",
+                filterOperator: "equals",
+                optionDataSource: RestDataSource_category_annualStatistical,
+                editorType: "SelectItem",
+                valueField: "id",
+                displayField: "titleFa",
+                filterOnKeypress: true,
+                filterEditorProperties:{
+                    optionDataSource: RestDataSource_category_annualStatistical,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["id","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                },
+                autoFitWidth:true
+            },
             {name: "finished_class_count",  title:"تعداد کلاس", align: "center", filterOperator: "iContains",autoFitWidth:true},
             {name: "canceled_class_count",  title:"تعداد کلاس لغو شده", align: "center", filterOperator: "iContains",autoFitWidth:true},
             {name: "sum_of_duration",  title:"ساعت آموزشی ارائه شده", align: "center", filterOperator: "iContains",autoFitWidth:true},
@@ -155,7 +191,16 @@
         recordDoubleClick: function () {
 
         },
-        gridComponents: [ToolStrip_Actions,"filterEditor", "header", "body"],
+        gridComponents: [isc.ToolStrip.create({
+            width: "100%",
+            members: [
+                isc.Label.create({
+                    padding: 5,
+                    width: "100%",
+                    align: "center",
+                    contents: "<b style='font-size: 16px;'>گزارش شامل کلاسهای پایان یافته و لغو شده است</b>"
+                }),]
+        }),ToolStrip_Actions,"filterEditor", "header", "body"],
 
         dataArrived: function ()
         {
