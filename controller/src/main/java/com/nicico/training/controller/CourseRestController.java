@@ -104,10 +104,8 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     @Loggable
     @PostMapping
     //@PreAuthorize("hasAuthority('Course_C')")
-    public ResponseEntity<CourseDto> create(@RequestBody Object req, HttpServletResponse response) {
-        CourseDTO.Create request = (new ModelMapper()).map(req, CourseDTO.Create.class);
-//        return new ResponseEntity<>(courseService.create(create), HttpStatus.CREATED);
-        CourseDto courseInfo = courseService.create(request, response);
+    public ResponseEntity<CourseDto> create(@RequestBody CourseDTO.Create  req, HttpServletResponse response) {
+        CourseDto courseInfo = courseService.create(req, response);
         if (courseInfo != null)
             return new ResponseEntity<>(courseInfo, HttpStatus.CREATED);
         else

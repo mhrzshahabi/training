@@ -219,10 +219,10 @@ public class CourseService implements ICourseService {
         Course course = modelMapper.map(request, Course.class);
         course.setCode(this.codeGenerate(course.getCode()));
         if (courseDAO.findByCodeEquals(course.getCode()).isEmpty()) {
-            course.setELevelType(eLevelTypeConverter.convertToEntityAttribute(request.getELevelTypeId()));
-            course.setERunType(eRunTypeConverter.convertToEntityAttribute(request.getERunTypeId()));
-            course.setETheoType(eTheoTypeConverter.convertToEntityAttribute(request.getETheoTypeId()));
-            course.setETechnicalType(eTechnicalTypeConverter.convertToEntityAttribute(request.getETechnicalTypeId()));
+            course.setELevelType(eLevelTypeConverter.convertToEntityAttribute(request.getLevelTypeId()));
+            course.setERunType(eRunTypeConverter.convertToEntityAttribute(request.getRunTypeId()));
+            course.setETheoType(eTheoTypeConverter.convertToEntityAttribute(request.getTheoTypeId()));
+            course.setETechnicalType(eTechnicalTypeConverter.convertToEntityAttribute(request.getTechnicalTypeId()));
             if (request.getMainObjectiveIds() != null && !request.getMainObjectiveIds().isEmpty())
                 course.setHasSkill(true);
             else
