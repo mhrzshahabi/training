@@ -25,7 +25,6 @@ import java.util.List;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_message_contact")
-@DiscriminatorValue("MessageContact")
 public class MessageContact<E> extends Auditable {
 
     @Id
@@ -33,12 +32,6 @@ public class MessageContact<E> extends Auditable {
     @SequenceGenerator(name = "message_contact_seq", sequenceName = "seq_message_contact_id", allocationSize = 1)
     @Column(name = "id", precision = 10)
     private Long id;
-
-    @Column(name = "c_context_text", nullable = false, length = 2000)
-    private String contextText;
-
-    @Column(name = "c_context_html", nullable = false, length = 2000)
-    private String contextHtml;
 
     @Column(name = "c_last_sent_date")
     private Date lastSentDate;
@@ -80,6 +73,9 @@ public class MessageContact<E> extends Auditable {
 
     @Column(name = "f_message_id")
     private Long messageId;
+
+    @OneToMany(mappedBy = "messageContact", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MessageParameter> messageParameterList;
 
 }
 

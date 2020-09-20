@@ -461,7 +461,11 @@
                                 return;
                             }
 
-                            MSG_selectUsersForm.getItem("multipleSelect").setValue(id);
+                            MSG_sendTypesItems = [];
+                            MSG_msgContent.type = [];
+                            MSG_sendTypesItems.push('MSG_messageType_sms');
+                            MSG_msgContent.type = MSG_sendTypesItems;
+
                             sendMessageFunc = sendMessage_evaluation;
                             RestDataSource_student_RE.fetchDataURL = tclassStudentUrl + "/students-iscList/" + row.id;
                             MSG_selectUsersForm.getItem("multipleSelect").optionDataSource = RestDataSource_student_RE;
@@ -519,12 +523,16 @@
                                 let ids = MSG_selectUsersForm.getItem("multipleSelect").pickList.data.getAllCachedRows().filter(p => !p.student.mobile || !(p.evaluationStatusReaction == 1)).map(function (item) {
                                     return item.id;
                                 });
+
                                 let findRows = MSG_selectUsersForm.getItem("multipleSelect").pickList.findAll({
                                     _constructor: "AdvancedCriteria",
                                     operator: "and",
                                     criteria: [{fieldName: "id", operator: "inSet", value: ids}]
                                 });
+
                                 findRows.setProperty("enabled", false);
+
+                                MSG_selectUsersForm.getItem("multipleSelect").setValue(id);
                             }
                             MSG_selectUsersForm.getItem("multipleSelect").fetchData();
 
@@ -540,11 +548,14 @@
                             }
                             MSG_userType = "classStudent";
                             MSG_classID = row.id;
+
+                            MSG_repeatOptions.getItem('maxRepeat').setValue(0);
+                            MSG_repeatOptions.getItem('timeBMessages').setValue(1);
                             MSG_Window_MSG_Main.show();
 
-                            setTimeout(function () {
+                            /*setTimeout(function () {
                                 $('#MSG_messageType_sms img').click()
-                            }, 0)
+                            }, 0)*/
                         } else {
                             createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
                         }
@@ -565,7 +576,11 @@
                         if (resp.httpResponseCode == 200) {
                             let id = [];
                             JSON.parse(resp.data).response.data.filter(p => p.personality?.contactInfo?.mobile).forEach(p => id.push(p.id));
-                            MSG_selectUsersForm.getItem("multipleSelect").setValue(id);
+                            MSG_sendTypesItems = [];
+                            MSG_msgContent.type = [];
+                            MSG_sendTypesItems.push('MSG_messageType_sms');
+                            MSG_msgContent.type = MSG_sendTypesItems;
+
                             sendMessageFunc = sendMessage_evaluation;
                             RestDataSource_student_RE.fetchDataURL = teacherUrl + "spec-list";
                             RestDataSource_student_RE.implicitCriteria = {
@@ -626,6 +641,8 @@
                                     criteria: [{fieldName: "id", operator: "inSet", value: ids}]
                                 });
                                 findRows.setProperty("enabled", false);
+
+                                MSG_selectUsersForm.getItem("multipleSelect").setValue(id);
                             }
                             MSG_selectUsersForm.getItem("multipleSelect").fetchData();
 
@@ -641,6 +658,8 @@
                             }
                             MSG_userType = "classTeacher";
                             MSG_classID = row.id;
+                            MSG_repeatOptions.getItem('maxRepeat').setValue(0);
+                            MSG_repeatOptions.getItem('timeBMessages').setValue(1);
                             MSG_Window_MSG_Main.show();
 
                             setTimeout(function () {

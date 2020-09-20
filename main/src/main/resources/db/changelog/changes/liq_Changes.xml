@@ -1253,4 +1253,10 @@
         </createIndex>
         <addPrimaryKey columnNames="category_id, institute_id" constraintName="tbl_annual_statisticalPK" forIndexName="IX_tbl_annual_statisticalPK" tableName="tbl_annual_statistical"/>
     </changeSet>
+    <changeSet author="golrokhi (generated)" id="1600506065252-644">
+        <dropColumn columnName="C_CONTEXT_HTML" tableName="TBL_MESSAGE_CONTACT"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1600506065252-645">
+        <dropColumn columnName="C_CONTEXT_TEXT" tableName="TBL_MESSAGE_CONTACT"/>
+    </changeSet>
 </databaseChangeLog>
