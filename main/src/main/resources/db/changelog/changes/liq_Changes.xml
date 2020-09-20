@@ -1237,5 +1237,26 @@
             <column name="f_student_cost_currency" type="number(19, 0)"/>
         </addColumn>
     </changeSet>
-
+    <changeSet author="razmnoosh (generated)" id="1599894112446-497">
+        <addColumn tableName="tbl_post">
+            <column name="n_parent_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1600570520012-448">
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="category_id" tableName="tbl_annual_statistical"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1600570520012-453">
+        <dropPrimaryKey tableName="tbl_annual_statistical"/>
+        <createIndex indexName="IX_tbl_annual_statisticalPK" tableName="tbl_annual_statistical" unique="true">
+            <column name="category_id"/>
+            <column name="institute_id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="category_id, institute_id" constraintName="tbl_annual_statisticalPK" forIndexName="IX_tbl_annual_statisticalPK" tableName="tbl_annual_statistical"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1600506065252-644">
+        <dropColumn columnName="C_CONTEXT_HTML" tableName="TBL_MESSAGE_CONTACT"/>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1600506065252-645">
+        <dropColumn columnName="C_CONTEXT_TEXT" tableName="TBL_MESSAGE_CONTACT"/>
+    </changeSet>
 </databaseChangeLog>

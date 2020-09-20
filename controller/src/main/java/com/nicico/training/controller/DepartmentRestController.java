@@ -3,12 +3,15 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.DepartmentDTO;
 import com.nicico.training.iservice.IDepartmentService;
 import com.nicico.training.utility.SpecListUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -133,4 +137,32 @@ public class DepartmentRestController {
         SearchDTO.SearchRs<DepartmentDTO.Info> searchRs = departmentService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
+
+    @GetMapping(value = "/getDepartmentsRoot")
+    public ResponseEntity<List<DepartmentDTO.TSociety>> getDepartmentsRoot() throws IOException {
+        List<DepartmentDTO.TSociety> roots = departmentService.getRoot();
+        for(DepartmentDTO.TSociety root : roots)
+            root.setParentId(new Long(0));
+        return new ResponseEntity<>(roots  , HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getDepartmentsByParentId/{parentId}")
+    public ResponseEntity<List<DepartmentDTO.TSociety>> getDepartmentsByParentId(@PathVariable Long parentId) throws IOException {
+        return new ResponseEntity<>(departmentService.getDepartmentByParentId(parentId), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/getDepartmentsChilderen")
+    public ResponseEntity<List<DepartmentDTO.TSociety>> getDepartmentsChilderen(@RequestBody List<Long> childeren) throws IOException {
+        List<DepartmentDTO.TSociety> result = departmentService.getDepartmentsByParentIds(childeren);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+
+    }
+
+    @GetMapping(value = "/searchSocieties")
+    public ResponseEntity<List<DepartmentDTO.TSociety>> searchSocieties(HttpServletRequest iscRq) throws IOException {
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        searchRq.setStartIndex(null);searchRq.setCount(null);
+        return new ResponseEntity<>(departmentService.searchSocieties(searchRq), HttpStatus.OK);
+    }
+
 }

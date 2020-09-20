@@ -67,7 +67,6 @@
         dataSource: PostDS_TrainingPost,
         // contextMenu: Menu_PostLG_TrainingPost_Jsp,
         autoFetchData: true,
-        showResizeBar: true,
         sortField: 1,
         fields: [
             {name: "peopleType",
@@ -814,7 +813,6 @@
         dataSource: RestDataSource_TrainingPost_Posts_Jsp,
         contextMenu: Menu_ListGrid_Post_Group_Posts,
         autoFetchData: false,
-        showResizeBar: true,
         sortField: 1,
         gridComponents: [ActionsTS_TrainingPost, "header", "filterEditor", "body",],
         fields: [
@@ -1629,6 +1627,7 @@
     var HLayout_Grid_TrainingPost_Jsp = isc.HLayout.create({
         width: "100%",
         height: "100%",
+        showResizeBar: true,
         members: [ListGrid_TrainingPost_Jsp]
     });
 
@@ -1808,15 +1807,14 @@
                 break;
             }
             case "TabPane_NA_TrainingPost_Jsp": {
-                //don't delete this part !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                // if (naTrainingPost_TrainingPost_Jsp === trainingPost.id)
-                //     return;
-                // naTrainingPost_TrainingPost_Jsp = trainingPost.id;
-                // CourseDS_TrainingPost_Jsp.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + trainingPost.id + "&objectType=TrainingPost";
-                // CourseDS_TrainingPost_Jsp.invalidateCache();
-                // CourseDS_TrainingPost_Jsp.fetchData();
-                // CourseLG_TrainingPost_Jsp.invalidateCache();
-                // CourseLG_TrainingPost_Jsp.fetchData();
+                if (naTrainingPost_TrainingPost_Jsp === trainingPost.id)
+                    return;
+                naTrainingPost_TrainingPost_Jsp = trainingPost.id;
+                CourseDS_TrainingPost_Jsp.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + trainingPost.id + "&objectType=TrainingPost";
+                CourseDS_TrainingPost_Jsp.invalidateCache();
+                CourseDS_TrainingPost_Jsp.fetchData();
+                CourseLG_TrainingPost_Jsp.invalidateCache();
+                CourseLG_TrainingPost_Jsp.fetchData();
                 break;
             }
             case "TabPane_manage_TrainingPost_Jsp": {

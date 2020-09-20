@@ -12,6 +12,8 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.oauth.common.domain.CustomUserDetails;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
+import com.nicico.training.mapper.course.CourseBeanMapper;
+import com.nicico.training.model.Course;
 import com.nicico.training.model.TrainingPlace;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.PersonnelRegisteredDAO;
@@ -33,6 +35,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import response.course.dto.CourseDto;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
@@ -114,6 +117,8 @@ public class ExportToFileController {
     private final ModelMapper modelMapper;
     private final MessageSource messageSource;
     private final ObjectMapper objectMapper;
+    private final CourseBeanMapper beanMapper;
+
     @Autowired
     protected EntityManager entityManager;
 
@@ -170,7 +175,7 @@ public class ExportToFileController {
 
             case "course":
                 searchRq.setCriteria(workGroupService.addPermissionToCriteria("categoryId", searchRq.getCriteria()));
-                generalList = (List<Object>) ((Object) courseService.search(searchRq, c -> modelMapper.map(c, CourseDTO.Info.class)).getList());
+                generalList = (courseService.search(searchRq, c -> beanMapper.toCourseDto((Course) c)).getList());
                 break;
 
             case "trainingFile":
@@ -398,6 +403,16 @@ public class ExportToFileController {
                 break;
 
             case "teacherReport":
+                if(searchRq.getCriteria() != null && searchRq.getCriteria().getCriteria() != null){
+                    for (SearchDTO.CriteriaRq criterion : searchRq.getCriteria().getCriteria()) {
+                        if(criterion.getValue() != null && criterion.getValue().size() != 0){
+                            if(criterion.getValue().get(0).equals("false"))
+                                criterion.setValue(false);
+                            if(criterion.getValue().get(0).equals("true"))
+                                criterion.setValue(true);
+                        }
+                    }
+                }
                 generalList = (List<Object>) ((Object) viewTeacherReportService.search(searchRq).getList());
                 break;
 
@@ -864,8 +879,6 @@ public class ExportToFileController {
         int responseCode = postConnection.getResponseCode();
 
         if (responseCode == HttpURLConnection.HTTP_OK) { //success
-            generalList = new ArrayList<>();
-
             BufferedReader in = new BufferedReader(new InputStreamReader(
                     postConnection.getInputStream()));
             String inputLine;

@@ -126,7 +126,7 @@ public class AttendanceService implements IAttendanceService {
             Map<String, String> map = new HashMap<>();
             map.put("studentId", String.valueOf(classStudent.getStudent().getId()));
             map.put("studentName", classStudent.getStudent().getFirstName().trim());
-            map.put("studentFamily", prepareForArabicSort(classStudent.getStudent().getLastName().trim()));
+            map.put("studentFamily", classStudent.getStudent().getLastName().trim());
             map.put("personalNum", classStudent.getStudent().getPersonnelNo());
             map.put("nationalCode", classStudent.getStudent().getNationalCode());
             map.put("company", classStudent.getStudent().getCompanyName());

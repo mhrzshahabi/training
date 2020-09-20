@@ -333,13 +333,29 @@
             sortField: 1,
             sortDirection: "descending",
             fields: [
-                {name: "student.firstName", autoFitWidth: true},
-                {name: "student.lastName", autoFitWidth: true},
+                {
+                    name: "student.firstName",
+                    autoFitWidth: true,
+                    sortNormalizer: function (record) {
+                        return record.student.firstName;
+                    }
+                },
+                {
+                    name: "student.lastName",
+                    autoFitWidth: true,
+                    sortNormalizer: function (record) {
+                        return record.student.lastName;
+                    }
+                },
                 {
                     name: "student.nationalCode",
                     filterEditorProperties: {
                         keyPressFilter: "[0-9]"
-                    }, autoFitWidth: true
+                    },
+                    autoFitWidth: true,
+                    sortNormalizer: function (record) {
+                        return record.student.nationalCode;
+                    }
                 },
                 {name: "student.fatherName", hidden: true},
                 {
@@ -392,25 +408,79 @@
                     filterEditorProperties: {
                         keyPressFilter: "[0-9]"
                     },
-                    autoFitWidth: true
+                    autoFitWidth: true,
+                    sortNormalizer: function (record) {
+                        return record.student.personnelNo;
+                    }
                 },
                 {
                     name: "student.personnelNo2",
                     filterEditorProperties: {
                         keyPressFilter: "[0-9]"
                     },
-                    autoFitWidth: true
+                    autoFitWidth: true,
+                    sortNormalizer: function (record) {
+                        return record.student.personnelNo2;
+                    }
                 },
-                {name: "student.postTitle", autoFitWidth: true},
-                {name: "student.mobile", autoFitWidth: true},
-                {name: "student.birthCertificateNo", autoFitWidth: true},
-                {name: "student.ccpArea", autoFitWidth: true},
-                {name: "student.ccpAssistant", autoFitWidth: true},
-                {name: "student.ccpAffairs", autoFitWidth: true},
-                {name: "student.ccpSection", autoFitWidth: true},
-                {name: "student.ccpUnit", autoFitWidth: true},
+                {
+                    name: "student.postTitle",
+                    autoFitWidth: true,
+                    sortNormalizer: function (record) {
+                        return record.student.postTitle;
+                    }
+                },
+                {
+                    name: "student.mobile",
+                    autoFitWidth: true,
+                    sortNormalizer: function (record) {
+                        return record.student.mobile;
+                    }
+                },
+                {
+                    name: "student.birthCertificateNo",
+                    autoFitWidth: true,
+                    sortNormalizer: function (record) {
+                        return record.student.birthCertificateNo;
+                    }
+                },
+                {
+                    name: "student.ccpArea",
+                    autoFitWidth: true,
+                    sortNormalizer: function (record) {
+                        return record.student.ccpArea;
+                    }
+                },
+                {
+                    name: "student.ccpAssistant",
+                    autoFitWidth: true,
+                    sortNormalizer: function (record) {
+                        return record.student.ccpAssistant;
+                    }
+                },
+                {
+                    name: "student.ccpAffairs",
+                    autoFitWidth: true,
+                    sortNormalizer: function (record) {
+                        return record.student.ccpAffairs;
+                    }
+                },
+                {
+                    name: "student.ccpSection",
+                    autoFitWidth: true,
+                    sortNormalizer: function (record) {
+                        return record.student.ccpSection;
+                    }
+                },
+                {
+                    name: "student.ccpUnit",
+                    autoFitWidth: true,
+                    sortNormalizer: function (record) {
+                        return record.student.ccpUnit;
+                    }
+                },
                 {name: "warning",hidden:true},
-                {name: "hasWarning", title: "قبولی در پیش تست", width: 130, type: "image", imageURLPrefix: "", imageURLSuffix: ".png", canEdit: false}
+                {name: "hasWarning", title: "قبولی در پیش تست", width: 130, type: "image", imageURLPrefix: "", imageURLSuffix: ".png", canEdit: false,canSort: false, canFilter: false}
             ],
             gridComponents: [StudentTS_student, "filterEditor", "header", "body"],
             dataArrived:function()

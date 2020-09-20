@@ -134,7 +134,7 @@
         fetchDataURL: instituteUrl + "spec-list",
         allowAdvancedCriteria: true
     });
-
+/**/
     var RestDataSource_SupervisorDS_JspTClassReport = isc.TrDS.create({
         fields: [
             {name: "id", filterOperator: "equals", primaryKey: true, hidden: true},
@@ -144,12 +144,7 @@
             {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
         ],
-        fetchDataURL: personnelUrl + "/iscList",
-        implicitCriteria: {
-            _constructor:"AdvancedCriteria",
-            operator:"and",
-            criteria:[{ fieldName: "active", operator: "equals", value: 1},{ fieldName: "deleted", operator: "equals", value: 0}]
-        }
+        fetchDataURL: viewActivePersonnelUrl + "/iscList"
     });
 
     var RestDataSource_PlannerDS_JspTClassReport = isc.TrDS.create({
@@ -161,12 +156,7 @@
             {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
         ],
-        fetchDataURL: personnelUrl + "/iscList",
-        implicitCriteria: {
-            _constructor:"AdvancedCriteria",
-            operator:"and",
-            criteria:[{ fieldName: "active", operator: "equals", value: 1},{ fieldName: "deleted", operator: "equals", value: 0}]
-        }
+        fetchDataURL: viewActivePersonnelUrl + "/iscList"
     });
 
     var RestDataSource_TargetSociety_JspTClassReport =  isc.DataSource.create({
@@ -233,7 +223,7 @@
             {name: "tclassCode", title: "کد کلاس"},
             {name: "courseCode", title: "کد دوره"},
             {name: "courseTitleFa", title: "نام دوره"},
-            {name: "tclassDuration", title: "مدت کلاس"},
+            {name: "tclassDuration", title: "مدت کلاس", filterOperator: "equals"},
             {name: "tclassStartDate", title: "تاریخ شروع"},
             {name: "tclassEndDate", title: "تاریخ پایان"},
             {name: "tclassYear", title: "سال کاری"},
@@ -248,7 +238,8 @@
                 valueMap: {
                     "1": "برنامه ریزی",
                     "2": "در حال اجرا",
-                    "3": "پایان یافته"
+                    "3": "پایان یافته",
+                    "4": "لغو شده"
                 },
                 filterEditorProperties: {
                     pickListProperties: {
@@ -750,7 +741,7 @@
                                             values = [];
 
                                         for (var i = 0; i < cache.length; i++) {
-                                            values[i] = cache[i].titleFa;
+                                            values[i] = cache[i].id;
                                         }
                                         item.setValue(values);
                                         item.pickList.hide();
@@ -911,7 +902,8 @@
                     "1": "برنامه ریزی",
                     "2": "در حال اجرا",
                     "3": "پایان یافته",
-                    "4": "همه"
+                    "4": "لفو شده"  ,
+                    "5": "همه"
                 }
             },
             {
@@ -924,10 +916,12 @@
                 title: "",
                 canEdit: false
             },
+
             {
                 name: "reactionEvaluation",
                 title: "نمره ارزیابی واکنشی کلاس",
                 type: "checkbox",
+                hidden: true,
                 changed: function (form, item, value) {
                     if (value == true) {
                         form.getField("reactionEvaluationOperator").disabled = false;
@@ -943,6 +937,7 @@
             {
                 name: "reactionEvaluationOperator",
                 title: "",
+                hidden: true,
                 type: "SelectItem",
                 valueMap: {
                     "lessOrEqual": "کمتر از",
@@ -958,6 +953,7 @@
             {
                 name: "evaluationReactionGrade",
                 title: "",
+                hidden: true,
                 disabled: true,
                 hint: "نمره ی ارزیابی واکنشی مد نظر را وارد کنید",
                 showHintInField: true,
@@ -968,6 +964,7 @@
                 name: "learningEvaluation",
                 title: "نمره ارزیابی یادگیری کلاس",
                 type: "checkbox",
+                hidden: true,
                 changed: function (form, item, value) {
                     if (value == true) {
                         form.getField("learningEvaluationOperator").disabled = false;
@@ -983,6 +980,7 @@
             {
                 name: "learningEvaluationOperator",
                 title: "",
+                hidden: true,
                 type: "SelectItem",
                 valueMap: {
                     "lessOrEqual": "کمتر از",
@@ -998,6 +996,7 @@
             {
                 name: "evaluationLearningGrade",
                 title: "",
+                hidden: true,
                 disabled: true,
                 hint: "نمره ی ارزیابی یادگیری مد نظر را وارد کنید",
                 showHintInField: true,
@@ -1008,6 +1007,7 @@
                 name: "behavioralEvaluation",
                 title: "نمره ارزیابی رفتاری کلاس",
                 type: "checkbox",
+                hidden: true,
                 changed: function (form, item, value) {
                     if (value == true) {
                         form.getField("behavioralEvaluationOperator").disabled = false;
@@ -1023,6 +1023,7 @@
             {
                 name: "behavioralEvaluationOperator",
                 title: "",
+                hidden: true,
                 type: "SelectItem",
                 valueMap: {
                     "lessOrEqual": "کمتر از",
@@ -1038,6 +1039,7 @@
             {
                 name: "evaluationBehavioralGrade",
                 title: "",
+                hidden: true,
                 disabled: true,
                 hint: "نمره ی ارزیابی رفتاری مد نظر را وارد کنید",
                 showHintInField: true,
@@ -1048,6 +1050,7 @@
                 name: "evaluation",
                 title: "نمره اثربخشی کلاس",
                 type: "checkbox",
+                hidden: true,
                 changed: function (form, item, value) {
                     if (value == true) {
                         form.getField("evaluationOperator").disabled = false;
@@ -1063,6 +1066,7 @@
             {
                 name: "evaluationOperator",
                 title: "",
+                hidden: true,
                 type: "SelectItem",
                 valueMap: {
                     "lessOrEqual": "کمتر از",
@@ -1078,6 +1082,7 @@
             {
                 name: "evaluationEffectivenessGrade",
                 title: "",
+                hidden: true,
                 disabled: true,
                 hint: "نمره ی اثربخشی مد نظر را وارد کنید",
                 showHintInField: true,
@@ -1422,7 +1427,7 @@
             else if (data_values.criteria[i].fieldName == "evaluationEffectivenessGrade") {
                 data_values.criteria[i].operator = DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationOperator").getValue();
             }
-            else if(data_values.criteria[i].fieldName == "tclassStatus" && data_values.criteria[i].value == "4")
+            else if(data_values.criteria[i].fieldName == "tclassStatus" && data_values.criteria[i].value == "5")
                 removedObjects.add(data_values.criteria[i]);
 
             //-----------------------------------TEMP----------------------------
@@ -1567,7 +1572,9 @@
             classTimeInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("endDate2").getDisplayValue();
             classTimeInfo_print += ", " ;
         }
-        if (DynamicForm_CriteriaForm_JspTClassReport.getField("tclassYear").getValue() != undefined) {
+        if (DynamicForm_CriteriaForm_JspTClassReport.getField("tclassYear").getValue() != null &&
+            DynamicForm_CriteriaForm_JspTClassReport.getField("tclassYear").getValue() != undefined &&
+            DynamicForm_CriteriaForm_JspTClassReport.getField("tclassYear").getValue().size() != 0) {
             classTimeInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "سال کاری: " + "</span>";
             classTimeInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("tclassYear").getDisplayValue() + "</span>";
@@ -1577,7 +1584,9 @@
             classTimeInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("tclassYear").getValue();
             classTimeInfo_print += ", ";
         }
-        if (DynamicForm_CriteriaForm_JspTClassReport.getField("termId").getValue() != undefined) {
+        if (DynamicForm_CriteriaForm_JspTClassReport.getField("termId").getValue() != null &&
+            DynamicForm_CriteriaForm_JspTClassReport.getField("termId").getValue() != undefined &&
+            DynamicForm_CriteriaForm_JspTClassReport.getField("termId").getValue().size() != 0) {
             classTimeInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "ترم کاری: " + "</span>";
             classTimeInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("termId").getDisplayValue() + "</span>";

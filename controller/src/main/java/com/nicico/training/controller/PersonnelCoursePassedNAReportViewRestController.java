@@ -25,22 +25,16 @@ public class PersonnelCoursePassedNAReportViewRestController {
     private final ModelMapper modelMapper;
 
     private <E, T> ResponseEntity<ISC<T>> search(HttpServletRequest iscRq, Function<E, T> converter) throws IOException {
-        int startRow = 0;
-        if (iscRq.getParameter("_startRow") != null)
-            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.SearchRs<T> searchRs = personnelCoursePassedNAReportViewService.search(searchRq, converter);
-        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping
     public ResponseEntity<ISC<PersonnelCoursePassedNAReportViewDTO.Grid>> list(HttpServletRequest iscRq) throws IOException {
-        int startRow = 0;
-        if (iscRq.getParameter("_startRow") != null)
-            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        return new ResponseEntity<>(ISC.convertToIscRs(personnelCoursePassedNAReportViewService.searchCourseList(searchRq), startRow), HttpStatus.OK);
+        return new ResponseEntity<>(ISC.convertToIscRs(personnelCoursePassedNAReportViewService.searchCourseList(searchRq), searchRq.getStartIndex()), HttpStatus.OK);
     }
 
     @GetMapping("/personnel-list")

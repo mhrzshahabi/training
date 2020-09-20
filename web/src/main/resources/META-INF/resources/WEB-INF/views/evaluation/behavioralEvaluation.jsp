@@ -5,6 +5,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);%>
+
+
 // <script>
     //----------------------------------------- Variables --------------------------------------------------------------
         var evalWait_BE;
@@ -27,79 +29,6 @@
                 operator:"and",
                 criteria:[{ fieldName: "code", operator: "inSet", value: ["21","32","42","4"]}]
             }
-        });
-
-        var EvaluationDS_PersonList_BE = isc.TrDS.create({
-            fields: [
-                {name: "id", primaryKey: true, hidden: true},
-                {
-                    name: "firstName",
-                    title: "<spring:message code="firstName"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
-                },
-                {
-                    name: "lastName",
-                    title: "<spring:message code="lastName"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
-                },
-                {
-                    name: "nationalCode",
-                    title: "<spring:message code="national.code"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
-                },
-                {
-                    name: "companyName",
-                    title: "<spring:message code="company.name"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
-                },
-                {
-                    name: "personnelNo",
-                    title: "<spring:message code="personnel.no"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
-                },
-                {
-                    name: "personnelNo2",
-                    title: "<spring:message code="personnel.no.6.digits"/>",
-                    filterOperator: "iContains"
-                },
-                {
-                    name: "postTitle",
-                    title: "<spring:message code="post"/>",
-                    filterOperator: "iContains",
-                    autoFitWidth: true
-                },
-                {
-                    name: "ccpArea",
-                    title: "<spring:message code="reward.cost.center.area"/>",
-                    filterOperator: "iContains"
-                },
-                {
-                    name: "ccpAssistant",
-                    title: "<spring:message code="reward.cost.center.assistant"/>",
-                    filterOperator: "iContains"
-                },
-                {
-                    name: "ccpAffairs",
-                    title: "<spring:message code="reward.cost.center.affairs"/>",
-                    filterOperator: "iContains"
-                },
-                {
-                    name: "ccpSection",
-                    title: "<spring:message code="reward.cost.center.section"/>",
-                    filterOperator: "iContains"
-                },
-                {
-                    name: "ccpUnit",
-                    title: "<spring:message code="reward.cost.center.unit"/>",
-                    filterOperator: "iContains"
-                }
-            ],
-            // fetchDataURL: personnelUrl + "/iscList"
         });
 
         var RestDataSource_student_BE = isc.TrDS.create({
@@ -227,27 +156,6 @@
     });
 
     //----------------------------------------- ListGrids --------------------------------------------------------------
-        var EvaluationListGrid_PeronalLIst_BE = isc.TrLG.create({
-            dataSource: EvaluationDS_PersonList_BE,
-            selectionType: "single",
-            fields: [
-                {name: "id", hidden: true},
-                {name: "firstName"},
-                {name: "lastName"},
-                {name: "nationalCode"},
-                {name: "companyName"},
-                {name: "personnelNo"},
-                {name: "personnelNo2"},
-                {name: "postTitle"},
-                {name: "ccpArea"},
-                {name: "ccpAssistant"},
-                {name: "ccpAffairs"},
-                {name: "ccpSection"},
-                {name: "ccpUnit"}
-            ],
-            selectionAppearance: "checkbox"
-        });
-
         var ListGrid_student_BE = isc.TrLG.create({
             width: "100%",
             height: "100%",
@@ -401,6 +309,64 @@
 
     //----------------------------------------- New Funsctions ---------------------------------------------------------
         function Training_Behavioral_Form_Inssurance_BE(record){
+
+            let EvaluationDS_PersonList_BE = isc.TrDS.create({
+                fields: [
+                    {name: "id", primaryKey: true, hidden: true},
+                    {
+                        name: "firstName",
+                        title: "<spring:message code="firstName"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "lastName",
+                        title: "<spring:message code="lastName"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "nationalCode",
+                        title: "<spring:message code="national.code"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "personnelNo",
+                        title: "<spring:message code="personnel.no"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "personnelNo2",
+                        title: "<spring:message code="personnel.no.6.digits"/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "postTitle",
+                        title: "<spring:message code="post"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    }
+                ],
+            });
+
+            let EvaluationListGrid_PeronalLIst_BE = isc.TrLG.create({
+                dataSource: EvaluationDS_PersonList_BE,
+                selectionType: "single",
+                autoFetchData: false,
+                fields: [
+                    {name: "id", hidden: true},
+                    {name: "firstName"},
+                    {name: "lastName"},
+                    {name: "nationalCode"},
+                    {name: "personnelNo"},
+                    {name: "personnelNo2"},
+                    {name: "postTitle"},
+                ],
+                selectionAppearance: "checkbox"
+            });
+
             let evaluation_Audience_Type = isc.DynamicForm.create({
                 fields: [
                     {
@@ -408,6 +374,7 @@
                         type: "SelectItem",
                         optionDataSource: AudienceTypeDS_BE,
                         title: "نوع مخاطب : ",
+                        defaultValue: 190,
                         pickListProperties: {
                             showFilterEditor: false
                         },
@@ -417,22 +384,68 @@
                         valueField: "id",
                         displayField: "title",
                         changed: function (form, item, value) {
-                            if(value == 190)
-                                EvaluationDS_PersonList_BE.fetchDataURL =  personnelUrl + "/getParentEmployee/" + record.student.nationalCode;
-                            else if(value == 189)
-                                EvaluationDS_PersonList_BE.fetchDataURL =  personnelUrl + "/getSiblingsEmployee/" + record.student.nationalCode;
-                            else if(value == 454)
-                                EvaluationDS_PersonList_BE.fetchDataURL =  personnelUrl + "/getTraining/" +  "<%= SecurityUtil.getNationalCode()%>";
-                            else if(value == 188)
-                                EvaluationDS_PersonList_BE.fetchDataURL =  personnelUrl + "/getStudent/" + record.student.nationalCode;
-                            else
-                                EvaluationDS_PersonList_BE.fetchDataURL =  personnelUrl + "/iscList";
-                            EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
-                            EvaluationListGrid_PeronalLIst_BE.fetchData();
-                            EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                            if(value == 190){
+                                EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getParentEmployee/" + record.student.nationalCode;
+                                EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
+                                    if(resp.data.size() == 0){
+                                        EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
+                                        EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                        EvaluationListGrid_PeronalLIst_BE.fetchData();
+                                        EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                    }
+                                });
+                            }
+                            else if(value == 189){
+                                EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getSiblingsEmployee/" + record.student.nationalCode;
+                                EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
+                                    if(resp.data.size() == 0){
+                                        EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
+                                        EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                        EvaluationListGrid_PeronalLIst_BE.fetchData();
+                                        EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                    }
+                                });
+                            }
+                            else if(value == 454){
+                                EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getTraining/" +  "<%= SecurityUtil.getNationalCode()%>";
+                                EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
+                                    if(resp.data.size() == 0){
+                                        EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
+                                        EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                        EvaluationListGrid_PeronalLIst_BE.fetchData();
+                                        EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                    }
+                                });
+                            }
+                            else if(value == 188){
+                                EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getStudent/" + record.student.nationalCode;
+                                EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
+                                    if(resp.data.size() == 0){
+                                        EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
+                                        EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                        EvaluationListGrid_PeronalLIst_BE.fetchData();
+                                        EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                    }
+                                });
+                            }
+                            else{
+                                EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
+                                EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                EvaluationListGrid_PeronalLIst_BE.fetchData();
+                                EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                            }
+
                         }
                     },
-                ]
+                ],
             });
             let Buttons_List_HLayout = isc.HLayout.create({
                 width: "100%",
@@ -447,7 +460,6 @@
                         click: function () {
                             if((evaluation_Audience_Type.getValue("audiencePost") !== null && evaluation_Audience_Type.getValue("audiencePost") !== undefined) && evaluation_Audience_Type.getValue("audiencePost") == 188){
                                     Select_Questionnarie_BE(null,null, record.id, 188, record.id, 188, 230, 156);
-                                    EvaluationWin_PersonList.close();
                             }
                             else if (EvaluationListGrid_PeronalLIst_BE.getSelectedRecord() !== null && (evaluation_Audience_Type.getValue("audiencePost") !== null && evaluation_Audience_Type.getValue("audiencePost") !== undefined)) {
                                 if(evaluation_Audience_Type.getValue("audiencePost") == 190)
@@ -516,8 +528,16 @@
             EvaluationDS_PersonList_BE.fetchDataURL =  "";
             EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
             EvaluationWin_PersonList.show();
+            EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getParentEmployee/" + record.student.nationalCode;
             EvaluationListGrid_PeronalLIst_BE.invalidateCache();
-            EvaluationListGrid_PeronalLIst_BE.fetchData();
+            EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
+                if(resp.data.size() == 0){
+                    EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
+                    EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                    EvaluationListGrid_PeronalLIst_BE.fetchData();
+                    EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                }
+            });
         }
 
         function Select_Questionnarie_BE(id,questionnarieId, evaluatorId,
@@ -557,7 +577,7 @@
                     },
                     {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
                 ],
-                fetchDataURL: questionnaireUrl + "/iscList"
+                fetchDataURL: questionnaireUrl + "/iscList/validQestionnaries"
             });
             let ListGrid_SelectQuestionnarie_BE = isc.TrLG.create({
                 width: "100%",
@@ -907,7 +927,7 @@
                             data.questionnaireTypeId = 230;
                             data.evaluationLevelId = 156;
                             data.status = true;
-                            if(evaluationEmpty == false && evaluationFull == true){
+                            if(evaluationEmpty == false){
                                 isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
                                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                         Window_Questions_JspEvaluation.close();
@@ -923,9 +943,6 @@
                                         createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                                     }
                                 }))
-                            }
-                            else if(evaluationFull == false){
-                                createDialog("info", "لطفا به تمام سوالات فرم ارزیابی پاسخ دهید", "<spring:message code="error"/>");
                             }
                             else{
                                 createDialog("info", "حداقل به یکی از سوالات فرم ارزیابی باید جواب داده شود", "<spring:message code="error"/>");

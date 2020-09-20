@@ -759,6 +759,18 @@
                 pickListFields: [
                     {name: "title", width: "30%"}
                 ],
+                sortNormalizer(record){
+                    switch (record.needsAssessmentPriorityId) {
+                        case "عملکردی ضروری":
+                            return 0;
+                        case "عملکردی بهبود":
+                            return 1;
+                        case "عملکردی توسعه":
+                            return 2;
+                        default:
+                            return record.needsAssessmentPriorityId;
+                    }
+                }
             },
             {
                 name: "competence.title",
@@ -828,6 +840,7 @@
                 ],
             },
         ],
+        sortField: "needsAssessmentPriorityId",
         dataArrived: function () {
             priorities_NABOP.forEach(p => {
                 if (this.originalData.localData.filter(d => d.needsAssessmentPriorityId === p.id).isEmpty()) {

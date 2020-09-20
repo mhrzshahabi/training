@@ -82,6 +82,7 @@ public interface AnnualStatisticalReportDAO extends JpaRepository<AnnualStatisti
             "                SELECT" +
             "                    institute.id           AS institute_id," +
             "                    institute.c_title_fa   AS institute_title_fa," +
+            "                    0     AS category_id, " +
             "                    class.c_status         AS c_status," +
             "                    class.n_h_duration     AS n_h_duration," +
             "                    class.id               AS class_id " +

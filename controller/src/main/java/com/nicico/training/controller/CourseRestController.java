@@ -8,25 +8,34 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.jpa.resource.SearchableResource;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICourseService;
+import com.nicico.training.mapper.course.CourseBeanMapper;
+import com.nicico.training.model.Course;
 import com.nicico.training.model.Skill;
 import com.nicico.training.model.enums.ERunType;
 import com.nicico.training.model.enums.ETheoType;
 import com.nicico.training.repository.SkillDAO;
 import com.nicico.training.service.CourseService;
 import com.nicico.training.service.GoalService;
+import com.nicico.training.service.SkillService;
 import com.nicico.training.service.WorkGroupService;
+import dto.SkillDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import request.course.CourseUpdateRequest;
+import response.course.CourseListResponse;
+import response.course.dto.CourseDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,17 +52,17 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "/api/course")
-public class CourseRestController {
+public class CourseRestController extends SearchableResource<Course, CourseListResponse.Response>{
     //------------------------------------------
     private final ReportUtil reportUtil;
     private final CourseService courseService;
     private final GoalService goalService;
     private final ICourseService iCourseService;
-    private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
-    private final SkillDAO skillDAO;
     private final WorkGroupService workGroupService;
+    private final CourseBeanMapper beanMapper;
+    private final SkillService skillService;
 
     // ---------------------------------
     @Loggable
@@ -95,10 +104,10 @@ public class CourseRestController {
     @Loggable
     @PostMapping
     //@PreAuthorize("hasAuthority('Course_C')")
-    public ResponseEntity<CourseDTO.Info> create(@RequestBody Object req, HttpServletResponse response) {
+    public ResponseEntity<CourseDto> create(@RequestBody Object req, HttpServletResponse response) {
         CourseDTO.Create request = (new ModelMapper()).map(req, CourseDTO.Create.class);
 //        return new ResponseEntity<>(courseService.create(create), HttpStatus.CREATED);
-        CourseDTO.Info courseInfo = courseService.create(request, response);
+        CourseDto courseInfo = courseService.create(request, response);
         if (courseInfo != null)
             return new ResponseEntity<>(courseInfo, HttpStatus.CREATED);
         else
@@ -135,12 +144,10 @@ public class CourseRestController {
 
     @Loggable
     @PutMapping(value = "/{id}")
-    //@PreAuthorize("hasAuthority('Course_U')")
-//	public ResponseEntity<CourseDTO.Info> update(@PathVariable Long id,@Validated @RequestBody CourseDTO.Update request) {
-//		return new ResponseEntity<>(courseService.update(id, request), HttpStatus.OK);
-    public ResponseEntity<CourseDTO.Info> update(@PathVariable Long id, @RequestBody Object  request) {
-        CourseDTO.Update update = modelMapper.map(request, CourseDTO.Update.class);
-        return new ResponseEntity<>(courseService.update(id, update), HttpStatus.OK);
+    public ResponseEntity<CourseDTO.Info> update(@PathVariable Long id, @RequestBody CourseUpdateRequest request) {
+        return new ResponseEntity<>(courseService.update(beanMapper.updateCourse(request,
+                courseService.getCourse(id)), request.getMainSkills().stream().map(SkillDto::getId)
+                .collect(Collectors.toList())), HttpStatus.OK);
     }
 
     @Loggable
@@ -221,12 +228,12 @@ public class CourseRestController {
 
     // ---------------
 
-    @Loggable
+  /*  @Loggable
     @PostMapping(value = "/search")
     //@PreAuthorize("hasAuthority('Course_R')")
     public ResponseEntity<SearchDTO.SearchRs<CourseDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(courseService.search(request), HttpStatus.OK);
-    }
+    }*/
 
     @Loggable
     @GetMapping(value = "/{courseId}/goal")
@@ -537,7 +544,7 @@ public class CourseRestController {
             return "";
         }
         StringBuilder mainObjective = new StringBuilder();
-        List<Skill> skillList = skillDAO.findByCourseMainObjectiveId(courseId);
+        List<Skill> skillList = skillService.skillList(courseId);
 
         for (Skill skill : skillList) {
 
@@ -660,4 +667,32 @@ public class CourseRestController {
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
+    @Override
+    public CourseListResponse.Response targetMapping(Page<Course> searchResult, int startRow, int endRow) {
+        CourseListResponse response = new CourseListResponse();
+        response.setData(beanMapper.toCourseDtoList(searchResult.getContent()));
+        response.setStatus(HttpStatus.OK.value());
+        response.setMessage("Successful");
+        response.setTotalRows(searchResult.getTotalElements());
+        response.setStartRow(startRow);
+        response.setEndRow(endRow);
+        CourseListResponse.Response finalResponse = new CourseListResponse.Response();
+        finalResponse.setResponse(response);
+        return finalResponse;
+    }
+
+    @Override
+    public SearchDTO.CriteriaRq getPermission(SearchDTO.SearchRq request) {
+        return workGroupService.addPermissionToCriteria("categoryId", request.getCriteria());
+    }
+
+    @Override
+    public SearchDTO.SearchRq mappedValues(SearchDTO.SearchRq request) {
+        request.getCriteria().getCriteria().forEach(criteriaRq -> {
+            if ("duration".equals(criteriaRq.getFieldName())) {
+                criteriaRq.setFieldName("theoryDuration");
+            }
+        });
+        return request;
+    }
 }

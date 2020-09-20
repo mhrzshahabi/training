@@ -420,7 +420,8 @@
                         title: "<spring:message code='class.code'/>",
                         align: "center",
                         filterOperator: "iContains",
-                        autoFitWidth: true
+                        autoFitWidth: true,
+                        filterOnKeypress: false
                     },
                     {
                         name: "titleClass",
@@ -428,7 +429,8 @@
                         align: "center",
                         filterOperator: "iContains",
                         autoFitWidth: true,
-                        hidden: true
+                        hidden: true,
+                        filterOnKeypress: false
                     },
                     {
                         name: "course.titleFa",
@@ -438,32 +440,37 @@
                         autoFitWidth: true,
                         sortNormalizer: function (record) {
                             return record.course.titleFa;
-                        }.bind(this)
+                        }.bind(this),
+                        filterOnKeypress: false
                     },
                     {
                         name: "startDate",
                         title: "<spring:message code='start.date'/>",
                         align: "center",
-                        filterOperator: "iContains"
+                        filterOperator: "iContains",
+                        filterOnKeypress: false
                     },
                     {
                         name: "endDate",
                         title: "<spring:message code='end.date'/>",
                         align: "center",
-                        filterOperator: "iContains"
+                        filterOperator: "iContains",
+                        filterOnKeypress: false
                     },
                     {
                         name: "studentCount",
                         title: "<spring:message code='student.count'/>",
                         filterOperator: "iContains",
-                        autoFitWidth: true
+                        autoFitWidth: false,
+                        filterOnKeypress: false
                     },
                     {
                         name: "institute.titleFa",
                         title: "<spring:message code='presenter'/>",
                         align: "center",
                         filterOperator: "iContains",
-                        autoFitWidth: true
+                        autoFitWidth: true,
+                        filterOnKeypress: false
                     },
                     {
                         name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
@@ -478,14 +485,35 @@
                         title: "workflowCode",
                         align: "center",
                         filterOperator: "iContains",
-                        hidden: true
+                        hidden: true,
+                        filterOnKeypress: false
                     },
                     {
                         name: "workflowEndingStatus",
                         title: "<spring:message code="ending.class.status"/>",
                         align: "center",
-                        filterOperator: "iContains"
+                        filterOperator: "iContains",
+                        filterOnKeypress: false
                     }
+                ],
+                gridComponents: [
+                    isc.ToolStrip.create({
+                        width: "100%",
+                        membersMargin: 5,
+                        members: [
+                            isc.ToolStripButtonExcel.create({
+                                click: function () {
+                                    let courseId = me.ListGrid_PersonnelTraining.getSelectedRecord().courseId;
+                                    let pageName = "لیست سوابق برگزاری دوره «" + me.ListGrid_PersonnelTraining.getSelectedRecord().courseTitle+"»";
+                                    let restUrl = personnelInformationUrl + "/findClassByCourseId/" + courseId;
+                                    ExportToFile.downloadExcelRestUrl(null, me.ListGrid_PersonnelInfo_class,  restUrl, 0, null, '', pageName, me.ListGrid_PersonnelInfo_class.getCriteria(), null);
+                                }
+                            })
+                        ]
+                    }),
+                    "filterEditor",
+                    "header",
+                    "body"
                 ]
             });
 
@@ -561,16 +589,16 @@
                             colSpan: 6,
                             cellStyle: "lineField"
                         },
-                        {
-                            name: "notExists",
-                            title: "<spring:message code="boss"/> : ",
-                            canEdit: false
-                        },
-                        {
-                            name: "notExists",
-                            title: "<spring:message code="connective"/> : ",
-                            canEdit: false
-                        },
+                        <%--{--%>
+                        <%--name: "notExists",--%>
+                        <%--title: "<spring:message code="boss"/> : ",--%>
+                        <%--canEdit: false--%>
+                        <%--},--%>
+                        <%--{--%>
+                        <%--name: "notExists",--%>
+                        <%--title: "<spring:message code="connective"/> : ",--%>
+                        <%--canEdit: false--%>
+                        <%--},--%>
                         {
                             name: "employmentStatus",
                             title: "<spring:message code="employment.status"/> : ",
@@ -582,70 +610,85 @@
                             canEdit: false
                         },
                         {
-                            name: "ccpArea",
+                            name: "department.hozeTitle",
                             title: "<spring:message code="complex"/> : ",
                             canEdit: false
                         },
                         {
-                            name: "ccpAssistant",
+                            name: "department.moavenatTitle",
                             title: "<spring:message code="assistance"/> : ",
                             canEdit: false
                         },
                         {
-                            name: "ccpAffairs",
+                            name: "department.omorTitle",
                             title: "<spring:message code="affairs"/> : ",
                             canEdit: false
                         },
                         {
-                            name: "ccpUnit",
+                            name: "department.vahedTitle",
                             title: "<spring:message code="unit"/> : ",
                             canEdit: false
                         },
                         {
-                            name: "ccpSection",
+                            name: "department.ghesmatTitle",
                             title: "<spring:message code="section"/> : ",
                             canEdit: false
                         },
                         {
-                            name: "jobTitle",
-                            title: "<spring:message code="job"/> : ",
+                            name: "post.job.code",
+                            title: "<spring:message code="job.code"/> : ",
                             canEdit: false
                         },
                         {
-                            name: "postTitle",
-                            title: "<spring:message code="post"/> : ",
+                            name: "post.job.titleFa",
+                            title: "<spring:message code="job.title"/> : ",
                             canEdit: false
                         },
                         {
-                            name: "postGradeTitle",
+                            name: "post.code",
+                            title: "<spring:message code="post.code"/> : ",
+                            canEdit: false
+                        },
+                        {
+                            name: "post.titleFa",
+                            title: "<spring:message code="post.title"/> : ",
+                            canEdit: false
+                        },
+                        {
+                            name: "post.postGrade.code",
+                            title: "<spring:message code="post.code"/> : ",
+                            canEdit: false
+                        },
+                        {
+                            name: "post.postGrade.titleFa",
                             title: "<spring:message code="post.grade"/> : ",
                             canEdit: false
                         },
-                        {
-                            name: "notExists",
-                            title: "<spring:message code="job.group"/> : ",
-                            canEdit: false
-                        },
-                        {
-                            name: "notExists",
-                            title: "<spring:message code="business.class"/> : ",
-                            canEdit: false
-                        },
+                        <%--{--%>
+                        <%--name: "notExists",--%>
+                        <%--title: "<spring:message code="job.group"/> : ",--%>
+                        <%--canEdit: false--%>
+                        <%--},--%>
+                        <%--{--%>
+                        <%--name: "notExists",--%>
+                        <%--title: "<spring:message code="business.class"/> : ",--%>
+                        <%--canEdit: false--%>
+                        <%--},--%>
                         {
                             name: "personnelNo2",
                             title: "<spring:message code="personnel.code.six.digit"/> : ",
                             canEdit: false
                         },
-                        {
-                            name: "notExists",
-                            title: "<spring:message code="post.group"/> : ",
-                            canEdit: false
-                        },
-                        {
-                            name: "notExists",
-                            title: "<spring:message code="person.basic"/> : ",
-                            canEdit: false
-                        },
+                        <%--{--%>
+                        <%--name: "notExists",--%>
+                        <%--title: "<spring:message code="post.group"/> : ",--%>
+                        <%--canEdit: false--%>
+                        <%--},--%>
+                        <%--{--%>
+                        <%--name: "notExists",--%>
+                        <%--title: "<spring:message code="person.basic"/> : ",--%>
+                        <%--canEdit: false--%>
+                        <%--},--%>
                         {
                             name: "employmentTypeTitle",
                             title: "<spring:message code="employment.type"/> : ",
@@ -661,18 +704,18 @@
                             title: "<spring:message code="geographical.location.of.service"/> : ",
                             canEdit: false
                         },
-                        {
-                            name: "notExists",
-                            title: "<spring:message code="agents"/> : ",
-                            canEdit: false
-                        },
+                        <%--{--%>
+                        <%--name: "notExists",--%>
+                        <%--title: "<spring:message code="agents"/> : ",--%>
+                        <%--canEdit: false--%>
+                        <%--},--%>
                         {
                             name: "workTurnTitle",
                             title: "<spring:message code="division.of.staff"/> : ",
                             canEdit: false
                         },
                         {
-                            name: "notExists",
+                            name: "militaryStatus",
                             title: "<spring:message code="military"/> : ",
                             canEdit: false
                         },

@@ -20,7 +20,7 @@ public class SkillGroupFormController {
 
     private final OAuth2AuthorizedClientService authorizedClientService;
 
-    @Value("${nicico.rest-api.url}")
+    //@Value("${nicico.rest-api.url}")
 //	private String restApiUrl;
 
     @RequestMapping("/show-form")

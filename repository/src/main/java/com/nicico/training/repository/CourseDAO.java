@@ -1,5 +1,6 @@
 package com.nicico.training.repository;
 
+import com.nicico.jpa.model.repository.NicicoRepository;
 import com.nicico.training.model.Course;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CourseDAO extends JpaRepository<Course, Long>, JpaSpecificationExecutor<Course> {
+public interface CourseDAO extends NicicoRepository<Course> {
     @Query(value = "select c.* from TBL_COURSE c  where Not EXISTS(select F_COURSE from TBL_SKILL sc where  sc.F_COURSE=c.ID and sc.ID = ?)", nativeQuery = true)
     List<Course> getUnAttachedCoursesBySkillId(Long skillId, Pageable pageable);
 

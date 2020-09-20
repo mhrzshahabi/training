@@ -52,6 +52,7 @@ public class EvaluationRestController {
     private final ClassStudentService classStudentService;
     private final TclassService tclassService;
     private final EvaluationDAO evaluationDAO;
+    private final ViewActivePersonnelDAO viewActivePersonnelDAO;
     private final PersonnelDAO personnelDAO;
     private final ParameterValueDAO parameterValueDAO;
     private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
@@ -157,6 +158,17 @@ public class EvaluationRestController {
         EvaluationDTO.Create create = modelMapper.map(req, EvaluationDTO.Create.class);
         EvaluationDTO.Info info = evaluationService.create(create);
         return new ResponseEntity<>(info, HttpStatus.CREATED);
+    }
+
+    @Loggable
+    @PostMapping(value = "/groupCreate/{Ids}")
+    public ResponseEntity<EvaluationDTO.Info> groupCreate(@RequestBody Object req, @PathVariable Set<Long> Ids) {
+        for (Long id : Ids) {
+            EvaluationDTO.Create create = modelMapper.map(req, EvaluationDTO.Create.class);
+            create.setEvaluatorId(id);
+            evaluationService.create(create);
+        }
+        return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 
     @Loggable
@@ -433,7 +445,7 @@ public class EvaluationRestController {
                 behavioralForms.setEvaluatorName(classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName());
             }
             else {
-                Personnel personnel = personnelDAO.findById(evaluation.getEvaluatorId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                ViewActivePersonnel personnel = viewActivePersonnelDAO.findById(evaluation.getEvaluatorId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                 behavioralForms.setEvaluatorId(personnel.getId());
                 behavioralForms.setEvaluatorName(personnel.getFirstName() + " " + personnel.getLastName());
             }
@@ -489,8 +501,8 @@ public class EvaluationRestController {
                 res.setClassEndDate(classStudentInfo.getTclass().getEndDate());
                 res.setClassDuration(classStudentInfo.getTclass().getHDuration());
                 res.setClassYear(classStudentInfo.getTclass().getStartDate().substring(0,4));
-                final Optional<Personnel> pByID1 = personnelDAO.findById(classStudentInfo.getTclass().getSupervisor());
-                final Optional<Personnel> pByID2 = personnelDAO.findById(classStudentInfo.getTclass().getPlanner());
+                final Optional<Personnel> pByID1 = personnelDAO.findById(classStudentInfo.getTclass().getSupervisorId());
+                final Optional<Personnel> pByID2 = personnelDAO.findById(classStudentInfo.getTclass().getPlannerId());
                 Personnel personnel1 = null;
                 Personnel personnel2 = null;
                 if(pByID1.isPresent())
@@ -527,8 +539,8 @@ public class EvaluationRestController {
                             res.setClassEndDate(classStudentInfo.getTclass().getEndDate());
                             res.setClassDuration(classStudentInfo.getTclass().getHDuration());
                             res.setClassYear(classStudentInfo.getTclass().getStartDate().substring(0,4));
-                            final Optional<Personnel> pByID1 = personnelDAO.findById(classStudentInfo.getTclass().getSupervisor());
-                            final Optional<Personnel> pByID2 = personnelDAO.findById(classStudentInfo.getTclass().getPlanner());
+                            final Optional<Personnel> pByID1 = personnelDAO.findById(classStudentInfo.getTclass().getSupervisorId());
+                            final Optional<Personnel> pByID2 = personnelDAO.findById(classStudentInfo.getTclass().getPlannerId());
                             Personnel personnel1 = null;
                             Personnel personnel2 = null;
                             if(pByID1.isPresent())
@@ -548,8 +560,8 @@ public class EvaluationRestController {
             }
         }
 
-        final Optional<Personnel> pById = personnelDAO.findById(personnelId);
-        final Personnel personnel = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        final Optional<ViewActivePersonnel> pById = viewActivePersonnelDAO.findById(personnelId);
+        final ViewActivePersonnel personnel = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
         List<Evaluation> behavioralResultCoWorker = evaluationDAO.findByEvaluatorIdAndEvaluatorTypeIdAndEvaluationLevelIdAndQuestionnaireTypeId(
                 personnelId,
@@ -578,8 +590,8 @@ public class EvaluationRestController {
                 res.setClassEndDate(tclass.getEndDate());
                 res.setClassDuration(tclass.getHDuration());
                 res.setClassYear(tclass.getStartDate().substring(0,4));
-                final Optional<Personnel> pByID1 = personnelDAO.findById(tclass.getSupervisor());
-                final Optional<Personnel> pByID2 = personnelDAO.findById(tclass.getPlanner());
+                final Optional<Personnel> pByID1 = personnelDAO.findById(tclass.getSupervisorId());
+                final Optional<Personnel> pByID2 = personnelDAO.findById(tclass.getPlannerId());
                 Personnel personnel1 = null;
                 Personnel personnel2 = null;
                 if(pByID1.isPresent())
@@ -624,8 +636,8 @@ public class EvaluationRestController {
                 res.setClassEndDate(tclass.getEndDate());
                 res.setClassDuration(tclass.getHDuration());
                 res.setClassYear(tclass.getStartDate().substring(0,4));
-                final Optional<Personnel> pByID1 = personnelDAO.findById(tclass.getSupervisor());
-                final Optional<Personnel> pByID2 = personnelDAO.findById(tclass.getPlanner());
+                final Optional<Personnel> pByID1 = personnelDAO.findById(tclass.getSupervisorId());
+                final Optional<Personnel> pByID2 = personnelDAO.findById(tclass.getPlannerId());
                 Personnel personnel1 = null;
                 Personnel personnel2 = null;
                 if(pByID1.isPresent())
@@ -670,8 +682,8 @@ public class EvaluationRestController {
                 res.setClassEndDate(tclass.getEndDate());
                 res.setClassDuration(tclass.getHDuration());
                 res.setClassYear(tclass.getStartDate().substring(0,4));
-                final Optional<Personnel> pByID1 = personnelDAO.findById(tclass.getSupervisor());
-                final Optional<Personnel> pByID2 = personnelDAO.findById(tclass.getPlanner());
+                final Optional<Personnel> pByID1 = personnelDAO.findById(tclass.getSupervisorId());
+                final Optional<Personnel> pByID2 = personnelDAO.findById(tclass.getPlannerId());
                 Personnel personnel1 = null;
                 Personnel personnel2 = null;
                 if(pByID1.isPresent())
@@ -730,8 +742,8 @@ public class EvaluationRestController {
                 res.setClassEndDate(classInfo.getEndDate());
                 res.setClassDuration(classInfo.getHDuration());
                 res.setClassYear(classInfo.getStartDate().substring(0,4));
-                final Optional<Personnel> pByID1 = personnelDAO.findById(classInfo.getSupervisor());
-                final Optional<Personnel> pByID2 = personnelDAO.findById(classInfo.getPlanner());
+                final Optional<Personnel> pByID1 = personnelDAO.findById(classInfo.getSupervisorId());
+                final Optional<Personnel> pByID2 = personnelDAO.findById(classInfo.getPlannerId());
                 Personnel personnel1 = null;
                 Personnel personnel2 = null;
                 if(pByID1.isPresent())

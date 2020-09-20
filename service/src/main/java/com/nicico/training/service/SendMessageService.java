@@ -6,16 +6,11 @@
 package com.nicico.training.service;
 
 import com.nicico.copper.core.service.sms.magfa.MagfaSMSService;
+import com.nicico.copper.core.service.sms.nimad.NimadSMSService;
 import com.nicico.training.dto.MessageContactDTO;
 import com.nicico.training.iservice.ISendMessageService;
-import com.nicico.training.model.ClassStudent;
-import com.nicico.training.model.Message;
-import com.nicico.training.model.MessageContact;
-import com.nicico.training.model.Tclass;
-import com.nicico.training.repository.ClassStudentDAO;
-import com.nicico.training.repository.MessageContactDAO;
-import com.nicico.training.repository.MessageDAO;
-import com.nicico.training.repository.TclassDAO;
+import com.nicico.training.model.*;
+import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +27,8 @@ import java.util.*;
 @Service
 public class SendMessageService implements ISendMessageService {
 
-    private final MagfaSMSService magfaSMSService;
+    //private final MagfaSMSService magfaSMSService;
+    private final NimadSMSService nimadSMSService;
     //private static Long messageId = -1L;
     private static SecureRandom secureRandom = new SecureRandom();
 
@@ -41,6 +37,9 @@ public class SendMessageService implements ISendMessageService {
 
     @Autowired
     protected MessageDAO messageDAO;
+
+    @Autowired
+    protected MessageParameterDAO messageParameterDAO;
 
     @Autowired
     protected ClassStudentDAO classStudentDAO;
@@ -52,13 +51,9 @@ public class SendMessageService implements ISendMessageService {
     protected ModelMapper modelMapper;
 
     @Override
-    public Long asyncEnqueue(List<String> recipientNos, String message) {
+    public List<String> asyncEnqueue(String pid, Map<String, String> paramValMap, List<String> recipients) {
 
-        Long messageId = Long.valueOf(secureRandom.nextInt(Integer.MAX_VALUE));
-
-        magfaSMSService.asyncEnqueue(recipientNos, ++messageId, message);
-
-        return messageId;
+        return nimadSMSService.syncEnqueue(pid, paramValMap, recipients);
     }
 
     @Scheduled(cron = "0 0 9 * * ?", zone = "Asia/Tehran")
@@ -66,19 +61,19 @@ public class SendMessageService implements ISendMessageService {
     @Override
     public void scheduling() {
 
-        List<Message> messages=messageDAO.findAll();
+        List<Message> messages = messageDAO.findAll();
         Integer cnt = messages.size();
 
         try {
             for (int i = 0; i < cnt; i++) {
-                if(messages.get(i).getMessageContactList().size()==0){
+                if (messages.get(i).getMessageContactList().size() == 0) {
                     messages.get(i).setSendWays(null);
                     messageDAO.save(messages.get(i));
 
                     messageDAO.deleteById(messages.get(i).getId());
                 }
             }
-        }catch (Exception ex){
+        } catch (Exception ex) {
 
         }
 
@@ -95,16 +90,22 @@ public class SendMessageService implements ISendMessageService {
 
         for (int i = 0; i < cnt; i++) {
 
-            if(masterList.get(i).getObjectType().equals("ClassStudent")){
-                ClassStudent model= classStudentDAO.findById(masterList.get(i).getObjectId()).orElse(null);
+            String pid = "";
 
-                if(model!=null&&!model.getEvaluationStatusReaction().equals(1)){
+            if (masterList.get(i).getObjectType().equals("ClassStudent")) {
+                pid = "bkvqncws2h";
+
+                ClassStudent model = classStudentDAO.findById(masterList.get(i).getObjectId()).orElse(null);
+
+                if (model != null && !model.getEvaluationStatusReaction().equals(1)) {
                     messageContactDAO.deleteById(masterList.get(i).getMessageContactId());
                 }
-            }else if(masterList.get(i).getObjectType().equals("Teacher")){
-                Tclass model= tclassDAO.findById(masterList.get(i).getClassId()).orElse(null);
+            } else if (masterList.get(i).getObjectType().equals("Teacher")) {
+                pid = "er7wvzn4l4";
 
-                if(model!=null&& !model.getEvaluationStatusReactionTeacher().equals(1)){
+                Tclass model = tclassDAO.findById(masterList.get(i).getClassId()).orElse(null);
+
+                if (model != null && !model.getEvaluationStatusReactionTeacher().equals(1)) {
                     messageContactDAO.deleteById(masterList.get(i).getMessageContactId());
                 }
             }
@@ -113,9 +114,19 @@ public class SendMessageService implements ISendMessageService {
             List<String> numbers = new ArrayList<>();
             numbers.add(masterList.get(i).getObjectMobile());
 
-            Long messageId = Long.valueOf(secureRandom.nextInt(Integer.MAX_VALUE));
+            //Long messageId = Long.valueOf(secureRandom.nextInt(Integer.MAX_VALUE));
 
-            magfaSMSService.asyncEnqueue(numbers, ++messageId,  masterList.get(i).getContextText());
+            Map<String, String> paramValMap = new HashMap<>();
+
+            List<MessageParameter> listParameter = messageParameterDAO.findByMessageContactId(masterList.get(i).getMessageContactId());
+
+            for (MessageParameter parameter :  listParameter) {
+                paramValMap.put(parameter.getName(), parameter.getValue());
+            }
+
+            Long messageId =Long.parseLong(nimadSMSService.syncEnqueue(pid, paramValMap, numbers).get(0));
+
+            //magfaSMSService.asyncEnqueue(numbers, ++messageId, masterList.get(i).getContextText());
 
             MessageContact messageContact = messageContactDAO.findById(masterList.get(i).getMessageContactId()).orElse(null);
 

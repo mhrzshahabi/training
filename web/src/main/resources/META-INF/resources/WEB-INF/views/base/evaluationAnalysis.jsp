@@ -73,10 +73,13 @@
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: false,
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
         initialSort: [
             {property: "tclassStartDate", direction: "descending", primarySort: true}
         ],
         fields: [
+            { name: "iconField", title: " ", width: 10 },
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {
                 name: "tclassCode",
@@ -144,6 +147,7 @@
                 align: "center",
                 filterOperator: "iContains",
                 autoFitWidth: true,
+                filterOnKeypress: true,
                 filterEditorProperties:{
                     pickListProperties: {
                         showFilterEditor: false
@@ -195,19 +199,28 @@
             set_evaluation_analysis_tabset_status(record);
             Detail_Tab_Evaluation_Analysis.selectTab(0);
         },
-        getCellCSSText: function (record, rowNum, colNum) {
-            if ((!ListGrid_evaluationAnalysis_class.getFieldByName("evaluation").hidden && record.evaluation === "1"))
-                return "background-color : #c9fecf";
-
-            if ((!ListGrid_evaluationAnalysis_class.getFieldByName("evaluation").hidden && record.evaluation === "2"))
-                return "background-color : #d3f4fe";
-
-            if ((!ListGrid_evaluationAnalysis_class.getFieldByName("evaluation").hidden && record.evaluation === "3"))
-                return "background-color : #fedee9";
-
-            if ((!ListGrid_evaluationAnalysis_class.getFieldByName("evaluation").hidden && record.evaluation === "4"))
-                return "background-color : #fefad1";
+        createRecordComponent: function (record, colNum) {
+            var fieldName = this.getFieldName(colNum);
+            if (fieldName == "iconField") {
+                if ((!ListGrid_evaluationAnalysis_class.getFieldByName("evaluation").hidden && record.evaluation))
+                    return labelList(record.evaluation);
+            } else {
+                return null;
+            }
         },
+        // getCellCSSText: function (record, rowNum, colNum) {
+        //     if ((!ListGrid_evaluationAnalysis_class.getFieldByName("evaluation").hidden && record.evaluation === "1"))
+        //         return "background-color : #c9fecf";
+        //
+        //     if ((!ListGrid_evaluationAnalysis_class.getFieldByName("evaluation").hidden && record.evaluation === "2"))
+        //         return "background-color : #d3f4fe";
+        //
+        //     if ((!ListGrid_evaluationAnalysis_class.getFieldByName("evaluation").hidden && record.evaluation === "3"))
+        //         return "background-color : #fedee9";
+        //
+        //     if ((!ListGrid_evaluationAnalysis_class.getFieldByName("evaluation").hidden && record.evaluation === "4"))
+        //         return "background-color : #fefad1";
+        // },
     });
 
     //----------------------------------------------------ToolStrips & Page Layout--------------------------------------
@@ -263,6 +276,22 @@
             Detail_Tab_Evaluation_Analysis.disableTab(3);
         }
     });
+    var ToolStripButton_Export2EXcel_Evaluation_Analysis = isc.ToolStripButtonExcel.create({
+        click: function () {
+            let restUrl = viewClassDetailUrl + "/iscList";
+
+            let implicitCriteria = JSON.parse(JSON.stringify(RestDataSource_evaluationAnalysis_class.implicitCriteria)) ;
+            let criteria = ListGrid_evaluationAnalysis_class.getCriteria();
+
+            if(criteria.criteria) {
+                for (let i = 0; i < criteria.criteria.length; i++) {
+                    implicitCriteria.criteria.push(criteria.criteria[i]);
+                }
+            }
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_evaluationAnalysis_class,  viewClassDetailUrl + "/iscList" , 0, null, '',"تحلیل ارزیابی", implicitCriteria, null);
+        }
+    });
+
 
     var ToolStrip_Evaluation_Analysis = isc.ToolStrip.create({
         width: "100%",
@@ -273,7 +302,8 @@
                 align: "left",
                 border: '0px',
                 members: [
-                    ToolStripButton_Refresh_Evaluation_Analysis
+                    ToolStripButton_Refresh_Evaluation_Analysis,
+                    ToolStripButton_Export2EXcel_Evaluation_Analysis
                 ]
             })
         ]
@@ -313,7 +343,9 @@
     var VLayout_Body_Evaluation_Analysis = isc.VLayout.create({
         width: "100%",
         height: "100%",
-        members: [HLayout_Actions_Evaluation_Analysis, Hlayout_Grid_Evaluation_Analysis]
+        members: [HLayout_Actions_Evaluation_Analysis,
+            labelGuide(ListGrid_evaluationAnalysis_class.getFieldByName("evaluation").valueMap),
+            Hlayout_Grid_Evaluation_Analysis]
     });
 
     //----------------------------------------------------Functions-----------------------------------------------------
