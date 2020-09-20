@@ -47,6 +47,7 @@
     var RestDataSource_Job_Group_Jobs_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap, filterOnKeypress: true},
             {name: "code", title: "<spring:message code="job.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains"},
             {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -644,7 +645,11 @@
         dataSource: RestDataSource_Job_Group_Jobs_Jsp,
         contextMenu: Menu_ListGrid_Job_Group_Jobs,
         gridComponents: [ActionsTS_Job_Group_Job, "header", "filterEditor", "body",],
-        fields: [{name: "code",
+        fields: [
+            {name: "peopleType",
+                filterOnKeypress: true,
+            },
+            {name: "code",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
                 }

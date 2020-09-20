@@ -58,6 +58,7 @@
                 autoFitWidth: true,
                 autoFitWidthApproach: "both",
             },
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار",}, filterOnKeypress: true},
         ],
         fetchDataURL: postGradeUrl + "/iscList"
     });
@@ -556,6 +557,10 @@
         autoFetchData: false,
         gridComponents: [ActionsTS_Post_Grade_Group_Grades, "header", "filterEditor", "body",],
         fields: [
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:{
+                    "Personal" : "شرکتی",
+                    "ContractorPersonal" : "پیمان کار"},
+                filterOnKeypress: true},
             {
                 name: "code",
                 title: "<spring:message code='post.grade.code'/>",

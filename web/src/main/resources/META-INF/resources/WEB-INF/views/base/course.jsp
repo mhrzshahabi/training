@@ -2727,11 +2727,29 @@
                                 dataSource: isc.TrDS.create({
                                     fields: [
                                         {name: "id", primaryKey: true, hidden: true},
-                                        {name: "titleFa", title: "نام فارسی", align: "center"},
-                                        {name: "code", title: "کد", align: "center",
+                                        {
+                                            name: "peopleType",
+                                            title: "<spring:message code="people.type"/>",
+                                            filterOperator: "equals",
+                                            autoFitWidth: true,
+                                            valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار"},
+                                            filterOnKeypress: true
+                                        },
+                                        {name: "titleFa", title: "نام فارسی", align: "center",autoFitWidth: true},
+                                        {name: "code", title: "کد", align: "center",autoFitWidth: true,
                                             filterEditorProperties: {
                                                 keyPressFilter: "[0-9/]"
                                             }
+                                        },
+                                        {
+                                            name: "enabled",
+                                            valueMap:{74 : "غیر فعال"},
+                                            filterOnKeypress: true,
+                                            title: "<spring:message code="active.status"/>",
+                                            align: "center",
+                                            filterOperator: "equals",
+                                            autoFitWidth: true,
+                                            autoFitWidthApproach: "both"
                                         }
                                     ],
                                     ID: "RestData_Post_JspCourse",
