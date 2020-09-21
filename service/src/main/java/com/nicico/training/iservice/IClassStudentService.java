@@ -22,7 +22,7 @@ public interface IClassStudentService {
 
     void saveOrUpdate(ClassStudent classStudent);
 
-    void delete(Long id);
+    String delete(Long id);
 
     void delete(ClassStudentDTO.Delete request);
 

@@ -61,4 +61,12 @@ public interface AttendanceDAO extends JpaRepository<Attendance, Long>, JpaSpeci
     Integer deleteAllBySessionId(List<Long> sessionIds);
 
     Integer deleteAllBySessionIdAndState(Long sessionId, String state);
+
+
+    @Query(value = "select count(*) from tbl_attendance where f_student=:studentId and f_session in (select id from tbl_session where f_class_id=:classId)",
+            nativeQuery = true)
+    Integer checkAttendanceByStudentIdAndClassId(Long studentId,Long classId);
+
+
+
 }
