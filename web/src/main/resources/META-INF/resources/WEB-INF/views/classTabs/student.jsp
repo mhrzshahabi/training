@@ -2,7 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
-<!-- <script> -->
+//<script>
     {
         var studentRemoveWait;
         var studentDefaultPresenceId = 103;
@@ -1853,6 +1853,10 @@
                         GroupSelectedPersonnelsLG_student.fetchData();
 
                         wait.close();
+
+                        if(insert){
+                            createDialog('info','شخصي جهت اضافه شدن وجود ندارد.');
+                        }
                     }
 
 
