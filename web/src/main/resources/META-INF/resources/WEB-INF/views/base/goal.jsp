@@ -1011,7 +1011,7 @@
         members: [VLayout_Body_Goal, VLayout_Body_Syllabus]
     });
 
-    function ListGrid_Goal_Remove() {
+    async function ListGrid_Goal_Remove() {
         let record = ListGrid_GoalAll.getSelectedRecord();
         if (record == null) {
             isc.Dialog.create({
@@ -1023,66 +1023,64 @@
                     this.close();
                 }
             });
-        } else {
-            let names = "";
-            wait.show();
-            isc.RPCManager.sendRequest({
-                actionURL: goalUrl + "course/" + record.id,
-                httpMethod: "GET",
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                showPrompt: true,
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    wait.close();
-                    let courses = JSON.parse(resp.data);
-                    if (courses.length > 1) {
-                        for (let i = 0; i < courses.length; i++) {
-                            if (courses.get(i).titleFa !== DynamicForm_course_MainTab.getValue("titleFa")) {
-                                names = names + " و دوره " + getFormulaMessage(courses.get(i).titleFa, 2, "red", "b");
-                            }
-                        }
-                        names = names.substr(2);
-                        createDialog('info', "هدف " + getFormulaMessage(record.titleFa, 2, "red", "b") + " با " + names + " در ارتباط است، ابتدا هدف را از دوره&#8201های مذکور جدا کنید.", "اخطار")
-                    } else {
-                        isc.Dialog.create({
-                            message: "هدف " + getFormulaMessage(record.titleFa, 2, "red", "b") + " حذف شود؟",
-                            icon: "[SKIN]ask.png",
-                            title: "<spring:message code="verify.delete"/>",
-                            buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
-                                title: "خیر"
-                            })],
-                            buttonClick: function (button, index) {
-                                this.close();
-                                if (index === 0) {
-                                    wait.show();
-                                    isc.RPCManager.sendRequest({
-                                        actionURL: goalUrl + "delete/" + record.id,
-                                        httpMethod: "DELETE",
-                                        useSimpleHttp: true,
-                                        contentType: "application/json; charset=utf-8",
-                                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                                        showPrompt: true,
-                                        serverOutputAsString: false,
-                                        callback: function (resp) {
-                                            wait.close();
-                                            if (resp.httpResponseCode == 200) {
-                                                ListGrid_GoalAll.invalidateCache();
-                                                simpleDialog("<spring:message code='msg.command.done'/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
-                                            } else {
-                                                simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
-                                            }
-                                        }
-                                    });
+        }
+        await hasRelationWithCourse(record);
+        else if(hasRelationWithCourse(record)) {
+            alert(1)
+            } else {
+                isc.Dialog.create({
+                    message: "هدف " + getFormulaMessage(record.titleFa, 2, "red", "b") + " حذف شود؟",
+                    icon: "[SKIN]ask.png",
+                    title: "<spring:message code="verify.delete"/>",
+                    buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
+                        title: "خیر"
+                    })],
+                    buttonClick: function (button, index) {
+                        this.close();
+                        if (index === 0) {
+                            wait.show();
+                            isc.RPCManager.sendRequest({
+                                actionURL: goalUrl + "delete/" + record.id,
+                                httpMethod: "DELETE",
+                                useSimpleHttp: true,
+                                contentType: "application/json; charset=utf-8",
+                                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                showPrompt: true,
+                                serverOutputAsString: false,
+                                callback: function (resp) {
+                                    wait.close();
+                                    if (resp.httpResponseCode == 200) {
+                                        ListGrid_GoalAll.invalidateCache();
+                                        simpleDialog("<spring:message code='msg.command.done'/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
+                                    } else {
+                                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
+                    }
+                });
+            }
+    }
+
+    let hasRelationWithCourse = async function (record) {
+        let names = "";
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(goalUrl + "course/" + record.id, "GET", null, (resp) => {
+            wait.close();
+            let courses = JSON.parse(resp.data);
+            if (courses.length > 0) {
+                for (let i = 0; i < courses.length; i++) {
+                    if (courses.get(i).titleFa !== DynamicForm_course_MainTab.getValue("titleFa")) {
+                        names = names + " و دوره " + getFormulaMessage(courses.get(i).titleFa, 2, "red", "b");
                     }
                 }
-            });
-
-        }
+                names = names.substr(2);
+                createDialog('info', "هدف " + getFormulaMessage(record.titleFa, 2, "red", "b") + " با " + names + " در ارتباط است، ابتدا هدف را از دوره&#8201های مذکور جدا کنید.", "اخطار")
+                return true;
+            }
+            return false;
+        }));
     }
 
     function ListGrid_Goal_Edit(LG = ListGrid_Goal) {
@@ -1105,7 +1103,7 @@
             Window_Goal.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="goal"/>");
             Window_Goal.show();
         }
-    };
+    }
 
     function ListGrid_Goal_refresh() {
         RestDataSource_CourseGoal.fetchDataURL = courseUrl + courseRecord.id + "/goal";
