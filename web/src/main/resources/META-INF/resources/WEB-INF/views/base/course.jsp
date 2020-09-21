@@ -1141,9 +1141,6 @@
     });
 
     var vm_JspCourse = isc.ValuesManager.create({
-        // itemChanged: function (item, newValue) {
-        //     IButton_course_Save.enable();
-        // }
     });
 
     isc.DataSource.create({
@@ -1850,19 +1847,18 @@
                 }
                 data.workflowStatus = "ثبت اولیه";
                 data.workflowStatusCode = "0";
-                delete data["subCategory"];
-                delete data["category"];
+                delete data["subCategoryId"];
+                delete data["categoryId"];
                 delete data["levelType"];
                 delete data["theoType"];
                 delete data["runType"];
                 delete data["technicalType"];
-                data.subCategoryId = DynamicForm_course_GroupTab.getValue("subCategory.id");
-                data.categoryId = DynamicForm_course_GroupTab.getValue("category.id");
-                data.eTechnicalTypeId = DynamicForm_course_GroupTab.getValue("technicalType.id");
-
-                data.eRunTypeId = DynamicForm_course_GroupTab.getValue("runType.id");
-                data.eLevelTypeId = DynamicForm_course_GroupTab.getValue("levelType.id");
-                data.eTheoTypeId = DynamicForm_course_GroupTab.getValue("theoType.id");
+                data.subCategory = DynamicForm_course_GroupTab.getItem("subCategory.id").getSelectedRecord();
+                data.category = DynamicForm_course_GroupTab.getItem("category.id").getSelectedRecord();
+                data.technicalTypeId = DynamicForm_course_GroupTab.getValue("technicalType.id");
+                data.runTypeId = DynamicForm_course_GroupTab.getValue("runType.id");
+                data.levelTypeId = DynamicForm_course_GroupTab.getValue("levelType.id");
+                data.theoTypeId = DynamicForm_course_GroupTab.getValue("theoType.id");
                 data.needText = DynamicForm_course_GroupTab.getValue("issueTitle");
                 data.theoryDuration = DynamicForm_course_GroupTab.getValue("duration");
                 wait.show()
@@ -1924,21 +1920,9 @@
                 sendData.theoType = sendData.theoType.id;
                 sendData.technicalType = sendData.technicalType.id;
                 sendData.levelType = sendData.levelType.id;
-                // delete data["subCategory"];
-                // delete data["category"];
-                // delete data["levelType"];
-                // delete data["theoType"];
-
-                // delete data["technicalType"];
-                // data.subCategoryId = DynamicForm_course_GroupTab.getValue("subCategory.id");
-                // data.categoryId = DynamicForm_course_GroupTab.getValue("category.id");
-                // data.eTechnicalTypeId = DynamicForm_course_GroupTab.getValue("technicalType.id");
-
-                // data.eRunTypeId = DynamicForm_course_GroupTab.getValue("runType.id");
-                // data.eLevelTypeId = DynamicForm_course_GroupTab.getValue("levelType.id");
-                // data.eTheoTypeId = DynamicForm_course_GroupTab.getValue("theoType.id");
-                // data.needText = DynamicForm_course_GroupTab.getValue("issueTitle");
-                // data.theoryDuration = DynamicForm_course_GroupTab.getValue("duration");
+                sendData.category = DynamicForm_course_GroupTab.getItem("category.id").getSelectedRecord()
+                sendData.subCategory = DynamicForm_course_GroupTab.getItem("subCategory.id").getSelectedRecord()
+                console.log(sendData)
 
                 wait.show()
                 isc.RPCManager.sendRequest(TrDSRequest(course_url, course_method, JSON.stringify(sendData), function (resp) {
@@ -2549,11 +2533,7 @@
                 valuesManager: "vm_JspCourse"
             })],
     });
-    // var VLayout_Tab2_JspCourse = isc.VLayout.create({
-    //     membersMargin: 5,
-    //     width: "30%",
-    //     members: [TabSet_GroupInfo_JspCourse],
-    // });
+
     var HLayOut_Tab_JspCourse = isc.HLayout.create({
         layoutMargin: 5,
         height: "40%",
@@ -2727,11 +2707,29 @@
                                 dataSource: isc.TrDS.create({
                                     fields: [
                                         {name: "id", primaryKey: true, hidden: true},
-                                        {name: "titleFa", title: "نام فارسی", align: "center"},
-                                        {name: "code", title: "کد", align: "center",
+                                        {
+                                            name: "peopleType",
+                                            title: "<spring:message code="people.type"/>",
+                                            filterOperator: "equals",
+                                            autoFitWidth: true,
+                                            valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار"},
+                                            filterOnKeypress: true
+                                        },
+                                        {name: "titleFa", title: "نام فارسی", align: "center",autoFitWidth: true},
+                                        {name: "code", title: "کد", align: "center",autoFitWidth: true,
                                             filterEditorProperties: {
                                                 keyPressFilter: "[0-9/]"
                                             }
+                                        },
+                                        {
+                                            name: "enabled",
+                                            valueMap:{74 : "غیر فعال"},
+                                            filterOnKeypress: true,
+                                            title: "<spring:message code="active.status"/>",
+                                            align: "center",
+                                            filterOperator: "equals",
+                                            autoFitWidth: true,
+                                            autoFitWidthApproach: "both"
                                         }
                                     ],
                                     ID: "RestData_Post_JspCourse",

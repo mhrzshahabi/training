@@ -203,15 +203,7 @@
     let SupervisorDS_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", filterOperator: "equals", primaryKey: true, hidden: true},
-            {
-                name: "firstName",
-                title: "<spring:message code="firstName"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true,
-                autoFitWidthApproach: "both"
-            },
-            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
-            {name: "fullName", title: "نام و نام خانوادگی", filterOperator: "iContains", autoFitWidth: true},
+            {name: "fullName", title: "نام و نام خانوادگی", filterOperator: "iContains"},
             {
                 name: "nationalCode",
                 title: "<spring:message code="national.code"/>",
@@ -240,15 +232,7 @@
     let PlannerDS_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", filterOperator: "equals", primaryKey: true, hidden: true},
-            {
-                name: "firstName",
-                title: "<spring:message code="firstName"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true,
-                autoFitWidthApproach: "both"
-            },
-            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
-            {name: "fullName", title: "نام و نام خانوادگی", filterOperator: "iContains", autoFitWidth: true},
+            {name: "fullName", title: "نام و نام خانوادگی", filterOperator: "iContains"},
             {
                 name: "nationalCode",
                 title: "<spring:message code="national.code"/>",
@@ -1000,9 +984,8 @@
                 optionDataSource: SupervisorDS_JspClass,
                 autoFetchData: false,
                 valueField: "id",
-                pickListWidth: 550,
-                pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "fullName"}, {name: "nationalCode"}, {name: "personnelNo"}],
-                // filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
+                pickListWidth: 500,
+                pickListFields: [{name: "personnelNo2"}, {name: "fullName"}, {name: "nationalCode"}, {name: "personnelNo"}],
                 pickListProperties: {sortField: "personnelNo2", showFilterEditor: true},
                 formatValue: function (value, record, form, item) {
                     var selectedRecord = item.getSelectedRecord();
@@ -1025,9 +1008,8 @@
                 optionDataSource: PlannerDS_JspClass,
                 autoFetchData: false,
                 valueField: "id",
-                pickListWidth: 550,
-                pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "fullName"}, {name: "nationalCode"}, {name: "personnelNo"}],
-                // filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
+                pickListWidth: 500,
+                pickListFields: [{name: "personnelNo2"}, {name: "fullName"}, {name: "nationalCode"}, {name: "personnelNo"}],
                 pickListProperties: {sortField: "personnelNo2", showFilterEditor: true},
                 formatValue: function (value, record, form, item) {
                     var selectedRecord = item.getSelectedRecord();
@@ -2855,7 +2837,7 @@
             gridState = "[{id:" + ListGrid_Class_JspClass.getSelectedRecord().id + "}]";
         }
         ListGrid_Class_JspClass.invalidateCache();
-        ListGrid_Class_JspClass.filterByEditor();
+        // ListGrid_Class_JspClass.filterByEditor();
         setTimeout(function () {
             ListGrid_Class_JspClass.setSelectedState(gridState);
         }, 3000);

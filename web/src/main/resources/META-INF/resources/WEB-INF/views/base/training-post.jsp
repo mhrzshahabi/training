@@ -972,19 +972,10 @@
                 layoutStyle: "horizontal",
                 hint: "",
                 pickListFields: [
+                    {name: "code"},
                     {name: "titleFa"},
-                    {name: "peopleType", filterOperator: "iContains"},
-                    {
-                        name: "enabled",
-                        valueMap:{
-                            // undefined : "فعال",
-                            74 : "غیر فعال"
-                        },filterOnKeypress: true
-                        // formatCellValue: function (value, record) {
-                        //     let newVal = value == undefined ? "فعال" : "غیر فعال";
-                        //     return newVal;
-                        // }
-                    }
+                    {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals",width:150, valueMap:peopleTypeMap, filterOnKeypress: true},
+                    {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, filterOnKeypress: true,valueMap:{74 : "غیر فعال"}}
                 ],
                 filterFields: ["titleFa"],
                 // pickListProperties: {

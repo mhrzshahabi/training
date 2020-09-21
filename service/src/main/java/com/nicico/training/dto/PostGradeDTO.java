@@ -19,6 +19,7 @@ public class PostGradeDTO implements Serializable {
 
     private String code;
     private String titleFa;
+    private String peopleType;
 
     @Getter
     @Setter

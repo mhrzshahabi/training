@@ -69,7 +69,7 @@ public class TargetSocietyService extends BaseService<TargetSociety, Long, Targe
             }
         }
 
-        if(type.equals("single")) {
+        if(type.equals("single") && targetIds != null && !targetIds.isEmpty()) {
             SearchDTO.CriteriaRq criteria = makeNewCriteria("id", targetIds, EOperator.inSet, null);
             searchRq.setCriteria(criteria);
             searchRq.setCount(count);

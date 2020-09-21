@@ -63,7 +63,7 @@
                 isc.ToolStripButtonExcel.create({
                     click: function () {
                         let criteria = JobLG_job.getCriteria();
-                        ExportToFile.downloadExcel(null, JobLG_job, "View_Job", 0, null, '', "لیست شغل ها - آموزش", criteria, null);
+                        ExportToFile.downloadExcelRestUrl(null, JobLG_job, viewJobUrl + "/iscList", 0, null, '', "لیست شغل ها", criteria, null);
                     }
                 })
             ]
@@ -322,7 +322,7 @@
 
                         criteria.criteria.push({fieldName: "jobId", operator: "equals", value: JobLG_job.getSelectedRecord().id});
 
-                        ExportToFile.downloadExcel(null, PersonnelLG_Job, "jobPersonnel", 0, null, '', "لیست پرسنل - آموزش", criteria, null);
+                        ExportToFile.downloadExcel(null, PersonnelLG_Job, "jobPersonnel", 0, JobLG_job, '', "شغل - لیست پرسنل", criteria, null);
                     }
                 })
             ]
@@ -479,25 +479,14 @@
             members: [
                 isc.ToolStripButtonExcel.create({
                     click: function () {
-                        let criteria = NALG_Job.getCriteria();
 
-                        if (typeof (criteria.operator) == 'undefined') {
-                            criteria._constructor = "AdvancedCriteria";
-                            criteria.operator = "and";
+                        let job = JobLG_job.getSelectedRecord();
+                        let tab = DetailTab_Job.getSelectedTab();
+                        if (job == null && tab.pane != null) {
+                            return;
                         }
 
-                        if (typeof (criteria.criteria) == 'undefined') {
-                            criteria.criteria = [];
-                        }
-                        criteria.criteria.push({
-                            fieldName: "objectId",
-                            operator: "equals",
-                            value: JobLG_job.getSelectedRecord().id
-                        });
-                        criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "Job"});
-                        // criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
-
-                        ExportToFile.downloadExcel(null, NALG_Job, "NeedsAssessmentReport", 0, null, '', "لیست نیازسنجی - آموزش", criteria, null);
+                        ExportToFile.downloadExcelRestUrl(null, NALG_Job, needsAssessmentReportsUrl + "?objectId=" + job.id + "&objectType=Job", 0, JobLG_job, '', "شغل - نیازسنجی", null, null,0,true);
                     }
                 })
             ]
@@ -574,6 +563,8 @@
         PostDS_Job = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true, hidden: true},
+                {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap, filterOnKeypress: true},
+                {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
                 {
                     name: "code",
                     title: "<spring:message code="post.code"/>",
@@ -645,8 +636,7 @@
                     filterOperator: "equals",
                     autoFitWidth: true,
                     autoFitWidthApproach: "both"
-                },
-
+                }
             ],
             fetchDataURL: viewTrainingPostUrl + "/iscList"
         });
@@ -657,30 +647,13 @@
             members: [
                 isc.ToolStripButtonExcel.create({
                     click: function () {
-                        let criteria = PostLG_Job.getCriteria();
-
-                        if (typeof (criteria.operator) == 'undefined') {
-                            criteria._constructor = "AdvancedCriteria";
-                            criteria.operator = "and";
-                        }
-
-                        if (typeof (criteria.criteria) == 'undefined') {
-                            criteria.criteria = [];
-                        }
-                        criteria.criteria.push({
-                            fieldName: "jobCode",
-                            operator: "equals",
-                            value: JobLG_job.getSelectedRecord().code
-                        });
-
                         let job = JobLG_job.getSelectedRecord();
 
                         if (job == null) {
                             return;
                         }
-                        criteria.criteria.push({fieldName: "jobId", operator: "equals", value: job.id});
 
-                        ExportToFile.downloadExcel(null, PostLG_Job, "View_Post", 0, null, '', "لیست پست - آموزش", criteria, null);
+                        ExportToFile.downloadExcelRestUrl(null, PostLG_Job, viewTrainingPostUrl + "/iscList", 0, JobLG_job, '', "شغل - ليست پست ها", null, null,0,true);
                     }
                 })
             ]
@@ -697,6 +670,9 @@
             dataSource: PostDS_Job,
             gridComponents: [ActionsTS_Post_Job, "header", "filterEditor", "body",],
             fields: [
+                {name: "peopleType",
+                    filterOnKeypress: true,
+                },
                 {
                     name: "code",
                     filterEditorProperties: {
@@ -719,7 +695,14 @@
                 },
                 {name: "costCenterTitleFa"},
                 {name: "competenceCount"},
-                {name: "personnelCount"}
+                {name: "personnelCount"},
+                {
+                    name: "enabled",
+                    valueMap:{
+                        // undefined : "فعال",
+                        74 : "غیر فعال"
+                    },filterOnKeypress: true,
+                }
             ],
             autoFetchData: false,
             showResizeBar: true,

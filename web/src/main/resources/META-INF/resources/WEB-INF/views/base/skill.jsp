@@ -14,7 +14,6 @@
     var skillChanged_Skill = false;
     var skill_SkillLevelUrl = rootUrl + "/skill-level/spec-list";
     var skillLevelSymbol_Skill = "";
-    var temp;
     let selectedSkillRecord;
 
     /////////////////////////////////////////////////TrDS/////////////////////////////////////////////////////////////////
@@ -47,6 +46,8 @@
     PostDS_Skill = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap, filterOnKeypress: true},
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -212,7 +213,6 @@
                 default: "125",
                 validateOnExit:true,
                 readonly: true,
-              //  keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 width: "300",
             },
             {
@@ -232,8 +232,6 @@
                 textAlign: "right",
                 type: "ComboBoxItem",
                 addUnknownValues: false,
-                // useClientFiltering: true,
-                // cachePickListResults: true,
                 changeOnKeypress: false,
                 filterOnKeypress: true,
                 pickListWidth: 300,
@@ -269,8 +267,6 @@
                 displayField: "titleFa",
                 valueField: "id",
                 addUnknownValues: false,
-                // useClientFiltering: true,
-                // cachePickListResults: true,
                 changeOnKeypress: false,
                 filterOnKeypress: true,
                 optionDataSource: SubCategoryDS_Skill,
@@ -337,7 +333,7 @@
                         height: 15,
                         inline: true,
                         prompt: "پاک کردن",
-                        click : function (form, item, icon) {
+                        click : function (form, item) {
                             item.clearValue();
                             item.focusInItem();
 
@@ -355,7 +351,6 @@
                 filterOnKeypress: true,
                 autoFetchData: true,
                 textMatchStyle: "startsWith",
-                // generateExactMatchCriteria: true,
                 filterFields: ["titleFa", "code", "createdBy"],
                 pickListFields: [
                     {name: "code"},
@@ -373,17 +368,14 @@
                     }
                     else{
                         CourseDS_Skill.fetchDataURL = courseUrl + "spec-list";
-                        // let categoryId = form.getValue("categoryId");
-                        // let subCategoryId = form.getValue("subCategoryId");
-                        let criteria = {
-                            _constructor:"AdvancedCriteria",
-                            operator:"and",
-                            criteria:[
-                                {fieldName:"categoryId", operator:"equals", value: form.getValue("categoryId")},
-                                {fieldName:"subCategoryId", operator:"equals", value: form.getValue("subCategoryId")}
+                        item.pickListCriteria = {
+                            _constructor: "AdvancedCriteria",
+                            operator: "and",
+                            criteria: [
+                                {fieldName: "categoryId", operator: "equals", value: form.getValue("categoryId")},
+                                {fieldName: "subCategoryId", operator: "equals", value: form.getValue("subCategoryId")}
                             ]
                         };
-                        item.pickListCriteria = criteria;
                     }
                     item.fetchData();
                 }
@@ -415,9 +407,7 @@
                     sub_cat_code = SkillDF_Skill.getItem('subCategoryId').getSelectedRecord().code;
                 SkillDF_Skill.getItem('code').setValue(sub_cat_code + skillLevelSymbol_Skill);
             }
-
-
-            wait.show()
+            wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(url_Skill, method_Skill, JSON.stringify(SkillDF_Skill.getValues()), Result_SaveSkill_Skill));
 
 
@@ -590,9 +580,7 @@
     PrintTSB_Skill = isc.ToolStripButtonPrint.create({
         title: "<spring:message code='print'/>",
         click: function () {
-          //  printWithCriteria(SkillLG_Skill.getCriteria(),{},"Skill_Report.jasper");
             print_SkillListGrid('pdf')
-
         }
     });
 
@@ -623,7 +611,6 @@
             CreateTSB_Skill,
             EditTSB_Skill,
             RemoveTSB_Skill,
-           // PrintTSB_Skill,
             CourseTSB_Skill,
             ToolStrip_Skill_Export2EXcel,
             isc.ToolStrip.create({
@@ -664,6 +651,9 @@
         autoFetchData: false,
         gridComponents: [ActionsTS_Post_Skill, "header", "filterEditor", "body",],
         fields: [
+            {name: "peopleType",
+                filterOnKeypress: true,
+            },
             {name: "code",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
@@ -676,7 +666,14 @@
             {name: "assistance"},
             {name: "affairs"},
             {name: "section"},
-            {name: "unit"}
+            {name: "unit"},
+            {
+                name: "enabled",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+            }
         ],
     });
 
@@ -717,7 +714,7 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                        wait.show()
+                        wait.show();
                         isc.RPCManager.sendRequest(TrDSRequest(skillUrl + "/" + record.id, "DELETE", null, Result_RemoveSkill_Skill));
                     }
                 }
@@ -726,7 +723,7 @@
     }
 
     function Result_RemoveSkill_Skill(resp) {
-        wait.close()
+        wait.close();
         if (resp.data === "true") {
             refreshLG(SkillLG_Skill);
             PostLG_Skill.setData([]);
@@ -734,17 +731,12 @@
             setTimeout(function () {
                 OK.close();
             }, 3000);
-        } else if (resp.httpResponseCode == 401) {
-            let ERROR = createDialog("info", "شما مجوز دسترسی برای حذف را ندارید");
-            setTimeout(function () {
-                ERROR.close();
-            }, 3000);
+        } else if (resp.httpResponseCode === 401) {
+            createDialog("info", "شما مجوز دسترسی برای حذف را ندارید");
         }
-        else if(resp.httpResponseCode == 204)
-        { let ERROR = createDialog("info", "<spring:message code="msg.record.cannot.deleted"/>");
-            setTimeout(function () {
-                ERROR.close();
-            }, 3000);}
+        else if(resp.httpResponseCode === 204) {
+            createDialog("info", "به دلیل وجود وابستگی این رکورد قابل حذف نمی باشد");
+        }
     }
 
     function EditSkill_Skill() {
@@ -752,15 +744,16 @@
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.not.selected.record'/>");
         } else {
-            wait.show()
+            wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(skillUrl + "/editSkill/" +record.id, "GET", null, Result_EditSkill));
 
         }
     }
-        function  Result_EditSkill(resp) {
-            wait.close()
+
+    function  Result_EditSkill(resp) {
+            wait.close();
             let record = SkillLG_Skill.getSelectedRecord();
-            if (resp.data == 'true')
+            if (resp.data === 'true')
             {
 
                 let id = record.categoryId;
@@ -804,7 +797,7 @@
     }
 
     function Result_SaveSkill_Skill(resp){
-        wait.close()
+        wait.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
             setTimeout(function () {
@@ -814,40 +807,27 @@
             PostLG_Skill.setData([]);
             SkillWindow_Skill.close();
         }else if(resp.httpResponseCode === 406){
-                var OK = isc.Dialog.create({
-                message:("info", "اطلاعات این مهارت با اطلاعات مهارت"+"&nbsp;" +"&nbsp;"+getFormulaMessage(decodeURIComponent(resp.httpHeaders.skillname.replace(/\+/g,' ')), 2, "red", "I")+"&nbsp;"+"  با کد "+ "&nbsp;" +getFormulaMessage(resp.httpHeaders.skillcode, 2, "red", "I") + "&nbsp;"+ " برابر است"),
+            isc.Dialog.create({
+                message: "اطلاعات این مهارت با اطلاعات مهارت"+"&nbsp;" +"&nbsp;"+getFormulaMessage(decodeURIComponent(resp.httpHeaders.skillname.replace(/\+/g,' ')), 2, "red", "I")+"&nbsp;"+"  با کد "+ "&nbsp;" +getFormulaMessage(resp.httpHeaders.skillcode, 2, "red", "I") + "&nbsp;"+ " برابر است",
                 icon: "[SKIN]say.png",
                 title: "<spring:message code="warning"/>",
             });
-            setTimeout(function () {
-                OK.close();
-            }, 8000);
-
-            //
-            // let OK = createDialog("info", "اطلاعات این مهارت با اطلاعات مهارت "+"&nbsp;&nbsp;" +"&nbsp;"+getFormulaMessage(resp.httpHeaders.skillname, 2, "red", "I")+"&nbsp;"+"  با کد "+ "&nbsp;&nbsp;" +getFormulaMessage(resp.httpHeaders.skillcode, 2, "red", "I") + "&nbsp;&nbsp;"+ " برابر است");
-            // setTimeout(function () {
-            //     OK.close();
-            // }, 15000);
         }
         else {
-
-            let ERROR = createDialog("info", "<spring:message code="msg.operation.error"/>");
-            setTimeout(function () {
-                ERROR.close();
-            }, 3000);
+            createDialog("info", "<spring:message code="msg.operation.error"/>");
         }
     }
 
     function setSkillCode_Skill(){
         if (SkillDF_Skill.getValue("categoryId") != null && SkillDF_Skill.getValue("subCategoryId") != null && SkillDF_Skill.getValue("skillLevelId") != null) {
             let code = SkillDF_Skill.getItem('subCategoryId').getSelectedRecord().code;
-            wait.show()
+            wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(skillUrl + "/getMaxSkillCode/" + (code + skillLevelSymbol_Skill), "GET", null, Result_SetSkillCode_Skill));
         }
     }
 
     function Result_SetSkillCode_Skill(resp) {
-        wait.close()
+        wait.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             SkillDF_Skill.getItem('code').setValue(resp.data);
         }
@@ -881,14 +861,14 @@
             $(classes).css({'direction': 'ltr!important'});
             $("tbody tr td:nth-child(8)").css({direction:'ltr'});
             $("tbody tr td:nth-child(2)").css({direction:'ltr'});
-            $("td.toolStripButtonExcel").css({direction:'rtl'}); //fix excel bug
+            $("td.toolStripButtonExcel").css({direction:'rtl'});
         },10);
     };
 
     function print_SkillListGrid(type) {
 
-        var advancedCriteria = SkillLG_Skill.getCriteria();
-        var criteriaForm = isc.DynamicForm.create({
+        let advancedCriteria = SkillLG_Skill.getCriteria();
+        let criteriaForm = isc.DynamicForm.create({
             method: "POST",
             action: "<spring:url value="/skill/print-all/"/>" + type,
             target: "_Blank",
@@ -899,13 +879,13 @@
                     {name: "sortBy", type: "hidden"},
                     {name: "token", type: "hidden"}
                 ]
-        })
+        });
         criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
         criteriaForm.setValue("sortBy", JSON.stringify(SkillLG_Skill.getSort()[0]));
         criteriaForm.setValue("token", "<%= accessToken %>");
         criteriaForm.show();
         criteriaForm.submitForm();
-    };
+    }
 
 
 

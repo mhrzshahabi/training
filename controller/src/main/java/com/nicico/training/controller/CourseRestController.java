@@ -56,7 +56,6 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     //------------------------------------------
     private final ReportUtil reportUtil;
     private final CourseService courseService;
-    private final GoalService goalService;
     private final ICourseService iCourseService;
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
@@ -104,10 +103,8 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     @Loggable
     @PostMapping
     //@PreAuthorize("hasAuthority('Course_C')")
-    public ResponseEntity<CourseDto> create(@RequestBody Object req, HttpServletResponse response) {
-        CourseDTO.Create request = (new ModelMapper()).map(req, CourseDTO.Create.class);
-//        return new ResponseEntity<>(courseService.create(create), HttpStatus.CREATED);
-        CourseDto courseInfo = courseService.create(request, response);
+    public ResponseEntity<CourseDto> create(@RequestBody CourseDTO.Create  req, HttpServletResponse response) {
+        CourseDto courseInfo = courseService.create(req, response);
         if (courseInfo != null)
             return new ResponseEntity<>(courseInfo, HttpStatus.CREATED);
         else
@@ -156,14 +153,8 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
         boolean check = courseService.checkForDelete(id);
         if (check) {
-            List<GoalDTO.Info> goals = courseService.getGoal(id);
-            goals.forEach(g -> goalService.delete(g.getId()));
-            courseService.deletGoal(id);
-            courseService.unAssignSkills(id);
             courseService.delete(id);
         }
-
-        // courseService.delete(id);
         return new ResponseEntity<>(check, HttpStatus.OK);
     }
 
