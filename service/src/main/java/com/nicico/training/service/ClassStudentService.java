@@ -11,6 +11,7 @@ import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.Student;
 import com.nicico.training.model.Tclass;
+import com.nicico.training.repository.AttendanceDAO;
 import com.nicico.training.repository.ClassStudentDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -25,6 +26,7 @@ import java.util.function.Function;
 public class ClassStudentService implements IClassStudentService {
 
     private final ClassStudentDAO classStudentDAO;
+    private final AttendanceDAO attendanceDAO;
     private final ITclassService tclassService;
     private final StudentService studentService;
 //    private final IPersonnelService personnelService;
@@ -123,8 +125,16 @@ public class ClassStudentService implements IClassStudentService {
 
     @Transactional
     @Override
-    public void delete(Long id) {
-        classStudentDAO.deleteById(id);
+    public String delete(Long id) {
+
+        ClassStudent classSession = classStudentDAO.getClassStudentById(id);
+        if (attendanceDAO.checkAttendanceByStudentIdAndClassId(classSession.getStudentId(), classSession.getTclassId()) > 0) {
+            return "فراگير «<b>" + classSession.getStudent().getFirstName() + " " + classSession.getStudent().getLastName() + "</b>» بدلیل داشتن حضور و غیاب قابل حذف نیست.";
+        } else {
+            classStudentDAO.deleteById(id);
+            return "";
+        }
+
     }
 
     @Transactional

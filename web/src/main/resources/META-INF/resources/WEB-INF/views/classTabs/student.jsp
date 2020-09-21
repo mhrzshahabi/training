@@ -1576,6 +1576,10 @@
             if (resp.httpResponseCode == 200) {
                 simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
                 refreshLG(StudentsLG_student);
+            }else if (resp.httpResponseCode == 406) {
+                    console.log(resp);
+                createDialog('info',resp.httpResponseText,'خطا در حذف فراگير(ان)');
+                refreshLG(StudentsLG_student);
             } else if (resp.data == false) {
                 let ERROR = isc.Dialog.create({
                     message: "<spring:message code='msg.student.remove.error'/>",
