@@ -2837,7 +2837,7 @@
             gridState = "[{id:" + ListGrid_Class_JspClass.getSelectedRecord().id + "}]";
         }
         ListGrid_Class_JspClass.invalidateCache();
-        ListGrid_Class_JspClass.filterByEditor();
+        // ListGrid_Class_JspClass.filterByEditor();
         setTimeout(function () {
             ListGrid_Class_JspClass.setSelectedState(gridState);
         }, 3000);
