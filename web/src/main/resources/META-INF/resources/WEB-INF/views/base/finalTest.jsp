@@ -241,11 +241,11 @@
     FinalTestLG_finalTest = isc.TrLG.create({
         dataSource: FinalTestDS_finalTest,
         fields: [
-            {name: "tclass.code",},
-            {name: "tclass.course.titleFa",},
-            {name: "tclass.startDate",},
-            {name: "tclass.endDate",},
-            {name: "tclass.teacher",},
+            {name: "tclass.code", sortNormalizer: function (record) {return record.tclass.code; } },
+            {name: "tclass.course.titleFa", sortNormalizer: function (record) {return record.tclass.course.titleFa; } },
+            {name: "tclass.startDate", sortNormalizer: function (record) {return record.tclass.startDate; } },
+            {name: "tclass.endDate", sortNormalizer: function (record) {return record.tclass.endDate; } },
+            {name: "tclass.teacher", sortNormalizer: function (record) {return record.tclass.teacher; } },
             {name: "date",},
             {name: "time",},
             {name: "duration",},
