@@ -2,7 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
-//<script>
+<!-- <script> -->
     {
         var studentRemoveWait;
         var studentDefaultPresenceId = 103;
