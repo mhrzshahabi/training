@@ -514,9 +514,9 @@
                         title: 'فیلتر گروهي',
                         click: function () {
                             if (PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel") {
-                                groupFilter("فیلتر گروهی", personnelRegUrl, checkPersonnelNosResponse);
+                                groupFilter("فیلتر گروهی", personnelUrl + "/checkPersonnelNos",checkPersonnelNosResponse, true, true, 0,false);
                             } else {
-                                groupFilter("فیلتر گروهی", personnelRegUrl, checkRegisterPersonnelNosResponse);
+                                groupFilter("فیلتر گروهی", personnelRegUrl + "/checkPersonnelNos", checkRegisterPersonnelNosResponse, true, true, 0,false);
                             }
 
                         }
@@ -586,31 +586,183 @@
 
         // <<----------------------------------------------- Functions --------------------------------------------
         {
-            function checkPersonnelNosResponse(url, result) {
-                advancedCriteriaPersonnelInformation = {
-                    operator: "or",
-                    criteria: [
-                        {fieldName: "personnelNo", operator: "inSet", value: result},
-                        {fieldName: "personnelNo2", operator: "inSet", value: result}
-                    ]
-                };
-                PersonnelInfoListGrid_PersonnelList.fetchData(advancedCriteriaPersonnelInformation);
-                ClassStudentWin_student_GroupInsert.close();
-                btnRemoveCriteria.enable()
+            function checkPersonnelNosResponse(url, result, addStudentsInGroupInsert) {
+
+                wait.show();
+                isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(result)
+                    , "callback: checkPersonnelNos_PI(rpcResponse," + JSON.stringify(result) + ",'" + url + "'," + addStudentsInGroupInsert +")"));
+
             }
 
-            function checkRegisterPersonnelNosResponse(url, result) {
-                advancedCriteriaPersonnelInformation = {
-                    operator: "or",
-                    criteria: [
-                        {fieldName: "personnelNo", operator: "inSet", value: result},
-                        {fieldName: "personnelNo2", operator: "inSet", value: result}
-                    ]
-                };
-                PersonnelInfoListGrid_RegisteredPersonnelList.fetchData(advancedCriteriaPersonnelInformation);
-                ClassStudentWin_student_GroupInsert.close();
-                btnRemoveCriteria.enable()
+            function checkRegisterPersonnelNosResponse(url, result, addStudentsInGroupInsert) {
+
+                wait.show();
+                isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(result)
+                    , "callback: checkPersonnelNos_PIR(rpcResponse," + JSON.stringify(result) + ",'" + url + "'," + addStudentsInGroupInsert +")"));
             }
+
+
+
+            function checkPersonnelNos_PI(resp, result, url, insert) {
+                if (generalGetResp(resp)) {
+                    if (resp.httpResponseCode === 200) {
+                        //------------------------------------*/
+                        let len = GroupSelectedPersonnelsLG_student.data.length;
+                        let list = GroupSelectedPersonnelsLG_student.data;
+                        let data = JSON.parse(resp.data);
+                        let allRowsOK = true;
+                        var students = [];
+
+                        for (let i = 0; i < len; i++) {
+                            let personnelNo = list[i].personnelNo;
+
+                            if(!result.includes(personnelNo)){
+                                continue;
+                            }
+
+                            if (personnelNo != "" && personnelNo != null && typeof (personnelNo) != "undefined") {
+                                let person = data.filter(function (item) {
+                                    return item.personnelNo == personnelNo || item.personnelNo2 == personnelNo;
+                                });
+
+                                if (person.length == 0) {
+                                    allRowsOK = false;
+                                    list[i].error = true;
+                                    list[i].hasWarning = "warning";
+                                    list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">شخصی با کد پرسنلی وارد شده وجود ندارد.</span>";
+                                } else {
+                                    person = person[0];
+
+                                    list[i].firstName = person.firstName;
+                                    list[i].lastName = person.lastName;
+                                    list[i].nationalCode = person.nationalCode;
+                                    list[i].personnelNo1 = person.personnelNo;
+                                    list[i].personnelNo2 = person.personnelNo2;
+                                    list[i].isInNA = person.isInNA;
+                                    list[i].scoreState = person.scoreState;
+                                    list[i].error = false;
+                                    list[i].hasWarning = "check";
+                                    list[i].description = "";
+
+                                    if (students.filter(function (item) {
+                                        return item.personnelNo2 == person.personnelNo2 || item.personnelNo == person.personnelNo;
+                                    }).length == 0) {
+                                        students.add(person.personnelNo);
+                                    }
+                                }
+                            }
+                        }
+                        if (students.getLength() > 0/*allRowsOK*/ && insert) {
+
+                            advancedCriteriaPersonnelInformation = {
+                                operator: "or",
+                                criteria: [
+                                    {fieldName: "personnelNo", operator: "inSet", value: students},
+                                    {fieldName: "personnelNo2", operator: "inSet", value:  students}
+                                ]
+                            };
+                            PersonnelInfoListGrid_PersonnelList.fetchData(advancedCriteriaPersonnelInformation);
+                            ClassStudentWin_student_GroupInsert.close();
+                            btnRemoveCriteria.enable();
+
+                            wait.close();
+
+                        } else {
+                            GroupSelectedPersonnelsLG_student.invalidateCache();
+                            GroupSelectedPersonnelsLG_student.fetchData();
+
+                            wait.close();
+                        }
+
+
+                    }else{
+                        wait.close();
+                    }
+                }else{
+                    wait.close();
+                }
+            }
+
+            function checkPersonnelNos_PIR(resp, result, url, insert) {
+                if (generalGetResp(resp)) {
+                    if (resp.httpResponseCode === 200) {
+                        //------------------------------------*/
+                        let len = GroupSelectedPersonnelsLG_student.data.length;
+                        let list = GroupSelectedPersonnelsLG_student.data;
+                        let data = JSON.parse(resp.data);
+                        let allRowsOK = true;
+                        var students = [];
+
+                        for (let i = 0; i < len; i++) {
+                            let personnelNo = list[i].personnelNo;
+
+                            if(!result.includes(personnelNo)){
+                                continue;
+                            }
+
+                            if (personnelNo != "" && personnelNo != null && typeof (personnelNo) != "undefined") {
+                                let person = data.filter(function (item) {
+                                    return item.personnelNo == personnelNo || item.personnelNo2 == personnelNo;
+                                });
+
+                                if (person.length == 0) {
+                                    allRowsOK = false;
+                                    list[i].error = true;
+                                    list[i].hasWarning = "warning";
+                                    list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">شخصی با کد پرسنلی وارد شده وجود ندارد.</span>";
+                                } else {
+                                    person = person[0];
+
+                                    list[i].firstName = person.firstName;
+                                    list[i].lastName = person.lastName;
+                                    list[i].nationalCode = person.nationalCode;
+                                    list[i].personnelNo1 = person.personnelNo;
+                                    list[i].personnelNo2 = person.personnelNo2;
+                                    list[i].isInNA = person.isInNA;
+                                    list[i].scoreState = person.scoreState;
+                                    list[i].error = false;
+                                    list[i].hasWarning = "check";
+                                    list[i].description = "";
+
+                                    if (students.filter(function (item) {
+                                        return item.personnelNo2 == person.personnelNo2 || item.personnelNo == person.personnelNo;
+                                    }).length == 0) {
+                                        students.add(person.personnelNo);
+                                    }
+                                }
+                            }
+                        }
+                        if (students.getLength() > 0/*allRowsOK*/ && insert) {
+
+                            advancedCriteriaPersonnelInformation = {
+                                operator: "or",
+                                criteria: [
+                                    {fieldName: "personnelNo", operator: "inSet", value: result},
+                                    {fieldName: "personnelNo2", operator: "inSet", value: result}
+                                ]
+                            };
+                            PersonnelInfoListGrid_RegisteredPersonnelList.fetchData(advancedCriteriaPersonnelInformation);
+                            ClassStudentWin_student_GroupInsert.close();
+                            btnRemoveCriteria.enable();
+
+                            wait.close();
+
+                        } else {
+                            GroupSelectedPersonnelsLG_student.invalidateCache();
+                            GroupSelectedPersonnelsLG_student.fetchData();
+
+                            wait.close();
+                        }
+
+
+                    }else{
+                        wait.close();
+                    }
+                }else{
+                    wait.close();
+                }
+            }
+
         }
         // ------------------------------------------------- Functions ------------------------------------------>>
 

@@ -83,7 +83,7 @@
             return replaceString;
         };
 
-        function groupFilter(title,inputURL,func,isCheck=false,addStudentsInGroupInsert=false, courseId=0){
+        function groupFilter(title,inputURL,func,isCheck=false,addStudentsInGroupInsert=false, courseId=0,withNA=true){
             TabSet_GroupInsert_JspStudent=isc.TabSet.create({
                 ID:"leftTabSet",
                 autoDraw:false,
@@ -430,7 +430,7 @@
                                     for (let index = 0; index < len; index++) {
                                         if(list[index].personnelNo != "" && list[index].personnelNo != null && typeof(list[index].personnelNo) != "undefined")
                                         {
-                                            if (result.filter(function (item) {return item.personnelNo2 == GroupSelectedPersonnelsLG_student.data[index].personnelNo2||item.personnelNo1 == GroupSelectedPersonnelsLG_student.data[index].personnelNo1;}).length==0) {
+                                            if (result.filter(function (item) {return (item.personnelNo2 && item.personnelNo2 == GroupSelectedPersonnelsLG_student.data[index].personnelNo2) || (item.personnelNo1 && item.personnelNo1 == GroupSelectedPersonnelsLG_student.data[index].personnelNo1);}).length==0) {
                                                 result.push(list[index].personnelNo)
                                             }
                                         }
@@ -454,16 +454,22 @@
                 ]
             });
 
-            TabSet_GroupInsert_JspStudent.selectTab(0);
-                GroupSelectedPersonnelsLG_student.discardAllEdits();
-                GroupSelectedPersonnelsLG_student.data.clearAll();
-                /*GroupSelectedPersonnelsLG_student.addData({
-                    nationalCode: ""
-                });*/
+            if(!withNA){
+                GroupSelectedPersonnelsLG_student.getField('isInNA').hidden=true;
+                GroupSelectedPersonnelsLG_student.getField('scoreState').hidden=true;
+            }else{
+                GroupSelectedPersonnelsLG_student.getField('isInNA').hidden=false;
+                GroupSelectedPersonnelsLG_student.getField('scoreState').hidden=false;
+            }
 
-                DynamicForm_GroupInsert_FileUploader_JspStudent.setValue('');
-                DynamicForm_GroupInsert_Textbox_JspStudent.setValue('');
-                ClassStudentWin_student_GroupInsert.show();
+            TabSet_GroupInsert_JspStudent.selectTab(0);
+            GroupSelectedPersonnelsLG_student.discardAllEdits();
+            GroupSelectedPersonnelsLG_student.data.clearAll();
+            /*GroupSelectedPersonnelsLG_student.addData({nationalCode: ""});*/
+
+            DynamicForm_GroupInsert_FileUploader_JspStudent.setValue('');
+            DynamicForm_GroupInsert_Textbox_JspStudent.setValue('');
+            ClassStudentWin_student_GroupInsert.show();
         }
 
         class ExportToFile {

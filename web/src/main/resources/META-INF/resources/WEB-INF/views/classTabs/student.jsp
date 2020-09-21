@@ -1857,6 +1857,10 @@
                         GroupSelectedPersonnelsLG_student.fetchData();
 
                         wait.close();
+
+                        if(insert){
+                            createDialog('info','شخصي جهت اضافه شدن وجود ندارد.');
+                        }
                     }
 
 
