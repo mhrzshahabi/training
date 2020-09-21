@@ -12,7 +12,6 @@ import dto.TheoType;
 @Getter
 @Setter
 public class CourseDto {
-
     private long id;
     private String code;
     private String titleFa;
