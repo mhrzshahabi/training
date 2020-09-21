@@ -19,8 +19,10 @@
         }
         else if (nameTab=="گزارشات نیازسنجی"){
             [...Array(4).keys()].slice(1).forEach(idx=> {
-                ReportTypeDF_NABOP.getItem("reportType").getItem(idx).setDisabled(false);
-                ReportTypeDF_NABOP.getItem("personnelId").show();
+                if (ReportTypeDF_NABOP.getItem("reportType").getItem(idx)) {
+                    ReportTypeDF_NABOP.getItem("reportType").getItem(idx).setDisabled(false);
+                    ReportTypeDF_NABOP.getItem("personnelId").show();
+                }
             });
             hideRadioButtons=false;
         }
