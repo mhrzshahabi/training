@@ -309,20 +309,13 @@
             members: [
                 isc.ToolStripButtonExcel.create({
                     click: function () {
-                        let criteria = PersonnelLG_Job.getCriteria();
-
-                        if (typeof (criteria.operator) == 'undefined') {
-                            criteria._constructor = "AdvancedCriteria";
-                            criteria.operator = "and";
+                        let job = JobLG_job.getSelectedRecord();
+                        let tab = DetailTab_Job.getSelectedTab();
+                        if (job == null && tab.pane != null) {
+                            return;
                         }
 
-                        if (typeof (criteria.criteria) == 'undefined') {
-                            criteria.criteria = [];
-                        }
-
-                        criteria.criteria.push({fieldName: "jobId", operator: "equals", value: JobLG_job.getSelectedRecord().id});
-
-                        ExportToFile.downloadExcel(null, PersonnelLG_Job, "jobPersonnel", 0, JobLG_job, '', "شغل - لیست پرسنل", criteria, null);
+                        ExportToFile.downloadExcelRestUrl(null, PersonnelLG_Job, jobUrl + "/" + job.id + "/getPersonnel", 0, JobLG_job, '', "شغل - لیست پرسنل", null, null,0,true);
                     }
                 })
             ]
