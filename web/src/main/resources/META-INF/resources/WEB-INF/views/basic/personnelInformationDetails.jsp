@@ -23,9 +23,9 @@
                     let nationalCode = selectedPersonnel.nationalCode;
 
                     if (this.PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_Info") {
-                        //console.log(personnelNo,this.nationalCode_Info,this.personnelNo_Info,personnelNo,nationalCode);
+                        //console.log(personnelNo,this.nationalCode_Info,nationalCode,this.personnelNo_Info,personnelNo);
 
-                        if (personnelNo !== null && (this.nationalCode_Info === nationalCode || this.personnelNo_Info === personnelNo)) {
+                        if (personnelNo !== null && ((this.nationalCode_Info && this.nationalCode_Info === nationalCode) || (this.personnelNo_Info && this.personnelNo_Info === personnelNo))) {
                             this.DynamicForm_PersonnelInfo.editRecord(this.tempPersonnel);
                         } else if (personnelNo !== null && (this.nationalCode_Info !== nationalCode || this.personnelNo_Info !== personnelNo)) {
                             this.DynamicForm_PersonnelInfo.clearValues();
