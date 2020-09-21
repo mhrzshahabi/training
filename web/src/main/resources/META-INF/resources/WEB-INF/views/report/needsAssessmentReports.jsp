@@ -9,7 +9,7 @@
 
     $(document).ready(()=>{
         let nameTab=mainTabSet.tabs[mainTabSet.selectedTab].title;
-        if (nameTab=="اطلاعات پرسنل"){
+        if (nameTab=="اطلاعات پرسنل" || nameTab=="کلاس"){
             hideRadioButtons=true;
 
             [...Array(3).keys()].slice(1).forEach(idx=> {
