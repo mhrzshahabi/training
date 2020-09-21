@@ -337,7 +337,6 @@
         },
         </sec:authorize>
 
-        //working
         dataArrived: function () {
             wait.close()
             selectWorkflowRecord();
@@ -412,11 +411,17 @@
                 canSort: false
             },
             {
-                name: "duration", title: "<spring:message
-                code="course_theoryDuration"/>", align: "center", filterOperator: "equals",
+                name: "duration",
+                title: "<spring:message
+                code="course_theoryDuration"/>",
+                align: "center",
+                filterOperator: "equals",
+                // canSort: false,
+                // canFilter: false,
                 filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
-                }
+                    keyPressFilter: "[0-9]",
+                    // criteriaField: "theoryDuration",
+                },
             },
             {
                 name: "technicalType.titleFa", title: "<spring:message
@@ -3217,7 +3222,7 @@
                             "cId": courseRecord.id,
                             "mainObjective": courseRecord.titleFa + " (" + courseMainObjective + ") ",
                             "titleFa": courseRecord.titleFa,
-                            "theoryDuration": courseRecord.theoryDuration.toString(),
+                            "theoryDuration": courseRecord.duration.toString(),
                             "courseCreatorId": "${username}",
                             "courseCreator": userFullName,
                             "REJECTVAL": "",
@@ -3287,7 +3292,7 @@
                 course_workflowParameters.workflowdata["REJECTVAL"] = " ";
                 course_workflowParameters.workflowdata["mainObjective"] = sRecord.mainObjective;
                 course_workflowParameters.workflowdata["titleFa"] = sRecord.titleFa;
-                course_workflowParameters.workflowdata["theoryDuration"] = sRecord.theoryDuration.toString();
+                course_workflowParameters.workflowdata["theoryDuration"] = sRecord.duration.toString();
                 course_workflowParameters.workflowdata["courseCreatorId"] = "${username}";
                 course_workflowParameters.workflowdata["courseCreator"] = userFullName;
                 course_workflowParameters.workflowdata["workflowStatus"] = "اصلاح دوره";
