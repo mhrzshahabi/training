@@ -37,14 +37,14 @@
             {name: "classCode", title:"<spring:message code="class.code"/>", autoFitWidth: true},
             {name: "courseCode", title:"<spring:message code='course.code'/>", autoFitWidth: true},
             {name: "courseTitleFa", title:"<spring:message code='course'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "courseDuration", title:"<spring:message code='course_theoryDuration'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "courseDuration", title:"<spring:message code='course_theoryDuration'/>", filterOperator: "equals", autoFitWidth: true},
             {name: "courseTheoType", title:"<spring:message code='course_etheoType'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "classTeachingType", title: "<spring:message code="teaching.type"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "classStartDate", title:"<spring:message code="start.date"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "classEndDate", title:"<spring:message code="end.date"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "teacherFirstName", title:"نام استاد", filterOperator: "iContains", autoFitWidth: true},
             {name: "teacherLastName", title:"نام خانوادگی استاد", filterOperator: "iContains", autoFitWidth: true},
-            {name: "courseTeacherStatus", title:"<spring:message code="teacher.type"/>", filterOperator: "iContains", autoFitWidth: true, valueMap: {
+            {name: "courseTeacherStatus", title:"<spring:message code="teacher.type"/>",filterOnKeypress: true, filterOperator: "equals", autoFitWidth: true, valueMap: {
                     "1" : "<spring:message code='company.staff'/>",
                     "0" : "<spring:message code='external.teacher'/>"
                 }},
@@ -55,16 +55,16 @@
             {name: "absenceMinute", title:"غیبت بر حسب دقیقه", filterOperator: "equals", autoFitWidth: true},
             {name: "instituteTitleFa", title: "<spring:message code="institute"/>", filterOperator: "iContains", autoFitWidth: true},
 
-            {name: "evaluationReactionStatus",title: "ارزیابی واکنشی", autoFitWidth: true,filterOperator: "equals",valueMap: {true: "انجام شده", false: "انجام نشده"}},
-            {name: "evaluationReactionPass",title: "وضعیت ارزیابی واکنشی", autoFitWidth: true,filterOperator: "equals",valueMap: {true: "تائید شده", false: "تائید نشده"}},
-            {name: "evaluationLearningStatus",title:"ارزیابی یادگیری", autoFitWidth: true,filterOperator: "equals",valueMap: {true: "انجام شده", false: "انجام نشده"}},
-            {name: "evaluationLearningPass",title: "وضعیت ارزیابی یادگیری" , autoFitWidth: true,filterOperator: "equals",valueMap: {true: "تائید شده", false: "تائید نشده"}},
-            {name: "evaluationBehavioralStatus" ,title: "ارزیابی رفتاری", autoFitWidth: true,filterOperator: "equals",valueMap: {true: "انجام شده", false: "انجام نشده"}},
-            {name: "evaluationBehavioralPass", title:"وضعیت ارزیابی رفتاری", autoFitWidth: true,filterOperator: "equals",valueMap: {true: "تائید شده", false: "تائید نشده"}},
-            {name: "evaluationEffectivenessStatus", title: "اثربخشی", autoFitWidth: true,filterOperator: "equals",valueMap: {true: "انجام شده", false: "انجام نشده"}},
-            {name: "evaluationEffectivenessPass",title: "وضعیت اثربخشی", autoFitWidth: true,filterOperator: "equals",valueMap: {true: "تائید شده", false: "تائید نشده"}},
-            {name: "evaluationResultsStatus", title: "ارزیابی نتایج", autoFitWidth: true,filterOperator: "equals",valueMap: {true: "انجام شده", false: "انجام نشده"}},
-            {name: "evaluationResultsPass",title: "وضعیت ارزیابی نتایج", autoFitWidth: true,filterOperator: "equals",valueMap: {true: "تائید شده", false: "تائید نشده"}},
+            {name: "evaluationReactionStatus",title: "ارزیابی واکنشی",filterOperator: "equals",filterOnKeypress:true,autoFitWidth: true,valueMap: {true: "انجام شده", false: "انجام نشده"}},
+            {name: "evaluationReactionPass",title: "وضعیت ارزیابی واکنشی", filterOnKeypress: true,autoFitWidth: true,valueMap: {true: "تائید شده", false: "تائید نشده"}},
+            {name: "evaluationLearningStatus",title:"ارزیابی یادگیری", filterOnKeypress: true,autoFitWidth: true,filterOperator: "equals",valueMap: {true: "انجام شده", false: "انجام نشده"}},
+            {name: "evaluationLearningPass",title: "وضعیت ارزیابی یادگیری" ,filterOnKeypress: true, autoFitWidth: true,filterOperator: "equals",valueMap: {true: "تائید شده", false: "تائید نشده"}},
+            {name: "evaluationBehavioralStatus" ,title: "ارزیابی رفتاری", filterOnKeypress: true,autoFitWidth: true,filterOperator: "equals",valueMap: {true: "انجام شده", false: "انجام نشده"}},
+            {name: "evaluationBehavioralPass", title:"وضعیت ارزیابی رفتاری", filterOnKeypress: true,autoFitWidth: true,filterOperator: "equals",valueMap: {true: "تائید شده", false: "تائید نشده"}},
+            {name: "evaluationEffectivenessStatus", title: "اثربخشی", filterOnKeypress: true,autoFitWidth: true,filterOperator: "equals",valueMap: {true: "انجام شده", false: "انجام نشده"}},
+            {name: "evaluationEffectivenessPass",title: "وضعیت اثربخشی", filterOnKeypress: true,autoFitWidth: true,filterOperator: "equals",valueMap: {true: "تائید شده", false: "تائید نشده"}},
+            {name: "evaluationResultsStatus", title: "ارزیابی نتایج", filterOnKeypress: true,autoFitWidth: true,filterOperator: "equals",valueMap: {true: "انجام شده", false: "انجام نشده"}},
+            {name: "evaluationResultsPass",title: "وضعیت ارزیابی نتایج", filterOnKeypress: true,autoFitWidth: true,filterOperator: "equals",valueMap: {true: "تائید شده", false: "تائید نشده"}},
 
             {name: "classId", hidden: true, filterOperator: "equals"},
             {name: "studentId", hidden: true, filterOperator: "equals"},
@@ -258,7 +258,8 @@
         dataSource : RestDataSource_JspUnitReport,
         cellHeight: 43,
         sortField: 0,
-        showFilterEditor: false,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
         selectionType: "single",
         showRecordComponents: true,
         showRecordComponentsByCell: true
@@ -269,7 +270,7 @@
         title: "گزارش اکسل",
         width: 300,
         click: function () {
-            ExportToFile.downloadExcel(null, ListGrid_JspUnitReport, 'statisticsUnitReport', 0, null, '',  "گزارش واحد آمار", ListGrid_JspUnitReport.data.criteria, null);
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_JspUnitReport, statisticsUnitReportUrl , 0, null, '',  "گزارش واحد آمار", ListGrid_JspUnitReport.data.getCriteria(), null);
         }
     });
 
