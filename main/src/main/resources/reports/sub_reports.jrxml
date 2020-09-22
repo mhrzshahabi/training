@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_reports" pageWidth="200" pageHeight="200" columnWidth="200" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="c274daf1-c0ac-4cf8-a5d4-bb0c44bf4a3e">
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="_THIS" class="java.util.List"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="190">
+			<subreport isUsingCache="false" runToBottom="false" overflowType="Stretch">
+				<reportElement positionType="Float" x="0" y="10" width="200" height="170" uuid="7e063917-0edf-45ee-b31a-697512a5e50e"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{_THIS})]]></dataSourceExpression>
+				<subreportExpression><![CDATA["reports/sub_report.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>

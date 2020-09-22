@@ -2,6 +2,7 @@ package com.nicico.training.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.grid.TotalResponse;
@@ -18,20 +19,27 @@ import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.data.JsonDataSource;
+import net.sf.jasperreports.engine.util.JRLoader;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -283,5 +291,80 @@ public class EvaluationAnalysisRestController {
         EvaluationDTO.EvaluationLearningResult resultSet = evaluationAnalysisService.evaluationAnalysistLearningResultTemp(classId,scoringMethod);
         return new ResponseEntity<>(resultSet,HttpStatus.OK);
     }
+
+    @Loggable
+    @PostMapping(value = {"/printReactionEvaluationReport"})
+    public void printReactionEvaluationReport(HttpServletResponse response) throws Exception {
+        final Gson gson = new Gson();
+        Type resultType = new TypeToken<HashMap<String, Object>>() {
+        }.getType();
+
+        Map<String, Object> params = new HashMap();
+
+        List<List<Coordinates>> allchartData = new ArrayList<>();
+
+        List<Coordinates> chartData = null;
+        chartData = new ArrayList<>();
+        chartData.add(new Coordinates(1, 20, 30));
+        chartData.add(new Coordinates(2, 10, 40));
+        chartData.add(new Coordinates(3, 5, 50));
+
+        allchartData.add(chartData);
+        chartData = new ArrayList<>();
+        chartData.add(new Coordinates(1, 30, 25));
+        chartData.add(new Coordinates(2, 40, 60));
+        chartData.add(new Coordinates(3, 70, 80));
+
+        allchartData.add(chartData);
+
+        params.put("XYChartDataSource", allchartData);
+        params.put("reportTime","تیر ماه");
+        params.put("todayDate",DateUtil.todayDate());
+        params.put(ConstantVARs.REPORT_TYPE, "PDF");
+
+        String data = objectMapper.writeValueAsString(allchartData);
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+
+        reportUtil.export("/reports/reactionEvaluationReport.jasper", params, jsonDataSource, response);
+    }
+
+    public static class Coordinates{
+        private Integer series;
+
+        private Integer xCoordinate;
+
+        private Integer yCoordinate;
+
+        public Coordinates( Integer series,Integer xCoordinate,Integer yCoordinate){
+            this.series = series;
+            this.xCoordinate = xCoordinate;
+            this.yCoordinate = yCoordinate;
+        }
+
+        public Integer getSeries() {
+            return series;
+        }
+
+        public Integer getxCoordinate() {
+            return xCoordinate;
+        }
+
+        public Integer getyCoordinate() {
+            return yCoordinate;
+        }
+
+        public void setSeries(Integer series) {
+            this.series = series;
+        }
+
+        public void setxCoordinate(Integer xCoordinate) {
+            this.xCoordinate = xCoordinate;
+        }
+
+        public void setyCoordinate(Integer yCoordinate) {
+            this.yCoordinate = yCoordinate;
+        }
+    }
+
 
     }
