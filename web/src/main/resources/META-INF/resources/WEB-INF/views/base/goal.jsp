@@ -256,7 +256,7 @@
                 return;
             }
             let data = DynamicForm_Goal.getValues();
-            wait.show()
+            wait.show();
             isc.RPCManager.sendRequest({
                 actionURL: urlGoal,
                 httpMethod: methodGoal,
@@ -269,10 +269,12 @@
                 callback: function (resp) {
                     wait.close()
                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                        var responseID = JSON.parse(resp.data).id;
-                        var gridState = "[{id:" + responseID + "}]";
+                        let responseID = JSON.parse(resp.data).id;
+                        let gridState = "[{id:" + responseID + "}]";
                         simpleDialog("انجام فرمان", "عملیات با موفقیت انجام شد.", "3000", "say");
                         ListGrid_Goal_refresh();
+                        ListGrid_GoalAll.invalidateCache();
+                        ListGrid_CourseGoal_Goal.invalidateCache();
                         setTimeout(function () {
                             ListGrid_Goal.setSelectedState(gridState);
                         }, 0);
@@ -369,10 +371,6 @@
     var Hlayout_Goal_SaveOrExit = isc.TrHLayoutButtons.create({
         members: [IButton_Goal_Save, isc.IButtonCancel.create({
             ID: "IButton_Goal_Exit",
-            // title: "لغو",
-            // prompt: "",
-            // icon: "<spring:url value="remove.png"/>",
-            // orientation: "vertical",
             click: function () {
                 DynamicForm_Goal.clearValues();
                 Window_Goal.close();
@@ -634,9 +632,6 @@
             margin: 5
         },
         dataSource: RestDataSource_GoalAll,
-        doubleClick: function () {
-            /*ListGrid_CourseGoal_Goal_Edit();*/
-        },
         fields: [
             {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleFa", title: "كل اهداف", align: "center", width:"60%"},
@@ -700,8 +695,6 @@
         fields: [
             {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleFa", title: "اهداف دوره", align: "center"},
-            // {name: "titleEn", title: "نام لاتین هدف", align: "center", hidden: true},
-            // {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         selectionType: "multiple",
         sortField: 1,
@@ -723,7 +716,7 @@
         canAcceptDroppedRecords: true,
         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
             addToListGrid()
-        }
+        },
     });
     var ToolStripButton_Syllabus_Edit = isc.ToolStripButtonEdit.create({
 
@@ -1011,7 +1004,7 @@
         members: [VLayout_Body_Goal, VLayout_Body_Syllabus]
     });
 
-    async function ListGrid_Goal_Remove() {
+    function ListGrid_Goal_Remove() {
         let record = ListGrid_GoalAll.getSelectedRecord();
         if (record == null) {
             isc.Dialog.create({
@@ -1023,47 +1016,37 @@
                     this.close();
                 }
             });
+            return;
         }
-        await hasRelationWithCourse(record);
-        else if(hasRelationWithCourse(record)) {
-            alert(1)
-            } else {
-                isc.Dialog.create({
-                    message: "هدف " + getFormulaMessage(record.titleFa, 2, "red", "b") + " حذف شود؟",
-                    icon: "[SKIN]ask.png",
-                    title: "<spring:message code="verify.delete"/>",
-                    buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
-                        title: "خیر"
-                    })],
-                    buttonClick: function (button, index) {
-                        this.close();
-                        if (index === 0) {
-                            wait.show();
-                            isc.RPCManager.sendRequest({
-                                actionURL: goalUrl + "delete/" + record.id,
-                                httpMethod: "DELETE",
-                                useSimpleHttp: true,
-                                contentType: "application/json; charset=utf-8",
-                                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                                showPrompt: true,
-                                serverOutputAsString: false,
-                                callback: function (resp) {
-                                    wait.close();
-                                    if (resp.httpResponseCode == 200) {
-                                        ListGrid_GoalAll.invalidateCache();
-                                        simpleDialog("<spring:message code='msg.command.done'/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
-                                    } else {
-                                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
-                                    }
-                                }
-                            });
-                        }
+        hasRelationWithCourse(record, ()=> {
+            isc.Dialog.create({
+                message: "هدف " + getFormulaMessage(record.titleFa, 2, "red", "b") + " حذف شود؟",
+                icon: "[SKIN]ask.png",
+                title: "<spring:message code="verify.delete"/>",
+                buttons: [
+                    isc.IButtonSave.create({title: "بله"}),
+                    isc.IButtonCancel.create({title: "خیر"})
+                ],
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        wait.show();
+                        isc.RPCManager.sendRequest(TrDSRequest(goalUrl + "delete/" + record.id, "DELETE", null, (resp) => {
+                            wait.close();
+                            if (resp.httpResponseCode == 200) {
+                                ListGrid_GoalAll.invalidateCache();
+                                simpleDialog("<spring:message code='msg.command.done'/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
+                            } else {
+                                simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
+                            }
+                        }));
                     }
-                });
-            }
+                }
+            });
+        });
     }
 
-    let hasRelationWithCourse = async function (record) {
+    let hasRelationWithCourse = function (record, callBack) {
         let names = "";
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(goalUrl + "course/" + record.id, "GET", null, (resp) => {
@@ -1077,9 +1060,9 @@
                 }
                 names = names.substr(2);
                 createDialog('info', "هدف " + getFormulaMessage(record.titleFa, 2, "red", "b") + " با " + names + " در ارتباط است، ابتدا هدف را از دوره&#8201های مذکور جدا کنید.", "اخطار")
-                return true;
+            }else{
+                callBack();
             }
-            return false;
         }));
     }
 
@@ -1095,23 +1078,25 @@
                     this.close();
                 }
             });
-        } else {
+            return;
+        }
+        hasRelationWithCourse(record, ()=>{
             methodGoal = "PUT";
             urlGoal = goalUrl + record.id;
             DynamicForm_Goal.clearValues();
             DynamicForm_Goal.editRecord(record);
             Window_Goal.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="goal"/>");
             Window_Goal.show();
-        }
+        });
     }
 
     function ListGrid_Goal_refresh() {
         RestDataSource_CourseGoal.fetchDataURL = courseUrl + courseRecord.id + "/goal";
-        ListGrid_Goal.fetchData();
         ListGrid_Goal.invalidateCache();
+        ListGrid_Goal.fetchData();
         RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseRecord.id;
-        ListGrid_Syllabus_Goal.fetchData();
         ListGrid_Syllabus_Goal.invalidateCache();
+        ListGrid_Syllabus_Goal.fetchData();
     }
 
     function ListGrid_Goal_Add() {
@@ -1197,7 +1182,7 @@
     }
 
     function ListGrid_Syllabus_Goal_Add() {
-        var gRecord = ListGrid_Goal.getSelectedRecord();
+        let gRecord = ListGrid_Goal.getSelectedRecord();
         if (gRecord == null || gRecord.id == null) {
             isc.Dialog.create({
                 message: "هدف مرتبط انتخاب نشده است.",
@@ -1219,7 +1204,7 @@
     }
 
     function ListGrid_Syllabus_Goal_Edit() {
-        var sRecord = ListGrid_Syllabus_Goal.getSelectedRecord();
+        let sRecord = ListGrid_Syllabus_Goal.getSelectedRecord();
         if (sRecord == null || sRecord.id == null) {
             isc.Dialog.create({
                 message: "سرفصلی انتخاب نشده است.",
@@ -1247,7 +1232,7 @@
         evalDomain();
     }
 
-    function addToListGrid() {
+    let addToListGrid = function() {
         if (courseRecord == null || courseRecord.id == null) {
             isc.Dialog.create({
                 message: "دوره اي انتخاب نشده است.",
@@ -1258,54 +1243,41 @@
                     this.close();
                 }
             });
-
         } else {
             let goalRecord = ListGrid_GoalAll.getSelectedRecords();
-            if (goalRecord.length == 0) {
+            if (goalRecord.length === 0) {
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>")
             } else {
-                let goalList = new Array();
-                let categoryIDs=[];
+                let goalList = [];
+                let categoryIDs = [];
                 for (let i = 0; i < goalRecord.length; i++) {
                     goalList.add(goalRecord[i].id);
                     categoryIDs=[...categoryIDs,goalRecord[i].categoryId];
                 }
-
-                if (categoryIDs.find(x=>x!==courseRecord.categoryId) || categoryIDs.some(x=>!x))
-                {
+                if (categoryIDs.find(x=>x!==courseRecord.category.id) || categoryIDs.some(x=>!x)){
                     simpleDialog("<spring:message code="message"/>",
                         "<spring:message code="goal.problem.add1"/>" + "<br/>" + "<spring:message code="goal.problem.add2"/>", 10000, "stop");
                     return;
                 }
-
                 wait.show()
-                isc.RPCManager.sendRequest({
-                    actionURL: courseUrl + courseRecord.id + "/" + goalList.toString(),
-                    httpMethod: "GET",
-                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                    useSimpleHttp: true,
-                    contentType: "application/json; charset=utf-8",
-                    showPrompt: false,
-                    serverOutputAsString: false,
-                    callback: function (resp) {
-                        wait.close()
-                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                            ListGrid_GoalAll.invalidateCache();
-                            ListGrid_CourseGoal_Goal.invalidateCache();
-                            ListGrid_Goal.invalidateCache();
-                            ListGrid_Syllabus_Goal.invalidateCache();
-                            evalDomain();
-                        } else {
-                            simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 3000, "stop");
-                        }
-
+                isc.RPCManager.sendRequest(TrDSRequest(courseUrl + courseRecord.id + "/" + goalList.toString(), "GET", null, (resp => {
+                    isChangeable();
+                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                        ListGrid_GoalAll.invalidateCache();
+                        ListGrid_CourseGoal_Goal.invalidateCache();
+                        ListGrid_CourseGoal_Goal.fetchData();
+                        ListGrid_Goal.invalidateCache();
+                        ListGrid_Syllabus_Goal.invalidateCache();
+                        evalDomain();
+                    } else {
+                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 3000, "stop");
                     }
-                });
+                })));
             }
         }
     }
 
-    function removeAsListGrid() {
+    let removeAsListGrid = function() {
         if (courseRecord == null || courseRecord.id == null) {
             isc.Dialog.create({
                 message: "دوره اي انتخاب نشده است.",
@@ -1317,8 +1289,8 @@
                 }
             });
         } else {
-            var goalrRecord = ListGrid_CourseGoal_Goal.getSelectedRecords();
-            if (goalrRecord.length == 0) {
+            let goalRecord = ListGrid_CourseGoal_Goal.getSelectedRecords();
+            if (goalRecord.length == 0) {
                 isc.Dialog.create({
                     message: "هدفي انتخاب نشده است.",
                     icon: "[SKIN]ask.png",
@@ -1329,34 +1301,24 @@
                     }
                 });
             } else {
-                let arrayRecord = new Array();
-                for (let i = 0; i < goalrRecord.length; i++) {
-                    arrayRecord.add(goalrRecord[i].id)
+                let arrayRecord = [];
+                for (let i = 0; i < goalRecord.length; i++) {
+                    arrayRecord.add(goalRecord[i].id)
                 }
 
                 wait.show();
-                isc.RPCManager.sendRequest({
-                    actionURL: courseUrl + "remove/" + courseRecord.id + "/" + arrayRecord.toString(),
-                    httpMethod: "GET",
-                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                    useSimpleHttp: true,
-                    contentType: "application/json; charset=utf-8",
-                    showPrompt: false,
-                    serverOutputAsString: false,
-                    callback: function (resp) {
-                        wait.close()
-                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                            ListGrid_GoalAll.invalidateCache();
-                            ListGrid_CourseGoal_Goal.invalidateCache();
-                            ListGrid_Goal.invalidateCache();
-                            ListGrid_Syllabus_Goal.invalidateCache();
-                            evalDomain();
-                        } else {
-                            simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
-                        }
-
+                isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "remove/" + courseRecord.id + "/" + arrayRecord.toString(), "GET", null ,(resp)=>{
+                    isChangeable();
+                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                        ListGrid_GoalAll.invalidateCache();
+                        ListGrid_CourseGoal_Goal.invalidateCache();
+                        ListGrid_Goal.invalidateCache();
+                        ListGrid_Syllabus_Goal.invalidateCache();
+                        evalDomain();
+                    } else {
+                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
                     }
-                });
+                }));
             }
         }
     }

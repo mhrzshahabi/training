@@ -439,7 +439,8 @@ public class CourseDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("CourseDependence")
     public static class CourseDependence{
-        private Integer numClasses;
-        private Integer numSkills;
+        private int numClasses;
+        private int numSkills;
+        private int numGoals;
     }
 }
