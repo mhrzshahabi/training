@@ -283,11 +283,19 @@ public class NeedsAssessmentReportsService {
 //    @Override
     public SearchDTO.SearchRs<NeedsAssessmentDTO.SkillNA> getSkillNAPostList(SearchDTO.SearchRq request) {
         BaseService.setCriteriaToNotSearchDeleted(request);
-        Page<NeedsAssessment> needsAssessments = needsAssessmentDAO.findAll(NICICOSpecification.of(request), NICICOPageable.of(request));
-        List<NeedsAssessmentDTO.SkillNA> objectList = convertToSkillNa(needsAssessments.getContent());
         SearchDTO.SearchRs<NeedsAssessmentDTO.SkillNA> searchRs = new SearchDTO.SearchRs<>();
-        searchRs.setTotalCount(needsAssessments.getTotalElements());
-        searchRs.setList(objectList);
+
+        if (request.getStartIndex() != null) {
+            Page<NeedsAssessment> needsAssessments = needsAssessmentDAO.findAll(NICICOSpecification.of(request), NICICOPageable.of(request));
+            List<NeedsAssessmentDTO.SkillNA> objectList = convertToSkillNa(needsAssessments.getContent());
+            searchRs.setTotalCount(needsAssessments.getTotalElements() - needsAssessments.getContent().size() + objectList.size());
+            searchRs.setList(objectList);
+        } else {
+            List<NeedsAssessment> needsAssessments = needsAssessmentDAO.findAll(NICICOSpecification.of(request));
+            List<NeedsAssessmentDTO.SkillNA> objectList = convertToSkillNa(needsAssessments);
+            searchRs.setTotalCount((long) objectList.size());
+            searchRs.setList(objectList);
+        }
         return searchRs;
     }
 
