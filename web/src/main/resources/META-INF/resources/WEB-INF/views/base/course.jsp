@@ -2686,7 +2686,7 @@
                                             createDialog("info", "دوره ای از جدول بالا انتخاب نشده است");
                                             return;
                                         }
-                                        ExportToFile.downloadExcelRestUrl(null, ListGrid_Post_JspCourse , needsAssessmentReportsUrl + "/skillNA", 0, ListGrid_Course, '',"لیست موارد نیازسنجی شده برای دوره " + courseRecord.titleFa + " با کد " + courseRecord.code, ListGrid_Post_JspCourse.getCriteria(), null);
+                                        ExportToFile.downloadExcelRestUrl(null, ListGrid_Post_JspCourse , skillNAUrl, 0, ListGrid_Course, '',"لیست موارد نیازسنجی شده برای دوره " + courseRecord.titleFa + " با کد " + courseRecord.code, null, null, 0, true);
                                     }
                                 }),isc.ToolStrip.create({
                                     width: "100%",
@@ -2712,26 +2712,23 @@
                                 // groupByField: "objectType",
                                 fields: [
                                     {name: "objectType", filterOnKeypress: true},
-                                    {name: "peopleType", canSort: false, canFilter: false},
+                                    {name: "peopleType", filterOnKeypress: true},
                                     {name: "objectCode"},
                                     {name: "objectName"},
-                                    {name: "area", canSort: false, canFilter: false},
-                                    {name: "assistance", canSort: false, canFilter: false},
-                                    {name: "affairs", canSort: false, canFilter: false},
-                                    {name: "section", canSort: false, canFilter: false},
-                                    {name: "unit", canSort: false, canFilter: false},
+                                    {name: "area"},
+                                    {name: "assistance"},
+                                    {name: "affairs"},
+                                    {name: "section"},
+                                    {name: "unit"},
                                     {
                                         name: "enabled",
                                         valueMap:{
                                             // undefined : "فعال",
                                             74 : "غیر فعال"
                                         },
-                                        filterOnKeypress: true,
-                                        canSort: false,
-                                        canFilter: false
+                                        filterOnKeypress: true
                                     }
-                                    ],
-
+                                ],
                                 dataSource: isc.TrDS.create({
                                     ID: "RestData_Post_JspCourse",
                                     fields: [
@@ -2756,7 +2753,7 @@
                                         {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
                                         {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"}
                                     ],
-                                    fetchDataURL: needsAssessmentReportsUrl + "/skillNA"
+                                    fetchDataURL: skillNAUrl
                                 })})
                         ]
                     })
@@ -3381,7 +3378,7 @@
                     ListGrid_Post_JspCourse.setImplicitCriteria({
                         _constructor: "AdvancedCriteria",
                         operator: "and",
-                        criteria: [{fieldName: "skill.courseId", operator: "equals", value: courseRecord.id}]
+                        criteria: [{fieldName: "courseId", operator: "equals", value: courseRecord.id}]
                     });
                     ListGrid_Post_JspCourse.invalidateCache();
                     ListGrid_Post_JspCourse.fetchData();

@@ -60,12 +60,6 @@ public class NeedsAssessmentReportsRestController {
         return new ResponseEntity(ISC.convertToIscRs(needsAssessmentReportsService.getCourseNA(searchRq, courseId, passedReport), searchRq.getStartIndex()), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/skillNA")
-    public ResponseEntity skillNA(HttpServletRequest iscRq) throws IOException {
-        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        return new ResponseEntity(ISC.convertToIscRs(needsAssessmentReportsService.getSkillNAPostList(searchRq), searchRq.getStartIndex()), HttpStatus.OK);
-    }
-
     @Loggable
     @PostMapping(value = {"/print-course-list-for-a-personnel/{type}"})
     public void printWithCriteria(HttpServletResponse response,

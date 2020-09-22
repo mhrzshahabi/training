@@ -63,7 +63,7 @@
             {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"}
         ],
-        fetchDataURL: needsAssessmentReportsUrl + "/skillNA"
+        fetchDataURL: skillNAUrl
     });
 
     let CourseDS_Skill = isc.TrDS.create({
@@ -612,7 +612,7 @@
                         createDialog("info", "مهارتی از جدول بالا انتخاب نشده است");
                         return;
                     }
-                    ExportToFile.downloadExcelRestUrl(null, PostLG_Skill , needsAssessmentReportsUrl + "/skillNA", 0, SkillLG_Skill, '',"لیست موارد نیازسنجی شده برای مهارت " + SkillLG_Skill.getSelectedRecord().titleFa + " با کد " + SkillLG_Skill.getSelectedRecord().code, PostLG_Skill.getCriteria(), null);
+                    ExportToFile.downloadExcelRestUrl(null, PostLG_Skill , skillNAUrl, 0, SkillLG_Skill, '',"لیست موارد نیازسنجی شده برای مهارت " + SkillLG_Skill.getSelectedRecord().titleFa + " با کد " + SkillLG_Skill.getSelectedRecord().code, null, null, 0, true );
                 }
             })
         ]
@@ -634,23 +634,21 @@
         // groupByField: "objectType",
         fields: [
             {name: "objectType", filterOnKeypress: true},
-            {name: "peopleType", canSort: false, canFilter: false},
+            {name: "peopleType", filterOnKeypress: true},
             {name: "objectCode"},
             {name: "objectName"},
-            {name: "area", canSort: false, canFilter: false},
-            {name: "assistance", canSort: false, canFilter: false},
-            {name: "affairs", canSort: false, canFilter: false},
-            {name: "section", canSort: false, canFilter: false},
-            {name: "unit", canSort: false, canFilter: false},
+            {name: "area"},
+            {name: "assistance"},
+            {name: "affairs"},
+            {name: "section"},
+            {name: "unit"},
             {
                 name: "enabled",
                 valueMap:{
                     // undefined : "فعال",
                     74 : "غیر فعال"
                 },
-                filterOnKeypress: true,
-                canSort: false,
-                canFilter: false
+                filterOnKeypress: true
             }
         ],
     });

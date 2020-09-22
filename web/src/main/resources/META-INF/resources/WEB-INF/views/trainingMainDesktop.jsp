@@ -1172,6 +1172,7 @@
     const workGroupUrl = rootUrl + "/work-group";
     const evaluationUrl = rootUrl + "/evaluation";
     const needsAssessmentReportsUrl = rootUrl + "/needsAssessment-reports";
+    const skillNAUrl = rootUrl + "/skill-na";
     const trainingOverTimeReportUrl = rootUrl + "/trainingOverTime";
     const personnelInformationUrl = rootUrl + "/personnelInformation";
     const unfinishedClasses = rootUrl + "/unfinishedClasses";
