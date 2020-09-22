@@ -3111,7 +3111,8 @@
     }
 
     function print_CourseListGrid(type) {
-        printWithCriteria(ListGrid_Course.getCriteria(), {}, "CourseByCriteria.jasper", type);
+        let direction = ListGrid_Course.getSort()[0]["direction"] === "descending" ? "-" : "";
+        printWithCriteria(ListGrid_Course.getCriteria(), {}, "CourseByCriteria.jasper", type,direction+ListGrid_Course.getSort()[0]["property"]);
     }
 
     function courseCode() {
