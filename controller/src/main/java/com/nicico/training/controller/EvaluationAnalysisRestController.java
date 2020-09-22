@@ -305,15 +305,15 @@ public class EvaluationAnalysisRestController {
 
         List<Coordinates> chartData = null;
         chartData = new ArrayList<>();
-        chartData.add(new Coordinates(1, 20, 30));
-        chartData.add(new Coordinates(2, 10, 40));
-        chartData.add(new Coordinates(3, 5, 50));
+        chartData.add(new Coordinates(1, 20, 30,"table1"));
+        chartData.add(new Coordinates(2, 10, 40,"table1"));
+        chartData.add(new Coordinates(3, 5, 50,"table1"));
 
         allchartData.add(chartData);
         chartData = new ArrayList<>();
-        chartData.add(new Coordinates(1, 30, 25));
-        chartData.add(new Coordinates(2, 40, 60));
-        chartData.add(new Coordinates(3, 70, 80));
+        chartData.add(new Coordinates(1, 30, 25,"table2"));
+        chartData.add(new Coordinates(2, 40, 60,"table2"));
+        chartData.add(new Coordinates(3, 70, 80,"table2"));
 
         allchartData.add(chartData);
 
@@ -335,10 +335,21 @@ public class EvaluationAnalysisRestController {
 
         private Integer yCoordinate;
 
-        public Coordinates( Integer series,Integer xCoordinate,Integer yCoordinate){
+        private String title;
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public Coordinates(Integer series, Integer xCoordinate, Integer yCoordinate, String title){
             this.series = series;
             this.xCoordinate = xCoordinate;
             this.yCoordinate = yCoordinate;
+            this.title = title;
         }
 
         public Integer getSeries() {

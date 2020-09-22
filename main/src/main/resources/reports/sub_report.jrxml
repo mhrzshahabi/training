@@ -16,6 +16,7 @@
 	<field name="series" class="java.lang.Integer"/>
 	<field name="xCoordinate" class="java.lang.Integer"/>
 	<field name="yCoordinate" class="java.lang.Integer"/>
+	<field name="title" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -24,7 +25,9 @@
 			<xyLineChart>
 				<chart evaluationTime="Report">
 					<reportElement positionType="Float" x="20" y="10" width="200" height="200" uuid="6f792d48-81d1-4469-94a8-de8919a839d5"/>
-					<chartTitle/>
+					<chartTitle>
+						<titleExpression><![CDATA[$F{title}]]></titleExpression>
+					</chartTitle>
 					<chartSubtitle/>
 					<chartLegend/>
 				</chart>
