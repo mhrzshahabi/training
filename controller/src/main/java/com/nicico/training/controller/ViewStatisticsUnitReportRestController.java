@@ -36,14 +36,11 @@ public class ViewStatisticsUnitReportRestController {
         if (searchRq.getCriteria() != null && searchRq.getCriteria().getCriteria() != null)
         {
             for (SearchDTO.CriteriaRq criterion : searchRq.getCriteria().getCriteria()) {
-                    if (criterion.getValue().get(0).equals("true")){
+                    if (criterion.getValue().get(0).equals("true"))
                         criterion.setValue(true);
 
-                    }
-                    if (criterion.getValue().get(0).equals("false")){
+                    else if (criterion.getValue().get(0).equals("false"))
                         criterion.setValue(false);
-
-                    }
                 }
         }
 
