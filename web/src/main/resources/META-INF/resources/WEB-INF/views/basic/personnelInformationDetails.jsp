@@ -185,10 +185,58 @@
                 }
             }
 
-            this.exportToExcel=function exportToExcel(){
-                ExportToFile.downloadExcelFromClient(this.ListGrid_PersonnelTraining, PersonnelInfoListGrid_PersonnelList, '', "اطلاعات پرسنل - آموزش ها");
-            }
+            this.exportToExcel=function exportToExcel() {
+                let nationalCode = null;
+                let personnelNo = null;
+                let restUrl = null;
+                //ExportToFile.downloadExcelFromClient(this.ListGrid_PersonnelTraining, PersonnelInfoListGrid_PersonnelList, '', "اطلاعات پرسنل - آموزش ها");
+                let tab = mainTabSet.tabs[mainTabSet.selectedTab];
+                if (tab.title == '<spring:message code="personnel.information"/>') {
+                    nationalCode = PersonnelInfoListGrid_PersonnelList.getSelectedRecord().nationalCode;
+                    personnelNo = PersonnelInfoListGrid_PersonnelList.getSelectedRecord().personnelNo;
+                    restUrl = classUrl + "personnel-training/" + nationalCode + "/" + personnelNo;
+                    ExportToFile.downloadExcelRestUrl(null, this.ListGrid_PersonnelTraining, restUrl, 0, PersonnelInfoListGrid_PersonnelList, '', "اطلاعات پرسنل - آموزش ها", this.ListGrid_PersonnelTraining.getCriteria(), null);
 
+                } else if (tab.title == '<spring:message code="class"/>') {
+                    let fName = null;
+                    let lName = null;
+                    let personnelNo2 = null;
+                    let titr = null;
+                    let PageName = null;
+                    if(StudentsLG_student) {
+                        if ((( SelectedPersonnelsLG_student && listGridType == "SelectedPersonnelsLG_student" )
+                            ||(PersonnelsLG_student && listGridType == "PersonnelsLG_student")
+                            ||(PersonnelsRegLG_student && listGridType == "PersonnelsRegLG_student"))
+                            && Object.keys(selectedRow).length != 0) {
+                            fName = selectedRow.firstName;
+                            lName = selectedRow.lastName;
+                            nationalCode = selectedRow.nationalCode;
+                            personnelNo = selectedRow.personnelNo;
+                            personnelNo2 = selectedRow.personnelNo2;
+                            if(listGridType == "SelectedPersonnelsLG_student")
+                                PageName = "کلاس - فراگیر - افزودن فراگیر - افراد انتخاب شده - آموزش ها";
+                            else
+                                PageName = "کلاس - فراگیر - افزودن فراگیر - همه افراد - آموزش ها";
+                        } else if(StudentsLG_student.getSelectedRecord() !== null) {
+                            fName = StudentsLG_student.getSelectedRecord().student.firstName;
+                            lName = StudentsLG_student.getSelectedRecord().student.lastName;
+                            nationalCode = StudentsLG_student.getSelectedRecord().student.nationalCode;
+                            personnelNo = StudentsLG_student.getSelectedRecord().student.personnelNo;
+                            personnelNo2 = StudentsLG_student.getSelectedRecord().student.personnelNo2;
+                            PageName = "کلاس - فراگیر - آموزش ها";
+                        }
+                        fName = fName ? "نام فراگیر: " + fName : "";
+                        lName = lName ? "   نام خانوداگی فراگیر: " + lName: "";
+                        nationalCode =  nationalCode ? "   کد ملی: " + nationalCode: "";
+                        personnelNo = personnelNo ?  "   شماره پرسنلی: " + personnelNo : "";
+                        personnelNo2 =  personnelNo2 ?  "   پرسنلی 6 رقمی: " + personnelNo2 : "";
+                        titr = fName+lName+nationalCode+personnelNo+personnelNo2;
+                        restUrl = classUrl + "personnel-training/" + nationalCode + "/" + personnelNo;
+                        ExportToFile.downloadExcelRestUrl(null, this.ListGrid_PersonnelTraining, restUrl, 0, null, titr, PageName, this.ListGrid_PersonnelTraining.getCriteria(), null);
+
+                    }
+                }
+            }
             this.tabSelectedPersonnelInfo_Tab=function tabSelectedPersonnelInfo_Tab(){
                 let tab = mainTabSet.tabs[mainTabSet.selectedTab];
                 if (tab.title == '<spring:message code="personnel.information"/>') {
