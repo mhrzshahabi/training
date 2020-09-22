@@ -511,7 +511,7 @@
             }
 
             static getAllData(listGrid, exceptColumn) {
-                let rows = listGrid.getOriginalData ().localData.toArray();
+                let rows = listGrid.getOriginalData().localData.toArray();
                 let result = this.getAllFields(listGrid, exceptColumn);
                 let fields = result.fields;
                 let isValueMaps = result.isValueMap;
@@ -785,7 +785,7 @@
             }
 
             static showDialog(title, listgrid, fileName, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate){
-                let size = listgrid.data.size();
+                let size = listgrid.getOriginalData().size();
                 let maxCount=5000;
 
                 size = Math.min(maxCount,size);
@@ -812,7 +812,7 @@
                             padding: 10,
                             fields: [
                                 {
-                                    title: "سطرهاي موجود: " + listgrid.data.size(),
+                                    title: "سطرهاي موجود: " + listgrid.getOriginalData().size(),
                                     type: 'staticText',
                                     width: "150",
                                     colSpan:2,
@@ -877,7 +877,7 @@
                                     click: function () {
                                         if (trTrim(exportExcelForm.getValue("maxRow")) != "") {
 
-                                            /*if(Number(trTrim(exportExcelForm.getValue("maxRow")))+Number(trTrim(exportExcelForm.getValue("startRow"))) > Number(listgrid.data.size())){
+                                            /*if(Number(trTrim(exportExcelForm.getValue("maxRow")))+Number(trTrim(exportExcelForm.getValue("startRow"))) > Number(listgrid.getOriginalData().size())){
                                                 createDialog("info", "مجمع سطر شروع و تعداد سطر ها در خواستي براي خروجي بيشتر از تعداد کل سطرهاي موجود است");
                                                 return;
                                             }else if(Number(trTrim(exportExcelForm.getValue("maxRow"))) > size){
@@ -909,7 +909,7 @@
             }
 
             static showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate){
-                let size = listgrid.data.size();
+                let size = listgrid.getOriginalData().size();
                 let maxCount=5000;
 
                 size = Math.min(maxCount,size);
@@ -936,7 +936,7 @@
                             padding: 10,
                             fields: [
                                 {
-                                    title: "سطرهاي موجود: " + listgrid.data.size(),
+                                    title: "سطرهاي موجود: " + listgrid.getOriginalData().size(),
                                     type: 'staticText',
                                     width: "150",
                                     colSpan:2,
@@ -1001,7 +1001,7 @@
                                     click: function () {
                                         if (trTrim(exportExcelForm.getValue("maxRow")) != "") {
 
-                                            /*if(Number(trTrim(exportExcelForm.getValue("maxRow")))+Number(trTrim(exportExcelForm.getValue("startRow"))) > Number(listgrid.data.size())){
+                                            /*if(Number(trTrim(exportExcelForm.getValue("maxRow")))+Number(trTrim(exportExcelForm.getValue("startRow"))) > Number(listgrid.getOriginalData().size())){
                                                 createDialog("info", "مجمع سطر شروع و تعداد سطر ها در خواستي براي خروجي بيشتر از تعداد کل سطرهاي موجود است");
                                                 return;
                                             }else if(Number(trTrim(exportExcelForm.getValue("maxRow"))) > size){

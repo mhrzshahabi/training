@@ -602,7 +602,6 @@
 
     //////////////////////////////////////////////////NA/////////////////////////////////////////////////////
 
-
     let ToolStrip_Skill_Post_Export2EXcel = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
