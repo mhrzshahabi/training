@@ -9,7 +9,7 @@
 %>
 // <script>
     wait.show();
-    let numClasses = 0, numSkills = 0;
+    let numClasses = 0, numSkills = 0, numGoals = 0;
     var testData = [];
     var mainObjectiveList = [];
     var equalCourse = [];
@@ -678,6 +678,7 @@
                                     wait.show();
                                     isc.RPCManager.sendRequest(
                                         TrDSRequest(skillUrl + "/remove-course/" + courseRecord.id + "/" + ListGridOwnSkill_JspCourse.getSelectedRecord().id, "DELETE", null, (resp)=>{
+                                            isChangeable();
                                             wait.close();
                                             if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                                                 mainObjectiveGrid_Refresh();
@@ -688,43 +689,17 @@
                                 }
                             }
                         },
-                        gridComponents: [isc.Label.create({
+                        gridComponents: [
+                            isc.Label.create({
                             contents: "<spring:message code="skill.plural.list"/>",
                             align: "center",
                             height: 30,
                             showEdges: true
                         }),
-                            //     isc.ToolStrip.create({
-                            //     width: "100%",
-                            //     border: '0px',
-                            //     members: [
-                            //         isc.ToolStripButton.create({
-                            //             // width: 250,
-                            //             title: "مهارت های گروه",
-                            //             click: function () {
-                            //                 let cat = DynamicForm_course_GroupTab.getField("category.id").getValue()
-                            //                 RestDataSource_Skill_JspCourse.fetchDataURL = skillUrl + "/skillthisCourse" + "?category.id=" + cat
-                            //                 ListGrid_AllSkill_JspCourse.fetchData()
-                            //                 ListGrid_AllSkill_JspCourse.invalidateCache()
-                            //             }
-                            //         }), isc.ToolStrip.create({
-                            //             width: "100%",
-                            //             align: "left",
-                            //             border: '0px',
-                            //             members: [
-                            //                 isc.ToolStripButton.create({
-                            //                     // width: 200,
-                            //                     title: "همه مهارت ها",
-                            //                     click: function () {
-                            //                         RestDataSource_Skill_JspCourse.fetchDataURL = skillUrl + "/spec-list",
-                            //                             ListGrid_AllSkill_JspCourse.fetchData()
-                            //                         ListGrid_AllSkill_JspCourse.invalidateCache()
-                            //                     }
-                            //                 })
-                            //             ]
-                            //         })]
-                            // }),
-                            "filterEditor", "header", "body"],
+                            "filterEditor",
+                            "header",
+                            "body"
+                        ],
                     }),
                     isc.ToolStrip.create({
                         ID: "ListGridOwnSkill_ToolStrip",
@@ -735,7 +710,6 @@
                         membersMargin: 5,
                         members: [
                             isc.IconButton.create({
-                                // icon: "[SKIN]/TransferIcons/double-arrow-left.png",
                                 icon: "<spring:url value="double-arrow-left.png"/>",
                                 showButtonTitle: false,
                                 prompt: "افزودن",
@@ -744,7 +718,6 @@
                                 }
                             }),
                             isc.IconButton.create({
-                                // icon: "[SKIN]/TransferIcons/double-arrow-right.png",
                                 icon: "<spring:url value="double-arrow-right.png"/>",
                                 showButtonTitle: false,
                                 prompt: "حذف",
@@ -777,22 +750,16 @@
                             if (ListGrid_AllSkill_JspCourse.getSelectedRecord() == null) {
                                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                             } else {
-                                wait.show()
-                                isc.RPCManager.sendRequest({
-                                    actionURL: skillUrl + "/add-course/" + courseRecord.id + "/" + ListGrid_AllSkill_JspCourse.getSelectedRecord().id,
-                                    httpMethod: "POST",
-                                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                                    useSimpleHttp: true,
-                                    contentType: "application/json; charset=utf-8",
-                                    showPrompt: false,
-                                    serverOutputAsString: false,
-                                    callback: function (resp) {
-                                        wait.close()
+                                wait.show();
+                                isc.RPCManager.sendRequest(
+                                    TrDSRequest(skillUrl + "/add-course/" + courseRecord.id + "/" + ListGrid_AllSkill_JspCourse.getSelectedRecord().id, "POST", null, (resp)=>{
+                                        wait.close();
+                                        isChangeable();
                                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                             ListGridAllSkillRefresh();
                                         }
-                                    }
-                                })
+                                    })
+                                );
                             }
                         },
                         gridComponents: [isc.Label.create({
@@ -2505,7 +2472,7 @@
         }
     };
 
-    const toggleGroupTabs = status => {
+    let toggleGroupTabs = status => {
         DynamicForm_course_GroupTab.getItem("category.id").setDisabled(status);
         DynamicForm_course_GroupTab.getItem("subCategory.id").setDisabled(status);
         DynamicForm_course_GroupTab.getItem("runType.id").setDisabled(status);
@@ -2515,7 +2482,21 @@
         if (status){
             DynamicForm_course_GroupTab.getItem('statusGroupTab').show();
             DynamicForm_course_GroupTab.getItem('statusGroupTab').setCellStyle('eval-code-label');
-            statusGroupTab.setValue("<spring:message code='status.course.groupTabSectionOne'/>" +" " +numClasses.toString()+" " +"<spring:message code='class'/>"+" و "+ numSkills.toString() + " "+"<spring:message code='skill'/>"+" "+"<spring:message code='status.course.groupTabSectionTwo'/>");
+            let str = "";
+            if(numClasses !== 0){
+                str = numClasses.toString() + " " + "<spring:message code='class'/>";
+            }else if(numSkills !== 0){
+                str = numSkills.toString() + " "+"<spring:message code='skill'/>";
+            }else if(numGoals !== 0){
+                str = numGoals.toString() + " " + "هدف";
+            }else if(equalCourse.length > 0){
+                str = equalCourse.length.toString() + " " + "دوره معادل";
+            }else if(preCourseGrid.getData().localData === undefined ? false : preCourseGrid.getData().localData.length > 0){
+                str = preCourseGrid.getData().localData.length.toString() + " " + "دوره پیشنیاز";
+            }else if(mainObjectiveList.length > 0){
+                str = mainObjectiveList.length.toString() + " " + "هدف اصلی";
+            }
+            statusGroupTab.setValue("<spring:message code='status.course.groupTabSectionOne'/>" + str + " " + "<spring:message code='status.course.groupTabSectionTwo'/>");
         }
     };
 
@@ -2600,11 +2581,11 @@
     }
 
     var isChangeable = (canShowWaitWindow = true) => {
-        // if(canShowWaitWindow) {
-        //     wait.show();
-        // }
         isc.RPCManager.sendRequest(
             TrDSRequest(courseUrl + "checkDependence/" + courseRecord.id, "GET", null, (resp)=>{
+                numClasses = 0;
+                numSkills = 0;
+                numGoals = 0;
                 if(canShowWaitWindow) {
                     wait.close();
                 }
@@ -2613,7 +2594,7 @@
                 numSkills = normalizedResp.numSkills;
                 numGoals = normalizedResp.numGoals;
                 toggleGroupTabs(
-                    numClasses > 0 || numSkills > 0 || mainObjectiveList.length > 0 || equalCourse.length > 0 || (preCourseGrid.getData().localData === undefined ? false : preCourseGrid.getData().localData > 0) || numGoals > 0
+                    numClasses > 0 || numSkills > 0 || mainObjectiveList.length > 0 || equalCourse.length > 0 || (preCourseGrid.getData().localData === undefined ? false : preCourseGrid.getData().localData.length > 0) || numGoals > 0
                 );
             })
         );

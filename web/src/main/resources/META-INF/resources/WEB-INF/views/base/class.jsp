@@ -2884,7 +2884,7 @@
             _constructor: "AdvancedCriteria",
             operator: "and",
             criteria: []
-        };
+        }
         if (ListGrid_Class_JspClass.getCriteria().criteria !== undefined) {
             cr = ListGrid_Class_JspClass.getCriteria();
         }
