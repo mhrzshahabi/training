@@ -9,7 +9,8 @@
 %>
 // <script>
     wait.show();
-    let numClasses = 0, numSkills = 0, numGoals = 0;
+    var numClasses = 0;
+    let numSkills = 0, numGoals = 0;
     var testData = [];
     var mainObjectiveList = [];
     var equalCourse = [];
@@ -673,7 +674,10 @@
                         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
                             if (ListGridOwnSkill_JspCourse.getSelectedRecord() == null) {
                                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
-                            } else {
+                            } else if(numClasses>0) {
+                                createDialog("warning","از این دوره در کلاس استفاده شده است.", "اخطار");
+                                return;
+                            }  else {
                                 if (!ListGridOwnSkill_JspCourse.getSelectedRecord().courseMainObjectiveId) {
                                     wait.show();
                                     isc.RPCManager.sendRequest(
@@ -749,17 +753,24 @@
                         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
                             if (ListGrid_AllSkill_JspCourse.getSelectedRecord() == null) {
                                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                            } else if(numClasses>0) {
+                              createDialog("warning","از این دوره در کلاس استفاده شده است.", "اخطار");
+                              return;
                             } else {
-                                wait.show();
-                                isc.RPCManager.sendRequest(
-                                    TrDSRequest(skillUrl + "/add-course/" + courseRecord.id + "/" + ListGrid_AllSkill_JspCourse.getSelectedRecord().id, "POST", null, (resp)=>{
-                                        wait.close();
-                                        isChangeable();
-                                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                                            ListGridAllSkillRefresh();
-                                        }
-                                    })
-                                );
+                                    wait.show();
+                                    isc.RPCManager.sendRequest(
+                                        TrDSRequest(skillUrl + "/add-course/" + courseRecord.id + "/" + ListGrid_AllSkill_JspCourse.getSelectedRecord().id, "POST", null, (resp)=>{
+                                            wait.close();
+                                            if(resp.httpResponseCode === 409){
+                                                createDialog("warning", JSON.parse(resp.httpResponseText).message, "اخطار")
+                                            }
+                                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                                ListGridAllSkillRefresh();
+                                                isChangeable();
+                                            }
+                                        })
+                                    );
+
                             }
                         },
                         gridComponents: [isc.Label.create({
@@ -2142,6 +2153,7 @@
             this.close();
         },
         close: function () {
+            DynamicForm_course_MainTab.setDisabled(false);
             Window_AddMainObjective.close();
             ListGrid_Course_refresh();
             this.Super("close", arguments);
@@ -2479,6 +2491,7 @@
         DynamicForm_course_GroupTab.getItem("levelType.id").setDisabled(status);
         DynamicForm_course_GroupTab.getItem("theoType.id").setDisabled(status);
         DynamicForm_course_GroupTab.getItem('statusGroupTab').hide();
+        DynamicForm_course_MainTab.setDisabled(numClasses>0);
         if (status){
             DynamicForm_course_GroupTab.getItem('statusGroupTab').show();
             DynamicForm_course_GroupTab.getItem('statusGroupTab').setCellStyle('eval-code-label');
@@ -2581,6 +2594,9 @@
     }
 
     var isChangeable = (canShowWaitWindow = true) => {
+        if (canShowWaitWindow){
+            wait.show();
+        }
         isc.RPCManager.sendRequest(
             TrDSRequest(courseUrl + "checkDependence/" + courseRecord.id, "GET", null, (resp)=>{
                 numClasses = 0;

@@ -22,8 +22,7 @@
         jsonSuffix: "",
         fetchDataURL: enumUrl + "eDomainType"
     });
-    var RestDataSource_GoalAll = isc.TrDS.create({
-        ID: "goalDS",
+    let RestDataSource_GoalAll = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: "true", hidden: "true"}, {name: "titleFa"}, {name: "titleEn"},
             {name: "code"}, {name: "description"}
@@ -33,7 +32,7 @@
         jsonSuffix: "",
         // fetchDataURL: courseUrl + "goal/" + courseRecord.id
     });
-    var RestDataSource_Syllabus_JspGoal = isc.TrDS.create({
+    let RestDataSource_Syllabus_JspGoal = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "سرفصل ها", align: "center", width: "60%"},
@@ -62,7 +61,7 @@
         fetchDataURL: subCategoryUrl + "spec-list",
     });
 
-    var DynamicForm_Goal = isc.DynamicForm.create({
+    let DynamicForm_Goal = isc.DynamicForm.create({
         fields: [
             {name: "id", hidden: true},
             {
@@ -122,8 +121,7 @@
             },
         ],
     });
-    var DynamicForm_Syllabus = isc.DynamicForm.create({
-        ID: "formSyllabus",
+    let DynamicForm_Syllabus = isc.DynamicForm.create({
         fields: [
             {name: "id", hidden: true},
             {
@@ -249,7 +247,7 @@
         }
     });
 
-    var IButton_Goal_Save = isc.IButtonSave.create({
+    let IButton_Goal_Save = isc.IButtonSave.create({
         click: function () {
             DynamicForm_Goal.validate();
             if (DynamicForm_Goal.hasErrors()) {
@@ -257,35 +255,23 @@
             }
             let data = DynamicForm_Goal.getValues();
             wait.show();
-            isc.RPCManager.sendRequest({
-                actionURL: urlGoal,
-                httpMethod: methodGoal,
-                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                showPrompt: false,
-                data: JSON.stringify(data),
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    wait.close()
-                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                        let responseID = JSON.parse(resp.data).id;
-                        let gridState = "[{id:" + responseID + "}]";
-                        simpleDialog("انجام فرمان", "عملیات با موفقیت انجام شد.", "3000", "say");
-                        ListGrid_Goal_refresh();
-                        ListGrid_GoalAll.invalidateCache();
-                        ListGrid_CourseGoal_Goal.invalidateCache();
-                        setTimeout(function () {
-                            ListGrid_Goal.setSelectedState(gridState);
-                        }, 0);
-                        Window_Goal.close();
-                    } else {
-                        simpleDialog("پیغام", "اجرای عملیات با مشکل مواجه شده است!", "3000", "error")
-                    }
-
+            isc.RPCManager.sendRequest(TrDSRequest(urlGoal, methodGoal, JSON.stringify(data), resp => {
+                wait.close();
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    let responseID = JSON.parse(resp.data).id;
+                    let gridState = "[{id:" + responseID + "}]";
+                    simpleDialog("انجام فرمان", "عملیات با موفقیت انجام شد.", "3000", "say");
+                    ListGrid_Goal_refresh();
+                    ListGrid_GoalAll.invalidateCache();
+                    ListGrid_CourseGoal_Goal.invalidateCache();
+                    setTimeout(function () {
+                        ListGrid_Goal.setSelectedState(gridState);
+                    }, 0);
+                    Window_Goal.close();
+                } else {
+                    simpleDialog("پیغام", "اجرای عملیات با مشکل مواجه شده است!", "3000", "error")
                 }
-            });
-
+            }));
         }
     });
     var IButton_Syllabus_Save = isc.IButtonSave.create({
@@ -658,8 +644,8 @@
         selectionChanged: function (record, state) {
             RestDataSource_Syllabus_JspGoal.fetchDataURL = goalUrl + record.id + "/syllabus";
         },
-        sortField: 1,
-        sortDirection: "descending",
+        sortField: 2,
+        sortDirection: "ascending",
         dataPageSize: 50,
         autoFetchData: false,
         showFilterEditor: true,
@@ -807,8 +793,7 @@
             ListGrid_Goal_Edit(ListGrid_GoalAll);
         }
     });
-    var ToolStripButton_Goal_Add = isc.ToolStripButtonAdd.create({
-
+    let ToolStripButton_Goal_Add = isc.ToolStripButtonAdd.create({
         title: "ایجاد",
         prompt: "تعریف هدف جدید برای دوره مذکور",
         hoverWidth: 160,
@@ -940,7 +925,6 @@
             this.hide();
         },
         show(){
-            console.log(courseRecord);
             let cr = {
                 _constructor: "AdvancedCriteria",
                 operator: "or",
@@ -1100,8 +1084,11 @@
     }
 
     function ListGrid_Goal_Add() {
+        if(numClasses>0){
+            createDialog("warning", "بدلیل تشکیل کلاس برای دوره نمی توان برای این دوره هدف جدید ایجاد کرد.", "اخطار");
+            return;
+        }
         DynamicForm_Goal.getItem("subCategoryId").disable();
-
         if (DynamicForm_course_MainTab.getValue("titleFa") == null) {
             isc.Dialog.create({
                 message: "لطفاً ابتدا اطلاعات دوره را وارد کنید.",
@@ -1247,6 +1234,9 @@
             let goalRecord = ListGrid_GoalAll.getSelectedRecords();
             if (goalRecord.length === 0) {
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>")
+            }else if(numClasses>0) {
+                createDialog("warning","از این دوره در کلاس استفاده شده است.", "اخطار");
+                return;
             } else {
                 let goalList = [];
                 let categoryIDs = [];
@@ -1300,6 +1290,9 @@
                         this.close();
                     }
                 });
+            } else if(numClasses>0) {
+                createDialog("warning","از این دوره در کلاس استفاده شده است.", "اخطار");
+                return;
             } else {
                 let arrayRecord = [];
                 for (let i = 0; i < goalRecord.length; i++) {
