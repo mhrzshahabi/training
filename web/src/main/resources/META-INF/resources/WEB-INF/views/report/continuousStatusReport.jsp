@@ -47,17 +47,16 @@
             {name: "classHDduration", title:"<spring:message code='course_theoryDuration'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "classStartDate", title:"<spring:message code="start.date"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "classEndDate", title:"<spring:message code="end.date"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "classStatus", title:"وضعیت کلاس", filterOperator: "equals", autoFitWidth: true, valueMap: {
-                    "1": "برنامه ریزی",
-                    "2": "در حال اجرا"
+            {name: "classStatus", title:"وضعیت کلاس", filterOnKeypress: true,filterOperator: "equals", autoFitWidth: true, valueMap: {
+                    1: "برنامه ریزی",
+                    2: "در حال اجرا"
                 }},
 
             {name: "courseType", title:"وضعیت نیازسنجی", filterOperator: "iContains", autoFitWidth: true},
-            {name: "naPriorityId", title:"اولویت نیازسنجی", filterOperator: "equals",  autoFitWidth: true, valueMap: {
-                    "111" : "عملکردی ضروری",
-                    "113" : "عملکردی توسعه",
-                    "112" : "عملکردی بهبود",
-                    "0" : ""
+            {name: "naPriorityId", title:"اولویت نیازسنجی",filterOnKeypress: true, filterOperator: "equals",  autoFitWidth: true, valueMap: {
+                    111 : "عملکردی ضروری",
+                    113 : "عملکردی توسعه",
+                    112 : "عملکردی بهبود"
                 }},
 
             {name: "termId", hidden: true, filterOperator: "equals"},
@@ -199,7 +198,8 @@
         dataSource : RestDataSource_JspcontinuousPersonnel,
         cellHeight: 43,
         sortField: 0,
-        showFilterEditor: false,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
         selectionType: "single",
         showRecordComponents: true,
         showRecordComponentsByCell: true
@@ -210,7 +210,7 @@
         title: "گزارش اکسل",
         width: 300,
         click: function () {
-            ExportToFile.downloadExcel(null, ListGrid_JspcontinuousPersonnel, 'continuousPersonnel', 0, null, '',  "گزارش مستمر", ListGrid_JspcontinuousPersonnel.data.criteria, null);
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_JspcontinuousPersonnel, continuousStatusReportViewUrl, 0, null, '',  "گزارش مستمر", ListGrid_JspcontinuousPersonnel.data.getCriteria(), null);
         }
     });
 
