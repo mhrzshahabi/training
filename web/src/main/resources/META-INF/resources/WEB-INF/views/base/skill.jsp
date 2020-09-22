@@ -608,9 +608,11 @@
         members: [
             isc.ToolStripButtonExcel.create({
                 click: function () {
-                    if (SkillLG_Skill.getSelectedRecord() == null)
+                    if (SkillLG_Skill.getSelectedRecord() == null) {
+                        createDialog("info", "مهارتی از جدول بالا انتخاب نشده است");
                         return;
-                    ExportToFile.downloadExcelRestUrl(null, PostLG_Skill , needsAssessmentReportsUrl + "/skillNA", 0, null, '',"لیست موارد نیازسنجی شده برای مهارت " + SkillLG_Skill.getSelectedRecord().titleFa + " با کد " + SkillLG_Skill.getSelectedRecord().code, PostLG_Skill.getCriteria(), null);
+                    }
+                    ExportToFile.downloadExcelRestUrl(null, PostLG_Skill , needsAssessmentReportsUrl + "/skillNA", 0, SkillLG_Skill, '',"لیست موارد نیازسنجی شده برای مهارت " + SkillLG_Skill.getSelectedRecord().titleFa + " با کد " + SkillLG_Skill.getSelectedRecord().code, PostLG_Skill.getCriteria(), null);
                 }
             })
         ]
@@ -627,11 +629,11 @@
         dataSource: PostDS_Skill,
         selectionType: "none",
         autoFetchData: false,
-        gridComponents: [ActionsTS_Post_Skill, "filterEditor", "header", "body",],
+        gridComponents: [ActionsTS_Post_Skill, "filterEditor", "header", "body"],
         sortField: "objectType",
-        groupByField: "objectType",
+        // groupByField: "objectType",
         fields: [
-            {name: "objectType"},
+            {name: "objectType", filterOnKeypress: true},
             {name: "peopleType", canSort: false, canFilter: false},
             {name: "objectCode"},
             {name: "objectName"},

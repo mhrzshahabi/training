@@ -1,5 +1,6 @@
 package com.nicico.training.service;
 
+import com.nicico.copper.common.domain.criteria.NICICOPageable;
 import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections.map.MultiValueMap;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -281,10 +283,10 @@ public class NeedsAssessmentReportsService {
 //    @Override
     public SearchDTO.SearchRs<NeedsAssessmentDTO.SkillNA> getSkillNAPostList(SearchDTO.SearchRq request) {
         BaseService.setCriteriaToNotSearchDeleted(request);
-        List<NeedsAssessment> needsAssessments = needsAssessmentDAO.findAll(NICICOSpecification.of(request));
-        List<NeedsAssessmentDTO.SkillNA> objectList = convertToSkillNa(needsAssessments);
+        Page<NeedsAssessment> needsAssessments = needsAssessmentDAO.findAll(NICICOSpecification.of(request), NICICOPageable.of(request));
+        List<NeedsAssessmentDTO.SkillNA> objectList = convertToSkillNa(needsAssessments.getContent());
         SearchDTO.SearchRs<NeedsAssessmentDTO.SkillNA> searchRs = new SearchDTO.SearchRs<>();
-        searchRs.setTotalCount((long) objectList.size());
+        searchRs.setTotalCount(needsAssessments.getTotalElements());
         searchRs.setList(objectList);
         return searchRs;
     }
@@ -302,7 +304,7 @@ public class NeedsAssessmentReportsService {
                 switch (na.getObjectType()) {
                     case "Post":
                         Post post = (Post) na.getObject();
-                        if(post.getDeleted() != null)
+                        if (post.getDeleted() != null)
                             return;
                         object.setPeopleType(post.getPeopleType())
                                 .setEnabled(post.getEnabled())
@@ -314,7 +316,7 @@ public class NeedsAssessmentReportsService {
                         break;
                     case "TrainingPost":
                         TrainingPost trainingPost = (TrainingPost) na.getObject();
-                        if(trainingPost.getDeleted() != null)
+                        if (trainingPost.getDeleted() != null)
                             return;
                         object.setPeopleType(trainingPost.getPeopleType())
                                 .setEnabled(trainingPost.getEnabled())
@@ -326,33 +328,33 @@ public class NeedsAssessmentReportsService {
                         break;
                     case "PostGroup":
                         PostGroup postGroup = (PostGroup) na.getObject();
-                        if(postGroup.getDeleted() != null)
+                        if (postGroup.getDeleted() != null)
                             return;
                         object.setEnabled(postGroup.getEnabled());
                         break;
                     case "Job":
                         Job job = (Job) na.getObject();
-                        if(job.getDeleted() != null)
+                        if (job.getDeleted() != null)
                             return;
                         object.setPeopleType(job.getPeopleType())
                                 .setEnabled(job.getEnabled());
                         break;
                     case "JobGroup":
                         JobGroup jobGroup = (JobGroup) na.getObject();
-                        if(jobGroup.getDeleted() != null)
+                        if (jobGroup.getDeleted() != null)
                             return;
                         object.setEnabled(jobGroup.getEnabled());
                         break;
                     case "PostGrade":
                         PostGrade postGrade = (PostGrade) na.getObject();
-                        if(postGrade.getDeleted() != null)
+                        if (postGrade.getDeleted() != null)
                             return;
                         object.setPeopleType(postGrade.getPeopleType())
                                 .setEnabled(postGrade.getEnabled());
                         break;
                     case "PostGradeGroup":
                         PostGradeGroup postGradeGroup = (PostGradeGroup) na.getObject();
-                        if(postGradeGroup.getDeleted() != null)
+                        if (postGradeGroup.getDeleted() != null)
                             return;
                         object.setEnabled(postGradeGroup.getEnabled());
                         break;
