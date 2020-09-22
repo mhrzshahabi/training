@@ -119,6 +119,7 @@ public class PersonnelRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
+    @Deprecated
     @Loggable
     @GetMapping(value = "/byPersonnelCode/{personnelCode}")
     public ResponseEntity<PersonnelDTO.PersonalityInfo> findPersonnelByPersonnelCode(@PathVariable String personnelCode) {
@@ -158,9 +159,9 @@ public class PersonnelRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/byPersonnelNo/{personnelId}/{personnelNo}")
-    public ResponseEntity<PersonnelDTO.DetailInfo> findPersonnelByPersonnelId(@PathVariable Long personnelId, @PathVariable String personnelNo) {
-        return new ResponseEntity<>(personnelService.findPersonnelByPersonnelId(personnelId, personnelNo), HttpStatus.OK);
+    @GetMapping(value = "/findPersonnel/{personnelType}/{personnelId}/{nationalCode}/{personnelNo}")
+    public ResponseEntity<PersonnelDTO.DetailInfo> findPersonnel(@PathVariable Long personnelType,@PathVariable Long personnelId,@PathVariable String nationalCode, @PathVariable String personnelNo) {
+        return new ResponseEntity<>(personnelService.findPersonnel(personnelType,personnelId,nationalCode, personnelNo), HttpStatus.OK);
     }
 
     @GetMapping("/all-field-values")

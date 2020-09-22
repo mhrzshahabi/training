@@ -31,8 +31,7 @@ public class ClassStudentService implements IClassStudentService {
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final ModelMapper mapper;
     private final IEvaluationAnalysisService evaluationAnalysisService;
-    private final ViewActivePersonnelService activePersonnelService;
-
+    private final PersonnelService personnelService;
 
 
     @Transactional(readOnly = true)
@@ -55,7 +54,7 @@ public class ClassStudentService implements IClassStudentService {
         Tclass tclass = tclassService.getTClass(classId);
 
         for (ClassStudentDTO.Create c : request) {
-            List<Student> list = studentService.getStudentByPostCodeAndPersonnelNoAndDepartmentCodeAndFirstNameAndLastName(c.getPostCode(), c.getPersonnelNo(), c.getDepartmentCode(), c.getFirstName(), c.getLastName());
+            List<Student> list = studentService.getStudentByPostCodeAndPersonnelNoAndDepartmentCodeAndFirstNameAndLastNameOrderByIdDesc(c.getPostCode(), c.getPersonnelNo(), c.getDepartmentCode(), c.getFirstName(), c.getLastName());
             Student student = null;
             int size = list.size();
             for (int i=0; i<size; i++) {
@@ -70,10 +69,10 @@ public class ClassStudentService implements IClassStudentService {
             if(student == null) {
                 student = new Student();
                 if (c.getRegisterTypeId() == 1) {
-                    mapper.map(activePersonnelService.getByPersonnelCode(c.getPersonnelNo()), student);
+                    mapper.map(personnelService.getByPersonnelCodeAndNationalCode(c.getNationalCode(),  c.getPersonnelNo()), student);
                     student.setDeleted(null);
                 } else if (c.getRegisterTypeId() == 2) {
-                    mapper.map(personnelRegisteredService.getByPersonnelCode(c.getPersonnelNo()), student);
+                    mapper.map(personnelRegisteredService.getByPersonnelCodeAndNationalCode(c.getNationalCode(), c.getPersonnelNo()), student);
                 }
 
                 /*SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();

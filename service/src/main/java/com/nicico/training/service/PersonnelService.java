@@ -16,6 +16,7 @@ import com.nicico.training.model.PersonnelRegistered;
 import com.nicico.training.model.ViewActivePersonnelInRegistering;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,6 +162,7 @@ public class PersonnelService implements IPersonnelService {
 
     }
 
+    @Deprecated
     @Override
     @Transactional
     public PersonnelDTO.PersonalityInfo getByPersonnelCode(String personnelCode) {
@@ -236,11 +238,64 @@ public class PersonnelService implements IPersonnelService {
 
     @Override
     @Transactional
-    public PersonnelDTO.DetailInfo findPersonnelByPersonnelId(Long personnelId, String personnelNo) {
+    public PersonnelDTO.DetailInfo findPersonnel(Long personnelType, Long personnelId, String nationalCode, String personnelNo) {
 
-        Long personnel_Id = personnelId != 0 ? personnelId : personnelDAO.getPersonnelIdByPersonnelNo(personnelNo);
-        PersonnelRegistered personnelRegistered = new PersonnelRegistered();
-        Personnel personnel = personnelDAO.findPersonnelById(personnel_Id);
+        PersonnelRegistered personnelRegistered = null;
+        Personnel personnel = null;
+        List<Personnel> personnels = null;
+        List<PersonnelRegistered> personnelRegistereds = null;
+
+        if (personnelId > 0 && (personnelType == 1 || personnelType == 2)) {
+
+            if (personnelType == 1) {
+                personnel = personnelDAO.findById(personnelId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+            } else if (personnelType == 2) {
+                personnelRegistered = personnelRegisteredDAO.findById(personnelId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+            }
+
+        } else if (StringUtils.isNotEmpty(nationalCode)) {
+
+            personnels = personnelDAO.findAllByNationalCodeOrderByIdDesc(nationalCode);
+
+            personnel = personnels.stream().filter(p -> p.getDeleted() == 0).findFirst().orElse(null);
+
+            if (personnel == null) {
+
+                personnelRegistereds = personnelRegisteredDAO.findAllByNationalCodeOrderByIdDesc(nationalCode);
+                personnelRegistered = personnelRegistereds.stream().filter(p -> p.getDeleted() == null).findFirst().orElse(null);
+
+                if (personnelRegistered == null) {
+                    if (personnels.size() > 0) {
+                        personnel = personnels.get(0);
+                    } else if (personnelRegistereds.size() > 0) {
+                        personnelRegistered = personnelRegistereds.get(0);
+                    } else {
+                        throw new TrainingException(TrainingException.ErrorType.NotFound);
+                    }
+                }
+            }
+
+        } else {
+            personnels = personnelDAO.findAllByPersonnelNoOrderByIdDesc(nationalCode);
+
+            personnel = personnels.stream().filter(p -> p.getDeleted() == 0).findFirst().orElse(null);
+
+            if (personnel == null) {
+
+                personnelRegistereds = personnelRegisteredDAO.findAllByPersonnelNoOrderByIdDesc(nationalCode);
+                personnelRegistered = personnelRegistereds.stream().filter(p -> p.getDeleted() == null).findFirst().orElse(null);
+
+                if (personnelRegistered == null) {
+                    if (personnels.size() > 0) {
+                        personnel = personnels.get(0);
+                    } else if (personnelRegistereds.size() > 0) {
+                        personnelRegistered = personnelRegistereds.get(0);
+                    } else {
+                        throw new TrainingException(TrainingException.ErrorType.NotFound);
+                    }
+                }
+            }
+        }
 
         if (personnel != null) {
 
@@ -248,8 +303,6 @@ public class PersonnelService implements IPersonnelService {
             personnel.setWorkYears(trainingTime == null ? "عدم آموزش در سال " + DateUtil.getYear() : trainingTime.toString() + " ساعت آموزش در سال " + DateUtil.getYear());
 
         } else {
-
-            personnelRegistered = personnelRegisteredDAO.findPersonnelRegisteredByPersonnelNo(personnelNo);
             Long trainingTime = tclassDAO.getStudentTrainingTime(personnelRegistered.getNationalCode(), personnelNo, DateUtil.getYear());
             personnelRegistered.setWorkYears(trainingTime == null ? "عدم آموزش در سال " + DateUtil.getYear() : trainingTime.toString() + " ساعت آموزش در سال " + DateUtil.getYear());
 
@@ -279,6 +332,40 @@ public class PersonnelService implements IPersonnelService {
 
 
         return result;
+    }
+
+    @Override
+    @Transactional
+    public PersonnelDTO.Info getByPersonnelCodeAndNationalCode(String nationalCode, String personnelNo) {
+
+        Personnel personnel = null;
+        List<Personnel> personnels = null;
+
+        if (StringUtils.isNotEmpty(nationalCode)) {
+
+            personnels = personnelDAO.findAllByNationalCodeOrderByIdDesc(nationalCode);
+
+            personnel = personnels.stream().filter(p -> p.getDeleted() == 0).findFirst().orElse(null);
+
+            if (personnel == null) {
+                if (personnels.size() > 0) {
+                    personnel = personnels.get(0);
+                }
+            }
+
+        } else {
+            personnels = personnelDAO.findAllByPersonnelNoOrderByIdDesc(nationalCode);
+
+            personnel = personnels.stream().filter(p -> p.getDeleted() == 0).findFirst().orElse(null);
+
+            if (personnel == null) {
+                if (personnels.size() > 0) {
+                    personnel = personnels.get(0);
+                }
+            }
+        }
+
+        return modelMapper.map(personnel, PersonnelDTO.Info.class);
     }
 
     @Override

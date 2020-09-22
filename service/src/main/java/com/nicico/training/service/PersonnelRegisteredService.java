@@ -13,6 +13,7 @@ import com.nicico.training.iservice.IPersonnelRegisteredService;
 import com.nicico.training.model.PersonnelRegistered;
 import com.nicico.training.repository.PersonnelRegisteredDAO;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
@@ -141,6 +142,41 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
         Optional<PersonnelRegistered> optPersonnel = personnelRegisteredDAO.findOneByPersonnelNo(personnelCode);
         final PersonnelRegistered personnel = optPersonnel.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         return modelMapper.map(personnel, PersonnelRegisteredDTO.Info.class);
+    }
+
+
+    @Override
+    @Transactional
+    public PersonnelRegisteredDTO.Info getByPersonnelCodeAndNationalCode(String nationalCode, String personnelNo) {
+
+        PersonnelRegistered personnelRegistered = null;
+        List<PersonnelRegistered> personnelsRegistereds = null;
+
+        if (StringUtils.isNotEmpty(nationalCode)) {
+
+            personnelsRegistereds = personnelRegisteredDAO.findAllByNationalCodeOrderByIdDesc(nationalCode);
+
+            personnelRegistered = personnelsRegistereds.stream().filter(p -> p.getDeleted() == null).findFirst().orElse(null);
+
+            if (personnelRegistered == null) {
+                if (personnelsRegistereds.size() > 0) {
+                    personnelRegistered = personnelsRegistereds.get(0);
+                }
+            }
+
+        } else {
+            personnelsRegistereds = personnelRegisteredDAO.findAllByPersonnelNoOrderByIdDesc(nationalCode);
+
+            personnelRegistered = personnelsRegistereds.stream().filter(p -> p.getDeleted() == null).findFirst().orElse(null);
+
+            if (personnelsRegistereds == null) {
+                if (personnelsRegistereds.size() > 0) {
+                    personnelRegistered = personnelsRegistereds.get(0);
+                }
+            }
+        }
+
+        return modelMapper.map(personnelRegistered, PersonnelRegisteredDTO.Info.class);
     }
 
 }

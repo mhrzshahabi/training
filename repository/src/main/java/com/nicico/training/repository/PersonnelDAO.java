@@ -67,4 +67,8 @@ public interface PersonnelDAO extends JpaRepository<Personnel, Long>, JpaSpecifi
 
     @Query(value = "SELECT DISTINCT POST_GRADE_TITLE FROM TBL_PERSONNEL WHERE POST_GRADE_TITLE IS NOT NULL", nativeQuery = true)
     List<String> findAllPostGrade();
+
+    List<Personnel> findAllByNationalCodeOrderByIdDesc(String nationalCode);
+
+    List<Personnel> findAllByPersonnelNoOrderByIdDesc(String personnelNo);
 }

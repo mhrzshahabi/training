@@ -34,4 +34,6 @@ public interface IPersonnelRegisteredService {
     PersonnelRegisteredDTO.Info getOneByNationalCode(String nationalCode);
 
     PersonnelRegisteredDTO.Info getByPersonnelCode(String personnelCode);
+
+    PersonnelRegisteredDTO.Info getByPersonnelCodeAndNationalCode(String nationalCode, String personnelNo);
 }
