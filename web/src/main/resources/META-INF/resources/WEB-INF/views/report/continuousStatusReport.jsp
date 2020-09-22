@@ -87,9 +87,7 @@
         implicitCriteria: {
             _constructor:"AdvancedCriteria",
             operator:"and",
-            criteria:[{fieldName: "active", operator: "equals", value: 1},
-                      {fieldName: "deleted", operator: "equals", value: 0}
-                      ]
+            criteria:[{fieldName: "deleted", operator: "equals", value: 0}]
         },
     });
 
@@ -823,11 +821,11 @@
     DynamicForm_SelectPeople_JspUnitReport.getField("people.code").comboBox.setHint("پرسنل مورد نظر را انتخاب کنید");
     DynamicForm_SelectPeople_JspUnitReport.getField("people.code").comboBox.pickListFields =
         [
-            {name: "firstName", title: "نام", width: "30%", filterOperator: "iContains"},
-            {name: "lastName", title: "نام خانوادگي", width: "30%", filterOperator: "iContains"},
-            {name: "nationalCode", title: "کدملي", width: "30%", filterOperator: "iContains"},
-            {name: "personnelNo", title: "کد پرسنلي", width: "30%", filterOperator: "iContains"},
-            {name: "personnelNo2", title: "کد پرسنلي 6 رقمي", width: "30%", filterOperator: "iContains"},
+            {name: "firstName", title: "نام", autoFitWidth:true, filterOperator: "iContains"},
+            {name: "lastName", title: "نام خانوادگي", autoFitWidth:true, filterOperator: "iContains"},
+            {name: "nationalCode", title: "کدملي", autoFitWidth:true, filterOperator: "iContains"},
+            {name: "personnelNo", title: "کد پرسنلي", autoFitWidth:true, filterOperator: "iContains"},
+            {name: "personnelNo2", title: "کد پرسنلي 6 رقمي",autoFitWidth:true, filterOperator: "iContains"},
             ];
     DynamicForm_SelectPeople_JspUnitReport.getField("people.code").comboBox.filterFields = ["firstName","lastName","nationalCode","personnelNo","personnelNo2"];
 
