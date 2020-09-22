@@ -49,6 +49,35 @@ public class NeedsAssessmentDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("SkillNA")
+    public static class SkillNA  {
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private Long id;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private Long objectId;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private String objectType;
+
+        private String objectName;
+        private String objectCode;
+        private String area;
+        private String assistance;
+        private String affairs;
+        private String section;
+        private String unit;
+        private String peopleType;
+        private Long enabled;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("NeedsAssessmentDTO - Info")
     public static class Info extends NeedsAssessmentDTO {
         private Long id;

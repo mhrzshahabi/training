@@ -511,7 +511,7 @@
             }
 
             static getAllData(listGrid, exceptColumn) {
-                let rows = listGrid.data.getAllLoadedRows();
+                let rows = listGrid.getOriginalData ().localData.toArray();
                 let result = this.getAllFields(listGrid, exceptColumn);
                 let fields = result.fields;
                 let isValueMaps = result.isValueMap;
@@ -1032,7 +1032,7 @@
 
             static downloadExcel(title, listgrid, fileName, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate,warning){
 
-                if(listgrid.data.localData.length > listgrid.data.getAllLoadedRows().length || listgrid.data.localData.length > 200){
+                if(listgrid.getOriginalData().size() > listgrid.getOriginalData().cachedRows || listgrid.getOriginalData().size() > 200){
 
                     let showDialog=null;
 
@@ -1062,7 +1062,7 @@
 
             static downloadExcelRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate,warning,generateCriteria = false){
 
-                if(listgrid.data.localData.length > listgrid.data.getAllLoadedRows().length || listgrid.data.localData.length > 200){
+                if(listgrid.getOriginalData().size() > listgrid.getOriginalData().cachedRows || listgrid.getOriginalData().size() > 200){
 
                     let showDialog=null;
 

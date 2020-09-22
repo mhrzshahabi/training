@@ -4,9 +4,9 @@ import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.NeedsAssessmentDTO;
 import com.nicico.training.dto.NeedsAssessmentReportsDTO;
 import com.nicico.training.dto.PersonnelDTO;
-import com.nicico.training.dto.PostDTO;
 import com.nicico.training.iservice.ICourseService;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.iservice.ISkillService;
@@ -279,15 +279,91 @@ public class NeedsAssessmentReportsService {
 
     @Transactional(readOnly = true)
 //    @Override
-    public SearchDTO.SearchRs<PostDTO.Info> getSkillNAPostList(SearchDTO.SearchRq request, Long skillId) {
-        Skill skill = skillService.getSkill(skillId);
-        List<NeedsAssessment> needsAssessments = new ArrayList<>(skill.getNeedsAssessments());
-        MultiValueMap postsGByPriority = getNAPostsGByPriority(needsAssessments.stream().filter(na -> na.getDeleted() == null).collect(Collectors.toList()));
-        SearchDTO.SearchRs<PostDTO.Info> searchRs = new SearchDTO.SearchRs<>();
-        searchRs.setTotalCount((long) postsGByPriority.values().size());
-        searchRs.setList(modelMapper.map(postsGByPriority.values(), new TypeToken<List<PostDTO.Info>>() {
-        }.getType()));
+    public SearchDTO.SearchRs<NeedsAssessmentDTO.SkillNA> getSkillNAPostList(SearchDTO.SearchRq request) {
+        BaseService.setCriteriaToNotSearchDeleted(request);
+        List<NeedsAssessment> needsAssessments = needsAssessmentDAO.findAll(NICICOSpecification.of(request));
+        List<NeedsAssessmentDTO.SkillNA> objectList = convertToSkillNa(needsAssessments);
+        SearchDTO.SearchRs<NeedsAssessmentDTO.SkillNA> searchRs = new SearchDTO.SearchRs<>();
+        searchRs.setTotalCount((long) objectList.size());
+        searchRs.setList(objectList);
         return searchRs;
+    }
+
+    private List<NeedsAssessmentDTO.SkillNA> convertToSkillNa(List<NeedsAssessment> needsAssessments) {
+        List<NeedsAssessmentDTO.SkillNA> objectList = new ArrayList<>();
+        needsAssessments.forEach(na -> {
+            try {
+                NeedsAssessmentDTO.SkillNA object = new NeedsAssessmentDTO.SkillNA()
+                        .setId(na.getId())
+                        .setObjectId(na.getObjectId())
+                        .setObjectType(na.getObjectType())
+                        .setObjectCode(na.getObjectCode())
+                        .setObjectName(na.getObjectName());
+                switch (na.getObjectType()) {
+                    case "Post":
+                        Post post = (Post) na.getObject();
+                        if(post.getDeleted() != null)
+                            return;
+                        object.setPeopleType(post.getPeopleType())
+                                .setEnabled(post.getEnabled())
+                                .setArea(post.getArea())
+                                .setAssistance(post.getAssistance())
+                                .setAffairs(post.getAffairs())
+                                .setSection(post.getSection())
+                                .setUnit(post.getUnit());
+                        break;
+                    case "TrainingPost":
+                        TrainingPost trainingPost = (TrainingPost) na.getObject();
+                        if(trainingPost.getDeleted() != null)
+                            return;
+                        object.setPeopleType(trainingPost.getPeopleType())
+                                .setEnabled(trainingPost.getEnabled())
+                                .setArea(trainingPost.getArea())
+                                .setAssistance(trainingPost.getAssistance())
+                                .setAffairs(trainingPost.getAffairs())
+                                .setSection(trainingPost.getSection())
+                                .setUnit(trainingPost.getUnit());
+                        break;
+                    case "PostGroup":
+                        PostGroup postGroup = (PostGroup) na.getObject();
+                        if(postGroup.getDeleted() != null)
+                            return;
+                        object.setEnabled(postGroup.getEnabled());
+                        break;
+                    case "Job":
+                        Job job = (Job) na.getObject();
+                        if(job.getDeleted() != null)
+                            return;
+                        object.setPeopleType(job.getPeopleType())
+                                .setEnabled(job.getEnabled());
+                        break;
+                    case "JobGroup":
+                        JobGroup jobGroup = (JobGroup) na.getObject();
+                        if(jobGroup.getDeleted() != null)
+                            return;
+                        object.setEnabled(jobGroup.getEnabled());
+                        break;
+                    case "PostGrade":
+                        PostGrade postGrade = (PostGrade) na.getObject();
+                        if(postGrade.getDeleted() != null)
+                            return;
+                        object.setPeopleType(postGrade.getPeopleType())
+                                .setEnabled(postGrade.getEnabled());
+                        break;
+                    case "PostGradeGroup":
+                        PostGradeGroup postGradeGroup = (PostGradeGroup) na.getObject();
+                        if(postGradeGroup.getDeleted() != null)
+                            return;
+                        object.setEnabled(postGradeGroup.getEnabled());
+                        break;
+                }
+
+                objectList.add(object);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        return objectList;
     }
 
     private void convertCriteriaToParams(SearchDTO.CriteriaRq criteria,

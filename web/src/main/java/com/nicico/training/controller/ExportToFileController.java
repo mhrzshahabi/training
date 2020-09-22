@@ -428,9 +428,7 @@ public class ExportToFileController {
             case "Skill_Post":
                 Map<String, Object[]> SkillPostParams = new HashMap<>();
                 CriteriaConverter.criteria2ParamsMap(searchRq.getCriteria(), SkillPostParams);
-                Long skillId = ((Integer) SkillPostParams.get("skillId")[0]).longValue();
-                CriteriaConverter.removeCriteriaByfieldName(searchRq.getCriteria(), "skillId");
-                generalList = (List<Object>) ((Object) needsAssessmentReportsService.getSkillNAPostList(searchRq, skillId).getList());
+                generalList = (List<Object>) ((Object) needsAssessmentReportsService.getSkillNAPostList(searchRq).getList());
                 break;
 
             case "View_Job":
@@ -866,12 +864,12 @@ public class ExportToFileController {
         String token = (String) req.getSession().getAttribute("AccessToken");
         String restApiUrl = req.getRequestURL().toString().replace(req.getServletPath(), "").replace(req.getContextPath(), "");
 
-        String url ="";
+        String url;
 
-        if(restUrl.contains("?")){
-            url=restApiUrl + restUrl + "&" + query;
-        }else{
-            url=restApiUrl + restUrl + "?" + query;
+        if (restUrl.contains("?")) {
+            url = restApiUrl + restUrl + "&" + query;
+        } else {
+            url = restApiUrl + restUrl + "?" + query;
         }
 
         URL obj = new URL(url);

@@ -8,25 +8,22 @@
 
 // <script>
 
-    var method_Skill = "POST";
-    var url_Skill;
-    var wait_Skill;
-    var skillChanged_Skill = false;
-    var skill_SkillLevelUrl = rootUrl + "/skill-level/spec-list";
-    var skillLevelSymbol_Skill = "";
-    let selectedSkillRecord;
+    let method_Skill = "POST";
+    let url_Skill;
+    let wait_Skill;
+    let skillLevelSymbol_Skill = "";
 
     /////////////////////////////////////////////////TrDS/////////////////////////////////////////////////////////////////
 
-    SkillLevelDS_Skill = isc.TrDS.create({
+    let SkillLevelDS_Skill = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
         ],
-        fetchDataURL: skill_SkillLevelUrl
+        fetchDataURL: rootUrl + "/skill-level/spec-list"
     });
 
-    CategoryDS_Skill = isc.TrDS.create({
+    let CategoryDS_Skill = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -35,7 +32,7 @@
         fetchDataURL: categoryUrl + "spec-list"
     });
 
-    SubCategoryDS_Skill = isc.TrDS.create({
+    let SubCategoryDS_Skill = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -43,27 +40,33 @@
         ]
     });
 
-    PostDS_Skill = isc.TrDS.create({
+    let PostDS_Skill = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap, filterOnKeypress: true},
             {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "objectId", hidden: true, filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "objectCode", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "objectName", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "objectType", title: "نوع نیازسنجی", filterOperator: "equals", autoFitWidth: true, valueMap:{
+                    "Post": "پست انفرادی",
+                    "PostGroup": "گروه پستی",
+                    "Job": "شغل",
+                    "JobGroup": "گروه شغلی",
+                    "PostGrade": "رده پستی",
+                    "PostGradeGroup": "گروه رده پستی",
+                    "TrainingPost": "پست"
+                }},
             {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"}
         ],
-        fetchDataURL: null
+        fetchDataURL: needsAssessmentReportsUrl + "/skillNA"
     });
 
-    CourseDS_Skill = isc.TrDS.create({
+    let CourseDS_Skill = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -85,7 +88,7 @@
         fetchDataURL: courseUrl + "spec-list"
     });
 
-    SkillDS_Skill = isc.TrDS.create({
+    let SkillDS_Skill = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "code", title: "<spring:message code='skill.code'/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -106,7 +109,7 @@
 
     //////////////////////////////////////////////////Course/////////////////////////////////////////////////////
 
-    CourseDV_Skill = isc.DetailViewer.create({
+    let CourseDV_Skill = isc.DetailViewer.create({
         width: 430,
         height: "90%",
         autoDraw: false,
@@ -131,7 +134,7 @@
         ]
     });
 
-    DVHLayout_Skill = isc.HLayout.create({
+    let DVHLayout_Skill = isc.HLayout.create({
         width: "100%",
         height: "5%",
         autoDraw: false,
@@ -145,7 +148,7 @@
         ]
     });
 
-    CloseHlayout_Skill = isc.HLayout.create({
+    let CloseHlayout_Skill = isc.HLayout.create({
         width: "100%",
         height: "6%",
         autoDraw: false,
@@ -163,7 +166,7 @@
         ]
     });
 
-    CourseWindow_Skill = isc.Window.create({
+    let CourseWindow_Skill = isc.Window.create({
         title: "<spring:message code='course'/>",
         width: 460,
         height: 400,
@@ -185,7 +188,7 @@
 
     //////////////////////////////////////////////////Skill/////////////////////////////////////////////////////
 
-    SkillDF_Skill = isc.DynamicForm.create({
+    let SkillDF_Skill = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
         align: "center",
@@ -390,7 +393,7 @@
         ]
     });
 
-    SkillIBSave_Skill = isc.IButtonSave.create({
+    let SkillIBSave_Skill = isc.IButtonSave.create({
 
         click: function () {
 
@@ -414,7 +417,7 @@
         }
     });
 
-    SkillHlayout_Skill = isc.HLayout.create({
+    let SkillHlayout_Skill = isc.HLayout.create({
         layoutMargin: 5,
         showEdges: false,
         align: "center",
@@ -432,7 +435,7 @@
         })]
     });
 
-    SkillWindow_Skill = isc.Window.create({
+    let SkillWindow_Skill = isc.Window.create({
         title: "<spring:message code="skill"/>",
         width: "830",
         autoSize: true,
@@ -448,7 +451,7 @@
         })]
     });
 
-    MenuSkill_Skill = isc.Menu.create({
+    let MenuSkill_Skill = isc.Menu.create({
         data: [
             {
                 title: "<spring:message code="refresh"/>",
@@ -480,30 +483,11 @@
                 click: function () {
                     setCourseDetailViewerData_Skill();
                 }
-            },
-            {isSeparator: true},
-            {
-                title: "<spring:message code='print.pdf'/>",
-                click: function () {
-                    printWithCriteria(SkillLG_Skill.getCriteria(),{},"Skill_Report.jasper");
-                }
-            },
-            {
-                title: "<spring:message code='print.excel'/>",
-                click: function () {
-                    printWithCriteria(SkillLG_Skill.getCriteria(),{},"Skill_Report.jasper","excel");
-                }
-            },
-            {
-                title: "<spring:message code='print.html'/>",
-                click: function () {
-                    printWithCriteria(SkillLG_Skill.getCriteria(),{},"Skill_Report.jasper","html");
-                }
             }
         ]
     });
 
-    SkillLG_Skill = isc.TrLG.create({
+    let SkillLG_Skill = isc.TrLG.create({
         dataSource: SkillDS_Skill,
         contextMenu: MenuSkill_Skill,
         width:"100%",
@@ -511,13 +495,6 @@
         autoFetchData: true,
         selectionType: "single",
         showResizeBar: true,
-        dataArrived:function(){
-            setTimeout(function(){
-                $("tbody tr td:nth-child(8)").css({direction:'ltr'});
-                $("tbody tr td:nth-child(2)").css({direction:'ltr'});
-                $("td.toolStripButtonExcel").css({direction:'rtl'}); //fix excel bug
-            },100);
-        },
         fields: [
             {name: "code"},
             {name: "titleFa"},
@@ -528,6 +505,13 @@
             {name: "course.titleFa"},
             {name: "description"}
         ],
+        dataArrived:function(){
+            setTimeout(function(){
+                $("tbody tr td:nth-child(8)").css({direction:'ltr'});
+                $("tbody tr td:nth-child(2)").css({direction:'ltr'});
+                $("td.toolStripButtonExcel").css({direction:'rtl'});
+            },100);
+        },
         rowHover: function(){
             changeDirection();
         },
@@ -542,45 +526,39 @@
             EditSkill_Skill();
         },
         selectionUpdated: function () {
-            skillChanged_Skill = true;
-            selectedSkillRecord=this.getSelectedRecord().id;
-            PostDS_Skill.fetchDataURL = needsAssessmentReportsUrl + "/skillNA?skillId=" + this.getSelectedRecord().id;
-            if ( DetailTS_Skill.getSelectedTab().name === "Post" ){
-                skillChanged_Skill = false;
-                PostLG_Skill.clearFilterValues();
-                refreshLG(PostLG_Skill);
-            }
+            PostLG_Skill.clearFilterValues();
+            PostLG_Skill.setImplicitCriteria({
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [{fieldName: "skillId", operator: "equals", value: this.getSelectedRecord().id}]
+            });
+            PostLG_Skill.invalidateCache();
+            PostLG_Skill.fetchData();
         }
     });
 
     /////////////////////////////////////////////////ToolStrip/////////////////////////////////////////////////////
 
-    RefreshTSB_Skill = isc.ToolStripButtonRefresh.create({
+    let RefreshTSB_Skill = isc.ToolStripButtonRefresh.create({
         title: "<spring:message code="refresh"/>",
         click: function () {
             refreshLG(SkillLG_Skill);
             PostLG_Skill.setData([]);
         }
     });
-    EditTSB_Skill = isc.ToolStripButtonEdit.create({
+    let EditTSB_Skill = isc.ToolStripButtonEdit.create({
         click: function () {
             EditSkill_Skill();
         }
     });
-    CreateTSB_Skill = isc.ToolStripButtonCreate.create({
+    let CreateTSB_Skill = isc.ToolStripButtonCreate.create({
         click: function () {
             CreateSkill_Skill();
         }
     });
-    RemoveTSB_Skill = isc.ToolStripButtonRemove.create({
+    let RemoveTSB_Skill = isc.ToolStripButtonRemove.create({
         click: function () {
             RemoveSkill_Skill();
-        }
-    });
-    PrintTSB_Skill = isc.ToolStripButtonPrint.create({
-        title: "<spring:message code='print'/>",
-        click: function () {
-            print_SkillListGrid('pdf')
         }
     });
 
@@ -596,7 +574,7 @@
         ]
     });
 
-    CourseTSB_Skill = isc.ToolStripButton.create({
+    let CourseTSB_Skill = isc.ToolStripButton.create({
         top: 260,
         align: "center",
         title: "دوره مرتبط با مهارت",
@@ -605,7 +583,7 @@
         }
     });
 
-    ActionsTS_Skill = isc.ToolStrip.create({
+    let ActionsTS_Skill = isc.ToolStrip.create({
         width: "100%",
         members: [
             CreateTSB_Skill,
@@ -622,7 +600,7 @@
         ]
     });
 
-    //////////////////////////////////////////////////Post/////////////////////////////////////////////////////
+    //////////////////////////////////////////////////NA/////////////////////////////////////////////////////
 
 
     let ToolStrip_Skill_Post_Export2EXcel = isc.ToolStrip.create({
@@ -631,12 +609,13 @@
         members: [
             isc.ToolStripButtonExcel.create({
                 click: function () {
-                    ExportToFile.downloadExcelRestUrl(null, PostLG_Skill , needsAssessmentReportsUrl + "/skillNA?skillId=" + selectedSkillRecord, 0, null, '',"لیست مهارت ها - پست های انفرادی"  , PostLG_Skill.getCriteria(), null);
+                    if (SkillLG_Skill.getSelectedRecord() == null)
+                        return;
+                    ExportToFile.downloadExcelRestUrl(null, PostLG_Skill , needsAssessmentReportsUrl + "/skillNA", 0, null, '',"لیست موارد نیازسنجی شده برای مهارت " + SkillLG_Skill.getSelectedRecord().titleFa + " با کد " + SkillLG_Skill.getSelectedRecord().code, PostLG_Skill.getCriteria(), null);
                 }
             })
         ]
     });
-
 
     let ActionsTS_Post_Skill = isc.ToolStrip.create({
         width: "100%",
@@ -645,50 +624,42 @@
         ]
     });
 
-    PostLG_Skill = isc.TrLG.create({
+    let PostLG_Skill = isc.TrLG.create({
         dataSource: PostDS_Skill,
         selectionType: "none",
         autoFetchData: false,
-        gridComponents: [ActionsTS_Post_Skill, "header", "filterEditor", "body",],
+        gridComponents: [ActionsTS_Post_Skill, "filterEditor", "header", "body",],
+        sortField: "objectType",
+        groupByField: "objectType",
         fields: [
-            {name: "peopleType",
-                filterOnKeypress: true,
-            },
-            {name: "code",
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
-                }
-            },
-            {name: "titleFa"},
-            {name: "job.titleFa"},
-            {name: "postGrade.titleFa"},
-            {name: "area"},
-            {name: "assistance"},
-            {name: "affairs"},
-            {name: "section"},
-            {name: "unit"},
+            {name: "objectType"},
+            {name: "peopleType", canSort: false, canFilter: false},
+            {name: "objectCode"},
+            {name: "objectName"},
+            {name: "area", canSort: false, canFilter: false},
+            {name: "assistance", canSort: false, canFilter: false},
+            {name: "affairs", canSort: false, canFilter: false},
+            {name: "section", canSort: false, canFilter: false},
+            {name: "unit", canSort: false, canFilter: false},
             {
                 name: "enabled",
                 valueMap:{
                     // undefined : "فعال",
                     74 : "غیر فعال"
-                },filterOnKeypress: true,
+                },
+                filterOnKeypress: true,
+                canSort: false,
+                canFilter: false
             }
         ],
     });
 
     /////////////////////////////////////////////////DetailTabSet///////////////////////////////////////////////
 
-    DetailTS_Skill = isc.TabSet.create({
+    let DetailTS_Skill = isc.TabSet.create({
         tabBarPosition: "top",
         height: "40%",
-        tabs: [{name: "Post", title: "پست انفرادی", pane: PostLG_Skill}],
-        tabSelected: function (tabNum, tabPane, ID, tab, name) {
-            if (name === "Post" && skillChanged_Skill) {
-                skillChanged_Skill = false;
-                refreshLG(PostLG_Skill);
-            }
-        }
+        tabs: [{name: "Post", title: "<spring:message code='need.assessment'/>", pane: PostLG_Skill}]
     });
 
     /////////////////////////////////////////////////Layout/////////////////////////////////////////////////////
@@ -864,30 +835,5 @@
             $("td.toolStripButtonExcel").css({direction:'rtl'});
         },10);
     };
-
-    function print_SkillListGrid(type) {
-
-        let advancedCriteria = SkillLG_Skill.getCriteria();
-        let criteriaForm = isc.DynamicForm.create({
-            method: "POST",
-            action: "<spring:url value="/skill/print-all/"/>" + type,
-            target: "_Blank",
-            canSubmit: true,
-            fields:
-                [
-                    {name: "CriteriaStr", type: "hidden"},
-                    {name: "sortBy", type: "hidden"},
-                    {name: "token", type: "hidden"}
-                ]
-        });
-        criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-        criteriaForm.setValue("sortBy", JSON.stringify(SkillLG_Skill.getSort()[0]));
-        criteriaForm.setValue("token", "<%= accessToken %>");
-        criteriaForm.show();
-        criteriaForm.submitForm();
-    }
-
-
-
 
     //</script>
