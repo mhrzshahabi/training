@@ -2216,7 +2216,7 @@
             <sec:authorize access="hasAuthority('Course_Post')">
             {
                 ID: "tabPostJspCourse",
-                title: "<spring:message code="post"/>",
+                title: "<spring:message code="need.assessment"/>",
                 pane:
                     isc.TrVLayout.create({
                         width: "100%",
@@ -2230,9 +2230,11 @@
                                 members: [ isc.ToolStripButtonExcel.create({
                                     click: function () {
                                         let courseRecord = ListGrid_Course.getSelectedRecord();
-                                        if (!(courseRecord === undefined || courseRecord == null)) {
-                                            ExportToFile.downloadExcelRestUrl(null, ListGrid_Post_JspCourse, courseUrl + "post/" + courseRecord.id, 0, ListGrid_Course, '', "دوره - پست", ListGrid_Post_JspCourse.getCriteria(), null);
+                                        if (courseRecord == null) {
+                                            createDialog("info", "دوره ای از جدول بالا انتخاب نشده است");
+                                            return;
                                         }
+                                        ExportToFile.downloadExcelRestUrl(null, ListGrid_Post_JspCourse , skillNAUrl, 0, ListGrid_Course, '',"لیست موارد نیازسنجی شده برای دوره " + courseRecord.titleFa + " با کد " + courseRecord.code, null, null, 0, true);
                                     }
                                 }),isc.ToolStrip.create({
                                     width: "100%",
@@ -2252,36 +2254,54 @@
                             isc.TrLG.create({
                                 ID: "ListGrid_Post_JspCourse",
                                 showResizeBar: false,
+                                selectionType: "none",
+                                autoFetchData: false,
+                                sortField: "objectType",
+                                // groupByField: "objectType",
+                                fields: [
+                                    {name: "objectType", filterOnKeypress: true},
+                                    {name: "peopleType", filterOnKeypress: true},
+                                    {name: "objectCode"},
+                                    {name: "objectName"},
+                                    {name: "area"},
+                                    {name: "assistance"},
+                                    {name: "affairs"},
+                                    {name: "section"},
+                                    {name: "unit"},
+                                    {
+                                        name: "enabled",
+                                        valueMap:{
+                                            // undefined : "فعال",
+                                            74 : "غیر فعال"
+                                        },
+                                        filterOnKeypress: true
+                                    }
+                                ],
                                 dataSource: isc.TrDS.create({
+                                    ID: "RestData_Post_JspCourse",
                                     fields: [
                                         {name: "id", primaryKey: true, hidden: true},
-                                        {
-                                            name: "peopleType",
-                                            title: "<spring:message code="people.type"/>",
-                                            filterOperator: "equals",
-                                            autoFitWidth: true,
-                                            valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار"},
-                                            filterOnKeypress: true
-                                        },
-                                        {name: "titleFa", title: "نام فارسی", align: "center",autoFitWidth: true},
-                                        {name: "code", title: "کد", align: "center",autoFitWidth: true,
-                                            filterEditorProperties: {
-                                                keyPressFilter: "[0-9/]"
-                                            }
-                                        },
-                                        {
-                                            name: "enabled",
-                                            valueMap:{74 : "غیر فعال"},
-                                            filterOnKeypress: true,
-                                            title: "<spring:message code="active.status"/>",
-                                            align: "center",
-                                            filterOperator: "equals",
-                                            autoFitWidth: true,
-                                            autoFitWidthApproach: "both"
-                                        }
+                                        {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap, filterOnKeypress: true},
+                                        {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+                                        {name: "objectId", hidden: true, filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+                                        {name: "objectCode", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+                                        {name: "objectName", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+                                        {name: "objectType", title: "نوع نیازسنجی", filterOperator: "equals", autoFitWidth: true, valueMap:{
+                                                "Post": "پست انفرادی",
+                                                "PostGroup": "گروه پستی",
+                                                "Job": "شغل",
+                                                "JobGroup": "گروه شغلی",
+                                                "PostGrade": "رده پستی",
+                                                "PostGradeGroup": "گروه رده پستی",
+                                                "TrainingPost": "پست"
+                                            }},
+                                        {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+                                        {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+                                        {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+                                        {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+                                        {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"}
                                     ],
-                                    ID: "RestData_Post_JspCourse",
-                                    fetchDataURL: courseUrl + "post/" + courseRecord.id,
+                                    fetchDataURL: skillNAUrl
                                 })})
                         ]
                     })
@@ -2861,9 +2881,14 @@
                     ListGrid_CourseJob.invalidateCache();
                     break;
                 case "tabPostJspCourse":
-                    RestData_Post_JspCourse.fetchDataURL = courseUrl + "post/" + courseRecord.id;
-                    ListGrid_Post_JspCourse.fetchData();
+                    ListGrid_Post_JspCourse.clearFilterValues();
+                    ListGrid_Post_JspCourse.setImplicitCriteria({
+                        _constructor: "AdvancedCriteria",
+                        operator: "and",
+                        criteria: [{fieldName: "courseId", operator: "equals", value: courseRecord.id}]
+                    });
                     ListGrid_Post_JspCourse.invalidateCache();
+                    ListGrid_Post_JspCourse.fetchData();
                     break;
                 case "tabSkillJspCourse":
                     if (courseRecord) {
