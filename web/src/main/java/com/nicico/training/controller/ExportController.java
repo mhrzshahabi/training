@@ -197,6 +197,7 @@ public class ExportController {
                 list = searchSkill.getList();
                 break;
             case "CourseByCriteria.jasper":
+                searchRq.setSortBy(sortBy);
                 searchRq.setCriteria(workGroupService.addPermissionToCriteria("categoryId", searchRq.getCriteria()));
                 SearchDTO.SearchRs<CourseDTO.Info> searchCourse = courseService.search(searchRq);
                 list = searchCourse.getList();
