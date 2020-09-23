@@ -4937,4 +4937,240 @@ FROM
         </createView>
     </changeSet>
 
+
+    <changeSet author="poursalehi_mos" id="VIEW_SKILL_NA-001">
+        <createView viewName="VIEW_SKILL_NA" replaceIfExists="true">
+            <![CDATA[
+                SELECT
+                    na.id                  AS id,
+                    'Post' AS object_type,
+                    p.id                   AS object_id,
+                    p.c_code               AS object_code,
+                    p.c_title_fa           AS object_name,
+                    p.c_people_type        AS object_people_type,
+                    p.e_enabled            AS object_enabled,
+                    skill.id               AS skill_id,
+                    skill.c_code           AS skill_code,
+                    skill.c_title_fa       AS skill_title_fa,
+                    course.id              AS course_id,
+                    course.c_code          AS course_code,
+                    course.c_title_fa      AS course_title_fa,
+                    dep.c_omor_title       AS post_cpp_affairs,
+                    dep.c_hoze_title       AS post_cpp_area,
+                    dep.c_moavenat_title   AS post_cpp_assistant,
+                    dep.c_ghesmat_title    AS post_cpp_section,
+                    dep.c_title            AS post_cpp_title,
+                    dep.c_vahed_title      AS post_cpp_unit,
+                    dep.c_hoze_title       AS post_complex_title,
+                    dep.id                 AS post_department_id
+                FROM
+                    tbl_needs_assessment   na
+                    INNER JOIN tbl_skill              skill ON na.f_skill = skill.id
+                    INNER JOIN tbl_course             course ON skill.f_course = course.id
+                    INNER JOIN tbl_post               p ON na.f_object = p.id
+                                             AND na.c_object_type = 'Post'
+                    LEFT JOIN tbl_department         dep ON dep.id = p.f_department_id
+                WHERE
+                    na.e_deleted IS NULL
+                    AND na.e_enabled IS NULL
+                    AND p.e_deleted IS NULL
+                UNION ALL
+                SELECT
+                    na.id                  AS id,
+                    'TrainingPost' AS object_type,
+                    p.id                   AS object_id,
+                    p.c_code               AS object_code,
+                    p.c_title_fa           AS object_name,
+                    p.c_people_type        AS object_people_type,
+                    p.e_enabled            AS object_enabled,
+                    skill.id               AS skill_id,
+                    skill.c_code           AS skill_code,
+                    skill.c_title_fa       AS skill_title_fa,
+                    course.id              AS course_id,
+                    course.c_code          AS course_code,
+                    course.c_title_fa      AS course_title_fa,
+                    dep.c_omor_title       AS post_cpp_affairs,
+                    dep.c_hoze_title       AS post_cpp_area,
+                    dep.c_moavenat_title   AS post_cpp_assistant,
+                    dep.c_ghesmat_title    AS post_cpp_section,
+                    dep.c_title            AS post_cpp_title,
+                    dep.c_vahed_title      AS post_cpp_unit,
+                    dep.c_hoze_title       AS post_complex_title,
+                    dep.id                 AS post_department_id
+                FROM
+                    tbl_needs_assessment   na
+                    INNER JOIN tbl_skill              skill ON na.f_skill = skill.id
+                    INNER JOIN tbl_course             course ON skill.f_course = course.id
+                    INNER JOIN tbl_training_post      p ON na.f_object = p.id
+                                                      AND na.c_object_type = 'TrainingPost'
+                    LEFT JOIN tbl_department         dep ON dep.id = p.f_department_id
+                WHERE
+                    na.e_deleted IS NULL
+                    AND na.e_enabled IS NULL
+                    AND p.e_deleted IS NULL
+                UNION ALL
+                SELECT
+                    na.id               AS id,
+                    'PostGroup' AS object_type,
+                    p.id                AS object_id,
+                    p.c_code            AS object_code,
+                    p.c_title_fa        AS object_name,
+                    NULL AS object_people_type,
+                    p.e_enabled         AS object_enabled,
+                    skill.id            AS skill_id,
+                    skill.c_code        AS skill_code,
+                    skill.c_title_fa    AS skill_title_fa,
+                    course.id           AS course_id,
+                    course.c_code       AS course_code,
+                    course.c_title_fa   AS course_title_fa,
+                    NULL AS post_cpp_affairs,
+                    NULL AS post_cpp_area,
+                    NULL AS post_cpp_assistant,
+                    NULL AS post_cpp_section,
+                    NULL AS post_cpp_title,
+                    NULL AS post_cpp_unit,
+                    NULL AS post_complex_title,
+                    NULL AS post_department_id
+                FROM
+                    tbl_needs_assessment   na
+                    INNER JOIN tbl_skill              skill ON na.f_skill = skill.id
+                    INNER JOIN tbl_course             course ON skill.f_course = course.id
+                    INNER JOIN tbl_post_group         p ON na.f_object = p.id
+                                                   AND na.c_object_type = 'PostGroup'
+                WHERE
+                    na.e_deleted IS NULL
+                    AND na.e_enabled IS NULL
+                    AND p.e_deleted IS NULL
+                UNION ALL
+                SELECT
+                    na.id               AS id,
+                    'Job' AS object_type,
+                    p.id                AS object_id,
+                    p.c_code            AS object_code,
+                    p.c_title_fa        AS object_name,
+                    p.c_people_type     AS object_people_type,
+                    p.e_enabled         AS object_enabled,
+                    skill.id            AS skill_id,
+                    skill.c_code        AS skill_code,
+                    skill.c_title_fa    AS skill_title_fa,
+                    course.id           AS course_id,
+                    course.c_code       AS course_code,
+                    course.c_title_fa   AS course_title_fa,
+                    NULL AS post_cpp_affairs,
+                    NULL AS post_cpp_area,
+                    NULL AS post_cpp_assistant,
+                    NULL AS post_cpp_section,
+                    NULL AS post_cpp_title,
+                    NULL AS post_cpp_unit,
+                    NULL AS post_complex_title,
+                    NULL AS post_department_id
+                FROM
+                    tbl_needs_assessment   na
+                    INNER JOIN tbl_skill              skill ON na.f_skill = skill.id
+                    INNER JOIN tbl_course             course ON skill.f_course = course.id
+                    INNER JOIN tbl_job                p ON na.f_object = p.id
+                                            AND na.c_object_type = 'Job'
+                WHERE
+                    na.e_deleted IS NULL
+                    AND na.e_enabled IS NULL
+                    AND p.e_deleted IS NULL
+                UNION ALL
+                SELECT
+                    na.id               AS id,
+                    'JobGroup' AS object_people_type,
+                    p.id                AS object_id,
+                    p.c_code            AS object_code,
+                    p.c_title_fa        AS object_name,
+                    NULL AS people_type,
+                    p.e_enabled         AS object_enabled,
+                    skill.id            AS skill_id,
+                    skill.c_code        AS skill_code,
+                    skill.c_title_fa    AS skill_title_fa,
+                    course.id           AS course_id,
+                    course.c_code       AS course_code,
+                    course.c_title_fa   AS course_title_fa,
+                    NULL AS post_cpp_affairs,
+                    NULL AS post_cpp_area,
+                    NULL AS post_cpp_assistant,
+                    NULL AS post_cpp_section,
+                    NULL AS post_cpp_title,
+                    NULL AS post_cpp_unit,
+                    NULL AS post_complex_title,
+                    NULL AS post_department_id
+                FROM
+                    tbl_needs_assessment   na
+                    INNER JOIN tbl_skill              skill ON na.f_skill = skill.id
+                    INNER JOIN tbl_course             course ON skill.f_course = course.id
+                    INNER JOIN tbl_job_group          p ON na.f_object = p.id
+                                                  AND na.c_object_type = 'JobGroup'
+                WHERE
+                    na.e_deleted IS NULL
+                    AND na.e_enabled IS NULL
+                    AND p.e_deleted IS NULL
+                UNION ALL
+                SELECT
+                    na.id               AS id,
+                    'PostGrade' AS object_type,
+                    p.id                AS object_id,
+                    p.c_code            AS object_code,
+                    p.c_title_fa        AS object_name,
+                    p.c_people_type     AS object_people_type,
+                    p.e_enabled         AS object_enabled,
+                    skill.id            AS skill_id,
+                    skill.c_code        AS skill_code,
+                    skill.c_title_fa    AS skill_title_fa,
+                    course.id           AS course_id,
+                    course.c_code       AS course_code,
+                    course.c_title_fa   AS course_title_fa,
+                    NULL AS post_cpp_affairs,
+                    NULL AS post_cpp_area,
+                    NULL AS post_cpp_assistant,
+                    NULL AS post_cpp_section,
+                    NULL AS post_cpp_title,
+                    NULL AS post_cpp_unit,
+                    NULL AS post_complex_title,
+                    NULL AS post_department_id
+                FROM
+                    tbl_needs_assessment   na
+                    INNER JOIN tbl_skill              skill ON na.f_skill = skill.id
+                    INNER JOIN tbl_course             course ON skill.f_course = course.id
+                    INNER JOIN tbl_post_grade         p ON na.f_object = p.id
+                                                   AND na.c_object_type = 'PostGrade'
+                WHERE
+                    na.e_deleted IS NULL
+                    AND na.e_enabled IS NULL
+                    AND p.e_deleted IS NULL
+                UNION ALL
+                SELECT
+                    na.id               AS id,
+                    'PostGradeGroup' AS object_people_type,
+                    p.id                AS object_id,
+                    p.c_code            AS object_code,
+                    p.c_title_fa        AS object_name,
+                    NULL AS people_type,
+                    p.e_enabled         AS object_enabled,
+                    skill.id            AS skill_id,
+                    skill.c_code        AS skill_code,
+                    skill.c_title_fa    AS skill_title_fa,
+                    course.id           AS course_id,
+                    course.c_code       AS course_code,
+                    course.c_title_fa   AS course_title_fa,
+                    NULL AS post_cpp_affairs,
+                    NULL AS post_cpp_area,
+                    NULL AS post_cpp_assistant,
+                    NULL AS post_cpp_section,
+                    NULL AS post_cpp_title,
+                    NULL AS post_cpp_unit,
+                    NULL AS post_complex_title,
+                    NULL AS post_department_id
+                FROM
+                    tbl_needs_assessment   na
+                    INNER JOIN tbl_skill              skill ON na.f_skill = skill.id
+                    INNER JOIN tbl_course             course ON skill.f_course = course.id
+                    INNER JOIN tbl_post_grade_group   p ON na.f_object = p.id
+                                                         AND na.c_object_type = 'PostGradeGroup'
+            ]]>
+        </createView>
+    </changeSet>
+
 </databaseChangeLog>
