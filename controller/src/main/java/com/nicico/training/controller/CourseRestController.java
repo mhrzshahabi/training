@@ -178,14 +178,15 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
                                                        @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
-        //don't touch
-        switch(sortBy){
-            case "duration":
-                sortBy = "theoryDuration";
-                break;
-            case "-duration":
-                sortBy = "-theoryDuration";
-                break;
+        if(sortBy != null) {
+            switch (sortBy) {
+                case "duration":
+                    sortBy = "theoryDuration";
+                    break;
+                case "-duration":
+                    sortBy = "-theoryDuration";
+                    break;
+            }
         }
 
 

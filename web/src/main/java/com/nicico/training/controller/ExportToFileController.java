@@ -75,6 +75,7 @@ public class ExportToFileController {
     private final CompetenceService competenceService;
     private final SkillService skillService;
     private final NeedsAssessmentReportsService needsAssessmentReportsService;
+    private final IViewSkillNAService viewSkillNAService;
     private final ViewJobService viewJobService;
     private final PersonnelService personnelService;
     private final ViewPostService viewPostService;
@@ -428,9 +429,7 @@ public class ExportToFileController {
             case "Skill_Post":
                 Map<String, Object[]> SkillPostParams = new HashMap<>();
                 CriteriaConverter.criteria2ParamsMap(searchRq.getCriteria(), SkillPostParams);
-                Long skillId = ((Integer) SkillPostParams.get("skillId")[0]).longValue();
-                CriteriaConverter.removeCriteriaByfieldName(searchRq.getCriteria(), "skillId");
-                generalList = (List<Object>) ((Object) needsAssessmentReportsService.getSkillNAPostList(searchRq, skillId).getList());
+                generalList = (List<Object>) ((Object) viewSkillNAService.search(searchRq, e -> modelMapper.map(e, ViewSkillNADTO.class)).getList());
                 break;
 
             case "View_Job":
@@ -866,12 +865,12 @@ public class ExportToFileController {
         String token = (String) req.getSession().getAttribute("AccessToken");
         String restApiUrl = req.getRequestURL().toString().replace(req.getServletPath(), "").replace(req.getContextPath(), "");
 
-        String url ="";
+        String url;
 
-        if(restUrl.contains("?")){
-            url=restApiUrl + restUrl + "&" + query;
-        }else{
-            url=restApiUrl + restUrl + "?" + query;
+        if (restUrl.contains("?")) {
+            url = restApiUrl + restUrl + "&" + query;
+        } else {
+            url = restApiUrl + restUrl + "?" + query;
         }
 
         URL obj = new URL(url);
