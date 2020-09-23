@@ -455,12 +455,10 @@
                 name: "teacher",
                 title: "<spring:message code='teacher'/>",
                 displayField: "teacher.personality.lastNameFa",
-                displayValueFromRecord: false,
                 type: "TextItem",
                 sortNormalizer(record) {
                     return record.teacher.personality.lastNameFa;
                 },
-
                 align: "center",
                 filterOperator: "iContains",
                 autoFitWidth: true,
@@ -540,10 +538,6 @@
                 filterOnKeypress: true,
                 autoFitWidth: true,
             },
-// {name: "lastModifiedDate",
-// type:"time"
-// ,hidden:true
-// },
             {name: "createdBy", hidden: true},
             {name: "createdDate", hidden: true},
             {
@@ -2884,7 +2878,7 @@
             _constructor: "AdvancedCriteria",
             operator: "and",
             criteria: []
-        };
+        }
         if (ListGrid_Class_JspClass.getCriteria().criteria !== undefined) {
             cr = ListGrid_Class_JspClass.getCriteria();
         }

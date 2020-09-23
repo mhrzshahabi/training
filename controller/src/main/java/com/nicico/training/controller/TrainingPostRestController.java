@@ -5,13 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonnelService;
-import com.nicico.training.service.BaseService;
 import com.nicico.training.service.TrainingPostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -50,11 +51,22 @@ public class TrainingPostRestController {
 
     @Loggable
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        trainingPostService.delete(id);
-        return new ResponseEntity(HttpStatus.OK);
-    }
+    public ResponseEntity delete(@PathVariable Long id) {
+        try {
+            boolean haveError = false;
 
+            if (!trainingPostService.delete(id))
+                haveError = true;
+
+            if (haveError) {
+                return new ResponseEntity<>("", HttpStatus.NOT_ACCEPTABLE);
+            } else {
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+        } catch (TrainingException | DataIntegrityViolationException e) {
+            return new ResponseEntity<>(new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
 
     @Loggable
     @GetMapping(value = "/spec-list")

@@ -14,13 +14,10 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.UniqueConstraint;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolationException;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -175,11 +172,13 @@ public class TrainingPostService implements ITrainingPostService {
 
     @Transactional
     @Override
-    public void delete(Long id) {
-        if (needsAssessmentService.checkBeforeDeleteObject("TrainingPost", id) && needsAssessmentTempService.checkBeforeDeleteObject("TrainingPost", id))
+    public boolean delete(Long id) {
+        if (needsAssessmentService.checkBeforeDeleteObject("TrainingPost", id) && needsAssessmentTempService.checkBeforeDeleteObject("TrainingPost", id)) {
             trainingPostDAO.deleteById(id);
-        else
-            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
+            return true;
+        }
+
+        return false;
     }
 
     private TrainingPost convertDTO2Obj(TrainingPostDTO trainingPostDTO) throws Exception {

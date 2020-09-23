@@ -159,8 +159,10 @@ public class CourseService implements ICourseService {
     public CourseDTO.CourseDependence checkDependence(Long courseId) {
         final Optional<Course> cById = courseDAO.findById(courseId);
         final Course course = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
-
-        return new CourseDTO.CourseDependence().setNumClasses(course.getTclassSet().size()).setNumSkills(course.getSkillSet().size());
+        int skillSize = course.getSkillSet().stream().filter(skill -> skill.getCourseMainObjectiveId() == null).collect(Collectors.toList()).size();
+        int classSize = course.getTclassSet().size();
+        int goalSize = course.getGoalSet().size();
+        return new CourseDTO.CourseDependence().setNumClasses(classSize).setNumSkills(skillSize).setNumGoals(goalSize);
     }
 
     @Transactional(readOnly = true)
