@@ -707,8 +707,6 @@ public class TclassService implements ITclassService {
             return null;
     }
 
-
-
     public Double getStudentsGradeToTeacher(Set<ClassStudent> classStudentList) {
         Map<String, Double> result = calculateStudentsReactionEvaluationResult(classStudentList);
         if(result.get("studentsGradeToTeacher") != null)
