@@ -21,19 +21,28 @@
                 name: "student.firstName",
                 title: "<spring:message code="firstName"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
+                autoFitWidth: true,
+                sortNormalizer: function (record) {
+                    return record.student.firstName;
+                }
             },
             {
                 name: "student.lastName",
                 title: "<spring:message code="lastName"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
+                autoFitWidth: true,
+                sortNormalizer: function (record) {
+                    return record.student.lastName;
+                }
             },
             {
                 name: "student.nationalCode",
                 title: "<spring:message code="national.code"/>",
                 filterOperator: "iContains",
                 autoFitWidth: true,
+                sortNormalizer: function (record) {
+                    return record.student.nationalCode;
+                }
             },
             {
                 name: "applicantCompanyName",
@@ -51,30 +60,45 @@
                 name: "student.companyName",
                 title: "<spring:message code="company.name"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
+                autoFitWidth: true,
+                sortNormalizer: function (record) {
+                    return record.student.companyName;
+                }
             },
             {
                 name: "student.personnelNo",
                 title: "<spring:message code="personnel.no"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
+                autoFitWidth: true,
+                sortNormalizer: function (record) {
+                    return record.student.personnelNo;
+                }
             },
             {
                 name: "student.personnelNo2",
                 title: "<spring:message code="personnel.no.6.digits"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
+                autoFitWidth: true,
+                sortNormalizer: function (record) {
+                    return record.student.personnelNo2;
+                }
             },
             {
                 name: "student.postTitle",
                 title: "<spring:message code="post"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
+                autoFitWidth: true,
+                sortNormalizer: function (record) {
+                    return record.student.postTitle;
+                }
             },
             {
                 name: "student.ccpArea",
                 title: "<spring:message code="reward.cost.center.area"/>",
-                filterOperator: "iContains"
+                filterOperator: "iContains",
+                sortNormalizer: function (record) {
+                    return record.student.ccpArea;
+                }
             },
             {
                 name: "evaluationStatusReaction",
@@ -1261,7 +1285,6 @@
     }
 
     function Student_Reaction_Form_Inssurance_All_RE() {
-        evalWait_RE = createDialog("wait");
         let check = false;
         for (let j = 0; j < ListGrid_student_RE.getData().localData.size(); j++) {
             let record = ListGrid_student_RE.getData().localData[j];
@@ -1278,7 +1301,6 @@
                 click: function () {
                     if (ListGrid_SelectQuestionnarie_RE.getSelectedRecord() == null || ListGrid_SelectQuestionnarie_RE.getSelectedRecord() == undefined) {
                         createDialog("info", "پرسشنامه ای انتخاب نشده است.");
-                        evalWait_RE.close();
                     } else {
                         let stdIds = new Array();
                         Window_SelectQuestionnarie_RE.close();
@@ -2524,6 +2546,7 @@
         data.evaluationFull = false;
         data.description = null;
 
+        evalWait_RE = createDialog("wait");
         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/groupCreate/" + evaluatorIds, "POST", JSON.stringify(data), function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 if(check == true){}
