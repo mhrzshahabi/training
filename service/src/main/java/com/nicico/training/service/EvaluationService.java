@@ -882,4 +882,18 @@ public class EvaluationService implements IEvaluationService {
         return evaluationResult;
     }
 
+    @Transactional
+    public Boolean classHasEvaluationForm(Long classId){
+        Optional<Tclass> byId = tclassDAO.findById(classId);
+        Tclass tclass = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        Boolean result = false;
+        for (ClassStudent std : tclass.getClassStudents()) {
+            if(std.getEvaluationStatusReaction() != null && std.getEvaluationStatusReaction() != 0)
+                result = true;
+            if(std.getNumberOfSendedBehavioralForms() != null && std.getNumberOfSendedBehavioralForms() > 0)
+                result = true;
+        }
+        return result;
+    }
+
 }
