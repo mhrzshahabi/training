@@ -61,6 +61,7 @@ public class PersonnelRestController {
     private final PersonnelDAO personnelDAO;
     private final IPersonnelRegisteredService personnelRegisteredService;
 
+    //Unused
     @GetMapping("list")
     public ResponseEntity<List<PersonnelDTO.Info>> list() {
         return new ResponseEntity<>(personnelService.list(), HttpStatus.OK);
@@ -74,11 +75,12 @@ public class PersonnelRestController {
 
     @Loggable
     @PostMapping(value = "/checkPersonnelNos/{courseId}")
-    public ResponseEntity<List<PersonnelDTO.InfoForStudent>> checkPersonnelNos(@PathVariable Long courseId,@RequestBody List<String> personnelNos) {
+    public ResponseEntity<List<PersonnelDTO.InfoForStudent>> checkPersonnelNos(@PathVariable Long courseId, @RequestBody List<String> personnelNos) {
         List<PersonnelDTO.InfoForStudent> list = personnelService.checkPersonnelNos(personnelNos, courseId);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
+    //Unused
     @Loggable
     @GetMapping(value = "/byPostCode/{postId}")
     public ResponseEntity<PersonnelDTO.PersonnelSpecRs> findPersonnelByPostCode(@PathVariable Long postId) {
@@ -99,6 +101,7 @@ public class PersonnelRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
+    //Unused
     @Loggable
     @GetMapping(value = "/byJobNo/{jobNo}")
     public ResponseEntity<PersonnelDTO.PersonnelSpecRs> findPersonnelByJobNo(@PathVariable String jobNo) {
@@ -119,7 +122,7 @@ public class PersonnelRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
-    @Deprecated
+    //Unused
     @Loggable
     @GetMapping(value = "/byPersonnelCode/{personnelCode}")
     public ResponseEntity<PersonnelDTO.PersonalityInfo> findPersonnelByPersonnelCode(@PathVariable String personnelCode) {
@@ -127,6 +130,7 @@ public class PersonnelRestController {
         return new ResponseEntity<>(personalInfoDTO, HttpStatus.OK);
     }
 
+    //Unused
     @Loggable
     @GetMapping(value = "/byNationalCode/{nationalCode}")
     public ResponseEntity<PersonnelDTO.PersonalityInfo> findPersonnelByNationalCode(@PathVariable String nationalCode) {
@@ -134,6 +138,7 @@ public class PersonnelRestController {
         return new ResponseEntity<>(personalInfoDTO, HttpStatus.OK);
     }
 
+    //Unused
     @Loggable
     @GetMapping(value = "/byId/{id}")
     public ResponseEntity<Personnel> findPersonnelById(@PathVariable Long id) {
@@ -141,6 +146,7 @@ public class PersonnelRestController {
         return new ResponseEntity<>(personalInfo, HttpStatus.OK);
     }
 
+    //Unused
     @GetMapping("/statisticalReport/{reportType}")
     public ResponseEntity<PersonnelDTO.PersonnelSpecRs> findAllStatisticalReport(@PathVariable String reportType) {
         List<PersonnelDTO.Info> list = personnelService.findAllStatisticalReportFilter(reportType);
@@ -159,25 +165,34 @@ public class PersonnelRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
+
     @GetMapping(value = "/findPersonnel/{personnelType}/{personnelId}/{nationalCode}/{personnelNo}")
-    public ResponseEntity<PersonnelDTO.DetailInfo> findPersonnel(@PathVariable Long personnelType,@PathVariable Long personnelId,@PathVariable String nationalCode, @PathVariable String personnelNo) {
-        return new ResponseEntity<>(personnelService.findPersonnel(personnelType,personnelId,nationalCode, personnelNo), HttpStatus.OK);
+    public ResponseEntity<PersonnelDTO.DetailInfo> findPersonnel(@PathVariable Long personnelType, @PathVariable Long personnelId, @PathVariable String nationalCode, @PathVariable String personnelNo) {
+        return new ResponseEntity<>(personnelService.findPersonnel(personnelType, personnelId, nationalCode, personnelNo), HttpStatus.OK);
     }
 
+    //TODO:must be check
     @GetMapping("/all-field-values")
     public ResponseEntity<ISC<PersonnelDTO.FieldValue>> findAllValuesOfOneFieldFromPersonnel(@RequestParam String fieldName) {
         return new ResponseEntity<>(ISC.convertToIscRs(personnelService.findAllValuesOfOneFieldFromPersonnel(fieldName), 0), HttpStatus.OK);
     }
 
+
+    //TODO:must be check
     @Loggable
     @GetMapping(value = "/getOneByNationalCode/{nationalCode}")
     public ResponseEntity getOneByNationalCode(@PathVariable String nationalCode) {
         SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
-        criteria.getCriteria().add(makeNewCriteria("active", 1, EOperator.equals, null));
+        criteria.getCriteria().add(makeNewCriteria("deleted", 0, EOperator.equals, null));
         criteria.getCriteria().add(makeNewCriteria("nationalCode", nationalCode, EOperator.equals, null));
         List<PersonnelDTO.Info> personnelList = personnelService.search(new SearchDTO.SearchRq().setCriteria(criteria)).getList();
         if (!personnelList.isEmpty())
             return new ResponseEntity<>(personnelList.get(0), HttpStatus.OK);
+
+        criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        criteria.getCriteria().add(makeNewCriteria("deleted", 0, EOperator.isNull, null));
+        criteria.getCriteria().add(makeNewCriteria("nationalCode", nationalCode, EOperator.equals, null));
+
         List<PersonnelRegisteredDTO.Info> personnelRegisteredList = personnelRegisteredService.search(new SearchDTO.SearchRq().setCriteria(criteria)).getList();
         if (!personnelRegisteredList.isEmpty())
             return new ResponseEntity<>(personnelRegisteredList.get(0), HttpStatus.OK);
@@ -187,6 +202,7 @@ public class PersonnelRestController {
             return new ResponseEntity<>("پرسنلی با این کد ملی در سیستم پیدا نشد", HttpStatus.NOT_FOUND);
     }
 
+    //Unused
     @Loggable
     @GetMapping(value = "/get-user-info")
     public ResponseEntity getUserInfo() {

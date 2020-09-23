@@ -32,6 +32,7 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
     private final ModelMapper modelMapper;
     private final PersonnelRegisteredDAO personnelRegisteredDAO;
 
+    //Unused
     @Transactional(readOnly = true)
     @Override
     public PersonnelRegisteredDTO.Info get(Long id) {
@@ -40,6 +41,7 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
         return modelMapper.map(personnelRegistered, PersonnelRegisteredDTO.Info.class);
     }
 
+    //Unused
     @Transactional(readOnly = true)
     @Override
     public List<PersonnelRegisteredDTO.Info> list() {
@@ -90,12 +92,14 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
         personnelRegisteredDAO.deleteAll(gAllById);
     }
 
+    //TODO:must be check
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<PersonnelRegisteredDTO.Info> search(SearchDTO.SearchRq request) {
         return SearchUtil.search(personnelRegisteredDAO, request, personnelRegistered -> modelMapper.map(personnelRegistered, PersonnelRegisteredDTO.Info.class));
     }
 
+    //unused
     @Transactional(readOnly = true)
     @Override
     public TotalResponse<PersonnelRegisteredDTO.Info> search(NICICOCriteria request) {
@@ -111,12 +115,12 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
         PersonnelRegistered prs = null;
 
         for (String personnelNo : personnelNos) {
-
-            if (list.stream().filter(p -> (p.getDeleted() == null || p.getDeleted().equals(0)) && (p.getPersonnelNo() != null && p.getPersonnelNo().equals(personnelNo)) || (p.getPersonnelNo2() != null && p.getPersonnelNo2().equals(personnelNo))).count() == 0) {
+            List<PersonnelRegistered> list2 = list.stream().filter(p -> (p.getDeleted() == null) && (p.getPersonnelNo() != null && p.getPersonnelNo().equals(personnelNo)) || (p.getPersonnelNo2() != null && p.getPersonnelNo2().equals(personnelNo))).collect(Collectors.toList());
+            if (list2.size() == 0){
                 result.add(new PersonnelRegisteredDTO.InfoForStudent());
 
-            } else {
-                prs = list.stream().filter(p -> (p.getDeleted() == null || p.getDeleted().equals(0)) && (p.getPersonnelNo() != null && p.getPersonnelNo().equals(personnelNo)) || (p.getPersonnelNo2() != null && p.getPersonnelNo2().equals(personnelNo))).collect(Collectors.toList()).get(0);
+            } else{
+                prs = list2.get(0);
                 result.add(modelMapper.map(prs, PersonnelRegisteredDTO.InfoForStudent.class));
             }
         }
@@ -124,6 +128,7 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
         return result;
     }
 
+    //unUsed
     @Override
     public PersonnelRegisteredDTO.Info getOneByNationalCode(String nationalCode) {
         return null;
@@ -136,6 +141,7 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
         return modelMapper.map(saved, PersonnelRegisteredDTO.Info.class);
     }
 
+    //unUsed
     @Override
     @Transactional
     public PersonnelRegisteredDTO.Info getByPersonnelCode(String personnelCode) {
@@ -143,7 +149,6 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
         final PersonnelRegistered personnel = optPersonnel.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         return modelMapper.map(personnel, PersonnelRegisteredDTO.Info.class);
     }
-
 
     @Override
     @Transactional

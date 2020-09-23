@@ -1302,6 +1302,16 @@
             }
         });
 
+        let criteriaActivePersonnelRegistered_studentjsp = {
+            _constructor: "AdvancedCriteria",
+            operator: "and",
+            criteria: [
+                {fieldName: "deleted", operator: "isNull"}
+            ]
+        };
+
+        PersonnelsRegLG_student.implicitCriteria = criteriaActivePersonnelRegistered_studentjsp;
+
         // ------------------------------------------- DynamicForm & Window -------------------------------------------
 
         let personnel_List_VLayout = isc.VLayout.create({
