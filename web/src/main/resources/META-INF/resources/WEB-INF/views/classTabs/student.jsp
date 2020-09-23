@@ -1583,7 +1583,7 @@
             let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
             let studentRecord = StudentsLG_student.getSelectedRecords();
 
-            if (studentRecord == null) {
+            if (studentRecord.length < 1) {
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             } else {
                 let Dialog_Delete = isc.Dialog.create({
