@@ -60,24 +60,35 @@
         top: 260,
         click: function () {
             let data = ListGrid_Goal_JspEGQ.getData();
-            if(data.size() == 0)
-                createDialog("info", "امکان حذف تمام اهداف وجود ندارد");
-            else{
-                wait_JspEGQ = createDialog("wait");
-                isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/deleteClassGoalsQuestions/" + classRecord_JspEGQ.id, "GET", null, function (resp) {
-                    isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/editClassGoalsQuestions" , "POST", JSON.stringify(data), function (resp) {
-                            ListGrid_Goal_JspEGQ.invalidateCache();
-                            wait_JspEGQ.close();
-                        }
-                    ));
-                }
-            ));
-            }
+            wait_JspEGQ = createDialog("wait");
+            isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/classHasEvaluationForm/" + classRecord_JspEGQ.id, "GET", null, function (resp) {
+               if(resp.httpResponseText == "true"){
+                   createDialog("info", "بعلت استفاده از این اهداف در فرم های ارزیابی امکان ویرایش اهداف وجود ندارد");
+                   wait_JspEGQ.close();
+               }
+               else if(resp.httpResponseText == "false"){
+                   if(data.size() == 0){
+                       createDialog("info", "امکان حذف تمام اهداف وجود ندارد");
+                       wait_JspEGQ.close();
+                   }
+                   else{
+                       isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/deleteClassGoalsQuestions/" + classRecord_JspEGQ.id, "GET", null, function (resp) {
+                               isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/editClassGoalsQuestions" , "POST", JSON.stringify(data), function (resp) {
+                                       ListGrid_Goal_JspEGQ.invalidateCache();
+                                       wait_JspEGQ.close();
+                                   }
+                               ));
+                           }
+                       ));
+                   }
+               }
+            }));
+
         }
     });
 
     var ToolStripButton_Refresh_JspEGQ = isc.ToolStripButtonRefresh.create({
-        title: "<spring:message code="refresh"/>",
+        title: "لغو تغییرات",
         click: function () {
             RestDataSource_Golas_JspEGQ.fetchDataURL = evaluationUrl + "/getClassGoalsQuestions/" + classRecord_JspEGQ.id;
             RestDataSource_Golas_JspEGQ.fetchData();

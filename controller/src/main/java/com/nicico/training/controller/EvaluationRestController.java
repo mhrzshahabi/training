@@ -356,6 +356,17 @@ public class EvaluationRestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Loggable
+    @GetMapping(value = "/classHasEvaluationForm/{classId}")
+    public ResponseEntity<Boolean> classHasEvaluationForm(@PathVariable Long classId) throws IOException {
+        List<Evaluation> evaluations1 = evaluationDAO.findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeId(classId,156L,230L);
+        List<Evaluation> evaluations2 = evaluationDAO.findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeId(classId,154L,139L);
+        if(evaluations1.size() == 0 && evaluations2.size() == 0)
+            return new ResponseEntity<>(false,HttpStatus.OK);
+        else
+            return new ResponseEntity<>(true,HttpStatus.OK);
+    }
+
     //--------------------------------------------- Calender -----------------------------------------------------------
     private static double greg_len = 365.2425;
     private static double greg_origin_from_jalali_base = 629964;
