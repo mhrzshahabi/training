@@ -1838,7 +1838,7 @@
                                                 "personnelNo": person.personnelNo,
                                                 "applicantCompanyName": person.companyName,
                                                 "presenceTypeId": studentDefaultPresenceId,
-                                                "registerTypeId": url.indexOf(personnelUrl) > -1 ? 1 : 2
+                                                "registerTypeId": url.indexOf(personnelUrl+"/") > -1 ? 1 : 2
                                             });
                                         }
                                     }
