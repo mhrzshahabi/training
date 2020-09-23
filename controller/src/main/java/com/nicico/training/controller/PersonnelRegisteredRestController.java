@@ -50,6 +50,7 @@ public class PersonnelRegisteredRestController {
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
 
+    //Unused
     @Loggable
     @GetMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('r_personnelRegistered')")
@@ -57,6 +58,7 @@ public class PersonnelRegisteredRestController {
         return new ResponseEntity<>(personnelRegisteredService.get(id), HttpStatus.OK);
     }
 
+    //Unused
     @Loggable
     @GetMapping(value = "/list")
 //    @PreAuthorize("hasAuthority('r_personnelRegistered')")
@@ -71,6 +73,7 @@ public class PersonnelRegisteredRestController {
         return new ResponseEntity<>(personnelRegisteredService.create(request), HttpStatus.CREATED);
     }
 
+    //Unused
     @Loggable
     @GetMapping(value = "/getOneByNationalCode/{nationalCode}")
 //    @PreAuthorize("hasAuthority('r_personalInfo')")
@@ -157,6 +160,7 @@ public class PersonnelRegisteredRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
+    //Unused
     @Loggable
     @PostMapping(value = "/search")
 //    @PreAuthorize("hasAuthority('r_personnelRegistered')")
@@ -166,12 +170,12 @@ public class PersonnelRegisteredRestController {
 
     @Loggable
     @PostMapping(value = "/checkPersonnelNos/{courseId}")
-    public ResponseEntity<List<PersonnelRegisteredDTO.InfoForStudent>> checkPersonnelNos(@PathVariable Long courseId,@RequestBody List<String> personnelNos) {
-        List<PersonnelRegisteredDTO.InfoForStudent> list=personnelRegisteredService.checkPersonnelNos(personnelNos,courseId);
-        return new ResponseEntity<>(list,HttpStatus.OK);
+    public ResponseEntity<List<PersonnelRegisteredDTO.InfoForStudent>> checkPersonnelNos(@PathVariable Long courseId, @RequestBody List<String> personnelNos) {
+        List<PersonnelRegisteredDTO.InfoForStudent> list = personnelRegisteredService.checkPersonnelNos(personnelNos, courseId);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
-
+    //unused
     @Loggable
     @PostMapping(value = {"/printWithCriteria/{type}"})
     public void printWithCriteria(HttpServletResponse response,

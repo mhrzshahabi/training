@@ -132,7 +132,7 @@
             });
 
 
-            var PersonnelInfoDS_WebService_PersonnelList = isc.TrDS.create({
+            /*var PersonnelInfoDS_WebService_PersonnelList = isc.TrDS.create({
                 fields: [
                     {name: "id", primaryKey: true, hidden: true},
                     {
@@ -209,7 +209,7 @@
                     }
                 ],
                 fetchDataURL: masterDataUrl + "/personnel/iscList"
-            });
+            });*/
 
             var PersonnelInfoListGrid_PersonnelList = isc.TrLG.create({
                 dataSource: PersonnelInfoDS_PersonnelList,
@@ -263,14 +263,13 @@
                 _constructor: "AdvancedCriteria",
                 operator: "and",
                 criteria: [
-                    {fieldName: "active", operator: "equals", value: 1},
                     {fieldName: "deleted", operator: "equals", value: 0}
                 ]
             };
 
             PersonnelInfoListGrid_PersonnelList.implicitCriteria = criteriaActivePersonnel;
 
-            var PersonnelInfoListGrid_WebService_PersonnelList = isc.TrLG.create({
+            /*var PersonnelInfoListGrid_WebService_PersonnelList = isc.TrLG.create({
                 dataSource: PersonnelInfoDS_WebService_PersonnelList,
                 selectionType: "single",
                 autoFetchData: true,
@@ -310,7 +309,7 @@
                         oPersonnelInformationDetails.set_PersonnelInfo_Details(this.getSelectedRecord());
                     }
                 }
-            });
+            });*/
 
 
             PersonnelInfoDS_RegisteredPersonnelList = isc.TrDS.create({
@@ -426,12 +425,22 @@
                     }
                 }
             });
+
+            let criteriaActivePersonnelRegistered = {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [
+                    {fieldName: "deleted", operator: "isNull"}
+                ]
+            };
+
+            PersonnelInfoListGrid_RegisteredPersonnelList.implicitCriteria = criteriaActivePersonnelRegistered;
         }
         // ---------------------------------------- Create - RestDataSource & ListGrid -------------------------->>
 
         // <<-------------------------------------- Create - DynamicForm & Window ---------------------------------
         {
-            var Window_WebService_PersonnelInformation = isc.Window.create({
+            /*var Window_WebService_PersonnelInformation = isc.Window.create({
                 title: "<spring:message code='personal'/>",
                 width: "100%",
                 height: "100%",
@@ -459,7 +468,7 @@
                     })
 
                 ]
-            });
+            });*/
 
 
         }

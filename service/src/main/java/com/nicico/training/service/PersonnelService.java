@@ -16,6 +16,7 @@ import com.nicico.training.model.PersonnelRegistered;
 import com.nicico.training.model.ViewActivePersonnelInRegistering;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +47,7 @@ public class PersonnelService implements IPersonnelService {
     @Autowired
     EntityManager entityManager;
 
+    //Unused
     @Transactional(readOnly = true)
     @Override
     public List<PersonnelDTO.Info> list() {
@@ -84,21 +87,22 @@ public class PersonnelService implements IPersonnelService {
         String query1 = "";
 
         List<Personnel> list = personnelDAO.findByPersonnelNoInOrPersonnelNo2In(personnelNos, personnelNos);
+
         Personnel prs = null;
 
         for (String personnelNo : personnelNos) {
-
-            if (list.stream().filter(p -> (p.getDeleted()==null || p.getDeleted().equals(0))&&(p.getPersonnelNo() != null && p.getPersonnelNo().equals(personnelNo)) || (p.getPersonnelNo2() != null && p.getPersonnelNo2().equals(personnelNo))).count() == 0) {
+            List<Personnel> list2 = list.stream().filter(p -> (p.getDeleted() == null || p.getDeleted().equals(0)) && (p.getPersonnelNo() != null && p.getPersonnelNo().equals(personnelNo)) || (p.getPersonnelNo2() != null && p.getPersonnelNo2().equals(personnelNo))).collect(Collectors.toList());
+            if (list2 == null || list2.size() == 0) {
                 result.add(new PersonnelDTO.InfoForStudent());
 
             } else {
-                prs = list.stream().filter(p -> (p.getDeleted()==null || p.getDeleted().equals(0))&&(p.getPersonnelNo() != null && p.getPersonnelNo().equals(personnelNo)) || (p.getPersonnelNo2() != null && p.getPersonnelNo2().equals(personnelNo))).collect(Collectors.toList()).get(0);
+                prs = list2.get(0);
                 result.add(modelMapper.map(prs, PersonnelDTO.InfoForStudent.class));
                 query1 += "(PERSONNEL_NO='" + prs.getPersonnelNo() + "' and COURSE_ID=" + courseId + " ) OR ";
             }
         }
 
-        if (query1 != "") {
+        if (query1 != "" && courseId > 0) {
             query1 = query1.substring(0, query1.length() - 4);
 
             List<?> listNA = entityManager.createNativeQuery(query + query1).getResultList();
@@ -107,7 +111,7 @@ public class PersonnelService implements IPersonnelService {
                 listNA.stream().forEach(p ->
                         {
                             Object[] item = (Object[]) p;
-                            PersonnelDTO.InfoForStudent tmp = (PersonnelDTO.InfoForStudent) result.stream().filter(c -> c.getPersonnelNo()!=null && c.getPersonnelNo().equals(item[0].toString())).toArray()[0];
+                            PersonnelDTO.InfoForStudent tmp = (PersonnelDTO.InfoForStudent) result.stream().filter(c -> c.getPersonnelNo() != null && c.getPersonnelNo().equals(item[0].toString())).toArray()[0];
                             tmp.setIsInNA(item[1] == null ? null : Boolean.parseBoolean(item[1].toString()));
                             tmp.setScoreState(item[2] == null ? null : Long.parseLong(item[2].toString()));
                         }
@@ -118,6 +122,7 @@ public class PersonnelService implements IPersonnelService {
         return result;
     }
 
+    //Unused
     @Override
     @Transactional
     public List<PersonnelDTO.Info> getByPostCode(Long postId) {
@@ -141,12 +146,15 @@ public class PersonnelService implements IPersonnelService {
 
     }
 
+    //Unused
     @Override
     @Transactional(readOnly = true)
     public List<Personnel> getByPostCode(String postCode) {
         return personnelDAO.findOneByPostCode(postCode);
     }
 
+
+    //Unused
     @Override
     @Transactional
     public List<PersonnelDTO.Info> getByJobNo(String jobNo) {
@@ -161,6 +169,7 @@ public class PersonnelService implements IPersonnelService {
 
     }
 
+    //Unused
     @Override
     @Transactional
     public PersonnelDTO.PersonalityInfo getByPersonnelCode(String personnelCode) {
@@ -169,6 +178,7 @@ public class PersonnelService implements IPersonnelService {
         return modelMapper.map(personnel, PersonnelDTO.PersonalityInfo.class);
     }
 
+    //Unused
     @Override
     @Transactional
     public PersonnelDTO.PersonalityInfo getByNationalCode(String nationalCode) {
@@ -179,6 +189,7 @@ public class PersonnelService implements IPersonnelService {
             return null;
     }
 
+    //Unused
     @Override
     @Transactional
     public List<PersonnelDTO.Info> findAllStatisticalReportFilter(String reportType) {
@@ -236,11 +247,67 @@ public class PersonnelService implements IPersonnelService {
 
     @Override
     @Transactional
-    public PersonnelDTO.DetailInfo findPersonnelByPersonnelId(Long personnelId, String personnelNo) {
+    public PersonnelDTO.DetailInfo findPersonnel(Long personnelType, Long personnelId, String nationalCode, String personnelNo) {
 
-        Long personnel_Id = personnelId != 0 ? personnelId : personnelDAO.getPersonnelIdByPersonnelNo(personnelNo);
-        PersonnelRegistered personnelRegistered = new PersonnelRegistered();
-        Personnel personnel = personnelDAO.findPersonnelById(personnel_Id);
+        PersonnelRegistered personnelRegistered = null;
+        Personnel personnel = null;
+        List<Personnel> personnels = null;
+        List<PersonnelRegistered> personnelRegistereds = null;
+
+        nationalCode=nationalCode.trim();
+        personnelNo=personnelNo.trim();
+
+        if (personnelId > 0 && (personnelType == 1 || personnelType == 2)) {
+
+            if (personnelType == 1) {
+                personnel = personnelDAO.findById(personnelId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+            } else if (personnelType == 2) {
+                personnelRegistered = personnelRegisteredDAO.findById(personnelId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+            }
+
+        } else if (StringUtils.isNotEmpty(nationalCode)) {
+
+            personnels = personnelDAO.findAllByNationalCodeOrderByIdDesc(nationalCode);
+
+            personnel = personnels.stream().filter(p -> p.getDeleted() == 0).findFirst().orElse(null);
+
+            if (personnel == null) {
+
+                personnelRegistereds = personnelRegisteredDAO.findAllByNationalCodeOrderByIdDesc(nationalCode);
+                personnelRegistered = personnelRegistereds.stream().filter(p -> p.getDeleted() == null).findFirst().orElse(null);
+
+                if (personnelRegistered == null) {
+                    if (personnels.size() > 0) {
+                        personnel = personnels.get(0);
+                    } else if (personnelRegistereds.size() > 0) {
+                        personnelRegistered = personnelRegistereds.get(0);
+                    } else {
+                        return null;
+                    }
+                }
+            }
+
+        } else {
+            personnels = personnelDAO.findAllByPersonnelNoOrderByIdDesc(personnelNo);
+
+            personnel = personnels.stream().filter(p -> p.getDeleted() == 0).findFirst().orElse(null);
+
+            if (personnel == null) {
+
+                personnelRegistereds = personnelRegisteredDAO.findAllByPersonnelNoOrderByIdDesc(personnelNo);
+                personnelRegistered = personnelRegistereds.stream().filter(p -> p.getDeleted() == null).findFirst().orElse(null);
+
+                if (personnelRegistered == null) {
+                    if (personnels.size() > 0) {
+                        personnel = personnels.get(0);
+                    } else if (personnelRegistereds.size() > 0) {
+                        personnelRegistered = personnelRegistereds.get(0);
+                    } else {
+                        throw new TrainingException(TrainingException.ErrorType.NotFound);
+                    }
+                }
+            }
+        }
 
         if (personnel != null) {
 
@@ -248,39 +315,72 @@ public class PersonnelService implements IPersonnelService {
             personnel.setWorkYears(trainingTime == null ? "عدم آموزش در سال " + DateUtil.getYear() : trainingTime.toString() + " ساعت آموزش در سال " + DateUtil.getYear());
 
         } else {
-
-            personnelRegistered = personnelRegisteredDAO.findPersonnelRegisteredByPersonnelNo(personnelNo);
             Long trainingTime = tclassDAO.getStudentTrainingTime(personnelRegistered.getNationalCode(), personnelNo, DateUtil.getYear());
             personnelRegistered.setWorkYears(trainingTime == null ? "عدم آموزش در سال " + DateUtil.getYear() : trainingTime.toString() + " ساعت آموزش در سال " + DateUtil.getYear());
 
         }
-        PersonnelDTO.DetailInfo result=null;
+        PersonnelDTO.DetailInfo result = null;
 
-        if(personnel != null){
-            result=modelMapper.map(personnel, PersonnelDTO.DetailInfo.class);
+        if (personnel != null) {
+            result = modelMapper.map(personnel, PersonnelDTO.DetailInfo.class);
 
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
-            if(personnel.getBirthDate()!=null){
+            if (personnel.getBirthDate() != null) {
                 result.setBirthDate(DateUtil.convertMiToKh(formatter.format(personnel.getBirthDate())));
             }
 
-            if(personnel.getEmploymentDate()!=null){
+            if (personnel.getEmploymentDate() != null) {
                 result.setEmploymentDate(DateUtil.convertMiToKh(formatter.format(personnel.getEmploymentDate())));
             }
 
-            if(personnel.getPostAssignmentDate()!=null){
+            if (personnel.getPostAssignmentDate() != null) {
                 result.setPostAssignmentDate(DateUtil.convertMiToKh(formatter.format(personnel.getPostAssignmentDate())));
             }
 
-        }else{
-            result=modelMapper.map(personnelRegistered, PersonnelDTO.DetailInfo.class);
+        } else {
+            result = modelMapper.map(personnelRegistered, PersonnelDTO.DetailInfo.class);
         }
 
 
         return result;
     }
 
+    @Override
+    @Transactional
+    public PersonnelDTO.Info getByPersonnelCodeAndNationalCode(String nationalCode, String personnelNo) {
+
+        Personnel personnel = null;
+        List<Personnel> personnels = null;
+
+        if (StringUtils.isNotEmpty(nationalCode)) {
+
+            personnels = personnelDAO.findAllByNationalCodeOrderByIdDesc(nationalCode);
+
+            personnel = personnels.stream().filter(p -> p.getDeleted() == 0).findFirst().orElse(null);
+
+            if (personnel == null) {
+                if (personnels.size() > 0) {
+                    personnel = personnels.get(0);
+                }
+            }
+
+        } else {
+            personnels = personnelDAO.findAllByPersonnelNoOrderByIdDesc(personnelNo);
+
+            personnel = personnels.stream().filter(p -> p.getDeleted() == 0).findFirst().orElse(null);
+
+            if (personnel == null) {
+                if (personnels.size() > 0) {
+                    personnel = personnels.get(0);
+                }
+            }
+        }
+
+        return modelMapper.map(personnel, PersonnelDTO.Info.class);
+    }
+
+    //TODO:must be check
     @Override
     @Transactional
     public SearchDTO.SearchRs<PersonnelDTO.FieldValue> findAllValuesOfOneFieldFromPersonnel(String fieldName) {
