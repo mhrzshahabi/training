@@ -22,17 +22,17 @@
         jsonSuffix: "",
         fetchDataURL: enumUrl + "eDomainType"
     });
-    var RestDataSource_GoalAll = isc.TrDS.create({
-        ID: "goalDS",
+    let RestDataSource_GoalAll = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: "true", hidden: "true"}, {name: "titleFa"}, {name: "titleEn"},
             {name: "code"}, {name: "description"}
-        ], dataFormat: "json",
+        ],
+        dataFormat: "json",
         jsonPrefix: "",
         jsonSuffix: "",
         // fetchDataURL: courseUrl + "goal/" + courseRecord.id
     });
-    var RestDataSource_Syllabus_JspGoal = isc.TrDS.create({
+    let RestDataSource_Syllabus_JspGoal = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "سرفصل ها", align: "center", width: "60%"},
@@ -61,7 +61,7 @@
         fetchDataURL: subCategoryUrl + "spec-list",
     });
 
-    var DynamicForm_Goal = isc.DynamicForm.create({
+    let DynamicForm_Goal = isc.DynamicForm.create({
         fields: [
             {name: "id", hidden: true},
             {
@@ -81,7 +81,9 @@
                 name: "categoryId",
                 title: "گروه",
                 displayField: "titleFa",
+                textAlign: "center",
                 valueField: "id",
+                disabled: true,
                 filterOperator: "equals",
                 autoFitWidth: true,
                 optionDataSource: RestDataSource_category,
@@ -105,6 +107,7 @@
                 title: "<spring:message code="course_subcategory"/>",
                 prompt: "ابتدا گروه را انتخاب کنید",
                 textAlign: "center",
+                disabled: true,
                 required: true,
                 autoFetchData: false,
                 displayField: "titleFa",
@@ -118,8 +121,7 @@
             },
         ],
     });
-    var DynamicForm_Syllabus = isc.DynamicForm.create({
-        ID: "formSyllabus",
+    let DynamicForm_Syllabus = isc.DynamicForm.create({
         fields: [
             {name: "id", hidden: true},
             {
@@ -245,41 +247,31 @@
         }
     });
 
-    var IButton_Goal_Save = isc.IButtonSave.create({
+    let IButton_Goal_Save = isc.IButtonSave.create({
         click: function () {
             DynamicForm_Goal.validate();
             if (DynamicForm_Goal.hasErrors()) {
                 return;
             }
             let data = DynamicForm_Goal.getValues();
-            wait.show()
-            isc.RPCManager.sendRequest({
-                actionURL: urlGoal,
-                httpMethod: methodGoal,
-                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                showPrompt: false,
-                data: JSON.stringify(data),
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    wait.close()
-                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                        var responseID = JSON.parse(resp.data).id;
-                        var gridState = "[{id:" + responseID + "}]";
-                        simpleDialog("انجام فرمان", "عملیات با موفقیت انجام شد.", "3000", "say");
-                        ListGrid_Goal_refresh();
-                        setTimeout(function () {
-                            ListGrid_Goal.setSelectedState(gridState);
-                        }, 0);
-                        Window_Goal.close();
-                    } else {
-                        simpleDialog("پیغام", "اجرای عملیات با مشکل مواجه شده است!", "3000", "error")
-                    }
-
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(urlGoal, methodGoal, JSON.stringify(data), resp => {
+                wait.close();
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    let responseID = JSON.parse(resp.data).id;
+                    let gridState = "[{id:" + responseID + "}]";
+                    simpleDialog("انجام فرمان", "عملیات با موفقیت انجام شد.", "3000", "say");
+                    ListGrid_Goal_refresh();
+                    ListGrid_GoalAll.invalidateCache();
+                    ListGrid_CourseGoal_Goal.invalidateCache();
+                    setTimeout(function () {
+                        ListGrid_Goal.setSelectedState(gridState);
+                    }, 0);
+                    Window_Goal.close();
+                } else {
+                    simpleDialog("پیغام", "اجرای عملیات با مشکل مواجه شده است!", "3000", "error")
                 }
-            });
-
+            }));
         }
     });
     var IButton_Syllabus_Save = isc.IButtonSave.create({
@@ -365,10 +357,6 @@
     var Hlayout_Goal_SaveOrExit = isc.TrHLayoutButtons.create({
         members: [IButton_Goal_Save, isc.IButtonCancel.create({
             ID: "IButton_Goal_Exit",
-            // title: "لغو",
-            // prompt: "",
-            // icon: "<spring:url value="remove.png"/>",
-            // orientation: "vertical",
             click: function () {
                 DynamicForm_Goal.clearValues();
                 Window_Goal.close();
@@ -423,6 +411,11 @@
         })],
         width: "400",
         height: "150",
+        show(){
+            DynamicForm_Goal.setValue("categoryId", courseRecord.category.id);
+            DynamicForm_Goal.setValue("subCategoryId", courseRecord.subCategory.id);
+            this.Super("show", arguments);
+        }
     });
 
     var Menu_ListGrid_Syllabus_Goal = isc.Menu.create({
@@ -625,20 +618,16 @@
             margin: 5
         },
         dataSource: RestDataSource_GoalAll,
-        doubleClick: function () {
-            /*ListGrid_CourseGoal_Goal_Edit();*/
-        },
         fields: [
             {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleFa", title: "كل اهداف", align: "center", width:"60%"},
-            // {name: "titleEn", title: "نام لاتین هدف ", align: "center", hidden: true},
             {
                 name: "categoryId",
                 title: "گروه",
                 optionDataSource: RestDataSource_category,
                 displayField: "titleFa",
                 valueField: "id",
-                filterOperator: "equals",
+                canFilter: false,
                 width:"20%"
             },
             {
@@ -647,31 +636,22 @@
                 optionDataSource: RestDataSource_SubCategory,
                 displayField: "titleFa",
                 valueField: "id",
-                filterOperator: "equals",
+                canFilter: false,
                 width:"20%"
             },
-            {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         selectionType: "multiple",
         selectionChanged: function (record, state) {
             RestDataSource_Syllabus_JspGoal.fetchDataURL = goalUrl + record.id + "/syllabus";
         },
-        sortField: 1,
-        sortDirection: "descending",
+        sortField: 2,
+        sortDirection: "ascending",
         dataPageSize: 50,
         autoFetchData: false,
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن",
         canDragRecordsOut: true,
         dragDataAction: "none",
         canAcceptDroppedRecords: true,
@@ -679,8 +659,8 @@
             removeAsListGrid();
         },
         getCellCSSText: function (record, rowNum, colNum) {
-            return record.categoryId===courseRecord.categoryId ? "color:black": "color:red";
-        }//end getCellCSSText
+            return record.categoryId === courseRecord.categoryId ? "color:black": "color:red";
+        }
     });
     var ListGrid_CourseGoal_Goal = isc.ListGrid.create({
         width: "100%",
@@ -701,8 +681,6 @@
         fields: [
             {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleFa", title: "اهداف دوره", align: "center"},
-            // {name: "titleEn", title: "نام لاتین هدف", align: "center", hidden: true},
-            // {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         selectionType: "multiple",
         sortField: 1,
@@ -724,7 +702,7 @@
         canAcceptDroppedRecords: true,
         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
             addToListGrid()
-        }
+        },
     });
     var ToolStripButton_Syllabus_Edit = isc.ToolStripButtonEdit.create({
 
@@ -801,19 +779,10 @@
         }
     });
     var ToolStripButton_Goal_Refresh = isc.ToolStripButtonRefresh.create({
-        //icon: "[SKIN]/actions/refresh.png",
         title: "بازخوانی",
         click: function () {
             ListGrid_Goal_refresh();
             ListGrid_Syllabus_Goal_refresh();
-        }
-    });
-    var ToolStripButton_Goal_Edit = isc.ToolStripButtonEdit.create({
-        title: "ویرایش",
-        prompt: "اخطار<br/>ویرایش هدف در تمامی دوره های ارضا کننده هدف نیز اعمال خواهد شد.",
-        hoverWidth: 320,
-        click: function () {
-            ListGrid_Goal_Edit();
         }
     });
     var ToolStripButton_Goal_Edit_WindowAllGoal = isc.ToolStripButtonEdit.create({
@@ -824,8 +793,7 @@
             ListGrid_Goal_Edit(ListGrid_GoalAll);
         }
     });
-    var ToolStripButton_Goal_Add = isc.ToolStripButtonAdd.create({
-
+    let ToolStripButton_Goal_Add = isc.ToolStripButtonAdd.create({
         title: "ایجاد",
         prompt: "تعریف هدف جدید برای دوره مذکور",
         hoverWidth: 160,
@@ -834,29 +802,10 @@
         }
     });
 
-    var ToolStripButton_Goal_All = isc.ToolStripButton.create({
-        title: "کل اهداف",
-        prompt: "لیست کل اهداف",
-        hoverWidth: 100,
-        click: function () {
-            ListGrid_Goal_All();
-        }
-    });
-
-    var ToolStripButton_Goal_Category = isc.ToolStripButton.create({
-        title: "اهداف مرتبط با گروه",
-        prompt: "لیست اهداف مرتبط با گروه",
-        hoverWidth: 140,
-        click: function () {
-            ListGrid_Goal_Category();
-        }
-    });
-
     var ToolStripButton_Goal_Remove = isc.ToolStripButtonRemove.create({
-
         title: "حذف",
-        prompt: "اخطار<br/>هدف انتخاب شده از تمامی دوره های موجود حذف خواهد شد.",
-        hoverWidth: 280,
+        prompt: getFormulaMessage("اخطار","3","red","b") + "<br/>" + "هدف انتخاب شده از پایگاه داده حذف خواهد شد.",
+        hoverWidth: 250,
         click: function () {
             ListGrid_Goal_Remove();
         }
@@ -873,11 +822,9 @@
             ListGrid_CourseGoal_Goal.fetchData();
             RestDataSource_GoalAll.fetchDataURL = goalUrl + "spec-list";
             ListGrid_GoalAll.invalidateCache();
-            ListGrid_GoalAll.fetchData();
         }
     });
     var ToolStripButton_Add_Vertical = isc.IconButton.create({
-        // icon: "[SKIN]/TransferIcons/double-arrow-left.png",
         icon: "<spring:url value="double-arrow-left.png"/>",
         showButtonTitle:false,
         prompt: "افزودن اهداف انتخاب شده به اهداف دوره مذکور",
@@ -899,8 +846,6 @@
         membersMargin: 5,
         members: [
             ToolStripButton_Goal_ADD,
-            ToolStripButton_Goal_Edit,
-            ToolStripButton_Goal_Remove,
             "separator",
             ToolStripButton_Goal_Refresh,
         ]
@@ -911,8 +856,7 @@
         members: [
             ToolStripButton_Goal_Add,
             ToolStripButton_Goal_Edit_WindowAllGoal,
-            ToolStripButton_Goal_All,
-            ToolStripButton_Goal_Category
+            ToolStripButton_Goal_Remove,
         ]
     });
     var ToolStrip_Actions_Syllabus = isc.ToolStrip.create({
@@ -980,6 +924,25 @@
         closeClick: function () {
             this.hide();
         },
+        show(){
+            let cr = {
+                _constructor: "AdvancedCriteria",
+                operator: "or",
+                criteria: [
+                    {
+                        operator: "and",
+                        criteria: [
+                            {fieldName: "categoryId", operator: "equals", value: courseRecord.category.id},
+                            {fieldName: "subCategoryId", operator: "equals", value: courseRecord.subCategory.id}
+                        ]
+                    },
+                    {fieldName: "categoryId", operator: "isNull"}
+                ]
+            };
+            ListGrid_GoalAll.setImplicitCriteria(cr);
+            ListGrid_GoalAll.fetchData();
+            this.Super("show",arguments);
+        },
         items: [
             ToolStrip_Actions_Window_AddGoal,
             HLayOut_Goal_JspGoal
@@ -1026,7 +989,7 @@
     });
 
     function ListGrid_Goal_Remove() {
-        var record = ListGrid_Goal.getSelectedRecord();
+        let record = ListGrid_GoalAll.getSelectedRecord();
         if (record == null) {
             isc.Dialog.create({
                 message: "هدفی انتخاب نشده است.",
@@ -1037,68 +1000,55 @@
                     this.close();
                 }
             });
-        } else {
-            let names = "";
-            wait.show()
-            isc.RPCManager.sendRequest({
-                actionURL: goalUrl + "course/" + record.id,
-                httpMethod: "GET",
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                showPrompt: true,
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    wait.close()
-                    let courses = JSON.parse(resp.data);
-                    if (courses.length > 1) {
-                        for (let i = 0; i < courses.length; i++) {
-                            if (courses.get(i).titleFa != DynamicForm_course_MainTab.getItem("titleFa")._value) {
-                                names = names + " و دوره " + getFormulaMessage(courses.get(i).titleFa, 2, "red", "b");
+            return;
+        }
+        hasRelationWithCourse(record, ()=> {
+            isc.Dialog.create({
+                message: "هدف " + getFormulaMessage(record.titleFa, 2, "red", "b") + " حذف شود؟",
+                icon: "[SKIN]ask.png",
+                title: "<spring:message code="verify.delete"/>",
+                buttons: [
+                    isc.IButtonSave.create({title: "بله"}),
+                    isc.IButtonCancel.create({title: "خیر"})
+                ],
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        wait.show();
+                        isc.RPCManager.sendRequest(TrDSRequest(goalUrl + "delete/" + record.id, "DELETE", null, (resp) => {
+                            wait.close();
+                            if (resp.httpResponseCode == 200) {
+                                ListGrid_GoalAll.invalidateCache();
+                                simpleDialog("<spring:message code='msg.command.done'/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
+                            } else {
+                                simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
                             }
-                        }
-                        names = names.substr(2);
-                        createDialog('info', "هدف " + getFormulaMessage(record.titleFa, 2, "red", "b") + " با " + names + " در ارتباط است، ابتدا هدف را از دوره&#8201های مذکور جدا کنید.", "اخطار")
-                    } else {
-                        var Dialog_Delete = isc.Dialog.create({
-                            message: "هدف " + getFormulaMessage(record.titleFa, 2, "red", "b") + " حذف شود؟",
-                            icon: "[SKIN]ask.png",
-                            title: "<spring:message code="verify.delete"/>",
-                            buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
-                                title: "خیر"
-                            })],
-                            buttonClick: function (button, index) {
-                                this.close();
-                                if (index == 0) {
-                                    wait.show()
-                                    isc.RPCManager.sendRequest({
-                                        actionURL: goalUrl + "delete/" + record.id,
-                                        httpMethod: "DELETE",
-                                        useSimpleHttp: true,
-                                        contentType: "application/json; charset=utf-8",
-                                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                                        showPrompt: true,
-                                        serverOutputAsString: false,
-                                        callback: function (resp) {
-                                            wait.close();
-                                            if (resp.httpResponseCode == 200) {
-                                                ListGrid_Goal_refresh();
-                                                ListGrid_Syllabus_Goal_refresh();
-                                                simpleDialog("<spring:message code='msg.command.done'/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
-                                            } else {
-                                                simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
-                                            }
-                                        }
-                                    });
-                                }
-                            }
-                        });
+                        }));
                     }
                 }
             });
+        });
+    }
 
-        }
-    };
+    let hasRelationWithCourse = function (record, callBack) {
+        let names = "";
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(goalUrl + "course/" + record.id, "GET", null, (resp) => {
+            wait.close();
+            let courses = JSON.parse(resp.data);
+            if (courses.length > 0) {
+                for (let i = 0; i < courses.length; i++) {
+                    if (courses.get(i).titleFa !== DynamicForm_course_MainTab.getValue("titleFa")) {
+                        names = names + " و دوره " + getFormulaMessage(courses.get(i).titleFa, 2, "red", "b");
+                    }
+                }
+                names = names.substr(2);
+                createDialog('info', "هدف " + getFormulaMessage(record.titleFa, 2, "red", "b") + " با " + names + " در ارتباط است، ابتدا هدف را از دوره&#8201های مذکور جدا کنید.", "اخطار")
+            }else{
+                callBack();
+            }
+        }));
+    }
 
     function ListGrid_Goal_Edit(LG = ListGrid_Goal) {
         let record = LG.getSelectedRecord();
@@ -1112,37 +1062,34 @@
                     this.close();
                 }
             });
-        } else {
+            return;
+        }
+        hasRelationWithCourse(record, ()=>{
             methodGoal = "PUT";
             urlGoal = goalUrl + record.id;
             DynamicForm_Goal.clearValues();
             DynamicForm_Goal.editRecord(record);
             Window_Goal.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="goal"/>");
             Window_Goal.show();
-        }
-    };
+        });
+    }
 
     function ListGrid_Goal_refresh() {
-        // var record = ListGrid_Goal.getSelectedRecord();
-        // if (record == null || record.id == null) {
-        // } else {
-        //     ListGrid_Goal.selectRecord(record);
-        // }
-        // RestDataSource_CourseGoal.fetchDataURL = courseUrl + ""
         RestDataSource_CourseGoal.fetchDataURL = courseUrl + courseRecord.id + "/goal";
-        ListGrid_Goal.fetchData();
         ListGrid_Goal.invalidateCache();
+        ListGrid_Goal.fetchData();
         RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseRecord.id;
-        ListGrid_Syllabus_Goal.fetchData();
         ListGrid_Syllabus_Goal.invalidateCache();
-        ListGrid_GoalAll.fetchData();
-        ListGrid_GoalAll.invalidateCache();
-    };
+        ListGrid_Syllabus_Goal.fetchData();
+    }
 
     function ListGrid_Goal_Add() {
+        if(numClasses>0){
+            createDialog("warning", "بدلیل تشکیل کلاس برای دوره نمی توان برای این دوره هدف جدید ایجاد کرد.", "اخطار");
+            return;
+        }
         DynamicForm_Goal.getItem("subCategoryId").disable();
-
-        if (DynamicForm_course_MainTab.getItem("titleFa")._value == null) {
+        if (DynamicForm_course_MainTab.getValue("titleFa") == null) {
             isc.Dialog.create({
                 message: "لطفاً ابتدا اطلاعات دوره را وارد کنید.",
                 icon: "[SKIN]ask.png",
@@ -1159,18 +1106,6 @@
             Window_Goal.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="goal"/>");
             Window_Goal.show();
         }
-    }
-
-    function ListGrid_Goal_All() {
-        RestDataSource_GoalAll.fetchDataURL = goalUrl + "spec-list";
-        ListGrid_GoalAll.fetchData();
-        ListGrid_GoalAll.invalidateCache();
-    }
-
-    function ListGrid_Goal_Category() {
-        RestDataSource_GoalAll.fetchDataURL = goalUrl + courseRecord.categoryId + "/goal-list";
-        ListGrid_GoalAll.fetchData();
-        ListGrid_GoalAll.invalidateCache();
     }
 
     function ListGrid_Syllabus_Goal_Remove() {
@@ -1231,10 +1166,10 @@
                         });
                     }
         }
-    };
+    }
 
     function ListGrid_Syllabus_Goal_Add() {
-        var gRecord = ListGrid_Goal.getSelectedRecord();
+        let gRecord = ListGrid_Goal.getSelectedRecord();
         if (gRecord == null || gRecord.id == null) {
             isc.Dialog.create({
                 message: "هدف مرتبط انتخاب نشده است.",
@@ -1251,13 +1186,12 @@
             DynamicForm_Syllabus.clearValues();
             DynamicForm_Syllabus.getItem("goalId").setValue(gRecord.id);
             Window_Syllabus.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="syllabus"/>");
-            // Window_Syllabus.setStatus("طول دوره " + (courseRecord.theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration + 2) + " ساعت می باشد.");
             Window_Syllabus.show();
         }
-    };
+    }
 
     function ListGrid_Syllabus_Goal_Edit() {
-        var sRecord = ListGrid_Syllabus_Goal.getSelectedRecord();
+        let sRecord = ListGrid_Syllabus_Goal.getSelectedRecord();
         if (sRecord == null || sRecord.id == null) {
             isc.Dialog.create({
                 message: "سرفصلی انتخاب نشده است.",
@@ -1273,26 +1207,19 @@
             urlSyllabus = syllabusUrl + sRecord.id;
             DynamicForm_Syllabus.clearValues();
             DynamicForm_Syllabus.editRecord(sRecord);
-            // Window_Syllabus.setStatus("طول دوره " + (courseRecord.theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) + " ساعت می باشد.");
             Window_Syllabus.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="syllabus"/>");
             Window_Syllabus.show();
         }
-    };
+    }
 
     function ListGrid_Syllabus_Goal_refresh() {
-        // var record = ListGrid_Syllabus_Goal.getSelectedRecord();
-        // if (record == null || record.id == null) {
-        // } else {
-        //     ListGrid_Syllabus_Goal.selectRecord(record);
-        // }
         RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseRecord.id;
         ListGrid_Syllabus_Goal.invalidateCache();
         ListGrid_Syllabus_Goal.fetchData();
         evalDomain();
-// ListGrid_Syllabus_Goal.getField("practicalDuration").summaryValue="Sum:" + getFormulaMessage(ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration,1,"red","B");
-    };
+    }
 
-    function addToListGrid() {
+    let addToListGrid = function() {
         if (courseRecord == null || courseRecord.id == null) {
             isc.Dialog.create({
                 message: "دوره اي انتخاب نشده است.",
@@ -1303,54 +1230,44 @@
                     this.close();
                 }
             });
-
         } else {
             let goalRecord = ListGrid_GoalAll.getSelectedRecords();
-            if (goalRecord.length == 0) {
+            if (goalRecord.length === 0) {
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>")
+            }else if(numClasses>0) {
+                createDialog("warning","از این دوره در کلاس استفاده شده است.", "اخطار");
+                return;
             } else {
-                let goalList = new Array();
-                let categoryIDs=[];
+                let goalList = [];
+                let categoryIDs = [];
                 for (let i = 0; i < goalRecord.length; i++) {
                     goalList.add(goalRecord[i].id);
                     categoryIDs=[...categoryIDs,goalRecord[i].categoryId];
                 }
-
-                if (categoryIDs.find(x=>x!==courseRecord.categoryId) || categoryIDs.some(x=>!x))
-                {
+                if (categoryIDs.find(x=>x!==courseRecord.category.id) || categoryIDs.some(x=>!x)){
                     simpleDialog("<spring:message code="message"/>",
                         "<spring:message code="goal.problem.add1"/>" + "<br/>" + "<spring:message code="goal.problem.add2"/>", 10000, "stop");
                     return;
                 }
-
                 wait.show()
-                isc.RPCManager.sendRequest({
-                    actionURL: courseUrl + courseRecord.id + "/" + goalList.toString(),
-                    httpMethod: "GET",
-                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                    useSimpleHttp: true,
-                    contentType: "application/json; charset=utf-8",
-                    showPrompt: false,
-                    serverOutputAsString: false,
-                    callback: function (resp) {
-                        wait.close()
-                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                            ListGrid_GoalAll.invalidateCache();
-                            ListGrid_CourseGoal_Goal.invalidateCache();
-                            ListGrid_Goal.invalidateCache();
-                            ListGrid_Syllabus_Goal.invalidateCache();
-                            evalDomain();
-                        } else {
-                            simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 3000, "stop");
-                        }
-
+                isc.RPCManager.sendRequest(TrDSRequest(courseUrl + courseRecord.id + "/" + goalList.toString(), "GET", null, (resp => {
+                    isChangeable();
+                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                        ListGrid_GoalAll.invalidateCache();
+                        ListGrid_CourseGoal_Goal.invalidateCache();
+                        ListGrid_CourseGoal_Goal.fetchData();
+                        ListGrid_Goal.invalidateCache();
+                        ListGrid_Syllabus_Goal.invalidateCache();
+                        evalDomain();
+                    } else {
+                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 3000, "stop");
                     }
-                });
+                })));
             }
         }
     }
 
-    function removeAsListGrid() {
+    let removeAsListGrid = function() {
         if (courseRecord == null || courseRecord.id == null) {
             isc.Dialog.create({
                 message: "دوره اي انتخاب نشده است.",
@@ -1362,8 +1279,8 @@
                 }
             });
         } else {
-            var goalrRecord = ListGrid_CourseGoal_Goal.getSelectedRecords();
-            if (goalrRecord.length == 0) {
+            let goalRecord = ListGrid_CourseGoal_Goal.getSelectedRecords();
+            if (goalRecord.length == 0) {
                 isc.Dialog.create({
                     message: "هدفي انتخاب نشده است.",
                     icon: "[SKIN]ask.png",
@@ -1373,35 +1290,28 @@
                         this.close();
                     }
                 });
+            } else if(numClasses>0) {
+                createDialog("warning","از این دوره در کلاس استفاده شده است.", "اخطار");
+                return;
             } else {
-                let arrayRecord = new Array();
-                for (let i = 0; i < goalrRecord.length; i++) {
-                    arrayRecord.add(goalrRecord[i].id)
+                let arrayRecord = [];
+                for (let i = 0; i < goalRecord.length; i++) {
+                    arrayRecord.add(goalRecord[i].id)
                 }
 
                 wait.show();
-                isc.RPCManager.sendRequest({
-                    actionURL: courseUrl + "remove/" + courseRecord.id + "/" + arrayRecord.toString(),
-                    httpMethod: "GET",
-                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                    useSimpleHttp: true,
-                    contentType: "application/json; charset=utf-8",
-                    showPrompt: false,
-                    serverOutputAsString: false,
-                    callback: function (resp) {
-                        wait.close()
-                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                            ListGrid_GoalAll.invalidateCache();
-                            ListGrid_CourseGoal_Goal.invalidateCache();
-                            ListGrid_Goal.invalidateCache();
-                            ListGrid_Syllabus_Goal.invalidateCache();
-                            evalDomain();
-                        } else {
-                            simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
-                        }
-
+                isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "remove/" + courseRecord.id + "/" + arrayRecord.toString(), "GET", null ,(resp)=>{
+                    isChangeable();
+                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                        ListGrid_GoalAll.invalidateCache();
+                        ListGrid_CourseGoal_Goal.invalidateCache();
+                        ListGrid_Goal.invalidateCache();
+                        ListGrid_Syllabus_Goal.invalidateCache();
+                        evalDomain();
+                    } else {
+                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
                     }
-                });
+                }));
             }
         }
     }
