@@ -170,7 +170,7 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
             }
 
         } else {
-            personnelsRegistereds = personnelRegisteredDAO.findAllByPersonnelNoOrderByIdDesc(nationalCode);
+            personnelsRegistereds = personnelRegisteredDAO.findAllByPersonnelNoOrderByIdDesc(personnelNo);
 
             personnelRegistered = personnelsRegistereds.stream().filter(p -> p.getDeleted() == null).findFirst().orElse(null);
 

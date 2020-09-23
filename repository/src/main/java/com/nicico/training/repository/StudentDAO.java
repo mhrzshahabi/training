@@ -21,6 +21,6 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
 
     Optional<Student> findByPersonnelNo(@Param("personnelNo") String personnelNo);
 
-    List<Student> findByPostCodeAndPersonnelNoAndDepartmentCodeAndFirstNameAndLastNameOrderByIdDesc(String postCode, String personnelNo, String depCode, String fName, String lName);
+    List<Student> findByPostIdAndPersonnelNoAndDepartmentIdAndFirstNameAndLastNameOrderByIdDesc(Long postId, String personnelNo, Long depId, String fName, String lName);
     List<Student> findByNationalCode(String nationalCode);
 }

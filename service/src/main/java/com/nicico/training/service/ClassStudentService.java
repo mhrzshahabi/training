@@ -54,7 +54,7 @@ public class ClassStudentService implements IClassStudentService {
         Tclass tclass = tclassService.getTClass(classId);
 
         for (ClassStudentDTO.Create c : request) {
-            List<Student> list = studentService.getStudentByPostCodeAndPersonnelNoAndDepartmentCodeAndFirstNameAndLastNameOrderByIdDesc(c.getPostCode(), c.getPersonnelNo(), c.getDepartmentCode(), c.getFirstName(), c.getLastName());
+            List<Student> list = studentService.getStudentByPostIdAndPersonnelNoAndDepartmentIdAndFirstNameAndLastNameOrderByIdDesc(c.getPostId(), c.getPersonnelNo(), c.getDepartmentId(), c.getFirstName(), c.getLastName());
             Student student = null;
             int size = list.size();
             for (int i=0; i<size; i++) {

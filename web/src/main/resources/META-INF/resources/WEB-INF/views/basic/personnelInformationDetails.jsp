@@ -32,36 +32,46 @@
                             this.nationalCode_Info = nationalCode;
                             this.personnelNo_Info = personnelNo;
                             me=this;
-                            isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byPersonnelNo/" + personnelId +"/"+ personnelNo, "GET", null, function (resp) {
+                            let personnelType=0;
 
-                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                            let tab = mainTabSet.tabs[mainTabSet.selectedTab];
+                            if (tab.title == '<spring:message code="personnel.information"/>') {
+                                personnelType=PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel" ? 1 : 2;
+                            }
 
-                                    let currentPersonnel = JSON.parse(resp.data);
+                            isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/findPersonnel/" + personnelType + "/" + personnelId + "/" + (nationalCode??' ') + "/" + personnelNo, "GET", null, function (resp) {
 
-                                    currentPersonnel.fullName =
-                                        (currentPersonnel.firstName !== undefined ? currentPersonnel.firstName : "")
-                                        + " " +
-                                        (currentPersonnel.lastName !== undefined ? currentPersonnel.lastName : "");
+                                if(generalGetResp(resp)){
+                                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
-                                    currentPersonnel.birth =
-                                        (currentPersonnel.birthDate !== undefined ? currentPersonnel.birthDate : "")
-                                        + " - " +
-                                        (currentPersonnel.birthPlace !== undefined ? currentPersonnel.birthPlace : "");
+                                        let currentPersonnel = JSON.parse(resp.data);
 
-                                    currentPersonnel.educationLevelTitle =
-                                        (currentPersonnel.educationLevelTitle !== undefined ? currentPersonnel.educationLevelTitle : "")
-                                        + " / " +
-                                        (currentPersonnel.educationMajorTitle !== undefined ? currentPersonnel.educationMajorTitle : "");
+                                        currentPersonnel.fullName =
+                                            (currentPersonnel.firstName !== undefined ? currentPersonnel.firstName : "")
+                                            + " " +
+                                            (currentPersonnel.lastName !== undefined ? currentPersonnel.lastName : "");
 
-                                    currentPersonnel.gender =
-                                        (currentPersonnel.gender !== undefined ? currentPersonnel.gender : "")
-                                        + " - " +
-                                        (currentPersonnel.maritalStatusTitle !== undefined ? currentPersonnel.maritalStatusTitle : "");
+                                        currentPersonnel.birth =
+                                            (currentPersonnel.birthDate !== undefined ? currentPersonnel.birthDate : "")
+                                            + " - " +
+                                            (currentPersonnel.birthPlace !== undefined ? currentPersonnel.birthPlace : "");
 
-                                    me.tempPersonnel = currentPersonnel;
-                                    me.DynamicForm_PersonnelInfo.editRecord(currentPersonnel);
+                                        currentPersonnel.educationLevelTitle =
+                                            (currentPersonnel.educationLevelTitle !== undefined ? currentPersonnel.educationLevelTitle : "")
+                                            + " / " +
+                                            (currentPersonnel.educationMajorTitle !== undefined ? currentPersonnel.educationMajorTitle : "");
+
+                                        currentPersonnel.gender =
+                                            (currentPersonnel.gender !== undefined ? currentPersonnel.gender : "")
+                                            + " - " +
+                                            (currentPersonnel.maritalStatusTitle !== undefined ? currentPersonnel.maritalStatusTitle : "");
+
+                                        me.tempPersonnel = currentPersonnel;
+                                        me.DynamicForm_PersonnelInfo.editRecord(currentPersonnel);
+                                    }else if(resp.httpResponseCode === 404){
+                                        createDialog('info',"اطلاعات فرد مورد نظر در سيستم موجود نمي باشد.");
+                                    }
                                 }
-
                             }));
                         }
                     } else if (this.PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_Training") {

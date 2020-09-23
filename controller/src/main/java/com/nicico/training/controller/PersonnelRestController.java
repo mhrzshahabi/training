@@ -168,7 +168,14 @@ public class PersonnelRestController {
 
     @GetMapping(value = "/findPersonnel/{personnelType}/{personnelId}/{nationalCode}/{personnelNo}")
     public ResponseEntity<PersonnelDTO.DetailInfo> findPersonnel(@PathVariable Long personnelType, @PathVariable Long personnelId, @PathVariable String nationalCode, @PathVariable String personnelNo) {
-        return new ResponseEntity<>(personnelService.findPersonnel(personnelType, personnelId, nationalCode, personnelNo), HttpStatus.OK);
+            PersonnelDTO.DetailInfo personnel = personnelService.findPersonnel(personnelType, personnelId, nationalCode, personnelNo);
+            if(personnel==null){
+                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            }else{
+                return new ResponseEntity<>(personnel, HttpStatus.OK);
+            }
+
+
     }
 
     //TODO:must be check

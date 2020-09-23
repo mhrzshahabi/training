@@ -49,8 +49,8 @@ public class StudentService implements IStudentService {
     }
 
     @Transactional(readOnly = true)
-    public List<Student> getStudentByPostCodeAndPersonnelNoAndDepartmentCodeAndFirstNameAndLastNameOrderByIdDesc(String postCode, String personnelNo, String depCode, String fName, String lName) {
-        List<Student> list = studentDAO.findByPostCodeAndPersonnelNoAndDepartmentCodeAndFirstNameAndLastNameOrderByIdDesc(postCode, personnelNo, depCode, fName, lName);
+    public List<Student> getStudentByPostIdAndPersonnelNoAndDepartmentIdAndFirstNameAndLastNameOrderByIdDesc(Long postId, String personnelNo, Long depId, String fName, String lName) {
+        List<Student> list = studentDAO.findByPostIdAndPersonnelNoAndDepartmentIdAndFirstNameAndLastNameOrderByIdDesc(postId, personnelNo, depId, fName, lName);
         return list;
     }
     @Transactional(readOnly = true)

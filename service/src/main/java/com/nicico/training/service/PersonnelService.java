@@ -254,6 +254,9 @@ public class PersonnelService implements IPersonnelService {
         List<Personnel> personnels = null;
         List<PersonnelRegistered> personnelRegistereds = null;
 
+        nationalCode=nationalCode.trim();
+        personnelNo=personnelNo.trim();
+
         if (personnelId > 0 && (personnelType == 1 || personnelType == 2)) {
 
             if (personnelType == 1) {
@@ -279,19 +282,19 @@ public class PersonnelService implements IPersonnelService {
                     } else if (personnelRegistereds.size() > 0) {
                         personnelRegistered = personnelRegistereds.get(0);
                     } else {
-                        throw new TrainingException(TrainingException.ErrorType.NotFound);
+                        return null;
                     }
                 }
             }
 
         } else {
-            personnels = personnelDAO.findAllByPersonnelNoOrderByIdDesc(nationalCode);
+            personnels = personnelDAO.findAllByPersonnelNoOrderByIdDesc(personnelNo);
 
             personnel = personnels.stream().filter(p -> p.getDeleted() == 0).findFirst().orElse(null);
 
             if (personnel == null) {
 
-                personnelRegistereds = personnelRegisteredDAO.findAllByPersonnelNoOrderByIdDesc(nationalCode);
+                personnelRegistereds = personnelRegisteredDAO.findAllByPersonnelNoOrderByIdDesc(personnelNo);
                 personnelRegistered = personnelRegistereds.stream().filter(p -> p.getDeleted() == null).findFirst().orElse(null);
 
                 if (personnelRegistered == null) {
@@ -363,7 +366,7 @@ public class PersonnelService implements IPersonnelService {
             }
 
         } else {
-            personnels = personnelDAO.findAllByPersonnelNoOrderByIdDesc(nationalCode);
+            personnels = personnelDAO.findAllByPersonnelNoOrderByIdDesc(personnelNo);
 
             personnel = personnels.stream().filter(p -> p.getDeleted() == 0).findFirst().orElse(null);
 
