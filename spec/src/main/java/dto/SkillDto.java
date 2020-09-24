@@ -7,4 +7,5 @@ import lombok.Setter;
 @Setter
 public class SkillDto {
     private long id;
+    private long subCategoryId;
 }

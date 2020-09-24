@@ -932,8 +932,8 @@
                     {
                         operator: "and",
                         criteria: [
-                            {fieldName: "categoryId", operator: "equals", value: courseRecord.category.id},
-                            {fieldName: "subCategoryId", operator: "equals", value: courseRecord.subCategory.id}
+                            {fieldName: "categoryId", operator: "equals", value: savedSubCategory.id},
+                            {fieldName: "subCategoryId", operator: "equals", value: savedSubCategory.id}
                         ]
                     },
                     {fieldName: "categoryId", operator: "isNull"}
@@ -1231,18 +1231,18 @@
                 }
             });
         } else {
-            let goalRecord = ListGrid_GoalAll.getSelectedRecords();
-            if (goalRecord.length === 0) {
+            let goalRecords = ListGrid_GoalAll.getSelectedRecords();
+            if (goalRecords.length === 0) {
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>")
             }else if(numClasses>0) {
-                createDialog("warning","از این دوره در کلاس استفاده شده است.", "اخطار");
+                createDialog("warning","از این دوره در "+ numClasses +" کلاس استفاده شده است.", "اخطار");
                 return;
             } else {
                 let goalList = [];
                 let categoryIDs = [];
-                for (let i = 0; i < goalRecord.length; i++) {
-                    goalList.add(goalRecord[i].id);
-                    categoryIDs=[...categoryIDs,goalRecord[i].categoryId];
+                for (let i = 0; i < goalRecords.length; i++) {
+                    goalList.add(goalRecords[i].id);
+                    categoryIDs=[...categoryIDs,goalRecords[i].categoryId];
                 }
                 if (categoryIDs.find(x=>x!==courseRecord.category.id) || categoryIDs.some(x=>!x)){
                     simpleDialog("<spring:message code="message"/>",

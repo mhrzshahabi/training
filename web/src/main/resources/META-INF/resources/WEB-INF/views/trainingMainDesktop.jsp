@@ -3088,7 +3088,6 @@
     }
 
     function printWithCriteria(advancedCriteria, params, fileName, type = "pdf", sortBy = null) {
-        // var advancedCriteria = LG.getCriteria();
         let criteriaForm = isc.DynamicForm.create({
             method: "POST",
             action: "<spring:url value="/export/print-criteria/"/>" + type,
@@ -3500,7 +3499,7 @@
     <%--emptyMessage: "",--%>
     <%--loadingDataMessage: "<spring:message code="loading"/>"--%>
     <%--createTab("<spring:message code="post"/>", "<spring:url value="/web/training-post"/>");--%>
-    <%--createTab("<spring:message code="class"/>", "<spring:url value="/tclass/show-form"/>");--%>
+    createTab("<spring:message code="course"/>", "<spring:url value="/course/show-form"/>");
     <%--createTab("<spring:message code="evaluation"/>", "<spring:url value="web/needsAssessment/"/>");--%>
 
     loadFrameworkMessageFa();

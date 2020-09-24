@@ -16,9 +16,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.course.CourseUpdateResponse;
 import response.course.dto.CourseDto;
 
 import javax.persistence.EntityManager;
@@ -246,10 +246,22 @@ public class CourseService implements ICourseService {
 
     @Transactional
     @Override
-    public CourseDTO.Info update(Course course, List<Long> skillIds) {
+    public CourseUpdateResponse update(Course course, List<Long> skillIds) {
 
         Course oldCourse = courseDAO.findCourseByIdEquals(course.getId());
+        course.setHasGoal(oldCourse.getGoalSet().size()>0);
+        CourseUpdateResponse response = new CourseUpdateResponse();
 
+        if(oldCourse.getGoalSet().stream().anyMatch(goal-> !goal.getSubCategoryId().equals(course.getSubCategoryId()))){
+            response.setMessage("خطا: زیر گروه دوره با زیر گروه هدف یکسان نیست!");
+            response.setStatus(409);
+            return response;
+        }
+        if(oldCourse.getSkillSet().stream().anyMatch(skill-> !skill.getSubCategoryId().equals(course.getSubCategoryId()))){
+            response.setMessage("خطا: زیر گروه دوره با زیر گروه مهارت یکسان نیست!");
+            response.setStatus(409);
+            return response;
+        }
         skillDAO.findByCourseMainObjectiveId(course.getId()).forEach(skill -> {
            skill.setCourseMainObjectiveId(null);
            skill.setCourseId(null);
@@ -264,7 +276,10 @@ public class CourseService implements ICourseService {
             skill.setCourseMainObjectiveId(course.getId());
         });
         course.setSkillMainObjectiveSet(new HashSet<>(newSkills));
-        return modelMapper.map(courseDAO.save(course), CourseDTO.Info.class);
+        response.setRecord(modelMapper.map(courseDAO.save(course), CourseDto.class));
+        response.setMessage("دوره با موفقیت ویرایش شد.");
+        response.setStatus(200);
+        return response;
     }
 
     @Transactional
