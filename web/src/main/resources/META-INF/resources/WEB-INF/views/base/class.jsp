@@ -3951,7 +3951,7 @@
                 data.evaluationFull = evaluationFull;
                 data.description = DynamicForm_Description_JspEvaluation.getField("description").getValue();
                 data.classId = classRecord.id;
-                data.evaluatorId = classRecord.supervisor;
+                data.evaluatorId = classRecord.supervisor.id;
                 data.evaluatorTypeId = 454;
                 data.evaluatedId = classRecord.teacherId;
                 data.evaluatedTypeId = 187;
@@ -4016,7 +4016,7 @@
         isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "teacherFullName/" + classRecord.teacherId, "GET", null, function (resp1) {
             DynamicForm_Questions_Title_JspEvaluation.getItem("teacher").setValue(resp1.httpResponseText);
             DynamicForm_Questions_Title_JspEvaluation.setValue("evaluated", resp1.httpResponseText);
-            isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/personnelFullName/" + classRecord.supervisor, "GET", null, function (resp2) {
+            isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/personnelFullName/" + classRecord.supervisor.id, "GET", null, function (resp2) {
                 DynamicForm_Questions_Title_JspEvaluation.setValue("evaluator", resp2.httpResponseText);
                 load_evaluation_form_RTr2();
             }));
@@ -4030,7 +4030,7 @@
 
             let data = {};
             data.classId = classRecord.id;
-            data.evaluatorId = classRecord.supervisor;
+            data.evaluatorId = classRecord.supervisor.id;
             data.evaluatorTypeId = 454;
             data.evaluatedId = classRecord.teacherId;
             data.evaluatedTypeId = 187;
@@ -4163,8 +4163,8 @@
         isc.RPCManager.sendRequest(TrDSRequest(questionnaireUrl + "/getLastQuestionnarieId?criteria=" + JSON.stringify(criteria), "GET", null, function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 QId = resp.httpResponseText;
-                if (QId != null && QId != undefined && classRecord.supervisor != undefined && classRecord.teacherId != undefined)
-                    create_evaluation_form_JspClass(null, QId, classRecord.supervisor, 454, classRecord.teacherId, 187, 141, 154, classRecord.id);
+                if (QId != null && QId != undefined && classRecord.supervisorId != undefined && classRecord.teacherId != undefined)
+                    create_evaluation_form_JspClass(null, QId, classRecord.supervisorId, 454, classRecord.teacherId, 187, 141, 154, classRecord.id);
             }
         }));
     }
