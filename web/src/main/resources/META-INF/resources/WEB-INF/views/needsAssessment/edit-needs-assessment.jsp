@@ -79,7 +79,6 @@
             {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
-
         ],
         fetchDataURL: viewTrainingPostUrl + "/spec-list"
     });
@@ -160,26 +159,10 @@
             {name: "id", primaryKey: true},
             {name: "code", title: "<spring:message code="skill.code"/>", filterOperator: "iContains"},
             {name: "titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: true},
-            <%--{name: "category.titleFa", title: "<spring:message code="category"/>", filterOperator: "iContains"},--%>
-            <%--{name: "subCategory.titleFa", title: "<spring:message code="subcategory"/>", filterOperator: "iContains"},--%>
-            <%--{name: "skillLevel.titleFa", title: "<spring:message code="skill.level"/>", filterOperator: "iContains"},--%>
             {name: "course.titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
             {name: "course.code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: true},
             {name: "course.theoryDuration", title: "<spring:message code="duration"/>", filterOperator: "iContains"}
-            <%--{name: "scoringMethod"},--%>
-            <%--{name: "acceptancelimit"},--%>
-            <%--{name: "startEvaluation"},--%>
-            <%--{--%>
-            <%--name: "code",--%>
-            <%--title: "<spring:message code="course.code"/>",--%>
-            <%--filterOperator: "iContains",--%>
-            <%--autoFitWidth: true--%>
-            <%--},--%>
-            <%--{name: "titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},--%>
-            <%--{name: "createdBy", title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},--%>
-            <%--{name: "theoryDuration"},--%>
-            <%--{name: "categoryId"},--%>
-            // {name: "subCategoryId"},
+
         ],
         fetchDataURL: skillUrl + "/WFC/spec-list"
 
@@ -247,7 +230,10 @@
                 canEdit: false,
                 hoverWidth: 250,
                 hoverHTML(record) {
-                    return record.course ? "نام مهارت: " + record.titleFa + "<br>" + "نام دوره: " + record.course.titleFa + "<br>" + "کد دوره: " + record.course.code : "نام مهارت: " + record.titleFa;
+                    return "<b>" + (record.mainWorkflowStatus !== undefined ? record.mainWorkflowStatus : "به گردش کار ارسال نشده") + "</b><br>" +
+                        (record.course ?
+                        "نام مهارت: " + record.titleFa + "<br>" + "نام دوره: " + record.course.titleFa + "<br>" + "کد دوره: " + record.course.code :
+                        "نام مهارت: " + record.titleFa);
                 },
             },
             {name: "needsAssessmentPriorityId", title: "<spring:message code="priority"/>", filterOperator: "iContains", autoFitWidth:true},
@@ -273,6 +259,7 @@
             {name: "objectCode"},
             {name: "course"},
             {name: "skill"},
+            {name: "mainWorkflowStatus"},
             {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, autoFitWidth:true,
                 showHover:true,
                 hoverWidth: 200,
@@ -1096,15 +1083,6 @@
             editing = true;
             this.Super("dataChanged",arguments);
         },
-        // canEditCell(rowNum, colNum){
-        //     if(colNum === 1) {
-        //         let record = this.getRecord(rowNum);
-        //         if (record.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")) {
-        //             return true;
-        //         }
-        //     }
-        //     return false;
-        // },
         getCellCSSText(record) {
             return priorityColor(record);
         },
@@ -1149,13 +1127,10 @@
         gridComponents: [
             "filterEditor", "header", "body"
         ],
-        // width: "25%",
         showHeaderContextMenu: false,
         canAcceptDroppedRecords: true,
-        // canHover: true,
         showHoverComponents: true,
         autoSaveEdits:false,
-        // hoverMode: "details",
         canRemoveRecords:true,
         showFilterEditor:false,
         implicitCriteria:{"needsAssessmentDomainId":109},
@@ -1168,10 +1143,6 @@
                 if (sourceWidget.ID === 'ListGrid_SkillAll_JspNeedsAssessment') {
                     for (let i = 0; i < dropRecords.length; i++) {
                         createNeedsAssessmentRecords(createData_JspNeedsAssessment(dropRecords[i], 109));
-                        // DataSource_Skill_JspNeedsAssessment.addData(data);
-                        // createNeedsAssessmentRecords(data);
-                        // this.fetchData();
-                        // fetchDataDomainsGrid();
                     }
                 }
             }
@@ -1180,15 +1151,6 @@
             editing = true;
             this.Super("dataChanged",arguments);
         },
-        // canEditCell(rowNum, colNum){
-        //     if(colNum == 1) {
-        //         let record = this.getRecord(rowNum);
-        //         if (record.objectType == DynamicForm_JspEditNeedsAssessment.getValue("objectType")) {
-        //             return true;
-        //         }
-        //     }
-        //     return false;
-        // },
         getCellCSSText: function (record) {
             return priorityColor(record);
         },
@@ -1686,6 +1648,7 @@
                 skill.objectName = data[i].objectName;
                 skill.objectCode = data[i].objectCode;
                 skill.skill = data[i].skill;
+                skill.mainWorkflowStatus = data[i].mainWorkflowStatus;
                 if(data[i].skill.course === undefined){
                     skill.hasWarning = "alarm";
                 }
