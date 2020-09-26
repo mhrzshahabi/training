@@ -276,7 +276,7 @@ public class CourseService implements ICourseService {
             skill.setCourseMainObjectiveId(course.getId());
         });
         course.setSkillMainObjectiveSet(new HashSet<>(newSkills));
-        response.setRecord(modelMapper.map(courseDAO.save(course), CourseDto.class));
+        response.setRecord(beanMapper.toCourseDto(courseDAO.save(course)));
         response.setMessage("دوره با موفقیت ویرایش شد.");
         response.setStatus(200);
         return response;

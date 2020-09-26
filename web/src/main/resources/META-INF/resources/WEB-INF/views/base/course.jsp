@@ -18,7 +18,7 @@
     var equalPreCourse = [];
     var equalCourseIdList = [];
     var courseRecord = {};
-    var savedSubCategory = {};
+    var editingCourseRecord = {};
     var runV = "";
     var eLevelTypeV = "";
     var course_method = "";
@@ -151,7 +151,7 @@
     var RestDataSource_CourseSkill = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true}, {name: "titleFa"}, {name: "titleEn"}
-        ], dataFormat: "json",
+        ],
         fetchDataURL: courseUrl + "skill/" + courseRecord.id
     });
     var RestDataSource_CourseJob = isc.TrDS.create({
@@ -290,7 +290,7 @@
         <sec:authorize access="hasAnyAuthority('Course_Syllabus','Course_Job','Course_Post','Course_Skill','Course_Teachers')">
         selectionChanged: function (record, state) {
             if (state) {
-                courseRecord = {...record};
+                courseRecord = record;
                 refreshSelectedTab_Course(tabSetCourse.getSelectedTab());
             }
         },
@@ -1027,8 +1027,8 @@
                 icon: "[SKIN]/actions/add.png",
                 prompt: "<spring:message code='add'/>",
                 click: function () {
-                    if(DynamicForm_course_GroupTab.getValue("category.id") === undefined || DynamicForm_course_GroupTab.getValue("subCategory.id") === undefined){
-                        createDialog("warning", "ابتدا گروه و زیر گروه را انتخاب نمایید", "اخطار")
+                    if((typeof DynamicForm_course_GroupTab.getValue("subCategory.id") != "number") || (DynamicForm_course_GroupTab.getValue("subCategory.id") == null)){
+                        createDialog("warning", "ابتدا گروه و زیر گروه را انتخاب نمایید", "اخطار");
                         return;
                     }
                     let cr = {};
@@ -1438,7 +1438,10 @@
                     DynamicForm_course_GroupTab.getItem("subCategory.id").fetchData();
                     DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
                     mainObjectiveGrid_Refresh("clear");
-                    ListGrid_AllSkill_JspCourse.setData([])
+                    if(course_method === "PUT"){
+                        disabledTabs();
+                    }
+                    // ListGrid_AllSkill_JspCourse.setData([])
                 },
                 click: function (form, item) {
                     item.fetchData();
@@ -1466,7 +1469,10 @@
                 changed: function (form, item, value) {
                     DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
                     mainObjectiveGrid_Refresh("clear");
-                    ListGridAllSkillRefresh();
+                    if(course_method === "PUT"){
+                        disabledTabs();
+                    }
+                    // ListGridAllSkillRefresh();
                 }
             },
             {
@@ -1728,8 +1734,9 @@
                 sendData.theoType = sendData.theoType.id;
                 sendData.technicalType = sendData.technicalType.id;
                 sendData.levelType = sendData.levelType.id;
-                sendData.category = DynamicForm_course_GroupTab.getItem("category.id").getSelectedRecord()
-                sendData.subCategory = DynamicForm_course_GroupTab.getItem("subCategory.id").getSelectedRecord()
+                sendData.category = DynamicForm_course_GroupTab.getItem("category.id").getSelectedRecord();
+                sendData.subCategory = DynamicForm_course_GroupTab.getItem("subCategory.id").getSelectedRecord();
+                sendData.duration = parseInt(DynamicForm_course_GroupTab.getValue("duration"));
 
                 wait.show();
                 isc.RPCManager.sendRequest(TrDSRequest(course_url, course_method, JSON.stringify(sendData), function (resp) {
@@ -1742,9 +1749,8 @@
                         }
                         sendToWorkflowAfterUpdate(response.record);
                         courseRecord = response.record;
-                        console.log("resp: ")
-                        console.log(courseRecord)
-                        DynamicForm_course_GroupTab.setValue("code", courseRecord.code);
+                        DynamicForm_course_GroupTab.setValue("code", {...courseRecord}.code);
+                        disabledTabs();
                         simpleDialog("<spring:message code="edit"/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
                     } else {
                         simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
@@ -2239,12 +2245,12 @@
                                 margin: 10,
                                 members: [ isc.ToolStripButtonExcel.create({
                                     click: function () {
-                                        let courseRecord = ListGrid_Course.getSelectedRecord();
-                                        if (courseRecord == null) {
+                                        let record = ListGrid_Course.getSelectedRecord();
+                                        if (record == null) {
                                             createDialog("info", "دوره ای از جدول بالا انتخاب نشده است");
                                             return;
                                         }
-                                        ExportToFile.downloadExcelRestUrl(null, ListGrid_Post_JspCourse , skillNAUrl, 0, ListGrid_Course, '',"لیست موارد نیازسنجی شده برای دوره " + courseRecord.titleFa + " با کد " + courseRecord.code, null, null, 0, true);
+                                        ExportToFile.downloadExcelRestUrl(null, ListGrid_Post_JspCourse , skillNAUrl, 0, ListGrid_Course, '',"لیست موارد نیازسنجی شده برای دوره " + record.titleFa + " با کد " + record.code, null, null, 0, true);
                                     }
                                 }),isc.ToolStrip.create({
                                     width: "100%",
@@ -2334,9 +2340,9 @@
                                 margin: 10,
                                 members: [ isc.ToolStripButtonExcel.create({
                                     click: function () {
-                                        let courseRecord = ListGrid_Course.getSelectedRecord();
-                                        if (!(courseRecord === undefined || courseRecord == null)) {
-                                            ExportToFile.downloadExcelRestUrl(null, ListGrid_CourseSkill, courseUrl + "skill/" + courseRecord.id, 0, ListGrid_Course, '', "دوره - مهارت", ListGrid_CourseSkill.getCriteria(), null);
+                                        let record = ListGrid_Course.getSelectedRecord();
+                                        if (!(record === undefined || record == null)) {
+                                            ExportToFile.downloadExcelRestUrl(null, ListGrid_CourseSkill, courseUrl + "skill/" + record.id, 0, ListGrid_Course, '', "دوره - مهارت", ListGrid_CourseSkill.getCriteria(), null);
                                         }
                                     }
                                 }), isc.ToolStrip.create({
@@ -2376,9 +2382,9 @@
                                     if (ListGrid_teacherInformation_Course.data.size() < 1)
                                         return;
 
-                                    let courseRecord = ListGrid_Course.getSelectedRecord();
-                                    if (!(courseRecord === undefined || courseRecord == null)) {
-                                        ExportToFile.downloadExcelRestUrl(null, ListGrid_teacherInformation_Course,teacherInformation + "/teacher-information-iscList" + "/" + courseRecord.code, 0, ListGrid_Course, '', "دوره - اساتیدی که این دوره را تدریس کرده اند", ListGrid_teacherInformation_Course.getCriteria(), null);
+                                    let record = ListGrid_Course.getSelectedRecord();
+                                    if (!(record === undefined || record == null)) {
+                                        ExportToFile.downloadExcelRestUrl(null, ListGrid_teacherInformation_Course,teacherInformation + "/teacher-information-iscList" + "/" + record.code, 0, ListGrid_Course, '', "دوره - اساتیدی که این دوره را تدریس کرده اند", ListGrid_teacherInformation_Course.getCriteria(), null);
                                     }
                                 }
                             }), isc.ToolStrip.create({
@@ -2424,7 +2430,7 @@
         ListGrid_CourseJob.setData([]);
         ListGrid_CourseSkill.setData([]);
         ListGrid_CourseSyllabus.setData([]);
-        courseRecord = "";
+        courseRecord = {};
     }
 
     function ListGrid_Course_add() {
@@ -2448,16 +2454,16 @@
         equalCourseGrid.invalidateCache();
         courseAllGrid.invalidateCache();
         Window_course.show();
+        courseRecord = {};
 
-        let val = setInterval(function () {
-            TabSet_Goal_JspCourse.disable();
+        disabledTabs()
+        mainObjectiveGrid_Refresh(1);
+    }
+    let disabledTabs = function () {
+            TabSet_Goal_JspCourse.setDisabled((courseRecord.subCategory == null) || (courseRecord.subCategory.id !== editingCourseRecord.subCategory.id));
             TabSet_Goal_JspCourse.selectTab(0);
             ListGrid_Goal.setData([]);
             ListGrid_Syllabus_Goal.setData([]);
-            clearInterval(val);
-        }, 500);
-        courseRecord = "";
-        mainObjectiveGrid_Refresh(1);
     }
 
     function ListGrid_Course_remove() {
@@ -2554,9 +2560,11 @@
         equalCourse.length = 0;
         preCourseGrid.invalidateCache();
         equalCourseGrid.invalidateCache();
-        if (courseRecord == null || courseRecord.id == null) {
+
+        if (courseRecord == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
+            editingCourseRecord = JSON.parse(JSON.stringify(courseRecord));
             vm_JspCourse.clearValues();
             vm_JspCourse.clearErrors();
             wait.show();
@@ -2582,9 +2590,8 @@
             course_url = courseUrl + courseRecord.id;
             RestDataSourceSubCategory.fetchDataURL = categoryUrl + courseRecord.category.id + "/sub-categories";
             DynamicForm_course_GroupTab.getItem("subCategory.id").fetchData();
-            savedSubCategory = {...courseRecord.subCategory};
-            vm_JspCourse.editRecord(courseRecord);
-            DynamicForm_course_GroupTab.setValue("subCategory.id", courseRecord.subCategory.id);
+            vm_JspCourse.editRecord(editingCourseRecord);
+            DynamicForm_course_GroupTab.setValue("subCategory.id", editingCourseRecord.subCategory.id);
 //======================================================
 //             if (courseRecord.hasGoal && DynamicForm_course_MainTab.getValue("evaluation") != null) {
 //                 Window_course.show();
@@ -2602,15 +2609,16 @@
             lblCourse.getField("domainCourse").setValue("");
             Window_course.show();
             if (courseRecord.scoringMethod === "1") {
-                DynamicForm_course_MainTab.getItem("acceptancelimit_a").setValue(courseRecord.acceptancelimit);
+                DynamicForm_course_MainTab.setValue("acceptancelimit_a", editingCourseRecord.acceptancelimit);
             }
             DynamicForm_course_MainTab.getItem("scoringMethod").change(DynamicForm_course_MainTab, DynamicForm_course_MainTab.getItem("scoringMethod"), DynamicForm_course_MainTab.getValue("scoringMethod"));
-            setTimeout(function () {
+            let val = setInterval(function () {
                 ListGrid_Goal_refresh();
                 ListGrid_Syllabus_Goal_refresh();
                 TabSet_Goal_JspCourse.enable();
                 TabSet_Goal_JspCourse.selectTab(0);
                 lblCourse.show();
+                clearInterval(val);
             }, 400)
         }
     }
@@ -2915,7 +2923,6 @@
 
     let ListGridAllSkillRefresh = function () {
         if (DynamicForm_course_GroupTab.getValue("subCategory.id") != null) {
-            console.log(courseRecord)
 
             ListGrid_AllSkill_JspCourse.invalidateCache();
             ListGrid_AllSkill_JspCourse.setImplicitCriteria({
@@ -2926,7 +2933,7 @@
                     {
                         fieldName: "subCategoryId",
                         operator: "equals",
-                        value: savedSubCategory.id
+                        value: courseRecord.subCategory.id
                     },
                 ]
             });
@@ -2937,7 +2944,7 @@
                 _constructor: "AdvancedCriteria",
                 operator: "and",
                 criteria: [
-                    {fieldName: "courseId", operator: "equals", value: savedSubCategory.id},
+                    {fieldName: "courseId", operator: "equals", value: courseRecord.id},
                 ]
             });
             ListGridOwnSkill_JspCourse.fetchData();
