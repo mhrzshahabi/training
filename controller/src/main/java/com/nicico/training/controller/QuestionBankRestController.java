@@ -10,6 +10,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IViewStatisticsUnitReportService;
+import com.nicico.training.model.QuestionBank;
 import com.nicico.training.repository.QuestionBankDAO;
 import com.nicico.training.service.QuestionBankService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -46,7 +48,7 @@ public class QuestionBankRestController {
 
     @Loggable
     @GetMapping(value = "/max")
-    public Integer getMaxId(){
+    public Integer getMaxId() {
         return questionBankService.getMaxId();
     }
 
@@ -124,13 +126,27 @@ public class QuestionBankRestController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
         try {
-            questionBankService.delete(id);
-            return new ResponseEntity(HttpStatus.OK);
+
+            QuestionBank qb = questionBankService.getById(id);
+
+            if (qb == null) {
+                return new ResponseEntity<>(
+                        new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(),
+                        HttpStatus.NOT_FOUND);
+            } else if (questionBankService.isExist(id)) {
+                return new ResponseEntity<>(
+                        new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(),
+                        HttpStatus.NOT_ACCEPTABLE);
+            } else {
+                questionBankService.delete(id);
+                return new ResponseEntity(HttpStatus.OK);
+            }
+
 
         } catch (DataIntegrityViolationException e) {
             return new ResponseEntity<>(
                     new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(),
-                    HttpStatus.NOT_ACCEPTABLE);
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
