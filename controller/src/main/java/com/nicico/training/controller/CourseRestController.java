@@ -217,7 +217,6 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
                     }
                 }
             }
-
         }
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
