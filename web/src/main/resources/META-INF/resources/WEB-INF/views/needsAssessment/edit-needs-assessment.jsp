@@ -230,7 +230,7 @@
                 canEdit: false,
                 hoverWidth: 250,
                 hoverHTML(record) {
-                    return "<b>" + (record.mainWorkflowStatus !== undefined ? record.mainWorkflowStatus : "به گردش کار ارسال نشده") + "</b><br>" +
+                    return (record.mainWorkflowStatus !== undefined ? record.mainWorkflowStatus : getFormulaMessage("به گردش کار ارسال نشده است", "2", "orange", "b")) + "<br>" +
                         (record.course ?
                         "نام مهارت: " + record.titleFa + "<br>" + "نام دوره: " + record.course.titleFa + "<br>" + "کد دوره: " + record.course.code :
                         "نام مهارت: " + record.titleFa);
@@ -1749,8 +1749,7 @@
         Label_PlusData_JspNeedsAssessment.setContents("");
         if(DynamicForm_JspEditNeedsAssessment.getValue("objectType") === "Post" || DynamicForm_JspEditNeedsAssessment.getValue("objectType") === "TrainingPost") {
             Label_PlusData_JspNeedsAssessment.setContents(
-                (objectId.titleFa !== undefined ? "<b>عنوان پست: </b>" +  objectId.titleFa : "")
-                // + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + objectId.postGrade.titleFa
+                (objectId.titleFa !== undefined ? '<b>عنوان پست: </b>' +  objectId.titleFa : "")
                 + "&nbsp;&nbsp;&nbsp;&nbsp;" +
                 (objectId.area !== undefined ? "<b>حوزه: </b>" + objectId.area : "")
                 + "&nbsp;&nbsp;&nbsp;&nbsp;" +
@@ -1763,7 +1762,6 @@
     function updatePriority_JspEditNeedsAssessment(viewer, record) {
         if(record.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")) {
             let updating = {objectType: record.objectType, objectId: record.objectId, needsAssessmentPriorityId: record.needsAssessmentPriorityId + 1 > 113 ? 111 : record.needsAssessmentPriorityId + 1};
-            // isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id + "?isFirstChange=" + isFirstChange, "PUT", JSON.stringify(record), function (resp) {
             wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "PUT", JSON.stringify(updating), function (resp) {
                 wait.close()
