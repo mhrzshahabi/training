@@ -1074,8 +1074,8 @@
             isc.ToolStripButton.create({
                 width: 15,
                 height: 15,
-                icon: "[SKIN]/FileBrowser/refresh.png",
-                prompt: "<spring:message code='refresh'/>",
+                icon: "[SKIN]/actions/undo.png",
+                prompt: "لغو تغییرات",
                 click: "mainObjectiveGrid_Refresh()"
             }),
         ]
@@ -2911,7 +2911,7 @@
                     ListGrid_Post_JspCourse.fetchData();
                     break;
                 case "tabSkillJspCourse":
-                    if (courseRecord) {
+                    if (!jQuery.isEmptyObject(courseRecord)) {
                         RestDataSource_CourseSkill.fetchDataURL = courseUrl + "skill/" + courseRecord.id;
                         ListGrid_CourseSkill.fetchData();
                         ListGrid_CourseSkill.invalidateCache();
