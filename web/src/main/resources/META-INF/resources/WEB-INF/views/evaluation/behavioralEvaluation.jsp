@@ -39,19 +39,28 @@
                     name: "student.firstName",
                     title: "<spring:message code="firstName"/>",
                     filterOperator: "iContains",
-                    autoFitWidth: true
+                    autoFitWidth: true,
+                    sortNormalizer: function (record) {
+                        return record.student.firstName;
+                    }
                 },
                 {
                     name: "student.lastName",
                     title: "<spring:message code="lastName"/>",
                     filterOperator: "iContains",
-                    autoFitWidth: true
+                    autoFitWidth: true,
+                    sortNormalizer: function (record) {
+                        return record.student.lastName;
+                    }
                 },
                 {
                     name: "student.nationalCode",
                     title: "<spring:message code="national.code"/>",
                     filterOperator: "iContains",
                     autoFitWidth: true,
+                    sortNormalizer: function (record) {
+                        return record.student.nationalCode;
+                    }
                 },
                 {
                     name: "applicantCompanyName",
@@ -69,30 +78,45 @@
                     name: "student.companyName",
                     title: "<spring:message code="company.name"/>",
                     filterOperator: "iContains",
-                    autoFitWidth: true
+                    autoFitWidth: true,
+                    sortNormalizer: function (record) {
+                        return record.student.companyName;
+                    }
                 },
                 {
                     name: "student.personnelNo",
                     title: "<spring:message code="personnel.no"/>",
                     filterOperator: "iContains",
-                    autoFitWidth: true
+                    autoFitWidth: true,
+                    sortNormalizer: function (record) {
+                        return record.student.personnelNo;
+                    }
                 },
                 {
                     name: "student.personnelNo2",
                     title: "<spring:message code="personnel.no.6.digits"/>",
                     filterOperator: "iContains",
-                    autoFitWidth: true
+                    autoFitWidth: true,
+                    sortNormalizer: function (record) {
+                        return record.student.personnelNo2;
+                    }
                 },
                 {
                     name: "student.postTitle",
                     title: "<spring:message code="post"/>",
                     filterOperator: "iContains",
-                    autoFitWidth: true
+                    autoFitWidth: true,
+                    sortNormalizer: function (record) {
+                        return record.student.postTitle;
+                    }
                 },
                 {
                     name: "student.ccpArea",
                     title: "<spring:message code="reward.cost.center.area"/>",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    sortNormalizer: function (record) {
+                        return record.student.ccpArea;
+                    }
                 },
                 {
                     name: "evaluationStatusReaction",

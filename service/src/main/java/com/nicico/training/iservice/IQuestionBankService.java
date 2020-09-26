@@ -7,6 +7,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.QuestionBankDTO;
 import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.model.QuestionBank;
 import com.nicico.training.model.Tclass;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,10 @@ import java.util.List;
 import java.util.Map;
 
 public interface IQuestionBankService {
+
+    boolean isExist(Long id);
+
+    QuestionBank getById(Long Id);
 
     QuestionBankDTO.FullInfo get(Long Id);
 

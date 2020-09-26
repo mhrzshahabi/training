@@ -58,6 +58,7 @@ public class SkillDTO {
     public static class InfoTuple {
         private Long id;
         private String titleFa;
+        private Long subCategoryId;
         private String code;
     }
 

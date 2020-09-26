@@ -245,7 +245,6 @@ public class EvaluationRestController {
         return new ResponseEntity<>(evaluationService.search(request), HttpStatus.OK);
     }
 
-
     @Loggable
     @GetMapping(value = "/class-spec-list")
     public ResponseEntity<TclassDTO.TclassSpecRs> classList(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
@@ -345,13 +344,23 @@ public class EvaluationRestController {
     }
 
     @Loggable
+    @GetMapping(value = "/deleteClassGoalsQuestions/{classId}")
+    public void deleteClassGoalsQuestions(@PathVariable Long classId) throws IOException {
+        classEvaluationGoalsService.deleteClassGoalsQuestions(classId);
+    }
+
+    @Loggable
     @GetMapping(value = "/deleteAllReactionEvaluationForms/{classId}")
     public ResponseEntity<Void> deleteAllReactionEvaluationForms(@PathVariable Long classId, HttpServletRequest iscRq) throws IOException {
         evaluationService.deleteAllReactionEvaluationForms(classId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
+    @Loggable
+    @GetMapping(value = "/classHasEvaluationForm/{classId}")
+    public ResponseEntity<Boolean> classHasEvaluationForm(@PathVariable Long classId) throws IOException {
+            return new ResponseEntity<>(evaluationService.classHasEvaluationForm(classId),HttpStatus.OK);
+    }
 
     //--------------------------------------------- Calender -----------------------------------------------------------
     private static double greg_len = 365.2425;

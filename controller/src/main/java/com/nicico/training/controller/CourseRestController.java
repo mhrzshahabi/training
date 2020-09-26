@@ -35,6 +35,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import request.course.CourseUpdateRequest;
 import response.course.CourseListResponse;
+import response.course.CourseUpdateResponse;
 import response.course.dto.CourseDto;
 
 import javax.servlet.http.HttpServletRequest;
@@ -141,7 +142,13 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
 
     @Loggable
     @PutMapping(value = "/{id}")
-    public ResponseEntity<CourseDTO.Info> update(@PathVariable Long id, @RequestBody CourseUpdateRequest request) {
+    public ResponseEntity<CourseUpdateResponse> update(@PathVariable Long id, @RequestBody CourseUpdateRequest request) {
+        if(request.getMainSkills().stream().anyMatch(skill->skill.getSubCategoryId() != request.getSubCategory().getId())){
+            CourseUpdateResponse response = new CourseUpdateResponse();
+            response.setMessage("خطا: زیرگروه اهداف اصلی با زیرگروه دوره همخوانی ندارد!");
+            response.setStatus(409);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
         return new ResponseEntity<>(courseService.update(beanMapper.updateCourse(request,
                 courseService.getCourse(id)), request.getMainSkills().stream().map(SkillDto::getId)
                 .collect(Collectors.toList())), HttpStatus.OK);

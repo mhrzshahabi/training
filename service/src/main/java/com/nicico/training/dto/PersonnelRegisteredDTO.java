@@ -84,6 +84,9 @@ public class PersonnelRegisteredDTO {
     private String email;
     private String accountNumber;
     private String personnelNo2;
+    private Long postId;
+    private Long departmentId;
+    private String departmentCode;
 
 
     @Getter

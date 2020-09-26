@@ -230,7 +230,10 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains",},
+            {name: "competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains"},
+            {name: "categoryId", title: "گروه"},
+            {name: "subCategoryId", title: "زیرگروه"},
+            {name: "code", title:"کد"}
         ],
         testData: competenceData,
         // fetchDataURL: competenceUrl + "/iscList",
@@ -269,6 +272,7 @@
             {name: "objectName"},
             {name: "objectCode"},
             {name: "course"},
+            {name: "skill"},
             {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, autoFitWidth:true,
                 showHover:true,
                 hoverWidth: 200,
@@ -479,6 +483,7 @@
         }
     });
 
+    let oldCourseRecord = {};
     let Menu_ListGrid_JspENA = isc.Menu.create({
         data: [
             {
@@ -649,17 +654,32 @@
                     if(selectedRecord.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")) {
                         let Window_AddCourse_JspENA = isc.Window.create({
                             title: "<spring:message code="course.plural.list"/>",
-                            placement: "fillScreen",
+                            // placement: "fillScreen",
+                            width: "40%",
+                            height: "50%",
                             minWidth: 1024,
                             keepInParentRect: true,
                             autoSize: false,
-
                             show() {
-                                ListGrid_AddCourse_JspENA.invalidateCache();
-                                ListGrid_AddCourse_JspENA.fetchData();
-                                if(selectedRecord.course !== undefined){
-                                    ListGrid_AddCourse_JspENA.setCriteria({id: selectedRecord.course.id});
+                                let cr = {
+                                    _constructor: "AdvancedCriteria",
+                                    operator: "and",
+                                    criteria: [
+                                        {fieldName: "categoryId", operator: "equals", value: selectedRecord.skill.categoryId},
+                                        {fieldName: "subCategoryId", operator: "equals", value: selectedRecord.skill.subCategoryId},
+                                    ]
                                 }
+
+                                ListGrid_AddCourse_JspENA.setImplicitCriteria(cr);
+                                ListGrid_AddCourse_JspENA.invalidateCache();
+                                ListGrid_AddCourse_JspENA.fetchData(null, ()=>{
+                                    if(selectedRecord.skill.courseId !== undefined){
+                                        oldCourseRecord = ListGrid_AddCourse_JspENA.getData().localData.toArray().find(a=>a.id===selectedRecord.skill.courseId);
+                                        if(oldCourseRecord != null) {
+                                            ListGrid_AddCourse_JspENA.selectRecord(oldCourseRecord);
+                                        }
+                                    }
+                                });
                                 this.Super("show", arguments);
                             },
                             items: [
@@ -669,8 +689,9 @@
                                             ID: "ListGrid_AddCourse_JspENA",
                                             dataSource: RestDataSource_AddCourse_JspENA,
                                             selectionType: "single",
+                                            selectionAppearance:"checkbox",
                                             filterOnKeypress: false,
-                                            // autoFetchData:true,
+                                            dataPageSize: 1000,
                                             fields: [
                                                 {
                                                     name: "code",
@@ -714,23 +735,38 @@
                                                 },
                                             ],
                                             gridComponents: ["filterEditor", "header", "body"],
-                                            recordDoubleClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
-                                                let url = skillUrl + "/add-course/" + record.id + "/" + selectedRecord.skillId
-                                                wait.show()
-                                                isc.RPCManager.sendRequest(TrDSRequest(url, "POST", null, (resp) => {
-                                                    wait.close()
-                                                    if (resp.httpResponseCode !== 200) {
-                                                        createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                            selectionChanged(record, state){
+                                                if(state){
+                                                    if((selectedRecord.skill.courseId == null)||(record.id !== selectedRecord.skill.courseId)){
+                                                        let dialog = createDialog("ask", "از تغییر دوره مهارت " + selectedRecord.skill.titleFa + " به دوره انتخاب شده مطمئن هستید.");
+                                                        dialog.addProperties({
+                                                            buttonClick: function (button, index) {
+                                                                this.close();
+                                                                if (index === 0) {
+                                                                    let url = skillUrl + "/add-course/" + record.id + "/" + selectedRecord.skillId;
+                                                                    wait.show();
+                                                                    isc.RPCManager.sendRequest(TrDSRequest(url, "POST", null, (resp) => {
+                                                                        wait.close()
+                                                                        if (resp.httpResponseCode !== 200) {
+                                                                            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                                                        }
+                                                                        editNeedsAssessmentRecord(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"));
+                                                                        ListGrid_SkillAll_JspNeedsAssessment_Refresh();
+                                                                        Window_AddCourse_JspENA.close()
+                                                                    }));
+                                                                }else {
+                                                                    ListGrid_AddCourse_JspENA.selectSingleRecord (oldCourseRecord);
+                                                                    // ListGrid_AddCourse_JspENA.deselectRecord(record);
+                                                                }
+                                                            }
+                                                        });
                                                     }
-                                                    editNeedsAssessmentRecord(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"));
-                                                    Window_AddCourse_JspENA.close()
-                                                }))
-
-                                            }
+                                                }
+                                            },
                                         }),
                                     ]
                                 })]
-                        })
+                        });
                         Window_AddCourse_JspENA.show()
                     }
                     else{
@@ -783,7 +819,6 @@
                             readOnly(true);
                         }
                     }));
-                    // ListGrid_Competence_JspNeedsAssessment.rowDoubleClick(ListGrid_Competence_JspNeedsAssessment.getSelectedRecord())
                 }
             },
         ]
@@ -794,7 +829,6 @@
         dataSource: RestDataSource_Competence_JspNeedsAssessment,
         showHeaderContextMenu: false,
         selectionType: "single",
-        // selectionAppearance: "checkbox",
         contextMenu: Menu_LG_AllCompetence_JspENA,
         filterOnKeypress: true,
         canDragRecordsOut: true,
@@ -815,7 +849,6 @@
             }
             createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
         },
-        // selectionUpdated: "ListGrid_Competence_JspNeedsAssessment.setData(this.getSelection())"
         selectionChanged(record, state) {
             if (state === true) {
                 let criteria = {
@@ -833,7 +866,6 @@
         dataSource: RestDataSource_NeedsAssessment_JspENA,
         showHeaderContextMenu: false,
         selectionType: "single",
-        // selectionAppearance: "checkbox",
         contextMenu: Menu_LG_History_JspENA,
         filterOnKeypress: true,
         canDragRecordsOut: true,
@@ -868,7 +900,6 @@
         autoFetchData: true,
         contextMenu: Menu_LG_Competence_JspENA,
         selectionType:"single",
-        // selectionAppearance: "checkbox",
         showHeaderContextMenu: false,
         showRowNumbers: false,
         fields: [{name: "title", title: "<spring:message code="title"/>"}, {name: "competenceType.title", title: "<spring:message code="type"/>"},],
@@ -927,6 +958,7 @@
         },
         selectionUpdated(record){
             fetchDataDomainsGrid();
+            ListGrid_SkillAll_JspNeedsAssessment_Refresh();
         },
         rowDoubleClick (record) {
             wait.show()
@@ -973,7 +1005,7 @@
     let ListGrid_SkillAll_JspNeedsAssessment = isc.TrLG.create({
         ID: "ListGrid_SkillAll_JspNeedsAssessment",
         dataSource: RestDataSource_Skill_JspNeedsAssessment,
-        autoFetchData: true,
+        autoFetchData: false,
         // selectionAppearance: "checkbox",
         // showRowNumbers: false,
         // showHeaderContextMenu: false,
@@ -1029,18 +1061,7 @@
             {name: "titleFa"},
             {name: "objectType"},
             {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
-            // {
-            //     name: "needsAssessmentPriorityId",
-            //     canEdit:true,
-            //     valueField: "id",
-            //     displayField: "title",
-            //     optionDataSource: RestDataSource_NeedsAssessmentPriority_JspNeedsAssessment,
-            //     change(form, item){
-            //         updateSkillRecord(form, item)
-            //     }
-            //     // modalEditing: true,
-            //     // valueMap:["عملکرد ضروری","عملکرد توسعه ای","عملکرد بهبود"]
-            // }
+
         ],
         headerSpans: [
             {
@@ -1052,11 +1073,8 @@
         gridComponents: [
             "filterEditor", "header", "body"
         ],
-        // width: "25%",
         canAcceptDroppedRecords: true,
-        // canHover: true,
         showHoverComponents: true,
-        // hoverMode: "detailField",
         canRemoveRecords:true,
         showHeaderContextMenu: false,
         showFilterEditor:false,
@@ -1070,7 +1088,6 @@
                     for (let i = 0; i < dropRecords.length; i++) {
                         createNeedsAssessmentRecords(createData_JspNeedsAssessment(dropRecords[i], 108));
                         fetchDataDomainsGrid();
-                        // this.fetchData();
                     }
                 }
             }
@@ -1668,6 +1685,7 @@
                 skill.objectType = data[i].objectType;
                 skill.objectName = data[i].objectName;
                 skill.objectCode = data[i].objectCode;
+                skill.skill = data[i].skill;
                 if(data[i].skill.course === undefined){
                     skill.hasWarning = "alarm";
                 }
@@ -1681,6 +1699,9 @@
                 competence.id = data[i].competenceId;
                 competence.title = data[i].competence.title;
                 competence.competenceType = data[i].competence.competenceType;
+                competence.categoryId = data[i].competence.categoryId;
+                competence.subCategoryId = data[i].competence.subCategoryId;
+                competence.code = data[i].competence.code;
                 DataSource_Competence_JspNeedsAssessment.addData(competence, ()=>{ListGrid_Competence_JspNeedsAssessment.selectRecord(0)});
             }
             ListGrid_Competence_JspNeedsAssessment.fetchData();
@@ -1742,6 +1763,7 @@
             needsAssessmentDomainId: DomainId,
             hasWarning: record.course ? "" : "alarm",
             course: record.course,
+            skill: record
         };
         return data;
     }
@@ -1808,6 +1830,27 @@
             case 113:
                 return "background-color : " + green;
         }
+    }
+
+    let ListGrid_SkillAll_JspNeedsAssessment_Refresh = ()=>{
+            let record = ListGrid_Competence_JspNeedsAssessment.getSelectedRecord();
+            if(record == null){
+                ListGrid_SkillAll_JspNeedsAssessment.setData([]);
+            }else{
+                let cr = {};
+                if(record.subCategoryId != null) {
+                    cr = {
+                        _constructor: "AdvancedCriteria",
+                        operator: "and",
+                        criteria: [
+                            {fieldName: "subCategoryId", operator: "equals", value: record.subCategoryId},
+                        ]
+                    }
+                }
+                ListGrid_SkillAll_JspNeedsAssessment.setImplicitCriteria(cr);
+                ListGrid_SkillAll_JspNeedsAssessment.invalidateCache();
+                ListGrid_SkillAll_JspNeedsAssessment.fetchData();
+            }
     }
 
 

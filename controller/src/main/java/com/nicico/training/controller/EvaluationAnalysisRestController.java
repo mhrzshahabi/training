@@ -278,8 +278,7 @@ public class EvaluationAnalysisRestController {
     }
 
     @GetMapping("/evaluationAnalysistLearningResult/{classId}/{scoringMethod}")
-    public ResponseEntity<EvaluationDTO.EvaluationLearningResult> evaluationAnalysistLearningResult(@PathVariable Long classId,
-                                                                                                    @PathVariable String scoringMethod) {
+    public ResponseEntity<EvaluationDTO.EvaluationLearningResult> evaluationAnalysistLearningResult(@PathVariable Long classId, @PathVariable String scoringMethod) {
         EvaluationDTO.EvaluationLearningResult resultSet = evaluationAnalysisService.evaluationAnalysistLearningResultTemp(classId,scoringMethod);
         return new ResponseEntity<>(resultSet,HttpStatus.OK);
     }

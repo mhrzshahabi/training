@@ -322,7 +322,7 @@
                         }, 900);
                         setTimeout(function () {
                             sumSyllabus = Math.ceil(ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration + ListGrid_Syllabus_Goal.getGridSummaryData().get(0).theoreticalDuration);
-                            if (sumSyllabus !== (courseRecord.theoryDuration)) {
+                            if (sumSyllabus !== (courseRecord.duration)) {
                                 isc.Dialog.create({
                                     message: "مدت زمان اجرای دوره به " + sumSyllabus + " ساعت تغییر کند؟",
                                     icon: "[SKIN]ask.png",
@@ -659,7 +659,7 @@
             removeAsListGrid();
         },
         getCellCSSText: function (record, rowNum, colNum) {
-            return record.categoryId === courseRecord.categoryId ? "color:black": "color:red";
+            return record.categoryId === courseRecord.category.id ? "color:black": "color:red";
         }
     });
     var ListGrid_CourseGoal_Goal = isc.ListGrid.create({
@@ -932,11 +932,10 @@
                     {
                         operator: "and",
                         criteria: [
-                            {fieldName: "categoryId", operator: "equals", value: courseRecord.category.id},
                             {fieldName: "subCategoryId", operator: "equals", value: courseRecord.subCategory.id}
                         ]
                     },
-                    {fieldName: "categoryId", operator: "isNull"}
+                    {fieldName: "subCategoryId", operator: "isNull"}
                 ]
             };
             ListGrid_GoalAll.setImplicitCriteria(cr);
@@ -1038,9 +1037,7 @@
             let courses = JSON.parse(resp.data);
             if (courses.length > 0) {
                 for (let i = 0; i < courses.length; i++) {
-                    if (courses.get(i).titleFa !== DynamicForm_course_MainTab.getValue("titleFa")) {
-                        names = names + " و دوره " + getFormulaMessage(courses.get(i).titleFa, 2, "red", "b");
-                    }
+                    names = names + " و دوره " + getFormulaMessage(courses.get(i).titleFa, 2, "red", "b");
                 }
                 names = names.substr(2);
                 createDialog('info', "هدف " + getFormulaMessage(record.titleFa, 2, "red", "b") + " با " + names + " در ارتباط است، ابتدا هدف را از دوره&#8201های مذکور جدا کنید.", "اخطار")
@@ -1231,25 +1228,25 @@
                 }
             });
         } else {
-            let goalRecord = ListGrid_GoalAll.getSelectedRecords();
-            if (goalRecord.length === 0) {
+            let goalRecords = ListGrid_GoalAll.getSelectedRecords();
+            if (goalRecords.length === 0) {
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>")
             }else if(numClasses>0) {
-                createDialog("warning","از این دوره در کلاس استفاده شده است.", "اخطار");
+                createDialog("warning","از این دوره در "+ numClasses +" کلاس استفاده شده است.", "اخطار");
                 return;
             } else {
                 let goalList = [];
-                let categoryIDs = [];
-                for (let i = 0; i < goalRecord.length; i++) {
-                    goalList.add(goalRecord[i].id);
-                    categoryIDs=[...categoryIDs,goalRecord[i].categoryId];
+                let subCategoryIDs = [];
+                for (let i = 0; i < goalRecords.length; i++) {
+                    goalList.add(goalRecords[i].id);
+                    subCategoryIDs=[...subCategoryIDs,goalRecords[i].subCategoryId];
                 }
-                if (categoryIDs.find(x=>x!==courseRecord.category.id) || categoryIDs.some(x=>!x)){
+                if (subCategoryIDs.find(x=>x!==courseRecord.subCategory.id) || subCategoryIDs.some(x=>!x)){
                     simpleDialog("<spring:message code="message"/>",
                         "<spring:message code="goal.problem.add1"/>" + "<br/>" + "<spring:message code="goal.problem.add2"/>", 10000, "stop");
                     return;
                 }
-                wait.show()
+                wait.show();
                 isc.RPCManager.sendRequest(TrDSRequest(courseUrl + courseRecord.id + "/" + goalList.toString(), "GET", null, (resp => {
                     isChangeable();
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {

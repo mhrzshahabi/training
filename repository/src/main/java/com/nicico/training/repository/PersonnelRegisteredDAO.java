@@ -22,6 +22,10 @@ public interface PersonnelRegisteredDAO extends JpaRepository<PersonnelRegistere
     List<PersonnelRegistered> findByPersonnelNoInOrPersonnelNo2In(List<String> personnelNos,List<String> personnelNos2);
 
     PersonnelRegistered findPersonnelRegisteredByPersonnelNo(String personnelNo);
+
+    List<PersonnelRegistered> findAllByNationalCodeOrderByIdDesc(String nationalCode);
+
+    List<PersonnelRegistered> findAllByPersonnelNoOrderByIdDesc(String personnelNo);
 }
 
 
