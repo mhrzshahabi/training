@@ -280,6 +280,8 @@
         contextMenu: Menu_ListGrid_course,
         allowAdvancedCriteria: true,
         hoverMoveWithMouse: true,
+        sortField: "id",
+        sortDirection: "descending",
 
         <sec:authorize access="hasAuthority('Course_U')">
         rowDoubleClick: function () {
