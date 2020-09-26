@@ -210,8 +210,10 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
             if (request.getCriteria() != null && request.getCriteria().getCriteria() != null)
             {
                 for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
-                    if(criterion.getFieldName().equals("duration")) {
-                        criterion.setFieldName("theoryDuration");
+                    if(criterion.getFieldName()!=null) {
+                        if (criterion.getFieldName().equals("duration")) {
+                            criterion.setFieldName("theoryDuration");
+                        }
                     }
                 }
             }
