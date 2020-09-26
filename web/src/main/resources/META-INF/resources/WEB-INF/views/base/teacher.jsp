@@ -122,94 +122,6 @@
     }
     });
 
-    var Menu_ListGrid_Teacher_JspTeacher = isc.Menu.create({
-        width: 150,
-        data: [
-            <sec:authorize access="hasAuthority('Teacher_R')">
-            {
-            title: "<spring:message code='refresh'/>", icon: "<spring:url value="refresh.png"/>", click: function () {
-                ListGrid_teacher_refresh();
-            }
-        },
-            </sec:authorize>
-
-            <sec:authorize access="hasAuthority('Teacher_C')">
-            {
-            title: "<spring:message code='create'/>", icon: "<spring:url value="create.png"/>", click: function () {
-                ListGrid_teacher_add();
-            }
-        },
-            </sec:authorize>
-
-            <sec:authorize access="hasAuthority('Teacher_U')">
-            {
-            title: "<spring:message code='edit'/>", icon: "<spring:url value="edit.png"/>", click: function () {
-                ListGrid_teacher_edit();
-            }
-        },
-            </sec:authorize>
-
-            <sec:authorize access="hasAuthority('Teacher_D')">
-            {
-            title: "<spring:message code='remove'/>", icon: "<spring:url value="remove.png"/>", click: function () {
-                ListGrid_teacher_remove();
-            }
-        },
-            </sec:authorize>
-
-            <sec:authorize access="hasAnyAuthority('Teacher_C','Teacher_R','Teacher_U','Teacher_D')">
-
-            {isSeparator: true},
-            </sec:authorize>
-
-            <sec:authorize access="hasAuthority('Teacher_P')">
-            {
-            title: "<spring:message code='print.pdf'/>", icon: "<spring:url value="pdf.png"/>", click: function () {
-                trPrintWithCriteria("<spring:url value="/teacher/printWithCriteria/"/>" + "pdf",
-                    ListGrid_Teacher_JspTeacher.getCriteria());
-            }
-        }, {
-            title: "<spring:message code='print.excel'/>", icon: "<spring:url value="excel.png"/>", click: function () {
-                trPrintWithCriteria("<spring:url value="/teacher/printWithCriteria/"/>" + "excel",
-                    ListGrid_Teacher_JspTeacher.getCriteria());
-            }
-        }, {
-            title: "<spring:message code='print.html'/>", icon: "<spring:url value="html.png"/>", click: function () {
-                trPrintWithCriteria("<spring:url value="/teacher/printWithCriteria/"/>" + "html",
-                    ListGrid_Teacher_JspTeacher.getCriteria());
-            },
-
-        },
-            {
-                title: "<spring:message code='print.teacher.detail'/>",
-                icon: "<spring:url value="print.png"/>",
-                click: function () {
-                    var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
-                    if (record == null || record.id == null) {
-                        createDialog("info", "<spring:message code='msg.no.records.selected'/>");
-                        return;
-                    }
-                    trPrintWithCriteria("<spring:url value="/teacher/printWithDetail/"/>" + record.id, null);
-                }
-            },
-            </sec:authorize>
-            <sec:authorize access="hasAuthority('Teacher_E')">
-            {
-                title: "<spring:message code='teacher.evaluation'/>",
-                click: function () {
-                    var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
-                    if (record == null || record.id == null) {
-                        createDialog("info", "<spring:message code='msg.no.records.selected'/>");
-                        return;
-                    }
-                    DynamicForm_Evaluation_JspTeacher.clearValues();
-                    DynamicForm_Evaluation_JspTeacher.setValue("teacherCode", record.teacherCode),
-                    Window_Evaluation_JspTeacher.show();
-                }
-            }
-            </sec:authorize>
-        ]
-    });
     //----------------------------------------------------ListGrid------------------------------------------------------
     var ListGrid_Teacher_JspTeacher = isc.TrLG.create({
         width: "100%",
@@ -218,9 +130,6 @@
         <sec:authorize access="hasAuthority('Teacher_R')">
         dataSource: RestDataSource_Teacher_JspTeacher,
         </sec:authorize>
-
-
-        contextMenu: Menu_ListGrid_Teacher_JspTeacher,
 
         <sec:authorize access="hasAuthority('Teacher_U')">
         rowDoubleClick: function () {
