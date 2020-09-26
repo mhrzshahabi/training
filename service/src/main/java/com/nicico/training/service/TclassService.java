@@ -902,7 +902,7 @@ public class TclassService implements ITclassService {
                 z1 = Double.parseDouble(parameterValue.getValue());
             else if (parameterValue.getCode().equalsIgnoreCase("z2"))
                 z2 = Double.parseDouble(parameterValue.getValue());
-            else if (parameterValue.getCode().equalsIgnoreCase("minScoreET "))
+            else if (parameterValue.getCode().equalsIgnoreCase("minScoreET"))
                 minScore_ET = Double.parseDouble(parameterValue.getValue());
             else if (parameterValue.getCode().equalsIgnoreCase("minQusET"))
                 minQus_ET = Double.parseDouble(parameterValue.getValue());
