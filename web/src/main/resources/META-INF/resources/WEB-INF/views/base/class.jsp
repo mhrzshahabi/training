@@ -2796,24 +2796,61 @@
                     } else {
                         classMethod = "POST";
                         url = classUrl;
-                        DynamicForm1_Class_JspClass.setValue("autoValid", true);
-                        DynamicForm_Class_JspClass.setValue("course.id", record.course.id);
-                        DynamicForm_Class_JspClass.setValue("titleClass", record.titleClass);
-                        DynamicForm_Class_JspClass.setValue("minCapacity", record.minCapacity);
-                        DynamicForm_Class_JspClass.setValue("maxCapacity", record.maxCapacity);
-                        DynamicForm_Class_JspClass.setValue("topology", record.topology);
-                        DynamicForm_Class_JspClass.setValue("hduration", record.hduration);
-                        DynamicForm_Class_JspClass.setValue("scoringMethod", record.scoringMethod);
-                        DynamicForm_Class_JspClass.setValue("acceptancelimit", record.acceptancelimit);
-                        DynamicForm_Class_JspClass.setValue("teachingType", record.teachingType);
-                        DynamicForm1_Class_JspClass.editRecord(record);
+
+                        record.plannerId = record.supervisorId=record.teacherId = undefined;
+                        record.plannerFullName = record.supervisorFullName=null
+                        record.planner = record.supervisor = record.teacher=null;
+
+                        record.classStudents.length = 0;
+
+                        record.startDate = record.endDate = null;
+
+                        VM_JspClass.editRecord(record);
+
+                        if (userPersonInfo != null) {
+                            DynamicForm_Class_JspClass.setValue("supervisor", userPersonInfo.id);
+                            DynamicForm_Class_JspClass.setValue("planner", userPersonInfo.id);
+                        }
+
                         Window_Class_JspClass.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="class"/>");
-                        DynamicForm_Class_JspClass.getItem("startEvaluation").required = false;
-                        DynamicForm_Class_JspClass.getItem("behavioralLevel").setDisabled(true);
-                        DynamicForm_Class_JspClass.getItem("startEvaluation").setDisabled(true);
-                        DynamicForm_Class_JspClass.getItem("startEvaluation").setValue();
+                        if(record.evaluation != undefined && record.evaluation == "3"){
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").required = true;
+                            DynamicForm_Class_JspClass.getItem("behavioralLevel").setDisabled(false);
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").setDisabled(false);
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").enable();
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").setValue("3");
+                        }
+                        else{
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").required = false;
+                            DynamicForm_Class_JspClass.getItem("behavioralLevel").setDisabled(true);
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").setDisabled(true);
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").setValue();
+                        }
                         Window_Class_JspClass.show();
-                        autoTimeActivation(true);
+
+                        DynamicForm_Class_JspClass.getItem("scoringMethod").change(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("scoringMethod"), DynamicForm_Class_JspClass.getValue("scoringMethod"));
+                        DynamicForm_Class_JspClass.itemChanged();
+                        if (ListGrid_Class_JspClass.getSelectedRecord().scoringMethod === "1") {
+                            DynamicForm_Class_JspClass.setValue("acceptancelimit_a", ListGrid_Class_JspClass.getSelectedRecord().acceptancelimit);
+                        }
+                        else {
+                            DynamicForm_Class_JspClass.setValue("acceptancelimit", ListGrid_Class_JspClass.getSelectedRecord().acceptancelimit);
+                        }
+
+                        if (record.evaluation === "1") {
+                            DynamicForm_Class_JspClass.setValue("preCourseTest", false);
+                            DynamicForm_Class_JspClass.getItem("preCourseTest").hide();
+                        } else
+                            DynamicForm_Class_JspClass.getItem("preCourseTest").show();
+
+                        DynamicForm_Class_JspClass.getField("classStatus").getItem(1).disable();
+                        DynamicForm_Class_JspClass.getField("classStatus").getItem(2).disable();
+
+                        ["first", "second", "third", "fourth", "fifth", "saturday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday"].forEach(item =>
+                        {
+                            DynamicForm1_Class_JspClass.getField(item).disable();
+                            DynamicForm1_Class_JspClass.setValue(item,false);
+                        });
                     }
                 }));
             }
@@ -3229,7 +3266,8 @@
     }
 
     function classCode() {
-        VM_JspClass.getItem("code").setValue(VM_JspClass.getItem("course.id").getSelectedRecord().code + "-" + VM_JspClass.getItem("termId").getSelectedRecord().code + "-" + VM_JspClass.getValue("group"));
+        if (VM_JspClass.getItem("course.id").getSelectedRecord()) //bug fix
+            VM_JspClass.getItem("code").setValue(VM_JspClass.getItem("course.id").getSelectedRecord().code + "-" + VM_JspClass.getItem("termId").getSelectedRecord().code + "-" + VM_JspClass.getValue("group"));
     }
 
     function evalGroup() {
