@@ -107,8 +107,8 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
 
     @Transactional
     public String codeCompute(String code){
-        Long maxCode = competenceDAO.getMaxCode(code+"%");
-        if(maxCode == null){
+        long maxCode = competenceDAO.getMaxCode(code+"%");
+        if(maxCode == 0){
             return code + "1";
         }
         return code + maxCode;
