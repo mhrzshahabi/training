@@ -656,7 +656,7 @@
                                     if (students.filter(function (item) {
                                         return item.personnelNo2 == person.personnelNo2 || item.personnelNo == person.personnelNo;
                                     }).length == 0) {
-                                        students.add(person.personnelNo);
+                                        students.add(list[i].personnelNo);
                                     }
                                 }
                             }
@@ -736,7 +736,7 @@
                                     if (students.filter(function (item) {
                                         return item.personnelNo2 == person.personnelNo2 || item.personnelNo == person.personnelNo;
                                     }).length == 0) {
-                                        students.add(person.personnelNo);
+                                        students.add(list[i].personnelNo);
                                     }
                                 }
                             }

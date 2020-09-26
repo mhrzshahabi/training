@@ -21,6 +21,6 @@ public interface CompetenceDAO extends BaseDAO<Competence, Long> {
     @Query(value = " update DEVTRAINING.TBL_COMPETENCE set N_WORK_FLOW_CODE = :code where ID = :competenceId ", nativeQuery = true)
     public int updateCompetenceState(Long competenceId, Integer code);
 
-    @Query(value = "select MAX(CAST(SUBSTR(c_code,2) AS INTEGER))+1 from TBL_COMPETENCE where c_code like :code", nativeQuery = true)
-    Long getMaxCode(String code);
+    @Query(value = "select MAX(CAST(SUBSTR(c_code,7) AS INTEGER))+1 from TBL_COMPETENCE where c_code like :code", nativeQuery = true)
+    long getMaxCode(String code);
 }
