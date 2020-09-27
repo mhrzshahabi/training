@@ -90,17 +90,17 @@ public class EvaluationAnalysisRestController {
         params.put("FECRGrade", FECRGrade);
 
         if(!FERPass.equalsIgnoreCase(""))
-            params.put("FERPass", Boolean.parseBoolean(FERPass));
+            params.put("FERPass", FERPass);
         else
-            params.put("FERPass", false);
+            params.put("FERPass", "عدم تائید");
         if(!FETPass.equalsIgnoreCase(""))
-            params.put("FETPass", Boolean.parseBoolean(FETPass));
+            params.put("FETPass", FETPass);
         else
-            params.put("FETPass", false);
+            params.put("FETPass", "عدم تائید");
         if(!FECRPass.equalsIgnoreCase(""))
-            params.put("FECRPass", Boolean.parseBoolean(FECRPass));
+            params.put("FECRPass",FECRPass);
         else
-            params.put("FECRPass", false);
+            params.put("FECRPass", "عدم تائید");
 
         params.put("minScore_ER", minScore_ER);
         params.put("minScore_ET", minScore_ET);

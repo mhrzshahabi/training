@@ -68,26 +68,26 @@
                 baseStyle: "evaluation-code",
                 canEdit: false
             },
-            {
-                name: "havePreTest",
-                title:"پیش آزمون",
-                baseStyle: "evaluation-code",
-                canEdit: false,
-                valueMap: {
-                    "true": "داشتیم",
-                    "false": "نداشتیم"
-                }
-            },
-            {
-                name: "havePostTest",
-                title: "پس آزمون",
-                baseStyle: "evaluation-code",
-                canEdit: false,
-                valueMap: {
-                    "true": "داشتیم",
-                    "false": "نداشتیم"
-                }
-            }
+            // {
+            //     name: "havePreTest",
+            //     title:"پیش آزمون",
+            //     baseStyle: "evaluation-code",
+            //     canEdit: false,
+            //     valueMap: {
+            //         "true": "داشتیم",
+            //         "false": "نداشتیم"
+            //     }
+            // },
+            // {
+            //     name: "havePostTest",
+            //     title: "پس آزمون",
+            //     baseStyle: "evaluation-code",
+            //     canEdit: false,
+            //     valueMap: {
+            //         "true": "داشتیم",
+            //         "false": "نداشتیم"
+            //     }
+            // }
         ]
     });
 
@@ -158,10 +158,10 @@
     DynamicForm_Learning_EvaluationAnalysis_Header.getItem('preTestMeanScore').titleStyle = 'evaluation-code-title';
     DynamicForm_Learning_EvaluationAnalysis_Header.getItem('postTestMeanScore').setCellStyle('evaluation-code-label');
     DynamicForm_Learning_EvaluationAnalysis_Header.getItem('postTestMeanScore').titleStyle = 'evaluation-code-title';
-    DynamicForm_Learning_EvaluationAnalysis_Header.getItem('havePreTest').setCellStyle('evaluation-code-label');
-    DynamicForm_Learning_EvaluationAnalysis_Header.getItem('havePreTest').titleStyle = 'evaluation-code-title';
-    DynamicForm_Learning_EvaluationAnalysis_Header.getItem('havePostTest').setCellStyle('evaluation-code-label');
-    DynamicForm_Learning_EvaluationAnalysis_Header.getItem('havePostTest').titleStyle = 'evaluation-code-title';
+    // DynamicForm_Learning_EvaluationAnalysis_Header.getItem('havePreTest').setCellStyle('evaluation-code-label');
+    // DynamicForm_Learning_EvaluationAnalysis_Header.getItem('havePreTest').titleStyle = 'evaluation-code-title';
+    // DynamicForm_Learning_EvaluationAnalysis_Header.getItem('havePostTest').setCellStyle('evaluation-code-label');
+    // DynamicForm_Learning_EvaluationAnalysis_Header.getItem('havePostTest').titleStyle = 'evaluation-code-title';
 
     DynamicForm_Learning_EvaluationAnalysis_Footer.getItem('FELGrade').setCellStyle('evaluation-code-label');
     DynamicForm_Learning_EvaluationAnalysis_Footer.getItem('FELGrade').titleStyle = 'evaluation-code-title';
@@ -193,15 +193,26 @@
         DynamicForm_Learning_EvaluationAnalysis_Header.getField("studentCount").setValue(record.studentCount);
         DynamicForm_Learning_EvaluationAnalysis_Header.getField("preTestMeanScore").setValue(record.preTestMeanScore);
         DynamicForm_Learning_EvaluationAnalysis_Header.getField("postTestMeanScore").setValue(record.postTestMeanScore);
-        DynamicForm_Learning_EvaluationAnalysis_Header.getField("havePreTest").setValue(record.havePreTest);
-        DynamicForm_Learning_EvaluationAnalysis_Header.getField("havePostTest").setValue(record.havePostTest);
+        // DynamicForm_Learning_EvaluationAnalysis_Header.getField("havePreTest").setValue(record.havePreTest);
+        // DynamicForm_Learning_EvaluationAnalysis_Header.getField("havePostTest").setValue(record.havePostTest);
 
-        DynamicForm_Learning_EvaluationAnalysis_Footer.getField("FELGrade").setValue(record.felgrade);
-        DynamicForm_Learning_EvaluationAnalysis_Footer.getField("Limit").setValue(record.limit);
-        DynamicForm_Learning_EvaluationAnalysis_Footer.getField("FELPass").setValue(record.felpass);
-        DynamicForm_Learning_EvaluationAnalysis_Footer.getField("FECLGrade").setValue(record.feclgrade);
-        DynamicForm_Learning_EvaluationAnalysis_Footer.getField("FECLPass").setValue(record.feclpass);
-        DynamicForm_Learning_EvaluationAnalysis_Footer.getField("tstudent").setValue(record.tstudent);
+        if(record.felgrade == undefined || record.felgrade == null){
+            DynamicForm_Learning_EvaluationAnalysis_Footer.getField("FELGrade").setValue("");
+            DynamicForm_Learning_EvaluationAnalysis_Footer.getField("Limit").setValue("");
+            DynamicForm_Learning_EvaluationAnalysis_Footer.getField("FELPass").setValue("");
+            DynamicForm_Learning_EvaluationAnalysis_Footer.getField("FECLGrade").setValue(record.feclgrade);
+            DynamicForm_Learning_EvaluationAnalysis_Footer.getField("FECLPass").setValue(record.feclpass);
+            DynamicForm_Learning_EvaluationAnalysis_Footer.getField("tstudent").setValue("");
+        }
+        else{
+            DynamicForm_Learning_EvaluationAnalysis_Footer.getField("FELGrade").setValue(record.felgrade);
+            DynamicForm_Learning_EvaluationAnalysis_Footer.getField("Limit").setValue(record.limit);
+            DynamicForm_Learning_EvaluationAnalysis_Footer.getField("FELPass").setValue(record.felpass);
+            DynamicForm_Learning_EvaluationAnalysis_Footer.getField("FECLGrade").setValue(record.feclgrade);
+            DynamicForm_Learning_EvaluationAnalysis_Footer.getField("FECLPass").setValue(record.feclpass);
+            DynamicForm_Learning_EvaluationAnalysis_Footer.getField("tstudent").setValue(record.tstudent);
+        }
+
     }
 
     var VLayout_Body_evaluation_analysis_learning = isc.VLayout.create({
