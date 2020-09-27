@@ -919,6 +919,8 @@ public class TclassService implements ITclassService {
             FETGrade /= 100;
             if (FETGrade >= minScore_ET && percenetOfFilledReactionEvaluationForms >= minQus_ET)
                 FETPass = true;
+            else
+                FETPass = false;
         }
 
         result.put("FETGrade", FETGrade);
