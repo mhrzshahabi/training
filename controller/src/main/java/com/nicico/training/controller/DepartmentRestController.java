@@ -141,9 +141,9 @@ public class DepartmentRestController {
     @GetMapping(value = "/getDepartmentsRoot")
     public ResponseEntity<List<DepartmentDTO.TSociety>> getDepartmentsRoot() throws IOException {
         List<DepartmentDTO.TSociety> roots = departmentService.getRoot();
-        for(DepartmentDTO.TSociety root : roots)
+        for (DepartmentDTO.TSociety root : roots)
             root.setParentId(new Long(0));
-        return new ResponseEntity<>(roots  , HttpStatus.OK);
+        return new ResponseEntity<>(roots, HttpStatus.OK);
     }
 
     @GetMapping(value = "/getDepartmentsByParentId/{parentId}")
@@ -161,7 +161,8 @@ public class DepartmentRestController {
     @GetMapping(value = "/searchSocieties")
     public ResponseEntity<List<DepartmentDTO.TSociety>> searchSocieties(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        searchRq.setStartIndex(null);searchRq.setCount(null);
+        searchRq.setStartIndex(null);
+        searchRq.setCount(null);
         return new ResponseEntity<>(departmentService.searchSocieties(searchRq), HttpStatus.OK);
     }
 
