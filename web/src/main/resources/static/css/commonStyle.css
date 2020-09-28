@@ -1,5 +1,5 @@
 .mainHeaderStyleOnline {
-    font-family: BYekan;
+    font-family: IRANSansNum, IRANSans;
     font-size: 14px;
     color: white;
     font-weight: bold;
@@ -980,4 +980,9 @@
 .comboBoxItemPicker, .comboBoxItemPickerOver, .comboBoxItemPickerFocused, .comboBoxItemPickerFocusedOver, .comboBoxItemPickerDisabledrtl, .comboBoxItemPickerrtl, .comboBoxItemPickerOverrtl, .comboBoxItemPickerFocusedrtl, .comboBoxItemPickerFocusedOverrtl {
     position: absolute !important;
     left: 3px !important;
+}
+
+
+body {
+    font-family: 'IRANSansNum', 'IRANSans';
 }

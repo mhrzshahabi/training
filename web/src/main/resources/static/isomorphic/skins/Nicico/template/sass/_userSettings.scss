@@ -102,15 +102,40 @@ $button_deselected_disabled_color: hsl(0, 0%, 66%);
 */
 //<theme_header
 //>theme_fonts
+//@font-face {
+//  font-family: 'BYekan';
+//  src: url("../../../fonts/BYekan.ttf");
+//  src: url("../../../fonts/BYekan.eot");
+//  src: url("../../../fonts/BYekan.woff");
+//  src: local("☺"), url("../../../fonts/BYekan.woff") format("woff"), url("../../../fonts/BYekan.otf") format("opentype"), url("../../../fonts/BYekan.ttf") format("truetype");
+//  font-weight: normal;
+//  font-style: normal;
+//}
+
+
+
 @font-face {
-  font-family: 'BYekan';
-  src: url("../../../fonts/BYekan.ttf");
-  src: url("../../../fonts/BYekan.eot");
-  src: url("../../../fonts/BYekan.woff");
-  src: local("☺"), url("../../../fonts/BYekan.woff") format("woff"), url("../../../fonts/BYekan.otf") format("opentype"), url("../../../fonts/BYekan.ttf") format("truetype");
-  font-weight: normal;
+  font-family: IRANSansNum;
   font-style: normal;
+  font-weight: 300;
+  src: url('../../../fonts/IRANSansWeb(FaNum)_Light.eot');
+  src: url('../../../fonts/IRANSansWeb(FaNum)_Light.eot?#iefix') format('embedded-opentype'), /* IE6-8 */
+  url('../../../fonts/IRANSansWeb(FaNum)_Light.woff2') format('woff2'), /* FF39+,Chrome36+, Opera24+*/
+  url('../../../fonts/IRANSansWeb(FaNum)_Light.woff') format('woff'), /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+  url('../../../fonts/IRANSansWeb(FaNum)_Light.ttf') format('truetype');
 }
+
+@font-face {
+  font-family: IRANSans;
+  font-style: normal;
+  font-weight: 300;
+  src: url('../../../fonts/IRANSansWeb_Light.eot');
+  src: url('../../../fonts/IRANSansWeb_Light.eot?#iefix') format('embedded-opentype'), /* IE6-8 */
+  url('../../../fonts/IRANSansWeb_Light.woff2') format('woff2'), /* FF39+,Chrome36+, Opera24+*/
+  url('../../../fonts/IRANSansWeb_Light.woff') format('woff'), /* FF3.6+, IE9, Chrome6+, Saf5.1+*/
+  url('../../../fonts/IRANSansWeb_Light.ttf') format('truetype');
+}
+
 
 
 @font-face {
@@ -173,10 +198,10 @@ $invert_menu_icons_on_rollover: true;
 
 // ==== Fonts - Variables for fonts
 // Font
-$primary_font: BYekan;
-$secondary_font: BYekan;
-$secondary_font_bold: BYekan;
-$tertiary_font: BYekan;
+$primary_font: IRANSansNum,IRANSans;
+$secondary_font: IRANSansNum,IRANSans;
+$secondary_font_bold: IRANSansNum,IRANSans;
+$tertiary_font: IRANSansNum,IRANSans;
 $standard_body_font: $tertiary_font;
 $standard_tab_font: $secondary_font;
 $standard_menu_font: $secondary_font;
