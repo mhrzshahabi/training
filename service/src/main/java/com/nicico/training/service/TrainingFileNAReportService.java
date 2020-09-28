@@ -160,13 +160,13 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
                 row.add(((Integer) (j + 1)).toString());
                 row.add(tmpTFNR.getCourseCode());
                 row.add(tmpTFNR.getCourseTitleFa());
-                row.add(tmpTFNR.getTheoryDuration().toString());
+                row.add(tmpTFNR.getTheoryDuration() == null ? "" : tmpTFNR.getTheoryDuration().toString());
                 row.add(tmpTFNR.getTechnicalType() == null ? "" : ((ETechnicalType) Arrays.asList(ETechnicalType.values()).stream().filter(p -> p.getId().equals(tmpTFNR.getTechnicalType())).toArray()[0]).getTitleFa());
                 row.add(tmpTFNR.getSkillCode());
                 row.add(tmpTFNR.getSkillTitleFa());
                 row.add(tmpTFNR.getPriority());
                 row.add(tmpTFNR.getIsInNA() ? "*" : "");
-                row.add(tmpTFNR.getScoreStateId() != null && (tmpTFNR.getScoreStateId().equals(400) || tmpTFNR.getScoreStateId().equals(401)) ? "*" : "");
+                row.add(tmpTFNR.getScoreStateId() != null && (tmpTFNR.getScoreStateId().equals(400L) || tmpTFNR.getScoreStateId().equals(401L)) ? "*" : "");
                 row.add(tmpTFNR.getClassCode());
                 row.add(tmpTFNR.getClassStartDate());
                 row.add(tmpTFNR.getClassEndDate());
