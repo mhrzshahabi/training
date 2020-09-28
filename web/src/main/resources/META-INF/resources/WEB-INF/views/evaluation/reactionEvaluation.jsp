@@ -160,7 +160,7 @@
         title: "ارسال پیام",
         overflow: "auto",
         width: 900,
-        height: 700,
+        height: 750,
         isModal: false,
         autoDraw: false,
         autoSize: false,
@@ -563,6 +563,8 @@
                             MSG_textEditorValue = "{prefix-full_name} {full-name}<br>\n پرسشنامه مربوط به ارزیابی دوره «{course-name}» که از تاریخ {start-date} تا {end-date} برگزارشده است و جنابعالی در آن شرکت داشته اید به پرتال پرسنلی شما در سیستم جامع آموزش به آدرس {personel-address} ارسال گردیده است ولی متاسفانه تاکنون تکمیل نشده است.لطفا در اسرع وقت آن را تکمیل نمایید بدیهی است تایید نهایی دوره جنابعالی منوط به تکمیل این پرسشنامه می باشد"
                             MSG_contentEditor.setValue(MSG_textEditorValue);
 
+                            linkFormMLanding.getItem('link').setValue('');
+
                             if (JSON.parse(resp.data).response.data.filter(p => !p.student.mobile && (p.evaluationStatusReaction == 1)).length != 0) {
                                 ErrorMsg.setContents('برای ' + JSON.parse(resp.data).response.data.filter(p => !p.student.mobile && (p.evaluationStatusReaction == 1)).length + ' فراگیر، شماره موبایل تعریف نشده است.');
                             } else if (JSON.parse(resp.data).response.data.filter(p => p.student.mobile && (p.evaluationStatusReaction == 1)).length == 0) {
@@ -673,6 +675,8 @@
                             MSG_textEditorValue = "{prefix-full_name} {full-name}<br>\n پرسشنامه مربوط به ارزیابی دوره «{course-name}» که از تاریخ {start-date} تا {end-date} توسط جنابعالی تدریس شده است به پرتال مدرس شما در سیستم جامع آموزش به آدرس {personel-address} ارسال گردیده است را تکمیل نمایید.بدیهی است تایید نهایی پرداخت هزینه دوره منوط به تکمیل این پرسشنامه می باشد"
                             MSG_contentEditor.setValue(MSG_textEditorValue);
 
+                            linkFormMLanding.getItem('link').setValue('');
+
                             if (JSON.parse(resp.data).response.data.length == 1 && JSON.parse(resp.data).response.data.filter(p => !p?.personality?.contactInfo?.mobile).length != 0) {
                                 ErrorMsg.setContents('برای مدرس این کلاس، شماره موبایل تعریف نشده است.');
                             } else if (JSON.parse(resp.data).response.data.filter(p => !p?.personality?.contactInfo?.mobile).length != 0) {
@@ -686,9 +690,9 @@
                             MSG_repeatOptions.getItem('timeBMessages').setValue(1);
                             MSG_Window_MSG_Main.show();
 
-                            setTimeout(function () {
+/*                            setTimeout(function () {
                                 $('#MSG_messageType_sms img').click()
-                            }, 0)
+                            }, 0)*/
                         } else {
                             createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
                         }
@@ -2604,10 +2608,11 @@
 
         let data = {
             type: ['sms'],
-//classStudent:MSG_msgContent.users,
+            //classStudent:MSG_msgContent.users,
             message: MSG_msgContent.text,
             maxRepeat: MSG_repeatOptions.getItem('maxRepeat').getValue(),
             timeBMessages: MSG_repeatOptions.getItem('timeBMessages').getValue(),
+            link: linkFormMLanding.getItem('link').getValue(),
         }
         if (MSG_userType == "classStudent") {
             data.classStudent = MSG_msgContent.users;

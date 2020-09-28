@@ -55,6 +55,7 @@ public class SendMessageRestController {
     public ResponseEntity sendSMS(final HttpServletRequest request, @RequestBody String data) throws IOException {
         List<Long> ids = new ArrayList<>();
         String type = "";
+        String link = "";
         List<String> mobiles = new ArrayList<>();
         List<String> fullName = new ArrayList<>();
         List<String> prefixFullName = new ArrayList<>();
@@ -78,6 +79,7 @@ public class SendMessageRestController {
         oMessage = jsonNode.get("message").asText("");
         maxRepeat = Integer.parseInt(jsonNode.get("maxRepeat").asText(""));
         timeBMessages = Integer.parseInt(jsonNode.get("timeBMessages").asText(""));
+        link = jsonNode.get("link").asText("");
 
         if (jsonNode.has("classID")) {
             classId = jsonNode.get("classID").asLong();
@@ -225,12 +227,14 @@ public class SendMessageRestController {
             paramValMap.put("course-name", courseName);
             paramValMap.put("start-date", courseStartDate);
             paramValMap.put("end-date", courseEndDate);
-            paramValMap.put("personel-address", personelAdress);
+
 
             if (type.equals("classStudent")) {
                 pid = "bkvqncws2h";
+                paramValMap.put("personel-address", link);
             } else if (type.equals("classTeacher")) {
                 pid = "er7wvzn4l4";
+                paramValMap.put("personel-address", personelAdress);
             }
 
             Long messageId = Long.parseLong(sendMessageService.asyncEnqueue(pid, paramValMap, numbers).get(0));

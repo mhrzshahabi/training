@@ -311,8 +311,8 @@
         marginTop:30,
         defaultLayoutAlign: "center",
         members:[
-            isc.HLayout.create({
-                width: "80%",
+            isc.VLayout.create({
+                width: "90%",
                 height: "100%",
                 membersMargin:5,
                 alignment: 'center',
@@ -335,7 +335,14 @@
                         controlGroups:["fontControls", "formatControls", "styleControls", "colorControls", "bulletControls"],
                         styleControls: ["alignRight", "boldSelection"],
                         value:MSG_textEditorValue
-                    })
+                    }),
+                    isc.DynamicForm.create({
+                        ID: "linkFormMLanding",
+                        width: "100%",
+                        fields: [
+                            { name: "link", title: "لینک", editorType: "TextItem"},
+                        ]
+                    }),
                 ],
 
             }),
@@ -693,6 +700,7 @@
 
     function MSG_initMSG(){
         MSG_contentEditor.setValue('');
+        linkFormMLanding.getItem('link').setValue('');
         //MSGAttachContainer.removeMembers(MSGAttachContainer.getMembers());
         MSG_selectUsersForm.clearValues()
         MSG_sendTypesItems = [];
