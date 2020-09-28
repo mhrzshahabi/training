@@ -166,7 +166,7 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
                 row.add(tmpTFNR.getSkillTitleFa());
                 row.add(tmpTFNR.getPriority());
                 row.add(tmpTFNR.getIsInNA() ? "*" : "");
-                row.add(tmpTFNR.getScoreStateId() == null || tmpTFNR.getScoreStateId() == 400 || tmpTFNR.getScoreStateId() == 401 ? "*" : "");
+                row.add(tmpTFNR.getScoreStateId() != null && (tmpTFNR.getScoreStateId().equals(400) || tmpTFNR.getScoreStateId().equals(401)) ? "*" : "");
                 row.add(tmpTFNR.getClassCode());
                 row.add(tmpTFNR.getClassStartDate());
                 row.add(tmpTFNR.getClassEndDate());
