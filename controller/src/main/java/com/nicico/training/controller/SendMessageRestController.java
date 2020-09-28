@@ -59,7 +59,7 @@ public class SendMessageRestController {
         List<String> mobiles = new ArrayList<>();
         List<String> fullName = new ArrayList<>();
         List<String> prefixFullName = new ArrayList<>();
-        String personelAdress = request.getRequestURL().toString().replace(request.getServletPath(), "");
+        String personelAddress = request.getRequestURL().toString().replace(request.getServletPath(), "");
         Long classId = null;
         String courseName = "";
         String courseStartDate = "";
@@ -214,7 +214,7 @@ public class SendMessageRestController {
             message = message.replace("{course-name}", courseName);
             message = message.replace("{start-date}", courseStartDate);
             message = message.replace("{end-date}", courseEndDate);
-            message = message.replace("{personnel-address}", personelAdress);
+            message = message.replace("{personnel-address}", personelAddress);
             message += "\nواحد ارزیابی امور آموزش";
 
 
@@ -234,7 +234,7 @@ public class SendMessageRestController {
                 paramValMap.put("personel-address", link);
             } else if (type.equals("classTeacher")) {
                 pid = "er7wvzn4l4";
-                paramValMap.put("personel-address", personelAdress);
+                paramValMap.put("personel-address", personelAddress);
             }
 
             Long messageId = Long.parseLong(sendMessageService.asyncEnqueue(pid, paramValMap, numbers).get(0));
@@ -249,22 +249,26 @@ public class SendMessageRestController {
 
                 messageContact.setObjectId(ids.get(i));
 
+                String tmpLink = "";
+
                 if (type.equals("classStudent")) {
                     messageContact.setObjectType("ClassStudent");
+                    tmpLink = link;
                 } else if (type.equals("classTeacher")) {
                     messageContact.setObjectType("Teacher");
+                    tmpLink = personelAddress;
                 }
 
                 messageContact.setObjectMobile(mobiles.get(i));
                 messageContact.setMessageId(oMessageModel.getId());
                 messageContactDAO.save(messageContact);
 
-                messageParameter("prefix-full_name", prefixFullName.get(i),messageContact.getId());
-                messageParameter("full-name", fullName.get(i),messageContact.getId());
-                messageParameter("course-name", courseName,messageContact.getId());
-                messageParameter("start-date", courseStartDate,messageContact.getId());
-                messageParameter("end-date", courseEndDate,messageContact.getId());
-                messageParameter("personel-address", personelAdress,messageContact.getId());
+                messageParameter("prefix-full_name", prefixFullName.get(i), messageContact.getId());
+                messageParameter("full-name", fullName.get(i), messageContact.getId());
+                messageParameter("course-name", courseName, messageContact.getId());
+                messageParameter("start-date", courseStartDate, messageContact.getId());
+                messageParameter("end-date", courseEndDate, messageContact.getId());
+                messageParameter("personel-address", tmpLink, messageContact.getId());
             }
         }
 
@@ -272,7 +276,7 @@ public class SendMessageRestController {
     }
 
 
-    private MessageParameter messageParameter(String name, String value,Long messageContactId) {
+    private MessageParameter messageParameter(String name, String value, Long messageContactId) {
         MessageParameter parameter = new MessageParameter();
         parameter.setName(name);
         parameter.setValue(value);
