@@ -2837,7 +2837,7 @@
                         } else
                             DynamicForm_Class_JspClass.getItem("preCourseTest").show();
 
-                        DynamicForm_Class_JspClass.getItem("classStatus").setValue(0);
+                        DynamicForm_Class_JspClass.getItem("classStatus").setValue(1);
                         DynamicForm_Class_JspClass.getField("classStatus").getItem(1).disable();
                         DynamicForm_Class_JspClass.getField("classStatus").getItem(2).disable();
 
