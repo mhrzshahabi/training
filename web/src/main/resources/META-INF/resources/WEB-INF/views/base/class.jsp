@@ -2797,13 +2797,7 @@
                         classMethod = "POST";
                         url = classUrl;
 
-                        record.plannerId = record.supervisorId=record.teacherId = undefined;
-                        record.plannerFullName = record.supervisorFullName=null
-                        record.planner = record.supervisor = record.teacher=null;
-
                         record.classStudents.length = 0;
-
-                        record.startDate = record.endDate = null;
 
                         VM_JspClass.editRecord(record);
 
@@ -2843,6 +2837,7 @@
                         } else
                             DynamicForm_Class_JspClass.getItem("preCourseTest").show();
 
+                        DynamicForm_Class_JspClass.getItem("classStatus").setValue(0);
                         DynamicForm_Class_JspClass.getField("classStatus").getItem(1).disable();
                         DynamicForm_Class_JspClass.getField("classStatus").getItem(2).disable();
 
@@ -2851,6 +2846,18 @@
                             DynamicForm1_Class_JspClass.getField(item).disable();
                             DynamicForm1_Class_JspClass.setValue(item,false);
                         });
+
+                        DynamicForm_Class_JspClass.setValue("teacherId",undefined);
+                        DynamicForm_Class_JspClass.setValue("supervisorId", undefined);
+                        DynamicForm_Class_JspClass.setValue("plannerId", undefined);
+
+                        DynamicForm1_Class_JspClass.setValue("startDate","");
+                        DynamicForm1_Class_JspClass.setValue("endDate","");
+
+                        DynamicForm_Class_JspClass.getItem("acceptancelimit").setDisabled(false);
+                        DynamicForm_Class_JspClass.getItem("scoringMethod").setDisabled(false);
+
+                        autoTimeActivation(active = true);
                     }
                 }));
             }
@@ -2904,6 +2911,12 @@
         OJT = false;
         DynamicForm_Class_JspClass.getField("classStatus").getItem(1).disable();
         DynamicForm_Class_JspClass.getField("classStatus").getItem(2).disable();
+
+        DynamicForm_Class_JspClass.getItem("acceptancelimit").setDisabled(false);
+        DynamicForm_Class_JspClass.getItem("scoringMethod").setDisabled(false);
+
+        DynamicForm_Class_JspClass.getItem("instituteId").setDisabled(false);
+        DynamicForm_Class_JspClass.getItem("trainingPlaceIds").setDisabled(false);
     }
 
     function ListGrid_class_print(type) {
