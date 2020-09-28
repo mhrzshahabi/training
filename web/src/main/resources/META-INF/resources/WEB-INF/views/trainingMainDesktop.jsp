@@ -748,7 +748,7 @@
                 this.exportToExcelFromServer(fields.fields, fileName, criteria, sortStr ,startRow, len, tmptitr, pageName, valueMaps);
             }
 
-            static downloadExcelFromRestUrl(listGrid, restUrl,startRow, len, parentListGrid, titr, pageName, criteria) {
+            static downloadExcelFromRestUrl(listGrid, restUrl,startRow, len, parentListGrid, titr, pageName, criteria, exceptColumn) {
 
                 let tmptitr = '';
 
@@ -758,7 +758,7 @@
                     tmptitr = titr;
                 }
 
-                let fields = this.getAllFields(listGrid);
+                let fields = this.getAllFields(listGrid, exceptColumn);
                 //let criteria=JSON.stringify(listGrid.data.criteria.criteria);
                 let sort = listGrid.getSort();
                 let sortStr='';
@@ -914,7 +914,7 @@
                 exportExcelWindow.show();
             }
 
-            static showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate){
+            static showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate, exceptColumn){
                 let size = listgrid.getOriginalData().size();
                 let maxCount=5000;
 
@@ -1016,7 +1016,7 @@
                                             }*/
 
                                             if(isValidate(trTrim(exportExcelForm.getValue("maxRow")))) {
-                                                ExportToFile.downloadExcelFromRestUrl(listgrid, restUrl, parseInt(trTrim(exportExcelForm.getValue("startRow")))-1, parseInt(trTrim(exportExcelForm.getValue("maxRow"))), parentListGrid, titr, pageName, Object.keys(criteria).map(function(key) {return {'name':key, 'value':criteria[key]};}));
+                                                ExportToFile.downloadExcelFromRestUrl(listgrid, restUrl, parseInt(trTrim(exportExcelForm.getValue("startRow")))-1, parseInt(trTrim(exportExcelForm.getValue("maxRow"))), parentListGrid, titr, pageName, Object.keys(criteria).map(function(key) {return {'name':key, 'value':criteria[key]};}), exceptColumn);
                                                 exportExcelWindow.close();
                                             }
                                         }
@@ -1066,7 +1066,7 @@
                 }
             }
 
-            static downloadExcelRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate,warning,generateCriteria = false){
+            static downloadExcelRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate,warning,generateCriteria = false, exceptColumn){
 
                 if(listgrid.getOriginalData().size() > listgrid.getOriginalData().cachedRows || listgrid.getOriginalData().size() > 200){
 
@@ -1086,17 +1086,17 @@
 
                     if(showDialog != null){
                         let me=this;
-                        showDialog.addPropcerties({
+                        showDialog.addProperties({
                             buttonClick: function (button, index) {
                                 this.close();
-                                me.showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate);
+                                me.showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate, exceptColumn);
                             }
                         });
                     }else{
-                        this.showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate);
+                        this.showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate, exceptColumn);
                     }
                 }else{
-                    this.downloadExcelFromClient(listgrid, parentListGrid, titr, pageName);
+                    this.downloadExcelFromClient(listgrid, parentListGrid, titr, pageName, exceptColumn);
                 }
             }
         }

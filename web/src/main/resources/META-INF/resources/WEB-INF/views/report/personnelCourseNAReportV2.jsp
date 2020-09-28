@@ -665,7 +665,7 @@
                         criteria.criteria.remove(criteria.criteria.find({fieldName: "reportType"}));
 
                         if (FilterDF_PCNR.getItem("reportType").getValue() === "1"){
-                            ExportToFile.downloadExcelRestUrl(null, CourseLG_PCNR, personnelCourseNAReportUrl , 0, null, '',"آمار دوره های نیازسنجی افراد - آماری",criteria, null);
+                            ExportToFile.downloadExcelRestUrl(null, CourseLG_PCNR, personnelCourseNAReportUrl, 0, null, '', "آمار دوره های نیازسنجی افراد - آماری", criteria, null, 1, false, ["totalNotPassed", "personnelList"]);
                         }
                         else if(FilterDF_PCNR.getItem("reportType").getValue() === "2"){
                             ExportToFile.downloadExcelRestUrl(null, CourseLG_MinPCNR, personnelCourseNAReportUrl + "/minList", 0, null, '',"آمار دوره های نیازسنجی افراد - لیستی"  , criteria, null);
