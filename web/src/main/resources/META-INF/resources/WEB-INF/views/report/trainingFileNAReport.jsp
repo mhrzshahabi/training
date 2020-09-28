@@ -630,6 +630,7 @@
             },
             {name: "jobNo", title: "شغل", optionDataSource: RestDataSource_Job,
                 valueField: "code",
+                hidden: true,
                 operator: "equals",
                 displayField: "titleFa",
                 pickListFields:[
