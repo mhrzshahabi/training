@@ -263,8 +263,6 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     //TODO:Unknown
     public ResponseEntity<GoalDTO.GoalSpecRs> getGoal(@PathVariable Long courseId) {
 
-//        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-
         List<GoalDTO.Info> goal = courseService.getGoal(courseId);
 
         final GoalDTO.SpecRs specResponse = new GoalDTO.SpecRs();
@@ -413,7 +411,6 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
 
-//        final SearchDTO.SearchRs<CourseDTO.Info> searchRs = courseService.search(searchRq);
         final SearchDTO.SearchRs<CourseDTO.InfoPrint> searchRs = courseService.searchGeneric(searchRq, CourseDTO.InfoPrint.class);
 
         final Map<String, Object> params = new HashMap<>();
