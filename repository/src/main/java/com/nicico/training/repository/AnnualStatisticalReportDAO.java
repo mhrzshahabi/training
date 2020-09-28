@@ -1,7 +1,6 @@
 package com.nicico.training.repository;
 
 import com.nicico.training.model.AnnualStatisticalReport;
-import com.nicico.training.model.compositeKey.AnnualStatisticalReportKey;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -12,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 
 @Repository
-public interface AnnualStatisticalReportDAO extends JpaRepository<AnnualStatisticalReport, AnnualStatisticalReportKey>, JpaSpecificationExecutor<AnnualStatisticalReport> {
+public interface AnnualStatisticalReportDAO extends JpaRepository<AnnualStatisticalReport, Long>, JpaSpecificationExecutor<AnnualStatisticalReport> {
 
     @Query(value = "WITH r AS( " +
             "    SELECT  " +

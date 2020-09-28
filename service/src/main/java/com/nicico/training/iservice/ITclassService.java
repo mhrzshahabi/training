@@ -95,7 +95,4 @@ public interface ITclassService {
 
     @Transactional
     void updateCostInfo(Long id, TclassDTO.Update request);
-
-    @Transactional
-    Map<String,Object> calculateEffectivenessEvaluation(String reactionGrade_s, String learningGrade_s, String behavioralGrade_s, String classEvaluation);
 }

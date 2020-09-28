@@ -22,9 +22,9 @@
 	<parameter name="FERGrade" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="FETGrade" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="FECRGrade" class="java.lang.String" isForPrompting="false"/>
-	<parameter name="FERPass" class="java.lang.String" isForPrompting="false"/>
-	<parameter name="FETPass" class="java.lang.String" isForPrompting="false"/>
-	<parameter name="FECRPass" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="FERPass" class="java.lang.Boolean" isForPrompting="false"/>
+	<parameter name="FETPass" class="java.lang.Boolean" isForPrompting="false"/>
+	<parameter name="FECRPass" class="java.lang.Boolean" isForPrompting="false"/>
 	<parameter name="minScore_ER" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="minScore_ET" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="differFER" class="java.lang.String" isForPrompting="false"/>
@@ -396,14 +396,14 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{FERPass}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{FERPass}==true? "تائید":"عدم تائید"]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement positionType="Float" x="0" y="240" width="105" height="14" uuid="1e9f3646-db85-4b61-a343-3e805e51cada"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{FECRPass}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{FECRPass}==true? "تائید":"عدم تائید"]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="270" y="300" width="188" height="14" uuid="430253f3-bd1a-4633-8d37-ce6874081007"/>
@@ -431,7 +431,7 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="8" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{FETPass}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{FETPass}==true? "تائید":"عدم تائید"]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement mode="Opaque" x="350" y="270" width="122" height="18" backcolor="#FE9D2A" uuid="51fed624-c3c2-4379-ba0b-57c40736658a"/>

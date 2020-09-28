@@ -131,7 +131,6 @@ public class ClassStudentService implements IClassStudentService {
             return "فراگير «<b>" + classSession.getStudent().getFirstName() + " " + classSession.getStudent().getLastName() + "</b>» بدلیل داشتن حضور و غیاب قابل حذف نیست.";
         } else {
             classStudentDAO.deleteById(id);
-            attendanceDAO.deleteAllByClassIdAndStudentId(classSession.getTclassId(),classSession.getStudentId());
             return "";
         }
 
