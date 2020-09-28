@@ -1260,5 +1260,8 @@
     <changeSet author="golrokhi (generated)" id="1600490278492-512">
         <addForeignKeyConstraint baseColumnNames="e_deleted" baseTableName="tbl_message_parameter" constraintName="FKi93g4hs2p1q3dquo0k1040scq" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1601202494394-522">
+        <addForeignKeyConstraint baseColumnNames="f_society_id" baseTableName="tbl_target_society" constraintName="FK4qjasx915rn362ie55to82ex6" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_department" validate="true"/>
+    </changeSet>
 
 </databaseChangeLog>
