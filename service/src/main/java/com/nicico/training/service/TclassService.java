@@ -55,6 +55,7 @@ public class TclassService implements ITclassService {
     private final AttendanceDAO attendanceDAO;
     private final ParameterValueDAO parameterValueDAO;
     private final TrainingClassBeanMapper trainingClassBeanMapper;
+    private final EvaluationAnalysisDAO evaluationAnalysisDAO;
     private DecimalFormat numberFormat = new DecimalFormat("#.00");
 
     @Transactional(readOnly = true)
@@ -538,12 +539,19 @@ public class TclassService implements ITclassService {
         if(FETGradeResult.get("minQus_ET") != null)
             minQus_ET = (Double) FETGradeResult.get("minQus_ET");
 
-        Map<String, Object> FECRResult = getFECRGrade(FERGrade);
+        Map<String, Object> FECRResult = null;
+        List<EvaluationAnalysis> evaluationAnalyses = evaluationAnalysisDAO.findByTClassId(classId);
+        if(evaluationAnalyses != null && evaluationAnalyses.size() != 0){
+           FECRResult = calculateEffectivenessEvaluation(FERGrade.toString(),evaluationAnalyses.get(0).getLearningGrade(),evaluationAnalyses.get(0).getBehavioralGrade(),tclass.getEvaluation());
+        }
+        else{
+            FECRResult = calculateEffectivenessEvaluation(FERGrade.toString(),null,null,tclass.getEvaluation());
+        }
 
-        if(FECRResult.get("FECRGrade") != null)
-            FECRGrade = (Double) FECRResult.get("FECRGrade");
-        if(FECRResult.get("FECRPass") != null)
-            FECRPass = (Boolean) FECRResult.get("FECRPass");
+        if(FECRResult.get("EffectivenessGrade") != null)
+            FECRGrade = (Double) FECRResult.get("EffectivenessGrade");
+        if(FECRResult.get("EffectivenessPass") != null)
+            FECRPass = (Boolean) FECRResult.get("EffectivenessPass");
         if(FECRResult.get("minScoreFECR") != null)
             minScoreFECR = (Double) FECRResult.get("minScoreFECR");
 
@@ -902,7 +910,7 @@ public class TclassService implements ITclassService {
                 z1 = Double.parseDouble(parameterValue.getValue());
             else if (parameterValue.getCode().equalsIgnoreCase("z2"))
                 z2 = Double.parseDouble(parameterValue.getValue());
-            else if (parameterValue.getCode().equalsIgnoreCase("minScoreET "))
+            else if (parameterValue.getCode().equalsIgnoreCase("minScoreET"))
                 minScore_ET = Double.parseDouble(parameterValue.getValue());
             else if (parameterValue.getCode().equalsIgnoreCase("minQusET"))
                 minQus_ET = Double.parseDouble(parameterValue.getValue());
@@ -919,6 +927,8 @@ public class TclassService implements ITclassService {
             FETGrade /= 100;
             if (FETGrade >= minScore_ET && percenetOfFilledReactionEvaluationForms >= minQus_ET)
                 FETPass = true;
+            else
+                FETPass = false;
         }
 
         result.put("FETGrade", FETGrade);
@@ -927,37 +937,6 @@ public class TclassService implements ITclassService {
         result.put("minQus_ET", minQus_ET);
         result.put("z1",z1);
         result.put("z2",z2);
-
-        return result;
-    }
-
-    private Map<String, Object> getFECRGrade(Double FERGrade) {
-        Map<String, Object> result = new HashMap<>();
-        Boolean FECRPass = null;
-        Double FECRGrade = null;
-
-        Double FECRZ = null;
-        Double minScoreFECR = null;
-        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("FEC_R");
-        List<ParameterValueDTO.Info> parameterValues = parameters.getResponse().getData();
-        for (ParameterValueDTO.Info parameterValue : parameterValues) {
-            if (parameterValue.getCode().equalsIgnoreCase("FECRZ"))
-                FECRZ = Double.parseDouble(parameterValue.getValue());
-            else if (parameterValue.getCode().equalsIgnoreCase("minScoreFECR"))
-                minScoreFECR = Double.parseDouble(parameterValue.getValue());
-        }
-
-        if(FERGrade != null) {
-            FECRGrade = (FERGrade * FECRZ) / 100;
-            if (FECRGrade >= minScoreFECR)
-                FECRPass = true;
-            else
-                FECRPass = false;
-        }
-
-        result.put("FECRGrade", FECRGrade);
-        result.put("FECRPass", FECRPass);
-        result.put("minScoreFECR", minScoreFECR);
 
         return result;
     }
@@ -1211,5 +1190,81 @@ public class TclassService implements ITclassService {
         tclass.setStudentCostCurrency(request.getStudentCostCurrency());
 
         Tclass updatedClass = tclassDAO.save(tclass);
+    }
+
+    @Transactional
+    @Override
+    public Map<String,Object> calculateEffectivenessEvaluation(String reactionGrade_s, String learningGrade_s, String behavioralGrade_s, String classEvaluation){
+        Double effectivenessGrade = 0.0;
+        Boolean effectivenessPass = false;
+        Map<String,Object> finalResult = new HashMap<>();
+
+        double reactionGrade = 0.0;
+        double learningGrade = 0.0;
+        double behavioralGrade = 0.0;
+
+        if(reactionGrade_s != null)
+            reactionGrade = Double.parseDouble(reactionGrade_s);
+        if(learningGrade_s != null)
+            learningGrade = Double.parseDouble(learningGrade_s);
+        if(behavioralGrade_s != null)
+            behavioralGrade = Double.parseDouble(behavioralGrade_s);
+
+        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("FEC_R");
+        double minScoreFECR = 0.0;
+        double FECRZ = 0.0;
+        List<ParameterValueDTO.Info> parameterValues = parameters.getResponse().getData();
+        for (ParameterValueDTO.Info parameterValue : parameterValues) {
+            if (parameterValue.getCode().equalsIgnoreCase("FECRZ"))
+                FECRZ = Double.parseDouble(parameterValue.getValue());
+            else if (parameterValue.getCode().equalsIgnoreCase("minScoreFECR"))
+                minScoreFECR = Double.parseDouble(parameterValue.getValue());
+        }
+
+        if(classEvaluation != null && classEvaluation.equalsIgnoreCase("1")){
+            effectivenessGrade = (reactionGrade * FECRZ)/100;
+        }
+        else if(classEvaluation != null && classEvaluation.equalsIgnoreCase("2")){
+            double FECLZ1 = 0.0;
+            double FECLZ2 = 0.0;
+            TotalResponse<ParameterValueDTO.Info> parameters1 = parameterService.getByCode("FEC_L");
+            List<ParameterValueDTO.Info> parameterValues1 = parameters1.getResponse().getData();
+            for (ParameterValueDTO.Info parameterValue : parameterValues1) {
+                if (parameterValue.getCode().equalsIgnoreCase("FECLZ1"))
+                    FECLZ1 = Double.parseDouble(parameterValue.getValue());
+                else if (parameterValue.getCode().equalsIgnoreCase("FECLZ2"))
+                    FECLZ2 = Double.parseDouble(parameterValue.getValue());
+            }
+            effectivenessGrade = (reactionGrade * FECLZ1 + learningGrade * FECLZ2)/100;
+        }
+        else if(classEvaluation != null && classEvaluation.equalsIgnoreCase("3")){
+            Double FECBZ1 = 0.0;
+            Double FECBZ2 = 0.0;
+            Double FECBZ3 = 0.0;
+            TotalResponse<ParameterValueDTO.Info> parameters2 = parameterService.getByCode("FEC_B");
+            List<ParameterValueDTO.Info> parameterValues2 = parameters2.getResponse().getData();
+            for (ParameterValueDTO.Info parameterValue : parameterValues2) {
+                if (parameterValue.getCode().equalsIgnoreCase("FECBZ1"))
+                    FECBZ1 = Double.parseDouble(parameterValue.getValue());
+                else if (parameterValue.getCode().equalsIgnoreCase("FECBZ2"))
+                    FECBZ2 = Double.parseDouble(parameterValue.getValue());
+                else if (parameterValue.getCode().equalsIgnoreCase("FECBZ3"))
+                    FECBZ3 = Double.parseDouble(parameterValue.getValue());
+            }
+
+            effectivenessGrade = (reactionGrade * FECBZ1 + learningGrade * FECBZ2 + behavioralGrade * FECBZ3)/100;
+        }
+
+        if(effectivenessGrade >= minScoreFECR)
+            effectivenessPass = true;
+        else
+            effectivenessPass = false;
+
+        if(effectivenessGrade != 0 && effectivenessGrade != 0.0) {
+            finalResult.put("EffectivenessGrade", effectivenessGrade);
+            finalResult.put("EffectivenessPass", effectivenessPass);
+            finalResult.put("minScoreFECR", minScoreFECR);
+        }
+        return finalResult;
     }
 }

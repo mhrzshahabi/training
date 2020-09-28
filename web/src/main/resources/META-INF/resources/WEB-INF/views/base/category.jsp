@@ -415,8 +415,7 @@
         members: [
             isc.ToolStripButtonExcel.create({
                 click: function () {
-                    let criteria = ListGrid_Category.getCriteria();
-                    ExportToFile.downloadExcel(null, ListGrid_Category , "Category", 0, null, '',"لیست گروه ها - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcelRestUrl(null, ListGrid_Category , category_CategoryHomeUrl + "/spec-list", 0, null, '',"لیست گروه ها - آموزش"  , null, null,0,true);
                 }
             })
         ]
@@ -908,18 +907,7 @@
         members: [
             isc.ToolStripButtonExcel.create({
                 click: function () {
-                    let criteria = ListGrid_Sub_Category.getCriteria();
-
-                    if(typeof(criteria.operator)=='undefined'){
-                        criteria._constructor="AdvancedCriteria";
-                        criteria.operator="and";
-                    }
-
-                    if(typeof(criteria.criteria)=='undefined'){
-                        criteria.criteria=[];
-                    }
-                    criteria.criteria.push({fieldName:'categoryId',operator:'equals',value:ListGrid_Category.getSelectedRecord().id});
-                    ExportToFile.downloadExcel(null, ListGrid_Sub_Category , "SubCategory", 0, null, '',"لیست زیر گروه ها - آموزش"  , criteria, null);
+                    ExportToFile.downloadExcelRestUrl(null, ListGrid_Sub_Category, category_CategoryHomeUrl + "/" + ListGrid_Category.getSelectedRecord().id + "/sub-categories", 0, ListGrid_Category, '', "لیست زیر گروه ها - آموزش", null, null, 0, true);
                 }
             })
         ]
