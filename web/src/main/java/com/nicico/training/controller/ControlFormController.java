@@ -285,7 +285,9 @@ public class ControlFormController {
 
             st.setFullName(st.getFirstName() + " " + st.getLastName());
             st.setScoreA(listClassStudents.get(i).getScore() != null && dataStatus.equals("true") ? listClassStudents.get(i).getScore().toString() : "");
-            st.setScoreB(st.calScoreB(st.getScoreA()));
+
+            if (tclassDTO.getScoringMethod() != null &&  tclassDTO.getScoringMethod().equals("3"))
+                st.setScoreB(st.calScoreB(st.getScoreA()));
 
             studentArrayList.add(st);
             i++;
@@ -518,6 +520,8 @@ public class ControlFormController {
                 StudentDTO.scoreAttendance st = modelMapper.map(student, StudentDTO.scoreAttendance.class);
                 st.setFullName(st.getFirstName() + " " + st.getLastName());
                 st.setScoreA(listClassStudents.get(i).getScore() != null && dataStatus.equals("true") ? listClassStudents.get(i).getScore().toString() : "");
+
+                if (tclassDTO.getScoringMethod() != null &&  tclassDTO.getScoringMethod().equals("3"))
                 st.setScoreB(st.calScoreB(st.getScoreA()));
 
                 studentArrayList.add(st);
@@ -682,7 +686,9 @@ public class ControlFormController {
                 st.setCcpAffairs(personnel!=null ? (personnel.getCcpAffairs() != null ? personnel.getCcpAffairs() : "") : "");
 
                 st.setScoreA(listClassStudents.get(cnt).getScore() != null && dataStatus.equals("true") ? listClassStudents.get(cnt).getScore().toString() : "");
-                st.setScoreB(st.calScoreB(st.getScoreA()));
+
+                if (tclassDTO.getScoringMethod() != null &&  tclassDTO.getScoringMethod().equals("3"))
+                    st.setScoreB(st.calScoreB(st.getScoreA()));
 
                 String dayDate = "";
 
