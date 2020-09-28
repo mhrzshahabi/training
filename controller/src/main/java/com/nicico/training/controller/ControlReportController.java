@@ -56,8 +56,12 @@ public class ControlReportController {
         String[] classStatus = null;
         String clasStatus_Str="";
 
-        if(!jsonObject.isNull("classCode"))
-            classCode = modelMapper.map(jsonObject.get("classCode"), String.class).split(",");
+        if(!jsonObject.isNull("classCode")) {
+            String resClassCode = modelMapper.map(jsonObject.get("classCode"), String.class);
+            if (resClassCode.length()!=0) {
+                classCode = resClassCode.split(",");
+            }//end if
+        }//end if
 
         if(!jsonObject.isNull("classYear"))
             classYear = modelMapper.map(jsonObject.get("classYear"),String.class);
@@ -92,11 +96,13 @@ public class ControlReportController {
         String reportScript = "select distinct(tbl_class.id) as idClass,tbl_class.c_code as codeClass,tbl_course.c_title_fa as nameCourse,SUBSTR(tbl_class.C_START_DATE,1,4) as yearClass,tbl_term.c_title_fa as termClass,tbl_institute.c_title_fa as instituteClass,tbl_CATEGORY.c_title_fa as categoryClass,tbl_SUB_CATEGORY.c_title_fa as subCategoryClass,tbl_class.C_START_DATE as startDateClass,tbl_class.C_END_DATE as endDateClass,tbl_class.c_status as statusClass from tbl_student INNER JOIN tbl_class_student ON tbl_student.id = tbl_class_student.student_id INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id INNER JOIN tbl_term ON tbl_class.f_term = tbl_term.id LEFT JOIN tbl_institute ON tbl_class.f_institute = tbl_institute.id INNER JOIN tbl_category ON tbl_course.category_id = tbl_category.id INNER JOIN tbl_sub_category ON tbl_course.subcategory_id = tbl_sub_category.id where tbl_class.id>0  ";
 
         if(classCode != null) {
-            classCode_Str += "'" + classCode[0] + "'";
-            for (int i = 1; i < classCode.length; i++) {
-                classCode_Str += "," + "'" + classCode[i] + "'" ;
+            if (classCode.length!=0) {
+                classCode_Str += "'" + classCode[0] + "'";
+                for (int i = 1; i < classCode.length; i++) {
+                    classCode_Str += "," + "'" + classCode[i] + "'";
+                }
+                reportScript += " AND tbl_class.c_code IN (" + classCode_Str + ") ";
             }
-            reportScript+=" AND tbl_class.c_code IN (" + classCode_Str + ") ";
         }
 
         if(classYear != null)
