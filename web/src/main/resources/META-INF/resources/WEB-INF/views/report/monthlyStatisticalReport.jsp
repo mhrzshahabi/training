@@ -9,35 +9,35 @@
     {
         var RestDataSource_Complex_MSReport = isc.TrDS.create({
             fields: [
-                {name: "complexTitle", title: "<spring:message code="telephone"/>"}
+                {name: "value", title: "<spring:message code="telephone"/>"}
             ],
             fetchDataURL: departmentUrl + "/all-field-values?fieldName=complexTitle"
         });
 
         var RestDataSource_Assistant_MSReport = isc.TrDS.create({
             fields: [
-                {name: "ccpAssistant", title: "<spring:message code="telephone"/>"}
+                {name: "value", title: "<spring:message code="telephone"/>"}
             ],
             fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAssistant"
         });
 
         var RestDataSource_Affairs_MSReport = isc.TrDS.create({
             fields: [
-                {name: "ccpAffairs", title: "<spring:message code="telephone"/>"}
+                {name: "value", title: "<spring:message code="telephone"/>"}
             ],
             fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAffairs"
         });
 
         var RestDataSource_Section_MSReport = isc.TrDS.create({
             fields: [
-                {name: "ccpSection", title: "<spring:message code="telephone"/>"}
+                {name: "value", title: "<spring:message code="telephone"/>"}
             ],
             fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpSection"
         });
 
         var RestDataSource_Unit_MSReport = isc.TrDS.create({
             fields: [
-                {name: "ccpUnit", title: "<spring:message code="telephone"/>"}
+                {name: "value", title: "<spring:message code="telephone"/>"}
             ],
             fetchDataURL: departmentUrl +  "/all-field-values?fieldName=ccpUnit"
         });
@@ -45,11 +45,15 @@
         var RestDataSource_MSReport = isc.TrDS.create({
             fields:
                 [
+                    {name: "complex_title"},
+                    {name: "ccp_assistant"},
+                    {name: "ccp_affairs"},
                     {name: "ccp_unit"},
+                    {name: "ccp_section"},
                     {name: "present"},
-                    {name: "Overtime"},
-                    {name: "UnjustifiedAbsence"},
-                    {name: "AcceptableAbsence"}
+                    {name: "overtime"},
+                    {name: "unjustifiedAbsence"},
+                    {name: "acceptableAbsence"}
                 ]
         });
 
@@ -114,7 +118,6 @@
                     filterOperator: "iContains"},
                 {name: "titleFa", title: "<spring:message code="course_fa_name"/>",
                     align: "center",
-                    autoFitWidth: true,
                     filterOperator: "iContains"},
                 {name: "titleEn", title: "<spring:message code="course_en_name"/>",
                     align: "center",
@@ -159,7 +162,6 @@
                     filterOperator: "iContains"},
                 {name: "titleClass", title: "<spring:message code="course_fa_name"/>",
                     align: "center",
-                    autoFitWidth: true,
                     filterOperator: "iContains"},
                 {name: "startDate", title: "<spring:message code="start.date"/>",
                     align: "center",
@@ -175,7 +177,6 @@
                     filterOperator: "iContains"},
                 {name: "course.titleFa", title: "<spring:message code="course.title"/>",
                     align: "center",
-                    autoFitWidth: true,
                     filterOperator: "iContains"},
                 {name: "teacher.personality.lastNameFa", title: "<spring:message code="course_fa_name"/>",
                     align: "center",
@@ -312,7 +313,7 @@
             fields: [
                 {
                     name: "firstDate_MSReport",
-                    title: "<spring:message code="start.date"/>",
+                    title: "تاريخ جلسه از",
                     ID: "firstDate_MSReport",
                     hint: "----/--/--",
                     keyPressFilter: "[0-9/]",
@@ -333,12 +334,11 @@
                 },
                 {
                     name: "secondDate_MSReport",
-                    title: "<spring:message code="end.date"/>",
+                    title: "تا",
                     ID: "secondDate_MSReport",
                     hint: "----/--/--",
                     keyPressFilter: "[0-9/]",
                     showHintInField: true,
-                    required: true,
                     icons: [{
                         src: "<spring:url value="calendar.png"/>",
                         click: function (form) {
@@ -364,7 +364,21 @@
                     optionDataSource: RestDataSource_Complex_MSReport,
                     textAlign: "center",
                     valueField: "value",
-                    displayField: "value"
+                    displayField: "value",
+                    icons: [
+                        {
+                            name: "clear",
+                            src: "[SKIN]actions/remove.png",
+                            width: 15,
+                            height: 15,
+                            inline: true,
+                            prompt: "پاک کردن",
+                            click: function (form, item, icon) {
+                                item.clearValue();
+                                item.focusInItem();
+                            }
+                        }
+                    ],
                 },
                 {
                     name: "Assistant",
@@ -377,7 +391,21 @@
                     optionDataSource: RestDataSource_Assistant_MSReport,
                     textAlign: "center",
                     valueField: "value",
-                    displayField: "value"
+                    displayField: "value",
+                    icons: [
+                        {
+                            name: "clear",
+                            src: "[SKIN]actions/remove.png",
+                            width: 15,
+                            height: 15,
+                            inline: true,
+                            prompt: "پاک کردن",
+                            click: function (form, item, icon) {
+                                item.clearValue();
+                                item.focusInItem();
+                            }
+                        }
+                    ]
                 },
                 {
                     name: "Affairs",
@@ -390,7 +418,21 @@
                     optionDataSource: RestDataSource_Affairs_MSReport,
                     textAlign: "center",
                     valueField: "value",
-                    displayField: "value"
+                    displayField: "value",
+                    icons: [
+                        {
+                            name: "clear",
+                            src: "[SKIN]actions/remove.png",
+                            width: 15,
+                            height: 15,
+                            inline: true,
+                            prompt: "پاک کردن",
+                            click: function (form, item, icon) {
+                                item.clearValue();
+                                item.focusInItem();
+                            }
+                        }
+                    ]
                 },
                 {
                     name: "Unit",
@@ -403,7 +445,21 @@
                     optionDataSource: RestDataSource_Unit_MSReport,
                     textAlign: "center",
                     valueField: "value",
-                    displayField: "value"
+                    displayField: "value",
+                    icons: [
+                        {
+                            name: "clear",
+                            src: "[SKIN]actions/remove.png",
+                            width: 15,
+                            height: 15,
+                            inline: true,
+                            prompt: "پاک کردن",
+                            click: function (form, item, icon) {
+                                item.clearValue();
+                                item.focusInItem();
+                            }
+                        }
+                    ]
                 },
                 {
                     name: "Section",
@@ -416,7 +472,21 @@
                     optionDataSource: RestDataSource_Section_MSReport,
                     textAlign: "center",
                     valueField: "value",
-                    displayField: "value"
+                    displayField: "value",
+                    icons: [
+                        {
+                            name: "clear",
+                            src: "[SKIN]actions/remove.png",
+                            width: 15,
+                            height: 15,
+                            inline: true,
+                            prompt: "پاک کردن",
+                            click: function (form, item, icon) {
+                                item.clearValue();
+                                item.focusInItem();
+                            }
+                        }
+                    ]
                 },
                 {type: "SpacerItem"},
                 {
@@ -597,7 +667,7 @@
 
             DynamicForm_MSReport.clearFieldErrors("secondDate_MSReport", true);
 
-            if (DynamicForm_MSReport.getValue("secondDate_MSReport") === undefined || !checkDate(DynamicForm_MSReport.getValue("secondDate_MSReport"))) {
+            if (DynamicForm_MSReport.getValue("secondDate_MSReport") && !checkDate(DynamicForm_MSReport.getValue("secondDate_MSReport"))) {
                 DynamicForm_MSReport.addFieldErrors("secondDate_MSReport", "<spring:message code="msg.correct.date"/>", true);
             } else {
                 DynamicForm_MSReport.clearFieldErrors("secondDate_MSReport", true);
@@ -632,7 +702,7 @@
 
             var reportParameters = {
                 firstDate: firstDate_MSReport._value.replace(/\//g, "^"),
-                secondDate: secondDate_MSReport._value.replace(/\//g, "^"),
+                secondDate: secondDate_MSReport._value?.replace(/\//g, "^"),
                 complex_title: DynamicForm_MSReport.getValue("complex_MSReport") !== undefined ? DynamicForm_MSReport.getValue("complex_MSReport") : "همه",
                 assistant: DynamicForm_MSReport.getValue("Assistant") !== undefined ? DynamicForm_MSReport.getValue("Assistant") : "همه",
                 affairs: DynamicForm_MSReport.getValue("Affairs") !== undefined ? DynamicForm_MSReport.getValue("Affairs") : "همه",
