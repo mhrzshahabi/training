@@ -120,11 +120,11 @@ public class SendMessageService implements ISendMessageService {
 
             List<MessageParameter> listParameter = messageParameterDAO.findByMessageContactId(masterList.get(i).getMessageContactId());
 
-            for (MessageParameter parameter :  listParameter) {
+            for (MessageParameter parameter : listParameter) {
                 paramValMap.put(parameter.getName(), parameter.getValue());
             }
 
-            Long messageId =Long.parseLong(nimadSMSService.syncEnqueue(pid, paramValMap, numbers).get(0));
+            Long messageId = Long.parseLong(nimadSMSService.syncEnqueue(pid, paramValMap, numbers).get(0));
 
             //magfaSMSService.asyncEnqueue(numbers, ++messageId, masterList.get(i).getContextText());
 

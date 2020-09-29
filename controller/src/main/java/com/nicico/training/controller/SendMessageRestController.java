@@ -205,6 +205,7 @@ public class SendMessageRestController {
 
             messageDAO.save(oMessageModel);
         }
+
         for (int i = 0; i < mobiles.size(); i++) {
             paramValMap = new HashMap<>();
 

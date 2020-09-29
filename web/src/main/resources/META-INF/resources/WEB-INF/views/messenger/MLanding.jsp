@@ -340,7 +340,7 @@
                         ID: "linkFormMLanding",
                         width: "100%",
                         fields: [
-                            { name: "link", title: "لینک", editorType: "TextItem"},
+                            { name: "link", title: "لینک", controlStyle : "inputRTL",cellStyle  : "inputRTL",showRTL :false},
                         ]
                     }),
                 ],
@@ -561,6 +561,18 @@
 
     function MSG_sendMsg(html){
 
+        if(linkFormMLanding.getItem('link').required && (!linkFormMLanding.getItem('link').getValue() || linkFormMLanding.getItem('link').getValue().trim() == '')){
+            var ERROR = isc.Dialog.create({
+                message:"لینک را وارد نمایید",
+                icon: "[SKIN]stop.png",
+                title:  "لینک"
+            });
+            setTimeout(function () {
+                ERROR.close();
+            }, 1000);
+            return;
+        }
+
         if(MSG_selectUsersForm.getItem('multipleSelect').getValue() == undefined || MSG_selectUsersForm.getItem('multipleSelect').getValue() == null){
             var ERROR = isc.Dialog.create({
                 message:"افراد را انتخاب نمایید",
@@ -701,6 +713,8 @@
     function MSG_initMSG(){
         MSG_contentEditor.setValue('');
         linkFormMLanding.getItem('link').setValue('');
+        linkFormMLanding.getItem('link').setRequired(false);
+        linkFormMLanding.getItem('link').disable();
         //MSGAttachContainer.removeMembers(MSGAttachContainer.getMembers());
         MSG_selectUsersForm.clearValues()
         MSG_sendTypesItems = [];
