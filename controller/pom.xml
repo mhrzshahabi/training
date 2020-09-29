@@ -20,9 +20,9 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.nicico</groupId>
+            <groupId>com.nicico.training</groupId>
             <artifactId>jpa</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
