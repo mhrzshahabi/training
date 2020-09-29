@@ -93,7 +93,7 @@ public class SendMessageService implements ISendMessageService {
             String pid = "";
 
             if (masterList.get(i).getObjectType().equals("ClassStudent")) {
-                pid = "bkvqncws2h";
+                pid = "ihxdaus47t";
 
                 ClassStudent model = classStudentDAO.findById(masterList.get(i).getObjectId()).orElse(null);
 

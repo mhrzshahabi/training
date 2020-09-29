@@ -560,7 +560,7 @@
                             }
                             MSG_selectUsersForm.getItem("multipleSelect").fetchData();
 
-                            MSG_textEditorValue = "{prefix-full_name} {full-name}<br>\n پرسشنامه مربوط به ارزیابی دوره «{course-name}» که از تاریخ {start-date} تا {end-date} برگزارشده است و جنابعالی در آن شرکت داشته اید به پرتال پرسنلی شما در سیستم جامع آموزش به آدرس {personel-address} ارسال گردیده است ولی متاسفانه تاکنون تکمیل نشده است.لطفا در اسرع وقت آن را تکمیل نمایید بدیهی است تایید نهایی دوره جنابعالی منوط به تکمیل این پرسشنامه می باشد"
+                            MSG_textEditorValue = "%prefix-full_name% %full-name%<br />لطفا در اسرع وقت پرسشنامه مربوط به ارزیابی دوره «%course-name%» را از طریق لینک ذیل تکمیل نمایید. بدیهی است تایید نهایی دوره جنابعالی، منوط به تکمیل این پرسشنامه می باشد.<br />لینک: %personnel-address%<br /><br/>واحد ارزیابی آموزش"
                             MSG_contentEditor.setValue(MSG_textEditorValue);
 
                             linkFormMLanding.getItem('link').setValue('');

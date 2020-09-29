@@ -225,16 +225,18 @@ public class SendMessageRestController {
             paramValMap.put("prefix-full_name", prefixFullName.get(i));
             paramValMap.put("full-name", fullName.get(i));
             paramValMap.put("course-name", courseName);
-            paramValMap.put("start-date", courseStartDate);
-            paramValMap.put("end-date", courseEndDate);
+
 
 
             if (type.equals("classStudent")) {
-                pid = "bkvqncws2h";
-                paramValMap.put("personel-address", link);
+                //pid = "bkvqncws2h";
+                pid = "0zsny4iqsf";
+                paramValMap.put("personnel-address", link);
             } else if (type.equals("classTeacher")) {
                 pid = "er7wvzn4l4";
                 paramValMap.put("personel-address", personelAddress);
+                paramValMap.put("start-date", courseStartDate);
+                paramValMap.put("end-date", courseEndDate);
             }
 
             Long messageId = Long.parseLong(sendMessageService.asyncEnqueue(pid, paramValMap, numbers).get(0));
@@ -266,9 +268,14 @@ public class SendMessageRestController {
                 messageParameter("prefix-full_name", prefixFullName.get(i), messageContact.getId());
                 messageParameter("full-name", fullName.get(i), messageContact.getId());
                 messageParameter("course-name", courseName, messageContact.getId());
-                messageParameter("start-date", courseStartDate, messageContact.getId());
-                messageParameter("end-date", courseEndDate, messageContact.getId());
-                messageParameter("personel-address", tmpLink, messageContact.getId());
+
+                if (type.equals("classStudent")) {
+                    messageParameter("personnel-address", tmpLink, messageContact.getId());
+                } else if (type.equals("classTeacher")) {
+                    messageParameter("personel-address", tmpLink, messageContact.getId());
+                    messageParameter("start-date", courseStartDate, messageContact.getId());
+                    messageParameter("end-date", courseEndDate, messageContact.getId());
+                }
             }
         }
 
