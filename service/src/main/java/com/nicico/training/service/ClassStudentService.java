@@ -127,11 +127,13 @@ public class ClassStudentService implements IClassStudentService {
     public String delete(Long id) {
 
         ClassStudent classSession = classStudentDAO.getClassStudentById(id);
-        if (attendanceDAO.checkAttendanceByStudentIdAndClassId(classSession.getStudentId(), classSession.getTclassId()) > 0) {
+        if (!classSession.getScoresStateId().equals(410L)) {
+            return "فراگير «<b>" + classSession.getStudent().getFirstName() + " " + classSession.getStudent().getLastName() + "</b>» بدلیل ثبت نمره قابل حذف نیست.";
+        } else if (attendanceDAO.checkAttendanceByStudentIdAndClassId(classSession.getStudentId(), classSession.getTclassId()) > 0) {
             return "فراگير «<b>" + classSession.getStudent().getFirstName() + " " + classSession.getStudent().getLastName() + "</b>» بدلیل داشتن حضور و غیاب قابل حذف نیست.";
         } else {
             classStudentDAO.deleteById(id);
-            attendanceDAO.deleteAllByClassIdAndStudentId(classSession.getTclassId(),classSession.getStudentId());
+            attendanceDAO.deleteAllByClassIdAndStudentId(classSession.getTclassId(), classSession.getStudentId());
             return "";
         }
 
