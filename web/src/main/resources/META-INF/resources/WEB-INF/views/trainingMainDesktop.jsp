@@ -2236,15 +2236,6 @@
                             {isSeparator: true},
                             <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">
                             {
-                                title: "گزارش واحد آمار",
-                                click: function () {
-                                    createTab(this.title, "<spring:url value="web/statisticsUnitReport/"/>");
-                                }
-                            },
-                            {isSeparator: true},
-                            </sec:authorize>
-                            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">
-                            {
                                 title: "گزارش دوره های گذرانده فرد",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/coursesPassedPersonnelReport/"/>");
@@ -2365,12 +2356,22 @@
                             createTab(this.title, "<spring:url value="web/personnelTrainingStatusReport"/>");
                             }
                             },
+                            {isSeparator: true},
                             </sec:authorize>
                             <sec:authorize access="hasAuthority('Menu_continuous_Status_Report')">
                             {
                                 title: "<spring:message code="continuous.status.report"/>",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/continuousStatusReport"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            </sec:authorize>
+                            <sec:authorize access="hasAuthority('Menu_continuous_Status_Report')">
+                            {
+                                title: "گزارش اصلی واحد آمار",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/statisticsUnitReport/"/>");
                                 }
                             },
                             </sec:authorize>
