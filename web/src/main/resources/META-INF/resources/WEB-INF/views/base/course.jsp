@@ -70,12 +70,12 @@
 
     var RestDataSource_teacherInformation_Course = isc.TrDS.create({
         fields: [
-            {name: "teacher.personality.firstNameFa"},
-            {name: "teacher.personality.lastNameFa"},
-            {name: "teacher.personality.nationalCode"},
-            {name: "teacher.personality.contactInfo.mobile"},
-            {name: "teacher.personality.contactInfo.homeAddress.state.name"},
-            {name: "teacher.personality.contactInfo.homeAddress.city.name"},
+            {name: "personality.firstNameFa"},
+            {name: "personality.lastNameFa"},
+            {name: "personality.nationalCode"},
+            {name: "personality.contactInfo.mobile"},
+            {name: "personality.contactInfo.homeAddress.state.name"},
+            {name: "personality.contactInfo.homeAddress.city.name"},
         ]
     });
 
@@ -497,32 +497,52 @@
         // autoFetchData: true,
         fields: [
 
-            {name: "teacher.fullName", title: "<spring:message code="teacher"/>", align: "center", filterOperator: "iContains",canSort:false},
-            {name: "teacher.personality.contactInfo.mobile", title: "<spring:message code="mobile"/>", align: "center", filterOperator: "iContains",
+            {
+                name: "personality.firstNameFa",
+                title: "<spring:message code="firstName"/>",
+                align: "center",
+                filterOperator: "iContains",
+                sortNormalizer(record){
+                    return record.personality.firstNameFa
+                },
+            },
+            {
+                name: "personality.lastNameFa",
+                title: "<spring:message code="lastName"/>",
+                align: "center",
+                filterOperator: "iContains",
+                sortNormalizer(record){
+                    return record.personality.lastNameFa
+                },
+            },
+
+            {
+                name: "personality.contactInfo.mobile",
+                title: "<spring:message code="mobile"/>",
+                align: "center",
+                filterOperator: "iContains",
+                sortNormalizer(record){
+                    return record.personality.contactInfo.mobile
+                },
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
                 }
             },
-            {name: "teacher.personality.nationalCode", title: "<spring:message code="national.code"/>", align: "center", filterOperator: "iContains",
+            {
+                name: "personality.nationalCode",
+                title: "<spring:message code="national.code"/>",
+                align: "center",
+                filterOperator: "iContains",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
-                }
+                },
+                canSort: false,
+                sortNormalizer(record){
+                    return record.personality.nationalCode
+                },
             },
-            {name: "teacher.address", title: "<spring:message code="address"/>", align: "center", filterOperator: "iContains"},
         ],
-        recordDoubleClick: function () {
-
-
-        },
-        showFilterEditor: true,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
         filterOnKeypress: false,
-        initialSort: [
-            {property: "teacher.personality.lastNameFa", direction: "ascending"},
-        ],
-        sortDirection: "descending",
-
     });
 
     var ListGrid_CourseSyllabus = isc.TrLG.create({
@@ -2886,7 +2906,7 @@
                         loadPage_course_evaluation();
                     break;
                 case "teacherInformationCourse":
-                    RestDataSource_teacherInformation_Course.fetchDataURL = teacherInformation + "/teacher-information-iscList" + "/" + courseRecord.code;
+                    RestDataSource_teacherInformation_Course.fetchDataURL = teacherInformation + "/teacher-information-iscList" + "/" + courseRecord.id;
                     ListGrid_teacherInformation_Course.fetchData();
                     ListGrid_teacherInformation_Course.invalidateCache();
                     break;

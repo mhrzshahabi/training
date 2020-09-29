@@ -9,6 +9,7 @@ import com.nicico.training.CustomModelMapper;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
+import com.nicico.training.mapper.teacher.TeacherBeanMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.repository.TeacherDAO;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.teacher.dto.TeacherInCourseDto;
 
 import java.util.*;
 
@@ -27,6 +29,7 @@ import java.util.*;
 public class TeacherService implements ITeacherService {
 
     private final CustomModelMapper modelMapper;
+    private final TeacherBeanMapper teacherBeanMapper;
     private final TeacherDAO teacherDAO;
     private final TclassDAO tclassDAO;
     private final ParameterService parameterService;
@@ -874,5 +877,11 @@ public class TeacherService implements ITeacherService {
         resultSet.put("table_3_count_note", table_3_count_note);
         resultSet.put("table_4_grade", table_4_grade);
         return resultSet;
+    }
+
+    @Transactional(readOnly = true)
+    public List<TeacherInCourseDto> getTeachersInCourse(Long courseId){
+        List<Teacher> teachers = teacherDAO.findDistinctByTclasseCourseId(courseId);
+        return teacherBeanMapper.toTeacherInCourseDtoList(teachers);
     }
 }

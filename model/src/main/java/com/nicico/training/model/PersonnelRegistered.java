@@ -54,7 +54,7 @@ public class PersonnelRegistered extends Auditable {
     private String nationalCode;
 
     @Column(name = "active")
-    private Integer active;
+    private Integer active = 1;
 
 //    @Column(name = "deleted")
 //    private Integer deleted;

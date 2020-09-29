@@ -3,8 +3,6 @@ package com.nicico.training.repository;
 import com.nicico.jpa.model.repository.NicicoRepository;
 import com.nicico.training.model.Course;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

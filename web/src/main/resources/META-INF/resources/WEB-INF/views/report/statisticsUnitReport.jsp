@@ -270,7 +270,7 @@
         title: "گزارش اکسل",
         width: 300,
         click: function () {
-            ExportToFile.downloadExcelRestUrl(null, ListGrid_JspUnitReport, statisticsUnitReportUrl , 0, null, '',  "گزارش واحد آمار", ListGrid_JspUnitReport.data.getCriteria(), null);
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_JspUnitReport, statisticsUnitReportUrl , 0, null, '',  "گزارش اصلی واحد آمار", ListGrid_JspUnitReport.data.getCriteria(), null);
         }
     });
 
@@ -300,7 +300,7 @@
 
     var Window_JspUnitReport = isc.Window.create({
         placement: "fillScreen",
-        title: "گزارش واحد آمار",
+        title: "گزارش اصلی واحد آمار",
         canDragReposition: true,
         align: "center",
         autoDraw: false,
