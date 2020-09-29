@@ -714,7 +714,7 @@
                         },
                         {
                             name: "post.postGrade.code",
-                            title: "<spring:message code="post.code"/> : ",
+                            title: "<spring:message code="post.grade.code"/> : ",
                             canEdit: false
                         },
                         {
