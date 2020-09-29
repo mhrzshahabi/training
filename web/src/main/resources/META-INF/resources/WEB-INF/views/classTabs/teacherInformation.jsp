@@ -30,60 +30,66 @@ let classRecord;
     // RestDataSource & ListGrid
     //************************************************************************************
     var RestDataSource_teacherInformation = isc.TrDS.create({
-        fields: [
-
-           {name: "teacher.personality.firstNameFa"},
-           {name: "teacher.personality.lastNameFa"},
-           {name: "teacher.personality.nationalCode"},
-           {name: "teacher.personality.contactInfo.mobile"},
-           {name: "teacher.personality.contactInfo.homeAddress.state.name"},
-           {name: "teacher.personality.contactInfo.homeAddress.city.name"},
-        ]
+         fields: [
+         {name: "personality.firstNameFa"},
+         {name: "personality.lastNameFa"},
+         {name: "personality.nationalCode"},
+         {name: "personality.contactInfo.mobile"},
+         {name: "personality.contactInfo.homeAddress.state.name"},
+         {name: "personality.contactInfo.homeAddress.city.name"},
+         ]
     });
 
-    var ListGrid_teacherInformation = isc.TrLG.create({
-        dataSource: RestDataSource_teacherInformation,
-        contextMenu: Menu_ListGrid_teacherInformation,
-        autoFetchData: true,
-        fields: [
+     var ListGrid_teacherInformation = isc.TrLG.create({
+     dataSource: RestDataSource_teacherInformation,
+     fields: [
+     {
+     name: "personality.firstNameFa",
+     title: "<spring:message code="firstName"/>",
+     align: "center",
+     filterOperator: "iContains",
+     sortNormalizer(record){
+     return record.personality.firstNameFa
+     },
+     },
+     {
+     name: "personality.lastNameFa",
+     title: "<spring:message code="lastName"/>",
+     align: "center",
+     filterOperator: "iContains",
+     sortNormalizer(record){
+     return record.personality.lastNameFa
+     },
+     },
 
-            {name: "teacher.fullName", title: "<spring:message code="teacher"/>", align: "center", filterOperator: "iContains",
-                /*formatCellValue: function (value, record) {
-                                return record.teacher.personality.firstNameFa+" "+record.teacher.personality.lastNameFa
-                }*/
-            },
-            {name: "teacher.personality.contactInfo.mobile", title: "<spring:message code="mobile"/>", align: "center", filterOperator: "iContains",
-                filterEditorProperties: {
-                keyPressFilter: "[0-9]"
-                }
-            },
-            {name: "teacher.personality.nationalCode", title: "<spring:message code="national.code"/>", align: "center", filterOperator: "iContains",
-                filterEditorProperties: {
-                keyPressFilter: "[0-9]"
-                }
-            },
-            {name: "teacher.address", title: "<spring:message code="address"/>", align: "center", filterOperator: "iContains",
-/*                formatCellValue: function (value, record) {
-                   return(value != null ? value +"-"+ record.teacher.personality.contactInfo.homeAddress.city.name+"-"+ record.teacher.personality.contactInfo.homeAddress.restAddr +"-"+ "کد پستی :"+record.teacher.personality.contactInfo.homeAddress.postalCode : "")
-                }*/
-            },
-        ],
-        initialSort: [
-            {property: "teacher.personality.lastNameFa", direction: "ascending"},
-        ],
-        recordDoubleClick: function () {
-
-         
-
-        },
-        showFilterEditor: true,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        filterOnKeypress: true,
-        sortField: 0,
-        sortDirection: "descending",
-
-    });
+     {
+     name: "personality.contactInfo.mobile",
+     title: "<spring:message code="mobile"/>",
+     align: "center",
+     filterOperator: "iContains",
+     filterEditorProperties: {
+     keyPressFilter: "[0-9]"
+     },
+     sortNormalizer(record){
+         let tmp = record.personality?.contactInfo?.mobile;
+         return tmp ? "" : tmp;
+     },
+     },
+     {
+     name: "personality.nationalCode",
+     title: "<spring:message code="national.code"/>",
+     align: "center",
+     filterOperator: "iContains",
+     filterEditorProperties: {
+     keyPressFilter: "[0-9]"
+     },
+     sortNormalizer(record){
+     return record.personality.nationalCode
+     },
+     },
+     ],
+     filterOnKeypress: false,
+     });
     //*************************************************************************************
     //DynamicForm & Window
     //*************************************************************************************
@@ -167,15 +173,16 @@ let classRecord;
     //************************************************************************************
     //function
     //************************************************************************************
-            function  loadPage_teacherInformation() {
-                classRecord = ListGrid_Class_JspClass.getSelectedRecord();
-                if (!(classRecord == undefined || classRecord == null)) {
-                RestDataSource_teacherInformation.fetchDataURL=teacherInformation +"/teacher-information-iscList" + "/"+classRecord.code.split('-')[0];
-                ListGrid_teacherInformation.invalidateCache()
-                ListGrid_teacherInformation.fetchData()
-                }
-                else {
-                ListGrid_teacherInformation.setData([]);
-                }
-                }
+    function  loadPage_teacherInformation() {
+        classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+
+        if (!(classRecord == undefined || classRecord == null)) {
+        RestDataSource_teacherInformation.fetchDataURL=teacherInformation +"/teacher-information-iscList" + "/"+classRecord.course.id;
+        ListGrid_teacherInformation.invalidateCache()
+        ListGrid_teacherInformation.fetchData()
+        }
+        else {
+        ListGrid_teacherInformation.setData([]);
+        }
+    }
 
