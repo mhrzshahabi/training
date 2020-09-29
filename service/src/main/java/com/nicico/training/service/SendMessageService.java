@@ -67,8 +67,7 @@ public class SendMessageService implements ISendMessageService {
         try {
             for (int i = 0; i < cnt; i++) {
                 if (messages.get(i).getMessageContactList().size() == 0) {
-                    messages.get(i).setSendWays(null);
-                    messageDAO.save(messages.get(i));
+                    messageDAO.deleteSendWaysById(messages.get(i).getId());
 
                     messageDAO.deleteById(messages.get(i).getId());
                 }
@@ -77,7 +76,6 @@ public class SendMessageService implements ISendMessageService {
 
         }
 
-
         List<Object> list = messageContactDAO.findAllMessagesForSend(LocalDate.now().toString());
         List<MessageContactDTO.AllMessagesForSend> masterList = new ArrayList<>();
 
@@ -85,7 +83,7 @@ public class SendMessageService implements ISendMessageService {
 
         for (int i = 0; i < cnt; i++) {
             Object[] oList = (Object[]) list.get(i);
-            masterList.add(new MessageContactDTO.AllMessagesForSend(Integer.parseInt(oList[0].toString()), Integer.parseInt(oList[1].toString()), oList[2].toString(), oList[3].toString(), oList[4].toString(), Long.parseLong(oList[5].toString()), Long.parseLong(oList[6].toString()), oList[7].toString(), Long.parseLong(oList[8].toString())));
+            masterList.add(new MessageContactDTO.AllMessagesForSend(Integer.parseInt(oList[0].toString()), Integer.parseInt(oList[1].toString()),/* oList[2].toString(), oList[3].toString(),*/ oList[2].toString(), Long.parseLong(oList[3].toString()), Long.parseLong(oList[4].toString()), oList[5].toString(), Long.parseLong(oList[6].toString())));
         }
 
         for (int i = 0; i < cnt; i++) {
@@ -131,13 +129,10 @@ public class SendMessageService implements ISendMessageService {
             MessageContact messageContact = messageContactDAO.findById(masterList.get(i).getMessageContactId()).orElse(null);
 
             if (messageContact.getCountSent() + 1 >= masterList.get(i).getCountSend()) {
-                messageContactDAO.delete(messageContact);
+                messageParameterDAO.deleteByMCId(messageContact.getId());
+                messageContactDAO.deleteById(messageContact.getId());
             } else {
-                messageContact.setReturnMessageId(messageId);
-                messageContact.setCountSent(messageContact.getCountSent() + 1);
-                messageContact.setLastSentDate(new Date());
-
-                messageContactDAO.save(messageContact);
+                messageContactDAO.updateAfterSendMessage(messageId,(long)(messageContact.getCountSent() + 1),new Date(),messageContact.getId());
             }
         }
     }
