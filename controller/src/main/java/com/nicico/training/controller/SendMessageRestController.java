@@ -155,7 +155,7 @@ public class SendMessageRestController {
             searchRs.getList().forEach(p -> {
                         mobiles.add(p.getPersonality().getContactInfo().getMobile());
                         fullName.add(p.getFullName());
-                        prefixFullName.add(p.getPersonality().getGenderId() == 1 ? "جناب آقای" : (p.getPersonality().getGenderId() == 2 ? "سرکار خانم" : "جناب آقای/سرکار خانم"));
+                        prefixFullName.add(p.getPersonality().getGenderId() == null ? "جناب آقای/سرکار خانم" : p.getPersonality().getGenderId() == 1 ? "جناب آقای" : (p.getPersonality().getGenderId() == 2 ? "سرکار خانم" : "جناب آقای/سرکار خانم"));
                     }
             );
         } /*else if (type.equals("classStudentHaventEvaluation")) {
@@ -226,7 +226,6 @@ public class SendMessageRestController {
             paramValMap.put("prefix-full_name", prefixFullName.get(i));
             paramValMap.put("full-name", fullName.get(i));
             paramValMap.put("course-name", courseName);
-
 
 
             if (type.equals("classStudent")) {

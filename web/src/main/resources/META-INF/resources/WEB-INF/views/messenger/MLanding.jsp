@@ -340,7 +340,8 @@
                         ID: "linkFormMLanding",
                         width: "100%",
                         fields: [
-                            { name: "link", title: "لینک", controlStyle : "inputRTL",cellStyle  : "inputRTL",showRTL :false},
+                            { name: "link", title: "لینک", controlStyle : "inputRTL",cellStyle  : "inputRTL",showRTL :false, validateOnExit: true,
+        validators: [TrValidators.WebsiteValidate],},
                         ]
                     }),
                 ],
@@ -561,7 +562,7 @@
 
     function MSG_sendMsg(html){
 
-        if(linkFormMLanding.getItem('link').required && (!linkFormMLanding.getItem('link').getValue() || linkFormMLanding.getItem('link').getValue().trim() == '')){
+        if(linkFormMLanding.getItem('link').required && (!linkFormMLanding.getItem('link').getValue() || linkFormMLanding.getItem('link').getValue().trim() == '' || !linkFormMLanding.getItem('link').isValid())){
             var ERROR = isc.Dialog.create({
                 message:"لینک را وارد نمایید",
                 icon: "[SKIN]stop.png",
