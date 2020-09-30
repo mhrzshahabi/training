@@ -30,9 +30,9 @@ public class MessageContactDTO {
 
         private Integer countSent;
 
-        private String contextText;
+        /*private String contextText;
 
-        private String contextHtml;
+        private String contextHtml;*/
 
         private String objectMobile;
 
