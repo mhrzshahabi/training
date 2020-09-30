@@ -494,9 +494,7 @@
 
     var ListGrid_teacherInformation_Course = isc.TrLG.create({
         dataSource: RestDataSource_teacherInformation_Course,
-        // autoFetchData: true,
         fields: [
-
             {
                 name: "personality.firstNameFa",
                 title: "<spring:message code="firstName"/>",
@@ -521,12 +519,13 @@
                 title: "<spring:message code="mobile"/>",
                 align: "center",
                 filterOperator: "iContains",
-                sortNormalizer(record){
-                    return record.personality.contactInfo.mobile
-                },
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
-                }
+                },
+                sortNormalizer(record){
+                    let tmp = record.personality?.contactInfo?.mobile;
+                    return tmp ? "" : tmp;
+                },
             },
             {
                 name: "personality.nationalCode",
@@ -536,7 +535,6 @@
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
                 },
-                canSort: false,
                 sortNormalizer(record){
                     return record.personality.nationalCode
                 },
