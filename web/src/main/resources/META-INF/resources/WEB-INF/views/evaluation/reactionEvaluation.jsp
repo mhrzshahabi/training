@@ -160,7 +160,7 @@
         title: "ارسال پیام",
         overflow: "auto",
         width: 900,
-        height: 750,
+        height: 760,
         isModal: false,
         autoDraw: false,
         autoSize: false,
