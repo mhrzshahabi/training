@@ -1,41 +1,27 @@
 package com.nicico.training.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
-import com.nicico.copper.common.dto.grid.TotalResponse;
-import com.nicico.copper.common.dto.search.EOperator;
-import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.dto.*;
+import com.nicico.training.dto.EvaluationDTO;
 import com.nicico.training.iservice.IEvaluationAnalysisService;
-import com.nicico.training.iservice.ITclassService;
-import com.nicico.training.model.*;
-import com.nicico.training.repository.ClassStudentDAO;
-import com.nicico.training.repository.TclassDAO;
-import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.activiti.engine.impl.util.json.JSONObject;
-import org.apache.commons.lang3.StringUtils;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.nio.charset.Charset;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -90,17 +76,17 @@ public class EvaluationAnalysisRestController {
         params.put("FECRGrade", FECRGrade);
 
         if(!FERPass.equalsIgnoreCase(""))
-            params.put("FERPass", Boolean.parseBoolean(FERPass));
+            params.put("FERPass", FERPass);
         else
-            params.put("FERPass", false);
+            params.put("FERPass", "عدم تائید");
         if(!FETPass.equalsIgnoreCase(""))
-            params.put("FETPass", Boolean.parseBoolean(FETPass));
+            params.put("FETPass", FETPass);
         else
-            params.put("FETPass", false);
+            params.put("FETPass", "عدم تائید");
         if(!FECRPass.equalsIgnoreCase(""))
-            params.put("FECRPass", Boolean.parseBoolean(FECRPass));
+            params.put("FECRPass",FECRPass);
         else
-            params.put("FECRPass", false);
+            params.put("FECRPass", "عدم تائید");
 
         params.put("minScore_ER", minScore_ER);
         params.put("minScore_ET", minScore_ET);
