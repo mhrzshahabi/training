@@ -20,7 +20,7 @@ public class Term extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "c_code")
+    @Column(name = "c_code", unique = true, nullable = false)
     private String code;
 
     @Column(name = "c_title_fa",nullable = false)

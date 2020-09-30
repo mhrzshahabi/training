@@ -40,7 +40,7 @@ public class Tclass extends Auditable {
     @Column(name = "n_max_capacity")
     private Long maxCapacity;
 
-    @Column(name = "c_code", nullable = false)
+    @Column(name = "c_code", nullable = false, unique = true)
     private String code;
 
     @Column(name = "c_title_class")

@@ -185,6 +185,15 @@
     <changeSet author="razmnoosh (generated)" id="1598260979293-504">
         <addUniqueConstraint columnNames="n_class, n_skill, n_goal" constraintName="UKr0m0bo09woqpjmo9k7qa5dm3d" tableName="tbl_class_evaluation_goals"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1601381769051-526">
+        <addUniqueConstraint columnNames="c_code" constraintName="UC_TBL_CLASSC_CODE_COL" tableName="tbl_class"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1601381769051-527">
+        <addUniqueConstraint columnNames="c_code" constraintName="UC_TBL_COURSEC_CODE_COL" tableName="tbl_course"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1601381769051-528">
+        <addUniqueConstraint columnNames="c_code" constraintName="UC_TBL_TERMC_CODE_COL" tableName="tbl_term"/>
+    </changeSet>
     <!--<changeSet author="matin_ar (generated)" id="1596019535756-477">-->
         <!--<addUniqueConstraint columnNames="c_title_fa" constraintName="UC_TBL_TRAINING_POSTC_TITLE_FA_COL" tableName="tbl_training_post"/>-->
     <!--</changeSet>-->
