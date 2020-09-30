@@ -17,6 +17,7 @@ import com.nicico.training.iservice.IEvaluationAnalysisService;
 import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.*;
+import com.nicico.training.repository.ClassEvaluationGoalsDAO;
 import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.EvaluationAnalysisDAO;
 import com.nicico.training.repository.TclassDAO;
@@ -48,6 +49,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
     private final ObjectMapper objectMapper;
     private final ClassStudentDAO classStudentDAO;
     private DecimalFormat numberFormat = new DecimalFormat("#.00");
+    private final ClassEvaluationGoalsDAO classEvaluationGoalsDAO;
 
     @Transactional(readOnly = true)
     @Override
@@ -456,31 +458,66 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         List<Map> indicesList = new ArrayList();
         List<Map> behavioralChart = new ArrayList();
         int i = 1;
-        for (Goal goal : tclass.getCourse().getGoalSet()) {
-            Map<String,String> indice = new HashMap<>();
-            indice.put("indicatorEx",goal.getTitleFa());
-            indice.put("indicatorNo", "شاخص " +i);
-            indicesList.add(indice);
 
-            Map<String,Object> behavior = new HashMap<>();
-            behavior.put("behaviorVal",result.getIndicesGrade().get("g"+goal.getId()));
-            behavior.put("behaviorCat","ﺺﺧﺎﺷ " +i);
-            behavioralChart.add(behavior);
+        List<ClassEvaluationGoals> editedGoalList = classEvaluationGoalsDAO.findByClassId(tclass.getId());
+        if(editedGoalList != null && editedGoalList.size() != 0){
+            for (ClassEvaluationGoals classEvaluationGoals : editedGoalList) {
+                if(classEvaluationGoals.getSkillId() != null){
+                    Map<String,String> indice = new HashMap<>();
+                    indice.put("indicatorEx",classEvaluationGoals.getQuestion());
+                    indice.put("indicatorNo", "شاخص " + i);
+                    indicesList.add(indice);
 
-            i++;
+                    Map<String,Object> behavior = new HashMap<>();
+                    behavior.put("behaviorVal",result.getIndicesGrade().get("s"+classEvaluationGoals.getSkillId()));
+                    behavior.put("behaviorCat","ﺺﺧﺎﺷ " + i);
+                    behavioralChart.add(behavior);
+
+                    i++;
+                }
+                if(classEvaluationGoals.getGoalId() != null){
+                    Map<String,String> indice = new HashMap<>();
+                    indice.put("indicatorEx",classEvaluationGoals.getQuestion());
+                    indice.put("indicatorNo", "شاخص " +i);
+                    indicesList.add(indice);
+
+                    Map<String,Object> behavior = new HashMap<>();
+                    behavior.put("behaviorVal",result.getIndicesGrade().get("g"+classEvaluationGoals.getGoalId()));
+                    behavior.put("behaviorCat","ﺺﺧﺎﺷ " +i);
+                    behavioralChart.add(behavior);
+
+                    i++;
+                }
+            }
         }
-        for (Skill skill : tclass.getCourse().getSkillSet()) {
-            Map<String,String> indice = new HashMap<>();
-            indice.put("indicatorEx",skill.getTitleFa());
-            indice.put("indicatorNo", "شاخص " + i);
-            indicesList.add(indice);
+        else{
+            for (Goal goal : tclass.getCourse().getGoalSet()) {
+                Map<String,String> indice = new HashMap<>();
+                indice.put("indicatorEx",goal.getTitleFa());
+                indice.put("indicatorNo", "شاخص " +i);
+                indicesList.add(indice);
 
-            Map<String,Object> behavior = new HashMap<>();
-            behavior.put("behaviorVal",result.getIndicesGrade().get("s"+skill.getId()));
-            behavior.put("behaviorCat","ﺺﺧﺎﺷ " + i);
-            behavioralChart.add(behavior);
+                Map<String,Object> behavior = new HashMap<>();
+                behavior.put("behaviorVal",result.getIndicesGrade().get("g"+goal.getId()));
+                behavior.put("behaviorCat","ﺺﺧﺎﺷ " +i);
+                behavioralChart.add(behavior);
 
-            i++;
+                i++;
+            }
+            for (Skill skill : tclass.getCourse().getSkillSet()) {
+                Map<String,String> indice = new HashMap<>();
+                indice.put("indicatorEx",skill.getTitleFa());
+                indice.put("indicatorNo", "شاخص " + i);
+                indicesList.add(indice);
+
+                Map<String,Object> behavior = new HashMap<>();
+                behavior.put("behaviorVal",result.getIndicesGrade().get("s"+skill.getId()));
+                behavior.put("behaviorCat","ﺺﺧﺎﺷ " + i);
+                behavioralChart.add(behavior);
+
+                i++;
+            }
+
         }
 
         List<Map> behavioralScoreChart = new ArrayList();
@@ -518,6 +555,33 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
     }
 
+    private static String bidiReorder(String text) {
+        PersianCharachtersUnicode unicode = new PersianCharachtersUnicode();
+        String textinverse = "";
+        int k = 0;
+        int i = 0;
+        for(int j= text.length() - 1; j >= 0; j--) {
+            unicode.setCharc(text.charAt(j));
+            k = j + 1;
+            i = j - 1;
+            if(j == text.length() - 1 && PersianCharachtersUnicode.getNextInitial(text.charAt(i)))
+                textinverse += unicode.getIsolatedForm_Unicode();
+            else if(j == text.length() - 1)
+                textinverse += unicode.getFinalForm_Unicode();
+            else if(j == 0)
+                textinverse += unicode.getInitialFom_Unicode();
+            else if(PersianCharachtersUnicode.getPrevInitial(text.charAt(k)) && PersianCharachtersUnicode.getNextInitial(text.charAt(i)))
+                textinverse += unicode.getIsolatedForm_Unicode();
+            else if(PersianCharachtersUnicode.getPrevInitial(text.charAt(k)))
+                textinverse += unicode.getFinalForm_Unicode();
+            else if(PersianCharachtersUnicode.getNextInitial(text.charAt(i)))
+                textinverse += unicode.getInitialFom_Unicode();
+            else
+                textinverse += unicode.getMedialForm_Unicode();
+        }
+
+        return textinverse;
+    }
 
     @Transactional
     @Override
@@ -679,8 +743,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
     @Transactional
     @Override
-    public List<ClassStudentDTO.evaluationAnalysistLearning> getStudentWithOutPreTest(Long id)
-    {
+    public List<ClassStudentDTO.evaluationAnalysistLearning> getStudentWithOutPreTest(Long id) {
         List<ClassStudent> classStudents = classStudentDAO.findByTclassIdAndPreTestScoreIsNull(id);
         return(modelMapper.map(classStudents, new TypeToken<List<ClassStudentDTO.evaluationAnalysistLearning>>() {}.getType()));
     }

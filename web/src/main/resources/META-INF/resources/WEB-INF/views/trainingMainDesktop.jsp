@@ -83,7 +83,7 @@
             return replaceString;
         };
 
-        function groupFilter(title,inputURL,func,isCheck=false,addStudentsInGroupInsert=false, courseId=0){
+        function groupFilter(title,inputURL,func,isCheck=false,addStudentsInGroupInsert=false, courseId=0,withNA=true){
             TabSet_GroupInsert_JspStudent=isc.TabSet.create({
                 ID:"leftTabSet",
                 autoDraw:false,
@@ -430,7 +430,7 @@
                                     for (let index = 0; index < len; index++) {
                                         if(list[index].personnelNo != "" && list[index].personnelNo != null && typeof(list[index].personnelNo) != "undefined")
                                         {
-                                            if (result.filter(function (item) {return item.personnelNo2 == GroupSelectedPersonnelsLG_student.data[index].personnelNo2||item.personnelNo1 == GroupSelectedPersonnelsLG_student.data[index].personnelNo1;}).length==0) {
+                                            if (result.filter(function (item) {return (item.personnelNo2 && item.personnelNo2 == GroupSelectedPersonnelsLG_student.data[index].personnelNo2) || (item.personnelNo1 && item.personnelNo1 == GroupSelectedPersonnelsLG_student.data[index].personnelNo1);}).length==0) {
                                                 result.push(list[index].personnelNo)
                                             }
                                         }
@@ -454,16 +454,22 @@
                 ]
             });
 
-            TabSet_GroupInsert_JspStudent.selectTab(0);
-                GroupSelectedPersonnelsLG_student.discardAllEdits();
-                GroupSelectedPersonnelsLG_student.data.clearAll();
-                /*GroupSelectedPersonnelsLG_student.addData({
-                    nationalCode: ""
-                });*/
+            if(!withNA){
+                GroupSelectedPersonnelsLG_student.getField('isInNA').hidden=true;
+                GroupSelectedPersonnelsLG_student.getField('scoreState').hidden=true;
+            }else{
+                GroupSelectedPersonnelsLG_student.getField('isInNA').hidden=false;
+                GroupSelectedPersonnelsLG_student.getField('scoreState').hidden=false;
+            }
 
-                DynamicForm_GroupInsert_FileUploader_JspStudent.setValue('');
-                DynamicForm_GroupInsert_Textbox_JspStudent.setValue('');
-                ClassStudentWin_student_GroupInsert.show();
+            TabSet_GroupInsert_JspStudent.selectTab(0);
+            GroupSelectedPersonnelsLG_student.discardAllEdits();
+            GroupSelectedPersonnelsLG_student.data.clearAll();
+            /*GroupSelectedPersonnelsLG_student.addData({nationalCode: ""});*/
+
+            DynamicForm_GroupInsert_FileUploader_JspStudent.setValue('');
+            DynamicForm_GroupInsert_Textbox_JspStudent.setValue('');
+            ClassStudentWin_student_GroupInsert.show();
         }
 
         class ExportToFile {
@@ -511,7 +517,7 @@
             }
 
             static getAllData(listGrid, exceptColumn) {
-                let rows = listGrid.data.getAllLoadedRows();
+                let rows = listGrid.getOriginalData().localData.toArray();
                 let result = this.getAllFields(listGrid, exceptColumn);
                 let fields = result.fields;
                 let isValueMaps = result.isValueMap;
@@ -785,7 +791,7 @@
             }
 
             static showDialog(title, listgrid, fileName, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate){
-                let size = listgrid.data.size();
+                let size = listgrid.getOriginalData().size();
                 let maxCount=5000;
 
                 size = Math.min(maxCount,size);
@@ -812,7 +818,7 @@
                             padding: 10,
                             fields: [
                                 {
-                                    title: "سطرهاي موجود: " + listgrid.data.size(),
+                                    title: "سطرهاي موجود: " + listgrid.getOriginalData().size(),
                                     type: 'staticText',
                                     width: "150",
                                     colSpan:2,
@@ -877,7 +883,7 @@
                                     click: function () {
                                         if (trTrim(exportExcelForm.getValue("maxRow")) != "") {
 
-                                            /*if(Number(trTrim(exportExcelForm.getValue("maxRow")))+Number(trTrim(exportExcelForm.getValue("startRow"))) > Number(listgrid.data.size())){
+                                            /*if(Number(trTrim(exportExcelForm.getValue("maxRow")))+Number(trTrim(exportExcelForm.getValue("startRow"))) > Number(listgrid.getOriginalData().size())){
                                                 createDialog("info", "مجمع سطر شروع و تعداد سطر ها در خواستي براي خروجي بيشتر از تعداد کل سطرهاي موجود است");
                                                 return;
                                             }else if(Number(trTrim(exportExcelForm.getValue("maxRow"))) > size){
@@ -909,7 +915,7 @@
             }
 
             static showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate){
-                let size = listgrid.data.size();
+                let size = listgrid.getOriginalData().size();
                 let maxCount=5000;
 
                 size = Math.min(maxCount,size);
@@ -936,7 +942,7 @@
                             padding: 10,
                             fields: [
                                 {
-                                    title: "سطرهاي موجود: " + listgrid.data.size(),
+                                    title: "سطرهاي موجود: " + listgrid.getOriginalData().size(),
                                     type: 'staticText',
                                     width: "150",
                                     colSpan:2,
@@ -1001,7 +1007,7 @@
                                     click: function () {
                                         if (trTrim(exportExcelForm.getValue("maxRow")) != "") {
 
-                                            /*if(Number(trTrim(exportExcelForm.getValue("maxRow")))+Number(trTrim(exportExcelForm.getValue("startRow"))) > Number(listgrid.data.size())){
+                                            /*if(Number(trTrim(exportExcelForm.getValue("maxRow")))+Number(trTrim(exportExcelForm.getValue("startRow"))) > Number(listgrid.getOriginalData().size())){
                                                 createDialog("info", "مجمع سطر شروع و تعداد سطر ها در خواستي براي خروجي بيشتر از تعداد کل سطرهاي موجود است");
                                                 return;
                                             }else if(Number(trTrim(exportExcelForm.getValue("maxRow"))) > size){
@@ -1032,7 +1038,7 @@
 
             static downloadExcel(title, listgrid, fileName, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate,warning){
 
-                if(listgrid.data.localData.length > listgrid.data.getAllLoadedRows().length || listgrid.data.localData.length > 200){
+                if(listgrid.getOriginalData().size() > listgrid.getOriginalData().cachedRows || listgrid.getOriginalData().size() > 200){
 
                     let showDialog=null;
 
@@ -1062,7 +1068,7 @@
 
             static downloadExcelRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate,warning,generateCriteria = false){
 
-                if(listgrid.data.localData.length > listgrid.data.getAllLoadedRows().length || listgrid.data.localData.length > 200){
+                if(listgrid.getOriginalData().size() > listgrid.getOriginalData().cachedRows || listgrid.getOriginalData().size() > 200){
 
                     let showDialog=null;
 
@@ -1172,6 +1178,7 @@
     const workGroupUrl = rootUrl + "/work-group";
     const evaluationUrl = rootUrl + "/evaluation";
     const needsAssessmentReportsUrl = rootUrl + "/needsAssessment-reports";
+    const skillNAUrl = rootUrl + "/skill-na";
     const trainingOverTimeReportUrl = rootUrl + "/trainingOverTime";
     const personnelInformationUrl = rootUrl + "/personnelInformation";
     const unfinishedClasses = rootUrl + "/unfinishedClasses";

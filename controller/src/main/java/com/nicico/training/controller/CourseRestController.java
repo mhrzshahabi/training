@@ -35,6 +35,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import request.course.CourseUpdateRequest;
 import response.course.CourseListResponse;
+import response.course.CourseUpdateResponse;
 import response.course.dto.CourseDto;
 
 import javax.servlet.http.HttpServletRequest;
@@ -56,7 +57,6 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     //------------------------------------------
     private final ReportUtil reportUtil;
     private final CourseService courseService;
-    private final GoalService goalService;
     private final ICourseService iCourseService;
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
@@ -104,10 +104,8 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     @Loggable
     @PostMapping
     //@PreAuthorize("hasAuthority('Course_C')")
-    public ResponseEntity<CourseDto> create(@RequestBody Object req, HttpServletResponse response) {
-        CourseDTO.Create request = (new ModelMapper()).map(req, CourseDTO.Create.class);
-//        return new ResponseEntity<>(courseService.create(create), HttpStatus.CREATED);
-        CourseDto courseInfo = courseService.create(request, response);
+    public ResponseEntity<CourseDto> create(@RequestBody CourseDTO.Create  req, HttpServletResponse response) {
+        CourseDto courseInfo = courseService.create(req, response);
         if (courseInfo != null)
             return new ResponseEntity<>(courseInfo, HttpStatus.CREATED);
         else
@@ -144,7 +142,13 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
 
     @Loggable
     @PutMapping(value = "/{id}")
-    public ResponseEntity<CourseDTO.Info> update(@PathVariable Long id, @RequestBody CourseUpdateRequest request) {
+    public ResponseEntity<CourseUpdateResponse> update(@PathVariable Long id, @RequestBody CourseUpdateRequest request) {
+        if(request.getMainSkills().stream().anyMatch(skill->skill.getSubCategoryId() != request.getSubCategory().getId())){
+            CourseUpdateResponse response = new CourseUpdateResponse();
+            response.setMessage("خطا: زیرگروه اهداف اصلی با زیرگروه دوره همخوانی ندارد!");
+            response.setStatus(409);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
         return new ResponseEntity<>(courseService.update(beanMapper.updateCourse(request,
                 courseService.getCourse(id)), request.getMainSkills().stream().map(SkillDto::getId)
                 .collect(Collectors.toList())), HttpStatus.OK);
@@ -156,14 +160,8 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
         boolean check = courseService.checkForDelete(id);
         if (check) {
-            List<GoalDTO.Info> goals = courseService.getGoal(id);
-            goals.forEach(g -> goalService.delete(g.getId()));
-            courseService.deletGoal(id);
-            courseService.unAssignSkills(id);
             courseService.delete(id);
         }
-
-        // courseService.delete(id);
         return new ResponseEntity<>(check, HttpStatus.OK);
     }
 
@@ -187,6 +185,18 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
                                                        @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
+        if(sortBy != null) {
+            switch (sortBy) {
+                case "duration":
+                    sortBy = "theoryDuration";
+                    break;
+                case "-duration":
+                    sortBy = "-theoryDuration";
+                    break;
+            }
+        }
+
+
         SearchDTO.CriteriaRq criteriaRq;
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
             criteria = "[" + criteria + "]";
@@ -195,6 +205,18 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
                     .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
             request.setCriteria(criteriaRq);
+
+
+            if (request.getCriteria() != null && request.getCriteria().getCriteria() != null)
+            {
+                for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
+                    if(criterion.getFieldName()!=null) {
+                        if (criterion.getFieldName().equals("duration")) {
+                            criterion.setFieldName("theoryDuration");
+                        }
+                    }
+                }
+            }
         }
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);

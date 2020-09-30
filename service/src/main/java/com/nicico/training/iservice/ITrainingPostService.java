@@ -3,7 +3,6 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PostDTO;
-import com.nicico.training.dto.TrainingPlaceDTO;
 import com.nicico.training.dto.TrainingPostDTO;
 
 import javax.servlet.http.HttpServletResponse;
@@ -31,5 +30,5 @@ public interface ITrainingPostService {
 
     TrainingPostDTO update(Long id,TrainingPostDTO.Update update, HttpServletResponse response) throws IOException;
 
-    void delete (Long id);
+    boolean delete (Long id);
 }

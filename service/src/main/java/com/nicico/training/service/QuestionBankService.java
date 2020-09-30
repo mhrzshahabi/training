@@ -46,6 +46,20 @@ public class QuestionBankService implements IQuestionBankService {
 
     @Transactional(readOnly = true)
     @Override
+    public boolean isExist(Long id) {
+        QuestionBank tmp = getById(id);
+        return tmp == null ? false : tmp.getQuestionBankTestQuestion().size() > 0;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public QuestionBank getById(Long id) {
+        return questionBankDAO.findById(id).orElse(null);
+    }
+
+
+    @Transactional(readOnly = true)
+    @Override
     public QuestionBankDTO.FullInfo get(Long id) {
 
         final Optional<QuestionBank> cById = questionBankDAO.findById(id);
@@ -69,8 +83,8 @@ public class QuestionBankService implements IQuestionBankService {
         final QuestionBank model = modelMapper.map(request, QuestionBank.class);
         Integer codeId = questionBankDAO.getLastCodeId();
 
-        if(codeId != null)
-            model.setCodeId(codeId+1);
+        if (codeId != null)
+            model.setCodeId(codeId + 1);
         else
             model.setCodeId(1);
         model.setCode(model.getCodeId().toString());
@@ -105,15 +119,14 @@ public class QuestionBankService implements IQuestionBankService {
     }
 
 
-
     private QuestionBankDTO.Info save(QuestionBank tclass) {
         final QuestionBank saved = questionBankDAO.saveAndFlush(tclass);
         return modelMapper.map(saved, QuestionBankDTO.Info.class);
     }
 
     public Integer getMaxId() {
-        Integer maxId =  questionBankDAO.getLastCodeId();
-        if(maxId != null)
+        Integer maxId = questionBankDAO.getLastCodeId();
+        if (maxId != null)
             return maxId + 1;
         return 1;
     }

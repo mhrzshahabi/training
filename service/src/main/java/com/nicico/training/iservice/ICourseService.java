@@ -3,13 +3,12 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
 import com.nicico.training.model.Course;
-import com.nicico.training.model.Skill;
 import org.springframework.transaction.annotation.Transactional;
+import response.course.CourseUpdateResponse;
 import response.course.dto.CourseDto;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 
 public interface ICourseService {
@@ -40,7 +39,7 @@ public interface ICourseService {
 
     CourseDto create(CourseDTO.Create request, HttpServletResponse response);
 
-    CourseDTO.Info update(Course course, List<Long> skillIds);
+    CourseUpdateResponse update(Course course, List<Long> skillIds);
 
     void delete(Long id);
 

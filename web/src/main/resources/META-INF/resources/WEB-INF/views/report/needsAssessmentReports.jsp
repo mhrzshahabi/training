@@ -9,7 +9,7 @@
 
     $(document).ready(()=>{
         let nameTab=mainTabSet.tabs[mainTabSet.selectedTab].title;
-        if (nameTab=="اطلاعات پرسنل"){
+        if (nameTab=="اطلاعات پرسنل" || nameTab=="کلاس"){
             hideRadioButtons=true;
 
             [...Array(3).keys()].slice(1).forEach(idx=> {
@@ -19,14 +19,17 @@
         }
         else if (nameTab=="گزارشات نیازسنجی"){
             [...Array(4).keys()].slice(1).forEach(idx=> {
-                ReportTypeDF_NABOP.getItem("reportType").getItem(idx).setDisabled(false);
-                ReportTypeDF_NABOP.getItem("personnelId").show();
+                if (ReportTypeDF_NABOP.getItem("reportType").getItem(idx)) {
+                    ReportTypeDF_NABOP.getItem("reportType").getItem(idx).setDisabled(false);
+                    ReportTypeDF_NABOP.getItem("personnelId").show();
+                }
             });
             hideRadioButtons=false;
         }
     });
     ////////////////////////////////////
 
+    let titleReportExcel;
     var postCode_NABOP = null;
     var passedStatusId_NABOP = 216;
     var priorities_NABOP;
@@ -98,13 +101,7 @@
             {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {
-                name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",
-                formatCellValue: function (value, record) {
-                    let newVal = value == undefined ? "فعال" : "غیر فعال";
-                    return newVal;
-                }
-            },
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, filterOnKeypress: true,valueMap:{74 : "غیر فعال"}}
         ],
         fetchDataURL: viewTrainingPostUrl + "/iscList"
     });
@@ -115,8 +112,8 @@
             {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار"},filterOnKeypress: true},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postGradeTitleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -128,13 +125,7 @@
             {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {
-                name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",
-                formatCellValue: function (value, record) {
-                    let newVal = value == undefined ? "فعال" : "غیر فعال";
-                    return newVal;
-                }
-            },
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, filterOnKeypress: true,valueMap:{74 : "غیر فعال"}}
         ],
         fetchDataURL: viewPostUrl + "/iscList"
     });
@@ -150,6 +141,7 @@
                 {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
                 {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
                 {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+                {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, filterOnKeypress: true,valueMap:{74 : "غیر فعال"}}
             ],
         fetchDataURL: viewPostGroupUrl + "/iscList"
     });
@@ -166,13 +158,7 @@
                 {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
                 {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
                 {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
-                {
-                    name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",
-                    formatCellValue: function (value, record) {
-                        let newVal = value == undefined ? "فعال" : "غیر فعال";
-                        return newVal;
-                    }
-                },
+                {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, filterOnKeypress: true,valueMap:{74 : "غیر فعال"}}
             ],
         fetchDataURL: viewJobUrl + "/iscList"
     });
@@ -188,6 +174,7 @@
                 {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
                 {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
                 {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+                {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, filterOnKeypress: true,valueMap:{74 : "غیر فعال"}}
             ],
         fetchDataURL: viewJobGroupUrl + "/iscList"
     });
@@ -203,13 +190,7 @@
             {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {
-                name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",
-                formatCellValue: function (value, record) {
-                    let newVal = value == undefined ? "فعال" : "غیر فعال";
-                    return newVal;
-                }
-            },
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, filterOnKeypress: true,valueMap:{74 : "غیر فعال"}}
         ],
         fetchDataURL: viewPostGradeUrl + "/iscList"
     });
@@ -224,6 +205,7 @@
             {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, filterOnKeypress: true,valueMap:{74 : "غیر فعال"}}
         ],
         fetchDataURL: viewPostGradeGroupUrl + "/iscList"
     });
@@ -626,9 +608,10 @@
 
     ReportTypeDF_NABOP = isc.DynamicForm.create({
         numCols: 3,
-        padding: 10,
+        padding: 5,
         titleAlign: "left",
         styleName: "teacher-form",
+        colWidths: ["10%", "5%", "85%"],
         fields: [
             {
                 name: "reportType",
@@ -882,10 +865,15 @@
                 click: function () {
                     let result = ExportToFile.getAllFields(CoursesLG_NABOP);
                     let fields = result.fields;
+
                     fields.splice(1, 0, { title: "نوع نیازسنجی", name: "needsAssessmentPriorityId" });
                     let isValueMaps = result.isValueMap;
                     isValueMaps.splice(1, 0, false);
                     let rows = CourseDS_NABOP.getCacheData();
+
+                    if (!rows) //bug fix
+                        return;
+
                     rows.sort(function(a, b){return b.needsAssessmentPriorityId - a.needsAssessmentPriorityId});
                     let pi = PriorityDS_NABOP.getCacheData();
                     let data = [];
@@ -902,7 +890,9 @@
                             }
                         }
                     }
-                    ExportToFile.exportToExcelFromClient(result.fields, data, '', ReportTypeDF_NABOP.getField("reportType").valueMap[reportType_NABOP]);
+
+                    if (CoursesLG_NABOP.data.size()>1)
+                        ExportToFile.exportToExcelFromClient(result.fields, data, titleReportExcel, ReportTypeDF_NABOP.getField("reportType").valueMap[reportType_NABOP]);
                 }
             })
         ]
@@ -915,17 +905,18 @@
         membersMargin: 5,
         members:
             [
+                ToolStripButton_Refresh_NABOP,
                 ToolStripButton_ShowChart_NABOP,
                 ToolStripButton_Print_NABOP,
                 ToolStrip_NA_Report_Export2EXcel,
-                isc.ToolStrip.create({
-                    width: "100%",
-                    align: "left",
-                    border: '0px',
-                    members: [
-                        ToolStripButton_Refresh_NABOP
-                    ]
-                })
+                // isc.ToolStrip.create({
+                //     width: "100%",
+                //     align: "left",
+                //     border: '0px',
+                //     members: [
+                //         ToolStripButton_Refresh_NABOP
+                //     ]
+                // })
             ]
     });
 
@@ -1098,6 +1089,14 @@
         chartData_NABOP.forEach(value1 => value1.duration=0);
         switch (reportType_NABOP) {
             case "0":
+                titleReportExcel="<spring:message code='needsAssessmentReport'/> " + "<spring:message code='Mrs/Mr'/> " +
+                     selectedPerson_NABOP.firstName+ " " + selectedPerson_NABOP.lastName +
+                    " <spring:message code='national.code'/> " + selectedPerson_NABOP.nationalCode +
+                    " <spring:message code='in.post'/> " + selectedPerson_NABOP.postTitle +
+                    " <spring:message code='post.code'/> " + selectedPerson_NABOP.postCode +
+                    " <spring:message code='area'/> " + selectedPerson_NABOP.ccpArea +
+                    " <spring:message code='affairs'/> " + selectedPerson_NABOP.ccpAffairs
+
                 CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + selectedObject_NABOP.id + "&personnelId=" + selectedPerson_NABOP.id + "&objectType=Post";
                 DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport'/> " + "<spring:message code='Mrs/Mr'/> " +
                     getFormulaMessage(selectedPerson_NABOP.firstName, 2, "red", "b") + " " + getFormulaMessage(selectedPerson_NABOP.lastName, 2, "red", "b") +
@@ -1110,6 +1109,7 @@
                 refreshLG_NABOP(CourseDS_NABOP);
                 break;
             case "1":
+                titleReportExcel="<spring:message code='needsAssessmentReport'/> " + Tabset_Object_NABOP.getSelectedTab().title + " " + selectedObject_NABOP.titleFa;
                 CourseDS_NABOP.fetchDataURL = needsAssessmentReportsUrl + "?objectId=" + selectedObject_NABOP.id + "&objectType=" + Tabset_Object_NABOP.getSelectedTab().name;
                 DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport'/> " +
                     Tabset_Object_NABOP.getSelectedTab().title + " " + getFormulaMessage(selectedObject_NABOP.titleFa, 2, "red", "b");
@@ -1125,8 +1125,12 @@
                 let nationalCode = selectedPerson_NABOP != null ? " <spring:message code='national.code'/> " + getFormulaMessage(selectedPerson_NABOP.nationalCode, 2, "red", "b") : "";
                 let postName = selectedObject_NABOP != null ? " <spring:message code='in.post'/> " + getFormulaMessage(selectedObject_NABOP.titleFa, 2, "red", "b") : getFormulaMessage("...", 2, "red", "b");
                 let postCode = selectedObject_NABOP != null ? " <spring:message code='post.code'/> " + getFormulaMessage(selectedObject_NABOP.code, 2, "red", "b") : "";
-                let area = selectedObject_NABOP != null ? " <spring:message code='area'/> " + getFormulaMessage(selectedObject_NABOP.area, 2, "red", "b") : "";
-                let affairs = selectedObject_NABOP != null ? " <spring:message code='affairs'/> " + getFormulaMessage(selectedObject_NABOP.affairs, 2, "red", "b") : "";
+                let area = selectedObject_NABOP != null ? " <spring:message code='area'/> " + getFormulaMessage(selectedObject_NABOP.area ? selectedObject_NABOP.area: "", 2, "red", "b") : "";
+                let affairs = selectedObject_NABOP != null ? " <spring:message code='affairs'/> " + getFormulaMessage(selectedObject_NABOP.affairs ? selectedObject_NABOP.affairs : "", 2, "red", "b") : "";
+
+                if (selectedObject_NABOP && selectedPerson_NABOP)
+                    titleReportExcel="<spring:message code='needsAssessmentReport.job.promotion'/> " + "<spring:message code='Mrs/Mr'/> " +  selectedPerson_NABOP.firstName + " " + selectedPerson_NABOP.lastName + " <spring:message code='national.code'/>"  + selectedPerson_NABOP.nationalCode + " <spring:message code='in.post'/> " +  selectedObject_NABOP.titleFa + " <spring:message code='post.code'/> " + selectedObject_NABOP.code + " <spring:message code='area'/> " + selectedObject_NABOP.area + " <spring:message code='affairs'/> " + selectedObject_NABOP.affairs;
+
                 DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport.job.promotion'/> " + "<spring:message code='Mrs/Mr'/> " + personName + nationalCode + postName + postCode + area + affairs;
                 DynamicForm_Title_NABOP.getItem("Title_NASB").redraw();
         }

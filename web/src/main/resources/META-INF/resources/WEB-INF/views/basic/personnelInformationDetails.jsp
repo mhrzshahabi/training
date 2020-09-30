@@ -23,45 +23,55 @@
                     let nationalCode = selectedPersonnel.nationalCode;
 
                     if (this.PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_Info") {
-                        //console.log(personnelNo,this.nationalCode_Info,this.personnelNo_Info,personnelNo,nationalCode);
+                        //console.log(personnelNo,this.nationalCode_Info,nationalCode,this.personnelNo_Info,personnelNo);
 
-                        if (personnelNo !== null && (this.nationalCode_Info === nationalCode || this.personnelNo_Info === personnelNo)) {
+                        if (personnelNo !== null && ((this.nationalCode_Info && this.nationalCode_Info === nationalCode) || (this.personnelNo_Info && this.personnelNo_Info === personnelNo))) {
                             this.DynamicForm_PersonnelInfo.editRecord(this.tempPersonnel);
                         } else if (personnelNo !== null && (this.nationalCode_Info !== nationalCode || this.personnelNo_Info !== personnelNo)) {
                             this.DynamicForm_PersonnelInfo.clearValues();
                             this.nationalCode_Info = nationalCode;
                             this.personnelNo_Info = personnelNo;
                             me=this;
-                            isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byPersonnelNo/" + personnelId +"/"+ personnelNo, "GET", null, function (resp) {
+                            let personnelType=0;
 
-                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                            let tab = mainTabSet.tabs[mainTabSet.selectedTab];
+                            if (tab.title == '<spring:message code="personnel.information"/>') {
+                                personnelType=PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel" ? 1 : 2;
+                            }
 
-                                    let currentPersonnel = JSON.parse(resp.data);
+                            isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/findPersonnel/" + personnelType + "/" + personnelId + "/" + (nationalCode??' ') + "/" + personnelNo, "GET", null, function (resp) {
 
-                                    currentPersonnel.fullName =
-                                        (currentPersonnel.firstName !== undefined ? currentPersonnel.firstName : "")
-                                        + " " +
-                                        (currentPersonnel.lastName !== undefined ? currentPersonnel.lastName : "");
+                                if(generalGetResp(resp)){
+                                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
-                                    currentPersonnel.birth =
-                                        (currentPersonnel.birthDate !== undefined ? currentPersonnel.birthDate : "")
-                                        + " - " +
-                                        (currentPersonnel.birthPlace !== undefined ? currentPersonnel.birthPlace : "");
+                                        let currentPersonnel = JSON.parse(resp.data);
 
-                                    currentPersonnel.educationLevelTitle =
-                                        (currentPersonnel.educationLevelTitle !== undefined ? currentPersonnel.educationLevelTitle : "")
-                                        + " / " +
-                                        (currentPersonnel.educationMajorTitle !== undefined ? currentPersonnel.educationMajorTitle : "");
+                                        currentPersonnel.fullName =
+                                            (currentPersonnel.firstName !== undefined ? currentPersonnel.firstName : "")
+                                            + " " +
+                                            (currentPersonnel.lastName !== undefined ? currentPersonnel.lastName : "");
 
-                                    currentPersonnel.gender =
-                                        (currentPersonnel.gender !== undefined ? currentPersonnel.gender : "")
-                                        + " - " +
-                                        (currentPersonnel.maritalStatusTitle !== undefined ? currentPersonnel.maritalStatusTitle : "");
+                                        currentPersonnel.birth =
+                                            (currentPersonnel.birthDate !== undefined ? currentPersonnel.birthDate : "")
+                                            + " - " +
+                                            (currentPersonnel.birthPlace !== undefined ? currentPersonnel.birthPlace : "");
 
-                                    me.tempPersonnel = currentPersonnel;
-                                    me.DynamicForm_PersonnelInfo.editRecord(currentPersonnel);
+                                        currentPersonnel.educationLevelTitle =
+                                            (currentPersonnel.educationLevelTitle !== undefined ? currentPersonnel.educationLevelTitle : "")
+                                            + " / " +
+                                            (currentPersonnel.educationMajorTitle !== undefined ? currentPersonnel.educationMajorTitle : "");
+
+                                        currentPersonnel.gender =
+                                            (currentPersonnel.gender !== undefined ? currentPersonnel.gender : "")
+                                            + " - " +
+                                            (currentPersonnel.maritalStatusTitle !== undefined ? currentPersonnel.maritalStatusTitle : "");
+
+                                        me.tempPersonnel = currentPersonnel;
+                                        me.DynamicForm_PersonnelInfo.editRecord(currentPersonnel);
+                                    }else if(resp.httpResponseCode === 404){
+                                        createDialog('info',"اطلاعات فرد مورد نظر در سيستم موجود نمي باشد.");
+                                    }
                                 }
-
                             }));
                         }
                     } else if (this.PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_Training") {
@@ -185,10 +195,58 @@
                 }
             }
 
-            this.exportToExcel=function exportToExcel(){
-                ExportToFile.downloadExcelFromClient(this.ListGrid_PersonnelTraining, PersonnelInfoListGrid_PersonnelList, '', "اطلاعات پرسنل - آموزش ها");
-            }
+            this.exportToExcel=function exportToExcel() {
+                let nationalCode = null;
+                let personnelNo = null;
+                let restUrl = null;
+                //ExportToFile.downloadExcelFromClient(this.ListGrid_PersonnelTraining, PersonnelInfoListGrid_PersonnelList, '', "اطلاعات پرسنل - آموزش ها");
+                let tab = mainTabSet.tabs[mainTabSet.selectedTab];
+                if (tab.title == '<spring:message code="personnel.information"/>') {
+                    nationalCode = PersonnelInfoListGrid_PersonnelList.getSelectedRecord().nationalCode;
+                    personnelNo = PersonnelInfoListGrid_PersonnelList.getSelectedRecord().personnelNo;
+                    restUrl = classUrl + "personnel-training/" + nationalCode + "/" + personnelNo;
+                    ExportToFile.downloadExcelRestUrl(null, this.ListGrid_PersonnelTraining, restUrl, 0, PersonnelInfoListGrid_PersonnelList, '', "اطلاعات پرسنل - آموزش ها", this.ListGrid_PersonnelTraining.getCriteria(), null);
 
+                } else if (tab.title == '<spring:message code="class"/>') {
+                    let fName = null;
+                    let lName = null;
+                    let personnelNo2 = null;
+                    let titr = null;
+                    let PageName = null;
+                    if(StudentsLG_student) {
+                        if ((( SelectedPersonnelsLG_student && listGridType == "SelectedPersonnelsLG_student" )
+                            ||(PersonnelsLG_student && listGridType == "PersonnelsLG_student")
+                            ||(PersonnelsRegLG_student && listGridType == "PersonnelsRegLG_student"))
+                            && Object.keys(selectedRow).length != 0) {
+                            fName = selectedRow.firstName;
+                            lName = selectedRow.lastName;
+                            nationalCode = selectedRow.nationalCode;
+                            personnelNo = selectedRow.personnelNo;
+                            personnelNo2 = selectedRow.personnelNo2;
+                            if(listGridType == "SelectedPersonnelsLG_student")
+                                PageName = "کلاس - فراگیر - افزودن فراگیر - افراد انتخاب شده - آموزش ها";
+                            else
+                                PageName = "کلاس - فراگیر - افزودن فراگیر - همه افراد - آموزش ها";
+                        } else if(StudentsLG_student.getSelectedRecord() !== null) {
+                            fName = StudentsLG_student.getSelectedRecord().student.firstName;
+                            lName = StudentsLG_student.getSelectedRecord().student.lastName;
+                            nationalCode = StudentsLG_student.getSelectedRecord().student.nationalCode;
+                            personnelNo = StudentsLG_student.getSelectedRecord().student.personnelNo;
+                            personnelNo2 = StudentsLG_student.getSelectedRecord().student.personnelNo2;
+                            PageName = "کلاس - فراگیر - آموزش ها";
+                        }
+                        fName = fName ? "نام فراگیر: " + fName : "";
+                        lName = lName ? "   نام خانوداگی فراگیر: " + lName: "";
+                        nationalCode =  nationalCode ? "   کد ملی: " + nationalCode: "";
+                        personnelNo = personnelNo ?  "   شماره پرسنلی: " + personnelNo : "";
+                        personnelNo2 =  personnelNo2 ?  "   پرسنلی 6 رقمی: " + personnelNo2 : "";
+                        titr = fName+lName+nationalCode+personnelNo+personnelNo2;
+                        restUrl = classUrl + "personnel-training/" + nationalCode + "/" + personnelNo;
+                        ExportToFile.downloadExcelRestUrl(null, this.ListGrid_PersonnelTraining, restUrl, 0, null, titr, PageName, this.ListGrid_PersonnelTraining.getCriteria(), null);
+
+                    }
+                }
+            }
             this.tabSelectedPersonnelInfo_Tab=function tabSelectedPersonnelInfo_Tab(){
                 let tab = mainTabSet.tabs[mainTabSet.selectedTab];
                 if (tab.title == '<spring:message code="personnel.information"/>') {

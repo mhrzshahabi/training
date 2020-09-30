@@ -79,7 +79,6 @@
             {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
-
         ],
         fetchDataURL: viewTrainingPostUrl + "/spec-list"
     });
@@ -160,26 +159,10 @@
             {name: "id", primaryKey: true},
             {name: "code", title: "<spring:message code="skill.code"/>", filterOperator: "iContains"},
             {name: "titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: true},
-            <%--{name: "category.titleFa", title: "<spring:message code="category"/>", filterOperator: "iContains"},--%>
-            <%--{name: "subCategory.titleFa", title: "<spring:message code="subcategory"/>", filterOperator: "iContains"},--%>
-            <%--{name: "skillLevel.titleFa", title: "<spring:message code="skill.level"/>", filterOperator: "iContains"},--%>
             {name: "course.titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
             {name: "course.code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: true},
             {name: "course.theoryDuration", title: "<spring:message code="duration"/>", filterOperator: "iContains"}
-            <%--{name: "scoringMethod"},--%>
-            <%--{name: "acceptancelimit"},--%>
-            <%--{name: "startEvaluation"},--%>
-            <%--{--%>
-                <%--name: "code",--%>
-                <%--title: "<spring:message code="course.code"/>",--%>
-                <%--filterOperator: "iContains",--%>
-                <%--autoFitWidth: true--%>
-            <%--},--%>
-            <%--{name: "titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},--%>
-            <%--{name: "createdBy", title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},--%>
-            <%--{name: "theoryDuration"},--%>
-            <%--{name: "categoryId"},--%>
-            // {name: "subCategoryId"},
+
         ],
         fetchDataURL: skillUrl + "/WFC/spec-list"
 
@@ -230,7 +213,10 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains",},
+            {name: "competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains"},
+            {name: "categoryId", title: "گروه"},
+            {name: "subCategoryId", title: "زیرگروه"},
+            {name: "code", title:"کد"}
         ],
         testData: competenceData,
         // fetchDataURL: competenceUrl + "/iscList",
@@ -243,9 +229,12 @@
                 showHover:true,
                 canEdit: false,
                 hoverWidth: 250,
-                    hoverHTML(record) {
-                        return record.course ? "نام مهارت: " + record.titleFa + "<br>" + "نام دوره: " + record.course.titleFa + "<br>" + "کد دوره: " + record.course.code : "نام مهارت: " + record.titleFa;
-                    },
+                hoverHTML(record) {
+                    return (record.mainWorkflowStatus !== undefined ? record.mainWorkflowStatus : getFormulaMessage("به گردش کار ارسال نشده است", "2", "orange", "b")) + "<br>" +
+                        (record.course ?
+                        "نام مهارت: " + record.titleFa + "<br>" + "نام دوره: " + record.course.titleFa + "<br>" + "کد دوره: " + record.course.code :
+                        "نام مهارت: " + record.titleFa);
+                },
             },
             {name: "needsAssessmentPriorityId", title: "<spring:message code="priority"/>", filterOperator: "iContains", autoFitWidth:true},
             {name: "needsAssessmentDomainId", filterOperator: "iContains", hidden:true},
@@ -269,6 +258,8 @@
             {name: "objectName"},
             {name: "objectCode"},
             {name: "course"},
+            {name: "skill"},
+            {name: "mainWorkflowStatus"},
             {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, autoFitWidth:true,
                 showHover:true,
                 hoverWidth: 200,
@@ -308,27 +299,27 @@
         ]
     });
     let buttonSendToWorkFlow = isc.ToolStripButtonCreate.create({
-            title: "ارسال به گردش کار",
-            click: function () {
-                sendNeedsAssessmentToWorkflow();
-            }
-        });
+        title: "ارسال به گردش کار",
+        click: function () {
+            sendNeedsAssessmentToWorkflow();
+        }
+    });
     let buttonChangeCancel = isc.ToolStripButtonRemove.create({
-            ID: "CancelChange_JspENA",
-            title: "بازخوانی / لغو تغییرات",
-            click: function () {
-                let id = DynamicForm_JspEditNeedsAssessment.getValue("objectId");
-                let type = DynamicForm_JspEditNeedsAssessment.getValue("objectType");
-                wait.show();
-                isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/rollBack/" + type + "/" + id, "PUT", null, (resp)=>{
-                    wait.close();
-                    if(resp.httpResponseCode === 200){
-                        hasChanged = false;
-                        editNeedsAssessmentRecord(id, type);
-                    }
-                }));
-            }
-        });
+        ID: "CancelChange_JspENA",
+        title: "بازخوانی / لغو تغییرات",
+        click: function () {
+            let id = DynamicForm_JspEditNeedsAssessment.getValue("objectId");
+            let type = DynamicForm_JspEditNeedsAssessment.getValue("objectType");
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/rollBack/" + type + "/" + id, "PUT", null, (resp)=>{
+                wait.close();
+                if(resp.httpResponseCode === 200){
+                    hasChanged = false;
+                    editNeedsAssessmentRecord(id, type);
+                }
+            }));
+        }
+    });
     let ToolStrip_JspNeedsAssessment = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -440,34 +431,34 @@
         baseStyle: "toolStripButton",
         // borderRadius: 5,
         click(){
-           if(ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecord()||ListGrid_Ability_JspNeedsAssessment.getSelectedRecord()||ListGrid_Attitude_JspNeedsAssessment.getSelectedRecord()||ListGrid_SkillAll_JspNeedsAssessment.getSelectedRecord()){
-               let skillIds = [];
-               if(ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecord()!= undefined && ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecord().course != undefined) {
-                   skillIds.push(ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecord().skillId);
-               }
-               if(ListGrid_Ability_JspNeedsAssessment.getSelectedRecord()!= undefined && ListGrid_Ability_JspNeedsAssessment.getSelectedRecord().course!= undefined) {
-                   skillIds.push(ListGrid_Ability_JspNeedsAssessment.getSelectedRecord().skillId);
-               }
-               if(ListGrid_Attitude_JspNeedsAssessment.getSelectedRecord()!= undefined && ListGrid_Attitude_JspNeedsAssessment.getSelectedRecord().course!= undefined) {
-                   skillIds.push(ListGrid_Attitude_JspNeedsAssessment.getSelectedRecord().skillId);
-               }
-               if(ListGrid_SkillAll_JspNeedsAssessment.getSelectedRecord()!= undefined && ListGrid_SkillAll_JspNeedsAssessment.getSelectedRecord().course!= undefined) {
-                   skillIds.push(ListGrid_SkillAll_JspNeedsAssessment.getSelectedRecord().id);
-               }
-               if(skillIds.length == 0){
-                   createDialog("info", "مهارت های انتخاب شده بدون دوره هستند.");
-                   return;
-               }
-               let criteria = {
-                   _constructor: "AdvancedCriteria",
-                   operator: "and",
-                   criteria: [{fieldName: "id", operator: "inSet", value: skillIds}]
-               };
-               Window_CourseDetail_JspENA.show(criteria);
-           }
-           else{
-               createDialog("info", "مهارتی انتخاب نشده است")
-           }
+            if(ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecord()||ListGrid_Ability_JspNeedsAssessment.getSelectedRecord()||ListGrid_Attitude_JspNeedsAssessment.getSelectedRecord()||ListGrid_SkillAll_JspNeedsAssessment.getSelectedRecord()){
+                let skillIds = [];
+                if(ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecord()!= undefined && ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecord().course != undefined) {
+                    skillIds.push(ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecord().skillId);
+                }
+                if(ListGrid_Ability_JspNeedsAssessment.getSelectedRecord()!= undefined && ListGrid_Ability_JspNeedsAssessment.getSelectedRecord().course!= undefined) {
+                    skillIds.push(ListGrid_Ability_JspNeedsAssessment.getSelectedRecord().skillId);
+                }
+                if(ListGrid_Attitude_JspNeedsAssessment.getSelectedRecord()!= undefined && ListGrid_Attitude_JspNeedsAssessment.getSelectedRecord().course!= undefined) {
+                    skillIds.push(ListGrid_Attitude_JspNeedsAssessment.getSelectedRecord().skillId);
+                }
+                if(ListGrid_SkillAll_JspNeedsAssessment.getSelectedRecord()!= undefined && ListGrid_SkillAll_JspNeedsAssessment.getSelectedRecord().course!= undefined) {
+                    skillIds.push(ListGrid_SkillAll_JspNeedsAssessment.getSelectedRecord().id);
+                }
+                if(skillIds.length == 0){
+                    createDialog("info", "مهارت های انتخاب شده بدون دوره هستند.");
+                    return;
+                }
+                let criteria = {
+                    _constructor: "AdvancedCriteria",
+                    operator: "and",
+                    criteria: [{fieldName: "id", operator: "inSet", value: skillIds}]
+                };
+                Window_CourseDetail_JspENA.show(criteria);
+            }
+            else{
+                createDialog("info", "مهارتی انتخاب نشده است")
+            }
         }
     });
 
@@ -479,6 +470,7 @@
         }
     });
 
+    let oldCourseRecord = {};
     let Menu_ListGrid_JspENA = isc.Menu.create({
         data: [
             {
@@ -649,17 +641,32 @@
                     if(selectedRecord.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")) {
                         let Window_AddCourse_JspENA = isc.Window.create({
                             title: "<spring:message code="course.plural.list"/>",
-                            placement: "fillScreen",
+                            // placement: "fillScreen",
+                            width: "40%",
+                            height: "50%",
                             minWidth: 1024,
                             keepInParentRect: true,
                             autoSize: false,
-
                             show() {
-                                ListGrid_AddCourse_JspENA.invalidateCache();
-                                ListGrid_AddCourse_JspENA.fetchData();
-                                if(selectedRecord.course !== undefined){
-                                    ListGrid_AddCourse_JspENA.setCriteria({id: selectedRecord.course.id});
+                                let cr = {
+                                    _constructor: "AdvancedCriteria",
+                                    operator: "and",
+                                    criteria: [
+                                        {fieldName: "categoryId", operator: "equals", value: selectedRecord.skill.categoryId},
+                                        {fieldName: "subCategoryId", operator: "equals", value: selectedRecord.skill.subCategoryId},
+                                    ]
                                 }
+
+                                ListGrid_AddCourse_JspENA.setImplicitCriteria(cr);
+                                ListGrid_AddCourse_JspENA.invalidateCache();
+                                ListGrid_AddCourse_JspENA.fetchData(null, ()=>{
+                                    if(selectedRecord.skill.courseId !== undefined){
+                                        oldCourseRecord = ListGrid_AddCourse_JspENA.getData().localData.toArray().find(a=>a.id===selectedRecord.skill.courseId);
+                                        if(oldCourseRecord != null) {
+                                            ListGrid_AddCourse_JspENA.selectRecord(oldCourseRecord);
+                                        }
+                                    }
+                                });
                                 this.Super("show", arguments);
                             },
                             items: [
@@ -669,8 +676,9 @@
                                             ID: "ListGrid_AddCourse_JspENA",
                                             dataSource: RestDataSource_AddCourse_JspENA,
                                             selectionType: "single",
+                                            selectionAppearance:"checkbox",
                                             filterOnKeypress: false,
-                                            // autoFetchData:true,
+                                            dataPageSize: 1000,
                                             fields: [
                                                 {
                                                     name: "code",
@@ -714,23 +722,38 @@
                                                 },
                                             ],
                                             gridComponents: ["filterEditor", "header", "body"],
-                                            recordDoubleClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
-                                                let url = skillUrl + "/add-course/" + record.id + "/" + selectedRecord.skillId
-                                                wait.show()
-                                                isc.RPCManager.sendRequest(TrDSRequest(url, "POST", null, (resp) => {
-                                                    wait.close()
-                                                    if (resp.httpResponseCode !== 200) {
-                                                        createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                            selectionChanged(record, state){
+                                                if(state){
+                                                    if((selectedRecord.skill.courseId == null)||(record.id !== selectedRecord.skill.courseId)){
+                                                        let dialog = createDialog("ask", "از تغییر دوره مهارت " + selectedRecord.skill.titleFa + " به دوره انتخاب شده مطمئن هستید.");
+                                                        dialog.addProperties({
+                                                            buttonClick: function (button, index) {
+                                                                this.close();
+                                                                if (index === 0) {
+                                                                    let url = skillUrl + "/add-course/" + record.id + "/" + selectedRecord.skillId;
+                                                                    wait.show();
+                                                                    isc.RPCManager.sendRequest(TrDSRequest(url, "POST", null, (resp) => {
+                                                                        wait.close()
+                                                                        if (resp.httpResponseCode !== 200) {
+                                                                            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                                                        }
+                                                                        editNeedsAssessmentRecord(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"));
+                                                                        ListGrid_SkillAll_JspNeedsAssessment_Refresh();
+                                                                        Window_AddCourse_JspENA.close()
+                                                                    }));
+                                                                }else {
+                                                                    ListGrid_AddCourse_JspENA.selectSingleRecord (oldCourseRecord);
+                                                                    // ListGrid_AddCourse_JspENA.deselectRecord(record);
+                                                                }
+                                                            }
+                                                        });
                                                     }
-                                                    editNeedsAssessmentRecord(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"));
-                                                    Window_AddCourse_JspENA.close()
-                                                }))
-
-                                            }
+                                                }
+                                            },
                                         }),
                                     ]
                                 })]
-                        })
+                        });
                         Window_AddCourse_JspENA.show()
                     }
                     else{
@@ -783,7 +806,6 @@
                             readOnly(true);
                         }
                     }));
-                    // ListGrid_Competence_JspNeedsAssessment.rowDoubleClick(ListGrid_Competence_JspNeedsAssessment.getSelectedRecord())
                 }
             },
         ]
@@ -794,7 +816,6 @@
         dataSource: RestDataSource_Competence_JspNeedsAssessment,
         showHeaderContextMenu: false,
         selectionType: "single",
-        // selectionAppearance: "checkbox",
         contextMenu: Menu_LG_AllCompetence_JspENA,
         filterOnKeypress: true,
         canDragRecordsOut: true,
@@ -815,7 +836,6 @@
             }
             createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
         },
-        // selectionUpdated: "ListGrid_Competence_JspNeedsAssessment.setData(this.getSelection())"
         selectionChanged(record, state) {
             if (state === true) {
                 let criteria = {
@@ -833,7 +853,6 @@
         dataSource: RestDataSource_NeedsAssessment_JspENA,
         showHeaderContextMenu: false,
         selectionType: "single",
-        // selectionAppearance: "checkbox",
         contextMenu: Menu_LG_History_JspENA,
         filterOnKeypress: true,
         canDragRecordsOut: true,
@@ -852,14 +871,14 @@
         ],
         gridComponents: [
             isc.Label.create({
-            contents: "<style>b{color: white}</style><b>تاریخچه شایستگی</b>",
-            backgroundColor: "#fe9d2a",
-            align: "left",
-            padding: 4,
-            borderRadius: 2,
-            height: 28,
-            // showEdges: true
-        }),
+                contents: "<style>b{color: white}</style><b>تاریخچه شایستگی</b>",
+                backgroundColor: "#fe9d2a",
+                align: "left",
+                padding: 4,
+                borderRadius: 2,
+                height: 28,
+                // showEdges: true
+            }),
             "filterEditor", "header", "body"],
     });
     let ListGrid_Competence_JspNeedsAssessment = isc.TrLG.create({
@@ -868,7 +887,6 @@
         autoFetchData: true,
         contextMenu: Menu_LG_Competence_JspENA,
         selectionType:"single",
-        // selectionAppearance: "checkbox",
         showHeaderContextMenu: false,
         showRowNumbers: false,
         fields: [{name: "title", title: "<spring:message code="title"/>"}, {name: "competenceType.title", title: "<spring:message code="type"/>"},],
@@ -927,6 +945,7 @@
         },
         selectionUpdated(record){
             fetchDataDomainsGrid();
+            ListGrid_SkillAll_JspNeedsAssessment_Refresh();
         },
         rowDoubleClick (record) {
             wait.show()
@@ -973,7 +992,7 @@
     let ListGrid_SkillAll_JspNeedsAssessment = isc.TrLG.create({
         ID: "ListGrid_SkillAll_JspNeedsAssessment",
         dataSource: RestDataSource_Skill_JspNeedsAssessment,
-        autoFetchData: true,
+        autoFetchData: false,
         // selectionAppearance: "checkbox",
         // showRowNumbers: false,
         // showHeaderContextMenu: false,
@@ -1029,18 +1048,7 @@
             {name: "titleFa"},
             {name: "objectType"},
             {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
-            // {
-            //     name: "needsAssessmentPriorityId",
-            //     canEdit:true,
-            //     valueField: "id",
-            //     displayField: "title",
-            //     optionDataSource: RestDataSource_NeedsAssessmentPriority_JspNeedsAssessment,
-            //     change(form, item){
-            //         updateSkillRecord(form, item)
-            //     }
-            //     // modalEditing: true,
-            //     // valueMap:["عملکرد ضروری","عملکرد توسعه ای","عملکرد بهبود"]
-            // }
+
         ],
         headerSpans: [
             {
@@ -1052,11 +1060,8 @@
         gridComponents: [
             "filterEditor", "header", "body"
         ],
-        // width: "25%",
         canAcceptDroppedRecords: true,
-        // canHover: true,
         showHoverComponents: true,
-        // hoverMode: "detailField",
         canRemoveRecords:true,
         showHeaderContextMenu: false,
         showFilterEditor:false,
@@ -1070,7 +1075,6 @@
                     for (let i = 0; i < dropRecords.length; i++) {
                         createNeedsAssessmentRecords(createData_JspNeedsAssessment(dropRecords[i], 108));
                         fetchDataDomainsGrid();
-                        // this.fetchData();
                     }
                 }
             }
@@ -1079,15 +1083,6 @@
             editing = true;
             this.Super("dataChanged",arguments);
         },
-        // canEditCell(rowNum, colNum){
-        //     if(colNum === 1) {
-        //         let record = this.getRecord(rowNum);
-        //         if (record.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")) {
-        //             return true;
-        //         }
-        //     }
-        //     return false;
-        // },
         getCellCSSText(record) {
             return priorityColor(record);
         },
@@ -1132,13 +1127,10 @@
         gridComponents: [
             "filterEditor", "header", "body"
         ],
-        // width: "25%",
         showHeaderContextMenu: false,
         canAcceptDroppedRecords: true,
-        // canHover: true,
         showHoverComponents: true,
         autoSaveEdits:false,
-        // hoverMode: "details",
         canRemoveRecords:true,
         showFilterEditor:false,
         implicitCriteria:{"needsAssessmentDomainId":109},
@@ -1151,10 +1143,6 @@
                 if (sourceWidget.ID === 'ListGrid_SkillAll_JspNeedsAssessment') {
                     for (let i = 0; i < dropRecords.length; i++) {
                         createNeedsAssessmentRecords(createData_JspNeedsAssessment(dropRecords[i], 109));
-                        // DataSource_Skill_JspNeedsAssessment.addData(data);
-                        // createNeedsAssessmentRecords(data);
-                        // this.fetchData();
-                        // fetchDataDomainsGrid();
                     }
                 }
             }
@@ -1163,15 +1151,6 @@
             editing = true;
             this.Super("dataChanged",arguments);
         },
-        // canEditCell(rowNum, colNum){
-        //     if(colNum == 1) {
-        //         let record = this.getRecord(rowNum);
-        //         if (record.objectType == DynamicForm_JspEditNeedsAssessment.getValue("objectType")) {
-        //             return true;
-        //         }
-        //     }
-        //     return false;
-        // },
         getCellCSSText: function (record) {
             return priorityColor(record);
         },
@@ -1189,6 +1168,7 @@
         showHeaderContextMenu: false,
         showRowNumbers: false,
         autoFetchData:false,
+        contextMenu: Menu_ListGrid_JspENA,
         selectionType:"single",
         fields: [
             {name: "titleFa"},
@@ -1342,8 +1322,8 @@
                     item.fetchData();
                     // updateObjectIdLG(form, form.getValue("objectType"));
                     // if(form.getValue("objectType") === "Post"){
-                        // PostDs_needsAssessment.fetchDataURL = postUrl + "/spec-list";
-                        // Window_AddPost_JspNeedsAssessment.show();
+                    // PostDs_needsAssessment.fetchDataURL = postUrl + "/spec-list";
+                    // Window_AddPost_JspNeedsAssessment.show();
                     // }
                 },
                 changed: function (form, item, value, oldValue) {
@@ -1419,8 +1399,8 @@
                 click(){
                     Menu_JspEditNeedsAssessment.hideContextMenu();
                     let url = needsAssessmentUrl + "/copy/" + DynamicForm_CopyOf_JspEditNeedsAssessment.getValue("objectType")
-                    + "/" + DynamicForm_CopyOf_JspEditNeedsAssessment.getValue("objectId") + "/" + DynamicForm_JspEditNeedsAssessment.getValue("objectType")
-                    + "/" + DynamicForm_JspEditNeedsAssessment.getValue("objectId");
+                        + "/" + DynamicForm_CopyOf_JspEditNeedsAssessment.getValue("objectId") + "/" + DynamicForm_JspEditNeedsAssessment.getValue("objectType")
+                        + "/" + DynamicForm_JspEditNeedsAssessment.getValue("objectId");
                     wait.show();
                     isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null,(resp)=>{
                         wait.close();
@@ -1487,32 +1467,32 @@
         ],
     });
     let HLayout_Bottom = isc.TrHLayout.create({
-            members: [
-                isc.TrVLayout.create({
-                    width: "25%",
-                    showResizeBar: true,
-                    members: [ListGrid_Competence_JspNeedsAssessment]
-                }),
-                isc.TrVLayout.create({
-                    ID: "VLayoutLeft_JspEditNeedsAssessment",
-                    // width: "75%",
-                    members: [
-                        isc.TrHLayout.create({
-                            ID: "HLayoutCenter_JspEditNeedsAssessment",
-                            height: "70%",
-                            showResizeBar: true,
-                            members: [
-                                ListGrid_Knowledge_JspNeedsAssessment,
-                                ListGrid_Ability_JspNeedsAssessment,
-                                ListGrid_Attitude_JspNeedsAssessment
-                            ]
-                        }),
-                        Label_Help_JspNeedsAssessment,
-                        ListGrid_SkillAll_JspNeedsAssessment
-                    ]
-                }),
-            ]
-        });
+        members: [
+            isc.TrVLayout.create({
+                width: "25%",
+                showResizeBar: true,
+                members: [ListGrid_Competence_JspNeedsAssessment]
+            }),
+            isc.TrVLayout.create({
+                ID: "VLayoutLeft_JspEditNeedsAssessment",
+                // width: "75%",
+                members: [
+                    isc.TrHLayout.create({
+                        ID: "HLayoutCenter_JspEditNeedsAssessment",
+                        height: "70%",
+                        showResizeBar: true,
+                        members: [
+                            ListGrid_Knowledge_JspNeedsAssessment,
+                            ListGrid_Ability_JspNeedsAssessment,
+                            ListGrid_Attitude_JspNeedsAssessment
+                        ]
+                    }),
+                    Label_Help_JspNeedsAssessment,
+                    ListGrid_SkillAll_JspNeedsAssessment
+                ]
+            }),
+        ]
+    });
 
     isc.TrVLayout.create({
         members: [
@@ -1667,6 +1647,8 @@
                 skill.objectType = data[i].objectType;
                 skill.objectName = data[i].objectName;
                 skill.objectCode = data[i].objectCode;
+                skill.skill = data[i].skill;
+                skill.mainWorkflowStatus = data[i].mainWorkflowStatus;
                 if(data[i].skill.course === undefined){
                     skill.hasWarning = "alarm";
                 }
@@ -1680,6 +1662,9 @@
                 competence.id = data[i].competenceId;
                 competence.title = data[i].competence.title;
                 competence.competenceType = data[i].competence.competenceType;
+                competence.categoryId = data[i].competence.categoryId;
+                competence.subCategoryId = data[i].competence.subCategoryId;
+                competence.code = data[i].competence.code;
                 DataSource_Competence_JspNeedsAssessment.addData(competence, ()=>{ListGrid_Competence_JspNeedsAssessment.selectRecord(0)});
             }
             ListGrid_Competence_JspNeedsAssessment.fetchData();
@@ -1711,8 +1696,8 @@
                 return;
             }
             else if (resp.httpResponseCode !== 200){
-                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
-                    return;
+                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                return;
             }
             data.id = JSON.parse(resp.data).id;
             DataSource_Skill_JspNeedsAssessment.addData(data);
@@ -1741,6 +1726,7 @@
             needsAssessmentDomainId: DomainId,
             hasWarning: record.course ? "" : "alarm",
             course: record.course,
+            skill: record
         };
         return data;
     }
@@ -1763,8 +1749,7 @@
         Label_PlusData_JspNeedsAssessment.setContents("");
         if(DynamicForm_JspEditNeedsAssessment.getValue("objectType") === "Post" || DynamicForm_JspEditNeedsAssessment.getValue("objectType") === "TrainingPost") {
             Label_PlusData_JspNeedsAssessment.setContents(
-                (objectId.titleFa !== undefined ? "<b>عنوان پست: </b>" +  objectId.titleFa : "")
-                // + "&nbsp;&nbsp;***&nbsp;&nbsp;" + "عنوان رده پستی: " + objectId.postGrade.titleFa
+                (objectId.titleFa !== undefined ? '<b>عنوان پست: </b>' +  objectId.titleFa : "")
                 + "&nbsp;&nbsp;&nbsp;&nbsp;" +
                 (objectId.area !== undefined ? "<b>حوزه: </b>" + objectId.area : "")
                 + "&nbsp;&nbsp;&nbsp;&nbsp;" +
@@ -1777,7 +1762,6 @@
     function updatePriority_JspEditNeedsAssessment(viewer, record) {
         if(record.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")) {
             let updating = {objectType: record.objectType, objectId: record.objectId, needsAssessmentPriorityId: record.needsAssessmentPriorityId + 1 > 113 ? 111 : record.needsAssessmentPriorityId + 1};
-            // isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id + "?isFirstChange=" + isFirstChange, "PUT", JSON.stringify(record), function (resp) {
             wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "PUT", JSON.stringify(updating), function (resp) {
                 wait.close()
@@ -1809,8 +1793,33 @@
         }
     }
 
+    let ListGrid_SkillAll_JspNeedsAssessment_Refresh = ()=>{
+            let record = ListGrid_Competence_JspNeedsAssessment.getSelectedRecord();
+            if(record == null){
+                ListGrid_SkillAll_JspNeedsAssessment.setData([]);
+            }else{
+                let cr = {};
+                if(record.subCategoryId != null) {
+                    cr = {
+                        _constructor: "AdvancedCriteria",
+                        operator: "and",
+                        criteria: [
+                            {fieldName: "subCategoryId", operator: "equals", value: record.subCategoryId},
+                        ]
+                    }
+                }
+                ListGrid_SkillAll_JspNeedsAssessment.setImplicitCriteria(cr);
+                ListGrid_SkillAll_JspNeedsAssessment.invalidateCache();
+                ListGrid_SkillAll_JspNeedsAssessment.fetchData();
+            }
+    }
+
 
     function loadEditNeedsAssessment(objectId, type, state = "R&W") {
+        if (ListGrid_SkillAll_JspNeedsAssessment) {
+            ListGrid_SkillAll_JspNeedsAssessment.clearFilterValues();
+        }
+
         if(state === "read"){
             DynamicForm_JspEditNeedsAssessment.disable()
         }
@@ -1877,8 +1886,8 @@
 
     // <<---------------------------------------- Send To Workflow ----------------------------------------
     function sendNeedsAssessmentToWorkflow() {
-            if(hasChanged){
-                isc.MyYesNoDialog.create({
+        if(hasChanged){
+            isc.MyYesNoDialog.create({
                 message: "<spring:message code="needs.assessment.sent.to.workflow.ask"/>",
                 title: "<spring:message code="message"/>",
                 buttonClick: function (button, index) {
@@ -1906,10 +1915,10 @@
                     }
                 }
             });
-            }
-            else{
-                createDialog("info","تغییری صورت نگرفته است")
-            }
+        }
+        else{
+            createDialog("info","تغییری صورت نگرفته است")
+        }
     }
 
     function startProcess_callback(resp) {

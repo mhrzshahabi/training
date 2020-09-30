@@ -190,27 +190,27 @@ public class CourseDTO implements Serializable {
     public static class Create extends CourseDTO {
         @NotEmpty
         @ApiModelProperty(required = true)
-        private Integer eRunTypeId;
+        private int runTypeId;
 
         @NotEmpty
         @ApiModelProperty(required = true)
-        private Integer eLevelTypeId;
+        private int levelTypeId;
 
         @NotEmpty
         @ApiModelProperty(required = true)
-        private Integer eTheoTypeId;
+        private int theoTypeId;
 
         @NotEmpty
         @ApiModelProperty(required = true)
-        private Integer eTechnicalTypeId;
+        private int technicalTypeId;
 
         @NotEmpty
         @ApiModelProperty(required = true)
-        private Long categoryId;
+        private CategoryDTO.Info category;
 
         @NotEmpty
         @ApiModelProperty(required = true)
-        private Long subCategoryId;
+        private SubcategoryDTO.Info subCategory;
 
         @NotEmpty
         private List<Long> mainObjectiveIds;
@@ -439,7 +439,8 @@ public class CourseDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("CourseDependence")
     public static class CourseDependence{
-        private Integer numClasses;
-        private Integer numSkills;
+        private int numClasses;
+        private int numSkills;
+        private int numGoals;
     }
 }

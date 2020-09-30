@@ -12,6 +12,10 @@
         var studentSelection = false;
         var selectedRecord_addStudent_class = '';
         var checkRefresh = 0;
+        var selectedRow = {};
+        var listGridType = null;
+        let previousSelectedRow ={};
+        let previousSelectedRowReg = {};
 
         // ------------------------------------------- Menu -------------------------------------------
         let StudentMenu_student = isc.Menu.create({
@@ -324,7 +328,8 @@
             fetchDataURL: parameterValueUrl + "/iscList/98"
         });
 
-        var StudentsLG_student = isc.TrLG.create({
+        let StudentsLG_student = isc.TrLG.create({
+            ID: "StudentsLG_student",
             <sec:authorize access="hasAnyAuthority('TclassStudentsTab_R','TclassStudentsTab_classStatus')">
             dataSource: StudentsDS_student,
             </sec:authorize>
@@ -532,6 +537,7 @@
                         minWidth: 500,
                         autoSize: false,
                         height: "50%",
+                        closeClick:deleteCachedValue,
                         items: [isc.VLayout.create({
                             width: "100%",
                             height: "100%",
@@ -679,6 +685,10 @@
                     return x.nationalCode == nationalCode
                 });
                 current.setProperty("enabled", true);
+                if(current && current[0]){
+                    current[0].isChecked = false;
+                    current[0].isClicked = false
+                }
                 PersonnelsLG_student.deselectRecord(current)
 
 
@@ -687,7 +697,11 @@
                     return x.nationalCode == nationalCode
                 });
                 current.setProperty("enabled", true);
-                PersonnelsRegLG_student.deselectRecord(current)
+                if(current && current[0]){
+                    current[0].isChecked = false;
+                    current[0].isClicked = false
+                }
+                PersonnelsRegLG_student.deselectRecord(current);
 
                 studentSelection = false;
 
@@ -713,6 +727,7 @@
                         minWidth: 500,
                         autoSize: false,
                         height: "50%",
+                        closeClick:deleteCachedValue,
                         items: [isc.VLayout.create({
                             width: "100%",
                             height: "100%",
@@ -747,6 +762,11 @@
                     checkExistInNeedsAssessment(ListGrid_Class_JspClass.getSelectedRecord().courseId)
                 }
             }*/
+
+            rowClick:function(record,recordNum,fieldNum){
+                selectedRow = record;
+                listGridType = "SelectedPersonnelsLG_student";
+            },
         });
 
         let PersonnelDS_student = isc.TrDS.create({
@@ -852,6 +872,7 @@
         });
 
         let PersonnelsLG_student = isc.TrLG.create({
+            ID: "PersonnelsLG_student",
             dataSource: PersonnelDS_student,
             selectionType: "single",
             fields: [
@@ -904,19 +925,25 @@
                     criteria: [{fieldName: "nationalCode", operator: "inSet", value: nationals}]
                 });
                 studentSelection = true;
+                findRows.forEach(current => current.isChecked = true);
 
                 PersonnelsLG_student.setSelectedState(findRows);
                 findRows.setProperty("enabled", false);
 
                 studentSelection = false;
             },
-            getCellCSSText: function (record, rowNum, colNum) {
-                let result = '';
-                if (this.getFieldName(colNum) == "personnelNo") {
-                    result += "color: #0066cc !important;text-decoration: underline !important;cursor: pointer !important;"
-                }
-
-                return result;
+            getCellCSSText: rowStyle,
+            rowClick:function(record,recordNum,fieldNum){
+                 if (Object.keys(previousSelectedRow).length>1){
+                      previousSelectedRow.data.isClicked=!previousSelectedRow.data.isClicked;
+                      this.getCellCSSText(previousSelectedRow.data,previousSelectedRow.row,previousSelectedRow.col);
+                      PersonnelsLG_student.redraw();
+                 }
+                record.isClicked = true;
+                selectedRow = record;
+                previousSelectedRow={data:selectedRow,row:recordNum,col:fieldNum};
+                listGridType = "PersonnelsLG_student";
+                this.getCellCSSText(record,recordNum,fieldNum);
             },
             dataChanged: function () {
                 this.Super("dataChanged", arguments);
@@ -968,6 +995,11 @@
                             operator: "and",
                             criteria: [{fieldName: "nationalCode", operator: "equals", value: current.nationalCode}]
                         }).setProperty("enabled", false);
+
+                     delete current.isClicked;
+                     current.isChecked = true;
+
+                     PersonnelsLG_student.redraw();
                     }
 
                     function checkIfAlreadyExist(currentVal) {
@@ -1009,6 +1041,7 @@
                         minWidth: 500,
                         autoSize: false,
                         height: "50%",
+                        closeClick:deleteCachedValue,
                         items: [isc.VLayout.create({
                             width: "100%",
                             height: "100%",
@@ -1123,6 +1156,7 @@
         });
 
         let PersonnelsRegLG_student = isc.TrLG.create({
+            ID: "PersonnelsRegLG_student",
             dataSource: PersonnelRegDS_student,
             selectionType: "single",
             fields: [
@@ -1172,20 +1206,26 @@
                     criteria: [{fieldName: "nationalCode", operator: "inSet", value: nationals}]
                 });
                 studentSelection = true;
-
+                findRows.forEach(current => current.isChecked = true);
                 PersonnelsRegLG_student.setSelectedState(findRows);
                 findRows.setProperty("enabled", false);
 
                 studentSelection = false;
             },
-            getCellCSSText: function (record, rowNum, colNum) {
-                let result = '';
-                if (this.getFieldName(colNum) == "personnelNo") {
-                    result += "color: #0066cc !important;text-decoration: underline !important;cursor: pointer !important;"
+            getCellCSSText: rowStyle,
+            rowClick:function(record,recordNum,fieldNum){
+                if (Object.keys(previousSelectedRowReg).length>1){
+                    previousSelectedRowReg.data.isClicked=!previousSelectedRowReg.data.isClicked;
+                    this.getCellCSSText(previousSelectedRowReg.data,previousSelectedRowReg.row,previousSelectedRowReg.col);
+                    PersonnelsRegLG_student.redraw();
                 }
-
-                return result;
+                record.isClicked = true;
+                selectedRow = record;
+                previousSelectedRowReg={data:selectedRow,row:recordNum,col:fieldNum};
+                listGridType = "PersonnelsRegLG_student";
+                this.getCellCSSText(record,recordNum,fieldNum);
             },
+
             dataChanged: function () {
                 this.Super("dataChanged", arguments);
                 totalRows = this.data.getLength();
@@ -1236,6 +1276,9 @@
                             criteria: [{fieldName: "nationalCode", operator: "equals", value: current.nationalCode}]
                         }).setProperty("enabled", false);
                     }
+                    delete current.isClicked;
+                    current.isChecked = true;
+                    PersonnelsLG_student.redraw();
 
                     function checkIfAlreadyExist(currentVal) {
                         return SelectedPersonnelsLG_student.data.some(function (item) {
@@ -1278,6 +1321,7 @@
                         minWidth: 500,
                         autoSize: false,
                         height: "50%",
+                        closeClick:deleteCachedValue,
                         items: [isc.VLayout.create({
                             width: "100%",
                             height: "100%",
@@ -1301,6 +1345,16 @@
                 }
             }
         });
+
+        let criteriaActivePersonnelRegistered_studentjsp = {
+            _constructor: "AdvancedCriteria",
+            operator: "and",
+            criteria: [
+                {fieldName: "deleted", operator: "isNull"}
+            ]
+        };
+
+        PersonnelsRegLG_student.implicitCriteria = criteriaActivePersonnelRegistered_studentjsp;
 
         // ------------------------------------------- DynamicForm & Window -------------------------------------------
 
@@ -1539,7 +1593,7 @@
             let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
             let studentRecord = StudentsLG_student.getSelectedRecords();
 
-            if (studentRecord == null) {
+            if (studentRecord.length < 1) {
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             } else {
                 let Dialog_Delete = isc.Dialog.create({
@@ -1575,6 +1629,10 @@
             studentRemoveWait.close();
             if (resp.httpResponseCode == 200) {
                 simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
+                refreshLG(StudentsLG_student);
+            }else if (resp.httpResponseCode == 406) {
+                    console.log(resp);
+                createDialog('info',resp.httpResponseText,'خطا در حذف فراگير(ان)');
                 refreshLG(StudentsLG_student);
             } else if (resp.data == false) {
                 let ERROR = isc.Dialog.create({
@@ -1828,7 +1886,7 @@
                                                 "personnelNo": person.personnelNo,
                                                 "applicantCompanyName": person.companyName,
                                                 "presenceTypeId": studentDefaultPresenceId,
-                                                "registerTypeId": url.indexOf(personnelUrl) > -1 ? 1 : 2
+                                                "registerTypeId": url.indexOf(personnelUrl+"/") > -1 ? 1 : 2
                                             });
                                         }
                                     }
@@ -1853,6 +1911,10 @@
                         GroupSelectedPersonnelsLG_student.fetchData();
 
                         wait.close();
+
+                        if(insert){
+                            createDialog('info','شخصي جهت اضافه شدن وجود ندارد.');
+                        }
                     }
 
 
@@ -1887,5 +1949,29 @@
                 checkRefresh = 0;
             }));
         }
+        function  deleteCachedValue() {
+            selectedRow = {};
+            listGridType = null;
+            this.close();
+        }
+        function rowStyle(record, rowNum, colNum) {
+            let result = '';
+            if (this.getFieldName(colNum) == "personnelNo") {
+                result += "color: #0066cc !important;text-decoration: underline !important;cursor: pointer !important;";
+            }
+
+            if (record.isChecked) {
+                result += " background-color:#ededed; color:#b8b8b8 !important";
+            }
+
+            else if (record.isClicked) {
+                result += " background-color:#929292;";
+            }
+
+            else if (!record.isClicked || !record.isChecked) {
+                result += " background-color:white;";
+            }
+            return result;
+            }
     }
 <!-- </script> -->

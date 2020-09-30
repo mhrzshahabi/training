@@ -11,6 +11,7 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.mapper.student.ClassStudentBeanMapper;
+import com.nicico.training.model.ClassStudent;
 import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
@@ -143,7 +144,7 @@ public class ClassStudentRestController {
     @Loggable
     @GetMapping(value = "/evaluationAnalysistLearning/{classId}")
     public ResponseEntity<ISC<ClassStudentDTO.evaluationAnalysistLearning>> evaluationAnalysistLearning(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
-        return searchEvaluationAnalysistLearning(iscRq,classId, makeNewCriteria("tclassId", classId, EOperator.equals, null));
+        return searchEvaluationAnalysistLearning(iscRq, classId, makeNewCriteria("tclassId", classId, EOperator.equals, null));
     }
 
 
@@ -162,6 +163,7 @@ public class ClassStudentRestController {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
     }
+
     @Loggable
     @PostMapping(value = "/check-register-students/{courseId}")
     public ResponseEntity checkRegisterStudents(@RequestBody List<ClassStudentDTO.RegisterInClass> request, @PathVariable Long courseId) {
@@ -200,12 +202,13 @@ public class ClassStudentRestController {
             return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
         }
     }
+
     @Loggable
     @PutMapping(value = "/update-presence-type-id/{id}/{presenceTypeId}")
-    public ResponseEntity<UpdateStudentScoreResponse> update(@PathVariable Long id, @PathVariable Long presenceTypeId ) {
+    public ResponseEntity<UpdateStudentScoreResponse> update(@PathVariable Long id, @PathVariable Long presenceTypeId) {
         UpdateStudentScoreResponse response = new UpdateStudentScoreResponse();
         try {
-            classStudentService.setPeresenceTypeId(presenceTypeId,id);
+            classStudentService.setPeresenceTypeId(presenceTypeId, id);
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("ویرایش موفقیت آمیز");
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -262,10 +265,16 @@ public class ClassStudentRestController {
 //    @PreAuthorize("hasAuthority('d_tclass')")
     public ResponseEntity delete(@PathVariable Set<Long> studentIds) {
         try {
-            Long classId = null;
+            //Long classId = null;
+            boolean haveError = false;
+            String message = "";
             for (Long studentId : studentIds) {
-                classId = classStudentService.getClassIdByClassStudentId(studentId);
-                classStudentService.delete(studentId);
+                String error = classStudentService.delete(studentId);
+
+                if (error != "") {
+                    haveError = true;
+                    message += error + "<br />";
+                }
             }
 
 //// cancel alarms
@@ -274,8 +283,12 @@ public class ClassStudentRestController {
 //                classAlarmService.alarmStudentConflict(classId);
 //                classAlarmService.saveAlarms();
 //            }
+            if (haveError) {
+                return new ResponseEntity<>(message, HttpStatus.NOT_ACCEPTABLE);
+            } else {
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
 
-            return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException | DataIntegrityViolationException e) {
             return new ResponseEntity<>(
                     new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);

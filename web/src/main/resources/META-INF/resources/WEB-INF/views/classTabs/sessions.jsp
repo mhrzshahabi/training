@@ -984,6 +984,22 @@
                             title: "<spring:message code="warning"/>",
                         });
                     }
+                    else {
+                        if (failures == 1) { //bug fix
+                            MyOkDialog_Session = isc.Dialog.create({
+                                message: "<spring:message code="attendance.meeting.none.nums"/>",
+                                icon: "[SKIN]say.png",
+                                title: "<spring:message code="warning"/>",
+                            });
+                        }else{
+                            MyOkDialog_Session = isc.Dialog.create({
+                                message: getFormulaMessage(failures.toString() + " ", 2, "red", "B") + "<spring:message code="attendance.meeting.none.nums"/>",
+                                icon: "[SKIN]say.png",
+                                title: "<spring:message code="warning"/>",
+                            });
+                        }
+
+                    }
                 } else {
                     MyOkDialog_Session = isc.Dialog.create({
                         message: "<spring:message code="global.form.request.successful"/>",

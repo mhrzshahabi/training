@@ -46,6 +46,9 @@
 		<field name="personality.firstNameFa" class="java.lang.String"/>
 		<field name="enableStatus" class="java.lang.Boolean"/>
 		<field name="personality.contactInfo.mobile" class="java.lang.String"/>
+		<variable name="Row_Number" class="java.lang.Integer">
+			<variableExpression><![CDATA[$V{REPORT_COUNT}]]></variableExpression>
+		</variable>
 	</subDataset>
 	<parameter name="logo_nicico" class="java.lang.Object"/>
 	<parameter name="todayDate" class="java.lang.String"/>
@@ -82,7 +85,7 @@
 	<detail>
 		<band height="80">
 			<componentElement>
-				<reportElement key="" style="Table_CH" x="12" y="10" width="530" height="60" uuid="ffefe320-675c-40cd-af1c-80c00f7923cd">
+				<reportElement key="" style="Table_CH" x="2" y="10" width="550" height="60" uuid="ffefe320-675c-40cd-af1c-80c00f7923cd">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
@@ -339,6 +342,30 @@
 									<font fontName="Shabnam-FD" size="8" isBold="true"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{teacherCode}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="20" uuid="67fac96b-5d03-45f7-a764-77d29b706824">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column8"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="20" height="30" uuid="69e3c8f0-982b-4fec-bf5c-691bac712d36"/>
+								<box>
+									<pen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Shabnam-FD" size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[ردیف]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="20" height="30" uuid="7c5e090e-d71a-4f73-8034-2401a5c83130"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Shabnam-FD" size="8"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{Row_Number}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

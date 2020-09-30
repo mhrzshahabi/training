@@ -236,7 +236,7 @@ public class TeacherRestController {
                                                                  @RequestParam(value = "operator", required = false) String operator,
                                                                  @RequestParam(value = "criteria", required = false) String criteria,
                                                                  @RequestParam(value = "id", required = false) Long id,
-                                                                 @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                                 @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException, NoSuchFieldException, IllegalAccessException {
 
         SearchDTO.SearchRq request = setSearchCriteriaNotInBlackList(startRow, endRow, constructor, operator, criteria, id, sortBy);
 
@@ -831,6 +831,11 @@ public class TeacherRestController {
         params.put("table3Translation", resultSet.get("table_3_count_translation"));
         params.put("table3Note", resultSet.get("table_3_count_note"));
         params.put("table4Grade", resultSet.get("table_4_grade"));
+        params.put("minEvaluationGrade1",resultSet.get("minEvaluationGrade1"));
+        params.put("minEvaluationGrade2",resultSet.get("minEvaluationGrade2"));
+        params.put("minEvaluationGrade3",resultSet.get("minEvaluationGrade3"));
+        params.put("minEvaluationGrade4",resultSet.get("minEvaluationGrade4"));
+        params.put("minEvaluationGrade5",resultSet.get("minEvaluationGrade5"));
 
         String data = "{" + "\"content\": " + null + "}";
 
