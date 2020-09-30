@@ -211,7 +211,7 @@ public class Tclass extends Auditable {
     @Column(name = "c_behavioral_level")
     private String behavioralLevel;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_cancel_class_reason", insertable = false, updatable = false)
     private ParameterValue classCancelReason;
 

@@ -237,6 +237,10 @@ public class TclassService implements ITclassService {
             resp.sendError(409, messageSource.getMessage("کلاس فوق بدلیل داشتن فراگیر قابل حذف نیست. ", null, LocaleContextHolder.getLocale()));
             return;
         }
+        for (Evaluation eva:tclass.getEvaluations()) {
+            evaluationService.delete(eva.getId());
+        }
+
         tclassDAO.deleteById(id);
         attendanceDAO.deleteAll(attendances);
         List<AttachmentDTO.Info> attachmentInfoList = attachmentService.search(null, "Tclass", id).getList();
