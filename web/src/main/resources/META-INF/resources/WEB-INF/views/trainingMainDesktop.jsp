@@ -111,7 +111,9 @@
                                 {
                                     ID:"DynamicForm_GroupInsert_Textbox_JspStudent",
                                     title:"",
-                                    /*direction:""*/
+                                    type: "TextItem",
+                                    length: 10000,
+                                    controlStyle : "inputRTL",cellStyle  : "inputRTL",showRTL :false,
                                     transformPastedValue:function(item, form, pastedValue)
                                     {
                                         item.setValue(pastedValue.split('\n').filter(p=>p!='').join(',')) ;
