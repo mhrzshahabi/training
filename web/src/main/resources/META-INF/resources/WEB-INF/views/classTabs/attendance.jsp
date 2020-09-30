@@ -338,6 +338,12 @@
                     }
                 }
             }),
+            isc.ToolStripButtonPrint.create({
+                title: "فرم خام عمومی",
+                click: function () {
+                    printFullClearForm()
+                }
+            }),
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -1284,7 +1290,6 @@
         isAttendanceDate = false;
     }
 
-
     function ListGrid_Attendance_Refresh(form = attendanceForm) {
         let oldValue = form.getValue("sessionDate");
         form.getItem("filterType").changed(form, form.getItem("filterType"), form.getValue("filterType"));
@@ -1327,18 +1332,65 @@
             action: "<spring:url value="/attendance/clear-print/pdf"/>",
             target: "_Blank",
             canSubmit: true,
-            fields:
-                [
+            fields:[
                     {name: "classId", type: "hidden"},
                     {name: "list", type: "hidden"},
                     {name: "page", type: "hidden"},
-                ]
+            ]
         });
         criteriaForm.setValue("classId", classGridRecordInAttendanceJsp.id);
         criteriaForm.setValue("list", JSON.stringify(list));
         criteriaForm.setValue("page", page);
         criteriaForm.show();
         criteriaForm.submitForm();
+    }
+    function printFullClearForm() {
+        let criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="/attendance/full-clear-print/pdf"/>",
+            target: "_Blank",
+            canSubmit: true,
+            numCols: 3,
+            colWidths: [50,150,70],
+            fields:
+                [
+                    {name: "txt", title: "تعداد سطر: ", keyPressFilter : "[0-9]", editorType: "SpinnerItem",
+                        writeStackedIcons: false,
+                        defaultValue: 20,
+                        min: 1,
+                        max: 500,
+                    },
+                    {name: "list", type: "hidden"},
+                    {
+                        name: "btnConfirm",
+                        title: "چاپ",
+                        startRow: false,
+                        type:"Button",
+                        click(){
+                            if(criteriaForm.getValue("txt") != null){
+                                let list = [];
+                                for (let i = 1; i <= parseInt(criteriaForm.getValue("txt")) ; i++) {
+                                    let object = {};
+                                    object.row = i;
+                                    list.push(object);
+                                }
+                                console.log(list);
+                                criteriaForm.setValue("list", JSON.stringify(list));
+                                criteriaForm.submitForm();
+                            }
+                        }
+                    }
+                ]
+        });
+        let windowPrint = isc.Window.create({
+            title: "",
+            keepInParentRect: true,
+            autoSize: true,
+            items:[
+                criteriaForm
+            ]
+        });
+        windowPrint.show();
     }
 
 
