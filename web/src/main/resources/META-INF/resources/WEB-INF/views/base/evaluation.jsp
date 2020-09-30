@@ -460,8 +460,8 @@
                     }
                     case "TabPane_EditGoalQuestions" : {
                         RestDataSource_Golas_JspEGQ.fetchDataURL = evaluationUrl + "/getClassGoalsQuestions/" + classRecord.id;
+                        RestDataSource_Golas_JspEGQ.fetchData();
                         ListGrid_Goal_JspEGQ.invalidateCache();
-                        ListGrid_Goal_JspEGQ.fetchData();
                         classRecord_JspEGQ = classRecord;
                         break;
                     }

@@ -28,7 +28,7 @@
             {name: "termCode", title:"<spring:message code='term.code'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "courseTitleFa", title:"<spring:message code='course'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "classStartDate", title:"<spring:message code="start.date"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "classStudentScore", title:"<spring:message code="score"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classStudentScore", title:"<spring:message code="score"/>", filterOperator: "equals", autoFitWidth: true},
             {name: "studentComplexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains"},
             {name: "studentCcpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains"},
             {name: "studentCompanyName", title: "<spring:message code="company"/>", filterOperator: "iContains"},
@@ -562,29 +562,29 @@
         gridComponents: [DynamicForm_StudentClass,
             isc.ToolStripButtonExcel.create({
                 margin:5,
-            click: function() {
+                click: function() {
 
-                let criteria = DynamicForm_StudentClass.getValuesAsAdvancedCriteria();
+                    let criteria = DynamicForm_StudentClass.getValuesAsAdvancedCriteria();
 
-                if(criteria != null && Object.keys(criteria).length != 0) {
+                    if(criteria != null && Object.keys(criteria).length != 0) {
 
-                    if(DynamicForm_StudentClass.getValue("studentPersonnelNo2") != undefined){
-                        let cr = [];
-                        for (let i = 0; i < criteria.criteria.length; i++) {
-                            if(criteria.criteria[i]["fieldName"] != "studentPersonnelNo2"){
-                                cr.push(criteria.criteria[i])
+                        if(DynamicForm_StudentClass.getValue("studentPersonnelNo2") != undefined){
+                            let cr = [];
+                            for (let i = 0; i < criteria.criteria.length; i++) {
+                                if(criteria.criteria[i]["fieldName"] != "studentPersonnelNo2"){
+                                    cr.push(criteria.criteria[i])
+                                }
                             }
+                            cr.push({fieldName: "studentPersonnelNo2", operator: "inSet", value: DynamicForm_StudentClass.getValue("studentPersonnelNo2").split(',').toArray()})
+                            criteria.criteria = cr;
                         }
-                        cr.push({fieldName: "studentPersonnelNo2", operator: "inSet", value: DynamicForm_StudentClass.getValue("studentPersonnelNo2").split(',').toArray()})
-                        criteria.criteria = cr;
+                    }else{
+                        return ;
                     }
-                }else{
-                    return ;
-                }
 
-                ExportToFile.downloadExcel(null, ListGrid_StudentClass_StudentClassJSP, 'studentClassReport', 0, null, '',  "دوره هاي گذراننده پرسنل", criteria, null);
-            }
-        }), "header", "filterEditor", "body"],
+                    ExportToFile.downloadExcel(null, ListGrid_StudentClass_StudentClassJSP, 'studentClassReport', 0, null, '',  "دوره هاي گذراننده پرسنل", criteria, null);
+                }
+            }), "header", "filterEditor", "body"],
         fields:[
             {
                 name: "studentPersonnelNo2",
@@ -594,7 +594,7 @@
             },
             {name: "studentFirstName"},
             {name: "studentLastName"},
-            {name: "studentCcpAffairs", filterOperator: "equals", autoFitWidth: true},
+            {name: "studentCcpAffairs", autoFitWidth: true},
             {name: "studentCcpUnit"},
             {name: "studentPostCode"},
             {name: "studentPostTitle", filterOperator: "equals", autoFitWidth: true},
@@ -607,12 +607,13 @@
             {
                 name: "classStudentScoresState",
                 optionDataSource: ScoresStateDS_SCRV,
-                filterEditorProperties:{
-                    pickListProperties: {
-                        showFilterEditor: false,
-                    },
-                },
-                filterEditorType : "TextItem",
+                // filterEditorProperties:{
+                //     pickListProperties: {
+                //         showFilterEditor: true,
+                //     },
+                // },
+                filterOnKeypress: true,
+                // filterEditorType : "TextItem",
                 displayField: "title",
                 valueField: "id",
                 // multiple: true

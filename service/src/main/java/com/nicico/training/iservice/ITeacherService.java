@@ -40,7 +40,7 @@ public interface ITeacherService {
 
     SearchDTO.SearchRs<TeacherDTO.Info> deepSearch(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException;
 
-    SearchDTO.SearchRs<TeacherDTO.Grid> deepSearchGrid(SearchDTO.SearchRq request);
+    SearchDTO.SearchRs<TeacherDTO.Grid> deepSearchGrid(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException;
 
     SearchDTO.SearchRs<TeacherDTO.Report> deepSearchReport(SearchDTO.SearchRq request);
 

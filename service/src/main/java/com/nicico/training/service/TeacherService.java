@@ -1,30 +1,26 @@
 package com.nicico.training.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nicico.copper.common.domain.criteria.NICICOPageable;
-import com.nicico.copper.common.domain.criteria.NICICOSpecification;
+
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.CustomModelMapper;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
+import com.nicico.training.mapper.teacher.TeacherBeanMapper;
 import com.nicico.training.model.*;
-import com.nicico.training.repository.CategoryDAO;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.repository.TeacherDAO;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
-import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.teacher.dto.TeacherInCourseDto;
 
 import java.util.*;
 
@@ -33,6 +29,7 @@ import java.util.*;
 public class TeacherService implements ITeacherService {
 
     private final CustomModelMapper modelMapper;
+    private final TeacherBeanMapper teacherBeanMapper;
     private final TeacherDAO teacherDAO;
     private final TclassDAO tclassDAO;
     private final ParameterService parameterService;
@@ -207,37 +204,23 @@ public class TeacherService implements ITeacherService {
 
     @Transactional(readOnly = true)
     @Override
-    public SearchDTO.SearchRs<TeacherDTO.Grid> deepSearchGrid(SearchDTO.SearchRq request) {
+    public SearchDTO.SearchRs<TeacherDTO.Grid> deepSearchGrid(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException {
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria("inBlackList", false, EOperator.equals, null);
 
-        Page<Teacher> all = teacherDAO.findAll(NICICOSpecification.of(request),NICICOPageable.of(request));
-        List<Teacher> listTeacher=all.getContent();
-
-        Long totalCount=all.getTotalElements();
-
-        SearchDTO.SearchRs<TeacherDTO.Grid> searchRs=null;
-
-        if (totalCount == 0) {
-
-            searchRs=new SearchDTO.SearchRs<>();
-            searchRs.setList(new ArrayList<TeacherDTO.Grid>());
-
-        } else {
-            List<Long> ids = new ArrayList<>();
-            int len = listTeacher.size();
-
-            for (int i = 0; i < len; i++) {
-                ids.add(listTeacher.get(i).getId());
+        List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+        if (request.getCriteria() != null) {
+            if (request.getCriteria().getCriteria() != null)
+                request.getCriteria().getCriteria().add(criteriaRq);
+            else {
+                criteriaRqList.add(criteriaRq);
+                request.getCriteria().setCriteria(criteriaRqList);
             }
+        } else
+            request.setCriteria(criteriaRq);
 
-            request.setCriteria(makeNewCriteria("id", ids, EOperator.inSet, null));
-            request.setStartIndex(null);
 
+        SearchDTO.SearchRs<TeacherDTO.Grid> searchRs = BaseService.<Teacher, TeacherDTO.Grid, TeacherDAO>optimizedSearch(teacherDAO, p->modelMapper.map(p, TeacherDTO.Grid.class), request);
 
-            searchRs = SearchUtil.search(teacherDAO, request, teacher -> modelMapper.map(teacher,
-                    TeacherDTO.Grid.class));
-        }
-
-        searchRs.setTotalCount(totalCount);
         return searchRs;
     }
 
@@ -557,9 +540,8 @@ public class TeacherService implements ITeacherService {
         TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("ClassConfig");
         List<ParameterValueDTO.Info> parameterValues = parameters.getResponse().getData();
 
-
         if (teacher_educationLevel == 1) {
-            if (evaluationGrade >= Integer.parseInt(parameterValues.stream().filter(p -> p.getCode().equals("MinTeacherEvalRankDiploma")).findFirst().orElse((ParameterValueDTO.Info) (new ParameterValueDTO.Info()).setValue("100")).getValue()) )
+            if (evaluationGrade >= Integer.parseInt(parameterValues.stream().filter(p -> p.getCode().equals("MinTeacherEvalRankDiploma")).findFirst().orElse((ParameterValueDTO.Info) (new ParameterValueDTO.Info()).setValue("100")).getValue()))
                 pass = true;
         } else if (teacher_educationLevel == 2) {
             if (evaluationGrade >= Integer.parseInt(parameterValues.stream().filter(p -> p.getCode().equals("MinTeacherEvalRankAD")).findFirst().orElse((ParameterValueDTO.Info) (new ParameterValueDTO.Info()).setValue("100")).getValue()))
@@ -599,6 +581,11 @@ public class TeacherService implements ITeacherService {
         resultSet.put("table_3_count_translation", table_3_count_translation);
         resultSet.put("table_3_count_note", table_3_count_note);
         resultSet.put("table_4_grade", table_4_grade);
+        resultSet.put("minEvaluationGrade1",Integer.parseInt(parameterValues.stream().filter(p -> p.getCode().equals("MinTeacherEvalRankDiploma")).findFirst().orElse((ParameterValueDTO.Info) (new ParameterValueDTO.Info()).setValue("100")).getValue()));
+        resultSet.put("minEvaluationGrade2",Integer.parseInt(parameterValues.stream().filter(p -> p.getCode().equals("MinTeacherEvalRankAD")).findFirst().orElse((ParameterValueDTO.Info) (new ParameterValueDTO.Info()).setValue("100")).getValue()));
+        resultSet.put("minEvaluationGrade3",Integer.parseInt(parameterValues.stream().filter(p -> p.getCode().equals("MinTeacherEvalRankBachelor")).findFirst().orElse((ParameterValueDTO.Info) (new ParameterValueDTO.Info()).setValue("100")).getValue()));
+        resultSet.put("minEvaluationGrade4",Integer.parseInt(parameterValues.stream().filter(p -> p.getCode().equals("MinTeacherEvalRankMaster")).findFirst().orElse((ParameterValueDTO.Info) (new ParameterValueDTO.Info()).setValue("100")).getValue()));
+        resultSet.put("minEvaluationGrade5",Integer.parseInt(parameterValues.stream().filter(p -> p.getCode().equals("MinTeacherEvalRankPhd")).findFirst().orElse((ParameterValueDTO.Info) (new ParameterValueDTO.Info()).setValue("100")).getValue()));
         return resultSet;
     }
 
@@ -890,5 +877,11 @@ public class TeacherService implements ITeacherService {
         resultSet.put("table_3_count_note", table_3_count_note);
         resultSet.put("table_4_grade", table_4_grade);
         return resultSet;
+    }
+
+    @Transactional(readOnly = true)
+    public List<TeacherInCourseDto> getTeachersInCourse(Long courseId){
+        List<Teacher> teachers = teacherDAO.findDistinctByTclasseCourseId(courseId);
+        return teacherBeanMapper.toTeacherInCourseDtoList(teachers);
     }
 }

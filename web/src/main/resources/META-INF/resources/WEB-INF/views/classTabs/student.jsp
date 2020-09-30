@@ -1346,6 +1346,16 @@
             }
         });
 
+        let criteriaActivePersonnelRegistered_studentjsp = {
+            _constructor: "AdvancedCriteria",
+            operator: "and",
+            criteria: [
+                {fieldName: "deleted", operator: "isNull"}
+            ]
+        };
+
+        PersonnelsRegLG_student.implicitCriteria = criteriaActivePersonnelRegistered_studentjsp;
+
         // ------------------------------------------- DynamicForm & Window -------------------------------------------
 
         let personnel_List_VLayout = isc.VLayout.create({
@@ -1621,7 +1631,6 @@
                 simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
                 refreshLG(StudentsLG_student);
             }else if (resp.httpResponseCode == 406) {
-                    console.log(resp);
                 createDialog('info',resp.httpResponseText,'خطا در حذف فراگير(ان)');
                 refreshLG(StudentsLG_student);
             } else if (resp.data == false) {
@@ -1876,7 +1885,7 @@
                                                 "personnelNo": person.personnelNo,
                                                 "applicantCompanyName": person.companyName,
                                                 "presenceTypeId": studentDefaultPresenceId,
-                                                "registerTypeId": url.indexOf(personnelUrl) > -1 ? 1 : 2
+                                                "registerTypeId": url.indexOf(personnelUrl+"/") > -1 ? 1 : 2
                                             });
                                         }
                                     }

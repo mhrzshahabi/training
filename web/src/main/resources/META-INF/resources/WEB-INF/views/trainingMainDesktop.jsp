@@ -748,7 +748,7 @@
                 this.exportToExcelFromServer(fields.fields, fileName, criteria, sortStr ,startRow, len, tmptitr, pageName, valueMaps);
             }
 
-            static downloadExcelFromRestUrl(listGrid, restUrl,startRow, len, parentListGrid, titr, pageName, criteria) {
+            static downloadExcelFromRestUrl(listGrid, restUrl,startRow, len, parentListGrid, titr, pageName, criteria, exceptColumn) {
 
                 let tmptitr = '';
 
@@ -758,7 +758,7 @@
                     tmptitr = titr;
                 }
 
-                let fields = this.getAllFields(listGrid);
+                let fields = this.getAllFields(listGrid, exceptColumn);
                 //let criteria=JSON.stringify(listGrid.data.criteria.criteria);
                 let sort = listGrid.getSort();
                 let sortStr='';
@@ -914,7 +914,7 @@
                 exportExcelWindow.show();
             }
 
-            static showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate){
+            static showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate, exceptColumn){
                 let size = listgrid.getOriginalData().size();
                 let maxCount=5000;
 
@@ -1016,7 +1016,7 @@
                                             }*/
 
                                             if(isValidate(trTrim(exportExcelForm.getValue("maxRow")))) {
-                                                ExportToFile.downloadExcelFromRestUrl(listgrid, restUrl, parseInt(trTrim(exportExcelForm.getValue("startRow")))-1, parseInt(trTrim(exportExcelForm.getValue("maxRow"))), parentListGrid, titr, pageName, Object.keys(criteria).map(function(key) {return {'name':key, 'value':criteria[key]};}));
+                                                ExportToFile.downloadExcelFromRestUrl(listgrid, restUrl, parseInt(trTrim(exportExcelForm.getValue("startRow")))-1, parseInt(trTrim(exportExcelForm.getValue("maxRow"))), parentListGrid, titr, pageName, Object.keys(criteria).map(function(key) {return {'name':key, 'value':criteria[key]};}), exceptColumn);
                                                 exportExcelWindow.close();
                                             }
                                         }
@@ -1045,9 +1045,9 @@
                     if(warning==1){
                         showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>نحوه مرتب سازي</b> و <b>فيلتر هاي اعمال شده</b> بر روي ليست گريد در خروجي اکسل اعمال نخواهند شد.');
                     }else if(warning ==2){
-                        showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>فيلتر هاي اعمال شده</b> بر روي ليست گريد در خروجي اکسل اعمال خواهند شد.');
+                        showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>فيلتر هاي اعمال شده</b> بر روي ليست گريد در خروجي اکسل اعمال نخواهند شد.');
                     }else if(warning ==3){
-                        showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>نحوه مرتب سازي</b> بر روي ليست گريد در خروجي اکسل اعمال خواهند شد.');
+                        showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>نحوه مرتب سازي</b> بر روي ليست گريد در خروجي اکسل اعمال نخواهند شد.');
                     }
 
                     if(showDialog != null){
@@ -1066,7 +1066,7 @@
                 }
             }
 
-            static downloadExcelRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate,warning,generateCriteria = false){
+            static downloadExcelRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate,warning,generateCriteria = false, exceptColumn){
 
                 if(listgrid.getOriginalData().size() > listgrid.getOriginalData().cachedRows || listgrid.getOriginalData().size() > 200){
 
@@ -1075,9 +1075,9 @@
                     if(warning == 1){
                         showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>نحوه مرتب سازي</b> و <b>فيلتر هاي اعمال شده</b> بر روي ليست گريد در خروجي اکسل اعمال نخواهند شد.');
                     }else if(warning == 2){
-                        showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>فيلتر هاي اعمال شده</b> بر روي ليست گريد در خروجي اکسل اعمال خواهند شد.');
+                        showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>فيلتر هاي اعمال شده</b> بر روي ليست گريد در خروجي اکسل اعمال نخواهند شد.');
                     }else if(warning == 3){
-                        showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>نحوه مرتب سازي</b> بر روي ليست گريد در خروجي اکسل اعمال خواهند شد.');
+                        showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>نحوه مرتب سازي</b> بر روي ليست گريد در خروجي اکسل اعمال نخواهند شد.');
                     }
 
                     if(criteria == null && generateCriteria){
@@ -1086,17 +1086,17 @@
 
                     if(showDialog != null){
                         let me=this;
-                        showDialog.addPropcerties({
+                        showDialog.addProperties({
                             buttonClick: function (button, index) {
                                 this.close();
-                                me.showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate);
+                                me.showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate, exceptColumn);
                             }
                         });
                     }else{
-                        this.showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate);
+                        this.showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate, exceptColumn);
                     }
                 }else{
-                    this.downloadExcelFromClient(listgrid, parentListGrid, titr, pageName);
+                    this.downloadExcelFromClient(listgrid, parentListGrid, titr, pageName, exceptColumn);
                 }
             }
         }
@@ -2236,15 +2236,6 @@
                             {isSeparator: true},
                             <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">
                             {
-                                title: "گزارش واحد آمار",
-                                click: function () {
-                                    createTab(this.title, "<spring:url value="web/statisticsUnitReport/"/>");
-                                }
-                            },
-                            {isSeparator: true},
-                            </sec:authorize>
-                            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">
-                            {
                                 title: "گزارش دوره های گذرانده فرد",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/coursesPassedPersonnelReport/"/>");
@@ -2365,12 +2356,22 @@
                             createTab(this.title, "<spring:url value="web/personnelTrainingStatusReport"/>");
                             }
                             },
+                            {isSeparator: true},
                             </sec:authorize>
                             <sec:authorize access="hasAuthority('Menu_continuous_Status_Report')">
                             {
                                 title: "<spring:message code="continuous.status.report"/>",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/continuousStatusReport"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            </sec:authorize>
+                            <sec:authorize access="hasAuthority('Menu_continuous_Status_Report')">
+                            {
+                                title: "گزارش اصلی واحد آمار",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/statisticsUnitReport/"/>");
                                 }
                             },
                             </sec:authorize>

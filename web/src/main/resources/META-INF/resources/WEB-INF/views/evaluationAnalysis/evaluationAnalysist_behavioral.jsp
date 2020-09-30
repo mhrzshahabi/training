@@ -88,7 +88,7 @@
                         isc.IButton.create({
                         title: "گزارش گیری",
                         click: function () {
-                            print(behavioralEvaluationClassId, {}, "behavioralReport.jasper",
+                            print_BehavioralEvaluationResult(behavioralEvaluationClassId, {}, "behavioralReport.jasper",
                                 DF_Report_Evaluation_Analysis.getValue("suggestions"),
                                 DF_Report_Evaluation_Analysis.getValue("opinion"));
                             Window_Report_Evaluation_Analysis.close();
@@ -110,15 +110,6 @@
         members: [BehavioralEvaluationChart1,BehavioralEvaluationChart2]
     });
 
-    // var Hlayout_BehavioralEvaluationResult = isc.HLayout.create({
-    //     width: "100%",
-    //     height: "75%",
-    //     // overflow: "scroll",
-    //     members: [
-    //         BehavioralEvaluationChartLayout,
-    //     ]
-    // });
-
     var Hlayout_BehavioralEvaluationResult = isc.VLayout.create({
         width: "100%",
         height: "100%",
@@ -131,7 +122,7 @@
         ]
     });
 
-    function print(ClassId, params, fileName,suggestions,opinion, type = "pdf") {
+    function print_BehavioralEvaluationResult(ClassId, params, fileName,suggestions,opinion, type = "pdf") {
         var criteriaForm = isc.DynamicForm.create({
             method: "POST",
             action: "<spring:url value="evaluationAnalysis/printBehavioralReport/"/>" + type,

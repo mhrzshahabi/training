@@ -33,4 +33,7 @@ public class ClassEvaluationGoals extends Auditable {
     @Column(name = "c_question")
     private String question;
 
+    @Column(name = "c_origin_question")
+    private String originQuestion;
+
 }

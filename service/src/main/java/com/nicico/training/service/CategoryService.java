@@ -57,7 +57,7 @@ public class CategoryService implements ICategoryService {
     public CategoryDTO.Info create(CategoryDTO.Create request) {
         final Category category = modelMapper.map(request, Category.class);
 
-        return save(category, request.getSubCategoryIds());
+        return save(category, request.getSubCategoryIds(),false);
     }
 
     @Transactional
@@ -70,7 +70,7 @@ public class CategoryService implements ICategoryService {
         modelMapper.map(category, updating);
         modelMapper.map(request, updating);
 
-        return save(updating, request.getSubCategoryIds());
+        return save(updating, request.getSubCategoryIds(),true);
     }
 
     @Transactional
@@ -101,16 +101,20 @@ public class CategoryService implements ICategoryService {
 
     // ------------------------------
 
-    private CategoryDTO.Info save(Category category, Set<Long> subCategoryIds) {
-        final Set<Subcategory> subCategorySet = new HashSet<>();
-        Optional.ofNullable(subCategoryIds)
-                .ifPresent(subCategoryIdSet -> subCategoryIdSet
-                        .forEach(subCategoryIdss ->
-                                subCategorySet.add(subCategoryDAO.findById(subCategoryIdss)
-                                        .orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SubCategoryNotFound)))
-                        ));
+    private CategoryDTO.Info save(Category category, Set<Long> subCategoryIds,boolean isUpdate) {
 
-        category.setSubCategorySet(subCategorySet);
+        if(!isUpdate){
+            final Set<Subcategory> subCategorySet = new HashSet<>();
+            Optional.ofNullable(subCategoryIds)
+                    .ifPresent(subCategoryIdSet -> subCategoryIdSet
+                            .forEach(subCategoryIdss ->
+                                    subCategorySet.add(subCategoryDAO.findById(subCategoryIdss)
+                                            .orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SubCategoryNotFound)))
+                            ));
+
+            category.setSubCategorySet(subCategorySet);
+        }
+
         final Category saved = categoryDAO.saveAndFlush(category);
         return modelMapper.map(saved, CategoryDTO.Info.class);
     }

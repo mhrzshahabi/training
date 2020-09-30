@@ -35,6 +35,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import request.course.CourseUpdateRequest;
 import response.course.CourseListResponse;
+import response.course.CourseUpdateResponse;
 import response.course.dto.CourseDto;
 
 import javax.servlet.http.HttpServletRequest;
@@ -141,7 +142,13 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
 
     @Loggable
     @PutMapping(value = "/{id}")
-    public ResponseEntity<CourseDTO.Info> update(@PathVariable Long id, @RequestBody CourseUpdateRequest request) {
+    public ResponseEntity<CourseUpdateResponse> update(@PathVariable Long id, @RequestBody CourseUpdateRequest request) {
+        if(request.getMainSkills().stream().anyMatch(skill->skill.getSubCategoryId() != request.getSubCategory().getId())){
+            CourseUpdateResponse response = new CourseUpdateResponse();
+            response.setMessage("خطا: زیرگروه اهداف اصلی با زیرگروه دوره همخوانی ندارد!");
+            response.setStatus(409);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
         return new ResponseEntity<>(courseService.update(beanMapper.updateCourse(request,
                 courseService.getCourse(id)), request.getMainSkills().stream().map(SkillDto::getId)
                 .collect(Collectors.toList())), HttpStatus.OK);
@@ -203,12 +210,13 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
             if (request.getCriteria() != null && request.getCriteria().getCriteria() != null)
             {
                 for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
-                    if(criterion.getFieldName().equals("duration")) {
-                        criterion.setFieldName("theoryDuration");
+                    if(criterion.getFieldName()!=null) {
+                        if (criterion.getFieldName().equals("duration")) {
+                            criterion.setFieldName("theoryDuration");
+                        }
                     }
                 }
             }
-
         }
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
@@ -254,8 +262,6 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     //@PreAuthorize("hasAuthority('r_teacher')")
     //TODO:Unknown
     public ResponseEntity<GoalDTO.GoalSpecRs> getGoal(@PathVariable Long courseId) {
-
-//        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
         List<GoalDTO.Info> goal = courseService.getGoal(courseId);
 
@@ -405,7 +411,6 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
 
-//        final SearchDTO.SearchRs<CourseDTO.Info> searchRs = courseService.search(searchRq);
         final SearchDTO.SearchRs<CourseDTO.InfoPrint> searchRs = courseService.searchGeneric(searchRq, CourseDTO.InfoPrint.class);
 
         final Map<String, Object> params = new HashMap<>();

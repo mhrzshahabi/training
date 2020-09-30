@@ -61,8 +61,8 @@ function change_fontFace(){
         // console.log(getSearchParameters())
         newStyle.appendChild(document.createTextNode("\
 @font-face {\
-    font-family: BYekan ;\
-        src: local('☺'), url('./static/fonts/BYekan.woff') format('woff'), url('./static/fonts/BYekan.otf') format('opentype'), url('./static/fonts/BYekan.ttf') format('truetype');\
+    font-family: IRANSansNum;\
+        src: local('☺'), url('./static/fonts/IRANSansWeb(FaNum)_Light.woff') format('woff'), url('./static/fonts/IRANSansWeb(FaNum)_Light.otf') format('opentype'), url('./static/fonts/IRANSansWeb(FaNum)_Light.ttf') format('truetype');\
 }\
 "));
     }else {

@@ -1,8 +1,11 @@
 package com.nicico.training.controller;
 
 
+import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.model.EvaluationAnalysis;
 import com.nicico.training.service.EvaluationAnalysisService;
+import com.nicico.training.service.ParameterService;
 import lombok.RequiredArgsConstructor;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.springframework.http.*;
@@ -26,6 +29,7 @@ import java.util.Arrays;
 public class EvaluationAnalysisFormController {
 
     private final EvaluationAnalysisService evaluationAnalysisService;
+    private final ParameterService parameterService;
 
     @RequestMapping("/show-form")
     public String showForm() {
@@ -73,6 +77,29 @@ public class EvaluationAnalysisFormController {
         params.add("numberOfInCompletedReactionEvaluationForms", object.get("numberOfInCompletedReactionEvaluationForms").toString());
         params.add("percenetOfFilledReactionEvaluationForms", object.get("percenetOfFilledReactionEvaluationForms").toString());
 
+        boolean minQuestionCount = false;
+        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("FER");
+        ParameterValueDTO.Info info = parameters.getResponse().getData().stream().filter(p -> p.getCode().equals("minQusER")).findFirst().orElse(null);
+        assert info != null;
+        if(Double.parseDouble(info.getValue()) <= Double.parseDouble(object.get("percenetOfFilledReactionEvaluationForms").toString()))
+            minQuestionCount = true;
+
+        if(!minQuestionCount){
+            params.add("FERPass", "عدم تائید (نرسیدن به حد نصاب پرسشنامه ها)");
+            params.add("FETPass", "عدم تائید (نرسیدن به حد نصاب پرسشنامه ها)");
+        }
+        else{
+            if(!object.isNull("FERPass") && Boolean.parseBoolean(object.get("FERPass").toString()))
+                params.add("FERPass", "تائید");
+            else
+                params.add("FERPass", "عدم تائید");
+
+            if(!object.isNull("FETPass") && Boolean.parseBoolean(object.get("FETPass").toString()))
+                params.add("FETPass", "تائید");
+            else
+                params.add("FETPass", "عدم تائید");
+
+        }
         if(!object.isNull("FERGrade"))
             params.add("FERGrade", object.get("FERGrade").toString());
         else
@@ -85,18 +112,10 @@ public class EvaluationAnalysisFormController {
             params.add("FECRGrade", object.get("FECRGrade").toString());
         else
             params.add("FECRGrade", "");
-        if(!object.isNull("FERPass"))
-            params.add("FERPass", object.get("FERPass").toString());
+        if(!object.isNull("FECRPass") && Boolean.parseBoolean(object.get("FECRPass").toString()))
+            params.add("FECRPass", "تائید");
         else
-            params.add("FERPass", "");
-        if(!object.isNull("FETPass"))
-            params.add("FETPass", object.get("FETPass").toString());
-        else
-            params.add("FETPass", "");
-        if(!object.isNull("FECRPass"))
-            params.add("FECRPass", object.get("FECRPass").toString());
-        else
-            params.add("FECRPass", "");
+            params.add("FECRPass", "عدم تائید");
         if(!object.isNull("minScore_ER"))
             params.add("minScore_ER", object.get("minScore_ER").toString());
         else

@@ -6,8 +6,6 @@ package com.nicico.training.repository;
 import com.nicico.training.model.Course;
 import com.nicico.training.model.Tclass;
 import com.nicico.training.model.Teacher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.lang.Nullable;

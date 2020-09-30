@@ -55,14 +55,14 @@ public interface ViewActivePersonnelDAO extends JpaRepository<ViewActivePersonne
 
     Optional<ViewActivePersonnel> findById(Long Id);
 
-    @Query(value = "SELECT complex_title FROM view_active_personnel where national_code = :national_code AND active = 1 AND employment_status_id=5 AND ROWNUM < 2", nativeQuery = true)
+    @Query(value = "SELECT complex_title FROM view_active_personnel where national_code = :national_code AND ROWNUM < 2", nativeQuery = true)
     String getComplexTitleByNationalCode(String national_code);
 
     @Transactional
     @Query(value = "select CONCAT(CONCAT(first_name, ' '), last_name) from view_active_personnel p where p.ID = ?", nativeQuery = true)
     String getPersonnelFullName(Long personnelID);
 
-    @Query(value = "SELECT MAX(ID) FROM view_active_personnel where PERSONNEL_NO = :PERSONNEL_NO AND active = 1 AND employment_status_id=5", nativeQuery = true)
+    @Query(value = "SELECT MAX(ID) FROM view_active_personnel where PERSONNEL_NO = :PERSONNEL_NO", nativeQuery = true)
     Long getPersonnelIdByPersonnelNo(String PERSONNEL_NO);
 
     @Query(value = "SELECT DISTINCT POST_GRADE_TITLE FROM view_active_personnel WHERE POST_GRADE_TITLE IS NOT NULL", nativeQuery = true)

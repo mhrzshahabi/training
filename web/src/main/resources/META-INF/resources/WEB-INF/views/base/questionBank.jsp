@@ -313,6 +313,9 @@
                 pickListFields: [
                     {name: "title"}
                     ]
+                },
+                sortNormalizer: function (record) {
+                    return record.displayType?.title;
                 }
             },
             {name: "questionType.id",
@@ -331,13 +334,17 @@
                 textMatchStyle: "substring",
                 generateExactMatchCriteria: true,
                 pickListProperties: {
-                showFilterEditor: false,
-                autoFitWidthApproach: "both"
-            },
-            pickListFields: [
-                {name: "title"}
+                    showFilterEditor: false,
+                    autoFitWidthApproach: "both"
+                },
+                pickListFields: [
+                    {name: "title"}
                 ]
-            }},
+                },
+                sortNormalizer: function (record) {
+                    return record.questionType?.title;
+                }
+            },
             {
                 name: "category.id",
                 optionDataSource: RestDataSource_category,
@@ -361,6 +368,9 @@
                     pickListFields: [
                         {name: "titleFa"}
                     ]
+                },
+                sortNormalizer: function (record) {
+                    return record.category?.titleFa;
                 }
             },
             {
@@ -386,14 +396,17 @@
                     pickListFields: [
                         {name: "titleFa"}
                     ]
+                },
+                sortNormalizer: function (record) {
+                    return record.subCategory?.titleFa;
                 }
             },
-            {name: "teacher.fullNameFa",},
-            {name: "course.titleFa",},
-            {name: "tclass.course.titleFa",},
-            {name: "tclass.code",},
-            {name: "tclass.startDate",},
-            {name: "tclass.endDate",},
+            {name: "teacher.fullNameFa",canFilter: false,canSort: false},
+            {name: "course.titleFa",sortNormalizer: function (record) {let tmp=record.course?.titleFa; tmp=(typeof(tmp)=="undefined")?"":tmp; return tmp; }},
+            {name: "tclass.course.titleFa",sortNormalizer: function (record) {let tmp=record.tclass?.course?.titleFa; tmp=(typeof(tmp)=="undefined")?"":tmp; return tmp; }},
+            {name: "tclass.code",sortNormalizer: function (record) { return record.tclass?.code; }},
+            {name: "tclass.startDate",sortNormalizer: function (record) { return record.tclass?.startDate; }},
+            {name: "tclass.endDate",sortNormalizer: function (record) { return record.tclass?.endDate; }},
         ],
         autoFetchData: true,
         gridComponents: [QuestionBankTS_questionBank, "filterEditor", "header", "body",],
@@ -1439,6 +1452,10 @@
                                         dialog.close();
                                     }, dialogShowTime);
                                     refresh_questionBank();
+                                } else if(resp.httpResponseCode == 404){
+                                    createDialog("warning", "چنین سوالی وجود ندارد", "اخطار");
+                                }else if(resp.httpResponseCode == 406){
+                                    createDialog("warning", "بدلیل استفاده در سوالات «آزمون پایانی» یا «پیش آزمون» امکان حذف این سوال وجود ندارد.", "اخطار");
                                 } else {
                                     createDialog("warning", "خطا در حذف سوال", "اخطار");
                                 }
