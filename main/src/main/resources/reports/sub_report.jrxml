@@ -13,41 +13,80 @@
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
-	<field name="series" class="java.lang.Integer"/>
-	<field name="xCoordinate" class="java.lang.Integer"/>
-	<field name="yCoordinate" class="java.lang.Integer"/>
+	<field name="series" class="java.lang.String"/>
+	<field name="xCoordinate" class="java.lang.String"/>
+	<field name="yCoordinate" class="java.lang.Double"/>
 	<field name="title" class="java.lang.String"/>
+	<field name="maxValue" class="java.lang.Double"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<summary>
-		<band height="221">
-			<xyLineChart>
+		<band height="250">
+			<multiAxisChart>
 				<chart evaluationTime="Report">
-					<reportElement positionType="Float" x="20" y="10" width="200" height="200" uuid="6f792d48-81d1-4469-94a8-de8919a839d5"/>
-					<chartTitle>
-						<titleExpression><![CDATA[$F{title}]]></titleExpression>
-					</chartTitle>
+					<reportElement x="20" y="20" width="200" height="200" uuid="7c59bfa0-5ce4-4517-8980-052069c0e8ce"/>
+					<chartTitle/>
 					<chartSubtitle/>
 					<chartLegend/>
 				</chart>
-				<xyDataset>
-					<xySeries autoSort="true">
-						<seriesExpression><![CDATA[$F{series}]]></seriesExpression>
-						<xValueExpression><![CDATA[$F{xCoordinate}]]></xValueExpression>
-						<yValueExpression><![CDATA[$F{yCoordinate}]]></yValueExpression>
-					</xySeries>
-				</xyDataset>
-				<linePlot>
+				<multiAxisPlot>
 					<plot/>
-					<categoryAxisFormat>
-						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000"/>
-					</categoryAxisFormat>
-					<valueAxisFormat>
-						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000"/>
-					</valueAxisFormat>
-				</linePlot>
-			</xyLineChart>
+					<axis>
+						<lineChart>
+							<chart evaluationTime="Report">
+								<reportElement x="0" y="0" width="0" height="0" backcolor="#FFFFFF" uuid="e31908d0-bf6e-4ed5-b848-3c5dc50d439e"/>
+								<chartTitle color="#000000"/>
+								<chartSubtitle color="#000000"/>
+								<chartLegend textColor="#000000" backgroundColor="#FFFFFF"/>
+							</chart>
+							<categoryDataset>
+								<categorySeries>
+									<seriesExpression><![CDATA["حد نصاب قابل قبول برای نمره ی واکنشی "]]></seriesExpression>
+									<categoryExpression><![CDATA[$F{xCoordinate}]]></categoryExpression>
+									<valueExpression><![CDATA[$F{maxValue}]]></valueExpression>
+								</categorySeries>
+							</categoryDataset>
+							<linePlot>
+								<plot/>
+								<categoryAxisFormat>
+									<axisFormat/>
+								</categoryAxisFormat>
+								<valueAxisFormat>
+									<axisFormat/>
+								</valueAxisFormat>
+							</linePlot>
+						</lineChart>
+					</axis>
+					<axis position="rightOrBottom">
+						<barChart>
+							<chart evaluationTime="Report">
+								<reportElement x="0" y="0" width="0" height="0" backcolor="#FFFFFF" uuid="458ca72a-fb38-44f6-90a9-2c56cc796696"/>
+								<chartTitle color="#000000"/>
+								<chartSubtitle color="#000000"/>
+								<chartLegend textColor="#000000" backgroundColor="#FFFFFF"/>
+							</chart>
+							<categoryDataset>
+								<categorySeries>
+									<seriesExpression><![CDATA[$F{series}]]></seriesExpression>
+									<categoryExpression><![CDATA[$F{xCoordinate}]]></categoryExpression>
+									<valueExpression><![CDATA[$F{yCoordinate}]]></valueExpression>
+								</categorySeries>
+							</categoryDataset>
+							<barPlot>
+								<plot/>
+								<itemLabel/>
+								<categoryAxisFormat>
+									<axisFormat/>
+								</categoryAxisFormat>
+								<valueAxisFormat>
+									<axisFormat/>
+								</valueAxisFormat>
+							</barPlot>
+						</barChart>
+					</axis>
+				</multiAxisPlot>
+			</multiAxisChart>
 		</band>
 	</summary>
 </jasperReport>

@@ -1,8 +1,6 @@
 package com.nicico.training.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.grid.TotalResponse;
@@ -12,38 +10,21 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationAnalysisService;
-import com.nicico.training.iservice.ITclassService;
-import com.nicico.training.model.*;
-import com.nicico.training.repository.ClassStudentDAO;
-import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.*;
+import com.nicico.training.utility.PersianCharachtersUnicode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.data.JsonDataSource;
-import net.sf.jasperreports.engine.util.JRLoader;
 import org.activiti.engine.impl.util.json.JSONObject;
-import org.apache.commons.lang3.StringUtils;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.nio.charset.Charset;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -53,6 +34,9 @@ public class EvaluationAnalysisRestController {
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final IEvaluationAnalysisService evaluationAnalysisService;
+    private final ViewEvaluationStaticalReportService viewEvaluationStaticalReportService;
+    private final CategoryService categoryService;
+    private final ParameterService parameterService;
 
     @Loggable
     @PostMapping(value = {"/printReactionEvaluation"})
@@ -294,48 +278,134 @@ public class EvaluationAnalysisRestController {
 
     @Loggable
     @PostMapping(value = {"/printReactionEvaluationReport"})
-    public void printReactionEvaluationReport(HttpServletResponse response) throws Exception {
-        final Gson gson = new Gson();
-        Type resultType = new TypeToken<HashMap<String, Object>>() {
-        }.getType();
+    public void printReactionEvaluationReport(HttpServletResponse response, @RequestParam(value = "CriteriaStr") String criteriaStr,
+                                              @RequestParam(value = "title") String title,
+                                              @RequestParam(value = "description") String description) throws Exception {
+
+        //////////////////// word ////////////////////
+//        String sourceFileName ="C:\\Users\\razmnoosh\\IdeaProjects\\training\\main\\src\\main\\resources\\reports\\reactionEvaluationReport.jasper";
+//        Map<String, Object> params = new HashMap();
+//        List<List<Coordinates>> allchartData = new ArrayList<>();
+//
+//        List<Coordinates> chartData = null;
+//        chartData = new ArrayList<>();
+//        chartData.add(new Coordinates(1, "شاخص 1", 30.0,"table1"));
+//        chartData.add(new Coordinates(2, "شاخص 2", 40.0,"table1"));
+//        chartData.add(new Coordinates(3, "شاخص 3", 50.0,"table1"));
+//
+//        allchartData.add(chartData);
+//        chartData = new ArrayList<>();
+//        chartData.add(new Coordinates(1, "شاخص 1", 25.0,"table2"));
+//        chartData.add(new Coordinates(2, "شاخص 2", 60.0,"table2"));
+//        chartData.add(new Coordinates(3, "شاخص 3", 80.0,"table2"));
+//
+//        allchartData.add(chartData);
+//
+//        params.put("XYChartDataSource", allchartData);
+//        params.put("reportTime","تیر ماه");
+//        params.put("todayDate",DateUtil.todayDate());
+//        params.put("minFerGrade","75");
+//
+//        List<TableData> tableData = new ArrayList<>();
+//        TableData tableData1 = new TableData("20","دوره 1");
+//        TableData tableData2 = new TableData("30","دوره 2");
+//        tableData.add(tableData1);
+//        tableData.add(tableData2);
+//
+//        JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(tableData);
+//
+//        JasperPrint jasperPrint = JasperFillManager.fillReport(sourceFileName, params, beanColDataSource);
+//        JRDocxExporter exporter = new JRDocxExporter();
+//        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+//        exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(response.getOutputStream()));
+//        response.setHeader("Content-Disposition", "attachment;filename=jasperfile.docx");
+//        response.setContentType("application/octet-stream");
+//        exporter.exportReport();
+        //////////////////// word ////////////////////
+
+        final SearchDTO.CriteriaRq criteriaRq;
+        final SearchDTO.SearchRq searchRq;
+        if (criteriaStr.equalsIgnoreCase("{}")) {
+            searchRq = new SearchDTO.SearchRq();
+        } else {
+            criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
+
+            SearchDTO.CriteriaRq criteriaRq1 = new SearchDTO.CriteriaRq();
+            criteriaRq1.setValue(null);
+            criteriaRq1.setOperator(EOperator.notNull);
+            criteriaRq1.setFieldName("evaluationReactionGrade");
+            criteriaRq.getCriteria().add(criteriaRq1);
+
+            SearchDTO.CriteriaRq criteriaRq2 = new SearchDTO.CriteriaRq();
+            criteriaRq2.setValue(new Integer(0));
+            criteriaRq2.setOperator(EOperator.notEqual);
+            criteriaRq2.setFieldName("tclassStudentsCount");
+            criteriaRq.getCriteria().add(criteriaRq2);
+
+            searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+        }
+        final SearchDTO.SearchRs<ViewEvaluationStaticalReportDTO.Info> searchRs = viewEvaluationStaticalReportService.search(searchRq);
 
         Map<String, Object> params = new HashMap();
 
         List<List<Coordinates>> allchartData = new ArrayList<>();
+        List<TableData> tableData = new ArrayList<>();
+        List<CategoryDTO.Info> categoryList =  categoryService.list();
+        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("FER");
+        ParameterValueDTO.Info minFerGrade = parameters.getResponse().getData().stream().filter(p -> p.getCode().equals("minScoreER")).findFirst().orElse(null);
 
-        List<Coordinates> chartData = null;
-        chartData = new ArrayList<>();
-        chartData.add(new Coordinates(1, 20, 30,"table1"));
-        chartData.add(new Coordinates(2, 10, 40,"table1"));
-        chartData.add(new Coordinates(3, 5, 50,"table1"));
-
-        allchartData.add(chartData);
-        chartData = new ArrayList<>();
-        chartData.add(new Coordinates(1, 30, 25,"table2"));
-        chartData.add(new Coordinates(2, 40, 60,"table2"));
-        chartData.add(new Coordinates(3, 70, 80,"table2"));
-
-        allchartData.add(chartData);
+        int catCount = 1;
+        for (CategoryDTO.Info category : categoryList) {
+               List<ViewEvaluationStaticalReportDTO.Info> list =  searchRs.getList().stream().filter(p->p.getCourseCategory().equals(category.getId())).collect(Collectors.toList());
+               if(list != null && list.size() != 0){
+                   List<Coordinates> chartData = new ArrayList<>();
+                   int index = 1;
+                   for (ViewEvaluationStaticalReportDTO.Info info : list) {
+                       chartData.add(new Coordinates(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode(), index + "" ,
+                               Double.parseDouble(info.getEvaluationReactionGrade()), PersianCharachtersUnicode.bidiReorder(catCount + ". واحد " + category.getTitleFa()),
+                               Double.parseDouble(minFerGrade.getValue())));
+                       index++;
+                       if(Double.parseDouble(info.getEvaluationReactionGrade()) < Double.parseDouble(minFerGrade.getValue())){
+                           TableData tableData1 = new TableData(info.getEvaluationReactionGrade(),info.getCourseTitleFa() + "/" + info.getTclassCode());
+                           tableData.add(tableData1);
+                       }
+                   }
+                   allchartData.add(chartData);
+                   catCount++;
+               }
+        }
 
         params.put("XYChartDataSource", allchartData);
-        params.put("reportTime","تیر ماه");
+        params.put("title", title);
         params.put("todayDate",DateUtil.todayDate());
         params.put(ConstantVARs.REPORT_TYPE, "PDF");
+        params.put("minFerGrade",minFerGrade.getValue());
+        params.put("description",description);
 
-        String data = objectMapper.writeValueAsString(allchartData);
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(tableData) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
 
         reportUtil.export("/reports/reactionEvaluationReport.jasper", params, jsonDataSource, response);
     }
 
     public static class Coordinates{
-        private Integer series;
+        private String series;
 
-        private Integer xCoordinate;
+        private String xCoordinate;
 
-        private Integer yCoordinate;
+        private Double yCoordinate;
+
+        private Double maxValue;
 
         private String title;
+
+        public Double getMaxValue() {
+            return maxValue;
+        }
+
+        public void setMaxValue(Double maxValue) {
+            this.maxValue = maxValue;
+        }
 
         public void setTitle(String title) {
             this.title = title;
@@ -345,36 +415,66 @@ public class EvaluationAnalysisRestController {
             return title;
         }
 
-        public Coordinates(Integer series, Integer xCoordinate, Integer yCoordinate, String title){
+        public Coordinates(String series, String xCoordinate, Double yCoordinate, String title,Double maxValue){
             this.series = series;
             this.xCoordinate = xCoordinate;
             this.yCoordinate = yCoordinate;
             this.title = title;
+            this.maxValue = maxValue;
         }
 
-        public Integer getSeries() {
+        public String getSeries() {
             return series;
         }
 
-        public Integer getxCoordinate() {
+        public String getxCoordinate() {
             return xCoordinate;
         }
 
-        public Integer getyCoordinate() {
+        public Double getyCoordinate() {
             return yCoordinate;
         }
 
-        public void setSeries(Integer series) {
+        public void setSeries(String series) {
             this.series = series;
         }
 
-        public void setxCoordinate(Integer xCoordinate) {
+        public void setxCoordinate(String xCoordinate) {
             this.xCoordinate = xCoordinate;
         }
 
-        public void setyCoordinate(Integer yCoordinate) {
+        public void setyCoordinate(Double yCoordinate) {
             this.yCoordinate = yCoordinate;
         }
+        }
+
+        public static class TableData{
+        public TableData(String courseGrade, String courseName) {
+            this.courseGrade = courseGrade;
+            this.courseName = courseName;
+        }
+
+        public void setCourseGrade(String courseGrade) {
+            this.courseGrade = courseGrade;
+        }
+
+        public void setCourseName(String courseName) {
+            this.courseName = courseName;
+        }
+
+        public TableData() {
+        }
+
+        public String getCourseGrade() {
+            return courseGrade;
+        }
+
+        public String getCourseName() {
+            return courseName;
+        }
+
+        private String courseGrade;
+        private String courseName;
     }
 
 

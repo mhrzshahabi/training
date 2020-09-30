@@ -1659,7 +1659,7 @@ WITH result AS (
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW_EVALUATION_STATICAL_REPORT-012">
+    <changeSet author="NICICO" id="VIEW_EVALUATION_STATICAL_REPORT-013">
         <createView viewName="VIEW_EVALUATION_STATICAL_REPORT" replaceIfExists="true">
             <![CDATA[
 	 SELECT
@@ -1690,6 +1690,7 @@ WITH result AS (
         tclass.C_START_DATE as tclass_c_start_date,
         tclass.C_END_DATE as tclass_c_end_date,
         tclass.C_EVALUATION as tclass_evaluation,
+        tclass.c_teaching_type as tclass_teaching_type,
         SUBSTR(tclass.C_START_DATE,1,4) as tclass_year,
         course.C_CODE as course_c_code,
         course.CATEGORY_ID as course_category_id,

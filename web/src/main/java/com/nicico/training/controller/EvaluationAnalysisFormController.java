@@ -1,10 +1,16 @@
 package com.nicico.training.controller;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.nicico.copper.common.dto.search.EOperator;
+import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.ViewClassDetailDTO;
 import com.nicico.training.model.EvaluationAnalysis;
 import com.nicico.training.service.EvaluationAnalysisService;
+import com.nicico.training.service.ViewClassDetailService;
 import lombok.RequiredArgsConstructor;
 import org.activiti.engine.impl.util.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.stereotype.Controller;
@@ -19,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
@@ -213,6 +220,7 @@ public class EvaluationAnalysisFormController {
     public ResponseEntity<?> printReactionEvaluationReport(final HttpServletRequest request) {
         String token = request.getParameter("token");
         JSONObject object = new JSONObject(request.getParameter("data"));
+        MultiValueMap<String, String> params = new LinkedMultiValueMap();
         final RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
 
@@ -222,11 +230,14 @@ public class EvaluationAnalysisFormController {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 
-        MultiValueMap<String, String> params = new LinkedMultiValueMap();
+        params.add("CriteriaStr", request.getParameter("CriteriaStr"));
+        params.add("title", "");
+        params.add("description", "");
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers);
 
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
+
 
         return restTemplate.exchange(restApiUrl + "/api/evaluationAnalysis/printReactionEvaluationReport" , HttpMethod.POST, entity, byte[].class);
     }
