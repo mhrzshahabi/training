@@ -54,7 +54,7 @@ public class Competence extends Auditable {
     @Column(name = "subcategory_id")
     private Long subCategoryId;
 
-    @Column(name = "c_code", unique = true)
+    @Column(name = "c_code", unique = true, nullable = false)
     private String code;
 
     @Column(name = "n_work_flow_code")
