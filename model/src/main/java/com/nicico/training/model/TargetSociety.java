@@ -13,7 +13,7 @@ import javax.persistence.*;
 @EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
 @Table(name = "tbl_target_society")
-public class TargetSociety extends Auditable  {
+public class TargetSociety extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_target_society_id")
@@ -22,6 +22,10 @@ public class TargetSociety extends Auditable  {
 
     @Column(name = "f_society_id")
     private Long societyId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_society_id", insertable = false, updatable = false)
+    private Department society;
 
     @Column(name = "c_title")
     private String title;

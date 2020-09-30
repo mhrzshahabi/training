@@ -395,13 +395,13 @@
         criteria.operator = "or";
         criteria.criteria = [];
         criteria.criteria.push({fieldName: "title", operator: "iContains", value: value});
-        criteria.criteria.push({fieldName: "code", operator: "startsWith", value: value});
+        criteria.criteria.push({fieldName: "code", operator: "iContains", value: value});
 
         let  AdvanceCriteria = {};
         AdvanceCriteria.operator = "and";
         AdvanceCriteria._constructor = "AdvancedCriteria";
         AdvanceCriteria.criteria = [];
-        AdvanceCriteria.criteria.push({fieldName: "enabled", operator: "isNull", value: null});
+        AdvanceCriteria.criteria.push({fieldName: "enabled", operator: "isNull"});
         AdvanceCriteria.criteria.push(criteria);
 
         getSearchData(AdvanceCriteria);

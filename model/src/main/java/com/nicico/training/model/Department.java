@@ -1,5 +1,6 @@
 package com.nicico.training.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.hibernate.annotations.Immutable;
 
@@ -10,6 +11,7 @@ import java.util.Date;
 @Entity
 @Immutable
 @Table(name = "tbl_department")
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
 public class Department extends Auditable {
 
     @Id

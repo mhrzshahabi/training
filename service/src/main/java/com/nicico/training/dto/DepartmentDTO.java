@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 import java.util.List;
@@ -83,27 +83,14 @@ public class DepartmentDTO implements Serializable {
 
     @Getter
     @Setter
+    @EqualsAndHashCode(of = {"id"}, callSuper = false)
     @ApiModel("TSociety")
-    public static class TSociety{
+    public static class TSociety {
 
         private Long id;
         public String title;
         public String code;
         public Long parentId;
-
-        @Override
-        public int hashCode() {
-            return new HashCodeBuilder(17, 31).
-                    append(code).
-                    toHashCode();
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (!(obj instanceof CompetenceWebserviceDTO))
-                return false;
-            return (this.getId().equals(((CompetenceWebserviceDTO.TupleInfo) obj).getId()));
-        }
     }
 
 }

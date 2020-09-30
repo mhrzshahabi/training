@@ -108,7 +108,7 @@ public class DepartmentService extends GenericService<Department, Long, Departme
                 values = departmentDAO.findAllAffairsFromDepartment();
                 break;
 
-             case "ccpUnit":
+            case "ccpUnit":
                 values = departmentDAO.findAllUnitsFromDepartment();
                 break;
 
@@ -116,7 +116,7 @@ public class DepartmentService extends GenericService<Department, Long, Departme
                 values = departmentDAO.findAllAssistantsFromDepartment();
                 break;
 
-           case "ccpArea":
+            case "ccpArea":
                 values = departmentDAO.findAllAreasFromDepartment();
                 break;
 
@@ -137,7 +137,7 @@ public class DepartmentService extends GenericService<Department, Long, Departme
     }
 
     @Transactional(readOnly = true)
-    public List<DepartmentDTO.TSociety> getRoot(){
+    public List<DepartmentDTO.TSociety> getRoot() {
         return modelMapper.map(departmentDAO.getRoot(), new TypeToken<List<DepartmentDTO.TSociety>>() {
         }.getType());
     }
@@ -150,19 +150,20 @@ public class DepartmentService extends GenericService<Department, Long, Departme
         criteriaRq.getCriteria().add(makeNewCriteria("enabled", null, EOperator.isNull, null));
         searchRq.setCriteria(criteriaRq);
         List<DepartmentDTO.Info> infoList = search(searchRq).getList();
-        Iterator<DepartmentDTO.Info> iterator =infoList.iterator();
-        while(iterator.hasNext()) {
+        Iterator<DepartmentDTO.Info> iterator = infoList.iterator();
+        while (iterator.hasNext()) {
             DepartmentDTO.Info removedObject = iterator.next();
-            if(removedObject.getId().equals(parentId))
+            if (removedObject.getId().equals(parentId))
                 iterator.remove();
         }
-        return modelMapper.map(infoList,new TypeToken<List<DepartmentDTO.TSociety>>() {}.getType());
+        return modelMapper.map(infoList, new TypeToken<List<DepartmentDTO.TSociety>>() {
+        }.getType());
     }
 
     @Override
     public List<DepartmentDTO.TSociety> getDepartmentsByParentIds(List<Long> parentsId) {
         SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
-        if(parentsId.size() > 0) {
+        if (parentsId.size() > 0) {
             SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
             criteriaRq.getCriteria().add(makeNewCriteria("parentId", parentsId, EOperator.inSet, null));
             criteriaRq.getCriteria().add(makeNewCriteria("enabled", null, EOperator.isNull, null));
@@ -174,44 +175,40 @@ public class DepartmentService extends GenericService<Department, Long, Departme
                 if (parentsId.contains(removedObject.getId()))
                     iterator.remove();
             }
-            return modelMapper.map(infoList,new TypeToken<List<DepartmentDTO.TSociety>>() {}.getType());
-        }else
+            return modelMapper.map(infoList, new TypeToken<List<DepartmentDTO.TSociety>>() {
+            }.getType());
+        } else
             return new ArrayList<>();
     }
 
     @Override
     public List<DepartmentDTO.TSociety> searchSocieties(SearchDTO.SearchRq request) {
-        List<DepartmentDTO.TSociety> infoList = modelMapper.map(search(request).getList(),new TypeToken<List<DepartmentDTO.TSociety>>() {}.getType());
+        List<DepartmentDTO.TSociety> infoList = modelMapper.map(search(request).getList(), new TypeToken<List<DepartmentDTO.TSociety>>() {
+        }.getType());
         Set<DepartmentDTO.TSociety> departments = new HashSet<>();
         Long anccestorId = null;
-        if(infoList.size() > 0) {
+        if (infoList.size() > 0) {
             List<DepartmentDTO.TSociety> roots = getRoot();
             DepartmentDTO.TSociety society = roots.get(0);
             anccestorId = roots.get(0).getId();
             society.setParentId(0L);
             departments.add(society);
         }
-        for(DepartmentDTO.TSociety child : infoList){
-            departments.addAll(findDeparmentAnccestor(anccestorId,child.getParentId()));
+        for (DepartmentDTO.TSociety child : infoList) {
+            departments.addAll(findDeparmentAnccestor(anccestorId, child.getParentId()));
             departments.add(child);
         }
-        return new ArrayList<DepartmentDTO.TSociety>(departments);
+        return new ArrayList<>(departments);
     }
 
 
-
-
-
-
-
-    private List<DepartmentDTO.TSociety> findDeparmentAnccestor(Long anccestorId, Long parentId){
+    private List<DepartmentDTO.TSociety> findDeparmentAnccestor(Long anccestorId, Long parentId) {
         List<DepartmentDTO.TSociety> parents = new ArrayList<>();
         DepartmentDTO.TSociety parent = modelMapper.map(get(parentId), DepartmentDTO.TSociety.class);
-        if(parent.getParentId().equals(anccestorId)) {
+        if (parent.getParentId().equals(anccestorId)) {
             parents.add(parent);
             return parents;
-        }
-        else {
+        } else {
             parents.add(parent);
             parents.addAll(findDeparmentAnccestor(anccestorId, parent.getParentId()));
         }
