@@ -122,17 +122,21 @@ public class SendMessageService implements ISendMessageService {
                 paramValMap.put(parameter.getName(), parameter.getValue());
             }
 
-            Long messageId = Long.parseLong(nimadSMSService.syncEnqueue(pid, paramValMap, numbers).get(0));
+            try{
+                Long messageId = Long.parseLong(nimadSMSService.syncEnqueue(pid, paramValMap, numbers).get(0));
 
-            //magfaSMSService.asyncEnqueue(numbers, ++messageId, masterList.get(i).getContextText());
+                //magfaSMSService.asyncEnqueue(numbers, ++messageId, masterList.get(i).getContextText());
 
-            MessageContact messageContact = messageContactDAO.findById(masterList.get(i).getMessageContactId()).orElse(null);
+                MessageContact messageContact = messageContactDAO.findById(masterList.get(i).getMessageContactId()).orElse(null);
 
-            if (messageContact.getCountSent() + 1 >= masterList.get(i).getCountSend()) {
-                messageParameterDAO.deleteByMCId(messageContact.getId());
-                messageContactDAO.deleteById(messageContact.getId());
-            } else {
-                messageContactDAO.updateAfterSendMessage(messageId,(long)(messageContact.getCountSent() + 1),new Date(),messageContact.getId());
+                if (messageContact.getCountSent() + 1 >= masterList.get(i).getCountSend()) {
+                    messageParameterDAO.deleteByMCId(messageContact.getId());
+                    messageContactDAO.deleteById(messageContact.getId());
+                } else {
+                    messageContactDAO.updateAfterSendMessage(messageId,(long)(messageContact.getCountSent() + 1),new Date(),messageContact.getId());
+                }
+            }catch(Exception ex){
+
             }
         }
     }
