@@ -16,6 +16,7 @@ import com.nicico.training.model.Tclass;
 import com.nicico.training.repository.StudentDAO;
 import com.nicico.training.service.TclassService;
 import lombok.RequiredArgsConstructor;
+import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -28,11 +29,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Controller
@@ -117,7 +119,19 @@ public class AttendanceFormController {
             }
         }
         return params;
+    }
 
+    @Transactional(readOnly = true)
+    @PostMapping(value = {"/full-clear-print/{type}"})
+    public void printFullClear(HttpServletResponse response,
+                               @PathVariable String type,
+                               @RequestParam(value = "list") String list) throws JRException, IOException, SQLException {
+        final Map<String, Object> params = new HashMap<>();
+        String data = "{" + "\"content\": " + list + "}";
+        params.put("today", DateUtil.todayDate());
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        reportUtil.export("/reports/attendanceFullClear.jasper", params, jsonDataSource, response);
     }
 
 }
