@@ -4,6 +4,7 @@
 
 package com.nicico.training.dto;
 
+import com.nicico.training.model.MessageParameter;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,12 +12,45 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 public class MessageContactDTO {
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("MessageContact-Create")
+    public static class Create extends MessageContactDTO {
+        private Long messageId;
+
+        private Long objectId;
+
+        private String objectType;
+
+        private String objectMobile;
+
+        private List<MessageParameterDTO.Create> messageParameterList;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("MessageContact-Info")
+    public static class Info extends MessageContactDTO {
+        private Long id;
+
+        private Long messageId;
+
+        private Long objectId;
+
+        private String objectType;
+
+        private String objectMobile;
+    }
 
     @Getter
     @Setter
@@ -30,10 +64,6 @@ public class MessageContactDTO {
 
         private Integer countSent;
 
-        /*private String contextText;
-
-        private String contextHtml;*/
-
         private String objectMobile;
 
         private Long messageContactId;
@@ -43,6 +73,8 @@ public class MessageContactDTO {
         private String objectType;
 
         private Long objectId;
+
+        private String pid;
     }
 
 }

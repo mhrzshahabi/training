@@ -16,4 +16,6 @@ import java.util.List;
 
 public interface IMessageContactService {
     List<MessageContactDTO.AllMessagesForSend> getAllMessageContactForSend();
+
+    MessageContactDTO.Info create(MessageContactDTO.Create model);
 }

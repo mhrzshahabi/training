@@ -33,7 +33,7 @@ public class Message extends Auditable {
     private String contextHtml;
 
     @Column(name = "c_pid", nullable = false)
-    private String PId;
+    private String pId;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tbl_message_parameter_value",
@@ -55,7 +55,7 @@ public class Message extends Auditable {
     private Integer countSend;
 
     @Column(name = "n_interval", nullable = false)
-    private Integer Interval;
+    private Integer interval;
 
     @ManyToOne
     @JoinColumn(name = "f_message_class", insertable = false, updatable = false)

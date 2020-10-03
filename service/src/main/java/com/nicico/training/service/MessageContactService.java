@@ -15,9 +15,13 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IMasterDataService;
 import com.nicico.training.iservice.IMessageContactService;
+import com.nicico.training.model.MessageContact;
+import com.nicico.training.model.MessageParameter;
 import com.nicico.training.repository.MessageContactDAO;
+import com.nicico.training.repository.MessageParameterDAO;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -38,6 +42,8 @@ import java.util.*;
 public class MessageContactService implements IMessageContactService {
 
     private final MessageContactDAO messageContactDAO;
+    private final MessageParameterDAO messageParameterDAO;
+    private final ModelMapper modelMapper;
 
     @Override
     public List<MessageContactDTO.AllMessagesForSend> getAllMessageContactForSend() {
@@ -48,9 +54,34 @@ public class MessageContactService implements IMessageContactService {
 
         for (int i = 0; i < cnt; i++) {
             Object[] oList = (Object[]) list.get(i);
-            masterList.add(new MessageContactDTO.AllMessagesForSend(Integer.parseInt(oList[0].toString()), Integer.parseInt(oList[1].toString()), oList[2].toString(), Long.parseLong(oList[3].toString()), Long.parseLong(oList[4].toString()), oList[5].toString(), Long.parseLong(oList[6].toString())));
+            masterList.add(new MessageContactDTO.AllMessagesForSend(Integer.parseInt(oList[0].toString()), Integer.parseInt(oList[1].toString()), oList[2].toString(), Long.parseLong(oList[3].toString()), Long.parseLong(oList[4].toString()), oList[5].toString(), Long.parseLong(oList[6].toString()), oList[7].toString()));
         }
 
-        return  masterList;
+        return masterList;
+    }
+
+    @Override
+    public MessageContactDTO.Info create(MessageContactDTO.Create model) {
+
+        MessageContact messageContact = modelMapper.map(model, MessageContact.class);
+
+        messageContact.setCountSent(0);
+        messageContact.setLastSentDate(null);
+        messageContact.setStatusId((long) 588);
+        messageContact.setMessageParameterList(null);
+
+        messageContactDAO.save(messageContact);
+
+        for (MessageParameterDTO.Create messageParameter : model.getMessageParameterList()) {
+            MessageParameter oMessageParameter = modelMapper.map(messageParameter, MessageParameter.class);
+            oMessageParameter.setMessageContactId(messageContact.getId());
+
+            messageParameterDAO.save(oMessageParameter);
+        }
+
+        MessageContactDTO.Info result = modelMapper.map(messageContact, MessageContactDTO.Info.class);
+        result.setId(messageContact.getId());
+
+        return result;
     }
 }
