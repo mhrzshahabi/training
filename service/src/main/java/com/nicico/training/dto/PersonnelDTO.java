@@ -22,6 +22,18 @@ public class PersonnelDTO implements Serializable {
     @Getter
     @Setter
     @Accessors
+    @ApiModel("info-tuple")
+    public static class InfoTuple {
+        private Long id;
+        private String personnelNo;
+        private String firstName;
+        private String lastName;
+    }
+
+
+    @Getter
+    @Setter
+    @Accessors
     @ApiModel("Personnel - Personality - Info")
     public static class PersonalityInfo {
         private Long id;

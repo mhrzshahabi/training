@@ -1259,4 +1259,21 @@
     <changeSet author="golrokhi (generated)" id="1600506065252-645">
         <dropColumn columnName="C_CONTEXT_TEXT" tableName="TBL_MESSAGE_CONTACT"/>
     </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1600843973327-512">
+        <addColumn tableName="tbl_class_evaluation_goals">
+            <column name="c_origin_question" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1601381769051-464">
+        <addNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_code" tableName="tbl_competence"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1601381769051-465">
+        <addNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_code" tableName="tbl_course"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1601381769051-466">
+        <addNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_code" tableName="tbl_term"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1601381769051-470">
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="scores_state_id" tableName="tbl_class_student"/>
+    </changeSet>
 </databaseChangeLog>

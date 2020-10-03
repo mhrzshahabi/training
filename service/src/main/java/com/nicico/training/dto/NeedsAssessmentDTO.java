@@ -46,6 +46,7 @@ public class NeedsAssessmentDTO implements Serializable {
     @ApiModelProperty(required = true)
     private Long needsAssessmentPriorityId;
 
+
     @Getter
     @Setter
     @Accessors(chain = true)

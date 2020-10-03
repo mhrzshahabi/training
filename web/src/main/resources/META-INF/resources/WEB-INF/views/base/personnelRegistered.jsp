@@ -1363,7 +1363,7 @@
 
     var ToolStripButton_Export2EXcel_JspPersonnelReg = isc.ToolStripButtonExcel.create({
         click: function () {
-            ExportToFile.downloadExcelRestUrl(null, ListGrid_PersonnelReg_JspPersonnelReg,  personnelRegUrl + "/spec-list" , 0, null, '',"لیست فراگیران متفرقه", ListGrid_PersonnelReg_JspPersonnelReg.getCriteria(), null);
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_PersonnelReg_JspPersonnelReg,  personnelRegUrl + "/spec-list" , 0, null, '',"لیست فراگیران متفرقه", null, null, 0, true);
         }
     });
 
@@ -1485,6 +1485,16 @@
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>"
     });
+
+    let criteriaActivePersonnelRegistered_JspPersonnelReg = {
+        _constructor: "AdvancedCriteria",
+        operator: "and",
+        criteria: [
+            {fieldName: "deleted", operator: "isNull"}
+        ]
+    };
+
+    ListGrid_PersonnelReg_JspPersonnelReg.implicitCriteria = criteriaActivePersonnelRegistered_JspPersonnelReg;
 
     var HLayout_Actions_PersonnelReg_JspPersonnelReg = isc.HLayout.create({
         width: "100%",

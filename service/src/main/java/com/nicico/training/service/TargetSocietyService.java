@@ -50,7 +50,7 @@ public class TargetSocietyService extends BaseService<TargetSociety, Long, Targe
 //    }
 
     @Transactional(readOnly = true)
-    public List<TargetSocietyDTO.Info> getTargetSocietiesById(Iterator<TargetSocietyDTO.Info> infoIterator,Long targetTypeId) {
+    public List<TargetSocietyDTO.Info> getTargetSocietiesById(Iterator<TargetSocietyDTO.Info> infoIterator, Long targetTypeId) {
         Long typeId = parameterValueService.getId("single");
         String type = parameterValueService.get(targetTypeId).getCode();
         Integer count = 0;
@@ -69,26 +69,27 @@ public class TargetSocietyService extends BaseService<TargetSociety, Long, Targe
             }
         }
 
-        if(type.equals("single")) {
+        if (type.equals("single") && targetIds != null && !targetIds.isEmpty()) {
             SearchDTO.CriteriaRq criteria = makeNewCriteria("id", targetIds, EOperator.inSet, null);
             searchRq.setCriteria(criteria);
             searchRq.setCount(count);
             SearchDTO.SearchRs<DepartmentDTO.Info> departments = departmentService.search(searchRq);
 
-        for(DepartmentDTO.Info deparment : departments.getList()){
-            TargetSocietyDTO.Info info = new TargetSocietyDTO.Info();
-            info.setSocietyId(deparment.getId());
-            info.setTitle(deparment.getTitle());
-            info.setTargetSocietyTypeId(targetTypeId);
-            infoList.add(info);
-        }
+            for (DepartmentDTO.Info deparment : departments.getList()) {
+                TargetSocietyDTO.Info info = new TargetSocietyDTO.Info();
+                info.setSocietyId(deparment.getId());
+                info.setTitle(deparment.getTitle());
+                info.setTargetSocietyTypeId(targetTypeId);
+                infoList.add(info);
+            }
         }
 
-            return infoList;
+        return infoList;
     }
 
     @Transactional
-    public List<TargetSocietyDTO.Info> getListById(Long id){
-        return modelMapper.map(dao.findAllByTclassId(id), new TypeToken<List<TargetSocietyDTO.Info>>(){}.getType());
+    public List<TargetSocietyDTO.Info> getListById(Long id) {
+        return modelMapper.map(dao.findAllByTclassId(id), new TypeToken<List<TargetSocietyDTO.Info>>() {
+        }.getType());
     }
 }

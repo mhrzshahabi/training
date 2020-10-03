@@ -33,57 +33,50 @@ public class ClassEvaluationGoalsService extends BaseService<ClassEvaluationGoal
 
     @Transactional
     public List<ClassEvaluationGoalsDTO.Info> getClassGoals(Long classId){
+        List<ClassEvaluationGoals> list = dao.findByClassId(classId);
         List<ClassEvaluationGoalsDTO.Info> result = new ArrayList<>();
-        Optional<Tclass> byId = tclassDAO.findById(classId);
-        Tclass tclass = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-
-        for (Goal goal : tclass.getCourse().getGoalSet()) {
-            ClassEvaluationGoalsDTO.Info info = new ClassEvaluationGoalsDTO.Info();
-            info.setClassId(classId);
-            info.setGoalId(goal.getId());
-            info.setSkillId(null);
-            info.setId(null);
-            info.setGoalQuestion(goal.getTitleFa());
-            info.setQuestion(null);
-            ClassEvaluationGoals classEvaluationGoals = dao.findByClassIdAndSkillIdAndGoalId(classId,null,goal.getId());
-            if(classEvaluationGoals != null) {
-                info.setQuestion(classEvaluationGoals.getQuestion());
-                info.setId(classEvaluationGoals.getId());
+        if(list != null && list.size() != 0){
+            for (ClassEvaluationGoals info : list) {
+                result.add(modelMapper.map(info,ClassEvaluationGoalsDTO.Info.class));
             }
-            result.add(info);
         }
+        else{
+            Optional<Tclass> byId = tclassDAO.findById(classId);
+            Tclass tclass = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
-        for(Skill skill : tclass.getCourse().getSkillSet()){
-            ClassEvaluationGoalsDTO.Info info = new ClassEvaluationGoalsDTO.Info();
-            info.setClassId(classId);
-            info.setSkillId(skill.getId());
-            info.setGoalId(null);
-            info.setId(null);
-            info.setGoalQuestion(skill.getTitleFa());
-            info.setQuestion(null);
-            ClassEvaluationGoals classEvaluationGoals = dao.findByClassIdAndSkillIdAndGoalId(classId,skill.getId(),null);
-            if(classEvaluationGoals != null){
-                info.setQuestion(classEvaluationGoals.getQuestion());
-                info.setId(classEvaluationGoals.getId());
+            for (Goal goal : tclass.getCourse().getGoalSet()) {
+                ClassEvaluationGoalsDTO.Info info = new ClassEvaluationGoalsDTO.Info();
+                info.setClassId(classId);
+                info.setGoalId(goal.getId());
+                info.setSkillId(null);
+                info.setId(null);
+                info.setOriginQuestion(goal.getTitleFa());
+                info.setQuestion(goal.getTitleFa());
+                result.add(info);
             }
-            result.add(info);
-        }
 
+            for(Skill skill : tclass.getCourse().getSkillSet()){
+                ClassEvaluationGoalsDTO.Info info = new ClassEvaluationGoalsDTO.Info();
+                info.setClassId(classId);
+                info.setSkillId(skill.getId());
+                info.setGoalId(null);
+                info.setId(null);
+                info.setOriginQuestion(skill.getTitleFa());
+                info.setQuestion(skill.getTitleFa());
+                result.add(info);
+            }
+        }
         return result;
     }
 
-    @Transactional
     public void editClassGoalsQuestions(ArrayList<LinkedHashMap> body){
         for (LinkedHashMap map : body) {
-            Long id = null;
             Long classId = null;
             Long skillId = null;
             Long goalId = null;
             String question = null;
-            String goalQuestion =  null;
+            String originQuestion =  null;
 
-            if(map.get("id") != null)
-                id = Long.parseLong(map.get("id").toString());
             if(map.get("classId") != null)
                 classId = Long.parseLong(map.get("classId").toString());
             if(map.get("skillId") != null)
@@ -92,25 +85,37 @@ public class ClassEvaluationGoalsService extends BaseService<ClassEvaluationGoal
                 goalId = Long.parseLong(map.get("goalId").toString());
             if(map.get("question") != null)
                 question =  map.get("question").toString();
-            if(map.get("question") != null)
-                goalQuestion = map.get("goalQuestion").toString();
+            if(map.get("originQuestion") != null)
+                originQuestion = map.get("originQuestion").toString();
 
-           if(id == null && question != null && !question.equalsIgnoreCase("") && !question.equalsIgnoreCase(" ")){
+           if(question != null && !question.equalsIgnoreCase("") && !question.equalsIgnoreCase(" ")){
                ClassEvaluationGoalsDTO.Info classEvaluationGoals = new ClassEvaluationGoalsDTO.Info();
                classEvaluationGoals.setQuestion(question);
                classEvaluationGoals.setClassId(classId);
                classEvaluationGoals.setSkillId(skillId);
                classEvaluationGoals.setGoalId(goalId);
+               classEvaluationGoals.setOriginQuestion(originQuestion);
                create(classEvaluationGoals);
            }
-           else if(id != null &&  question != null  && !question.equalsIgnoreCase("") && !question.equalsIgnoreCase(" ")){
-               final Optional<ClassEvaluationGoals> cById = dao.findById(id);
-               final ClassEvaluationGoals classEvaluationGoals = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
-               classEvaluationGoals.setQuestion(question);
-           }
-           else if(id != null && (question == null || question.equalsIgnoreCase("") || !question.equalsIgnoreCase(" "))){
-               delete(id);
+           else{
+               ClassEvaluationGoalsDTO.Info classEvaluationGoals = new ClassEvaluationGoalsDTO.Info();
+               classEvaluationGoals.setQuestion(originQuestion);
+               classEvaluationGoals.setClassId(classId);
+               classEvaluationGoals.setSkillId(skillId);
+               classEvaluationGoals.setGoalId(goalId);
+               classEvaluationGoals.setOriginQuestion(originQuestion);
+               create(classEvaluationGoals);
            }
         }
     }
+
+    public void deleteClassGoalsQuestions(Long classID){
+        List<ClassEvaluationGoals> list = dao.findByClassId(classID);
+        if(list != null && list.size() != 0){
+            for (ClassEvaluationGoals classEvaluationGoals : list) {
+                dao.delete(classEvaluationGoals);
+            }
+        }
+    }
+
 }

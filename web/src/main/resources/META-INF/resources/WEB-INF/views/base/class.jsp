@@ -203,15 +203,7 @@
     let SupervisorDS_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", filterOperator: "equals", primaryKey: true, hidden: true},
-            {
-                name: "firstName",
-                title: "<spring:message code="firstName"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true,
-                autoFitWidthApproach: "both"
-            },
-            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
-            {name: "fullName", title: "نام و نام خانوادگی", filterOperator: "iContains", autoFitWidth: true},
+            {name: "fullName", title: "نام و نام خانوادگی", filterOperator: "iContains"},
             {
                 name: "nationalCode",
                 title: "<spring:message code="national.code"/>",
@@ -240,15 +232,7 @@
     let PlannerDS_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", filterOperator: "equals", primaryKey: true, hidden: true},
-            {
-                name: "firstName",
-                title: "<spring:message code="firstName"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true,
-                autoFitWidthApproach: "both"
-            },
-            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
-            {name: "fullName", title: "نام و نام خانوادگی", filterOperator: "iContains", autoFitWidth: true},
+            {name: "fullName", title: "نام و نام خانوادگی", filterOperator: "iContains"},
             {
                 name: "nationalCode",
                 title: "<spring:message code="national.code"/>",
@@ -471,12 +455,10 @@
                 name: "teacher",
                 title: "<spring:message code='teacher'/>",
                 displayField: "teacher.personality.lastNameFa",
-                displayValueFromRecord: false,
                 type: "TextItem",
                 sortNormalizer(record) {
                     return record.teacher.personality.lastNameFa;
                 },
-
                 align: "center",
                 filterOperator: "iContains",
                 autoFitWidth: true,
@@ -556,10 +538,6 @@
                 filterOnKeypress: true,
                 autoFitWidth: true,
             },
-// {name: "lastModifiedDate",
-// type:"time"
-// ,hidden:true
-// },
             {name: "createdBy", hidden: true},
             {name: "createdDate", hidden: true},
             {
@@ -1000,9 +978,8 @@
                 optionDataSource: SupervisorDS_JspClass,
                 autoFetchData: false,
                 valueField: "id",
-                pickListWidth: 550,
-                pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "fullName"}, {name: "nationalCode"}, {name: "personnelNo"}],
-                // filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
+                pickListWidth: 500,
+                pickListFields: [{name: "personnelNo2"}, {name: "fullName"}, {name: "nationalCode"}, {name: "personnelNo"}],
                 pickListProperties: {sortField: "personnelNo2", showFilterEditor: true},
                 formatValue: function (value, record, form, item) {
                     var selectedRecord = item.getSelectedRecord();
@@ -1025,9 +1002,8 @@
                 optionDataSource: PlannerDS_JspClass,
                 autoFetchData: false,
                 valueField: "id",
-                pickListWidth: 550,
-                pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "fullName"}, {name: "nationalCode"}, {name: "personnelNo"}],
-                // filterFields: ["personnelNo2", "firstName", "lastName", "nationalCode", "personnelNo"],
+                pickListWidth: 500,
+                pickListFields: [{name: "personnelNo2"}, {name: "fullName"}, {name: "nationalCode"}, {name: "personnelNo"}],
                 pickListProperties: {sortField: "personnelNo2", showFilterEditor: true},
                 formatValue: function (value, record, form, item) {
                     var selectedRecord = item.getSelectedRecord();
@@ -2820,24 +2796,68 @@
                     } else {
                         classMethod = "POST";
                         url = classUrl;
-                        DynamicForm1_Class_JspClass.setValue("autoValid", true);
-                        DynamicForm_Class_JspClass.setValue("course.id", record.course.id);
-                        DynamicForm_Class_JspClass.setValue("titleClass", record.titleClass);
-                        DynamicForm_Class_JspClass.setValue("minCapacity", record.minCapacity);
-                        DynamicForm_Class_JspClass.setValue("maxCapacity", record.maxCapacity);
-                        DynamicForm_Class_JspClass.setValue("topology", record.topology);
-                        DynamicForm_Class_JspClass.setValue("hduration", record.hduration);
-                        DynamicForm_Class_JspClass.setValue("scoringMethod", record.scoringMethod);
-                        DynamicForm_Class_JspClass.setValue("acceptancelimit", record.acceptancelimit);
-                        DynamicForm_Class_JspClass.setValue("teachingType", record.teachingType);
-                        DynamicForm1_Class_JspClass.editRecord(record);
+
+                        record.classStudents.length = 0;
+
+                        VM_JspClass.editRecord(record);
+
+                        if (userPersonInfo != null) {
+                            DynamicForm_Class_JspClass.setValue("supervisor", userPersonInfo.id);
+                            DynamicForm_Class_JspClass.setValue("planner", userPersonInfo.id);
+                        }
+
                         Window_Class_JspClass.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="class"/>");
-                        DynamicForm_Class_JspClass.getItem("startEvaluation").required = false;
-                        DynamicForm_Class_JspClass.getItem("behavioralLevel").setDisabled(true);
-                        DynamicForm_Class_JspClass.getItem("startEvaluation").setDisabled(true);
-                        DynamicForm_Class_JspClass.getItem("startEvaluation").setValue();
+                        if(record.evaluation != undefined && record.evaluation == "3"){
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").required = true;
+                            DynamicForm_Class_JspClass.getItem("behavioralLevel").setDisabled(false);
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").setDisabled(false);
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").enable();
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").setValue("3");
+                        }
+                        else{
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").required = false;
+                            DynamicForm_Class_JspClass.getItem("behavioralLevel").setDisabled(true);
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").setDisabled(true);
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").setValue();
+                        }
                         Window_Class_JspClass.show();
-                        autoTimeActivation(true);
+
+                        DynamicForm_Class_JspClass.getItem("scoringMethod").change(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("scoringMethod"), DynamicForm_Class_JspClass.getValue("scoringMethod"));
+                        DynamicForm_Class_JspClass.itemChanged();
+                        if (ListGrid_Class_JspClass.getSelectedRecord().scoringMethod === "1") {
+                            DynamicForm_Class_JspClass.setValue("acceptancelimit_a", ListGrid_Class_JspClass.getSelectedRecord().acceptancelimit);
+                        }
+                        else {
+                            DynamicForm_Class_JspClass.setValue("acceptancelimit", ListGrid_Class_JspClass.getSelectedRecord().acceptancelimit);
+                        }
+
+                        if (record.evaluation === "1") {
+                            DynamicForm_Class_JspClass.setValue("preCourseTest", false);
+                            DynamicForm_Class_JspClass.getItem("preCourseTest").hide();
+                        } else
+                            DynamicForm_Class_JspClass.getItem("preCourseTest").show();
+
+                        DynamicForm_Class_JspClass.getItem("classStatus").setValue(1);
+                        DynamicForm_Class_JspClass.getField("classStatus").getItem(1).disable();
+                        DynamicForm_Class_JspClass.getField("classStatus").getItem(2).disable();
+
+                        ["first", "second", "third", "fourth", "fifth", "saturday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday"].forEach(item =>
+                        {
+                            DynamicForm1_Class_JspClass.getField(item).disable();
+                            DynamicForm1_Class_JspClass.setValue(item,false);
+                        });
+
+                        DynamicForm_Class_JspClass.setValue("teacherId",undefined);
+                        DynamicForm_Class_JspClass.setValue("supervisorId", undefined);
+                        DynamicForm_Class_JspClass.setValue("plannerId", undefined);
+
+                        DynamicForm1_Class_JspClass.setValue("startDate","");
+                        DynamicForm1_Class_JspClass.setValue("endDate","");
+
+                        DynamicForm_Class_JspClass.getItem("acceptancelimit").setDisabled(false);
+                        DynamicForm_Class_JspClass.getItem("scoringMethod").setDisabled(false);
+
+                        autoTimeActivation(active = true);
                     }
                 }));
             }
@@ -2855,7 +2875,7 @@
             gridState = "[{id:" + ListGrid_Class_JspClass.getSelectedRecord().id + "}]";
         }
         ListGrid_Class_JspClass.invalidateCache();
-        ListGrid_Class_JspClass.filterByEditor();
+        // ListGrid_Class_JspClass.filterByEditor();
         setTimeout(function () {
             ListGrid_Class_JspClass.setSelectedState(gridState);
         }, 3000);
@@ -2891,6 +2911,12 @@
         OJT = false;
         DynamicForm_Class_JspClass.getField("classStatus").getItem(1).disable();
         DynamicForm_Class_JspClass.getField("classStatus").getItem(2).disable();
+
+        DynamicForm_Class_JspClass.getItem("acceptancelimit").setDisabled(false);
+        DynamicForm_Class_JspClass.getItem("scoringMethod").setDisabled(false);
+
+        DynamicForm_Class_JspClass.getItem("instituteId").setDisabled(false);
+        DynamicForm_Class_JspClass.getItem("trainingPlaceIds").setDisabled(false);
     }
 
     function ListGrid_class_print(type) {
@@ -2902,7 +2928,7 @@
             _constructor: "AdvancedCriteria",
             operator: "and",
             criteria: []
-        };
+        }
         if (ListGrid_Class_JspClass.getCriteria().criteria !== undefined) {
             cr = ListGrid_Class_JspClass.getCriteria();
         }
@@ -3253,7 +3279,8 @@
     }
 
     function classCode() {
-        VM_JspClass.getItem("code").setValue(VM_JspClass.getItem("course.id").getSelectedRecord().code + "-" + VM_JspClass.getItem("termId").getSelectedRecord().code + "-" + VM_JspClass.getValue("group"));
+        if (VM_JspClass.getItem("course.id").getSelectedRecord()) //bug fix
+            VM_JspClass.getItem("code").setValue(VM_JspClass.getItem("course.id").getSelectedRecord().code + "-" + VM_JspClass.getItem("termId").getSelectedRecord().code + "-" + VM_JspClass.getValue("group"));
     }
 
     function evalGroup() {
@@ -3729,10 +3756,10 @@
         DataSource_TargetSociety_List.testData.forEach(function (currentValue, index, arr) {
             DataSource_TargetSociety_List.removeData(currentValue)
         });
-        wait.show()
+        wait.show();
         isc.RPCManager.sendRequest(
             TrDSRequest(targetSocietyUrl + "getListById/" + id, "GET", null, function (resp) {
-                wait.close()
+                wait.close();
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     var societies = [];
                     var item = 0;
@@ -3742,15 +3769,14 @@
                     // DynamicForm_Class_JspClass.getItem("addtargetSociety").hide();
                     DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue("371");
                     DynamicForm_Class_JspClass.getItem("targetSocieties")._value = undefined;
-                    JSON.parse(resp.data).forEach(
-                        function (currentValue, index, arr) {
+                    JSON.parse(resp.data).forEach(currentValue =>
+                        {
                             if (currentValue.targetSocietyTypeId === 371) {
                                 societies.add(currentValue.societyId);
                                 DynamicForm_Class_JspClass.getItem("targetSocieties").valueField = "societyId";
                                 DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(currentValue.targetSocietyTypeId.toString());
                                 DataSource_TargetSociety_List.addData(currentValue);
                                 singleTargetScoiety.add(currentValue);
-                                //DynamicForm_Class_JspClass.getItem("addtargetSociety").hide();
                             } else if (currentValue.targetSocietyTypeId === 372) {
                                 societies.add(currentValue.title);
                                 DynamicForm_Class_JspClass.getItem("targetSocieties").valueField = "title";
@@ -3758,9 +3784,9 @@
                                 etcTargetSociety.add(currentValue.title);
                                 item -= 1;
                                 DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(currentValue.targetSocietyTypeId.toString());
-                                // DynamicForm_Class_JspClass.getItem("addtargetSociety").show();
                             }
-                        });
+                        }
+                    );
                     DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(societies);
                 }
             })
@@ -3975,7 +4001,7 @@
                 data.evaluationFull = evaluationFull;
                 data.description = DynamicForm_Description_JspEvaluation.getField("description").getValue();
                 data.classId = classRecord.id;
-                data.evaluatorId = classRecord.supervisor;
+                data.evaluatorId = classRecord.supervisor.id;
                 data.evaluatorTypeId = 454;
                 data.evaluatedId = classRecord.teacherId;
                 data.evaluatedTypeId = 187;
@@ -4040,7 +4066,7 @@
         isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "teacherFullName/" + classRecord.teacherId, "GET", null, function (resp1) {
             DynamicForm_Questions_Title_JspEvaluation.getItem("teacher").setValue(resp1.httpResponseText);
             DynamicForm_Questions_Title_JspEvaluation.setValue("evaluated", resp1.httpResponseText);
-            isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/personnelFullName/" + classRecord.supervisor, "GET", null, function (resp2) {
+            isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/personnelFullName/" + classRecord.supervisor.id, "GET", null, function (resp2) {
                 DynamicForm_Questions_Title_JspEvaluation.setValue("evaluator", resp2.httpResponseText);
                 load_evaluation_form_RTr2();
             }));
@@ -4054,7 +4080,7 @@
 
             let data = {};
             data.classId = classRecord.id;
-            data.evaluatorId = classRecord.supervisor;
+            data.evaluatorId = classRecord.supervisor.id;
             data.evaluatorTypeId = 454;
             data.evaluatedId = classRecord.teacherId;
             data.evaluatedTypeId = 187;
@@ -4187,8 +4213,8 @@
         isc.RPCManager.sendRequest(TrDSRequest(questionnaireUrl + "/getLastQuestionnarieId?criteria=" + JSON.stringify(criteria), "GET", null, function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 QId = resp.httpResponseText;
-                if (QId != null && QId != undefined && classRecord.supervisor != undefined && classRecord.teacherId != undefined)
-                    create_evaluation_form_JspClass(null, QId, classRecord.supervisor, 454, classRecord.teacherId, 187, 141, 154, classRecord.id);
+                if (QId != null && QId != undefined && classRecord.supervisorId != undefined && classRecord.teacherId != undefined)
+                    create_evaluation_form_JspClass(null, QId, classRecord.supervisorId, 454, classRecord.teacherId, 187, 141, 154, classRecord.id);
             }
         }));
     }

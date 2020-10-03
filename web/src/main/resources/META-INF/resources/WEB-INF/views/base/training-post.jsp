@@ -972,19 +972,10 @@
                 layoutStyle: "horizontal",
                 hint: "",
                 pickListFields: [
+                    {name: "code"},
                     {name: "titleFa"},
-                    {name: "peopleType", filterOperator: "iContains"},
-                    {
-                        name: "enabled",
-                        valueMap:{
-                            // undefined : "فعال",
-                            74 : "غیر فعال"
-                        },filterOnKeypress: true
-                        // formatCellValue: function (value, record) {
-                        //     let newVal = value == undefined ? "فعال" : "غیر فعال";
-                        //     return newVal;
-                        // }
-                    }
+                    {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals",width:150, valueMap:peopleTypeMap, filterOnKeypress: true},
+                    {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, filterOnKeypress: true,valueMap:{74 : "غیر فعال"}}
                 ],
                 filterFields: ["titleFa"],
                 // pickListProperties: {
@@ -1689,36 +1680,30 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
-                        var wait = isc.Dialog.create({
-                            message: "در حال انجام عملیات...",
-                            icon: "[SKIN]say.png",
-                            title: "پیام"
-                        });
-                        isc.RPCManager.sendRequest({
-                            actionURL: trainingPostUrl + "/" + record.id,
-                            httpMethod: "DELETE",
-                            useSimpleHttp: true,
-                            contentType: "application/json; charset=utf-8",
-                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                            showPrompt: true,
-                            serverOutputAsString: false,
-                            callback: function (resp) {
-                                wait.close();
-                                if (resp.httpResponseCode == 200) {
-                                    ListGrid_TrainingPost_Jsp.invalidateCache();
-                                    simpleDialog("انجام فرمان", "حذف با موفقیت انجام شد", 2000, "say");
-                                    ListGrid_TrainingPost_Posts.setData([]);
-                                } else {
-                                    simpleDialog("پیام خطا", "حذف با خطا مواجه شد", 2000, "stop");
-
-                                }
-                            }
-                        });
+                        wait.show();
+                        isc.RPCManager.sendRequest(TrDSRequest(trainingPostUrl + "/" + record.id, "DELETE", null, "callback: postGroup_delete_result(rpcResponse)"));
                     }
                 }
             });
         }
     }
+
+    function postGroup_delete_result(resp) {
+        wait.close();
+        console.log(resp)
+        if (resp.httpResponseCode == 200) {
+            ListGrid_TrainingPost_Jsp.invalidateCache();
+            simpleDialog("انجام فرمان", "حذف با موفقیت انجام شد", 2000, "say");
+            ListGrid_TrainingPost_Posts.setData([]);
+
+        }
+        else if (resp.httpResponseCode == 406) {
+            simpleDialog("پیام خطا", "گروه پستی قادر به حذف نیست", 2000, "stop");
+        } else {
+            simpleDialog("پیام خطا", "حذف با خطا مواجه شد", 2000, "stop");
+
+        }
+    };
 
     function nullPostsRefresh(Ds, Lg){
         Ds.fetchDataURL = trainingPostUrl + "/getNullPosts";

@@ -15,6 +15,13 @@
     var postsSelection=false;
     let LoadAttachments_Post_Group = null;
 
+    var peopleTypeMap ={
+        "Personal" : "شرکتی",
+        "ContractorPersonal" : "پیمان کار",
+        // "Company" : "شرکتی",
+        // "OrgCostCenter" : "پیمان کار"
+    };
+
     PostDS_PostGroup = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -291,6 +298,7 @@
     var RestDataSource_Post_Group_Posts_Jsp = isc.TrDS.create({
         fields: [
             {name: "postId"},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap, filterOnKeypress: true},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "jobTitle", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -311,6 +319,7 @@
     var RestDataSource_All_Posts = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap, filterOnKeypress: true},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains",autoFitWidth:true},
             {name: "titleEn", title: "<spring:message code="title.en"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -333,6 +342,7 @@
     var RestDataSource_ForThisPostGroup_GetPosts = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap, filterOnKeypress: true},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains",autoFitWidth:true},
             {name: "titleEn", title: "<spring:message code="title.en"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -368,6 +378,9 @@
         showRecordComponentsByCell: true,
         gridComponents: [Lable_AllPosts, "filterEditor", "header", "body"],
         fields: [
+            {name: "peopleType",
+                filterOnKeypress: true,
+            },
             {name: "code", filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
                 }},
@@ -483,9 +496,8 @@
         selectionType: "simple",
         fields: [
             {name: "id", hidden:true},
-            {name: "code", filterEditorProperties: {
-                    keyPressFilter: "[0-9/]"
-                }},
+            {name: "peopleType", filterOnKeypress: true},
+            {name: "code", filterEditorProperties: {keyPressFilter: "[0-9/]"}},
             {name: "titleFa"},
             {name: "job.code"},
             {name: "job.titleFa"},
@@ -727,6 +739,9 @@
         sortField: 1,
         gridComponents: [ActionsTS_Post_Post_Group, "header", "filterEditor", "body",],
         fields: [
+            {name: "peopleType",
+                filterOnKeypress: true,
+            },
             {name: "code",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
@@ -802,6 +817,7 @@
     var RestDataSource_Post_Group_TrainingPosts_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap, filterOnKeypress: true},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -822,6 +838,7 @@
     var RestDataSource_All_Training_Posts = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap, filterOnKeypress: true},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleEn", title: "<spring:message code="title.en"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -844,6 +861,7 @@
     var RestDataSource_ForThisPostGroup_GetTrainingPosts = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap, filterOnKeypress: true},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleEn", title: "<spring:message code="title.en"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -879,6 +897,7 @@
         showRecordComponentsByCell: true,
         gridComponents: [Lable_AllTrainingPosts, "filterEditor", "header", "body"],
         fields: [
+            {name: "peopleType", filterOnKeypress: true},
             {name: "code", filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
                 }},
@@ -994,6 +1013,7 @@
         selectionType: "simple",
         fields: [
             {name: "id", hidden:true},
+            {name: "peopleType", filterOnKeypress: true},
             {name: "code", filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
                 }},
@@ -1238,6 +1258,7 @@
         sortField: 1,
         gridComponents: [ActionsTS_TrainingPost_Post_Group, "header", "filterEditor", "body",],
         fields: [
+            {name: "peopleType", filterOnKeypress: true},
             {name: "code",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9/]"

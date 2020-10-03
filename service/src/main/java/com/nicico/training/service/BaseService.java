@@ -82,52 +82,56 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
 
     public static <E, INFO, DAO extends JpaSpecificationExecutor<E>> SearchDTO.SearchRs<INFO> optimizedSearch(DAO dao, Function<E, INFO> converter, SearchDTO.SearchRq rq) throws NoSuchFieldException, IllegalAccessException {
 
-
-        Page<E> all = dao.findAll(NICICOSpecification.of(rq), NICICOPageable.of(rq));
-        List<E> list = all.getContent();
-
-
-        Long totalCount = all.getTotalElements();
         SearchDTO.SearchRs<INFO> searchRs = null;
 
-        if (totalCount == 0) {
-
-            searchRs = new SearchDTO.SearchRs<>();
-            searchRs.setList(new ArrayList<INFO>());
-
-        } else {
-            List<Long> ids = new ArrayList<>();
-            int len = list.size();
-            Field field = null;
-
-            for (int i = 0; i < len; i++) {
-
-                field = list.get(i).getClass().getDeclaredField("id");
-
-                field.setAccessible(true);
-
-                Object value = field.get(list.get(i));
-                ids.add((Long) value);
-            }
-
-            rq.setCriteria(makeNewCriteria("", null, EOperator.or, null));
-            List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
-            SearchDTO.CriteriaRq tmpcriteria = null;
-            int page = 0;
-
-            while (page * 1000 < ids.size()) {
-                page++;
-                criteriaRqList.add(makeNewCriteria("id", ids.subList((page - 1) * 1000, Math.min((page * 1000), ids.size())), EOperator.inSet, null));
-
-            }
-
-            rq.setCriteria(makeNewCriteria("", null, EOperator.or, criteriaRqList));
-            rq.setStartIndex(null);
-
+        if (rq.getStartIndex() == null) {
             searchRs = SearchUtil.search(dao, rq, converter);
-        }
+        } else {
+            Page<E> all = dao.findAll(NICICOSpecification.of(rq), NICICOPageable.of(rq));
+            List<E> list = all.getContent();
 
-        searchRs.setTotalCount(totalCount);
+            Long totalCount = all.getTotalElements();
+
+
+            if (totalCount == 0) {
+
+                searchRs = new SearchDTO.SearchRs<>();
+                searchRs.setList(new ArrayList<INFO>());
+
+            } else {
+                List<Long> ids = new ArrayList<>();
+                int len = list.size();
+                Field field = null;
+
+                for (int i = 0; i < len; i++) {
+
+                    field = list.get(i).getClass().getDeclaredField("id");
+
+                    field.setAccessible(true);
+
+                    Object value = field.get(list.get(i));
+                    ids.add((Long) value);
+                }
+
+                rq.setCriteria(makeNewCriteria("", null, EOperator.or, null));
+                List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+                SearchDTO.CriteriaRq tmpcriteria = null;
+                int page = 0;
+
+                while (page * 1000 < ids.size()) {
+                    page++;
+                    criteriaRqList.add(makeNewCriteria("id", ids.subList((page - 1) * 1000, Math.min((page * 1000), ids.size())), EOperator.inSet, null));
+
+                }
+
+                rq.setCriteria(makeNewCriteria("", null, EOperator.or, criteriaRqList));
+                rq.setStartIndex(null);
+
+                searchRs = SearchUtil.search(dao, rq, converter);
+            }
+
+            searchRs.setTotalCount(totalCount);
+        }
 
         return searchRs;
     }

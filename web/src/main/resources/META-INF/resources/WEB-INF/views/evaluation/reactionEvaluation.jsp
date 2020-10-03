@@ -21,19 +21,28 @@
                 name: "student.firstName",
                 title: "<spring:message code="firstName"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
+                autoFitWidth: true,
+                sortNormalizer: function (record) {
+                    return record.student.firstName;
+                }
             },
             {
                 name: "student.lastName",
                 title: "<spring:message code="lastName"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
+                autoFitWidth: true,
+                sortNormalizer: function (record) {
+                    return record.student.lastName;
+                }
             },
             {
                 name: "student.nationalCode",
                 title: "<spring:message code="national.code"/>",
                 filterOperator: "iContains",
                 autoFitWidth: true,
+                sortNormalizer: function (record) {
+                    return record.student.nationalCode;
+                }
             },
             {
                 name: "applicantCompanyName",
@@ -51,30 +60,45 @@
                 name: "student.companyName",
                 title: "<spring:message code="company.name"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
+                autoFitWidth: true,
+                sortNormalizer: function (record) {
+                    return record.student.companyName;
+                }
             },
             {
                 name: "student.personnelNo",
                 title: "<spring:message code="personnel.no"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
+                autoFitWidth: true,
+                sortNormalizer: function (record) {
+                    return record.student.personnelNo;
+                }
             },
             {
                 name: "student.personnelNo2",
                 title: "<spring:message code="personnel.no.6.digits"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
+                autoFitWidth: true,
+                sortNormalizer: function (record) {
+                    return record.student.personnelNo2;
+                }
             },
             {
                 name: "student.postTitle",
                 title: "<spring:message code="post"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
+                autoFitWidth: true,
+                sortNormalizer: function (record) {
+                    return record.student.postTitle;
+                }
             },
             {
                 name: "student.ccpArea",
                 title: "<spring:message code="reward.cost.center.area"/>",
-                filterOperator: "iContains"
+                filterOperator: "iContains",
+                sortNormalizer: function (record) {
+                    return record.student.ccpArea;
+                }
             },
             {
                 name: "evaluationStatusReaction",
@@ -136,7 +160,7 @@
         title: "ارسال پیام",
         overflow: "auto",
         width: 900,
-        height: 700,
+        height: 760,
         isModal: false,
         autoDraw: false,
         autoSize: false,
@@ -536,8 +560,10 @@
                             }
                             MSG_selectUsersForm.getItem("multipleSelect").fetchData();
 
-                            MSG_textEditorValue = "{prefix-full_name} {full-name}<br>\n پرسشنامه مربوط به ارزیابی دوره «{course-name}» که از تاریخ {start-date} تا {end-date} برگزارشده است و جنابعالی در آن شرکت داشته اید به پرتال پرسنلی شما در سیستم جامع آموزش به آدرس {personel-address} ارسال گردیده است ولی متاسفانه تاکنون تکمیل نشده است.لطفا در اسرع وقت آن را تکمیل نمایید بدیهی است تایید نهایی دوره جنابعالی منوط به تکمیل این پرسشنامه می باشد"
+                            MSG_textEditorValue = "%prefix-full_name% %full-name%<br />لطفا در اسرع وقت پرسشنامه مربوط به ارزیابی دوره «%course-name%» را از طریق لینک ذیل تکمیل نمایید. بدیهی است تایید نهایی دوره جنابعالی، منوط به تکمیل این پرسشنامه می باشد.<br />لینک: %personnel-address%<br /><br/>واحد ارزیابی آموزش"
                             MSG_contentEditor.setValue(MSG_textEditorValue);
+
+                            linkFormMLanding.getItem('link').setValue('');
 
                             if (JSON.parse(resp.data).response.data.filter(p => !p.student.mobile && (p.evaluationStatusReaction == 1)).length != 0) {
                                 ErrorMsg.setContents('برای ' + JSON.parse(resp.data).response.data.filter(p => !p.student.mobile && (p.evaluationStatusReaction == 1)).length + ' فراگیر، شماره موبایل تعریف نشده است.');
@@ -551,6 +577,9 @@
 
                             MSG_repeatOptions.getItem('maxRepeat').setValue(0);
                             MSG_repeatOptions.getItem('timeBMessages').setValue(1);
+                            linkFormMLanding.getItem('link').setValue('');
+                            linkFormMLanding.getItem('link').setRequired(true);
+                            linkFormMLanding.getItem('link').enable();
                             MSG_Window_MSG_Main.show();
 
                             /*setTimeout(function () {
@@ -649,6 +678,8 @@
                             MSG_textEditorValue = "{prefix-full_name} {full-name}<br>\n پرسشنامه مربوط به ارزیابی دوره «{course-name}» که از تاریخ {start-date} تا {end-date} توسط جنابعالی تدریس شده است به پرتال مدرس شما در سیستم جامع آموزش به آدرس {personel-address} ارسال گردیده است را تکمیل نمایید.بدیهی است تایید نهایی پرداخت هزینه دوره منوط به تکمیل این پرسشنامه می باشد"
                             MSG_contentEditor.setValue(MSG_textEditorValue);
 
+                            linkFormMLanding.getItem('link').setValue('');
+
                             if (JSON.parse(resp.data).response.data.length == 1 && JSON.parse(resp.data).response.data.filter(p => !p?.personality?.contactInfo?.mobile).length != 0) {
                                 ErrorMsg.setContents('برای مدرس این کلاس، شماره موبایل تعریف نشده است.');
                             } else if (JSON.parse(resp.data).response.data.filter(p => !p?.personality?.contactInfo?.mobile).length != 0) {
@@ -660,11 +691,14 @@
                             MSG_classID = row.id;
                             MSG_repeatOptions.getItem('maxRepeat').setValue(0);
                             MSG_repeatOptions.getItem('timeBMessages').setValue(1);
+                            linkFormMLanding.getItem('link').setValue('');
+                            linkFormMLanding.getItem('link').setRequired(false);
+                            linkFormMLanding.getItem('link').disable();
                             MSG_Window_MSG_Main.show();
 
-                            setTimeout(function () {
+/*                            setTimeout(function () {
                                 $('#MSG_messageType_sms img').click()
-                            }, 0)
+                            }, 0)*/
                         } else {
                             createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
                         }
@@ -1261,7 +1295,6 @@
     }
 
     function Student_Reaction_Form_Inssurance_All_RE() {
-        evalWait_RE = createDialog("wait");
         let check = false;
         for (let j = 0; j < ListGrid_student_RE.getData().localData.size(); j++) {
             let record = ListGrid_student_RE.getData().localData[j];
@@ -1278,7 +1311,6 @@
                 click: function () {
                     if (ListGrid_SelectQuestionnarie_RE.getSelectedRecord() == null || ListGrid_SelectQuestionnarie_RE.getSelectedRecord() == undefined) {
                         createDialog("info", "پرسشنامه ای انتخاب نشده است.");
-                        evalWait_RE.close();
                     } else {
                         let stdIds = new Array();
                         Window_SelectQuestionnarie_RE.close();
@@ -2524,6 +2556,7 @@
         data.evaluationFull = false;
         data.description = null;
 
+        evalWait_RE = createDialog("wait");
         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/groupCreate/" + evaluatorIds, "POST", JSON.stringify(data), function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 if(check == true){}
@@ -2581,10 +2614,11 @@
 
         let data = {
             type: ['sms'],
-//classStudent:MSG_msgContent.users,
+            //classStudent:MSG_msgContent.users,
             message: MSG_msgContent.text,
             maxRepeat: MSG_repeatOptions.getItem('maxRepeat').getValue(),
             timeBMessages: MSG_repeatOptions.getItem('timeBMessages').getValue(),
+            link: linkFormMLanding.getItem('link').getValue(),
         }
         if (MSG_userType == "classStudent") {
             data.classStudent = MSG_msgContent.users;

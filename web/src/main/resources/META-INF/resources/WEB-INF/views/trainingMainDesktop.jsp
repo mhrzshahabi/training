@@ -83,7 +83,7 @@
             return replaceString;
         };
 
-        function groupFilter(title,inputURL,func,isCheck=false,addStudentsInGroupInsert=false, courseId=0){
+        function groupFilter(title,inputURL,func,isCheck=false,addStudentsInGroupInsert=false, courseId=0,withNA=true){
             TabSet_GroupInsert_JspStudent=isc.TabSet.create({
                 ID:"leftTabSet",
                 autoDraw:false,
@@ -111,7 +111,9 @@
                                 {
                                     ID:"DynamicForm_GroupInsert_Textbox_JspStudent",
                                     title:"",
-                                    /*direction:""*/
+                                    type: "TextItem",
+                                    length: 10000,
+                                    controlStyle : "inputRTL",cellStyle  : "inputRTL",showRTL :false,
                                     transformPastedValue:function(item, form, pastedValue)
                                     {
                                         item.setValue(pastedValue.split('\n').filter(p=>p!='').join(',')) ;
@@ -430,7 +432,7 @@
                                     for (let index = 0; index < len; index++) {
                                         if(list[index].personnelNo != "" && list[index].personnelNo != null && typeof(list[index].personnelNo) != "undefined")
                                         {
-                                            if (result.filter(function (item) {return item.personnelNo2 == GroupSelectedPersonnelsLG_student.data[index].personnelNo2||item.personnelNo1 == GroupSelectedPersonnelsLG_student.data[index].personnelNo1;}).length==0) {
+                                            if (result.filter(function (item) {return (item.personnelNo2 && item.personnelNo2 == GroupSelectedPersonnelsLG_student.data[index].personnelNo2) || (item.personnelNo1 && item.personnelNo1 == GroupSelectedPersonnelsLG_student.data[index].personnelNo1);}).length==0) {
                                                 result.push(list[index].personnelNo)
                                             }
                                         }
@@ -454,16 +456,22 @@
                 ]
             });
 
-            TabSet_GroupInsert_JspStudent.selectTab(0);
-                GroupSelectedPersonnelsLG_student.discardAllEdits();
-                GroupSelectedPersonnelsLG_student.data.clearAll();
-                /*GroupSelectedPersonnelsLG_student.addData({
-                    nationalCode: ""
-                });*/
+            if(!withNA){
+                GroupSelectedPersonnelsLG_student.getField('isInNA').hidden=true;
+                GroupSelectedPersonnelsLG_student.getField('scoreState').hidden=true;
+            }else{
+                GroupSelectedPersonnelsLG_student.getField('isInNA').hidden=false;
+                GroupSelectedPersonnelsLG_student.getField('scoreState').hidden=false;
+            }
 
-                DynamicForm_GroupInsert_FileUploader_JspStudent.setValue('');
-                DynamicForm_GroupInsert_Textbox_JspStudent.setValue('');
-                ClassStudentWin_student_GroupInsert.show();
+            TabSet_GroupInsert_JspStudent.selectTab(0);
+            GroupSelectedPersonnelsLG_student.discardAllEdits();
+            GroupSelectedPersonnelsLG_student.data.clearAll();
+            /*GroupSelectedPersonnelsLG_student.addData({nationalCode: ""});*/
+
+            DynamicForm_GroupInsert_FileUploader_JspStudent.setValue('');
+            DynamicForm_GroupInsert_Textbox_JspStudent.setValue('');
+            ClassStudentWin_student_GroupInsert.show();
         }
 
         class ExportToFile {
@@ -511,7 +519,7 @@
             }
 
             static getAllData(listGrid, exceptColumn) {
-                let rows = listGrid.data.getAllLoadedRows();
+                let rows = listGrid.getOriginalData().localData.toArray();
                 let result = this.getAllFields(listGrid, exceptColumn);
                 let fields = result.fields;
                 let isValueMaps = result.isValueMap;
@@ -552,6 +560,25 @@
                 titr = titr.substring(0, titr.length - 3);
 
                 return titr;
+            }
+
+            static generateCriteria(listGrid){
+
+                if(listGrid.implicitCriteria){
+                    let implicitCriteria = JSON.parse(JSON.stringify(listGrid.implicitCriteria)) ;
+                    let criteria = listGrid.getCriteria();
+
+                    if(criteria.criteria){
+                        for (let i = 0; i < criteria.criteria.length ; i++) {
+                            implicitCriteria.criteria.push(criteria.criteria[i]);
+                        }
+                    }
+
+                    return implicitCriteria;
+                }else{
+                    return listGrid.getCriteria();
+                }
+
             }
 
             //Send Data Methods
@@ -680,7 +707,6 @@
 
                 if ((titr.length === 0) && parentListGrid != null) {
                     tmptitr = this.generateTitle(parentListGrid);
-                    tmptitr = '';
                 } else {
                     tmptitr = titr;
                 }
@@ -724,18 +750,17 @@
                 this.exportToExcelFromServer(fields.fields, fileName, criteria, sortStr ,startRow, len, tmptitr, pageName, valueMaps);
             }
 
-            static downloadExcelFromRestUrl(listGrid, restUrl,startRow, len, parentListGrid, titr, pageName, criteria) {
+            static downloadExcelFromRestUrl(listGrid, restUrl,startRow, len, parentListGrid, titr, pageName, criteria, exceptColumn) {
 
                 let tmptitr = '';
 
                 if ((titr.length === 0) && parentListGrid != null) {
                     tmptitr = this.generateTitle(parentListGrid);
-                    tmptitr = '';
                 } else {
                     tmptitr = titr;
                 }
 
-                let fields = this.getAllFields(listGrid);
+                let fields = this.getAllFields(listGrid, exceptColumn);
                 //let criteria=JSON.stringify(listGrid.data.criteria.criteria);
                 let sort = listGrid.getSort();
                 let sortStr='';
@@ -768,7 +793,7 @@
             }
 
             static showDialog(title, listgrid, fileName, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate){
-                let size = listgrid.data.size();
+                let size = listgrid.getOriginalData().size();
                 let maxCount=5000;
 
                 size = Math.min(maxCount,size);
@@ -795,7 +820,7 @@
                             padding: 10,
                             fields: [
                                 {
-                                    title: "سطرهاي موجود: " + listgrid.data.size(),
+                                    title: "سطرهاي موجود: " + listgrid.getOriginalData().size(),
                                     type: 'staticText',
                                     width: "150",
                                     colSpan:2,
@@ -860,7 +885,7 @@
                                     click: function () {
                                         if (trTrim(exportExcelForm.getValue("maxRow")) != "") {
 
-                                            /*if(Number(trTrim(exportExcelForm.getValue("maxRow")))+Number(trTrim(exportExcelForm.getValue("startRow"))) > Number(listgrid.data.size())){
+                                            /*if(Number(trTrim(exportExcelForm.getValue("maxRow")))+Number(trTrim(exportExcelForm.getValue("startRow"))) > Number(listgrid.getOriginalData().size())){
                                                 createDialog("info", "مجمع سطر شروع و تعداد سطر ها در خواستي براي خروجي بيشتر از تعداد کل سطرهاي موجود است");
                                                 return;
                                             }else if(Number(trTrim(exportExcelForm.getValue("maxRow"))) > size){
@@ -891,8 +916,8 @@
                 exportExcelWindow.show();
             }
 
-            static showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate){
-                let size = listgrid.data.size();
+            static showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate, exceptColumn){
+                let size = listgrid.getOriginalData().size();
                 let maxCount=5000;
 
                 size = Math.min(maxCount,size);
@@ -919,7 +944,7 @@
                             padding: 10,
                             fields: [
                                 {
-                                    title: "سطرهاي موجود: " + listgrid.data.size(),
+                                    title: "سطرهاي موجود: " + listgrid.getOriginalData().size(),
                                     type: 'staticText',
                                     width: "150",
                                     colSpan:2,
@@ -984,7 +1009,7 @@
                                     click: function () {
                                         if (trTrim(exportExcelForm.getValue("maxRow")) != "") {
 
-                                            /*if(Number(trTrim(exportExcelForm.getValue("maxRow")))+Number(trTrim(exportExcelForm.getValue("startRow"))) > Number(listgrid.data.size())){
+                                            /*if(Number(trTrim(exportExcelForm.getValue("maxRow")))+Number(trTrim(exportExcelForm.getValue("startRow"))) > Number(listgrid.getOriginalData().size())){
                                                 createDialog("info", "مجمع سطر شروع و تعداد سطر ها در خواستي براي خروجي بيشتر از تعداد کل سطرهاي موجود است");
                                                 return;
                                             }else if(Number(trTrim(exportExcelForm.getValue("maxRow"))) > size){
@@ -993,7 +1018,7 @@
                                             }*/
 
                                             if(isValidate(trTrim(exportExcelForm.getValue("maxRow")))) {
-                                                ExportToFile.downloadExcelFromRestUrl(listgrid, restUrl, parseInt(trTrim(exportExcelForm.getValue("startRow")))-1, parseInt(trTrim(exportExcelForm.getValue("maxRow"))), parentListGrid, titr, pageName, Object.keys(criteria).map(function(key) {return {'name':key, 'value':criteria[key]};}));
+                                                ExportToFile.downloadExcelFromRestUrl(listgrid, restUrl, parseInt(trTrim(exportExcelForm.getValue("startRow")))-1, parseInt(trTrim(exportExcelForm.getValue("maxRow"))), parentListGrid, titr, pageName, Object.keys(criteria).map(function(key) {return {'name':key, 'value':criteria[key]};}), exceptColumn);
                                                 exportExcelWindow.close();
                                             }
                                         }
@@ -1015,16 +1040,16 @@
 
             static downloadExcel(title, listgrid, fileName, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate,warning){
 
-                if(listgrid.data.localData.length > listgrid.data.getAllLoadedRows().length || listgrid.data.localData.length > 200){
+                if(listgrid.getOriginalData().size() > listgrid.getOriginalData().cachedRows || listgrid.getOriginalData().size() > 200){
 
                     let showDialog=null;
 
                     if(warning==1){
                         showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>نحوه مرتب سازي</b> و <b>فيلتر هاي اعمال شده</b> بر روي ليست گريد در خروجي اکسل اعمال نخواهند شد.');
                     }else if(warning ==2){
-                        showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>فيلتر هاي اعمال شده</b> بر روي ليست گريد در خروجي اکسل اعمال خواهند شد.');
+                        showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>فيلتر هاي اعمال شده</b> بر روي ليست گريد در خروجي اکسل اعمال نخواهند شد.');
                     }else if(warning ==3){
-                        showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>نحوه مرتب سازي</b> بر روي ليست گريد در خروجي اکسل اعمال خواهند شد.');
+                        showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>نحوه مرتب سازي</b> بر روي ليست گريد در خروجي اکسل اعمال نخواهند شد.');
                     }
 
                     if(showDialog != null){
@@ -1043,33 +1068,37 @@
                 }
             }
 
-            static downloadExcelRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate,warning){
+            static downloadExcelRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate,warning,generateCriteria = false, exceptColumn){
 
-                if(listgrid.data.localData.length > listgrid.data.getAllLoadedRows().length || listgrid.data.localData.length > 200){
+                if(listgrid.getOriginalData().size() > listgrid.getOriginalData().cachedRows || listgrid.getOriginalData().size() > 200){
 
                     let showDialog=null;
 
                     if(warning == 1){
                         showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>نحوه مرتب سازي</b> و <b>فيلتر هاي اعمال شده</b> بر روي ليست گريد در خروجي اکسل اعمال نخواهند شد.');
                     }else if(warning == 2){
-                        showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>فيلتر هاي اعمال شده</b> بر روي ليست گريد در خروجي اکسل اعمال خواهند شد.');
+                        showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>فيلتر هاي اعمال شده</b> بر روي ليست گريد در خروجي اکسل اعمال نخواهند شد.');
                     }else if(warning == 3){
-                        showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>نحوه مرتب سازي</b> بر روي ليست گريد در خروجي اکسل اعمال خواهند شد.');
+                        showDialog = createDialog('info','کاربر گرامي توجه داشته باشيد <b>نحوه مرتب سازي</b> بر روي ليست گريد در خروجي اکسل اعمال نخواهند شد.');
+                    }
+
+                    if(criteria == null && generateCriteria){
+                        criteria = this.generateCriteria(listgrid);
                     }
 
                     if(showDialog != null){
                         let me=this;
-                        showDialog.addPropcerties({
+                        showDialog.addProperties({
                             buttonClick: function (button, index) {
                                 this.close();
-                                me.showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate);
+                                me.showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate, exceptColumn);
                             }
                         });
                     }else{
-                        this.showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate);
+                        this.showDialogRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate, exceptColumn);
                     }
                 }else{
-                    this.downloadExcelFromClient(listgrid, parentListGrid, titr, pageName);
+                    this.downloadExcelFromClient(listgrid, parentListGrid, titr, pageName, exceptColumn);
                 }
             }
         }
@@ -1151,6 +1180,7 @@
     const workGroupUrl = rootUrl + "/work-group";
     const evaluationUrl = rootUrl + "/evaluation";
     const needsAssessmentReportsUrl = rootUrl + "/needsAssessment-reports";
+    const skillNAUrl = rootUrl + "/skill-na";
     const trainingOverTimeReportUrl = rootUrl + "/trainingOverTime";
     const personnelInformationUrl = rootUrl + "/personnelInformation";
     const unfinishedClasses = rootUrl + "/unfinishedClasses";
@@ -2208,15 +2238,6 @@
                             {isSeparator: true},
                             <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">
                             {
-                                title: "گزارش واحد آمار",
-                                click: function () {
-                                    createTab(this.title, "<spring:url value="web/statisticsUnitReport/"/>");
-                                }
-                            },
-                            {isSeparator: true},
-                            </sec:authorize>
-                            <sec:authorize access="hasAuthority('Menu_Report_ReportsRun_TrainingOverTime')">
-                            {
                                 title: "گزارش دوره های گذرانده فرد",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/coursesPassedPersonnelReport/"/>");
@@ -2337,12 +2358,22 @@
                             createTab(this.title, "<spring:url value="web/personnelTrainingStatusReport"/>");
                             }
                             },
+                            {isSeparator: true},
                             </sec:authorize>
                             <sec:authorize access="hasAuthority('Menu_continuous_Status_Report')">
                             {
                                 title: "<spring:message code="continuous.status.report"/>",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/continuousStatusReport"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            </sec:authorize>
+                            <sec:authorize access="hasAuthority('Menu_continuous_Status_Report')">
+                            {
+                                title: "گزارش اصلی واحد آمار",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/statisticsUnitReport/"/>");
                                 }
                             },
                             </sec:authorize>

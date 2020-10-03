@@ -28,7 +28,7 @@ public class Course extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "c_code")
+    @Column(name = "c_code", unique = true, nullable = false)
     private String code;
 
     @Column(name = "c_title_fa")
@@ -59,17 +59,17 @@ public class Course extends Auditable {
     private String behavioralLevel;
 
     @ManyToOne
-    @JoinColumn(name = "category_id", insertable = false, updatable = false)
+    @JoinColumn(name = "category_id")
     private Category category;
 
-    @Column(name = "category_id")
+    @Column(name = "category_id", insertable = false, updatable = false)
     private Long categoryId;
 
     @ManyToOne
-    @JoinColumn(name = "subcategory_id", insertable = false, updatable = false)
+    @JoinColumn(name = "subcategory_id")
     private Subcategory subCategory;
 
-    @Column(name = "subcategory_id")
+    @Column(name = "subcategory_id", insertable = false, updatable = false)
     private Long subCategoryId;
 
     @OneToMany(mappedBy = "course")

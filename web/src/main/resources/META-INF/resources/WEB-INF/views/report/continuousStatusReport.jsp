@@ -47,17 +47,16 @@
             {name: "classHDduration", title:"<spring:message code='course_theoryDuration'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "classStartDate", title:"<spring:message code="start.date"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "classEndDate", title:"<spring:message code="end.date"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "classStatus", title:"وضعیت کلاس", filterOperator: "equals", autoFitWidth: true, valueMap: {
-                    "1": "برنامه ریزی",
-                    "2": "در حال اجرا"
+            {name: "classStatus", title:"وضعیت کلاس", filterOnKeypress: true,filterOperator: "equals", autoFitWidth: true, valueMap: {
+                    1: "برنامه ریزی",
+                    2: "در حال اجرا"
                 }},
 
             {name: "courseType", title:"وضعیت نیازسنجی", filterOperator: "iContains", autoFitWidth: true},
-            {name: "naPriorityId", title:"اولویت نیازسنجی", filterOperator: "equals",  autoFitWidth: true, valueMap: {
-                    "111" : "عملکردی ضروری",
-                    "113" : "عملکردی توسعه",
-                    "112" : "عملکردی بهبود",
-                    "0" : ""
+            {name: "naPriorityId", title:"اولویت نیازسنجی",filterOnKeypress: true, filterOperator: "equals",  autoFitWidth: true, valueMap: {
+                    111 : "عملکردی ضروری",
+                    113 : "عملکردی توسعه",
+                    112 : "عملکردی بهبود"
                 }},
 
             {name: "termId", hidden: true, filterOperator: "equals"},
@@ -88,9 +87,7 @@
         implicitCriteria: {
             _constructor:"AdvancedCriteria",
             operator:"and",
-            criteria:[{fieldName: "active", operator: "equals", value: 1},
-                      {fieldName: "deleted", operator: "equals", value: 0}
-                      ]
+            criteria:[{fieldName: "deleted", operator: "equals", value: 0}]
         },
     });
 
@@ -199,7 +196,8 @@
         dataSource : RestDataSource_JspcontinuousPersonnel,
         cellHeight: 43,
         sortField: 0,
-        showFilterEditor: false,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
         selectionType: "single",
         showRecordComponents: true,
         showRecordComponentsByCell: true
@@ -210,7 +208,7 @@
         title: "گزارش اکسل",
         width: 300,
         click: function () {
-            ExportToFile.downloadExcel(null, ListGrid_JspcontinuousPersonnel, 'continuousPersonnel', 0, null, '',  "گزارش مستمر", ListGrid_JspcontinuousPersonnel.data.criteria, null);
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_JspcontinuousPersonnel, continuousStatusReportViewUrl, 0, null, '',  "گزارش مستمر", ListGrid_JspcontinuousPersonnel.data.getCriteria(), null);
         }
     });
 
@@ -823,11 +821,11 @@
     DynamicForm_SelectPeople_JspUnitReport.getField("people.code").comboBox.setHint("پرسنل مورد نظر را انتخاب کنید");
     DynamicForm_SelectPeople_JspUnitReport.getField("people.code").comboBox.pickListFields =
         [
-            {name: "firstName", title: "نام", width: "30%", filterOperator: "iContains"},
-            {name: "lastName", title: "نام خانوادگي", width: "30%", filterOperator: "iContains"},
-            {name: "nationalCode", title: "کدملي", width: "30%", filterOperator: "iContains"},
-            {name: "personnelNo", title: "کد پرسنلي", width: "30%", filterOperator: "iContains"},
-            {name: "personnelNo2", title: "کد پرسنلي 6 رقمي", width: "30%", filterOperator: "iContains"},
+            {name: "firstName", title: "نام", autoFitWidth:true, filterOperator: "iContains"},
+            {name: "lastName", title: "نام خانوادگي", autoFitWidth:true, filterOperator: "iContains"},
+            {name: "nationalCode", title: "کدملي", autoFitWidth:true, filterOperator: "iContains"},
+            {name: "personnelNo", title: "کد پرسنلي", autoFitWidth:true, filterOperator: "iContains"},
+            {name: "personnelNo2", title: "کد پرسنلي 6 رقمي",autoFitWidth:true, filterOperator: "iContains"},
             ];
     DynamicForm_SelectPeople_JspUnitReport.getField("people.code").comboBox.filterFields = ["firstName","lastName","nationalCode","personnelNo","personnelNo2"];
 
@@ -1070,19 +1068,19 @@
 
                     else if (data_values.criteria[i].fieldName == "startDate1") {
                         data_values.criteria[i].fieldName = "classStartDate";
-                        data_values.criteria[i].operator = "greaterThan";
+                        data_values.criteria[i].operator = "greaterOrEqual";
                     }
                     else if (data_values.criteria[i].fieldName == "startDate2") {
                         data_values.criteria[i].fieldName = "classStartDate";
-                        data_values.criteria[i].operator = "lessThan";
+                        data_values.criteria[i].operator = "lessOrEqual";
                     }
                     else if (data_values.criteria[i].fieldName == "endDate1") {
                         data_values.criteria[i].fieldName = "classEndDate";
-                        data_values.criteria[i].operator = "greaterThan";
+                        data_values.criteria[i].operator = "greaterOrEqual";
                     }
                     else if (data_values.criteria[i].fieldName == "endDate2") {
                         data_values.criteria[i].fieldName = "classEndDate";
-                        data_values.criteria[i].operator = "lessThan";
+                        data_values.criteria[i].operator = "lessOrEqual";
                     }
 
                     else if (data_values.criteria[i].fieldName == "classYear") {

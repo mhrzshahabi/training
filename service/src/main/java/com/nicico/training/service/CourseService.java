@@ -16,9 +16,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.course.CourseUpdateResponse;
 import response.course.dto.CourseDto;
 
 import javax.persistence.EntityManager;
@@ -48,6 +48,7 @@ public class CourseService implements ICourseService {
     private final WorkGroupService workGroupService;
     private final TclassService tclassService;
     private final TeacherService teacherService;
+    private final GoalService goalService;
     private final ParameterService parameterService;
     private final EnumsConverter.ETechnicalTypeConverter eTechnicalTypeConverter = new EnumsConverter.ETechnicalTypeConverter();
     private final EnumsConverter.ELevelTypeConverter eLevelTypeConverter = new EnumsConverter.ELevelTypeConverter();
@@ -158,8 +159,10 @@ public class CourseService implements ICourseService {
     public CourseDTO.CourseDependence checkDependence(Long courseId) {
         final Optional<Course> cById = courseDAO.findById(courseId);
         final Course course = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
-
-        return new CourseDTO.CourseDependence().setNumClasses(course.getTclassSet().size()).setNumSkills(course.getSkillSet().size());
+        int skillSize = course.getSkillSet().stream().filter(skill -> skill.getCourseMainObjectiveId() == null).collect(Collectors.toList()).size();
+        int classSize = course.getTclassSet().size();
+        int goalSize = course.getGoalSet().size();
+        return new CourseDTO.CourseDependence().setNumClasses(classSize).setNumSkills(skillSize).setNumGoals(goalSize);
     }
 
     @Transactional(readOnly = true)
@@ -219,10 +222,10 @@ public class CourseService implements ICourseService {
         Course course = modelMapper.map(request, Course.class);
         course.setCode(this.codeGenerate(course.getCode()));
         if (courseDAO.findByCodeEquals(course.getCode()).isEmpty()) {
-            course.setELevelType(eLevelTypeConverter.convertToEntityAttribute(request.getELevelTypeId()));
-            course.setERunType(eRunTypeConverter.convertToEntityAttribute(request.getERunTypeId()));
-            course.setETheoType(eTheoTypeConverter.convertToEntityAttribute(request.getETheoTypeId()));
-            course.setETechnicalType(eTechnicalTypeConverter.convertToEntityAttribute(request.getETechnicalTypeId()));
+            course.setELevelType(eLevelTypeConverter.convertToEntityAttribute(request.getLevelTypeId()));
+            course.setERunType(eRunTypeConverter.convertToEntityAttribute(request.getRunTypeId()));
+            course.setETheoType(eTheoTypeConverter.convertToEntityAttribute(request.getTheoTypeId()));
+            course.setETechnicalType(eTechnicalTypeConverter.convertToEntityAttribute(request.getTechnicalTypeId()));
             if (request.getMainObjectiveIds() != null && !request.getMainObjectiveIds().isEmpty())
                 course.setHasSkill(true);
             else
@@ -243,10 +246,22 @@ public class CourseService implements ICourseService {
 
     @Transactional
     @Override
-    public CourseDTO.Info update(Course course, List<Long> skillIds) {
+    public CourseUpdateResponse update(Course course, List<Long> skillIds) {
 
         Course oldCourse = courseDAO.findCourseByIdEquals(course.getId());
+        course.setHasGoal(oldCourse.getGoalSet().size()>0);
+        CourseUpdateResponse response = new CourseUpdateResponse();
 
+        if(oldCourse.getGoalSet().stream().anyMatch(goal-> !goal.getSubCategoryId().equals(course.getSubCategoryId()))){
+            response.setMessage("خطا: زیر گروه دوره با زیر گروه هدف یکسان نیست!");
+            response.setStatus(409);
+            return response;
+        }
+        if(oldCourse.getSkillSet().stream().anyMatch(skill-> !skill.getSubCategoryId().equals(course.getSubCategoryId()))){
+            response.setMessage("خطا: زیر گروه دوره با زیر گروه مهارت یکسان نیست!");
+            response.setStatus(409);
+            return response;
+        }
         skillDAO.findByCourseMainObjectiveId(course.getId()).forEach(skill -> {
            skill.setCourseMainObjectiveId(null);
            skill.setCourseId(null);
@@ -261,7 +276,10 @@ public class CourseService implements ICourseService {
             skill.setCourseMainObjectiveId(course.getId());
         });
         course.setSkillMainObjectiveSet(new HashSet<>(newSkills));
-        return modelMapper.map(courseDAO.save(course), CourseDTO.Info.class);
+        response.setRecord(beanMapper.toCourseDto(courseDAO.save(course)));
+        response.setMessage("دوره با موفقیت ویرایش شد.");
+        response.setStatus(200);
+        return response;
     }
 
     @Transactional
@@ -269,6 +287,10 @@ public class CourseService implements ICourseService {
     public void delete(Long id) {
         Optional<Course> byId = courseDAO.findById(id);
         Course course = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
+        List<GoalDTO.Info> goals = getGoal(id);
+        goals.forEach(g -> goalService.delete(g.getId()));
+        deletGoal(id);
+        unAssignSkills(id);
         courseDAO.delete(course);
     }
 

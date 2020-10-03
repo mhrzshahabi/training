@@ -28,8 +28,6 @@ public class EvaluationService implements IEvaluationService {
     private final ParameterService parameterService;
     private final QuestionnaireDAO questionnaireDAO;
     private final TclassDAO tclassDAO;
-    private final GoalDAO goalDAO;
-    private final SkillDAO skillDAO;
     private final DynamicQuestionService dynamicQuestionService;
     private final DynamicQuestionDAO dynamicQuestionDAO;
     private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
@@ -125,7 +123,7 @@ public class EvaluationService implements IEvaluationService {
     }
 
     @Transactional
-    private EvaluationDTO.Info save(Evaluation evaluation) {
+    public EvaluationDTO.Info save(Evaluation evaluation) {
         final Evaluation saved = evaluationDAO.saveAndFlush(evaluation);
         Long evaluationId = saved.getId();
         if(evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(139L)) {
@@ -396,66 +394,88 @@ public class EvaluationService implements IEvaluationService {
         if(evaluation.getQuestionnaireTypeId().equals(139L)){
             Optional<Tclass> byId = tclassDAO.findById(evaluation.getClassId());
             Tclass tclass = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-
-            for (Goal goal : tclass.getCourse().getGoalSet()) {
-                ClassEvaluationGoals classEvaluationGoals = classEvaluationGoalsDAO.findByClassIdAndSkillIdAndGoalId(tclass.getId(),null,goal.getId());
-                String Question = null;
-                if(classEvaluationGoals != null)
+            List<ClassEvaluationGoals> editedGoalList = classEvaluationGoalsDAO.findByClassId(tclass.getId());
+            if(editedGoalList != null && editedGoalList.size() != 0){
+                for (ClassEvaluationGoals classEvaluationGoals : editedGoalList) {
+                    Long type = null;
+                    String Question = null;
+                    DynamicQuestionDTO.Info dynamicQuestion;
+                    if(classEvaluationGoals.getGoalId() != null)
+                        type = 201L;
+                    if(classEvaluationGoals.getSkillId() != null)
+                        type = 200L;
                     Question = classEvaluationGoals.getQuestion();
-                else
-                    Question = goal.getTitleFa();
-                Long type = 201L;
-                DynamicQuestionDTO.Info dynamicQuestion;
-                List<DynamicQuestion> list = dynamicQuestionDAO.findByQuestionAndTypeIdAndGoalIdAndSkillId(Question,type,goal.getId(),null);
-                if(list != null && list.size() >0){
-                    dynamicQuestion = modelMapper.map(list.get(0),DynamicQuestionDTO.Info.class);
+                    List<DynamicQuestion> list = dynamicQuestionDAO.findByQuestionAndTypeIdAndGoalIdAndSkillId(Question,type,classEvaluationGoals.getGoalId(),classEvaluationGoals.getSkillId());
+                    if(list != null && list.size() >0){
+                        dynamicQuestion = modelMapper.map(list.get(0),DynamicQuestionDTO.Info.class);
+                    }
+                    else{
+                        DynamicQuestionDTO.Info dynamicQuestionCreate = new DynamicQuestionDTO.Info();
+                        dynamicQuestionCreate.setOrder(0);
+                        dynamicQuestionCreate.setQuestion(Question);
+                        dynamicQuestionCreate.setTypeId(type);
+                        dynamicQuestionCreate.setWeight(1);
+                        dynamicQuestionCreate.setGoalId(classEvaluationGoals.getGoalId());
+                        dynamicQuestionCreate.setSkillId(classEvaluationGoals.getSkillId());
+                        dynamicQuestion = dynamicQuestionService.create(dynamicQuestionCreate);
+                    }
+                    EvaluationAnswerDTO.Create evaluationAnswerCreate = new EvaluationAnswerDTO.Create();
+                    evaluationAnswerCreate.setEvaluationId(evaluation.getId());
+                    evaluationAnswerCreate.setQuestionSourceId(type);
+                    evaluationAnswerCreate.setEvaluationQuestionId(dynamicQuestion.getId());
+                    evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate,EvaluationAnswer.class));
                 }
-                else{
-                    DynamicQuestionDTO.Info dynamicQuestionCreate = new DynamicQuestionDTO.Info();
-                    dynamicQuestionCreate.setOrder(0);
-                    dynamicQuestionCreate.setQuestion(Question);
-                    dynamicQuestionCreate.setTypeId(type);
-                    dynamicQuestionCreate.setWeight(1);
-                    dynamicQuestionCreate.setGoalId(goal.getId());
-                    dynamicQuestion = dynamicQuestionService.create(dynamicQuestionCreate);
-                }
-                EvaluationAnswerDTO.Create evaluationAnswerCreate = new EvaluationAnswerDTO.Create();
-                evaluationAnswerCreate.setEvaluationId(evaluation.getId());
-                evaluationAnswerCreate.setQuestionSourceId(type);
-                evaluationAnswerCreate.setEvaluationQuestionId(dynamicQuestion.getId());
-//                EvaluationAnswerDTO.Info evaluationAnswer = evaluationAnswerSer.create(evaluationAnswerCreate);
-                evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate,EvaluationAnswer.class));
             }
+            else{
+                for (Goal goal : tclass.getCourse().getGoalSet()) {
+                    String Question = null;
+                    Question = goal.getTitleFa();
+                    Long type = 201L;
+                    DynamicQuestionDTO.Info dynamicQuestion;
+                    List<DynamicQuestion> list = dynamicQuestionDAO.findByQuestionAndTypeIdAndGoalIdAndSkillId(Question,type,goal.getId(),null);
+                    if(list != null && list.size() >0){
+                        dynamicQuestion = modelMapper.map(list.get(0),DynamicQuestionDTO.Info.class);
+                    }
+                    else{
+                        DynamicQuestionDTO.Info dynamicQuestionCreate = new DynamicQuestionDTO.Info();
+                        dynamicQuestionCreate.setOrder(0);
+                        dynamicQuestionCreate.setQuestion(Question);
+                        dynamicQuestionCreate.setTypeId(type);
+                        dynamicQuestionCreate.setWeight(1);
+                        dynamicQuestionCreate.setGoalId(goal.getId());
+                        dynamicQuestion = dynamicQuestionService.create(dynamicQuestionCreate);
+                    }
+                    EvaluationAnswerDTO.Create evaluationAnswerCreate = new EvaluationAnswerDTO.Create();
+                    evaluationAnswerCreate.setEvaluationId(evaluation.getId());
+                    evaluationAnswerCreate.setQuestionSourceId(type);
+                    evaluationAnswerCreate.setEvaluationQuestionId(dynamicQuestion.getId());
+                    evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate,EvaluationAnswer.class));
+                }
 
-            for(Skill skill : tclass.getCourse().getSkillSet()){
-                ClassEvaluationGoals classEvaluationGoals = classEvaluationGoalsDAO.findByClassIdAndSkillIdAndGoalId(tclass.getId(),skill.getId(),null);
-                String Question = null;
-                if(classEvaluationGoals != null)
-                    Question = classEvaluationGoals.getQuestion();
-                else
+                for(Skill skill : tclass.getCourse().getSkillSet()){
+                    String Question = null;
                     Question = skill.getTitleFa();
-
-                Long type = 200L;
-                DynamicQuestionDTO.Info dynamicQuestion;
-                List<DynamicQuestion> list = dynamicQuestionDAO.findByQuestionAndTypeIdAndGoalIdAndSkillId(Question,type,null,skill.getId());
-                if(list != null && list.size() >0){
-                    dynamicQuestion = modelMapper.map(list.get(0),DynamicQuestionDTO.Info.class);
+                    Long type = 200L;
+                    DynamicQuestionDTO.Info dynamicQuestion;
+                    List<DynamicQuestion> list = dynamicQuestionDAO.findByQuestionAndTypeIdAndGoalIdAndSkillId(Question,type,null,skill.getId());
+                    if(list != null && list.size() >0){
+                        dynamicQuestion = modelMapper.map(list.get(0),DynamicQuestionDTO.Info.class);
+                    }
+                    else{
+                        DynamicQuestionDTO.Info dynamicQuestionCreate = new DynamicQuestionDTO.Info();
+                        dynamicQuestionCreate.setOrder(-1);
+                        dynamicQuestionCreate.setQuestion(Question);
+                        dynamicQuestionCreate.setTypeId(type);
+                        dynamicQuestionCreate.setWeight(1);
+                        dynamicQuestionCreate.setSkillId(skill.getId());
+                        dynamicQuestion = dynamicQuestionService.create(dynamicQuestionCreate);
+                    }
+                    EvaluationAnswerDTO.Create evaluationAnswerCreate = new EvaluationAnswerDTO.Create();
+                    evaluationAnswerCreate.setEvaluationId(evaluation.getId());
+                    evaluationAnswerCreate.setQuestionSourceId(type);
+                    evaluationAnswerCreate.setEvaluationQuestionId(dynamicQuestion.getId());
+                    evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate,EvaluationAnswer.class));
                 }
-                else{
-                    DynamicQuestionDTO.Info dynamicQuestionCreate = new DynamicQuestionDTO.Info();
-                    dynamicQuestionCreate.setOrder(-1);
-                    dynamicQuestionCreate.setQuestion(Question);
-                    dynamicQuestionCreate.setTypeId(type);
-                    dynamicQuestionCreate.setWeight(1);
-                    dynamicQuestionCreate.setSkillId(skill.getId());
-                    dynamicQuestion = dynamicQuestionService.create(dynamicQuestionCreate);
-                }
-                EvaluationAnswerDTO.Create evaluationAnswerCreate = new EvaluationAnswerDTO.Create();
-                evaluationAnswerCreate.setEvaluationId(evaluation.getId());
-                evaluationAnswerCreate.setQuestionSourceId(type);
-                evaluationAnswerCreate.setEvaluationQuestionId(dynamicQuestion.getId());
-//                EvaluationAnswerDTO.Info evaluationAnswer = evaluationAnswerSer.create(evaluationAnswerCreate);
-                evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate,EvaluationAnswer.class));
             }
 
             Optional<Questionnaire> qId = questionnaireDAO.findById(evaluation.getQuestionnaireId());
@@ -465,10 +485,10 @@ public class EvaluationService implements IEvaluationService {
                 evaluationAnswerCreate.setEvaluationId(evaluation.getId());
                 evaluationAnswerCreate.setQuestionSourceId(199L);
                 evaluationAnswerCreate.setEvaluationQuestionId(questionnaireQuestion.getId());
-//                EvaluationAnswerDTO.Info evaluationAnswer = evaluationAnswerSer.create(evaluationAnswerCreate);
                 evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate,EvaluationAnswer.class));
             }
         }
+
         else if(evaluation.getQuestionnaireTypeId().equals(141L)){
             Optional<Questionnaire> qId = questionnaireDAO.findById(evaluation.getQuestionnaireId());
             Questionnaire questionnaire = qId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
@@ -480,6 +500,7 @@ public class EvaluationService implements IEvaluationService {
                 evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate,EvaluationAnswer.class));
             }
         }
+
         else if(evaluation.getQuestionnaireTypeId().equals(140L)){
             Optional<Questionnaire> qId = questionnaireDAO.findById(evaluation.getQuestionnaireId());
             Questionnaire questionnaire = qId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
@@ -491,66 +512,92 @@ public class EvaluationService implements IEvaluationService {
                 evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate,EvaluationAnswer.class));
             }
         }
+
         else if(evaluation.getQuestionnaireTypeId().equals(230L)){
             Optional<Tclass> byId = tclassDAO.findById(evaluation.getClassId());
             Tclass tclass = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-
-            for (Goal goal : tclass.getCourse().getGoalSet()) {
-                ClassEvaluationGoals classEvaluationGoals = classEvaluationGoalsDAO.findByClassIdAndSkillIdAndGoalId(tclass.getId(),null,goal.getId());
-                String Question = null;
-                if(classEvaluationGoals != null)
+            List<ClassEvaluationGoals> editedGoalList = classEvaluationGoalsDAO.findByClassId(tclass.getId());
+            if(editedGoalList != null && editedGoalList.size() != 0){
+                for (ClassEvaluationGoals classEvaluationGoals : editedGoalList) {
+                    Long type = null;
+                    String Question = null;
+                    DynamicQuestionDTO.Info dynamicQuestion;
+                    if(classEvaluationGoals.getGoalId() != null)
+                        type = 201L;
+                    if(classEvaluationGoals.getSkillId() != null)
+                        type = 200L;
                     Question = classEvaluationGoals.getQuestion();
-                else
-                    Question = goal.getTitleFa();
-                Long type = 201L;
-                DynamicQuestionDTO.Info dynamicQuestion;
-                List<DynamicQuestion> list = dynamicQuestionDAO.findByQuestionAndTypeIdAndGoalIdAndSkillId(Question,type,goal.getId(),null);
-                if(list != null && list.size() >0){
-                    dynamicQuestion = modelMapper.map(list.get(0),DynamicQuestionDTO.Info.class);
+                    List<DynamicQuestion> list = dynamicQuestionDAO.findByQuestionAndTypeIdAndGoalIdAndSkillId(Question,type,classEvaluationGoals.getGoalId(),classEvaluationGoals.getSkillId());
+                    if(list != null && list.size() >0){
+                        dynamicQuestion = modelMapper.map(list.get(0),DynamicQuestionDTO.Info.class);
+                    }
+                    else{
+                        DynamicQuestionDTO.Info dynamicQuestionCreate = new DynamicQuestionDTO.Info();
+                        dynamicQuestionCreate.setOrder(0);
+                        dynamicQuestionCreate.setQuestion(Question);
+                        dynamicQuestionCreate.setTypeId(type);
+                        dynamicQuestionCreate.setWeight(1);
+                        dynamicQuestionCreate.setGoalId(classEvaluationGoals.getGoalId());
+                        dynamicQuestionCreate.setSkillId(classEvaluationGoals.getSkillId());
+                        dynamicQuestion = dynamicQuestionService.create(dynamicQuestionCreate);
+                    }
+                    EvaluationAnswerDTO.Create evaluationAnswerCreate = new EvaluationAnswerDTO.Create();
+                    evaluationAnswerCreate.setEvaluationId(evaluation.getId());
+                    evaluationAnswerCreate.setQuestionSourceId(type);
+                    evaluationAnswerCreate.setEvaluationQuestionId(dynamicQuestion.getId());
+                    evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate,EvaluationAnswer.class));
                 }
-                else{
-                    DynamicQuestionDTO.Info dynamicQuestionCreate = new DynamicQuestionDTO.Info();
-                    dynamicQuestionCreate.setOrder(0);
-                    dynamicQuestionCreate.setQuestion(Question);
-                    dynamicQuestionCreate.setTypeId(type);
-                    dynamicQuestionCreate.setWeight(1);
-                    dynamicQuestionCreate.setGoalId(goal.getId());
-                    dynamicQuestion = dynamicQuestionService.create(dynamicQuestionCreate);
-                }
-                EvaluationAnswerDTO.Create evaluationAnswerCreate = new EvaluationAnswerDTO.Create();
-                evaluationAnswerCreate.setEvaluationId(evaluation.getId());
-                evaluationAnswerCreate.setQuestionSourceId(type);
-                evaluationAnswerCreate.setEvaluationQuestionId(dynamicQuestion.getId());
-                evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate,EvaluationAnswer.class));
             }
+            else{
+                for (Goal goal : tclass.getCourse().getGoalSet()) {
+                    String Question = null;
+                    Question = goal.getTitleFa();
+                    Long type = 201L;
+                    DynamicQuestionDTO.Info dynamicQuestion;
+                    List<DynamicQuestion> list = dynamicQuestionDAO.findByQuestionAndTypeIdAndGoalIdAndSkillId(Question,type,goal.getId(),null);
+                    if(list != null && list.size() >0){
+                        dynamicQuestion = modelMapper.map(list.get(0),DynamicQuestionDTO.Info.class);
+                    }
+                    else{
+                        DynamicQuestionDTO.Info dynamicQuestionCreate = new DynamicQuestionDTO.Info();
+                        dynamicQuestionCreate.setOrder(0);
+                        dynamicQuestionCreate.setQuestion(Question);
+                        dynamicQuestionCreate.setTypeId(type);
+                        dynamicQuestionCreate.setWeight(1);
+                        dynamicQuestionCreate.setGoalId(goal.getId());
+                        dynamicQuestion = dynamicQuestionService.create(dynamicQuestionCreate);
+                    }
+                    EvaluationAnswerDTO.Create evaluationAnswerCreate = new EvaluationAnswerDTO.Create();
+                    evaluationAnswerCreate.setEvaluationId(evaluation.getId());
+                    evaluationAnswerCreate.setQuestionSourceId(type);
+                    evaluationAnswerCreate.setEvaluationQuestionId(dynamicQuestion.getId());
+                    evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate,EvaluationAnswer.class));
+                }
 
-            for(Skill skill : tclass.getCourse().getSkillSet()){
-                ClassEvaluationGoals classEvaluationGoals = classEvaluationGoalsDAO.findByClassIdAndSkillIdAndGoalId(tclass.getId(),skill.getId(),null);
-                String Question = null;
-                if(classEvaluationGoals != null)
-                    Question = classEvaluationGoals.getQuestion();
-                else
+                for(Skill skill : tclass.getCourse().getSkillSet()){
+                    String Question = null;
                     Question = skill.getTitleFa();
-                Long type = 200L;
-                DynamicQuestionDTO.Info dynamicQuestion;
-                List<DynamicQuestion> list = dynamicQuestionDAO.findByQuestionAndTypeIdAndGoalIdAndSkillId(Question,type,null,skill.getId());
-                if(list != null && list.size() >0){
-                    dynamicQuestion = modelMapper.map(list.get(0),DynamicQuestionDTO.Info.class);
+                    Long type = 200L;
+                    DynamicQuestionDTO.Info dynamicQuestion;
+                    List<DynamicQuestion> list = dynamicQuestionDAO.findByQuestionAndTypeIdAndGoalIdAndSkillId(Question,type,null,skill.getId());
+                    if(list != null && list.size() >0){
+                        dynamicQuestion = modelMapper.map(list.get(0),DynamicQuestionDTO.Info.class);
+                    }
+                    else{
+                        DynamicQuestionDTO.Info dynamicQuestionCreate = new DynamicQuestionDTO.Info();
+                        dynamicQuestionCreate.setOrder(-1);
+                        dynamicQuestionCreate.setQuestion(Question);
+                        dynamicQuestionCreate.setTypeId(type);
+                        dynamicQuestionCreate.setWeight(1);
+                        dynamicQuestionCreate.setSkillId(skill.getId());
+                        dynamicQuestion = dynamicQuestionService.create(dynamicQuestionCreate);
+                    }
+                    EvaluationAnswerDTO.Create evaluationAnswerCreate = new EvaluationAnswerDTO.Create();
+                    evaluationAnswerCreate.setEvaluationId(evaluation.getId());
+                    evaluationAnswerCreate.setQuestionSourceId(type);
+                    evaluationAnswerCreate.setEvaluationQuestionId(dynamicQuestion.getId());
+                    evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate,EvaluationAnswer.class));
                 }
-                else{
-                    DynamicQuestionDTO.Info dynamicQuestionCreate = new DynamicQuestionDTO.Info();
-                    dynamicQuestionCreate.setOrder(-1);
-                    dynamicQuestionCreate.setQuestion(Question);
-                    dynamicQuestionCreate.setTypeId(type);
-                    dynamicQuestionCreate.setWeight(1);
-                    dynamicQuestionCreate.setSkillId(skill.getId());
-                    dynamicQuestion = dynamicQuestionService.create(dynamicQuestionCreate);
-                }
-                EvaluationAnswerDTO.Create evaluationAnswerCreate = new EvaluationAnswerDTO.Create();
-                evaluationAnswerCreate.setEvaluationId(evaluation.getId());
-                evaluationAnswerCreate.setQuestionSourceId(type);
-                evaluationAnswerCreate.setEvaluationQuestionId(dynamicQuestion.getId());
-                evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate,EvaluationAnswer.class));
             }
 
             Optional<Questionnaire> qId = questionnaireDAO.findById(evaluation.getQuestionnaireId());
@@ -654,13 +701,30 @@ public class EvaluationService implements IEvaluationService {
 
         Map<String,Integer> indicesTotalWeight = new HashMap<>();
         Map<String,Double> indicesGrade = new HashMap<>();
-        for (Skill skill : tclass.getCourse().getSkillSet()) {
-            indicesGrade.put("s"+skill.getId(),0.0);
-            indicesTotalWeight.put("s"+skill.getId(),0);
+
+        List<ClassEvaluationGoals> editedGoalList = classEvaluationGoalsDAO.findByClassId(tclass.getId());
+        if(editedGoalList != null && editedGoalList.size() != 0){
+            for (ClassEvaluationGoals classEvaluationGoals : editedGoalList) {
+                if(classEvaluationGoals.getSkillId() != null){
+                    indicesGrade.put("s"+classEvaluationGoals.getSkillId(),0.0);
+                    indicesTotalWeight.put("s"+classEvaluationGoals.getSkillId(),0);
+                }
+                if(classEvaluationGoals.getGoalId() != null){
+                    indicesGrade.put("g"+classEvaluationGoals.getGoalId(),0.0);
+                    indicesTotalWeight.put("g"+classEvaluationGoals.getGoalId(),0);
+                }
+            }
         }
-        for (Goal goal : tclass.getCourse().getGoalSet()) {
-            indicesGrade.put("g"+goal.getId(),0.0);
-            indicesTotalWeight.put("g"+goal.getId(),0);
+        else{
+            for (Skill skill : tclass.getCourse().getSkillSet()) {
+                indicesGrade.put("s"+skill.getId(),0.0);
+                indicesTotalWeight.put("s"+skill.getId(),0);
+            }
+            for (Goal goal : tclass.getCourse().getGoalSet()) {
+                indicesGrade.put("g"+goal.getId(),0.0);
+                indicesTotalWeight.put("g"+goal.getId(),0);
+            }
+
         }
 
         int index = 0;
@@ -816,6 +880,20 @@ public class EvaluationService implements IEvaluationService {
         evaluationResult.setIndicesGrade(indicesGrade);
 
         return evaluationResult;
+    }
+
+    @Transactional
+    public Boolean classHasEvaluationForm(Long classId){
+        Optional<Tclass> byId = tclassDAO.findById(classId);
+        Tclass tclass = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        Boolean result = false;
+        for (ClassStudent std : tclass.getClassStudents()) {
+            if(std.getEvaluationStatusReaction() != null && std.getEvaluationStatusReaction() != 0)
+                result = true;
+            if(std.getNumberOfSendedBehavioralForms() != null && std.getNumberOfSendedBehavioralForms() > 0)
+                result = true;
+        }
+        return result;
     }
 
 }

@@ -169,7 +169,7 @@
                 click:function() {
                     let title="گزارش اضافه کاری آموزشی از تاریخ "+DynamicForm_TrainingOverTime.getItem("startDate").getValue()+ " الی "+DynamicForm_TrainingOverTime.getItem("endDate").getValue();
 
-                    ExportToFile.downloadExcel(null, ListGrid_TrainingOverTime_TrainingOverTimeJSP, 'trainingOverTime', 0, null, '', title, DynamicForm_TrainingOverTime.getValuesAsAdvancedCriteria(), null);
+                    ExportToFile.downloadExcel(null, ListGrid_TrainingOverTime_TrainingOverTimeJSP, 'trainingOverTime', 0, null, '', title, DynamicForm_TrainingOverTime.getValuesAsAdvancedCriteria(), null,2);
                 }
             })
             , "header", "filterEditor", "body"],

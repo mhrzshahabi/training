@@ -1,12 +1,13 @@
 package com.nicico.training.service;
 
+import com.nicico.copper.common.domain.criteria.NICICOPageable;
 import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.NeedsAssessmentDTO;
 import com.nicico.training.dto.NeedsAssessmentReportsDTO;
 import com.nicico.training.dto.PersonnelDTO;
-import com.nicico.training.dto.PostDTO;
 import com.nicico.training.iservice.ICourseService;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.iservice.ISkillService;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections.map.MultiValueMap;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -275,19 +277,6 @@ public class NeedsAssessmentReportsService {
                 ex.printStackTrace();
             }
         });
-    }
-
-    @Transactional(readOnly = true)
-//    @Override
-    public SearchDTO.SearchRs<PostDTO.Info> getSkillNAPostList(SearchDTO.SearchRq request, Long skillId) {
-        Skill skill = skillService.getSkill(skillId);
-        List<NeedsAssessment> needsAssessments = new ArrayList<>(skill.getNeedsAssessments());
-        MultiValueMap postsGByPriority = getNAPostsGByPriority(needsAssessments.stream().filter(na -> na.getDeleted() == null).collect(Collectors.toList()));
-        SearchDTO.SearchRs<PostDTO.Info> searchRs = new SearchDTO.SearchRs<>();
-        searchRs.setTotalCount((long) postsGByPriority.values().size());
-        searchRs.setList(modelMapper.map(postsGByPriority.values(), new TypeToken<List<PostDTO.Info>>() {
-        }.getType()));
-        return searchRs;
     }
 
     private void convertCriteriaToParams(SearchDTO.CriteriaRq criteria,

@@ -1,6 +1,7 @@
 package com.nicico.training.controller;
 
 import com.nicico.copper.common.Loggable;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ViewStatisticsUnitReportDTO;
 import com.nicico.training.iservice.IViewStatisticsUnitReportService;
@@ -31,6 +32,18 @@ public class ViewStatisticsUnitReportRestController {
     public ResponseEntity<ISC<ViewStatisticsUnitReportDTO.Grid>> list(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         searchRq.setSortBy("id");
+
+        if (searchRq.getCriteria() != null && searchRq.getCriteria().getCriteria() != null)
+        {
+            for (SearchDTO.CriteriaRq criterion : searchRq.getCriteria().getCriteria()) {
+                    if (criterion.getValue().get(0).equals("true"))
+                        criterion.setValue(true);
+
+                    else if (criterion.getValue().get(0).equals("false"))
+                        criterion.setValue(false);
+                }
+        }
+
         return new ResponseEntity<>(ISC.convertToIscRs(iViewStatisticsUnitReportService.search(searchRq, o -> modelMapper.map(o, ViewStatisticsUnitReportDTO.Grid.class)), searchRq.getStartIndex()), HttpStatus.OK);
     }
 

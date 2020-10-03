@@ -45,7 +45,6 @@
             {name: "courseId", hidden: true, title:"<spring:message code='identity'/>", filterOperator: "equals", autoFitWidth: true},
             {name: "courseCode", title:"<spring:message code='course.code'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "courseTitleFa", title:"<spring:message code='course'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "categoryId", title:"<spring:message code='category'/>", filterOperator: "equals", autoFitWidth: true},
             {name: "courseRunType", title:"<spring:message code='course_eruntype'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "courseTheoType", title:"<spring:message code='course_etheoType'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "courseLevelType", title:"<spring:message code='cousre_elevelType'/>", filterOperator: "iContains", autoFitWidth: true},
@@ -159,7 +158,8 @@
         dataSource : RestDataSource_JspAttendanceReport,
         cellHeight: 43,
         sortField: 0,
-        showFilterEditor: false,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
         selectionType: "single",
         showRecordComponents: true,
         showRecordComponentsByCell: true
@@ -252,6 +252,21 @@
                 optionDataSource: ComplexDS_PresenceReport,
                 valueField: "value",
                 displayField: "value",
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "classStudentApplicantCompanyName",
@@ -259,6 +274,21 @@
                 valueField: "value",
                 displayField: "value",
                 optionDataSource: CompanyDS_PresenceReport,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "studentCcpAssistant",
@@ -266,6 +296,21 @@
                 valueField: "value",
                 displayField: "value",
                 optionDataSource: AssistantDS_PresenceReport,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "studentCcpSection",
@@ -273,6 +318,21 @@
                 valueField: "value",
                 displayField: "value",
                 optionDataSource: SectionDS_PresenceReport,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "studentCcpUnit",
@@ -280,6 +340,21 @@
                 optionDataSource: UnitDS_PresenceReport,
                 valueField: "value",
                 displayField: "value",
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "studentCcpAffairs",
@@ -287,6 +362,21 @@
                 optionDataSource: AffairsDS_PresenceReport,
                 valueField: "value",
                 displayField: "value",
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "classCode",
@@ -748,11 +838,11 @@
     DynamicForm_SelectPeople_JspUnitReport.getField("people.code").comboBox.setHint("پرسنل مورد نظر را انتخاب کنید");
     DynamicForm_SelectPeople_JspUnitReport.getField("people.code").comboBox.pickListFields =
         [
-            {name: "firstName", title: "نام", width: "30%", filterOperator: "iContains"},
-            {name: "lastName", title: "نام خانوادگي", width: "30%", filterOperator: "iContains"},
-            {name: "nationalCode", title: "کدملي", width: "30%", filterOperator: "iContains"},
-            {name: "personnelNo", title: "کد پرسنلي", width: "30%", filterOperator: "iContains"},
-            {name: "personnelNo2", title: "کد پرسنلي 6 رقمي", width: "30%", filterOperator: "iContains"},
+            {name: "firstName", title: "نام", autoFitWidth:true, filterOperator: "iContains"},
+            {name: "lastName", title: "نام خانوادگي", autoFitWidth:true, filterOperator: "iContains"},
+            {name: "nationalCode", title: "کدملي", autoFitWidth:true, filterOperator: "iContains"},
+            {name: "personnelNo", title: "کد پرسنلي", autoFitWidth:true, filterOperator: "iContains"},
+            {name: "personnelNo2", title: "کد پرسنلي 6 رقمي", autoFitWidth:true, filterOperator: "iContains"},
         ];
     DynamicForm_SelectPeople_JspUnitReport.getField("people.code").comboBox.filterFields = ["firstName","lastName","nationalCode","personnelNo","personnelNo2"];
 
@@ -883,29 +973,29 @@
 
                      else if (data_values.criteria[i].fieldName == "startDate1") {
                          data_values.criteria[i].fieldName = "classStartDate";
-                         data_values.criteria[i].operator = "greaterThan";
+                         data_values.criteria[i].operator = "greaterOrEqual";
                      }
                      else if (data_values.criteria[i].fieldName == "startDate2") {
                          data_values.criteria[i].fieldName = "classStartDate";
-                         data_values.criteria[i].operator = "lessThan";
+                         data_values.criteria[i].operator = "lessOrEqual";
                      }
                      else if (data_values.criteria[i].fieldName == "endDate1") {
                          data_values.criteria[i].fieldName = "classEndDate";
-                         data_values.criteria[i].operator = "greaterThan";
+                         data_values.criteria[i].operator = "greaterOrEqual";
                      }
                      else if (data_values.criteria[i].fieldName == "endDate2") {
                          data_values.criteria[i].fieldName = "classEndDate";
-                         data_values.criteria[i].operator = "lessThan";
+                         data_values.criteria[i].operator = "lessOrEqual";
                      }
 
                      else if (data_values.criteria[i].fieldName == "sessionStartDate") {
                          data_values.criteria[i].fieldName = "sessionDate";
-                         data_values.criteria[i].operator = "greaterThan";
+                         data_values.criteria[i].operator = "greaterOrEqual";
                      }
 
                      else if (data_values.criteria[i].fieldName == "sessionEndDate") {
                          data_values.criteria[i].fieldName = "sessionDate";
-                         data_values.criteria[i].operator = "lessThan";
+                         data_values.criteria[i].operator = "lessOrEqual";
                      }
 
                      else if (data_values.criteria[i].fieldName == "studentPersonnelNo") {

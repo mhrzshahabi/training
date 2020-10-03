@@ -213,7 +213,22 @@
                     pickListFields: [
                         {name: "titleFa", filterOperator: "iContains"},
                     ],
-                    filterFields: [""]
+                    filterFields: [""],
+                    icons:[
+                        {
+                            name: "clear",
+                            src: "[SKIN]actions/remove.png",
+                            width: 15,
+                            height: 15,
+                            inline: true,
+                            prompt: "پاک کردن",
+                            click : function (form, item, icon) {
+                                item.clearValue();
+                                item.focusInItem();
+                                form.setValue(null);
+                            }
+                        }
+                    ]
                 },
                 {
                     name: "category",
@@ -232,7 +247,22 @@
                     pickListFields: [
                         {name: "titleFa", filterOperator: "iContains"},
                     ],
-                    filterFields: [""]
+                    filterFields: [""],
+                    icons:[
+                        {
+                            name: "clear",
+                            src: "[SKIN]actions/remove.png",
+                            width: 15,
+                            height: 15,
+                            inline: true,
+                            prompt: "پاک کردن",
+                            click : function (form, item, icon) {
+                                item.clearValue();
+                                item.focusInItem();
+                                form.setValue(null);
+                            }
+                        }
+                    ]
                 },
                 {
                     name: "subcategory",
@@ -251,7 +281,22 @@
                     pickListFields: [
                         {name: "titleFa", filterOperator: "iContains"},
                     ],
-                    filterFields: [""]
+                    filterFields: [""],
+                    icons:[
+                        {
+                            name: "clear",
+                            src: "[SKIN]actions/remove.png",
+                            width: 15,
+                            height: 15,
+                            inline: true,
+                            prompt: "پاک کردن",
+                            click : function (form, item, icon) {
+                                item.clearValue();
+                                item.focusInItem();
+                                form.setValue(null);
+                            }
+                        }
+                    ]
                 },
                 {
                     name: "course",
@@ -270,7 +315,22 @@
                     pickListFields: [
                         {name: "titleFa", filterOperator: "iContains"},
                     ],
-                    filterFields: [""]
+                    filterFields: [""],
+                    icons:[
+                        {
+                            name: "clear",
+                            src: "[SKIN]actions/remove.png",
+                            width: 15,
+                            height: 15,
+                            inline: true,
+                            prompt: "پاک کردن",
+                            click : function (form, item, icon) {
+                                item.clearValue();
+                                item.focusInItem();
+                                form.setValue(null);
+                            }
+                        }
+                    ]
                 },
                 {
                     name: "term",
@@ -285,7 +345,7 @@
                     optionDataSource: RestDataSource_Term,
                     displayField: ["titleFa"],
                     valueField: ["id"],
-                    sortField: ["titleFa"],
+                    sortField: ["id"],
                     sortDirection: "descending",
                     textAlign: "center",
                     pickListFields: [
@@ -295,7 +355,22 @@
                             filterOperator: "iContains"
                         },
                     ],
-                    filterFields: [""]
+                    filterFields: [""],
+                    icons:[
+                        {
+                            name: "clear",
+                            src: "[SKIN]actions/remove.png",
+                            width: 15,
+                            height: 15,
+                            inline: true,
+                            prompt: "پاک کردن",
+                            click : function (form, item, icon) {
+                                item.clearValue();
+                                item.focusInItem();
+                                form.setValue(null);
+                            }
+                        }
+                    ]
                 },
                 {
                     ID: "reportType",
@@ -333,7 +408,7 @@
                     name: "searchBtn",
                     ID: "searchBtnJspCPReport",
                     type: "ButtonItem",
-                    colSpan: 4,
+                    colSpan: 2,
                     width:"*",
                     startRow:false,
                     endRow:false,
@@ -341,7 +416,37 @@
                     click: function () {
                         searchResult();
                     }
-                }
+                },
+                {
+                    type: "button",
+                    width:"*",
+                    startRow:false,
+                    endRow:false,
+                    colSpan: 2,
+                    title: "<spring:message code="global.form.print.excel"/>",
+                    click: function () {
+                        if (ListGrid_ClPReport.data.size()>0 || ListGrid_atPReport.data.size()>0) {
+                            var reportParameters = {
+                                firstStartDate: firstStartDate._value.replace(/\//g, "^"),
+                                secondStartDate: secondStartDate._value.replace(/\//g, "^"),
+                                firstFinishDate: firstFinishDate._value.replace(/\//g, "^"),
+                                secondFinishDate: secondFinishDate._value.replace(/\//g, "^"),
+                                institute: DynamicForm_CPReport.getValue("institute") !== undefined ? DynamicForm_CPReport.getValue("institute") : "همه",
+                                category: DynamicForm_CPReport.getValue("category") !== undefined ? DynamicForm_CPReport.getValue("category") : "همه",
+                                subcategory: DynamicForm_CPReport.getValue("subcategory") !== undefined ? DynamicForm_CPReport.getValue("subcategory") : "همه",
+                                term: DynamicForm_CPReport.getValue("term") !== undefined ? DynamicForm_CPReport.getValue("term") : "همه",
+                                course: DynamicForm_CPReport.getValue("course") !== undefined ? DynamicForm_CPReport.getValue("course") : "همه"
+                            };
+
+                            if (DynamicForm_CPReport.getValue("reportType") === "1") {
+                                ExportToFile.downloadExcelRestUrl(null, ListGrid_ClPReport, classPerformanceReport + "list" + "/" + JSON.stringify(reportParameters), 0, null, '', "لیست گزارش عملکرد واحدهای آموزشی - کلاسی", ListGrid_ClPReport.getCriteria(), null);
+                            }
+                            else {
+                                ExportToFile.downloadExcelRestUrl(null, ListGrid_atPReport, attendancePerformanceReportUrl + "list" + "/" + JSON.stringify(reportParameters), 0, null, '', "لیست گزارش عملکرد واحدهای آموزشی - حضور و غیابی", ListGrid_atPReport.getCriteria(), null);
+                            }
+                        }
+                    }
+                },
             ]
         });
         // ----------------------------------- Create - DynamicForm & Window --------------------------->>

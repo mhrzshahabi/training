@@ -311,8 +311,8 @@
         marginTop:30,
         defaultLayoutAlign: "center",
         members:[
-            isc.HLayout.create({
-                width: "80%",
+            isc.VLayout.create({
+                width: "90%",
                 height: "100%",
                 membersMargin:5,
                 alignment: 'center',
@@ -335,7 +335,15 @@
                         controlGroups:["fontControls", "formatControls", "styleControls", "colorControls", "bulletControls"],
                         styleControls: ["alignRight", "boldSelection"],
                         value:MSG_textEditorValue
-                    })
+                    }),
+                    isc.DynamicForm.create({
+                        ID: "linkFormMLanding",
+                        width: "100%",
+                        fields: [
+                            { name: "link", title: "لینک", controlStyle : "inputRTL",cellStyle  : "inputRTL",showRTL :false, validateOnExit: true,
+        validators: [TrValidators.WebsiteValidate],},
+                        ]
+                    }),
                 ],
 
             }),
@@ -554,6 +562,18 @@
 
     function MSG_sendMsg(html){
 
+        if(linkFormMLanding.getItem('link').required && (!linkFormMLanding.getItem('link').getValue() || linkFormMLanding.getItem('link').getValue().trim() == '' || !linkFormMLanding.getItem('link').isValid())){
+            var ERROR = isc.Dialog.create({
+                message:"لینک را وارد نمایید",
+                icon: "[SKIN]stop.png",
+                title:  "لینک"
+            });
+            setTimeout(function () {
+                ERROR.close();
+            }, 1000);
+            return;
+        }
+
         if(MSG_selectUsersForm.getItem('multipleSelect').getValue() == undefined || MSG_selectUsersForm.getItem('multipleSelect').getValue() == null){
             var ERROR = isc.Dialog.create({
                 message:"افراد را انتخاب نمایید",
@@ -693,6 +713,9 @@
 
     function MSG_initMSG(){
         MSG_contentEditor.setValue('');
+        linkFormMLanding.getItem('link').setValue('');
+        linkFormMLanding.getItem('link').setRequired(false);
+        linkFormMLanding.getItem('link').disable();
         //MSGAttachContainer.removeMembers(MSGAttachContainer.getMembers());
         MSG_selectUsersForm.clearValues()
         MSG_sendTypesItems = [];
