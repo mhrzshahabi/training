@@ -243,6 +243,8 @@ public class ClassStudentDTO implements Serializable {
         Long failureReasonId;
         private Float score;
         private String valence;
+        private String scoreStateTitle;
+        private String failureReasonTitle;
     }
 
     @Getter

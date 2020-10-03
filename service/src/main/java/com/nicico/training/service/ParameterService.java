@@ -16,9 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -54,4 +52,17 @@ public class ParameterService extends BaseService<Parameter, Long, ParameterDTO.
             config.getParameterValueList().sort(Comparator.comparing(ParameterValueDTO::getType));
         return configSearchRs;
     }
+
+    @Transactional(readOnly = true)
+    public Map<Long, String> getMapByCode(String code) {
+        Map<Long, String> parameterMap = new HashMap<>();
+        Optional<Parameter> pByCode = dao.findByCode(code);
+        Parameter parameter = pByCode.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        parameter.getParameterValueList().forEach(info -> {
+            parameterMap.put(info.getId(), info.getTitle());
+        });
+        return parameterMap;
+    }
+
+
 }
