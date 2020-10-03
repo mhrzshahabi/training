@@ -8,6 +8,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.service.ClassStudentService;
+import com.nicico.training.service.ParameterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -32,6 +33,7 @@ public class ScoreRestController {
     private final ReportUtil reportUtil;
     private final ClassStudentService classStudentService;
     private final ModelMapper modelMapper;
+    private final ParameterService parameterService;
 
     @PostMapping(value = {"/printWithCriteria"})
     public void printWithCriteria(HttpServletResponse response,  @RequestParam(value = "_sortBy") String sortBy, @RequestParam(value = "classId") String classId, @RequestParam(value = "CriteriaStr") String criteriaStr, @RequestParam(value = "class") String classRecord) throws Exception {
@@ -42,6 +44,8 @@ public class ScoreRestController {
         map.put("1002", "متوسط");
         map.put("1003", "خوب");
         map.put("1004", "خیلی خوب");
+        Map<Long, String> mapScoreState;
+        Map<Long, String> mapfailureReasonTitle;
         if (criteriaStr.equalsIgnoreCase("{}")) {
             searchRq = new SearchDTO.SearchRq();
         } else {
@@ -66,6 +70,8 @@ public class ScoreRestController {
 
 
         final SearchDTO.SearchRs<ClassStudentDTO.ScoresInfo> searchRs = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.ScoresInfo.class));
+        mapScoreState= parameterService.getMapByCode("StudentScoreState");
+        mapfailureReasonTitle=parameterService.getMapByCode("StudentFailureReason");
         Map<String, String> map1 = new HashMap<>();
         map1.put("1001", "ضعیف");
         map1.put("1002", "متوسط");
@@ -81,12 +87,20 @@ public class ScoreRestController {
         params.put("scoringMethod", json.getString("scoringMethod"));
         params.put("acceptancelimit", json.getString("acceptancelimit"));
         params.put(ConstantVARs.REPORT_TYPE, "pdf");
+        for (ClassStudentDTO.ScoresInfo x:searchRs.getList())
+        {
+            x.setScoreStateTitle(mapScoreState.get(x.getScoresStateId()));
+        }
+        for (ClassStudentDTO.ScoresInfo x:searchRs.getList())
+        {
+            x.setFailureReasonTitle(mapfailureReasonTitle.get(x.getFailureReasonId()));
+        }
         if (json.getString("scoringMethod").equals("ارزشی")) {
             List<ClassStudentDTO.ScoresInfo> list = searchRs.getList();
             for (ClassStudentDTO.ScoresInfo x : list) {
                 x.setValence(map1.get(x.getValence()));
             }
-            String data = "{" + "\"content\": " + objectMapper.writeValueAsString(list) + "}";
+             String data = "{" + "\"content\": " + objectMapper.writeValueAsString(list) + "}";
             JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
             reportUtil.export("/reports/scoreValence.jasper", params, jsonDataSource, response);
         } else {
