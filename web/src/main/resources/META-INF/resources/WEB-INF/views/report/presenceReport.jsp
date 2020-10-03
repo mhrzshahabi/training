@@ -162,7 +162,10 @@
         allowFilterExpressions: true,
         selectionType: "single",
         showRecordComponents: true,
-        showRecordComponentsByCell: true
+        showRecordComponentsByCell: true,
+        initialSort: [
+            {property: "studentId", direction: "ascending",primarySort: true}
+        ],
     });
 
     IButton_JspAttendancePresenceReport_FullExcel = isc.IButtonSave.create({

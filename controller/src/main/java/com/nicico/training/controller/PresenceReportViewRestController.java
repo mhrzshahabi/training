@@ -30,7 +30,6 @@ public class PresenceReportViewRestController {
     @GetMapping
     public ResponseEntity<ISC<PersonnelCoursePassedNAReportViewDTO.Grid>> list(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        searchRq.setSortBy("id");
         return new ResponseEntity<>(ISC.convertToIscRs(presenceReportViewService.search(searchRq, o -> modelMapper.map(o, PresenceReportViewDTO.Grid.class)), searchRq.getStartIndex()), HttpStatus.OK);
     }
 
