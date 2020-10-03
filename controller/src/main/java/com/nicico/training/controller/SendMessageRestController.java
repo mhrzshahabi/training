@@ -64,6 +64,7 @@ public class SendMessageRestController {
         String courseName = "";
         String courseStartDate = "";
         String courseEndDate = "";
+        String institute = "";
         String oMessage = "";
         Integer maxRepeat = 0;
         Integer timeBMessages = 0;
@@ -87,6 +88,7 @@ public class SendMessageRestController {
             courseName = tclassDTO.getCourse().getTitleFa();
             courseStartDate = tclassDTO.getStartDate();
             courseEndDate = tclassDTO.getEndDate();
+            institute = tclassDTO.getInstitute().getTitleFa();
         }
 
         if (jsonNode.has("classStudent")) {
@@ -107,9 +109,9 @@ public class SendMessageRestController {
                     ids.add(objNode.asLong());
                 }
             }
-        } else if (jsonNode.has("classStudentHaventEvaluation")) {
-            jsonNode = jsonNode.get("classStudentHaventEvaluation");
-            type = "classStudentHaventEvaluation";
+        } else if (jsonNode.has("classStudentRegistered")) {
+            jsonNode = jsonNode.get("classStudentRegistered");
+            type = "classStudentRegistered";
 
             if (jsonNode.isArray()) {
                 for (final JsonNode objNode : jsonNode) {
@@ -158,8 +160,9 @@ public class SendMessageRestController {
                         prefixFullName.add(p.getPersonality().getGenderId() == null ? "جناب آقای/سرکار خانم" : p.getPersonality().getGenderId() == 1 ? "جناب آقای" : (p.getPersonality().getGenderId() == 2 ? "سرکار خانم" : "جناب آقای/سرکار خانم"));
                     }
             );
-        } /*else if (type.equals("classStudentHaventEvaluation")) {
-            code = "CSHE";
+        } else if (type.equals("classStudentRegistered")) {
+
+            code = "CSR";
 
             SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
             searchRq.setCount(1000);
@@ -175,48 +178,45 @@ public class SendMessageRestController {
                         prefixFullName.add(p.getStudent().getGender().equals("مرد") ? "جناب آقای" : (p.getStudent().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم"));
                     }
             );
-        }*/
+        }
 
         Message oMessageModel = new Message();
 
-        if (maxRepeat > 0) {
+        oMessageModel.setContextText(oMessage);
+        oMessageModel.setContextHtml(oMessage);
 
-            oMessageModel.setContextText(oMessage);
-            oMessageModel.setContextHtml(oMessage);
+        parameter = parameterService.getByCode("MessageUserType");
 
-            parameter = parameterService.getByCode("MessageUserType");
+        String finalCode = code;
+        ParameterValueDTO.Info parameterValue = modelMapper.map(((TotalResponse) parameter).getResponse().getData().stream().filter(p -> ((ParameterValueDTO.Info) p).getCode().equals(finalCode)).toArray()[0], ParameterValueDTO.Info.class);
 
-            String finalCode = code;
-            ParameterValueDTO.Info parameterValue = modelMapper.map(((TotalResponse) parameter).getResponse().getData().stream().filter(p -> ((ParameterValueDTO.Info) p).getCode().equals(finalCode)).toArray()[0], ParameterValueDTO.Info.class);
+        oMessageModel.setUserTypeId(parameterValue.getId());
+        List<ParameterValue> sentWays = new ArrayList<>();
 
-            oMessageModel.setUserTypeId(parameterValue.getId());
-            List<ParameterValue> sentWays = new ArrayList<>();
+        parameter = parameterService.getByCode("MessageSendWays");
 
-            parameter = parameterService.getByCode("MessageSendWays");
+        parameterValue = modelMapper.map(((TotalResponse) parameter).getResponse().getData().stream().filter(p -> ((ParameterValueDTO.Info) p).getCode().equals("sms")).toArray()[0], ParameterValueDTO.Info.class);
 
-            parameterValue = modelMapper.map(((TotalResponse) parameter).getResponse().getData().stream().filter(p -> ((ParameterValueDTO.Info) p).getCode().equals("sms")).toArray()[0], ParameterValueDTO.Info.class);
+        sentWays.add(parameterValueDAO.findById(parameterValue.getId()).orElse(null));
 
-            sentWays.add(parameterValueDAO.findById(parameterValue.getId()).orElse(null));
+        oMessageModel.setSendWays(sentWays);
+        oMessageModel.setInterval(timeBMessages);
+        oMessageModel.setCountSend(maxRepeat + 1);
+        oMessageModel.setTclassId(classId);
 
-            oMessageModel.setSendWays(sentWays);
-            oMessageModel.setInterval(timeBMessages);
-            oMessageModel.setCountSend(maxRepeat);
-            oMessageModel.setTclassId(classId);
-
-            messageDAO.save(oMessageModel);
-        }
+        messageDAO.save(oMessageModel);
 
         for (int i = 0; i < mobiles.size(); i++) {
             paramValMap = new HashMap<>();
 
-            String message = oMessage;
+            /*String message = oMessage;
             message = message.replace("{prefix-full_name}", prefixFullName.get(i));
             message = message.replace("{full-name}", fullName.get(i));
             message = message.replace("{course-name}", courseName);
             message = message.replace("{start-date}", courseStartDate);
             message = message.replace("{end-date}", courseEndDate);
             message = message.replace("{personnel-address}", personelAddress);
-            message += "\nواحد ارزیابی امور آموزش";
+            message += "\nواحد ارزیابی امور آموزش";*/
 
 
             List<String> numbers = new ArrayList<>();
@@ -229,7 +229,6 @@ public class SendMessageRestController {
 
 
             if (type.equals("classStudent")) {
-                //pid = "bkvqncws2h";
                 pid = "0zsny4iqsf";
                 paramValMap.put("personnel-address", link);
             } else if (type.equals("classTeacher")) {
@@ -237,46 +236,54 @@ public class SendMessageRestController {
                 paramValMap.put("personel-address", personelAddress);
                 paramValMap.put("start-date", courseStartDate);
                 paramValMap.put("end-date", courseEndDate);
+            } else if (type.equals("classStudentRegistered")) {
+                pid = "nag1n27dvu";
+                paramValMap.put("institute", institute);
             }
 
             Long messageId = Long.parseLong(sendMessageService.asyncEnqueue(pid, paramValMap, numbers).get(0));
 
-            if (maxRepeat > 0) {
-                MessageContact messageContact = new MessageContact();
-                messageContact.setCountSent(0);
-                //messageContact.setMessageParameterList(parameters);
-                messageContact.setLastSentDate(new Date());
-                messageContact.setReturnMessageId(messageId);
-                messageContact.setStatusId((long) 588);
+            //if (maxRepeat > 0) {
+            MessageContact messageContact = new MessageContact();
+            messageContact.setCountSent(1);
+            //messageContact.setMessageParameterList(parameters);
+            messageContact.setLastSentDate(new Date());
+            //messageContact.setReturnMessageId(messageId);
+            messageContact.setStatusId((long) 588);
 
-                messageContact.setObjectId(ids.get(i));
+            messageContact.setObjectId(ids.get(i));
 
-                String tmpLink = "";
+            String tmpLink = "";
 
-                if (type.equals("classStudent")) {
-                    messageContact.setObjectType("ClassStudent");
-                    tmpLink = link;
-                } else if (type.equals("classTeacher")) {
-                    messageContact.setObjectType("Teacher");
-                    tmpLink = personelAddress;
-                }
-
-                messageContact.setObjectMobile(mobiles.get(i));
-                messageContact.setMessageId(oMessageModel.getId());
-                messageContactDAO.save(messageContact);
-
-                messageParameter("prefix-full_name", prefixFullName.get(i), messageContact.getId());
-                messageParameter("full-name", fullName.get(i), messageContact.getId());
-                messageParameter("course-name", courseName, messageContact.getId());
-
-                if (type.equals("classStudent")) {
-                    messageParameter("personnel-address", tmpLink, messageContact.getId());
-                } else if (type.equals("classTeacher")) {
-                    messageParameter("personel-address", tmpLink, messageContact.getId());
-                    messageParameter("start-date", courseStartDate, messageContact.getId());
-                    messageParameter("end-date", courseEndDate, messageContact.getId());
-                }
+            if (type.equals("classStudent")) {
+                messageContact.setObjectType("ClassStudent");
+                tmpLink = link;
+            } else if (type.equals("classTeacher")) {
+                messageContact.setObjectType("Teacher");
+                tmpLink = personelAddress;
+            } else if (type.equals("classStudentRegistered")) {
+                messageContact.setObjectType("ClassStudent");
+                tmpLink = link;
             }
+
+            messageContact.setObjectMobile(mobiles.get(i));
+            messageContact.setMessageId(oMessageModel.getId());
+            messageContactDAO.save(messageContact);
+
+            messageParameter("prefix-full_name", prefixFullName.get(i), messageContact.getId());
+            messageParameter("full-name", fullName.get(i), messageContact.getId());
+            messageParameter("course-name", courseName, messageContact.getId());
+
+            if (type.equals("classStudent")) {
+                messageParameter("personnel-address", tmpLink, messageContact.getId());
+            } else if (type.equals("classTeacher")) {
+                messageParameter("personel-address", tmpLink, messageContact.getId());
+                messageParameter("start-date", courseStartDate, messageContact.getId());
+                messageParameter("end-date", courseEndDate, messageContact.getId());
+            } else if (type.equals("classStudentRegistered")) {
+                messageParameter("institute", institute, messageContact.getId());
+            }
+            //}
         }
 
         return new ResponseEntity<>(HttpStatus.OK);

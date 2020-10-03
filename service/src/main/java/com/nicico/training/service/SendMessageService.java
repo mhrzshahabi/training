@@ -27,10 +27,8 @@ import java.util.*;
 @Service
 public class SendMessageService implements ISendMessageService {
 
-    //private final MagfaSMSService magfaSMSService;
     private final NimadSMSService nimadSMSService;
-    //private static Long messageId = -1L;
-    private static SecureRandom secureRandom = new SecureRandom();
+    private final MessageContactService messageContactService;
 
     @Autowired
     protected MessageContactDAO messageContactDAO;
@@ -61,30 +59,8 @@ public class SendMessageService implements ISendMessageService {
     @Override
     public void scheduling() {
 
-        List<Message> messages = messageDAO.findAll();
-        Integer cnt = messages.size();
-
-        try {
-            for (int i = 0; i < cnt; i++) {
-                if (messages.get(i).getMessageContactList().size() == 0) {
-                    messageDAO.deleteSendWaysById(messages.get(i).getId());
-
-                    messageDAO.deleteById(messages.get(i).getId());
-                }
-            }
-        } catch (Exception ex) {
-
-        }
-
-        List<Object> list = messageContactDAO.findAllMessagesForSend(LocalDate.now().toString());
-        List<MessageContactDTO.AllMessagesForSend> masterList = new ArrayList<>();
-
-        cnt = list.size();
-
-        for (int i = 0; i < cnt; i++) {
-            Object[] oList = (Object[]) list.get(i);
-            masterList.add(new MessageContactDTO.AllMessagesForSend(Integer.parseInt(oList[0].toString()), Integer.parseInt(oList[1].toString()),/* oList[2].toString(), oList[3].toString(),*/ oList[2].toString(), Long.parseLong(oList[3].toString()), Long.parseLong(oList[4].toString()), oList[5].toString(), Long.parseLong(oList[6].toString())));
-        }
+        List<MessageContactDTO.AllMessagesForSend> masterList = messageContactService.getAllMessageContactForSend();
+        Integer cnt = masterList.size();
 
         for (int i = 0; i < cnt; i++) {
 
@@ -112,8 +88,6 @@ public class SendMessageService implements ISendMessageService {
             List<String> numbers = new ArrayList<>();
             numbers.add(masterList.get(i).getObjectMobile());
 
-            //Long messageId = Long.valueOf(secureRandom.nextInt(Integer.MAX_VALUE));
-
             Map<String, String> paramValMap = new HashMap<>();
 
             List<MessageParameter> listParameter = messageParameterDAO.findByMessageContactId(masterList.get(i).getMessageContactId());
@@ -122,20 +96,17 @@ public class SendMessageService implements ISendMessageService {
                 paramValMap.put(parameter.getName(), parameter.getValue());
             }
 
-            try{
+            try {
                 Long messageId = Long.parseLong(nimadSMSService.syncEnqueue(pid, paramValMap, numbers).get(0));
-
-                //magfaSMSService.asyncEnqueue(numbers, ++messageId, masterList.get(i).getContextText());
 
                 MessageContact messageContact = messageContactDAO.findById(masterList.get(i).getMessageContactId()).orElse(null);
 
                 if (messageContact.getCountSent() + 1 >= masterList.get(i).getCountSend()) {
-                    messageParameterDAO.deleteByMCId(messageContact.getId());
                     messageContactDAO.deleteById(messageContact.getId());
                 } else {
-                    messageContactDAO.updateAfterSendMessage(messageId,(long)(messageContact.getCountSent() + 1),new Date(),messageContact.getId());
+                    messageContactDAO.updateAfterSendMessage(messageId, (long) (messageContact.getCountSent() + 1), new Date(), messageContact.getId());
                 }
-            }catch(Exception ex){
+            } catch (Exception ex) {
 
             }
         }

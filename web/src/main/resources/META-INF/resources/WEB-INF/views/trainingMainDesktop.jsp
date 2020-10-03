@@ -891,6 +891,11 @@
                                                 return;
                                             }*/
 
+                                            if(maxCount < size){
+                                                createDialog("info", "تعداد سطرهاي وارد شده جهت خروجي، بيشتر از حداکثر تعداد سطرهاي قابل چاپ است");
+                                                return;
+                                            }
+
                                             if(isValidate(trTrim(exportExcelForm.getValue("maxRow")))) {
 
                                                 ExportToFile.downloadExcelFromServer(listgrid, fileName, parseInt(trTrim(exportExcelForm.getValue("startRow")))-1, parseInt(trTrim(exportExcelForm.getValue("maxRow"))), parentListGrid, titr, pageName,JSON.stringify(criteria));
@@ -1014,6 +1019,11 @@
                                                 createDialog("info", "تعداد سطرهاي وارد شده جهت خروجي، بيشتر از حداکثر تعداد سطرهاي قابل چاپ است");
                                                 return;
                                             }*/
+
+                                            if(maxCount < size){
+                                                createDialog("info", "تعداد سطرهاي وارد شده جهت خروجي، بيشتر از حداکثر تعداد سطرهاي قابل چاپ است");
+                                                return;
+                                            }
 
                                             if(isValidate(trTrim(exportExcelForm.getValue("maxRow")))) {
                                                 ExportToFile.downloadExcelFromRestUrl(listgrid, restUrl, parseInt(trTrim(exportExcelForm.getValue("startRow")))-1, parseInt(trTrim(exportExcelForm.getValue("maxRow"))), parentListGrid, titr, pageName, Object.keys(criteria).map(function(key) {return {'name':key, 'value':criteria[key]};}), exceptColumn);

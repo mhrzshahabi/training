@@ -155,7 +155,7 @@
         ]
     });
 
-    var MSG_Window_MSG_Main = isc.Window.create({
+    /*var MSG_Window_MSG_Main = isc.Window.create({
         placement: "center",
         title: "ارسال پیام",
         overflow: "auto",
@@ -172,7 +172,7 @@
             this.clear()
             this.close();
         },
-    });
+    });*/
 
     //----------------------------------------- ListGrids --------------------------------------------------------------
     var ListGrid_student_RE = isc.TrLG.create({

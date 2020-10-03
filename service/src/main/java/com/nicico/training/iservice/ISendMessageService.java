@@ -1,5 +1,7 @@
 package com.nicico.training.iservice;
 
+import com.nicico.training.dto.MessageContactDTO;
+
 import java.util.List;
 import java.util.Map;
 

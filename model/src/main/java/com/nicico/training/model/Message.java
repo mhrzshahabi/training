@@ -18,7 +18,6 @@ import java.util.List;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_message")
-@DiscriminatorValue("Message")
 public class Message extends Auditable {
 
     @Id
@@ -33,13 +32,16 @@ public class Message extends Auditable {
     @Column(name = "c_context_html", nullable = false, length = 2000)
     private String contextHtml;
 
+    @Column(name = "c_pid", nullable = false)
+    private String PId;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tbl_message_parameter_value",
             joinColumns = {@JoinColumn(name = "f_message_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_parameter_value_id", referencedColumnName = "id")})
     private List<ParameterValue> sendWays;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "f_message_user_type", nullable = false, insertable = false, updatable = false)
     private ParameterValue userType;
 
@@ -55,10 +57,17 @@ public class Message extends Auditable {
     @Column(name = "n_interval", nullable = false)
     private Integer Interval;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "f_message_class", insertable = false, updatable = false)
     private Tclass tclass;
 
     @Column(name = "f_message_class")
     private Long tclassId;
+
+    @ManyToOne
+    @JoinColumn(name = "f_orginal_message_message", insertable = false, updatable = false)
+    private Message orginalMessage;
+
+    @Column(name = "f_orginal_message_message")
+    private Long orginalMessageId;
 }
