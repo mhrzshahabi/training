@@ -167,7 +167,9 @@
         height: "100%",
         dataSource : RestDataSource_JspCoursesNotPassedPersonnel,
         cellHeight: 43,
-        sortField: "id",
+        initialSort: [
+            {property: "personnelId", direction: "ascending",primarySort: true}
+        ],
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         selectionType: "single",
