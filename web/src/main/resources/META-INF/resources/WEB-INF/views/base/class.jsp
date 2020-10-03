@@ -3530,7 +3530,7 @@
     }
 
     function tabSet_class_status(classRecord) {
-        if (ListGrid_Class_JspClass.getSelectedRecord() === null) {
+        if ((ListGrid_Class_JspClass.getSelectedRecord() === null) || (ListGrid_Class_JspClass.getSelectedRecord().classStatus === "4")) {
             TabSet_Class.disable();
             isReadOnlyClass = true;
             return;
