@@ -834,13 +834,13 @@
             ListGrid_Class_Student.refreshFields();
             ListGrid_Class_Student.dataChanged()
         } else {
-            let scores_wait=createDialog("wait", "در حال بروز رسانی اطلاعات", "<spring:message code="message"/>");
-            setTimeout(function () {
-                ListGrid_Class_Student.fetchData()
-                ListGrid_Class_Student.invalidateCache()
-                scores_wait.close()
-            },3000);
-            return;
+            <%--let scores_wait=createDialog("wait", "در حال بروز رسانی اطلاعات", "<spring:message code="message"/>");--%>
+            <%--setTimeout(function () {--%>
+                <%--ListGrid_Class_Student.fetchData()--%>
+                <%--ListGrid_Class_Student.invalidateCache()--%>
+                <%--scores_wait.close()--%>
+            <%--},3000);--%>
+            <%--return;--%>
         }
 
     }

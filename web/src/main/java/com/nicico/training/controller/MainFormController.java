@@ -356,4 +356,7 @@ public class MainFormController {
         return "basic/personnelInformationDetails";
     }
 
+    @RequestMapping("/reactionEvaluationReport")
+    public String reactionEvaluationReport(){return "report/reactionEvaluationReport";}
+
 }

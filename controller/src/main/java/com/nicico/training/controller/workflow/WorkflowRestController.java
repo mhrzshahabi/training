@@ -43,7 +43,6 @@ import java.util.*;
 public class WorkflowRestController {
 
     private final FileUtil fileUtil;
-    private final ModelMapper modelMapper;
     private final ObjectMapper objectMapper;
     private final TaskService taskService;
     private final RuntimeService runtimeService;

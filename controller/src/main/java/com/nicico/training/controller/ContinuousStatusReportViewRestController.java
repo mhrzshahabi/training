@@ -27,7 +27,6 @@ public class ContinuousStatusReportViewRestController {
     @GetMapping
     public ResponseEntity<ISC<ContinuousStatusReportViewDTO.Grid>> iscList(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        searchRq.setSortBy("empNo");
         SearchDTO.SearchRs<ContinuousStatusReportViewDTO.Grid> searchRs = continuousStatusReportViewService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }

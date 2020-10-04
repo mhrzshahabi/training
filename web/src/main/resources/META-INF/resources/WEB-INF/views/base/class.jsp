@@ -3530,7 +3530,7 @@
     }
 
     function tabSet_class_status(classRecord) {
-        if (ListGrid_Class_JspClass.getSelectedRecord() === null) {
+        if ((ListGrid_Class_JspClass.getSelectedRecord() === null) || (ListGrid_Class_JspClass.getSelectedRecord().classStatus === "4")) {
             TabSet_Class.disable();
             isReadOnlyClass = true;
             return;
@@ -3756,10 +3756,10 @@
         DataSource_TargetSociety_List.testData.forEach(function (currentValue, index, arr) {
             DataSource_TargetSociety_List.removeData(currentValue)
         });
-        wait.show()
+        wait.show();
         isc.RPCManager.sendRequest(
             TrDSRequest(targetSocietyUrl + "getListById/" + id, "GET", null, function (resp) {
-                wait.close()
+                wait.close();
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     var societies = [];
                     var item = 0;
@@ -3769,15 +3769,14 @@
                     // DynamicForm_Class_JspClass.getItem("addtargetSociety").hide();
                     DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue("371");
                     DynamicForm_Class_JspClass.getItem("targetSocieties")._value = undefined;
-                    JSON.parse(resp.data).forEach(
-                        function (currentValue, index, arr) {
+                    JSON.parse(resp.data).forEach(currentValue =>
+                        {
                             if (currentValue.targetSocietyTypeId === 371) {
                                 societies.add(currentValue.societyId);
                                 DynamicForm_Class_JspClass.getItem("targetSocieties").valueField = "societyId";
                                 DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(currentValue.targetSocietyTypeId.toString());
                                 DataSource_TargetSociety_List.addData(currentValue);
                                 singleTargetScoiety.add(currentValue);
-                                //DynamicForm_Class_JspClass.getItem("addtargetSociety").hide();
                             } else if (currentValue.targetSocietyTypeId === 372) {
                                 societies.add(currentValue.title);
                                 DynamicForm_Class_JspClass.getItem("targetSocieties").valueField = "title";
@@ -3785,9 +3784,9 @@
                                 etcTargetSociety.add(currentValue.title);
                                 item -= 1;
                                 DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue(currentValue.targetSocietyTypeId.toString());
-                                // DynamicForm_Class_JspClass.getItem("addtargetSociety").show();
                             }
-                        });
+                        }
+                    );
                     DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(societies);
                 }
             })

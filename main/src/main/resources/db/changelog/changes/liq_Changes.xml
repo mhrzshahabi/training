@@ -1264,4 +1264,16 @@
             <column name="c_origin_question" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1601381769051-464">
+        <addNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_code" tableName="tbl_competence"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1601381769051-465">
+        <addNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_code" tableName="tbl_course"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1601381769051-466">
+        <addNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_code" tableName="tbl_term"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1601381769051-470">
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="scores_state_id" tableName="tbl_class_student"/>
+    </changeSet>
 </databaseChangeLog>

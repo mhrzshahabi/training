@@ -277,9 +277,6 @@
     let CompetenceTS_needsAssessment = isc.ToolStrip.create({
         ID: "CompetenceTS_needsAssessment",
         members: [
-            // isc.ToolStripButtonRefresh.create({
-            //     click: function () { refreshLG(ListGrid_Competence_JspNeedsAssessment); }
-            // }),
             isc.ToolStripButtonAdd.create({
                 title:"افزودن",
                 click: function () {
@@ -293,7 +290,6 @@
                     }
                 }
             }),
-            // isc.ToolStripButtonCreate.create({click: function () { createCompetence_competence(); }}),
             isc.LayoutSpacer.create({width: "*"}),
             isc.Label.create({ID: "CompetenceLGCount_needsAssessment"}),
         ]
@@ -897,6 +893,10 @@
         canRemoveRecords:true,
         canDragRecordsOut: true,
         dragDataAction: "none",
+        canHover: true,
+        showHoverComponents: true,
+        hoverMode: "details",
+
         removeRecordClick(rowNum){
             wait.show();
             let id = DynamicForm_JspEditNeedsAssessment.getValue("objectId");

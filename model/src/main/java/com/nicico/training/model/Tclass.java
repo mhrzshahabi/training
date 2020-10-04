@@ -40,7 +40,7 @@ public class Tclass extends Auditable {
     @Column(name = "n_max_capacity")
     private Long maxCapacity;
 
-    @Column(name = "c_code", nullable = false)
+    @Column(name = "c_code", nullable = false, unique = true)
     private String code;
 
     @Column(name = "c_title_class")
@@ -211,7 +211,7 @@ public class Tclass extends Auditable {
     @Column(name = "c_behavioral_level")
     private String behavioralLevel;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_cancel_class_reason", insertable = false, updatable = false)
     private ParameterValue classCancelReason;
 

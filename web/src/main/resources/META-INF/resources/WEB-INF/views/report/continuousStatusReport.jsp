@@ -200,7 +200,10 @@
         allowFilterExpressions: true,
         selectionType: "single",
         showRecordComponents: true,
-        showRecordComponentsByCell: true
+        showRecordComponentsByCell: true,
+        initialSort: [
+            {property: "courseId", direction: "ascending",primarySort: true}
+        ],
     });
 
     IButton_JspcontinuousPersonnel_FullExcel = isc.IButtonSave.create({

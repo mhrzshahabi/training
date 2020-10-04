@@ -13,4 +13,5 @@ public class UpdateStudentScoreRequest implements Serializable {
     private Long scoresStateId;
     private Float score;
     private long failureReasonId;
+    private String valence;
 }
