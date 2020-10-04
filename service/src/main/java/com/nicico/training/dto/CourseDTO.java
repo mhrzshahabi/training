@@ -443,4 +443,14 @@ public class CourseDTO implements Serializable {
         private int numSkills;
         private int numGoals;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("WithOutClassSpecRs")
+    public static class WithOutClassSpecRs {
+        private SpecRs response;
+    }
+
 }
