@@ -1,17 +1,10 @@
 package com.nicico.training.controller;
 
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.nicico.copper.common.dto.search.EOperator;
-import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.training.dto.ViewClassDetailDTO;
 import com.nicico.training.model.EvaluationAnalysis;
 import com.nicico.training.service.EvaluationAnalysisService;
-import com.nicico.training.service.ViewClassDetailService;
-import javafx.scene.input.InputMethodTextRun;
 import lombok.RequiredArgsConstructor;
 import org.activiti.engine.impl.util.json.JSONObject;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.stereotype.Controller;
@@ -26,7 +19,6 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
