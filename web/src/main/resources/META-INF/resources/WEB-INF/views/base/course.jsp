@@ -557,10 +557,17 @@
             {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center", hidden: true},
             {
                 name: "practicalDuration",
-                title: "<spring:message code="course_Running_time"/>",
+                title: "مدت زمان عملی",
                 align: "center",
                 summaryFunction: "sum",
-                format: "0 ساعت "
+                format: "0.00 ساعت"
+            },
+            {
+                name: "theoreticalDuration",
+                title: "مدت زمان تئوری",
+                align: "center",
+                summaryFunction: "sum",
+                format: "0.00 ساعت"
             },
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
