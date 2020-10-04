@@ -26,7 +26,6 @@ public class ViewCoursesPassedPersonnelReportController {
     @GetMapping
     public ResponseEntity<ISC<ViewCoursesPassedPersonnelReportDTO.Grid>> list(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        searchRq.setSortBy("empNo");
         SearchDTO.SearchRs<ViewCoursesPassedPersonnelReportDTO.Grid> searchRs = iViewCoursesPassedPersonnelReportService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }

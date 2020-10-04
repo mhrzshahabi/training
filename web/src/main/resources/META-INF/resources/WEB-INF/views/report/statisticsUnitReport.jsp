@@ -262,7 +262,10 @@
         allowFilterExpressions: true,
         selectionType: "single",
         showRecordComponents: true,
-        showRecordComponentsByCell: true
+        showRecordComponentsByCell: true,
+        initialSort: [
+            {property: "studentId", direction: "ascending",primarySort: true}
+        ],
     });
 
     IButton_JspUnitReport_FullExcel = isc.IButtonSave.create({
