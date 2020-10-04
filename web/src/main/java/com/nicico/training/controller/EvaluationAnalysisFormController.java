@@ -8,6 +8,7 @@ import com.nicico.training.dto.ViewClassDetailDTO;
 import com.nicico.training.model.EvaluationAnalysis;
 import com.nicico.training.service.EvaluationAnalysisService;
 import com.nicico.training.service.ViewClassDetailService;
+import javafx.scene.input.InputMethodTextRun;
 import lombok.RequiredArgsConstructor;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -231,8 +232,8 @@ public class EvaluationAnalysisFormController {
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 
         params.add("CriteriaStr", request.getParameter("CriteriaStr"));
-        params.add("title", "");
-        params.add("description", "");
+        params.add("object", object.toString());
+
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers);
 

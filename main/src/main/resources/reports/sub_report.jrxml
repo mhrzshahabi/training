@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_report" pageWidth="250" pageHeight="250" columnWidth="250" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="76c99c52-53b7-4be1-9482-f67aafb4ec86">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_report" pageWidth="500" pageHeight="300" columnWidth="500" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="76c99c52-53b7-4be1-9482-f67aafb4ec86">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
@@ -21,15 +21,19 @@
 		<band splitType="Stretch"/>
 	</background>
 	<summary>
-		<band height="250">
+		<band height="300">
 			<barChart>
 				<chart isShowLegend="true" evaluationTime="Report">
-					<reportElement x="30" y="30" width="200" height="200" uuid="e4d8001c-7e2f-48a5-8017-b9fc229225f5"/>
+					<reportElement x="0" y="42" width="500" height="258" uuid="0b999604-614a-4388-a13b-fa6cc6e0a8cc"/>
 					<chartTitle>
-						<titleExpression><![CDATA[$F{title}]]></titleExpression>
+						<font fontName="Shabnam-FD" size="9"/>
 					</chartTitle>
-					<chartSubtitle/>
-					<chartLegend/>
+					<chartSubtitle>
+						<font fontName="Shabnam-FD" size="9"/>
+					</chartSubtitle>
+					<chartLegend>
+						<font fontName="Shabnam-FD" size="8"/>
+					</chartLegend>
 				</chart>
 				<categoryDataset>
 					<categorySeries>
@@ -38,17 +42,40 @@
 						<valueExpression><![CDATA[$F{yCoordinate}]]></valueExpression>
 					</categorySeries>
 				</categoryDataset>
-				<barPlot>
-					<plot labelRotation="42.0"/>
-					<itemLabel/>
-					<categoryAxisFormat labelRotation="42.0">
-						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000"/>
+				<barPlot isShowLabels="true" isShowTickLabels="true" isShowTickMarks="false">
+					<plot backgroundAlpha="1.0" labelRotation="45.0"/>
+					<itemLabel>
+						<font fontName="Shabnam-FD"/>
+					</itemLabel>
+					<categoryAxisFormat labelRotation="45.0">
+						<axisFormat labelColor="#000000" tickLabelColor="#000000" verticalTickLabels="true" axisLineColor="#000000">
+							<labelFont>
+								<font fontName="Shabnam-FD"/>
+							</labelFont>
+							<tickLabelFont>
+								<font fontName="Shabnam-FD" size="0"/>
+							</tickLabelFont>
+						</axisFormat>
 					</categoryAxisFormat>
 					<valueAxisFormat>
-						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000"/>
+						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000">
+							<labelFont>
+								<font fontName="Shabnam-FD"/>
+							</labelFont>
+							<tickLabelFont>
+								<font fontName="Shabnam-FD"/>
+							</tickLabelFont>
+						</axisFormat>
 					</valueAxisFormat>
 				</barPlot>
 			</barChart>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="150" y="12" width="200" height="30" backcolor="#FE9D2A" uuid="b5c4c4b2-6830-493c-89a9-546d5572bb59"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
+			</textField>
 		</band>
 	</summary>
 </jasperReport>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reactionEvaluationReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="da2486f4-0744-447f-92e2-37ffbbffbd58">
-	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+	<style name="Table 1_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
 			<topPen lineWidth="0.5" lineColor="#000000"/>
@@ -10,7 +10,7 @@
 			<rightPen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
-	<style name="Table_CH" mode="Opaque" backcolor="#BFE1FF">
+	<style name="Table 1_CH" mode="Opaque" backcolor="#FE9D2A">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
 			<topPen lineWidth="0.5" lineColor="#000000"/>
@@ -19,7 +19,7 @@
 			<rightPen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
-	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+	<style name="Table 1_TD" mode="Opaque" backcolor="#FFFFFF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
 			<topPen lineWidth="0.5" lineColor="#000000"/>
@@ -41,10 +41,10 @@
 	</subDataset>
 	<parameter name="XYChartDataSource" class="java.util.List"/>
 	<parameter name="todayDate" class="java.lang.String"/>
+	<parameter name="title" class="java.lang.String"/>
 	<parameter name="logo_nicico" class="java.lang.Object"/>
 	<parameter name="description" class="java.lang.String"/>
 	<parameter name="minFerGrade" class="java.lang.String"/>
-	<parameter name="title" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -52,69 +52,77 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="118">
+		<band height="103">
 			<rectangle radius="5">
-				<reportElement x="0" y="11" width="559" height="89" backcolor="#FE9D2A" uuid="0f0aa6cf-1f63-45d6-9b86-c3a5c42c0fb8"/>
+				<reportElement x="0" y="7" width="559" height="89" backcolor="#FE9D2A" uuid="0f0aa6cf-1f63-45d6-9b86-c3a5c42c0fb8"/>
 			</rectangle>
 			<image>
-				<reportElement x="495" y="36" width="50" height="50" uuid="4a699506-0f9b-4bc4-a441-07fa6de7f434"/>
+				<reportElement x="495" y="26" width="50" height="50" uuid="4a699506-0f9b-4bc4-a441-07fa6de7f434"/>
 				<imageExpression><![CDATA[$P{logo_nicico}]]></imageExpression>
 			</image>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="60" y="30" width="430" height="60" uuid="13a92fd4-f8e9-480b-808e-8fb650adc2ef"/>
+				<reportElement positionType="Float" x="119" y="42" width="317" height="20" uuid="9fc9a021-3d3b-461d-bced-0a636e5bd1a6"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD" size="12" isBold="false"/>
+					<font fontName="Shabnam-FD" size="14" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{title}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
 	<summary>
-		<band height="558">
+		<band height="534">
 			<subreport isUsingCache="false" runToBottom="false">
-				<reportElement positionType="Float" x="181" y="92" width="190" height="150" uuid="8cddf419-f1d9-40b8-8f28-8fd7a48fcf97"/>
+				<reportElement positionType="Float" x="8" y="73" width="537" height="300" uuid="8cddf419-f1d9-40b8-8f28-8fd7a48fcf97"/>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{XYChartDataSource})]]></dataSourceExpression>
 				<subreportExpression><![CDATA["reports/sub_reports.jasper"]]></subreportExpression>
 			</subreport>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="8" y="7" width="537" height="20" uuid="8800368d-d335-4187-b74b-0a34d131555c"/>
+				<textElement textAlignment="Right">
+					<font fontName="Shabnam-FD" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{description}]]></textFieldExpression>
+			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="230" y="50" width="315" height="30" forecolor="#D13E38" uuid="8d1d1555-49c4-47b8-85a9-f536fc683692"/>
+				<reportElement positionType="Float" x="230" y="32" width="315" height="30" forecolor="#D13E38" uuid="8d1d1555-49c4-47b8-85a9-f536fc683692"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="12"/>
 				</textElement>
 				<text><![CDATA[الف) نمودار نمره ی واکنش کلی دوره ها بر اساس واحدهای آموزش]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="0" y="258" width="550" height="35" uuid="d058cdd1-0d01-4cdf-9e95-089b73c49ce0"/>
+				<reportElement positionType="Float" x="0" y="379" width="550" height="35" uuid="d058cdd1-0d01-4cdf-9e95-089b73c49ce0"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[" با توجه به نمودارهای فوق، نمودار ارزیابی کلی دوره های ذیل از حد نصاب " + $P{minFerGrade} + "کمتر بوده است که نیاز به بررسی و در  نهایت بهبود موارد نقص می باشد. "]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement positionType="Float" x="57" y="306" width="441" height="60" uuid="bfe6f5b5-0c8b-4be6-b511-50e94624cc8f">
+				<reportElement positionType="Float" x="60" y="431" width="440" height="60" uuid="11ef668e-f89a-4f9c-8477-6fcd20ed21d5">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
-					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
-					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
-					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 1_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 1_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table 1_TD"/>
+					<property name="net.sf.jasperreports.export.headertoolbar.table.name" value=""/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="content" uuid="cdc47bac-dd24-42ce-bc08-d75850a31669">
+					<datasetRun subDataset="content" uuid="09b6193c-e6ee-4ce2-892d-8d50a30e12b2">
 						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("content")]]></dataSourceExpression>
 					</datasetRun>
-					<jr:column width="150" uuid="2d2f2eba-40ba-495d-9db6-9f5ee4b10f4d">
+					<jr:column width="150" uuid="d7e88367-92d6-47ad-bf68-b420058e4cbf">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="150" height="30" uuid="f9e73269-135c-4566-8d97-184a9e51ef96"/>
+								<reportElement x="0" y="0" width="150" height="30" uuid="34c85cfd-84ac-4cbf-8d02-9173f60f6328"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="12"/>
 								</textElement>
 								<text><![CDATA[نمره]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="150" height="30" uuid="bcb818e2-c55f-43a4-ba0b-948c87a08951"/>
+								<reportElement x="0" y="0" width="150" height="30" uuid="8d452470-7406-49d7-a43e-855a5cccaff6"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="12"/>
 								</textElement>
@@ -122,20 +130,20 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="250" uuid="3894c9f7-d1bb-4129-9f1a-edd1dd5a40fb">
+					<jr:column width="250" uuid="e8577922-8348-4b4f-89cb-a58844cf6843">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="250" height="30" uuid="da8723e0-d2ee-4b7c-9f15-c427d5ed769c"/>
+								<reportElement x="0" y="0" width="250" height="30" uuid="77d6ca89-3b1b-42f7-837a-cb94f5405450"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="12"/>
 								</textElement>
 								<text><![CDATA[دوره]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="250" height="30" uuid="3950abd2-b86d-40e9-a13e-504cfa5da178"/>
+								<reportElement x="0" y="0" width="250" height="30" uuid="bd8eaa74-9c37-4108-a559-f41e69d2b1a5"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="12"/>
 								</textElement>
@@ -143,20 +151,20 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="40" uuid="e4625974-2f0d-4679-9f27-d4d289c85769">
+					<jr:column width="40" uuid="b7983cf6-6f07-4620-ada6-a328a9a3cf39">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="40" height="30" uuid="47cccd85-68ac-4d52-894f-19f3eb756a18"/>
+								<reportElement x="0" y="0" width="40" height="30" uuid="344a63ac-6a96-4518-b696-cb1936838cc3"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="12"/>
 								</textElement>
 								<text><![CDATA[ردیف]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="40" height="30" uuid="a73e9e8d-6f34-4309-80d7-785fe3d56f18"/>
+								<reportElement x="0" y="0" width="40" height="30" uuid="88177350-d8bd-4b25-8970-8018c8fd0585"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="12"/>
 								</textElement>
@@ -166,22 +174,15 @@
 					</jr:column>
 				</jr:table>
 			</componentElement>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="13" y="15" width="537" height="20" uuid="4f97fa1e-b2f1-467d-874a-70d17ec403b8"/>
-				<textElement textAlignment="Right">
-					<font fontName="Shabnam-FD" size="12" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{description}]]></textFieldExpression>
-			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="112" y="530" width="88" height="20" uuid="02619a9d-32e6-49e1-911e-9c7a0b719bf3"/>
+				<reportElement positionType="Float" x="120" y="509" width="30" height="20" uuid="c82a1fc9-cecc-48c1-ab26-c2cd567d8db0"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="8"/>
 				</textElement>
-				<text><![CDATA[تاریخ گزارش گیری: ]]></text>
+				<text><![CDATA[تاریخ :]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement positionType="Float" x="10" y="530" width="100" height="20" uuid="4b31fadf-bd08-4fdb-a299-0627c7f9bf72"/>
+				<reportElement positionType="Float" x="18" y="509" width="100" height="20" uuid="280f0a33-c37e-4fb1-854c-89598fd71c21"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="8"/>
 				</textElement>

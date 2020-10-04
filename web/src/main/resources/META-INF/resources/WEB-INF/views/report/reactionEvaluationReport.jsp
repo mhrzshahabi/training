@@ -11,46 +11,14 @@
     var endDate1Check_RER = true;
     var endDate2Check_RER = true;
     var endDateCheck_Order_RER = true;
+    var data_values_RER = null;
+    var wait_RER = null;
 
     $(document).ready(()=>{
         setTimeout(()=>{
             $("input[name='tclassCode']").attr("disabled","disabled");
         },0)}
     );
-
-    var data_values_RER = null;
-
-    var courseInfo_print_RER = "";
-    var classTimeInfo_print_RER = "";
-    var executionInfo_print_RER = "";
-    var evaluationInfo_print_RER = "";
-
-    var titr_RER = isc.HTMLFlow.create({
-        align: "center",
-        border: "1px solid black",
-        width: "25%"
-    });
-    var courseInfo_RER = isc.HTMLFlow.create({
-        align: "center"
-    });
-    var classTimeInfo_RER = isc.HTMLFlow.create({
-        align: "center"
-    });
-    var executionInfo_RER = isc.HTMLFlow.create({
-        align: "center"
-    });
-    var reactionEvaluationInfo_RER = isc.HTMLFlow.create({
-        align: "center"
-    });
-    var learningEvaluationInfo_RER = isc.HTMLFlow.create({
-        align: "center"
-    });
-    var behavioralEvaluationInfo_RER = isc.HTMLFlow.create({
-        align: "center"
-    });
-    var evaluationInfo_RER = isc.HTMLFlow.create({
-        align: "center"
-    });
 
     //----------------------------------------------------Rest DataSource-----------------------------------------------
     var RestDataSource_Category_RER = isc.TrDS.create({
@@ -596,7 +564,36 @@
                 }
                 return;
             }
-            Window_FillReport_RER.show();
+
+            DynamicForm_reportComments_RER.clearValues();
+            Reporting_RER();
+            // wait_RER = createDialog("wait");
+            // isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/classNotPassedReactionEvaluation", "POST", JSON.stringify(data_values_RER), (resp) => {
+            //     wait_RER.close();
+            //     let classNotPassedItems = JSON.parse(resp.httpResponseText);
+                let itemList = [];
+                let item = {};
+                item.name = "title";
+                item.title = "عنوان گزارش";
+                item.required = true;
+                itemList.add(item);
+                item = {};
+                item.name = "description";
+                item.title = "توضیحات ابتدای گزارش";
+                item.type = 'textArea';
+                item.height = "60";
+                itemList.add(item);
+                // for (let j = 0; j <classNotPassedItems.size() ; j++) {
+                //     item = {};
+                //     item.name = "" + classNotPassedItems[j].id + "";
+                //     item.title = "انتقادات مسئول آموزش راجع به کلاس غیراثربخش "  + classNotPassedItems[j].courseName;
+                //     item.type = 'textArea';
+                //     item.height = "60";
+                //     itemList.add(item);
+                // }
+                DynamicForm_reportComments_RER.setItems(itemList);
+                Window_FillReport_RER.show();
+            // }));
         }
     });
 
@@ -693,16 +690,32 @@
         title: "چاپ گزارش",
         width: 300,
         click: function () {
+            DynamicForm_reportComments_RER.validate();
+            if (DynamicForm_reportComments_RER.hasErrors())
+                return;
             Reporting_RER();
-            trPrintWithCriteria("<spring:url value="/evaluationAnalysis/printReactionEvaluationReport"/>",data_values_RER,JSON.stringify(data_values_RER));
+            trPrintWithCriteria("<spring:url value="/evaluationAnalysis/printReactionEvaluationReport"/>",
+                                data_values_RER,JSON.stringify(DynamicForm_reportComments_RER.getValues()));
         }
+    });
+    var DynamicForm_reportComments_RER = isc.DynamicForm.create({
+        validateOnExit: true,
+        width: "100%",
+        padding: 10,
+        fields: []
     });
     var Window_FillReport_RER = isc.Window.create({
         width: 500,
         height: 300,
         placement: "center",
         title: "انتقادات و پیشنهادات مسئول ارزیابی جهت درج در گزارش",
-        items: [Button_printReport_RER]
+        items: [
+            DynamicForm_reportComments_RER,
+            isc.TrHLayoutButtons.create({
+            members: [
+                Button_printReport_RER
+             ]
+        })]
     });
 
     //----------------------------------- functions --------------------------------------------------------------------
@@ -753,146 +766,6 @@
             }
         }
         data_values_RER.criteria.removeList(removedObjects);
-
-        titr_RER.contents = "";
-        courseInfo_RER.contents = "";
-        classTimeInfo_RER.contents = "";
-        executionInfo_RER.contents = "";
-        reactionEvaluationInfo_RER.contents = "";
-        learningEvaluationInfo_RER.contents = "";
-        behavioralEvaluationInfo_RER.contents = "";
-        evaluationInfo_RER.contents = "";
-
-        courseInfo_print_RER = "";
-        classTimeInfo_print_RER = "";
-        executionInfo_print_RER = "";
-        evaluationInfo_print_RER = "";
-
-        if (DynamicForm_CriteriaForm_RER.getField("tclassCode").getValue() != undefined) {
-            courseInfo_RER.contents += "<span style='color:#050505; font-size:12px;'>" + "کد دوره: " + "</span>";
-            courseInfo_RER.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_RER.getField("tclassCode").getDisplayValue() + "</span>";
-            courseInfo_RER.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            courseInfo_print_RER +=  "کد کلاس: " ;
-            courseInfo_print_RER += DynamicForm_CriteriaForm_RER.getField("tclassCode").getDisplayValue();
-            courseInfo_print_RER +=  ", " ;
-        }
-        if (DynamicForm_CriteriaForm_RER.getField("courseCategory").getValue() != undefined) {
-            courseInfo_RER.contents += "<span style='color:#050505; font-size:12px;'>" + "گروه های کاری: " + "</span>";
-            courseInfo_RER.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_RER.getField("courseCategory").getDisplayValue() + "</span>";
-            courseInfo_RER.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            courseInfo_print_RER  += "گروه های کاری: " ;
-            courseInfo_print_RER  += DynamicForm_CriteriaForm_RER.getField("courseCategory").getDisplayValue() ;
-            courseInfo_print_RER  +=   ", " ;
-        }
-        if (DynamicForm_CriteriaForm_RER.getField("courseSubCategory").getValue() != undefined) {
-            courseInfo_RER.contents += "<span style='color:#050505; font-size:12px;'>" + "زیرگروه های کاری: " + "</span>";
-            courseInfo_RER.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_RER.getField("courseSubCategory").getDisplayValue() + "</span>";
-            courseInfo_RER.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            courseInfo_print_RER +=   "زیرگروه های کاری: " ;
-            courseInfo_print_RER  += DynamicForm_CriteriaForm_RER.getField("courseSubCategory").getDisplayValue() ;
-            courseInfo_print_RER  += ", " ;
-        }
-
-        if (DynamicForm_CriteriaForm_RER.getField("startDate1").getValue() != undefined) {
-            classTimeInfo_RER.contents += "<span style='color:#050505; font-size:12px;'>" + "تاریخ شروع کلاس: از " + "</span>";
-            classTimeInfo_RER.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_RER.getField("startDate1").getDisplayValue() + "</span>";
-            classTimeInfo_RER.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            classTimeInfo_print_RER += "تاریخ شروع کلاس: از " ;
-            classTimeInfo_print_RER += DynamicForm_CriteriaForm_RER.getField("startDate1").getDisplayValue();
-            classTimeInfo_print_RER +=  ", " ;
-        }
-        if (DynamicForm_CriteriaForm_RER.getField("startDate2").getValue() != undefined) {
-            classTimeInfo_RER.contents += "<span style='color:#050505; font-size:12px;'>" + "تاریخ شروع کلاس: تا " + "</span>";
-            classTimeInfo_RER.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_RER.getField("startDate2").getDisplayValue() + "</span>";
-            classTimeInfo_RER.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            classTimeInfo_print_RER +=   "تاریخ شروع کلاس: تا ";
-            classTimeInfo_print_RER += DynamicForm_CriteriaForm_RER.getField("startDate2");
-            classTimeInfo_print_RER +=  ", " ;
-        }
-        if (DynamicForm_CriteriaForm_RER.getField("endDate1").getValue() != undefined) {
-            classTimeInfo_RER.contents += "<span style='color:#050505; font-size:12px;'>" + "تاریخ پایان کلاس: از " + "</span>";
-            classTimeInfo_RER.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_RER.getField("endDate1").getDisplayValue() + "</span>";
-            classTimeInfo_RER.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            classTimeInfo_print_RER +=  "تاریخ پایان کلاس: از " ;
-            classTimeInfo_print_RER += DynamicForm_CriteriaForm_RER.getField("endDate1") ;
-            classTimeInfo_print_RER +=  ", " ;
-        }
-        if (DynamicForm_CriteriaForm_RER.getField("endDate2").getValue() != undefined) {
-            classTimeInfo_RER.contents += "<span style='color:#050505; font-size:12px;'>" + "تاریخ پایان کلاس: تا " + "</span>";
-            classTimeInfo_RER.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_RER.getField("endDate2").getDisplayValue() + "</span>";
-            classTimeInfo_RER.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            classTimeInfo_print_RER += "تاریخ پایان کلاس: تا " ;
-            classTimeInfo_print_RER += DynamicForm_CriteriaForm_RER.getField("endDate2").getDisplayValue();
-            classTimeInfo_print_RER += ", " ;
-        }
-        if (DynamicForm_CriteriaForm_RER.getField("tclassYear").getValue() != null &&
-            DynamicForm_CriteriaForm_RER.getField("tclassYear").getValue() != undefined) {
-            classTimeInfo_RER.contents += "<span style='color:#050505; font-size:12px;'>" + "سال: " + "</span>";
-            classTimeInfo_RER.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_RER.getField("tclassYear").getDisplayValue() + "</span>";
-            classTimeInfo_RER.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            classTimeInfo_print_RER +=  "سال کاری: " ;
-            classTimeInfo_print_RER += DynamicForm_CriteriaForm_RER.getField("tclassYear").getValue();
-            classTimeInfo_print_RER += ", ";
-        }
-        if (DynamicForm_CriteriaForm_RER.getField("termId").getValue() != null &&
-            DynamicForm_CriteriaForm_RER.getField("termId").getValue() != undefined) {
-            classTimeInfo_RER.contents += "<span style='color:#050505; font-size:12px;'>" + "ماه: " + "</span>";
-            classTimeInfo_RER.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_RER.getField("termId").getDisplayValue() + "</span>";
-            classTimeInfo_RER.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            classTimeInfo_print_RER  +=  "ترم کاری: " ;
-            classTimeInfo_print_RER  += DynamicForm_CriteriaForm_RER.getField("termId").getDisplayValue();
-            classTimeInfo_print_RER  +=  ", " ;
-        }
-
-        if (DynamicForm_CriteriaForm_RER.getField("teacherId").getValue() != undefined) {
-            executionInfo_RER.contents += "<span style='color:#050505; font-size:12px;'>" + "مدرس: " + "</span>";
-            executionInfo_RER.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_RER.getField("teacherId").getDisplayValue() + "</span>";
-            executionInfo_RER.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            executionInfo_print_RER +="مدرس: " ;
-            executionInfo_print_RER += DynamicForm_CriteriaForm_RER.getField("teacherId").getDisplayValue();
-            executionInfo_print_RER += ", " ;
-        }
-        if (DynamicForm_CriteriaForm_RER.getField("tclassOrganizerId").getValue() != undefined) {
-            executionInfo_RER.contents += "<span style='color:#050505; font-size:12px;'>" + "برگزار کننده: " + "</span>";
-            executionInfo_RER.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_RER.getField("tclassOrganizerId").getDisplayValue() + "</span>";
-            executionInfo_RER.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-
-            executionInfo_print_RER +=  "برگزار کننده: " ;
-            executionInfo_print_RER += DynamicForm_CriteriaForm_RER.getField("tclassOrganizerId").getDisplayValue() ;
-            executionInfo_print_RER +=  ", " ;
-        }
-
-        titr_RER.contents = "<span style='color:#050505; font-size:13px;'>" + "گزارش کلاس های آموزشی با توجه به محدودیت های اعمال شده:" + "</span>";
-
-        titr_RER.redraw();
-        courseInfo_RER.redraw();
-        classTimeInfo_RER.redraw();
-        executionInfo_RER.redraw();
-        reactionEvaluationInfo_RER.redraw();
-        learningEvaluationInfo_RER.redraw();
-        behavioralEvaluationInfo_RER.redraw();
-        evaluationInfo_RER.redraw();
     }
 
     //----------------------------------- layOut -----------------------------------------------------------------------
