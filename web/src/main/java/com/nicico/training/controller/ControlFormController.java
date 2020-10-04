@@ -70,7 +70,7 @@ public class ControlFormController {
         Tclass tClass = tclassService.getTClass(classId);
         TclassDTO.Info tclassDTO = modelMapper.map(tClass, TclassDTO.Info.class);
         Set<ClassStudent> classStudents = tClass.getClassStudents();
-        List<Student> students = classStudents.stream().map(classStudent -> studentService.getStudent(classStudent.getStudentId())).collect(Collectors.toList());
+        List<Student> students = classStudents.stream().map(ClassStudent::getStudent).collect(Collectors.toList());
         List<StudentDTO.clearAttendance> studentArrayList = new ArrayList<>();
 
         Set<ClassSession> sessions = tClass.getClassSessions();
@@ -105,23 +105,16 @@ public class ControlFormController {
         for (Student student : students) {
             StudentDTO.clearAttendanceWithState st = modelMapper.map(student, StudentDTO.clearAttendanceWithState.class);
 
-            Personnel personnel=null;
-
-            if (student!=null && student.getNationalCode()!=null)
-                if (student.getPersonnelNo() != null) {
-                    personnel = personnelDAO.findByNationalCodeAndPersonnelNo(student.getNationalCode().trim(), student.getPersonnelNo().trim());
-                }
-
-            st.setCcpAffairs(personnel!=null ? (personnel.getCcpAffairs() != null ? personnel.getCcpAffairs() : "") : "");
-
             st.setFullName(st.getFirstName() + " " + st.getLastName());
+
+            st.setCcpAffairs(student.getDepartment() !=null ? student.getDepartment().getOmorTitle() : "");
+            st.setJobTitle(student.getPost() != null ? (student.getPost().getJob() !=null ? student.getPost().getJob().getTitleFa() : "") : "");
 
             dayDate = sessionList.get(0).getSessionDate() != null ? sessionList.get(0).getSessionDate() : "";
 
             int z = 0;
             int ztemp = 0;
             Map<String, String> statePerStudent = new HashMap<>();
-
 
             for (int i = 0; i < sessionList.size(); i++) {
                 ClassSession classSession = sessionList.get(i);
@@ -342,14 +335,7 @@ public class ControlFormController {
             Student student = studentService.getStudent(studentId);
             StudentDTO.controlAttendance st = modelMapper.map(student, StudentDTO.controlAttendance.class);
 
-            Personnel personnel=null;
-
-            if (student!=null && student.getNationalCode()!=null)
-                if (student.getPersonnelNo() != null) {
-                    personnel = personnelDAO.findByNationalCodeAndPersonnelNo(student.getNationalCode().trim(), student.getPersonnelNo().trim());
-                }
-
-            st.setCcpAffairs(personnel!=null ? (personnel.getCcpAffairs() != null ? personnel.getCcpAffairs() : "") : "");
+            st.setCcpAffairs(student.getDepartment() != null ? student.getDepartment().getOmorTitle() : "");
 
             st.setFullName(st.getFirstName() + " " + st.getLastName());
             studentArrayList.add(st);
@@ -416,14 +402,8 @@ public class ControlFormController {
                 Student student = studentService.getStudent(studentId);
                 StudentDTO.clearAttendanceWithState st = modelMapper.map(student, StudentDTO.clearAttendanceWithState.class);
 
-                Personnel personnel=null;
-
-                if (student!=null && student.getNationalCode()!=null)
-                    if (student.getPersonnelNo() != null) {
-                        personnel = personnelDAO.findByNationalCodeAndPersonnelNo(student.getNationalCode().trim(), student.getPersonnelNo().trim());
-                    }
-
-                st.setCcpAffairs(personnel!=null ? (personnel.getCcpAffairs() != null ? personnel.getCcpAffairs() : "") : "");
+                st.setCcpAffairs(student.getDepartment() !=null ? student.getDepartment().getOmorTitle() : "");
+                st.setJobTitle(student.getPost() != null ? (student.getPost().getJob() !=null ? student.getPost().getJob().getTitleFa() : "") : "");
 
                 st.setFullName(st.getFirstName() + " " + st.getLastName());
 
@@ -589,14 +569,7 @@ public class ControlFormController {
                 StudentDTO.controlAttendance st = modelMapper.map(student, StudentDTO.controlAttendance.class);
                 st.setFullName(st.getFirstName() + " " + st.getLastName());
 
-                Personnel personnel=null;
-
-                if (student!=null && student.getNationalCode()!=null)
-                    if (student.getPersonnelNo() != null) {
-                        personnel = personnelDAO.findByNationalCodeAndPersonnelNo(student.getNationalCode().trim(), student.getPersonnelNo().trim());
-                    }
-
-                st.setCcpAffairs(personnel!=null ? (personnel.getCcpAffairs() != null ? personnel.getCcpAffairs() : "") : "");
+                st.setCcpAffairs(student.getDepartment() !=null ? student.getDepartment().getOmorTitle() : "");
 
                 studentArrayList.add(st);
                 i++;
@@ -676,14 +649,8 @@ public class ControlFormController {
                 StudentDTO.fullAttendance st = modelMapper.map(student, StudentDTO.fullAttendance.class);
                 st.setFullName(st.getFirstName() + " " + st.getLastName());
 
-                Personnel personnel=null;
-
-                if (student!=null && student.getNationalCode()!=null)
-                    if (student.getPersonnelNo() != null) {
-                        personnel = personnelDAO.findByNationalCodeAndPersonnelNo(student.getNationalCode().trim(), student.getPersonnelNo().trim());
-                    }
-
-                st.setCcpAffairs(personnel!=null ? (personnel.getCcpAffairs() != null ? personnel.getCcpAffairs() : "") : "");
+                st.setCcpAffairs(student.getDepartment() !=null ? student.getDepartment().getOmorTitle() : "");
+                st.setJobTitle(student.getPost() != null ? (student.getPost().getJob() !=null ? student.getPost().getJob().getTitleFa() : "") : "");
 
                 st.setScoreA(listClassStudents.get(cnt).getScore() != null && dataStatus.equals("true") ? listClassStudents.get(cnt).getScore().toString() : "");
 
