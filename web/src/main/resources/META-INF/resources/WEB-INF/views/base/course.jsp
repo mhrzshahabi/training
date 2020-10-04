@@ -701,22 +701,27 @@
                             if (ListGridOwnSkill_JspCourse.getSelectedRecord() == null) {
                                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                             } else if(numClasses>0) {
-                                createDialog("warning","از این دوره در کلاس استفاده شده است.", "اخطار");
-                                return;
-                            }  else {
-                                if (!ListGridOwnSkill_JspCourse.getSelectedRecord().courseMainObjectiveId) {
-                                    wait.show();
-                                    isc.RPCManager.sendRequest(
-                                        TrDSRequest(skillUrl + "/remove-course/" + courseRecord.id + "/" + ListGridOwnSkill_JspCourse.getSelectedRecord().id, "DELETE", null, (resp)=>{
-                                            isChangeable();
-                                            wait.close();
-                                            if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                                                mainObjectiveGrid_Refresh();
-                                                ListGridAllSkillRefresh();
+                                let dialog = createDialog("ask","از این دوره در کلاس استفاده شده است. از تغییرات مطمئن هستید؟", "اخطار");
+                                dialog.addProperties({
+                                    buttonClick(button, index) {
+                                        this.close();
+                                        if (index === 0) {
+                                            if (!ListGridOwnSkill_JspCourse.getSelectedRecord().courseMainObjectiveId) {
+                                                wait.show();
+                                                isc.RPCManager.sendRequest(
+                                                    TrDSRequest(skillUrl + "/remove-course/" + courseRecord.id + "/" + ListGridOwnSkill_JspCourse.getSelectedRecord().id, "DELETE", null, (resp)=>{
+                                                        isChangeable();
+                                                        wait.close();
+                                                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                                            mainObjectiveGrid_Refresh();
+                                                            ListGridAllSkillRefresh();
+                                                        }
+                                                    })
+                                                );
                                             }
-                                        })
-                                    );
-                                }
+                                        }
+                                    }
+                                })
                             }
                         },
                         gridComponents: [
@@ -780,23 +785,27 @@
                             if (ListGrid_AllSkill_JspCourse.getSelectedRecord() == null) {
                                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                             } else if(numClasses>0) {
-                              createDialog("warning","از این دوره در کلاس استفاده شده است.", "اخطار");
-                              return;
-                            } else {
-                                    wait.show();
-                                    isc.RPCManager.sendRequest(
-                                        TrDSRequest(skillUrl + "/add-course/" + courseRecord.id + "/" + ListGrid_AllSkill_JspCourse.getSelectedRecord().id, "POST", null, (resp)=>{
-                                            wait.close();
-                                            if(resp.httpResponseCode === 409){
-                                                createDialog("warning", JSON.parse(resp.httpResponseText).message, "اخطار")
-                                            }
-                                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                                                ListGridAllSkillRefresh();
-                                                isChangeable();
-                                            }
-                                        })
-                                    );
-
+                              let dialog = createDialog("ask","از این دوره در کلاس استفاده شده است. از تغییرات مطمئن هستید؟", "اخطار");
+                              dialog.addProperties({
+                                  buttonClick(button, index){
+                                      this.close();
+                                      if(index === 0){
+                                          wait.show();
+                                          isc.RPCManager.sendRequest(
+                                              TrDSRequest(skillUrl + "/add-course/" + courseRecord.id + "/" + ListGrid_AllSkill_JspCourse.getSelectedRecord().id, "POST", null, (resp)=>{
+                                                  wait.close();
+                                                  if(resp.httpResponseCode === 409){
+                                              createDialog("warning", JSON.parse(resp.httpResponseText).message, "اخطار")
+                                          }
+                                                  if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                              ListGridAllSkillRefresh();
+                                              isChangeable();
+                                          }
+                                                })
+                                            );
+                                      }
+                                  }
+                              })
                             }
                         },
                         gridComponents: [isc.Label.create({
@@ -815,12 +824,7 @@
             if (!ListGrid_Course.isMasked()) {
                 ListGrid_Course_refresh();
             }
-        },
-        // show:function () {
-        //     Window_AddSkill.addItem(HLayoutWindowAddSkill);
-        //     Window_AddSkill.redraw();
-        //     this.Super("show", arguments);
-        // }
+        }
     });
 
     var ToolStrip_Actions = isc.ToolStrip.create({
