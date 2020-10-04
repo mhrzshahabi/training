@@ -1,12 +1,12 @@
 package com.nicico.training.service;
 
-import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.DepartmentDTO;
 import com.nicico.training.iservice.IDepartmentService;
 import com.nicico.training.model.Department;
-import com.nicico.training.repository.DepartmentDAO;
+import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -14,7 +14,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.*;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
@@ -25,6 +24,11 @@ public class DepartmentService extends GenericService<Department, Long, Departme
 
     private final ModelMapper modelMapper;
     private final DepartmentDAO departmentDAO;
+    private final ComplexDAO complexDAO;
+    private final AssistantDAO assistantDAO;
+    private final AffairsDAO affairsDAO;
+    private final SectionDAO sectionDAO;
+    private final UnitDAO unitDAO;
 
     @Override
     @Transactional(readOnly = true)
@@ -134,6 +138,32 @@ public class DepartmentService extends GenericService<Department, Long, Departme
         values.forEach(value -> response.getList().add(new DepartmentDTO.FieldValue(value)));
         response.setTotalCount((long) response.getList().size());
         return response;
+    }
+
+    @Override
+    @Transactional
+    public SearchDTO.SearchRs<DepartmentDTO.OrganSegment> getOrganSegmentList(String fieldName, SearchDTO.SearchRq request) {
+        switch (fieldName) {
+            case "complexTitle":
+                return SearchUtil.search(complexDAO, request, d -> modelMapper.map(d, DepartmentDTO.OrganSegment.class));
+
+            case "ccpAssistant":
+                return SearchUtil.search(assistantDAO, request, d -> modelMapper.map(d, DepartmentDTO.OrganSegment.class));
+
+            case "ccpAffairs":
+                return SearchUtil.search(affairsDAO, request, d -> modelMapper.map(d, DepartmentDTO.OrganSegment.class));
+
+            case "ccpSection":
+                return SearchUtil.search(sectionDAO, request, d -> modelMapper.map(d, DepartmentDTO.OrganSegment.class));
+
+            case "ccpUnit":
+                return SearchUtil.search(unitDAO, request, d -> modelMapper.map(d, DepartmentDTO.OrganSegment.class));
+            default:
+                SearchDTO.SearchRs<DepartmentDTO.OrganSegment> nullResp = new SearchDTO.SearchRs<>();
+                nullResp.setList(new ArrayList<>());
+                nullResp.setTotalCount(0L);
+                return nullResp;
+        }
     }
 
     @Transactional(readOnly = true)

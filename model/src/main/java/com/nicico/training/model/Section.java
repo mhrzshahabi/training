@@ -2,15 +2,15 @@ package com.nicico.training.model;
 
 import lombok.Getter;
 import org.hibernate.annotations.Immutable;
+import org.hibernate.annotations.Subselect;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Table;
 
 @Getter
 @Entity
 @Immutable
-@Table(name = "tbl_department")
-@DiscriminatorValue("Department")
-public class Department extends DepartmentSuperClass {
+@Subselect("select * from view_section")
+@DiscriminatorValue("Section")
+public class Section extends DepartmentSuperClass {
 }
