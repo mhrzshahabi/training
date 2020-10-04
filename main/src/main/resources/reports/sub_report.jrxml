@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_report" pageWidth="500" pageHeight="300" columnWidth="500" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="76c99c52-53b7-4be1-9482-f67aafb4ec86">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="series" class="java.lang.String"/>
+	<field name="xCoordinate" class="java.lang.String"/>
+	<field name="yCoordinate" class="java.lang.Double"/>
+	<field name="title" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<summary>
+		<band height="300">
+			<barChart>
+				<chart isShowLegend="true" evaluationTime="Report">
+					<reportElement x="0" y="42" width="500" height="258" uuid="0b999604-614a-4388-a13b-fa6cc6e0a8cc"/>
+					<chartTitle>
+						<font fontName="Shabnam-FD" size="9"/>
+					</chartTitle>
+					<chartSubtitle>
+						<font fontName="Shabnam-FD" size="9"/>
+					</chartSubtitle>
+					<chartLegend>
+						<font fontName="Shabnam-FD" size="8"/>
+					</chartLegend>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{series}]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{xCoordinate}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{yCoordinate}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<barPlot isShowLabels="true" isShowTickLabels="true" isShowTickMarks="false">
+					<plot backgroundAlpha="1.0" labelRotation="45.0"/>
+					<itemLabel>
+						<font fontName="Shabnam-FD"/>
+					</itemLabel>
+					<categoryAxisFormat labelRotation="45.0">
+						<axisFormat labelColor="#000000" tickLabelColor="#000000" verticalTickLabels="true" axisLineColor="#000000">
+							<labelFont>
+								<font fontName="Shabnam-FD"/>
+							</labelFont>
+							<tickLabelFont>
+								<font fontName="Shabnam-FD" size="0"/>
+							</tickLabelFont>
+						</axisFormat>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000">
+							<labelFont>
+								<font fontName="Shabnam-FD"/>
+							</labelFont>
+							<tickLabelFont>
+								<font fontName="Shabnam-FD"/>
+							</tickLabelFont>
+						</axisFormat>
+					</valueAxisFormat>
+				</barPlot>
+			</barChart>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement mode="Opaque" x="150" y="12" width="200" height="30" backcolor="#FE9D2A" uuid="b5c4c4b2-6830-493c-89a9-546d5572bb59"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

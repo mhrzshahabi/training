@@ -2315,6 +2315,13 @@
                                     createTab(this.title, "<spring:url value="web/evaluationStaticalReport"/>");
                                 }
                             },
+
+                            {
+                                title:  "<spring:message code="class.reaction.evaluation.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/reactionEvaluationReport"/>");
+                                }
+                            },
 <%--                            </sec:authorize>--%>
                         ]
                 },

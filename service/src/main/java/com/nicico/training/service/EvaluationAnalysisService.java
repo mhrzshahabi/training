@@ -429,7 +429,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         for(int z=0;z<result.getClassStudentsName().length;z++){
             Map<String,Object> behavior = new HashMap<>();
             behavior.put("scoreVal",behavioralGrades[z]);
-            behavior.put("scoreCat",bidiReorder(classStudentsName[z]));
+            behavior.put("scoreCat", PersianCharachtersUnicode.bidiReorder(classStudentsName[z]));
             behavioralScoreChart.add(behavior);
         }
 

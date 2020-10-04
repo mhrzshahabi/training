@@ -490,5 +490,33 @@ public class PersianCharachtersUnicode {
         }
         return init;
     }
+
+    public static String bidiReorder(String text) {
+        PersianCharachtersUnicode unicode = new PersianCharachtersUnicode();
+        String textinverse = "";
+        int k = 0;
+        int i = 0;
+        for(int j= text.length() - 1; j >= 0; j--) {
+            unicode.setCharc(text.charAt(j));
+            k = j + 1;
+            i = j - 1;
+            if(j == text.length() - 1 && PersianCharachtersUnicode.getNextInitial(text.charAt(i)))
+                textinverse += unicode.getIsolatedForm_Unicode();
+            else if(j == text.length() - 1)
+                textinverse += unicode.getFinalForm_Unicode();
+            else if(j == 0)
+                textinverse += unicode.getInitialFom_Unicode();
+            else if(PersianCharachtersUnicode.getPrevInitial(text.charAt(k)) && PersianCharachtersUnicode.getNextInitial(text.charAt(i)))
+                textinverse += unicode.getIsolatedForm_Unicode();
+            else if(PersianCharachtersUnicode.getPrevInitial(text.charAt(k)))
+                textinverse += unicode.getFinalForm_Unicode();
+            else if(PersianCharachtersUnicode.getNextInitial(text.charAt(i)))
+                textinverse += unicode.getInitialFom_Unicode();
+            else
+                textinverse += unicode.getMedialForm_Unicode();
+        }
+
+        return textinverse;
+    }
 }
 
