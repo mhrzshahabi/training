@@ -135,7 +135,9 @@ public class SendMessageService implements ISendMessageService {
                 if (messageContact.getCountSent() >= masterList.get(i).getCountSend()) {
                     messageContactDAO.deleteById(messageContact.getId());
                 } else {
-                    messageContactDAO.updateAfterSendMessage((long) (messageContact.getCountSent() + 1), new Date(), messageContact.getId());
+                    if (log.getReturnMessageId() != null) {
+                        messageContactDAO.updateAfterSendMessage((long) (messageContact.getCountSent() + 1), new Date(), messageContact.getId());
+                    }
                 }
             } catch (Exception ex) {
 
