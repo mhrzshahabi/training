@@ -135,7 +135,9 @@ public class DepartmentService extends GenericService<Department, Long, Departme
 
         SearchDTO.SearchRs<DepartmentDTO.FieldValue> response = new SearchDTO.SearchRs<>();
         response.setList(new ArrayList<>());
-        values.forEach(value -> response.getList().add(new DepartmentDTO.FieldValue(value)));
+        if (values != null) {
+            values.forEach(value -> response.getList().add(new DepartmentDTO.FieldValue(value)));
+        }
         response.setTotalCount((long) response.getList().size());
         return response;
     }
@@ -145,18 +147,23 @@ public class DepartmentService extends GenericService<Department, Long, Departme
     public SearchDTO.SearchRs<DepartmentDTO.OrganSegment> getOrganSegmentList(String fieldName, SearchDTO.SearchRq request) {
         switch (fieldName) {
             case "complexTitle":
+            case "mojtame":
                 return SearchUtil.search(complexDAO, request, d -> modelMapper.map(d, DepartmentDTO.OrganSegment.class));
 
             case "ccpAssistant":
+            case "moavenat":
                 return SearchUtil.search(assistantDAO, request, d -> modelMapper.map(d, DepartmentDTO.OrganSegment.class));
 
             case "ccpAffairs":
+            case "omor":
                 return SearchUtil.search(affairsDAO, request, d -> modelMapper.map(d, DepartmentDTO.OrganSegment.class));
 
             case "ccpSection":
+            case "ghesmat":
                 return SearchUtil.search(sectionDAO, request, d -> modelMapper.map(d, DepartmentDTO.OrganSegment.class));
 
             case "ccpUnit":
+            case "vahed":
                 return SearchUtil.search(unitDAO, request, d -> modelMapper.map(d, DepartmentDTO.OrganSegment.class));
             default:
                 SearchDTO.SearchRs<DepartmentDTO.OrganSegment> nullResp = new SearchDTO.SearchRs<>();
@@ -180,12 +187,7 @@ public class DepartmentService extends GenericService<Department, Long, Departme
         criteriaRq.getCriteria().add(makeNewCriteria("enabled", null, EOperator.isNull, null));
         searchRq.setCriteria(criteriaRq);
         List<DepartmentDTO.Info> infoList = search(searchRq).getList();
-        Iterator<DepartmentDTO.Info> iterator = infoList.iterator();
-        while (iterator.hasNext()) {
-            DepartmentDTO.Info removedObject = iterator.next();
-            if (removedObject.getId().equals(parentId))
-                iterator.remove();
-        }
+        infoList.removeIf(removedObject -> removedObject.getId().equals(parentId));
         return modelMapper.map(infoList, new TypeToken<List<DepartmentDTO.TSociety>>() {
         }.getType());
     }
@@ -199,12 +201,7 @@ public class DepartmentService extends GenericService<Department, Long, Departme
             criteriaRq.getCriteria().add(makeNewCriteria("enabled", null, EOperator.isNull, null));
             searchRq.setCriteria(criteriaRq);
             List<DepartmentDTO.Info> infoList = search(searchRq).getList();
-            Iterator<DepartmentDTO.Info> iterator = infoList.iterator();
-            while (iterator.hasNext()) {
-                DepartmentDTO.Info removedObject = iterator.next();
-                if (parentsId.contains(removedObject.getId()))
-                    iterator.remove();
-            }
+            infoList.removeIf(removedObject -> parentsId.contains(removedObject.getId()));
             return modelMapper.map(infoList, new TypeToken<List<DepartmentDTO.TSociety>>() {
             }.getType());
         } else
