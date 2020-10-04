@@ -36,6 +36,7 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -86,12 +87,16 @@ public class ClassStudentRestController {
             criteriaRq.getCriteria().add(searchRq.getCriteria());
         searchRq.setCriteria(criteriaRq);
         SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> searchRs = classStudentService.search(searchRq, converter);
-       int n= Integer.parseInt(parameterService.getByCode("FEL").getResponse().getData().get(3).getValue());
-        searchRs.getList().forEach(x->{if (x.getPreTestScore() != null && x.getPreTestScore()>=n){x.setWarning("Ok");}else x.setWarning("NotOk");});
+        int n = Integer.parseInt(parameterService.getByCode("FEL").getResponse().getData().get(3).getValue());
+        searchRs.getList().forEach(x -> {
+            if (x.getPreTestScore() != null && x.getPreTestScore() >= n) {
+                x.setWarning("Ok");
+            } else x.setWarning("NotOk");
+        });
         return new ResponseEntity(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
-    private ResponseEntity<ISC<ClassStudentDTO.evaluationAnalysistLearning>> searchEvaluationAnalysistLearning(HttpServletRequest iscRq,Long classId, SearchDTO.CriteriaRq criteria) throws IOException {
+    private ResponseEntity<ISC<ClassStudentDTO.evaluationAnalysistLearning>> searchEvaluationAnalysistLearning(HttpServletRequest iscRq, Long classId, SearchDTO.CriteriaRq criteria) throws IOException {
         int startRow = 0;
         if (iscRq.getParameter("_startRow") != null)
             startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
@@ -101,14 +106,24 @@ public class ClassStudentRestController {
         if (searchRq.getCriteria() != null)
             criteriaRq.getCriteria().add(searchRq.getCriteria());
         searchRq.setCriteria(criteriaRq);
-        SearchDTO.SearchRs<ClassStudentDTO.evaluationAnalysistLearning> searchRs = classStudentService.searchEvaluationAnalysistLearning(searchRq,classId);
+        SearchDTO.SearchRs<ClassStudentDTO.evaluationAnalysistLearning> searchRs = classStudentService.searchEvaluationAnalysistLearning(searchRq, classId);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/students-iscList/{classId}")
     public ResponseEntity<ISC<ClassStudentDTO.ClassStudentInfo>> list(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
-        return search1(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
+        ResponseEntity<ISC<ClassStudentDTO.ClassStudentInfo>> list = search1(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
+        Map<String, Integer> mobiles = classStudentService.getStatusSendMessageStudents(classId);
+
+        ((List<ClassStudentDTO.ClassStudentInfo>) list.getBody().getResponse().getData()).forEach(p -> {
+            if (p.getStudent().getMobile() != null && mobiles.get(p.getStudent().getMobile()) > 0) {
+                p.setIsSentMessage(true);
+            } else {
+                p.setIsSentMessage(false);
+            };
+        });
+        return list;
     }
 
     @Loggable
