@@ -1300,4 +1300,8 @@
             <column name="f_orginal_message_message" type="number(19, 0)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet author="golrokhi" id="ManualModifiedParameterValue-001">
+        <modifyDataType tableName="tbl_parameter_value" columnName="c_description" newDataType="VARCHAR2(600 CHAR)" />
+    </changeSet>
 </databaseChangeLog>

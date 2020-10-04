@@ -66,7 +66,7 @@ public class MessageContactService implements IMessageContactService {
         MessageContact messageContact = modelMapper.map(model, MessageContact.class);
 
         messageContact.setCountSent(0);
-        messageContact.setLastSentDate(null);
+        messageContact.setLastSentDate(model.getLastSentDate());
         messageContact.setStatusId((long) 588);
         messageContact.setMessageParameterList(null);
 

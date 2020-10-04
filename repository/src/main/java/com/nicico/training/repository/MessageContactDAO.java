@@ -21,6 +21,6 @@ public interface MessageContactDAO extends BaseDAO<MessageContact, Long> {
     void deleteById(Long id);
 
     @Modifying
-    @Query(value = "update tbl_message_contact set n_message_id = :returnMessageId, n_count_sent = :countSent, c_last_sent_date = :lastSentDate WHERE id = :id", nativeQuery = true)
-    void updateAfterSendMessage(Long returnMessageId, Long countSent, Date lastSentDate, Long id);
+    @Query(value = "update tbl_message_contact set n_count_sent = :countSent, c_last_sent_date = :lastSentDate WHERE id = :id", nativeQuery = true)
+    void updateAfterSendMessage(Long countSent, Date lastSentDate, Long id);
 }

@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -44,7 +45,7 @@ public class MessageService implements IMessageService {
         message.setTclassId(model.getTclassId());
         message.setUserTypeId(model.getUserTypeId());
         message.setCountSend(model.getCountSend());
-        message.setInterval(0);
+        message.setInterval(model.getInterval());
         message.setContextHtml(model.getContextHtml());
         message.setContextText(model.getContextText());
         message.setOrginalMessageId(model.getOrginalMessageId());
@@ -65,6 +66,11 @@ public class MessageService implements IMessageService {
 
         for (MessageContactDTO.Create messageContact : model.getMessageContactList()) {
             messageContact.setMessageId(message.getId());
+            if(model.getOrginalMessageId()!=null){
+                messageContact.setLastSentDate(new Date());
+            }else{
+                messageContact.setLastSentDate(null);
+            }
             result.getMessageContactList().add(messageContactService.create(messageContact));
         }
 

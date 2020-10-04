@@ -42,27 +42,12 @@ public class SendMessageService implements ISendMessageService {
 
     private final NimadSMSService nimadSMSService;
     private final MessageContactService messageContactService;
-
-    @Autowired
-    protected MessageContactDAO messageContactDAO;
-
-    @Autowired
-    protected MessageDAO messageDAO;
-
-    @Autowired
-    protected MessageParameterDAO messageParameterDAO;
-
-    @Autowired
-    protected ClassStudentDAO classStudentDAO;
-
-    @Autowired
-    protected TclassDAO tclassDAO;
-
+    private final MessageContactDAO messageContactDAO;
+    private final MessageParameterDAO messageParameterDAO;
+    private final ClassStudentDAO classStudentDAO;
+    private final TclassDAO tclassDAO;
     private final MessageContactLogDAO messageContactLogDAO;
-
-    @Autowired
-    protected ModelMapper modelMapper;
-
+    private final ModelMapper modelMapper;
     private final ClassStudentService classStudentService;
     private final TeacherService teacherService;
     private final TclassService tclassService;
@@ -75,7 +60,7 @@ public class SendMessageService implements ISendMessageService {
         return nimadSMSService.syncEnqueue(pid, paramValMap, recipients);
     }
 
-    @Scheduled(cron = "0 * * * * ?", zone = "Asia/Tehran")
+    @Scheduled(cron = "0 0 9 * * ?", zone = "Asia/Tehran")
     @Transactional
     @Override
     public void scheduling() {
@@ -85,19 +70,13 @@ public class SendMessageService implements ISendMessageService {
 
         for (int i = 0; i < cnt; i++) {
 
-            //String pid = "";
-
             if (masterList.get(i).getObjectType().equals("ClassStudent")) {
-                //pid = "ihxdaus47t";
-
                 ClassStudent model = classStudentDAO.findById(masterList.get(i).getObjectId()).orElse(null);
 
                 if (model != null && !model.getEvaluationStatusReaction().equals(1)) {
                     messageContactDAO.deleteById(masterList.get(i).getMessageContactId());
                 }
             } else if (masterList.get(i).getObjectType().equals("Teacher")) {
-                //pid = "er7wvzn4l4";
-
                 Tclass model = tclassDAO.findById(masterList.get(i).getClassId()).orElse(null);
 
                 if (model != null && !model.getEvaluationStatusReactionTeacher().equals(1)) {
@@ -118,14 +97,45 @@ public class SendMessageService implements ISendMessageService {
             }
 
             try {
-                Long messageId = Long.parseLong(nimadSMSService.syncEnqueue(masterList.get(i).getPid(), paramValMap, numbers).get(0));
+
+                List<String> returnMessage = syncEnqueue(masterList.get(i).getPid(), paramValMap, numbers);
+                Long returnMessageId = null;
+
+                MessageContactLog log = new MessageContactLog();
+
+                log.setMessageContactId(masterList.get(i).getMessageContactId());
+
+                if (returnMessage == null) {
+                    log.setErrorMessage("Error Exception");
+                    log.setReturnMessageId(null);
+                    messageContactLogDAO.save(log);
+                } else {
+                    try {
+                        returnMessageId = Long.parseLong(returnMessage.get(0));
+                        MessageContact messageContact = messageContactDAO.findById(masterList.get(i).getMessageContactId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+                        messageContact.setLastSentDate(new Date());
+                        messageContact.setCountSent(messageContact.getCountSent() + 1);
+
+                        messageContactDAO.save(messageContact);
+
+                        log.setErrorMessage("");
+                        log.setReturnMessageId(returnMessageId.toString());
+                        messageContactLogDAO.save(log);
+
+                    } catch (Exception ex) {
+                        log.setErrorMessage(ex.getMessage());
+                        log.setReturnMessageId(null);
+                        messageContactLogDAO.save(log);
+                    }
+                }
 
                 MessageContact messageContact = messageContactDAO.findById(masterList.get(i).getMessageContactId()).orElse(null);
 
                 if (messageContact.getCountSent() + 1 >= masterList.get(i).getCountSend()) {
                     messageContactDAO.deleteById(messageContact.getId());
                 } else {
-                    messageContactDAO.updateAfterSendMessage(messageId, (long) (messageContact.getCountSent() + 1), new Date(), messageContact.getId());
+                    messageContactDAO.updateAfterSendMessage((long) (messageContact.getCountSent() + 1), new Date(), messageContact.getId());
                 }
             } catch (Exception ex) {
 
@@ -276,15 +286,24 @@ public class SendMessageService implements ISendMessageService {
         oMessageModel.setTclassId(classId);
         oMessageModel.setMessageContactList(new ArrayList<>());
 
+        TotalResponse<ParameterValueDTO.Info> pIds = parameterService.getByCode("MessageContent");
+        String textMessage = "";
+
+
         if (type.equals("classStudent")) {
-            pid = "ihxdaus47t";
+            pid = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MCS1")).findFirst().orElseThrow(null).getValue();
+            textMessage = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MCS1")).findFirst().orElseThrow(null).getDescription();
         } else if (type.equals("classTeacher")) {
-            pid = "er7wvzn4l4";
+            pid = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MTeacher")).findFirst().orElseThrow(null).getValue();
+            textMessage = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MTeacher")).findFirst().orElseThrow(null).getDescription();
         } else if (type.equals("classStudentRegistered")) {
-            pid = "nag1n27dvu";
+            pid = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MCSR")).findFirst().orElseThrow(null).getValue();
+            textMessage = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MCSR")).findFirst().orElseThrow(null).getDescription();
         }
 
         oMessageModel.setPId(pid);
+        oMessageModel.setContextText(textMessage);
+        oMessageModel.setContextHtml(" ");
 
         for (int i = 0; i < mobiles.size(); i++) {
             MessageContactDTO.Create messageContact = new MessageContactDTO.Create();
@@ -305,7 +324,7 @@ public class SendMessageService implements ISendMessageService {
 
             messageContact.setObjectMobile(mobiles.get(i));
 
-            List<MessageParameterDTO.Create> parameters = new ArrayList<MessageParameterDTO.Create>();
+            List<MessageParameterDTO.Create> parameters = new ArrayList<>();
             parameters.add(new MessageParameterDTO.Create("prefix-full_name", prefixFullName.get(i)));
             parameters.add(new MessageParameterDTO.Create("full-name", fullName.get(i)));
             parameters.add(new MessageParameterDTO.Create("course-name", courseName));
@@ -317,6 +336,7 @@ public class SendMessageService implements ISendMessageService {
                 parameters.add(new MessageParameterDTO.Create("start-date", courseStartDate));
                 parameters.add(new MessageParameterDTO.Create("end-date", courseEndDate));
             } else if (type.equals("classStudentRegistered")) {
+                parameters.add(new MessageParameterDTO.Create("personnel-address", tmpLink));
                 parameters.add(new MessageParameterDTO.Create("institute", institute));
             }
 
@@ -326,19 +346,6 @@ public class SendMessageService implements ISendMessageService {
         }
 
         MessageDTO.Info result = messageService.create(oMessageModel);
-
-        if(maxRepeat>0){
-
-            if (type.equals("classStudent")) {
-                pid = "0zsny4iqsf";
-            }
-
-            oMessageModel.setOrginalMessageId(result.getId());
-            oMessageModel.setInterval(timeBMessages);
-            oMessageModel.setCountSend(maxRepeat);
-
-            messageService.create(oMessageModel);
-        }
 
         for (int i = 0; i < mobiles.size(); i++) {
 
@@ -350,7 +357,7 @@ public class SendMessageService implements ISendMessageService {
             List<String> returnMessage = syncEnqueue(pid, convertMessageParameterToMap(oMessageModel.getMessageContactList().get(i).getMessageParameterList()), numbers);
             Long returnMessageId = null;
 
-            MessageContactLog log=new MessageContactLog();
+            MessageContactLog log = new MessageContactLog();
 
             log.setMessageContactId(messageContact.getId());
 
@@ -376,6 +383,22 @@ public class SendMessageService implements ISendMessageService {
                     messageContactLogDAO.save(log);
                 }
             }
+        }
+
+        if (maxRepeat > 0) {
+
+            if (type.equals("classStudent")) {
+                pid = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MCS2")).findFirst().orElseThrow(null).getValue();
+                oMessageModel.setPId(pid);
+                oMessageModel.setContextText(pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MCS2")).findFirst().orElseThrow(null).getDescription());
+                oMessageModel.setContextHtml(" ");
+            }
+
+            oMessageModel.setOrginalMessageId(result.getId());
+            oMessageModel.setInterval(timeBMessages);
+            oMessageModel.setCountSend(maxRepeat);
+
+            messageService.create(oMessageModel);
         }
 
         return new ResponseEntity<>(HttpStatus.OK);

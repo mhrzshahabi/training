@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -34,6 +35,8 @@ public class MessageContactDTO {
         private String objectMobile;
 
         private List<MessageParameterDTO.Create> messageParameterList;
+
+        private Date lastSentDate;
     }
 
     @Getter

@@ -256,8 +256,9 @@
         vAlign: "center",
         layoutTopMargin: 20,
         members: [
-            MSG_Cancel_MsgForm,
-            MSG_sendMsgForm
+            MSG_sendMsgForm,
+            MSG_Cancel_MsgForm
+
         ]
     });
 
