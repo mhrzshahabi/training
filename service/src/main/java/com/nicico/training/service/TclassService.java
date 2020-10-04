@@ -495,7 +495,7 @@ public class TclassService implements ITclassService {
         Double teacherGradeToClass = null;
         Double percenetOfFilledReactionEvaluationForms = null;
         Integer studentCount = null;
-
+        String FERGradeS = null;
 
         Tclass tclass = getTClass(classId);
         classStudents = tclass.getClassStudents();
@@ -545,11 +545,13 @@ public class TclassService implements ITclassService {
             minQus_ET = (Double) FETGradeResult.get("minQus_ET");
 
         Map<String, Object> FECRResult = null;
+        if(FERGrade != null)
+            FERGradeS = FERGrade.toString();
         List<EvaluationAnalysis> evaluationAnalyses = evaluationAnalysisDAO.findByTClassId(classId);
         if (evaluationAnalyses != null && evaluationAnalyses.size() != 0) {
-            FECRResult = calculateEffectivenessEvaluation(FERGrade.toString(), evaluationAnalyses.get(0).getLearningGrade(), evaluationAnalyses.get(0).getBehavioralGrade(), tclass.getEvaluation());
+            FECRResult = calculateEffectivenessEvaluation(FERGradeS, evaluationAnalyses.get(0).getLearningGrade(), evaluationAnalyses.get(0).getBehavioralGrade(), tclass.getEvaluation());
         } else {
-            FECRResult = calculateEffectivenessEvaluation(FERGrade.toString(), null, null, tclass.getEvaluation());
+            FECRResult = calculateEffectivenessEvaluation(FERGradeS, null, null, tclass.getEvaluation());
         }
 
         if (FECRResult.get("EffectivenessGrade") != null)
