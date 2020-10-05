@@ -628,6 +628,17 @@
                     canEdit: false,
                     canSort: false,
                     canFilter: false
+                },
+                {
+                    name: "isSentMessage",
+                    title: "ارسال پيام قبل از شروع کلاس",
+                    width: 160,
+                    type: "image",
+                    imageURLPrefix: "",
+                    imageURLSuffix: ".png",
+                    canEdit: false,
+                    canSort: false,
+                    canFilter: false
                 }
             ],
             gridComponents: [StudentTS_student, "filterEditor", "header", "body"],

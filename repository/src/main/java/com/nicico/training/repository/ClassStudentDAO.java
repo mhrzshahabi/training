@@ -75,6 +75,6 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
     public int setStudentFormIssuanceAudienceId(Long idClassStudent, Long AudienceId);
 
     @Query(value = "select mc.c_object_mobile,count(*) as cnt from tbl_message_contact mc inner join tbl_message m on m.id=mc.f_message_id where mc.n_count_sent>0 and m.f_message_class=:classId and m.f_message_user_type=679 group by mc.c_object_mobile", nativeQuery = true)
-    Map<String,Integer> getStatusSendMessageStudents(Long classId);
+    List<Object> getStatusSendMessageStudents(Long classId);
 
 }

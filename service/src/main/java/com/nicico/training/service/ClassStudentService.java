@@ -171,7 +171,15 @@ public class ClassStudentService implements IClassStudentService {
 
     @Override
     public Map<String, Integer> getStatusSendMessageStudents(Long classId) {
-        return classStudentDAO.getStatusSendMessageStudents(classId);
+        List<Object> list = classStudentDAO.getStatusSendMessageStudents(classId);
+
+        Map<String, Integer> result = new HashMap<>();
+        for (int i = 0; i < list.size(); i++) {
+            Object[] arr = (Object[]) list.get(i);
+            result.put(arr[0] == null ? null : arr[0].toString(), Integer.parseInt(arr[1].toString()));
+        }
+
+        return result;
     }
 
     @Transactional

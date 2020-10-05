@@ -34,6 +34,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -56,6 +60,7 @@ public class ClassStudentRestController {
     private final ViewCoursesPassedPersonnelReportService iViewCoursesPassedPersonnelReportService;
     private final ViewPersonnelCourseNaReportService viewPersonnelCourseNaReportService;
     private final ContinuousStatusReportViewService continuousStatusReportViewService;
+    private final ClassSessionService classSessionService;
     private final ClassStudentBeanMapper mapper;
 //    private final SearchDTO.SearchRq searchRq;
 //    private final SearchDTO.CriteriaRq criteriaRq;
@@ -112,17 +117,42 @@ public class ClassStudentRestController {
 
     @Loggable
     @GetMapping(value = "/students-iscList/{classId}")
-    public ResponseEntity<ISC<ClassStudentDTO.ClassStudentInfo>> list(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
+    public ResponseEntity<ISC<ClassStudentDTO.ClassStudentInfo>> list(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException, ParseException {
         ResponseEntity<ISC<ClassStudentDTO.ClassStudentInfo>> list = search1(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
-        Map<String, Integer> mobiles = classStudentService.getStatusSendMessageStudents(classId);
 
-        ((List<ClassStudentDTO.ClassStudentInfo>) list.getBody().getResponse().getData()).forEach(p -> {
-            if (p.getStudent().getMobile() != null && mobiles.get(p.getStudent().getMobile()) > 0) {
-                p.setIsSentMessage(true);
-            } else {
-                p.setIsSentMessage(false);
-            };
-        });
+        List<ClassStudentDTO.ClassStudentInfo> tmplist = (List<ClassStudentDTO.ClassStudentInfo>) list.getBody().getResponse().getData();
+
+        if (tmplist.size() > 0 && (tmplist.get(0).getTclass().getClassStatus().equals("1") || tmplist.get(0).getTclass().getClassStatus().equals("2"))) {
+
+            SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+            searchRq.setCount(1);
+            searchRq.setStartIndex(0);
+
+            List<String> sortBy = new ArrayList<>();
+            sortBy.add("sessionDate");
+            sortBy.add("sessionStartHour");
+
+            searchRq.setSortBy(sortBy);
+            SearchDTO.SearchRs<ClassSessionDTO.Info> result = classSessionService.searchWithCriteria(searchRq, classId);
+
+            if (result.getList().size() > 0) {
+                String str = DateUtil.convertKhToMi1(result.getList().get(0).getSessionDate());
+                LocalDate date = LocalDate.parse(str);
+
+                if ((date.isBefore(LocalDate.now().plusDays(7))||date.equals(LocalDate.now().plusDays(7))) && (date.isAfter(LocalDate.now())||date.equals(LocalDate.now()))) {
+                    Map<String, Integer> mobiles = classStudentService.getStatusSendMessageStudents(classId);
+
+                    tmplist.forEach(p -> {
+                        if (p.getStudent().getMobile() != null && mobiles.get(p.getStudent().getMobile()) != null && mobiles.get(p.getStudent().getMobile()) > 0) {
+                            p.setIsSentMessage("");
+                        } else {
+                            p.setIsSentMessage("warning");
+                        }
+                    });
+                }
+            }
+        }
+
         return list;
     }
 

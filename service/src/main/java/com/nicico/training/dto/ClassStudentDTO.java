@@ -59,7 +59,7 @@ public class ClassStudentDTO implements Serializable {
         private Integer numberOfSendedBehavioralForms;
         private Integer numberOfRegisteredBehavioralForms;
 
-        private Boolean isSentMessage;
+        private String isSentMessage;
 
         public String getFullName(){
             return student.getFirstName()+" "+student.getLastName();
