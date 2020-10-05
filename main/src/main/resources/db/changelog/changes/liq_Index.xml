@@ -38,11 +38,30 @@
         </createIndex>
     </changeSet>
 
-<!--    <changeSet author="golrokhi (generated)" id="1600570520012-511">
-        <createIndex indexName="IX_tbl_annual_statisticalPK" tableName="tbl_annual_statistical" unique="true">
-            <column name="category_id"/>
-            <column name="institute_id"/>
+    <changeSet author="NICICO" id="INDEX_TBL_PERSONNEL_COL_PERSONNEL_NO-001">
+        <createIndex indexName="INDEX_TBL_PERSONNEL_COL_PERSONNEL_NO" tableName="TBL_PERSONNEL" unique="false">
+            <column name="PERSONNEL_NO"/>
         </createIndex>
-    </changeSet>-->
+    </changeSet>
+
+    <changeSet author="NICICO" id="INDEX_TBL_STUDENT_COL_PERSONNEL_NO-001">
+        <createIndex indexName="INDEX_TBL_STUDENT_COL_PERSONNEL_NO" tableName="TBL_STUDENT" unique="false">
+            <column name="PERSONNEL_NO"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet author="NICICO" id="INDEX_TBL_PERSONNEL_REGISTERED_COL_PERSONNEL_NO-001">
+        <createIndex indexName="INDEX_TBL_PERSONNEL_REGISTERED_COL_PERSONNEL_NO" tableName="TBL_PERSONNEL_REGISTERED" unique="false">
+            <column name="PERSONNEL_NO"/>
+        </createIndex>
+    </changeSet>
+
+
+    <!--    <changeSet author="golrokhi (generated)" id="1600570520012-511">
+            <createIndex indexName="IX_tbl_annual_statisticalPK" tableName="tbl_annual_statistical" unique="true">
+                <column name="category_id"/>
+                <column name="institute_id"/>
+            </createIndex>
+        </changeSet>-->
 
 </databaseChangeLog>
