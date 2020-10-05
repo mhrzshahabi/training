@@ -232,7 +232,7 @@ public class SendMessageService implements ISendMessageService {
             searchRs.getList().forEach(p -> {
                         mobiles.add(p.getStudent().getMobile());
                         fullName.add(p.getFullName());
-                        prefixFullName.add(p.getStudent().getGender() == null ? "جناب آقای/سرکار خانم" : p.getStudent().getGender().equals("مرد") ? "جناب آقای" : (p.getStudent().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم"));
+                        prefixFullName.add(p.getStudent().getGender() == null ? "جناب آقای/سرکار خانم" : (p.getStudent().getGender().equals("مرد") ? "جناب آقای" : (p.getStudent().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم")));
                     }
             );
         } else if (type.equals("classTeacher")) {
@@ -249,7 +249,7 @@ public class SendMessageService implements ISendMessageService {
             searchRs.getList().forEach(p -> {
                         mobiles.add(p.getPersonality().getContactInfo().getMobile());
                         fullName.add(p.getFullName());
-                        prefixFullName.add(p.getPersonality().getGenderId() == null ? "جناب آقای/سرکار خانم" : p.getPersonality().getGenderId() == 1 ? "جناب آقای" : (p.getPersonality().getGenderId() == 2 ? "سرکار خانم" : "جناب آقای/سرکار خانم"));
+                        prefixFullName.add(p.getPersonality().getGenderId() == null ? "جناب آقای/سرکار خانم" : (p.getPersonality().getGenderId() == 1 ? "جناب آقای" : (p.getPersonality().getGenderId() == 2 ? "سرکار خانم" : "جناب آقای/سرکار خانم")));
                     }
             );
         } else if (type.equals("classStudentRegistered")) {
@@ -267,7 +267,7 @@ public class SendMessageService implements ISendMessageService {
             searchRs.getList().forEach(p -> {
                         mobiles.add(p.getStudent().getMobile());
                         fullName.add(p.getFullName());
-                        prefixFullName.add(p.getStudent().getGender() == null ? "جناب آقای/سرکار خانم" : p.getStudent().getGender().equals("مرد") ? "جناب آقای" : (p.getStudent().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم"));
+                        prefixFullName.add(p.getStudent().getGender() == null ? "جناب آقای/سرکار خانم" : (p.getStudent().getGender().equals("مرد") ? "جناب آقای" : (p.getStudent().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم")));
                     }
             );
         }
