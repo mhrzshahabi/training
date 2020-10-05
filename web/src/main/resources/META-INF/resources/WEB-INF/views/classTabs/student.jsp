@@ -632,7 +632,7 @@
                 {
                     name: "isSentMessage",
                     title: "ارسال پيام قبل از شروع کلاس",
-                    width: 160,
+                    width: 190,
                     type: "image",
                     imageURLPrefix: "",
                     imageURLSuffix: ".png",

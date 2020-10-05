@@ -1261,4 +1261,17 @@ public class TclassService implements ITclassService {
         }
         return finalResult;
     }
+
+    @Override
+    public Map<Long, Integer> checkClassesForSendMessage(List<Long> classIds) {
+        List<Object> list = tclassDAO.checkClassesForSendMessage(classIds);
+
+        Map<Long, Integer> result = new HashMap<>();
+        for (int i = 0; i < list.size(); i++) {
+            Object[] arr = (Object[]) list.get(i);
+            result.put(arr[0] == null ? null : Long.parseLong(arr[0].toString()), Integer.parseInt(arr[1].toString()));
+        }
+
+        return result;
+    }
 }
