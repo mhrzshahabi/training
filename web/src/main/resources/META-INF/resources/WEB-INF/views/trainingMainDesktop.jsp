@@ -3508,6 +3508,76 @@
     wait.close();
     // ---------------------------------------- Not Ok - End ----------------------------------------
 
+
+    isc.defineClass("OrganSegmentFilterDF", DynamicForm);
+    isc.OrganSegmentFilterDF.addProperties({
+        border: "1px solid black",
+        numCols: 10,
+        padding: 10,
+        margin:0,
+        titleAlign:"left",
+        wrapItemTitles: true,
+        fields: [{
+
+            name: "test",
+            type: "MultiComboBoxItem",
+            title: "<spring:message code='company'/>",
+            optionDataSource: isc.TrDS.create({
+                fields: [{name: "id"}, {name: "code"}, {name: "titleFa"}],
+                cacheAllData: true,
+                fetchDataURL: rootUrl + "/geo-work/company-list"
+            }),
+            valueField: "titleFa",
+            displayField: "titleFa",
+            filterOnKeypress: true,
+            multiple: true,
+            comboBoxProperties: {
+                hint: "",
+                pickListWidth: 280,
+                filterFields: ["code", "titleFa"],
+                textMatchStyle: "substring",
+                <%--pickListProperties: {--%>
+                <%--    autoFitWidthApproach: "both",--%>
+                <%--    gridComponents: [--%>
+                <%--        isc.ToolStrip.create({--%>
+                <%--            autoDraw:false,--%>
+                <%--            height:30,--%>
+                <%--            width: "100%",--%>
+                <%--            members: [--%>
+                <%--                isc.ToolStripButton.create({--%>
+                <%--                    width:"50%",--%>
+                <%--                    icon: "[SKIN]/actions/approve.png",--%>
+                <%--                    title: "<spring:message code='select.all'/>",--%>
+                <%--                    click:function() {--%>
+                <%--                        let fItem = DynamicForm_JspWorkGroup.getField("userIds");--%>
+                <%--                        fItem.setValue(fItem.comboBox.pickList.data.localData.map(user => user.id));--%>
+                <%--                        fItem.comboBox.pickList.hide();--%>
+                <%--                    }--%>
+                <%--                }),--%>
+                <%--                isc.ToolStripButton.create({--%>
+                <%--                    width:"50%",--%>
+                <%--                    icon: "[SKIN]/actions/close.png",--%>
+                <%--                    title: "<spring:message code='deselect.all'/>",--%>
+                <%--                    click:function() {--%>
+                <%--                        let fItem = DynamicForm_JspWorkGroup.getField("userIds");--%>
+                <%--                        fItem.setValue([]);--%>
+                <%--                        fItem.comboBox.pickList.hide();--%>
+                <%--                    }--%>
+                <%--                })--%>
+                <%--            ]--%>
+                <%--        }),--%>
+                <%--        "header","body"--%>
+                <%--    ]--%>
+                <%--},--%>
+                pickListFields: [
+                    {name: "id", primaryKey: true, hidden: true},
+                    {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
+                    {name: "titleFa", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true}
+                ],
+            },
+        }]
+    });
+
 </script>
 </body>
 </html>
