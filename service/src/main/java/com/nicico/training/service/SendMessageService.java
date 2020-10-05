@@ -291,16 +291,26 @@ public class SendMessageService implements ISendMessageService {
         TotalResponse<ParameterValueDTO.Info> pIds = parameterService.getByCode("MessageContent");
         String textMessage = "";
 
+        ParameterValueDTO.Info prmv;
 
         if (type.equals("classStudent")) {
-            pid = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MCS1")).findFirst().orElseThrow(null).getValue();
-            textMessage = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MCS1")).findFirst().orElseThrow(null).getDescription();
+
+            prmv = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MCS1")).findFirst().orElseThrow(null);
+            pid = prmv.getValue();
+            textMessage = prmv.getDescription();
+
         } else if (type.equals("classTeacher")) {
-            pid = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MTeacher")).findFirst().orElseThrow(null).getValue();
-            textMessage = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MTeacher")).findFirst().orElseThrow(null).getDescription();
+
+            prmv = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MTeacher")).findFirst().orElseThrow(null);
+            pid = prmv.getValue();
+            textMessage = prmv.getDescription();
+
         } else if (type.equals("classStudentRegistered")) {
-            pid = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MCSR")).findFirst().orElseThrow(null).getValue();
-            textMessage = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MCSR")).findFirst().orElseThrow(null).getDescription();
+
+            prmv = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MCSR")).findFirst().orElseThrow(null);
+            pid = prmv.getValue();
+            textMessage = prmv.getDescription();
+
         }
 
         oMessageModel.setPId(pid);
