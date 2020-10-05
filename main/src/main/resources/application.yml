@@ -2,7 +2,7 @@ spring:
   application:
     name: Training
   profiles:
-    active: Local
+    active: Development
   datasource:
     hikari:
       connection-test-query: SELECT 1 FROM DUAL
@@ -10,7 +10,7 @@ spring:
       connection-timeout: 60000
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.Oracle12cDialect
