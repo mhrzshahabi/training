@@ -729,6 +729,20 @@
                                         }
                                     }
                                 })
+                            } else{
+                                if (!ListGridOwnSkill_JspCourse.getSelectedRecord().courseMainObjectiveId) {
+                                    wait.show();
+                                    isc.RPCManager.sendRequest(
+                                        TrDSRequest(skillUrl + "/remove-course/" + courseRecord.id + "/" + ListGridOwnSkill_JspCourse.getSelectedRecord().id, "DELETE", null, (resp)=>{
+                                            isChangeable();
+                                            wait.close();
+                                            if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                                mainObjectiveGrid_Refresh();
+                                                ListGridAllSkillRefresh();
+                                            }
+                                        })
+                                    );
+                                }
                             }
                         },
                         gridComponents: [
@@ -813,6 +827,20 @@
                                       }
                                   }
                               })
+                            } else {
+                                wait.show();
+                                isc.RPCManager.sendRequest(
+                                    TrDSRequest(skillUrl + "/add-course/" + courseRecord.id + "/" + ListGrid_AllSkill_JspCourse.getSelectedRecord().id, "POST", null, (resp)=>{
+                                        wait.close();
+                                        if(resp.httpResponseCode === 409){
+                                            createDialog("warning", JSON.parse(resp.httpResponseText).message, "اخطار")
+                                        }
+                                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                            ListGridAllSkillRefresh();
+                                            isChangeable();
+                                        }
+                                    })
+                                );
                             }
                         },
                         gridComponents: [isc.Label.create({
