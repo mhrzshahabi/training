@@ -3508,75 +3508,385 @@
     wait.close();
     // ---------------------------------------- Not Ok - End ----------------------------------------
 
+    // ---------------------------------------- OrganSegmentFilterDF ----------------------------------------
+    var testMostafa;
+    let companyFieldName_OrganSegmentFilterDF = "companyName";
+    let mojtameFieldName_OrganSegmentFilterDF = "department.mojtameCode";
+    let moavenatFieldName_OrganSegmentFilterDF = "department.moavenatCode";
+    let omorFieldName_OrganSegmentFilterDF = "department.omorCode";
+    let ghesmatFieldName_OrganSegmentFilterDF = "department.ghesmatCode";
+    let vahedFieldName_OrganSegmentFilterDF = "department.vahedCode";
+    let hideCompanyFilter_OrganSegmentFilterDF = false;
+    let useNameInCriteria_OrganSegmentFilterDF_OrganSegmentFilterDF = false;
+
+    function init_OrganSegmentFilterDF(useNameInCriteria, hideCompanyFilter, companyFieldName, mojtameFieldName, moavenatFieldName, omorFieldName, ghesmatFieldName, vahedFieldName) {
+        useNameInCriteria_OrganSegmentFilterDF_OrganSegmentFilterDF = useNameInCriteria != null ? useNameInCriteria : false;
+        hideCompanyFilter_OrganSegmentFilterDF = hideCompanyFilter != null ? hideCompanyFilter : false;
+        companyFieldName_OrganSegmentFilterDF = companyFieldName != null ? companyFieldName : "companyName";
+        mojtameFieldName_OrganSegmentFilterDF = mojtameFieldName != null ? mojtameFieldName : "department.mojtameCode";
+        moavenatFieldName_OrganSegmentFilterDF = moavenatFieldName != null ? moavenatFieldName : "department.moavenatCode";
+        omorFieldName_OrganSegmentFilterDF = omorFieldName != null ? omorFieldName : "department.omorCode";
+        ghesmatFieldName_OrganSegmentFilterDF = ghesmatFieldName != null ? ghesmatFieldName : "department.ghesmatCode";
+        vahedFieldName_OrganSegmentFilterDF = vahedFieldName != null ? vahedFieldName : "department.vahedCode";
+    }
 
     isc.defineClass("OrganSegmentFilterDF", DynamicForm);
     isc.OrganSegmentFilterDF.addProperties({
         border: "1px solid black",
-        numCols: 10,
+        numCols: 8,
         padding: 10,
         margin:0,
         titleAlign:"left",
         wrapItemTitles: true,
-        fields: [{
-
-            name: "test",
-            type: "MultiComboBoxItem",
-            title: "<spring:message code='company'/>",
-            optionDataSource: isc.TrDS.create({
-                fields: [{name: "id"}, {name: "code"}, {name: "titleFa"}],
-                cacheAllData: true,
-                fetchDataURL: rootUrl + "/geo-work/company-list"
-            }),
-            valueField: "titleFa",
-            displayField: "titleFa",
-            filterOnKeypress: true,
-            multiple: true,
-            comboBoxProperties: {
-                hint: "",
-                pickListWidth: 280,
-                filterFields: ["code", "titleFa"],
-                textMatchStyle: "substring",
-                <%--pickListProperties: {--%>
-                <%--    autoFitWidthApproach: "both",--%>
-                <%--    gridComponents: [--%>
-                <%--        isc.ToolStrip.create({--%>
-                <%--            autoDraw:false,--%>
-                <%--            height:30,--%>
-                <%--            width: "100%",--%>
-                <%--            members: [--%>
-                <%--                isc.ToolStripButton.create({--%>
-                <%--                    width:"50%",--%>
-                <%--                    icon: "[SKIN]/actions/approve.png",--%>
-                <%--                    title: "<spring:message code='select.all'/>",--%>
-                <%--                    click:function() {--%>
-                <%--                        let fItem = DynamicForm_JspWorkGroup.getField("userIds");--%>
-                <%--                        fItem.setValue(fItem.comboBox.pickList.data.localData.map(user => user.id));--%>
-                <%--                        fItem.comboBox.pickList.hide();--%>
-                <%--                    }--%>
-                <%--                }),--%>
-                <%--                isc.ToolStripButton.create({--%>
-                <%--                    width:"50%",--%>
-                <%--                    icon: "[SKIN]/actions/close.png",--%>
-                <%--                    title: "<spring:message code='deselect.all'/>",--%>
-                <%--                    click:function() {--%>
-                <%--                        let fItem = DynamicForm_JspWorkGroup.getField("userIds");--%>
-                <%--                        fItem.setValue([]);--%>
-                <%--                        fItem.comboBox.pickList.hide();--%>
-                <%--                    }--%>
-                <%--                })--%>
-                <%--            ]--%>
-                <%--        }),--%>
-                <%--        "header","body"--%>
-                <%--    ]--%>
-                <%--},--%>
-                pickListFields: [
-                    {name: "id", primaryKey: true, hidden: true},
-                    {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
-                    {name: "titleFa", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true}
-                ],
+        // hideCompanyFilter_OrganSegmentFilterDF: false,
+        // companyFieldName_OrganSegmentFilterDF: companyFieldName_OrganSegmentFilterDF,
+        // mojtameFieldName_OrganSegmentFilterDF: mojtameFieldName_OrganSegmentFilterDF,
+        // moavenatFieldName_OrganSegmentFilterDF: moavenatFieldName_OrganSegmentFilterDF,
+        // omorFieldName_OrganSegmentFilterDF: omorFieldName_OrganSegmentFilterDF,
+        // ghesmatFieldName_OrganSegmentFilterDF: ghesmatFieldName_OrganSegmentFilterDF,
+        // vahedFieldName_OrganSegmentFilterDF: vahedFieldName_OrganSegmentFilterDF
+        fields: [
+            {
+                name: companyFieldName_OrganSegmentFilterDF,
+                type: "MultiComboBoxItem",
+                hidden: hideCompanyFilter_OrganSegmentFilterDF,
+                title: "<spring:message code='company'/>",
+                optionDataSource: isc.TrDS.create({
+                    fields: [{name: "id"}, {name: "code"}, {name: "titleFa"}],
+                    cacheAllData: true,
+                    fetchDataURL: rootUrl + "/geo-work/company-list"
+                }),
+                valueField: "titleFa",
+                displayField: "titleFa",
+                filterOnKeypress: true,
+                multiple: true,
+                comboBoxProperties: {
+                    hint: "",
+                    width: 170,
+                    pickListWidth: 275,
+                    filterFields: ["code", "titleFa"],
+                    textMatchStyle: "substring",
+                    pickListProperties:{showFilterEditor: false, autoFitWidthApproach: "both"},
+                    pickListFields: [
+                        {name: "id", primaryKey: true, hidden: true},
+                        {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
+                        {name: "titleFa", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true}
+                    ],
+                    icons:[
+                        {
+                            name: "clear",
+                            src: "[SKIN]actions/remove.png",
+                            width: 15,
+                            height: 15,
+                            inline: true,
+                            prompt: "حذف همه",
+                            click : function (form) {
+                                form.parentElement.creator.clearValue();
+                                form.parentElement.creator.focusInItem();
+                                form.parentElement.creator.form.getFields().forEach(f => f.enable());
+                            }
+                        }
+                    ],
+                },
+                changed: function (form, item, value) {
+                    if (value == null || value.length === 0 || (value.length === 1 && value[0] === "شرکت ملی صنایع مس ایران")){
+                        form.getFields().forEach(f => f.enable());
+                    } else {
+                        form.getFields().forEach(f => { if (item.name !== f.name) {f.disable(); f.setValue([])}});
+                    }
+                }
             },
-        }]
+            {
+                name: mojtameFieldName_OrganSegmentFilterDF,
+                type: "MultiComboBoxItem",
+                title: "<spring:message code='complex'/>",
+                optionDataSource: isc.TrDS.create({
+                    fields: [{name: "id"}, {name: "code"}, {name: "title"}],
+                    cacheAllData: true,
+                    fetchDataURL: departmentUrl + "/organ-segment-iscList/mojtame"
+                }),
+                valueField: useNameInCriteria_OrganSegmentFilterDF ? "title" : "code",
+                displayField: "title",
+                filterOnKeypress: true,
+                multiple: true,
+                comboBoxProperties: {
+                    hint: "",
+                    width: 170,
+                    pickListWidth: 295,
+                    filterFields: ["code", "title"],
+                    textMatchStyle: "substring",
+                    pickListProperties:{showFilterEditor: false, autoFitWidthApproach: "both"},
+                    pickListFields: [
+                        {name: "id", primaryKey: true, hidden: true},
+                        {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
+                        {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true}
+                    ],
+                    icons:[
+                        {
+                            name: "clear",
+                            src: "[SKIN]actions/remove.png",
+                            width: 15,
+                            height: 15,
+                            inline: true,
+                            prompt: "حذف همه",
+                            click : function (form) {
+                                form.parentElement.creator.clearValue();
+                                form.parentElement.creator.focusInItem();
+                                form.parentElement.creator.changed(form.parentElement.creator.form, form.parentElement.creator, null);
+                            }
+                        }
+                    ],
+                },
+                changed: function (form, item, value) {
+                    if (value != null && value.length > 0) {
+                        form.getField(2).optionCriteria = {
+                            _constructor: "AdvancedCriteria",
+                            operator: "and",
+                            criteria: [
+                                {fieldName: useNameInCriteria_OrganSegmentFilterDF ? "mojtameTitle" : "mojtameCode", operator: "inSet", value: value},
+                            ]
+                        };
+                    } else {
+                        form.getField(2).optionCriteria = null;
+                    }
+                    form.getField(2).optionDataSource.implicitCriteria = form.getField(2).optionCriteria;
+                    form.getField(2).optionDataSource.invalidateCache();
+                }
+            },
+            {
+                name: moavenatFieldName_OrganSegmentFilterDF,
+                type: "MultiComboBoxItem",
+                title: "<spring:message code='assistance'/>",
+                optionDataSource: isc.TrDS.create({
+                    fields: [{name: "id"}, {name: "code"}, {name: "title"}],
+                    fetchDataURL: departmentUrl + "/organ-segment-iscList/moavenat"
+                }),
+                valueField: useNameInCriteria_OrganSegmentFilterDF ? "title" : "code",
+                displayField: "title",
+                filterOnKeypress: true,
+                multiple: true,
+                comboBoxProperties: {
+                    hint: "",
+                    width: 170,
+                    pickListWidth: 295,
+                    filterFields: ["code", "title"],
+                    textMatchStyle: "substring",
+                    pickListProperties:{showFilterEditor: false, autoFitWidthApproach: "both"},
+                    pickListFields: [
+                        {name: "id", primaryKey: true, hidden: true},
+                        {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
+                        {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true}
+                    ],
+                    icons:[
+                        {
+                            name: "clear",
+                            src: "[SKIN]actions/remove.png",
+                            width: 15,
+                            height: 15,
+                            inline: true,
+                            prompt: "حذف همه",
+                            click : function (form) {
+                                form.parentElement.creator.clearValue();
+                                form.parentElement.creator.focusInItem();
+                                form.parentElement.creator.changed(form.parentElement.creator.form, form.parentElement.creator, null);
+                            }
+                        }
+                    ],
+                },
+                click(form, item){
+                    let isDataNull = item.comboBox.optionDataSource.getCacheData() == null;
+                    item.comboBox.fetchData();
+                    if (isDataNull) {item.comboBox.showPicker();}
+                },
+                changed: function (form, item, value) {
+                    if (value != null && value.length > 0) {
+                        form.getField(3).optionCriteria = {
+                            _constructor: "AdvancedCriteria",
+                            operator: "and",
+                            criteria: [
+                                {fieldName: useNameInCriteria_OrganSegmentFilterDF ? "moavenatTitle" : "moavenatCode", operator: "inSet", value: value},
+                            ]
+                        };
+                    } else {
+                        form.getField(3).optionCriteria = null;
+                    }
+                    form.getField(3).optionDataSource.implicitCriteria = form.getField(3).optionCriteria;
+                    form.getField(3).optionDataSource.invalidateCache();
+                }
+            },
+            {
+                name: omorFieldName_OrganSegmentFilterDF,
+                type: "MultiComboBoxItem",
+                title: "<spring:message code='affairs'/>",
+                optionDataSource: isc.TrDS.create({
+                    fields: [{name: "id"}, {name: "code"}, {name: "title"}],
+                    fetchDataURL: departmentUrl + "/organ-segment-iscList/omor"
+                }),
+                valueField: useNameInCriteria_OrganSegmentFilterDF ? "title" : "code",
+                displayField: "title",
+                filterOnKeypress: true,
+                multiple: true,
+                comboBoxProperties: {
+                    hint: "",
+                    width: 170,
+                    pickListWidth: 295,
+                    filterFields: ["code", "title"],
+                    textMatchStyle: "substring",
+                    pickListProperties:{showFilterEditor: false, autoFitWidthApproach: "both"},
+                    pickListFields: [
+                        {name: "id", primaryKey: true, hidden: true},
+                        {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
+                        {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true}
+                    ],
+                    icons:[
+                        {
+                            name: "clear",
+                            src: "[SKIN]actions/remove.png",
+                            width: 15,
+                            height: 15,
+                            inline: true,
+                            prompt: "حذف همه",
+                            click : function (form) {
+                                form.parentElement.creator.clearValue();
+                                form.parentElement.creator.focusInItem();
+                                form.parentElement.creator.changed(form.parentElement.creator.form, form.parentElement.creator, null);
+                            }
+                        }
+                    ],
+                },
+                click(form, item){
+                    let isDataNull = item.comboBox.optionDataSource.getCacheData() == null;
+                    item.comboBox.fetchData();
+                    if (isDataNull) {item.comboBox.showPicker();}
+                },
+                changed: function (form, item, value) {
+                    if (value != null && value.length > 0) {
+                        form.getField(4).optionCriteria = {
+                            _constructor: "AdvancedCriteria",
+                            operator: "and",
+                            criteria: [
+                                {fieldName: useNameInCriteria_OrganSegmentFilterDF ? "omorTitle" : "omorCode", operator: "inSet", value: value},
+                            ]
+                        };
+                    } else {
+                        form.getField(4).optionCriteria = null;
+                    }
+                    form.getField(4).optionDataSource.implicitCriteria = form.getField(4).optionCriteria;
+                    form.getField(4).optionDataSource.invalidateCache();
+                }
+            },
+            {
+                name: ghesmatFieldName_OrganSegmentFilterDF,
+                type: "MultiComboBoxItem",
+                title: "<spring:message code='section'/>",
+                optionDataSource: isc.TrDS.create({
+                    fields: [{name: "id"}, {name: "code"}, {name: "title"}],
+                    fetchDataURL: departmentUrl + "/organ-segment-iscList/ghesmat"
+                }),
+                valueField: useNameInCriteria_OrganSegmentFilterDF ? "title" : "code",
+                displayField: "title",
+                filterOnKeypress: true,
+                multiple: true,
+                comboBoxProperties: {
+                    hint: "",
+                    width: 170,
+                    pickListWidth: 295,
+                    filterFields: ["code", "title"],
+                    textMatchStyle: "substring",
+                    pickListProperties:{showFilterEditor: false, autoFitWidthApproach: "both"},
+                    pickListFields: [
+                        {name: "id", primaryKey: true, hidden: true},
+                        {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
+                        {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true}
+                    ],
+                    icons:[
+                        {
+                            name: "clear",
+                            src: "[SKIN]actions/remove.png",
+                            width: 15,
+                            height: 15,
+                            inline: true,
+                            prompt: "حذف همه",
+                            click : function (form) {
+                                form.parentElement.creator.clearValue();
+                                form.parentElement.creator.focusInItem();
+                                form.parentElement.creator.changed(form.parentElement.creator.form, form.parentElement.creator, null);
+                            }
+                        }
+                    ],
+                },
+                click(form, item){
+                    let isDataNull = item.comboBox.optionDataSource.getCacheData() == null;
+                    item.comboBox.fetchData();
+                    if (isDataNull) {item.comboBox.showPicker();}
+                },
+                changed: function (form, item, value) {
+                    if (value != null && value.length > 0) {
+                        form.getField(5).optionCriteria = {
+                            _constructor: "AdvancedCriteria",
+                            operator: "and",
+                            criteria: [
+                                {fieldName: useNameInCriteria_OrganSegmentFilterDF ? "ghesmatTitle" : "ghesmatCode", operator: "inSet", value: value},
+                            ]
+                        };
+                    } else {
+                        form.getField(5).optionCriteria = null;
+                    }
+                    form.getField(5).optionDataSource.implicitCriteria = form.getField(5).optionCriteria;
+                    form.getField(5).optionDataSource.invalidateCache();
+                }
+            },
+            {
+                name: vahedFieldName_OrganSegmentFilterDF,
+                type: "MultiComboBoxItem",
+                title: "<spring:message code='unit'/>",
+                optionDataSource: isc.TrDS.create({
+                    fields: [{name: "id"}, {name: "code"}, {name: "title"}],
+                    fetchDataURL: departmentUrl + "/organ-segment-iscList/vahed"
+                }),
+                valueField: useNameInCriteria_OrganSegmentFilterDF ? "title" : "code",
+                displayField: "title",
+                filterOnKeypress: true,
+                multiple: true,
+                comboBoxProperties: {
+                    hint: "",
+                    width: 170,
+                    pickListWidth: 295,
+                    filterFields: ["code", "title"],
+                    textMatchStyle: "substring",
+                    pickListProperties:{showFilterEditor: false, autoFitWidthApproach: "both"},
+                    pickListFields: [
+                        {name: "id", primaryKey: true, hidden: true},
+                        {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
+                        {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true}
+                    ],
+                    icons:[
+                        {
+                            name: "clear",
+                            src: "[SKIN]actions/remove.png",
+                            width: 15,
+                            height: 15,
+                            inline: true,
+                            prompt: "حذف همه",
+                            click : function (form) {
+                                form.parentElement.creator.clearValue();
+                                form.parentElement.creator.focusInItem();
+                                form.parentElement.creator.changed(form.parentElement.creator.form, form.parentElement.creator, null);
+                            }
+                        }
+                    ],
+                },
+                click(form, item){
+                    let isDataNull = item.comboBox.optionDataSource.getCacheData() == null;
+                    item.comboBox.fetchData();
+                    if (isDataNull) {item.comboBox.showPicker();}
+                }
+            },
+        ]
     });
+
+
+    createTab("نیاز", "<spring:url value="web/personnel-course-NA-report"/>");
 
 </script>
 </body>
