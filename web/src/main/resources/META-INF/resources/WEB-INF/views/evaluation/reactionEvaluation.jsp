@@ -609,8 +609,8 @@
                                         MSG_repeatOptions.getItem('maxRepeat').setValue(0);
                                         MSG_repeatOptions.getItem('timeBMessages').setValue(1);
                                         linkFormMLanding.getItem('link').setValue('');
-                                        linkFormMLanding.getItem('link').setRequired(false);
-                                        linkFormMLanding.getItem('link').disable();
+                                        linkFormMLanding.getItem('link').setRequired(true);
+                                        linkFormMLanding.getItem('link').enable();
                                         MSG_Window_MSG_Main.show();
 
                                     }

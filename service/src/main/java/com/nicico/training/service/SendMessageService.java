@@ -328,7 +328,7 @@ public class SendMessageService implements ISendMessageService {
                 tmpLink = link;
             } else if (type.equals("classTeacher")) {
                 messageContact.setObjectType("Teacher");
-                tmpLink = personelAddress;
+                tmpLink = link;
             } else if (type.equals("classStudentRegistered")) {
                 messageContact.setObjectType("ClassStudent");
                 tmpLink = link;
