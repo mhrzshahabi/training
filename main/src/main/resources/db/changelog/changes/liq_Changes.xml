@@ -1276,4 +1276,9 @@
     <changeSet author="poursalehi_mos (generated)" id="1601381769051-470">
         <addNotNullConstraint columnDataType="number(19,0)" columnName="scores_state_id" tableName="tbl_class_student"/>
     </changeSet>
+
+    <changeSet author="razmnoosh" id="ManualModifiedEvaluation-002">
+        <modifyDataType tableName="tbl_evaluation" columnName="c_description" newDataType="VARCHAR2(600 CHAR)" />
+    </changeSet>
+
 </databaseChangeLog>
