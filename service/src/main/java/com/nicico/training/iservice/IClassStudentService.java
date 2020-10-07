@@ -32,6 +32,8 @@ public interface IClassStudentService {
 
     List<Long> getScoreState(Long classId);
 
+    Map<String,Integer> getStatusSendMessageStudents(Long classId);
+
 
     @Transactional(readOnly = true)
    SearchDTO.SearchRs<ClassStudentDTO.evaluationAnalysistLearning> searchEvaluationAnalysistLearning(SearchDTO.SearchRq request,Long classId);

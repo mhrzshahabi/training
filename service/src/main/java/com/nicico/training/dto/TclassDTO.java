@@ -118,7 +118,7 @@ public class TclassDTO {
         private String organizerName;
         private InstituteDTO.InstituteInfoTuple organizer;
         private List<TclassDTO.InfoTuple> canceledClasses;
-
+        private String isSentMessage;
         //*********************************
         //******old code for alarms********
         // private String hasWarning;
