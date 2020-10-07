@@ -314,7 +314,6 @@
             if (CourseLG_CNAR.getSelectedRecord() !== null && valuePersonnelGroup ) {
                 let restUrl = needsAssessmentReportsUrl + "/courseNA?courseId=" + CourseLG_CNAR.getSelectedRecord().id + "&passedReport=true";
                 let groupTitle = "";
-                console.log(selectedGroup_CNAR);
                 let personnelforGroup =  valuePersonnelGroup;
                 if (selectedGroup_CNAR == 7)
                     personnelforGroup = PersonnelGroup_CNAR.getField("personnelGroup").getDisplayValue();
