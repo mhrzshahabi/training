@@ -1297,4 +1297,14 @@
     <changeSet author="golrokhi" id="ManualModifiedParameterValue-001">
         <modifyDataType tableName="tbl_parameter_value" columnName="c_description" newDataType="VARCHAR2(600 CHAR)" />
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1601702370446-516">
+        <addColumn tableName="tbl_department">
+            <column name="c_mojtame_code" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1601702370446-517">
+        <addColumn tableName="tbl_department">
+            <column name="c_mojtame_title" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

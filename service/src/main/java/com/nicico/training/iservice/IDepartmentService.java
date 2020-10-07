@@ -3,11 +3,9 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.training.dto.CompetenceWebserviceDTO;
 import com.nicico.training.dto.DepartmentDTO;
 
 import java.util.List;
-import java.util.Set;
 
 public interface IDepartmentService {
 
@@ -26,6 +24,8 @@ public interface IDepartmentService {
     List<DepartmentDTO.Info> findByParentId(Long parentId);
 
     SearchDTO.SearchRs<DepartmentDTO.FieldValue> findAllValuesOfOneFieldFromDepartment(String fieldName);
+
+    SearchDTO.SearchRs<DepartmentDTO.OrganSegment> getOrganSegmentList(String fieldName, SearchDTO.SearchRq request);
 
     List<DepartmentDTO.TSociety> getRoot();
 

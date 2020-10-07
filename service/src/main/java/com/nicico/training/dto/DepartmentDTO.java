@@ -3,10 +3,7 @@ package com.nicico.training.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
@@ -25,7 +22,6 @@ public class DepartmentDTO implements Serializable {
     @ApiModelProperty
     private String code;
 
-    // ------------------------------
 
     @Getter
     @Setter
@@ -46,8 +42,6 @@ public class DepartmentDTO implements Serializable {
     }
 
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -57,7 +51,6 @@ public class DepartmentDTO implements Serializable {
         private SpecRs response;
     }
 
-    // ---------------
 
     @Getter
     @Setter
@@ -71,7 +64,7 @@ public class DepartmentDTO implements Serializable {
         private Integer totalRows;
     }
 
-    //Amin HK
+
     @Getter
     @Setter
     @AllArgsConstructor
@@ -79,6 +72,17 @@ public class DepartmentDTO implements Serializable {
     @ApiModel("FieldValue")
     public static class FieldValue {
         private String value;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Accessors(chain = true)
+    @ApiModel("OrganSegment")
+    public static class OrganSegment extends DepartmentDTO {
+        private String type;
+        private Long enabled;
     }
 
     @Getter
