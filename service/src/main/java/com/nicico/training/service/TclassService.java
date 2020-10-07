@@ -1237,7 +1237,7 @@ public class TclassService implements ITclassService {
                     FECLZ2 = Double.parseDouble(parameterValue.getValue());
             }
             effectivenessGrade = (reactionGrade * FECLZ1 + learningGrade * FECLZ2) / 100;
-        } else if (classEvaluation != null && classEvaluation.equalsIgnoreCase("3")) {
+        } else if (classEvaluation != null && (classEvaluation.equalsIgnoreCase("3") || classEvaluation.equalsIgnoreCase("4"))) {
             Double FECBZ1 = 0.0;
             Double FECBZ2 = 0.0;
             Double FECBZ3 = 0.0;
