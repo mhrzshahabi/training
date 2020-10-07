@@ -3509,7 +3509,7 @@
     // ---------------------------------------- Not Ok - End ----------------------------------------
 
     // ---------------------------------------- OrganSegmentFilterDF ----------------------------------------
-    var testMostafa;
+
     let companyFieldName_OrganSegmentFilterDF = "companyName";
     let mojtameFieldName_OrganSegmentFilterDF = "department.mojtameCode";
     let moavenatFieldName_OrganSegmentFilterDF = "department.moavenatCode";
