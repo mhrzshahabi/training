@@ -59,7 +59,7 @@ public class ViewAttendanceReport implements Serializable {
     @Column(name = "c_session_date", insertable = false, updatable = false)
     private String date;
 
-    @Column(name = "c_state")
+    @Column(name = "c_state", insertable = false, updatable = false)
     private Integer attendanceStatus;
 
     @Column(name = "time")
