@@ -705,34 +705,7 @@
                             {name: "subCategory.id", canFilter: false}
                         ],
                         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
-                            if (ListGridOwnSkill_JspCourse.getSelectedRecord() == null) {
-                                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
-                            } else if(numClasses>0) {
-                                let dialog = createDialog("ask","از این دوره در کلاس استفاده شده است. از تغییرات مطمئن هستید؟", "اخطار");
-                                dialog.addProperties({
-                                    buttonClick(button, index) {
-                                        this.close();
-                                        if (index === 0) {
-                                            if (!ListGridOwnSkill_JspCourse.getSelectedRecord().courseMainObjectiveId) {
-                                                wait.show();
-                                                isc.RPCManager.sendRequest(
-                                                    TrDSRequest(skillUrl + "/remove-course/" + courseRecord.id + "/" + ListGridOwnSkill_JspCourse.getSelectedRecord().id, "DELETE", null, (resp)=>{
-                                                        isChangeable();
-                                                        wait.close();
-                                                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                                                            mainObjectiveGrid_Refresh();
-                                                            ListGridAllSkillRefresh();
-                                                        }
-                                                    })
-                                                );
-                                            }
-                                            else{
-                                                createDialog("info", "اهداف اصلی از این طریق حذف نمی شوند.");
-                                            }
-                                        }
-                                    }
-                                })
-                            } else{
+                            let deleteSkillFromCourse = ()=>{
                                 if (!ListGridOwnSkill_JspCourse.getSelectedRecord().courseMainObjectiveId) {
                                     wait.show();
                                     isc.RPCManager.sendRequest(
@@ -749,6 +722,21 @@
                                 else{
                                     createDialog("info", "اهداف اصلی از این طریق حذف نمی شوند.");
                                 }
+                            }
+                            if (ListGridOwnSkill_JspCourse.getSelectedRecord() == null) {
+                                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                            } else if(numClasses>0) {
+                                let dialog = createDialog("ask","از این دوره در کلاس استفاده شده است. از تغییرات مطمئن هستید؟", "اخطار");
+                                dialog.addProperties({
+                                    buttonClick(button, index) {
+                                        this.close();
+                                        if (index === 0) {
+                                            deleteSkillFromCourse()
+                                        }
+                                    }
+                                })
+                            } else{
+                                deleteSkillFromCourse()
                             }
                         },
                         gridComponents: [
