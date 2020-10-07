@@ -705,6 +705,24 @@
                             {name: "subCategory.id", canFilter: false}
                         ],
                         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
+                            let deleteSkillFromCourse = ()=>{
+                                if (!ListGridOwnSkill_JspCourse.getSelectedRecord().courseMainObjectiveId) {
+                                    wait.show();
+                                    isc.RPCManager.sendRequest(
+                                        TrDSRequest(skillUrl + "/remove-course/" + courseRecord.id + "/" + ListGridOwnSkill_JspCourse.getSelectedRecord().id, "DELETE", null, (resp)=>{
+                                            isChangeable();
+                                            wait.close();
+                                            if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                                mainObjectiveGrid_Refresh();
+                                                ListGridAllSkillRefresh();
+                                            }
+                                        })
+                                    );
+                                }
+                                else{
+                                    createDialog("info", "اهداف اصلی از این طریق حذف نمی شوند.");
+                                }
+                            }
                             if (ListGridOwnSkill_JspCourse.getSelectedRecord() == null) {
                                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                             } else if(numClasses>0) {
@@ -713,22 +731,12 @@
                                     buttonClick(button, index) {
                                         this.close();
                                         if (index === 0) {
-                                            if (!ListGridOwnSkill_JspCourse.getSelectedRecord().courseMainObjectiveId) {
-                                                wait.show();
-                                                isc.RPCManager.sendRequest(
-                                                    TrDSRequest(skillUrl + "/remove-course/" + courseRecord.id + "/" + ListGridOwnSkill_JspCourse.getSelectedRecord().id, "DELETE", null, (resp)=>{
-                                                        isChangeable();
-                                                        wait.close();
-                                                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                                                            mainObjectiveGrid_Refresh();
-                                                            ListGridAllSkillRefresh();
-                                                        }
-                                                    })
-                                                );
-                                            }
+                                            deleteSkillFromCourse()
                                         }
                                     }
                                 })
+                            } else{
+                                deleteSkillFromCourse()
                             }
                         },
                         gridComponents: [
@@ -786,7 +794,7 @@
                             },
                             {name: "category.id", filterOnKeypress:true},
                             {name: "subCategory.id", filterOnKeypress:true},
-                            {name: "courseMainObjectiveId", type: "boolean", title: "هدف کلی", canFilter: false}
+                            {name: "courseMainObjectiveId", type: "boolean", title: "هدف اصلی", canFilter: false}
                         ],
                         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
                             if (ListGrid_AllSkill_JspCourse.getSelectedRecord() == null) {
@@ -813,6 +821,20 @@
                                       }
                                   }
                               })
+                            } else {
+                                wait.show();
+                                isc.RPCManager.sendRequest(
+                                    TrDSRequest(skillUrl + "/add-course/" + courseRecord.id + "/" + ListGrid_AllSkill_JspCourse.getSelectedRecord().id, "POST", null, (resp)=>{
+                                        wait.close();
+                                        if(resp.httpResponseCode === 409){
+                                            createDialog("warning", JSON.parse(resp.httpResponseText).message, "اخطار")
+                                        }
+                                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                            ListGridAllSkillRefresh();
+                                            isChangeable();
+                                        }
+                                    })
+                                );
                             }
                         },
                         gridComponents: [isc.Label.create({
