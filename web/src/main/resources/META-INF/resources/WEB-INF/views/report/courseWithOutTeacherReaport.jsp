@@ -101,7 +101,7 @@
             }
             criteria = DynamicForm_Report_CourseWithOutTeacher.getValuesAsAdvancedCriteria();
             isc.Dialog.create({
-                message: "ممکن است خروجی اکسل متفاوت باشد",
+                message: "ممکن است نحوه چیدمان داده ها در خروجی اکسل متفاوت باشد",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code='message'/>",
                 buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
