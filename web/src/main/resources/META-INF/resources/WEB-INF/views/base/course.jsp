@@ -2498,11 +2498,11 @@
     }
 
     function ListGrid_Course_remove() {
-        var record = ListGrid_Course.getSelectedRecord();
+        let record = ListGrid_Course.getSelectedRecord();
         if (record == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            var Dialog_Delete = isc.Dialog.create({
+            let Dialog_Delete = isc.Dialog.create({
                 message: "<spring:message
         code="course_delete"/>" + " " + getFormulaMessage(record.titleFa, 3, "red", "I") + " " + "<spring:message
         code="course_delete1"/>",
@@ -2513,49 +2513,24 @@
                 })],
                 buttonClick: function (button, index) {
                     this.close();
-
-                    if (index == 0) {
-                        wait.show()
-                        isc.RPCManager.sendRequest({
-                            actionURL: courseUrl + "deleteCourse/" + record.id,
-                            httpMethod: "DELETE",
-                            useSimpleHttp: true,
-                            contentType: "application/json; charset=utf-8",
-                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                            showPrompt: true,
-                            serverOutputAsString: false,
-                            callback: function (resp) {
-                                wait.close();
-                                if (resp.data === "true") {
-                                    ListGrid_Course_refresh();
-                                    ListGrid_CourseJob.setData([]);
-                                    ListGrid_CourseSkill.setData([]);
-                                    ListGrid_CourseSyllabus.setData([]);
-                                    var OK = isc.Dialog.create({
-                                        message: "<spring:message code="msg.record.remove.successful"/>",
-                                        icon: "[SKIN]say.png",
-                                        title: "<spring:message code="msg.command.done"/>"
-                                    });
-                                    setTimeout(function () {
-                                        OK.close();
-                                    }, 3000);
-                                } else {
-                                    var ERROR = isc.Dialog.create({
-                                        message: "<spring:message code="course_record.remove.failed"/>",
-                                        icon: "[SKIN]stop.png",
-                                        title: "<spring:message code="error"/>"
-                                    });
-                                    setTimeout(function () {
-                                        ERROR.close();
-                                    }, 3000);
-                                }
+                    if (index === 0) {
+                        wait.show();
+                        isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "deleteCourse/" + record.id, "DELETE", null, resp=>{
+                            wait.close();
+                            let response = JSON.parse(resp.httpResponseText);
+                            if (response.status === 200) {
+                                ListGrid_Course_refresh();
+                                ListGrid_CourseJob.setData([]);
+                                ListGrid_CourseSkill.setData([]);
+                                ListGrid_CourseSyllabus.setData([]);
                             }
-                        });
+                            createDialog("info", response.message);
+                        }));
                     }
                 }
             });
         }
-    };
+    }
 
     let toggleGroupTabs = status => {
         DynamicForm_course_GroupTab.getItem("category.id").setDisabled(status);

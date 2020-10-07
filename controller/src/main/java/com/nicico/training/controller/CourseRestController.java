@@ -34,6 +34,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import request.course.CourseUpdateRequest;
+import response.course.CourseDeleteResponse;
 import response.course.CourseListResponse;
 import response.course.CourseUpdateResponse;
 import response.course.dto.CourseDto;
@@ -157,12 +158,27 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     @Loggable
     @DeleteMapping(value = "deleteCourse/{id}")
     //@PreAuthorize("hasAuthority('Course_D')")
-    public ResponseEntity<Boolean> delete(@PathVariable Long id) {
+    public ResponseEntity<CourseDeleteResponse> delete(@PathVariable Long id) {
         boolean check = courseService.checkForDelete(id);
+        CourseDeleteResponse response = new CourseDeleteResponse();
         if (check) {
-            courseService.delete(id);
+            try {
+                courseService.delete(id);
+                response.setMessage("عمليات حذف با موفقيت انجام شد");
+                response.setStatus(200);
+            }
+            catch (Exception e){
+                if(e.toString().split(";")[2].contains("FKILBXORAQADWTOK81KWPDGBSSB")){
+                    response.setMessage("دوره قابل حذف نميباشد. بدليل اينکه معادل دوره ديگري است.");
+                }else if(e.toString().split(";")[2].contains("FKFO4NAM3WFRJ5URT3GD0KEVSLR")){
+                    response.setMessage("دوره قابل حذف نميباشد. بدليل اينکه پيشنياز دوره ديگري است.");
+                }else{
+                    response.setMessage("دوره قابل حذف نميباشد. بديل اينکه از آن در قسمتي از برنامه استفاده شده است.");
+                }
+                response.setStatus(409);
+            }
         }
-        return new ResponseEntity<>(check, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Loggable
