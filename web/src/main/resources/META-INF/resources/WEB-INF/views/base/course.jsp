@@ -746,6 +746,9 @@
                                         })
                                     );
                                 }
+                                else{
+                                    createDialog("info", "اهداف اصلی از این طریق حذف نمی شوند.");
+                                }
                             }
                         },
                         gridComponents: [
