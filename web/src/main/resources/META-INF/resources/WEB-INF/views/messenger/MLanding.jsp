@@ -27,8 +27,6 @@
 
     var sendMessageFunc;
 
-
-
     var ErrorMsg=isc.Label.create({
         height: 30,
         padding: 10,
@@ -258,8 +256,9 @@
         vAlign: "center",
         layoutTopMargin: 20,
         members: [
-            MSG_Cancel_MsgForm,
-            MSG_sendMsgForm
+            MSG_sendMsgForm,
+            MSG_Cancel_MsgForm
+
         ]
     });
 
@@ -735,6 +734,25 @@
 
     }
 
+
+    var MSG_Window_MSG_Main = isc.Window.create({
+        placement: "center",
+        title: "ارسال پیام",
+        overflow: "auto",
+        width: 900,
+        height: 760,
+        isModal: false,
+        autoDraw: false,
+        autoSize: false,
+        items: [
+            MSG_main_layout
+        ],
+        closeClick: function () {
+            MSG_initMSG()
+            this.clear()
+            this.close();
+        },
+    });
 
     /*----------------------------------setDisable-----------------------------*/
 

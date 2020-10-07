@@ -1276,6 +1276,27 @@
     <changeSet author="poursalehi_mos (generated)" id="1601381769051-470">
         <addNotNullConstraint columnDataType="number(19,0)" columnName="scores_state_id" tableName="tbl_class_student"/>
     </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1601704909443-660">
+        <dropColumn columnName="N_MESSAGE_ID" tableName="TBL_MESSAGE_CONTACT"/>
+    </changeSet>
+
+    <changeSet author="golrokhi (generated)" id="1601709679462-517">
+        <addColumn tableName="tbl_message">
+            <column name="c_pid" type="varchar2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="golrokhi (generated)" id="1601709679462-518">
+        <addColumn tableName="tbl_message">
+            <column name="f_orginal_message_message" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="golrokhi" id="ManualModifiedParameterValue-001">
+        <modifyDataType tableName="tbl_parameter_value" columnName="c_description" newDataType="VARCHAR2(600 CHAR)" />
+    </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1601702370446-516">
         <addColumn tableName="tbl_department">
             <column name="c_mojtame_code" type="varchar2(255 CHAR)"/>

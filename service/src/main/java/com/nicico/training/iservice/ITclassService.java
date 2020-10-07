@@ -98,4 +98,7 @@ public interface ITclassService {
 
     @Transactional
     Map<String,Object> calculateEffectivenessEvaluation(String reactionGrade_s, String learningGrade_s, String behavioralGrade_s, String classEvaluation);
+
+    @Transactional
+    Map<Long,Integer> checkClassesForSendMessage(List<Long> classIds);
 }

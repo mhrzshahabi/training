@@ -111,7 +111,9 @@
                                 {
                                     ID:"DynamicForm_GroupInsert_Textbox_JspStudent",
                                     title:"",
-                                    /*direction:""*/
+                                    type: "TextItem",
+                                    length: 10000,
+                                    controlStyle : "inputRTL",cellStyle  : "inputRTL",showRTL :false,
                                     transformPastedValue:function(item, form, pastedValue)
                                     {
                                         item.setValue(pastedValue.split('\n').filter(p=>p!='').join(',')) ;
@@ -891,6 +893,11 @@
                                                 return;
                                             }*/
 
+                                            if(maxCount < size){
+                                                createDialog("info", "تعداد سطرهاي وارد شده جهت خروجي، بيشتر از حداکثر تعداد سطرهاي قابل چاپ است");
+                                                return;
+                                            }
+
                                             if(isValidate(trTrim(exportExcelForm.getValue("maxRow")))) {
 
                                                 ExportToFile.downloadExcelFromServer(listgrid, fileName, parseInt(trTrim(exportExcelForm.getValue("startRow")))-1, parseInt(trTrim(exportExcelForm.getValue("maxRow"))), parentListGrid, titr, pageName,JSON.stringify(criteria));
@@ -1014,6 +1021,11 @@
                                                 createDialog("info", "تعداد سطرهاي وارد شده جهت خروجي، بيشتر از حداکثر تعداد سطرهاي قابل چاپ است");
                                                 return;
                                             }*/
+
+                                            if(maxCount < size){
+                                                createDialog("info", "تعداد سطرهاي وارد شده جهت خروجي، بيشتر از حداکثر تعداد سطرهاي قابل چاپ است");
+                                                return;
+                                            }
 
                                             if(isValidate(trTrim(exportExcelForm.getValue("maxRow")))) {
                                                 ExportToFile.downloadExcelFromRestUrl(listgrid, restUrl, parseInt(trTrim(exportExcelForm.getValue("startRow")))-1, parseInt(trTrim(exportExcelForm.getValue("maxRow"))), parentListGrid, titr, pageName, Object.keys(criteria).map(function(key) {return {'name':key, 'value':criteria[key]};}), exceptColumn);
@@ -2313,6 +2325,13 @@
                                     createTab(this.title, "<spring:url value="web/evaluationStaticalReport"/>");
                                 }
                             },
+
+                            {
+                                title:  "<spring:message code="class.reaction.evaluation.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/reactionEvaluationReport"/>");
+                                }
+                            },
 <%--                            </sec:authorize>--%>
                         ]
                 },
@@ -3219,42 +3238,45 @@
         defaultTimeout: 90000,
         willHandleError: true,
         handleError: function (response, request) {
-            let userErrorMessage = "<spring:message code="msg.error.connecting.to.server"/>";
-            if (JSON.parse(response.httpResponseText).message !== undefined && JSON.parse(response.httpResponseText).message !== "No message available" && JSON.parse(response.httpResponseText).message.length > 0) {
-                userErrorMessage = JSON.parse(response.httpResponseText).message;
-            }else if (JSON.parse(response.httpResponseText).message !== undefined && (JSON.parse(response.httpResponseText).status == 404 ||JSON.parse(response.httpResponseText).status == 500 || JSON.parse(response.httpResponseText).status == 400)) {
+            if(generalGetResp(response)){
+                let userErrorMessage = "<spring:message code="msg.error.connecting.to.server"/>";
+                if (JSON.parse(response.httpResponseText).message !== undefined && JSON.parse(response.httpResponseText).message !== "No message available" && JSON.parse(response.httpResponseText).message.length > 0) {
+                    userErrorMessage = JSON.parse(response.httpResponseText).message;
+                }else if (JSON.parse(response.httpResponseText).message !== undefined && (JSON.parse(response.httpResponseText).status == 404 ||JSON.parse(response.httpResponseText).status == 500 || JSON.parse(response.httpResponseText).status == 400)) {
 
-                if(JSON.parse(response.httpResponseText).path.indexOf("isomorphic/IDACall")==-1){
+                    if(JSON.parse(response.httpResponseText).path.indexOf("isomorphic/IDACall")==-1){
 
-                    /*if(JSON.parse(response.httpResponseText).status == 400){
-                        userErrorMessage = "خطا در ارسال اطلاعات";
-                    }else */if(JSON.parse(response.httpResponseText).status == 404){
-                        userErrorMessage = "خطا در ارسال اطلاعات";
-                    }/*else if(JSON.parse(response.httpResponseText).status == 500){
+                        /*if(JSON.parse(response.httpResponseText).status == 400){
+                            userErrorMessage = "خطا در ارسال اطلاعات";
+                        }else */if(JSON.parse(response.httpResponseText).status == 404){
+                            userErrorMessage = "خطا در ارسال اطلاعات";
+                        }/*else if(JSON.parse(response.httpResponseText).status == 500){
                         userErrorMessage = "خطا در سرور";
                     }*/
 
-                    createDialog("warning", userErrorMessage, "اخطار");
-                    wait.close();
+                        createDialog("warning", userErrorMessage, "اخطار");
+                        wait.close();
+                    }
+                    return;
+                } else if (JSON.parse(response.httpResponseText).errors[0].message !== undefined && JSON.parse(response.httpResponseText).errors[0].message.length > 0) {
+                    userErrorMessage = JSON.parse(response.httpResponseText).errors[0].message;
                 }
-                return;
-            } else if (JSON.parse(response.httpResponseText).errors[0].message !== undefined && JSON.parse(response.httpResponseText).errors[0].message.length > 0) {
-                userErrorMessage = JSON.parse(response.httpResponseText).errors[0].message;
+                wait.close();
+                createDialog("warning", userErrorMessage, "اخطار");
+
+
+                <%--if (JSON.parse(response.httpResponseText).message !== "No message available" && response.httpResponseText.length > 0) {--%>
+                <%--let userErrorMessage = "<spring:message code="exception.un-managed"/>";--%>
+                <%--if(JSON.parse(response.httpResponseText).message.length > 0)--%>
+                <%--userErrorMessage = JSON.parse(response.httpResponseText).message;--%>
+                <%--else if(JSON.parse(response.httpResponseText).errors[0].message.length > 0 && response.httpResponseCode === 403)--%>
+                <%--userErrorMessage = JSON.parse(response.httpResponseText).errors[0].message;--%>
+
+                <%--createDialog("info", userErrorMessage);--%>
+                <%--} else--%>
+                <%--createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>");--%>
             }
-            wait.close();
-            createDialog("warning", userErrorMessage, "اخطار");
 
-
-            <%--if (JSON.parse(response.httpResponseText).message !== "No message available" && response.httpResponseText.length > 0) {--%>
-            <%--let userErrorMessage = "<spring:message code="exception.un-managed"/>";--%>
-            <%--if(JSON.parse(response.httpResponseText).message.length > 0)--%>
-            <%--userErrorMessage = JSON.parse(response.httpResponseText).message;--%>
-            <%--else if(JSON.parse(response.httpResponseText).errors[0].message.length > 0 && response.httpResponseCode === 403)--%>
-            <%--userErrorMessage = JSON.parse(response.httpResponseText).errors[0].message;--%>
-
-            <%--createDialog("info", userErrorMessage);--%>
-            <%--} else--%>
-            <%--createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>");--%>
         }
     });
 

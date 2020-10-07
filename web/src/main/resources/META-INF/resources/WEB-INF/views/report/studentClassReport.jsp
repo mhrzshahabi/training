@@ -1,44 +1,26 @@
-<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%
-    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-%>
-
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 // <script>
 
-    var selectedPerson_StudentClass = null;
-    var printUrl_StudentClass = "<spring:url value="/web/print/class-student/"/>";
+    $(document).ready(()=>{
+        setTimeout(()=>{
+        $("input[name='personnelNo']").attr("disabled","disabled");
+        $("input[name='courseCode']").attr("disabled","disabled");
+        $("input[name='postGrade']").attr("disabled","disabled");
+    },0)}
+    );
 
-    var RestDataSource_Course_JspStudentClass = isc.TrDS.create({
-        fields: [
-            {name: "classStudentId", primaryKey: true, hidden: true},
-            {name: "studentPersonnelNo2", title:"<spring:message code='personnel.no.6.digits'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentNationalCode", title:"<spring:message code='national.code'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentFirstName", title:"<spring:message code='firstName'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentLastName", title:"<spring:message code='lastName'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentCcpUnit", title:"<spring:message code='unit'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentCcpSection", title:"<spring:message code='section'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentCcpAssistant", title:"<spring:message code='assistance'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentCcpArea", title:"<spring:message code='area'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentPostCode", title:"<spring:message code='post.code'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "studentPostTitle", title:"<spring:message code='post.title'/>", filterOperator: "iContains"},
-            {name: "courseCode", title:"<spring:message code='corse_code'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "termCode", title:"<spring:message code='term.code'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "courseTitleFa", title:"<spring:message code='course'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "classStartDate", title:"<spring:message code="start.date"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "classStudentScore", title:"<spring:message code="score"/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "studentComplexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains"},
-            {name: "studentCcpAffairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains"},
-            {name: "studentCompanyName", title: "<spring:message code="company"/>", filterOperator: "iContains"},
-            {name: "classStudentScoresState", title:"<spring:message code="score.state"/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "classEndDate", filterOperator: "greaterOrEqual", autoFitWidth: true},
-            {name: "classHDuration", title:"<spring:message code="duration"/>", autoFitWidth: true, filterOperator: "equals"},
-        ],
-        fetchDataURL: studentClassReportUrl
-    });
-    var ScoresStateDS_SCRV = isc.TrDS.create({
+    var startDate1Check_JspStaticalStudentClassReport = true;
+    var startDate2Check_JspStaticalStudentClassReport = true;
+    var startDateCheck_Order_JspStaticalStudentClassReport = true;
+    var endDate1Check_JspStaticalStudentClassReport = true;
+    var endDate2Check_JspStaticalStudentClassReport = true;
+    var endDateCheck_Order_JspStaticalStudentClassReport = true;
+
+    //----------------------------------------------------Rest DataSource-----------------------------------------------
+    ScoresStateDS_SCRV = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
@@ -48,42 +30,71 @@
         fetchDataURL: parameterUrl + "/iscList/StudentScoreState"
     });
 
-    var CompanyDS_SCRV = isc.TrDS.create({
+    RestDataSource_JspStudentClassPersonnel = isc.TrDS.create({
         fields: [
-            {name: "value", title: "<spring:message code="company"/>", filterOperator: "iContains", autoFitWidth: true, primaryKey:true},
+            {name: "classStudentId", primaryKey: true, hidden: true},
+            {name: "studentPersonnelNo2", title:"<spring:message code='personnel.no.6.digits'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentNationalCode", title:"<spring:message code='national.code'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentFirstName", title:"<spring:message code='firstName'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentLastName", title:"<spring:message code='lastName'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentCcpAffairs", title:"<spring:message code='affairs'/>", filterOperator: "iContains", autoFitWidth: true},
+	        {name: "studentCcpUnit", title:"<spring:message code='unit'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentPostCode", title:"<spring:message code='post.code'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "studentPostTitle", title:"<spring:message code='post.title'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "courseCode", title:"<spring:message code='corse_code'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "courseTitleFa", title:"<spring:message code='course'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classHDuration", title:"<spring:message code="duration"/>", autoFitWidth: true, filterOperator: "equals"},
+            {name: "classStartDate", title:"<spring:message code="start.date"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classEndDate",title:"<spring:message code="end.date"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classStudentScore", title:"<spring:message code="score"/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "classStudentScoresState", title:"<spring:message code="score.state"/>", filterOperator: "equals", autoFitWidth: true,displayField: "title", valueField: "id",optionDataSource: ScoresStateDS_SCRV,},
         ],
-        cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=companyName"
+        fetchDataURL: studentClassReportUrl
     });
-    var AreaDS_SCRV = isc.TrDS.create({
+
+    PersonnelDS_PTSR_DF = isc.TrDS.create({
         fields: [
-            {name: "value", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "postGradeTitle", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
         ],
-        cacheAllData: true,
-        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpArea"
+        fetchDataURL: personnelUrl + "/iscList",
+        implicitCriteria: {
+            _constructor:"AdvancedCriteria",
+            operator:"and",
+            criteria:[{fieldName: "deleted", operator: "equals", value: 0}]
+        },
     });
-    var ComplexDS_SCRV = isc.TrDS.create({
+
+    RestDataSource_Class_JspStudentClassPersonnel = isc.TrDS.create({
+        ID: "classDS",
         fields: [
-            {name: "value", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "id", primaryKey: true},
+            {name: "titleClass"},
+            {name: "code"},
+            {name: "course.titleFa"}
         ],
-        cacheAllData: true,
-        fetchDataURL: departmentUrl + "/all-field-values?fieldName=complexTitle"
+        fetchDataURL: classUrl + "info-tuple-list"
     });
-    var AssistantDS_SCRV = isc.TrDS.create({
-        fields: [
-            {name: "value", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
-        ],
-        cacheAllData: true,
-        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAssistant"
+
+    RestDataSource_Category_JspStudentClassReport = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: categoryUrl + "spec-list"
     });
-    var AffairsDS_SCRV = isc.TrDS.create({
-        fields: [
-            {name: "value", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
-        ],
-        cacheAllData: true,
-        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAffairs"
-    });
-    var CourseDS_SCRV = isc.TrDS.create({
+
+    RestDataSource_Course_JspStudentClassReport = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "code", title: "<spring:message code="corse_code"/>"},
@@ -91,101 +102,175 @@
         ],
         fetchDataURL: courseUrl + "spec-list"
     });
-    var UnitDS_SCRV = isc.TrDS.create({
+
+    CompanyDS_PresenceReport = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="company"/>", filterOperator: "iContains", autoFitWidth: true, primaryKey:true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: personnelUrl + "/all-field-values?fieldName=companyName"
+    });
+
+    ComplexDS_PresenceReport = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=complexTitle"
+    });
+
+    AssistantDS_PresenceReport = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAssistant"
+    });
+
+    AffairsDS_PresenceReport = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAffairs"
+    });
+
+    SectionDS_PresenceReport = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="term.code"/>", filterOperator: "iContains", autoFitWidth: true, primaryKey: true},
+        ],
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpSection"
+    });
+
+    UnitDS_PresenceReport = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         cacheAllData: true,
         fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpUnit"
     });
-    var TermDS_SCRV = isc.TrDS.create({
+
+    var RestDataSource_PostGradeLvl_PCNR = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>",filterOnKeypress: true, filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap},
+            {
+                name: "code",
+                title: "<spring:message code="post.grade.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
+            {
+                name: "enabled",
+                title: "<spring:message code="active.status"/>",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both",
+                valueMap:{
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+            },
+        ],
+        fetchDataURL: viewPostGradeUrl + "/iscList"
+    });
+
+    RestDataSource_Term_JspStudentClassReport = isc.TrDS.create({
         fields: [
             {name: "value", title: "<spring:message code="term.code"/>", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach:true},
         ],
-        // cacheAllData: true,
         fetchDataURL: termUrl + "spec-list"
     });
-    var YearDS_SCRV = isc.TrDS.create({
-        fields: [
-            {name: "year", title: "<spring:message code="year"/>", filterOperator: "iContains", autoFitWidth: true},
+    //----------------------------------------------------ListGrid Result-----------------------------------------------
+    var ListGrid_JspStudentClassPersonnel = isc.TrLG.create({
+        width: "100%",
+        height: "100%",
+        dataSource : RestDataSource_JspStudentClassPersonnel,
+        cellHeight: 43,
+        initialSort: [
+            {property: "classStudentId", direction: "ascending",primarySort: true}
         ],
-        // cacheAllData: true,
-        fetchDataURL: termUrl + "yearList"
-    });
-    var SectionDS_SCRV = isc.TrDS.create({
-        fields: [
-            {name: "value", title: "<spring:message code="term.code"/>", filterOperator: "iContains", autoFitWidth: true, primaryKey: true},
-        ],
-        // cacheAllData: true,
-        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpSection"
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        selectionType: "single",
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
+        border: "1px solid #4a4444",
+        margin: 5
     });
 
-    var DynamicForm_StudentClass = isc.DynamicForm.create({
-        numCols: 11,
+    IButton_JspStudentClassPersonnel_FullExcel = isc.IButtonSave.create({
+        top: 260,
+        title: "گزارش اکسل",
+        width: 300,
+        click: function () {
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_JspStudentClassPersonnel, studentClassReportUrl, 0, null, '',  "گزارش دوره های گذرانده پرسنل", ListGrid_JspStudentClassPersonnel.data.getCriteria(), null);
+        }
+    });
+
+    var HLayOut_CriteriaForm_JspStudentClassPersonnel_Details = isc.TrHLayoutButtons.create({
+        showEdges: false,
+        edgeImage: "",
+        width: "100%",
+        height: "100%",
+        alignLayout: "center",
+        members: [
+            ListGrid_JspStudentClassPersonnel
+        ]
+    });
+
+    var HLayOut_Confirm_JspStudentClassPersonnel_StudentClassExcel = isc.TrHLayoutButtons.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        width: "70%",
+        height: "10%",
+        alignLayout: "center",
         padding: 10,
-        readOnlyDisplay: "readOnly",
-        margin:0,
-        // cellPadding: 10,
-        titleAlign:"left",
-        wrapItemTitles: true,
-        colWidths:[50,150,50,150,50,150,50,150, 50, 100, 50],
-        // sectionVisibilityMode: "mutex",
+        members: [
+            IButton_JspStudentClassPersonnel_FullExcel
+        ]
+    });
+
+    var Window_JspStudentClassPersonnel = isc.Window.create({
+        placement: "fillScreen",
+        title: "گزارش دوره های گذرانده پرسنل",
+        canDragReposition: true,
+        align: "center",
+        autoDraw: false,
+        border: "1px solid gray",
+        minWidth: 1024,
+        items: [
+            isc.TrVLayout.create({
+                members: [
+                    HLayOut_CriteriaForm_JspStudentClassPersonnel_Details,HLayOut_Confirm_JspStudentClassPersonnel_StudentClassExcel
+                ]
+            })
+        ]
+    });
+    //----------------------------------------------------Criteria Form------------------------------------------------
+    var DynamicForm_CriteriaForm_JspStudentClassPersonnel = isc.DynamicForm.create({
+        align: "right",
+        titleWidth: 0,
+        titleAlign: "center",
+        showInlineErrors: true,
+        showErrorText: false,
+        numCols: 6,
+        colWidths: ["5%", "25%", "5%", "25%","5%","25%"],
         fields: [
-            // {
-            //     defaultValue:"جستجو فرد", type:"section", sectionExpanded:true,canTabToHeader:true,
-            //     itemIds: ["studentPersonnelNo2","studentPersonnelNo","studentNationalCode","searchBtn","studentFirstName","studentLastName","clearBtn"],
-            //     width:"80%"
-            // },
             {
-                name: "studentPersonnelNo2",
-                title:"پرسنلی 6رقمی",
-                <%--title:"<spring:message code="personnel.no.6.digits"/>",--%>
-                textAlign: "center",
-                width: "*",
-                keyPressFilter: "[0-9, ]",
-                operator: "inSet",
-                editorType: "TextItem",
-                length:10000,
-                changed (form, item, value){
-                    let res = value.split(" ");
-                    item.setValue(res.toString())
-                }
+                name: "personnelNo",
+                title: "شماره پرسنلي",
+                hint: "شماره پرسنلي را انتخاب نمایید",
+                showHintInField: true,
+                icons: [{
+                    src: "[SKIN]/pickers/search_picker.png",
+                    click: function () {
+                        Window_SelectPeople_JspStudentClass.show();
+                    }}],
+                keyPressFilter: "[A-Z|0-9|,-]"
             },
-            {
-                name: "studentPersonnelNo",
-                title:"<spring:message code="personnel.no"/> ",
-                textAlign: "center",
-                width: "*"
-            },
-            {
-                name: "studentNationalCode",
-                title:"<spring:message code="national.code"/> ",
-                textAlign: "center",
-                width: "*",
-            },
-            {
-                name: "studentFirstName",
-                title:"<spring:message code="firstName"/> ",
-                textAlign: "center",
-                width: "*"
-            },
-            {
-                name: "studentLastName",
-                colSpan: 2,
-                title:"<spring:message code="lastName"/> ",
-                textAlign: "center",
-                width: "*"
-            },
-            // {
-            //     type: "SpacerItem"
-            // },
-            // {
-            //     type: "SpacerItem"
-            // },
-            // {
-            //     defaultValue:"جستجو گروه", type:"section",canTabToHeader:true,
-            //     itemIds: ["classStudentScoresState","studentComplexTitle","studentCcpAffairs","studentCompanyName","courseTitle","termTitleFa"], width:"80%"
-            // },
             {
                 name: "classStudentScoresState",
                 title: "<spring:message code="score.state"/>",
@@ -205,487 +290,769 @@
                 displayField: "title",
             },
             {
-                name: "studentComplexTitle",
-                title: "<spring:message code="complex"/>",
-                optionDataSource: ComplexDS_SCRV,
-                type: "MultiComboBoxItem",
-                comboBoxWidth: 155,
-                valueField: "value",
-                displayField: "value",
+                name: "temp1",
+                title: "",
+                canEdit: false
             },
             {
-                name: "studentCompanyName",
+                name: "companyName",
                 title: "<spring:message code="company"/>",
-                type: "MultiComboBoxItem",
-                comboBoxWidth: 155,
                 valueField: "value",
                 displayField: "value",
-                optionDataSource: CompanyDS_SCRV,
+                optionDataSource: CompanyDS_PresenceReport,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
-                name: "studentCcpArea",
-                title: "<spring:message code="area"/>",
-                type: "MultiComboBoxItem",
-                comboBoxWidth: 155,
+                name: "complexTitle",
+                title: "<spring:message code="complex"/>",
+                optionDataSource: ComplexDS_PresenceReport,
                 valueField: "value",
                 displayField: "value",
-                optionDataSource: AreaDS_SCRV,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
-                name: "studentCcpAssistant",
+                name: "assistant",
                 title: "<spring:message code="assistance"/>",
-                type: "MultiComboBoxItem",
-                comboBoxWidth: 155,
                 valueField: "value",
                 displayField: "value",
-                optionDataSource: AssistantDS_SCRV,
+                optionDataSource: AssistantDS_PresenceReport,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
-                name: "studentCcpSection",
-                title: "<spring:message code="section.cost"/>",
-                type: "MultiComboBoxItem",
-                comboBoxWidth: 155,
-                valueField: "value",
-                displayField: "value",
-                optionDataSource: SectionDS_SCRV,
-            },
-            {
-                name: "studentCcpUnit",
-                title: "<spring:message code="unitName"/>",
-                optionDataSource: UnitDS_SCRV,
-                type: "MultiComboBoxItem",
-                comboBoxWidth: 155,
-                valueField: "value",
-                displayField: "value",
-            },
-            {
-                name: "studentCcpAffairs",
+                name: "affairs",
                 title: "<spring:message code="affairs"/>",
-                optionDataSource: AffairsDS_SCRV,
-                type: "MultiComboBoxItem",
-                comboBoxWidth: 155,
+                optionDataSource: AffairsDS_PresenceReport,
                 valueField: "value",
                 displayField: "value",
-                // comboBoxWidth: 155,
-                // layoutStyle: "verticalReverse",
-                // comboBoxProperties: {
-                //     pickListWidth: 300,
-                // },
-                // pickListProperties: {
-                //     showFilterEditor: false,
-                //     showClippedValuesOnHover: true,
-                // },
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
+            },
+            {
+                name: "unit",
+                title: "<spring:message code="unit"/>",
+                optionDataSource: UnitDS_PresenceReport,
+                valueField: "value",
+                displayField: "value",
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
+            },
+            {
+                name: "section",
+                title: "<spring:message code="section.cost"/>",
+                valueField: "value",
+                displayField: "value",
+                optionDataSource: SectionDS_PresenceReport,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
             },
             {
                 name: "courseCode",
-                title: "<spring:message code="course"/>",
-                optionDataSource: CourseDS_SCRV,
-                valueField: "code",
-                displayField: "code",
-                type: "MultiComboBoxItem",
-                textMatchStyle: "substring",
-                comboBoxWidth: 155,
-                // layoutStyle: "horizontal",
-                comboBoxProperties: {
-                    pickListWidth: 400,
-                    useClientFiltering: true,
-                },
+                title: "کد دوره",
+                hint: "کد دوره را وارد نمایید",
+                showHintInField: true,
+                icons: [{
+                    src: "[SKIN]/pickers/search_picker.png",
+                    click: function () {
+                        Window_SelectCourses_JspStudentClassReport.show();
+                    }
+                }],
+                keyPressFilter: "[A-Z|0-9|;-]"
             },
             {
-                name: "termTitleFa",
+                name: "termId",
                 title: "<spring:message code="term"/>",
-                // filterFields: ["value", "value"],
-                // pickListWidth: 100,
                 type: "SelectItem",
-                // textMatchStyle: "substring",
                 pickListProperties: {
                     showFilterEditor: false,
                     showClippedValuesOnHover: true,
                 },
-                colSpan: 2,
                 multiple: true,
-                valueField: "titleFa",
+                valueField: "id",
                 displayField: "titleFa",
                 initialSort: [
                     {property: "titleFa", direction: "descending", primarySort: true}
                 ],
-                optionDataSource: TermDS_SCRV,
+                optionDataSource: RestDataSource_Term_JspStudentClassReport,
             },
-            <%--{--%>
-            <%--name: "year",--%>
-            <%--title: "<spring:message code="year"/>",--%>
-            <%--// filterFields: ["value", "value"],--%>
-            <%--// pickListWidth: 100,--%>
-            <%--type: "SelectItem",--%>
-            <%--criteriaField: "termCode",--%>
-            <%--operator: "contains",--%>
-            <%--// textMatchStyle: "substring",--%>
-            <%--pickListProperties: {--%>
-            <%--showFilterEditor: false,--%>
-            <%--showClippedValuesOnHover: true,--%>
-            <%--},--%>
-            <%--multiple: true,--%>
-            <%--valueField: "year",--%>
-            <%--displayField: "year",--%>
-            <%--optionDataSource: YearDS_SCRV,--%>
-            <%--},--%>
-            // { name: "independence", editorType: "DateRangeItem", showTitle: false, allowRelativeDates: true },
             {
-                name: "fromDate",
-                titleColSpan: 3,
+                name: "temp1",
+                title: "",
+                canEdit: false
+            },
+            {
+                name: "startDate1",
+                ID: "startDate1_JspStaticalStudentClassReport",
                 title: "تاریخ شروع کلاس: از",
-                ID: "startDate_jspStudentClassReport",
-                hint: "--/--/----",
-                criteriaField: "classStartDate",
-                operator: "greaterOrEqual",
+                hint: todayDate,
                 keyPressFilter: "[0-9/]",
+                length: 10,
                 showHintInField: true,
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
-                    click: function (form) {
+                    click: function () {
                         closeCalendarWindow();
-                        displayDatePicker('startDate_jspStudentClassReport', this, 'ymd', '/');
+                        displayDatePicker('startDate1_JspStaticalStudentClassReport', this, 'ymd', '/');
                     }
                 }],
-                textAlign: "center",
-                // colSpan: 2,
-                changed: function (form, item, value) {
+                editorExit: function (form, item, value) {
+                    if(value == undefined || value ==null){
+                        form.clearFieldErrors("startDate2","تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد" ,true);
+                        form.clearFieldErrors("startDate1", true);
+                        startDateCheck_Order_JspStaticalStudentClassReport = true;
+                        startDate1Check_JspStaticalStudentClassReport = true;
+                        return;
+                    }
+
                     var dateCheck;
-                    // var endDate = form.getValue("endDate");
+                    var endDate = form.getValue("startDate2");
                     dateCheck = checkDate(value);
                     if (dateCheck === false) {
-                        form.addFieldErrors("fromDate", "<spring:message code='msg.correct.date'/>", true);
-                    } else {
-                        form.clearFieldErrors("fromDate", true);
+                        startDate1Check_JspStaticalStudentClassReport = false;
+                        startDateCheck_Order_JspStaticalStudentClassReport = true;
+                        form.clearFieldErrors("startDate1", true);
+                        form.addFieldErrors("startDate1", "<spring:message code='msg.correct.date'/>", true);
+                    } else if (endDate < value) {
+                        startDateCheck_Order_JspStaticalStudentClassReport = false;
+                        startDate1Check_JspStaticalStudentClassReport = true;
+                        form.clearFieldErrors("startDate1", true);
+                        form.addFieldErrors("startDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                    }
+                    else {
+                        startDate1Check_JspStaticalStudentClassReport = true;
+                        startDateCheck_Order_JspStaticalStudentClassReport = true;
+                        form.clearFieldErrors("startDate1", true);
                     }
                 }
             },
             {
-                name: "toDate",
-                titleColSpan: 1,
+                name: "startDate2",
+                ID: "startDate2_JspStaticalStudentClassReport",
                 title: "تا",
-                ID: "endDate_jspStudentClassReport",
-                hint: "--/--/----",
-                criteriaField: "classStartDate",
-                operator: "lessOrEqual",
+                hint: todayDate,
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
+                length: 10,
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('endDate_jspStudentClassReport', this, 'ymd', '/');
+                        displayDatePicker('startDate2_JspStaticalStudentClassReport', this, 'ymd', '/');
                     }
                 }],
-                textAlign: "center",
-                // colSpan: 2,
-                changed: function (form, item, value) {
-                    let dateCheck;
+                editorExit: function (form, item, value) {
+                    if(value == undefined || value ==null){
+                        form.clearFieldErrors("startDate1","تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد" ,true);
+                        form.clearFieldErrors("startDate2", true);
+                        startDateCheck_Order_JspStaticalStudentClassReport = true;
+                        startDate2Check_JspStaticalStudentClassReport = true;
+                        return;
+                    }
+
+                    var dateCheck;
+                    dateCheck = checkDate(value);
+                    var startDate = form.getValue("startDate1");
+                    if (dateCheck === false) {
+                        startDate2Check_JspStaticalStudentClassReport = false;
+                        startDateCheck_Order_JspStaticalStudentClassReport = true;
+                        form.clearFieldErrors("startDate2", true);
+                        form.addFieldErrors("startDate2", "<spring:message code='msg.correct.date'/>", true);
+                    } else if (startDate != undefined && value < startDate) {
+                        form.clearFieldErrors("startDate2", true);
+                        form.addFieldErrors("startDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                        startDate2Check_JspStaticalStudentClassReport = true;
+                        startDateCheck_Order_JspStaticalStudentClassReport = false;
+                    } else {
+                        form.clearFieldErrors("startDate2", true);
+                        startDate2Check_JspStaticalStudentClassReport = true;
+                        startDateCheck_Order_JspStaticalStudentClassReport = true;
+                    }
+                }
+            },
+            {
+                name: "temp2",
+                title: "",
+                canEdit: false
+            },
+            {
+                name: "endDate1",
+                ID: "endDate1_JspStaticalUnitReport",
+                title: "تاریخ پایان کلاس: از",
+                hint: todayDate,
+                keyPressFilter: "[0-9/]",
+                length: 10,
+                showHintInField: true,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('endDate1_JspStaticalUnitReport', this, 'ymd', '/');
+                    }
+                }],
+                editorExit: function (form, item, value) {
+                    if(value == undefined || value ==null){
+                        form.clearFieldErrors("endDate2","تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد" ,true);
+                        form.clearFieldErrors("endDate1", true);
+                        endDateCheck_Order_JspStaticalUnitReport = true;
+                        endDate1Check_JspStaticalUnitReport = true;
+                        return;
+                    }
+
+                    var dateCheck;
+                    var endDate = form.getValue("endDate2");
                     dateCheck = checkDate(value);
                     if (dateCheck === false) {
-                        form.clearFieldErrors("toDate", true);
-                        form.addFieldErrors("toDate", "<spring:message code='msg.correct.date'/>", true);
+                        endDate1Check_JspStaticalUnitReport = false;
+                        endDateCheck_Order_JspStaticalUnitReport = true;
+                        form.clearFieldErrors("endDate1", true);
+                        form.addFieldErrors("endDate1", "<spring:message code='msg.correct.date'/>", true);
+                    } else if (endDate < value) {
+                        endDateCheck_Order_JspStaticalUnitReport = false;
+                        endDate1Check_JspStaticalUnitReport = true;
+                        form.clearFieldErrors("endDate1", true);
+                        form.addFieldErrors("endDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
                     } else {
-                        form.clearFieldErrors("toDate", true);
+                        endDate1Check_JspStaticalUnitReport = true;
+                        endDateCheck_Order_JspStaticalUnitReport = true;
+                        form.clearFieldErrors("endDate1", true);
                     }
                 }
             },
-            {type: "SpacerItem"},
             {
-                name: "searchBtn",
-                ID: "searchBtnJspStudentClass",
-                <%--title: "<spring:message code="report"/>",--%>
-                title: "<spring:message code="reporting"/>",
-                type: "ButtonItem",
-                colSpan: 1,
-                width:"*",
-                startRow:false,
-                endRow:false,
-                click (form) {
-                    let criteria = form.getValuesAsAdvancedCriteria();
-                    if(criteria === null || Object.keys(form.getValuesAsCriteria()).length === 0) {
-                        ListGrid_StudentClass_StudentClassJSP.setData([]);
-                        createDialog("info","فیلتری انتخاب نشده است.");
+                name: "endDate2",
+                ID: "endDate2_JspStaticalUnitReport",
+                title: "تا",
+                hint: todayDate,
+                keyPressFilter: "[0-9/]",
+                showHintInField: true,
+                length: 10,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function (form) {
+                        closeCalendarWindow();
+                        displayDatePicker('endDate2_JspStaticalUnitReport', this, 'ymd', '/');
                     }
-                    else{
-                        if(form.getValue("studentPersonnelNo2") != undefined){
-                            let cr = [];
-                            for (let i = 0; i < criteria.criteria.length; i++) {
-                                if(criteria.criteria[i]["fieldName"] != "studentPersonnelNo2"){
-                                    cr.push(criteria.criteria[i])
-                                }
-                            }
-                            cr.push({fieldName: "studentPersonnelNo2", operator: "inSet", value: form.getValue("studentPersonnelNo2").split(',').toArray()})
-                            criteria.criteria = cr;
-                        }
-                        ListGrid_StudentClass_StudentClassJSP.invalidateCache();
-                        RestDataSource_Course_JspStudentClass.implicitCriteria = criteria;
-                        ListGrid_StudentClass_StudentClassJSP.fetchData(criteria)
+                }],
+                editorExit: function (form, item, value) {
+                    if(value == undefined || value ==null){
+                        form.clearFieldErrors("endDate1","تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد" ,true);
+                        form.clearFieldErrors("endDate2", true);
+                        endDateCheck_Order_JspStaticalUnitReport = true;
+                        endDate2Check_JspStaticalUnitReport = true;
+                        return;
+                    }
+
+                    var dateCheck;
+                    dateCheck = checkDate(value);
+                    var startDate = form.getValue("endDate1");
+                    if (dateCheck === false) {
+                        endDate2Check_JspStaticalUnitReport = false;
+                        endDateCheck_Order_JspStaticalUnitReport = true;
+                        form.clearFieldErrors("endDate2", true);
+                        form.addFieldErrors("endDate2", "<spring:message code='msg.correct.date'/>", true);
+                    } else if (startDate != undefined && value < startDate) {
+                        form.clearFieldErrors("endDate2", true);
+                        form.addFieldErrors("endDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                        endDate2Check_JspStaticalUnitReport = true;
+                        endDateCheck_Order_JspStaticalUnitReport = false;
+                    } else {
+                        form.clearFieldErrors("endDate2", true);
+                        endDate2Check_JspStaticalUnitReport = true;
+                        endDateCheck_Order_JspStaticalUnitReport = true;
                     }
                 }
             },
-            // {type:"SpacerItem"},
-            {
-                name: "clearBtn",
-                title: "<spring:message code="clear"/>",
-                type: "ButtonItem",
-                width:"*",
-                colSpan: 2,
-                startRow:false,
-                endRow:false,
-                click (form, item) {
-                    form.clearValues();
-                    ListGrid_StudentClass_StudentClassJSP.setData([]);
-                }
-            }
         ],
-        itemChanged (item, newValue){
-            ListGrid_StudentClass_StudentClassJSP.setData([]);
-        },
-        // itemKeyPress: function(item, keyName) {
-        //     if(keyName == "Enter"){
-        //         // searchBtnJspStudentClass.click(DynamicForm_StudentClass);
-        //     }
-        // }
     });
 
-    DynamicForm_StudentClass.getField("courseCode").comboBox.pickListFields = [
-        {name: "code", autoFitWidth: true},
-        {name: "titleFa"},
-    ];
-    DynamicForm_StudentClass.getField("courseCode").comboBox.setHint("دوره های مورد نظر را انتخاب کنید");
-    DynamicForm_StudentClass.getField("courseCode").comboBox.filterFields = ["titleFa", "code"];
-    DynamicForm_StudentClass.getField("courseCode").comboBox.textMatchStyle="substring";
-    DynamicForm_StudentClass.getField("courseCode").comboBox.pickListProperties= {
-        showFilterEditor: false,
-        pickListWidth: 400,
-        showClippedValuesOnHover: true,
-    };
-    DynamicForm_StudentClass.getField("studentCcpAffairs").comboBox.filterFields = ["value", "value"];
-    DynamicForm_StudentClass.getField("studentCcpAffairs").comboBox.textMatchStyle="substring";
-    DynamicForm_StudentClass.getField("studentCcpAffairs").comboBox.setHint("امورهای مورد نظر را انتخاب کنید");
-    DynamicForm_StudentClass.getField("studentCcpAffairs").comboBox.pickListProperties= {
-        showFilterEditor: false,
-        pickListWidth: 400,
-        showClippedValuesOnHover: true,
-    };
-    DynamicForm_StudentClass.getField("studentCcpUnit").comboBox.filterFields = ["value", "value"];
-    DynamicForm_StudentClass.getField("studentCcpUnit").comboBox.textMatchStyle="substring";
-    DynamicForm_StudentClass.getField("studentCcpUnit").comboBox.setHint("واحدهای مورد نظر را انتخاب کنید");
-    DynamicForm_StudentClass.getField("studentCcpUnit").comboBox.pickListProperties= {
-        showFilterEditor: false,
-        pickListWidth: 400,
-        showClippedValuesOnHover: true,
-    };
-    DynamicForm_StudentClass.getField("studentCcpSection").comboBox.filterFields = ["value", "value"];
-    DynamicForm_StudentClass.getField("studentCcpSection").comboBox.textMatchStyle="substring";
-    DynamicForm_StudentClass.getField("studentCcpSection").comboBox.setHint("مرکز هزینه های مورد نظر را انتخاب کنید");
-    DynamicForm_StudentClass.getField("studentCcpSection").comboBox.pickListProperties= {
-        showFilterEditor: false,
-        pickListWidth: 400,
-        showClippedValuesOnHover: true,
-    };
-    DynamicForm_StudentClass.getField("studentCcpAssistant").comboBox.filterFields = ["value", "value"];
-    DynamicForm_StudentClass.getField("studentCcpAssistant").comboBox.textMatchStyle="substring";
-    DynamicForm_StudentClass.getField("studentCcpAssistant").comboBox.setHint("معاونت های مورد نظر را انتخاب کنید");
-    DynamicForm_StudentClass.getField("studentCcpAssistant").comboBox.pickListProperties= {
-        showFilterEditor: false,
-        showClippedValuesOnHover: true,
-    };
-    DynamicForm_StudentClass.getField("studentCcpArea").comboBox.filterFields = ["value", "value"];
-    DynamicForm_StudentClass.getField("studentCcpArea").comboBox.textMatchStyle="substring";
-    DynamicForm_StudentClass.getField("studentCcpArea").comboBox.pickListProperties= {
-        showFilterEditor: false,
-        showClippedValuesOnHover: true,
-    };
-    DynamicForm_StudentClass.getField("studentCompanyName").comboBox.filterFields = ["value", "value"];
-    DynamicForm_StudentClass.getField("studentCompanyName").comboBox.textMatchStyle="substring";
-    DynamicForm_StudentClass.getField("studentCompanyName").comboBox.pickListProperties= {
-        showFilterEditor: false,
-        showClippedValuesOnHover: true,
-    };
-    DynamicForm_StudentClass.getField("studentComplexTitle").comboBox.filterFields = ["value", "value"];
-    DynamicForm_StudentClass.getField("studentComplexTitle").comboBox.textMatchStyle="substring";
-    DynamicForm_StudentClass.getField("studentComplexTitle").comboBox.pickListProperties= {
-        showFilterEditor: false,
-        showClippedValuesOnHover: true,
-    };
+    var initialLayoutStyle = "vertical";
 
-    var Menu_Courses_StudentClassJSP = isc.Menu.create({
-        data: [
+    var DynamicForm_SelectPeople_JspStudentClass = isc.DynamicForm.create({
+        align: "center",
+        titleWidth: 0,
+        titleAlign: "center",
+        width: 500,
+        height: 300,
+        fields: [
             {
-                title: "<spring:message code="global.form.print.pdf"/>",
-                click: function () {
-                    let params = {};
-                    params.complex = "مجتمع: " + (DynamicForm_StudentClass.getValue("studentComplexTitle")?DynamicForm_StudentClass.getValue("studentComplexTitle").toString():"-");
-                    params.company = "شرکت: " + (DynamicForm_StudentClass.getValue("studentCompanyName")?DynamicForm_StudentClass.getValue("studentCompanyName").toString():"-");
-                    params.area = "حوزه: " + (DynamicForm_StudentClass.getValue("studentCcpArea")?DynamicForm_StudentClass.getValue("studentCcpArea").toString():"-");
-                    params.assistant = "معاونت: " + (DynamicForm_StudentClass.getValue("studentCcpAssistant")?DynamicForm_StudentClass.getValue("studentCcpAssistant").toString():"-");
-                    params.section = "مرکز هزينه: " + (DynamicForm_StudentClass.getValue("studentCcpSection")?DynamicForm_StudentClass.getValue("studentCcpSection").toString():"-");
-                    params.unit = "نام واحد: " + (DynamicForm_StudentClass.getValue("studentCcpUnit")?DynamicForm_StudentClass.getValue("studentCcpUnit").toString():"-");
-                    params.affairs = "امور: " + (DynamicForm_StudentClass.getValue("studentCcpAffairs")?DynamicForm_StudentClass.getValue("studentCcpAffairs").toString():"-");
-                    params.term = "کد ترم: " + (DynamicForm_StudentClass.getValue("termTitleFa")?DynamicForm_StudentClass.getValue("termTitleFa").toString():"-");
-                    params.fromDate = "تاریخ شروع کلاس: از: " + (DynamicForm_StudentClass.getValue("fromDate")?DynamicForm_StudentClass.getValue("fromDate"):"-");
-                    params.toDate = "تا: " + (DynamicForm_StudentClass.getValue("toDate")?DynamicForm_StudentClass.getValue("toDate"):"-");
-                    printWithCriteria(DynamicForm_StudentClass.getValuesAsAdvancedCriteria(), params, "personnelCourses.jasper");
-                    // printToJasper(ListGrid_StudentClass_StudentClassJSP.getData().localData.toArray(), params, "personnelCourses.jasper");
-                }
-            },
-            {
-                title: "<spring:message code="global.form.print.excel"/>",
-                click: function () {
-                    // console.log(ListGrid_StudentClass_StudentClassJSP.getFields().subList(1,10));
-                    // exportToExcel(ListGrid_StudentClass_StudentClassJSP.getFields().subList(1,10) ,ListGrid_StudentClass_StudentClassJSP.getData().localData)
-                    ExportToFile.downloadExcelFromClient(ListGrid_StudentClass_StudentClassJSP,null,"","دوره های گذرانده پرسنل");
-                }
-            },
-            <%--{--%>
-            <%--title: "<spring:message code="global.form.print.html"/>",--%>
-            <%--click: function () {--%>
-            <%--printToJasper(ListGrid_StudentClass_StudentClassJSP.getData().localData.toArray(), params, "personnelCourses.jasper", "HTML");--%>
-            <%--}--%>
-            <%--}--%>
+                name: "people.code",
+                align: "center",
+                title: "",
+                editorType: "MultiComboBoxItem",
+                multiple: true,
+                defaultValue: null,
+                changeOnKeypress: true,
+                showHintInField: true,
+                displayField: "personnelNo",
+                comboBoxWidth: 500,
+                valueField: "personnelNo",
+                layoutStyle: initialLayoutStyle,
+                optionDataSource: PersonnelDS_PTSR_DF
+            }
         ]
     });
 
-    var ListGrid_StudentClass_StudentClassJSP = isc.TrLG.create({
-        ID: "StudentClassGrid",
-        dynamicTitle: true,
-        autoFetchData: false,
-        allowAdvancedCriteria: true,
-        contextMenu: Menu_Courses_StudentClassJSP,
-        dataSource: RestDataSource_Course_JspStudentClass,
-        // overflow: "scroll",
-        filterOnKeypress: false,
-        showFilterEditor: true,
+    DynamicForm_SelectPeople_JspStudentClass.getField("people.code").comboBox.setHint("پرسنل مورد نظر را انتخاب کنید");
+    DynamicForm_SelectPeople_JspStudentClass.getField("people.code").comboBox.pickListFields =
+            [
+                {name: "firstName", title: "نام", autoFitWidth:true, filterOperator: "iContains"},
+                {name: "lastName", title: "نام خانوادگي", autoFitWidth:true, filterOperator: "iContains"},
+                {name: "nationalCode", title: "کدملي", autoFitWidth:true, filterOperator: "iContains"},
+                {name: "personnelNo", title: "کد پرسنلي", autoFitWidth:true, filterOperator: "iContains"},
+                {name: "personnelNo2", title: "کد پرسنلي 6 رقمي",autoFitWidth:true, filterOperator: "iContains"},
+            ];
+    DynamicForm_SelectPeople_JspStudentClass.getField("people.code").comboBox.filterFields = ["firstName","lastName","nationalCode","personnelNo","personnelNo2"];
 
-        gridComponents: [DynamicForm_StudentClass,
-            isc.ToolStripButtonExcel.create({
-                margin:5,
-                click: function() {
-
-                    let criteria = DynamicForm_StudentClass.getValuesAsAdvancedCriteria();
-
-                    if(criteria != null && Object.keys(criteria).length != 0) {
-
-                        if(DynamicForm_StudentClass.getValue("studentPersonnelNo2") != undefined){
-                            let cr = [];
-                            for (let i = 0; i < criteria.criteria.length; i++) {
-                                if(criteria.criteria[i]["fieldName"] != "studentPersonnelNo2"){
-                                    cr.push(criteria.criteria[i])
-                                }
-                            }
-                            cr.push({fieldName: "studentPersonnelNo2", operator: "inSet", value: DynamicForm_StudentClass.getValue("studentPersonnelNo2").split(',').toArray()})
-                            criteria.criteria = cr;
-                        }
-                    }else{
-                        return ;
-                    }
-
-                    ExportToFile.downloadExcel(null, ListGrid_StudentClass_StudentClassJSP, 'studentClassReport', 0, null, '',  "دوره هاي گذراننده پرسنل", criteria, null);
-                }
-            }), "header", "filterEditor", "body"],
-        fields:[
-            {
-                name: "studentPersonnelNo2",
-            },
-            {name: "studentNationalCode",
-                keyPressFilter: "[0-9]"
-            },
-            {name: "studentFirstName"},
-            {name: "studentLastName"},
-            {name: "studentCcpAffairs", autoFitWidth: true},
-            {name: "studentCcpUnit"},
-            {name: "studentPostCode"},
-            {name: "studentPostTitle", filterOperator: "equals", autoFitWidth: true},
-            {name: "courseCode"},
-            {name: "courseTitleFa"},
-            {name: "classHDuration"},
-            {name: "classStartDate"},
-            {name: "classEndDate", title:"<spring:message code="end.date"/>", filterOperator: "equals", autoFitWidth: true},
-            {name: "classStudentScore"},
-            {
-                name: "classStudentScoresState",
-                optionDataSource: ScoresStateDS_SCRV,
-                // filterEditorProperties:{
-                //     pickListProperties: {
-                //         showFilterEditor: true,
-                //     },
-                // },
-                filterOnKeypress: true,
-                // filterEditorType : "TextItem",
-                displayField: "title",
-                valueField: "id",
-                // multiple: true
-            },
-        ]
-    });
-
-    var ToolStripButton_studentClassReport = isc.ToolStripButtonPrint.create({
-        <%--title: "<spring:message code='print'/>",--%>
+    IButton_ConfirmPeopleSelections_JspStudentClass = isc.IButtonSave.create({
+        top: 260,
+        title: "تائید",
+        width: 300,
         click: function () {
-            print_Training_File();
+            let criteriaDisplayValues = "";
+            let selectorDisplayValues = DynamicForm_SelectPeople_JspStudentClass.getItem("people.code").getValue();
+            if (DynamicForm_SelectPeople_JspStudentClass.getField("people.code").getValue() != undefined && DynamicForm_SelectPeople_JspStudentClass.getField("people.code").getValue() != "") {
+                criteriaDisplayValues = DynamicForm_SelectPeople_JspStudentClass.getField("people.code").getValue().join(",");
+                let ALength = criteriaDisplayValues.length;
+                let lastChar = criteriaDisplayValues.charAt(ALength - 1);
+                if (lastChar != ";")
+                    criteriaDisplayValues += ",";
+            }
+            if (selectorDisplayValues != undefined) {
+                for (let i = 0; i < selectorDisplayValues.size() - 1; i++) {
+                    criteriaDisplayValues += selectorDisplayValues [i] + ",";
+                }
+                criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
+            }
+
+            if (typeof criteriaDisplayValues != "undefined") {
+                let uniqueNames = [];
+
+                $.each(criteriaDisplayValues.split(","), function (i, el) {
+                    if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+                });
+                criteriaDisplayValues = uniqueNames.join(",");
+            }
+
+            criteriaDisplayValues = criteriaDisplayValues == "undefined" ? "" : criteriaDisplayValues;
+
+            DynamicForm_CriteriaForm_JspStudentClassPersonnel.getField("personnelNo").setValue(criteriaDisplayValues);
+            Window_SelectPeople_JspStudentClass.close();
         }
     });
 
-    var ToolStrip_Actions_studentClassReport = isc.ToolStrip.create({
-        width: "100%",
-        membersMargin: 5,
-        members: [ToolStripButton_studentClassReport]
+    var Window_SelectPeople_JspStudentClass = isc.Window.create({
+        placement: "center",
+        title: "انتخاب پرسنل",
+        canDragReposition: true,
+        align: "center",
+        autoDraw: false,
+        border: "2px solid gray",
+        width: 500,
+        height: 300,
+        items: [
+            isc.TrVLayout.create({
+                members: [
+                    DynamicForm_SelectPeople_JspStudentClass,
+                    IButton_ConfirmPeopleSelections_JspStudentClass,
+                ]
+            })
+        ]
     });
 
-    var VLayout_Body_Training_File = isc.VLayout.create({
+    var DynamicForm_SelectPostGrade_JspStudentClass = isc.DynamicForm.create({
+        align: "center",
+        titleWidth: 0,
+        titleAlign: "center",
+        width: 500,
+        height: 300,
+        fields: [
+            {
+                name: "PostGrade.code",
+                align: "center",
+                title: "",
+                editorType: "MultiComboBoxItem",
+                multiple: true,
+                defaultValue: null,
+                changeOnKeypress: true,
+                showHintInField: true,
+                displayField: "titleFa",
+                comboBoxWidth: 500,
+                valueField: "id",
+                layoutStyle: initialLayoutStyle,
+                optionDataSource: RestDataSource_PostGradeLvl_PCNR,
+            },
+        ]
+    });
+
+    DynamicForm_SelectPostGrade_JspStudentClass.getField("PostGrade.code").comboBox.setHint("رده پستی مورد نظر را انتخاب کنید");
+    DynamicForm_SelectPostGrade_JspStudentClass.getField("PostGrade.code").comboBox.pickListFields =
+            [
+                {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
+                {name: "peopleType",  title: "نوع فراگیر",valueMap: {"personnel_registered": "متفرقه", "Personal": "شرکتی", "ContractorPersonal": "پیمانکار"}},
+                {name: "enabled", title: "فعال/غیرفعال", valueMap: {"undefined": "فعال", "74": "غیرفعال"}}
+            ];
+    DynamicForm_SelectPostGrade_JspStudentClass.getField("PostGrade.code").comboBox.filterFields = ["titleFa","peopleType","enabled"];
+
+    IButton_ConfirmPostGradeSelections_JspStudentClass = isc.IButtonSave.create({
+        top: 260,
+        title: "تائید",
+        width: 300,
+        click: function () {
+            let criteriaDisplayValues = "";
+            let selectorDisplayValues = DynamicForm_SelectPostGrade_JspStudentClass.getItem("PostGrade.code").getValue();
+            if (DynamicForm_SelectPostGrade_JspStudentClass.getField("PostGrade.code").getValue() != undefined && DynamicForm_SelectPostGrade_JspStudentClass.getField("PostGrade.code").getValue() != "") {
+                criteriaDisplayValues = DynamicForm_SelectPostGrade_JspStudentClass.getField("PostGrade.code").getValue().join(",");
+                let ALength = criteriaDisplayValues.length;
+                let lastChar = criteriaDisplayValues.charAt(ALength - 1);
+                if (lastChar != ";")
+                    criteriaDisplayValues += ",";
+            }
+            if (selectorDisplayValues != undefined) {
+                for (let i = 0; i < selectorDisplayValues.size() - 1; i++) {
+                    criteriaDisplayValues += selectorDisplayValues [i] + ",";
+                }
+                criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
+            }
+
+            if (typeof criteriaDisplayValues != "undefined") {
+                let uniqueNames = [];
+
+                $.each(criteriaDisplayValues.split(","), function (i, el) {
+                    if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+                });
+                criteriaDisplayValues = uniqueNames.join(",");
+            }
+
+            criteriaDisplayValues = criteriaDisplayValues == "undefined" ? "" : criteriaDisplayValues;
+
+            criteriaDisplayValuesPostGrade=criteriaDisplayValues;
+            DynamicForm_CriteriaForm_JspStudentClassPersonnel.getField("postGrade").setValue(DynamicForm_SelectPostGrade_JspStudentClass.getItem("PostGrade.code").getDisplayValue().join(","));
+            Window_SelectPostGrade_JspStudentClass.close();
+        }
+    });
+
+    var Window_SelectPostGrade_JspStudentClass = isc.Window.create({
+        placement: "center",
+        title: "انتخاب رده پستی",
+        canDragReposition: true,
+        align: "center",
+        autoDraw: false,
+        border: "2px solid gray",
+        width: 500,
+        height: 300,
+        items: [
+            isc.TrVLayout.create({
+                members: [
+                    DynamicForm_SelectPostGrade_JspStudentClass,
+                    IButton_ConfirmPostGradeSelections_JspStudentClass,
+                ]
+            })
+        ]
+    });
+
+    var DynamicForm_SelectCourses_JspStudentClassReport = isc.DynamicForm.create({
+        align: "center",
+        titleWidth: 0,
+        titleAlign: "center",
+        width: 500,
+        height: 300,
+        fields: [
+            {
+                name: "courseCode",
+                align: "center",
+                title: "",
+                editorType: "MultiComboBoxItem",
+                multiple: true,
+                defaultValue: null,
+                changeOnKeypress: true,
+                showHintInField: true,
+                displayField: "code",
+                comboBoxWidth: 500,
+                valueField: "code",
+                layoutStyle: initialLayoutStyle,
+                optionDataSource: RestDataSource_Course_JspStudentClassReport
+            }
+        ]
+    });
+    DynamicForm_SelectCourses_JspStudentClassReport.getField("courseCode").comboBox.setHint("دوره های مورد نظر را انتخاب کنید");
+    DynamicForm_SelectCourses_JspStudentClassReport.getField("courseCode").comboBox.pickListFields =
+            [{name: "titleFa", title: "نام دوره", width: "30%", filterOperator: "iContains"},
+                {
+                    name: "code", title: "کد دوره", width: "30%", filterOperator: "iContains"
+                }];
+    DynamicForm_SelectCourses_JspStudentClassReport.getField("courseCode").comboBox.filterFields = ["titleFa", "code"];
+
+    IButton_ConfirmCourseSelections_JspStudentClassReport = isc.IButtonSave.create({
+        top: 260,
+        title: "تائید",
+        width: 300,
+        click: function () {
+            var criteriaDisplayValues = "";
+            var selectorDisplayValues = DynamicForm_SelectCourses_JspStudentClassReport.getItem("courseCode").getValue();
+            if (DynamicForm_SelectCourses_JspStudentClassReport.getField("courseCode").getValue() != undefined
+                    && DynamicForm_SelectCourses_JspStudentClassReport.getField("courseCode").getValue() != "") {
+                criteriaDisplayValues = DynamicForm_SelectCourses_JspStudentClassReport.getField("courseCode").getValue().join(",");
+                var ALength = criteriaDisplayValues.length;
+                var lastChar = criteriaDisplayValues.charAt(ALength - 1);
+                if (lastChar != ";")
+                    criteriaDisplayValues += ",";
+            }
+            if (selectorDisplayValues != undefined) {
+                for (var i = 0; i < selectorDisplayValues.size() - 1; i++) {
+                    criteriaDisplayValues += selectorDisplayValues [i] + ",";
+                }
+                criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
+            }
+
+            if (typeof criteriaDisplayValues != "undefined") {
+                let uniqueNames = [];
+
+                $.each(criteriaDisplayValues.split(","), function (i, el) {
+                    if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+                });
+                criteriaDisplayValues = uniqueNames.join(",");
+            }
+
+            criteriaDisplayValues = criteriaDisplayValues == "undefined" ? "" : criteriaDisplayValues;
+
+            DynamicForm_CriteriaForm_JspStudentClassPersonnel.getField("courseCode").setValue(criteriaDisplayValues);
+            Window_SelectCourses_JspStudentClassReport.close();
+        }
+    });
+
+    var Window_SelectCourses_JspStudentClassReport = isc.Window.create({
+        placement: "center",
+        title: "انتخاب دوره ها",
+        canDragReposition: true,
+        align: "center",
+        autoDraw: false,
+        border: "2px solid gray",
+        width: 500,
+        height: 300,
+        items: [
+            isc.TrVLayout.create({
+                members: [
+                    DynamicForm_SelectCourses_JspStudentClassReport,
+                    IButton_ConfirmCourseSelections_JspStudentClassReport
+                ]
+            })
+        ]
+    });
+
+    IButton_JspStudentClassPersonnel = isc.IButtonSave.create({
+        top: 260,
+        title: "چاپ گزارش",
+        width: 300,
+        click: function () {
+            if(DynamicForm_CriteriaForm_JspStudentClassPersonnel.getValuesAsAdvancedCriteria()==null) {
+                createDialog("info","فیلتری انتخاب نشده است.");
+                return;
+            }
+            DynamicForm_CriteriaForm_JspStudentClassPersonnel.validate();
+            if (DynamicForm_CriteriaForm_JspStudentClassPersonnel.hasErrors())
+                return;
+
+            else{
+                data_values = DynamicForm_CriteriaForm_JspStudentClassPersonnel.getValuesAsAdvancedCriteria();
+                for (let i = 0; i < data_values.criteria.size(); i++) {
+                    if (data_values.criteria[i].fieldName == "personnelNo") {
+                        var codesString = data_values.criteria[i].value;
+                        var codesArray;
+                        codesArray = codesString.split(",");
+                        for (var j = 0; j < codesArray.length; j++) {
+                            if (codesArray[j] == "" || codesArray[j] == " ") {
+                                codesArray.remove(codesArray[j]);
+                            }
+                        }
+
+                        data_values.criteria[i].fieldName = "studentPersonnelNo";
+                        data_values.criteria[i].operator = "inSet";
+                        data_values.criteria[i].value = codesArray;
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "classStudentScoresState") {
+                        data_values.criteria[i].operator = "inSet";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "courseCode") {
+                        var codesString = data_values.criteria[i].value;
+                        var codesArray;
+                        codesArray = codesString.split(",");
+                        for (var j = 0; j < codesArray.length; j++) {
+                            if (codesArray[j] == "" || codesArray[j] == " ") {
+                                codesArray.remove(codesArray[j]);
+                            }
+                        }
+                        data_values.criteria[i].operator = "inSet";
+                        data_values.criteria[i].value = codesArray;
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "startDate1") {
+                        data_values.criteria[i].fieldName = "classStartDate";
+                        data_values.criteria[i].operator = "greaterOrEqual";
+                    }
+                    else if (data_values.criteria[i].fieldName == "startDate2") {
+                        data_values.criteria[i].fieldName = "classStartDate";
+                        data_values.criteria[i].operator = "lessOrEqual";
+                    }
+                    else if (data_values.criteria[i].fieldName == "endDate1") {
+                        data_values.criteria[i].fieldName = "classEndDate";
+                        data_values.criteria[i].operator = "greaterOrEqual";
+                    }
+                    else if (data_values.criteria[i].fieldName == "endDate2") {
+                        data_values.criteria[i].fieldName = "classEndDate";
+                        data_values.criteria[i].operator = "lessOrEqual";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "companyName") {
+                        data_values.criteria[i].fieldName = "studentCompanyName";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "assistant") {
+                        data_values.criteria[i].fieldName = "studentCcpAssistant";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "unit") {
+                        data_values.criteria[i].fieldName = "studentCcpUnit";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "affairs") {
+                        data_values.criteria[i].fieldName = "studentCcpAffairs";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+                    else if (data_values.criteria[i].fieldName == "section") {
+                        data_values.criteria[i].fieldName = "studentCcpSection";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "complexTitle") {
+                        data_values.criteria[i].fieldName = "studentComplexTitle";
+                        data_values.criteria[i].operator = "iContains";
+                    }
+
+                    else if (data_values.criteria[i].fieldName == "termId") {
+                        data_values.criteria[i].operator = "inSet";
+                    }
+                }
+
+                ListGrid_JspStudentClassPersonnel.invalidateCache();
+                ListGrid_JspStudentClassPersonnel.fetchData(data_values);
+                Window_JspStudentClassPersonnel.show();
+            }
+        }
+    });
+
+    //----------------------------------- layOut -----------------------------------------------------------------------
+    var HLayOut_CriteriaForm_JspStudentClassPersonnel = isc.TrHLayoutButtons.create({
+        showEdges: false,
+        margin:20,
+        edgeImage: "",
         width: "100%",
         height: "100%",
-        overflow: "visible",
+        alignLayout: "center",
         members: [
-            //ToolStrip_Actions_studentClassReport,
-            ListGrid_StudentClass_StudentClassJSP
+            DynamicForm_CriteriaForm_JspStudentClassPersonnel
         ]
     });
 
-    //*************this function calls from studentPortal page**************
-    <%--function call_trainingFile(selected_person) {--%>
-    <%--selectedPerson_StudentClass = selected_person;--%>
-    <%--DynamicForm_StudentClass.hide();--%>
-    <%--RestDataSource_Course_JspStudentClass.fetchDataURL = studentPortalUrl + "/class-student/classes-of-student/" + selectedPerson_StudentClass.nationalCode;--%>
-    <%--printUrl_StudentClass = "<spring:url value="/web/print/student-portal/"/>";--%>
-    <%--ListGrid_StudentClass_StudentClassJSP.invalidateCache();--%>
-    <%--ListGrid_StudentClass_StudentClassJSP.fetchData();--%>
-    <%--}--%>
+    var HLayOut_Confirm_JspStudentClassPersonnel = isc.TrHLayoutButtons.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        width: "70%",
+        height: "10%",
+        alignLayout: "center",
+        padding: 10,
+        members: [
+            IButton_JspStudentClassPersonnel
+        ]
+    });
 
-    function print_Training_File(type = "pdf") {
-        if (selectedPerson_StudentClass == null){
-            createDialog("info", "<spring:message code='personnel.not.selected'/>");
-            return;
-        }
-        let params = {};
-        params.firstName = selectedPerson_StudentClass.firstName;
-        params.lastName = selectedPerson_StudentClass.lastName;
-        params.nationalCode = selectedPerson_StudentClass.nationalCode;
-        params.personnelNo = selectedPerson_StudentClass.personnelNo;
-        params.personnelNo2 = selectedPerson_StudentClass.personnelNo2;
-        params.companyName = selectedPerson_StudentClass.companyName;
-
-        let CriteriaForm_StudentClass = isc.DynamicForm.create({
-            method: "POST",
-            action: printUrl_StudentClass + type,
-            target: "_Blank",
-            canSubmit: true,
-            fields:
-                [
-                    {name: "CriteriaStr", type: "hidden"},
-                    {name: "myToken", type: "hidden"},
-                    {name: "params", type: "hidden"},
-                    {name: "formData", type: "hidden"},
-                ]
-        });
-        CriteriaForm_StudentClass.setValue("CriteriaStr", JSON.stringify(ListGrid_StudentClass_StudentClassJSP.getCriteria()));
-        CriteriaForm_StudentClass.setValue("formData", JSON.stringify(selectedPerson_StudentClass.nationalCode));
-        CriteriaForm_StudentClass.setValue("myToken", "<%=accessToken%>");
-        CriteriaForm_StudentClass.setValue("params", JSON.stringify(params));
-        CriteriaForm_StudentClass.show();
-        CriteriaForm_StudentClass.submitForm();
-    }
-
-    //</script>
+    isc.TrVLayout.create({
+        members: [
+            HLayOut_CriteriaForm_JspStudentClassPersonnel,
+            HLayOut_Confirm_JspStudentClassPersonnel
+        ]
+    });
+    //----------------------------------------------------End-----------------------------------------------------------
+    Window_JspStudentClassPersonnel.hide();

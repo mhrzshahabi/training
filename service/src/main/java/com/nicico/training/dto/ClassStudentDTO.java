@@ -59,6 +59,8 @@ public class ClassStudentDTO implements Serializable {
         private Integer numberOfSendedBehavioralForms;
         private Integer numberOfRegisteredBehavioralForms;
 
+        private String isSentMessage;
+
         public String getFullName(){
             return student.getFirstName()+" "+student.getLastName();
         }
@@ -245,6 +247,8 @@ public class ClassStudentDTO implements Serializable {
         Long failureReasonId;
         private Float score;
         private String valence;
+        private String scoreStateTitle;
+        private String failureReasonTitle;
     }
 
     @Getter

@@ -111,9 +111,15 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
 
     @Transactional
     @Query(value = "select evaluation_reaction_teacher from TBL_CLASS where ID = :classId", nativeQuery = true)
-    public Integer  getTeacherReactionStatus(Long classId);
+    public Integer getTeacherReactionStatus(Long classId);
 
     @Transactional
     @Query(value = "select evaluation_reaction_training from TBL_CLASS where ID = :classId", nativeQuery = true)
-    public Integer  getTrainingReactionStatus(Long classId);
+    public Integer getTrainingReactionStatus(Long classId);
+
+    @Transactional
+    @Query(value = "select tmp_table.class_id,count(*) from (select cs.class_id from tbl_class_student cs inner join tbl_student st on st.id=cs.student_id where cs.class_id in (:classIds) and " +
+            " not EXISTS (select NULL from tbl_message_contact mc inner join tbl_message m on m.id=mc.f_message_id where mc.n_count_sent>0 and m.f_message_class = cs.class_id and " +
+            "m.f_message_user_type=679 and mc.c_object_mobile=st.mobile)) tmp_table group by tmp_table.class_id", nativeQuery = true)
+    List<Object> checkClassesForSendMessage(List<Long> classIds);
 }

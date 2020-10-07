@@ -4,10 +4,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@ page import="com.nicico.copper.core.SecurityUtil" %>
+<%@include file="../messenger/MLanding.jsp" %>
 
-<%
+<%--<%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-%>
+%>--%>
 // <script>
     wait.show();
     var etcTargetSociety = [];
@@ -555,6 +556,7 @@
                 autoFitWidth: true
             },
             {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"},
+            {name: "isSentMessage", title: "ارسال پيام قبل از شروع کلاس", width: 190, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", canEdit: false, canSort: false, canFilter: false},
             {name: "course.code", title: "", hidden: true},
             {name: "course.theoryDuration", title: "", hidden: true},
             {name: "scoringMethod", hidden: true},
@@ -3530,7 +3532,7 @@
     }
 
     function tabSet_class_status(classRecord) {
-        if (ListGrid_Class_JspClass.getSelectedRecord() === null) {
+        if ((ListGrid_Class_JspClass.getSelectedRecord() === null) || (ListGrid_Class_JspClass.getSelectedRecord().classStatus === "4")) {
             TabSet_Class.disable();
             isReadOnlyClass = true;
             return;

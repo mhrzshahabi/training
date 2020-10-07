@@ -725,7 +725,7 @@
         click: function () {
             let params = {};
             let data = ListGrid_PreTest.getData().localData.get(0).testQuestionId;
-            params.teacher = ListGrid_PreTest.getData().localData.get(0).questionBank.teacher.fullNameFa;
+            params.teacher = ListGrid_class_Evaluation.getSelectedRecord().teacherFullName;
 
             print(data, params, "testForm.jasper");
         }

@@ -237,6 +237,10 @@ public class TclassService implements ITclassService {
             resp.sendError(409, messageSource.getMessage("کلاس فوق بدلیل داشتن فراگیر قابل حذف نیست. ", null, LocaleContextHolder.getLocale()));
             return;
         }
+        for (Evaluation eva:tclass.getEvaluations()) {
+            evaluationService.delete(eva.getId());
+        }
+
         tclassDAO.deleteById(id);
         attendanceDAO.deleteAll(attendances);
         List<AttachmentDTO.Info> attachmentInfoList = attachmentService.search(null, "Tclass", id).getList();
@@ -491,7 +495,7 @@ public class TclassService implements ITclassService {
         Double teacherGradeToClass = null;
         Double percenetOfFilledReactionEvaluationForms = null;
         Integer studentCount = null;
-
+        String FERGradeS = null;
 
         Tclass tclass = getTClass(classId);
         classStudents = tclass.getClassStudents();
@@ -541,11 +545,13 @@ public class TclassService implements ITclassService {
             minQus_ET = (Double) FETGradeResult.get("minQus_ET");
 
         Map<String, Object> FECRResult = null;
+        if(FERGrade != null)
+            FERGradeS = FERGrade.toString();
         List<EvaluationAnalysis> evaluationAnalyses = evaluationAnalysisDAO.findByTClassId(classId);
         if (evaluationAnalyses != null && evaluationAnalyses.size() != 0) {
-            FECRResult = calculateEffectivenessEvaluation(FERGrade.toString(), evaluationAnalyses.get(0).getLearningGrade(), evaluationAnalyses.get(0).getBehavioralGrade(), tclass.getEvaluation());
+            FECRResult = calculateEffectivenessEvaluation(FERGradeS, evaluationAnalyses.get(0).getLearningGrade(), evaluationAnalyses.get(0).getBehavioralGrade(), tclass.getEvaluation());
         } else {
-            FECRResult = calculateEffectivenessEvaluation(FERGrade.toString(), null, null, tclass.getEvaluation());
+            FECRResult = calculateEffectivenessEvaluation(FERGradeS, null, null, tclass.getEvaluation());
         }
 
         if (FECRResult.get("EffectivenessGrade") != null)
@@ -1260,5 +1266,18 @@ public class TclassService implements ITclassService {
             finalResult.put("minScoreFECR", minScoreFECR);
         }
         return finalResult;
+    }
+
+    @Override
+    public Map<Long, Integer> checkClassesForSendMessage(List<Long> classIds) {
+        List<Object> list = tclassDAO.checkClassesForSendMessage(classIds);
+
+        Map<Long, Integer> result = new HashMap<>();
+        for (int i = 0; i < list.size(); i++) {
+            Object[] arr = (Object[]) list.get(i);
+            result.put(arr[0] == null ? null : Long.parseLong(arr[0].toString()), Integer.parseInt(arr[1].toString()));
+        }
+
+        return result;
     }
 }

@@ -10,10 +10,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.InstituteDTO;
-import com.nicico.training.dto.ParameterValueDTO;
-import com.nicico.training.dto.TclassDTO;
-import com.nicico.training.dto.ViewEvaluationStaticalReportDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IInstituteService;
 import com.nicico.training.model.Institute;
 import com.nicico.training.model.Personnel;
@@ -38,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.time.LocalDate;
 import java.util.*;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
@@ -58,6 +56,7 @@ public class TclassRestController {
     private final TclassDAO tclassDAO;
     private final WorkGroupService workGroupService;
     private final ViewEvaluationStaticalReportService viewEvaluationStaticalReportService;
+    private final ClassSessionService classSessionService;
     private final PersonnelDAO personnelDAO;
     private final InstituteDAO instituteDAO;
 
@@ -149,10 +148,10 @@ public class TclassRestController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity delete(@PathVariable Long id, HttpServletResponse resp) throws IOException {
         try {
-            if(workGroupService.isAllowUseId("Tclass",id)){
+            if (workGroupService.isAllowUseId("Tclass", id)) {
                 tClassService.delete(id, resp);
                 return new ResponseEntity(HttpStatus.OK);
-            }else{
+            } else {
 //                tClassService.delete(id);
                 return new ResponseEntity(HttpStatus.UNAUTHORIZED);
             }
@@ -197,7 +196,7 @@ public class TclassRestController {
 
         //criteriaRq=(SearchDTO.SearchRq[])request.getCriteria().getCriteria().stream().filter(p->p.getFieldName().equals("term.id")&&p.getValue().get(0).equals("[]")).toArray();
 
-        if(request.getCriteria() != null) {
+        if (request.getCriteria() != null) {
             if (request.getCriteria().getCriteria().stream().filter(p -> (p.getFieldName() == null ? false : p.getFieldName().equals("term.id")) && p.getValue().size() == 0).toArray().length > 0) {
                 ArrayList list = new ArrayList<>();
                 list.add("-1000");
@@ -223,30 +222,64 @@ public class TclassRestController {
 
         SearchDTO.SearchRs<TclassDTO.Info> response = tClassService.search(request);
 
+        List<Long> classIdForCheckMessage = new ArrayList<>();
+
         for (TclassDTO.Info tclassDTO : response.getList()) {
             tclassDTO.setPlannerFullName("");
             tclassDTO.setSupervisorFullName("");
             tclassDTO.setOrganizerName("");
 
-            if (tclassDTO.getPlannerId()!=null) {
+            if (tclassDTO.getPlannerId() != null) {
                 Optional<Personnel> planner = personnelDAO.findById(tclassDTO.getPlannerId());
-                   if (planner.isPresent()) {
-                       tclassDTO.setPlannerFullName(planner.get().getFirstName() + " " + planner.get().getLastName());
-                   }
+                if (planner.isPresent()) {
+                    tclassDTO.setPlannerFullName(planner.get().getFirstName() + " " + planner.get().getLastName());
+                }
 
                 Optional<Personnel> supervisor = personnelDAO.findById(tclassDTO.getSupervisorId());
                 if (supervisor.isPresent()) {
                     tclassDTO.setSupervisorFullName(supervisor.get().getFirstName() + " " + supervisor.get().getLastName());
                 }
             }
-            if(tclassDTO.getOrganizerId() != null){
+            if (tclassDTO.getOrganizerId() != null) {
                 Optional<Institute> institute = instituteDAO.findById(tclassDTO.getOrganizerId());
-                if(institute.isPresent()){
+                if (institute.isPresent()) {
                     tclassDTO.setOrganizerName(institute.get().getTitleFa());
+                }
+            }
+
+            if (tclassDTO.getStudentCount() > 0 && (tclassDTO.getClassStatus().equals("1") || tclassDTO.getClassStatus().equals("2"))) {
+                SearchDTO.SearchRq csSearchRq = new SearchDTO.SearchRq();
+                csSearchRq.setCount(1);
+                csSearchRq.setStartIndex(0);
+
+                List<String> csSortBy = new ArrayList<>();
+                csSortBy.add("sessionDate");
+                csSortBy.add("sessionStartHour");
+                csSearchRq.setSortBy(csSortBy);
+                SearchDTO.SearchRs<ClassSessionDTO.Info> result = classSessionService.searchWithCriteria(csSearchRq, tclassDTO.getId());
+
+                if (result.getList().size() > 0) {
+                    String str = DateUtil.convertKhToMi1(result.getList().get(0).getSessionDate());
+                    LocalDate date = LocalDate.parse(str);
+
+                    if ((date.isBefore(LocalDate.now().plusDays(7)) || date.equals(LocalDate.now().plusDays(7))) && (date.isAfter(LocalDate.now()) || date.equals(LocalDate.now()))) {
+                        classIdForCheckMessage.add(tclassDTO.getId());
+                    }
                 }
             }
         }
 
+        if (classIdForCheckMessage.size() > 0) {
+            Map<Long, Integer> classIds = tClassService.checkClassesForSendMessage(classIdForCheckMessage);
+
+            response.getList().forEach(p -> {
+                if (classIds != null && classIds.get(p.getId()) != null && classIds.get(p.getId()) > 0) {
+                    p.setIsSentMessage("alarm");
+                } else {
+                    p.setIsSentMessage("");
+                }
+            });
+        }
         //*********************************
         //******old code for alarms********
 ////        for (TclassDTO.Info tclassDTO : response.getList()) {
@@ -313,11 +346,11 @@ public class TclassRestController {
     @Loggable
     @GetMapping(value = "/info-tuple-list")
     public ResponseEntity<TclassDTO.TclassInfoTupleSpecRs> infoTupleList(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
-                                                            @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
-                                                            @RequestParam(value = "_constructor", required = false) String constructor,
-                                                            @RequestParam(value = "operator", required = false) String operator,
-                                                            @RequestParam(value = "criteria", required = false) String criteria,
-                                                            @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException {
+                                                                         @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+                                                                         @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                         @RequestParam(value = "operator", required = false) String operator,
+                                                                         @RequestParam(value = "criteria", required = false) String criteria,
+                                                                         @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
@@ -489,7 +522,7 @@ public class TclassRestController {
     @GetMapping(value = "/personnel-training/{national_code}/{personnel_no}")
     public ResponseEntity<TclassDTO.PersonnelClassInfo_TclassSpecRs> personnelTraining(@PathVariable String national_code, @PathVariable String personnel_no) {
 
-        List<TclassDTO.PersonnelClassInfo> list = tClassService.findAllPersonnelClass(national_code,personnel_no);
+        List<TclassDTO.PersonnelClassInfo> list = tClassService.findAllPersonnelClass(national_code, personnel_no);
 
         final TclassDTO.PersonnelClassInfo_SpecRs specResponse = new TclassDTO.PersonnelClassInfo_SpecRs();
         final TclassDTO.PersonnelClassInfo_TclassSpecRs specRs = new TclassDTO.PersonnelClassInfo_TclassSpecRs();
@@ -544,12 +577,12 @@ public class TclassRestController {
 
     @Loggable
     @GetMapping(value = "/defaultExecutor/{parameterCode}/{cTitle}")
-    public ResponseEntity<InstituteDTO.Info> defaultExecutor(@PathVariable String parameterCode, @PathVariable String cTitle){
+    public ResponseEntity<InstituteDTO.Info> defaultExecutor(@PathVariable String parameterCode, @PathVariable String cTitle) {
         TotalResponse<ParameterValueDTO.Info> totalResponse = parameterService.getByCode(parameterCode);
         ParameterValueDTO.Info parameterInfo = totalResponse.getResponse().getData().stream().filter(i -> i.getTitle().equals(cTitle)).findFirst().orElse(null);
         SearchDTO.SearchRs<InstituteDTO.Info> infoSearchRs = null;
         if (parameterInfo != null) {
-            infoSearchRs = instituteService.search(new SearchDTO.SearchRq().setCriteria(makeNewCriteria("titleFa",parameterInfo.getValue(),EOperator.equals,null)));
+            infoSearchRs = instituteService.search(new SearchDTO.SearchRq().setCriteria(makeNewCriteria("titleFa", parameterInfo.getValue(), EOperator.equals, null)));
         }
         return new ResponseEntity<>((infoSearchRs == null || infoSearchRs.getList().size() == 0) ? new InstituteDTO.Info() : infoSearchRs.getList().get(0), HttpStatus.OK);
     }
@@ -563,21 +596,20 @@ public class TclassRestController {
                             @RequestParam String classTimeInfo,
                             @RequestParam String executionInfo,
                             @RequestParam String evaluationInfo
-    ) throws Exception
-    {
-         SearchDTO.CriteriaRq criteriaRq = null;
-         SearchDTO.SearchRq request = null;
+    ) throws Exception {
+        SearchDTO.CriteriaRq criteriaRq = null;
+        SearchDTO.SearchRq request = null;
         if (CriteriaStr.equalsIgnoreCase("{}")) {
             request = new SearchDTO.SearchRq();
         } else {
             criteriaRq = objectMapper.readValue(CriteriaStr, SearchDTO.CriteriaRq.class);
             request = new SearchDTO.SearchRq().setCriteria(criteriaRq).setSortBy("-tclassStartDate");
         }
-        if(request.getCriteria() != null && request.getCriteria().getCriteria() != null){
+        if (request.getCriteria() != null && request.getCriteria().getCriteria() != null) {
             for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
-                if(criterion.getValue().get(0).equals("true"))
+                if (criterion.getValue().get(0).equals("true"))
                     criterion.setValue(true);
-                if(criterion.getValue().get(0).equals("false"))
+                if (criterion.getValue().get(0).equals("false"))
                     criterion.setValue(false);
             }
         }
@@ -601,10 +633,10 @@ public class TclassRestController {
     @Transactional
     @GetMapping(value = "/setReactionStatus/{teacherReactionStatus}/{trainingReactionStatus}/{classId}")
     public void setReactionStatus(@PathVariable Integer teacherReactionStatus, @PathVariable Integer trainingReactionStatus, @PathVariable Long classId) {
-        if(teacherReactionStatus == 10)
-            tclassDAO.updateTrainingReactionStatus(trainingReactionStatus,classId);
-        if(trainingReactionStatus == 10)
-            tclassDAO.updateTeacherReactionStatus(teacherReactionStatus,classId);
+        if (teacherReactionStatus == 10)
+            tclassDAO.updateTrainingReactionStatus(trainingReactionStatus, classId);
+        if (trainingReactionStatus == 10)
+            tclassDAO.updateTeacherReactionStatus(teacherReactionStatus, classId);
     }
 
     @Loggable
@@ -612,7 +644,7 @@ public class TclassRestController {
     @GetMapping(value = "/getTeacherReactionStatus/{classId}")
     public ResponseEntity<Integer> getTeacherReactionStatus(@PathVariable Long classId) {
         Integer result = tclassDAO.getTeacherReactionStatus(classId);
-        if(result != null)
+        if (result != null)
             return new ResponseEntity<>(result, HttpStatus.OK);
         else
             return new ResponseEntity<>(0, HttpStatus.OK);
@@ -623,7 +655,7 @@ public class TclassRestController {
     @GetMapping(value = "/getTrainingReactionStatus/{classId}")
     public ResponseEntity<Integer> getTrainingReactionStatus(@PathVariable Long classId) {
         Integer result = tclassDAO.getTrainingReactionStatus(classId);
-        if(result != null)
+        if (result != null)
             return new ResponseEntity<>(result, HttpStatus.OK);
         else
             return new ResponseEntity<>(0, HttpStatus.OK);
@@ -632,7 +664,7 @@ public class TclassRestController {
     @Loggable
     @GetMapping("/hasSessions/{classId}")
     public ResponseEntity<Boolean> hasSessions(@PathVariable Long classId) {
-        return new ResponseEntity<>(tClassService.hasSessions(classId),HttpStatus.OK);
+        return new ResponseEntity<>(tClassService.hasSessions(classId), HttpStatus.OK);
     }
 
     @Loggable
@@ -646,4 +678,4 @@ public class TclassRestController {
     }
 
 
-    }
+}

@@ -650,9 +650,9 @@ public class TeacherRestController {
         params.put("birthLocation", teacherDTO.getPersonality().getBirthLocation());
         Integer genderId = teacherDTO.getPersonality().getGenderId();
         String gender = null;
-        if(genderId.equals("1"))
+        if(genderId != null && genderId.equals("1"))
             gender = "مرد";
-        if(genderId.equals("2"))
+        if(genderId != null && genderId.equals("2"))
             gender = "زن";
         params.put("gender", gender);
         Integer militaryId = teacherDTO.getPersonality().getMilitaryId();

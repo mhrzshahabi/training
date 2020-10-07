@@ -31,7 +31,6 @@ public class ViewStatisticsUnitReportRestController {
     @GetMapping
     public ResponseEntity<ISC<ViewStatisticsUnitReportDTO.Grid>> list(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        searchRq.setSortBy("id");
 
         if (searchRq.getCriteria() != null && searchRq.getCriteria().getCriteria() != null)
         {

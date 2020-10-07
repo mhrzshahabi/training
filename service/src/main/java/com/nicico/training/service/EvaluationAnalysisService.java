@@ -298,7 +298,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
             evaluationAnalysis.setTClassId(classId);
             evaluationAnalysis.setTClass(tclassDAO.getOne(classId));
             Map<String,Object> effectivenessResult = null;
-            if(behavioralResult.getBehavioralGrade() != 0)
+            if(behavioralResult.getBehavioralGrade() != null && behavioralResult.getBehavioralGrade() != 0)
                 effectivenessResult = tclassService.calculateEffectivenessEvaluation(evaluationAnalysis.getReactionGrade(),
                         evaluationAnalysis.getLearningGrade(),behavioralResult.getBehavioralGrade().toString(), tclass.getEvaluation());
             else
@@ -429,7 +429,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         for(int z=0;z<result.getClassStudentsName().length;z++){
             Map<String,Object> behavior = new HashMap<>();
             behavior.put("scoreVal",behavioralGrades[z]);
-            behavior.put("scoreCat",bidiReorder(classStudentsName[z]));
+            behavior.put("scoreCat", PersianCharachtersUnicode.bidiReorder(classStudentsName[z]));
             behavioralScoreChart.add(behavior);
         }
 
@@ -678,6 +678,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         Float postTestMeanGrade = null;
         Float preTestMeanGrade = null;
         Float felGrade = null;
+        String felGradeS = null;
 
         if(result != null && result.length > 0 )
             postTestMeanGrade = result[0];
@@ -686,14 +687,17 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         if(result != null && result.length > 2)
             felGrade = result[3];
 
+        if(felGrade != null)
+            felGradeS = felGrade.toString();
+
         Tclass tclass = tclassService.getTClass(classId);
         Map<String, Object> FECRResult = null;
         List<EvaluationAnalysis> evaluationAnalyses = evaluationAnalysisDAO.findByTClassId(classId);
         if(evaluationAnalyses != null && evaluationAnalyses.size() != 0){
-            FECRResult = tclassService.calculateEffectivenessEvaluation(evaluationAnalyses.get(0).getReactionGrade(),felGrade.toString(),evaluationAnalyses.get(0).getBehavioralGrade(),tclass.getEvaluation());
+            FECRResult = tclassService.calculateEffectivenessEvaluation(evaluationAnalyses.get(0).getReactionGrade(),felGradeS,evaluationAnalyses.get(0).getBehavioralGrade(),tclass.getEvaluation());
         }
         else{
-            FECRResult = tclassService.calculateEffectivenessEvaluation(null,felGrade.toString(),null,tclass.getEvaluation());
+            FECRResult = tclassService.calculateEffectivenessEvaluation(null,felGradeS,null,tclass.getEvaluation());
         }
 
         if(FECRResult.get("EffectivenessGrade") != null)
@@ -722,9 +726,11 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         else
             resultSet.setPreTestMeanScore(null);
 
-        resultSet.setFeclgrade(FECRGrade.toString());
+        if(FECRGrade != null)
+            resultSet.setFeclgrade(FECRGrade.toString());
 
-        resultSet.setFeclpass(FECRPass.toString());
+        if(FECRPass != null)
+            resultSet.setFeclpass(FECRPass.toString());
 
         Integer classHasPreTest = tclassDAO.checkIfClassHasPreTest(classId);
         if(classHasPreTest != null && classHasPreTest.equals(new Integer(1)))

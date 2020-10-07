@@ -56,11 +56,12 @@
         </createIndex>
     </changeSet>
 
-<!--    <changeSet author="golrokhi (generated)" id="1600570520012-511">
-        <createIndex indexName="IX_tbl_annual_statisticalPK" tableName="tbl_annual_statistical" unique="true">
-            <column name="category_id"/>
-            <column name="institute_id"/>
-        </createIndex>
-    </changeSet>-->
+
+    <!--    <changeSet author="golrokhi (generated)" id="1600570520012-511">
+            <createIndex indexName="IX_tbl_annual_statisticalPK" tableName="tbl_annual_statistical" unique="true">
+                <column name="category_id"/>
+                <column name="institute_id"/>
+            </createIndex>
+        </changeSet>-->
 
 </databaseChangeLog>
