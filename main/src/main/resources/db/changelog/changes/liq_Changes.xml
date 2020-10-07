@@ -1281,13 +1281,6 @@
         <dropColumn columnName="N_MESSAGE_ID" tableName="TBL_MESSAGE_CONTACT"/>
     </changeSet>
 
-    <changeSet author="golrokhi (generated)" id="1601704909443-464">
-        <dropNotNullConstraint columnDataType="number(19,0)" columnName="f_message_contact_status_id" tableName="tbl_message_contact"/>
-    </changeSet>
-    <changeSet author="golrokhi (generated)" id="1601704909443-465">
-        <dropNotNullConstraint columnDataType="number(19,0)" columnName="f_message_user_type" tableName="tbl_message"/>
-    </changeSet>
-
     <changeSet author="golrokhi (generated)" id="1601709679462-517">
         <addColumn tableName="tbl_message">
             <column name="c_pid" type="varchar2(255 CHAR)">
