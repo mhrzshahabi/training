@@ -707,9 +707,18 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
 
     @Override
     public SearchDTO.SearchRq mappedValues(SearchDTO.SearchRq request) {
-        request.getCriteria().getCriteria().forEach(criteriaRq -> {
-            if ("duration".equals(criteriaRq.getFieldName())) {
-                criteriaRq.setFieldName("theoryDuration");
+        request.getCriteria().getCriteria().forEach(criteriaRq -> criteriaRq.getCriteria().forEach(cr-> {
+                    if ("duration".equals(cr.getFieldName())) {
+                        cr.setFieldName("theoryDuration");
+                    }
+                }
+            ));
+        request.getSortBy().forEach(c->{
+            if("duration".equals(c.getFieldName())) {
+                if (c.getDescendingSafe())
+                    request.setSortBy("-theoryDuration");
+                else
+                    request.setSortBy("theoryDuration");
             }
         });
         return request;
