@@ -123,7 +123,7 @@
             isc.LayoutSpacer.create({width: "*"}),
             isc.Label.create({
                 //padding: 5,
-                width: "100%%",
+                width: "100%",
                 align: "center",
                 contents: "<b style='font-size: 10px;'>گزارش شامل دوره هایی است که با توجه به پارامترهای وارد شده، برای آنها کلاسی تشکیل نشده است</b>"
             }),
