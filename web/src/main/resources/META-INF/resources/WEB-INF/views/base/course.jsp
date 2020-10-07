@@ -726,6 +726,9 @@
                                                     })
                                                 );
                                             }
+                                            else{
+                                                createDialog("info", "اهداف اصلی از این طریق حذف نمیشوند.");
+                                            }
                                         }
                                     }
                                 })
@@ -800,7 +803,7 @@
                             },
                             {name: "category.id", filterOnKeypress:true},
                             {name: "subCategory.id", filterOnKeypress:true},
-                            {name: "courseMainObjectiveId", type: "boolean", title: "هدف کلی", canFilter: false}
+                            {name: "courseMainObjectiveId", type: "boolean", title: "هدف اصلی", canFilter: false}
                         ],
                         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
                             if (ListGrid_AllSkill_JspCourse.getSelectedRecord() == null) {
