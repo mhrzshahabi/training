@@ -267,8 +267,6 @@
         fetchDataURL: viewPostGradeUrl + "/iscList"
     });
 
-    testDynamicFrom_PCNR = isc.OrganSegmentFilterDF.create({});
-
     FilterDF_PCNR = isc.DynamicForm.create({
         border: "1px solid black",
         numCols: 10,
@@ -810,7 +808,6 @@
         height: "100%",
         members: [
             FilterDF_PCNR,
-            testDynamicFrom_PCNR,
             CourseLG_MinPCNR,
         ]
     });

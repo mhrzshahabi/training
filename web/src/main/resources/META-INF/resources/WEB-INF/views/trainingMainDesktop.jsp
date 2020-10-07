@@ -3858,7 +3858,6 @@
             }
             for (let i = fieldIndex + 1; i < this.getFields().length; i++) {
                 let fieldCriteria = this.getField(i).optionCriteria;
-                testMostafa = fieldCriteria;
                 fieldCriteria?.criteria?.remove(fieldCriteria.criteria.find({fieldName: item.organSegmentFilterFieldName}));
                 if (fieldCriteria && (fieldCriteria.criteria == null || fieldCriteria.criteria.length === 0))
                     fieldCriteria = null;
