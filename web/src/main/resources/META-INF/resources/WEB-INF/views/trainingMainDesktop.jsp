@@ -3517,10 +3517,10 @@
     let ghesmatFieldName_OrganSegmentFilterDF = "department.ghesmatCode";
     let vahedFieldName_OrganSegmentFilterDF = "department.vahedCode";
     let hideCompanyFilter_OrganSegmentFilterDF = false;
-    let useNameInCriteria_OrganSegmentFilterDF_OrganSegmentFilterDF = false;
+    let useNameInCriteria_OrganSegmentFilterDF = false;
 
     function init_OrganSegmentFilterDF(useNameInCriteria, hideCompanyFilter, companyFieldName, mojtameFieldName, moavenatFieldName, omorFieldName, ghesmatFieldName, vahedFieldName) {
-        useNameInCriteria_OrganSegmentFilterDF_OrganSegmentFilterDF = useNameInCriteria != null ? useNameInCriteria : false;
+        useNameInCriteria_OrganSegmentFilterDF = useNameInCriteria != null ? useNameInCriteria : false;
         hideCompanyFilter_OrganSegmentFilterDF = hideCompanyFilter != null ? hideCompanyFilter : false;
         companyFieldName_OrganSegmentFilterDF = companyFieldName != null ? companyFieldName : "companyName";
         mojtameFieldName_OrganSegmentFilterDF = mojtameFieldName != null ? mojtameFieldName : "department.mojtameCode";
@@ -3528,23 +3528,17 @@
         omorFieldName_OrganSegmentFilterDF = omorFieldName != null ? omorFieldName : "department.omorCode";
         ghesmatFieldName_OrganSegmentFilterDF = ghesmatFieldName != null ? ghesmatFieldName : "department.ghesmatCode";
         vahedFieldName_OrganSegmentFilterDF = vahedFieldName != null ? vahedFieldName : "department.vahedCode";
+        return isc.OrganSegmentFilterDF.create({});
     }
 
     isc.defineClass("OrganSegmentFilterDF", DynamicForm);
     isc.OrganSegmentFilterDF.addProperties({
-        border: "1px solid black",
-        numCols: 8,
-        padding: 10,
-        margin:0,
-        titleAlign:"left",
-        wrapItemTitles: true,
-        // hideCompanyFilter_OrganSegmentFilterDF: false,
-        // companyFieldName_OrganSegmentFilterDF: companyFieldName_OrganSegmentFilterDF,
-        // mojtameFieldName_OrganSegmentFilterDF: mojtameFieldName_OrganSegmentFilterDF,
-        // moavenatFieldName_OrganSegmentFilterDF: moavenatFieldName_OrganSegmentFilterDF,
-        // omorFieldName_OrganSegmentFilterDF: omorFieldName_OrganSegmentFilterDF,
-        // ghesmatFieldName_OrganSegmentFilterDF: ghesmatFieldName_OrganSegmentFilterDF,
-        // vahedFieldName_OrganSegmentFilterDF: vahedFieldName_OrganSegmentFilterDF
+        colWidths: ["33%","33%","33%"],
+        numCols: 3,
+        titleAlign:"right",
+        overflow: "auto",
+        height: 150,
+        titleOrientation: "top",
         fields: [
             {
                 name: companyFieldName_OrganSegmentFilterDF,
@@ -3556,14 +3550,17 @@
                     cacheAllData: true,
                     fetchDataURL: rootUrl + "/geo-work/company-list"
                 }),
+                operator: "inSet",
                 valueField: "titleFa",
                 displayField: "titleFa",
                 filterOnKeypress: true,
                 multiple: true,
+                autoFitButtons: true,
+                layoutStyle: "vertical",
+                vAlign: "top",
+                titleVAlign: "top",
                 comboBoxProperties: {
                     hint: "",
-                    width: 170,
-                    pickListWidth: 275,
                     filterFields: ["code", "titleFa"],
                     textMatchStyle: "substring",
                     pickListProperties:{showFilterEditor: false, autoFitWidthApproach: "both"},
@@ -3605,14 +3602,17 @@
                     cacheAllData: true,
                     fetchDataURL: departmentUrl + "/organ-segment-iscList/mojtame"
                 }),
+                operator: "inSet",
                 valueField: useNameInCriteria_OrganSegmentFilterDF ? "title" : "code",
+                organSegmentFilterFieldName: useNameInCriteria_OrganSegmentFilterDF ? "mojtameTitle" : "mojtameCode",
                 displayField: "title",
                 filterOnKeypress: true,
                 multiple: true,
+                autoFitButtons: true,
+                layoutStyle: "vertical",
+                vAlign: "top",
                 comboBoxProperties: {
                     hint: "",
-                    width: 170,
-                    pickListWidth: 295,
                     filterFields: ["code", "title"],
                     textMatchStyle: "substring",
                     pickListProperties:{showFilterEditor: false, autoFitWidthApproach: "both"},
@@ -3638,20 +3638,8 @@
                     ],
                 },
                 changed: function (form, item, value) {
-                    if (value != null && value.length > 0) {
-                        form.getField(2).optionCriteria = {
-                            _constructor: "AdvancedCriteria",
-                            operator: "and",
-                            criteria: [
-                                {fieldName: useNameInCriteria_OrganSegmentFilterDF ? "mojtameTitle" : "mojtameCode", operator: "inSet", value: value},
-                            ]
-                        };
-                    } else {
-                        form.getField(2).optionCriteria = null;
-                    }
-                    form.getField(2).optionDataSource.implicitCriteria = form.getField(2).optionCriteria;
-                    form.getField(2).optionDataSource.invalidateCache();
-                }
+                    form.updateCriteria(item, value, 1);
+                },
             },
             {
                 name: moavenatFieldName_OrganSegmentFilterDF,
@@ -3661,14 +3649,18 @@
                     fields: [{name: "id"}, {name: "code"}, {name: "title"}],
                     fetchDataURL: departmentUrl + "/organ-segment-iscList/moavenat"
                 }),
+                operator: "inSet",
                 valueField: useNameInCriteria_OrganSegmentFilterDF ? "title" : "code",
+                organSegmentFilterFieldName: useNameInCriteria_OrganSegmentFilterDF ? "moavenatTitle" : "moavenatCode",
                 displayField: "title",
                 filterOnKeypress: true,
                 multiple: true,
+                autoFitButtons: true,
+                layoutStyle: "vertical",
+                vAlign: "top",
+                criteriaHasChanged: false,
                 comboBoxProperties: {
                     hint: "",
-                    width: 170,
-                    pickListWidth: 295,
                     filterFields: ["code", "title"],
                     textMatchStyle: "substring",
                     pickListProperties:{showFilterEditor: false, autoFitWidthApproach: "both"},
@@ -3694,24 +3686,10 @@
                     ],
                 },
                 click(form, item){
-                    let isDataNull = item.comboBox.optionDataSource.getCacheData() == null;
-                    item.comboBox.fetchData();
-                    if (isDataNull) {item.comboBox.showPicker();}
+                    if (this.criteriaHasChanged) {item.comboBox.fetchData(); this.criteriaHasChanged = false;}
                 },
                 changed: function (form, item, value) {
-                    if (value != null && value.length > 0) {
-                        form.getField(3).optionCriteria = {
-                            _constructor: "AdvancedCriteria",
-                            operator: "and",
-                            criteria: [
-                                {fieldName: useNameInCriteria_OrganSegmentFilterDF ? "moavenatTitle" : "moavenatCode", operator: "inSet", value: value},
-                            ]
-                        };
-                    } else {
-                        form.getField(3).optionCriteria = null;
-                    }
-                    form.getField(3).optionDataSource.implicitCriteria = form.getField(3).optionCriteria;
-                    form.getField(3).optionDataSource.invalidateCache();
+                    form.updateCriteria(item, value, 2);
                 }
             },
             {
@@ -3722,14 +3700,18 @@
                     fields: [{name: "id"}, {name: "code"}, {name: "title"}],
                     fetchDataURL: departmentUrl + "/organ-segment-iscList/omor"
                 }),
+                operator: "inSet",
                 valueField: useNameInCriteria_OrganSegmentFilterDF ? "title" : "code",
+                organSegmentFilterFieldName: useNameInCriteria_OrganSegmentFilterDF ? "omorTitle" : "omorCode",
                 displayField: "title",
                 filterOnKeypress: true,
                 multiple: true,
+                autoFitButtons: true,
+                layoutStyle: "vertical",
+                vAlign: "top",
+                criteriaHasChanged: false,
                 comboBoxProperties: {
                     hint: "",
-                    width: 170,
-                    pickListWidth: 295,
                     filterFields: ["code", "title"],
                     textMatchStyle: "substring",
                     pickListProperties:{showFilterEditor: false, autoFitWidthApproach: "both"},
@@ -3755,24 +3737,10 @@
                     ],
                 },
                 click(form, item){
-                    let isDataNull = item.comboBox.optionDataSource.getCacheData() == null;
-                    item.comboBox.fetchData();
-                    if (isDataNull) {item.comboBox.showPicker();}
+                    if (this.criteriaHasChanged) {item.comboBox.fetchData(); this.criteriaHasChanged = false;}
                 },
                 changed: function (form, item, value) {
-                    if (value != null && value.length > 0) {
-                        form.getField(4).optionCriteria = {
-                            _constructor: "AdvancedCriteria",
-                            operator: "and",
-                            criteria: [
-                                {fieldName: useNameInCriteria_OrganSegmentFilterDF ? "omorTitle" : "omorCode", operator: "inSet", value: value},
-                            ]
-                        };
-                    } else {
-                        form.getField(4).optionCriteria = null;
-                    }
-                    form.getField(4).optionDataSource.implicitCriteria = form.getField(4).optionCriteria;
-                    form.getField(4).optionDataSource.invalidateCache();
+                    form.updateCriteria(item, value, 3);
                 }
             },
             {
@@ -3783,14 +3751,18 @@
                     fields: [{name: "id"}, {name: "code"}, {name: "title"}],
                     fetchDataURL: departmentUrl + "/organ-segment-iscList/ghesmat"
                 }),
+                operator: "inSet",
                 valueField: useNameInCriteria_OrganSegmentFilterDF ? "title" : "code",
+                organSegmentFilterFieldName: useNameInCriteria_OrganSegmentFilterDF ? "ghesmatTitle" : "ghesmatCode",
                 displayField: "title",
                 filterOnKeypress: true,
                 multiple: true,
+                autoFitButtons: true,
+                layoutStyle: "vertical",
+                vAlign: "top",
+                criteriaHasChanged: false,
                 comboBoxProperties: {
                     hint: "",
-                    width: 170,
-                    pickListWidth: 295,
                     filterFields: ["code", "title"],
                     textMatchStyle: "substring",
                     pickListProperties:{showFilterEditor: false, autoFitWidthApproach: "both"},
@@ -3816,24 +3788,10 @@
                     ],
                 },
                 click(form, item){
-                    let isDataNull = item.comboBox.optionDataSource.getCacheData() == null;
-                    item.comboBox.fetchData();
-                    if (isDataNull) {item.comboBox.showPicker();}
+                    if (this.criteriaHasChanged) {item.comboBox.fetchData(); this.criteriaHasChanged = false;}
                 },
                 changed: function (form, item, value) {
-                    if (value != null && value.length > 0) {
-                        form.getField(5).optionCriteria = {
-                            _constructor: "AdvancedCriteria",
-                            operator: "and",
-                            criteria: [
-                                {fieldName: useNameInCriteria_OrganSegmentFilterDF ? "ghesmatTitle" : "ghesmatCode", operator: "inSet", value: value},
-                            ]
-                        };
-                    } else {
-                        form.getField(5).optionCriteria = null;
-                    }
-                    form.getField(5).optionDataSource.implicitCriteria = form.getField(5).optionCriteria;
-                    form.getField(5).optionDataSource.invalidateCache();
+                    form.updateCriteria(item, value, 4);
                 }
             },
             {
@@ -3844,14 +3802,17 @@
                     fields: [{name: "id"}, {name: "code"}, {name: "title"}],
                     fetchDataURL: departmentUrl + "/organ-segment-iscList/vahed"
                 }),
+                operator: "inSet",
                 valueField: useNameInCriteria_OrganSegmentFilterDF ? "title" : "code",
                 displayField: "title",
                 filterOnKeypress: true,
                 multiple: true,
+                autoFitButtons: true,
+                layoutStyle: "vertical",
+                vAlign: "top",
+                criteriaHasChanged: false,
                 comboBoxProperties: {
                     hint: "",
-                    width: 170,
-                    pickListWidth: 295,
                     filterFields: ["code", "title"],
                     textMatchStyle: "substring",
                     pickListProperties:{showFilterEditor: false, autoFitWidthApproach: "both"},
@@ -3877,16 +3838,38 @@
                     ],
                 },
                 click(form, item){
-                    let isDataNull = item.comboBox.optionDataSource.getCacheData() == null;
-                    item.comboBox.fetchData();
-                    if (isDataNull) {item.comboBox.showPicker();}
+                    if (this.criteriaHasChanged) {item.comboBox.fetchData(); this.criteriaHasChanged = false;}
                 }
             },
-        ]
+        ],
+        getCriteria: function (criteria){
+            return isc.DataSource.combineCriteria(this.getValuesAsAdvancedCriteria(), criteria);
+        },
+        updateCriteria: function(item, value, fieldIndex){
+            let criteria = null;
+            if (value != null && value.length > 0) {
+                criteria = {
+                    _constructor: "AdvancedCriteria",
+                    operator: "and",
+                    criteria: [
+                        {fieldName: item.organSegmentFilterFieldName, operator: "inSet", value: value},
+                    ]
+                };
+            }
+            for (let i = fieldIndex + 1; i < this.getFields().length; i++) {
+                let fieldCriteria = this.getField(i).optionCriteria;
+                testMostafa = fieldCriteria;
+                fieldCriteria?.criteria?.remove(fieldCriteria.criteria.find({fieldName: item.organSegmentFilterFieldName}));
+                if (fieldCriteria && (fieldCriteria.criteria == null || fieldCriteria.criteria.length === 0))
+                    fieldCriteria = null;
+                let afterChangeCriteria = isc.DataSource.combineCriteria(criteria, fieldCriteria);
+                this.getField(i).optionCriteria = afterChangeCriteria;
+                this.getField(i).optionDataSource.implicitCriteria = afterChangeCriteria;
+                this.getField(i).optionDataSource.invalidateCache();
+                this.getField(i).criteriaHasChanged = true;
+            }
+        }
     });
-
-
-    createTab("نیاز", "<spring:url value="web/personnel-course-NA-report"/>");
 
 </script>
 </body>
