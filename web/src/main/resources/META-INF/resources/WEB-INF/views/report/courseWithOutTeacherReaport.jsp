@@ -10,8 +10,17 @@
 // <script>
 
 
-    var endDateCheckReportCWOT = true;
-    var modalDialog;
+
+    let reasonErrorStartDate = "";
+    let reasonErrorStartDate2 = "";
+    let reasonErrorEndDate = "";
+    let reasonErrorEndDate2 = "";
+    let countErrorStartDate = 0;
+    let countErrorStartDate2 = 0;
+    let countErrorEndDate = 0;
+    let countErrorEndDate2 = 0;
+   // var modalDialog;
+    let criteria = null;
 
     var RestDataSource_Year_Filter_courseWithOutTeacher = isc.TrDS.create({
         fields: [
@@ -38,10 +47,10 @@
             };
             return this.Super("transformRequest", arguments);
         },
-        fields: [{name: "id", primaryKey: true},
-            {name: "code"},
-            {name: "title"},
-            {name: "max_start_date"},
+        fields: [{name: "id", primaryKey: true, canFilter: false},
+            {name: "code", autoFitWidth: true, canFilter: false },
+            {name: "title", autoFitWidth: true, canFilter: false},
+            {name: "max_start_date", autoFitWidth: true, canFilter: false},
         ], dataFormat: "json",
 
         // autoFetchData: true,
@@ -70,6 +79,7 @@
 
     var ButtonExcel =isc.ToolStripButtonExcel.create({
         margin:5,
+        disabled: true,
         click: function () {
             let rows = List_Grid_Reaport_CourseWithOutTeacher.data.getAllLoadedRows();
             let result = ExportToFile.getAllFields(List_Grid_Reaport_CourseWithOutTeacher);
@@ -89,8 +99,21 @@
                     }
                 }
             }
-            ExportToFile.exportToExcelFromClient(fields, data, '', "دوره های بدون کلاس")
-            ;
+            criteria = DynamicForm_Report_CourseWithOutTeacher.getValuesAsAdvancedCriteria();
+            isc.Dialog.create({
+                message: "ممکن است نحوه چیدمان داده ها در خروجی اکسل متفاوت باشد",
+                icon: "[SKIN]ask.png",
+                title: "<spring:message code='message'/>",
+                buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
+                buttonClick: function (button, index) {
+                    if (index == 0) {
+                        ExportToFile.downloadExcelRestUrl(null, List_Grid_Reaport_CourseWithOutTeacher, courseUrl + "courseWithOutClass", 0, null, '',"دوره های فاقد کلاس"  , criteria, null);
+                    }
+                    this.close();
+                }
+            });
+
+
         }
     })
     var ToolStrip_Actions = isc.ToolStrip.create({
@@ -99,8 +122,15 @@
             ButtonExcel,
             isc.LayoutSpacer.create({width: "*"}),
             isc.Label.create({
+                //padding: 5,
+                width: "100%",
+                align: "center",
+                contents: "<b style='font-size: 10px;'>گزارش شامل دوره هایی است که با توجه به پارامترهای وارد شده، برای آنها کلاسی تشکیل نشده است</b>"
+            }),
+            isc.Label.create({
                 ID: "totalsCount_Rows"
-            }),]
+            })]
+
     })
     var List_Grid_Reaport_CourseWithOutTeacher = isc.TrLG.create({
         width: "100%",
@@ -108,11 +138,11 @@
         dataSource: RestDataSource_CourseWithOutTeacher,
         showRowNumbers: true,
         //autoFetchData: true,
-
+        showFilterEditor: false,
         fields: [
-            {name: "code", title: "<spring:message code="code"/>", align: "center", filterOperator: "iContains",autoFitWidth:true},
-            {name: "title", title:"<spring:message code="course"/>", align: "center", filterOperator: "iContains",autoFitWidth:true},
-            {name: "max_start_date", title:"تاریخ شروع آخرین کلاس", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "code", title: "<spring:message code="code"/>", align: "center", filterOperator: "iContains",autoFitWidth:true, filterOnKeypress: false},
+            {name: "title", title:"<spring:message code="course"/>", align: "center", filterOperator: "iContains",autoFitWidth:true, filterOnKeypress: false},
+            {name: "max_start_date", title:"تاریخ شروع آخرین کلاس", align: "center", filterOperator: "iContains",autoFitWidth:true, filterOnKeypress: false},
 
         ],
         recordDoubleClick: function () {
@@ -124,15 +154,14 @@
 
         dataArrived: function ()
         {
-            modalDialog.close();
+            //modalDialog.close();
 
             let totalRows = this.data.getLength();
             if (totalRows >= 0 && this.data.lengthIsKnown())
-                totalsCount_Rows.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
+                totalsCount_Rows.setContents("<b style='font-size: 10px;'>" + "<spring:message code="records.count"/>" + ":&nbsp;" + totalRows + "</b>");
             else
                 totalsCount_Rows.setContents("&nbsp;");
         },
-        showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         useClientFiltering:true,
@@ -142,7 +171,7 @@
 
     var DynamicForm_Report_CourseWithOutTeacher = isc.DynamicForm.create({
         width: "550px",
-        height: "100%",
+        height: "45%",
         overflow:"auto",
         padding: 5,
         cellPadding: 5,
@@ -177,36 +206,72 @@
                     let result=reformat(DynamicForm_Report_CourseWithOutTeacher.getValue("startDate"));
                     if (result){
                         DynamicForm_Report_CourseWithOutTeacher.getItem("startDate").setValue(result);
-                        DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("startDate", true);
                     }
                 },
                 blur: function () {
-                    var dateCheck;
-                    dateCheck = checkDate(DynamicForm_Report_CourseWithOutTeacher.getValue("startDate"));
-                    if (dateCheck == false)
-                        DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
-                    endDateCheckReportCWOT = false;
-                    if (dateCheck == true)
+                    let dateCheck;
+                    if (DynamicForm_Report_CourseWithOutTeacher.getValue("startDate")) {
+                        dateCheck = checkDate(DynamicForm_Report_CourseWithOutTeacher.getValue("startDate"));
+                        if (dateCheck == false) {
+                            DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                        }
+                        if (dateCheck == true) {
+                            DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("startDate", true);
+                            let startDate2 = DynamicForm_Report_CourseWithOutTeacher.getValue("startDate2");
+                            let startDate = DynamicForm_Report_CourseWithOutTeacher.getValue("startDate");
+                            let endDate = DynamicForm_Report_CourseWithOutTeacher.getValue("endDate");
+                            let endDate2 = DynamicForm_Report_CourseWithOutTeacher.getValue("endDate2");
+
+                            countErrorStartDate = 0;
+                            if (startDate2 && startDate > startDate2 && reasonErrorStartDate2 != "startDate2LessThanStartDate") {
+                                DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("startDate2", true);
+                                DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("startDate2", "<spring:message code='msg.equal.less.start.date'/>", true);
+                                reasonErrorStartDate = "startDate2LessThanStartDate";
+                                countErrorStartDate++;
+                            }
+                            if (endDate && startDate > endDate && reasonErrorEndDate != "endDateLessThanStartDate") {
+                                DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("startDate", true);
+                                DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("startDate", "<spring:message code='msg.equal.less.end.date'/>", true);
+                                reasonErrorStartDate = "endDateLessThanStartDate"
+                                countErrorStartDate++;
+                            }
+                            if (endDate2 && startDate > endDate2 && reasonErrorEndDate2 != "endDate2LessThanStartDate") {
+                                DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("startDate", true);
+                                DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("startDate", "<spring:message code='msg.equal.less.end.date'/>", true);
+                                reasonErrorStartDate = "endDate2LessThanStartDate";
+                                countErrorStartDate++;
+                            }
+                            if(countErrorStartDate == 0)
+                                reasonErrorStartDate = "";
+                        }
+                    }
+                    else {
                         DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("startDate", true);
-                    endDateCheckReportCWOT = true;
-                    var endDate = DynamicForm_Report_CourseWithOutTeacher.getValue("endDate");
-                    var startDate = DynamicForm_Report_CourseWithOutTeacher.getValue("startDate");
-                    if (endDate != undefined && startDate > endDate) {
-                        DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
-                        DynamicForm_Report_CourseWithOutTeacher.getItem("endDate").setValue("");
-                        endDateCheckReportCWOT = false;
+                        reasonErrorStartDate = "";
+                        if(reasonErrorStartDate2 == "startDate2LessThanStartDate"){
+                            DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("startDate2", true);
+                            reasonErrorStartDate2 = "";
+                        }
+                        if (reasonErrorEndDate == "endDateLessThanStartDate") {
+                            DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate", true);
+                            reasonErrorEndDate = "";
+                        }
+                        if(reasonErrorEndDate2 == "endDate2LessThanStartDate"){
+                            DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate2", true);
+                            reasonErrorEndDate2 = "";
+                        }
                     }
                 }
             },
 
             {
-                name: "endDate",
+                name: "startDate2",
                 // height: 35,
                 //  width:"1%",
                 //  titleColSpan: 1,
                 title: "تا",
                 titleAlign:"center",
-                ID: "endDate_jspReport",
+                ID: "startDate2_jspReport",
                 // required: true,
                 hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
@@ -220,42 +285,72 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
                         closeCalendarWindow();
-                        displayDatePicker('endDate_jspReport', this, 'ymd', '/');
+                        displayDatePicker('startDate2_jspReport', this, 'ymd', '/');
 
                     }
                 }],
                 editorExit:function(){
-                    let result=reformat(DynamicForm_Report_CourseWithOutTeacher.getValue("endDate"));
+                    let result=reformat(DynamicForm_Report_CourseWithOutTeacher.getValue("startDate2"));
                     if (result){
-                        DynamicForm_Report_CourseWithOutTeacher.getItem("endDate").setValue(result);
-                        DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate", true);
+                        DynamicForm_Report_CourseWithOutTeacher.getItem("startDate2").setValue(result);
                     }
                 },
                 blur: function () {
 
-                    var dateCheck;
-                    dateCheck = checkDate(DynamicForm_Report_CourseWithOutTeacher.getValue("endDate"));
-                    var endDate = DynamicForm_Report_CourseWithOutTeacher.getValue("endDate");
-                    var startDate = DynamicForm_Report_CourseWithOutTeacher.getValue("startDate");
-                    if (dateCheck == false) {
-                        DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate", true);
-                        DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
-                        endDateCheckReportCWOT = false;
-                    }
-                    if (dateCheck == true) {
-                        if (startDate == undefined)
-                            DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate", true);
-                        DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
-                        endDateCheckReportCWOT = false;
-                        if (startDate != undefined && startDate > endDate) {
-                            DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate", true);
-                            DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
-                            endDateCheckReportCWOT = false;
+                    let dateCheck;
+                    if (DynamicForm_Report_CourseWithOutTeacher.getValue("startDate2")) {
+                        dateCheck = checkDate(DynamicForm_Report_CourseWithOutTeacher.getValue("startDate2"));
+                        let startDate2 = DynamicForm_Report_CourseWithOutTeacher.getValue("startDate2");
+                        let startDate = DynamicForm_Report_CourseWithOutTeacher.getValue("startDate");
+                        if (dateCheck == false) {
+                            DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("startDate2", true);
+                            DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("startDate2", "<spring:message code='msg.correct.date'/>", true);
                         }
-                        if (startDate != undefined && startDate < endDate) {
-                            DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate", true);
+                        if (dateCheck == true) {
+                            DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("startDate2", true);
+
+                            let endDate = DynamicForm_Report_CourseWithOutTeacher.getValue("endDate");
+                            let endDate2 = DynamicForm_Report_CourseWithOutTeacher.getValue("endDate2");
+
+                            countErrorStartDate2 = 0;
+
+                            if (startDate && startDate2 < startDate && reasonErrorStartDate != "startDate2LessThanStartDate") {
+                                DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("startDate2", true);
+                                DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("startDate2", "<spring:message code='msg.equal.less.start.date'/>", true);
+                                reasonErrorStartDate2 = "startDate2LessThanStartDate";
+                                countErrorStartDate2++;
+                            }
+                            if (endDate && startDate2 > endDate && reasonErrorEndDate != "endDateLessThanStartDate2" ) {
+                                DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("startDate2", true);
+                                DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("startDate2", "<spring:message code='msg.equal.less.end.date'/>", true);
+                                reasonErrorStartDate2 = "endDateLessThanStartDate2"
+                                countErrorStartDate2++;
+                            }
+                            if (endDate2 && startDate2 > endDate2 && reasonErrorEndDate2 != "endDate2LessThanStartDate2" ) {
+                                DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate2", true);
+                                DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("startDate2", "<spring:message code='msg.equal.less.end.date'/>", true);
+                                reasonErrorStartDate2 = "endDate2LessThanStartDate2";
+                                countErrorStartDate2++;
+                            }
+                            if(countErrorStartDate2 == 0)
+                                reasonErrorStartDate2 = "";
+                        }
+
+                    }
+                    else{
+                        DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("startDate2", true);
+                        reasonErrorStartDate2 = "";
+                        if (reasonErrorStartDate == "startDate2LessThanStartDate") {
                             DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("startDate", true);
-                            endDateCheckReportCWOT = true;
+                            reasonErrorStartDate = "";
+                        }
+                        if (reasonErrorEndDate == "endDateLessThanStartDate2") {
+                            DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate", true);
+                            reasonErrorEndDate = "";
+                        }
+                        if (reasonErrorEndDate2 == "endDate2LessThanStartDate2") {
+                            DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate2", true);
+                            reasonErrorEndDate2 = "";
                         }
                     }
                 }
@@ -263,14 +358,14 @@
             },
             {
 
-                name: "startDate2",
+                name: "endDate",
                 //height: 35,
                 // width:"5%",
                 //   titleColSpan: 1,
                 //   colSpan: 2,
                 titleAlign:"center",
                 title: "تاریخ پایان : از",
-                ID: "startDate2_jspReport",
+                ID: "endDate_jspReport",
                 type: 'text',
                 textAlign: "center",
                 // required: true,
@@ -284,33 +379,68 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
                         closeCalendarWindow();
-                        displayDatePicker('startDate2_jspReport', this, 'ymd', '/');
+                        displayDatePicker('endDate_jspReport', this, 'ymd', '/');
                     }
                 }],
 
                 editorExit:function(){
-                    let result=reformat(DynamicForm_Report_CourseWithOutTeacher.getValue("startDate2"));
+                    let result=reformat(DynamicForm_Report_CourseWithOutTeacher.getValue("endDate"));
                     if (result){
-                        DynamicForm_Report_CourseWithOutTeacher.getItem("startDate2").setValue(result);
-                        DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("startDate2", true);
+                        DynamicForm_Report_CourseWithOutTeacher.getItem("endDate").setValue(result);
                     }
                 },
 
                 blur: function () {
-                    var dateCheck;
-                    dateCheck = checkDate(DynamicForm_Report_CourseWithOutTeacher.getValue("startDate2"));
-                    if (dateCheck == false)
-                        DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("startDate2", "<spring:message code='msg.correct.date'/>", true);
-                    endDateCheckReportCWOT = false;
-                    if (dateCheck == true)
-                        DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("startDate2", true);
-                    endDateCheckReportCWOT = true;
-                    var endDate = DynamicForm_Report_CourseWithOutTeacher.getValue("endDate2");
-                    var startDate = DynamicForm_Report_CourseWithOutTeacher.getValue("startDate2");
-                    if (endDate != undefined && startDate > endDate) {
-                        DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("endDate2", "<spring:message code='msg.date.order'/>", true);
-                        DynamicForm_Report_CourseWithOutTeacher.getItem("endDate2").setValue("");
-                        endDateCheckReportCWOT = false;
+                    let dateCheck;
+                    if (DynamicForm_Report_CourseWithOutTeacher.getValue("endDate")) {
+                        dateCheck = checkDate(DynamicForm_Report_CourseWithOutTeacher.getValue("endDate"));
+                        if (dateCheck == false) {
+                            DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
+                        }
+                        if (dateCheck == true) {
+                            DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate", true);
+                            let endDate = DynamicForm_Report_CourseWithOutTeacher.getValue("endDate");
+                            let endDate2 = DynamicForm_Report_CourseWithOutTeacher.getValue("endDate2");
+                            let startDate = DynamicForm_Report_CourseWithOutTeacher.getValue("startDate");
+                            let startDate2 = DynamicForm_Report_CourseWithOutTeacher.getValue("startDate2");
+
+                            countErrorEndDate = 0;
+                            if (startDate &&  endDate < startDate &&  reasonErrorStartDate != "endDateLessThanStartDate") {
+                                DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors(endDate);
+                                DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("endDate", "<spring:message code='msg.equal.less.start.date'/>", true);
+                                reasonErrorEndDate = "endDateLessThanStartDate";
+                                countErrorEndDate++;
+                            }
+                            if (startDate2 &&  endDate < startDate2 && reasonErrorStartDate2 != "endDateLessThanStartDate2") {
+                                DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors(endDate);
+                                DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("endDate", "<spring:message code='msg.equal.less.start.date'/>", true);
+                                reasonErrorEndDate = "endDateLessThanStartDate2";
+                                countErrorEndDate++;
+                            }
+                            if (endDate2 &&   endDate > endDate2 && reasonErrorEndDate2 != "endDate2LessThanEndDate" ) {
+                                DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors(endDate);
+                                DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("endDate", "<spring:message code='msg.equal.less.end.date'/>", true);
+                                reasonErrorEndDate = "endDate2LessThanEndDate";
+                                countErrorEndDate++;
+                            }
+                            if(countErrorEndDate == 0)
+                                reasonErrorEndDate = "";
+                        }
+                    }else{
+                        DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate", true);
+                        reasonErrorEndDate = "";
+                        if (reasonErrorStartDate == "endDateLessThanStartDate") {
+                            DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("startDate", true);
+                            reasonErrorStartDate = "";
+                        }
+                        if (reasonErrorStartDate2 == "endDateLessThanStartDate2") {
+                            DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("startDate2", true);
+                            reasonErrorStartDate2 = "";
+                        }
+                        if (reasonErrorEndDate2 == "endDate2LessThanEndDate") {
+                            DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate2", true);
+                            reasonErrorEndDate2 = "";
+                        }
                     }
                 }
             },
@@ -344,34 +474,65 @@
                     let result=reformat(DynamicForm_Report_CourseWithOutTeacher.getValue("endDate2"));
                     if (result){
                         DynamicForm_Report_CourseWithOutTeacher.getItem("endDate2").setValue(result);
-                        DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate2", true);
                     }
                 },
                 blur: function () {
 
-                    var dateCheck;
-                    dateCheck = checkDate(DynamicForm_Report_CourseWithOutTeacher.getValue("endDate2"));
-                    var endDate = DynamicForm_Report_CourseWithOutTeacher.getValue("endDate2");
-                    var startDate = DynamicForm_Report_CourseWithOutTeacher.getValue("startDate2");
-                    if (dateCheck == false) {
-                        DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate2", true);
-                        DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("endDate2", "<spring:message code='msg.correct.date'/>", true);
-                        endDateCheckReportCWOT = false;
-                    }
-                    if (dateCheck == true) {
-                        if (startDate == undefined)
+                    let dateCheck;
+                    if (DynamicForm_Report_CourseWithOutTeacher.getValue("endDate2")) {
+                        dateCheck = checkDate(DynamicForm_Report_CourseWithOutTeacher.getValue("endDate2"));
+                        let endDate2 = DynamicForm_Report_CourseWithOutTeacher.getValue("endDate2");
+                        let endDate = DynamicForm_Report_CourseWithOutTeacher.getValue("endDate");
+                        if (dateCheck == false) {
                             DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate2", true);
-                        DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("startDate2", "<spring:message code='msg.correct.date'/>", true);
-                        endDateCheckReportCWOT = false;
-                        if (startDate != undefined && startDate > endDate) {
-                            DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate2", true);
-                            DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("endDate2", "<spring:message code='msg.date.order'/>", true);
-                            endDateCheckReportCWOT = false;
+                            DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("endDate2", "<spring:message code='msg.correct.date'/>", true);
                         }
-                        if (startDate != undefined && startDate < endDate) {
+                        if (dateCheck == true) {
+
                             DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate2", true);
+                            countErrorEndDate2 = 0;
+
+                            let startDate2 = DynamicForm_Report_CourseWithOutTeacher.getValue("startDate2");
+                            let startDate = DynamicForm_Report_CourseWithOutTeacher.getValue("startDate");
+
+                            if (startDate  && endDate2 < startDate && reasonErrorStartDate != "endDate2LessThanStartDate" ) {
+                                DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate2", true);
+                                DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("endDate2", "<spring:message code='msg.equal.less.start.date'/>", true);
+                                reasonErrorEndDate2 = "endDate2LessThanStartDate";
+                                countErrorEndDate2++;
+                            }
+                            if (startDate2  && endDate2 < startDate2 && reasonErrorStartDate2 != "endDate2LessThanStartDate2") {
+                                DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate2", true);
+                                DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("endDate2", "<spring:message code='msg.equal.less.start.date'/>", true);
+                                reasonErrorEndDate2 = "endDate2LessThanStartDate2";
+                                countErrorEndDate2++;
+                            }
+                            if (endDate &&  endDate2 < endDate && reasonErrorEndDate != "endDate2LessThanEndDate") {
+                                DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate2", true);
+                                DynamicForm_Report_CourseWithOutTeacher.addFieldErrors("endDate2", "<spring:message code='msg.equal.less.end.date'/>", true);
+                                reasonErrorEndDate2 = "endDate2LessThanEndDate";
+                                countErrorEndDate2++;
+                            }
+                            if(countErrorEndDate2 ==0)
+                                reasonErrorEndDate2 = "";
+                        }
+                    }else{
+                        DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate2", true);
+                        reasonErrorEndDate2 = "";
+                        if(reasonErrorStartDate == "endDate2LessThanStartDate")
+                        {
+                            DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("startDate", true);
+                            reasonErrorStartDate = "";
+                        }
+                        if(reasonErrorStartDate2 == "endDate2LessThanStartDate2")
+                        {
                             DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("startDate2", true);
-                            endDateCheckReportCWOT = true;
+                            reasonErrorStartDate2= "";
+                        }
+                        if(reasonErrorEndDate == "endDate2LessThanEndDate")
+                        {
+                            DynamicForm_Report_CourseWithOutTeacher.clearFieldErrors("endDate", true);
+                            reasonErrorEndDate= "";
                         }
                     }
                 }
@@ -439,7 +600,6 @@
                     ]
                 },
                 changed: function (form, item, value) {
-                    console.log(value.size())
                     if (value != null && value != undefined && value.size() == 1) {
                         DynamicForm_Report_CourseWithOutTeacher.getField("termFilters").setValue([])
                         let criteria= '{"fieldName":"startDate","operator":"iStartsWith","value":"' + value[0] + '"}';
@@ -479,6 +639,7 @@
                 titleAlign:"center",
                 endRow:false,
                 startRow:true,
+                disabled: true,
                 textAlign: "center",
                 type: "SelectItem",
                 multiple: true,
@@ -667,44 +828,8 @@
                     }
                 ],
             },
-
-            {type: "SpacerItem"},
-            {type: "SpacerItem",colSpan:3},
-            {type: "SpacerItem"},
-            {
-                type: "button",
-                title: "تهیه گزارش",
-                width:418,
-                colSpan:3,
-                // align:"left",
-                titleAlign:"center",
-                endRow:false,
-                startRow: false,
-                click:function () {
-
-
-                    if (endDateCheckReportCWOT == false)
-                        return;
-
-                    if (!DynamicForm_Report_CourseWithOutTeacher.validate()) {
-                        return;
-                    }
-                    modalDialog=createDialog('wait');
-                    let strSData =(!DynamicForm_Report_CourseWithOutTeacher.getItem("startDate").getValue() ? '13000101' : DynamicForm_Report_CourseWithOutTeacher.getItem("startDate").getValue().replace(/(\/)/g, ""));
-                    let strEData =(!DynamicForm_Report_CourseWithOutTeacher.getItem("endDate").getValue() ? '19000101' : DynamicForm_Report_CourseWithOutTeacher.getItem("endDate").getValue().replace(/(\/)/g, ""));
-                    let strSData2 =(!DynamicForm_Report_CourseWithOutTeacher.getItem("startDate2").getValue() ? '13000101': DynamicForm_Report_CourseWithOutTeacher.getItem("startDate2").getValue().replace(/(\/)/g, ""));
-                    let strEData2 =(!DynamicForm_Report_CourseWithOutTeacher.getItem("endDate2").getValue() ? '19000101' : DynamicForm_Report_CourseWithOutTeacher.getItem("endDate2").getValue().replace(/(\/)/g, ""));
-                    let Years = (!DynamicForm_Report_CourseWithOutTeacher.getField("tclassYears").getValue()  ?  "" : DynamicForm_Report_CourseWithOutTeacher.getField("tclassYears").getValue()) ;
-                    let termId =(!DynamicForm_Report_CourseWithOutTeacher.getField("termFilters").getValue()  ?  "" : DynamicForm_Report_CourseWithOutTeacher.getField("termFilters").getValue());
-                    let courseId =(!DynamicForm_Report_CourseWithOutTeacher.getField("courseId").getValue()  ?  "" : DynamicForm_Report_CourseWithOutTeacher.getField("courseId").getValue());
-                    let teacherId =(!DynamicForm_Report_CourseWithOutTeacher.getField("teacherId").getValue()  ?  "" : DynamicForm_Report_CourseWithOutTeacher.getField("teacherId").getValue());
-                    RestDataSource_CourseWithOutTeacher.fetchDataURL=courseUrl + "courseWithOutTeacher"+"/"+strSData + "/" + strEData +"?strSData2=" +strSData2  +"&strEData2=" +strEData2 +"&Years=" +Years +"&termId=" +termId + "&courseId=" +courseId+ "&teacherId="+teacherId;
-                    List_Grid_Reaport_CourseWithOutTeacher.invalidateCache();
-                    List_Grid_Reaport_CourseWithOutTeacher.fetchData();
-                }
-            },
-
         ]
+
     })
 
     var ToolStrip_ToolStrip_Personnel_Info_Training_Action = isc.ToolStrip.create({
@@ -723,14 +848,68 @@
 
 
     var Hlayout_Reaport_body =  isc.VLayout.create({
-        width: "500px",
+        //width: "500px",
         height: "100%",
-        members: [DynamicForm_Report_CourseWithOutTeacher]
+        members: [DynamicForm_Report_CourseWithOutTeacher, isc.HLayout.create({
+            width: "500px",
+            height: "55%",
+            layoutAlign:"center",
+            align:"center",
+            members:[
+                isc.IButton.create({
+                    title: "تهیه گزارش",
+                    width: "120px",
+                    iconOrientation: "right",
+                    titleAlign: "center",
+                    click: function () {
+
+                        if (!DynamicForm_Report_CourseWithOutTeacher.validate()) {
+                            return;
+                        }
+                        if (reasonErrorStartDate != "" || reasonErrorStartDate2 != "" || reasonErrorEndDate != "" || reasonErrorEndDate2 != "") {
+                            isc.Dialog.create({
+                                message: "تاریخ های وارد شده برای ایجاد گزارش مناسب نیستند",
+                                icon: "[SKIN]ask.png",
+                                title: "<spring:message code='message'/>",
+                                buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
+                                buttonClick: function (button, index) {
+                                    this.close();
+                                }
+                            });
+                            return;
+
+                        }
+                        criteria = DynamicForm_Report_CourseWithOutTeacher.getValuesAsAdvancedCriteria();
+                        if (criteria == null || criteria.criteria.size() <= 0) {
+                            isc.Dialog.create({
+                                message: "<spring:message code='msg.no.filter.selected'/>",
+                                icon: "[SKIN]ask.png",
+                                title: "<spring:message code='message'/>",
+                                buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
+                                buttonClick: function (button, index) {
+                                    this.close();
+                                }
+                            });
+                        } else {
+                            //modalDialog = createDialog('wait');
+                            List_Grid_Reaport_CourseWithOutTeacher.invalidateCache();
+                            RestDataSource_CourseWithOutTeacher.fetchDataURL = courseUrl + "courseWithOutClass";
+                            List_Grid_Reaport_CourseWithOutTeacher.fetchData({
+                                _constructor: "AdvancedCriteria",
+                                operator: "and",
+                                criteria: criteria.criteria
+                            });
+                            ButtonExcel.setDisabled(false);
+                        }
+                    }
+                })
+            ]
+        })]
         //, Hlayout__Personnel_Info_Training_body_CWOTR]
     })
 
     var Hlayout_Reaport_body1= isc.VLayout.create({
-        width: "50%",
+        width: "70%",
         height: "100%",
         border: "1px solid gray",
         members:[List_Grid_Reaport_CourseWithOutTeacher],

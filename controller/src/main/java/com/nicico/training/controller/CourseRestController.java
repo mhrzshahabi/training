@@ -522,34 +522,38 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     }
 
     @Loggable
-    @GetMapping(value = "courseWithOutTeacher/{startdate}/{endDate}")
+    @GetMapping(value = "courseWithOutClass")
     //@PreAuthorize("hasAuthority('r_teacher')")
     //TODO:Unknown
-    public ResponseEntity<CourseDTO.SpecRs> getcourseWithOutTeacher(@PathVariable String startdate, @PathVariable String endDate,@RequestParam(value = "strSData2") String strSData2,@RequestParam(value = "strEData2") String strEData2,@RequestParam(value = "Years") String Years,@RequestParam(value = "termId") String termId,@RequestParam(value = "courseId") String courseId,@RequestParam(value = "teacherId") String teacherId) {
-        String[] years=(!Years.equals("") ? Years.split(","): new String[]{});
+    public ResponseEntity<CourseDTO.WithOutClassSpecRs> getCourseWithOutClass(
+                                                                                @RequestParam(value = "criteria", required = false) String criteria,
+                                                                                @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 
-        String[] term= (!termId.equals("") && !Years.equals("") ? termId.split(",") : new String[]{"null"});
-        List<Long> termIds= (!term[0].equals("null")  ? Arrays.stream(term).map(x->Long.parseLong(x)).collect(Collectors.toList()) : new ArrayList(Arrays.asList(new Long[]{})));
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
-        String[] course= (!courseId.equals("") ? courseId.split(",") : new String[]{"null"});
-        List<Long> courseIds=(!course[0].equals("null") ?  Arrays.stream(course).map(x->Long.parseLong(x)).collect(Collectors.toList()) : new ArrayList(Arrays.asList(new Long[]{})));
+        SearchDTO.CriteriaRq criteriaRq;
+        criteria = "[" + criteria + "]";
+        criteriaRq = new SearchDTO.CriteriaRq();
+        criteriaRq.setOperator(EOperator.valueOf("and"))
+                .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                }));
+        request.setCriteria(criteriaRq);
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
 
-        String[] teacher= (!teacherId.equals("") ? teacherId.split(","):new String[]{"null"});
-        List<Long> teacherIds= (!teacher[0].equals("null") ? Arrays.stream(teacher).map(x->Long.parseLong(x)).collect(Collectors.toList()) :new ArrayList(Arrays.asList(new Long[]{})));
+        final SearchDTO.SearchRs<CourseDTO.courseWithOutTeacher> response = iCourseService.courseWithOutTeacher(request);
 
-        startdate = startdate.substring(0, 4) + "/" + startdate.substring(4, 6) + "/" + startdate.substring(6, 8);
-        endDate = endDate.substring(0, 4) + "/" + endDate.substring(4, 6) + "/" + endDate.substring(6, 8);
-        strSData2 = strSData2.substring(0, 4) + "/" + strSData2.substring(4, 6) + "/" + strSData2.substring(6, 8);
-        strEData2 = strEData2.substring(0, 4) + "/" + strEData2.substring(4, 6) + "/" + strEData2.substring(6, 8);
-        List<CourseDTO.courseWithOutTeacher> list = courseService.courseWithOutTeacher(startdate,endDate,strSData2,strEData2,years,termIds,courseIds,teacherIds);
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
-        specResponse.setData(list)
+        final CourseDTO.WithOutClassSpecRs specRs = new CourseDTO.WithOutClassSpecRs();
+        specResponse.setData(response.getList())
                 .setStartRow(0)
-                .setEndRow(list.size())
-                .setTotalRows(list.size());
-        final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
+                .setEndRow(response.getTotalCount().intValue())
+                .setTotalRows(response.getTotalCount().intValue());
+
         specRs.setResponse(specResponse);
-        return new ResponseEntity(specRs, HttpStatus.OK);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
 
