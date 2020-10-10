@@ -2524,7 +2524,7 @@ SELECT distinct
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW-CLASS-DETAIL-005">
+    <changeSet author="NICICO" id="VIEW-CLASS-DETAIL-006">
         <createView viewName="view_class_detail" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -2557,6 +2557,7 @@ SELECT
         tclass.START_EVALUATION as START_EVALUATION,
         tclass.F_CANCEL_CLASS_REASON as CANCEL_REASON_ID,
         tclass.C_POSTPONE_START_DATE as POSTPONE_DATE,
+        tclass.c_teaching_type as tclass_teaching_type,
         personalInfo.C_FIRST_NAME_FA as teacher_First_Name,
         personalInfo.C_LAST_NAME_FA as teacher_Last_Name,
         SUBSTR(tclass.C_START_DATE,1,4) as tclass_year,
