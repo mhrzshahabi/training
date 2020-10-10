@@ -15,6 +15,7 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.mapper.TrainingClassBeanMapper;
+import com.nicico.training.mapper.tclass.TclassBeanMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.tclass.dto.TclassDto;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -56,6 +58,7 @@ public class TclassService implements ITclassService {
     private final ParameterValueDAO parameterValueDAO;
     private final TrainingClassBeanMapper trainingClassBeanMapper;
     private final EvaluationAnalysisDAO evaluationAnalysisDAO;
+    private final TclassBeanMapper tclassBeanMapper;
     private DecimalFormat numberFormat = new DecimalFormat("#.00");
 
     @Transactional(readOnly = true)
@@ -119,7 +122,7 @@ public class TclassService implements ITclassService {
     }
 
     @Transactional
-    public TclassDTO.Info safeCreate(TclassDTO.Create request, HttpServletResponse response) {
+    public TclassDto safeCreate(TclassDTO.Create request, HttpServletResponse response) {
         final Tclass tclass = modelMapper.map(request, Tclass.class);
         if (checkDuration(tclass)) {
             List<Long> list = request.getTrainingPlaceIds();
@@ -129,8 +132,8 @@ public class TclassService implements ITclassService {
                 tclass.setTrainingPlaceSet(set);
             }
             Tclass save = tclassDAO.save(tclass);
-            save.setTargetSocietyList(saveTargetSocieties(request.gettargetSocieties(), request.getTargetSocietyTypeId(), save.getId()));
-            return modelMapper.map(save, TclassDTO.Info.class);
+            save.setTargetSocietyList(saveTargetSocieties(request.getTargetSocieties(), request.getTargetSocietyTypeId(), save.getId()));
+            return tclassBeanMapper.toTclassResponse(save);
         } else {
             try {
                 Locale locale = LocaleContextHolder.getLocale();
@@ -143,7 +146,7 @@ public class TclassService implements ITclassService {
     }
 
     @Transactional
-    public TclassDTO.Info update(Long id, TclassDTO.Update request, List<Long> cancelClassesIds) {
+    public TclassDto update(Long id, TclassDTO.Update request, List<Long> cancelClassesIds) {
         final Optional<Tclass> cById = tclassDAO.findById(id);
         final Tclass tclass = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
         Long classOldSupervisor = tclass.getSupervisorId();
@@ -211,9 +214,7 @@ public class TclassService implements ITclassService {
         }
         //-----------------------------------------------------
 
-        TclassDTO.Info info = new TclassDTO.Info();
-        info.setId(updatedClass.getId());
-        return info;
+        return tclassBeanMapper.toTclassResponse(updatedClass);
     }
 
     @Transactional

@@ -1761,18 +1761,20 @@
             wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(classSaveUrl, classMethod, JSON.stringify(data), (resp) => {
                 wait.close();
-                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                let response = JSON.parse(resp.httpResponseText);
+                console.log(response);
+                if (response.status === 200 || response.status === 201) {
                     if (classMethod.localeCompare("POST") === 0) {
-                        Training_Reaction_Form_Inssurance_JspClass(JSON.parse(resp.httpResponseText));
+                        Training_Reaction_Form_Inssurance_JspClass(response.record);
                     }
                     if (classMethod.localeCompare("PUT") === 0) {
                         sendEndingClassToWorkflow();
-                        sendToWorkflowAfterUpdate(JSON.parse(resp.data));
+                        sendToWorkflowAfterUpdate(response.record);
                     }
                     ListGrid_Class_refresh();
-                    let responseID = JSON.parse(resp.data).id;
+                    let responseID = response.record.id;
                     let gridState = "[{id:" + responseID + "}]";
-                    simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
+                    simpleDialog("<spring:message code="message"/>", response.message, 3000, "say");
                     setTimeout(function () {
                         ListGrid_Class_JspClass.setSelectedState(gridState);
                         ListGrid_Class_JspClass.scrollToRow(ListGrid_Class_JspClass.getRecordIndex(ListGrid_Class_JspClass.getSelectedRecord()), 0);
@@ -1782,7 +1784,7 @@
                     //**********generate class sessions**********
                     if (!VM_JspClass.hasErrors() && ((classMethod.localeCompare("POST") === 0) || (classMethod.localeCompare("PUT") === 0 && ListGrid_session.getData().localData.length > 0 ? false : true && VM_JspClass.getValues().autoValid))) {
                         if (autoValid) {
-                            ClassID = JSON.parse(resp.data).id;
+                            let ClassID = response.record.id;
                             wait.show();
                             isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "generateSessions" + "/" + ClassID, "POST", JSON.stringify(data), (resp) => {
                                 wait.close();
@@ -1793,7 +1795,7 @@
                     //**********generate class sessions**********
 
                 } else {
-                    simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", "3000", "error");
+                    simpleDialog("<spring:message code="message"/>", response.message, "0", "error");
                 }
             }));
         }
@@ -2001,12 +2003,6 @@
         title: "<spring:message code='copy.of.class'/>",
         click: function () {
             ListGrid_class_edit(1);
-            setTimeout(function () {
-                evalGroup();
-            }, 200);
-            setTimeout(function () {
-                classCode();
-            }, 700);
         }
     });
     </sec:authorize>
@@ -3015,23 +3011,25 @@
     }
 
     function classCode() {
-        if (DynamicForm_Class_JspClass.getItem("course.id").getSelectedRecord()!= null) //bug fix
-            DynamicForm_Class_JspClass.setValue("code", DynamicForm_Class_JspClass.getItem("course.id").getSelectedRecord().code + "-" + DynamicForm_Class_JspClass.getItem("termId").getSelectedRecord().code + "-" + DynamicForm_Class_JspClass.getValue("group"));
+        if (DynamicForm_Class_JspClass.getItem("course.id").getSelectedRecord()!== undefined) //bug fix
+            DynamicForm_Class_JspClass.setValue("code", DynamicForm_Class_JspClass.getItem("course.id").getSelectedRecord().code + "-" + DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord().code + "-" + DynamicForm_Class_JspClass.getValue("group"));
     }
 
     function evalGroup() {
-        let tid = DynamicForm_Class_JspClass.getValue("termId");
-        let cid = DynamicForm_Class_JspClass.getValue("course.id");
-        if (tid && cid) {
-            wait.show();
-            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "end_group/" + cid + "/" + tid, "GET", null, resp => {
-                wait.close();
-                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                    DynamicForm_Class_JspClass.setValue("group", JSON.parse(resp.data));
-                    classCode();
-                }
-            }));
-        }
+        setTimeout(()=>{
+            let tid = DynamicForm1_Class_JspClass.getValue("termId");
+            let cid = DynamicForm_Class_JspClass.getValue("course.id");
+            if (tid && cid) {
+                wait.show();
+                isc.RPCManager.sendRequest(TrDSRequest(classUrl + "end_group/" + cid + "/" + tid, "GET", null, resp => {
+                    wait.close();
+                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                        DynamicForm_Class_JspClass.setValue("group", JSON.parse(resp.data));
+                        classCode();
+                    }
+                }));
+            }
+        },500)
     }
 
     function class_action_result(resp) {
@@ -3413,7 +3411,6 @@
     function sendToWorkflowAfterUpdate(selectedRecord) {
 
         let sRecord = selectedRecord;
-
         if (sRecord !== null && sRecord.id !== null && class_workflowParameters !== null) {
 
             if (sRecord.workflowEndingStatusCode === -1 || sRecord.workflowEndingStatusCode === -2) {
