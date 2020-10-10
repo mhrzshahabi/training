@@ -2601,13 +2601,7 @@
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/teacher-information-tab"})
             },
             </sec:authorize>
-            <sec:authorize access="hasAuthority('TclassPreCourseTestQuestionsTab')">
-            <%--{--%>
-            <%--ID: "classPreCourseTestQuestionsTab",--%>
-            <%--title: "<spring:message code='class.preCourseTestQuestion'/>",--%>
-            <%--pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/pre-course-test-questions-tab"})--%>
-            <%--},--%>
-            </sec:authorize>
+
             <sec:authorize access="hasAuthority('TclassAttachmentsTab')">
             {
                 ID: "classAttachmentsTab",
@@ -2625,11 +2619,6 @@
                 title: "ثبت هزینه کلاس",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/class-costs-tab"})
             },
-            <%--{--%>
-            <%--ID: "costClassTab",--%>
-            <%--title: "<spring:message code='cost.class'/>",--%>
-            <%--pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/cost-class-tab"})--%>
-            <%--}--%>
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
             if (isc.Page.isLoaded())
@@ -2696,7 +2685,7 @@
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            if (record.classStatus === "4") {
+            if ((a===0)&&(record.classStatus === "4")) {
                 let dialog = createDialog("ask", "کلاس انتخاب شده لغو شده است در صورت ویرایش وضعیت کلاس به حالت برنامه ریزی برمیگردد. از ویرایش کلاس مطمئن هستید؟", "هشدار");
                 dialog.addProperties({
                     buttonClick: function (button, index) {
@@ -2798,10 +2787,23 @@
                     } else {
                         classMethod = "POST";
                         url = classUrl;
-
-                        record.classStudents.length = 0;
-
-                        VM_JspClass.editRecord(record);
+                        DynamicForm_Class_JspClass.setValue("course.id", record.course.id);
+                        DynamicForm_Class_JspClass.setValue("course.theoryDuration", record.course.theoryDuration);
+                        DynamicForm_Class_JspClass.setValue("minCapacity", record.minCapacity);
+                        DynamicForm_Class_JspClass.setValue("maxCapacity", record.maxCapacity);
+                        DynamicForm_Class_JspClass.setValue("titleClass", record.titleClass);
+                        DynamicForm_Class_JspClass.setValue("teachingType", record.teachingType);
+                        DynamicForm_Class_JspClass.setValue("topology", record.topology);
+                        DynamicForm_Class_JspClass.setValue("hduration", record.hduration);
+                        DynamicForm_Class_JspClass.setValue("reason", record.reason);
+                        DynamicForm_Class_JspClass.setValue("organizerId", record.organizerId);
+                        DynamicForm_Class_JspClass.setValue("instituteId", record.instituteId);
+                        DynamicForm_Class_JspClass.setValue("trainingPlaceIds", record.trainingPlaceIds);
+                        DynamicForm_Class_JspClass.setValue("scoringMethod", record.scoringMethod);
+                        DynamicForm_Class_JspClass.setValue("preCourseTest", record.preCourseTest);
+                        DynamicForm_Class_JspClass.setValue("evaluation", record.evaluation);
+                        DynamicForm_Class_JspClass.setValue("startEvaluation", record.startEvaluation);
+                        DynamicForm_Class_JspClass.setValue("behavioralLevel", record.behavioralLevel);
 
                         if (userPersonInfo != null) {
                             DynamicForm_Class_JspClass.setValue("supervisor", userPersonInfo.id);
@@ -2839,7 +2841,6 @@
                         } else
                             DynamicForm_Class_JspClass.getItem("preCourseTest").show();
 
-                        DynamicForm_Class_JspClass.getItem("classStatus").setValue(1);
                         DynamicForm_Class_JspClass.getField("classStatus").getItem(1).disable();
                         DynamicForm_Class_JspClass.getField("classStatus").getItem(2).disable();
 
@@ -2849,17 +2850,10 @@
                             DynamicForm1_Class_JspClass.setValue(item,false);
                         });
 
-                        DynamicForm_Class_JspClass.setValue("teacherId",undefined);
-                        DynamicForm_Class_JspClass.setValue("supervisorId", undefined);
-                        DynamicForm_Class_JspClass.setValue("plannerId", undefined);
-
-                        DynamicForm1_Class_JspClass.setValue("startDate","");
-                        DynamicForm1_Class_JspClass.setValue("endDate","");
-
                         DynamicForm_Class_JspClass.getItem("acceptancelimit").setDisabled(false);
                         DynamicForm_Class_JspClass.getItem("scoringMethod").setDisabled(false);
 
-                        autoTimeActivation(active = true);
+                        autoTimeActivation();
                     }
                 }));
             }
@@ -2961,9 +2955,7 @@
                         ID: "DynamicFormPostponeClass",
                         numCols: 4,
                         validateOnChange: true,
-                        // colWidths: [120, 20, 50, 100],
                         readOnlyDisplay: "readOnly",
-                        // cellBorder:1,
                         fields: [
                             {
                                 name: "classCancelReasonId",
@@ -2983,15 +2975,12 @@
                                 type: "checkbox",
                                 colSpan: 4,
                                 title: "در تاریخ دیگری اجرا میشود.",
-                                // titleOrientation: "top",
-                                // labelAsTitle: true,
                                 endRow: false,
                                 changed(form, item, value) {
                                     if (value) {
                                         form.getItem("postponeStartDate").show();
                                         form.getItem("alternativeClassId").show();
                                         form.getItem("postponeStartDate").required = true;
-                                        // form.getItem("alternativeClassId").required = false;
                                     } else {
                                         form.clearValue("postponeStartDate");
                                         form.clearValue("alternativeClassId");
@@ -3004,7 +2993,6 @@
                             {
                                 name: "postponeStartDate",
                                 colSpan: 4,
-// type:"staticText",
                                 ID: "startDate_CancelClass_jspClass",
                                 title: "<spring:message code='start.date'/>:",
                                 hint: "--/--/----",
@@ -3024,7 +3012,6 @@
                                     if (dateCheck === false) {
                                         form.addFieldErrors("postponeStartDate", "<spring:message code='msg.correct.date'/>", true);
                                     }
-                                    ;
                                 }
                             },
                             {
@@ -3052,9 +3039,6 @@
                                 optionDataSource: RestDataSource_Class_JspClass,
                                 displayField: "titleClass",
                                 valueField: "id",
-                                // addUnknownValues: false,
-                                // textMatchStyle: "substring",
-                                // generateExactMatchCriteria: true,
                                 filterFields: ["titleClass", "code"],
                                 pickListFields: [
                                     {name: "code", title: "کد کلاس", autoFitWidth: true},
@@ -3065,7 +3049,6 @@
                                 ],
                                 pickListProperties: {
                                     showFilterEditor: false,
-                                    // alternateRecordStyles: true,
                                     autoFitWidthApproach: "both",
                                 },
                                 click(form, item) {
@@ -3286,27 +3269,17 @@
     }
 
     function evalGroup() {
-        tid = VM_JspClass.getValue("termId");
-        cid = VM_JspClass.getValue("course.id");
+        let tid = VM_JspClass.getValue("termId");
+        let cid = VM_JspClass.getValue("course.id");
         if (tid && cid) {
-            wait.show()
-            isc.RPCManager.sendRequest({
-                actionURL: classUrl + "end_group/" + cid + "/" + tid,
-                httpMethod: "GET",
-                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                showPrompt: false,
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    wait.close()
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                        VM_JspClass.getItem("group").setValue(JSON.parse(resp.data));
-                        classCode();
-                    }
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "end_group/" + cid + "/" + tid, "GET", null, resp => {
+                wait.close();
+                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                    VM_JspClass.getItem("group").setValue(JSON.parse(resp.data));
+                    classCode();
                 }
-            });
-
+            }));
         }
     }
 
@@ -3388,10 +3361,7 @@
             DynamicForm_Class_JspClass.getItem('scoringMethod').setDisabled(true);
             DynamicForm_Class_JspClass.getItem("acceptancelimit").setDisabled(true);
             DynamicForm_Class_JspClass.getItem("acceptancelimit_a").setDisabled(true);
-            // createDialog("info","کاربر گرامی برای این کلاس فراگیرانی با روش نمره دهی قبلی ثبت شده لطفا بعد از تغییر روش نمره دهی در قسمت ثبت نمرات تغییرات را اعمال کنید","<spring:message code="warning"/>");
         }
-
-
     }
 
     function refreshSelectedTab_class(tab) {
@@ -3439,7 +3409,6 @@
                     }
                     break;
                 }
-
 
                 case "classAttendanceTab": {
                     if (typeof loadPage_Attendance !== "undefined")
@@ -3512,7 +3481,7 @@
     }
 
     function getDaysOfClass(classId) {
-        wait.show()
+        wait.show();
         isc.RPCManager.sendRequest({
             actionURL: attendanceUrl + "/session-date?classId=" + classId,
             httpMethod: "GET",
@@ -3539,7 +3508,6 @@
         }
         isReadOnlyClass = ListGrid_Class_JspClass.getSelectedRecord().workflowEndingStatusCode === 2;
         TabSet_Class.enable();
-
         <sec:authorize access="hasAuthority('TclassPreCourseTestQuestionsTab')">
         if (classRecord.preCourseTest && classRecord.evaluation !== "1") {
             //  TabSet_Class.getTab("classPreCourseTestQuestionsTab").show();
@@ -3570,11 +3538,9 @@
                             this.close();
                         }
                     });
-
                     classTypeStatus.setValue(oldValue);
                     highlightClassStauts(oldValue, 10);
                 }
-
             }));
         }
     }
@@ -3600,7 +3566,6 @@
                         });
                     }
                 }
-
             }));
         }
     }
@@ -3696,7 +3661,7 @@
 
     function sendToWorkflowAfterUpdate(selectedRecord) {
 
-        var sRecord = selectedRecord;
+        let sRecord = selectedRecord;
 
         if (sRecord !== null && sRecord.id !== null && class_workflowParameters !== null) {
 
@@ -3713,9 +3678,9 @@
                 class_workflowParameters.workflowdata["workflowStatus"] = "اصلاح پایان کلاس";
                 class_workflowParameters.workflowdata["workflowEndingStatusCode"] = "20";
 
-                var ndat = class_workflowParameters.workflowdata;
+                let ndat = class_workflowParameters.workflowdata;
 
-                wait.show()
+                wait.show();
                 isc.RPCManager.sendRequest({
                     actionURL: workflowUrl + "/doUserTask",
                     httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
@@ -3727,7 +3692,7 @@
                     params: {"taskId": class_workflowParameters.taskId, "usr": class_workflowParameters.usr},
                     serverOutputAsString: false,
                     callback: function (RpcResponse_o) {
-                        wait.close()
+                        wait.close();
                         if (RpcResponse_o.data === 'success') {
 
                             ListGrid_Class_refresh();
@@ -3768,7 +3733,6 @@
                     DataSource_TargetSociety_List.testData.forEach(function (currentValue, index, arr) {
                         DataSource_TargetSociety_List.removeData(currentValue)
                     });
-                    // DynamicForm_Class_JspClass.getItem("addtargetSociety").hide();
                     DynamicForm_Class_JspClass.getItem("targetSocietyTypeId").setValue("371");
                     DynamicForm_Class_JspClass.getItem("targetSocieties")._value = undefined;
                     JSON.parse(resp.data).forEach(currentValue =>
@@ -3807,10 +3771,6 @@
                 DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(selectedSocieties);
             }
         });
-        // singleTargetScoiety.forEach(function (currentValue, index, arr) {
-        //     selectedSocieties.add(currentValue.societyId);
-        // });
-        // DynamicForm_Class_JspClass.getItem("targetSocieties").setValue(selectedSocieties);
     }
 
     function autoTimeActivation(active = true) {
@@ -3823,7 +3783,7 @@
     }
 
     function weekDateActivation(active = true) {
-        var times = [
+        let times = [
             "first", "second", "third", "fourth", "fifth",
             "saturday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday"];
 
@@ -3851,9 +3811,9 @@
         <%--return;--%>
         <%--}--%>
         let sRecord = VM_JspClass.getValues();
-        wait.show()
+        wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(classUrl + "getWorkflowEndingStatusCode/" + sRecord.id, "GET", null, function (resp) {
-            wait.close()
+            wait.close();
             let workflowStatusCode = resp.data;
 
             if (sRecord.classStatus === "3") {
@@ -3885,17 +3845,6 @@
     ////*****load classes by term*****
     function load_classes_by_term(value) {
         if (value !== undefined) {
-            ////*****this criteria is for OR two condition (term.id and classStatus)
-            ////*****this criteria is And with user criteria
-            //old criteria
-            // let criteria = {
-            //     _constructor:"AdvancedCriteria",
-            //     operator:"or",
-            //     criteria:[
-            //         { fieldName:"term.id", operator:"inSet", value: value},
-            //         { fieldName:"classStatus", operator:"notEqual", value: "3"}
-            //     ]
-            // };
             let criteria = {
                 _constructor: "AdvancedCriteria",
                 operator: "and",
