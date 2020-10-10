@@ -6,9 +6,6 @@
 <%@ page import="com.nicico.copper.core.SecurityUtil" %>
 <%@include file="../messenger/MLanding.jsp" %>
 
-<%--<%
-    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-%>--%>
 // <script>
     wait.show();
     var etcTargetSociety = [];
@@ -2009,20 +2006,14 @@
             classCode();
         } else if (resp.httpResponseCode === 407) {
             let respText = JSON.parse(resp.httpResponseText);
-            MyOkDialog_classSession = isc.MyOkDialog.create({
+            let MyOkDialog_classSession = isc.MyOkDialog.create({
                 title: "<spring:message code='message'/>",
                 message: respText.message
             });
-
-            close_MyOkDialog_classSession();
+            setTimeout(function () {
+                MyOkDialog_classSession.close();
+            }, 3000);
         }
-    }
-
-    //*****close dialog*****
-    function close_MyOkDialog_classSession() {
-        setTimeout(function () {
-            MyOkDialog_classSession.close();
-        }, 3000);
     }
 
     var HLayOut_ClassSaveOrExit_JspClass = isc.TrHLayoutButtons.create({
@@ -2036,33 +2027,14 @@
 
     var Window_Class_JspClass = isc.Window.create({
         title: "<spring:message code='class'/>",
-        // width: "90%",
         bodyColor: "#cbeaff",
         autoCenter: false,
         showMaximizeButton: false,
         autoSize: false,
         minWidth: 1024,
         isModal: false,
-        // height: "87%",
         keepInParentRect: true,
         placement: "fillPanel",
-        // align: "center",
-        // border: "1px solid gray",
-// show: function () {
-// this.Super("show", arguments);
-// for (i = 0; i < document.getElementsByClassName("textItemLiteRTL").length; i++) {
-// document.getElementsByClassName("textItemLiteRTL")[i].style.borderRadius = "5px";
-// }
-// ;
-// for (j = 0; j < document.getElementsByClassName("selectItemLiteControlRTL").length; j++) {
-// document.getElementsByClassName("selectItemLiteControlRTL")[j].style.borderRadius = "5px";
-// }
-// ;
-// for (c = 0; c < document.getElementsByClassName("formCellDisabledRTL").length; c++) {
-// document.getElementsByClassName("formCellDisabledRTL")[c].style.borderRadius = "5px";
-// }
-// ;
-// },
         closeClick: function () {
             this.Super("closeClick", arguments);
         },
@@ -2076,8 +2048,6 @@
     var Window_AddCourse_JspClass = isc.Window.create({
         title: "<spring:message code="course.plural.list"/>",
         placement: "fillScreen",
-        // width: "80%",
-        // height: "50%",
         minWidth: 1024,
         keepInParentRect: true,
         autoSize: false,
@@ -2094,11 +2064,7 @@
                         dataSource: RestDataSource_Course_JspClass,
                         selectionType: "single",
                         filterOnKeypress: false,
-                        // autoFetchData:true,
                         fields: [
-                            // {name: "scoringMethod"},
-                            // {name: "acceptancelimit"},
-                            // {name: "startEvaluation"},
                             {
                                 name: "code",
                                 title: "<spring:message code="course.code"/>",
@@ -2147,13 +2113,6 @@
                                 DynamicForm_Class_JspClass.getItem("course.id").changed(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("course.id"));
                                 Window_AddCourse_JspClass.close();
                             }, 1000);
-                            // var criteria = '{"fieldName":"id","operator":"equals","value":"'+record.id+'"}';
-                            // PostDs_needsAssessment.fetchDataURL = postUrl + "/wpIscList?operator=or&_constructor=AdvancedCriteria&criteria="+ criteria;
-                            // DynamicForm_Class_JspClass.getItem("course.id").fetchData(function () {
-                            //     DynamicForm_Class_JspClass.setValue("objectId", record.id);
-                            //     editNeedsAssessmentRecord(record.id, "Post");
-                            // })
-                            // NeedsAssessmentTargetDF_needsAssessment.getItem("objectId").pickListCriteria = {"id" : record.id};
                         }
                     }),
                 ]
@@ -2229,7 +2188,6 @@
 
     <sec:authorize access="hasAuthority('Tclass_P')">
     var ToolStripButton_Print_JspClass = isc.ToolStripButtonPrint.create({
-//icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
             ListGrid_class_print("pdf");
@@ -2297,11 +2255,8 @@
     var DynamicForm_Term_Filter = isc.DynamicForm.create({
         width: "400",
         height: 30,
-        // wrapItemTitles: true,
         numCols: 4,
         colWidths: ["2%", "28%", "2%", "68%"],
-        // align: "center",
-        // titleAlign: "left",
         fields: [
             {
                 name: "yearFilter",
@@ -2316,7 +2271,6 @@
                 filterFields: ["year"],
                 sortField: ["year"],
                 sortDirection: "descending",
-                // defaultToFirstOption: true,
                 useClientFiltering: true,
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
@@ -2355,7 +2309,6 @@
                 filterFields: ["code"],
                 sortField: ["code"],
                 sortDirection: "descending",
-                // defaultToFirstOption: true,
                 useClientFiltering: true,
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]",
@@ -2453,7 +2406,6 @@
 
     DynamicForm_Term_Filter.getField("yearFilter").setValue(todayDate.substring(0, 4));
     load_term_by_year(todayDate.substring(0, 4));
-
 
 
     var ToolStrip_Excel_JspClass = isc.ToolStripButtonExcel.create({
@@ -2871,7 +2823,6 @@
             gridState = "[{id:" + ListGrid_Class_JspClass.getSelectedRecord().id + "}]";
         }
         ListGrid_Class_JspClass.invalidateCache();
-        // ListGrid_Class_JspClass.filterByEditor();
         setTimeout(function () {
             ListGrid_Class_JspClass.setSelectedState(gridState);
         }, 3000);
