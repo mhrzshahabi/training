@@ -6,9 +6,6 @@
 <%@ page import="com.nicico.copper.core.SecurityUtil" %>
 <%@include file="../messenger/MLanding.jsp" %>
 
-<%--<%
-    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-%>--%>
 // <script>
     wait.show();
     var etcTargetSociety = [];
@@ -921,7 +918,6 @@
                         <%--}--%>
                     },
                 ],
-                showIconsOnFocus: true,
                 icons: [{
                     src: "<spring:url value="history.png"/>",
                     prompt: "سوابق تدریس در شرکت مس",
@@ -935,6 +931,8 @@
                         ListGrid_AllStudentsGradeToTeacher_JspClass.fetchData();
                     }
                 }],
+                iconWidth: 50,
+                iconHeight: 24,
 
                 filterFields: [
                     "personality.lastNameFa",
@@ -2161,11 +2159,10 @@
     });
 
     var Window_MoreInformation_JspClass = isc.Window.create({
-        title: "<spring:message code="more.information"/>",
+        title: "سوابق استاد",
         width: "80%",
         height: "60%",
         keepInParentRect: true,
-        // isModal: false,
         autoSize: false,
         items: [
             isc.TrHLayout.create({
@@ -2182,7 +2179,11 @@
                             {name: "endDate", title: "<spring:message code="end.date"/>"},
                             {name: "code", title: "<spring:message code="class.code"/>"},
                             {name: "term", title: "<spring:message code="term"/>"},
-                            {name: "grade", title: "<spring:message code="students.to.teacher.grade"/>"}
+                            {name: "grade", title: "<spring:message code="students.to.teacher.grade"/>",
+                                formatCellValue(value){
+                                    return value == "null" ? "-" : value;
+                                }
+                            }
                         ],
                         gridComponents: ["filterEditor", "header", "body"],
                     }),
@@ -2711,6 +2712,8 @@
             }
 
             function startEdit(record) {
+                VM_JspClass.clearErrors();
+                VM_JspClass.clearValues();
                 DynamicForm_Class_JspClass.setValue("erunType", record.course.erunType);
                 wait.show();
                 isc.RPCManager.sendRequest(TrDSRequest(classUrl + "hasSessions/" + record.id, "GET", null, (resp) => {
