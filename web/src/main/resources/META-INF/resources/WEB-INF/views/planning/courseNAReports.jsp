@@ -309,17 +309,28 @@
             refreshLG_CNAR();
         }
     });
-    var ToolStripButton_Export2EXcel_CNAR = isc.ToolStripButtonExcel.create({
+    let ToolStripButton_Export2EXcel_CNAR = isc.ToolStripButtonExcel.create({
         click: function () {
-            if (CourseLG_CNAR.getSelectedRecord() !== null) {
+            if (CourseLG_CNAR.getSelectedRecord() !== null && valuePersonnelGroup ) {
                 let restUrl = needsAssessmentReportsUrl + "/courseNA?courseId=" + CourseLG_CNAR.getSelectedRecord().id + "&passedReport=true";
-                let fileTitr = "لیست نیازسنجی دوره «" +  CourseLG_CNAR.getSelectedRecord().titleFa+"»";
-                ExportToFile.downloadExcelRestUrl(null, CourseNAReportLG_CNAR,restUrl, 0, CourseLG_CNAR, '', fileTitr, CourseNAReportLG_CNAR.getCriteria(), null);
+                let groupTitle = "";
+                let personnelforGroup =  valuePersonnelGroup;
+                if (selectedGroup_CNAR == 7)
+                    personnelforGroup = PersonnelGroup_CNAR.getField("personnelGroup").getDisplayValue();
+
+                if (personnelforGroup)
+                    groupTitle = MenuButton_GroupType_CNAR.menu.data[selectedGroup_CNAR].title + ": " + personnelforGroup;
+
+                let courseInfo = "<spring:message code='course.code'/>: " + CourseLG_CNAR.getSelectedRecord().code + '   ' + "<spring:message code='course.title'/>: "+ CourseLG_CNAR.getSelectedRecord().titleFa;
+
+                let titr = courseInfo + "   " + groupTitle;
+
+                ExportToFile.downloadExcelRestUrl(null, CourseNAReportLG_CNAR,restUrl, 0, null, titr, "طراحی و برنامه ریزی - گزارش نیازسنجی دوره", null, null);
             }
             else
             {
                 isc.Dialog.create({
-                        message:  " برای ايجاد فايل اکسل دوره ای انتخاب نشده است" ,
+                        message:  " برای ايجاد فايل اکسل فیلترها به درستی انتخاب نشده اند" ,
                         icon: "[SKIN]ask.png",
                         title: "توجه",
                         buttons: [isc.IButtonSave.create({title: "تائید"})],

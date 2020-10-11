@@ -3,15 +3,13 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
-import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.DepartmentDTO;
 import com.nicico.training.iservice.IDepartmentService;
+import com.nicico.training.service.BaseService;
 import com.nicico.training.utility.SpecListUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -75,30 +72,18 @@ public class DepartmentRestController {
             List<DepartmentDTO.Info> departmentList;
             if (criteria == null) {
                 if (httpRequest.getParameter("depParrentId") == null ||
-                        (httpRequest.getParameter("depParrentId") != null && httpRequest.getParameter("depParrentId").toString().equalsIgnoreCase("null"))
+                        (httpRequest.getParameter("depParrentId") != null && httpRequest.getParameter("depParrentId").equalsIgnoreCase("null"))
                 ) {
                     departmentList = departmentService.findRootNode();
                 } else {
-                    Long parentId = new Long(httpRequest.getParameter("depParrentId").toString());
+                    Long parentId = new Long(httpRequest.getParameter("depParrentId"));
                     departmentList = departmentService.findByParentId(parentId);
                 }
-                if (departmentList != null && departmentList.size() > 0) {
-                    /*for (int i = 0; i < departmentList.size(); i++) {
-                        if (departmentList.get(i).getDepParrentId() != null)
-                            departmentList.get(i).setDepParrentId(departmentList.get(i).getParentDepartment().getId());
-                    }*/
-                }
                 response.setList(departmentList);
-            } else if (criteria != null && !criteria.contains("null")) {
+            } else if (!criteria.contains("null")) {
                 String[] temp = criteria.split("depParrentId");
-                Long parentId = new Long(temp[1].substring(10, 22).toString());
+                Long parentId = new Long(temp[1].substring(10, 22));
                 departmentList = departmentService.findByParentId(parentId);
-                if (departmentList != null && departmentList.size() > 0) {
-                    /*for (int i = 0; i < departmentList.size(); i++) {
-                        if (departmentList.get(i).getParentDepartment() != null)
-                            departmentList.get(i).setDepParrentId(departmentList.get(i).getParentDepartment().getId());
-                    }*/
-                }
                 response.setList(departmentList);
             }
 
@@ -128,31 +113,35 @@ public class DepartmentRestController {
         return new ResponseEntity<>(ISC.convertToIscRs(departmentService.findAllValuesOfOneFieldFromDepartment(fieldName), 0), HttpStatus.OK);
     }
 
+    @GetMapping("/organ-segment-iscList/{fieldName}")
+    public ResponseEntity<ISC<DepartmentDTO.OrganSegment>> getOrganSegmentList(@PathVariable String fieldName, HttpServletRequest iscRq) throws IOException {
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(departmentService.getOrganSegmentList(fieldName, searchRq), searchRq.getStartIndex()), HttpStatus.OK);
+    }
+
     @GetMapping(value = "iscList")
     public ResponseEntity<ISC<DepartmentDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
-        int startRow = 0;
-        if (iscRq.getParameter("_startRow") != null)
-            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.SearchRs<DepartmentDTO.Info> searchRs = departmentService.search(searchRq);
-        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 
     @GetMapping(value = "/getDepartmentsRoot")
-    public ResponseEntity<List<DepartmentDTO.TSociety>> getDepartmentsRoot() throws IOException {
+    public ResponseEntity<List<DepartmentDTO.TSociety>> getDepartmentsRoot() {
         List<DepartmentDTO.TSociety> roots = departmentService.getRoot();
         for (DepartmentDTO.TSociety root : roots)
-            root.setParentId(new Long(0));
+            root.setParentId(0L);
         return new ResponseEntity<>(roots, HttpStatus.OK);
     }
 
     @GetMapping(value = "/getDepartmentsByParentId/{parentId}")
-    public ResponseEntity<List<DepartmentDTO.TSociety>> getDepartmentsByParentId(@PathVariable Long parentId) throws IOException {
+    public ResponseEntity<List<DepartmentDTO.TSociety>> getDepartmentsByParentId(@PathVariable Long parentId) {
         return new ResponseEntity<>(departmentService.getDepartmentByParentId(parentId), HttpStatus.OK);
     }
 
     @PostMapping(value = "/getDepartmentsChilderen")
-    public ResponseEntity<List<DepartmentDTO.TSociety>> getDepartmentsChilderen(@RequestBody List<Long> childeren) throws IOException {
+    public ResponseEntity<List<DepartmentDTO.TSociety>> getDepartmentsChilderen(@RequestBody List<Long> childeren) {
         List<DepartmentDTO.TSociety> result = departmentService.getDepartmentsByParentIds(childeren);
         return new ResponseEntity<>(result, HttpStatus.OK);
 

@@ -5,53 +5,57 @@
  */
 package com.nicico.training.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.dto.search.EOperator;
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.service.sms.magfa.MagfaSMSService;
 import com.nicico.copper.core.service.sms.nimad.NimadSMSService;
-import com.nicico.training.dto.MessageContactDTO;
+import com.nicico.training.TrainingException;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ISendMessageService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.*;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 
 @RequiredArgsConstructor
 @Service
 public class SendMessageService implements ISendMessageService {
 
-    //private final MagfaSMSService magfaSMSService;
     private final NimadSMSService nimadSMSService;
-    //private static Long messageId = -1L;
-    private static SecureRandom secureRandom = new SecureRandom();
-
-    @Autowired
-    protected MessageContactDAO messageContactDAO;
-
-    @Autowired
-    protected MessageDAO messageDAO;
-
-    @Autowired
-    protected MessageParameterDAO messageParameterDAO;
-
-    @Autowired
-    protected ClassStudentDAO classStudentDAO;
-
-    @Autowired
-    protected TclassDAO tclassDAO;
-
-    @Autowired
-    protected ModelMapper modelMapper;
+    private final MessageContactService messageContactService;
+    private final MessageContactDAO messageContactDAO;
+    private final MessageParameterDAO messageParameterDAO;
+    private final ClassStudentDAO classStudentDAO;
+    private final TclassDAO tclassDAO;
+    private final MessageContactLogDAO messageContactLogDAO;
+    private final ModelMapper modelMapper;
+    private final ClassStudentService classStudentService;
+    private final TeacherService teacherService;
+    private final TclassService tclassService;
+    private final ParameterService parameterService;
+    private final MessageService messageService;
 
     @Override
-    public List<String> asyncEnqueue(String pid, Map<String, String> paramValMap, List<String> recipients) {
+    public List<String> syncEnqueue(String pid, Map<String, String> paramValMap, List<String> recipients) {
 
         return nimadSMSService.syncEnqueue(pid, paramValMap, recipients);
     }
@@ -61,46 +65,18 @@ public class SendMessageService implements ISendMessageService {
     @Override
     public void scheduling() {
 
-        List<Message> messages = messageDAO.findAll();
-        Integer cnt = messages.size();
-
-        try {
-            for (int i = 0; i < cnt; i++) {
-                if (messages.get(i).getMessageContactList().size() == 0) {
-                    messageDAO.deleteSendWaysById(messages.get(i).getId());
-
-                    messageDAO.deleteById(messages.get(i).getId());
-                }
-            }
-        } catch (Exception ex) {
-
-        }
-
-        List<Object> list = messageContactDAO.findAllMessagesForSend(LocalDate.now().toString());
-        List<MessageContactDTO.AllMessagesForSend> masterList = new ArrayList<>();
-
-        cnt = list.size();
+        List<MessageContactDTO.AllMessagesForSend> masterList = messageContactService.getAllMessageContactForSend();
+        Integer cnt = masterList.size();
 
         for (int i = 0; i < cnt; i++) {
-            Object[] oList = (Object[]) list.get(i);
-            masterList.add(new MessageContactDTO.AllMessagesForSend(Integer.parseInt(oList[0].toString()), Integer.parseInt(oList[1].toString()),/* oList[2].toString(), oList[3].toString(),*/ oList[2].toString(), Long.parseLong(oList[3].toString()), Long.parseLong(oList[4].toString()), oList[5].toString(), Long.parseLong(oList[6].toString())));
-        }
-
-        for (int i = 0; i < cnt; i++) {
-
-            String pid = "";
 
             if (masterList.get(i).getObjectType().equals("ClassStudent")) {
-                pid = "ihxdaus47t";
-
                 ClassStudent model = classStudentDAO.findById(masterList.get(i).getObjectId()).orElse(null);
 
                 if (model != null && !model.getEvaluationStatusReaction().equals(1)) {
                     messageContactDAO.deleteById(masterList.get(i).getMessageContactId());
                 }
             } else if (masterList.get(i).getObjectType().equals("Teacher")) {
-                pid = "er7wvzn4l4";
-
                 Tclass model = tclassDAO.findById(masterList.get(i).getClassId()).orElse(null);
 
                 if (model != null && !model.getEvaluationStatusReactionTeacher().equals(1)) {
@@ -112,8 +88,6 @@ public class SendMessageService implements ISendMessageService {
             List<String> numbers = new ArrayList<>();
             numbers.add(masterList.get(i).getObjectMobile());
 
-            //Long messageId = Long.valueOf(secureRandom.nextInt(Integer.MAX_VALUE));
-
             Map<String, String> paramValMap = new HashMap<>();
 
             List<MessageParameter> listParameter = messageParameterDAO.findByMessageContactId(masterList.get(i).getMessageContactId());
@@ -122,22 +96,333 @@ public class SendMessageService implements ISendMessageService {
                 paramValMap.put(parameter.getName(), parameter.getValue());
             }
 
-            try{
-                Long messageId = Long.parseLong(nimadSMSService.syncEnqueue(pid, paramValMap, numbers).get(0));
+            try {
 
-                //magfaSMSService.asyncEnqueue(numbers, ++messageId, masterList.get(i).getContextText());
+                List<String> returnMessage = syncEnqueue(masterList.get(i).getPid(), paramValMap, numbers);
+                Long returnMessageId = null;
+
+                MessageContactLog log = new MessageContactLog();
+
+                log.setMessageContactId(masterList.get(i).getMessageContactId());
+
+                if (returnMessage == null) {
+                    log.setErrorMessage("Error Exception");
+                    log.setReturnMessageId(null);
+                    messageContactLogDAO.save(log);
+                } else {
+                    try {
+                        returnMessageId = Long.parseLong(returnMessage.get(0));
+                        MessageContact messageContact = messageContactDAO.findById(masterList.get(i).getMessageContactId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+                        messageContact.setLastSentDate(new Date());
+                        messageContact.setCountSent(messageContact.getCountSent() + 1);
+
+                        messageContactDAO.save(messageContact);
+
+                        log.setErrorMessage("");
+                        log.setReturnMessageId(returnMessageId.toString());
+                        messageContactLogDAO.save(log);
+
+                    } catch (Exception ex) {
+                        log.setErrorMessage(ex.getMessage());
+                        log.setReturnMessageId(null);
+                        messageContactLogDAO.save(log);
+                    }
+                }
 
                 MessageContact messageContact = messageContactDAO.findById(masterList.get(i).getMessageContactId()).orElse(null);
 
-                if (messageContact.getCountSent() + 1 >= masterList.get(i).getCountSend()) {
-                    messageParameterDAO.deleteByMCId(messageContact.getId());
+                if (messageContact.getCountSent() >= masterList.get(i).getCountSend()) {
                     messageContactDAO.deleteById(messageContact.getId());
                 } else {
-                    messageContactDAO.updateAfterSendMessage(messageId,(long)(messageContact.getCountSent() + 1),new Date(),messageContact.getId());
+                    if (log.getReturnMessageId() != null) {
+                        messageContactDAO.updateAfterSendMessage((long) (messageContact.getCountSent() + 1), new Date(), messageContact.getId());
+                    }
                 }
-            }catch(Exception ex){
+            } catch (Exception ex) {
 
             }
         }
+    }
+
+    public ResponseEntity sendMessage(final HttpServletRequest request, @RequestBody String data) throws IOException {
+        List<Long> ids = new ArrayList<>();
+        String type = "";
+        String link = "";
+        List<String> mobiles = new ArrayList<>();
+        List<String> fullName = new ArrayList<>();
+        List<String> prefixFullName = new ArrayList<>();
+        String personelAddress = request.getRequestURL().toString().replace(request.getServletPath(), "");
+        Long classId = null;
+        String courseName = "";
+        String courseStartDate = "";
+        String courseEndDate = "";
+        String institute = "";
+        String oMessage = "";
+        Integer maxRepeat = 0;
+        Integer timeBMessages = 0;
+        String code = null;
+        String pid = "";
+
+        TotalResponse<ParameterValueDTO.Info> parameter = null;
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        JsonNode jsonNode = objectMapper.readTree(data);
+        oMessage = jsonNode.get("message").asText("");
+        maxRepeat = Integer.parseInt(jsonNode.get("maxRepeat").asText(""));
+        timeBMessages = Integer.parseInt(jsonNode.get("timeBMessages").asText(""));
+        link = jsonNode.get("link").asText("");
+
+        if (jsonNode.has("classID")) {
+            classId = jsonNode.get("classID").asLong();
+            TclassDTO.Info tclassDTO = tclassService.get(classId);
+            courseName = tclassDTO.getCourse().getTitleFa();
+            courseStartDate = tclassDTO.getStartDate();
+            courseEndDate = tclassDTO.getEndDate();
+            institute = tclassDTO.getInstitute().getTitleFa();
+        }
+
+        if (jsonNode.has("classStudent")) {
+            jsonNode = jsonNode.get("classStudent");
+            type = "classStudent";
+
+            if (jsonNode.isArray()) {
+                for (final JsonNode objNode : jsonNode) {
+                    ids.add(objNode.asLong());
+                }
+            }
+        } else if (jsonNode.has("classTeacher")) {
+            jsonNode = jsonNode.get("classTeacher");
+            type = "classTeacher";
+
+            if (jsonNode.isArray()) {
+                for (final JsonNode objNode : jsonNode) {
+                    ids.add(objNode.asLong());
+                }
+            }
+        } else if (jsonNode.has("classStudentRegistered")) {
+            jsonNode = jsonNode.get("classStudentRegistered");
+            type = "classStudentRegistered";
+
+            if (jsonNode.isArray()) {
+                for (final JsonNode objNode : jsonNode) {
+                    ids.add(objNode.asLong());
+                }
+            }
+        }
+
+        if (ids.size() == 0) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+
+        if (type.equals("classStudent")) {
+
+            code = "CS";
+
+            SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+            searchRq.setCount(1000);
+            searchRq.setStartIndex(0);
+            searchRq.setSortBy("id");
+            searchRq.setCriteria(makeNewCriteria("id", ids, EOperator.inSet, null));
+
+            SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> searchRs = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
+
+            searchRs.getList().forEach(p -> {
+                        mobiles.add(p.getStudent().getMobile());
+                        fullName.add(p.getFullName());
+                        prefixFullName.add(p.getStudent().getGender() == null ? "جناب آقای/سرکار خانم" : (p.getStudent().getGender().equals("مرد") ? "جناب آقای" : (p.getStudent().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم")));
+                    }
+            );
+        } else if (type.equals("classTeacher")) {
+            code = "Teacher";
+
+            SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+            searchRq.setCount(1000);
+            searchRq.setStartIndex(0);
+            searchRq.setSortBy("id");
+            searchRq.setCriteria(makeNewCriteria("id", ids, EOperator.inSet, null));
+
+            SearchDTO.SearchRs<TeacherDTO.Info> searchRs = teacherService.search(searchRq);
+
+            searchRs.getList().forEach(p -> {
+                        mobiles.add(p.getPersonality().getContactInfo().getMobile());
+                        fullName.add(p.getFullName());
+                        prefixFullName.add(p.getPersonality().getGenderId() == null ? "جناب آقای/سرکار خانم" : (p.getPersonality().getGenderId() == 1 ? "جناب آقای" : (p.getPersonality().getGenderId() == 2 ? "سرکار خانم" : "جناب آقای/سرکار خانم")));
+                    }
+            );
+        } else if (type.equals("classStudentRegistered")) {
+
+            code = "CSR";
+
+            SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+            searchRq.setCount(1000);
+            searchRq.setStartIndex(0);
+            searchRq.setSortBy("id");
+            searchRq.setCriteria(makeNewCriteria("id", ids, EOperator.inSet, null));
+
+            SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> searchRs = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
+
+            searchRs.getList().forEach(p -> {
+                        mobiles.add(p.getStudent().getMobile());
+                        fullName.add(p.getFullName());
+                        prefixFullName.add(p.getStudent().getGender() == null ? "جناب آقای/سرکار خانم" : (p.getStudent().getGender().equals("مرد") ? "جناب آقای" : (p.getStudent().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم")));
+                    }
+            );
+        }
+
+        MessageDTO.Create oMessageModel = new MessageDTO.Create();
+
+        oMessageModel.setContextText(oMessage);
+        oMessageModel.setContextHtml(oMessage);
+
+        parameter = parameterService.getByCode("MessageUserType");
+
+        String finalCode = code;
+        ParameterValueDTO.Info parameterValue = modelMapper.map(((TotalResponse) parameter).getResponse().getData().stream().filter(p -> ((ParameterValueDTO.Info) p).getCode().equals(finalCode)).toArray()[0], ParameterValueDTO.Info.class);
+
+        oMessageModel.setUserTypeId(parameterValue.getId());
+        oMessageModel.setInterval(0);
+        oMessageModel.setCountSend(0);
+        oMessageModel.setTclassId(classId);
+        oMessageModel.setMessageContactList(new ArrayList<>());
+
+        TotalResponse<ParameterValueDTO.Info> pIds = parameterService.getByCode("MessageContent");
+        String textMessage = "";
+
+        ParameterValueDTO.Info prmv;
+
+        if (type.equals("classStudent")) {
+
+            prmv = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MCS1")).findFirst().orElseThrow(null);
+            pid = prmv.getValue();
+            textMessage = prmv.getDescription();
+
+        } else if (type.equals("classTeacher")) {
+
+            prmv = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MTeacher")).findFirst().orElseThrow(null);
+            pid = prmv.getValue();
+            textMessage = prmv.getDescription();
+
+        } else if (type.equals("classStudentRegistered")) {
+
+            prmv = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MCSR")).findFirst().orElseThrow(null);
+            pid = prmv.getValue();
+            textMessage = prmv.getDescription();
+
+        }
+
+        oMessageModel.setPId(pid);
+        oMessageModel.setContextText(textMessage);
+        oMessageModel.setContextHtml(" ");
+
+        for (int i = 0; i < mobiles.size(); i++) {
+            MessageContactDTO.Create messageContact = new MessageContactDTO.Create();
+            messageContact.setObjectId(ids.get(i));
+
+            String tmpLink = "";
+
+            if (type.equals("classStudent")) {
+                messageContact.setObjectType("ClassStudent");
+                tmpLink = link;
+            } else if (type.equals("classTeacher")) {
+                messageContact.setObjectType("Teacher");
+                tmpLink = link;
+            } else if (type.equals("classStudentRegistered")) {
+                messageContact.setObjectType("ClassStudent");
+                tmpLink = link;
+            }
+
+            messageContact.setObjectMobile(mobiles.get(i));
+
+            List<MessageParameterDTO.Create> parameters = new ArrayList<>();
+            parameters.add(new MessageParameterDTO.Create("prefix-full_name", prefixFullName.get(i)));
+            parameters.add(new MessageParameterDTO.Create("full-name", fullName.get(i)));
+            parameters.add(new MessageParameterDTO.Create("course-name", courseName));
+
+            if (type.equals("classStudent")) {
+                parameters.add(new MessageParameterDTO.Create("personnel-address", tmpLink));
+            } else if (type.equals("classTeacher")) {
+                parameters.add(new MessageParameterDTO.Create("personel-address", tmpLink));
+                parameters.add(new MessageParameterDTO.Create("start-date", courseStartDate));
+                parameters.add(new MessageParameterDTO.Create("end-date", courseEndDate));
+            } else if (type.equals("classStudentRegistered")) {
+                parameters.add(new MessageParameterDTO.Create("personnel-address", tmpLink));
+                parameters.add(new MessageParameterDTO.Create("institute", institute));
+            }
+
+            messageContact.setMessageParameterList(parameters);
+
+            oMessageModel.getMessageContactList().add(messageContact);
+        }
+
+        MessageDTO.Info result = messageService.create(oMessageModel);
+
+        for (int i = 0; i < mobiles.size(); i++) {
+
+            List<String> numbers = new ArrayList<>();
+            numbers.add(mobiles.get(i));
+
+            MessageContact messageContact = messageContactDAO.findById(result.getMessageContactList().get(i).getId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+            List<String> returnMessage = syncEnqueue(pid, convertMessageParameterToMap(oMessageModel.getMessageContactList().get(i).getMessageParameterList()), numbers);
+            Long returnMessageId = null;
+
+            MessageContactLog log = new MessageContactLog();
+
+            log.setMessageContactId(messageContact.getId());
+
+            if (returnMessage == null) {
+                log.setErrorMessage("Error Exception");
+                log.setReturnMessageId(null);
+                messageContactLogDAO.save(log);
+            } else {
+                try {
+                    returnMessageId = Long.parseLong(returnMessage.get(0));
+                    messageContact.setLastSentDate(new Date());
+                    messageContact.setCountSent(messageContact.getCountSent() + 1);
+
+                    messageContactDAO.save(messageContact);
+
+                    log.setErrorMessage("");
+                    log.setReturnMessageId(returnMessageId.toString());
+                    messageContactLogDAO.save(log);
+
+                } catch (Exception ex) {
+                    log.setErrorMessage(ex.getMessage());
+                    log.setReturnMessageId(null);
+                    messageContactLogDAO.save(log);
+                }
+            }
+        }
+
+        if (maxRepeat > 0) {
+
+            if (type.equals("classStudent")) {
+                pid = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MCS2")).findFirst().orElseThrow(null).getValue();
+                oMessageModel.setPId(pid);
+                oMessageModel.setContextText(pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MCS2")).findFirst().orElseThrow(null).getDescription());
+                oMessageModel.setContextHtml(" ");
+            }
+
+            oMessageModel.setOrginalMessageId(result.getId());
+            oMessageModel.setInterval(timeBMessages);
+            oMessageModel.setCountSend(maxRepeat);
+
+            messageService.create(oMessageModel);
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private Map<String, String> convertMessageParameterToMap(List<MessageParameterDTO.Create> model) {
+        Map<String, String> parameters = new HashMap<>();
+
+        for (MessageParameterDTO.Create item : model) {
+            parameters.put(item.getName(), item.getValue());
+        }
+
+        return parameters;
     }
 }
