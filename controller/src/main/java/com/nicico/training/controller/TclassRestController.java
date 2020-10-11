@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import response.tclass.TclassCreateResponse;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
@@ -92,9 +93,20 @@ public class TclassRestController {
 
     @Loggable
     @PostMapping("/safeCreate")
-    public ResponseEntity<TclassDTO.Info> safeCreate(@Validated @RequestBody TclassDTO.Create request, HttpServletResponse response) {
+    public ResponseEntity safeCreate(@Validated @RequestBody TclassDTO.Create request, HttpServletResponse response) {
 
-        ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.safeCreate(request, response), HttpStatus.CREATED);
+        TclassCreateResponse createResponse = new TclassCreateResponse();
+        try{
+            createResponse.setRecord(tClassService.safeCreate(request, response));
+            createResponse.setMessage("عملیات ایجاد با موفقیت انجام شد.");
+            createResponse.setStatus(200);
+        }
+        catch (Exception e){
+            createResponse.setStatus(409);
+            if(e.getLocalizedMessage().contains("UC_TBL_CLASSC_CODE_COL")){
+                createResponse.setMessage("کد کلاس تکراری است. احتمالا فرایند ایجاد کلاس همزمان توسط چندین کاربر انجام شده است.");
+            }
+        }
 
         //*****check alarms*****
 //// cancel alarms
@@ -105,16 +117,25 @@ public class TclassRestController {
 //            classAlarmService.alarmPreCourseTestQuestion(infoResponseEntity.getBody().getId());
 //            classAlarmService.saveAlarms();
 //        }
-        return infoResponseEntity;
+        return new ResponseEntity<>(createResponse, HttpStatus.CREATED);
     }
 
     @Loggable
     @PutMapping(value = "/update/{id}")
-    public ResponseEntity<TclassDTO.Info> safeUpdate(@PathVariable Long id,
+    public ResponseEntity safeUpdate(@PathVariable Long id,
                                                      @RequestBody TclassDTO.Update request,
                                                      @RequestParam(required = false) List<Long> cancelClassesIds) {
 
-        ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.update(id, request, cancelClassesIds), HttpStatus.OK);
+        TclassCreateResponse response = new TclassCreateResponse();
+        try{
+            response.setRecord(tClassService.update(id, request, cancelClassesIds));
+            response.setStatus(200);
+            response.setMessage("عملیات ویرایش کلاس با موفقیت انجام شد.");
+        }
+        catch (Exception e){
+            response.setStatus(409);
+            response.setMessage("عملیات با مشکل مواجه شد.");
+        }
 
         //*****check alarms*****
       /* //// cancel alarms
@@ -124,14 +145,14 @@ public class TclassRestController {
             classAlarmService.saveAlarms();
         }*/
 
-        return infoResponseEntity;
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
-    public ResponseEntity<TclassDTO.Info> update(@PathVariable Long id, @RequestBody TclassDTO.Update request) {
+    public ResponseEntity update(@PathVariable Long id, @RequestBody TclassDTO.Update request) {
 
-        ResponseEntity<TclassDTO.Info> infoResponseEntity = new ResponseEntity<>(tClassService.update(id, request, null), HttpStatus.OK);
+        ResponseEntity infoResponseEntity = new ResponseEntity<>(tClassService.update(id, request, null), HttpStatus.OK);
 
         //*****check alarms*****
         //// cancel alarms
