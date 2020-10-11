@@ -344,9 +344,7 @@ public class SendMessageService implements ISendMessageService {
             if (type.equals("classStudent")) {
                 parameters.add(new MessageParameterDTO.Create("personnel-address", tmpLink));
             } else if (type.equals("classTeacher")) {
-                parameters.add(new MessageParameterDTO.Create("personel-address", tmpLink));
-                parameters.add(new MessageParameterDTO.Create("start-date", courseStartDate));
-                parameters.add(new MessageParameterDTO.Create("end-date", courseEndDate));
+                parameters.add(new MessageParameterDTO.Create("personnel-address", tmpLink));
             } else if (type.equals("classStudentRegistered")) {
                 parameters.add(new MessageParameterDTO.Create("personnel-address", tmpLink));
                 parameters.add(new MessageParameterDTO.Create("institute", institute));
