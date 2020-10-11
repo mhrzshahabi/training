@@ -1762,7 +1762,6 @@
             isc.RPCManager.sendRequest(TrDSRequest(classSaveUrl, classMethod, JSON.stringify(data), (resp) => {
                 wait.close();
                 let response = JSON.parse(resp.httpResponseText);
-                console.log(response);
                 if (response.status === 200 || response.status === 201) {
                     if (classMethod.localeCompare("POST") === 0) {
                         Training_Reaction_Form_Inssurance_JspClass(response.record);
