@@ -1036,6 +1036,14 @@
 
     //----------------------------------- New Funsctions ---------------------------------------------------------------
     function Student_Reaction_Form_Inssurance_RE(studentRecord) {
+        let titr = isc.HTMLFlow.create({
+            align: "center",
+            border: "1px solid black",
+            width: "25%"
+        });
+        titr.contents = "";
+
+
         let IButtonSave_SelectQuestionnarie_RE = isc.IButtonSave.create({
             title: "صدور/ارسال به کارتابل",
             width: 150,
@@ -1067,7 +1075,7 @@
                 },
                 {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
             ],
-            fetchDataURL: questionnaireUrl + "/iscList/validQestionnaries"
+            fetchDataURL: questionnaireUrl + "/iscList/validQestionnaries/" + classRecord_RE.id
         });
         let ListGrid_SelectQuestionnarie_RE = isc.TrLG.create({
             width: "100%",
@@ -1087,8 +1095,15 @@
             items: [
                 isc.HLayout.create({
                     width: "100%",
-                    height: "90%",
+                    height: "80%",
                     members: [ListGrid_SelectQuestionnarie_RE]
+                }),
+                isc.TrHLayoutButtons.create({
+                    width: "100%",
+                    height: "5%",
+                    members: [
+                        titr
+                    ]
                 }),
                 isc.TrHLayoutButtons.create({
                     width: "100%",
@@ -1101,7 +1116,7 @@
                             }
                         })
                     ]
-                })
+                }),
             ],
             minWidth: 1024
         });
@@ -1116,6 +1131,8 @@
         ListGrid_SelectQuestionnarie_RE.fetchData(criteria);
         ListGrid_SelectQuestionnarie_RE.invalidateCache();
         Window_SelectQuestionnarie_RE.show();
+        titr.contents = "<span style='color:rgba(199,23,15,0.91); font-size:13px;'>" + "کاربر گرامی در صورتی که قبلا فرم ارزیابی واکنشی برای این کلاس صادر شده باشد، فقط پرسشنامه ی منتخب قبلی در اینجا به شما نشان داده می شود، در صورتی که پرسشنامه ای مشاهده نمیکنید، فعال و غیرفعال بودن پرسشنامه ها را چک کنید." + "</span>";
+        titr.redraw();
     }
 
     function Student_Reaction_Form_Inssurance_All_RE() {
@@ -1129,6 +1146,12 @@
             }
         }
         if (check) {
+            let titr = isc.HTMLFlow.create({
+                align: "center",
+                border: "1px solid black",
+                width: "25%"
+            });
+            titr.contents = "";
             let IButtonSave_SelectQuestionnarie_RE = isc.IButtonSave.create({
                 title: "صدور/ارسال به کارتابل",
                 width: 150,
@@ -1169,7 +1192,7 @@
                     },
                     {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
                 ],
-                fetchDataURL: questionnaireUrl + "/iscList/validQestionnaries"
+                fetchDataURL: questionnaireUrl + "/iscList/validQestionnaries/" + classRecord_RE.id
             });
             let ListGrid_SelectQuestionnarie_RE = isc.TrLG.create({
                 width: "100%",
@@ -1189,8 +1212,15 @@
                 items: [
                     isc.HLayout.create({
                         width: "100%",
-                        height: "90%",
+                        height: "80%",
                         members: [ListGrid_SelectQuestionnarie_RE]
+                    }),
+                    isc.TrHLayoutButtons.create({
+                        width: "100%",
+                        height: "5%",
+                        members: [
+                            titr
+                        ]
                     }),
                     isc.TrHLayoutButtons.create({
                         width: "100%",
@@ -1219,6 +1249,8 @@
             ListGrid_SelectQuestionnarie_RE.fetchData(criteria);
             ListGrid_SelectQuestionnarie_RE.invalidateCache();
             Window_SelectQuestionnarie_RE.show();
+            titr.contents = "<span style='color:rgba(199,23,15,0.91); font-size:13px;'>" + "کاربر گرامی در صورتی که قبلا فرم ارزیابی واکنشی برای این کلاس صادر شده باشد، فقط پرسشنامه ی منتخب  قبلی در اینجا به شما نشان داده می شود، در صورتی که پرسشنامه ای مشاهده نمیکنید، فعال و غیرفعال بودن پرسشنامه ها را چک کنید." + "</span>";
+            titr.redraw();
         }
         else{
             createDialog("info", "برای تمام فراگیران کلاس فرم ارزیابی واکنشی صادر شده است.");
@@ -1553,7 +1585,7 @@
                 },
                 {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
             ],
-            fetchDataURL: questionnaireUrl + "/iscList/validQestionnaries"
+            fetchDataURL: questionnaireUrl + "/iscList/validQestionnaries/" + classRecord_RE.id
         });
         let ListGrid_SelectQuestionnarie_RE = isc.TrLG.create({
             width: "100%",
@@ -1937,7 +1969,7 @@
                 },
                 {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
             ],
-            fetchDataURL: questionnaireUrl + "/iscList/validQestionnaries"
+            fetchDataURL: questionnaireUrl + "/iscList/validQestionnaries/" + classRecord_RE.id
         });
         let ListGrid_SelectQuestionnarie_RE = isc.TrLG.create({
             width: "100%",
