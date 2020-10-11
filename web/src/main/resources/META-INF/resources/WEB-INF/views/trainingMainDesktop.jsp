@@ -3620,7 +3620,7 @@
                 type: "MultiComboBoxItem",
                 title: "<spring:message code='complex'/>",
                 optionDataSource: isc.TrDS.create({
-                    fields: [{name: "id"}, {name: "code"}, {name: "title"}],
+                    fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
                     cacheAllData: true,
                     fetchDataURL: departmentUrl + "/organ-segment-iscList/mojtame"
                 }),
@@ -3641,7 +3641,8 @@
                     pickListFields: [
                         {name: "id", primaryKey: true, hidden: true},
                         {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true}
+                        {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true},
+                        {name: "enabled", title: "<spring:message code="active.status"/>", filterOperator: "equals", autoFitWidth: true,valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
                     ],
                     icons:[
                         {
@@ -3668,7 +3669,7 @@
                 type: "MultiComboBoxItem",
                 title: "<spring:message code='assistance'/>",
                 optionDataSource: isc.TrDS.create({
-                    fields: [{name: "id"}, {name: "code"}, {name: "title"}],
+                    fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
                     fetchDataURL: departmentUrl + "/organ-segment-iscList/moavenat"
                 }),
                 operator: "inSet",
@@ -3689,7 +3690,8 @@
                     pickListFields: [
                         {name: "id", primaryKey: true, hidden: true},
                         {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true}
+                        {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true},
+                        {name: "enabled", title: "<spring:message code="active.status"/>", filterOperator: "equals", autoFitWidth: true,valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
                     ],
                     icons:[
                         {
@@ -3719,7 +3721,7 @@
                 type: "MultiComboBoxItem",
                 title: "<spring:message code='affairs'/>",
                 optionDataSource: isc.TrDS.create({
-                    fields: [{name: "id"}, {name: "code"}, {name: "title"}],
+                    fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
                     fetchDataURL: departmentUrl + "/organ-segment-iscList/omor"
                 }),
                 operator: "inSet",
@@ -3740,7 +3742,8 @@
                     pickListFields: [
                         {name: "id", primaryKey: true, hidden: true},
                         {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true}
+                        {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true},
+                        {name: "enabled", title: "<spring:message code="active.status"/>", filterOperator: "equals", autoFitWidth: true,valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
                     ],
                     icons:[
                         {
@@ -3770,7 +3773,7 @@
                 type: "MultiComboBoxItem",
                 title: "<spring:message code='section'/>",
                 optionDataSource: isc.TrDS.create({
-                    fields: [{name: "id"}, {name: "code"}, {name: "title"}],
+                    fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
                     fetchDataURL: departmentUrl + "/organ-segment-iscList/ghesmat"
                 }),
                 operator: "inSet",
@@ -3791,7 +3794,8 @@
                     pickListFields: [
                         {name: "id", primaryKey: true, hidden: true},
                         {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true}
+                        {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true},
+                        {name: "enabled", title: "<spring:message code="active.status"/>", filterOperator: "equals", autoFitWidth: true,valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
                     ],
                     icons:[
                         {
@@ -3821,7 +3825,7 @@
                 type: "MultiComboBoxItem",
                 title: "<spring:message code='unit'/>",
                 optionDataSource: isc.TrDS.create({
-                    fields: [{name: "id"}, {name: "code"}, {name: "title"}],
+                    fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
                     fetchDataURL: departmentUrl + "/organ-segment-iscList/vahed"
                 }),
                 operator: "inSet",
@@ -3841,7 +3845,8 @@
                     pickListFields: [
                         {name: "id", primaryKey: true, hidden: true},
                         {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true}
+                        {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true},
+                        {name: "enabled", title: "<spring:message code="active.status"/>", filterOperator: "equals", autoFitWidth: true,valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
                     ],
                     icons:[
                         {
