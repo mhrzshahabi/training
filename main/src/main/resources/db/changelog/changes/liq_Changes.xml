@@ -1308,8 +1308,4 @@
         </addColumn>
     </changeSet>
 
-    <changeSet author="razmnoosh (generated)" id="1600233949294-531">
-        <dropUniqueConstraint constraintName="UC_TBL_DYNAMIC_QUESTIONC_QUESTION_COL" tableName="TBL_DYNAMIC_QUESTION"/>
-    </changeSet>
-
 </databaseChangeLog>
