@@ -36,8 +36,8 @@ public class PersonnelCoursePassedNAReportViewService implements IPersonnelCours
         List<List> courseAndPersonnelCountList = personnelCoursePassedNAReportViewDAO.getPersonnelCountByPriority(
                 map.get("courseId") == null ? nullList : map.get("courseId"),
                 map.get("courseId") == null ? 1 : 0,
-                map.get("personnelNationalCode") == null ? nullList : map.get("personnelNationalCode"),
-                map.get("personnelNationalCode") == null ? 1 : 0,
+                map.get("personnelPersonnelNo") == null ? nullList : map.get("personnelPersonnelNo"),
+                map.get("personnelPersonnelNo") == null ? 1 : 0,
                 map.get("postGradeId") == null ? nullList : map.get("postGradeId"),
                 map.get("postGradeId") == null ? 1 : 0,
                 map.get("personnelCompanyName") == null ? null : (String) map.get("personnelCompanyName")[0],
