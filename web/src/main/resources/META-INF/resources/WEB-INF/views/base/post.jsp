@@ -3,37 +3,6 @@
 
 // <script>
     let LoadAttachments_Post = null;
-    <%--if(Window_NeedsAssessment_Edit === undefined) {--%>
-        <%--var Window_NeedsAssessment_Edit = isc.Window.create({--%>
-            <%--ID: "Window_NeedsAssessment_Edit",--%>
-            <%--title: "<spring:message code="needs.assessment"/>",--%>
-            <%--minWidth: 1024,--%>
-            <%--items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],--%>
-            <%--// items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/diff-needs-assessment/"})],--%>
-            <%--placement: "fillScreen",--%>
-            <%--showUs(record, objectType) {--%>
-                <%--loadEditNeedsAssessment(record, objectType);--%>
-                <%--// loadDiffNeedsAssessment(record, objectType);--%>
-                <%--isChanged = false;--%>
-                <%--this.Super("show", arguments);--%>
-            <%--},--%>
-        <%--});--%>
-    // }
-
-    <%--if(Window_NeedsAssessment_Tree === undefined) {--%>
-        <%--var Window_NeedsAssessment_Tree = isc.Window.create({--%>
-            <%--title: "<spring:message code="needs.assessment"/>",--%>
-            <%--placement: "fillScreen",--%>
-            <%--minWidth: 1024,--%>
-            <%--items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/tree-needs-assessment/"})],--%>
-            <%--showUs(record, objectType) {--%>
-                <%--loadNeedsAssessmentTree(record, objectType);--%>
-                <%--this.Super("show", arguments);--%>
-            <%--},--%>
-        <%--});--%>
-    <%--}--%>
-
-
 
     // ------------------------------------------- Menu -------------------------------------------
     PostMenu_post = isc.Menu.create({
@@ -52,29 +21,6 @@
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
-    ToolStripButton_unGroupedPosts_POST = isc.ToolStripButton.create({
-        title: "پست های فاقد گروه پستی",
-        click: function () {
-            callToShowUnGroupedPosts_POST({
-                _constructor: "AdvancedCriteria",
-                operator: "and",
-                criteria: [{fieldName: "postGroupSet", operator: "isNull"}]
-            });
-        }
-    });
-    ToolStripButton_newPosts_POST = isc.ToolStripButton.create({
-        title: "پست های جدید",
-        click: function () {
-            callToShowUnGroupedPosts_POST({
-                _constructor: "AdvancedCriteria",
-                operator: "or",
-                criteria: [
-                    {fieldName: "createdDate", operator: "greaterOrEqual", value: Date.create(today-6048e5).toUTCString()},
-                    {fieldName: "lastModifiedDate", operator: "greaterOrEqual", value: Date.create(today-6048e5).toUTCString()}
-                ]
-            });
-        }
-    });
     ToolStripButton_EditNA_POST = isc.ToolStripButton.create({
         title: "ویرایش نیازسنجی",
         click: function () {
@@ -113,8 +59,6 @@
         width: "100%",
         membersMargin: 5,
         members: [
-            ToolStripButton_unGroupedPosts_POST,
-            ToolStripButton_newPosts_POST,
             ToolStripButton_EditNA_POST,
             ToolStripButton_TreeNA_JspPost,
             ToolStrip_Post_Export2EXcel
@@ -124,12 +68,6 @@
     PostTS_post = isc.ToolStrip.create({
         membersMargin: 5,
         members: [
-            <%--isc.ToolStripButtonPrint.create({--%>
-            <%--    title: "<spring:message code='print'/>",--%>
-            <%--    click: function () {--%>
-            <%--        print_PostListGrid("pdf");--%>
-            <%--    }--%>
-            <%--}),--%>
             isc.ToolStripButton.create({
                 top: 260,
                 align: "center",
