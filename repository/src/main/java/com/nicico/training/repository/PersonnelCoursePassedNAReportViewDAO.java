@@ -25,7 +25,7 @@ public interface PersonnelCoursePassedNAReportViewDAO extends JpaRepository<Pers
             "FROM " +
             "    VIEW_PERSONNEL_COURSE_PASSED_NA_REPORT na " +
             "WHERE " +
-            "        (CASE WHEN :isCourseIdNull = 1 OR na.course_id IN (:courseId) THEN 1 END) IS NOT NULL " +
+            "        (CASE WHEN :isCourseCodeNull = 1 OR na.COURSE_CODE IN (:courseCode) THEN 1 END) IS NOT NULL " +
             "        AND (CASE WHEN :isPersonnelNoNull = 1 OR na.PERSONNEL_PERSONNEL_NO IN (:personnelPersonnelNo) THEN 1 END) IS NOT NULL " +
             "        AND (CASE WHEN :isPostGradeIdNull = 1 OR na.personnel_post_grade_id IN (:postGradeId) THEN 1 END) IS NOT NULL " +
             "        AND (CASE WHEN :personnelCompanyName IS NULL THEN 1 WHEN na.PERSONNEL_COMPANY_NAME like :personnelCompanyName THEN 1 END) IS NOT NULL " +
@@ -39,8 +39,8 @@ public interface PersonnelCoursePassedNAReportViewDAO extends JpaRepository<Pers
             "    na.course_id, " +
             "    na.course_code, " +
             "    na.course_title_fa", nativeQuery = true)
-    List<List> getPersonnelCountByPriority(Object[] courseId,
-                                              int isCourseIdNull,
+    List<List> getPersonnelCountByPriority(Object[] courseCode,
+                                              int isCourseCodeNull,
                                               Object[] personnelPersonnelNo,
                                               int isPersonnelNoNull,
                                               Object[] postGradeId,

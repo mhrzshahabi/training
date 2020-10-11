@@ -34,8 +34,8 @@ public class PersonnelCoursePassedNAReportViewService implements IPersonnelCours
         Map<String, Object[]> map = CriteriaConverter.criteria2ParamsMap(request.getCriteria());
         Object[] nullList = {-1};
         List<List> courseAndPersonnelCountList = personnelCoursePassedNAReportViewDAO.getPersonnelCountByPriority(
-                map.get("courseId") == null ? nullList : map.get("courseId"),
-                map.get("courseId") == null ? 1 : 0,
+                map.get("courseCode") == null ? nullList : map.get("courseCode"),
+                map.get("courseCode") == null ? 1 : 0,
                 map.get("personnelPersonnelNo") == null ? nullList : map.get("personnelPersonnelNo"),
                 map.get("personnelPersonnelNo") == null ? 1 : 0,
                 map.get("postGradeId") == null ? nullList : map.get("postGradeId"),
