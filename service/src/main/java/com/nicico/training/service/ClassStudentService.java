@@ -182,6 +182,11 @@ public class ClassStudentService implements IClassStudentService {
         return result;
     }
 
+    @Override
+    public List<ClassStudent> getClassStudents(long classId) {
+        return classStudentDAO.findAllByTclassId(classId);
+    }
+
     @Transactional
     public ClassStudent findByClassIdAndStudentId(Long classId, Long studentId) {
         return classStudentDAO.findByTclassIdAndStudentId(classId, studentId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
