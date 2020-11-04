@@ -351,7 +351,7 @@
         waitDialog.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             refreshLG(ListGrid_Province);
-            ListGrid_Polis.setData([]);
+            ListGrid_Polis.c([]);
             var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
             setTimeout(function () {
                 OK.close();

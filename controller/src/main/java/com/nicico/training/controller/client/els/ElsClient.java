@@ -4,7 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 import request.evaluation.ElsEvalRequest;
 import response.BaseResponse;
-import response.evaluation.EvalResultListResponse;
+import response.evaluation.EvalListResponse;
 
 @FeignClient(value = "elsClient", url = "http://172.16.6.131:8080/els/api/training")
 public interface ElsClient {
@@ -12,6 +12,6 @@ public interface ElsClient {
     BaseResponse sendEvaluation(@RequestBody ElsEvalRequest request);
 
     @GetMapping("/evaluation/{id}")
-    EvalResultListResponse getEvalResults(@PathVariable long id);
+    EvalListResponse getEvalResults(@PathVariable long id);
 
 }

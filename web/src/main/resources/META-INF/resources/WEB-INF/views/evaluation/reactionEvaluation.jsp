@@ -123,6 +123,21 @@
         ],
     });
 
+    var RestDataSource_Result_Evaluation = isc.TrDS.create({
+        fields: [
+            {name: "surname", title: 'نام'},
+            {name: "lastName", title: 'نام خانوادگی'},
+            {name: "description", title: 'توضیحات'},
+            {name: "answers", hidden: true },
+        ],
+    });
+
+    var RestDataSource_Result_Answers_Evaluation = isc.TrDS.create({
+        fields: [
+            {name: "question", title: 'سوال'},
+            {name: "answer", title: 'پاسخ'},
+        ],
+    });
     //----------------------------------------- DynamicForms -----------------------------------------------------------
     var DynamicForm_ReturnDate_RE = isc.DynamicForm.create({
         width: "150px",
@@ -808,7 +823,7 @@
                                             else
                                                 print_Teacher_Reaction_Form_RE();
                                         }
-                                    }
+                                    },
                                 ]
                             },
                             {
@@ -926,12 +941,92 @@
                                             else
                                                 print_Training_Reaction_Form_RE();
                                         }
-                                    }
+                                    },
                                 ]
                             },
+                            //    {
+                            //             name: "sendEvaluationToEls",
+                            //             title: "ارسال فرم ارزیابی به آموزش آنلاین",
+                            //             type: "button",
+                            //             startRow: false,
+                            //             endRow: false,
+                            //             baseStyle: "sendFile",
+                            //             click: function () {
+                            //                 if (classRecord_RE.trainingEvalStatus == "0" || classRecord_RE.trainingEvalStatus == null) {
+                            //                     sendToEls()
+                            //                 }
+                            //             },
+                            //         },
+                            // {
+                            //     name: "showResultEvaluationOfEls",
+                            //     title: "مشاهده نتایج از آزمون آنلاین ",
+                            //     type: "button",
+                            //     startRow: false,
+                            //     endRow: false,
+                            //     baseStyle: "sendFile",
+                            //     click: function () {
+                            //         if (classRecord_RE.trainingEvalStatus == "0" || classRecord_RE.trainingEvalStatus == null) {
+                            //             showResults();
+                            //         }
+                            //     },
+                            // }
+                            // ,
+
+
                         ]
                     }),
 
+                ]
+            }),
+            isc.VLayout.create({
+                layoutAlign: "center",
+                defaultLayoutAlign: "center",
+                layoutMargin: 10,
+                members: [
+                    isc.HLayout.create({
+                        layoutAlign: "center",
+                        defaultLayoutAlign: "center",
+                        layoutMargin: 5,
+                        membersMargin: 10,
+                        members: [
+                            isc.ToolStripButton.create({
+                                title: "ارسال فرم ارزیابی به آموزش آنلاین",
+                                baseStyle: "sendFile",
+                                click: function () {
+                                    sendToEls('teacher')
+                                }
+                            }),
+                            isc.ToolStripButton.create({
+                                title: "مشاهده نتایج از آزمون آنلاین ",
+                                baseStyle: "sendFile",
+                                click: function () {
+                                    showResults('teacher')
+                                }
+                            })
+                        ]
+                    }),
+                    isc.HLayout.create({
+                        layoutAlign: "center",
+                        defaultLayoutAlign: "center",
+                        layoutMargin: 10,
+                        membersMargin: 10,
+                        members: [
+                            isc.ToolStripButton.create({
+                                title: "ارسال فرم ارزیابی به آموزش آنلاین",
+                                baseStyle: "sendFile",
+                                click: function () {
+                                    sendToEls('supervisor')
+                                }
+                            }),
+                            isc.ToolStripButton.create({
+                                title: "مشاهده نتایج از آزمون آنلاین ",
+                                baseStyle: "sendFile",
+                                click: function () {
+                                    showResults('supervisor')
+                                }
+                            })
+                        ]
+                    })
                 ]
             }),
             isc.HLayout.create({
@@ -981,6 +1076,174 @@
             })
         ]
     });
+
+    function sendToEls(type) {
+        let data = {};
+        if(type == 'supervisor') {
+            data.classId = classRecord_RE.id;
+            data.evaluatorId = classRecord_RE.tclassSupervisor;
+            data.evaluatorTypeId = 454;
+            data.evaluatedId = classRecord_RE.teacherId;
+            data.evaluatedTypeId = 187;
+            data.questionnaireTypeId = 141;
+            data.evaluationLevelId = 154;
+        }else {
+            data.classId = classRecord_RE.id;
+            data.evaluatorId = classRecord_RE.teacherId;
+            data.evaluatorTypeId = 187;
+            data.evaluatedId = classRecord_RE.id;
+            data.evaluatedTypeId = 504;
+            data.questionnaireTypeId = 140;
+            data.evaluationLevelId = 154;
+        }
+
+        isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
+            var wait = isc.Dialog.create({
+                message: "در حال انجام عملیات...",
+                icon: "[SKIN]say.png",
+                title: "پیام"
+            });
+            let result = JSON.parse(resp.httpResponseText).response.data;
+            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/eval/"+ result[0].evaluationId, "GET",null, function (resp) {
+                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                    var OK = isc.Dialog.create({
+                        message: "<spring:message code="msg.operation.successful"/>",
+                        icon: "[SKIN]say.png",
+                        title:  "<spring:message code='message'/>"
+                    });
+                    setTimeout(function () {
+                        OK.close();
+                    }, 2000);
+                } else {
+                    var ERROR = isc.Dialog.create({
+                        message:"<spring:message code='exception.un-managed'/>",
+                        icon: "[SKIN]stop.png",
+                        title:  "<spring:message code='message'/>"
+                    });
+                    setTimeout(function () {
+                        ERROR.close();
+                    }, 2000);
+                }
+                wait.close()
+            }))
+        }))
+    }
+    function showResults(type) {
+        let data = {};
+        if(type == 'supervisor') {
+            data.classId = classRecord_RE.id;
+            data.evaluatorId = classRecord_RE.tclassSupervisor;
+            data.evaluatorTypeId = 454;
+            data.evaluatedId = classRecord_RE.teacherId;
+            data.evaluatedTypeId = 187;
+            data.questionnaireTypeId = 141;
+            data.evaluationLevelId = 154;
+        }else {
+            data.classId = classRecord_RE.id;
+            data.evaluatorId = classRecord_RE.teacherId;
+            data.evaluatorTypeId = 187;
+            data.evaluatedId = classRecord_RE.id;
+            data.evaluatedTypeId = 504;
+            data.questionnaireTypeId = 140;
+            data.evaluationLevelId = 154;
+        }
+
+
+        let ListGrid_Result_evaluation = isc.TrLG.create({
+            width: "100%",
+            height: 700,
+            dataSource: RestDataSource_Result_Evaluation,
+            fields: [],
+            doubleClick: function (record) {
+                ListGrid_show_ansewrs(ListGrid_Result_evaluation.getSelectedRecord().answers);
+            },
+        });
+
+
+
+        isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
+            var wait = isc.Dialog.create({
+                message: "در حال انجام عملیات...",
+                icon: "[SKIN]say.png",
+                title: "پیام"
+            });
+            let result = JSON.parse(resp.httpResponseText).response.data;
+            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/evalResult/"+ result[0].evaluationId, "GET",null, function (resp) {
+                let results = JSON.parse(resp.data).data;
+                ListGrid_Result_evaluation.setData(results)
+                ListGrid_Result_evaluation.invalidateCache();
+                wait.close();
+
+                let Window_result_JspEvaluation = isc.Window.create({
+                    width: 1024,
+                    height: 768,
+                    keepInParentRect: true,
+                    title: "<spring:message code="record.evaluation.results"/>",
+                    items: [
+                        isc.VLayout.create({
+                            width: "100%",
+                            height: "100%",
+                            defaultLayoutAlign: "center",
+                            align: "center",
+                            members: [
+                                isc.HLayout.create({
+                                    width: "100%",
+                                    height: "90%",
+                                    members: [ListGrid_Result_evaluation]
+                                }),
+                                isc.IButtonCancel.create({
+                                    click: function () {
+                                        Window_result_JspEvaluation.close();
+                                    }
+                                })]
+                        })
+                    ],
+                    minWidth: 1024
+                })
+                Window_result_JspEvaluation.show();
+            }))
+        }))
+    }
+
+    function ListGrid_show_ansewrs(answers) {
+        let ListGrid_Result_Answer_evaluation = isc.TrLG.create({
+            width: "100%",
+            height: 700,
+            dataSource: RestDataSource_Result_Answers_Evaluation,
+            fields: [],
+        });
+
+        ListGrid_Result_Answer_evaluation.setData(answers)
+        ListGrid_Result_Answer_evaluation.invalidateCache();
+
+        let Window_result_Answer_JspEvaluation = isc.Window.create({
+            width: 1024,
+            height: 768,
+            keepInParentRect: true,
+            title: "<spring:message code="record.evaluation.results"/>",
+            items: [
+                isc.VLayout.create({
+                    width: "100%",
+                    height: "100%",
+                    defaultLayoutAlign: "center",
+                    align: "center",
+                    members: [
+                        isc.HLayout.create({
+                            width: "100%",
+                            height: "90%",
+                            members: [ListGrid_Result_Answer_evaluation]
+                        }),
+                        isc.IButtonCancel.create({
+                            click: function () {
+                                Window_result_Answer_JspEvaluation.close();
+                            }
+                        })]
+                })
+            ],
+            minWidth: 1024
+        })
+        Window_result_Answer_JspEvaluation.show();
+    }
 
     //----------------------------------------- LayOut -----------------------------------------------------------------
     var HLayout_Actions_RE = isc.HLayout.create({
@@ -1441,7 +1704,6 @@
             let itemList = [];
             let description;
             let record = {};
-
             isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
                 let result = JSON.parse(resp.httpResponseText).response.data;
                 description = result[0].description;
@@ -1825,7 +2087,7 @@
             let itemList = [];
             let description;
             let record = {};
-
+            console.log('22')
             isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
                 let result = JSON.parse(resp.httpResponseText).response.data;
                 description = result[0].description;
@@ -1971,6 +2233,10 @@
             ],
             fetchDataURL: questionnaireUrl + "/iscList/validQestionnaries/" + classRecord_RE.id
         });
+
+
+
+
         let ListGrid_SelectQuestionnarie_RE = isc.TrLG.create({
             width: "100%",
             dataSource: RestDataSource_Questionnarie_RE,
@@ -2206,7 +2472,7 @@
             let itemList = [];
             let description;
             let record = {};
-
+                console.log('33')
             isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
                 let result = JSON.parse(resp.httpResponseText).response.data;
                 description = result[0].description;
