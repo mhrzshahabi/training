@@ -475,7 +475,6 @@
                             ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(false);
 
                             ToolStrip_SendForms_RE.getField("registerButtonTeacher").showIcon("ok");
-
                         }
                         ToolStrip_SendForms_RE.redraw();
 

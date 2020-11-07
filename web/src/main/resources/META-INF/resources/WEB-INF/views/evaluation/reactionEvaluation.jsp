@@ -335,7 +335,7 @@
                                                 const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
                                                 setTimeout(() => {
                                                     msg.close();
-                                            }, 3000);
+                                                }, 3000);
                                             } else {
                                                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                                             }
@@ -527,118 +527,118 @@
                     return;
                 }
 
-                <%--isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "spec-list?_constructor=AdvancedCriteria&_endRow=1000&_sortBy=id&_startRow=0&criteria=%7B%22operator%22%3A%22equals%22%2C%22fieldName%22%3A%22tclasse.id%22%2C%22value%22%3A%22" + row.id + "%22%7D&operator=and", "GET", null, function (resp) {--%>
-                    <%--if (generalGetResp(resp)) {--%>
-                        <%--if (resp.httpResponseCode == 200) {--%>
+                isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "spec-list?_constructor=AdvancedCriteria&_endRow=1000&_sortBy=id&_startRow=0&criteria=%7B%22operator%22%3A%22equals%22%2C%22fieldName%22%3A%22tclasse.id%22%2C%22value%22%3A%22" + row.id + "%22%7D&operator=and", "GET", null, function (resp) {
+                    if (generalGetResp(resp)) {
+                        if (resp.httpResponseCode == 200) {
 
-                            <%--isc.RPCManager.sendRequest(TrDSRequest(parameterValueUrl + "/iscList/481?operator=and&_constructor=AdvancedCriteria&criteria={\"fieldName\":\"code\",\"operator\":\"equals\",\"value\":\"MTeacher\",\"_constructor\":\"AdvancedCriteria\"}&_startRow=0&_endRow=75&_sortBy=title", "GET", null, function (resp2) {--%>
-                                <%--wait.close();--%>
-                                <%--if (generalGetResp(resp)) {--%>
-                                    <%--if (resp.httpResponseCode == 200) {--%>
+                            isc.RPCManager.sendRequest(TrDSRequest(parameterValueUrl + "/iscList/481?operator=and&_constructor=AdvancedCriteria&criteria={\"fieldName\":\"code\",\"operator\":\"equals\",\"value\":\"MTeacher\",\"_constructor\":\"AdvancedCriteria\"}&_startRow=0&_endRow=75&_sortBy=title", "GET", null, function (resp2) {
+                                wait.close();
+                                if (generalGetResp(resp)) {
+                                    if (resp.httpResponseCode == 200) {
 
-                                        <%--let id = [];--%>
-                                        <%--JSON.parse(resp.data).response.data.filter(p => p.personality?.contactInfo?.mobile).forEach(p => id.push(p.id));--%>
-                                        <%--MSG_sendTypesItems = [];--%>
-                                        <%--MSG_msgContent.type = [];--%>
-                                        <%--MSG_sendTypesItems.push('MSG_messageType_sms');--%>
-                                        <%--MSG_msgContent.type = MSG_sendTypesItems;--%>
+                                        let id = [];
+                                        JSON.parse(resp.data).response.data.filter(p => p.personality?.contactInfo?.mobile).forEach(p => id.push(p.id));
+                                        MSG_sendTypesItems = [];
+                                        MSG_msgContent.type = [];
+                                        MSG_sendTypesItems.push('MSG_messageType_sms');
+                                        MSG_msgContent.type = MSG_sendTypesItems;
 
-                                        <%--sendMessageFunc = sendMessage_evaluation;--%>
-                                        <%--RestDataSource_student_RE.fetchDataURL = teacherUrl + "spec-list";--%>
-                                        <%--RestDataSource_student_RE.implicitCriteria = {--%>
-                                            <%--_constructor: "AdvancedCriteria",--%>
-                                            <%--operator: "and",--%>
-                                            <%--criteria: [{fieldName: "tclasse.id", operator: "equals", value: row.id}]--%>
-                                        <%--};--%>
-                                        <%--MSG_selectUsersForm.getItem("multipleSelect").optionDataSource = RestDataSource_student_RE;--%>
-                                        <%--MSG_selectUsersForm.getItem("multipleSelect").pickListFields = [--%>
-                                            <%--{--%>
-                                                <%--name: "teacherCode",--%>
-                                                <%--title: "<spring:message code="national.code"/>",--%>
-                                                <%--autoFitWidth: false,--%>
-                                                <%--align: "center"--%>
-                                            <%--},--%>
-                                            <%--{--%>
-                                                <%--name: "personality.firstNameFa",--%>
-                                                <%--title: "<spring:message code="firstName"/>",--%>
-                                                <%--autoFitWidth: false,--%>
-                                                <%--align: "center"--%>
-                                            <%--},--%>
-                                            <%--{--%>
-                                                <%--name: "personality.lastNameFa",--%>
-                                                <%--title: "<spring:message code="lastName"/>",--%>
-                                                <%--width: 100,--%>
-                                                <%--align: "center"--%>
-                                            <%--},--%>
-                                            <%--{--%>
-                                                <%--name: "personnelCode",--%>
-                                                <%--title: "<spring:message code="personnel.code.six.digit"/>",--%>
-                                                <%--width: 100,--%>
-                                                <%--align: "center"--%>
-                                            <%--},--%>
-                                            <%--{--%>
-                                                <%--name: "personality.contactInfo.mobile",--%>
-                                                <%--title: "<spring:message code="mobile"/>",--%>
-                                                <%--width: 100,--%>
-                                                <%--align: "center"--%>
-                                            <%--},--%>
-                                            <%--{--%>
-                                                <%--name: "enableStatus",--%>
-                                                <%--title: "<spring:message code="status"/>",--%>
-                                                <%--width: 100,--%>
-                                                <%--align: "center",--%>
-                                                <%--type: "boolean"--%>
-                                            <%--},--%>
-                                        <%--];--%>
-                                        <%--MSG_selectUsersForm.getItem("multipleSelect").displayField = "fullName";--%>
-                                        <%--MSG_selectUsersForm.getItem("multipleSelect").valueField = "id";--%>
-                                        <%--MSG_selectUsersForm.getItem("multipleSelect").dataArrived = function (startRow, endRow) {--%>
-                                            <%--let ids = MSG_selectUsersForm.getItem("multipleSelect").pickList.data.getAllCachedRows().filter(p => !p?.personality?.contactInfo?.mobile).map(function (item) {--%>
-                                                <%--return item.id;--%>
-                                            <%--});--%>
-                                            <%--let findRows = MSG_selectUsersForm.getItem("multipleSelect").pickList.findAll({--%>
-                                                <%--_constructor: "AdvancedCriteria",--%>
-                                                <%--operator: "and",--%>
-                                                <%--criteria: [{fieldName: "id", operator: "inSet", value: ids}]--%>
-                                            <%--});--%>
-                                            <%--findRows.setProperty("enabled", false);--%>
+                                        sendMessageFunc = sendMessage_evaluation;
+                                        RestDataSource_student_RE.fetchDataURL = teacherUrl + "spec-list";
+                                        RestDataSource_student_RE.implicitCriteria = {
+                                            _constructor: "AdvancedCriteria",
+                                            operator: "and",
+                                            criteria: [{fieldName: "tclasse.id", operator: "equals", value: row.id}]
+                                        };
+                                        MSG_selectUsersForm.getItem("multipleSelect").optionDataSource = RestDataSource_student_RE;
+                                        MSG_selectUsersForm.getItem("multipleSelect").pickListFields = [
+                                            {
+                                                name: "teacherCode",
+                                                title: "<spring:message code="national.code"/>",
+                                                autoFitWidth: false,
+                                                align: "center"
+                                            },
+                                            {
+                                                name: "personality.firstNameFa",
+                                                title: "<spring:message code="firstName"/>",
+                                                autoFitWidth: false,
+                                                align: "center"
+                                            },
+                                            {
+                                                name: "personality.lastNameFa",
+                                                title: "<spring:message code="lastName"/>",
+                                                width: 100,
+                                                align: "center"
+                                            },
+                                            {
+                                                name: "personnelCode",
+                                                title: "<spring:message code="personnel.code.six.digit"/>",
+                                                width: 100,
+                                                align: "center"
+                                            },
+                                            {
+                                                name: "personality.contactInfo.mobile",
+                                                title: "<spring:message code="mobile"/>",
+                                                width: 100,
+                                                align: "center"
+                                            },
+                                            {
+                                                name: "enableStatus",
+                                                title: "<spring:message code="status"/>",
+                                                width: 100,
+                                                align: "center",
+                                                type: "boolean"
+                                            },
+                                        ];
+                                        MSG_selectUsersForm.getItem("multipleSelect").displayField = "fullName";
+                                        MSG_selectUsersForm.getItem("multipleSelect").valueField = "id";
+                                        MSG_selectUsersForm.getItem("multipleSelect").dataArrived = function (startRow, endRow) {
+                                            let ids = MSG_selectUsersForm.getItem("multipleSelect").pickList.data.getAllCachedRows().filter(p => !p?.personality?.contactInfo?.mobile).map(function (item) {
+                                                return item.id;
+                                            });
+                                            let findRows = MSG_selectUsersForm.getItem("multipleSelect").pickList.findAll({
+                                                _constructor: "AdvancedCriteria",
+                                                operator: "and",
+                                                criteria: [{fieldName: "id", operator: "inSet", value: ids}]
+                                            });
+                                            findRows.setProperty("enabled", false);
 
-                                            <%--MSG_selectUsersForm.getItem("multipleSelect").setValue(id);--%>
-                                        <%--}--%>
-                                        <%--MSG_selectUsersForm.getItem("multipleSelect").fetchData();--%>
+                                            MSG_selectUsersForm.getItem("multipleSelect").setValue(id);
+                                        }
+                                        MSG_selectUsersForm.getItem("multipleSelect").fetchData();
 
-                                        <%--MSG_textEditorValue = JSON.parse(resp2.data).response.data[0].description;--%>
-                                        <%--MSG_contentEditor.setValue(MSG_textEditorValue);--%>
+                                        MSG_textEditorValue = JSON.parse(resp2.data).response.data[0].description;
+                                        MSG_contentEditor.setValue(MSG_textEditorValue);
 
-                                        <%--linkFormMLanding.getItem('link').setValue('');--%>
+                                        linkFormMLanding.getItem('link').setValue('');
 
-                                        <%--if (JSON.parse(resp.data).response.data.length == 1 && JSON.parse(resp.data).response.data.filter(p => !p?.personality?.contactInfo?.mobile).length != 0) {--%>
-                                            <%--ErrorMsg.setContents('برای مدرس این کلاس، شماره موبایل تعریف نشده است.');--%>
-                                        <%--} else if (JSON.parse(resp.data).response.data.filter(p => !p?.personality?.contactInfo?.mobile).length != 0) {--%>
-                                            <%--ErrorMsg.setContents('برای ' + JSON.parse(resp.data).response.data.filter(p => !p?.personality?.contactInfo?.mobile).length + ' مدرس، شماره موبایل تعریف نشده است.');--%>
-                                        <%--} else {--%>
-                                            <%--ErrorMsg.setContents('');--%>
-                                        <%--}--%>
-                                        <%--MSG_userType = "classTeacher";--%>
-                                        <%--MSG_classID = row.id;--%>
-                                        <%--MSG_repeatOptions.getItem('maxRepeat').setValue(0);--%>
-                                        <%--MSG_repeatOptions.getItem('timeBMessages').setValue(1);--%>
-                                        <%--linkFormMLanding.getItem('link').setValue('');--%>
-                                        <%--linkFormMLanding.getItem('link').setRequired(true);--%>
-                                        <%--linkFormMLanding.getItem('link').enable();--%>
-                                        <%--MSG_Window_MSG_Main.show();--%>
+                                        if (JSON.parse(resp.data).response.data.length == 1 && JSON.parse(resp.data).response.data.filter(p => !p?.personality?.contactInfo?.mobile).length != 0) {
+                                            ErrorMsg.setContents('برای مدرس این کلاس، شماره موبایل تعریف نشده است.');
+                                        } else if (JSON.parse(resp.data).response.data.filter(p => !p?.personality?.contactInfo?.mobile).length != 0) {
+                                            ErrorMsg.setContents('برای ' + JSON.parse(resp.data).response.data.filter(p => !p?.personality?.contactInfo?.mobile).length + ' مدرس، شماره موبایل تعریف نشده است.');
+                                        } else {
+                                            ErrorMsg.setContents('');
+                                        }
+                                        MSG_userType = "classTeacher";
+                                        MSG_classID = row.id;
+                                        MSG_repeatOptions.getItem('maxRepeat').setValue(0);
+                                        MSG_repeatOptions.getItem('timeBMessages').setValue(1);
+                                        linkFormMLanding.getItem('link').setValue('');
+                                        linkFormMLanding.getItem('link').setRequired(true);
+                                        linkFormMLanding.getItem('link').enable();
+                                        MSG_Window_MSG_Main.show();
 
-                                    <%--}--%>
-                                <%--}--%>
-                            <%--}));--%>
-                        <%--} else {--%>
-                            <%--wait.close();--%>
-                            <%--createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");--%>
-                        <%--}--%>
-                    <%--} else {--%>
-                        <%--wait.close();--%>
-                    <%--}--%>
-                <%--}));--%>
+                                    }
+                                }
+                            }));
+                        } else {
+                            wait.close();
+                            createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
+                        }
+                    } else {
+                        wait.close();
+                    }
+                }));
 
             } else {
                 wait.close();
@@ -668,19 +668,19 @@
                         evalWait_RE = createDialog("wait");
                         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/deleteAllReactionEvaluationForms/" +
                             classRecord_RE.id, "GET", null, function (resp) {
-                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                                    ListGrid_student_RE.invalidateCache();
-                                    isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
-                                        classRecord_RE.id,"GET", null, null));
-                                    const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                                    setTimeout(() => {
-                                        msg.close();
+                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                ListGrid_student_RE.invalidateCache();
+                                isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
+                                    classRecord_RE.id,"GET", null, null));
+                                const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                                setTimeout(() => {
+                                    msg.close();
                                 }, 3000);
-                                } else {
-                                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
-                                }
-                                evalWait_RE.close();
+                            } else {
+                                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                             }
+                                evalWait_RE.close();
+                        }
                         ))
                     }
                 }
@@ -794,7 +794,7 @@
                                                                     const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
                                                                     setTimeout(() => {
                                                                         msg.close();
-                                                                }, 3000);
+                                                                    }, 3000);
                                                                     isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
                                                                         classRecord_RE.id,"GET", null, null));
                                                                     classRecord_RE.teacherEvalStatus = 0;
@@ -827,7 +827,7 @@
                                             else
                                                 print_Teacher_Reaction_Form_RE();
                                         }
-                                    },
+                                    }
                                 ]
                             },
                             {
@@ -937,7 +937,7 @@
                                                                     const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
                                                                     setTimeout(() => {
                                                                         msg.close();
-                                                                }, 3000);
+                                                                    }, 3000);
                                                                     isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
                                                                         classRecord_RE.id,"GET", null, null));
                                                                     classRecord_RE.trainingEvalStatus = 0;
@@ -996,7 +996,6 @@
                             }
                         ]
                     }),
-
 
                 ]
             }),
@@ -1455,7 +1454,7 @@
                             if (record.evaluationStatusReaction == null
                                 || record.evaluationStatusReaction == 0
                                 || record.evaluationStatusReaction == undefined) {
-                                stdIds.push(record.id);
+                                    stdIds.push(record.id);
                             }
                         }
                         create_multiple_evaluation_form_RE(null, ListGrid_SelectQuestionnarie_RE.getSelectedRecord().id, stdIds, 188, classRecord_RE.id, 504, 139, 154, check)
@@ -1656,7 +1655,7 @@
                             const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
                             setTimeout(() => {
                                 msg.close();
-                        }, 3000);
+                            }, 3000);
                         } else {
                             createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                         }
@@ -1730,6 +1729,7 @@
             let itemList = [];
             let description;
             let record = {};
+
             isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
                 let result = JSON.parse(resp.httpResponseText).response.data;
                 description = result[0].description;
@@ -2037,7 +2037,7 @@
                             const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
                             setTimeout(() => {
                                 msg.close();
-                        }, 3000);
+                            }, 3000);
                         } else {
                             createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                         }
@@ -2095,7 +2095,6 @@
             }));
         }));
 
-
         Window_Questions_JspEvaluation.show();
 
         evalWait_RE = createDialog("wait");
@@ -2114,7 +2113,7 @@
             let itemList = [];
             let description;
             let record = {};
-            console.log('22')
+
             isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
                 let result = JSON.parse(resp.httpResponseText).response.data;
                 description = result[0].description;
@@ -2260,10 +2259,6 @@
             ],
             fetchDataURL: questionnaireUrl + "/iscList/validQestionnaries/" + classRecord_RE.id
         });
-
-
-
-
         let ListGrid_SelectQuestionnarie_RE = isc.TrLG.create({
             width: "100%",
             dataSource: RestDataSource_Questionnarie_RE,
@@ -2413,24 +2408,24 @@
                 data.evaluationLevelId = 154;
                 if(evaluationEmpty == false){
                     isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
-                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                            Window_Questions_JspEvaluation.close();
-                            if (evaluationFull == true)
-                                classRecord_RE.teacherEvalStatus = 2;
-                            else
-                                classRecord_RE.teacherEvalStatus = 3;
-                            isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
-                                classRecord_RE.id,"GET", null, null));
-                            ToolStrip_SendForms_RE.getField("registerButtonTeacher").showIcon("ok");
-                            ToolStrip_SendForms_RE.redraw();
-                            const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                            setTimeout(() => {
-                                msg.close();
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                        Window_Questions_JspEvaluation.close();
+                        if (evaluationFull == true)
+                            classRecord_RE.teacherEvalStatus = 2;
+                        else
+                            classRecord_RE.teacherEvalStatus = 3;
+                        isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
+                            classRecord_RE.id,"GET", null, null));
+                        ToolStrip_SendForms_RE.getField("registerButtonTeacher").showIcon("ok");
+                        ToolStrip_SendForms_RE.redraw();
+                        const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                        setTimeout(() => {
+                            msg.close();
                         }, 3000);
-                        } else {
-                            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
-                        }
-                    }))
+                    } else {
+                        createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                    }
+                }))
                 }
                 else{
                     createDialog("info", "حداقل به یکی از سوالات فرم ارزیابی باید جواب داده شود", "<spring:message code="error"/>");
@@ -2499,7 +2494,7 @@
             let itemList = [];
             let description;
             let record = {};
-            console.log('33')
+
             isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
                 let result = JSON.parse(resp.httpResponseText).response.data;
                 description = result[0].description;
@@ -2677,7 +2672,7 @@
                     const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
                     setTimeout(() => {
                         msg.close();
-                }, 3000);
+                    }, 3000);
                 }
                 if (questionnarieTypeId == 139) {
                     ListGrid_student_RE.invalidateCache();
@@ -2722,12 +2717,12 @@
 
         evalWait_RE = createDialog("wait");
         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/groupCreate/" + evaluatorIds, "POST", JSON.stringify(data), function (resp) {
-                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                    if(check == true){}
-                    else{
-                        const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                        setTimeout(() => {
-                            msg.close();
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                if(check == true){}
+                else{
+                    const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                    setTimeout(() => {
+                        msg.close();
                     }, 3000);
                     }
                     if (questionnarieTypeId == 139) {
@@ -2751,7 +2746,7 @@
                     createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                 }
                 evalWait_RE.close();
-            }
+        }
         ));
 
     }
