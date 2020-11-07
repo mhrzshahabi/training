@@ -3873,27 +3873,27 @@
             return isc.DataSource.combineCriteria(this.getValuesAsAdvancedCriteria(), criteria);
         },
         updateCriteria: function(item, value, fieldIndex){
-            let criteria = null;
-            if (value != null && value.length > 0) {
-                criteria = {
-                    _constructor: "AdvancedCriteria",
-                    operator: "and",
-                    criteria: [
-                        {fieldName: item.organSegmentFilterFieldName, operator: "inSet", value: value},
-                    ]
-                };
-            }
-            for (let i = fieldIndex + 1; i < this.getFields().length; i++) {
-                let fieldCriteria = this.getField(i).optionCriteria;
-                fieldCriteria?.criteria?.remove(fieldCriteria.criteria.find({fieldName: item.organSegmentFilterFieldName}));
-                if (fieldCriteria && (fieldCriteria.criteria == null || fieldCriteria.criteria.length === 0))
-                    fieldCriteria = null;
-                let afterChangeCriteria = isc.DataSource.combineCriteria(criteria, fieldCriteria);
-                this.getField(i).optionCriteria = afterChangeCriteria;
-                this.getField(i).optionDataSource.implicitCriteria = afterChangeCriteria;
-                this.getField(i).optionDataSource.invalidateCache();
-                this.getField(i).criteriaHasChanged = true;
-            }
+            // let criteria = null;
+            // if (value != null && value.length > 0) {
+            //     criteria = {
+            //         _constructor: "AdvancedCriteria",
+            //         operator: "and",
+            //         criteria: [
+            //             {fieldName: item.organSegmentFilterFieldName, operator: "inSet", value: value},
+            //         ]
+            //     };
+            // }
+            // for (let i = fieldIndex + 1; i < this.getFields().length; i++) {
+            //     let fieldCriteria = this.getField(i).optionCriteria;
+            //     fieldCriteria?.criteria?.remove(fieldCriteria.criteria.find({fieldName: item.organSegmentFilterFieldName}));
+            //     if (fieldCriteria && (fieldCriteria.criteria == null || fieldCriteria.criteria.length === 0))
+            //         fieldCriteria = null;
+            //     let afterChangeCriteria = isc.DataSource.combineCriteria(criteria, fieldCriteria);
+            //     this.getField(i).optionCriteria = afterChangeCriteria;
+            //     this.getField(i).optionDataSource.implicitCriteria = afterChangeCriteria;
+            //     this.getField(i).optionDataSource.invalidateCache();
+            //     this.getField(i).criteriaHasChanged = true;
+            // }
         }
     });
 
