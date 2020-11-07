@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import request.evaluation.ElsEvalRequest;
 import response.BaseResponse;
-import response.evaluation.EvalResultListResponse;
+import response.evaluation.EvalListResponse;
 import response.evaluation.SendEvalToElsResponse;
 
 @RestController
@@ -29,7 +29,7 @@ public class ElsRestController {
     private final ClassStudentService classStudentService;
     private final ElsClient client;
 
-    @PostMapping("/eval/{id}")
+    @GetMapping("/eval/{id}")
     public ResponseEntity<SendEvalToElsResponse> sendEvalToEls(@PathVariable long id) {
         Evaluation evaluation = evaluationService.getById(id);
         ElsEvalRequest request = evaluationBeanMapper.toElsEvalRequest(evaluation, questionnaireService.get(evaluation.getQuestionnaireId()),
@@ -43,10 +43,10 @@ public class ElsRestController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/eval/{id}")
-    public ResponseEntity<EvalResultListResponse> getEvalResults(@PathVariable long id) {
-        EvalResultListResponse response = client.getEvalResults(id);
+    @GetMapping("/evalResult/{id}")
+    public ResponseEntity<EvalListResponse> getEvalResults(@PathVariable long id) {
+        EvalListResponse response = client.getEvalResults(id);
         //TODO SAVE EVALUATION RESULTS TO DB OR ANYTHING THAT YOU WANT TO DO
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity(response, HttpStatus.OK);
     }
 }

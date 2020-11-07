@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class EvalResultListResponse extends BaseResponse implements Serializable {
+public class EvalListResponse extends BaseResponse implements Serializable {
 
-    private List<EvalResultDto> results;
+    private List<EvalResultDto> data;
 }

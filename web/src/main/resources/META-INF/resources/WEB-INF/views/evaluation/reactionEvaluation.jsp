@@ -123,6 +123,21 @@
         ],
     });
 
+    var RestDataSource_Result_Evaluation = isc.TrDS.create({
+        fields: [
+            {name: "surname", title: 'نام'},
+            {name: "lastName", title: 'نام خانوادگی'},
+            {name: "description", title: 'توضیحات'},
+            {name: "answers", hidden: true },
+        ]
+    });
+
+    var RestDataSource_Result_Answers_Evaluation = isc.TrDS.create({
+        fields: [
+            {name: "question", title: 'سوال'},
+            {name: "answer", title: 'پاسخ'},
+        ]
+    });
     //----------------------------------------- DynamicForms -----------------------------------------------------------
     var DynamicForm_ReturnDate_RE = isc.DynamicForm.create({
         width: "150px",
@@ -730,6 +745,7 @@
                                 title: "ثبت نتایج ارزیابی مدرس از کلاس",
                                 type: "button",
                                 startRow: false,
+                                endRow: false,
                                 baseStyle: "registerFile",
                                 click: function () {
                                     if (classRecord_RE.teacherEvalStatus == "0" || classRecord_RE.teacherEvalStatus == null)
@@ -783,6 +799,9 @@
                                                                         classRecord_RE.id,"GET", null, null));
                                                                     classRecord_RE.teacherEvalStatus = 0;
                                                                     ToolStrip_SendForms_RE.getField("sendButtonTeacher").hideIcon("ok");
+                                                                    ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(true);
+                                                                    ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(true);
+
                                                                     ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
                                                                     ToolStrip_SendForms_RE.redraw();
                                                                 } else {
@@ -811,6 +830,28 @@
                                     }
                                 ]
                             },
+                            {
+                                name: "sendToEls_teacher",
+                                title: "ارسال به آموزش آنلاین",
+                                type: "button",
+                                startRow: false,
+                                endRow: false,
+                                click: function () {
+                                    console.log('send')
+                                    sendToEls('teacher')
+                                }
+                            },
+                            {
+                                name: "showResultsEls_teacher",
+                                title: "مشاهده نتایج ارزیابی",
+                                type: "button",
+                                startRow: false,
+                                click: function () {
+                                    console.log('show')
+                                    showResults('teacher')
+                                }
+                            },
+
                             {
                                 name: "sendButtonTraining",
                                 title: "صدور فرم ارزیابی آموزش از مدرس",
@@ -901,6 +942,9 @@
                                                                         classRecord_RE.id,"GET", null, null));
                                                                     classRecord_RE.trainingEvalStatus = 0;
                                                                     ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
+                                                                    ToolStrip_SendForms_RE.getField("sendToEls_supervisor").setDisabled(true);
+                                                                    ToolStrip_SendForms_RE.getField("showResultsEls_supervisor").setDisabled(true);
+
                                                                     ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
                                                                     ToolStrip_SendForms_RE.redraw();
                                                                 } else {
@@ -929,6 +973,27 @@
                                     }
                                 ]
                             },
+                            {
+                                name: "sendToEls_supervisor",
+                                title: "ارسال به آموزش آنلاین",
+                                type: "button",
+                                startRow: false,
+                                endRow: false,
+                                click: function () {
+                                    console.log('send')
+                                    sendToEls('supervisor')
+                                }
+                            },
+                            {
+                                name: "showResultsEls_supervisor",
+                                title: "مشاهده نتایج ارزیابی",
+                                type: "button",
+                                startRow: false,
+                                click: function () {
+                                    console.log('show')
+                                     showResults('supervisor')
+                                }
+                            }
                         ]
                     }),
 
@@ -981,6 +1046,229 @@
             })
         ]
     });
+
+    function sendToEls(type) {
+        let data = {};
+        if(type == 'supervisor') {
+            data.classId = classRecord_RE.id;
+            data.evaluatorId = classRecord_RE.tclassSupervisor;
+            data.evaluatorTypeId = 454;
+            data.evaluatedId = classRecord_RE.teacherId;
+            data.evaluatedTypeId = 187;
+            data.questionnaireTypeId = 141;
+            data.evaluationLevelId = 154;
+        }else {
+            data.classId = classRecord_RE.id;
+            data.evaluatorId = classRecord_RE.teacherId;
+            data.evaluatorTypeId = 187;
+            data.evaluatedId = classRecord_RE.id;
+            data.evaluatedTypeId = 504;
+            data.questionnaireTypeId = 140;
+            data.evaluationLevelId = 154;
+        }
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
+            if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                let result = JSON.parse(resp.httpResponseText).response.data;
+                wait.show();
+                isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/eval/" + result[0].evaluationId, "GET", null, function (resp) {
+                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                        var OK = isc.Dialog.create({
+                            message: "<spring:message code="msg.operation.successful"/>",
+                            icon: "[SKIN]say.png",
+                            title: "<spring:message code='message'/>"
+                        });
+                        setTimeout(function () {
+                            OK.close();
+                        }, 2000);
+                    } else {
+                        var ERROR = isc.Dialog.create({
+                            message: "<spring:message code='exception.un-managed'/>",
+                            icon: "[SKIN]stop.png",
+                            title: "<spring:message code='message'/>"
+                        });
+                        setTimeout(function () {
+                            ERROR.close();
+                        }, 2000);
+                    }
+                    wait.close()
+                }))
+            } else {
+                var ERROR = isc.Dialog.create({
+                    message: "<spring:message code='exception.un-managed'/>",
+                    icon: "[SKIN]stop.png",
+                    title: "<spring:message code='message'/>"
+                });
+                setTimeout(function () {
+                    ERROR.close();
+                }, 2000);
+            }
+            wait.close()
+        }))
+    }
+    function showResults(type) {
+        let data = {};
+        if(type == 'supervisor') {
+            data.classId = classRecord_RE.id;
+            data.evaluatorId = classRecord_RE.tclassSupervisor;
+            data.evaluatorTypeId = 454;
+            data.evaluatedId = classRecord_RE.teacherId;
+            data.evaluatedTypeId = 187;
+            data.questionnaireTypeId = 141;
+            data.evaluationLevelId = 154;
+        }else {
+            data.classId = classRecord_RE.id;
+            data.evaluatorId = classRecord_RE.teacherId;
+            data.evaluatorTypeId = 187;
+            data.evaluatedId = classRecord_RE.id;
+            data.evaluatedTypeId = 504;
+            data.questionnaireTypeId = 140;
+            data.evaluationLevelId = 154;
+        }
+
+
+        let ListGrid_Result_evaluation = isc.TrLG.create({
+            width: "100%",
+            height: 700,
+            dataSource: RestDataSource_Result_Evaluation,
+            showRecordComponents: true,
+            showRecordComponentsByCell: true,
+            fields: [
+                {name: "surname", title: 'نام',  width: "20%"},
+                {name: "lastName", title: 'نام خانوادگی' , width: "20%"},
+                {name: "description", title: 'توضیحات' , width:"20%"},
+                { name: "iconField", title: " ", width: "10%"},
+            ],
+            createRecordComponent: function (record, colNum) {
+                var fieldName = this.getFieldName(colNum);
+                if (fieldName == "iconField") {
+                    let button = isc.IButton.create({
+                        layoutAlign: "center",
+                        title: "پاسخ ها",
+                        width: "120",
+                        click: function () {
+                            ListGrid_show_ansewrs(record.answers);
+                        }
+                    });
+                    return button;
+                } else {
+                    return null;
+                }
+            }
+        });
+
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
+            if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                let result = JSON.parse(resp.httpResponseText).response.data;
+                wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/evalResult/" + result[0].evaluationId, "GET", null, function (resp) {
+                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                    let results = JSON.parse(resp.data).data;
+                    var OK = isc.Dialog.create({
+                        message: "<spring:message code="msg.operation.successful"/>",
+                        icon: "[SKIN]say.png",
+                        title: "<spring:message code='message'/>"
+                    });
+                    setTimeout(function () {
+                        OK.close();
+                    }, 2000);
+
+                    ListGrid_Result_evaluation.setData(results);
+
+                    let Window_result_JspEvaluation = isc.Window.create({
+                        width: 1024,
+                        height: 768,
+                        keepInParentRect: true,
+                        title: "مشاهده نتایج ارزیابی",
+                        items: [
+                            isc.VLayout.create({
+                                width: "100%",
+                                height: "100%",
+                                defaultLayoutAlign: "center",
+                                align: "center",
+                                members: [
+                                    isc.HLayout.create({
+                                        width: "100%",
+                                        height: "90%",
+                                        members: [ListGrid_Result_evaluation]
+                                    }),
+                                    isc.IButtonCancel.create({
+                                        click: function () {
+                                            Window_result_JspEvaluation.close();
+                                        }
+                                    })]
+                            })
+                        ],
+                        minWidth: 1024
+                    })
+                    Window_result_JspEvaluation.show();
+                } else {
+                    var ERROR = isc.Dialog.create({
+                        message: "<spring:message code='exception.un-managed'/>",
+                        icon: "[SKIN]stop.png",
+                        title: "<spring:message code='message'/>"
+                    });
+                    setTimeout(function () {
+                        ERROR.close();
+                    }, 2000);
+                }
+                wait.close();
+            }))
+        } else {
+                var ERROR = isc.Dialog.create({
+                    message: "<spring:message code='exception.un-managed'/>",
+                    icon: "[SKIN]stop.png",
+                    title: "<spring:message code='message'/>"
+                });
+                setTimeout(function () {
+                    ERROR.close();
+                }, 2000);
+            }
+            wait.close()
+        }))
+    }
+
+    function ListGrid_show_ansewrs(answers) {
+        let ListGrid_Result_Answer_evaluation = isc.TrLG.create({
+            width: "100%",
+            height: 700,
+            dataSource: RestDataSource_Result_Answers_Evaluation,
+            fields: [],
+        });
+
+        ListGrid_Result_Answer_evaluation.setData(answers)
+       // ListGrid_Result_Answer_evaluation.invalidateCache();
+
+        let Window_result_Answer_JspEvaluation = isc.Window.create({
+            width: 1024,
+            height: 768,
+            keepInParentRect: true,
+            title: "مشاهده پاسخ ها",
+            items: [
+                isc.VLayout.create({
+                    width: "100%",
+                    height: "100%",
+                    defaultLayoutAlign: "center",
+                    align: "center",
+                    members: [
+                        isc.HLayout.create({
+                            width: "100%",
+                            height: "90%",
+                            members: [ListGrid_Result_Answer_evaluation]
+                        }),
+                        isc.IButtonCancel.create({
+                            click: function () {
+                                Window_result_Answer_JspEvaluation.close();
+                            }
+                        })]
+                })
+            ],
+            minWidth: 1024
+        })
+        Window_result_Answer_JspEvaluation.show();
+    }
 
     //----------------------------------------- LayOut -----------------------------------------------------------------
     var HLayout_Actions_RE = isc.HLayout.create({
@@ -2391,10 +2679,16 @@
                 } else if (questionnarieTypeId == 141) {
                     classRecord_RE.trainingEvalStatus = 1;
                     ToolStrip_SendForms_RE.getField("sendButtonTraining").showIcon("ok");
+                    ToolStrip_SendForms_RE.getField("sendToEls_supervisor").setDisabled(false);
+                    ToolStrip_SendForms_RE.getField("showResultsEls_supervisor").setDisabled(false);
+
                     ToolStrip_SendForms_RE.redraw();
                 } else if (questionnarieTypeId == 140) {
                     classRecord_RE.teacherEvalStatus = 1;
                     ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
+                    ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(false);
+                    ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(false);
+
                     ToolStrip_SendForms_RE.redraw();
                 }
             } else {
@@ -2430,21 +2724,27 @@
                     setTimeout(() => {
                         msg.close();
                     }, 3000);
+                    }
+                    if (questionnarieTypeId == 139) {
+                        ListGrid_student_RE.invalidateCache();
+                    } else if (questionnarieTypeId == 141) {
+                        classRecord_RE.trainingEvalStatus = 1;
+                        ToolStrip_SendForms_RE.getField("sendButtonTraining").showIcon("ok");
+                        ToolStrip_SendForms_RE.getField("sendToEls_supervisor").setDisabled(false);
+                        ToolStrip_SendForms_RE.getField("showResultsEls_supervisor").setDisabled(false);
+
+                        ToolStrip_SendForms_RE.redraw();
+                    } else if (questionnarieTypeId == 140) {
+                        classRecord_RE.teacherEvalStatus = 1;
+                        ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
+                        ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(false);
+                        ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(false);
+
+                        ToolStrip_SendForms_RE.redraw();
+                    }
+                } else {
+                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                 }
-                if (questionnarieTypeId == 139) {
-                    ListGrid_student_RE.invalidateCache();
-                } else if (questionnarieTypeId == 141) {
-                    classRecord_RE.trainingEvalStatus = 1;
-                    ToolStrip_SendForms_RE.getField("sendButtonTraining").showIcon("ok");
-                    ToolStrip_SendForms_RE.redraw();
-                } else if (questionnarieTypeId == 140) {
-                    classRecord_RE.teacherEvalStatus = 1;
-                    ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
-                    ToolStrip_SendForms_RE.redraw();
-                }
-            } else {
-                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
-            }
                 evalWait_RE.close();
         }
         ));
