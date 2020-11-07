@@ -799,6 +799,9 @@
                                                                         classRecord_RE.id,"GET", null, null));
                                                                     classRecord_RE.teacherEvalStatus = 0;
                                                                     ToolStrip_SendForms_RE.getField("sendButtonTeacher").hideIcon("ok");
+                                                                    ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(true);
+                                                                    ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(true);
+
                                                                     ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
                                                                     ToolStrip_SendForms_RE.redraw();
                                                                 } else {
@@ -939,6 +942,9 @@
                                                                         classRecord_RE.id,"GET", null, null));
                                                                     classRecord_RE.trainingEvalStatus = 0;
                                                                     ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
+                                                                    ToolStrip_SendForms_RE.getField("sendToEls_supervisor").setDisabled(true);
+                                                                    ToolStrip_SendForms_RE.getField("showResultsEls_supervisor").setDisabled(true);
+
                                                                     ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
                                                                     ToolStrip_SendForms_RE.redraw();
                                                                 } else {
@@ -1063,30 +1069,42 @@
         }
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
-            let result = JSON.parse(resp.httpResponseText).response.data;
-           // wait.close()
-            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/eval/"+ result[0].evaluationId, "GET",null, function (resp) {
-                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                    var OK = isc.Dialog.create({
-                        message: "<spring:message code="msg.operation.successful"/>",
-                        icon: "[SKIN]say.png",
-                        title:  "<spring:message code='message'/>"
-                    });
-                    setTimeout(function () {
-                        OK.close();
-                    }, 2000);
-                } else {
-                    var ERROR = isc.Dialog.create({
-                        message:"<spring:message code='exception.un-managed'/>",
-                        icon: "[SKIN]stop.png",
-                        title:  "<spring:message code='message'/>"
-                    });
-                    setTimeout(function () {
-                        ERROR.close();
-                    }, 2000);
-                }
-                wait.close()
-            }))
+            if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                let result = JSON.parse(resp.httpResponseText).response.data;
+                wait.show();
+                isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/eval/" + result[0].evaluationId, "GET", null, function (resp) {
+                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                        var OK = isc.Dialog.create({
+                            message: "<spring:message code="msg.operation.successful"/>",
+                            icon: "[SKIN]say.png",
+                            title: "<spring:message code='message'/>"
+                        });
+                        setTimeout(function () {
+                            OK.close();
+                        }, 2000);
+                    } else {
+                        var ERROR = isc.Dialog.create({
+                            message: "<spring:message code='exception.un-managed'/>",
+                            icon: "[SKIN]stop.png",
+                            title: "<spring:message code='message'/>"
+                        });
+                        setTimeout(function () {
+                            ERROR.close();
+                        }, 2000);
+                    }
+                    wait.close()
+                }))
+            } else {
+                var ERROR = isc.Dialog.create({
+                    message: "<spring:message code='exception.un-managed'/>",
+                    icon: "[SKIN]stop.png",
+                    title: "<spring:message code='message'/>"
+                });
+                setTimeout(function () {
+                    ERROR.close();
+                }, 2000);
+            }
+            wait.close()
         }))
     }
     function showResults(type) {
@@ -1143,40 +1161,73 @@
 
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
-            let result = JSON.parse(resp.httpResponseText).response.data;
-            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/evalResult/"+ result[0].evaluationId, "GET",null, function (resp) {
-                let results = JSON.parse(resp.data).data;
-                ListGrid_Result_evaluation.setData(results)
-                wait.close();
+            if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                let result = JSON.parse(resp.httpResponseText).response.data;
+                wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/evalResult/" + result[0].evaluationId, "GET", null, function (resp) {
+                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                    let results = JSON.parse(resp.data).data;
+                    var OK = isc.Dialog.create({
+                        message: "<spring:message code="msg.operation.successful"/>",
+                        icon: "[SKIN]say.png",
+                        title: "<spring:message code='message'/>"
+                    });
+                    setTimeout(function () {
+                        OK.close();
+                    }, 2000);
 
-                let Window_result_JspEvaluation = isc.Window.create({
-                    width: 1024,
-                    height: 768,
-                    keepInParentRect: true,
-                    title: "مشاهده نتایج ارزیابی",
-                    items: [
-                        isc.VLayout.create({
-                            width: "100%",
-                            height: "100%",
-                            defaultLayoutAlign: "center",
-                            align: "center",
-                            members: [
-                                isc.HLayout.create({
-                                    width: "100%",
-                                    height: "90%",
-                                    members: [ListGrid_Result_evaluation]
-                                }),
-                                isc.IButtonCancel.create({
-                                    click: function () {
-                                        Window_result_JspEvaluation.close();
-                                    }
-                                })]
-                        })
-                    ],
-                    minWidth: 1024
-                })
-                Window_result_JspEvaluation.show();
+                    ListGrid_Result_evaluation.setData(results);
+
+                    let Window_result_JspEvaluation = isc.Window.create({
+                        width: 1024,
+                        height: 768,
+                        keepInParentRect: true,
+                        title: "مشاهده نتایج ارزیابی",
+                        items: [
+                            isc.VLayout.create({
+                                width: "100%",
+                                height: "100%",
+                                defaultLayoutAlign: "center",
+                                align: "center",
+                                members: [
+                                    isc.HLayout.create({
+                                        width: "100%",
+                                        height: "90%",
+                                        members: [ListGrid_Result_evaluation]
+                                    }),
+                                    isc.IButtonCancel.create({
+                                        click: function () {
+                                            Window_result_JspEvaluation.close();
+                                        }
+                                    })]
+                            })
+                        ],
+                        minWidth: 1024
+                    })
+                    Window_result_JspEvaluation.show();
+                } else {
+                    var ERROR = isc.Dialog.create({
+                        message: "<spring:message code='exception.un-managed'/>",
+                        icon: "[SKIN]stop.png",
+                        title: "<spring:message code='message'/>"
+                    });
+                    setTimeout(function () {
+                        ERROR.close();
+                    }, 2000);
+                }
+                wait.close();
             }))
+        } else {
+                var ERROR = isc.Dialog.create({
+                    message: "<spring:message code='exception.un-managed'/>",
+                    icon: "[SKIN]stop.png",
+                    title: "<spring:message code='message'/>"
+                });
+                setTimeout(function () {
+                    ERROR.close();
+                }, 2000);
+            }
+            wait.close()
         }))
     }
 
@@ -2633,10 +2684,16 @@
                 } else if (questionnarieTypeId == 141) {
                     classRecord_RE.trainingEvalStatus = 1;
                     ToolStrip_SendForms_RE.getField("sendButtonTraining").showIcon("ok");
+                    ToolStrip_SendForms_RE.getField("sendToEls_supervisor").setDisabled(false);
+                    ToolStrip_SendForms_RE.getField("showResultsEls_supervisor").setDisabled(false);
+
                     ToolStrip_SendForms_RE.redraw();
                 } else if (questionnarieTypeId == 140) {
                     classRecord_RE.teacherEvalStatus = 1;
                     ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
+                    ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(false);
+                    ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(false);
+
                     ToolStrip_SendForms_RE.redraw();
                 }
             } else {
@@ -2678,10 +2735,16 @@
                     } else if (questionnarieTypeId == 141) {
                         classRecord_RE.trainingEvalStatus = 1;
                         ToolStrip_SendForms_RE.getField("sendButtonTraining").showIcon("ok");
+                        ToolStrip_SendForms_RE.getField("sendToEls_supervisor").setDisabled(false);
+                        ToolStrip_SendForms_RE.getField("showResultsEls_supervisor").setDisabled(false);
+
                         ToolStrip_SendForms_RE.redraw();
                     } else if (questionnarieTypeId == 140) {
                         classRecord_RE.teacherEvalStatus = 1;
                         ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
+                        ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(false);
+                        ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(false);
+
                         ToolStrip_SendForms_RE.redraw();
                     }
                 } else {
