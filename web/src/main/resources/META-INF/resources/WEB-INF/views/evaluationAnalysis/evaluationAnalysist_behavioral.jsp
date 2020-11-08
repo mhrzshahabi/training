@@ -9,18 +9,14 @@
 
     var BehavioralEvaluationChart1 = isc.FacetChart.create({
         height: "75%",
-        verticalAlign: "top",
         titleAlign: "center",
-        minLabelGap: 5,
-        barMargin: "100",
-        stacked: false,
-        chartType: "Column",
         allowedChartTypes: [],
         axisStartValue: 0,
         axisEndValue: 100,
         showDataValues:true,
         brightenAllOnHover:true,
         hoverLabelPadding: -7,
+        valueTitle: "میانگین نمره ارزیابی",
         facets: [
             {
                 id: "student",
@@ -33,8 +29,9 @@
         ],
         data: behavioral_chartData1,
         valueProperty: "grade",
-        valueTitle: "میانگین نمره ارزیابی",
-        title: "تحلیل ارزیابی رفتاری کلاس بر اساس فراگیران",
+        stacked: false,
+        chartType: "Column",
+        title: "تحلیل ارزیابی رفتاری کلاس بر اساس فراگیران"
     });
 
     var behavioral_chartData2 = null;

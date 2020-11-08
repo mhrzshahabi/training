@@ -69,7 +69,7 @@ public class Tclass extends Auditable {
     @Column(name = "f_supervisor")
     private Long supervisorId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "f_planner", insertable = false, updatable = false)
     private Personnel planner;
 
@@ -92,7 +92,7 @@ public class Tclass extends Auditable {
     @Column(name = "f_institute")
     private Long instituteId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "f_institute_organizer", insertable = false, updatable = false)
     private Institute organizer;
 
@@ -160,7 +160,7 @@ public class Tclass extends Auditable {
     @Column(name = "c_workflow_ending_status_code")
     private Integer workflowEndingStatusCode;
 
-    @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "tclass", cascade = CascadeType.REMOVE)
     private Set<ClassStudent> classStudents;
 
     @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)

@@ -4,6 +4,9 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.dto.QuestionnaireDTO;
+import com.nicico.training.model.Evaluation;
+import com.nicico.training.repository.EvaluationDAO;
+import com.nicico.training.service.EvaluationService;
 import com.nicico.training.service.QuestionnaireService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -23,6 +26,7 @@ public class QuestionnaireRestController {
 
     private final QuestionnaireService questionnaireService;
     private final ModelMapper modelMapper;
+    private final EvaluationDAO evaluationDAO;
 
     @Loggable
     @GetMapping("/isLocked/{id}")
@@ -46,13 +50,27 @@ public class QuestionnaireRestController {
 
 
     @Loggable
-    @GetMapping(value = "/iscList/validQestionnaries")
-    public ResponseEntity<TotalResponse<QuestionnaireDTO.Info>> iscListValidQuestionnarie(@RequestParam MultiValueMap<String, String> criteria) {
+    @GetMapping(value = "/iscList/validQestionnaries/{classId}")
+    public ResponseEntity<TotalResponse<QuestionnaireDTO.Info>> iscListValidQuestionnarie(@RequestParam MultiValueMap<String, String> criteria,
+                                                                                            @PathVariable Long classId) {
+        Long questionnarieId = null;
+        Long questionnarieType = null;
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
         TotalResponse<QuestionnaireDTO.Info> result = questionnaireService.search(nicicoCriteria);
+        if(result != null && result.getResponse().getData() != null && result.getResponse().getData().size() != 0){
+            questionnarieType = result.getResponse().getData().get(0).getQuestionnaireType().getId();
+        }
+        if(questionnarieType != null && questionnarieType.equals(139L)){
+            List<Evaluation> evaluationList =  evaluationDAO.findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeId(classId, 154L, 139L);
+            if(evaluationList != null && evaluationList.size() != 0){
+                questionnarieId = evaluationList.get(0).getQuestionnaireId();
+            }
+        }
         List<Object> removedObject = new ArrayList();
         for (QuestionnaireDTO.Info info : result.getResponse().getData()) {
             if(info.getQuestionnaireQuestionList() == null || info.getQuestionnaireQuestionList().size() == 0)
+                removedObject.add(info);
+            if(questionnarieId != null && !info.getId().equals(questionnarieId))
                 removedObject.add(info);
         }
 

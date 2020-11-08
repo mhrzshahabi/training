@@ -22,7 +22,7 @@ public class EvaluationAnswer extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "f_evaluation_id", insertable = false, updatable = false)
     private Evaluation evaluation;
 
@@ -35,7 +35,7 @@ public class EvaluationAnswer extends Auditable {
     @Column(name = "f_evaluation_question_id")
     private Long evaluationQuestionId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "f_question_source_id", insertable = false, updatable = false)
     private ParameterValue questionSource;
 

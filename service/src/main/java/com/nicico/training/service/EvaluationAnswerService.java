@@ -82,6 +82,11 @@ public class EvaluationAnswerService implements IEvaluationAnswerService {
         return SearchUtil.search(evaluationAnswerDAO, request, evaluationAnswer -> modelMapper.map(evaluationAnswer, EvaluationAnswerDTO.Info.class));
     }
 
+    @Override
+    public List<EvaluationAnswer> getAllByEvaluationId(long id) {
+        return evaluationAnswerDAO.findByEvaluationId(id);
+    }
+
 
     // ------------------------------
 

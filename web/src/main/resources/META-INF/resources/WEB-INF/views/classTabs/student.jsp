@@ -14,7 +14,7 @@
         var checkRefresh = 0;
         var selectedRow = {};
         var listGridType = null;
-        let previousSelectedRow ={};
+        let previousSelectedRow = {};
         let previousSelectedRowReg = {};
 
         // ------------------------------------------- Menu -------------------------------------------
@@ -52,15 +52,15 @@
                 },
                 </sec:authorize>
 
-<%--                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_E','TclassStudentsTab_classStatus')">--%>
-<%--                {--%>
-<%--                    title: "<spring:message code="evaluation"/>",--%>
-<%--                    icon: "<spring:url value="remove.png"/>",--%>
-<%--                    click: function () {--%>
-<%--                        evaluationStudent_student();--%>
-<%--                    }--%>
-<%--                },--%>
-<%--                </sec:authorize>--%>
+                <%--                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_E','TclassStudentsTab_classStatus')">--%>
+                <%--                {--%>
+                <%--                    title: "<spring:message code="evaluation"/>",--%>
+                <%--                    icon: "<spring:url value="remove.png"/>",--%>
+                <%--                    click: function () {--%>
+                <%--                        evaluationStudent_student();--%>
+                <%--                    }--%>
+                <%--                },--%>
+                <%--                </sec:authorize>--%>
             ]
         });
 
@@ -88,14 +88,14 @@
                 btnRemove_student_class,
                 </sec:authorize>
 
-<%--                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_E','TclassStudentsTab_classStatus')">--%>
-<%--                isc.ToolStripButton.create({--%>
-<%--                    title: "<spring:message code="evaluation"/>",--%>
-<%--                    click: function () {--%>
-<%--                        evaluationStudent_student();--%>
-<%--                    }--%>
-<%--                }),--%>
-<%--                </sec:authorize>--%>
+                <%--                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_E','TclassStudentsTab_classStatus')">--%>
+                <%--                isc.ToolStripButton.create({--%>
+                <%--                    title: "<spring:message code="evaluation"/>",--%>
+                <%--                    click: function () {--%>
+                <%--                        evaluationStudent_student();--%>
+                <%--                    }--%>
+                <%--                }),--%>
+                <%--                </sec:authorize>--%>
 
                 <sec:authorize access="hasAnyAuthority('TclassStudentsTab_P','TclassStudentsTab_classStatus')">
                 isc.ToolStripButtonExcel.create({
@@ -105,7 +105,7 @@
                         if (!(classRecord === undefined || classRecord == null)) {
                             ExportToFile.downloadExcelRestUrl(null, StudentsLG_student, tclassStudentUrl + "/students-iscList/" + classRecord.id, 0, ListGrid_Class_JspClass, '', "کلاس - فراگيران", StudentsLG_student.getCriteria(), null);
                         }
-                   }
+                    }
                 }),
                 isc.ToolStripButton.create({
                     icon: "[SKIN]/RichTextEditor/print.png",
@@ -155,6 +155,131 @@
                     }
                 }),
                 </sec:authorize>
+
+                isc.IButton.create({
+                    baseStyle: 'MSG-btn-orange',
+                    icon: '../static/img/msg/mail.svg',
+                    title: "ارسال پیام", width: 80,
+                    click: function () {
+                        let row = ListGrid_Class_JspClass.getSelectedRecords()[0];
+                        let wait = createDialog("wait");
+
+                        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/students-iscList/" + row.id, "GET", null, function (resp) {
+                            if (generalGetResp(resp)) {
+                                if (resp.httpResponseCode == 200) {
+                                    isc.RPCManager.sendRequest(TrDSRequest(parameterValueUrl + "/iscList/481?operator=and&_constructor=AdvancedCriteria&criteria={\"fieldName\":\"code\",\"operator\":\"equals\",\"value\":\"MCSR\",\"_constructor\":\"AdvancedCriteria\"}&_startRow=0&_endRow=75&_sortBy=title", "GET", null, function (resp2) {
+                                        wait.close();
+                                        if (generalGetResp(resp)) {
+                                            if (resp.httpResponseCode == 200) {
+
+
+                                                let id = [];
+                                                JSON.parse(resp.data).response.data.filter(p => p.student.mobile).forEach(p => id.push(p.id));
+
+                                                MSG_sendTypesItems = [];
+                                                MSG_msgContent.type = [];
+                                                MSG_sendTypesItems.push('MSG_messageType_sms');
+                                                MSG_msgContent.type = MSG_sendTypesItems;
+
+                                                sendMessageFunc = sendMessage_StudentClassJsp;
+                                                MSG_selectUsersForm.getItem("multipleSelect").optionDataSource = StudentsDS_student;
+
+                                                //MSG_selectUsersForm.getItem("multipleSelect").pickListWidth=600;
+                                                MSG_selectUsersForm.getItem("multipleSelect").pickListFields = [
+                                                    {
+                                                        name: "student.firstName",
+                                                        title: "<spring:message code="firstName"/>",
+                                                        autoFitWidth: false,
+                                                        align: "center"
+                                                    },
+                                                    {
+                                                        name: "student.lastName",
+                                                        title: "<spring:message code="lastName"/>",
+                                                        autoFitWidth: false,
+                                                        align: "center"
+                                                    },
+                                                    {
+                                                        name: "student.nationalCode",
+                                                        title: "<spring:message code="national.code"/>",
+                                                        width: 100,
+                                                        align: "center"
+                                                    },
+                                                    {
+                                                        name: "student.personnelNo",
+                                                        title: "<spring:message code="personnel.no"/>",
+                                                        width: 100,
+                                                        align: "center"
+                                                    },
+                                                    {
+                                                        name: "student.personnelNo2",
+                                                        title: "<spring:message code="personnel.no.6.digits"/>",
+                                                        width: 100,
+                                                        align: "center"
+                                                    },
+                                                    {
+                                                        name: "student.mobile",
+                                                        title: "<spring:message code="mobile"/>",
+                                                        width: 100,
+                                                        align: "center"
+                                                    },
+                                                ];
+                                                MSG_selectUsersForm.getItem("multipleSelect").displayField = "fullName";
+                                                MSG_selectUsersForm.getItem("multipleSelect").valueField = "id";
+                                                MSG_selectUsersForm.getItem("multipleSelect").dataArrived = function (startRow, endRow) {
+                                                    let ids = MSG_selectUsersForm.getItem("multipleSelect").pickList.data.getAllCachedRows().filter(p => !p.student.mobile).map(function (item) {
+                                                        return item.id;
+                                                    });
+
+                                                    let findRows = MSG_selectUsersForm.getItem("multipleSelect").pickList.findAll({
+                                                        _constructor: "AdvancedCriteria",
+                                                        operator: "and",
+                                                        criteria: [{fieldName: "id", operator: "inSet", value: ids}]
+                                                    });
+
+                                                    findRows.setProperty("enabled", false);
+
+                                                    MSG_selectUsersForm.getItem("multipleSelect").setValue(id);
+                                                }
+                                                MSG_selectUsersForm.getItem("multipleSelect").fetchData();
+
+                                                MSG_textEditorValue = JSON.parse(resp2.data).response.data[0].description;
+                                                MSG_contentEditor.setValue(MSG_textEditorValue);
+
+                                                linkFormMLanding.getItem('link').setValue('');
+
+                                                if (JSON.parse(resp.data).response.data.filter(p => !p.student.mobile).length != 0) {
+                                                    ErrorMsg.setContents('برای ' + JSON.parse(resp.data).response.data.filter(p => !p.student.mobile).length + ' فراگیر، شماره موبایل تعریف نشده است.');
+                                                } else if (JSON.parse(resp.data).response.data.filter(p => p.student.mobile).length == 0) {
+                                                    ErrorMsg.setContents('هیچ مخاطبی انتخاب نشده است');
+                                                } else {
+                                                    ErrorMsg.setContents('');
+                                                }
+                                                MSG_userType = "classStudentRegistered";
+                                                MSG_classID = row.id;
+
+                                                MSG_repeatOptions.getItem('maxRepeat').setValue(0);
+                                                MSG_repeatOptions.getItem('timeBMessages').setValue(1);
+                                                linkFormMLanding.getItem('link').setValue('');
+                                                linkFormMLanding.getItem('link').setRequired(true);
+                                                linkFormMLanding.getItem('link').enable();
+                                                MSG_Window_MSG_Main.show();
+                                            } else {
+                                                createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
+                                            }
+                                        }
+                                    }))
+
+                                } else {
+                                    wait.close();
+                                    createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
+                                }
+                            } else {
+                                wait.close();
+                            }
+                        }));
+                    }
+                }),
+
                 isc.LayoutSpacer.create({width: "*"}),
                 isc.Label.create({ID: "StudentsCount_student"}),
 
@@ -311,7 +436,15 @@
                     title: "<spring:message code="birth.certificate.no"/>",
                     filterOperator: "iContains"
                 },
-                {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".png", canEdit: false},
+                {
+                    name: "hasWarning",
+                    title: " ",
+                    width: 40,
+                    type: "image",
+                    imageURLPrefix: "",
+                    imageURLSuffix: ".png",
+                    canEdit: false
+                },
                 {name: "warning", autoFitWidth: true}
 
             ],
@@ -484,13 +617,33 @@
                         return record.student.ccpUnit;
                     }
                 },
-                {name: "warning",hidden:true},
-                {name: "hasWarning", title: "قبولی در پیش تست", width: 130, type: "image", imageURLPrefix: "", imageURLSuffix: ".png", canEdit: false,canSort: false, canFilter: false}
+                {name: "warning", hidden: true},
+                {
+                    name: "hasWarning",
+                    title: "قبولی در پیش تست",
+                    width: 130,
+                    type: "image",
+                    imageURLPrefix: "",
+                    imageURLSuffix: ".png",
+                    canEdit: false,
+                    canSort: false,
+                    canFilter: false
+                },
+                {
+                    name: "isSentMessage",
+                    title: "ارسال پيام قبل از شروع کلاس",
+                    width: 190,
+                    type: "image",
+                    imageURLPrefix: "",
+                    imageURLSuffix: ".png",
+                    canEdit: false,
+                    canSort: false,
+                    canFilter: false
+                }
             ],
             gridComponents: [StudentTS_student, "filterEditor", "header", "body"],
-            dataArrived:function()
-            {
-                StudentsLG_student.data.localData.filter(p=>p.warning =='Ok').forEach(p=>p.hasWarning='checkBlue');
+            dataArrived: function () {
+                StudentsLG_student.data.localData.filter(p => p.warning == 'Ok').forEach(p => p.hasWarning = 'checkBlue');
             },
             // contextMenu: StudentMenu_student,
             dataChanged: function () {
@@ -537,7 +690,7 @@
                         minWidth: 500,
                         autoSize: false,
                         height: "50%",
-                        closeClick:deleteCachedValue,
+                        closeClick: deleteCachedValue,
                         items: [isc.VLayout.create({
                             width: "100%",
                             height: "100%",
@@ -545,12 +698,12 @@
                         })]
                     });
 
-                   if (!loadjs.isDefined('personnel-information-details')) {
+                    if (!loadjs.isDefined('personnel-information-details')) {
                         loadjs('<spring:url value='web/personnel-information-details/' />', 'personnel-information-details');
-                   }
+                    }
 
-                    loadjs.ready('personnel-information-details', function() {
-                        let oPersonnelInformationDetails=new loadPersonnelInformationDetails();
+                    loadjs.ready('personnel-information-details', function () {
+                        let oPersonnelInformationDetails = new loadPersonnelInformationDetails();
                         window_class_Information.addMember(oPersonnelInformationDetails.PersonnelInfo_Tab);
 
                     });
@@ -628,9 +781,16 @@
                     displayField: "title",
                     filterOnKeypress: true,
                 },
-                {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, hidden: true},
-                {name: "registerTypeId", title: "پرسنل", canEdit: false,
-                    formatCellValue(value){
+                {
+                    name: "personnelNo",
+                    title: "<spring:message code="personnel.no"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true,
+                    hidden: true
+                },
+                {
+                    name: "registerTypeId", title: "پرسنل", canEdit: false,
+                    formatCellValue(value) {
                         return (value === 1 ? "هست" : "نیست");
                     }
                 },
@@ -685,7 +845,7 @@
                     return x.nationalCode == nationalCode
                 });
                 current.setProperty("enabled", true);
-                if(current && current[0]){
+                if (current && current[0]) {
                     current[0].isChecked = false;
                     current[0].isClicked = false
                 }
@@ -697,7 +857,7 @@
                     return x.nationalCode == nationalCode
                 });
                 current.setProperty("enabled", true);
-                if(current && current[0]){
+                if (current && current[0]) {
                     current[0].isChecked = false;
                     current[0].isClicked = false
                 }
@@ -727,7 +887,7 @@
                         minWidth: 500,
                         autoSize: false,
                         height: "50%",
-                        closeClick:deleteCachedValue,
+                        closeClick: deleteCachedValue,
                         items: [isc.VLayout.create({
                             width: "100%",
                             height: "100%",
@@ -739,8 +899,8 @@
                         loadjs('<spring:url value='web/personnel-information-details/' />', 'personnel-information-details');
                     }
 
-                    loadjs.ready('personnel-information-details', function() {
-                        oPersonnelInformationDetails=new loadPersonnelInformationDetails();
+                    loadjs.ready('personnel-information-details', function () {
+                        oPersonnelInformationDetails = new loadPersonnelInformationDetails();
                         window_class_Information.addMember(oPersonnelInformationDetails.PersonnelInfo_Tab);
                     });
 
@@ -763,7 +923,7 @@
                 }
             }*/
 
-            rowClick:function(record,recordNum,fieldNum){
+            rowClick: function (record, recordNum, fieldNum) {
                 selectedRow = record;
                 listGridType = "SelectedPersonnelsLG_student";
             },
@@ -904,8 +1064,8 @@
                 {name: "ccpAffairs", hidden: true},
                 {name: "ccpSection", hidden: true},
                 {name: "ccpUnit", hidden: true},
-                {name:"isInNA"},
-                {name:"scoreState"},
+                {name: "isInNA"},
+                {name: "scoreState"},
             ],
             gridComponents: [PersonnelsTS_student, "filterEditor", "header", "body"],
             selectionAppearance: "checkbox",
@@ -933,17 +1093,17 @@
                 studentSelection = false;
             },
             getCellCSSText: rowStyle,
-            rowClick:function(record,recordNum,fieldNum){
-                 if (Object.keys(previousSelectedRow).length>1){
-                      previousSelectedRow.data.isClicked=!previousSelectedRow.data.isClicked;
-                      this.getCellCSSText(previousSelectedRow.data,previousSelectedRow.row,previousSelectedRow.col);
-                      PersonnelsLG_student.redraw();
-                 }
+            rowClick: function (record, recordNum, fieldNum) {
+                if (Object.keys(previousSelectedRow).length > 1) {
+                    previousSelectedRow.data.isClicked = !previousSelectedRow.data.isClicked;
+                    this.getCellCSSText(previousSelectedRow.data, previousSelectedRow.row, previousSelectedRow.col);
+                    PersonnelsLG_student.redraw();
+                }
                 record.isClicked = true;
                 selectedRow = record;
-                previousSelectedRow={data:selectedRow,row:recordNum,col:fieldNum};
+                previousSelectedRow = {data: selectedRow, row: recordNum, col: fieldNum};
                 listGridType = "PersonnelsLG_student";
-                this.getCellCSSText(record,recordNum,fieldNum);
+                this.getCellCSSText(record, recordNum, fieldNum);
             },
             dataChanged: function () {
                 this.Super("dataChanged", arguments);
@@ -996,10 +1156,10 @@
                             criteria: [{fieldName: "nationalCode", operator: "equals", value: current.nationalCode}]
                         }).setProperty("enabled", false);
 
-                     delete current.isClicked;
-                     current.isChecked = true;
+                        delete current.isClicked;
+                        current.isChecked = true;
 
-                     PersonnelsLG_student.redraw();
+                        PersonnelsLG_student.redraw();
                     }
 
                     function checkIfAlreadyExist(currentVal) {
@@ -1041,7 +1201,7 @@
                         minWidth: 500,
                         autoSize: false,
                         height: "50%",
-                        closeClick:deleteCachedValue,
+                        closeClick: deleteCachedValue,
                         items: [isc.VLayout.create({
                             width: "100%",
                             height: "100%",
@@ -1053,8 +1213,8 @@
                         loadjs('<spring:url value='web/personnel-information-details/' />', 'personnel-information-details');
                     }
 
-                    loadjs.ready('personnel-information-details', function() {
-                        oPersonnelInformationDetails=new loadPersonnelInformationDetails();
+                    loadjs.ready('personnel-information-details', function () {
+                        oPersonnelInformationDetails = new loadPersonnelInformationDetails();
                         window_class_Information.addMember(oPersonnelInformationDetails.PersonnelInfo_Tab);
                     });
 
@@ -1213,17 +1373,17 @@
                 studentSelection = false;
             },
             getCellCSSText: rowStyle,
-            rowClick:function(record,recordNum,fieldNum){
-                if (Object.keys(previousSelectedRowReg).length>1){
-                    previousSelectedRowReg.data.isClicked=!previousSelectedRowReg.data.isClicked;
-                    this.getCellCSSText(previousSelectedRowReg.data,previousSelectedRowReg.row,previousSelectedRowReg.col);
+            rowClick: function (record, recordNum, fieldNum) {
+                if (Object.keys(previousSelectedRowReg).length > 1) {
+                    previousSelectedRowReg.data.isClicked = !previousSelectedRowReg.data.isClicked;
+                    this.getCellCSSText(previousSelectedRowReg.data, previousSelectedRowReg.row, previousSelectedRowReg.col);
                     PersonnelsRegLG_student.redraw();
                 }
                 record.isClicked = true;
                 selectedRow = record;
-                previousSelectedRowReg={data:selectedRow,row:recordNum,col:fieldNum};
+                previousSelectedRowReg = {data: selectedRow, row: recordNum, col: fieldNum};
                 listGridType = "PersonnelsRegLG_student";
-                this.getCellCSSText(record,recordNum,fieldNum);
+                this.getCellCSSText(record, recordNum, fieldNum);
             },
 
             dataChanged: function () {
@@ -1321,7 +1481,7 @@
                         minWidth: 500,
                         autoSize: false,
                         height: "50%",
-                        closeClick:deleteCachedValue,
+                        closeClick: deleteCachedValue,
                         items: [isc.VLayout.create({
                             width: "100%",
                             height: "100%",
@@ -1333,8 +1493,8 @@
                         loadjs('<spring:url value='web/personnel-information-details/' />', 'personnel-information-details');
                     }
 
-                    loadjs.ready('personnel-information-details', function() {
-                        oPersonnelInformationDetails=new loadPersonnelInformationDetails();
+                    loadjs.ready('personnel-information-details', function () {
+                        oPersonnelInformationDetails = new loadPersonnelInformationDetails();
                         window_class_Information.addMember(oPersonnelInformationDetails.PersonnelInfo_Tab);
                     });
 
@@ -1382,7 +1542,7 @@
                                     isc.ToolStripButtonAdd.create({
                                         title: 'اضافه کردن گروهي',
                                         click: function () {
-                                           groupFilter("اضافه کردن گروهی", personnelUrl + "/checkPersonnelNos", checkPersonnelNosResponse, true, true, ListGrid_Class_JspClass.getSelectedRecord().courseId);
+                                            groupFilter("اضافه کردن گروهی", personnelUrl + "/checkPersonnelNos", checkPersonnelNosResponse, true, true, ListGrid_Class_JspClass.getSelectedRecord().courseId);
                                         }
                                     })
                                 ]
@@ -1464,22 +1624,22 @@
                                         title: "<spring:message code='save'/>",
                                         align: "center",
                                         icon: "[SKIN]/actions/save.png",
-                                        click:function () {
-                                                SelectedPersonnelsLG_student.endEditing();
-                                                let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
-                                                // for (let i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
-                                                //     students.add({
-                                                //         "personnelNo": SelectedPersonnelsLG_student.data[i].personnelNo,
-                                                //         "applicantCompanyName": SelectedPersonnelsLG_student.data[i].applicantCompanyName,
-                                                //         "presenceTypeId": SelectedPersonnelsLG_student.data[i].presenceTypeId,
-                                                //         "registerTypeId": SelectedPersonnelsLG_student.data[i].registerTypeId
-                                                //     });
-                                                // }
-                                                if (SelectedPersonnelsLG_student.data.toArray().getLength() > 0) {
-                                                    wait.show()
-                                                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST", JSON.stringify(SelectedPersonnelsLG_student.data.toArray()), class_add_students_result));
-                                                }
-                                                SelectedPersonnelsLG_student.data.clearAll();
+                                        click: function () {
+                                            SelectedPersonnelsLG_student.endEditing();
+                                            let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
+                                            // for (let i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
+                                            //     students.add({
+                                            //         "personnelNo": SelectedPersonnelsLG_student.data[i].personnelNo,
+                                            //         "applicantCompanyName": SelectedPersonnelsLG_student.data[i].applicantCompanyName,
+                                            //         "presenceTypeId": SelectedPersonnelsLG_student.data[i].presenceTypeId,
+                                            //         "registerTypeId": SelectedPersonnelsLG_student.data[i].registerTypeId
+                                            //     });
+                                            // }
+                                            if (SelectedPersonnelsLG_student.data.toArray().getLength() > 0) {
+                                                wait.show()
+                                                isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST", JSON.stringify(SelectedPersonnelsLG_student.data.toArray()), class_add_students_result));
+                                            }
+                                            SelectedPersonnelsLG_student.data.clearAll();
                                         }
                                     }),
                                     isc.IButtonCancel.create({
@@ -1630,8 +1790,8 @@
             if (resp.httpResponseCode == 200) {
                 simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
                 refreshLG(StudentsLG_student);
-            }else if (resp.httpResponseCode == 406) {
-                createDialog('info',resp.httpResponseText,'خطا در حذف فراگير(ان)');
+            } else if (resp.httpResponseCode == 406) {
+                createDialog('info', resp.httpResponseText, 'خطا در حذف فراگير(ان)');
                 refreshLG(StudentsLG_student);
             } else if (resp.data == false) {
                 let ERROR = isc.Dialog.create({
@@ -1674,11 +1834,11 @@
                 refreshLG(StudentsLG_student);
             }
             <%--else {--%>
-                <%--isc.Dialog.create({--%>
-                    <%--message: "<spring:message code='msg.operation.error'/>",--%>
-                    <%--icon: "[SKIN]stop.png",--%>
-                    <%--title: "<spring:message code='message'/>"--%>
-                <%--});--%>
+            <%--isc.Dialog.create({--%>
+            <%--message: "<spring:message code='msg.operation.error'/>",--%>
+            <%--icon: "[SKIN]stop.png",--%>
+            <%--title: "<spring:message code='message'/>"--%>
+            <%--});--%>
             <%--}--%>
         }
 
@@ -1803,7 +1963,7 @@
         function checkPersonnelNosResponse(url, result, addStudentsInGroupInsert) {
             wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(result)
-                , "callback: checkPersonnelNos(rpcResponse," + JSON.stringify(result) + ",'" + url + "'," + addStudentsInGroupInsert +")"));
+                , "callback: checkPersonnelNos(rpcResponse," + JSON.stringify(result) + ",'" + url + "'," + addStudentsInGroupInsert + ")"));
         }
 
         function checkPersonnelNos(resp, result, url, insert) {
@@ -1825,7 +1985,7 @@
                     for (let i = 0; i < len; i++) {
                         let personnelNo = list[i].personnelNo;
 
-                        if(!result.includes(personnelNo)){
+                        if (!result.includes(personnelNo)) {
                             continue;
                         }
 
@@ -1880,12 +2040,14 @@
 
                                     if (!checkIfAlreadyExist(person)) {
 
-                                        if (students.filter(function (item) {return item.personnelNo2 == person.personnelNo2||item.personnelNo == person.personnelNo;}).length==0) {
+                                        if (students.filter(function (item) {
+                                            return item.personnelNo2 == person.personnelNo2 || item.personnelNo == person.personnelNo;
+                                        }).length == 0) {
                                             students.add({
                                                 "personnelNo": person.personnelNo,
                                                 "applicantCompanyName": person.companyName,
                                                 "presenceTypeId": studentDefaultPresenceId,
-                                                "registerTypeId": url.indexOf(personnelUrl+"/") > -1 ? 1 : 2
+                                                "registerTypeId": url.indexOf(personnelUrl + "/") > -1 ? 1 : 2
                                             });
                                         }
                                     }
@@ -1911,27 +2073,27 @@
 
                         wait.close();
 
-                        if(insert){
-                            createDialog('info','شخصي جهت اضافه شدن وجود ندارد.');
+                        if (insert) {
+                            createDialog('info', 'شخصي جهت اضافه شدن وجود ندارد.');
                         }
                     }
 
 
-                }else{
+                } else {
                     wait.close();
                 }
-            }else{
+            } else {
                 wait.close();
             }
         }
 
-        function checkExistInNeedsAssessment(courseId){
+        function checkExistInNeedsAssessment(courseId) {
             // let personnelIds = personnel.map(x => x.id);
             // isc.RPCManager.sendRequest(TrDSRequest(url, "GET", JSON.stringify(SelectedPersonnelsLG_student.data.toArray()), (resp) => {
             //
             // }));
             wait.show()
-            isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/check-register-students/" + courseId , "POST", JSON.stringify(SelectedPersonnelsLG_student.data.toArray()), (resp)=>{
+            isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/check-register-students/" + courseId, "POST", JSON.stringify(SelectedPersonnelsLG_student.data.toArray()), (resp) => {
                 wait.close()
                 SelectedPersonnelsLG_student.setData(JSON.parse(resp.data));
                 // let ids = JSON.parse(resp.data);
@@ -1948,11 +2110,13 @@
                 checkRefresh = 0;
             }));
         }
-        function  deleteCachedValue() {
+
+        function deleteCachedValue() {
             selectedRow = {};
             listGridType = null;
             this.close();
         }
+
         function rowStyle(record, rowNum, colNum) {
             let result = '';
             if (this.getFieldName(colNum) == "personnelNo") {
@@ -1961,16 +2125,58 @@
 
             if (record.isChecked) {
                 result += " background-color:#ededed; color:#b8b8b8 !important";
-            }
-
-            else if (record.isClicked) {
+            } else if (record.isClicked) {
                 result += " background-color:#929292;";
-            }
-
-            else if (!record.isClicked || !record.isChecked) {
+            } else if (!record.isClicked || !record.isChecked) {
                 result += " background-color:white;";
             }
             return result;
-            }
+        }
     }
-<!-- </script> -->
+
+    function sendMessage_StudentClassJsp() {
+
+        let data = {
+            type: ['sms'],
+            message: MSG_msgContent.text,
+            maxRepeat: MSG_repeatOptions.getItem('maxRepeat').getValue(),
+            timeBMessages: MSG_repeatOptions.getItem('timeBMessages').getValue(),
+            link: linkFormMLanding.getItem('link').getValue(),
+        }
+
+        data.classStudentRegistered = MSG_msgContent.users;
+        data.classID = MSG_classID;
+
+        let wait = createDialog("wait");
+
+        isc.RPCManager.sendRequest(TrDSRequest(sendMessageUrl +
+            "/sendSMS",
+            "POST",
+            JSON.stringify(data),
+            function (resp) {
+                wait.close();
+                if (generalGetResp(resp)) {
+                    if (resp.httpResponseCode == 200) {
+                        var ERROR = isc.Dialog.create({
+                            message: "پیام با موفقیت ارسال شد",
+                            icon: "[SKIN]say.png",
+                            title: "متن پیام"
+                        });
+
+                        setTimeout(function () {
+                            ERROR.close();
+                        }, 1000);
+
+                        MSG_initMSG()
+                        MSG_Window_MSG_Main.clear()
+                        MSG_Window_MSG_Main.close();
+
+                    } else {
+                        createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
+                    }
+                }
+            })
+        );
+    }
+
+    // </script>

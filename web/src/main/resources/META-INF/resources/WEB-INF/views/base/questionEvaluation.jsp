@@ -269,7 +269,10 @@
                 {
                     name: "description",
                     title: "<spring:message code='description'/>",
-                    type: 'textArea'
+                    type: 'textArea',
+                    height: 100,
+                    length: "600",
+                    enforceLength : true
                 }
             ]
         });

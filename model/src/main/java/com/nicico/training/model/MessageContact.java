@@ -39,9 +39,6 @@ public class MessageContact<E> extends Auditable {
     @Column(name = "n_count_sent")
     private Integer countSent;
 
-    @Column(name = "n_message_id")
-    private Long returnMessageId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_message_contact_status_id", nullable = false, insertable = false, updatable = false)
     private ParameterValue status;
@@ -76,6 +73,9 @@ public class MessageContact<E> extends Auditable {
 
     @OneToMany(mappedBy = "messageContact", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MessageParameter> messageParameterList;
+
+    @OneToMany(mappedBy = "messageContact", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MessageContactLog> messageContactLogList;
 
 }
 

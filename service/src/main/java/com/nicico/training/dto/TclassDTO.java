@@ -118,7 +118,7 @@ public class TclassDTO {
         private String organizerName;
         private InstituteDTO.InstituteInfoTuple organizer;
         private List<TclassDTO.InfoTuple> canceledClasses;
-
+        private String isSentMessage;
         //*********************************
         //******old code for alarms********
         // private String hasWarning;
@@ -228,7 +228,7 @@ public class TclassDTO {
         @Getter(AccessLevel.NONE)
         private List<Object> targetSocieties;
 
-        public List<Object> gettargetSocieties() {
+        public List<Object> getTargetSocieties() {
             if (targetSocieties == null)
                 return new ArrayList<>(0);
             boolean accept = true;

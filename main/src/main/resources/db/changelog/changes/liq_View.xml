@@ -2524,7 +2524,7 @@ SELECT distinct
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW-CLASS-DETAIL-005">
+    <changeSet author="NICICO" id="VIEW-CLASS-DETAIL-006">
         <createView viewName="view_class_detail" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -2557,6 +2557,7 @@ SELECT
         tclass.START_EVALUATION as START_EVALUATION,
         tclass.F_CANCEL_CLASS_REASON as CANCEL_REASON_ID,
         tclass.C_POSTPONE_START_DATE as POSTPONE_DATE,
+        tclass.c_teaching_type as tclass_teaching_type,
         personalInfo.C_FIRST_NAME_FA as teacher_First_Name,
         personalInfo.C_LAST_NAME_FA as teacher_Last_Name,
         SUBSTR(tclass.C_START_DATE,1,4) as tclass_year,
@@ -5158,6 +5159,269 @@ FROM
                     INNER JOIN tbl_course             course ON skill.f_course = course.id
                     INNER JOIN tbl_post_grade_group   p ON na.f_object = p.id
                                                          AND na.c_object_type = 'PostGradeGroup'
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="NICICO" id="VIEW_COMPLEX-001">
+        <createView viewName="VIEW_COMPLEX" replaceIfExists="true">
+            <![CDATA[
+                SELECT
+                    "ID",
+                    "C_CODE",
+                    "N_VERSION",
+                    "C_ALIGNMENT",
+                    "C_CORRECTION",
+                    "C_CREATED_BY",
+                    "C_END_DATE",
+                    "C_GHESMAT_CODE",
+                    "C_GHESMAT_TITLE",
+                    "C_HOZE_CODE",
+                    "C_HOZE_TITLE",
+                    "C_ISSUABLE",
+                    "C_LAST_MODIFIED_BY",
+                    "C_LEGACY_CHANGE_DATE",
+                    "C_LEGACY_CREATE_DATE",
+                    "C_MOAVENAT_CODE",
+                    "C_MOAVENAT_TITLE",
+                    "C_NATURE",
+                    "C_NEW_CODE",
+                    "C_OLD_CODE",
+                    "C_OMOR_CODE",
+                    "C_OMOR_TITLE",
+                    "C_PARENT_CODE",
+                    "C_PEOPLE_TYPE",
+                    "C_START_DATE",
+                    "C_TITLE",
+                    "C_TITLE_L",
+                    "C_TYPE",
+                    "C_USER",
+                    "C_VAHED_CODE",
+                    "C_VAHED_TITLE",
+                    "D_CREATED_DATE",
+                    "D_LAST_MODIFIED_DATE",
+                    "E_DELETED",
+                    "E_ENABLED",
+                    "F_PARENT",
+                    "C_MOJTAME_CODE",
+                    "C_MOJTAME_TITLE"
+                FROM
+                    tbl_department dp
+                WHERE
+                    dp.c_code LIKE '1%000000000'
+                    AND length(dp.c_code) = 12
+                    AND dp.e_deleted IS NULL
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="NICICO" id="VIEW_ASSISTANT-001">
+        <createView viewName="VIEW_ASSISTANT" replaceIfExists="true">
+            <![CDATA[
+                SELECT
+                    "ID",
+                    "C_CODE",
+                    "N_VERSION",
+                    "C_ALIGNMENT",
+                    "C_CORRECTION",
+                    "C_CREATED_BY",
+                    "C_END_DATE",
+                    "C_GHESMAT_CODE",
+                    "C_GHESMAT_TITLE",
+                    "C_HOZE_CODE",
+                    "C_HOZE_TITLE",
+                    "C_ISSUABLE",
+                    "C_LAST_MODIFIED_BY",
+                    "C_LEGACY_CHANGE_DATE",
+                    "C_LEGACY_CREATE_DATE",
+                    "C_MOAVENAT_CODE",
+                    "C_MOAVENAT_TITLE",
+                    "C_NATURE",
+                    "C_NEW_CODE",
+                    "C_OLD_CODE",
+                    "C_OMOR_CODE",
+                    "C_OMOR_TITLE",
+                    "C_PARENT_CODE",
+                    "C_PEOPLE_TYPE",
+                    "C_START_DATE",
+                    "C_TITLE",
+                    "C_TITLE_L",
+                    "C_TYPE",
+                    "C_USER",
+                    "C_VAHED_CODE",
+                    "C_VAHED_TITLE",
+                    "D_CREATED_DATE",
+                    "D_LAST_MODIFIED_DATE",
+                    "E_DELETED",
+                    "E_ENABLED",
+                    "F_PARENT",
+                    "C_MOJTAME_CODE",
+                    "C_MOJTAME_TITLE"
+                FROM
+                    tbl_department dp
+                WHERE
+                    dp.c_code LIKE '1%0000000'
+                    AND dp.c_code NOT LIKE '1%000000000'
+                    AND length(dp.c_code) = 12
+                    AND dp.e_deleted IS NULL
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="NICICO" id="VIEW_AFFAIRS-001">
+        <createView viewName="VIEW_AFFAIRS" replaceIfExists="true">
+            <![CDATA[
+                SELECT
+                    "ID",
+                    "C_CODE",
+                    "N_VERSION",
+                    "C_ALIGNMENT",
+                    "C_CORRECTION",
+                    "C_CREATED_BY",
+                    "C_END_DATE",
+                    "C_GHESMAT_CODE",
+                    "C_GHESMAT_TITLE",
+                    "C_HOZE_CODE",
+                    "C_HOZE_TITLE",
+                    "C_ISSUABLE",
+                    "C_LAST_MODIFIED_BY",
+                    "C_LEGACY_CHANGE_DATE",
+                    "C_LEGACY_CREATE_DATE",
+                    "C_MOAVENAT_CODE",
+                    "C_MOAVENAT_TITLE",
+                    "C_NATURE",
+                    "C_NEW_CODE",
+                    "C_OLD_CODE",
+                    "C_OMOR_CODE",
+                    "C_OMOR_TITLE",
+                    "C_PARENT_CODE",
+                    "C_PEOPLE_TYPE",
+                    "C_START_DATE",
+                    "C_TITLE",
+                    "C_TITLE_L",
+                    "C_TYPE",
+                    "C_USER",
+                    "C_VAHED_CODE",
+                    "C_VAHED_TITLE",
+                    "D_CREATED_DATE",
+                    "D_LAST_MODIFIED_DATE",
+                    "E_DELETED",
+                    "E_ENABLED",
+                    "F_PARENT",
+                    "C_MOJTAME_CODE",
+                    "C_MOJTAME_TITLE"
+                FROM
+                    tbl_department dp
+                WHERE
+                    dp.c_code LIKE '1%00000'
+                    AND dp.c_code NOT LIKE '1%0000000'
+                    AND length(dp.c_code) = 12
+                    AND dp.e_deleted IS NULL
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="NICICO" id="VIEW_SECTION-001">
+        <createView viewName="VIEW_SECTION" replaceIfExists="true">
+            <![CDATA[
+                SELECT
+                    "ID",
+                    "C_CODE",
+                    "N_VERSION",
+                    "C_ALIGNMENT",
+                    "C_CORRECTION",
+                    "C_CREATED_BY",
+                    "C_END_DATE",
+                    "C_GHESMAT_CODE",
+                    "C_GHESMAT_TITLE",
+                    "C_HOZE_CODE",
+                    "C_HOZE_TITLE",
+                    "C_ISSUABLE",
+                    "C_LAST_MODIFIED_BY",
+                    "C_LEGACY_CHANGE_DATE",
+                    "C_LEGACY_CREATE_DATE",
+                    "C_MOAVENAT_CODE",
+                    "C_MOAVENAT_TITLE",
+                    "C_NATURE",
+                    "C_NEW_CODE",
+                    "C_OLD_CODE",
+                    "C_OMOR_CODE",
+                    "C_OMOR_TITLE",
+                    "C_PARENT_CODE",
+                    "C_PEOPLE_TYPE",
+                    "C_START_DATE",
+                    "C_TITLE",
+                    "C_TITLE_L",
+                    "C_TYPE",
+                    "C_USER",
+                    "C_VAHED_CODE",
+                    "C_VAHED_TITLE",
+                    "D_CREATED_DATE",
+                    "D_LAST_MODIFIED_DATE",
+                    "E_DELETED",
+                    "E_ENABLED",
+                    "F_PARENT",
+                    "C_MOJTAME_CODE",
+                    "C_MOJTAME_TITLE"
+                FROM
+                    tbl_department dp
+                WHERE
+                    dp.c_code LIKE '1%000'
+                    AND dp.c_code NOT LIKE '1%00000'
+                    AND length(dp.c_code) = 12
+                    AND dp.e_deleted IS NULL
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="NICICO" id="VIEW_UNIT-001">
+        <createView viewName="VIEW_UNIT" replaceIfExists="true">
+            <![CDATA[
+                SELECT
+                    "ID",
+                    "C_CODE",
+                    "N_VERSION",
+                    "C_ALIGNMENT",
+                    "C_CORRECTION",
+                    "C_CREATED_BY",
+                    "C_END_DATE",
+                    "C_GHESMAT_CODE",
+                    "C_GHESMAT_TITLE",
+                    "C_HOZE_CODE",
+                    "C_HOZE_TITLE",
+                    "C_ISSUABLE",
+                    "C_LAST_MODIFIED_BY",
+                    "C_LEGACY_CHANGE_DATE",
+                    "C_LEGACY_CREATE_DATE",
+                    "C_MOAVENAT_CODE",
+                    "C_MOAVENAT_TITLE",
+                    "C_NATURE",
+                    "C_NEW_CODE",
+                    "C_OLD_CODE",
+                    "C_OMOR_CODE",
+                    "C_OMOR_TITLE",
+                    "C_PARENT_CODE",
+                    "C_PEOPLE_TYPE",
+                    "C_START_DATE",
+                    "C_TITLE",
+                    "C_TITLE_L",
+                    "C_TYPE",
+                    "C_USER",
+                    "C_VAHED_CODE",
+                    "C_VAHED_TITLE",
+                    "D_CREATED_DATE",
+                    "D_LAST_MODIFIED_DATE",
+                    "E_DELETED",
+                    "E_ENABLED",
+                    "F_PARENT",
+                    "C_MOJTAME_CODE",
+                    "C_MOJTAME_TITLE"
+                FROM
+                    tbl_department dp
+                WHERE
+                    dp.c_code NOT LIKE '1%000'
+                    AND length(dp.c_code) = 12
+                    AND dp.e_deleted IS NULL
             ]]>
         </createView>
     </changeSet>

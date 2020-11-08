@@ -41,20 +41,6 @@ public abstract class SearchableResource<T, V> {
                                     @RequestParam(value = "id", required = false) Long id,
                                     @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-
-        if(sortBy != null) {
-            switch (sortBy) {
-                case "duration":
-                    sortBy = "theoryDuration";
-                    break;
-                case "-duration":
-                    sortBy = "-theoryDuration";
-                    break;
-            }
-        }
-
-
-
         SearchDTO.CriteriaRq criteriaRq;
 
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
@@ -64,12 +50,6 @@ public abstract class SearchableResource<T, V> {
                     .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
             request.setCriteria(criteriaRq);
-
-            if (request.getCriteria() != null && request.getCriteria().getCriteria() != null)
-                for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()){
-                    if(criterion.getFieldName().equals("duration"))
-                        criterion.setFieldName("theoryDuration");
-                }
 
         }
         if (StringUtils.isNotEmpty(sortBy)) {

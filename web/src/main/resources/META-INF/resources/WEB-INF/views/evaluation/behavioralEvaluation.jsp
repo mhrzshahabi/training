@@ -601,7 +601,7 @@
                     },
                     {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
                 ],
-                fetchDataURL: questionnaireUrl + "/iscList/validQestionnaries"
+                fetchDataURL: questionnaireUrl + "/iscList/validQestionnaries/" + classRecord_BE.id
             });
             let ListGrid_SelectQuestionnarie_BE = isc.TrLG.create({
                 width: "100%",
@@ -912,7 +912,10 @@
                             {
                                 name: "description",
                                 title: "<spring:message code='description'/>",
-                                type: 'textArea'
+                                type: 'textArea',
+                                height: 100,
+                                length: "600",
+                                enforceLength : true
                             }
                         ]
                     });

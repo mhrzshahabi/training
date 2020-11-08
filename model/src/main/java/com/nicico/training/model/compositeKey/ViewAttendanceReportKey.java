@@ -28,5 +28,8 @@ public class ViewAttendanceReportKey implements Serializable {
 
     @Column(name = "c_session_date")
     private String date;
+
+    @Column(name = "c_state")
+    private Integer attendanceStatus;
 }
 

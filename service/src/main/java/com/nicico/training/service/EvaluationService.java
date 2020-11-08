@@ -8,6 +8,10 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
+import dto.EvalQuestionDto;
+import dto.EvalQuestionInRange;
+import dto.EvalQuestionOptional;
+import dto.EvalQuestionType;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.annotation.Tainted;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +39,7 @@ public class EvaluationService implements IEvaluationService {
     private final ParameterValueDAO parameterValueDAO;
     private final ClassEvaluationGoalsDAO classEvaluationGoalsDAO;
     private final EvaluationAnswerDAO evaluationAnswerDAO;
+    private final EvaluationQuestionDAO evaluationQuestionDAO;
 
 
     @Transactional(readOnly = true)
@@ -882,6 +888,34 @@ public class EvaluationService implements IEvaluationService {
         return evaluationResult;
     }
 
+    @Override
+    public Evaluation getById(long id) {
+        return evaluationDAO.findById(id).get();
+    }
+
+    @Override
+    public List<EvalQuestionDto> getEvaluationQuestions(List<EvaluationAnswer> answers) {
+
+        return answers.stream().map(evaluationAnswer -> {
+            EvalQuestionDto questionDto = new EvalQuestionDto();
+            EvalQuestionOptional questionOptional = new EvalQuestionOptional();
+            if (evaluationAnswer.getQuestionSourceId() == 200 ||
+                    evaluationAnswer.getQuestionSourceId() == 201) {
+                DynamicQuestion dynamicQuestion = dynamicQuestionDAO.findById(evaluationAnswer.getEvaluationQuestionId()).get();
+                questionDto.setTitle(dynamicQuestion.getQuestion());
+            } else {
+                EvaluationQuestion evaluationQuestion = evaluationQuestionDAO.findById(questionnaireQuestionDAO.findById(evaluationAnswer.getEvaluationQuestionId()).get()
+                        .getEvaluationQuestionId()).get();
+                questionDto.setTitle(evaluationQuestion.getQuestion());
+            }
+
+            questionOptional.setOptions(parameterValueDAO.findAllByParameterId(192L).stream().map(ParameterValue::getTitle).collect(Collectors.toList()));
+            questionDto.setType(EvalQuestionType.OPTIONAL);
+            questionDto.setOption(questionOptional);
+            return questionDto;
+        }).collect(Collectors.toList());
+    }
+
     @Transactional
     public Boolean classHasEvaluationForm(Long classId){
         Optional<Tclass> byId = tclassDAO.findById(classId);
@@ -895,5 +929,7 @@ public class EvaluationService implements IEvaluationService {
         }
         return result;
     }
+
+
 
 }
