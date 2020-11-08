@@ -9,13 +9,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
+import java.util.*;
+
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaSpecificationExecutor<ClassStudent> {
 
@@ -73,5 +73,10 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "evaluation_audience_id = :AudienceId " +
             "where id = :idClassStudent", nativeQuery = true)
     public int setStudentFormIssuanceAudienceId(Long idClassStudent, Long AudienceId);
+
+    @Query(value = "select mc.c_object_mobile,count(*) as cnt from tbl_message_contact mc inner join tbl_message m on m.id=mc.f_message_id where mc.n_count_sent>0 and m.f_message_class=:classId and m.f_message_user_type=679 group by mc.c_object_mobile", nativeQuery = true)
+    List<Object> getStatusSendMessageStudents(Long classId);
+
+    List<ClassStudent> findAllByTclassId(long classId);
 
 }

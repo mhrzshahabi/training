@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@include file="../messenger/MLanding.jsp" %>
+
 // <script>
     //----------------------------------------- DataSources ------------------------------------------------------------
 
@@ -34,7 +35,8 @@
                 {name: "courseId"},
                 {name: "teacherEvalStatus"},
                 {name: "trainingEvalStatus"},
-                {name: "tclassSupervisor"}
+                {name: "tclassSupervisor"},
+                {name: "tclassTeachingType"}
             ],
             fetchDataURL: viewClassDetailUrl + "/iscList",
             implicitCriteria: {
@@ -249,6 +251,24 @@
                     filterOperator: "iContains",
                     autoFithWidth: true
                 },
+                {
+                    name: "tclassTeachingType",
+                    title: "روش آموزش",
+                    filterOperator: "equals",
+                    filterEditorProperties:{
+                        pickListProperties: {
+                            showFilterEditor: false,
+                            autoFitWidthApproach: "both"
+                        }
+                    },
+                    valueMap: [
+                        "حضوری",
+                        "غیر حضوری",
+                        "مجازی",
+                        "عملی و کارگاهی",
+                        "آموزش حین کار(OJT)"
+                    ]
+                },
                 {name: "classScoringMethod", hidden: true},
                 {name: "classPreCourseTest", hidden: true},
                 {name: "courseId", hidden: true},
@@ -413,14 +433,23 @@
                                 classRecord.trainingEvalStatus == undefined ||
                                     classRecord.trainingEvalStatus == null) {
                             ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
+                            ToolStrip_SendForms_RE.getField("sendToEls_supervisor").setDisabled(true);
+                            ToolStrip_SendForms_RE.getField("showResultsEls_supervisor").setDisabled(true);
+
                             ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
                         }
                         else if(classRecord.trainingEvalStatus == 1){
                             ToolStrip_SendForms_RE.getField("sendButtonTraining").showIcon("ok");
+                            ToolStrip_SendForms_RE.getField("sendToEls_supervisor").setDisabled(false);
+                            ToolStrip_SendForms_RE.getField("showResultsEls_supervisor").setDisabled(false);
+
                             ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
                         }
                         else{
                             ToolStrip_SendForms_RE.getField("sendButtonTraining").showIcon("ok");
+                            ToolStrip_SendForms_RE.getField("sendToEls_supervisor").setDisabled(false);
+                            ToolStrip_SendForms_RE.getField("showResultsEls_supervisor").setDisabled(false);
+
                             ToolStrip_SendForms_RE.getField("registerButtonTraining").showIcon("ok");
                         }
 
@@ -428,14 +457,23 @@
                             classRecord.teacherEvalStatus == undefined ||
                             classRecord.teacherEvalStatus == null) {
                             ToolStrip_SendForms_RE.getField("sendButtonTeacher").hideIcon("ok");
+                            ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(true);
+                            ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(true);
+
                             ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
                         }
                         else if(classRecord.teacherEvalStatus == 1){
                             ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
+                            ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(false);
+                            ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(false);
+
                             ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
                         }
                         else{
                             ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
+                            ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(false);
+                            ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(false);
+
                             ToolStrip_SendForms_RE.getField("registerButtonTeacher").showIcon("ok");
                         }
                         ToolStrip_SendForms_RE.redraw();

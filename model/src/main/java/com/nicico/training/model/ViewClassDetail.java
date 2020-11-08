@@ -133,4 +133,7 @@ public class ViewClassDetail extends Auditable {
     @Column(name = "BEHAVIORAL_DUE_DATE")
     private Date behavioralDueDate;
 
+    @Column(name = "tclass_teaching_type")
+    private String tclassTeachingType;
+
 }

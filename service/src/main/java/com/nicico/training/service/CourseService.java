@@ -11,6 +11,7 @@ import com.nicico.training.mapper.course.CourseBeanMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.*;
+import com.nicico.training.utility.CriteriaConverter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
@@ -665,41 +666,77 @@ public class CourseService implements ICourseService {
     //----------------------------------------------------------------------
     @Transactional
     @Override
-    public List<CourseDTO.courseWithOutTeacher> courseWithOutTeacher(String startDate, String endDate, String strSData2, String strEData2, String[] years, List<Long> termId, List<Long> courseId, List<Long> teacherId) {
-        StringBuilder stringBuilder = new StringBuilder().append("SELECT courseId,c_code,titleCourse,max(tbl2.c_start_date) from ( SELECT tbl_class.c_start_date, tb.courseId, tbl_class.f_teacher,tb.c_code, tb.titleCourse FROM tbl_class  INNER JOIN  \n" +
-                " (SELECT   tbl_course.id courseId ,tbl_course.c_code,tbl_course.c_title_fa titleCourse FROM  tbl_course  WHERE tbl_course.id NOT IN(SELECT DISTINCT tbl_class.f_course\n" +
-                "    FROM tbl_class\n" +
-                "        INNER JOIN tbl_term ON tbl_term.id = tbl_class.f_term\n" +
-                "        INNER JOIN tbl_teacher  ON tbl_teacher.id = tbl_class.f_teacher\n" +
-                "        INNER JOIN tbl_course ON tbl_course.id = tbl_class.f_course WHERE  1=1 ");
-        if (!(courseId.size() == 0))
-            stringBuilder.append(" AND tbl_class.f_course IN (" + StringUtils.join(courseId, ",") + ")");
+    public SearchDTO.SearchRs<CourseDTO.courseWithOutTeacher> courseWithOutTeacher(SearchDTO.SearchRq request) {
 
-        if (!(teacherId.size() == 0))
-            stringBuilder.append(" AND tbl_teacher.id IN (" + StringUtils.join(teacherId, ",") + ")");
+        Map<String, Object[]> courseWithOutTeacherParams = new HashMap<>();
+        CriteriaConverter.criteria2ParamsMap(request.getCriteria(), courseWithOutTeacherParams);
+        Object [] years = courseWithOutTeacherParams.get("tclassYears");
+        Object startDate = courseWithOutTeacherParams.get("startDate");
+        Object endDate = courseWithOutTeacherParams.get("endDate");
+        Object startDate2 = courseWithOutTeacherParams.get("startDate2");
+        Object endDate2 = courseWithOutTeacherParams.get("endDate2");
+        Object [] termIds = courseWithOutTeacherParams.get("termFilters");
+        Object [] courseIds = courseWithOutTeacherParams.get("courseId");
+        Object [] teacherIds = courseWithOutTeacherParams.get("teacherId");
+        List<SearchDTO.SortByRq> sortBy = request.getSortBy();
+        String [] fieldName = new String[sortBy.size()];
+        Boolean [] descending = new Boolean[sortBy.size()];
+        String [] sort =new String[sortBy.size()];
+        for(int i=0;i<sortBy.size();i++){
+            fieldName[i] = sortBy.get(i).getFieldName();
+            descending[i] = sortBy.get(i).getDescending();
+            if(fieldName[i].equals( "code"))
+                sort[i] = "c_code";
+            if(fieldName[i].equals( "c_title_fa"))
+                sort[i] = "c_code";
+            if(fieldName[i].equals( "max_start_date"))
+                sort[i] = "max_start_date";
+            if(descending[i] != null && descending[i] )
+                sort[i] += " desc ";
+            else
+                sort[i] += " asc ";
+        }
 
-        if (!(termId.size() == 0))
-            stringBuilder.append(" AND   tbl_term.id IN (" + StringUtils.join(termId, ",") + ")");
 
-        if (!(years.length == 0))
-            stringBuilder.append(" AND SUBSTR(tbl_term.c_startdate, 1, 4 ) IN (" + StringUtils.join(years, ",") + ")");
-         stringBuilder.append(" AND   (tbl_class.c_start_date >= :startDate AND tbl_class.c_end_date <= :endDate) AND   (tbl_class.c_start_date >= :strSData2 AND  tbl_class.c_end_date<= :strEData2)))" +
-                 "  tb on tbl_class.f_course =tb.courseId) tbl2 WHERE TBL2.f_teacher is not null  and (tbl2.c_start_date  not like '//')  GROUP by courseId,c_code,titleCourse");
-        List<Object> list = new ArrayList<>();
-        list = (List<Object>) entityManager.createNativeQuery(stringBuilder.toString())
-                .setParameter("startDate", startDate)
-                .setParameter("endDate", endDate)
-                .setParameter("strSData2", strSData2)
-                .setParameter("strEData2", strEData2).getResultList();
-        List<CourseDTO.courseWithOutTeacher> courseWithOutTeacherList = new ArrayList<>();
-        if (list != null) {
+        String sortQuery=null;
+        if(sort.length>0)
+            sortQuery =" order by "+StringUtils.join(sort,",");
+
+        List<Object> list;
+
+        String termIdsString = StringUtils.join(termIds,",");
+        if(termIdsString != null)
+            termIdsString = "'," + termIdsString + ",'";
+
+        String courseIdsString = StringUtils.join(courseIds,",");
+        if(courseIdsString != null)
+            courseIdsString = "'," + courseIdsString + ",'";
+
+        String teacherIdsString = StringUtils.join(teacherIds,",");
+        if(teacherIdsString != null)
+            teacherIdsString = "'," + teacherIdsString + ",'";
+
+
+        if( (courseIds == null || courseIds.length == 0) && (teacherIds == null || teacherIds.length ==0))
+            list =courseDAO.getCourseWithOutClassWithNeverProvidedAllCourses(StringUtils.join(years, ","), startDate, endDate, startDate2, endDate2, termIdsString, courseIdsString, teacherIdsString/*, sortQuery*/);
+        else if (courseIds == null || courseIds.length == 0)
+             list =courseDAO.getCourseWithOutClass(StringUtils.join(years, ","), startDate, endDate, startDate2, endDate2, termIdsString, courseIdsString, teacherIdsString/*, sortQuery*/);
+        else
+            list = courseDAO.getCourseWithOutClassWithNeverProvidedThisCourse(StringUtils.join(years, ","), startDate,endDate,startDate, endDate,termIdsString, courseIdsString, teacherIdsString/*, sortQuery*/);
+        //List<Object> list = courseDAO.getCourseWithOutTeacher(years, startDate,endDate,strSData2, strEData2,termId,courseId, teacherId)
+
+        List <CourseDTO.courseWithOutTeacher> courseWithOutTeacherList =  new ArrayList<>();
+        if (list.size() > 0) {
+            courseWithOutTeacherList = new ArrayList<>(list.size());
             for (int i = 0; i < list.size(); i++) {
                 Object[] arr = (Object[]) list.get(i);
-                courseWithOutTeacherList.add(new CourseDTO.courseWithOutTeacher(Long.valueOf(arr[0].toString()), (arr[1] == null ? "" : arr[1].toString()), (arr[2] == null ? "" : arr[2].toString()) ,(arr[3] == null ? "": arr[3].toString())));
+                courseWithOutTeacherList.add(new CourseDTO.courseWithOutTeacher(Long.valueOf(arr[0].toString()), (arr[1] == null ? "" : arr[1].toString()), (arr[2] == null ? "" : arr[2].toString()), (arr[3] == null ? "" : arr[3].toString())));
             }
         }
-        return (modelMapper.map(courseWithOutTeacherList, new TypeToken<List<CourseDTO.courseWithOutTeacher>>() {
-        }.getType()));
+        SearchDTO.SearchRs<CourseDTO.courseWithOutTeacher> searchRs = new SearchDTO.SearchRs<>();
+        searchRs.setList(courseWithOutTeacherList);
+        searchRs.setTotalCount((long) courseWithOutTeacherList.size());
+        return searchRs;
     }
 
     //----------------------------------------------------------------------

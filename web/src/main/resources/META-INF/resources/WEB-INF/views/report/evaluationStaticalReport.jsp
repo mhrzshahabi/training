@@ -1239,19 +1239,19 @@ console.log(criteriaDisplayValues);
             }
             else if (data_values.criteria[i].fieldName == "startDate1") {
                 data_values.criteria[i].fieldName = "tclassStartDate";
-                data_values.criteria[i].operator = "greaterThan";
+                data_values.criteria[i].operator = "greaterOrEqual";
             }
             else if (data_values.criteria[i].fieldName == "startDate2") {
                 data_values.criteria[i].fieldName = "tclassStartDate";
-                data_values.criteria[i].operator = "lessThan";
+                data_values.criteria[i].operator = "lessOrEqual";
             }
             else if (data_values.criteria[i].fieldName == "endDate1") {
                 data_values.criteria[i].fieldName = "tclassEndDate";
-                data_values.criteria[i].operator = "greaterThan";
+                data_values.criteria[i].operator = "greaterOrEqual";
             }
             else if (data_values.criteria[i].fieldName == "endDate2") {
                 data_values.criteria[i].fieldName = "tclassEndDate";
-                data_values.criteria[i].operator = "lessThan";
+                data_values.criteria[i].operator = "lessOrEqual";
             }
             else if (data_values.criteria[i].fieldName == "workYear") {
                 data_values.criteria[i].fieldName = "tclassYear";

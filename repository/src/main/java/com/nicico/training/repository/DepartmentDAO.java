@@ -17,7 +17,6 @@ public interface DepartmentDAO extends JpaRepository<Department, Long>, JpaSpeci
     @Query("FROM Department d  WHERE d.parentDepartment is null"/* and d.treeVersion = 'MID-001'*/)
     List<Department> findRootNode();
 
-    //Amin HK
     @Query(value = "SELECT DISTINCT tbl_department.c_omor_title FROM tbl_department WHERE tbl_department.c_omor_title IS NOT NULL ORDER BY  tbl_department.c_omor_title", nativeQuery = true)
     List<String> findAllAffairsFromDepartment();
 
@@ -36,6 +35,6 @@ public interface DepartmentDAO extends JpaRepository<Department, Long>, JpaSpeci
     @Query(value = "SELECT DISTINCT tbl_department.c_ghesmat_title FROM tbl_department WHERE tbl_department.c_ghesmat_title IS NOT NULL ORDER BY  tbl_department.c_ghesmat_title", nativeQuery = true)
     List<String> findAllSectionsFromDepartment();
 
-    @Query(value = "select * from TBL_DEPARTMENT where id = f_parent and e_enabled is null", nativeQuery = true)
+    @Query(value = "select * from tbl_department where id = f_parent and e_enabled is null", nativeQuery = true)
     List<Department> getRoot();
 }

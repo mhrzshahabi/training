@@ -48,7 +48,8 @@
             {name: "teacherEvalStatus"},
             {name: "trainingEvalStatus"},
             {name: "tclassSupervisor"},
-            {name: "teacherFullName"}
+            {name: "teacherFullName"},
+            {name: "tclassTeachingType"}
         ],
         fetchDataURL: viewClassDetailUrl + "/iscList",
         implicitCriteria: {
@@ -186,6 +187,24 @@
                     "3": "پایان یافته",
                     "4": "لغو شده"
                 }
+            },
+            {
+                name: "tclassTeachingType",
+                title: "روش آموزش",
+                filterOperator: "equals",
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    }
+                  },
+                valueMap: [
+                    "حضوری",
+                    "غیر حضوری",
+                    "مجازی",
+                    "عملی و کارگاهی",
+                    "آموزش حین کار(OJT)"
+                ]
             },
             {name: "classScoringMethod", hidden: true},
             {name: "classPreCourseTest", hidden: true},

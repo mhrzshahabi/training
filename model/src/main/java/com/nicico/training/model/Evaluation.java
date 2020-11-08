@@ -30,7 +30,7 @@ public class Evaluation extends Auditable {
     @Column(name = "f_questionnaire_type_id")
     private Long questionnaireTypeId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "f_class_id", insertable = false, updatable = false)
     private Tclass tclass;
 

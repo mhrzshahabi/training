@@ -29,7 +29,7 @@ public class ClassStudentService implements IClassStudentService {
     private final AttendanceDAO attendanceDAO;
     private final ITclassService tclassService;
     private final StudentService studentService;
-//    private final IPersonnelService personnelService;
+    //    private final IPersonnelService personnelService;
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final ModelMapper mapper;
     private final IEvaluationAnalysisService evaluationAnalysisService;
@@ -59,19 +59,19 @@ public class ClassStudentService implements IClassStudentService {
             List<Student> list = studentService.getStudentByPostIdAndPersonnelNoAndDepartmentIdAndFirstNameAndLastNameOrderByIdDesc(c.getPostId(), c.getPersonnelNo(), c.getDepartmentId(), c.getFirstName(), c.getLastName());
             Student student = null;
             int size = list.size();
-            for (int i=0; i<size; i++) {
-                if(Objects.equals(1, list.get(i).getActive())){
+            for (int i = 0; i < size; i++) {
+                if (Objects.equals(1, list.get(i).getActive())) {
                     student = list.get(i);
                     break;
                 }
-                if(i==size-1) {
+                if (i == size - 1) {
                     student = list.get(i);
                 }
             }
-            if(student == null) {
+            if (student == null) {
                 student = new Student();
                 if (c.getRegisterTypeId() == 1) {
-                    mapper.map(personnelService.getByPersonnelCodeAndNationalCode(c.getNationalCode(),  c.getPersonnelNo()), student);
+                    mapper.map(personnelService.getByPersonnelCodeAndNationalCode(c.getNationalCode(), c.getPersonnelNo()), student);
                     student.setDeleted(null);
                 } else if (c.getRegisterTypeId() == 2) {
                     mapper.map(personnelRegisteredService.getByPersonnelCodeAndNationalCode(c.getNationalCode(), c.getPersonnelNo()), student);
@@ -90,24 +90,24 @@ public class ClassStudentService implements IClassStudentService {
 
             }
             ClassStudent classStudent = new ClassStudent();
-            if(c.getApplicantCompanyName() != null)
+            if (c.getApplicantCompanyName() != null)
                 classStudent.setApplicantCompanyName(c.getApplicantCompanyName());
             else {
-                invalStudents.add(student.getFirstName()+ " " + student.getLastName());
+                invalStudents.add(student.getFirstName() + " " + student.getLastName());
                 continue;
             }
-            if(c.getPresenceTypeId() != null)
+            if (c.getPresenceTypeId() != null)
                 classStudent.setPresenceTypeId(c.getPresenceTypeId());
             classStudent.setTclass(tclass);
             classStudent.setStudent(student);
             classStudentDAO.saveAndFlush(classStudent);
         }
         String nameList = new String();
-        if(invalStudents.size() > 0) {
+        if (invalStudents.size() > 0) {
             for (String name : invalStudents) {
                 nameList += name + " , ";
             }
-        }else
+        } else
             nameList = null;
         Map<String, String> map = new HashMap();
         map.put("names", nameList);
@@ -119,7 +119,7 @@ public class ClassStudentService implements IClassStudentService {
     @Override
     public void saveOrUpdate(ClassStudent classStudent) {
         ClassStudent tclass = classStudentDAO.save(classStudent);
-        evaluationAnalysisService.updateLearningEvaluation(tclass.getTclassId(),tclass.getTclass().getScoringMethod());
+        evaluationAnalysisService.updateLearningEvaluation(tclass.getTclassId(), tclass.getTclass().getScoringMethod());
     }
 
     @Transactional
@@ -150,10 +150,10 @@ public class ClassStudentService implements IClassStudentService {
     @Override
     public int setStudentFormIssuance(Map<String, String> formIssuance) {
         Long classId = Long.parseLong(formIssuance.get("idClassStudent").toString());
-        if(formIssuance.get("evaluationAudienceType") != null)
-            classStudentDAO.setStudentFormIssuanceAudienceType(classId,Long.parseLong(formIssuance.get("evaluationAudienceType")));
-        if(formIssuance.get("evaluationAudienceId") != null)
-            classStudentDAO.setStudentFormIssuanceAudienceId(classId,Long.parseLong(formIssuance.get("evaluationAudienceId")));
+        if (formIssuance.get("evaluationAudienceType") != null)
+            classStudentDAO.setStudentFormIssuanceAudienceType(classId, Long.parseLong(formIssuance.get("evaluationAudienceType")));
+        if (formIssuance.get("evaluationAudienceId") != null)
+            classStudentDAO.setStudentFormIssuanceAudienceId(classId, Long.parseLong(formIssuance.get("evaluationAudienceId")));
         return classStudentDAO.setStudentFormIssuance(classId, Integer.parseInt(formIssuance.get("reaction")), Integer.parseInt(formIssuance.get("learning")), Integer.parseInt(formIssuance.get("behavior")), Integer.parseInt(formIssuance.get("results")));
     }
 
@@ -167,6 +167,24 @@ public class ClassStudentService implements IClassStudentService {
     @Override
     public List<Long> getScoreState(Long classId) {
         return classStudentDAO.getScoreState(classId);
+    }
+
+    @Override
+    public Map<String, Integer> getStatusSendMessageStudents(Long classId) {
+        List<Object> list = classStudentDAO.getStatusSendMessageStudents(classId);
+
+        Map<String, Integer> result = new HashMap<>();
+        for (int i = 0; i < list.size(); i++) {
+            Object[] arr = (Object[]) list.get(i);
+            result.put(arr[0] == null ? null : arr[0].toString(), Integer.parseInt(arr[1].toString()));
+        }
+
+        return result;
+    }
+
+    @Override
+    public List<ClassStudent> getClassStudents(long classId) {
+        return classStudentDAO.findAllByTclassId(classId);
     }
 
     @Transactional
@@ -185,12 +203,12 @@ public class ClassStudentService implements IClassStudentService {
     @Override
     public SearchDTO.SearchRs<ClassStudentDTO.evaluationAnalysistLearning> searchEvaluationAnalysistLearning(SearchDTO.SearchRq request, Long classId) {
         Tclass tClass = tclassService.getTClass(classId);
-        SearchDTO.SearchRs<ClassStudentDTO.evaluationAnalysistLearning> result =  SearchUtil.search(classStudentDAO, request,classStudent -> mapper.map(classStudent,
+        SearchDTO.SearchRs<ClassStudentDTO.evaluationAnalysistLearning> result = SearchUtil.search(classStudentDAO, request, classStudent -> mapper.map(classStudent,
                 ClassStudentDTO.evaluationAnalysistLearning.class));
         for (ClassStudentDTO.evaluationAnalysistLearning t : result.getList()) {
-            if(tClass.getScoringMethod() != null && tClass.getScoringMethod().equalsIgnoreCase("3")){
-                if(t.getScore() != null)
-                    t.setScore(t.getScore()*5);
+            if (tClass.getScoringMethod() != null && tClass.getScoringMethod().equalsIgnoreCase("3")) {
+                if (t.getScore() != null)
+                    t.setScore(t.getScore() * 5);
             }
         }
         return result;

@@ -53,7 +53,7 @@ public class ClassStudent extends Auditable {
     private Long presenceTypeId;
 
     //DO NOT TOUCH
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "student_id", nullable = false)
     private Student student;
 

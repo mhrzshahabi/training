@@ -52,4 +52,8 @@ public class ParameterValueService extends BaseService<ParameterValue, Long, Par
     public Long getId(String code) {
         return dao.findByCode(code).getId();
     }
+
+    public ParameterValue getEntityId(String code) {
+        return dao.findByCode(code);
+    }
 }
