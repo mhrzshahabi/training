@@ -6,7 +6,7 @@ import request.evaluation.ElsEvalRequest;
 import response.BaseResponse;
 import response.evaluation.EvalListResponse;
 
-@FeignClient(value = "elsClient", url = "http://storage.icico.net.ir/els/api/training")
+@FeignClient(value = "elsClient", url = "http://mobiles.nicico.com/els/api/training")
 public interface ElsClient {
     @RequestMapping(method = RequestMethod.POST, value = "/evaluation")
     BaseResponse sendEvaluation(@RequestBody ElsEvalRequest request);
