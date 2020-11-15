@@ -4,10 +4,7 @@ package com.nicico.training.controller;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.model.Evaluation;
-import com.nicico.training.service.ClassStudentService;
-import com.nicico.training.service.EvaluationAnswerService;
-import com.nicico.training.service.EvaluationService;
-import com.nicico.training.service.QuestionnaireService;
+import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +24,8 @@ public class ElsRestController {
     private final QuestionnaireService questionnaireService;
     private final EvaluationService evaluationService;
     private final ClassStudentService classStudentService;
+    private final TeacherService teacherService;
+    private final PersonalInfoService personalInfoService;
     private final ElsClient client;
 
     @GetMapping("/eval/{id}")
@@ -34,7 +33,8 @@ public class ElsRestController {
         Evaluation evaluation = evaluationService.getById(id);
         ElsEvalRequest request = evaluationBeanMapper.toElsEvalRequest(evaluation, questionnaireService.get(evaluation.getQuestionnaireId()),
                 classStudentService.getClassStudents(evaluation.getClassId()),
-                evaluationService.getEvaluationQuestions(answerService.getAllByEvaluationId(evaluation.getId())));
+                evaluationService.getEvaluationQuestions(answerService.getAllByEvaluationId(evaluation.getId())),
+                personalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId()));
         BaseResponse baseResponse = client.sendEvaluation(request);
         SendEvalToElsResponse response = new SendEvalToElsResponse();
         response.setMessage(baseResponse.getMessage());

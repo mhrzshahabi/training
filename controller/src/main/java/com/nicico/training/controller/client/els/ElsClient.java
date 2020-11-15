@@ -6,10 +6,13 @@ import request.evaluation.ElsEvalRequest;
 import response.BaseResponse;
 import response.evaluation.EvalListResponse;
 
-@FeignClient(value = "elsClient", url = "http://mobiles.nicico.com/els/api/training")
+@FeignClient(value = "elsClient", url = "http://localhost:8080/els/api/training")
 public interface ElsClient {
     @RequestMapping(method = RequestMethod.POST, value = "/evaluation")
     BaseResponse sendEvaluation(@RequestBody ElsEvalRequest request);
+
+    @RequestMapping(method = RequestMethod.POST, value = "/exam")
+    BaseResponse sendExam(@RequestBody ElsEvalRequest request);
 
     @GetMapping("/evaluation/{id}")
     EvalListResponse getEvalResults(@PathVariable long id);
