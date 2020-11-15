@@ -733,14 +733,16 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
                     }
                 }
             ));
-        request.getSortBy().forEach(c->{
-            if("duration".equals(c.getFieldName())) {
-                if (c.getDescendingSafe())
-                    request.setSortBy("-theoryDuration");
-                else
-                    request.setSortBy("theoryDuration");
-            }
-        });
+        if(request.getSortBy()!=null) {
+            request.getSortBy().forEach(c -> {
+                if ("duration".equals(c.getFieldName())) {
+                    if (c.getDescendingSafe())
+                        request.setSortBy("-theoryDuration");
+                    else
+                        request.setSortBy("theoryDuration");
+                }
+            });
+        }
         return request;
     }
 }
