@@ -9,5 +9,6 @@ import lombok.RequiredArgsConstructor;
 @JsonFormat
 public enum EvalQuestionType {
     OPTIONAL,
+    MULTIPLE_CHOICE,
     IN_RANGE;
 }
