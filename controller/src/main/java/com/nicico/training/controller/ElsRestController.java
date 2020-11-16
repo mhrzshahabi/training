@@ -1,16 +1,23 @@
 package com.nicico.training.controller;
 
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.model.Evaluation;
 import com.nicico.training.service.*;
+import jdk.nashorn.internal.parser.JSONParser;
 import lombok.RequiredArgsConstructor;
+import net.minidev.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import request.evaluation.ElsEvalRequest;
 import request.exam.ElsExamRequest;
+import request.exam.SampleRequest;
 import response.BaseResponse;
 import response.evaluation.EvalListResponse;
 import response.evaluation.SendEvalToElsResponse;
@@ -51,11 +58,11 @@ public class ElsRestController {
         return new ResponseEntity(response, HttpStatus.OK);
     }
 
-    @GetMapping("/evalResult/{id}")
-    public ResponseEntity<EvalListResponse> sendExam(@PathVariable long id) {
+    @PostMapping("/examToEls")
+    public ResponseEntity<EvalListResponse> sendExam(@RequestBody SampleRequest object) {
         ElsExamRequest request =new ElsExamRequest();
 
-        BaseResponse response = client.sendExam(request);
+        BaseResponse response = client.sendExam(object);
         //TODO SAVE EVALUATION RESULTS TO DB OR ANYTHING THAT YOU WANT TO DO
         return new ResponseEntity(response, HttpStatus.OK);
     }

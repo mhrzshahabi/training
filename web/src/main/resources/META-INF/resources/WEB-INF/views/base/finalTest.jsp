@@ -135,7 +135,6 @@
                 title: "<spring:message code="test.question.type"/>",
                 filterOperator: "iContains", autoFitWidth: true
             },*/
-
         ],
         fetchDataURL: testQuestionUrl + "/spec-list",
         implicitCriteria: {
@@ -249,6 +248,8 @@
             {name: "date",},
             {name: "time",},
             {name: "duration",},
+            { name: "iconField", title: " ", width: "140"},
+
             //{name: "isPreTestQuestion",}
         ],
         autoFetchData: true,
@@ -259,6 +260,8 @@
         filterOnKeypress: false,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
         selectionUpdated: function (record) {
            loadTab();
 
@@ -269,8 +272,58 @@
         filterEditorSubmit: function () {
             FinalTestLG_finalTest.invalidateCache();
         },
+         createRecordComponent: function (record, colNum) {
+                    var fieldName = this.getFieldName(colNum);
+                    if (fieldName == "iconField") {
+                        let button = isc.IButton.create({
+                            layoutAlign: "center",
+                            title: "ارسال به آموزش آنلاین",
+                            width: "140",
+                            click: function () {
+                                loadExamQuestions(record)
+                            }
+                        });
+                        return button;
+                    } else {
+                        return null;
+                    }
+                },
     });
+    function loadExamQuestions(record){
+           wait.show();
+           isc.RPCManager.sendRequest(TrDSRequest(questionBankTestQuestionUrl +"/test/"+record.tclass.id+ "/spec-list", "GET",null, function (resp) {
+                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                            let result = JSON.parse(resp.httpResponseText).response.data;
+                              wait.close();
+                              wait.show();
+                              var examData = {
+                                  examItem : record,
+                                  questions: result
+                                };
+                                isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examToEls", "POST", JSON.stringify(examData), function (resp) {
+                                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                        console.log(resp)
+                                        var OK = isc.Dialog.create({
+                                        message: "<spring:message code="msg.operation.successful"/>",
+                                        icon: "[SKIN]say.png",
+                                        title: "<spring:message code='message'/>"
+                                         });
+                                    setTimeout(function () {
+                                        OK.close();
+                                    }, 2000);
+                                    } else {
+                                    wait.close();
+                                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                    }
 
+                             }))
+
+                        } else {
+                            wait.close();
+                            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                        }
+                    }))
+    }
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
     let FinalTestDF_finalTest = isc.DynamicForm.create({
         ID: "FinalTestDF_finalTest",
@@ -667,7 +720,6 @@
         RestDataSource_FinalTest.fetchDataURL = questionBankTestQuestionUrl +"/test/"+FinalTestLG_finalTest.getSelectedRecord().tclass.id+ "/spec-list";
         ListGrid_FinalTest.invalidateCache();
         ListGrid_FinalTest.fetchData();
-
         TabSet_finalTest.enable();
     }
 

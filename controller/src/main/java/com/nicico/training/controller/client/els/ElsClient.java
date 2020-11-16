@@ -13,7 +13,7 @@ public interface ElsClient {
     BaseResponse sendEvaluation(@RequestBody ElsEvalRequest request);
 
     @RequestMapping(method = RequestMethod.POST, value = "/exam")
-    BaseResponse sendExam(@RequestBody ElsExamRequest request);
+    BaseResponse sendExam(@RequestBody Object request);
 
     @GetMapping("/evaluation/{id}")
     EvalListResponse getEvalResults(@PathVariable long id);
