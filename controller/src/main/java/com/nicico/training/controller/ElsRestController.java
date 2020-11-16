@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import request.evaluation.ElsEvalRequest;
+import request.exam.ElsExamRequest;
 import response.BaseResponse;
 import response.evaluation.EvalListResponse;
 import response.evaluation.SendEvalToElsResponse;
@@ -46,6 +47,15 @@ public class ElsRestController {
     @GetMapping("/evalResult/{id}")
     public ResponseEntity<EvalListResponse> getEvalResults(@PathVariable long id) {
         EvalListResponse response = client.getEvalResults(id);
+        //TODO SAVE EVALUATION RESULTS TO DB OR ANYTHING THAT YOU WANT TO DO
+        return new ResponseEntity(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/evalResult/{id}")
+    public ResponseEntity<EvalListResponse> sendExam(@PathVariable long id) {
+        ElsExamRequest request =new ElsExamRequest();
+
+        BaseResponse response = client.sendExam(request);
         //TODO SAVE EVALUATION RESULTS TO DB OR ANYTHING THAT YOU WANT TO DO
         return new ResponseEntity(response, HttpStatus.OK);
     }
