@@ -462,28 +462,32 @@
     });
     var Menu_ListGrid_Goal = isc.Menu.create({
         width: 150,
-        data: [{
+        data: [
+            {
             title: "بازخوانی اطلاعات",
             click: function () {
                 ListGrid_Goal_refresh();
             }
-        }, {
-            title: "ایجاد",
-            click: function () {
-                ListGrid_Goal_Add();
-            }
         },
-            {
-                title: "ویرایش",
-                click: function () {
-                    ListGrid_Goal_Edit();
-                }
-            }, {
-                title: "حذف",
-                click: function () {
-                    ListGrid_Goal_Remove();
-                }
-            }, {isSeparator: true}, {
+        //     {
+        //     title: "ایجاد",
+        //     click: function () {
+        //         ListGrid_Goal_Add();
+        //     }
+        // },
+        //     {
+        //         title: "ویرایش",
+        //         click: function () {
+        //             ListGrid_Goal_Edit();
+        //         }
+        //     },
+        //     {
+        //         title: "حذف",
+        //         click: function () {
+        //             ListGrid_Goal_Remove();
+        //         }
+        //     },
+            {isSeparator: true}, {
                 title: "ارسال به Pdf",
                 click: function () {
                     trPrintWithCriteria("<spring:url value="goal/print-one-course/"/>" + courseRecord.id + "/pdf" ,null,null);
