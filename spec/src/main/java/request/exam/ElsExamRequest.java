@@ -1,29 +1,24 @@
 package request.exam;
 
-import dto.*;
+
+import dto.EvalTargetUser;
+import dto.exam.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.io.Serializable;
 import java.util.List;
 
-@Getter
 @Setter
+@Getter
 @ToString
-public class ElsExamRequest implements Serializable {
-
-    private long id;
-    private List<EvalTargetUser> targetUsers;
-    private EvalTargetUser teacher;
-    private ExamCourseCategoryDto examCourseCategory;
-    private ExamCourseDto examCourse ;
-    private ExamCourseProtocolDto examCourseProtocol ;
-    private List<ExamQuestionDto> questions;
-
-
-//
-//    private EvalCourse course;
-//    private EvalCourseProtocol courseProtocol;
-
+public class ElsExamRequest {
+    private ExamCreateDTO exam;
+    private ImportedCourseCategory category;
+    private ImportedCourseDto course;
+    private CourseProtocolImportDTO protocol;
+    private List<ImportedCourseProgram> programs;
+    private List<ImportedQuestionProtocol> questionProtocols;
+    private ImportedUser instructor;
+    private List<EvalTargetUser> users;
 }

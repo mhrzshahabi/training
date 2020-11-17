@@ -12,15 +12,10 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class SampleRequest implements Serializable {
+public class ExamImportedRequest implements Serializable {
 
     private ExamData examItem;
     private List<QuestionData> questions;
 
-
-
-//
-//    private EvalCourse course;
-//    private EvalCourseProtocol courseProtocol;
 
 }

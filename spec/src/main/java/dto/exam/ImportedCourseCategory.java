@@ -1,15 +1,14 @@
-package dto;
+package dto.exam;
 
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-
-@Getter
 @Setter
+@Getter
 @ToString
-public class ExamCourseCategoryDto {
+public class ImportedCourseCategory {
     private String name;
     private String code;
 }

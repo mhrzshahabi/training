@@ -1165,6 +1165,7 @@
                 wait.show();
             isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/evalResult/" + result[0].evaluationId, "GET", null, function (resp) {
                 if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                    wait.close();
                     let results = JSON.parse(resp.data).data;
                     var OK = isc.Dialog.create({
                         message: "<spring:message code="msg.operation.successful"/>",
