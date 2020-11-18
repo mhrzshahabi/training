@@ -135,7 +135,6 @@
                 title: "<spring:message code="test.question.type"/>",
                 filterOperator: "iContains", autoFitWidth: true
             },*/
-
         ],
         fetchDataURL: testQuestionUrl + "/spec-list",
         implicitCriteria: {
@@ -249,6 +248,9 @@
             {name: "date",},
             {name: "time",},
             {name: "duration",},
+            { name: "sendBtn", title: " ", width: "140"},
+            { name: "showBtn", title: " ", width: "140"},
+
             //{name: "isPreTestQuestion",}
         ],
         autoFetchData: true,
@@ -259,6 +261,8 @@
         filterOnKeypress: false,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
         selectionUpdated: function (record) {
            loadTab();
 
@@ -269,8 +273,212 @@
         filterEditorSubmit: function () {
             FinalTestLG_finalTest.invalidateCache();
         },
+         createRecordComponent: function (record, colNum) {
+                    var fieldName = this.getFieldName(colNum);
+                    if (fieldName == "sendBtn") {
+                        let button = isc.IButton.create({
+                            layoutAlign: "center",
+                            title: "ارسال به آموزش آنلاین",
+                            width: "140",
+                            click: function () {
+                                loadExamQuestions(record)
+                            }
+                        });
+                        return button;
+                    }if (fieldName == "showBtn") {
+                        let button = isc.IButton.create({
+                            layoutAlign: "center",
+                            title: "نمایش نتایج ",
+                            width: "140",
+                            click: function () {
+                                loadExamResult(record.id)
+                            }
+                        });
+                        return button;
+                    } else {
+                        return null;
+                    }
+                },
+    });
+        var RestDataSource_Result_FinalTest = isc.TrDS.create({
+        fields: [
+            {name: "surname", title: 'نام'},
+            {name: "lastName", title: 'نام خانوادگی'},
+            {name: "answers", hidden: true },
+        ]
     });
 
+    function loadExamResult(id){
+        let ListGrid_Result_finalTest = isc.TrLG.create({
+            width: "100%",
+            height: 700,
+            dataSource: RestDataSource_Result_FinalTest,
+            showRecordComponents: true,
+            showRecordComponentsByCell: true,
+            fields: [
+                {name: "surname", title: 'نام',  width: "20%"},
+                {name: "lastName", title: 'نام خانوادگی' , width: "20%"},
+                { name: "iconField", title: " ", width: "10%"},
+            ],
+            createRecordComponent: function (record, colNum) {
+                var fieldName = this.getFieldName(colNum);
+                if (fieldName == "iconField") {
+                    let button = isc.IButton.create({
+                        layoutAlign: "center",
+                        title: "پاسخ ها",
+                        width: "120",
+                        click: function () {
+                            ListGrid_show_results(record.answers);
+                        }
+                    });
+                    return button;
+                } else {
+                    return null;
+                }
+            }
+        });
+
+
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examResult/" + id, "GET", null, function (resp) {
+                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                    let results = JSON.parse(resp.data).data;
+                    var OK = isc.Dialog.create({
+                        message: "<spring:message code="msg.operation.successful"/>",
+                        icon: "[SKIN]say.png",
+                        title: "<spring:message code='message'/>"
+                    });
+                    setTimeout(function () {
+                        OK.close();
+                    }, 2000);
+
+                    ListGrid_Result_finalTest.setData(results);
+
+                    let Window_result_Finaltest = isc.Window.create({
+                        width: 1024,
+                        height: 768,
+                        keepInParentRect: true,
+                        title: "مشاهده نتایج آزمون",
+                        items: [
+                            isc.VLayout.create({
+                                width: "100%",
+                                height: "100%",
+                                defaultLayoutAlign: "center",
+                                align: "center",
+                                members: [
+                                    isc.HLayout.create({
+                                        width: "100%",
+                                        height: "90%",
+                                        members: [ListGrid_Result_finalTest]
+                                    }),
+                                    isc.IButtonCancel.create({
+                                        click: function () {
+                                        Window_result_Finaltest.close();
+                                        }
+                                    })]
+                            })
+                        ],
+                        minWidth: 1024
+                    })
+                    Window_result_Finaltest.show();
+                } else {
+                    var ERROR = isc.Dialog.create({
+                        message: "<spring:message code='exception.un-managed'/>",
+                        icon: "[SKIN]stop.png",
+                        title: "<spring:message code='message'/>"
+                    });
+                    setTimeout(function () {
+                        ERROR.close();
+                    }, 2000);
+                }
+                wait.close();
+            }))
+    }
+    var RestDataSource_Result_Answers_FianlTest = isc.TrDS.create({
+        fields: [
+            {name: "question", title: 'سوال'},
+            {name: "answer", title: 'پاسخ'},
+        ]
+    });
+
+    function ListGrid_show_results(answers) {
+        let ListGrid_Result_Answer_fianTest = isc.TrLG.create({
+            width: "100%",
+            height: 700,
+            dataSource: RestDataSource_Result_Answers_FianlTest,
+            fields: [],
+        });
+
+        ListGrid_Result_Answer_fianTest.setData(answers)
+
+        let Window_result_Answer_FinalTest = isc.Window.create({
+            width: 1024,
+            height: 768,
+            keepInParentRect: true,
+            title: "مشاهده پاسخ ها",
+            items: [
+                isc.VLayout.create({
+                    width: "100%",
+                    height: "100%",
+                    defaultLayoutAlign: "center",
+                    align: "center",
+                    members: [
+                        isc.HLayout.create({
+                            width: "100%",
+                            height: "90%",
+                            members: [ListGrid_Result_Answer_fianTest]
+                        }),
+                        isc.IButtonCancel.create({
+                            click: function () {
+                                Window_result_Answer_FinalTest.close();
+                            }
+                        })]
+                })
+            ],
+            minWidth: 1024
+        })
+            Window_result_Answer_FinalTest.show();
+    }
+
+
+    function loadExamQuestions(record){
+           wait.show();
+           isc.RPCManager.sendRequest(TrDSRequest(questionBankTestQuestionUrl +"/test/"+record.tclass.id+ "/spec-list", "GET",null, function (resp) {
+                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                            let result = JSON.parse(resp.httpResponseText).response.data;
+                              wait.close();
+                              wait.show();
+                              var examData = {
+                                  examItem : record,
+                                  questions: result
+                                };
+                                isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examToEls", "POST", JSON.stringify(examData), function (resp) {
+                                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+
+                                    wait.close();
+
+                                        var OK = isc.Dialog.create({
+                                        message: "<spring:message code="msg.operation.successful"/>",
+                                        icon: "[SKIN]say.png",
+                                        title: "<spring:message code='message'/>"
+                                         });
+                                    setTimeout(function () {
+                                        OK.close();
+                                    }, 2000);
+                                    } else {
+                                    wait.close();
+                                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                    }
+
+                             }))
+
+                        } else {
+                            wait.close();
+                            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                        }
+                    }))
+    }
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
     let FinalTestDF_finalTest = isc.DynamicForm.create({
         ID: "FinalTestDF_finalTest",
@@ -667,7 +875,6 @@
         RestDataSource_FinalTest.fetchDataURL = questionBankTestQuestionUrl +"/test/"+FinalTestLG_finalTest.getSelectedRecord().tclass.id+ "/spec-list";
         ListGrid_FinalTest.invalidateCache();
         ListGrid_FinalTest.fetchData();
-
         TabSet_finalTest.enable();
     }
 

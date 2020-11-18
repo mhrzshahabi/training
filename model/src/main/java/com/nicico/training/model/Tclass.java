@@ -27,7 +27,7 @@ public class Tclass extends Auditable {
     @Column(name = "id", precision = 10)
     private long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "f_course", insertable = false, updatable = false)
     private Course course;
 

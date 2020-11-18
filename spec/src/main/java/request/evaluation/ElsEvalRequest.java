@@ -1,5 +1,7 @@
 package request.evaluation;
 
+import dto.EvalCourse;
+import dto.EvalCourseProtocol;
 import dto.EvalQuestionDto;
 import dto.EvalTargetUser;
 import lombok.Getter;
@@ -20,5 +22,10 @@ public class ElsEvalRequest implements Serializable {
     private String organizer;
     private List<EvalQuestionDto> questions;
     private List<EvalTargetUser> targetUsers;
+
+
+    private EvalTargetUser teacher;
+    private EvalCourse course;
+    private EvalCourseProtocol courseProtocol;
 
 }
