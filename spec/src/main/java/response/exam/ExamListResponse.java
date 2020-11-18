@@ -1,4 +1,4 @@
-package response.evaluation;
+package response.exam;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class EvalListResponse extends BaseResponse implements Serializable {
+public class ExamListResponse extends BaseResponse implements Serializable {
 
-    private List<EvalResultDto> data ;
+    private List<ExamResultDto> data;
 }
