@@ -1,4 +1,4 @@
-package com.nicico.training.controller.util;
+package com.nicico.training.utility;
 
 import java.util.*;
 

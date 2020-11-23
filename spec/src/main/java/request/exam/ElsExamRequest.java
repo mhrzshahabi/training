@@ -1,7 +1,7 @@
 package request.exam;
 
 
-import dto.EvalTargetUser;
+import dto.evaluuation.EvalTargetUser;
 import dto.exam.*;
 import lombok.Getter;
 import lombok.Setter;

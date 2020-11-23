@@ -1,4 +1,4 @@
-package dto;
+package dto.evaluuation;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;

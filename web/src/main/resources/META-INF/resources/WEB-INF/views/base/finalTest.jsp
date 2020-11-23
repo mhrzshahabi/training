@@ -468,7 +468,12 @@
                                     }, 2000);
                                     } else {
                                     wait.close();
+                                     if (resp.httpResponseCode === 500)
                                     createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                     else
+                                    createDialog("info",JSON.parse(resp.httpResponseText).message, "<spring:message code="error"/>");
+
+
                                     }
 
                              }))

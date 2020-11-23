@@ -1,7 +1,6 @@
-package dto;
+package dto.exam;
 
 
-import com.sun.corba.se.spi.presentation.rmi.PresentationManager;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
