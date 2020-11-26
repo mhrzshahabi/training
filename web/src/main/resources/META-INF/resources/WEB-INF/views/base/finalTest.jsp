@@ -634,10 +634,28 @@
                 required: true,
                 requiredMessage: "<spring:message code="msg.field.is.required"/>",
                 hint: "--:--",
+                defaultValue: "08:00",
                 keyPressFilter: "[0-9:]",
                 showHintInField: true,
                 textAlign: "center",
                 validateOnChange: true,
+                validators: [{
+                    type: "isString",
+                    validateOnExit: true,
+                    type: "lengthRange",
+                    min: 5,
+                    max: 5,
+                    stopOnError: true,
+                    errorMessage: "زمان مجاز بصورت 08:30 است"
+                },
+                {
+                    type: "regexp",
+                    expression: "^(([0-1][0-9]|2[0-3]):([0-5][0-9]))$",
+                    validateOnChange: true,
+                    errorMessage: "ساعت 23-0 و دقیقه 59-0"
+                }
+                ],
+                length:5,
                 editorExit:function(){
                     DynamicForm_Session.setValue("time",arrangeDate(DynamicForm_Session.getValue("time")));
                     let val=DynamicForm_Session.getValue("time");
