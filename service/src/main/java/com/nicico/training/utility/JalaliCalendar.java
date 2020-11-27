@@ -86,6 +86,17 @@ public class JalaliCalendar extends Calendar {
 
         return dt;
     }
+    public static String getGregorianString(String jalaliDate, String time) {
+        String[] arr = jalaliDate.split("/");
+
+        YearMonthDate jalali = new YearMonthDate(Integer.parseInt(arr[0]),
+                Integer.parseInt(arr[1]) - 1, Integer.parseInt(arr[2]));
+
+        YearMonthDate gDate = jalaliToGregorian(jalali);
+
+        return gDate.getYear()+"-"+gDate.getMonth()+"-"+gDate.getDate()+" "+time+":00";
+
+     }
 
     public String getJalaliDate(Date gDate) {
 

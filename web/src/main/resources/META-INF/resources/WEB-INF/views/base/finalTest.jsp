@@ -280,6 +280,7 @@
                             layoutAlign: "center",
                             title: "ارسال به آموزش آنلاین",
                             width: "140",
+                            margin: 3,
                             click: function () {
                                 loadExamQuestions(record)
                             }
@@ -290,6 +291,8 @@
                             layoutAlign: "center",
                             title: "نمایش نتایج ",
                             width: "140",
+                            margin: 3,
+
                             click: function () {
                                 loadExamResult(record.id)
                             }
@@ -350,7 +353,7 @@
                     });
                     setTimeout(function () {
                         OK.close();
-                    }, 2000);
+                    }, 8000);
 
                     ListGrid_Result_finalTest.setData(results);
 
@@ -389,7 +392,7 @@
                     });
                     setTimeout(function () {
                         ERROR.close();
-                    }, 2000);
+                    }, 8000);
                 }
                 wait.close();
             }))
@@ -465,7 +468,7 @@
                                          });
                                     setTimeout(function () {
                                         OK.close();
-                                    }, 2000);
+                                    }, 8000);
                                     } else {
                                     wait.close();
                                      if (resp.httpResponseCode === 500)

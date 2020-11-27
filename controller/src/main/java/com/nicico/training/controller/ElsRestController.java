@@ -76,16 +76,22 @@ public class ElsRestController {
         BaseResponse response = new BaseResponse();
         try {
             ElsExamRequest request;
-            request = evaluationBeanMapper.toGetExamRequest(object, classStudentService.getClassStudents(object.getExamItem().getTclassId()));
+            request = evaluationBeanMapper.toGetExamRequest( personalInfoService.getPersonalInfo
+                            (teacherService.getTeacher(object.getExamItem().getTclass().getTeacherId()).getPersonalityId()),
+                    object, classStudentService.getClassStudents(object.getExamItem().getTclassId()));
             boolean hasDuplicateQuestions = evaluationBeanMapper.hasDuplicateQuestions(request.getQuestionProtocols());
             boolean hasWrongCorrectAnswer = evaluationBeanMapper.hasWrongCorrectAnswer(request.getQuestionProtocols());
-            if (hasDuplicateQuestions || hasWrongCorrectAnswer) {
+            if (hasDuplicateQuestions || hasWrongCorrectAnswer || request.getQuestionProtocols().size()==0) {
 
                 response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
                 if (hasDuplicateQuestions)
                     response.setMessage("سوال با عنوان تکراری در آزمون موجود است!");
-                else
+                else  if (hasWrongCorrectAnswer)
                     response.setMessage("سوال چهار گزینه ای بدون جواب صحیح موجود است!");
+
+                else
+                    response.setMessage("آزمون سوال ندارد!");
+
 
                 return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
             } else {

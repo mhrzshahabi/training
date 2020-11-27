@@ -906,14 +906,14 @@ public class EvaluationService implements IEvaluationService {
                         .getEvaluationQuestionId()).get();
                 questionDto.setTitle(evaluationQuestion.getQuestion());
             }
+            Comparator<ParameterValue> comparator = Comparator.comparing(ParameterValue::getId);
 
-            questionOptional.setOptions(parameterValueDAO.findAllByParameterId(192L).stream().map(ParameterValue::getTitle).collect(Collectors.toList()));
+            questionOptional.setOptions(parameterValueDAO.findAllByParameterId(192L).stream().sorted(comparator).map(ParameterValue::getTitle).collect(Collectors.toList()));
             questionDto.setType(EvalQuestionType.OPTIONAL);
             questionDto.setOption(questionOptional);
             return questionDto;
         }).collect(Collectors.toList());
     }
-
     @Transactional
     public Boolean classHasEvaluationForm(Long classId){
         Optional<Tclass> byId = tclassDAO.findById(classId);

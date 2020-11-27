@@ -10,6 +10,9 @@ import dto.evaluuation.EvalCourseProtocol;
 import dto.evaluuation.EvalQuestionDto;
 import dto.evaluuation.EvalTargetUser;
 import dto.exam.*;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -18,6 +21,8 @@ import request.evaluation.ElsEvalRequest;
 import request.exam.ElsExamRequest;
 import request.exam.ExamImportedRequest;
 
+import java.security.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -41,6 +46,8 @@ public abstract class EvaluationBeanMapper {
     public ElsEvalRequest toElsEvalRequest(Evaluation evaluation, Questionnaire questionnaire, List<ClassStudent> classStudents,
                                            List<EvalQuestionDto> questionDtos, PersonalInfo teacher) {
         ElsEvalRequest request = new ElsEvalRequest();
+
+
         EvalCourse evalCourse = new EvalCourse();
         EvalCourseProtocol evalCourseProtocol = new EvalCourseProtocol();
         request.setId(evaluation.getId());
@@ -84,32 +91,37 @@ public abstract class EvaluationBeanMapper {
     public abstract EvalTargetUser toTeacher(PersonalInfo teacher);
 
 
-    public ElsExamRequest toGetExamRequest(ExamImportedRequest object, List<ClassStudent> classStudents) {
+    public ElsExamRequest toGetExamRequest(PersonalInfo teacherInfo, ExamImportedRequest object, List<ClassStudent> classStudents) {
         ElsExamRequest request = new ElsExamRequest();
+        Date startDate = getDate(object.getExamItem().getDate(), object.getExamItem().getTime());
+
+        Date endDate = getEndDAteFromDuration(getStringGeoDate(object.getExamItem().getDate(), object.getExamItem().getTime())
+                , object.getExamItem().getDuration());
+
 
         ExamCreateDTO exam = new ExamCreateDTO();
         ImportedCourseCategory courseCategory = new ImportedCourseCategory();
         ImportedCourseDto courseDto = new ImportedCourseDto();
         CourseProtocolImportDTO courseProtocol = new CourseProtocolImportDTO();
-        ImportedCourseProgram program = new ImportedCourseProgram();
-        List<ImportedCourseProgram> programs = new ArrayList<>();
+
         List<ImportedQuestionProtocol> questionProtocols = new ArrayList<>();
         ImportedUser teacher = new ImportedUser();
         /////////////////////////////////////////////////////////
 
         exam.setCode(object.getExamItem().getTclass().getCode());
         exam.setName(object.getExamItem().getTclass().getTitleClass());
-        exam.setStartDate(1600585781L);
-        exam.setEndDate(1685585781L);
+        exam.setStartDate(startDate.getTime());
+        exam.setEndDate(endDate.getTime());
         exam.setQuestionCount(object.getQuestions().size());
-        exam.setMinimumAcceptScore(0D);
+        exam.setMinimumAcceptScore(10D);
         exam.setSourceExamId(object.getExamItem().getId());
         int time = Math.toIntExact(object.getExamItem().getDuration());
 
         exam.setDuration(time);
+        //
         int timeQues = 0;
         if (object.getQuestions() != null && object.getQuestions().size() > 0)
-            timeQues = (time * 1000) / object.getQuestions().size();
+            timeQues = (time * 60) / object.getQuestions().size();
         exam.setScore(20D);
         exam.setStatus(ExamStatus.ACTIVE);
 //////////////////////////////////////////////////
@@ -129,13 +141,9 @@ public abstract class EvaluationBeanMapper {
         courseProtocol.setFinishDate(getDateFromStringDate(object.getExamItem().getTclass().getEndDate()).getTime());
         courseProtocol.setCourseStatus(CourseStatus.ACTIVE);
         courseProtocol.setCourseType(CourseType.IMPERETIVE);
-        ////////////////////////////////////
-        program.setDay("SATURDAY");
-        program.setEndTime("12");
-        program.setStartTime("10");
-        programs.add(program);
-        /////////////////////////////
 
+        /////////////////////////////
+        Double questionScore = (double) (20 / object.getQuestions().size());
 
         for (QuestionData questionData : object.getQuestions()) {
             ImportedQuestionProtocol questionProtocol = new ImportedQuestionProtocol();
@@ -171,7 +179,7 @@ public abstract class EvaluationBeanMapper {
 
             }
 
-            questionProtocol.setMark(2D);
+            questionProtocol.setMark(questionScore);
             questionProtocol.setTime(timeQues);
             questionProtocol.setQuestion(question);
             questionProtocols.add(questionProtocol);
@@ -179,11 +187,22 @@ public abstract class EvaluationBeanMapper {
 
 
 ////////////////////////////////////////////
-        teacher.setCellNumber("09189996626");
-        teacher.setNationalCode("3240939177");
-        teacher.setGender("زن");
-        teacher.setLastName("اردلانی");
-        teacher.setSurname("الناز");
+
+        if (null == teacherInfo.getContactInfo().getMobile()) {
+            teacher.setCellNumber("09189996626");
+            teacher.setNationalCode("3240939177");
+            teacher.setGender("زن");
+            teacher.setLastName("اردلانی");
+            teacher.setSurname("الناز");
+
+        } else {
+            teacher.setCellNumber(teacherInfo.getContactInfo().getMobile());
+            teacher.setNationalCode(teacherInfo.getNationalCode());
+            teacher.setGender(teacherInfo.getGender().getTitleFa());
+            teacher.setLastName(teacherInfo.getLastNameFa());
+            teacher.setSurname(teacherInfo.getFirstNameFa());
+        }
+
         /////////////////////////////
 
 
@@ -193,16 +212,367 @@ public abstract class EvaluationBeanMapper {
 
         ////////////////////
         exam.setType(getExamType(questionProtocols));
+        if (exam.getType() != ExamType.MULTI_CHOICES)
+            exam.setResultDate(1638036038L);
+
 
         request.setExam(exam);
         request.setCategory(courseCategory);
         request.setCourse(courseDto);
         request.setInstructor(teacher);
         request.setQuestionProtocols(questionProtocols);
-        request.setPrograms(programs);
+        request.setPrograms(getPrograms(object.getExamItem().getTclass()));
         request.setProtocol(courseProtocol);
 
         return request;
+    }
+
+    private List<ImportedCourseProgram> getPrograms(ExamClassData tclass) {
+        List<ImportedCourseProgram> programs = new ArrayList<>();
+        ////////////////////////////////////
+
+
+        if (null != (tclass.getSaturday()) && tclass.getSaturday()) {
+
+
+            if (null != (tclass.getFirst()) && tclass.getFirst()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("SATURDAY");
+                program.setEndTime("8");
+                program.setStartTime("10");
+                programs.add(program);
+
+            }
+            if (null != (tclass.getSecond()) && tclass.getSecond()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("SATURDAY");
+                program.setEndTime("10");
+                program.setStartTime("12");
+                programs.add(program);
+            }
+            if (null != (tclass.getThird()) && tclass.getThird()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("SATURDAY");
+                program.setEndTime("12");
+                program.setStartTime("14");
+                programs.add(program);
+            }
+            if (null != (tclass.getFourth()) && tclass.getFourth()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("SATURDAY");
+                program.setEndTime("14");
+                program.setStartTime("16");
+                programs.add(program);
+            }
+            if (null != (tclass.getFifth()) && tclass.getFifth()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("SATURDAY");
+                program.setEndTime("16");
+                program.setStartTime("18");
+                programs.add(program);
+            }
+
+
+        }
+        if (null != (tclass.getSunday()) && tclass.getSunday()) {
+
+
+            if (null != (tclass.getFirst()) && tclass.getFirst()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("SUNDAY");
+                program.setEndTime("8");
+                program.setStartTime("10");
+                programs.add(program);
+
+            }
+            if (null != (tclass.getSecond()) && tclass.getSecond()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("SUNDAY");
+                program.setEndTime("10");
+                program.setStartTime("12");
+                programs.add(program);
+            }
+            if (null != (tclass.getThird()) && tclass.getThird()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("SUNDAY");
+                program.setEndTime("12");
+                program.setStartTime("14");
+                programs.add(program);
+            }
+            if (null != (tclass.getFourth()) && tclass.getFourth()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("SUNDAY");
+                program.setEndTime("14");
+                program.setStartTime("16");
+                programs.add(program);
+            }
+            if (null != (tclass.getFifth()) && tclass.getFifth()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("SUNDAY");
+                program.setEndTime("16");
+                program.setStartTime("18");
+                programs.add(program);
+            }
+
+
+        }
+        if (null != (tclass.getMonday()) && tclass.getMonday()) {
+
+
+            if (null != (tclass.getFirst()) && tclass.getFirst()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("MONDAY");
+                program.setEndTime("8");
+                program.setStartTime("10");
+                programs.add(program);
+
+            }
+            if (null != (tclass.getSecond()) && tclass.getSecond()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("MONDAY");
+                program.setEndTime("10");
+                program.setStartTime("12");
+                programs.add(program);
+            }
+            if (null != (tclass.getThird()) && tclass.getThird()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("MONDAY");
+                program.setEndTime("12");
+                program.setStartTime("14");
+                programs.add(program);
+            }
+            if (null != (tclass.getFourth()) && tclass.getFourth()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("MONDAY");
+                program.setEndTime("14");
+                program.setStartTime("16");
+                programs.add(program);
+            }
+            if (null != (tclass.getFifth()) && tclass.getFifth()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("MONDAY");
+                program.setEndTime("16");
+                program.setStartTime("18");
+                programs.add(program);
+            }
+
+
+        }
+        if (null != (tclass.getTuesday()) && tclass.getTuesday()) {
+
+
+            if (null != (tclass.getFirst()) && tclass.getFirst()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("TUESDAY");
+                program.setEndTime("8");
+                program.setStartTime("10");
+                programs.add(program);
+
+            }
+            if (null != (tclass.getSecond()) && tclass.getSecond()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("TUESDAY");
+                program.setEndTime("10");
+                program.setStartTime("12");
+                programs.add(program);
+            }
+            if (null != (tclass.getThird()) && tclass.getThird()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("TUESDAY");
+                program.setEndTime("12");
+                program.setStartTime("14");
+                programs.add(program);
+            }
+            if (null != (tclass.getFourth()) && tclass.getFourth()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("TUESDAY");
+                program.setEndTime("14");
+                program.setStartTime("16");
+                programs.add(program);
+            }
+            if (null != (tclass.getFifth()) && tclass.getFifth()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("TUESDAY");
+                program.setEndTime("16");
+                program.setStartTime("18");
+                programs.add(program);
+            }
+
+
+        }
+        if (null != (tclass.getWednesday()) && tclass.getWednesday()) {
+
+
+            if (null != (tclass.getFirst()) && tclass.getFirst()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("WEDNESDAY");
+                program.setEndTime("8");
+                program.setStartTime("10");
+                programs.add(program);
+
+            }
+            if (null != (tclass.getSecond()) && tclass.getSecond()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("WEDNESDAY");
+                program.setEndTime("10");
+                program.setStartTime("12");
+                programs.add(program);
+            }
+            if (null != (tclass.getThird()) && tclass.getThird()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("WEDNESDAY");
+                program.setEndTime("12");
+                program.setStartTime("14");
+                programs.add(program);
+            }
+            if (null != (tclass.getFourth()) && tclass.getFourth()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("WEDNESDAY");
+                program.setEndTime("14");
+                program.setStartTime("16");
+                programs.add(program);
+            }
+            if (null != (tclass.getFifth()) && tclass.getFifth()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("WEDNESDAY");
+                program.setEndTime("16");
+                program.setStartTime("18");
+                programs.add(program);
+            }
+
+
+        }
+        if (null != (tclass.getThursday()) && tclass.getThursday()) {
+
+
+            if (null != (tclass.getFirst()) && tclass.getFirst()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("THURSDAY");
+                program.setEndTime("8");
+                program.setStartTime("10");
+                programs.add(program);
+
+            }
+            if (null != (tclass.getSecond()) && tclass.getSecond()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("THURSDAY");
+                program.setEndTime("10");
+                program.setStartTime("12");
+                programs.add(program);
+            }
+            if (null != (tclass.getThird()) && tclass.getThird()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("THURSDAY");
+                program.setEndTime("12");
+                program.setStartTime("14");
+                programs.add(program);
+            }
+            if (null != (tclass.getFourth()) && tclass.getFourth()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("THURSDAY");
+                program.setEndTime("14");
+                program.setStartTime("16");
+                programs.add(program);
+            }
+            if (null != (tclass.getFifth()) && tclass.getFifth()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("THURSDAY");
+                program.setEndTime("16");
+                program.setStartTime("18");
+                programs.add(program);
+            }
+
+
+        }
+        if (null != (tclass.getFriday()) && tclass.getFriday()) {
+
+
+            if (null != (tclass.getFirst()) && tclass.getFirst()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("FRIDAY");
+                program.setEndTime("8");
+                program.setStartTime("10");
+                programs.add(program);
+
+            }
+            if (null != (tclass.getSecond()) && tclass.getSecond()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("FRIDAY");
+                program.setEndTime("10");
+                program.setStartTime("12");
+                programs.add(program);
+            }
+            if (null != (tclass.getThird()) && tclass.getThird()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("FRIDAY");
+                program.setEndTime("12");
+                program.setStartTime("14");
+                programs.add(program);
+            }
+            if (null != (tclass.getFourth()) && tclass.getFourth()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("FRIDAY");
+                program.setEndTime("14");
+                program.setStartTime("16");
+                programs.add(program);
+            }
+            if (null != (tclass.getFifth()) && tclass.getFifth()) {
+                ImportedCourseProgram program = new ImportedCourseProgram();
+                program.setDay("FRIDAY");
+                program.setEndTime("16");
+                program.setStartTime("18");
+                programs.add(program);
+            }
+
+
+        }
+
+        return programs;
+    }
+
+    private Date getEndDAteFromDuration(String dateString, Long duration) {
+
+// parse the string
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+        DateTime dateTime = formatter.parseDateTime(dateString);
+
+
+        int hours = (int) (duration / 60); //since both are ints, you get an int
+        int minutes = (int) (duration % 60);
+        dateTime = dateTime.plusMinutes(minutes);
+        dateTime = dateTime.plusHours(hours);
+
+
+        java.sql.Timestamp ts = new java.sql.Timestamp(dateTime.getMillis());
+
+
+        return new Date(ts.getTime() / 1000);
+
+
+    }
+
+    private Date getDate(String date, String time) {
+        if (!time.contains(":")) {
+            StringBuilder sb = new StringBuilder(time);
+            sb.insert(2, ':');
+            time = sb.toString();
+        }
+        long longDate = Date.from(java.sql.Timestamp
+                .valueOf(                           // Class-method parses SQL-style formatted date-time strings.
+                        getStringGeoDate(date, time)
+                )                                   // Returns a `Timestamp` object.
+                .toInstant()).getTime();
+
+        return new Date(longDate / 1000);
+    }
+
+    private String getStringGeoDate(String date, String time) {
+        if (!time.contains(":")) {
+            StringBuilder sb = new StringBuilder(time);
+            sb.insert(2, ':');
+            time = sb.toString();
+        }
+        return JalaliCalendar.getGregorianString(date, time);
     }
 
 
@@ -277,7 +647,7 @@ public abstract class EvaluationBeanMapper {
     public Boolean hasWrongCorrectAnswer(List<ImportedQuestionProtocol> questionProtocols) {
         List<ImportedQuestionProtocol> filteredTeams =
                 questionProtocols
-                        .stream().filter(p->p.getQuestion().getType().getValue().equals(MULTI_CHOICES.getValue()))
+                        .stream().filter(p -> p.getQuestion().getType().getValue().equals(MULTI_CHOICES.getValue()))
 
                         .collect(Collectors.toList());
 
