@@ -93,9 +93,12 @@ public abstract class EvaluationBeanMapper {
 
     public ElsExamRequest toGetExamRequest(PersonalInfo teacherInfo, ExamImportedRequest object, List<ClassStudent> classStudents) {
         ElsExamRequest request = new ElsExamRequest();
-        Date startDate = getDate(object.getExamItem().getDate(), object.getExamItem().getTime());
 
-        Date endDate = getEndDAteFromDuration(getStringGeoDate(object.getExamItem().getDate(), object.getExamItem().getTime())
+          String newTime=deCreaseTimeZone(object.getExamItem().getTime());
+
+        Date startDate = getDate(object.getExamItem().getDate(),newTime);
+
+        Date endDate = getEndDAteFromDuration(getStringGeoDate(object.getExamItem().getDate(), newTime)
                 , object.getExamItem().getDuration());
 
 
@@ -547,6 +550,25 @@ public abstract class EvaluationBeanMapper {
 
 
         return new Date(ts.getTime() / 1000);
+
+
+    }
+    private String deCreaseTimeZone(String dateString) {
+
+// parse the string
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("HH:mm");
+        DateTime dateTime = formatter.parseDateTime(dateString);
+
+
+        int hours = (int) (-3); //since both are ints, you get an int
+        int minutes = (int) (-30);
+        dateTime = dateTime.plusMinutes(minutes);
+        dateTime = dateTime.plusHours(hours);
+
+
+
+
+        return dateTime.getHourOfDay()+":"+dateTime.getMinuteOfHour();
 
 
     }
