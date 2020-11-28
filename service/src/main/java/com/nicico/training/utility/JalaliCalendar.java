@@ -74,7 +74,7 @@ public class JalaliCalendar extends Calendar {
         String[] arr = jalaliDate.split("/");
 
         YearMonthDate jalali = new YearMonthDate(Integer.parseInt(arr[0]),
-                Integer.parseInt(arr[1]) - 1, Integer.parseInt(arr[2]));
+                Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
 
         YearMonthDate gDate = jalaliToGregorian(jalali);
 
@@ -90,7 +90,7 @@ public class JalaliCalendar extends Calendar {
         String[] arr = jalaliDate.split("/");
 
         YearMonthDate jalali = new YearMonthDate(Integer.parseInt(arr[0]),
-                Integer.parseInt(arr[1]) - 1, Integer.parseInt(arr[2]));
+                Integer.parseInt(arr[1]) , Integer.parseInt(arr[2]));
 
         YearMonthDate gDate = jalaliToGregorian(jalali);
 

@@ -39,7 +39,6 @@ public class ElsRestController {
     private final ClassStudentService classStudentService;
     private final TeacherService teacherService;
     private final PersonalInfoService personalInfoService;
-    private final QuestionBankService questionBankService;
     private final ElsClient client;
 
     @GetMapping("/eval/{id}")
@@ -105,6 +104,11 @@ public class ElsRestController {
             response.setMessage("بروز خطا در سیستم");
             return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
         }
+    }
+
+    @GetMapping("/userInfo/{nationalCode}")
+    public ResponseEntity  getUserInfo(@PathVariable String nationalCode) {
+        return new ResponseEntity(nationalCode, HttpStatus.OK);
     }
 
 
