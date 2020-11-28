@@ -188,19 +188,19 @@ public abstract class EvaluationBeanMapper {
 
 ////////////////////////////////////////////
 
-        if (null == teacherInfo.getContactInfo().getMobile()) {
+        if (null!=teacherInfo.getContactInfo() && null!=teacherInfo.getContactInfo().getMobile()) {
+
+            teacher.setCellNumber(teacherInfo.getContactInfo().getMobile());
+            teacher.setNationalCode(teacherInfo.getNationalCode());
+            teacher.setGender("مرد");
+            teacher.setLastName(teacherInfo.getLastNameFa());
+            teacher.setSurname(teacherInfo.getFirstNameFa());
+        } else {
             teacher.setCellNumber("09189996626");
             teacher.setNationalCode("3240939177");
             teacher.setGender("زن");
             teacher.setLastName("اردلانی");
             teacher.setSurname("الناز");
-
-        } else {
-            teacher.setCellNumber(teacherInfo.getContactInfo().getMobile());
-            teacher.setNationalCode(teacherInfo.getNationalCode());
-            teacher.setGender(teacherInfo.getGender().getTitleFa());
-            teacher.setLastName(teacherInfo.getLastNameFa());
-            teacher.setSurname(teacherInfo.getFirstNameFa());
         }
 
         /////////////////////////////
