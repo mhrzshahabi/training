@@ -13,4 +13,6 @@ import java.util.List;
 public class ExamListResponse extends BaseResponse implements Serializable {
 
     private List<ExamResultDto> data;
+    private String excelUrl="https://file-examples-com.github.io/uploads/2017/02/file_example_XLS_10.xls";
+
 }

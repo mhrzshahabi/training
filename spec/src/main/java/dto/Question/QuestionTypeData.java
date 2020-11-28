@@ -1,17 +1,13 @@
-package dto;
-
+package dto.Question;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-
 @Getter
 @Setter
 @ToString
-public class EvalQuestionDto {
+public class QuestionTypeData {
 
     private String title;
-    private EvalQuestionType type;
-    private Object option;
 }

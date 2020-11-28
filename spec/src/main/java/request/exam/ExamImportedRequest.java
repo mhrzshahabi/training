@@ -1,7 +1,7 @@
 package request.exam;
 
-import com.google.gson.JsonObject;
-import dto.*;
+import dto.Question.QuestionData;
+import dto.exam.ExamData;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

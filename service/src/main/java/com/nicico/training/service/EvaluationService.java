@@ -8,10 +8,9 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
-import dto.EvalQuestionDto;
-import dto.EvalQuestionInRange;
-import dto.EvalQuestionOptional;
-import dto.EvalQuestionType;
+import dto.evaluuation.EvalQuestionDto;
+import dto.evaluuation.EvalQuestionOptional;
+import dto.evaluuation.EvalQuestionType;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.annotation.Tainted;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -908,14 +906,14 @@ public class EvaluationService implements IEvaluationService {
                         .getEvaluationQuestionId()).get();
                 questionDto.setTitle(evaluationQuestion.getQuestion());
             }
+            Comparator<ParameterValue> comparator = Comparator.comparing(ParameterValue::getId);
 
-            questionOptional.setOptions(parameterValueDAO.findAllByParameterId(192L).stream().map(ParameterValue::getTitle).collect(Collectors.toList()));
+            questionOptional.setOptions(parameterValueDAO.findAllByParameterId(192L).stream().sorted(comparator).map(ParameterValue::getTitle).collect(Collectors.toList()));
             questionDto.setType(EvalQuestionType.OPTIONAL);
             questionDto.setOption(questionOptional);
             return questionDto;
         }).collect(Collectors.toList());
     }
-
     @Transactional
     public Boolean classHasEvaluationForm(Long classId){
         Optional<Tclass> byId = tclassDAO.findById(classId);
