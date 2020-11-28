@@ -3,16 +3,13 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.EvaluationAnswerDTO;
 import com.nicico.training.dto.EvaluationDTO;
-import com.nicico.training.dto.EvaluationQuestionDTO;
 import com.nicico.training.model.Evaluation;
 import com.nicico.training.model.EvaluationAnswer;
-import dto.EvalQuestionDto;
-import org.springframework.transaction.annotation.Transactional;
+import dto.evaluuation.EvalQuestionDto;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public interface IEvaluationService {
 

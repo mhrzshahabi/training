@@ -1174,7 +1174,7 @@
                     });
                     setTimeout(function () {
                         OK.close();
-                    }, 2000);
+                    }, 8000);
 
                     ListGrid_Result_evaluation.setData(results);
 
@@ -1213,7 +1213,7 @@
                     });
                     setTimeout(function () {
                         ERROR.close();
-                    }, 2000);
+                    }, 8000);
                 }
                 wait.close();
             }))
@@ -1225,7 +1225,7 @@
                 });
                 setTimeout(function () {
                     ERROR.close();
-                }, 2000);
+                }, 8000);
             }
             wait.close()
         }))

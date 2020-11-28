@@ -1,4 +1,4 @@
-package dto;
+package dto.Question;
 
 
 import lombok.Getter;

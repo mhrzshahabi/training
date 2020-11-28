@@ -91,7 +91,7 @@ public class PersonalInfo extends Auditable {
     @Column(name = "e_gender")
     private Integer genderId;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "f_contact_info")
     private ContactInfo contactInfo;
 

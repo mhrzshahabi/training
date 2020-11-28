@@ -1,9 +1,9 @@
 package request.evaluation;
 
-import dto.EvalCourse;
-import dto.EvalCourseProtocol;
-import dto.EvalQuestionDto;
-import dto.EvalTargetUser;
+import dto.evaluuation.EvalCourse;
+import dto.evaluuation.EvalCourseProtocol;
+import dto.evaluuation.EvalQuestionDto;
+import dto.evaluuation.EvalTargetUser;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
