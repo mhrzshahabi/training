@@ -86,6 +86,7 @@ public class ElsRestController {
                 if (null == teacherInfo.getGender() ||
                         null == teacherInfo.getContactInfo() ||
                         null == teacherInfo.getNationalCode() ||
+                        10 != teacherInfo.getNationalCode().length() ||
                         null == teacherInfo.getContactInfo().getMobile()) {
                     response.setMessage("اطلاعات استاد تکمیل نیست");
                     return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
