@@ -4,9 +4,7 @@ package com.nicico.training.controller;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
-import com.nicico.training.model.ClassStudent;
-import com.nicico.training.model.Evaluation;
-import com.nicico.training.model.QuestionBank;
+import com.nicico.training.model.*;
 import com.nicico.training.service.*;
 import dto.Question.QuestionData;
 import dto.exam.*;
@@ -38,6 +36,7 @@ public class ElsRestController {
     private final EvaluationService evaluationService;
     private final ClassStudentService classStudentService;
     private final TeacherService teacherService;
+    private final StudentService studentService;
     private final PersonalInfoService personalInfoService;
     private final ElsClient client;
 
@@ -74,41 +73,57 @@ public class ElsRestController {
     public ResponseEntity sendExam(@RequestBody ExamImportedRequest object) {
         BaseResponse response = new BaseResponse();
         try {
+
             ElsExamRequest request;
-            request = evaluationBeanMapper.toGetExamRequest( personalInfoService.getPersonalInfo
-                            (teacherService.getTeacher(object.getExamItem().getTclass().getTeacherId()).getPersonalityId()),
-                    object, classStudentService.getClassStudents(object.getExamItem().getTclassId()));
-            boolean hasDuplicateQuestions = evaluationBeanMapper.hasDuplicateQuestions(request.getQuestionProtocols());
-            boolean hasWrongCorrectAnswer = evaluationBeanMapper.hasWrongCorrectAnswer(request.getQuestionProtocols());
-            if (hasDuplicateQuestions || hasWrongCorrectAnswer || request.getQuestionProtocols().size()==0) {
-
-                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-                if (hasDuplicateQuestions)
-                    response.setMessage("سوال با عنوان تکراری در آزمون موجود است!");
-                else  if (hasWrongCorrectAnswer)
-                    response.setMessage("سوال چهار گزینه ای بدون جواب صحیح موجود است!");
-
-                else
-                    response.setMessage("آزمون سوال ندارد!");
-
-
+            if (null == object.getQuestions() || object.getQuestions().isEmpty()) {
+                response.setMessage("آزمون سوال ندارد!");
                 return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+
             } else {
 
-                response = client.sendExam(request);
-                return new ResponseEntity<>(response, HttpStatus.OK);
+                PersonalInfo teacherInfo = personalInfoService.getPersonalInfo
+                        (teacherService.getTeacher(object.getExamItem().getTclass().getTeacherId()).getPersonalityId());
+                if (null == teacherInfo.getGender() ||
+                        null == teacherInfo.getContactInfo() ||
+                        null == teacherInfo.getNationalCode() ||
+                        10 != teacherInfo.getNationalCode().length() ||
+                        null == teacherInfo.getContactInfo().getMobile()) {
+                    response.setMessage("اطلاعات استاد تکمیل نیست");
+                    return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+                } else {
+                    request = evaluationBeanMapper.toGetExamRequest(teacherInfo,
+                            object, classStudentService.getClassStudents(object.getExamItem().getTclassId()));
+                    boolean hasDuplicateQuestions = evaluationBeanMapper.hasDuplicateQuestions(request.getQuestionProtocols());
+                    boolean hasWrongCorrectAnswer = evaluationBeanMapper.hasWrongCorrectAnswer(request.getQuestionProtocols());
+                    if (hasDuplicateQuestions || hasWrongCorrectAnswer || request.getQuestionProtocols().size() == 0) {
+
+                        response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                        if (hasDuplicateQuestions)
+                            response.setMessage("سوال با عنوان تکراری در آزمون موجود است!");
+                        else if (hasWrongCorrectAnswer)
+                            response.setMessage("سوال چهار گزینه ای بدون جواب صحیح موجود است!");
+
+                        else
+                            response.setMessage("آزمون سوال ندارد!");
+
+
+                        return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+                    } else {
+
+                        response = client.sendExam(request);
+                        return new ResponseEntity<>(response, HttpStatus.OK);
+                    }
+                }
+
+
             }
+
 
         } catch (TrainingException ex) {
             response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
             response.setMessage("بروز خطا در سیستم");
             return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
         }
-    }
-
-    @GetMapping("/userInfo/{nationalCode}")
-    public ResponseEntity  getUserInfo(@PathVariable String nationalCode) {
-        return new ResponseEntity(nationalCode, HttpStatus.OK);
     }
 
 

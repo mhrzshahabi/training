@@ -3,7 +3,7 @@ package com.nicico.training.mapper.evaluation;
 
 import com.nicico.training.model.*;
 import com.nicico.training.service.QuestionBankService;
-import com.nicico.training.utility.JalaliCalendar;
+import com.nicico.training.utility.persianDate.PersianDate;
 import dto.Question.QuestionData;
 import dto.evaluuation.EvalCourse;
 import dto.evaluuation.EvalCourseProtocol;
@@ -21,10 +21,9 @@ import request.evaluation.ElsEvalRequest;
 import request.exam.ElsExamRequest;
 import request.exam.ExamImportedRequest;
 
-import java.security.Timestamp;
-import java.text.SimpleDateFormat;
+
+import java.time.LocalDate;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static dto.exam.EQuestionType.MULTI_CHOICES;
@@ -94,58 +93,67 @@ public abstract class EvaluationBeanMapper {
     public ElsExamRequest toGetExamRequest(PersonalInfo teacherInfo, ExamImportedRequest object, List<ClassStudent> classStudents) {
         ElsExamRequest request = new ElsExamRequest();
 
-          String newTime=deCreaseTimeZone(object.getExamItem().getTime());
 
-        Date startDate = getDate(object.getExamItem().getDate(),newTime);
-
-        Date endDate = getEndDAteFromDuration(getStringGeoDate(object.getExamItem().getDate(), newTime)
-                , object.getExamItem().getDuration());
-
-
-        ExamCreateDTO exam = new ExamCreateDTO();
-        ImportedCourseCategory courseCategory = new ImportedCourseCategory();
-        ImportedCourseDto courseDto = new ImportedCourseDto();
-        CourseProtocolImportDTO courseProtocol = new CourseProtocolImportDTO();
-
-        List<ImportedQuestionProtocol> questionProtocols = new ArrayList<>();
-        ImportedUser teacher = new ImportedUser();
-        /////////////////////////////////////////////////////////
-
-        exam.setCode(object.getExamItem().getTclass().getCode());
-        exam.setName(object.getExamItem().getTclass().getTitleClass());
-        exam.setStartDate(startDate.getTime());
-        exam.setEndDate(endDate.getTime());
-        exam.setQuestionCount(object.getQuestions().size());
-        exam.setMinimumAcceptScore(10D);
-        exam.setSourceExamId(object.getExamItem().getId());
         int time = Math.toIntExact(object.getExamItem().getDuration());
 
-        exam.setDuration(time);
-        //
         int timeQues = 0;
         if (object.getQuestions() != null && object.getQuestions().size() > 0)
             timeQues = (time * 60) / object.getQuestions().size();
-        exam.setScore(20D);
-        exam.setStatus(ExamStatus.ACTIVE);
-//////////////////////////////////////////////////
-        courseCategory.setCode(object.getExamItem().getTclass().getCourse().getCategory().getCode());
-        courseCategory.setName(object.getExamItem().getTclass().getCourse().getCategory().getTitleFa());
-//////////////////////
-        courseDto.setCode(object.getExamItem().getTclass().getCourse().getCode());
-        courseDto.setName(object.getExamItem().getTclass().getCourse().getTitleFa());
-////////////////////////
-        if (null != object.getExamItem().getTclass().getMaxCapacity())
-            courseProtocol.setCapacity(Math.toIntExact(object.getExamItem().getTclass().getMaxCapacity()));
-        courseProtocol.setClassType(ClassType.ATTENDANCE);
-        courseProtocol.setCode(object.getExamItem().getTclass().getCode());
-        courseProtocol.setName(object.getExamItem().getTclass().getTitleClass());
-        courseProtocol.setDuration(100);
-        courseProtocol.setStartDate(getDateFromStringDate(object.getExamItem().getTclass().getStartDate()).getTime());
-        courseProtocol.setFinishDate(getDateFromStringDate(object.getExamItem().getTclass().getEndDate()).getTime());
-        courseProtocol.setCourseStatus(CourseStatus.ACTIVE);
-        courseProtocol.setCourseType(CourseType.IMPERETIVE);
 
-        /////////////////////////////
+        ExamCreateDTO exam = getExamData(object);
+        ImportedCourseCategory courseCategory = getCourseCategoryData(object);
+        ImportedCourseDto courseDto = getCourseData(object);
+        CourseProtocolImportDTO courseProtocol = getCourseProtocolData(object);
+
+        List<ImportedQuestionProtocol> questionProtocols = getQuestions(object, timeQues);
+        ImportedUser teacher = getTeacherData(teacherInfo);
+
+
+        request.setUsers(classStudents.stream()
+                .map(classStudent -> toTargetUser(classStudent.getStudent())).collect(Collectors.toList()));
+
+
+        ////////////////////
+        //todo
+        exam.setType(getExamType(questionProtocols));
+        if (exam.getType() != ExamType.MULTI_CHOICES)
+            exam.setResultDate(1638036038L);
+
+
+        request.setExam(exam);
+        request.setCategory(courseCategory);
+        request.setCourse(courseDto);
+        request.setInstructor(teacher);
+        request.setQuestionProtocols(questionProtocols);
+        request.setPrograms(getPrograms(object.getExamItem().getTclass()));
+        request.setProtocol(courseProtocol);
+
+        return request;
+    }
+
+    private ImportedUser getTeacherData(PersonalInfo teacherInfo) {
+    ImportedUser teacher=new ImportedUser();
+        if (null != teacherInfo.getContactInfo() && null != teacherInfo.getContactInfo().getMobile()) {
+
+            teacher.setCellNumber(teacherInfo.getContactInfo().getMobile());
+            teacher.setNationalCode(teacherInfo.getNationalCode());
+            teacher.setGender(teacherInfo.getGender().getTitleFa());
+            teacher.setLastName(teacherInfo.getLastNameFa());
+            teacher.setSurname(teacherInfo.getFirstNameFa());
+        } else {
+            teacher.setCellNumber("09189996626");
+            teacher.setNationalCode("3240939177");
+            teacher.setGender("زن");
+            teacher.setLastName("اردلانی");
+            teacher.setSurname("الناز");
+        }
+        return teacher;
+    }
+
+    private List<ImportedQuestionProtocol> getQuestions(ExamImportedRequest object, int timeQues) {
+
+        List<ImportedQuestionProtocol> questionProtocols = new ArrayList<>();
+
         Double questionScore = (double) (20 / object.getQuestions().size());
 
         for (QuestionData questionData : object.getQuestions()) {
@@ -187,47 +195,66 @@ public abstract class EvaluationBeanMapper {
             questionProtocol.setQuestion(question);
             questionProtocols.add(questionProtocol);
         }
+        return questionProtocols;
+    }
+
+    private CourseProtocolImportDTO getCourseProtocolData(ExamImportedRequest object) {
+        CourseProtocolImportDTO courseProtocol = new CourseProtocolImportDTO();
+        if (null != object.getExamItem().getTclass().getMaxCapacity())
+            courseProtocol.setCapacity(Math.toIntExact(object.getExamItem().getTclass().getMaxCapacity()));
+        courseProtocol.setCode(object.getExamItem().getTclass().getCode());
+        courseProtocol.setName(object.getExamItem().getTclass().getTitleClass());
+        courseProtocol.setStartDate(getDateFromStringDate(object.getExamItem().getTclass().getStartDate()).getTime());
+        courseProtocol.setFinishDate(getDateFromStringDate(object.getExamItem().getTclass().getEndDate()).getTime());
+//todo
+        courseProtocol.setClassType(ClassType.ATTENDANCE);
+        courseProtocol.setDuration(100);
+        courseProtocol.setCourseStatus(CourseStatus.ACTIVE);
+        courseProtocol.setCourseType(CourseType.IMPERETIVE);
+
+        return courseProtocol;
+    }
+
+    private ImportedCourseDto getCourseData(ExamImportedRequest object) {
+        ImportedCourseDto courseDto = new ImportedCourseDto();
+        courseDto.setCode(object.getExamItem().getTclass().getCourse().getCode());
+        courseDto.setName(object.getExamItem().getTclass().getCourse().getTitleFa());
+        return courseDto;
+    }
 
 
-////////////////////////////////////////////
+    private ImportedCourseCategory getCourseCategoryData(ExamImportedRequest object) {
+        ImportedCourseCategory courseCategory = new ImportedCourseCategory();
+        courseCategory.setCode(object.getExamItem().getTclass().getCourse().getCategory().getCode());
+        courseCategory.setName(object.getExamItem().getTclass().getCourse().getCategory().getTitleFa());
+        return courseCategory;
+    }
 
-//        if (null!=teacherInfo.getContactInfo() && null!=teacherInfo.getContactInfo().getMobile()) {
-//
-//            teacher.setCellNumber(teacherInfo.getContactInfo().getMobile());
-//            teacher.setNationalCode(teacherInfo.getNationalCode());
-//            teacher.setGender("مرد");
-//            teacher.setLastName(teacherInfo.getLastNameFa());
-//            teacher.setSurname(teacherInfo.getFirstNameFa());
-//        } else {
-            teacher.setCellNumber("09189996626");
-            teacher.setNationalCode("3240939177");
-            teacher.setGender("زن");
-            teacher.setLastName("اردلانی");
-            teacher.setSurname("الناز");
-//        }
+    private ExamCreateDTO getExamData(ExamImportedRequest object) {
+        int time = Math.toIntExact(object.getExamItem().getDuration());
 
-        /////////////////////////////
+        String newTime = convertToTimeZone(object.getExamItem().getTime());
 
+        Date startDate = getDate(object.getExamItem().getDate(), newTime);
 
-        request.setUsers(classStudents.stream()
-                .map(classStudent -> toTargetUser(classStudent.getStudent())).collect(Collectors.toList()));
+        Date endDate = getEndDateFromDuration(getStringGeoDate(object.getExamItem().getDate(), newTime)
+                , object.getExamItem().getDuration());
+        ExamCreateDTO exam = new ExamCreateDTO();
+        exam.setCode(object.getExamItem().getTclass().getCode());
+        exam.setName(object.getExamItem().getTclass().getTitleClass());
+        exam.setStartDate(startDate.getTime());
+        exam.setEndDate(endDate.getTime());
+        exam.setQuestionCount(object.getQuestions().size());
+        exam.setMinimumAcceptScore(10D);
+        exam.setSourceExamId(object.getExamItem().getId());
 
-
-        ////////////////////
-        exam.setType(getExamType(questionProtocols));
-        if (exam.getType() != ExamType.MULTI_CHOICES)
-            exam.setResultDate(1638036038L);
+        exam.setDuration(time);
 
 
-        request.setExam(exam);
-        request.setCategory(courseCategory);
-        request.setCourse(courseDto);
-        request.setInstructor(teacher);
-        request.setQuestionProtocols(questionProtocols);
-        request.setPrograms(getPrograms(object.getExamItem().getTclass()));
-        request.setProtocol(courseProtocol);
-
-        return request;
+        exam.setScore(20D);
+        //todo
+        exam.setStatus(ExamStatus.ACTIVE);
+        return exam;
     }
 
     private List<ImportedCourseProgram> getPrograms(ExamClassData tclass) {
@@ -533,7 +560,7 @@ public abstract class EvaluationBeanMapper {
         return programs;
     }
 
-    private Date getEndDAteFromDuration(String dateString, Long duration) {
+    private Date getEndDateFromDuration(String dateString, Long duration) {
 
 // parse the string
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
@@ -553,22 +580,17 @@ public abstract class EvaluationBeanMapper {
 
 
     }
-    private String deCreaseTimeZone(String dateString) {
+
+    private String convertToTimeZone(String dateString) {
 
 // parse the string
         DateTimeFormatter formatter = DateTimeFormat.forPattern("HH:mm");
         DateTime dateTime = formatter.parseDateTime(dateString);
-
-
         int hours = (int) (-3); //since both are ints, you get an int
         int minutes = (int) (-30);
         dateTime = dateTime.plusMinutes(minutes);
         dateTime = dateTime.plusHours(hours);
-
-
-
-
-        return dateTime.getHourOfDay()+":"+dateTime.getMinuteOfHour();
+        return dateTime.getHourOfDay() + ":" + dateTime.getMinuteOfHour();
 
 
     }
@@ -589,12 +611,25 @@ public abstract class EvaluationBeanMapper {
     }
 
     private String getStringGeoDate(String date, String time) {
-        if (!time.contains(":")) {
-            StringBuilder sb = new StringBuilder(time);
-            sb.insert(2, ':');
-            time = sb.toString();
+        if (null != time) {
+            if (!time.contains(":")) {
+                StringBuilder sb = new StringBuilder(time);
+                sb.insert(2, ':');
+                time = sb.toString();
+            }
+            String[] arr = date.split("/");
+
+            PersianDate persianDate = PersianDate.of(Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
+            LocalDate gregDate = persianDate.toGregorian();
+            return gregDate.toString() + " " + time + ":00";
+        } else {
+            String[] arr = date.split("/");
+
+            PersianDate persianDate = PersianDate.of(Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
+            LocalDate gregDate = persianDate.toGregorian();
+            return gregDate.toString();
         }
-        return JalaliCalendar.getGregorianString(date, time);
+
     }
 
 
@@ -629,8 +664,12 @@ public abstract class EvaluationBeanMapper {
     }
 
     private Date getDateFromStringDate(String date) {
-
-        long longDate = JalaliCalendar.getGregorianDate(date).getTime();
+        getStringGeoDate(date, null);
+        long longDate = Date.from(java.sql.Timestamp
+                .valueOf(                           // Class-method parses SQL-style formatted date-time strings.
+                        getStringGeoDate(date, "08:00")
+                )                                   // Returns a `Timestamp` object.
+                .toInstant()).getTime();
         long time = longDate / 1000;
 
         return new Date(time);
