@@ -111,7 +111,11 @@ public class ElsRestController {
                     } else {
 
                         response = client.sendExam(request);
-                        return new ResponseEntity<>(response, HttpStatus.OK);
+                        if (response.getStatus() == HttpStatus.OK.value())
+                            return new ResponseEntity<>(response, HttpStatus.OK);
+                        else
+                            return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+
                     }
                 }
 

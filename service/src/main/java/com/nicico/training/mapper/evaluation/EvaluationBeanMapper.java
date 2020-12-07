@@ -233,7 +233,8 @@ public abstract class EvaluationBeanMapper {
     private ExamCreateDTO getExamData(ExamImportedRequest object) {
         int time = Math.toIntExact(object.getExamItem().getDuration());
 
-        String newTime = convertToTimeZone(object.getExamItem().getTime());
+//        String newTime = convertToTimeZone(object.getExamItem().getTime());
+        String newTime = object.getExamItem().getTime();
 
         Date startDate = getDate(object.getExamItem().getDate(), newTime);
 
