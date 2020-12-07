@@ -1082,14 +1082,13 @@
                             OK.close();
                         }, 2000);
                     } else {
-                        var ERROR = isc.Dialog.create({
-                            message: "<spring:message code='exception.un-managed'/>",
-                            icon: "[SKIN]stop.png",
-                            title: "<spring:message code='message'/>"
-                        });
-                        setTimeout(function () {
-                            ERROR.close();
-                        }, 2000);
+                      wait.close();
+                                     if (resp.httpResponseCode === 500)
+                                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                     else
+                                    createDialog("info",JSON.parse(resp.httpResponseText).message, "<spring:message code="error"/>");
+
+
                     }
                     wait.close()
                 }))
