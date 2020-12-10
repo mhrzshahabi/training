@@ -8,7 +8,7 @@ import response.BaseResponse;
 import response.evaluation.EvalListResponse;
 import response.exam.ExamListResponse;
 
-@FeignClient(value = "elsClient", url = "http://mobiles.nicico.com/els/api/training")
+@FeignClient(value = "elsClient", url = "http://staging.icico.net.ir/els/api/training")
 public interface ElsClient {
     @RequestMapping(method = RequestMethod.POST, value = "/evaluation")
     BaseResponse sendEvaluation(@RequestBody ElsEvalRequest request);

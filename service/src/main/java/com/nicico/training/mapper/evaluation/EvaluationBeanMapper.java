@@ -132,7 +132,7 @@ public abstract class EvaluationBeanMapper {
     }
 
     private ImportedUser getTeacherData(PersonalInfo teacherInfo) {
-    ImportedUser teacher=new ImportedUser();
+        ImportedUser teacher = new ImportedUser();
         if (null != teacherInfo.getContactInfo() && null != teacherInfo.getContactInfo().getMobile()) {
 
             teacher.setCellNumber(teacherInfo.getContactInfo().getMobile());
@@ -253,8 +253,11 @@ public abstract class EvaluationBeanMapper {
 
 
         exam.setScore(20D);
-        //todo
-        exam.setStatus(ExamStatus.ACTIVE);
+        if (dayIsTomorrow(startDate.getTime()))
+            exam.setStatus(ExamStatus.UPCOMMING);
+        else
+            exam.setStatus(ExamStatus.ACTIVE);
+
         return exam;
     }
 
@@ -714,5 +717,11 @@ public abstract class EvaluationBeanMapper {
                         .collect(Collectors.toList());
 
         return filteredTeams.stream().anyMatch(x -> x.getCorrectAnswerTitle() == null);
+    }
+
+    public static boolean dayIsTomorrow(long time) {
+        DateTime tomorrow = new DateTime().withTimeAtStartOfDay().plusDays(1);
+        return time > (tomorrow.getMillis() / 1000);
+
     }
 }

@@ -42,17 +42,32 @@ public class ElsRestController {
 
     @GetMapping("/eval/{id}")
     public ResponseEntity<SendEvalToElsResponse> sendEvalToEls(@PathVariable long id) {
+        SendEvalToElsResponse response = new SendEvalToElsResponse();
+
         Evaluation evaluation = evaluationService.getById(id);
         ElsEvalRequest request = evaluationBeanMapper.toElsEvalRequest(evaluation, questionnaireService.get(evaluation.getQuestionnaireId()),
                 classStudentService.getClassStudents(evaluation.getClassId()),
                 evaluationService.getEvaluationQuestions(answerService.getAllByEvaluationId(evaluation.getId())),
                 personalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId()));
-        BaseResponse baseResponse = client.sendEvaluation(request);
-        SendEvalToElsResponse response = new SendEvalToElsResponse();
-        response.setMessage(baseResponse.getMessage());
-        response.setStatus(baseResponse.getStatus());
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+
+        if (null == request.getTeacher().getGender() ||
+                null == request.getTeacher().getCellNumber() ||
+                null == request.getTeacher().getNationalCode() ||
+                10 != request.getTeacher().getNationalCode().length()
+        ) {
+            response.setMessage("اطلاعات استاد تکمیل نیست");
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+
+            return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+        } else {
+            BaseResponse baseResponse = client.sendEvaluation(request);
+            response.setMessage(baseResponse.getMessage());
+            response.setStatus(baseResponse.getStatus());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+
     }
 
     @GetMapping("/evalResult/{id}")
