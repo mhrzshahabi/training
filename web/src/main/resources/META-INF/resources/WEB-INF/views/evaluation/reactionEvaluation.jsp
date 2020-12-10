@@ -1231,15 +1231,28 @@
                                         height: "90%",
                                         members: [ListGrid_Result_evaluation]
                                     }),
-                                    isc.IButtonCancel.create({
-                                        click: function () {
-                                            Window_result_JspEvaluation.close();
-                                        }
+                                    isc.HLayout.create({
+                                        width: "100%",
+                                        height: "90%",
+                                        align: "center",
+                                        membersMargin: 10,
+                                        members: [
+                                            isc.IButtonCancel.create({
+                                                click: function () {
+                                                    Window_result_JspEvaluation.close();
+                                                }
+                                            }),
+                                            isc.IButtonSave.create({
+                                                title: "مشاهده نتایج",
+                                                click: function () {
+                                                    printFullClearForm()                                                }
+                                            })
+                                        ]
                                     })]
                             })
                         ],
                         minWidth: 1024
-                    })
+                    });
                     Window_result_JspEvaluation.show();
                 } else {
                     var ERROR = isc.Dialog.create({
@@ -1264,7 +1277,56 @@
                 }, 8000);
             }
             wait.close()
-        }))
+        }));
+    }
+
+    function printFullClearForm() {
+        let criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="/attendance/full-clear-print/pdf"/>",
+            target: "_Blank",
+            canSubmit: true,
+            numCols: 3,
+            colWidths: [50,150,70],
+            fields:
+                [
+                    {name: "txt", title: "تعداد سطر: ", keyPressFilter : "[0-9]", editorType: "SpinnerItem",
+                        writeStackedIcons: false,
+                        defaultValue: 20,
+                        min: 1,
+                        max: 500,
+                    },
+                    {name: "list", type: "hidden"},
+                    {
+                        name: "btnConfirm",
+                        title: "چاپ",
+                        startRow: false,
+                        type:"Button",
+                        click(){
+                            if(criteriaForm.getValue("txt") != null){
+                                let list = [];
+                                for (let i = 1; i <= parseInt(criteriaForm.getValue("txt")) ; i++) {
+                                    let object = {};
+                                    object.row = i;
+                                    list.push(object);
+                                }
+                                console.log(list);
+                                criteriaForm.setValue("list", JSON.stringify(list));
+                                criteriaForm.submitForm();
+                            }
+                        }
+                    }
+                ]
+        });
+        let windowPrint = isc.Window.create({
+            title: "",
+            keepInParentRect: true,
+            autoSize: true,
+            items:[
+                criteriaForm
+            ]
+        });
+        windowPrint.show();
     }
 
     function showOnlineResults(type) {
@@ -1293,6 +1355,35 @@
                 data.questionnaireTypeId = 140;
                 data.evaluationLevelId = 154;
 
+                let ListGrid_Result_evaluation = isc.TrLG.create({
+                    width: "100%",
+                    height: 700,
+                    dataSource: RestDataSource_Result_Evaluation,
+                    showRecordComponents: true,
+                    showRecordComponentsByCell: true,
+                    fields: [
+                        {name: "surname", title: 'نام',  width: "20%"},
+                        {name: "lastName", title: 'نام خانوادگی' , width: "20%"},
+                        {name: "description", title: 'توضیحات' , width:"20%"},
+                        { name: "iconField", title: " ", width: "10%"},
+                    ],
+                    createRecordComponent: function (record, colNum) {
+                        var fieldName = this.getFieldName(colNum);
+                        if (fieldName == "iconField") {
+                            let button = isc.IButton.create({
+                                layoutAlign: "center",
+                                title: "پاسخ ها",
+                                width: "120",
+                                click: function () {
+                                    ListGrid_show_ansewrs(record.answers);
+                                }
+                            });
+                            return button;
+                        } else {
+                            return null;
+                        }
+                    }
+                });
 
                 wait.show();
                 isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
@@ -1356,15 +1447,28 @@
                                                         height: "90%",
                                                         members: [ListGrid_Result_evaluation]
                                                     }),
-                                                    isc.IButtonCancel.create({
-                                                        click: function () {
-                                                            Window_result_JspEvaluation.close();
-                                                        }
+                                                    isc.HLayout.create({
+                                                        width: "100%",
+                                                        height: "90%",
+                                                        align: "center",
+                                                        membersMargin: 10,
+                                                        members: [
+                                                            isc.IButtonCancel.create({
+                                                                click: function () {
+                                                                    Window_result_JspEvaluation.close();
+                                                                }
+                                                            }),
+                                                            isc.IButtonSave.create({
+                                                                title: "مشاهده نتایج",
+                                                                click: function () {
+                                                                    printFullClearForm()                                                }
+                                                            })
+                                                        ]
                                                     })]
                                             })
                                         ],
                                         minWidth: 1024
-                                    })
+                                    });
                                     Window_result_JspEvaluation.show();
                                 } else {
                                     var ERROR = isc.Dialog.create({
