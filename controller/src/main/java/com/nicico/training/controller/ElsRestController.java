@@ -3,13 +3,17 @@ package com.nicico.training.controller;
 
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
+import com.nicico.training.controller.util.GeneratePdfReport;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.service.*;
 import dto.Question.QuestionData;
 import dto.exam.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import request.evaluation.ElsEvalRequest;
@@ -17,9 +21,12 @@ import request.exam.ElsExamRequest;
 import request.exam.ExamImportedRequest;
 import response.BaseResponse;
 import response.evaluation.EvalListResponse;
+import response.evaluation.PdfResponse;
 import response.evaluation.SendEvalToElsResponse;
+import response.evaluation.dto.PdfEvalResponse;
 import response.exam.ExamListResponse;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -65,6 +72,36 @@ public class ElsRestController {
             response.setMessage(baseResponse.getMessage());
             response.setStatus(baseResponse.getStatus());
             return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+
+    }
+
+    @GetMapping("/teacherEval/{id}")
+    public ResponseEntity<SendEvalToElsResponse> sendEvalToElsForTeacher(@PathVariable long id) {
+        SendEvalToElsResponse response = new SendEvalToElsResponse();
+
+        Evaluation evaluation = evaluationService.getById(id);
+        ElsEvalRequest request = evaluationBeanMapper.toElsEvalRequest(evaluation, questionnaireService.get(evaluation.getQuestionnaireId()),
+                classStudentService.getClassStudents(evaluation.getClassId()),
+                evaluationService.getEvaluationQuestions(answerService.getAllByEvaluationId(evaluation.getId())),
+                personalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId()));
+
+
+        if (null == request.getTeacher().getGender() ||
+                null == request.getTeacher().getCellNumber() ||
+                null == request.getTeacher().getNationalCode() ||
+                10 != request.getTeacher().getNationalCode().length()
+        ) {
+            response.setMessage("اطلاعات استاد تکمیل نیست");
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+
+            return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+        } else {
+        BaseResponse baseResponse = client.sendEvaluationToTeacher(request);
+        response.setMessage(baseResponse.getMessage());
+        response.setStatus(baseResponse.getStatus());
+        return new ResponseEntity<>(response, HttpStatus.OK);
         }
 
 
@@ -146,4 +183,37 @@ public class ElsRestController {
     }
 
 
+    @GetMapping("/getEvalReport/{id}")
+    public ResponseEntity<InputStreamResource> getEvalReport(@PathVariable long id) {
+
+
+        EvalListResponse pdfResponse = client.getEvalResults(id);
+
+        ByteArrayInputStream bis = GeneratePdfReport.ReportEvaluation(pdfResponse);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "inline; filename=evaluation-" + System.currentTimeMillis() + ".pdf");
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(new InputStreamResource(bis));
+    }
+
+    @GetMapping("/getExamReport/{id}")
+    public ResponseEntity<InputStreamResource> getExamReport(@PathVariable long id) {
+
+
+        ExamListResponse pdfResponse = client.getExamResults(id);
+
+        ByteArrayInputStream bis = GeneratePdfReport.ReportExam(pdfResponse);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "inline; filename=evaluation-" + System.currentTimeMillis() + ".pdf");
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(new InputStreamResource(bis));
+    }
 }

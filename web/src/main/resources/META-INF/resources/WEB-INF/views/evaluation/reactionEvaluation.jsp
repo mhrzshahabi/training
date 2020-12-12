@@ -1108,7 +1108,7 @@
             if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                 let result = JSON.parse(resp.httpResponseText).response.data;
                 wait.show();
-                isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/eval/" + result[0].evaluationId, "GET", null, function (resp) {
+                isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/teacherEval/" + result[0].evaluationId, "GET", null, function (resp) {
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                         var OK = isc.Dialog.create({
                             message: "<spring:message code="msg.operation.successful"/>",
@@ -1245,7 +1245,7 @@
                                             isc.IButtonSave.create({
                                                 title: "مشاهده نتایج",
                                                 click: function () {
-                                                    printFullClearForm()                                                }
+                                                    printTeacherClearForm(result[0].evaluationId)                                                }
                                             })
                                         ]
                                     })]
@@ -1280,53 +1280,25 @@
         }));
     }
 
-    function printFullClearForm() {
-        let criteriaForm = isc.DynamicForm.create({
-            method: "POST",
-            action: "<spring:url value="/attendance/full-clear-print/pdf"/>",
-            target: "_Blank",
-            canSubmit: true,
-            numCols: 3,
-            colWidths: [50,150,70],
-            fields:
-                [
-                    {name: "txt", title: "تعداد سطر: ", keyPressFilter : "[0-9]", editorType: "SpinnerItem",
-                        writeStackedIcons: false,
-                        defaultValue: 20,
-                        min: 1,
-                        max: 500,
-                    },
-                    {name: "list", type: "hidden"},
-                    {
-                        name: "btnConfirm",
-                        title: "چاپ",
-                        startRow: false,
-                        type:"Button",
-                        click(){
-                            if(criteriaForm.getValue("txt") != null){
-                                let list = [];
-                                for (let i = 1; i <= parseInt(criteriaForm.getValue("txt")) ; i++) {
-                                    let object = {};
-                                    object.row = i;
-                                    list.push(object);
-                                }
-                                console.log(list);
-                                criteriaForm.setValue("list", JSON.stringify(list));
-                                criteriaForm.submitForm();
-                            }
-                        }
-                    }
-                ]
-        });
-        let windowPrint = isc.Window.create({
-            title: "",
-            keepInParentRect: true,
-            autoSize: true,
-            items:[
-                criteriaForm
-            ]
-        });
-        windowPrint.show();
+
+    function printTeacherClearForm(id) {
+         wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/getEvalReport/" +id, "GET", null, function (resp) {
+                <%--if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {--%>
+                <%--    wait.close();--%>
+                <%--} else {--%>
+                <%--    var ERROR = isc.Dialog.create({--%>
+                <%--        message: "<spring:message code='exception.un-managed'/>",--%>
+                <%--        icon: "[SKIN]stop.png",--%>
+                <%--        title: "<spring:message code='message'/>"--%>
+                <%--    });--%>
+                <%--    setTimeout(function () {--%>
+                <%--        ERROR.close();--%>
+                <%--    }, 8000);--%>
+                <%--}--%>
+                wait.close();
+    }));
+
     }
 
     function showOnlineResults(type) {
@@ -1347,12 +1319,14 @@
             }
 
             if(check && classRecord_RE.id) {
+                let rec=ListGrid_student_RE.getData().localData[0];
+
                 data.classId = classRecord_RE.id;
-                data.evaluatorId = classRecord_RE.teacherId;
-                data.evaluatorTypeId = 187;
+                data.evaluatorId = rec.id;
+                data.evaluatorTypeId = 188;
                 data.evaluatedId = classRecord_RE.id;
                 data.evaluatedTypeId = 504;
-                data.questionnaireTypeId = 140;
+                data.questionnaireTypeId = 139;
                 data.evaluationLevelId = 154;
 
                 let ListGrid_Result_evaluation = isc.TrLG.create({
@@ -1402,14 +1376,13 @@
                                         OK.close();
                                     }, 2000);
                                 } else {
-                                    var ERROR = isc.Dialog.create({
-                                        message: "<spring:message code='exception.un-managed'/>",
-                                        icon: "[SKIN]stop.png",
-                                        title: "<spring:message code='message'/>"
-                                    });
-                                    setTimeout(function () {
-                                        ERROR.close();
-                                    }, 2000);
+                                    wait.close();
+                                     if (resp.httpResponseCode === 500)
+                                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                     else
+                                    createDialog("info",JSON.parse(resp.httpResponseText).message, "<spring:message code="error"/>");
+
+
                                 }
                                 wait.close()
                             }));
@@ -1461,7 +1434,7 @@
                                                             isc.IButtonSave.create({
                                                                 title: "مشاهده نتایج",
                                                                 click: function () {
-                                                                    printFullClearForm()                                                }
+                                                                    printTeacherClearForm(result[0].evaluationId)                                                }
                                                             })
                                                         ]
                                                     })]
@@ -3102,4 +3075,3 @@
         );
     }
 
-    //
