@@ -87,6 +87,7 @@ public abstract class EvaluationBeanMapper {
     @Mapping(source = "lastNameFa", target = "lastName")
     @Mapping(source = "nationalCode", target = "nationalCode")
     @Mapping(source = "gender", target = "gender")
+    @Mapping(source = "contactInfo.mobile", target = "cellNumber")
     public abstract EvalTargetUser toTeacher(PersonalInfo teacher);
 
 
@@ -233,7 +234,8 @@ public abstract class EvaluationBeanMapper {
     private ExamCreateDTO getExamData(ExamImportedRequest object) {
         int time = Math.toIntExact(object.getExamItem().getDuration());
 
-        String newTime = convertToTimeZone(object.getExamItem().getTime());
+//        String newTime = convertToTimeZone(object.getExamItem().getTime());
+        String newTime = object.getExamItem().getTime();
 
         Date startDate = getDate(object.getExamItem().getDate(), newTime);
 
