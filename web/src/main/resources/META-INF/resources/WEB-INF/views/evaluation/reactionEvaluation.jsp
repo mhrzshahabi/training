@@ -655,6 +655,27 @@
         }
     });
 
+
+    var ToolStripButton_OnlineFormIssuanceForAll_RE = isc.ToolStripButton.create({
+        title: "صدور فرم ارزیابی به آزمون آنلاین برای همه فراگیران",
+        width: "100%",
+        maxWidth: 500,
+        baseStyle: "sendFile",
+        click: function () {
+            showOnlineResults('eval');
+        }
+    });
+
+    var ToolStripButton_OnlineFormIssuanceResultForAll_RE = isc.ToolStripButton.create({
+        title: "مشاهده نتیجه ارزیابی همه فراگیران",
+        width: "100%",
+        maxWidth: 500,
+        baseStyle: "sendFile",
+        click: function () {
+            showOnlineResults('evalResult');
+        }
+    });
+
     var ToolStripButton_FormIssuanceDeleteForAll_RE = isc.ToolStripButton.create({
         title: "حذف فرم ارزیابی واکنشی برای همه فراگیران",
         baseStyle: "sendFile",
@@ -972,28 +993,29 @@
                                         }
                                     }
                                 ]
-                            },
-                            {
-                                name: "sendToEls_supervisor",
-                                title: "ارسال به آموزش آنلاین",
-                                type: "button",
-                                startRow: false,
-                                endRow: false,
-                                click: function () {
-                                    console.log('send')
-                                    sendToEls('supervisor')
-                                }
-                            },
-                            {
-                                name: "showResultsEls_supervisor",
-                                title: "مشاهده نتایج ارزیابی",
-                                type: "button",
-                                startRow: false,
-                                click: function () {
-                                    console.log('show')
-                                     showResults('supervisor')
-                                }
                             }
+                            // ,
+                            // {
+                            //     name: "sendToEls_supervisor",
+                            //     title: "ارسال به آموزش آنلاین",
+                            //     type: "button",
+                            //     startRow: false,
+                            //     endRow: false,
+                            //     click: function () {
+                            //         console.log('send')
+                            //         sendToEls('supervisor')
+                            //     }
+                            // },
+                            // {
+                            //     name: "showResultsEls_supervisor",
+                            //     title: "مشاهده نتایج ارزیابی",
+                            //     type: "button",
+                            //     startRow: false,
+                            //     click: function () {
+                            //         console.log('show')
+                            //          showResults('supervisor')
+                            //     }
+                            // }
                         ]
                     }),
 
@@ -1035,6 +1057,21 @@
                     isc.LayoutSpacer.create({height: "22"})
                 ]
             }),
+            isc.HLayout.create({
+                layoutAlign: "center",
+                defaultLayoutAlign: "center",
+                width: 500,
+                members: [
+                    isc.VLayout.create({
+                        membersMargin: 5,
+                        members: [
+                            ToolStripButton_OnlineFormIssuanceForAll_RE,
+                            ToolStripButton_OnlineFormIssuanceResultForAll_RE
+                        ]
+                    }),
+                    isc.LayoutSpacer.create({height: "22"})
+                ]
+            }),
             isc.ToolStrip.create({
                 width: "100%",
                 maxWidth: 500,
@@ -1071,7 +1108,7 @@
             if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                 let result = JSON.parse(resp.httpResponseText).response.data;
                 wait.show();
-                isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/eval/" + result[0].evaluationId, "GET", null, function (resp) {
+                isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/teacherEval/" + result[0].evaluationId, "GET", null, function (resp) {
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                         var OK = isc.Dialog.create({
                             message: "<spring:message code="msg.operation.successful"/>",
@@ -1082,14 +1119,13 @@
                             OK.close();
                         }, 2000);
                     } else {
-                        var ERROR = isc.Dialog.create({
-                            message: "<spring:message code='exception.un-managed'/>",
-                            icon: "[SKIN]stop.png",
-                            title: "<spring:message code='message'/>"
-                        });
-                        setTimeout(function () {
-                            ERROR.close();
-                        }, 2000);
+                      wait.close();
+                                     if (resp.httpResponseCode === 500)
+                                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                     else
+                                    createDialog("info",JSON.parse(resp.httpResponseText).message, "<spring:message code="error"/>");
+
+
                     }
                     wait.close()
                 }))
@@ -1103,7 +1139,7 @@
                     ERROR.close();
                 }, 2000);
             }
-            wait.close()
+            wait.close();
         }))
     }
     function showResults(type) {
@@ -1195,15 +1231,28 @@
                                         height: "90%",
                                         members: [ListGrid_Result_evaluation]
                                     }),
-                                    isc.IButtonCancel.create({
-                                        click: function () {
-                                            Window_result_JspEvaluation.close();
-                                        }
+                                    isc.HLayout.create({
+                                        width: "100%",
+                                        height: "90%",
+                                        align: "center",
+                                        membersMargin: 10,
+                                        members: [
+                                            isc.IButtonCancel.create({
+                                                click: function () {
+                                                    Window_result_JspEvaluation.close();
+                                                }
+                                            }),
+                                            isc.IButtonSave.create({
+                                                title: "مشاهده نتایج",
+                                                click: function () {
+                                                    printTeacherClearForm(result[0].evaluationId)                                                }
+                                            })
+                                        ]
                                     })]
                             })
                         ],
                         minWidth: 1024
-                    })
+                    });
                     Window_result_JspEvaluation.show();
                 } else {
                     var ERROR = isc.Dialog.create({
@@ -1228,7 +1277,204 @@
                 }, 8000);
             }
             wait.close()
-        }))
+        }));
+    }
+
+
+    function printTeacherClearForm(id) {
+         wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/getEvalReport/" +id, "GET", null, function (resp) {
+                <%--if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {--%>
+                <%--    wait.close();--%>
+                <%--} else {--%>
+                <%--    var ERROR = isc.Dialog.create({--%>
+                <%--        message: "<spring:message code='exception.un-managed'/>",--%>
+                <%--        icon: "[SKIN]stop.png",--%>
+                <%--        title: "<spring:message code='message'/>"--%>
+                <%--    });--%>
+                <%--    setTimeout(function () {--%>
+                <%--        ERROR.close();--%>
+                <%--    }, 8000);--%>
+                <%--}--%>
+                wait.close();
+    }));
+
+    }
+
+    function showOnlineResults(type) {
+        let data = {};
+
+        if (ListGrid_student_RE.getData().localData.size() == 0){
+            createDialog("info", "کلاس هیچ شرکت کننده ای ندارد");
+            evalWait_RE.close();
+        } else {
+            let check = true;
+            for (let j = 0; j < ListGrid_student_RE.getData().localData.size(); j++) {
+                let record = ListGrid_student_RE.getData().localData[j];
+                if (record.evaluationStatusReaction == null
+                    || record.evaluationStatusReaction == 0
+                    || record.evaluationStatusReaction == undefined) {
+                    check = false;
+                }
+            }
+
+            if(check && classRecord_RE.id) {
+                let rec=ListGrid_student_RE.getData().localData[0];
+
+                data.classId = classRecord_RE.id;
+                data.evaluatorId = rec.id;
+                data.evaluatorTypeId = 188;
+                data.evaluatedId = classRecord_RE.id;
+                data.evaluatedTypeId = 504;
+                data.questionnaireTypeId = 139;
+                data.evaluationLevelId = 154;
+
+                let ListGrid_Result_evaluation = isc.TrLG.create({
+                    width: "100%",
+                    height: 700,
+                    dataSource: RestDataSource_Result_Evaluation,
+                    showRecordComponents: true,
+                    showRecordComponentsByCell: true,
+                    fields: [
+                        {name: "surname", title: 'نام',  width: "20%"},
+                        {name: "lastName", title: 'نام خانوادگی' , width: "20%"},
+                        {name: "description", title: 'توضیحات' , width:"20%"},
+                        { name: "iconField", title: " ", width: "10%"},
+                    ],
+                    createRecordComponent: function (record, colNum) {
+                        var fieldName = this.getFieldName(colNum);
+                        if (fieldName == "iconField") {
+                            let button = isc.IButton.create({
+                                layoutAlign: "center",
+                                title: "پاسخ ها",
+                                width: "120",
+                                click: function () {
+                                    ListGrid_show_ansewrs(record.answers);
+                                }
+                            });
+                            return button;
+                        } else {
+                            return null;
+                        }
+                    }
+                });
+
+                wait.show();
+                isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
+                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                        let result = JSON.parse(resp.httpResponseText).response.data;
+                        wait.show();
+                        if (type == 'eval') {
+                            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/eval/" + result[0].evaluationId, "GET", null, function (resp) {
+                                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                    var OK = isc.Dialog.create({
+                                        message: "<spring:message code="msg.operation.successful"/>",
+                                        icon: "[SKIN]say.png",
+                                        title: "<spring:message code='message'/>"
+                                    });
+                                    setTimeout(function () {
+                                        OK.close();
+                                    }, 2000);
+                                } else {
+                                    wait.close();
+                                     if (resp.httpResponseCode === 500)
+                                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                     else
+                                    createDialog("info",JSON.parse(resp.httpResponseText).message, "<spring:message code="error"/>");
+
+
+                                }
+                                wait.close()
+                            }));
+                        }
+                        if (type == 'evalResult') {
+                            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/evalResult/" + result[0].evaluationId, "GET", null, function (resp) {
+                                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                    wait.close();
+                                    let results = JSON.parse(resp.data).data;
+                                    var OK = isc.Dialog.create({
+                                        message: "<spring:message code="msg.operation.successful"/>",
+                                        icon: "[SKIN]say.png",
+                                        title: "<spring:message code='message'/>"
+                                    });
+                                    setTimeout(function () {
+                                        OK.close();
+                                    }, 8000);
+
+                                    ListGrid_Result_evaluation.setData(results);
+
+                                    let Window_result_JspEvaluation = isc.Window.create({
+                                        width: 1024,
+                                        height: 768,
+                                        keepInParentRect: true,
+                                        title: "مشاهده نتایج ارزیابی",
+                                        items: [
+                                            isc.VLayout.create({
+                                                width: "100%",
+                                                height: "100%",
+                                                defaultLayoutAlign: "center",
+                                                align: "center",
+                                                members: [
+                                                    isc.HLayout.create({
+                                                        width: "100%",
+                                                        height: "90%",
+                                                        members: [ListGrid_Result_evaluation]
+                                                    }),
+                                                    isc.HLayout.create({
+                                                        width: "100%",
+                                                        height: "90%",
+                                                        align: "center",
+                                                        membersMargin: 10,
+                                                        members: [
+                                                            isc.IButtonCancel.create({
+                                                                click: function () {
+                                                                    Window_result_JspEvaluation.close();
+                                                                }
+                                                            }),
+                                                            isc.IButtonSave.create({
+                                                                title: "مشاهده نتایج",
+                                                                click: function () {
+                                                                    printTeacherClearForm(result[0].evaluationId)                                                }
+                                                            })
+                                                        ]
+                                                    })]
+                                            })
+                                        ],
+                                        minWidth: 1024
+                                    });
+                                    Window_result_JspEvaluation.show();
+                                } else {
+                                    var ERROR = isc.Dialog.create({
+                                        message: "<spring:message code='exception.un-managed'/>",
+                                        icon: "[SKIN]stop.png",
+                                        title: "<spring:message code='message'/>"
+                                    });
+                                    setTimeout(function () {
+                                        ERROR.close();
+                                    }, 8000);
+                                }
+                                wait.close();
+                            }));
+                        }
+                    } else {
+                        var ERROR = isc.Dialog.create({
+                            message: "<spring:message code='exception.un-managed'/>",
+                            icon: "[SKIN]stop.png",
+                            title: "<spring:message code='message'/>"
+                        });
+                        setTimeout(function () {
+                            ERROR.close();
+                        }, 8000);
+                    }
+                    wait.close()
+                }));
+            } else {
+                createDialog("info", "فرم ارزیابی برای همه ی شرکت کنندگان صادر نشده است.");
+                evalWait_RE.close();
+            }
+
+        }
+
     }
 
     function ListGrid_show_ansewrs(answers) {
@@ -2829,4 +3075,3 @@
         );
     }
 
-    //

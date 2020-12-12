@@ -374,10 +374,24 @@
                                         height: "90%",
                                         members: [ListGrid_Result_finalTest]
                                     }),
-                                    isc.IButtonCancel.create({
-                                        click: function () {
-                                        Window_result_Finaltest.close();
-                                        }
+                                    isc.HLayout.create({
+                                        width: "100%",
+                                        height: "90%",
+                                        align: "center",
+                                        membersMargin: 10,
+                                        members: [
+                                            isc.IButtonCancel.create({
+                                                click: function () {
+                                                Window_result_Finaltest.close();
+                                                }
+                                            }),
+                                            isc.IButtonSave.create({
+                                                title: "مشاهده نتایج",
+                                                click: function () {
+
+                                                    printFullClearForm(id)                                                }
+                                            })
+                                        ]
                                     })]
                             })
                         ],
@@ -397,6 +411,27 @@
                 wait.close();
             }))
     }
+
+        function printFullClearForm(id) {
+          wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/getExamReport/" +id, "GET", null, function (resp) {
+                <%--if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {--%>
+                <%--    wait.close();--%>
+                <%--} else {--%>
+                <%--    var ERROR = isc.Dialog.create({--%>
+                <%--        message: "<spring:message code='exception.un-managed'/>",--%>
+                <%--        icon: "[SKIN]stop.png",--%>
+                <%--        title: "<spring:message code='message'/>"--%>
+                <%--    });--%>
+                <%--    setTimeout(function () {--%>
+                <%--        ERROR.close();--%>
+                <%--    }, 8000);--%>
+                <%--}--%>
+                wait.close();
+    }));
+
+    }
+
     var RestDataSource_Result_Answers_FianlTest = isc.TrDS.create({
         fields: [
             {name: "question", title: 'سوال'},
