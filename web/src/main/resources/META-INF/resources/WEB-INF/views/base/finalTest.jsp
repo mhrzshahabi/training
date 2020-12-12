@@ -388,7 +388,8 @@
                                             isc.IButtonSave.create({
                                                 title: "مشاهده نتایج",
                                                 click: function () {
-                                                    printFullClearForm()                                                }
+
+                                                    printFullClearForm(id)                                                }
                                             })
                                         ]
                                     })]
@@ -411,53 +412,24 @@
             }))
     }
 
-        function printFullClearForm() {
-        let criteriaForm = isc.DynamicForm.create({
-            method: "POST",
-            action: "<spring:url value="/attendance/full-clear-print/pdf"/>",
-            target: "_Blank",
-            canSubmit: true,
-            numCols: 3,
-            colWidths: [50,150,70],
-            fields:
-                [
-                    {name: "txt", title: "تعداد سطر: ", keyPressFilter : "[0-9]", editorType: "SpinnerItem",
-                        writeStackedIcons: false,
-                        defaultValue: 20,
-                        min: 1,
-                        max: 500,
-                    },
-                    {name: "list", type: "hidden"},
-                    {
-                        name: "btnConfirm",
-                        title: "چاپ",
-                        startRow: false,
-                        type:"Button",
-                        click(){
-                            if(criteriaForm.getValue("txt") != null){
-                                let list = [];
-                                for (let i = 1; i <= parseInt(criteriaForm.getValue("txt")) ; i++) {
-                                    let object = {};
-                                    object.row = i;
-                                    list.push(object);
-                                }
-                                console.log(list);
-                                criteriaForm.setValue("list", JSON.stringify(list));
-                                criteriaForm.submitForm();
-                            }
-                        }
-                    }
-                ]
-        });
-        let windowPrint = isc.Window.create({
-            title: "",
-            keepInParentRect: true,
-            autoSize: true,
-            items:[
-                criteriaForm
-            ]
-        });
-        windowPrint.show();
+        function printFullClearForm(id) {
+          wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/getExamReport/" +id, "GET", null, function (resp) {
+                <%--if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {--%>
+                <%--    wait.close();--%>
+                <%--} else {--%>
+                <%--    var ERROR = isc.Dialog.create({--%>
+                <%--        message: "<spring:message code='exception.un-managed'/>",--%>
+                <%--        icon: "[SKIN]stop.png",--%>
+                <%--        title: "<spring:message code='message'/>"--%>
+                <%--    });--%>
+                <%--    setTimeout(function () {--%>
+                <%--        ERROR.close();--%>
+                <%--    }, 8000);--%>
+                <%--}--%>
+                wait.close();
+    }));
+
     }
 
     var RestDataSource_Result_Answers_FianlTest = isc.TrDS.create({
