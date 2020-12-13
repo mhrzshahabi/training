@@ -161,7 +161,7 @@ spring:
             user-name-attribute: username
 nicico:
   security:
-    sys-password: password
+#    sys-password: password
   upload:
     dir: /var/nicico/${spring.application.name}/upload
   dirs:
