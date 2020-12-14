@@ -69,7 +69,7 @@ public class ElsRestController {
                 null == request.getTeacher().getNationalCode() ||
                 10 != request.getTeacher().getNationalCode().length()
         ) {
-            response.setMessage("اطلاعات استاد تکمیل نیست");
+            response.setMessage("اطلاعات استاد تکمیل نیست.");
             response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
 
             return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
