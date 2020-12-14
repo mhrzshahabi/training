@@ -657,10 +657,10 @@
 
 
     var ToolStripButton_OnlineFormIssuanceForAll_RE = isc.ToolStripButton.create({
-        title: "صدور فرم ارزیابی به آزمون آنلاین برای همه فراگیران",
+        title: "ارسال فرم ارزیابی به آموزش آنلاین برای همه فراگیران",
         width: "100%",
         maxWidth: 500,
-        baseStyle: "sendFile",
+        baseStyle: 'MSG-btn-orange',
         click: function () {
             showOnlineResults('eval');
         }
@@ -670,7 +670,7 @@
         title: "مشاهده نتیجه ارزیابی همه فراگیران",
         width: "100%",
         maxWidth: 500,
-        baseStyle: "sendFile",
+        baseStyle: "MSG-btn-orange",
         click: function () {
             showOnlineResults('evalResult');
         }
