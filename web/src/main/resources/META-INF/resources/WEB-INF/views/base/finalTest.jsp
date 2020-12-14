@@ -422,23 +422,23 @@ printPdf(record.nationalCode,id,record.surname,record.lastName);
             }))
     }
 
-    <%--    function printFullClearForm(id) {--%>
-    <%--      wait.show();--%>
-    <%--        isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/getExamReport/" +id, "GET", null, function (resp) {--%>
-    <%--            &lt;%&ndash;if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {&ndash;%&gt;--%>
-    <%--            &lt;%&ndash;    wait.close();&ndash;%&gt;--%>
-    <%--            &lt;%&ndash;} else {&ndash;%&gt;--%>
-    <%--            &lt;%&ndash;    var ERROR = isc.Dialog.create({&ndash;%&gt;--%>
-    <%--            &lt;%&ndash;        message: "<spring:message code='exception.un-managed'/>",&ndash;%&gt;--%>
-    <%--            &lt;%&ndash;        icon: "[SKIN]stop.png",&ndash;%&gt;--%>
-    <%--            &lt;%&ndash;        title: "<spring:message code='message'/>"&ndash;%&gt;--%>
-    <%--            &lt;%&ndash;    });&ndash;%&gt;--%>
-    <%--            &lt;%&ndash;    setTimeout(function () {&ndash;%&gt;--%>
-    <%--            &lt;%&ndash;        ERROR.close();&ndash;%&gt;--%>
-    <%--            &lt;%&ndash;    }, 8000);&ndash;%&gt;--%>
-    <%--            &lt;%&ndash;}&ndash;%&gt;--%>
-    <%--            wait.close();--%>
-    <%--}));--%>
+        function printFullClearForm(id) {
+          wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/getExamReport/" +id, "GET", null, function (resp) {
+                <%--if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {--%>
+                <%--    wait.close();--%>
+                <%--} else {--%>
+                <%--    var ERROR = isc.Dialog.create({--%>
+                <%--        message: "<spring:message code='exception.un-managed'/>",--%>
+                <%--        icon: "[SKIN]stop.png",--%>
+                <%--        title: "<spring:message code='message'/>"--%>
+                <%--    });--%>
+                <%--    setTimeout(function () {--%>
+                <%--        ERROR.close();--%>
+                <%--    }, 8000);--%>
+                <%--}--%>
+                wait.close();
+    }));
 
     }
          function printPdf(national,id,name,last) {
