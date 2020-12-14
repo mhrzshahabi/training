@@ -424,6 +424,25 @@ printPdf(record.nationalCode,id,record.surname,record.lastName);
 
         function printFullClearForm(id) {
           wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/getExamReport/" +id, "GET", null, function (resp) {
+                <%--if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {--%>
+                <%--    wait.close();--%>
+                <%--} else {--%>
+                <%--    var ERROR = isc.Dialog.create({--%>
+                <%--        message: "<spring:message code='exception.un-managed'/>",--%>
+                <%--        icon: "[SKIN]stop.png",--%>
+                <%--        title: "<spring:message code='message'/>"--%>
+                <%--    });--%>
+                <%--    setTimeout(function () {--%>
+                <%--        ERROR.close();--%>
+                <%--    }, 8000);--%>
+                <%--}--%>
+                wait.close();
+    }));
+
+    }
+         function printPdf(national,id,name,last) {
+          wait.show();
             isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/printPdf/" +id+"/"+national+"/"+name+" "+last, "GET", null, function (resp) {
                 <%--if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {--%>
                 <%--    wait.close();--%>
