@@ -1241,11 +1241,6 @@
                                                 click: function () {
                                                     Window_result_JspEvaluation.close();
                                                 }
-                                            }),
-                                            isc.IButtonSave.create({
-                                                title: "مشاهده نتایج",
-                                                click: function () {
-                                                    printTeacherClearForm(result[0].evaluationId)                                                }
                                             })
                                         ]
                                     })]
@@ -1367,6 +1362,8 @@
                         if (type == 'eval') {
                             isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/eval/" + result[0].evaluationId, "GET", null, function (resp) {
                                 if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                                                        wait.close();
+
                                     var OK = isc.Dialog.create({
                                         message: "<spring:message code="msg.operation.successful"/>",
                                         icon: "[SKIN]say.png",
@@ -1384,7 +1381,6 @@
 
 
                                 }
-                                wait.close()
                             }));
                         }
                         if (type == 'evalResult') {
@@ -1399,7 +1395,7 @@
                                     });
                                     setTimeout(function () {
                                         OK.close();
-                                    }, 8000);
+                                    }, 2000);
 
                                     ListGrid_Result_evaluation.setData(results);
 
@@ -1430,11 +1426,6 @@
                                                                 click: function () {
                                                                     Window_result_JspEvaluation.close();
                                                                 }
-                                                            }),
-                                                            isc.IButtonSave.create({
-                                                                title: "مشاهده نتایج",
-                                                                click: function () {
-                                                                    printTeacherClearForm(result[0].evaluationId)                                                }
                                                             })
                                                         ]
                                                     })]

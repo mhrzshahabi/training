@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="zaza" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Error" uuid="5c7879da-4fe6-4e43-878c-062f863d8266">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<subDataset name="content" uuid="81142457-8391-4b66-adcf-4c129665a1be">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="question" class="java.lang.String"/>
+		<field name="answer" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="logo_nicico" class="java.lang.Object"/>
+	<parameter name="today" class="java.lang.String"/>
+	<parameter name="course" class="java.lang.String"/>
+	<parameter name="teacher" class="java.lang.String"/>
+	<parameter name="student" class="java.lang.String"/>
+	<parameter name="date" class="java.lang.String"/>
+	<parameter name="time" class="java.lang.String"/>
+	<parameter name="duration" class="java.lang.String"/>
+	<parameter name="class_code" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="question" class="java.lang.String"/>
+	<field name="answer" class="java.lang.String"/>
+	<field name="option1" class="java.lang.String"/>
+	<field name="option2" class="java.lang.String"/>
+	<field name="option3" class="java.lang.String"/>
+	<field name="option4" class="java.lang.String"/>
+	<field name="questionType.code" class="java.lang.String"/>
+	<field name="displayType.code" class="java.lang.String"/>
+	<background>
+		<band height="802" splitType="Stretch">
+			<rectangle radius="5">
+				<reportElement key="rectangle-2" x="-1" y="-1" width="560" height="800" uuid="2be892c1-815d-428d-987e-88070314b1c6"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineStyle="Solid"/>
+				</graphicElement>
+			</rectangle>
+		</band>
+	</background>
+	<title>
+		<band height="97" splitType="Stretch">
+			<rectangle radius="5">
+				<reportElement x="-1" y="-1" width="560" height="89" backcolor="#FFD7A7" uuid="b0bdc503-f4b4-4cad-8290-051117f53873"/>
+			</rectangle>
+			<image>
+				<reportElement x="490" y="8" width="61" height="62" uuid="96d9dc3a-881d-4d3f-b7e5-45330306b6fa"/>
+				<imageExpression><![CDATA[$P{logo_nicico}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="410" y="10" width="70" height="20" uuid="4b96c66b-28e7-42b9-b89b-dc1fb60b89ec"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD" size="8"/>
+				</textElement>
+				<text><![CDATA[نام و نام خانوادگی :]]></text>
+			</staticText>
+			<frame>
+				<reportElement x="160" y="38" width="130" height="20" uuid="bcc55bf5-d933-4556-81ba-296d5d687e59"/>
+				<textField isBlankWhenNull="true">
+					<reportElement x="0" y="0" width="95" height="20" uuid="12b7693e-4594-48f6-ae7c-e37a0e1b3103"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Shabnam-FD" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{course}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="95" y="0" width="35" height="20" uuid="11622399-de65-48ba-95fb-5362132c2168"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Shabnam-FD" size="8"/>
+					</textElement>
+					<text><![CDATA[نام دوره :]]></text>
+				</staticText>
+			</frame>
+			<frame>
+				<reportElement x="290" y="38" width="190" height="20" uuid="f9d81464-78cf-4429-b8cd-2093285a4f93"/>
+				<staticText>
+					<reportElement x="150" y="0" width="40" height="20" uuid="3555add0-078a-4ebf-accc-35500870e286"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Shabnam-FD" size="8"/>
+					</textElement>
+					<text><![CDATA[نام مدرس :]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="0" y="0" width="150" height="20" uuid="7f0070f2-e11c-4f21-a983-e95f6e31c378"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Shabnam-FD" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{teacher}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement x="310" y="10" width="120" height="20" uuid="f9d81464-78cf-4429-b8cd-2093285a4f93"/>
+				<textField isBlankWhenNull="true">
+					<reportElement x="10" y="0" width="100" height="20" uuid="7f0070f2-e11c-4f21-a983-e95f6e31c378"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Shabnam-FD" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{student}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement x="160" y="10" width="130" height="20" uuid="6e7f0b47-67f2-4239-9a76-c32b98b65ad6"/>
+				<staticText>
+					<reportElement x="100" y="0" width="30" height="20" uuid="42f2aa57-695a-41e5-944a-c7bfb14ed78e"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Shabnam-FD" size="8"/>
+					</textElement>
+					<text><![CDATA[تاریخ : ]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="0" y="0" width="100" height="20" uuid="cee5cad2-a868-478e-b8a8-2ebe7eca2f65"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Shabnam-FD" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{date}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement x="0" y="10" width="160" height="20" uuid="1f665901-9acf-4fc1-9a3c-2ce807fd4cfc"/>
+				<staticText>
+					<reportElement x="90" y="0" width="70" height="20" uuid="44ffe48e-de33-4364-b99e-d504777d5ef4"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Shabnam-FD" size="8"/>
+					</textElement>
+					<text><![CDATA[ساعت شروع آزمون :]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="0" y="0" width="89" height="20" uuid="7bc0f9fb-9fd6-40c4-9167-4eae2002d874"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Shabnam-FD" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{time}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement x="0" y="38" width="160" height="20" uuid="115b9f4c-7a7c-4a06-bfa2-88b52b42de07"/>
+				<staticText>
+					<reportElement x="100" y="0" width="60" height="20" uuid="ec927b5e-dd06-47e8-a71b-481fb4464833"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Shabnam-FD" size="8"/>
+					</textElement>
+					<text><![CDATA[مدت پاسخگویی :]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="0" y="0" width="100" height="20" uuid="a830ead1-5051-482b-b89a-ae6f953bbc02"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Shabnam-FD" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{duration}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement x="160" y="63" width="130" height="20" uuid="eb41d2db-98e9-4180-bc33-f4c32470f721"/>
+				<staticText>
+					<reportElement x="95" y="0" width="35" height="20" uuid="0050324b-a0c5-4a96-9b43-cfc491f3c7e5"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Shabnam-FD" size="8"/>
+					</textElement>
+					<text><![CDATA[کد کلاس :]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="0" y="0" width="95" height="20" uuid="a7700906-90ab-4461-8c60-060885da6c0d"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Shabnam-FD" size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{class_code}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</title>
+	<detail>
+		<band height="35" splitType="Prevent">
+			<property name="com.jaspersoft.studio.layout"/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="-1" y="5" width="529" height="20" uuid="c06b54d1-650a-4477-8b33-5d03d9d5ce87">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a4612b74-2dce-4db8-afd5-df173a4d4d70"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font fontName="Shabnam-FD"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{question}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="537" y="6" width="20" height="18" uuid="4745045e-e2e6-44b7-a87e-06993945e023"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="528" y="5" width="9" height="21" uuid="e3c1752d-d636-4a64-9d67-c7a138a4ab98"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD"/>
+				</textElement>
+				<text><![CDATA[_]]></text>
+			</staticText>
+		</band>
+		<band height="22" splitType="Prevent">
+			<printWhenExpression><![CDATA[$F{questionType.code}.equals("MultipleChoiceAnswer")  &&  $F{displayType.code}.equals("Block" )? 
+new Boolean(true) : new Boolean(false)]]></printWhenExpression>
+			<frame>
+				<reportElement x="5" y="0" width="545" height="19" uuid="d067a70c-9868-416f-8124-c4d56b652e0f"/>
+				<frame>
+					<reportElement x="420" y="0" width="125" height="19" uuid="347e0f55-51c9-44f5-a05b-f032753b21b6">
+						<property name="com.jaspersoft.studio.element.name" value="h1"/>
+					</reportElement>
+					<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+						<reportElement x="0" y="0" width="100" height="19" uuid="f17591e8-1981-44d0-8875-ae64d05c0cc9"/>
+						<textElement textAlignment="Right" verticalAlignment="Middle">
+							<font fontName="Shabnam-FD"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$F{option1}]]></textFieldExpression>
+					</textField>
+					<rectangle radius="5">
+						<reportElement x="110" y="2" width="15" height="15" forecolor="#FE9D2A" backcolor="#FFFFFF" uuid="edc9de9a-34bf-42a9-b8cd-9f55c749dd8d">
+							<property name="com.jaspersoft.studio.element.name" value="h"/>
+						</reportElement>
+					</rectangle>
+				</frame>
+				<frame>
+					<reportElement x="280" y="0" width="125" height="19" uuid="8ee580f2-0282-4775-a3c1-2de7bef8f1b5">
+						<property name="com.jaspersoft.studio.element.name" value="h2"/>
+					</reportElement>
+					<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+						<reportElement x="0" y="0" width="100" height="19" uuid="2c03cbb9-3ffc-473f-b912-61880eb7d64c"/>
+						<textElement textAlignment="Right" verticalAlignment="Middle">
+							<font fontName="Shabnam-FD"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$F{option2}]]></textFieldExpression>
+					</textField>
+					<rectangle radius="5">
+						<reportElement x="110" y="2" width="15" height="15" forecolor="#FE9D2A" backcolor="#FFFFFF" uuid="da937291-8f8e-46af-9374-f191df8b69ec">
+							<property name="com.jaspersoft.studio.element.name" value="h"/>
+						</reportElement>
+					</rectangle>
+				</frame>
+				<frame>
+					<reportElement x="140" y="0" width="125" height="18" uuid="37741f81-fa83-45db-aad8-4475adea6033">
+						<property name="com.jaspersoft.studio.element.name" value="h3"/>
+					</reportElement>
+					<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+						<reportElement x="0" y="0" width="100" height="18" uuid="2b2c84d7-3656-4402-9581-c8bb10370e17"/>
+						<textElement textAlignment="Right" verticalAlignment="Middle">
+							<font fontName="Shabnam-FD"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$F{option3}]]></textFieldExpression>
+					</textField>
+					<rectangle radius="5">
+						<reportElement x="110" y="2" width="15" height="15" forecolor="#FE9D2A" backcolor="#FFFFFF" uuid="46e2b034-e3c9-43a7-88d6-b3eae5b562de">
+							<property name="com.jaspersoft.studio.element.name" value="h"/>
+						</reportElement>
+					</rectangle>
+				</frame>
+				<frame>
+					<reportElement x="0" y="0" width="125" height="18" uuid="7c24347e-7dd8-4b6a-b172-6a71c43db836">
+						<property name="com.jaspersoft.studio.element.name" value="h4"/>
+					</reportElement>
+					<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+						<reportElement x="0" y="0" width="100" height="18" uuid="01322b43-ac83-4cd0-9115-f7308f30ed54"/>
+						<textElement textAlignment="Right" verticalAlignment="Middle">
+							<font fontName="Shabnam-FD"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$F{option4}]]></textFieldExpression>
+					</textField>
+					<rectangle radius="5">
+						<reportElement x="110" y="2" width="15" height="15" forecolor="#FE9D2A" backcolor="#FFFFFF" uuid="a0df97a7-0466-49da-ba78-d8aab5b27d13">
+							<property name="com.jaspersoft.studio.element.name" value="h"/>
+						</reportElement>
+					</rectangle>
+				</frame>
+			</frame>
+		</band>
+		<band height="25" splitType="Prevent">
+			<printWhenExpression><![CDATA[$F{questionType.code}.equals("MultipleChoiceAnswer")  &&  !$F{displayType.code}.equals("Block") ? 
+new Boolean(true) : new Boolean(false)]]></printWhenExpression>
+			<frame>
+				<reportElement positionType="Float" x="15" y="0" width="535" height="19" uuid="1f7669a6-cb6c-4dba-8c0f-295f00e011f6">
+					<property name="com.jaspersoft.studio.element.name" value="v1"/>
+				</reportElement>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement positionType="Float" x="0" y="0" width="510" height="19" uuid="75a25bcf-bc8a-418d-aa45-517ee44bcc49"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Shabnam-FD"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{option1}]]></textFieldExpression>
+				</textField>
+				<rectangle radius="5">
+					<reportElement x="520" y="2" width="15" height="15" forecolor="#FE9D2A" backcolor="#FFFFFF" uuid="55322b80-e5ba-4849-afe2-807901e00afa">
+						<property name="com.jaspersoft.studio.element.name" value="v"/>
+					</reportElement>
+				</rectangle>
+			</frame>
+		</band>
+		<band height="25" splitType="Prevent">
+			<printWhenExpression><![CDATA[$F{questionType.code}.equals("MultipleChoiceAnswer")  &&  !$F{displayType.code}.equals("Block") ? 
+new Boolean(true) : new Boolean(false)]]></printWhenExpression>
+			<frame>
+				<reportElement stretchType="RelativeToTallestObject" x="15" y="0" width="535" height="19" uuid="b99c01ee-3753-4645-8f54-5e5f0ecdc8d4">
+					<property name="com.jaspersoft.studio.element.name" value="v2"/>
+				</reportElement>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="0" y="0" width="510" height="19" uuid="94545f5f-e16e-4bcc-9321-2fd39ff3679a"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Shabnam-FD"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{option2}]]></textFieldExpression>
+				</textField>
+				<rectangle radius="5">
+					<reportElement x="520" y="2" width="15" height="15" forecolor="#FE9D2A" backcolor="#FFFFFF" uuid="7f8a3e89-6f53-491e-b930-be3f80a5da4a">
+						<property name="com.jaspersoft.studio.element.name" value="v"/>
+					</reportElement>
+				</rectangle>
+			</frame>
+		</band>
+		<band height="25" splitType="Prevent">
+			<printWhenExpression><![CDATA[$F{questionType.code}.equals("MultipleChoiceAnswer")  &&  !$F{displayType.code}.equals("Block") ? 
+new Boolean(true) : new Boolean(false)]]></printWhenExpression>
+			<frame>
+				<reportElement positionType="Float" x="15" y="0" width="535" height="19" uuid="c81e9bd0-25e1-4c64-afda-f97c855047e5">
+					<property name="com.jaspersoft.studio.element.name" value="v3"/>
+				</reportElement>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="0" y="0" width="510" height="19" uuid="f8821c18-4d27-4d4e-9ea0-61c02a28c021"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Shabnam-FD"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{option3}]]></textFieldExpression>
+				</textField>
+				<rectangle radius="5">
+					<reportElement x="520" y="2" width="15" height="15" forecolor="#FE9D2A" backcolor="#FFFFFF" uuid="b9764214-332a-47f1-b92a-6a6f4d411cf1">
+						<property name="com.jaspersoft.studio.element.name" value="v"/>
+					</reportElement>
+				</rectangle>
+			</frame>
+		</band>
+		<band height="25" splitType="Prevent">
+			<printWhenExpression><![CDATA[$F{questionType.code}.equals("MultipleChoiceAnswer")  &&  !$F{displayType.code}.equals("Block") ? 
+new Boolean(true) : new Boolean(false)]]></printWhenExpression>
+			<frame>
+				<reportElement x="15" y="0" width="536" height="18" uuid="e7bce364-5b60-4ec6-8bae-4c2eedf617de">
+					<property name="com.jaspersoft.studio.element.name" value="v4"/>
+				</reportElement>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="1" y="0" width="510" height="19" uuid="1b190b95-4a76-4bdc-8681-9a7d0da805cb"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Shabnam-FD"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{option4}]]></textFieldExpression>
+				</textField>
+				<rectangle radius="5">
+					<reportElement x="521" y="2" width="15" height="15" forecolor="#FE9D2A" backcolor="#FFFFFF" uuid="ed63c824-1bce-4ff1-a8fa-3c61463feb7d">
+						<property name="com.jaspersoft.studio.element.name" value="v"/>
+					</reportElement>
+				</rectangle>
+			</frame>
+		</band>
+		<band height="35" splitType="Prevent">
+			<property name="com.jaspersoft.studio.layout"/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="0" y="7" width="490" height="20" isPrintWhenDetailOverflows="true" uuid="c06b54d1-650a-4477-8b33-5d03d9d5ce87">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a4612b74-2dce-4db8-afd5-df173a4d4d70"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{answer}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="490" y="5" width="68" height="21" uuid="e3c1752d-d636-4a64-9d67-c7a138a4ab98"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD"/>
+				</textElement>
+				<text><![CDATA[پاسخ دانشجو :
+]]></text>
+			</staticText>
+		</band>
+		<band height="1" splitType="Immediate">
+			<line>
+				<reportElement x="0" y="0" width="560" height="1" uuid="aeeb1637-f7b4-4291-aec3-40166b79b12f"/>
+			</line>
+		</band>
+	</detail>
+</jasperReport>

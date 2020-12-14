@@ -120,6 +120,30 @@ public class QuestionBankDTO {
         private Integer lines;
 
     }
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("Exam")
+    public static class ElsExam {
+
+        private String option1;
+
+        private String option2;
+
+        private String option3;
+
+        private String option4;
+
+        private String question;
+        private String answer;
+
+        private ParameterValueDTO.TupleInfo questionType;
+
+        private ParameterValueDTO.TupleInfo displayType;
+
+        private Integer lines;
+
+    }
 
     @Getter
     @Setter
