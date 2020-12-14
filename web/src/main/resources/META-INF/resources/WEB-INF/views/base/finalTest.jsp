@@ -307,6 +307,7 @@
         fields: [
             {name: "surname", title: 'نام'},
             {name: "lastName", title: 'نام خانوادگی'},
+            {name: "answers",title: 'asdasd', hidden: true },
             {name: "answers", hidden: true },
         ]
     });
@@ -315,13 +316,16 @@
         let ListGrid_Result_finalTest = isc.TrLG.create({
             width: "100%",
             height: 700,
+
             dataSource: RestDataSource_Result_FinalTest,
             showRecordComponents: true,
             showRecordComponentsByCell: true,
             fields: [
                 {name: "surname", title: 'نام',  width: "20%"},
                 {name: "lastName", title: 'نام خانوادگی' , width: "20%"},
-                { name: "iconField", title: " ", width: "10%"},
+                { name: "iconField", title: "نتایج", width: "10%",align:"center"},
+                { name: "iconField2", title: "چاپ گزارش", width: "10%",align:"center"},
+
             ],
             createRecordComponent: function (record, colNum) {
                 var fieldName = this.getFieldName(colNum);
@@ -335,7 +339,19 @@
                         }
                     });
                     return button;
-                } else {
+                }
+                else if(fieldName == "iconField2") {
+                    let button2 = isc.IButton.create({
+                        layoutAlign: "center",
+                        title: "چاپ گزارش",
+                        width: "120",
+                        click: function () {
+printPdf(record.nationalCode,id,record.surname,record.lastName);
+                        }
+                    });
+                    return button2;
+                }
+                else {
                     return null;
                 }
             }
@@ -384,12 +400,6 @@
                                                 click: function () {
                                                 Window_result_Finaltest.close();
                                                 }
-                                            }),
-                                            isc.IButtonSave.create({
-                                                title: "مشاهده نتایج",
-                                                click: function () {
-
-                                                    printFullClearForm(id)                                                }
                                             })
                                         ]
                                     })]
@@ -415,6 +425,25 @@
         function printFullClearForm(id) {
           wait.show();
             isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/getExamReport/" +id, "GET", null, function (resp) {
+                <%--if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {--%>
+                <%--    wait.close();--%>
+                <%--} else {--%>
+                <%--    var ERROR = isc.Dialog.create({--%>
+                <%--        message: "<spring:message code='exception.un-managed'/>",--%>
+                <%--        icon: "[SKIN]stop.png",--%>
+                <%--        title: "<spring:message code='message'/>"--%>
+                <%--    });--%>
+                <%--    setTimeout(function () {--%>
+                <%--        ERROR.close();--%>
+                <%--    }, 8000);--%>
+                <%--}--%>
+                wait.close();
+    }));
+
+    }
+         function printPdf(national,id,name,last) {
+          wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/printPdf/" +id+"/"+national+"/"+name+" "+last, "GET", null, function (resp) {
                 <%--if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {--%>
                 <%--    wait.close();--%>
                 <%--} else {--%>

@@ -24,6 +24,8 @@ import org.modelmapper.TypeToken;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.exam.ExamAnswerDto;
+import response.exam.ExamResultDto;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
@@ -64,6 +66,15 @@ public class TestQuestionService implements ITestQuestionService {
         Set<QuestionBank> result = new HashSet<>();
         model.getQuestionBankTestQuestionList().forEach(q -> result.add(q.getQuestionBank()));
         return modelMapper.map(result, new TypeToken<Set<QuestionBankDTO.Exam>>() {
+        }.getType());
+    }
+
+    @Transactional
+    public Set<QuestionBankDTO.ElsExam> getAllQuestionsByTestQuestionIdForEls(Long testQuestionId) {
+        final TestQuestion model = testQuestionDAO.findById(testQuestionId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TestQuestionNotFound));
+        Set<QuestionBank> result = new HashSet<>();
+        model.getQuestionBankTestQuestionList().forEach(q -> result.add(q.getQuestionBank()));
+        return modelMapper.map(result, new TypeToken<Set<QuestionBankDTO.ElsExam>>() {
         }.getType());
     }
 
@@ -122,7 +133,7 @@ public class TestQuestionService implements ITestQuestionService {
 
     @Transactional
     @Override
-    public void print (HttpServletResponse response, String type , String fileName, Long testQuestionId, String receiveParams) throws Exception {
+    public void print(HttpServletResponse response, String type, String fileName, Long testQuestionId, String receiveParams) throws Exception {
         final Gson gson = new Gson();
         Type resultType = new TypeToken<HashMap<String, Object>>() {
         }.getType();
@@ -132,12 +143,54 @@ public class TestQuestionService implements ITestQuestionService {
 
         Set<QuestionBankDTO.Exam> testQuestionBanks = getAllQuestionsByTestQuestionId(testQuestionId);
 
-        for(QuestionBankDTO.Exam q : testQuestionBanks){
-            if(q.getQuestionType().getCode().equals("Descriptive")){
-                for(int i = 0; i <= q.getLines(); i ++){
+        for (QuestionBankDTO.Exam q : testQuestionBanks) {
+            if (q.getQuestionType().getCode().equals("Descriptive")) {
+                for (int i = 0; i <= q.getLines(); i++) {
                     q.setQuestion(q.getQuestion() + "\n");
                 }
             }
+        }
+
+        String data = mapper.writeValueAsString(testQuestionBanks);
+        params.put("today", DateUtil.todayDate());
+        params.put("course", model.getTclass().getTitleClass());
+        params.put("class_code", model.getTclass().getCode());
+        params.put("date", model.getDate() != null ? model.getDate() : null);
+        params.put("time", model.getTime() != null ? model.getTime() : null);
+        params.put("duration", model.getDuration() != null ? model.getDuration().toString() + " دقیقه" : null);
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        JsonDataSource jsonDataSource = null;
+        jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
+    }
+
+    @Transactional
+    public void printElsPdf(HttpServletResponse response, String type, String fileName, Long testQuestionId,
+                            String receiveParams, ExamResultDto exam) throws Exception {
+        final Gson gson = new Gson();
+        Type resultType = new TypeToken<HashMap<String, Object>>() {
+        }.getType();
+        final HashMap<String, Object> params = gson.fromJson(receiveParams, resultType);
+
+        TestQuestionDTO.fullInfo model = get(testQuestionId);
+
+        Set<QuestionBankDTO.ElsExam> testQuestionBanks = getAllQuestionsByTestQuestionIdForEls(testQuestionId);
+
+        for (QuestionBankDTO.ElsExam q : testQuestionBanks) {
+            if (q.getQuestionType().getCode().equals("Descriptive")) {
+                for (int i = 0; i <= q.getLines(); i++) {
+                    q.setQuestion(q.getQuestion() + "\n");
+                }
+            }
+            ExamAnswerDto answer;
+            answer = exam.getAnswers().stream()
+                    .filter(x -> x.getQuestion().trim().equals(q.getQuestion().trim()))
+                    .findFirst()
+                    .orElse(null);
+            if (answer != null)
+                q.setAnswer(answer.getAnswer() + "\n");
+            else
+                q.setAnswer("---" + "\n");
         }
 
         String data = mapper.writeValueAsString(testQuestionBanks);
