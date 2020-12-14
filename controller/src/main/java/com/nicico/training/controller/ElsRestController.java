@@ -206,44 +206,7 @@ public class ElsRestController {
                 .body(new InputStreamResource(bis));
     }
 
-    @GetMapping("/getExamReport/{id}")
-    public void getExamReport(HttpServletResponse response, @PathVariable long id) throws Exception {
 
-//
-        ExamListResponse asas = client.getExamResults(id);
-        List<ExamResultDto> list=new ArrayList<>();
-        List<ExamAnswerDto> answerDtos=new ArrayList<>();
-        ExamListResponse pdfResponse =new ExamListResponse();
-        ExamAnswerDto answerDto =new ExamAnswerDto();
-        ExamResultDto examResultDto=new ExamResultDto();
-        examResultDto.setSurname("ثثض");
-        examResultDto.setLastName("sadasd");
-        examResultDto.setNationalCode("sadasd");
-        examResultDto.setCellNumber("ضصثصضثضصث");
-        answerDto.setAnswer("zazazaz");
-        answerDto.setQuestion("aaaaa");
-        answerDtos.add(answerDto);
-        examResultDto.setAnswers(answerDtos);
-        list.add(examResultDto);
-        pdfResponse.setData(list);
-
-
-        String params="{\"teacher\":\"حامد رستگاری\"}";
-        testQuestionService.print(response, "pdf", "zaza.jasper", id, params);
-
-
-
-
-//        ByteArrayInputStream bis = GeneratePdfReport.ReportExam(pdfResponse);
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.add("Content-Disposition", "inline; filename=evaluation-" + System.currentTimeMillis() + ".pdf");
-//
-//        return ResponseEntity
-//                .ok()
-//                .headers(headers)
-//                .contentType(MediaType.APPLICATION_PDF)
-//                .body(new InputStreamResource(bis));
-    }
     @GetMapping("/printPdf/{id}/{national}/{fullName}")
     public void printPdf(HttpServletResponse response, @PathVariable long id,@PathVariable String national,@PathVariable String fullName) throws Exception {
 
