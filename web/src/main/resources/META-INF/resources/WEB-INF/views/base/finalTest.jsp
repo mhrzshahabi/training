@@ -346,7 +346,7 @@
                         title: "چاپ گزارش",
                         width: "120",
                         click: function () {
-printPdf(record.nationalCode,id,record.surname,record.lastName);
+printPdf("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.lastName);
                         }
                     });
                     return button2;
@@ -441,9 +441,9 @@ printPdf(record.nationalCode,id,record.surname,record.lastName);
     }));
 
     }
-         function printPdf(national,id,name,last) {
+         function printPdf(type,id,national,fileName,name,last ) {
           wait.show();
-            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/printPdf/" +id+"/"+national+"/"+name+" "+last, "GET", null, function (resp) {
+            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/printPdf/" +id+"/"+national+"/"+name+"/"+last+"/"+"exam", "POST", null, function (resp) {
                 <%--if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {--%>
                 <%--    wait.close();--%>
                 <%--} else {--%>
@@ -458,6 +458,28 @@ printPdf(record.nationalCode,id,record.surname,record.lastName);
                 <%--}--%>
                 wait.close();
     }));
+
+
+
+        <%--     var criteriaForm = isc.DynamicForm.create({--%>
+        <%--    method: "POST",--%>
+        <%--    action: "<spring:url value="training/anonymous/els/printPdf/"/>" + type,--%>
+        <%--    target: "_Blank",--%>
+        <%--    canSubmit: true,--%>
+        <%--    fields:--%>
+        <%--        [--%>
+        <%--            {name: "id", id: "hidden"},--%>
+        <%--            {name: "national", type: "hidden"},--%>
+        <%--            {name: "fileName", type: "hidden"},--%>
+        <%--            {name: "fullName", type: "hidden"}--%>
+        <%--        ]--%>
+        <%--});--%>
+        <%--criteriaForm.setValue("id", id);--%>
+        <%--criteriaForm.setValue("national", national);--%>
+        <%--criteriaForm.fileName("fileName", fileName);--%>
+        <%--criteriaForm.setValue("fullName", name +" "+last);--%>
+        <%--criteriaForm.show();--%>
+        <%--criteriaForm.submitForm();--%>
 
     }
 
