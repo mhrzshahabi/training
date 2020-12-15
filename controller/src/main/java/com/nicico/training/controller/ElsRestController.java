@@ -207,13 +207,13 @@ public class ElsRestController {
     }
 
 
-    @PostMapping("/printPdf/{type}/{id}/{national}/{fullName}/{fileName}")
+    @PostMapping("/printPdf/{id}/{national}/{name}/{last}/{fullName}")
     public void printPdf(HttpServletResponse response,
-                         @PathVariable String type,
-                         @RequestParam long id,
-                         @RequestParam String national,
-                         @RequestParam String fullName,
-                         @RequestParam(value = "fileName") String fileName
+                         @PathVariable long id,
+                         @PathVariable String national,
+                         @PathVariable String name,
+                         @PathVariable String last,
+                         @PathVariable  String fullName
 
     ) throws Exception {
 
@@ -226,9 +226,9 @@ public class ElsRestController {
                 .findFirst()
                 .get();
 
-        String params="{\"student\":\""+fullName+"\"}";
+        String params="{\"student\":\""+name+""+last +"\"}";
 
-        testQuestionService.printElsPdf(response, type, fileName, id, params, data);
+        testQuestionService.printElsPdf(response, "pdf", "ElsExam.jasper", id, params, data);
 
 
     }
