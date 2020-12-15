@@ -207,8 +207,15 @@ public class ElsRestController {
     }
 
 
-    @GetMapping("/printPdf/{id}/{national}/{fullName}")
-    public void printPdf(HttpServletResponse response, @PathVariable long id,@PathVariable String national,@PathVariable String fullName) throws Exception {
+    @PostMapping("/printPdf/{type}/{id}/{national}/{fileName}/{fullName}")
+    public void printPdf(HttpServletResponse response,
+                         @PathVariable long id,
+                         @PathVariable String national,
+                         @PathVariable String type,
+                         @PathVariable String fullName,
+                         @RequestParam(value = "fileName") String fileName
+
+    ) throws Exception {
 
         ExamListResponse pdfData = client.getExamResults(id);
         ExamResultDto data;
@@ -221,8 +228,7 @@ public class ElsRestController {
 
         String params="{\"student\":\""+fullName+"\"}";
 
-
-        testQuestionService.printElsPdf(response, "pdf", "elsExam.jasper", id, params,data );
+        testQuestionService.printElsPdf(response, type, fileName, id, params, data);
 
 
     }
