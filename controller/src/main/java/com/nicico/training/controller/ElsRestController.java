@@ -207,12 +207,12 @@ public class ElsRestController {
     }
 
 
-    @PostMapping("/printPdf/{type}/{id}/{national}/{fileName}/{fullName}")
+    @PostMapping("/printPdf/{type}/{id}/{national}/{fullName}/{fileName}")
     public void printPdf(HttpServletResponse response,
-                         @PathVariable long id,
-                         @PathVariable String national,
                          @PathVariable String type,
-                         @PathVariable String fullName,
+                         @RequestParam long id,
+                         @RequestParam String national,
+                         @RequestParam String fullName,
                          @RequestParam(value = "fileName") String fileName
 
     ) throws Exception {
