@@ -346,7 +346,7 @@
                         title: "چاپ گزارش",
                         width: "120",
                         click: function () {
-printPdf(record.nationalCode,id,record.surname,record.lastName,"ElsExam.jasper");
+printPdf("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.lastName);
                         }
                     });
                     return button2;
@@ -441,7 +441,7 @@ printPdf(record.nationalCode,id,record.surname,record.lastName,"ElsExam.jasper")
     }));
 
     }
-         function printPdf(national,id,name,last,type = "pdf",fileName) {
+         function printPdf(type,id,national,fileName,name,last ) {
           // wait.show();
     <%--        isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/printPdf/" +id+"/"+national+"/"+name+" "+last, "GET", null, function (resp) {--%>
     <%--            &lt;%&ndash;if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {&ndash;%&gt;--%>
