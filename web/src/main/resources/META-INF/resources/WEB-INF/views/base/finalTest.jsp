@@ -346,7 +346,7 @@
                         title: "چاپ گزارش",
                         width: "120",
                         click: function () {
-printPdf("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.lastName);
+printEls("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.lastName);
                         }
                     });
                     return button2;
