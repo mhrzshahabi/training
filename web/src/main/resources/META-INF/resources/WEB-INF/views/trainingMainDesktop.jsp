@@ -1842,17 +1842,9 @@
                         createTab(this.title, "<spring:url value="/company/show-form"/>");
                     }
                 },
-                {isSeparator: true},
+                // {isSeparator: true},
                 </sec:authorize>
 
-                <sec:authorize access="hasAuthority('Menu_Designing_NeedsAssessmentReportCourse')">
-                {
-                    title: "<spring:message code='needsAssessment.report.course'/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/course-needs-assessment-reports"/>");
-                    }
-                },
-                </sec:authorize>
             ]
         }),
     });
@@ -2281,6 +2273,17 @@
                             },
                             {isSeparator: true},
                             </sec:authorize>
+
+                            <sec:authorize access="hasAuthority('Menu_Designing_NeedsAssessmentReportCourse')">
+                            {
+                                title: "<spring:message code='needsAssessment.report.course'/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/course-needs-assessment-reports"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            </sec:authorize>
+
 
                             <sec:authorize access="hasAuthority('Menu_Report_ReportsNeedsAssessment_People')">
                             {
