@@ -288,11 +288,11 @@
             ListGrid_Course_Edit()
         },
         </sec:authorize>
-
         <sec:authorize access="hasAnyAuthority('Course_Syllabus','Course_Job','Course_Post','Course_Skill','Course_Teachers')">
         selectionChanged: function (record, state) {
             if (state) {
                 courseRecord = record;
+                Detail_Tab_Course.setDisabled(false)
                 refreshSelectedTab_Course(tabSetCourse.getSelectedTab());
             }
         },
@@ -2466,6 +2466,7 @@
 
 
     });
+    Detail_Tab_Course.setDisabled(true)
     var HLayout_Tab_Course = isc.HLayout.create({
         width: "100%",
         height: "50%",
