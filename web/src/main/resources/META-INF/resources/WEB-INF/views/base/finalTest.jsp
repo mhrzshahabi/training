@@ -321,8 +321,8 @@
             showRecordComponents: true,
             showRecordComponentsByCell: true,
             fields: [
-                {name: "surname", title: 'نام',  width: "20%"},
-                {name: "lastName", title: 'نام خانوادگی' , width: "20%"},
+                {name: "surname", title: 'نام',align: "center", width: "20%"},
+                {name: "lastName", title: 'نام خانوادگی' ,align: "center", width: "20%"},
                 { name: "iconField", title: "نتایج", width: "10%",align:"center"},
                 { name: "iconField2", title: "چاپ گزارش", width: "10%",align:"center"},
 
