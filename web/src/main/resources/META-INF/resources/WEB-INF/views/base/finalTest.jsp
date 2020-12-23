@@ -976,6 +976,16 @@ printEls("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.las
         }, 3000);
     };
 
+        function checkHaveQuestion(res) {
+            if(res.data.length == 0) {
+            ToolStrip_Actions_FinalTest.members[2].setDisabled(true);
+            ToolStrip_Actions_FinalTest.members[3].setDisabled(true);
+            }else{
+            ToolStrip_Actions_FinalTest.members[2].setDisabled(false);
+            ToolStrip_Actions_FinalTest.members[3].setDisabled(false);
+            }
+        }
+
     function loadTab() {
         if (FinalTestLG_finalTest.getSelectedRecord() === null) {
             TabSet_finalTest.disable();
@@ -986,7 +996,9 @@ printEls("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.las
         classId_finalTest = FinalTestLG_finalTest.getSelectedRecord().id;
         RestDataSource_FinalTest.fetchDataURL = questionBankTestQuestionUrl +"/test/"+FinalTestLG_finalTest.getSelectedRecord().tclass.id+ "/spec-list";
         ListGrid_FinalTest.invalidateCache();
-        ListGrid_FinalTest.fetchData();
+        ListGrid_FinalTest.fetchData(null,(res) => {
+            checkHaveQuestion(res);
+            });
         TabSet_finalTest.enable();
     }
 
