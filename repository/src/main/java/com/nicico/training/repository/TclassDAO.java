@@ -122,4 +122,12 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
             " not EXISTS (select NULL from tbl_message_contact mc inner join tbl_message m on m.id=mc.f_message_id where mc.n_count_sent>0 and m.f_message_class = cs.class_id and " +
             "m.f_message_user_type=679 and mc.c_object_mobile=st.mobile)) tmp_table group by tmp_table.class_id", nativeQuery = true)
     List<Object> checkClassesForSendMessage(List<Long> classIds);
+
+    @Modifying
+    @Query(value = "update TBL_CLASS set TEACHER_ONLINE_EVAL_STATUS = :state where ID = :classId", nativeQuery = true)
+    public void changeOnlineEvalTeacherStatus(Long classId, boolean state);
+
+    @Modifying
+    @Query(value = "update TBL_CLASS set STUDENT_ONLINE_EVAL_STATUS = :state where ID = :classId", nativeQuery = true)
+    public void changeOnlineEvalStudentStatus(Long classId, boolean state);
 }

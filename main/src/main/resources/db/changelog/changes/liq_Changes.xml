@@ -1310,4 +1310,14 @@
     <changeSet author="razmnoosh" id="ManualModifiedEvaluation-002">
         <modifyDataType tableName="tbl_evaluation" columnName="c_description" newDataType="VARCHAR2(600 CHAR)" />
     </changeSet>
+    <!--<changeSet author="ASUS (generated)" id="1608547682490-521">-->
+        <!--<addColumn tableName="tbl_class">-->
+            <!--<column name="TEACHER_ONLINE_EVAL_STATUS" type="number(1, 0)"/>-->
+        <!--</addColumn>-->
+    <!--</changeSet>-->
+    <!--<changeSet author="ASUS (generated)" id="1608547682490-520">-->
+        <!--<addColumn tableName="tbl_class">-->
+            <!--<column name="STUDENT_ONLINE_EVAL_STATUS" type="number(1, 0)"/>-->
+        <!--</addColumn>-->
+    <!--</changeSet>-->
 </databaseChangeLog>

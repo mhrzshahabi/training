@@ -4,13 +4,11 @@ package com.nicico.training.controller;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.controller.util.GeneratePdfReport;
+import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.service.*;
-import dto.Question.QuestionData;
-import dto.exam.*;
 import lombok.RequiredArgsConstructor;
-import net.sf.jasperreports.engine.JasperCompileManager;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,20 +20,12 @@ import request.exam.ElsExamRequest;
 import request.exam.ExamImportedRequest;
 import response.BaseResponse;
 import response.evaluation.EvalListResponse;
-import response.evaluation.PdfResponse;
 import response.evaluation.SendEvalToElsResponse;
-import response.evaluation.dto.PdfEvalResponse;
-import response.exam.ExamAnswerDto;
 import response.exam.ExamListResponse;
 import response.exam.ExamResultDto;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/anonymous/els")
@@ -48,6 +38,7 @@ public class ElsRestController {
     private final EvaluationService evaluationService;
     private final ClassStudentService classStudentService;
     private final TeacherService teacherService;
+    private final ITclassService iTclassService;
     private final StudentService studentService;
     private final PersonalInfoService personalInfoService;
     private final ElsClient client;
@@ -77,6 +68,8 @@ public class ElsRestController {
             BaseResponse baseResponse = client.sendEvaluation(request);
             response.setMessage(baseResponse.getMessage());
             response.setStatus(baseResponse.getStatus());
+            iTclassService.changeOnlineEvalStudentStatus(evaluation.getClassId() , true);
+
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
 
@@ -107,6 +100,8 @@ public class ElsRestController {
             BaseResponse baseResponse = client.sendEvaluationToTeacher(request);
             response.setMessage(baseResponse.getMessage());
             response.setStatus(baseResponse.getStatus());
+            iTclassService.changeOnlineEvalTeacherStatus(evaluation.getClassId() , true);
+
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
 
