@@ -2524,7 +2524,7 @@ SELECT distinct
         </createView>
     </changeSet>
 
-    <changeSet author="NICICO" id="VIEW-CLASS-DETAIL-006">
+    <changeSet author="NICICO" id="VIEW-CLASS-DETAIL-009">
         <createView viewName="view_class_detail" replaceIfExists="true">
             <![CDATA[
 SELECT
@@ -2577,7 +2577,9 @@ SELECT
          tclass.C_END_DATE,
          'yyyy/mm/dd',
          'nls_calendar=persian'
-       )+30*tclass.START_EVALUATION END AS Behavioral_Due_Date
+       )+30*tclass.START_EVALUATION END AS Behavioral_Due_Date,
+        tclass.STUDENT_ONLINE_EVAL_STATUS as tclass_student_online_eval_status,
+        tclass.TEACHER_ONLINE_EVAL_STATUS as tclass_teacher_online_eval_status
 
         FROM TBL_CLASS tclass LEFT JOIN TBL_COURSE course
         ON tclass.F_COURSE = course.ID

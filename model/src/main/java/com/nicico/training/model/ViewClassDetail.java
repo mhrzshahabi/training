@@ -136,4 +136,9 @@ public class ViewClassDetail extends Auditable {
     @Column(name = "tclass_teaching_type")
     private String tclassTeachingType;
 
+    @Column(name = "tclass_teacher_online_eval_status")
+    private Boolean classTeacherOnlineEvalStatus;
+
+    @Column(name = "tclass_student_online_eval_status")
+    private Boolean classStudentOnlineEvalStatus;
 }

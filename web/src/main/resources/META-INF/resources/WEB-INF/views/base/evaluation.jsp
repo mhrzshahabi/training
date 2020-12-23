@@ -36,7 +36,9 @@
                 {name: "teacherEvalStatus"},
                 {name: "trainingEvalStatus"},
                 {name: "tclassSupervisor"},
-                {name: "tclassTeachingType"}
+                {name: "tclassTeachingType"},
+                {name: "classTeacherOnlineEvalStatus"},
+                {name: "classStudentOnlineEvalStatus"}
             ],
             fetchDataURL: viewClassDetailUrl + "/iscList",
             implicitCriteria: {
@@ -273,9 +275,11 @@
                 {name: "classPreCourseTest", hidden: true},
                 {name: "courseId", hidden: true},
                 {name: "teacherId", hidden: true},
-                {name: "teacherEvalStatus", hidden: true},
+                {name: "x", hidden: true},
                 {name: "trainingEvalStatus", hidden: true},
-                {name: "tclassSupervisor", hidden: true}
+                {name: "tclassSupervisor", hidden: true},
+                {name: "classStudentOnlineEvalStatus", title: "classStudentOnlineEvalStatus", hidden: true},
+                {name: "classTeacherOnlineEvalStatus", title: "classTeacherOnlineEvalStatus", hidden: true},
             ],
             selectionUpdated: function () {
                 loadSelectedTab_data(Detail_Tab_Evaluation.getSelectedTab());
@@ -429,50 +433,72 @@
                         ListGrid_student_RE.fetchData();
                         DynamicForm_ReturnDate_RE.clearValues();
                         classRecord_RE = classRecord;
-                        if (classRecord.trainingEvalStatus == 0 ||
-                                classRecord.trainingEvalStatus == undefined ||
-                                    classRecord.trainingEvalStatus == null) {
-                            ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
-                            ToolStrip_SendForms_RE.getField("sendToEls_supervisor").setDisabled(true);
-                            ToolStrip_SendForms_RE.getField("showResultsEls_supervisor").setDisabled(true);
 
+                        if (classRecord.trainingEvalStatus === 0 ||
+                                classRecord.trainingEvalStatus === undefined ||
+                                    classRecord.trainingEvalStatus === null) {
+                                ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
+                                ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("ToolStripButton_OnlineFormIssuanceForAll_RE").setDisabled(true);
+                            // ToolStrip_SendForms_RE.getField("ToolStripButton_OnlineFormIssuanceResultForAll_RE").setDisabled(true);
+                            ToolStripButton_OnlineFormIssuanceForAll_RE.setDisabled(true);
                             ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
                         }
-                        else if(classRecord.trainingEvalStatus == 1){
-                            ToolStrip_SendForms_RE.getField("sendButtonTraining").showIcon("ok");
-                            ToolStrip_SendForms_RE.getField("sendToEls_supervisor").setDisabled(false);
-                            ToolStrip_SendForms_RE.getField("showResultsEls_supervisor").setDisabled(false);
+                        else if(classRecord.trainingEvalStatus === 1){
+                                ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
+                                ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
 
-                            ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
-                        }
+                            // ToolStrip_SendForms_RE.getField("ToolStripButton_OnlineFormIssuanceForAll_RE").setDisabled(false);
+                            // ToolStrip_SendForms_RE.getField("ToolStripButton_OnlineFormIssuanceResultForAll_RE").setDisabled(false);
+                       }
                         else{
-                            ToolStrip_SendForms_RE.getField("sendButtonTraining").showIcon("ok");
-                            ToolStrip_SendForms_RE.getField("sendToEls_supervisor").setDisabled(false);
-                            ToolStrip_SendForms_RE.getField("showResultsEls_supervisor").setDisabled(false);
+                                ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
+                                ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
 
-                            ToolStrip_SendForms_RE.getField("registerButtonTraining").showIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("ToolStripButton_OnlineFormIssuanceForAll_RE").setDisabled(false);
+                            // ToolStrip_SendForms_RE.getField("ToolStripButton_OnlineFormIssuanceResultForAll_RE").setDisabled(false);
                         }
 
-                        if (classRecord.teacherEvalStatus == 0 ||
-                            classRecord.teacherEvalStatus == undefined ||
-                            classRecord.teacherEvalStatus == null) {
+                        if (classRecord.classStudentOnlineEvalStatus){
+                            ToolStripButton_OnlineFormIssuanceForAll_RE.setDisabled(true);
+                            ToolStripButton_OnlineFormIssuanceResultForAll_RE.setDisabled(false);
+                        }else {
+                            ToolStripButton_OnlineFormIssuanceForAll_RE.setDisabled(false);
+                            ToolStripButton_OnlineFormIssuanceResultForAll_RE.setDisabled(true);
+                        }
+
+                        if (classRecord.teacherEvalStatus === 0 ||
+                            classRecord.teacherEvalStatus === undefined ||
+                            classRecord.teacherEvalStatus === null) {
+
                             ToolStrip_SendForms_RE.getField("sendButtonTeacher").hideIcon("ok");
                             ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(true);
                             ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(true);
 
                             ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
                         }
-                        else if(classRecord.teacherEvalStatus == 1){
+                    else if(classRecord.teacherEvalStatus === 1){
                             ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
-                            ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(false);
-                            ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(false);
+                            if (classRecord.classTeacherOnlineEvalStatus){
+                                ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(true);
+                                ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(false);
+                            } else {
+                                ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(false);
+                                ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(true);
+
+                            }
 
                             ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
                         }
                         else{
                             ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
-                            ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(false);
-                            ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(false);
+                            if (classRecord.classTeacherOnlineEvalStatus){
+                                ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(true);
+                                ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(false);
+                            } else {
+                                ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(false);
+                                ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(true);
+                            }
 
                             ToolStrip_SendForms_RE.getField("registerButtonTeacher").showIcon("ok");
                         }
