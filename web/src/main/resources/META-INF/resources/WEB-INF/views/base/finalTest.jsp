@@ -316,8 +316,12 @@
         let ListGrid_Result_finalTest = isc.TrLG.create({
             width: "100%",
             height: 700,
-
+            canHover: true,
             dataSource: RestDataSource_Result_FinalTest,
+            filterOperator: "iContains",
+            filterOnKeypress: false,
+            allowAdvancedCriteria: true,
+            allowFilterExpressions: true,
             showRecordComponents: true,
             showRecordComponentsByCell: true,
             fields: [
@@ -491,14 +495,49 @@ printEls("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.las
     });
 
     function ListGrid_show_results(answers) {
-        let ListGrid_Result_Answer_fianTest = isc.TrLG.create({
-            width: "100%",
-            height: 700,
-            dataSource: RestDataSource_Result_Answers_FianlTest,
-            fields: [],
-        });
+        let radio_FormItem =  { name: "startMode",titleOrientation: "top", title: "Initially show ColorPicker as",
+                        width: 200,
+                        type: "radioGroup",
+                        valueMap: {
+                            "simple": "Simple",
+                            "complex": "Complex"
+                        }
+                    };
 
-        ListGrid_Result_Answer_fianTest.setData(answers)
+        let dynamicForm_Answers_List = isc.DynamicForm.create({
+                padding: 6,
+                numCols: 1,
+                fields: []
+                });
+        console.log(answers)
+        for(var i=0 ; i<answers.length; i++) {
+                let text_FormItem = { title:"Pasted value",titleOrientation: "top", name:"textArea", width:"100%",height:100, editorType: "TextAreaItem", value: ''};
+                text_FormItem.title = (i+1)+"-"+answers[i].question;
+                text_FormItem.value = answers[i].answer;
+                text_FormItem.name = answers[i].answer;
+                console.log(answers[i].answer)
+                dynamicForm_Answers_List.addField(text_FormItem)
+            }
+        // let ListGrid_Result_Answer_fianTest = isc.TrLG.create({
+        //     width: "100%",
+        //     height: 700,
+        //     canHover: true,
+        //     hoverWidth: 300,
+        //     filterOperator: "iContains",
+        //     filterOnKeypress: false,
+        //     allowAdvancedCriteria: true,
+        //     allowFilterExpressions: true,
+        //     showRecordComponents: true,
+        //     showRecordComponentsByCell: true,
+        //     styleName: "show-more-style",
+        //     dataSource: RestDataSource_Result_Answers_FianlTest,
+        //     fields: [
+        //         {name: "question", title: 'سوال' ,width: '49%'},
+        //         {name: "answer", title: 'پاسخ' ,width: '49%'}
+        //     ],
+        // });
+        //
+        // ListGrid_Result_Answer_fianTest.setData(answers)
 
         let Window_result_Answer_FinalTest = isc.Window.create({
             width: 1024,
@@ -515,7 +554,7 @@ printEls("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.las
                         isc.HLayout.create({
                             width: "100%",
                             height: "90%",
-                            members: [ListGrid_Result_Answer_fianTest]
+                            members: [dynamicForm_Answers_List]
                         }),
                         isc.IButtonCancel.create({
                             click: function () {
