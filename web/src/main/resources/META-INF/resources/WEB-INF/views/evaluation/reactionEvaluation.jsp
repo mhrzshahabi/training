@@ -986,7 +986,7 @@
                                                                     classRecord_RE.trainingEvalStatus = 0;
                                                                     ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
                                                                    // ToolStrip_SendForms_RE.getField("sendToEls_supervisor").setDisabled(true);
-                                                                  //  ToolStrip_SendForms_RE.getField("showResultsEls_supervisor").setDisabled(true);
+                                                                   // ToolStrip_SendForms_RE.getField("showResultsEls_supervisor").setDisabled(true);
 
                                                                     ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
                                                                     ToolStrip_SendForms_RE.redraw();
