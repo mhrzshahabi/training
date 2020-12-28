@@ -5,6 +5,7 @@ import com.nicico.training.model.*;
 import com.nicico.training.service.QuestionBankService;
 import com.nicico.training.utility.persianDate.PersianDate;
 import dto.Question.QuestionData;
+import dto.Question.QuestionScores;
 import dto.evaluuation.EvalCourse;
 import dto.evaluuation.EvalCourseProtocol;
 import dto.evaluuation.EvalQuestionDto;
@@ -20,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import request.evaluation.ElsEvalRequest;
 import request.exam.ElsExamRequest;
 import request.exam.ExamImportedRequest;
+import response.exam.ExamQuestionsDto;
+import response.question.QuestionsDto;
 
 
 import java.time.LocalDate;
@@ -91,7 +94,7 @@ public abstract class EvaluationBeanMapper {
     public abstract EvalTargetUser toTeacher(PersonalInfo teacher);
 
 
-    public ElsExamRequest toGetExamRequest(PersonalInfo teacherInfo, ExamImportedRequest object, List<ClassStudent> classStudents) {
+    public ElsExamRequest toGetExamRequest(Tclass tClass, PersonalInfo teacherInfo, ExamImportedRequest object, List<ClassStudent> classStudents) {
         ElsExamRequest request = new ElsExamRequest();
 
 
@@ -101,7 +104,7 @@ public abstract class EvaluationBeanMapper {
         if (object.getQuestions() != null && object.getQuestions().size() > 0)
             timeQues = (time * 60) / object.getQuestions().size();
 
-        ExamCreateDTO exam = getExamData(object);
+        ExamCreateDTO exam = getExamData(object, tClass);
         ImportedCourseCategory courseCategory = getCourseCategoryData(object);
         ImportedCourseDto courseDto = getCourseData(object);
         CourseProtocolImportDTO courseProtocol = getCourseProtocolData(object);
@@ -151,11 +154,12 @@ public abstract class EvaluationBeanMapper {
         return teacher;
     }
 
-    private List<ImportedQuestionProtocol> getQuestions(ExamImportedRequest object, int timeQues) {
+    private List<ImportedQuestionProtocol> getQuestions(ExamImportedRequest object, Integer timeQues) {
 
         List<ImportedQuestionProtocol> questionProtocols = new ArrayList<>();
 
-        Double questionScore = (double) (20 / object.getQuestions().size());
+        if (object.getQuestions().size() > 0) {
+//            Double questionScore = (double) (20 / object.getQuestions().size());
 
         for (QuestionData questionData : object.getQuestions()) {
             ImportedQuestionProtocol questionProtocol = new ImportedQuestionProtocol();
@@ -190,14 +194,24 @@ public abstract class EvaluationBeanMapper {
                 questionProtocol.setCorrectAnswerTitle(convertCorrectAnswer(questionBank.getMultipleChoiceAnswer(), questionBank));
 
             }
+            if (object.getQuestionData()!=null)
+            {
+                QuestionScores questionScore = object.getQuestionData().stream()
+                        .filter(x -> x.getQuestion().trim().equals(question.getTitle().trim()))
+                        .findFirst()
+                        .get();
 
-            questionProtocol.setMark(questionScore);
+                questionProtocol.setMark(Double.valueOf(questionScore.getScore()));
+            }
+
             questionProtocol.setTime(timeQues);
             questionProtocol.setQuestion(question);
             questionProtocols.add(questionProtocol);
         }
-        return questionProtocols;
     }
+
+        return questionProtocols;
+}
 
     private CourseProtocolImportDTO getCourseProtocolData(ExamImportedRequest object) {
         CourseProtocolImportDTO courseProtocol = new CourseProtocolImportDTO();
@@ -231,7 +245,7 @@ public abstract class EvaluationBeanMapper {
         return courseCategory;
     }
 
-    private ExamCreateDTO getExamData(ExamImportedRequest object) {
+    private ExamCreateDTO getExamData(ExamImportedRequest object, Tclass tClass) {
         int time = Math.toIntExact(object.getExamItem().getDuration());
 
         String newTime = convertToTimeZone(object.getExamItem().getTime());
@@ -247,13 +261,17 @@ public abstract class EvaluationBeanMapper {
         exam.setStartDate(startDate.getTime());
         exam.setEndDate(endDate.getTime());
         exam.setQuestionCount(object.getQuestions().size());
-        exam.setMinimumAcceptScore(10D);
+        exam.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
         exam.setSourceExamId(object.getExamItem().getId());
 
         exam.setDuration(time);
 
+        if (tClass.getScoringMethod().equals("3"))
+            exam.setScore(20D);
+        else if (tClass.getScoringMethod().equals("4"))
+            exam.setScore(100D);
 
-        exam.setScore(20D);
+
         if (dayIsTomorrow(startDate.getTime()))
             exam.setStatus(ExamStatus.UPCOMMING);
         else
@@ -723,6 +741,61 @@ public abstract class EvaluationBeanMapper {
     public static boolean dayIsTomorrow(long time) {
         DateTime tomorrow = new DateTime().withTimeAtStartOfDay().plusDays(1);
         return time > (tomorrow.getMillis() / 1000);
+
+    }
+
+    public ExamQuestionsDto toGetExamQuestions(ExamImportedRequest object) {
+        ExamQuestionsDto examQuestionsDto = new ExamQuestionsDto();
+
+        List<ImportedQuestionProtocol> questionProtocols = getQuestions(object, null);
+        List<QuestionsDto> questionsDtos = new ArrayList<>();
+        for (ImportedQuestionProtocol question : questionProtocols) {
+            QuestionsDto questionsDto = new QuestionsDto();
+            questionsDto.setQuestion(question.getQuestion().getTitle());
+            questionsDto.setType(question.getQuestion().getType().getValue());
+            StringBuilder listString = new StringBuilder();
+
+            if (questionsDto.getType().equals(MULTI_CHOICES.getValue())) {
+                for (int i = 0; i < question.getQuestion().getQuestionOption().size(); i++) {
+                    listString.append(i + 1).append(" - ").append(question.getQuestion().getQuestionOption().get(i).getTitle()).append("\t").append(System.lineSeparator());
+                }
+                questionsDto.setOptions(listString.toString());
+            } else {
+                questionsDto.setOptions("-");
+
+            }
+
+
+            questionsDtos.add(questionsDto);
+        }
+        examQuestionsDto.setData(questionsDtos);
+
+        return examQuestionsDto;
+    }
+
+    public boolean checkExamScore(ExamImportedRequest object, Tclass tclass) {
+
+        try {
+            if (tclass.getScoringMethod().equals("3") || tclass.getScoringMethod().equals("4")) {
+                double totalScore = 0;
+                for (QuestionScores questionScores : object.getQuestionData()) {
+                    double score = Double.parseDouble(questionScores.getScore());
+                    totalScore = totalScore + score;
+                }
+                if (tclass.getScoringMethod().equals("3")) {
+                    return totalScore == 20;
+                } else {
+                    return totalScore == 100;
+                }
+
+            } else {
+                return true;
+
+            }
+        } catch (Exception ex) {
+            return false;
+
+        }
 
     }
 }
