@@ -314,6 +314,7 @@
     });
         var RestDataSource_Questions_finalTest = isc.TrDS.create({
         fields: [
+             {name: "id",hidden:true },
              {name: "question", title: 'سوال'},
                 {name: "type", title: 'نوع پاسخ' },
                 { name: "options", title: "گزینه ها"},
@@ -450,6 +451,7 @@ printPdf("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.las
             showRecordComponents: true,
             showRecordComponentsByCell: true,
             fields: [
+                 {name: "id",hidden:true},
                 {name: "question", title: 'سوال',  width: "20%"},
                 {name: "type", title: 'نوع پاسخ' , width: "10%"},
                 { name: "options", title: "گزینه ها", width: "20%",align:"center"},
@@ -484,6 +486,7 @@ printPdf("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.las
                         OK.close();
                     }, 1500);
                   questionData = results;
+                    console.log(results);
                   ListGrid_Questions_finalTest.setData(results);
 
                     let Window_result_Finaltest = isc.Window.create({

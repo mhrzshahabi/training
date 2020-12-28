@@ -11,6 +11,7 @@ import java.util.List;
 @Setter
 public class QuestionsDto {
 
+    private Long id;
     private String question;
     private String type;
     private String score;

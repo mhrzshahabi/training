@@ -166,7 +166,7 @@ public abstract class EvaluationBeanMapper {
 
             ImportedQuestion question = new ImportedQuestion();
 
-
+            question.setId(questionData.getQuestionBank().getId());
             question.setTitle(questionData.getQuestionBank().getQuestion());
             question.setType(convertQuestionType(questionData.getQuestionBank().getQuestionType().getTitle()));
 
@@ -197,7 +197,7 @@ public abstract class EvaluationBeanMapper {
             if (object.getQuestionData()!=null)
             {
                 QuestionScores questionScore = object.getQuestionData().stream()
-                        .filter(x -> x.getQuestion().trim().equals(question.getTitle().trim()))
+                        .filter(x -> x.getId().equals(question.getId()))
                         .findFirst()
                         .get();
 
@@ -261,15 +261,29 @@ public abstract class EvaluationBeanMapper {
         exam.setStartDate(startDate.getTime());
         exam.setEndDate(endDate.getTime());
         exam.setQuestionCount(object.getQuestions().size());
-        exam.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
         exam.setSourceExamId(object.getExamItem().getId());
 
         exam.setDuration(time);
 
         if (tClass.getScoringMethod().equals("3"))
+        {
+            exam.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
             exam.setScore(20D);
+
+        }
         else if (tClass.getScoringMethod().equals("4"))
+        {
+            exam.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
             exam.setScore(100D);
+
+        }
+        else
+        {
+            exam.setMinimumAcceptScore(0D);
+
+            exam.setScore(0D);
+
+        }
 
 
         if (dayIsTomorrow(startDate.getTime()))
@@ -753,6 +767,7 @@ public abstract class EvaluationBeanMapper {
             QuestionsDto questionsDto = new QuestionsDto();
             questionsDto.setQuestion(question.getQuestion().getTitle());
             questionsDto.setType(question.getQuestion().getType().getValue());
+            questionsDto.setId(question.getQuestion().getId());
             StringBuilder listString = new StringBuilder();
 
             if (questionsDto.getType().equals(MULTI_CHOICES.getValue())) {
@@ -778,10 +793,10 @@ public abstract class EvaluationBeanMapper {
         try {
             if (tclass.getScoringMethod().equals("3") || tclass.getScoringMethod().equals("4")) {
                 double totalScore = 0;
-                for (QuestionScores questionScores : object.getQuestionData()) {
-                    double score = Double.parseDouble(questionScores.getScore());
-                    totalScore = totalScore + score;
-                }
+//                for (QuestionScores questionScores : object.getQuestionData()) {
+//                    double score = Double.parseDouble(questionScores.getScore());
+//                    totalScore = totalScore + score;
+//                }
                 if (tclass.getScoringMethod().equals("3")) {
                     return totalScore == 20;
                 } else {
