@@ -4,8 +4,7 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@include file="../messenger/MLanding.jsp" %>
 
-//
-<script>
+//<script>
     //----------------------------------------- DataSources ------------------------------------------------------------
 
     var RestDataSource_class_Evaluation = isc.TrDS.create({
