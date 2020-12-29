@@ -131,6 +131,7 @@ nicico:
     upload-bpmn-img: /var/nicico/${spring.application.name}/upload/bpmn/img
     upload-TriningPost: /var/nicico/${spring.application.name}/upload/TriningPost
     upload-TriningPost-deleted: /var/nicico/${spring.application.name}/upload/TriningPost/deleted
+    upload-question-bank: /var/nicico/${spring.application.name}/upload/questionBank
 
 ---
 
@@ -187,6 +188,7 @@ nicico:
     upload-bpmn-img: /var/nicico/${spring.application.name}/upload/bpmn/img
     upload-TriningPost: /var/nicico/${spring.application.name}/upload/TrainingPost
     upload-TriningPost-deleted: /var/nicico/${spring.application.name}/upload/TrainingPost/deleted
+    upload-question-bank: /var/nicico/${spring.application.name}/upload/questionBank
 
 ---
 
@@ -245,3 +247,4 @@ nicico:
     upload-bpmn-img: c:/nicico/${spring.application.name}/upload/bpmn/img
     upload-TrainingPost: c:/nicico/${spring.application.name}/upload/TrainingPost
     upload-TrainingPost-deleted: c:/nicico/${spring.application.name}/upload/TrainingPost/deleted
+    upload-question-bank: c:/nicico/${spring.application.name}/upload/questionBank
