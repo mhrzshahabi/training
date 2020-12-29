@@ -793,10 +793,10 @@ public abstract class EvaluationBeanMapper {
         try {
             if (tclass.getScoringMethod().equals("3") || tclass.getScoringMethod().equals("4")) {
                 double totalScore = 0;
-//                for (QuestionScores questionScores : object.getQuestionData()) {
-//                    double score = Double.parseDouble(questionScores.getScore());
-//                    totalScore = totalScore + score;
-//                }
+                for (QuestionScores questionScores : object.getQuestionData()) {
+                    double score = Double.parseDouble(questionScores.getScore());
+                    totalScore = totalScore + score;
+                }
                 if (tclass.getScoringMethod().equals("3")) {
                     return totalScore == 20;
                 } else {
