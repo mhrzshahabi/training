@@ -1320,4 +1320,9 @@
             <column name="STUDENT_ONLINE_EVAL_STATUS" type="number(1, 0)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="nick (generated)" id="1609332788904-520">
+        <addColumn tableName="tbl_test_question">
+            <column name="B_ONLINE_FINAL_EXAM_STATUS" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

@@ -164,6 +164,11 @@ public class TestQuestionService implements ITestQuestionService {
         reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
     }
 
+    @Override
+    public void changeOnlineFinalExamStatus(Long examId, boolean state) {
+        testQuestionDAO.changeOnlineFinalExamStatus(examId,state);
+    }
+
     @Transactional
     public void printElsPdf(HttpServletResponse response, String type, String fileName, Long testQuestionId,
                             String receiveParams, ExamResultDto exam) throws Exception {

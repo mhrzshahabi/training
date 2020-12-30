@@ -3,6 +3,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Set;
@@ -22,4 +23,7 @@ public interface ITestQuestionService {
     TestQuestionDTO.Info update(Long id, TestQuestionDTO.Update request, HttpServletResponse response);
 
     void print (HttpServletResponse response ,String type, String fileName, Long testQuestionId, String receiveParams) throws Exception;
+
+    @Transactional
+    void changeOnlineFinalExamStatus(Long examId , boolean state);
 }
