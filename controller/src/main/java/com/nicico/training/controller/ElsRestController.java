@@ -4,6 +4,7 @@ package com.nicico.training.controller;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.controller.util.GeneratePdfReport;
+import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.service.*;
@@ -43,6 +44,8 @@ public class ElsRestController {
     private final ClassStudentService classStudentService;
     private final TclassService tclassService;
     private final TeacherService teacherService;
+    private final ITclassService iTclassService;
+    private final StudentService studentService;
     private final PersonalInfoService personalInfoService;
     private final ElsClient client;
     private final TestQuestionService testQuestionService;
@@ -71,6 +74,8 @@ public class ElsRestController {
             BaseResponse baseResponse = client.sendEvaluation(request);
             response.setMessage(baseResponse.getMessage());
             response.setStatus(baseResponse.getStatus());
+            iTclassService.changeOnlineEvalStudentStatus(evaluation.getClassId() , true);
+
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
 
@@ -101,6 +106,8 @@ public class ElsRestController {
             BaseResponse baseResponse = client.sendEvaluationToTeacher(request);
             response.setMessage(baseResponse.getMessage());
             response.setStatus(baseResponse.getStatus());
+            iTclassService.changeOnlineEvalTeacherStatus(evaluation.getClassId() , true);
+
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
 

@@ -7,52 +7,54 @@
 //<script>
     //----------------------------------------- DataSources ------------------------------------------------------------
 
-    var RestDataSource_class_Evaluation = isc.TrDS.create({
-        fields: [
-            {name: "id"},
-            {name: "termId"},
-            {name: "instituteId"},
-            {name: "teacherId"},
-            {name: "tclassStudentsCount"},
-            {name: "tclassCode"},
-            {name: "tclassStartDate"},
-            {name: "tclassEndDate"},
-            {name: "tclassYear"},
-            {name: "courseCode"},
-            {name: "courseCategory"},
-            {name: "courseSubCategory"},
-            {name: "courseTitleFa"},
-            {name: "evaluation"},
-            {name: "tclassDuration"},
-            {name: "tclassOrganizerId"},
-            {name: "tclassStatus"},
-            {name: "tclassEndingStatus"},
-            {name: "tclassPlanner"},
-            {name: "termTitleFa"},
-            {name: "instituteTitleFa"},
-            {name: "classScoringMethod"},
-            {name: "classPreCourseTest"},
-            {name: "courseId"},
-            {name: "teacherEvalStatus"},
-            {name: "trainingEvalStatus"},
-            {name: "tclassSupervisor"},
-            {name: "tclassTeachingType"}
-        ],
-        fetchDataURL: viewClassDetailUrl + "/iscList",
-        implicitCriteria: {
-            _constructor: "AdvancedCriteria",
-            operator: "and",
-            criteria: [{fieldName: "tclassStudentsCount", operator: "notEqual", value: 0},
-                {fieldName: "evaluation", operator: "notNull"}]
-        },
-    });
+        var RestDataSource_class_Evaluation = isc.TrDS.create({
+            fields: [
+                {name: "id"},
+                {name: "termId"},
+                {name: "instituteId"},
+                {name: "teacherId"},
+                {name: "tclassStudentsCount"},
+                {name: "tclassCode"},
+                {name: "tclassStartDate"},
+                {name: "tclassEndDate"},
+                {name: "tclassYear"},
+                {name: "courseCode"},
+                {name: "courseCategory"},
+                {name: "courseSubCategory"},
+                {name: "courseTitleFa"},
+                {name: "evaluation"},
+                {name: "tclassDuration"},
+                {name: "tclassOrganizerId"},
+                {name: "tclassStatus"},
+                {name: "tclassEndingStatus"},
+                {name: "tclassPlanner"},
+                {name: "termTitleFa"},
+                {name: "instituteTitleFa"},
+                {name: "classScoringMethod"},
+                {name: "classPreCourseTest"},
+                {name: "courseId"},
+                {name: "teacherEvalStatus"},
+                {name: "trainingEvalStatus"},
+                {name: "tclassSupervisor"},
+                {name: "tclassTeachingType"},
+                {name: "classTeacherOnlineEvalStatus"},
+                {name: "classStudentOnlineEvalStatus"}
+            ],
+            fetchDataURL: viewClassDetailUrl + "/iscList",
+            implicitCriteria: {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [{fieldName: "tclassStudentsCount", operator: "notEqual", value: 0},
+                    {fieldName: "evaluation", operator: "notNull"}]
+            },
+        });
 
     //----------------------------------------- DynamicForms -----------------------------------------------------------
-    var DynamicForm_AlarmSelection = isc.DynamicForm.create({
-        width: "85%",
-        height: "100%",
-        fields: [
-            {
+        var DynamicForm_AlarmSelection = isc.DynamicForm.create({
+            width: "85%",
+            height: "100%",
+            fields: [
+                {
 
                 name: "classAlarmSelect",
                 title: "",
@@ -238,56 +240,58 @@
                         setTimeout(() => {
                             $('.comboBoxItemPickerrtl').eq(5).remove();
                             $('.comboBoxItemPickerrtl').eq(4).remove();
-                        }, 0);
+                        },0);
+                        }
+                    },
+                    valueMap: {
+                        "1": "برنامه ریزی",
+                        "2": "در حال اجرا",
+                        "3": "پایان یافته",
+                        "4": "لغو شده"
                     }
                 },
-                valueMap: {
-                    "1": "برنامه ریزی",
-                    "2": "در حال اجرا",
-                    "3": "پایان یافته",
-                    "4": "لغو شده"
-                }
-            },
-            {
-                name: "tclassEndingStatus",
-                title: "<spring:message code="ending.class.status"/>",
-                align: "center",
-                filterOperator: "iContains",
-                autoFithWidth: true
-            },
-            {
-                name: "tclassTeachingType",
-                title: "روش آموزش",
-                filterOperator: "equals",
-                filterEditorProperties: {
-                    pickListProperties: {
-                        showFilterEditor: false,
-                        autoFitWidthApproach: "both"
-                    }
+                {
+                    name: "tclassEndingStatus",
+                    title: "<spring:message code="ending.class.status"/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                    autoFithWidth: true
                 },
-                valueMap: [
-                    "حضوری",
-                    "غیر حضوری",
-                    "مجازی",
-                    "عملی و کارگاهی",
-                    "آموزش حین کار(OJT)"
-                ]
+                {
+                    name: "tclassTeachingType",
+                    title: "روش آموزش",
+                    filterOperator: "equals",
+                    filterEditorProperties:{
+                        pickListProperties: {
+                            showFilterEditor: false,
+                            autoFitWidthApproach: "both"
+                        }
+                    },
+                    valueMap: [
+                        "حضوری",
+                        "غیر حضوری",
+                        "مجازی",
+                        "عملی و کارگاهی",
+                        "آموزش حین کار(OJT)"
+                    ]
+                },
+                {name: "classScoringMethod", hidden: true},
+                {name: "classPreCourseTest", hidden: true},
+                {name: "courseId", hidden: true},
+                {name: "teacherId", hidden: true},
+                {name: "x", hidden: true},
+                {name: "trainingEvalStatus", hidden: true},
+                {name: "tclassSupervisor", hidden: true},
+                {name: "classStudentOnlineEvalStatus", title: "classStudentOnlineEvalStatus", hidden: true},
+                {name: "classTeacherOnlineEvalStatus", title: "classTeacherOnlineEvalStatus", hidden: true},
+            ],
+            selectionUpdated: function () {
+                loadSelectedTab_data(Detail_Tab_Evaluation.getSelectedTab());
+                set_Evaluation_Tabset_status();
             },
-            {name: "classScoringMethod", hidden: true},
-            {name: "classPreCourseTest", hidden: true},
-            {name: "courseId", hidden: true},
-            {name: "teacherId", hidden: true},
-            {name: "teacherEvalStatus", hidden: true},
-            {name: "trainingEvalStatus", hidden: true},
-            {name: "tclassSupervisor", hidden: true}
-        ],
-        selectionUpdated: function () {
-            loadSelectedTab_data(Detail_Tab_Evaluation.getSelectedTab());
-            set_Evaluation_Tabset_status();
-        },
-        createRecordComponent: function (record, colNum) {
-            var fieldName = this.getFieldName(colNum);
-            if (fieldName == "iconField") {
+            createRecordComponent: function (record, colNum) {
+                var fieldName = this.getFieldName(colNum);
+                if (fieldName == "iconField") {
 
                 if ((!ListGrid_class_Evaluation.getFieldByName("evaluation").hidden && record.evaluation))
                     return labelList(record.evaluation);
@@ -425,57 +429,80 @@
 
             Detail_Tab_Evaluation.enable();
 
-            switch (tab.id) {
-                case "TabPane_Reaction": {
-                    RestDataSource_student_RE.implicitCriteria = null;
-                    RestDataSource_student_RE.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
-                    ListGrid_student_RE.invalidateCache();
-                    ListGrid_student_RE.fetchData();
-                    DynamicForm_ReturnDate_RE.clearValues();
-                    classRecord_RE = classRecord;
-                    if (classRecord.trainingEvalStatus == 0 ||
-                        classRecord.trainingEvalStatus == undefined ||
-                        classRecord.trainingEvalStatus == null) {
-                        ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
+                switch (tab.id) {
+                    case "TabPane_Reaction": {
+                        RestDataSource_student_RE.implicitCriteria=null;
+                        RestDataSource_student_RE.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
+                        ListGrid_student_RE.invalidateCache();
+                        ListGrid_student_RE.fetchData();
+                        DynamicForm_ReturnDate_RE.clearValues();
+                        classRecord_RE = classRecord;
 
-                        ////// ToolStrip_SendForms_RE.getField("sendToEls_supervisor").setDisabled(true);
-                        ////// ToolStrip_SendForms_RE.getField("showResultsEls_supervisor").setDisabled(true);
+                        if (classRecord.trainingEvalStatus === 0 ||
+                                classRecord.trainingEvalStatus === undefined ||
+                                    classRecord.trainingEvalStatus === null) {
+                                ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
+                                ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("ToolStripButton_OnlineFormIssuanceForAll_RE").setDisabled(true);
+                            // ToolStrip_SendForms_RE.getField("ToolStripButton_OnlineFormIssuanceResultForAll_RE").setDisabled(true);
+                            ToolStripButton_OnlineFormIssuanceForAll_RE.setDisabled(true);
+                            ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
+                        }
+                        else if(classRecord.trainingEvalStatus === 1){
+                                ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
+                                ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
 
-                        ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
-                    } else if (classRecord.trainingEvalStatus == 1) {
-                        ToolStrip_SendForms_RE.getField("sendButtonTraining").showIcon("ok");
+                            // ToolStrip_SendForms_RE.getField("ToolStripButton_OnlineFormIssuanceForAll_RE").setDisabled(false);
+                            // ToolStrip_SendForms_RE.getField("ToolStripButton_OnlineFormIssuanceResultForAll_RE").setDisabled(false);
+                       }
+                        else{
+                                ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
+                                ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
 
-                        ////// ToolStrip_SendForms_RE.getField("sendToEls_supervisor").setDisabled(false);
-                        ////// ToolStrip_SendForms_RE.getField("showResultsEls_supervisor").setDisabled(false);
+                            // ToolStrip_SendForms_RE.getField("ToolStripButton_OnlineFormIssuanceForAll_RE").setDisabled(false);
+                            // ToolStrip_SendForms_RE.getField("ToolStripButton_OnlineFormIssuanceResultForAll_RE").setDisabled(false);
+                        }
 
-                        ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
-                    } else {
-                        ToolStrip_SendForms_RE.getField("sendButtonTraining").showIcon("ok");
+                        if (classRecord.classStudentOnlineEvalStatus){
+                            ToolStripButton_OnlineFormIssuanceForAll_RE.setDisabled(true);
+                            ToolStripButton_OnlineFormIssuanceResultForAll_RE.setDisabled(false);
+                        }else {
+                            ToolStripButton_OnlineFormIssuanceForAll_RE.setDisabled(false);
+                            ToolStripButton_OnlineFormIssuanceResultForAll_RE.setDisabled(true);
+                        }
 
-                        ////// ToolStrip_SendForms_RE.getField("sendToEls_supervisor").setDisabled(false);
-                        ////// ToolStrip_SendForms_RE.getField("showResultsEls_supervisor").setDisabled(false);
+                        if (classRecord.teacherEvalStatus === 0 ||
+                            classRecord.teacherEvalStatus === undefined ||
+                            classRecord.teacherEvalStatus === null) {
 
-                        ToolStrip_SendForms_RE.getField("registerButtonTraining").showIcon("ok");
-                    }
+                            ToolStrip_SendForms_RE.getField("sendButtonTeacher").hideIcon("ok");
+                            ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(true);
+                            ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(true);
 
-                    if (classRecord.teacherEvalStatus == 0 ||
-                        classRecord.teacherEvalStatus == undefined ||
-                        classRecord.teacherEvalStatus == null) {
-                        ToolStrip_SendForms_RE.getField("sendButtonTeacher").hideIcon("ok");
-                        ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(true);
-                        ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(true);
+                            ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
+                        }
+                    else if(classRecord.teacherEvalStatus === 1){
+                            ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
+                            if (classRecord.classTeacherOnlineEvalStatus){
+                                ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(true);
+                                ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(false);
+                            } else {
+                                ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(false);
+                                ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(true);
 
-                        ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
-                    } else if (classRecord.teacherEvalStatus == 1) {
-                        ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
-                        ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(false);
-                        ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(false);
+                            }
 
-                        ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
-                    } else {
-                        ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
-                        ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(false);
-                        ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(false);
+                            ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
+                        }
+                        else{
+                            ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
+                            if (classRecord.classTeacherOnlineEvalStatus){
+                                ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(true);
+                                ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(false);
+                            } else {
+                                ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(false);
+                                ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(true);
+                            }
 
                         ToolStrip_SendForms_RE.getField("registerButtonTeacher").showIcon("ok");
                     }

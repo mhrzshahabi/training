@@ -246,4 +246,10 @@ public class Tclass extends Auditable {
 
     @Column(name = "f_student_cost_currency")
     private Long studentCostCurrency;
+
+    @Column(name = "TEACHER_ONLINE_EVAL_STATUS")
+    private Boolean teacherOnlineEvalStatus;
+
+    @Column(name = "STUDENT_ONLINE_EVAL_STATUS")
+    private Boolean studentOnlineEvalStatus;
 }
