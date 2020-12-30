@@ -75,6 +75,8 @@ public class TclassDTO {
     private String postponeStartDate;
     private String studentCost;
     private Long studentCostCurrency;
+    private Boolean teacherOnlineEvalStatus;
+    private Boolean studentOnlineEvalStatus;
 
 
     @Getter

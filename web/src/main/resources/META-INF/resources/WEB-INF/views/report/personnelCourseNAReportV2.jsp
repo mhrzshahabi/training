@@ -591,138 +591,6 @@
                 canEdit: false
             },
             {
-                name: "companyName",
-                title: "<spring:message code="company"/>",
-                valueField: "value",
-                displayField: "value",
-                optionDataSource: CompanyDS_PresenceReport,
-                icons:[
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click : function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                            form.setValue(null);
-                        }
-                    }
-                ],
-            },
-            {
-                name: "complexTitle",
-                title: "<spring:message code="complex"/>",
-                optionDataSource: ComplexDS_PresenceReport,
-                valueField: "value",
-                displayField: "value",
-                icons:[
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click : function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                            form.setValue(null);
-                        }
-                    }
-                ],
-            },
-            {
-                name: "assistant",
-                title: "<spring:message code="assistance"/>",
-                valueField: "value",
-                displayField: "value",
-                optionDataSource: AssistantDS_PresenceReport,
-                icons:[
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click : function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                            form.setValue(null);
-                        }
-                    }
-                ],
-            },
-            {
-                name: "affairs",
-                title: "<spring:message code="affairs"/>",
-                optionDataSource: AffairsDS_PresenceReport,
-                valueField: "value",
-                displayField: "value",
-                icons:[
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click : function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                            form.setValue(null);
-                        }
-                    }
-                ],
-            },
-            {
-                name: "unit",
-                title: "<spring:message code="unitName"/>",
-                optionDataSource: UnitDS_PresenceReport,
-                valueField: "value",
-                displayField: "value",
-                icons:[
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click : function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                            form.setValue(null);
-                        }
-                    }
-                ],
-            },
-            {
-                name: "section",
-                title: "<spring:message code="section.cost"/>",
-                valueField: "value",
-                displayField: "value",
-                optionDataSource: SectionDS_PresenceReport,
-                icons:[
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click : function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                            form.setValue(null);
-                        }
-                    }
-                ],
-            },
-            {
                 name: "courseCode",
                 title: "کد دوره",
                 hint: "کد دوره را وارد نمایید",
@@ -748,6 +616,8 @@
             },
         ],
     });
+
+    var organSegmentFilter = init_OrganSegmentFilterDF(true, true , null, "complexTitle","assistant","affairs", "section", "unit")
 
     var initialLayoutStyle = "vertical";
 
@@ -1028,18 +898,16 @@
         title: "چاپ گزارش",
         width: 300,
         click: function () {
-            if(DynamicForm_CriteriaForm_JspCourseNAReportPersonnel.getValuesAsAdvancedCriteria().criteria.length<=1) {
+            if((organSegmentFilter.getCriteria(DynamicForm_CriteriaForm_JspCourseNAReportPersonnel.getValuesAsAdvancedCriteria())).criteria.length <= 1) {
                 createDialog("info","فیلتری انتخاب نشده است.");
                 return;
             }
-            DynamicForm_CriteriaForm_JspCourseNAReportPersonnel.validate();
-            if (DynamicForm_CriteriaForm_JspCourseNAReportPersonnel.hasErrors())
+            if (DynamicForm_CriteriaForm_JspCourseNAReportPersonnel.hasErrors() || organSegmentFilter.hasErrors())
                 return;
 
-            else{
-                isPassedDS_PCNR.fetchData();
+            isPassedDS_PCNR.fetchData();
 
-                data_values = DynamicForm_CriteriaForm_JspCourseNAReportPersonnel.getValuesAsAdvancedCriteria();
+                data_values = organSegmentFilter.getCriteria(DynamicForm_CriteriaForm_JspCourseNAReportPersonnel.getValuesAsAdvancedCriteria());
                 for (let i = 0; i < data_values.criteria.size(); i++) {
                     if (data_values.criteria[i].fieldName == "personnelNo") {
                         var codesString = data_values.criteria[i].value;
@@ -1131,7 +999,6 @@
                     Window_JspCourseNAReportPersonnel.show();
                 }
             }
-        }
     });
 
     //----------------------------------- layOut -----------------------------------------------------------------------
@@ -1139,8 +1006,6 @@
         showEdges: false,
         margin:20,
         edgeImage: "",
-        width: "100%",
-        height: "100%",
         alignLayout: "center",
         members: [
             DynamicForm_CriteriaForm_JspCourseNAReportPersonnel
@@ -1162,7 +1027,8 @@
 
     isc.TrVLayout.create({
         members: [
-            HLayOut_CriteriaForm_JspCourseNAReportPersonnel,
+            DynamicForm_CriteriaForm_JspCourseNAReportPersonnel,
+            organSegmentFilter,
             HLayOut_Confirm_JspCourseNAReportPersonnel
         ]
     });

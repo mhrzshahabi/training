@@ -384,6 +384,16 @@ public class TclassService implements ITclassService {
         return modelMapper.map(saved, TclassDTO.Info.class);
     }
 
+    @Override
+    public void changeOnlineEvalTeacherStatus(Long classId, boolean state) {
+        tclassDAO.changeOnlineEvalTeacherStatus(classId,state);
+    }
+
+    @Override
+    public void changeOnlineEvalStudentStatus(Long classId, boolean state) {
+        tclassDAO.changeOnlineEvalStudentStatus(classId,state);
+    }
+
     @Transactional()
     @Override
     public List<ClassStudentDTO.AttendanceInfo> getStudents(Long classID) {

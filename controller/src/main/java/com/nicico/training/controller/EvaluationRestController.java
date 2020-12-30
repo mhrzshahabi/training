@@ -10,6 +10,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
+import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import com.nicico.training.service.*;
@@ -56,6 +57,7 @@ public class EvaluationRestController {
     private final DynamicQuestionDAO dynamicQuestionDAO;
     private final ClassStudentDAO classStudentDAO;
     private final ClassEvaluationGoalsService classEvaluationGoalsService;
+    private final ITclassService iTclassService;
 
     @Loggable
     @PostMapping("/printWithCriteria")
@@ -316,6 +318,12 @@ public class EvaluationRestController {
     @PostMapping("/deleteEvaluation")
     public ResponseEntity deleteEvaluation(@RequestBody HashMap req) {
         evaluationService.deleteEvaluation(req);
+        if (req.get("classId") != null && req.get("questionnaireTypeId")!= null && req.get("questionnaireTypeId").toString().equals("140")) {
+            iTclassService.changeOnlineEvalTeacherStatus(Long.parseLong(req.get("classId").toString()), false);
+        }
+        if (req.get("classId") != null && req.get("questionnaireTypeId")!= null && req.get("questionnaireTypeId").toString().equals("139")) {
+            iTclassService.changeOnlineEvalStudentStatus(Long.parseLong(req.get("classId").toString()), false);
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -348,6 +356,9 @@ public class EvaluationRestController {
     @GetMapping(value = "/deleteAllReactionEvaluationForms/{classId}")
     public ResponseEntity<Void> deleteAllReactionEvaluationForms(@PathVariable Long classId, HttpServletRequest iscRq) throws IOException {
         evaluationService.deleteAllReactionEvaluationForms(classId);
+        if (classId != null) {
+            iTclassService.changeOnlineEvalTeacherStatus(classId, false);
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

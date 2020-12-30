@@ -333,6 +333,11 @@
                                                 isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
                                                     classRecord_RE.id,"GET", null, null));
                                                 const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                                                if (classRecord_RE.classStudentOnlineEvalStatus) {
+                                                    ToolStripButton_OnlineFormIssuanceForAll_RE.setDisabled(false);
+                                                    classRecord_RE.classStudentOnlineEvalStatus= false;
+                                                    ListGrid_class_Evaluation.getSelectedRecord().classStudentOnlineEvalStatus = false;
+                                                }
                                                 setTimeout(() => {
                                                     msg.close();
                                                 }, 3000);
@@ -694,6 +699,12 @@
                                 isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
                                     classRecord_RE.id,"GET", null, null));
                                 const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                                if (classRecord_RE.classStudentOnlineEvalStatus) {
+                                    ToolStripButton_OnlineFormIssuanceForAll_RE.setDisabled(false);
+                                    classRecord_RE.classStudentOnlineEvalStatus= false;
+                                    ListGrid_class_Evaluation.getSelectedRecord().classStudentOnlineEvalStatus = false;
+
+                                }
                                 setTimeout(() => {
                                     msg.close();
                                 }, 3000);
@@ -822,8 +833,15 @@
                                                                     ToolStrip_SendForms_RE.getField("sendButtonTeacher").hideIcon("ok");
                                                                     ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(true);
                                                                     ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(true);
+                                                                    if (classRecord_RE.classTeacherOnlineEvalStatus) {
+                                                                        ToolStripButton_OnlineFormIssuanceForAll_RE.setDisabled(false);
+                                                                        classRecord_RE.classTeacherOnlineEvalStatus= false;
+                                                                        ListGrid_class_Evaluation.getSelectedRecord().classTeacherOnlineEvalStatus = false;
+
+                                                                    }
 
                                                                     ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
+                                                                    classRecord_RE.classTeacherOnlineEvalStatus= false;
                                                                     ToolStrip_SendForms_RE.redraw();
                                                                 } else {
                                                                     createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
@@ -856,10 +874,14 @@
                                 title: "ارسال به آموزش آنلاین",
                                 type: "button",
                                 startRow: false,
+                                // disabled: classRecord_RE.classTeacherOnlineEvalStatus,
+                                // disabled: true,
                                 endRow: false,
                                 click: function () {
-                                    console.log('send')
-                                    sendToEls('teacher')
+                                    if (classRecord_RE.teacherEvalStatus == "0" || classRecord_RE.teacherEvalStatus == null)
+                                        createDialog("info", "فرم ارزیابی واکنشی برای مدرس صادر نشده است");
+                                    console.log('send');
+                                    sendToEls('teacher');
                                 }
                             },
                             {
@@ -963,8 +985,8 @@
                                                                         classRecord_RE.id,"GET", null, null));
                                                                     classRecord_RE.trainingEvalStatus = 0;
                                                                     ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
-                                                                    ToolStrip_SendForms_RE.getField("sendToEls_supervisor").setDisabled(true);
-                                                                    ToolStrip_SendForms_RE.getField("showResultsEls_supervisor").setDisabled(true);
+                                                                   // ToolStrip_SendForms_RE.getField("sendToEls_supervisor").setDisabled(true);
+                                                                   // ToolStrip_SendForms_RE.getField("showResultsEls_supervisor").setDisabled(true);
 
                                                                     ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
                                                                     ToolStrip_SendForms_RE.redraw();
@@ -1115,6 +1137,11 @@
                             icon: "[SKIN]say.png",
                             title: "<spring:message code='message'/>"
                         });
+                        if(type !== 'supervisor') {
+                            ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(true);
+                            ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(false);
+                            ListGrid_class_Evaluation.getSelectedRecord().classTeacherOnlineEvalStatus = true;
+                        }
                         setTimeout(function () {
                             OK.close();
                         }, 2000);
@@ -1306,9 +1333,9 @@
             let check = true;
             for (let j = 0; j < ListGrid_student_RE.getData().localData.size(); j++) {
                 let record = ListGrid_student_RE.getData().localData[j];
-                if (record.evaluationStatusReaction == null
-                    || record.evaluationStatusReaction == 0
-                    || record.evaluationStatusReaction == undefined) {
+                if (record.evaluationStatusReaction === null
+                    || record.evaluationStatusReaction === 0
+                    || record.evaluationStatusReaction === undefined) {
                     check = false;
                 }
             }
@@ -1362,13 +1389,18 @@
                         if (type == 'eval') {
                             isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/eval/" + result[0].evaluationId, "GET", null, function (resp) {
                                 if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                                                                        wait.close();
+                                    wait.close();
 
                                     var OK = isc.Dialog.create({
                                         message: "<spring:message code="msg.operation.successful"/>",
                                         icon: "[SKIN]say.png",
                                         title: "<spring:message code='message'/>"
                                     });
+
+                                    ToolStripButton_OnlineFormIssuanceForAll_RE.setDisabled(true);
+                                    ToolStripButton_OnlineFormIssuanceResultForAll_RE.setDisabled(false);
+                                    ListGrid_class_Evaluation.getSelectedRecord().classStudentOnlineEvalStatus = true;
+                                    classRecord_RE.classStudentOnlineEvalStatus = true;
                                     setTimeout(function () {
                                         OK.close();
                                     }, 2000);
@@ -2916,16 +2948,18 @@
                     ListGrid_student_RE.invalidateCache();
                 } else if (questionnarieTypeId == 141) {
                     classRecord_RE.trainingEvalStatus = 1;
+
                     ToolStrip_SendForms_RE.getField("sendButtonTraining").showIcon("ok");
-                    ToolStrip_SendForms_RE.getField("sendToEls_supervisor").setDisabled(false);
-                    ToolStrip_SendForms_RE.getField("showResultsEls_supervisor").setDisabled(false);
+                  //  ToolStrip_SendForms_RE.getField("sendToEls_supervisor").setDisabled(false);
+                  //  ToolStrip_SendForms_RE.getField("showResultsEls_supervisor").setDisabled(false);
 
                     ToolStrip_SendForms_RE.redraw();
                 } else if (questionnarieTypeId == 140) {
                     classRecord_RE.teacherEvalStatus = 1;
+
                     ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
                     ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(false);
-                    ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(false);
+                    ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(true);
 
                     ToolStrip_SendForms_RE.redraw();
                 }
@@ -2967,13 +3001,15 @@
                         ListGrid_student_RE.invalidateCache();
                     } else if (questionnarieTypeId == 141) {
                         classRecord_RE.trainingEvalStatus = 1;
+
                         ToolStrip_SendForms_RE.getField("sendButtonTraining").showIcon("ok");
-                        ToolStrip_SendForms_RE.getField("sendToEls_supervisor").setDisabled(false);
-                        ToolStrip_SendForms_RE.getField("showResultsEls_supervisor").setDisabled(false);
+                      //  ToolStrip_SendForms_RE.getField("sendToEls_supervisor").setDisabled(false);
+                       // ToolStrip_SendForms_RE.getField("showResultsEls_supervisor").setDisabled(false);
 
                         ToolStrip_SendForms_RE.redraw();
                     } else if (questionnarieTypeId == 140) {
                         classRecord_RE.teacherEvalStatus = 1;
+
                         ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
                         ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(false);
                         ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(false);

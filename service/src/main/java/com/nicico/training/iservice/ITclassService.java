@@ -101,4 +101,10 @@ public interface ITclassService {
 
     @Transactional
     Map<Long,Integer> checkClassesForSendMessage(List<Long> classIds);
+
+    @Transactional
+    void changeOnlineEvalTeacherStatus(Long classId , boolean state);
+
+    @Transactional
+    void changeOnlineEvalStudentStatus(Long classId ,boolean state);
 }
