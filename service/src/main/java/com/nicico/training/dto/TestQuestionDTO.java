@@ -24,6 +24,9 @@ public class TestQuestionDTO {
     private boolean isPreTestQuestion;
 
     private Long tclassId;
+    private Boolean onlineFinalExamStatus;
+    private Boolean onlineExamDeadLineStatus;
+
     // ------------------------------
 
     @Getter
