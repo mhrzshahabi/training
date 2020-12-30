@@ -294,7 +294,7 @@
                             margin: 3,
 
                             click: function () {
-                                loadExamResult(record.id)
+                                loadExamResult(record)
                             }
                         });
                         return button;
@@ -312,7 +312,7 @@
         ]
     });
 
-    function loadExamResult(id){
+    function loadExamResult(recordList){
         let ListGrid_Result_finalTest = isc.TrLG.create({
             width: "100%",
             height: 700,
@@ -350,7 +350,7 @@
                         title: "چاپ گزارش",
                         width: "120",
                         click: function () {
-printEls("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.lastName);
+                            printEls("pdf",recordList.id,record.nationalCode,"ElsExam.jasper",record.surname,record.lastName);
                         }
                     });
                     return button2;
@@ -361,9 +361,8 @@ printEls("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.las
             }
         });
 
-
             wait.show();
-            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examResult/" + id, "GET", null, function (resp) {
+            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examResult/" + recordList.id, "GET", null, function (resp) {
                 if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                     let results = JSON.parse(resp.data).data;
                     var OK = isc.Dialog.create({
@@ -373,7 +372,7 @@ printEls("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.las
                     });
                     setTimeout(function () {
                         OK.close();
-                    }, 8000);
+                    }, 3000);
 
                     ListGrid_Result_finalTest.setData(results);
 
@@ -420,7 +419,7 @@ printEls("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.las
                     });
                     setTimeout(function () {
                         ERROR.close();
-                    }, 8000);
+                    }, 3000);
                 }
                 wait.close();
             }))
@@ -495,57 +494,57 @@ printEls("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.las
     });
 
     function ListGrid_show_results(answers) {
-        let radio_FormItem =  { name: "startMode",titleOrientation: "top", title: "Initially show ColorPicker as",
-                        width: 200,
-                        type: "radioGroup",
-                        valueMap: {
-                            "simple": "Simple",
-                            "complex": "Complex"
-                        }
-                    };
+
 
         let dynamicForm_Answers_List = isc.DynamicForm.create({
                 padding: 6,
                 numCols: 1,
+                values: {},
+                styleName: "answers-form",
+                height:768,
                 fields: []
                 });
         console.log(answers)
         for(var i=0 ; i<answers.length; i++) {
-                let text_FormItem = { title:"Pasted value",titleOrientation: "top", name:"textArea", width:"100%",height:100, editorType: "TextAreaItem", value: ''};
+                let text_FormItem = { title:"Pasted value",cellStyle: 'text-exam-form-item',disabled:true, titleOrientation: "top", name:"textArea", width:"100%",height:100, editorType: "TextAreaItem", value: ''};
+                let radio_FormItem =  { name: "startMode", cellStyle: 'radio-exam-form-item', disabled:true,titleOrientation: "top", title: "Initially show ColorPicker as",
+                        width: "100%",
+                        type: "radioGroup",
+                        valueMap: {}
+                    };
+
                 text_FormItem.title = (i+1)+"-"+answers[i].question;
                 text_FormItem.value = answers[i].answer;
                 text_FormItem.name = answers[i].answer;
-                console.log(answers[i].answer)
-                dynamicForm_Answers_List.addField(text_FormItem)
+                if(answers[i].type == "چند گزینه ای") {
+                    radio_FormItem.title = answers[i].question;
+                    radio_FormItem.name = answers[i].answer;
+                    if(answers[i].options.length > 0) {
+                        for(let j = 0; j< answers[i].options.length; j++){
+                            let key = answers[i].options[j].title;
+                            let value = answers[i].options[j].title;
+                            radio_FormItem.valueMap[key] = value;
+                        }
+                    }
+                    dynamicForm_Answers_List.addField(radio_FormItem)
+                    if(radio_FormItem.valueMap.hasOwnProperty(answers[i].answer)) {
+                         dynamicForm_Answers_List.getField(answers[i].answer).setValue(answers[i].answer);
+                    }
+                } else {
+                    dynamicForm_Answers_List.addField(text_FormItem)
+                }
             }
-        // let ListGrid_Result_Answer_fianTest = isc.TrLG.create({
-        //     width: "100%",
-        //     height: 700,
-        //     canHover: true,
-        //     hoverWidth: 300,
-        //     filterOperator: "iContains",
-        //     filterOnKeypress: false,
-        //     allowAdvancedCriteria: true,
-        //     allowFilterExpressions: true,
-        //     showRecordComponents: true,
-        //     showRecordComponentsByCell: true,
-        //     styleName: "show-more-style",
-        //     dataSource: RestDataSource_Result_Answers_FianlTest,
-        //     fields: [
-        //         {name: "question", title: 'سوال' ,width: '49%'},
-        //         {name: "answer", title: 'پاسخ' ,width: '49%'}
-        //     ],
-        // });
-        //
-        // ListGrid_Result_Answer_fianTest.setData(answers)
-
         let Window_result_Answer_FinalTest = isc.Window.create({
             width: 1024,
             height: 768,
             keepInParentRect: true,
             title: "مشاهده پاسخ ها",
+            autoSize: false,
+            isModal: true,
+            autoDraw: true,
+            overflow: "auto",
             items: [
-                isc.VLayout.create({
+             isc.VLayout.create({
                     width: "100%",
                     height: "100%",
                     defaultLayoutAlign: "center",
@@ -553,18 +552,23 @@ printEls("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.las
                     members: [
                         isc.HLayout.create({
                             width: "100%",
-                            height: "90%",
-                            members: [dynamicForm_Answers_List]
+                            height: "100%",
+                            overflow: "auto",
+                            styleName: "hLayout-scrollable",
+                            autoDraw: false,
+                            members: [
+                                dynamicForm_Answers_List
+                            ]
                         }),
                         isc.IButtonCancel.create({
                             click: function () {
                                 Window_result_Answer_FinalTest.close();
                             }
-                        })]
+                        })
+                    ]
                 })
             ],
-            minWidth: 1024
-        })
+        });
             Window_result_Answer_FinalTest.show();
     }
 
@@ -593,7 +597,7 @@ printEls("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.las
                                          });
                                     setTimeout(function () {
                                         OK.close();
-                                    }, 8000);
+                                    }, 5000);
                                     } else {
                                     wait.close();
                                      if (resp.httpResponseCode === 500)
