@@ -983,4 +983,16 @@
         criteriaForm.show();
         criteriaForm.submitForm();
     }
+
+
+    function printEls(type,id,national,fileName,name,last) {
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "/training/anonymous/els/printPdf/" +id+"/"+national+"/"+name+"/"+last+"/"+"exam",
+            target: "_Blank",
+            canSubmit: true
+        });
+        criteriaForm.show();
+        criteriaForm.submitForm();
+    }
     //</script>

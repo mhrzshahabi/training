@@ -22,10 +22,15 @@ import response.BaseResponse;
 import response.evaluation.EvalListResponse;
 import response.evaluation.SendEvalToElsResponse;
 import response.exam.ExamListResponse;
+import response.exam.ExamQuestionsDto;
 import response.exam.ExamResultDto;
+import response.question.QuestionsDto;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/anonymous/els")
@@ -37,6 +42,7 @@ public class ElsRestController {
     private final QuestionnaireService questionnaireService;
     private final EvaluationService evaluationService;
     private final ClassStudentService classStudentService;
+    private final TclassService tclassService;
     private final TeacherService teacherService;
     private final ITclassService iTclassService;
     private final StudentService studentService;
@@ -134,42 +140,60 @@ public class ElsRestController {
 
             } else {
 
-                PersonalInfo teacherInfo = personalInfoService.getPersonalInfo
-                        (teacherService.getTeacher(object.getExamItem().getTclass().getTeacherId()).getPersonalityId());
-                if (null == teacherInfo.getGender() ||
-                        null == teacherInfo.getContactInfo() ||
-                        null == teacherInfo.getNationalCode() ||
-                        10 != teacherInfo.getNationalCode().length() ||
-                        null == teacherInfo.getContactInfo().getMobile()) {
-                    response.setMessage("اطلاعات استاد تکمیل نیست");
-                    return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
-                } else {
-                    request = evaluationBeanMapper.toGetExamRequest(teacherInfo,
-                            object, classStudentService.getClassStudents(object.getExamItem().getTclassId()));
-                    boolean hasDuplicateQuestions = evaluationBeanMapper.hasDuplicateQuestions(request.getQuestionProtocols());
-                    boolean hasWrongCorrectAnswer = evaluationBeanMapper.hasWrongCorrectAnswer(request.getQuestionProtocols());
-                    if (hasDuplicateQuestions || hasWrongCorrectAnswer || request.getQuestionProtocols().size() == 0) {
-
-                        response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-                        if (hasDuplicateQuestions)
-                            response.setMessage("سوال با عنوان تکراری در آزمون موجود است!");
-                        else if (hasWrongCorrectAnswer)
-                            response.setMessage("سوال چهار گزینه ای بدون جواب صحیح موجود است!");
-
-                        else
-                            response.setMessage("آزمون سوال ندارد!");
-
-
-                        return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
-                    } else {
-
-                        response = client.sendExam(request);
-                        if (response.getStatus() == HttpStatus.OK.value())
-                            return new ResponseEntity<>(response, HttpStatus.OK);
-                        else
+                if (object.getExamItem().getTclass().getTeacherId()!=null)
+                {
+                    if (evaluationBeanMapper.checkExamScore(object, tclassService.getTClass(object.getExamItem().getTclassId())))
+                    {
+                        PersonalInfo teacherInfo = personalInfoService.getPersonalInfo
+                                (teacherService.getTeacher(object.getExamItem().getTclass().getTeacherId()).getPersonalityId());
+                        if (null == teacherInfo.getGender() ||
+                                null == teacherInfo.getContactInfo() ||
+                                null == teacherInfo.getNationalCode() ||
+                                10 != teacherInfo.getNationalCode().length() ||
+                                null == teacherInfo.getContactInfo().getMobile()) {
+                            response.setMessage("اطلاعات استاد تکمیل نیست");
                             return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+                        } else {
+                            request = evaluationBeanMapper.toGetExamRequest(tclassService.getTClass(object.getExamItem().getTclassId()),teacherInfo,
+                                    object, classStudentService.getClassStudents(object.getExamItem().getTclassId()));
+                            boolean hasDuplicateQuestions = evaluationBeanMapper.hasDuplicateQuestions(request.getQuestionProtocols());
+                            boolean hasWrongCorrectAnswer = evaluationBeanMapper.hasWrongCorrectAnswer(request.getQuestionProtocols());
+                            if (hasDuplicateQuestions || hasWrongCorrectAnswer || request.getQuestionProtocols().size() == 0) {
+
+                                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                                if (hasDuplicateQuestions)
+                                    response.setMessage("سوال با عنوان تکراری در آزمون موجود است!");
+                                else if (hasWrongCorrectAnswer)
+                                    response.setMessage("سوال چهار گزینه ای بدون جواب صحیح موجود است!");
+
+                                else
+                                    response.setMessage("آزمون سوال ندارد!");
+
+
+                                return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+                            } else {
+
+                                response = client.sendExam(request);
+                                if (response.getStatus() == HttpStatus.OK.value())
+                                    return new ResponseEntity<>(response, HttpStatus.OK);
+                                else
+                                    return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+
+                            }
+                        }
 
                     }
+                    else
+                    {
+                        response.setMessage("بارم بندی آزمون صحیح نمی باشد");
+                        return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+                    }
+
+                }
+                else
+                {
+                    response.setMessage("کلاس استاد ندارد");
+                    return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
                 }
 
 
@@ -227,4 +251,14 @@ public class ElsRestController {
 
 
     }
+
+
+    @PostMapping("/examQuestions")
+    public ResponseEntity<ExamQuestionsDto> examQuestions(@RequestBody ExamImportedRequest object) {
+
+        ExamQuestionsDto  response=evaluationBeanMapper.toGetExamQuestions(object);
+
+        return new ResponseEntity(response, HttpStatus.OK);
+
+     }
 }

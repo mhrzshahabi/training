@@ -282,7 +282,8 @@
                             width: "140",
                             margin: 3,
                             click: function () {
-                                loadExamQuestions(record)
+                               loadExamForScores(record)
+                                // loadExamQuestions(record)
                             }
                         });
                         return button;
@@ -311,7 +312,16 @@
             {name: "answers", hidden: true },
         ]
     });
-
+        var RestDataSource_Questions_finalTest = isc.TrDS.create({
+        fields: [
+             {name: "id",hidden:true },
+             {name: "question", title: 'سوال'},
+                {name: "type", title: 'نوع پاسخ' },
+                { name: "options", title: "گزینه ها"},
+                { name: "score", title: "بارم",canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click",
+                }
+        ]
+    });
     function loadExamResult(id){
         let ListGrid_Result_finalTest = isc.TrLG.create({
             width: "100%",
@@ -346,7 +356,7 @@
                         title: "چاپ گزارش",
                         width: "120",
                         click: function () {
-printPdf("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.lastName);
+printEls("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.lastName);
                         }
                     });
                     return button2;
@@ -369,7 +379,7 @@ printPdf("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.las
                     });
                     setTimeout(function () {
                         OK.close();
-                    }, 8000);
+                    }, 1500);
 
                     ListGrid_Result_finalTest.setData(results);
 
@@ -420,6 +430,204 @@ printPdf("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.las
                 }
                 wait.close();
             }))
+    }
+    var questionData;
+    function setScoreValue(value, form) {
+        let index = questionData.findIndex(f => f.question == form.values.question)
+        questionData[index].score = value;
+        }
+
+    function loadExamForScores(record){
+
+
+
+
+
+        var ListGrid_Questions_finalTest = isc.TrLG.create({
+            width: "100%",
+            height: 700,
+
+            dataSource: RestDataSource_Questions_finalTest,
+            showRecordComponents: true,
+            showRecordComponentsByCell: true,
+            fields: [
+                 {name: "id",hidden:true},
+                {name: "question", title: 'سوال',  width: "20%"},
+                {name: "type", title: 'نوع پاسخ' , width: "10%"},
+                { name: "options", title: "گزینه ها", width: "20%",align:"center"},
+                { name: "score", title: "بارم", width: "10%", align:"center", change: function(form, item, value, oldValue) {
+                   setScoreValue(value, form)
+                    },canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click",
+                }
+
+            ],
+
+        });
+
+            wait.show();
+           isc.RPCManager.sendRequest(TrDSRequest(questionBankTestQuestionUrl +"/test/"+record.tclass.id+ "/spec-list", "GET",null, function (resp) {
+                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                            let result = JSON.parse(resp.httpResponseText).response.data;
+                              wait.close();
+                              wait.show();
+                              var examData = {
+                                  examItem : record,
+                                  questions: result
+                                };
+                                isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examQuestions", "POST", JSON.stringify(examData), function (resp) {
+                                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                    let results = JSON.parse(resp.data).data;
+                    var OK = isc.Dialog.create({
+                        message: "<spring:message code="msg.operation.successful"/>",
+                        icon: "[SKIN]say.png",
+                        title: "<spring:message code='message'/>"
+                    });
+                    setTimeout(function () {
+                        OK.close();
+                    }, 1500);
+                  questionData = results;
+                    console.log(results);
+                  ListGrid_Questions_finalTest.setData(results);
+
+                    let Window_result_Finaltest = isc.Window.create({
+                        width: 1024,
+                        height: 768,
+                        keepInParentRect: true,
+                        title: "ارسال آزمون به آموزش آنلاین",
+                        items: [
+                            isc.VLayout.create({
+                                width: "100%",
+                                height: "100%",
+                                defaultLayoutAlign: "center",
+                                align: "center",
+                                members: [
+                                       isc.Label.create({
+
+              contents: "<br/> <span style='color: #000000; font-weight: bold; font-size: large'>برای ارسال آزمون به سیستم آموزش آنلاین لطفا بارم هر سوال را در مقابل آن بنویسید و در نهایت دکمه ارسال آزمون را بزنید</span> <br/>",
+
+                 align: "center",
+                padding: 5,
+                ID: "totalsLabel_competence"
+            }),
+                                    isc.HLayout.create({
+                                        width: "100%",
+                                        height: "90%",
+                                        members: [ListGrid_Questions_finalTest]
+                                    }),
+                                    isc.HLayout.create({
+                                        width: "100%",
+                                        height: "90%",
+                                        align: "center",
+                                        membersMargin: 10,
+                                        members: [
+                                                 isc.IButtonSave.create({
+                            layoutAlign: "center",
+                            title: "ارسال به آموزش آنلاین",
+                            width: "140",
+                            click: function () {
+                                questionData.map(item => {
+                                    if(!item.score)
+                                        item.score = '0';
+                                    return item;
+                                    })
+                                loadExamQuestions(record,questionData)
+                            }
+                        }),
+                                            isc.IButtonCancel.create({
+                                                click: function () {
+                                                Window_result_Finaltest.close();
+                                                }
+                                            })
+                                        ]
+                                    })]
+                            })
+                        ],
+                        minWidth: 1024
+                    })
+                    Window_result_Finaltest.show();
+                } else {
+                    var ERROR = isc.Dialog.create({
+                        message: "<spring:message code='exception.un-managed'/>",
+                        icon: "[SKIN]stop.png",
+                        title: "<spring:message code='message'/>"
+                    });
+                    setTimeout(function () {
+                        ERROR.close();
+                    }, 8000);
+                }
+                wait.close();
+
+                             }))
+
+                        } else {
+                            wait.close();
+                            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                        }
+                    }))
+
+
+            // wait.show();
+            <%--isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examQuestions/" + id, "GET", null, function (resp) {--%>
+            <%--    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {--%>
+            <%--        let results = JSON.parse(resp.data).data;--%>
+            <%--        var OK = isc.Dialog.create({--%>
+            <%--            message: "<spring:message code="msg.operation.successful"/>",--%>
+            <%--            icon: "[SKIN]say.png",--%>
+            <%--            title: "<spring:message code='message'/>"--%>
+            <%--        });--%>
+            <%--        setTimeout(function () {--%>
+            <%--            OK.close();--%>
+            <%--        }, 1500);--%>
+
+            <%--        istGrid_Questions_finalTest.setData(results);--%>
+
+            <%--        let Window_result_Finaltest = isc.Window.create({--%>
+            <%--            width: 1024,--%>
+            <%--            height: 768,--%>
+            <%--            keepInParentRect: true,--%>
+            <%--            title: "ارسال آزمون به آموزش آنلاین",--%>
+            <%--            items: [--%>
+            <%--                isc.VLayout.create({--%>
+            <%--                    width: "100%",--%>
+            <%--                    height: "100%",--%>
+            <%--                    defaultLayoutAlign: "center",--%>
+            <%--                    align: "center",--%>
+            <%--                    members: [--%>
+            <%--                        isc.HLayout.create({--%>
+            <%--                            width: "100%",--%>
+            <%--                            height: "90%",--%>
+            <%--                            members: [ListGrid_Questions_finalTest]--%>
+            <%--                        }),--%>
+            <%--                        isc.HLayout.create({--%>
+            <%--                            width: "100%",--%>
+            <%--                            height: "90%",--%>
+            <%--                            align: "center",--%>
+            <%--                            membersMargin: 10,--%>
+            <%--                            members: [--%>
+            <%--                                isc.IButtonCancel.create({--%>
+            <%--                                    click: function () {--%>
+            <%--                                    Window_result_Finaltest.close();--%>
+            <%--                                    }--%>
+            <%--                                })--%>
+            <%--                            ]--%>
+            <%--                        })]--%>
+            <%--                })--%>
+            <%--            ],--%>
+            <%--            minWidth: 1024--%>
+            <%--        })--%>
+            <%--        Window_result_Finaltest.show();--%>
+            <%--    } else {--%>
+            <%--        var ERROR = isc.Dialog.create({--%>
+            <%--            message: "<spring:message code='exception.un-managed'/>",--%>
+            <%--            icon: "[SKIN]stop.png",--%>
+            <%--            title: "<spring:message code='message'/>"--%>
+            <%--        });--%>
+            <%--        setTimeout(function () {--%>
+            <%--            ERROR.close();--%>
+            <%--        }, 8000);--%>
+            <%--    }--%>
+            <%--    wait.close();--%>
+            <%--}))--%>
     }
 
         function printFullClearForm(id) {
@@ -530,7 +738,7 @@ printPdf("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.las
     }
 
 
-    function loadExamQuestions(record){
+    function loadExamQuestions(record,questionData){
            wait.show();
            isc.RPCManager.sendRequest(TrDSRequest(questionBankTestQuestionUrl +"/test/"+record.tclass.id+ "/spec-list", "GET",null, function (resp) {
                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
@@ -539,7 +747,8 @@ printPdf("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.las
                               wait.show();
                               var examData = {
                                   examItem : record,
-                                  questions: result
+                                  questions: result,
+                                  questionData: questionData,
                                 };
                                 isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examToEls", "POST", JSON.stringify(examData), function (resp) {
                                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
@@ -976,6 +1185,16 @@ printPdf("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.las
         }, 3000);
     };
 
+        function checkHaveQuestion(res) {
+            if(res.data.length == 0) {
+            ToolStrip_Actions_FinalTest.members[2].setDisabled(true);
+            ToolStrip_Actions_FinalTest.members[3].setDisabled(true);
+            }else{
+            ToolStrip_Actions_FinalTest.members[2].setDisabled(false);
+            ToolStrip_Actions_FinalTest.members[3].setDisabled(false);
+            }
+        }
+
     function loadTab() {
         if (FinalTestLG_finalTest.getSelectedRecord() === null) {
             TabSet_finalTest.disable();
@@ -986,7 +1205,9 @@ printPdf("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.las
         classId_finalTest = FinalTestLG_finalTest.getSelectedRecord().id;
         RestDataSource_FinalTest.fetchDataURL = questionBankTestQuestionUrl +"/test/"+FinalTestLG_finalTest.getSelectedRecord().tclass.id+ "/spec-list";
         ListGrid_FinalTest.invalidateCache();
-        ListGrid_FinalTest.fetchData();
+        ListGrid_FinalTest.fetchData(null,(res) => {
+            checkHaveQuestion(res);
+            });
         TabSet_finalTest.enable();
     }
 

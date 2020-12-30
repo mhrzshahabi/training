@@ -366,7 +366,7 @@ abaspour 9803
                                 if (RpcResponse_o.data == 'success') {
                                     // isc.say(rejectDocumentLabel == null ? targetTitleFa + " تایید شد." : targetTitleFa + " جهت بررسی ارسال شد.");
                                     //isc.say(rejectDocumentLabel == null ? " تایید شد." : " جهت بررسی ارسال شد.");
-                                    simpleDialog("<spring:message code="message"/>", rejectDocumentLabel == null ? " تایید شد." : " جهت بررسی ارسال شد.", 3000, "say");
+                                    simpleDialog("<spring:message code="message"/>", rejectDocumentLabel == null ? " تایید شد." : " عملیات تایید با موفقیت انجام شد.", 3000, "say");
                                     taskConfirmationWindow.hide();
                                     ListGrid_UserTaskList.invalidateCache();
                                     <%--userCartableButton.setTitle("شخصی (" + ${cartableCount -1} +"   )");--%>
