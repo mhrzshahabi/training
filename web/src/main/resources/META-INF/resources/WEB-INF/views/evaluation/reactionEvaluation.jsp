@@ -880,7 +880,6 @@
                                 click: function () {
                                     if (classRecord_RE.teacherEvalStatus == "0" || classRecord_RE.teacherEvalStatus == null)
                                         createDialog("info", "فرم ارزیابی واکنشی برای مدرس صادر نشده است");
-                                    console.log('send');
                                     sendToEls('teacher');
                                 }
                             },
@@ -890,7 +889,6 @@
                                 type: "button",
                                 startRow: false,
                                 click: function () {
-                                    console.log('show')
                                     showResults('teacher')
                                 }
                             },
@@ -1129,7 +1127,6 @@
         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
             if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                 let result = JSON.parse(resp.httpResponseText).response.data;
-                wait.show();
                 isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/teacherEval/" + result[0].evaluationId, "GET", null, function (resp) {
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                         var OK = isc.Dialog.create({
@@ -1146,13 +1143,10 @@
                             OK.close();
                         }, 2000);
                     } else {
-                      wait.close();
-                                     if (resp.httpResponseCode === 500)
-                                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
-                                     else
-                                    createDialog("info",JSON.parse(resp.httpResponseText).message, "<spring:message code="error"/>");
-
-
+                         if (resp.httpResponseCode === 500)
+                        createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                         else
+                        createDialog("info",JSON.parse(resp.httpResponseText).message, "<spring:message code="error"/>");
                     }
                     wait.close()
                 }))
@@ -1165,8 +1159,9 @@
                 setTimeout(function () {
                     ERROR.close();
                 }, 2000);
+                wait.close();
             }
-            wait.close();
+
         }))
     }
     function showResults(type) {
@@ -1225,10 +1220,8 @@
         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
             if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                 let result = JSON.parse(resp.httpResponseText).response.data;
-                wait.show();
             isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/evalResult/" + result[0].evaluationId, "GET", null, function (resp) {
                 if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                    wait.close();
                     let results = JSON.parse(resp.data).data;
                     var OK = isc.Dialog.create({
                         message: "<spring:message code="msg.operation.successful"/>",
@@ -1289,6 +1282,7 @@
                 wait.close();
             }))
         } else {
+                wait.close()
                 var ERROR = isc.Dialog.create({
                     message: "<spring:message code='exception.un-managed'/>",
                     icon: "[SKIN]stop.png",
@@ -1298,7 +1292,6 @@
                     ERROR.close();
                 }, 8000);
             }
-            wait.close()
         }));
     }
 

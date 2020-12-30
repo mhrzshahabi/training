@@ -786,8 +786,6 @@
            isc.RPCManager.sendRequest(TrDSRequest(questionBankTestQuestionUrl +"/test/"+record.tclass.id+ "/spec-list", "GET",null, function (resp) {
                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                             let result = JSON.parse(resp.httpResponseText).response.data;
-                              wait.close();
-                              wait.show();
                               var examData = {
                                   examItem : record,
                                   questions: result,
@@ -796,9 +794,6 @@
                                 isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examToEls", "POST", JSON.stringify(examData), function (resp) {
                                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
-
-                                    wait.close();
-
                                         var OK = isc.Dialog.create({
                                         message: "<spring:message code="msg.operation.successful"/>",
                                         icon: "[SKIN]say.png",
@@ -806,17 +801,14 @@
                                          });
                                     setTimeout(function () {
                                         OK.close();
-                                    }, 5000);
+                                    }, 3000);
                                     } else {
-                                    wait.close();
                                      if (resp.httpResponseCode === 500)
                                     createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                                      else
                                     createDialog("info",JSON.parse(resp.httpResponseText).message, "<spring:message code="error"/>");
-
-
                                     }
-
+                                    wait.close();
                              }))
 
                         } else {
