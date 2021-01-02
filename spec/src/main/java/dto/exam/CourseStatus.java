@@ -7,7 +7,7 @@ public enum CourseStatus {
     ACTIVE(1,"درحال برگزاری"),
     COMPLETED(2, "برگزار شده"),
     CANCELED(3,"کنسل"),
-    UPCOMMING(4, "آتی");
+    UPCOMING(4, "آتی");
     // درخواست حق الزحمه برای این دوره  /// ////////////////////////////////
 
     private int key;

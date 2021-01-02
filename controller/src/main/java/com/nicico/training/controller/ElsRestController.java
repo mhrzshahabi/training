@@ -123,6 +123,7 @@ public class ElsRestController {
 
     @GetMapping("/examResult/{id}")
     public ResponseEntity<ExamListResponse> examResult(@PathVariable long id) {
+
         ExamListResponse response = client.getExamResults(id);
         //TODO SAVE EVALUATION RESULTS TO DB OR ANYTHING THAT YOU WANT TO DO
         return new ResponseEntity(response, HttpStatus.OK);
@@ -156,16 +157,15 @@ public class ElsRestController {
                         } else {
                             request = evaluationBeanMapper.toGetExamRequest(tclassService.getTClass(object.getExamItem().getTclassId()),teacherInfo,
                                     object, classStudentService.getClassStudents(object.getExamItem().getTclassId()));
-                            boolean hasDuplicateQuestions = evaluationBeanMapper.hasDuplicateQuestions(request.getQuestionProtocols());
+//                            boolean hasDuplicateQuestions = evaluationBeanMapper.hasDuplicateQuestions(request.getQuestionProtocols());
                             boolean hasWrongCorrectAnswer = evaluationBeanMapper.hasWrongCorrectAnswer(request.getQuestionProtocols());
-                            if (hasDuplicateQuestions || hasWrongCorrectAnswer || request.getQuestionProtocols().size() == 0) {
+                            if ( hasWrongCorrectAnswer || request.getQuestionProtocols().size() == 0) {
 
                                 response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-                                if (hasDuplicateQuestions)
-                                    response.setMessage("سوال با عنوان تکراری در آزمون موجود است!");
-                                else if (hasWrongCorrectAnswer)
+//                                if (hasDuplicateQuestions)
+//                                    response.setMessage("سوال با عنوان تکراری در آزمون موجود است!");
+                                 if (hasWrongCorrectAnswer)
                                     response.setMessage("سوال چهار گزینه ای بدون جواب صحیح موجود است!");
-
                                 else
                                     response.setMessage("آزمون سوال ندارد!");
 

@@ -533,7 +533,7 @@
                                         item.score = '0';
                                     return item;
                                     })
-                                loadExamQuestions(record,questionData)
+                                loadExamQuestions(record,questionData,Window_result_Finaltest)
                             }
                         }),
                                             isc.IButtonCancel.create({
@@ -781,7 +781,7 @@
     }
 
 
-    function loadExamQuestions(record,questionData){
+    function loadExamQuestions(record,questionData,dialog){
            wait.show();
            isc.RPCManager.sendRequest(TrDSRequest(questionBankTestQuestionUrl +"/test/"+record.tclass.id+ "/spec-list", "GET",null, function (resp) {
                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
@@ -800,8 +800,9 @@
                                         title: "<spring:message code='message'/>"
                                          });
                                     setTimeout(function () {
+                                         dialog.close();
                                         OK.close();
-                                    }, 3000);
+                                    }, 2000);
                                     } else {
                                      if (resp.httpResponseCode === 500)
                                     createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
