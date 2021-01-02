@@ -287,7 +287,7 @@ public abstract class EvaluationBeanMapper {
 
 
         if (dayIsTomorrow(startDate.getTime()))
-            exam.setStatus(ExamStatus.UPCOMMING);
+            exam.setStatus(ExamStatus.UPCOMING);
         else
             exam.setStatus(ExamStatus.ACTIVE);
 
