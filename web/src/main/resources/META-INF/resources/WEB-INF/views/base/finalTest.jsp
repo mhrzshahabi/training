@@ -295,7 +295,7 @@
                             margin: 3,
 
                             click: function () {
-                                loadExamResult(record.id)
+                                loadExamResult(record)
                             }
                         });
                         return button;
@@ -326,13 +326,17 @@
         let ListGrid_Result_finalTest = isc.TrLG.create({
             width: "100%",
             height: 700,
-
+            canHover: true,
             dataSource: RestDataSource_Result_FinalTest,
+            filterOperator: "iContains",
+            filterOnKeypress: false,
+            allowAdvancedCriteria: true,
+            allowFilterExpressions: true,
             showRecordComponents: true,
             showRecordComponentsByCell: true,
             fields: [
-                {name: "surname", title: 'نام',  width: "20%"},
-                {name: "lastName", title: 'نام خانوادگی' , width: "20%"},
+                {name: "surname", title: 'نام',align: "center", width: "20%"},
+                {name: "lastName", title: 'نام خانوادگی' ,align: "center", width: "20%"},
                 { name: "iconField", title: "نتایج", width: "10%",align:"center"},
                 { name: "iconField2", title: "چاپ گزارش", width: "10%",align:"center"},
 
@@ -356,7 +360,7 @@
                         title: "چاپ گزارش",
                         width: "120",
                         click: function () {
-printEls("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.lastName);
+                            printEls("pdf",recordList.id,record.nationalCode,"ElsExam.jasper",record.surname,record.lastName);
                         }
                     });
                     return button2;
@@ -367,9 +371,8 @@ printEls("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.las
             }
         });
 
-
             wait.show();
-            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examResult/" + id, "GET", null, function (resp) {
+            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examResult/" + recordList.id, "GET", null, function (resp) {
                 if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                     let results = JSON.parse(resp.data).data;
                     var OK = isc.Dialog.create({
@@ -426,7 +429,7 @@ printEls("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.las
                     });
                     setTimeout(function () {
                         ERROR.close();
-                    }, 8000);
+                    }, 3000);
                 }
                 wait.close();
             }))
@@ -699,22 +702,57 @@ printEls("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.las
     });
 
     function ListGrid_show_results(answers) {
-        let ListGrid_Result_Answer_fianTest = isc.TrLG.create({
-            width: "100%",
-            height: 700,
-            dataSource: RestDataSource_Result_Answers_FianlTest,
-            fields: [],
-        });
 
-        ListGrid_Result_Answer_fianTest.setData(answers)
 
+        let dynamicForm_Answers_List = isc.DynamicForm.create({
+                padding: 6,
+                numCols: 1,
+                values: {},
+                styleName: "answers-form",
+                height:768,
+                fields: []
+                });
+        console.log(answers)
+        for(var i=0 ; i<answers.length; i++) {
+                let text_FormItem = { title:"Pasted value",cellStyle: 'text-exam-form-item',disabled:true, titleOrientation: "top", name:"textArea", width:"100%",height:100, editorType: "TextAreaItem", value: ''};
+                let radio_FormItem =  { name: "startMode", cellStyle: 'radio-exam-form-item', disabled:true,titleOrientation: "top", title: "Initially show ColorPicker as",
+                        width: "100%",
+                        type: "radioGroup",
+                        valueMap: {}
+                    };
+
+                text_FormItem.title = (i+1)+"-"+answers[i].question;
+                text_FormItem.value = answers[i].answer;
+                text_FormItem.name = answers[i].answer;
+                if(answers[i].type == "چند گزینه ای") {
+                    radio_FormItem.title = answers[i].question;
+                    radio_FormItem.name = answers[i].answer;
+                    if(answers[i].options.length > 0) {
+                        for(let j = 0; j< answers[i].options.length; j++){
+                            let key = answers[i].options[j].title;
+                            let value = answers[i].options[j].title;
+                            radio_FormItem.valueMap[key] = value;
+                        }
+                    }
+                    dynamicForm_Answers_List.addField(radio_FormItem)
+                    if(radio_FormItem.valueMap.hasOwnProperty(answers[i].answer)) {
+                         dynamicForm_Answers_List.getField(answers[i].answer).setValue(answers[i].answer);
+                    }
+                } else {
+                    dynamicForm_Answers_List.addField(text_FormItem)
+                }
+            }
         let Window_result_Answer_FinalTest = isc.Window.create({
             width: 1024,
             height: 768,
             keepInParentRect: true,
             title: "مشاهده پاسخ ها",
+            autoSize: false,
+            isModal: true,
+            autoDraw: true,
+            overflow: "auto",
             items: [
-                isc.VLayout.create({
+             isc.VLayout.create({
                     width: "100%",
                     height: "100%",
                     defaultLayoutAlign: "center",
@@ -722,18 +760,23 @@ printEls("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.las
                     members: [
                         isc.HLayout.create({
                             width: "100%",
-                            height: "90%",
-                            members: [ListGrid_Result_Answer_fianTest]
+                            height: "100%",
+                            overflow: "auto",
+                            styleName: "hLayout-scrollable",
+                            autoDraw: false,
+                            members: [
+                                dynamicForm_Answers_List
+                            ]
                         }),
                         isc.IButtonCancel.create({
                             click: function () {
                                 Window_result_Answer_FinalTest.close();
                             }
-                        })]
+                        })
+                    ]
                 })
             ],
-            minWidth: 1024
-        })
+        });
             Window_result_Answer_FinalTest.show();
     }
 
@@ -743,8 +786,6 @@ printEls("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.las
            isc.RPCManager.sendRequest(TrDSRequest(questionBankTestQuestionUrl +"/test/"+record.tclass.id+ "/spec-list", "GET",null, function (resp) {
                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                             let result = JSON.parse(resp.httpResponseText).response.data;
-                              wait.close();
-                              wait.show();
                               var examData = {
                                   examItem : record,
                                   questions: result,
@@ -752,9 +793,6 @@ printEls("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.las
                                 };
                                 isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examToEls", "POST", JSON.stringify(examData), function (resp) {
                                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-
-
-                                    wait.close();
 
                                         var OK = isc.Dialog.create({
                                         message: "<spring:message code="msg.operation.successful"/>",
@@ -766,15 +804,12 @@ printEls("pdf",id,record.nationalCode,"ElsExam.jasper",record.surname,record.las
                                         OK.close();
                                     }, 2000);
                                     } else {
-                                    wait.close();
                                      if (resp.httpResponseCode === 500)
                                     createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                                      else
                                     createDialog("info",JSON.parse(resp.httpResponseText).message, "<spring:message code="error"/>");
-
-
                                     }
-
+                                    wait.close();
                              }))
 
                         } else {

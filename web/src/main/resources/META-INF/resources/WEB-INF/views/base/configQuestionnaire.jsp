@@ -51,7 +51,7 @@
     DynamicForm_JspConfigQuestionnaire = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
-        titleAlign: "left",
+        titleAlign: "right",
         fields: [
             {name: "id", hidden: true},
             {
@@ -78,11 +78,13 @@
                 name: "evaluationIndices",
                 title: "<spring:message code='question.indicator'/>",
                 type: "MultiComboBoxItem",
-                layoutStyle: "horizontal",
+                layoutStyle: "vertical",
                 optionDataSource: RestDataSource_QuestionIndicator_JspConfigQuestionnaire,
                 valueField: "id",
                 displayField: "nameFa",
                 filterFields: ["nameFa"],
+                comboBoxWidth: "100%",
+                width: "585",
                 multiple: true,
                 filterOnKeypress: true,
                 comboBoxProperties: {
