@@ -123,6 +123,7 @@ public class ElsRestController {
 
     @GetMapping("/examResult/{id}")
     public ResponseEntity<ExamListResponse> examResult(@PathVariable long id) {
+
         ExamListResponse response = client.getExamResults(id);
         //TODO SAVE EVALUATION RESULTS TO DB OR ANYTHING THAT YOU WANT TO DO
         return new ResponseEntity(response, HttpStatus.OK);
