@@ -27,8 +27,6 @@ public class TestQuestionDTO {
     private Boolean onlineFinalExamStatus;
     private Boolean onlineExamDeadLineStatus;
 
-    private Boolean onlineFinalExamStatus;
-
     // ------------------------------
 
     @Getter
