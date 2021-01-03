@@ -174,9 +174,10 @@ public class ElsRestController {
                             } else {
 
                                 response = client.sendExam(request);
-                                if (response.getStatus() == HttpStatus.OK.value())
+                                if (response.getStatus() == HttpStatus.OK.value()) {
+                                    testQuestionService.changeOnlineFinalExamStatus(request.getExam().getSourceExamId(), true);
                                     return new ResponseEntity<>(response, HttpStatus.OK);
-                                else
+                                }else
                                     return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
 
                             }

@@ -130,6 +130,11 @@
                 title: "<spring:message code="test.question.duration"/>",
                 filterOperator: "iContains", autoFitWidth: true
             },
+            { name: "onlineFinalExamStatus",
+                title: "<spring:message code="test.question.status"/>",
+                 autoFitWidth: true
+            },
+            { name: "onlineExamDeadLineStatus", hidden: true}
             /*{
                 name: "isPreTestQuestion",
                 title: "<spring:message code="test.question.type"/>",
@@ -248,8 +253,10 @@
             {name: "date",},
             {name: "time",},
             {name: "duration",},
+            { name: "onlineFinalExamStatus", valueMap: {"false": "ارسال نشده", "true": "ارسال شده"}},
             { name: "sendBtn", title: " ", width: "140"},
             { name: "showBtn", title: " ", width: "140"},
+            { name: "onlineExamDeadLineStatus" , hidden: true},
 
             //{name: "isPreTestQuestion",}
         ],
@@ -278,11 +285,12 @@
                     if (fieldName == "sendBtn") {
                         let button = isc.IButton.create({
                             layoutAlign: "center",
+                            disabled: record.onlineFinalExamStatus,
                             title: "ارسال به آموزش آنلاین",
                             width: "140",
                             margin: 3,
                             click: function () {
-                               loadExamForScores(record)
+                               loadExamForScores(record);
                                 // loadExamQuestions(record)
                             }
                         });
@@ -290,6 +298,7 @@
                     }if (fieldName == "showBtn") {
                         let button = isc.IButton.create({
                             layoutAlign: "center",
+                            disabled: !record.onlineFinalExamStatus,
                             title: "نمایش نتایج ",
                             width: "140",
                             margin: 3,
@@ -1093,8 +1102,11 @@
     function showEditForm_finalTest() {
         let record = FinalTestLG_finalTest.getSelectedRecord();
         if (record == null || record.id == null) {
-            createDialog("info", "<spring:message code='msg.not.selected.record'/>");
-        } else {
+            createDialog("warning", "<spring:message code='msg.not.selected.record'/>", "<spring:message code="warning"/>");
+        } else  if (record.onlineFinalExamStatus && record.onlineExamDeadLineStatus){
+            createDialog("warning", "<spring:message code='msg.can.not.edit.selected.record'/>", "<spring:message code="warning"/>");
+        }
+        else{
             isc.RPCManager.sendRequest(TrDSRequest(testQuestionUrl + "/" + record.id, "GET", null, result_EditFinalTest));
 
         }

@@ -45,4 +45,7 @@ public class TestQuestion extends Auditable {
 
     @Column(name = "n_duration")
     private Integer duration;
+
+    @Column(name = "B_ONLINE_FINAL_EXAM_STATUS")
+    private Boolean onlineFinalExamStatus;
 }

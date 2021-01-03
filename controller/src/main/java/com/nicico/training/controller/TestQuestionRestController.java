@@ -7,6 +7,7 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.GoalDTO;
 import com.nicico.training.dto.SkillLevelDTO;
@@ -27,6 +28,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -71,7 +76,33 @@ public class TestQuestionRestController {
                 .setCount(endRow - startRow);
 
         SearchDTO.SearchRs<TestQuestionDTO.Info> response = testQuestionService.search(request);
+        LocalDateTime nowDateTime = LocalDateTime.now();
+        LocalDateTime examDateTime ;
 
+        for (TestQuestionDTO.Info testQuestion: response.getList()) {
+            if (testQuestion.getTime() != null && testQuestion.getTime() != ""
+                    && testQuestion.getDate() != null && testQuestion.getDate() != ""){
+                String dateStr = DateUtil.convertKhToMi1(testQuestion.getDate());
+                String timeStr = testQuestion.getTime();
+                String[] str = timeStr.split(":");
+                LocalDate examDate = LocalDate.parse(dateStr);
+                LocalTime examTime = LocalTime.of(Integer.parseInt(str[0]),Integer.parseInt(str[1]));
+                examDateTime = LocalDateTime.of(examDate,examTime);
+                int diff = nowDateTime.minusMinutes(5).compareTo(examDateTime);
+//                System.currentTimeMillis()/1000
+//                if (examDate.isBefore(LocalDate.now()) /*|| (date.equals(LocalDate.now()) && testQuestion.getTime())*/){
+                if (diff > 0){
+                    testQuestion.setOnlineExamDeadLineStatus(true);
+                } else {
+                    testQuestion.setOnlineExamDeadLineStatus(false);
+                }
+            } else {
+                testQuestion.setOnlineExamDeadLineStatus(false);
+            }
+            if (testQuestion.getOnlineFinalExamStatus()  == null){
+                testQuestion.setOnlineFinalExamStatus(false);
+            }
+        }
         final TestQuestionDTO.SpecRs specResponse = new TestQuestionDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)

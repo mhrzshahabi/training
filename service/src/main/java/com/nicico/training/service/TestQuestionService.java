@@ -89,6 +89,7 @@ public class TestQuestionService implements ITestQuestionService {
     @Override
     public TestQuestionDTO.Info create(TestQuestionDTO.Create request) {
         TestQuestion model = modelMapper.map(request, TestQuestion.class);
+        model.setOnlineFinalExamStatus(false);
 
         if (testQuestionDAO.IsExist(model.getTclassId(), false, 0L) == 0) {
             TestQuestion saved = testQuestionDAO.saveAndFlush(model);
@@ -115,7 +116,8 @@ public class TestQuestionService implements ITestQuestionService {
                 TestQuestion saved = testQuestionDAO.save(updating);
 
                 saved.setTclass(tclassDAO.findById(saved.getTclassId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TestQuestionNotFound)));
-
+                testQuestionDAO.changeOnlineFinalExamStatus(updating.getId(), false);
+                saved.setOnlineFinalExamStatus(false);
                 return modelMapper.map(saved, TestQuestionDTO.Info.class);
             } catch (ConstraintViolationException | DataIntegrityViolationException e) {
                 throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
@@ -162,6 +164,11 @@ public class TestQuestionService implements ITestQuestionService {
         JsonDataSource jsonDataSource = null;
         jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
+    }
+
+    @Override
+    public void changeOnlineFinalExamStatus(Long examId, boolean state) {
+        testQuestionDAO.changeOnlineFinalExamStatus(examId,state);
     }
 
     @Transactional
