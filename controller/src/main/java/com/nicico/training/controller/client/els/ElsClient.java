@@ -14,7 +14,7 @@ import response.exam.ExamListResponse;
 
 import java.io.ByteArrayInputStream;
 
-@FeignClient(value = "elsClient", url = "http://staging.icico.net.ir/els")
+@FeignClient(value = "elsClient", url = "mobiles.nicico.com/api/training")
 public interface ElsClient {
     @RequestMapping(method = RequestMethod.POST, value = "/evaluation")
     BaseResponse sendEvaluation(@RequestBody ElsEvalRequest request);
