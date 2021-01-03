@@ -80,22 +80,25 @@ public class TestQuestionRestController {
         LocalDateTime examDateTime ;
 
         for (TestQuestionDTO.Info testQuestion: response.getList()) {
-            if (testQuestion.getTime() != null && testQuestion.getTime() != ""
-                    && testQuestion.getDate() != null && testQuestion.getDate() != ""){
+            if (testQuestion.getTime() != null && !testQuestion.getTime().equals("")
+                    && testQuestion.getDate() != null && !testQuestion.getDate().equals("")){
                 String dateStr = DateUtil.convertKhToMi1(testQuestion.getDate());
                 String timeStr = testQuestion.getTime();
-                String[] str = timeStr.split(":");
-                LocalDate examDate = LocalDate.parse(dateStr);
-                LocalTime examTime = LocalTime.of(Integer.parseInt(str[0]),Integer.parseInt(str[1]));
-                examDateTime = LocalDateTime.of(examDate,examTime);
-                int diff = nowDateTime.minusMinutes(5).compareTo(examDateTime);
-//                System.currentTimeMillis()/1000
-//                if (examDate.isBefore(LocalDate.now()) /*|| (date.equals(LocalDate.now()) && testQuestion.getTime())*/){
-                if (diff > 0){
-                    testQuestion.setOnlineExamDeadLineStatus(true);
-                } else {
-                    testQuestion.setOnlineExamDeadLineStatus(false);
+                if (timeStr.trim().length()<=5 && timeStr.contains(":"))
+                {
+                    String[] str = timeStr.split(":");
+                    LocalDate examDate = LocalDate.parse(dateStr);
+                    LocalTime examTime = LocalTime.of(Integer.parseInt(str[0]),Integer.parseInt(str[1]));
+                    examDateTime = LocalDateTime.of(examDate,examTime);
+                    int diff = nowDateTime.minusMinutes(5).compareTo(examDateTime);
+                    testQuestion.setOnlineExamDeadLineStatus(diff > 0);
                 }
+                else
+                {
+                    testQuestion.setOnlineExamDeadLineStatus(false);
+
+                }
+
             } else {
                 testQuestion.setOnlineExamDeadLineStatus(false);
             }
