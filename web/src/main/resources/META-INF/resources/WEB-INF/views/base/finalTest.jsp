@@ -331,7 +331,7 @@
                 }
         ]
     });
-    function loadExamResult(id){
+    function loadExamResult(recordList){
         let ListGrid_Result_finalTest = isc.TrLG.create({
             width: "100%",
             height: 700,
@@ -379,7 +379,6 @@
                 }
             }
         });
-
             wait.show();
             isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examResult/" + recordList.id, "GET", null, function (resp) {
                 if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
