@@ -76,7 +76,6 @@ public class TestQuestionRestController {
                 .setCount(endRow - startRow);
 
         SearchDTO.SearchRs<TestQuestionDTO.Info> response = testQuestionService.search(request);
-        int x = 4;
         LocalDateTime nowDateTime = LocalDateTime.now();
         LocalDateTime examDateTime ;
 
