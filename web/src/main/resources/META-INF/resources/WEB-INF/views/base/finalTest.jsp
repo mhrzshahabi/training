@@ -444,7 +444,7 @@
     }
     var questionData;
     function setScoreValue(value, form) {
-        let index = questionData.findIndex(f => f.question == form.values.question)
+        let index = questionData.findIndex(f => f.id == form.values.id)
         questionData[index].score = value;
         }
 
@@ -801,6 +801,7 @@
                                 };
                                 isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examToEls", "POST", JSON.stringify(examData), function (resp) {
                                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                        refresh_finalTest();
 
                                         var OK = isc.Dialog.create({
                                         message: "<spring:message code="msg.operation.successful"/>",
