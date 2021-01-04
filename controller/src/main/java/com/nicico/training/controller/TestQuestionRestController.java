@@ -123,8 +123,16 @@ public class TestQuestionRestController {
 //    @PreAuthorize("hasAuthority('d_personalInfo')")
     public ResponseEntity delete(@PathVariable Long id) {
         try {
-            testQuestionService.delete(id);
-            return new ResponseEntity<>(HttpStatus.OK);
+            TestQuestionDTO.fullInfo testQuestion= testQuestionService.get(id);
+            if(testQuestion.getOnlineFinalExamStatus()==null||!testQuestion.getOnlineFinalExamStatus())
+            {
+                testQuestionService.delete(id);
+                return  new ResponseEntity<>(HttpStatus.OK);
+            }
+            else
+                return new ResponseEntity<>(
+                        new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
+
         } catch (TrainingException | DataIntegrityViolationException e) {
             return new ResponseEntity<>(
                     new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
