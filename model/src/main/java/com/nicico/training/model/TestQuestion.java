@@ -34,7 +34,7 @@ public class TestQuestion extends Auditable {
     @Column(name = "f_class")
     private Long tclassId;
 
-    @OneToMany(mappedBy = "testQuestion", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "testQuestion", fetch = FetchType.LAZY ,cascade = CascadeType.REMOVE)
     private Set<QuestionBankTestQuestion> questionBankTestQuestionList;
 
     @Column(name = "c_date")
