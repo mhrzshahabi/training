@@ -144,7 +144,7 @@
                         Window_Category.close();
                     } else {
                         var ERROR = isc.Dialog.create({
-                            message: ("گروه تکراری است!"),
+                            message: ("گروه در جای دیگری استفاده شده امکان ویرایش آن وجود ندارد!"),
                             icon: "[SKIN]stop.png",
                             title: "توجه"
                         });
