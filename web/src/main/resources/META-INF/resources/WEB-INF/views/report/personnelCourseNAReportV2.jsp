@@ -410,12 +410,12 @@
                 autoFitWidth: true,
                 canFilter: false,
                 formatCellValue: function (value, record) {
-                    if(record.notPassedEssentialPersonnelCount)
-                        return record.notPassedEssentialPersonnelCount + record.notPassedImprovingPersonnelCount + record.notPassedDevelopmentalPersonnelCount;
-                    return "";
+                    if(record.notPassedEssentialPersonnelCount || record.notPassedImprovingPersonnelCount || record.notPassedDevelopmentalPersonnelCount)
+                        return record?.notPassedEssentialPersonnelCount + record?.notPassedImprovingPersonnelCount + record?.notPassedDevelopmentalPersonnelCount;
+                    return 0;
                 },
                 sortNormalizer: function (record) {
-                    return record.notPassedEssentialPersonnelCount + record.notPassedImprovingPersonnelCount + record.notPassedDevelopmentalPersonnelCount;
+                    return record?.notPassedEssentialPersonnelCount + record?.notPassedImprovingPersonnelCount + record?.notPassedDevelopmentalPersonnelCount;
                 }
             },
             { name: "personnelList", title: "لیست پرسنل", align: "center", width: 130, canFilter: false},
