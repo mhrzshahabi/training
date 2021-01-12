@@ -43,7 +43,7 @@ public class EducationMajorDTO {
     @Getter
     @Setter
     @ApiModel("EducationMajorInfoTuple")
-    static class EducationMajorInfoTuple {
+    public static class EducationMajorInfoTuple {
         private String titleFa;
         private String titleEn;
     }
