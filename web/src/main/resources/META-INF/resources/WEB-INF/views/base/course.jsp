@@ -282,7 +282,6 @@
         hoverMoveWithMouse: true,
         sortField: "id",
         sortDirection: "descending",
-
         <sec:authorize access="hasAuthority('Course_U')">
         rowDoubleClick: function () {
             ListGrid_Course_Edit()
@@ -299,6 +298,11 @@
         </sec:authorize>
 
         dataArrived: function () {
+            this.data.localData.map(item => {
+                if(item.technicalType && item.technicalType.titleFa =="فني") {
+                    item.technicalType.titleFa = 'تخصصی';
+                 }
+            })
             wait.close();
             selectWorkflowRecord();
         },
@@ -1635,13 +1639,18 @@
                 required: true,
                 displayField: "titleFa",
                 valueField: "id",
-                optionDataSource: RestDataSource_eTechnicalType,
+                //optionDataSource: RestDataSource_eTechnicalType,
                 sortField: ["id"],
                 // titleOrientation: "top",
                 width: "*",
                 // height: "30",
                 pickListProperties:{
                     showFilterEditor: false
+                },
+                valueMap: {
+                    "1": "عمومي",
+                    "2": "تخصصی",
+                    "3": "مديريتي",
                 },
                 changed: function (form, item, value) {
                     ChangeEtechnicalType = true;

@@ -18,7 +18,7 @@ import lombok.ToString;
 public enum ETechnicalType {
 
     General(1, "عمومي"),
-    Technical(2, "تخصصی"),
+    Technical(2, "فني"),
     Managerial(3, "مديريتي");
 
     private final Integer id;
