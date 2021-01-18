@@ -2440,7 +2440,7 @@
     }
 
     function ListGrid_class_edit(a = 0) {
-        let record = ListGrid_Class_JspClass.getSelectedRecord();
+        let record = JSON.parse(JSON.stringify(ListGrid_Class_JspClass.getSelectedRecord()));
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
