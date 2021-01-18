@@ -8,8 +8,10 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PersonnelRegisteredDTO;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
+import com.nicico.training.model.Personnel;
 import com.nicico.training.model.PersonnelRegistered;
 import com.nicico.training.repository.PersonnelRegisteredDAO;
 import lombok.RequiredArgsConstructor;
@@ -131,7 +133,11 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
     //unUsed
     @Override
     public PersonnelRegisteredDTO.Info getOneByNationalCode(String nationalCode) {
-        return null;
+        PersonnelRegistered[]  personnelRegisterdList = personnelRegisteredDAO.findAllByNationalCode(nationalCode);
+        if (personnelRegisterdList != null && personnelRegisterdList.length != 0)
+            return modelMapper.map(personnelRegisterdList[0], PersonnelRegisteredDTO.Info.class);
+        else
+            return null;
     }
 
     // ------------------------------
