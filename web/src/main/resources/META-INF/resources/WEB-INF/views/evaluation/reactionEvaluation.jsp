@@ -731,374 +731,429 @@
         width: "100%",
         membersMargin: 10,
         members: [
-            isc.HLayout.create({
-                membersMargin: 5,
-                layoutAlign: "center",
-                defaultLayoutAlign: "center",
+            isc.VLayout.create({
+                width:"100%",
+                height: "100%",
                 members: [
-                    isc.DynamicForm.create({
-                        height: "100%",
-                        numCols: 8,
-                        defaultLayoutAlign: "center",
-                        ID: "ToolStrip_SendForms_RE",
-                        fields: [
-                            {
-                                name: "sendButtonTeacher",
-                                title: "صدور فرم ارزیابی مدرس از کلاس",
-                                type: "button",
-                                startRow: false,
-                                endRow: false,
-                                baseStyle: "sendFile",
-                                click: function () {
-                                    if (classRecord_RE.teacherEvalStatus != "0" && classRecord_RE.teacherEvalStatus != null)
-                                        createDialog("info", "قبلا فرم ارزیابی واکنشی برای مدرس صادر شده است");
-                                    else {
-                                        if (classRecord_RE.teacherId == undefined)
-                                            createDialog("info", "اطلاعات کلاس ناقص است!");
-                                        else
-                                            Teacher_Reaction_Form_Inssurance_RE();
-                                    }
-                                },
-                                icons: [
-                                    {
-                                        name: "ok",
-                                        src: "[SKIN]actions/ok.png",
-                                        width: 15,
-                                        height: 15,
-                                        inline: true,
-                                        prompt: "تائید صدور",
-                                        click: function (form, item, icon) {
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                name: "registerButtonTeacher",
-                                title: "ثبت نتایج ارزیابی مدرس از کلاس",
-                                type: "button",
-                                startRow: false,
-                                endRow: false,
-                                baseStyle: "registerFile",
-                                click: function () {
-                                    if (classRecord_RE.teacherEvalStatus == "0" || classRecord_RE.teacherEvalStatus == null)
-                                        createDialog("info", "فرم ارزیابی واکنشی برای مسئول آموزش صادر نشده است");
-                                    else
-                                        register_Teacher_Reaction_Form_RE();
-                                },
-                                icons: [
-                                    {
-                                        name: "ok",
-                                        src: "[SKIN]actions/ok.png",
-                                        width: 15,
-                                        height: 15,
-                                        inline: true,
-                                        prompt: "تائید صدور",
-                                        click: function (form, item, icon) {
-                                        }
-                                    },
-                                    {
-                                        name: "clear",
-                                        src: "[SKIN]actions/remove.png",
-                                        width: 15,
-                                        height: 15,
-                                        inline: true,
-                                        prompt: "حذف فرم",
-                                        click: function (form, item, icon) {
-                                            if (classRecord_RE.teacherEvalStatus == "0" || classRecord_RE.teacherEvalStatus == null)
-                                                createDialog("info", "فرم ارزیابی واکنشی برای مدرس صادر نشده است");
-                                            else {
-                                                let Dialog_remove = createDialog("ask", "آیا از حذف فرم مطمئن هستید؟",
-                                                    "<spring:message code="verify.delete"/>");
-                                                Dialog_remove.addProperties({
-                                                    buttonClick: function (button, index) {
-                                                        this.close();
-                                                        if (index === 0) {
-                                                            let data = {};
-                                                            data.classId = classRecord_RE.id;
-                                                            data.evaluatorId = classRecord_RE.teacherId;
-                                                            data.evaluatorTypeId = 187;
-                                                            data.evaluatedId = classRecord_RE.id;
-                                                            data.evaluatedTypeId = 504;
-                                                            data.questionnaireTypeId = 140;
-                                                            data.evaluationLevelId = 154;
-                                                            isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/deleteEvaluation", "POST", JSON.stringify(data), function (resp) {
-                                                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                                                                    const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                                                                    setTimeout(() => {
-                                                                        msg.close();
-                                                                    }, 3000);
-                                                                    isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
-                                                                        classRecord_RE.id,"GET", null, null));
-                                                                    classRecord_RE.teacherEvalStatus = 0;
-                                                                    ToolStrip_SendForms_RE.getField("sendButtonTeacher").hideIcon("ok");
-                                                                    ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(true);
-                                                                    ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(true);
-                                                                    if (classRecord_RE.classTeacherOnlineEvalStatus) {
-                                                                        ToolStripButton_OnlineFormIssuanceForAll_RE.setDisabled(false);
-                                                                        classRecord_RE.classTeacherOnlineEvalStatus= false;
-                                                                        ListGrid_class_Evaluation.getSelectedRecord().classTeacherOnlineEvalStatus = false;
+                    isc.HLayout.create({
+                        members: [
+                            isc.HLayout.create({
+                                width:"50%",
+                                membersMargin: 5,
+                                layoutAlign: "center",
+                                defaultLayoutAlign: "center",
+                                members: [
+                                    isc.DynamicForm.create({
+                                        height: "100%",
+                                        numCols: 8,
+                                        defaultLayoutAlign: "center",
+                                        ID: "ToolStrip_SendForms_RE",
+                                        fields: [
+                                            {
+                                                name: "sendButtonTeacher",
+                                                title: "صدور فرم ارزیابی مدرس از کلاس",
+                                                type: "button",
+                                                width: 170,
+                                                startRow: false,
+                                                endRow: false,
+                                                baseStyle: "sendFile",
+                                                click: function () {
+                                                    if (classRecord_RE.teacherEvalStatus != "0" && classRecord_RE.teacherEvalStatus != null)
+                                                        createDialog("info", "قبلا فرم ارزیابی واکنشی برای مدرس صادر شده است");
+                                                    else {
+                                                        if (classRecord_RE.teacherId == undefined)
+                                                            createDialog("info", "اطلاعات کلاس ناقص است!");
+                                                        else
+                                                            Teacher_Reaction_Form_Inssurance_RE();
+                                                    }
+                                                },
+                                                icons: [
+                                                    {
+                                                        name: "ok",
+                                                        src: "[SKIN]actions/ok.png",
+                                                        width: 15,
+                                                        height: 15,
+                                                        inline: true,
+                                                        prompt: "تائید صدور",
+                                                        click: function (form, item, icon) {
+                                                        }
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                name: "registerButtonTeacher",
+                                                title: "ثبت نتایج ارزیابی مدرس از کلاس",
+                                                type: "button",
+                                                width: 170,
+                                                startRow: false,
+                                                endRow: false,
+                                                baseStyle: "registerFile",
+                                                click: function () {
+                                                    if (classRecord_RE.teacherEvalStatus == "0" || classRecord_RE.teacherEvalStatus == null)
+                                                        createDialog("info", "فرم ارزیابی واکنشی برای مسئول آموزش صادر نشده است");
+                                                    else
+                                                        register_Teacher_Reaction_Form_RE();
+                                                },
+                                                icons: [
+                                                    {
+                                                        name: "ok",
+                                                        src: "[SKIN]actions/ok.png",
+                                                        width: 15,
+                                                        height: 15,
+                                                        inline: true,
+                                                        prompt: "تائید صدور",
+                                                        click: function (form, item, icon) {
+                                                        }
+                                                    },
+                                                    {
+                                                        name: "clear",
+                                                        src: "[SKIN]actions/remove.png",
+                                                        width: 15,
+                                                        height: 15,
+                                                        inline: true,
+                                                        prompt: "حذف فرم",
+                                                        click: function (form, item, icon) {
+                                                            if (classRecord_RE.teacherEvalStatus == "0" || classRecord_RE.teacherEvalStatus == null)
+                                                                createDialog("info", "فرم ارزیابی واکنشی برای مدرس صادر نشده است");
+                                                            else {
+                                                                let Dialog_remove = createDialog("ask", "آیا از حذف فرم مطمئن هستید؟",
+                                                                    "<spring:message code="verify.delete"/>");
+                                                                Dialog_remove.addProperties({
+                                                                    buttonClick: function (button, index) {
+                                                                        this.close();
+                                                                        if (index === 0) {
+                                                                            let data = {};
+                                                                            data.classId = classRecord_RE.id;
+                                                                            data.evaluatorId = classRecord_RE.teacherId;
+                                                                            data.evaluatorTypeId = 187;
+                                                                            data.evaluatedId = classRecord_RE.id;
+                                                                            data.evaluatedTypeId = 504;
+                                                                            data.questionnaireTypeId = 140;
+                                                                            data.evaluationLevelId = 154;
+                                                                            isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/deleteEvaluation", "POST", JSON.stringify(data), function (resp) {
+                                                                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                                                                    const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                                                                                    setTimeout(() => {
+                                                                                        msg.close();
+                                                                                    }, 3000);
+                                                                                    isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
+                                                                                        classRecord_RE.id,"GET", null, null));
+                                                                                    classRecord_RE.teacherEvalStatus = 0;
+                                                                                    ToolStrip_SendForms_RE.getField("sendButtonTeacher").hideIcon("ok");
+                                                                                    ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(true);
+                                                                                    ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(true);
+                                                                                    if (classRecord_RE.classTeacherOnlineEvalStatus) {
+                                                                                        ToolStripButton_OnlineFormIssuanceForAll_RE.setDisabled(false);
+                                                                                        classRecord_RE.classTeacherOnlineEvalStatus= false;
+                                                                                        ListGrid_class_Evaluation.getSelectedRecord().classTeacherOnlineEvalStatus = false;
 
+                                                                                    }
+
+                                                                                    ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
+                                                                                    classRecord_RE.classTeacherOnlineEvalStatus= false;
+                                                                                    ToolStrip_SendForms_RE.redraw();
+                                                                                } else {
+                                                                                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                                                                }
+                                                                            }))
+                                                                        }
                                                                     }
-
-                                                                    ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
-                                                                    classRecord_RE.classTeacherOnlineEvalStatus= false;
-                                                                    ToolStrip_SendForms_RE.redraw();
-                                                                } else {
-                                                                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
-                                                                }
-                                                            }))
+                                                                });
+                                                            }
+                                                        }
+                                                    },
+                                                    {
+                                                        name: "print",
+                                                        src: "[SKIN]actions/print.png",
+                                                        width: 15,
+                                                        height: 15,
+                                                        inline: true,
+                                                        prompt: "چاپ فرم",
+                                                        click: function (form, item, icon) {
+                                                            if (classRecord_RE.teacherEvalStatus == "0" || classRecord_RE.teacherEvalStatus == null)
+                                                                createDialog("info", "فرم ارزیابی واکنشی برای مدرس صادر نشده است");
+                                                            else
+                                                                print_Teacher_Reaction_Form_RE();
                                                         }
                                                     }
-                                                });
-                                            }
-                                        }
-                                    },
-                                    {
-                                        name: "print",
-                                        src: "[SKIN]actions/print.png",
-                                        width: 15,
-                                        height: 15,
-                                        inline: true,
-                                        prompt: "چاپ فرم",
-                                        click: function (form, item, icon) {
-                                            if (classRecord_RE.teacherEvalStatus == "0" || classRecord_RE.teacherEvalStatus == null)
-                                                createDialog("info", "فرم ارزیابی واکنشی برای مدرس صادر نشده است");
-                                            else
-                                                print_Teacher_Reaction_Form_RE();
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                name: "sendToEls_teacher",
-                                title: "ارسال به آموزش آنلاین",
-                                type: "button",
-                                startRow: false,
-                                // disabled: classRecord_RE.classTeacherOnlineEvalStatus,
-                                // disabled: true,
-                                endRow: false,
-                                click: function () {
-                                    if (classRecord_RE.teacherEvalStatus == "0" || classRecord_RE.teacherEvalStatus == null)
-                                        createDialog("info", "فرم ارزیابی واکنشی برای مدرس صادر نشده است");
-                                    sendToEls('teacher');
-                                }
-                            },
-                            {
-                                name: "showResultsEls_teacher",
-                                title: "مشاهده نتایج ارزیابی",
-                                type: "button",
-                                startRow: false,
-                                click: function () {
-                                    showResults('teacher')
-                                }
-                            },
+                                                ]
+                                            },
+                                            {
+                                                name: "sendToEls_teacher",
+                                                title: "ارسال به آموزش آنلاین",
+                                                type: "button",
+                                                startRow: false,
+                                                // disabled: classRecord_RE.classTeacherOnlineEvalStatus,
+                                                // disabled: true,
+                                                endRow: false,
+                                                click: function () {
+                                                    if (classRecord_RE.teacherEvalStatus == "0" || classRecord_RE.teacherEvalStatus == null)
+                                                        createDialog("info", "فرم ارزیابی واکنشی برای مدرس صادر نشده است");
+                                                    sendToEls('teacher');
+                                                }
+                                            },
+                                            {
+                                                name: "showResultsEls_teacher",
+                                                title: "مشاهده نتایج ارزیابی",
+                                                type: "button",
+                                                startRow: false,
+                                                click: function () {
+                                                    showResults('teacher')
+                                                }
+                                            },
 
-                            {
-                                name: "sendButtonTraining",
-                                title: "صدور فرم ارزیابی آموزش از مدرس",
-                                type: "button",
-                                startRow: false,
-                                endRow: false,
-                                baseStyle: "sendFile",
-                                click: function () {
-                                    if (classRecord_RE.trainingEvalStatus != "0" && classRecord_RE.trainingEvalStatus != null)
-                                        createDialog("info", "قبلا فرم ارزیابی واکنشی برای مسئول آموزش صادر شده است");
-                                    else {
-                                        if (classRecord_RE.tclassSupervisor == undefined || classRecord_RE.teacherId == undefined)
-                                            createDialog("info", "اطلاعات کلاس ناقص است!");
-                                        else
-                                            Training_Reaction_Form_Inssurance_RE();
-                                    }
-                                },
-                                icons: [
-                                    {
-                                        name: "ok",
-                                        src: "[SKIN]actions/ok.png",
-                                        width: 15,
-                                        height: 15,
-                                        inline: true,
-                                        prompt: "تائید صدور",
-                                        click: function (form, item, icon) {
-                                        }
-                                    }
-                                ]
-                            },
-                            {
-                                name: "registerButtonTraining",
-                                title: "ثبت نتایج ارزیابی آموزش از مدرس",
-                                type: "button",
-                                startRow: false,
-                                endRow: false,
-                                baseStyle: "registerFile",
-                                click: function () {
-                                    if (classRecord_RE.trainingEvalStatus == "0" || classRecord_RE.trainingEvalStatus == null)
-                                        createDialog("info", "فرم ارزیابی واکنشی برای مسئول آموزش صادر نشده است");
-                                    else
-                                        register_Training_Reaction_Form_RE();
-
-                                },
-                                icons: [
-                                    {
-                                        name: "ok",
-                                        src: "[SKIN]actions/ok.png",
-                                        width: 15,
-                                        height: 15,
-                                        inline: true,
-                                        prompt: "تائید ثبت",
-                                        click: function (form, item, icon) {
-                                        }
-                                    },
-                                    {
-                                        name: "clear",
-                                        src: "[SKIN]actions/remove.png",
-                                        width: 15,
-                                        height: 15,
-                                        inline: true,
-                                        prompt: "حذف فرم",
-                                        click: function (form, item, icon) {
-                                            if (classRecord_RE.trainingEvalStatus == "0" || classRecord_RE.trainingEvalStatus == null)
-                                                createDialog("info", "فرم ارزیابی واکنشی برای مسئول آموزش صادر نشده است");
-                                            else {
-                                                let Dialog_remove = createDialog("ask", "آیا از حذف فرم مطمئن هستید؟",
-                                                    "<spring:message code="verify.delete"/>");
-                                                Dialog_remove.addProperties({
-                                                    buttonClick: function (button, index) {
-                                                        this.close();
-                                                        if (index === 0) {
-                                                            let data = {};
-                                                            data.classId = classRecord_RE.id;
-                                                            data.evaluatorId = classRecord_RE.tclassSupervisor;
-                                                            data.evaluatorTypeId = 454;
-                                                            data.evaluatedId = classRecord_RE.teacherId;
-                                                            data.evaluatedTypeId = 187;
-                                                            data.questionnaireTypeId = 141;
-                                                            data.evaluationLevelId = 154;
-                                                            isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/deleteEvaluation", "POST", JSON.stringify(data), function (resp) {
-                                                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                                                                    const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                                                                    setTimeout(() => {
-                                                                        msg.close();
-                                                                    }, 3000);
-                                                                    isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
-                                                                        classRecord_RE.id,"GET", null, null));
-                                                                    classRecord_RE.trainingEvalStatus = 0;
-                                                                    ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
-                                                                   // ToolStrip_SendForms_RE.getField("sendToEls_supervisor").setDisabled(true);
-                                                                   // ToolStrip_SendForms_RE.getField("showResultsEls_supervisor").setDisabled(true);
-
-                                                                    ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
-                                                                    ToolStrip_SendForms_RE.redraw();
-                                                                } else {
-                                                                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
-                                                                }
-                                                            }))
+                                            {
+                                                name: "sendButtonTraining",
+                                                title: "صدور فرم ارزیابی آموزش از مدرس",
+                                                width: 170,
+                                                type: "button",
+                                                startRow: false,
+                                                endRow: false,
+                                                baseStyle: "sendFile",
+                                                click: function () {
+                                                    if (classRecord_RE.trainingEvalStatus != "0" && classRecord_RE.trainingEvalStatus != null)
+                                                        createDialog("info", "قبلا فرم ارزیابی واکنشی برای مسئول آموزش صادر شده است");
+                                                    else {
+                                                        if (classRecord_RE.tclassSupervisor == undefined || classRecord_RE.teacherId == undefined)
+                                                            createDialog("info", "اطلاعات کلاس ناقص است!");
+                                                        else
+                                                            Training_Reaction_Form_Inssurance_RE();
+                                                    }
+                                                },
+                                                icons: [
+                                                    {
+                                                        name: "ok",
+                                                        src: "[SKIN]actions/ok.png",
+                                                        width: 15,
+                                                        height: 15,
+                                                        inline: true,
+                                                        prompt: "تائید صدور",
+                                                        click: function (form, item, icon) {
                                                         }
                                                     }
-                                                });
-                                            }
-                                        }
-                                    },
-                                    {
-                                        name: "print",
-                                        src: "[SKIN]actions/print.png",
-                                        width: 15,
-                                        height: 15,
-                                        inline: true,
-                                        prompt: "چاپ فرم",
-                                        click: function (form, item, icon) {
-                                            if (classRecord_RE.trainingEvalStatus == "0" || classRecord_RE.trainingEvalStatus == null)
-                                                createDialog("info", "فرم ارزیابی واکنشی برای مسئول آموزش صادر نشده است");
-                                            else
-                                                print_Training_Reaction_Form_RE();
-                                        }
-                                    }
-                                ]
-                            }
-                            // ,
-                            // {
-                            //     name: "sendToEls_supervisor",
-                            //     title: "ارسال به آموزش آنلاین",
-                            //     type: "button",
-                            //     startRow: false,
-                            //     endRow: false,
-                            //     click: function () {
-                            //         console.log('send')
-                            //         sendToEls('supervisor')
-                            //     }
-                            // },
-                            // {
-                            //     name: "showResultsEls_supervisor",
-                            //     title: "مشاهده نتایج ارزیابی",
-                            //     type: "button",
-                            //     startRow: false,
-                            //     click: function () {
-                            //         console.log('show')
-                            //          showResults('supervisor')
-                            //     }
-                            // }
-                        ]
-                    }),
+                                                ]
+                                            },
+                                            {
+                                                name: "registerButtonTraining",
+                                                title: "ثبت نتایج ارزیابی آموزش از مدرس",
+                                                width: 170,
+                                                type: "button",
+                                                startRow: false,
+                                                endRow: false,
+                                                baseStyle: "registerFile",
+                                                click: function () {
+                                                    if (classRecord_RE.trainingEvalStatus == "0" || classRecord_RE.trainingEvalStatus == null)
+                                                        createDialog("info", "فرم ارزیابی واکنشی برای مسئول آموزش صادر نشده است");
+                                                    else
+                                                        register_Training_Reaction_Form_RE();
 
-                ]
-            }),
-            isc.HLayout.create({
-                layoutAlign: "center",
-                defaultLayoutAlign: "center",
-                members: [
-                    isc.VLayout.create({
-                        membersMargin: 5,
-                        members: [
-                            ToolStripButton_FormIssuanceForAll_RE,
-                            ToolStripButton_FormIssuanceDeleteForAll_RE
+                                                },
+                                                icons: [
+                                                    {
+                                                        name: "ok",
+                                                        src: "[SKIN]actions/ok.png",
+                                                        width: 15,
+                                                        height: 15,
+                                                        inline: true,
+                                                        prompt: "تائید ثبت",
+                                                        click: function (form, item, icon) {
+                                                        }
+                                                    },
+                                                    {
+                                                        name: "clear",
+                                                        src: "[SKIN]actions/remove.png",
+                                                        width: 15,
+                                                        height: 15,
+                                                        inline: true,
+                                                        prompt: "حذف فرم",
+                                                        click: function (form, item, icon) {
+                                                            if (classRecord_RE.trainingEvalStatus == "0" || classRecord_RE.trainingEvalStatus == null)
+                                                                createDialog("info", "فرم ارزیابی واکنشی برای مسئول آموزش صادر نشده است");
+                                                            else {
+                                                                let Dialog_remove = createDialog("ask", "آیا از حذف فرم مطمئن هستید؟",
+                                                                    "<spring:message code="verify.delete"/>");
+                                                                Dialog_remove.addProperties({
+                                                                    buttonClick: function (button, index) {
+                                                                        this.close();
+                                                                        if (index === 0) {
+                                                                            let data = {};
+                                                                            data.classId = classRecord_RE.id;
+                                                                            data.evaluatorId = classRecord_RE.tclassSupervisor;
+                                                                            data.evaluatorTypeId = 454;
+                                                                            data.evaluatedId = classRecord_RE.teacherId;
+                                                                            data.evaluatedTypeId = 187;
+                                                                            data.questionnaireTypeId = 141;
+                                                                            data.evaluationLevelId = 154;
+                                                                            isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/deleteEvaluation", "POST", JSON.stringify(data), function (resp) {
+                                                                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                                                                    const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                                                                                    setTimeout(() => {
+                                                                                        msg.close();
+                                                                                    }, 3000);
+                                                                                    isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
+                                                                                        classRecord_RE.id,"GET", null, null));
+                                                                                    classRecord_RE.trainingEvalStatus = 0;
+                                                                                    ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
+                                                                                    // ToolStrip_SendForms_RE.getField("sendToEls_supervisor").setDisabled(true);
+                                                                                    // ToolStrip_SendForms_RE.getField("showResultsEls_supervisor").setDisabled(true);
+
+                                                                                    ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
+                                                                                    ToolStrip_SendForms_RE.redraw();
+                                                                                } else {
+                                                                                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                                                                }
+                                                                            }))
+                                                                        }
+                                                                    }
+                                                                });
+                                                            }
+                                                        }
+                                                    },
+                                                    {
+                                                        name: "print",
+                                                        src: "[SKIN]actions/print.png",
+                                                        width: 15,
+                                                        height: 15,
+                                                        inline: true,
+                                                        prompt: "چاپ فرم",
+                                                        click: function (form, item, icon) {
+                                                            if (classRecord_RE.trainingEvalStatus == "0" || classRecord_RE.trainingEvalStatus == null)
+                                                                createDialog("info", "فرم ارزیابی واکنشی برای مسئول آموزش صادر نشده است");
+                                                            else
+                                                                print_Training_Reaction_Form_RE();
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                            // ,
+                                            // {
+                                            //     name: "sendToEls_supervisor",
+                                            //     title: "ارسال به آموزش آنلاین",
+                                            //     type: "button",
+                                            //     startRow: false,
+                                            //     endRow: false,
+                                            //     click: function () {
+                                            //         console.log('send')
+                                            //         sendToEls('supervisor')
+                                            //     }
+                                            // },
+                                            // {
+                                            //     name: "showResultsEls_supervisor",
+                                            //     title: "مشاهده نتایج ارزیابی",
+                                            //     type: "button",
+                                            //     startRow: false,
+                                            //     click: function () {
+                                            //         console.log('show')
+                                            //          showResults('supervisor')
+                                            //     }
+                                            // }
+                                        ]
+                                    }),
+
+                                ]
+                            }),
+                            isc.HLayout.create({
+                                width:"40%",
+                                layoutAlign: "center",
+                                defaultLayoutAlign: "center",
+                                members: [
+                                    isc.VLayout.create({
+                                        membersMargin: 5,
+                                        members: [
+                                            ToolStripButton_FormIssuanceForAll_RE,
+                                            ToolStripButton_FormIssuanceDeleteForAll_RE
+                                        ]
+                                    }),
+                                    isc.LayoutSpacer.create({height: "22"})
+                                ]
+                            }),
+                            isc.RibbonGroup.create({
+                                ID: "fileGroup_RE",
+                                title: "راهنمای رنگ بندی لیست",
+                                numRows: 1,
+                                colWidths: [40, "*"],
+                                height: "10px",
+                                titleAlign: "center",
+                                titleStyle: "gridHint",
+                                controls: [
+                                    isc.IconButton.create(isc.addProperties({
+                                        title: "صادر نشده",
+                                        baseStyle: "gridHint",
+                                        backgroundColor: '#fffff'
+                                    })),
+                                    isc.IconButton.create(isc.addProperties({
+                                        title: "صادر شده",
+                                        baseStyle: "gridHint",
+                                        backgroundColor: '#d8e4bc'
+                                    })),
+                                    isc.IconButton.create(isc.addProperties({
+                                        title: "تکمیل شده",
+                                        baseStyle: "gridHint",
+                                        backgroundColor: '#b7dee8'
+                                    }))
+                                ]
+                            })
                         ]
                     }),
-                    isc.DynamicForm.create({
+                    isc.HLayout.create({
+                        width:"100%",
                         height: "100%",
-                        width: 300,
-                        margin: 0,
-                        fields: [
-                            {
-                                ID: 'contactSelector_RE',
-                                type: "SelectItem",
-                                textAlign: "center",
-                                pickListProperties: {
-                                    showFilterEditor: false
-                                },
-                                valueMap: {
-                                    1: "ارسال پیام به فراگیران کلاس",
-                                    2: "ارسال پیام به مدرس کلاس",
-                                    //3: "ارسال پیام به فراگیرانی که فرم ارزیابی مدرس را تکمیل نکرده<spring:message code="title"/>اند"
-                                },
-                                defaultValue: 1
-                            }
-                        ]
-                    }),
-                    ToolStripButton_MSG_RE,
-                    isc.LayoutSpacer.create({height: "22"})
-                ]
-            }),
-            isc.HLayout.create({
-                layoutAlign: "center",
-                defaultLayoutAlign: "center",
-                width: 500,
-                members: [
-                    isc.VLayout.create({
-                        membersMargin: 5,
                         members: [
-                            ToolStripButton_OnlineFormIssuanceForAll_RE,
-                            ToolStripButton_OnlineFormIssuanceResultForAll_RE
+                            isc.HLayout.create({
+                                width:"43%",
+                                height: "100%",
+                                layoutAlign: "center",
+                                defaultLayoutAlign: "center",
+                                members: [
+                                    isc.DynamicForm.create({
+                                        height: "100%",
+                                        width: 400,
+                                        margin: 0,
+                                        fields: [
+                                            {
+                                                ID: 'contactSelector_RE',
+                                                type: "SelectItem",
+                                                textAlign: "center",
+                                                pickListProperties: {
+                                                    showFilterEditor: false
+                                                },
+                                                valueMap: {
+                                                    1: "ارسال پیام به فراگیران کلاس",
+                                                    2: "ارسال پیام به مدرس کلاس",
+                                                    //3: "ارسال پیام به فراگیرانی که فرم ارزیابی مدرس را تکمیل نکرده<spring:message code="title"/>اند"
+                                                },
+                                                defaultValue: 1
+                                            }
+                                        ]
+                                    }),
+                                    ToolStripButton_MSG_RE,
+                                ]
+                            }),
+                            isc.HLayout.create({
+                                layoutAlign: "right",
+                                defaultLayoutAlign: "right",
+                                align:"right",
+                                width: "19%",
+                                members: [
+                                    isc.VLayout.create({
+                                        membersMargin: 5,
+                                        members: [
+                                            ToolStripButton_OnlineFormIssuanceForAll_RE,
+                                            ToolStripButton_OnlineFormIssuanceResultForAll_RE
+                                        ]
+                                    }),
+                                ]
+                            }),
+                            isc.ToolStrip.create({
+                                width: "30%",
+                                align: "left",
+                                border: '0px',
+                                members: [
+                                    ToolStripButton_RefreshIssuance_RE
+                                ]
+                            })
                         ]
-                    }),
-                    isc.LayoutSpacer.create({height: "22"})
-                ]
-            }),
-            isc.ToolStrip.create({
-                width: "100%",
-                maxWidth: 500,
-                align: "left",
-                border: '0px',
-                members: [
-                    ToolStripButton_RefreshIssuance_RE
+                    })
                 ]
             })
         ]
@@ -1551,32 +1606,8 @@
         members: [
             DynamicForm_ReturnDate_RE,
             isc.LayoutSpacer.create({width: "80%"}),
-            isc.RibbonGroup.create({
-                ID: "fileGroup_RE",
-                title: "راهنمای رنگ بندی لیست",
-                numRows: 1,
-                colWidths: [40, "*"],
-                height: "10px",
-                titleAlign: "center",
-                titleStyle: "gridHint",
-                controls: [
-                    isc.IconButton.create(isc.addProperties({
-                        title: "صادر نشده",
-                        baseStyle: "gridHint",
-                        backgroundColor: '#fffff'
-                    })),
-                    isc.IconButton.create(isc.addProperties({
-                        title: "صادر شده",
-                        baseStyle: "gridHint",
-                        backgroundColor: '#d8e4bc'
-                    })),
-                    isc.IconButton.create(isc.addProperties({
-                        title: "تکمیل شده",
-                        baseStyle: "gridHint",
-                        backgroundColor: '#b7dee8'
-                    }))
-                ]
-            })]
+
+        ]
     });
 
     var VLayout_Body_RE = isc.VLayout.create({

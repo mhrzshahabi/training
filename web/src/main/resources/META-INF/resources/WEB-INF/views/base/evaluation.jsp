@@ -399,7 +399,7 @@
 
     var Hlayout_Grid_Evaluation = isc.HLayout.create({
         width: "100%",
-        height: "50%",
+        height: "30%",
         showResizeBar: true,
         members: [ListGrid_class_Evaluation]
     });
