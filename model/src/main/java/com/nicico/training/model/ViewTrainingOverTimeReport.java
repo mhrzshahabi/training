@@ -21,7 +21,7 @@ import java.io.Serializable;
 public class ViewTrainingOverTimeReport implements Serializable {
 
     @EmbeddedId
-    private ViewAttendanceReportKey id;
+    private ViewAttendanceOverTimeReportKey id;
 
     @Column(name = "personalnum", insertable = false, updatable = false)
     private String personalNum;
