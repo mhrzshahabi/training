@@ -1863,6 +1863,8 @@
 
                 StudentsLG_student.invalidateCache();
                 StudentsLG_student.fetchData();
+            } else {
+                StudentsLG_student.setData([]);
             }
         }
 

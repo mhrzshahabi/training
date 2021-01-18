@@ -2051,7 +2051,12 @@
             {name: "endDate"}
         ]
     });
-
+    function clearClassTabValue() {
+        TabSet_Class.selectTab(0);
+        ListGrid_Class_JspClass.deselectAllRecords();
+        loadPage_student();
+        TabSet_Class.setDisabled(true);
+    }
     var DynamicForm_Term_Filter = isc.DynamicForm.create({
         width: "400",
         height: 30,
@@ -2086,6 +2091,7 @@
                     }
                 ],
                 changed: function (form, item, value) {
+                    clearClassTabValue();
                     load_term_by_year(value);
                 },
                 dataArrived: function (startRow, endRow, data) {
@@ -2181,6 +2187,7 @@
                     ]
                 },
                 changed: function (form, item, value) {
+                    clearClassTabValue();
                     load_classes_by_term(value);
                 },
                 dataArrived: function (startRow, endRow, data) {
@@ -2196,6 +2203,7 @@
                                 DynamicForm_Term_Filter.getItem("termFilter").clearValue();
                                 DynamicForm_Term_Filter.getField("termFilter").setValue(resp.httpResponseText);
                                 load_classes_by_term(resp.httpResponseText);
+                                clearClassTabValue();
                         }
                     });
 
