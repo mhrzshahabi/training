@@ -477,7 +477,7 @@ public class TclassService implements ITclassService {
         String todayDate = DateUtil.convertMiToKh(dateFormat.format(date));
         String startingDate = tclass.getStartDate();
 
-        return todayDate.compareTo(startingDate) > 0 ? true : false;
+        return todayDate.compareTo(startingDate) >= 0 ? true : false;
     }
 
     //----------------------------------------------- Reaction Evaluation ----------------------------------------------
