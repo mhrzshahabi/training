@@ -66,12 +66,14 @@ public class QuestionnaireRestController {
                 questionnarieId = evaluationList.get(0).getQuestionnaireId();
             }
         }
+        //Todo need to refactor
         List<Object> removedObject = new ArrayList();
         for (QuestionnaireDTO.Info info : result.getResponse().getData()) {
             if(info.getQuestionnaireQuestionList() == null || info.getQuestionnaireQuestionList().size() == 0)
                 removedObject.add(info);
-            if(questionnarieId != null && !info.getId().equals(questionnarieId))
+          else if(questionnarieId != null && !info.getId().equals(questionnarieId))
                 removedObject.add(info);
+
         }
 
         for (Object o : removedObject) {
