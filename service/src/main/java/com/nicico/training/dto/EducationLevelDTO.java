@@ -42,8 +42,9 @@ public class EducationLevelDTO {
     //-------------------------------
     @Getter
     @Setter
+    @Accessors(chain = true)
     @ApiModel("EducationLevelInfoTuple")
-    static class EducationLevelInfoTuple {
+    public static class EducationLevelInfoTuple {
         private Integer code;
         private String titleFa;
         private String titleEn;
