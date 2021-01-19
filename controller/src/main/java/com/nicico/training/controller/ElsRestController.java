@@ -28,8 +28,12 @@ import response.question.QuestionsDto;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.nicico.copper.common.util.date.DateUtil.convertMiToKh2;
 
 
 @RestController
@@ -257,9 +261,42 @@ public class ElsRestController {
     @PostMapping("/examQuestions")
     public ResponseEntity<ExamQuestionsDto> examQuestions(@RequestBody ExamImportedRequest object) {
 
-        ExamQuestionsDto  response=evaluationBeanMapper.toGetExamQuestions(object);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 
-        return new ResponseEntity(response, HttpStatus.OK);
+        try {
+            if (sdf.parse(object.getExamItem().getTclass().getStartDate()).compareTo(sdf.parse(object.getExamItem().getTclass().getEndDate()))!= 0)
+            {
 
-     }
+                if (sdf.parse(object.getExamItem().getDate()).after(sdf.parse(object.getExamItem().getTclass().getStartDate()))
+                )
+                {
+                    ExamQuestionsDto  response=evaluationBeanMapper.toGetExamQuestions(object);
+                    return new ResponseEntity(response, HttpStatus.OK);
+                }
+                else
+                {
+                    return new ResponseEntity("زمان برگذاری آزمون در بازه زمانی درست نمی باشد", HttpStatus.NOT_ACCEPTABLE);
+                }
+            }
+            else
+            {
+                if (sdf.parse(object.getExamItem().getTclass().getStartDate()).compareTo(sdf.parse(object.getExamItem().getDate()))!= 0)
+                {
+                    return new ResponseEntity("زمان برگذاری آزمون در بازه زمانی درست نمی باشد", HttpStatus.NOT_ACCEPTABLE);
+                }
+                else
+                {
+                    ExamQuestionsDto  response=evaluationBeanMapper.toGetExamQuestions(object);
+                    return new ResponseEntity(response, HttpStatus.OK);
+                }
+            }
+
+        } catch (ParseException e) {
+
+            return new ResponseEntity(new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
+
+
+    }
+
 }
