@@ -198,8 +198,9 @@ function showWindowDiffNeedsAssessment(objectId, objectType, unchangeable = fals
                 Window_NeedsAssessment_Edit.close(0);
             }
         }
-    },50)
-}
+    wait.close();
+    },1000)
+    }
 
 function showDetailViewer(title, field, record) {
     let Window_DetailViewer_Main = isc.Window.create({
