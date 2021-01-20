@@ -1284,7 +1284,7 @@
     <changeSet author="golrokhi (generated)" id="1601709679462-517">
         <addColumn tableName="tbl_message">
             <column name="c_pid" type="varchar2(255 CHAR)">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
         </addColumn>
     </changeSet>
