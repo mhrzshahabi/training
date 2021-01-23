@@ -1,18 +1,15 @@
 package com.nicico.training.controller.client.els;
 
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import request.evaluation.ElsEvalRequest;
 import request.exam.ElsExamRequest;
 import response.BaseResponse;
 import response.evaluation.EvalListResponse;
 import response.evaluation.PdfResponse;
-import response.evaluation.dto.PdfEvalResponse;
 import response.exam.ExamListResponse;
 
-import java.io.ByteArrayInputStream;
+
 
 @FeignClient(value = "elsClient", url = "http://devapp01.icico.net.ir/els/api/training")
 public interface ElsClient {
@@ -25,12 +22,12 @@ public interface ElsClient {
     @GetMapping("/evaluation/{id}")
     EvalListResponse getEvalResults(@PathVariable long id);
 
-
     @GetMapping("/exam/{id}")
     ExamListResponse getExamResults(@PathVariable long id);
 
     @GetMapping("/exam/pdfReport//{id}")
     PdfResponse getExamReport(@PathVariable long id);
+
     @GetMapping("/evaluation/pdfData/{id}")
     EvalListResponse getEvalReport(@PathVariable long id);
 
