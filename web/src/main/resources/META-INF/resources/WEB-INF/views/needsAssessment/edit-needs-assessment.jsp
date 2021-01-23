@@ -461,7 +461,8 @@
     var Button_changeShow_JspEditNeedsAssessment = isc.Button.create({
         title:"مشاهده تغییرات",
         margin: 1,
-        click(){
+        click: function () {
+            wait.show();
             showWindowDiffNeedsAssessment(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"), true)
         }
     });

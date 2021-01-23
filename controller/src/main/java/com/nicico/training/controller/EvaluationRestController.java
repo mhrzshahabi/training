@@ -14,6 +14,7 @@ import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import com.nicico.training.service.*;
+import dto.evaluuation.EvalQuestionDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -58,6 +59,7 @@ public class EvaluationRestController {
     private final ClassStudentDAO classStudentDAO;
     private final ClassEvaluationGoalsService classEvaluationGoalsService;
     private final ITclassService iTclassService;
+    private final EvaluationAnswerService answerService;
 
     @Loggable
     @PostMapping("/printWithCriteria")
@@ -891,5 +893,13 @@ public class EvaluationRestController {
     @GetMapping(value = "/getBehavioralEvaluationResult/{classId}")
     public EvaluationDTO.BehavioralResult getBehavioralEvaluationResult(@PathVariable Long classId) {
         return evaluationService.getBehavioralEvaluationResult(classId);
+    }
+
+
+    @GetMapping(value = "/getEvaluationQuestions/{evaluationId}")
+    public ResponseEntity<List<EvalQuestionDto>> getEvaluationQuestions(@PathVariable Long evaluationId) {
+        List<EvalQuestionDto> questionDtos=    evaluationService.getEvaluationQuestions(answerService.getAllByEvaluationId(evaluationId));
+        return new ResponseEntity<>(questionDtos, HttpStatus.OK);
+
     }
 }

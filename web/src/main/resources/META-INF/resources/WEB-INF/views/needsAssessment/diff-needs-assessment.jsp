@@ -1294,7 +1294,9 @@
         competenceBottomData.length = 0;
         skillTopData.length = 0;
         skillBottomData.length = 0;
-        ListGridTop_Competence_JspDiffNeedsAssessment.setData([]);
+        if(ListGridTop_Competence_JspDiffNeedsAssessment) {
+            ListGridTop_Competence_JspDiffNeedsAssessment.setData([]);
+        }
         ListGridTop_Knowledge_JspDiffNeedsAssessment.setData([]);
         ListGridTop_Attitude_JspDiffNeedsAssessment.setData([]);
         ListGridTop_Ability_JspDiffNeedsAssessment.setData([]);

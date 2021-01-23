@@ -558,7 +558,7 @@
                     Window_result_Finaltest.show();
                 } else {
                     var ERROR = isc.Dialog.create({
-                        message: "<spring:message code='exception.un-managed'/>",
+                        message: "<spring:message code='exception.not-acceptable-date'/>",
                         icon: "[SKIN]stop.png",
                         title: "<spring:message code='message'/>"
                     });
