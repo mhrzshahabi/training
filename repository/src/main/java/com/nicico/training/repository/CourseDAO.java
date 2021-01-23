@@ -52,15 +52,15 @@ public interface CourseDAO extends NicicoRepository<Course> {
      @Query(value =
              "(select  course.id, course.c_code ,course.c_title_fa  , max(tbl_class.c_start_date) max_start_date from " +
                  "(select distinct tbl_course.id, tbl_course.c_code, tbl_course.c_title_fa from tbl_course " +
-                 "inner join tbl_class on tbl_class.f_course = tbl_course.id " +
-                 "inner join tbl_term on tbl_term.id = tbl_class.f_term " +
-                 "inner join tbl_teacher  on tbl_teacher.id = tbl_class.f_teacher " +
-                 "where " +
-                 "  (case when :termIds is null then 1 when INSTR(:termIds,','||tbl_term.id||',',1,1)>0 then 1 end) is not null  and " +
-                 "  (case when :teacherIds is null then 1 when  INSTR(:teacherIds,','||tbl_teacher.id||',',1,1)>0  then 1 end) is not null and " +
-                 "  (case  when :courseIds is null then 1 when INSTR(:courseIds,','||tbl_course.id||',',1,1)>0 then 1 end ) is not null " +
-                 "minus " +
-                 "select distinct tbl_course.id, tbl_course.c_code, tbl_course.c_title_fa from tbl_course " +
+//                 "inner join tbl_class on tbl_class.f_course = tbl_course.id " +
+//                 "inner join tbl_term on tbl_term.id = tbl_class.f_term " +
+//                 "inner join tbl_teacher  on tbl_teacher.id = tbl_class.f_teacher " +
+//                 "where " +
+//                 "  (case when :termIds is null then 1 when INSTR(:termIds,','||tbl_term.id||',',1,1)>0 then 1 end) is not null  and " +
+//                 "  (case when :teacherIds is null then 1 when  INSTR(:teacherIds,','||tbl_teacher.id||',',1,1)>0  then 1 end) is not null and " +
+//                 "  (case  when :courseIds is null then 1 when INSTR(:courseIds,','||tbl_course.id||',',1,1)>0 then 1 end ) is not null " +
+//                 "minus " +
+//                 "select distinct tbl_course.id, tbl_course.c_code, tbl_course.c_title_fa from tbl_course " +
                  "inner join tbl_class on tbl_class.f_course = tbl_course.id " +
                  "inner join tbl_term on tbl_term.id = tbl_class.f_term " +
                  "inner join tbl_teacher  on tbl_teacher.id = tbl_class.f_teacher " +
