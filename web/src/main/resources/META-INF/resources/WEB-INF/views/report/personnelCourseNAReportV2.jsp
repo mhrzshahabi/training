@@ -14,6 +14,7 @@
 
     let criteriaDisplayValuesPostGrade;
     var isPassedDS_PCNR_data;
+    let data_values;
 
     //----------------------------------------------------Rest DataSource-----------------------------------------------
     PriorityDS_PCNR = isc.TrDS.create({
@@ -430,8 +431,7 @@
                     click: function () {
                         selectedCourse = record;
                         Window_Personnel_PCNR.show();
-
-                        PersonnelsLG_PCNR.implicitCriteria = data_values;
+                        PersonnelsLG_PCNR.implicitCriteria = JSON.parse(JSON.stringify(data_values));
                         PersonnelsLG_PCNR.implicitCriteria.criteria.addAll([
                             {
                                 fieldName: "isPassed",
