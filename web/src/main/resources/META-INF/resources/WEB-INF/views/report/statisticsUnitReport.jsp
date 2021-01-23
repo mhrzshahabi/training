@@ -317,6 +317,9 @@
             })
         ]
     });
+
+    var organizationFilter = init_OrganSegmentFilterDF(true, true , null, "personnelComplexTitle","studentCcpAssistant","studentCcpAffairs", "studentCcpSection", "studentCcpUnit");
+
     //----------------------------------------------------Criteria Form------------------------------------------------
     var DynamicForm_CriteriaForm_JspUnitReport = isc.DynamicForm.create({
         align: "right",
@@ -327,138 +330,138 @@
         numCols: 6,
         colWidths: ["5%", "25%", "5%", "25%","5%","25%"],
         fields: [
-            {
-                name: "personnelComplexTitle",
-                title: "<spring:message code="complex"/>",
-                optionDataSource: ComplexDS_PresenceReport,
-                valueField: "value",
-                displayField: "value",
-                icons:[
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click : function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                            form.setValue(null);
-                        }
-                    }
-                ],
-            },
-            {
-                name: "classStudentApplicantCompanyName",
-                title: "<spring:message code="company"/>",
-                valueField: "value",
-                displayField: "value",
-                optionDataSource: CompanyDS_PresenceReport,
-                icons:[
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click : function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                            form.setValue(null);
-                        }
-                    }
-                ],
-            },
-            {
-                name: "studentCcpAssistant",
-                title: "<spring:message code="assistance"/>",
-                valueField: "value",
-                displayField: "value",
-                optionDataSource: AssistantDS_PresenceReport,
-                icons:[
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click : function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                            form.setValue(null);
-                        }
-                    }
-                ],
-            },
-            {
-                name: "studentCcpSection",
-                title: "<spring:message code="section.cost"/>",
-                valueField: "value",
-                displayField: "value",
-                optionDataSource: SectionDS_PresenceReport,
-                icons:[
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click : function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                            form.setValue(null);
-                        }
-                    }
-                ],
-            },
-            {
-                name: "studentCcpUnit",
-                title: "<spring:message code="unitName"/>",
-                optionDataSource: UnitDS_PresenceReport,
-                valueField: "value",
-                displayField: "value",
-                icons:[
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click : function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                            form.setValue(null);
-                        }
-                    }
-                ],
-            },
-            {
-                name: "studentCcpAffairs",
-                title: "<spring:message code="affairs"/>",
-                optionDataSource: AffairsDS_PresenceReport,
-                valueField: "value",
-                displayField: "value",
-                icons:[
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click : function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                            form.setValue(null);
-                        }
-                    }
-                ],
-            },
+            <%--{--%>
+            <%--    name: "personnelComplexTitle",--%>
+            <%--    title: "<spring:message code="complex"/>",--%>
+            <%--    optionDataSource: ComplexDS_PresenceReport,--%>
+            <%--    valueField: "value",--%>
+            <%--    displayField: "value",--%>
+            <%--    icons:[--%>
+            <%--        {--%>
+            <%--            name: "clear",--%>
+            <%--            src: "[SKIN]actions/remove.png",--%>
+            <%--            width: 15,--%>
+            <%--            height: 15,--%>
+            <%--            inline: true,--%>
+            <%--            prompt: "پاک کردن",--%>
+            <%--            click : function (form, item, icon) {--%>
+            <%--                item.clearValue();--%>
+            <%--                item.focusInItem();--%>
+            <%--                form.setValue(null);--%>
+            <%--            }--%>
+            <%--        }--%>
+            <%--    ],--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "classStudentApplicantCompanyName",--%>
+            <%--    title: "<spring:message code="company"/>",--%>
+            <%--    valueField: "value",--%>
+            <%--    displayField: "value",--%>
+            <%--    optionDataSource: CompanyDS_PresenceReport,--%>
+            <%--    icons:[--%>
+            <%--        {--%>
+            <%--            name: "clear",--%>
+            <%--            src: "[SKIN]actions/remove.png",--%>
+            <%--            width: 15,--%>
+            <%--            height: 15,--%>
+            <%--            inline: true,--%>
+            <%--            prompt: "پاک کردن",--%>
+            <%--            click : function (form, item, icon) {--%>
+            <%--                item.clearValue();--%>
+            <%--                item.focusInItem();--%>
+            <%--                form.setValue(null);--%>
+            <%--            }--%>
+            <%--        }--%>
+            <%--    ],--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "studentCcpAssistant",--%>
+            <%--    title: "<spring:message code="assistance"/>",--%>
+            <%--    valueField: "value",--%>
+            <%--    displayField: "value",--%>
+            <%--    optionDataSource: AssistantDS_PresenceReport,--%>
+            <%--    icons:[--%>
+            <%--        {--%>
+            <%--            name: "clear",--%>
+            <%--            src: "[SKIN]actions/remove.png",--%>
+            <%--            width: 15,--%>
+            <%--            height: 15,--%>
+            <%--            inline: true,--%>
+            <%--            prompt: "پاک کردن",--%>
+            <%--            click : function (form, item, icon) {--%>
+            <%--                item.clearValue();--%>
+            <%--                item.focusInItem();--%>
+            <%--                form.setValue(null);--%>
+            <%--            }--%>
+            <%--        }--%>
+            <%--    ],--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "studentCcpSection",--%>
+            <%--    title: "<spring:message code="section.cost"/>",--%>
+            <%--    valueField: "value",--%>
+            <%--    displayField: "value",--%>
+            <%--    optionDataSource: SectionDS_PresenceReport,--%>
+            <%--    icons:[--%>
+            <%--        {--%>
+            <%--            name: "clear",--%>
+            <%--            src: "[SKIN]actions/remove.png",--%>
+            <%--            width: 15,--%>
+            <%--            height: 15,--%>
+            <%--            inline: true,--%>
+            <%--            prompt: "پاک کردن",--%>
+            <%--            click : function (form, item, icon) {--%>
+            <%--                item.clearValue();--%>
+            <%--                item.focusInItem();--%>
+            <%--                form.setValue(null);--%>
+            <%--            }--%>
+            <%--        }--%>
+            <%--    ],--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "studentCcpUnit",--%>
+            <%--    title: "<spring:message code="unitName"/>",--%>
+            <%--    optionDataSource: UnitDS_PresenceReport,--%>
+            <%--    valueField: "value",--%>
+            <%--    displayField: "value",--%>
+            <%--    icons:[--%>
+            <%--        {--%>
+            <%--            name: "clear",--%>
+            <%--            src: "[SKIN]actions/remove.png",--%>
+            <%--            width: 15,--%>
+            <%--            height: 15,--%>
+            <%--            inline: true,--%>
+            <%--            prompt: "پاک کردن",--%>
+            <%--            click : function (form, item, icon) {--%>
+            <%--                item.clearValue();--%>
+            <%--                item.focusInItem();--%>
+            <%--                form.setValue(null);--%>
+            <%--            }--%>
+            <%--        }--%>
+            <%--    ],--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "studentCcpAffairs",--%>
+            <%--    title: "<spring:message code="affairs"/>",--%>
+            <%--    optionDataSource: AffairsDS_PresenceReport,--%>
+            <%--    valueField: "value",--%>
+            <%--    displayField: "value",--%>
+            <%--    icons:[--%>
+            <%--        {--%>
+            <%--            name: "clear",--%>
+            <%--            src: "[SKIN]actions/remove.png",--%>
+            <%--            width: 15,--%>
+            <%--            height: 15,--%>
+            <%--            inline: true,--%>
+            <%--            prompt: "پاک کردن",--%>
+            <%--            click : function (form, item, icon) {--%>
+            <%--                item.clearValue();--%>
+            <%--                item.focusInItem();--%>
+            <%--                form.setValue(null);--%>
+            <%--            }--%>
+            <%--        }--%>
+            <%--    ],--%>
+            <%--},--%>
             {
                 name: "courseCode",
                 title: "کد دوره",
@@ -1162,17 +1165,18 @@
         width: 300,
         click: function () {
 
-            if(DynamicForm_CriteriaForm_JspUnitReport.getValuesAsAdvancedCriteria().criteria.size() <= 1) {
+            if(DynamicForm_CriteriaForm_JspUnitReport.getValuesAsAdvancedCriteria().criteria.size() <= 1 ||
+                (organizationFilter.getCriteria(DynamicForm_CriteriaForm_JspUnitReport.getValuesAsAdvancedCriteria())).criteria.length <= 1) {
                 createDialog("info","فیلتری انتخاب نشده است.");
                 return;
             }
 
             DynamicForm_CriteriaForm_JspUnitReport.validate();
-            if (DynamicForm_CriteriaForm_JspUnitReport.hasErrors())
+            if (DynamicForm_CriteriaForm_JspUnitReport.hasErrors() || organizationFilter.hasErrors())
                 return;
 
             else{
-                data_values = DynamicForm_CriteriaForm_JspUnitReport.getValuesAsAdvancedCriteria();
+                data_values = organizationFilter.getCriteria(DynamicForm_CriteriaForm_JspUnitReport.getValuesAsAdvancedCriteria());
                 for (var i = 0; i < data_values.criteria.size(); i++) {
                     if (data_values.criteria[i].fieldName == "courseCode") {
                         var codesString = data_values.criteria[i].value;
@@ -1311,7 +1315,7 @@
         showEdges: false,
         edgeImage: "",
         width: "100%",
-        height: "100%",
+        height: "20%",
         alignLayout: "center",
         members: [
             Window_CriteriaForm_JspUnitReport
@@ -1333,7 +1337,8 @@
 
     var VLayout_Body_JspUnitReport = isc.TrVLayout.create({
         members: [
-            HLayOut_CriteriaForm_JspUnitReport,
+            organizationFilter,
+            DynamicForm_CriteriaForm_JspUnitReport,
             HLayOut_Confirm_JspUnitReport
         ]
     });
