@@ -558,7 +558,7 @@
         titleAlign: "center",
         showInlineErrors: true,
         showErrorText: false,
-        numCols: 6,
+        numCols: 4,
         colWidths: ["5%", "25%", "5%", "25%","5%","25%"],
         fields: [
             {
@@ -959,24 +959,24 @@
                     }
                     else if (data_values.criteria[i].fieldName == "assistant") {
                         data_values.criteria[i].fieldName = "personnelCcpAssistant";
-                        data_values.criteria[i].operator = "iContains";
+                        data_values.criteria[i].operator = "inSet";
                     }
                     else if (data_values.criteria[i].fieldName == "unit") {
                         data_values.criteria[i].fieldName = "personnelCcpUnit";
-                        data_values.criteria[i].operator = "iContains";
+                        data_values.criteria[i].operator = "inSet";
                     }
                     else if (data_values.criteria[i].fieldName == "affairs") {
                         data_values.criteria[i].fieldName = "personnelCcpAffairs";
-                        data_values.criteria[i].operator = "iContains";
+                        data_values.criteria[i].operator = "inSet";
                     }
                     else if (data_values.criteria[i].fieldName == "section") {
                         data_values.criteria[i].fieldName = "personnelCcpSection";
-                        data_values.criteria[i].operator = "iContains";
+                        data_values.criteria[i].operator = "inSet";
                     }
 
                     else if (data_values.criteria[i].fieldName == "complexTitle") {
                         data_values.criteria[i].fieldName = "personnelComplexTitle";
-                        data_values.criteria[i].operator = "iContains";
+                        data_values.criteria[i].operator = "inSet";
                     }
 
                     else if (data_values.criteria[i].fieldName == "courseCategory") {
