@@ -32,7 +32,7 @@ function getOffset(el) {
 }
 
 
-function displayDatePicker(dateFieldID, displayBelowThisObject, dtFormat, dtSep) {
+function displayDatePicker(dateFieldID, displayBelowThisObject, dtFormat, dtSep, align = 'left') {
 
     var win = document.defaultView || document.parentWindow;
     var id = win[dateFieldID].getElement().id;
@@ -58,7 +58,7 @@ function displayDatePicker(dateFieldID, displayBelowThisObject, dtFormat, dtSep)
     var x = getOffset(targetDateField).left;
     var y = getOffset(targetDateField).top;
 
-    x -= 200;
+    x = align == 'left' ? x - 200 : x ;
     y -= 50;
     drawDatePicker(targetDateField, x, y);
 }

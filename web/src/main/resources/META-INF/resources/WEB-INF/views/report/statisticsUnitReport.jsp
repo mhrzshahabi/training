@@ -327,7 +327,7 @@
         titleAlign: "center",
         showInlineErrors: true,
         showErrorText: false,
-        numCols: 6,
+        numCols: 4,
         colWidths: ["5%", "25%", "5%", "25%","5%","25%"],
         fields: [
             {
@@ -348,11 +348,6 @@
                 title: "نام دوره",
                 length: 100,
                 filterOperator: "iContains"
-            },
-            {
-                name: "temp1",
-                title: "",
-                canEdit: false
             },
             {
                 name: "classCode",
@@ -382,11 +377,6 @@
                     showFilterEditor: false
                 },
                 defaultValue:  ["1","2","3"]
-            },
-            {
-                name: "temp2",
-                title: "",
-                canEdit: false
             },
             {
                 name: "startDate1",
@@ -445,7 +435,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('startDate2_JspStaticalUnitReport', this, 'ymd', '/');
+                        displayDatePicker('startDate2_JspStaticalUnitReport', this, 'ymd', '/', 'right');
                     }
                 }],
                 editorExit: function (form, item, value) {
@@ -476,11 +466,6 @@
                         startDateCheck_Order_JspStaticalUnitReport = true;
                     }
                 }
-            },
-            {
-                name: "temp41",
-                title: "",
-                canEdit: false
             },
             {
                 name: "endDate1",
@@ -538,7 +523,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('endDate2_JspStaticalUnitReport', this, 'ymd', '/');
+                        displayDatePicker('endDate2_JspStaticalUnitReport', this, 'ymd', '/', 'right');
                     }
                 }],
                 editorExit: function (form, item, value) {
@@ -569,11 +554,6 @@
                         endDateCheck_Order_JspStaticalUnitReport = true;
                     }
                 }
-            },
-            {
-                name: "temp42",
-                title: "",
-                canEdit: false
             },
             {
                 name: "courseTeacherId",
@@ -617,11 +597,6 @@
                 }
             },
             {
-                name: "temp5",
-                title: "",
-                canEdit: false
-            },
-            {
                 name: "classYear",
                 title: "سال کاری",
                 type: "SelectItem",
@@ -657,11 +632,6 @@
                 valueField: "id",
                 displayField: "titleFa",
                 filterLocally: true
-            },
-            {
-                name: "temp6",
-                title: "",
-                canEdit: false
             },
             {
                 name: "courseCategory",
@@ -733,11 +703,6 @@
                         this.fetchData();
                     }
                 }
-            },
-            {
-                name: "temp7",
-                title: "",
-                canEdit: false
             },
             {
                 name: "classSupervisor",
@@ -1079,7 +1044,7 @@
 
                     else if (data_values.criteria[i].fieldName == "personnelComplexTitle") {
                         data_values.criteria[i].fieldName = "personnelComplexTitle";
-                        data_values.criteria[i].operator = "iContains";
+                        data_values.criteria[i].operator = "inSet";
                     }
 
                     else if (data_values.criteria[i].fieldName == "classStudentApplicantCompanyName") {
@@ -1088,19 +1053,19 @@
                     }
                     else if (data_values.criteria[i].fieldName == "studentCcpAssistant") {
                         data_values.criteria[i].fieldName = "studentCcpAssistant";
-                        data_values.criteria[i].operator = "iContains";
+                        data_values.criteria[i].operator = "inSet";
                     }
                     else if (data_values.criteria[i].fieldName == "studentCcpUnit") {
                         data_values.criteria[i].fieldName = "studentCcpUnit";
-                        data_values.criteria[i].operator = "iContains";
+                        data_values.criteria[i].operator = "inSet";
                     }
                     else if (data_values.criteria[i].fieldName == "studentCcpAffairs") {
                         data_values.criteria[i].fieldName = "studentCcpAffairs";
-                        data_values.criteria[i].operator = "iContains";
+                        data_values.criteria[i].operator = "inSet";
                     }
                     else if (data_values.criteria[i].fieldName == "studentCcpSection") {
                         data_values.criteria[i].fieldName = "studentCcpSection";
-                        data_values.criteria[i].operator = "iContains";
+                        data_values.criteria[i].operator = "inSet";
                     }
                     else if (data_values.criteria[i].fieldName == "courseTitleFa") {
                         data_values.criteria[i].fieldName = "courseTitleFa";
