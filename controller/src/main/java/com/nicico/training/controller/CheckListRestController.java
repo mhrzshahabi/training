@@ -109,7 +109,18 @@ public class CheckListRestController {
 
         final CheckListDTO.CheckListSpecRs specRs = new CheckListDTO.CheckListSpecRs();
         specRs.setResponse(specResponse);
+        if (specRs.getResponse()!=null && specRs.getResponse().getData()!=null)
+        {
 
+            specRs.getResponse().getData().stream()
+                    .filter(checkListDTO -> checkListDTO.getTitleFa().equals("سوالات مربوط به ارزيابي استاد"))
+                    .findFirst()
+                    .map(p -> {
+                        specRs.getResponse().getData().remove(p);
+                        return p;
+                    });
+
+        }
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
