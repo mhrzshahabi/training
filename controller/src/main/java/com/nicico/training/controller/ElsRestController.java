@@ -24,16 +24,12 @@ import response.evaluation.SendEvalToElsResponse;
 import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
 import response.exam.ExamResultDto;
-import response.question.QuestionsDto;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 
-import static com.nicico.copper.common.util.date.DateUtil.convertMiToKh2;
 
 
 @RestController
