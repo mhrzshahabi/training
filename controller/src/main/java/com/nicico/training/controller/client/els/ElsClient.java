@@ -20,17 +20,17 @@ public interface ElsClient {
     BaseResponse sendExam(@RequestBody ElsExamRequest request);
 
     @GetMapping("/evaluation/{id}")
-    EvalListResponse getEvalResults(@PathVariable long id);
+    EvalListResponse getEvalResults(@PathVariable("id") long id);
 
     @GetMapping("/exam/{id}")
-    ExamListResponse getExamResults(@PathVariable long id);
+    ExamListResponse getExamResults(@PathVariable("id") long id);
 
-    @GetMapping("/exam/pdfReport//{id}")
-    PdfResponse getExamReport(@PathVariable long id);
+    @GetMapping("/exam/pdfReport/{id}")
+    PdfResponse getExamReport(@PathVariable("id") long id);
 
     @GetMapping("/evaluation/pdfData/{id}")
-    EvalListResponse getEvalReport(@PathVariable long id);
+    EvalListResponse getEvalReport(@PathVariable("id") long id);
 
     @RequestMapping(method = RequestMethod.POST, value = "/evaluationToTeacher")
-    BaseResponse sendEvaluationToTeacher(ElsEvalRequest request);
+    BaseResponse sendEvaluationToTeacher(@RequestBody ElsEvalRequest request);
 }
