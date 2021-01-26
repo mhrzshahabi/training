@@ -25,6 +25,9 @@ public class ViewAttendanceReportDTO {
     String date;
     Integer attendanceStatus;
     String time;
+    String plannerComplex;
+    String plannerName;
+    String instituteName;
 
     @Getter
     @Setter
