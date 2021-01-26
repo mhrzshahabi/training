@@ -139,8 +139,8 @@ spring:
   profiles: Development
   datasource:
     url: jdbc:oracle:thin:@//oragnrt01.icico.net.ir:1521/pdb_dev01
-    username: testtraining
-    password: testtraining
+    username: devtraining
+    password: devtraining
   redis:
     host: devapp01.icico.net.ir
     password: nicico
