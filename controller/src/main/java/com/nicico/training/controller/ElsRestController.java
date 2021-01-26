@@ -6,6 +6,7 @@ import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.controller.util.GeneratePdfReport;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
+import com.nicico.training.mapper.evaluation.EvaluationMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import request.exam.ExamImportedRequest;
 import response.BaseResponse;
 import response.evaluation.EvalListResponse;
 import response.evaluation.SendEvalToElsResponse;
+import response.evaluation.TrainingEvaluationDto;
 import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
 import response.exam.ExamResultDto;
@@ -32,6 +34,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static com.nicico.copper.common.util.date.DateUtil.convertMiToKh2;
 
@@ -42,6 +45,7 @@ import static com.nicico.copper.common.util.date.DateUtil.convertMiToKh2;
 public class ElsRestController {
 
     private final EvaluationBeanMapper evaluationBeanMapper;
+    private final EvaluationMapper evaluationMapper;
     private final EvaluationAnswerService answerService;
     private final QuestionnaireService questionnaireService;
     private final EvaluationService evaluationService;
@@ -49,7 +53,6 @@ public class ElsRestController {
     private final TclassService tclassService;
     private final TeacherService teacherService;
     private final ITclassService iTclassService;
-    private final StudentService studentService;
     private final PersonalInfoService personalInfoService;
     private final ElsClient client;
     private final TestQuestionService testQuestionService;
@@ -78,7 +81,7 @@ public class ElsRestController {
             BaseResponse baseResponse = client.sendEvaluation(request);
             response.setMessage(baseResponse.getMessage());
             response.setStatus(baseResponse.getStatus());
-            iTclassService.changeOnlineEvalStudentStatus(evaluation.getClassId() , true);
+            iTclassService.changeOnlineEvalStudentStatus(evaluation.getClassId(), true);
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
@@ -110,7 +113,7 @@ public class ElsRestController {
             BaseResponse baseResponse = client.sendEvaluationToTeacher(request);
             response.setMessage(baseResponse.getMessage());
             response.setStatus(baseResponse.getStatus());
-            iTclassService.changeOnlineEvalTeacherStatus(evaluation.getClassId() , true);
+            iTclassService.changeOnlineEvalTeacherStatus(evaluation.getClassId(), true);
 
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
@@ -145,10 +148,8 @@ public class ElsRestController {
 
             } else {
 
-                if (object.getExamItem().getTclass().getTeacherId()!=null)
-                {
-                    if (evaluationBeanMapper.checkExamScore(object, tclassService.getTClass(object.getExamItem().getTclassId())))
-                    {
+                if (object.getExamItem().getTclass().getTeacherId() != null) {
+                    if (evaluationBeanMapper.checkExamScore(object, tclassService.getTClass(object.getExamItem().getTclassId()))) {
                         PersonalInfo teacherInfo = personalInfoService.getPersonalInfo
                                 (teacherService.getTeacher(object.getExamItem().getTclass().getTeacherId()).getPersonalityId());
                         if (null == teacherInfo.getGender() ||
@@ -159,16 +160,16 @@ public class ElsRestController {
                             response.setMessage("اطلاعات استاد تکمیل نیست");
                             return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
                         } else {
-                            request = evaluationBeanMapper.toGetExamRequest(tclassService.getTClass(object.getExamItem().getTclassId()),teacherInfo,
+                            request = evaluationBeanMapper.toGetExamRequest(tclassService.getTClass(object.getExamItem().getTclassId()), teacherInfo,
                                     object, classStudentService.getClassStudents(object.getExamItem().getTclassId()));
 //                            boolean hasDuplicateQuestions = evaluationBeanMapper.hasDuplicateQuestions(request.getQuestionProtocols());
                             boolean hasWrongCorrectAnswer = evaluationBeanMapper.hasWrongCorrectAnswer(request.getQuestionProtocols());
-                            if ( hasWrongCorrectAnswer || request.getQuestionProtocols().size() == 0) {
+                            if (hasWrongCorrectAnswer || request.getQuestionProtocols().size() == 0) {
 
                                 response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
 //                                if (hasDuplicateQuestions)
 //                                    response.setMessage("سوال با عنوان تکراری در آزمون موجود است!");
-                                 if (hasWrongCorrectAnswer)
+                                if (hasWrongCorrectAnswer)
                                     response.setMessage("سوال چهار گزینه ای بدون جواب صحیح موجود است!");
                                 else
                                     response.setMessage("آزمون سوال ندارد!");
@@ -181,22 +182,18 @@ public class ElsRestController {
                                 if (response.getStatus() == HttpStatus.OK.value()) {
                                     testQuestionService.changeOnlineFinalExamStatus(request.getExam().getSourceExamId(), true);
                                     return new ResponseEntity<>(response, HttpStatus.OK);
-                                }else
+                                } else
                                     return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
 
                             }
                         }
 
-                    }
-                    else
-                    {
+                    } else {
                         response.setMessage("بارم بندی آزمون صحیح نمی باشد");
                         return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
                     }
 
-                }
-                else
-                {
+                } else {
                     response.setMessage("کلاس استاد ندارد");
                     return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
                 }
@@ -237,7 +234,7 @@ public class ElsRestController {
                          @PathVariable String national,
                          @PathVariable String name,
                          @PathVariable String last,
-                         @PathVariable  String fullName
+                         @PathVariable String fullName
 
     ) throws Exception {
 
@@ -250,7 +247,7 @@ public class ElsRestController {
                 .findFirst()
                 .get();
 
-        String params="{\"student\":\""+name+""+last +"\"}";
+        String params = "{\"student\":\"" + name + "" + last + "\"}";
 
         testQuestionService.printElsPdf(response, "pdf", "ElsExam.jasper", id, params, data);
 
@@ -264,29 +261,20 @@ public class ElsRestController {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 
         try {
-            if (sdf.parse(object.getExamItem().getTclass().getStartDate()).compareTo(sdf.parse(object.getExamItem().getTclass().getEndDate()))!= 0)
-            {
+            if (sdf.parse(object.getExamItem().getTclass().getStartDate()).compareTo(sdf.parse(object.getExamItem().getTclass().getEndDate())) != 0) {
 
                 if (sdf.parse(object.getExamItem().getDate()).after(sdf.parse(object.getExamItem().getTclass().getStartDate()))
-                )
-                {
-                    ExamQuestionsDto  response=evaluationBeanMapper.toGetExamQuestions(object);
+                ) {
+                    ExamQuestionsDto response = evaluationBeanMapper.toGetExamQuestions(object);
                     return new ResponseEntity(response, HttpStatus.OK);
-                }
-                else
-                {
+                } else {
                     return new ResponseEntity("زمان برگذاری آزمون در بازه زمانی درست نمی باشد", HttpStatus.NOT_ACCEPTABLE);
                 }
-            }
-            else
-            {
-                if (sdf.parse(object.getExamItem().getTclass().getStartDate()).compareTo(sdf.parse(object.getExamItem().getDate()))!= 0)
-                {
+            } else {
+                if (sdf.parse(object.getExamItem().getTclass().getStartDate()).compareTo(sdf.parse(object.getExamItem().getDate())) != 0) {
                     return new ResponseEntity("زمان برگذاری آزمون در بازه زمانی درست نمی باشد", HttpStatus.NOT_ACCEPTABLE);
-                }
-                else
-                {
-                    ExamQuestionsDto  response=evaluationBeanMapper.toGetExamQuestions(object);
+                } else {
+                    ExamQuestionsDto response = evaluationBeanMapper.toGetExamQuestions(object);
                     return new ResponseEntity(response, HttpStatus.OK);
                 }
             }
@@ -295,6 +283,15 @@ public class ElsRestController {
 
             return new ResponseEntity(new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
+
+
+    }
+
+
+    @GetMapping("/teacher/addAnswer/evaluation/{class_id}")
+    public void addTeacherEvaluationAnswer(@PathVariable long class_id) {
+
+      tclassService.classTeacherEvaluations(class_id);
 
 
     }

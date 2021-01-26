@@ -17,10 +17,13 @@ import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.mapper.TrainingClassBeanMapper;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
 import com.nicico.training.model.*;
+import com.nicico.training.model.evaluationSpecModel.EvaluationAnswerObject;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -28,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import response.tclass.dto.TclassDto;
 
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -41,9 +45,12 @@ import java.util.*;
 @RequiredArgsConstructor
 public class TclassService implements ITclassService {
 
+
+
     private final ModelMapper modelMapper;
     private final TclassDAO tclassDAO;
     private final ClassSessionDAO classSessionDAO;
+    private final EvaluationDAO evaluationDAO;
     private final ClassSessionService classSessionService;
     private final TrainingPlaceDAO trainingPlaceDAO;
     private final AttachmentService attachmentService;
@@ -238,7 +245,7 @@ public class TclassService implements ITclassService {
             resp.sendError(409, messageSource.getMessage("کلاس فوق بدلیل داشتن فراگیر قابل حذف نیست. ", null, LocaleContextHolder.getLocale()));
             return;
         }
-        for (Evaluation eva:tclass.getEvaluations()) {
+        for (Evaluation eva : tclass.getEvaluations()) {
             evaluationService.delete(eva.getId());
         }
 
@@ -386,13 +393,14 @@ public class TclassService implements ITclassService {
 
     @Override
     public void changeOnlineEvalTeacherStatus(Long classId, boolean state) {
-        tclassDAO.changeOnlineEvalTeacherStatus(classId,state);
+        tclassDAO.changeOnlineEvalTeacherStatus(classId, state);
     }
 
     @Override
     public void changeOnlineEvalStudentStatus(Long classId, boolean state) {
-        tclassDAO.changeOnlineEvalStudentStatus(classId,state);
+        tclassDAO.changeOnlineEvalStudentStatus(classId, state);
     }
+
 
     @Transactional()
     @Override
@@ -556,7 +564,7 @@ public class TclassService implements ITclassService {
             minQus_ET = (Double) FETGradeResult.get("minQus_ET");
 
         Map<String, Object> FECRResult = null;
-        if(FERGrade != null)
+        if (FERGrade != null)
             FERGradeS = FERGrade.toString();
         List<EvaluationAnalysis> evaluationAnalyses = evaluationAnalysisDAO.findByTClassId(classId);
         if (evaluationAnalyses != null && evaluationAnalyses.size() != 0) {
@@ -1290,5 +1298,25 @@ public class TclassService implements ITclassService {
         }
 
         return result;
+    }
+
+
+    @Override
+    public EvaluationAnswerObject classTeacherEvaluations(Long classId) {
+        final Optional<Tclass> optionalTclass = tclassDAO.findById(classId);
+        final Tclass tclass = optionalTclass.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        final Optional<Evaluation>optionalEvaluation=     evaluationDAO.findTopByClassIdAndQuestionnaireTypeId(tclass.getId(),140L);
+        final Evaluation evaluation = optionalEvaluation.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        EvaluationAnswerObject evaluationAnswerObject=new EvaluationAnswerObject();
+//        evaluationAnswerObject.setClassId();
+//        evaluationAnswerObject.setEvaluatedId();
+//        evaluationAnswerObject.setEvaluatedTypeId();
+//        evaluationAnswerObject.setEvaluationFull();
+//        evaluationAnswerObject.setEvaluationAnswerList();
+//        evaluationAnswerObject.setEvaluationLevelId();
+//        evaluationAnswerObject.setQuestionnaireTypeId();
+//        evaluationAnswerObject.setEvaluatorId();
+//        evaluationAnswerObject.setEvaluatorTypeId();
+        return  evaluationAnswerObject;
     }
 }

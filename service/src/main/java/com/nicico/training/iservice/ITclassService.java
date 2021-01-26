@@ -7,6 +7,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.model.Tclass;
+import com.nicico.training.model.evaluationSpecModel.EvaluationAnswerObject;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -107,4 +108,7 @@ public interface ITclassService {
 
     @Transactional
     void changeOnlineEvalStudentStatus(Long classId ,boolean state);
+
+
+    EvaluationAnswerObject classTeacherEvaluations(Long classId);
 }
