@@ -1899,7 +1899,7 @@
             fields: [
                 {
                     name: "description",
-                    title: "<spring:message code='description'/>",
+                    title: "<spring:message code='suggestions'/>",
                     type: 'textArea',
                     height: 100,
                     length: "600",
@@ -2285,7 +2285,7 @@
             fields: [
                 {
                     name: "description",
-                    title: "<spring:message code='description'/>",
+                    title: "<spring:message code='suggestions'/>",
                     type: 'textArea',
                     height: 100,
                     length: "600",
@@ -2677,7 +2677,7 @@
             fields: [
                 {
                     name: "description",
-                    title: "<spring:message code='description'/>",
+                    title: "<spring:message code='suggestions'/>",
                     type: 'textArea',
                     height: 100,
                     length: "600",
