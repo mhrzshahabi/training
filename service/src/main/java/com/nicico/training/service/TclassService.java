@@ -17,21 +17,22 @@ import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.mapper.TrainingClassBeanMapper;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
 import com.nicico.training.model.*;
-import com.nicico.training.model.evaluationSpecModel.EvaluationAnswerObject;
+import request.evaluation.StudentEvaluationAnswerDto;
+import response.evaluation.dto.EvaluationAnswerObject;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import request.evaluation.TeacherEvaluationAnswerDto;
+import request.evaluation.TeacherEvaluationAnswerList;
+import response.evaluation.dto.TeacherEvaluationAnswer;
 import response.tclass.dto.TclassDto;
 
-import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -46,11 +47,16 @@ import java.util.*;
 public class TclassService implements ITclassService {
 
 
-
     private final ModelMapper modelMapper;
+    private final EvaluationQuestionDAO evaluationQuestionDAO;
     private final TclassDAO tclassDAO;
     private final ClassSessionDAO classSessionDAO;
     private final EvaluationDAO evaluationDAO;
+    private final StudentDAO studentDAO;
+    private final ClassStudentDAO classStudentDAO;
+    private final EvaluationAnswerService evaluationAnswerService;
+    private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
+    private final DynamicQuestionDAO dynamicQuestionDAO;
     private final ClassSessionService classSessionService;
     private final TrainingPlaceDAO trainingPlaceDAO;
     private final AttachmentService attachmentService;
@@ -1300,23 +1306,173 @@ public class TclassService implements ITclassService {
         return result;
     }
 
-
+    @Transactional
     @Override
-    public EvaluationAnswerObject classTeacherEvaluations(Long classId) {
-        final Optional<Tclass> optionalTclass = tclassDAO.findById(classId);
+    public EvaluationAnswerObject classTeacherEvaluations(TeacherEvaluationAnswerDto dto) {
+        final Optional<Tclass> optionalTclass = tclassDAO.findById(dto.getClassId());
         final Tclass tclass = optionalTclass.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        final Optional<Evaluation>optionalEvaluation=     evaluationDAO.findTopByClassIdAndQuestionnaireTypeId(tclass.getId(),140L);
+        final Optional<Evaluation> optionalEvaluation = evaluationDAO.findTopByClassIdAndQuestionnaireTypeId(tclass.getId(), 140L);
         final Evaluation evaluation = optionalEvaluation.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        EvaluationAnswerObject evaluationAnswerObject=new EvaluationAnswerObject();
-//        evaluationAnswerObject.setClassId();
-//        evaluationAnswerObject.setEvaluatedId();
-//        evaluationAnswerObject.setEvaluatedTypeId();
-//        evaluationAnswerObject.setEvaluationFull();
-//        evaluationAnswerObject.setEvaluationAnswerList();
-//        evaluationAnswerObject.setEvaluationLevelId();
-//        evaluationAnswerObject.setQuestionnaireTypeId();
-//        evaluationAnswerObject.setEvaluatorId();
-//        evaluationAnswerObject.setEvaluatorTypeId();
-        return  evaluationAnswerObject;
+        EvaluationAnswerObject evaluationAnswerObject = new EvaluationAnswerObject();
+        evaluationAnswerObject.setClassId(dto.getClassId());
+        evaluationAnswerObject.setId(evaluation.getId());
+        evaluationAnswerObject.setEvaluatedId(evaluation.getEvaluatedId());
+        evaluationAnswerObject.setEvaluatedTypeId(evaluation.getEvaluatedTypeId());
+        evaluationAnswerObject.setEvaluationLevelId(evaluation.getEvaluationLevelId());
+        evaluationAnswerObject.setQuestionnaireTypeId(evaluation.getQuestionnaireTypeId());
+        evaluationAnswerObject.setQuestionnaireId(evaluation.getQuestionnaireId());
+        evaluationAnswerObject.setEvaluatorId(evaluation.getEvaluatorId());
+        evaluationAnswerObject.setEvaluatorTypeId(evaluation.getEvaluatorTypeId());
+
+        List<EvaluationAnswer> evaluationAnswers;
+        List<TeacherEvaluationAnswer> EvaluationAnswerList = new ArrayList<>();
+        evaluationAnswers = evaluationAnswerService.getAllByEvaluationId(evaluation.getId());
+        for (EvaluationAnswer evaluationAnswer : evaluationAnswers) {
+            TeacherEvaluationAnswer teacherEvaluationAnswer = new TeacherEvaluationAnswer();
+            teacherEvaluationAnswer.setId(evaluationAnswer.getId().toString());
+            Optional<QuestionnaireQuestion> questionnaireQuestionOptional = questionnaireQuestionDAO.findById(evaluationAnswer.getEvaluationQuestionId());
+            final QuestionnaireQuestion questionnaireQuestion = questionnaireQuestionOptional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+            Optional<EvaluationQuestion> evaluationQuestionOptional = evaluationQuestionDAO.findById(questionnaireQuestion.getEvaluationQuestionId());
+            final EvaluationQuestion question = evaluationQuestionOptional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+
+            TeacherEvaluationAnswerList answer = dto.getEvaluationAnswerList().stream()
+                    .filter(x -> x.getQuestion().trim().equals(question.getQuestion().trim()))
+                    .findFirst()
+                    .orElse(null);
+            if (answer != null) {
+                switch (answer.getAnswer()) {
+                    case "عالی":
+                        teacherEvaluationAnswer.setAnswerID("205");
+                        break;
+                    case "خوب":
+                        teacherEvaluationAnswer.setAnswerID("206");
+                        break;
+                    case "متوسط":
+                        teacherEvaluationAnswer.setAnswerID("207");
+                        break;
+                    case "ضعیف":
+                        teacherEvaluationAnswer.setAnswerID("208");
+                        break;
+                    case "خیلی ضعیف":
+                        teacherEvaluationAnswer.setAnswerID("209");
+                        break;
+                }
+
+                EvaluationAnswerList.add(teacherEvaluationAnswer);
+            }
+        }
+        evaluationAnswerObject.setEvaluationFull(evaluationAnswers.size() == dto.getEvaluationAnswerList().size());
+        evaluationAnswerObject.setEvaluationAnswerList(EvaluationAnswerList);
+        if (dto.getDescription() != null && !dto.getDescription().isEmpty() && dto.getDescription().trim().length() > 0)
+            evaluationAnswerObject.setDescription(dto.getDescription());
+        evaluationAnswerObject.setSendDate(DateUtil.todayDate());
+        return evaluationAnswerObject;
+    }
+    @Transactional
+    @Override
+    public EvaluationAnswerObject classStudentEvaluations(StudentEvaluationAnswerDto dto) {
+        final Optional<Tclass> optionalTclass = tclassDAO.findById(dto.getClassId());
+        final Tclass tclass = optionalTclass.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        List<Evaluation> optionalEvaluation = evaluationDAO.findAllByClassIdAndQuestionnaireTypeId(tclass.getId(), 139L);
+        Long userId =   studentDAO.findOneByNationalCode(dto.getNationalCode(),dto.getClassId());
+
+        Evaluation evaluation = optionalEvaluation.stream()
+                .filter(x -> x.getEvaluatorId().equals(userId))
+                .findFirst()
+                .orElse(null);
+
+        EvaluationAnswerObject evaluationAnswerObject = new EvaluationAnswerObject();
+        evaluationAnswerObject.setClassId(dto.getClassId());
+        evaluationAnswerObject.setId(evaluation.getId());
+        evaluationAnswerObject.setEvaluatedId(evaluation.getEvaluatedId());
+        evaluationAnswerObject.setEvaluatedTypeId(evaluation.getEvaluatedTypeId());
+        evaluationAnswerObject.setEvaluationLevelId(evaluation.getEvaluationLevelId());
+        evaluationAnswerObject.setQuestionnaireTypeId(evaluation.getQuestionnaireTypeId());
+        evaluationAnswerObject.setQuestionnaireId(evaluation.getQuestionnaireId());
+        evaluationAnswerObject.setEvaluatorId(userId);
+        evaluationAnswerObject.setEvaluatorTypeId(188L);
+
+        List<EvaluationAnswer> evaluationAnswers;
+        List<TeacherEvaluationAnswer> EvaluationAnswerList = new ArrayList<>();
+        evaluationAnswers = evaluationAnswerService.getAllByEvaluationId(evaluation.getId());
+        for (EvaluationAnswer evaluationAnswer : evaluationAnswers) {
+            TeacherEvaluationAnswer teacherEvaluationAnswer = new TeacherEvaluationAnswer();
+            teacherEvaluationAnswer.setId(evaluationAnswer.getId().toString());
+            Optional<QuestionnaireQuestion> questionnaireQuestionOptional = questionnaireQuestionDAO.findById(evaluationAnswer.getEvaluationQuestionId());
+     final  QuestionnaireQuestion questionnaireQuestion;
+          if (questionnaireQuestionOptional.isPresent())
+          {
+              questionnaireQuestion=questionnaireQuestionOptional.get();
+
+              Optional<EvaluationQuestion> evaluationQuestionOptional = evaluationQuestionDAO.findById(questionnaireQuestion.getEvaluationQuestionId());
+              final EvaluationQuestion question = evaluationQuestionOptional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+
+              TeacherEvaluationAnswerList answer = dto.getEvaluationAnswerList().stream()
+                      .filter(x -> x.getQuestion().trim().equals(question.getQuestion().trim()))
+                      .findFirst()
+                      .orElse(null);
+              if (answer != null) {
+                  switch (answer.getAnswer()) {
+                      case "عالی":
+                          teacherEvaluationAnswer.setAnswerID("205");
+                          break;
+                      case "خوب":
+                          teacherEvaluationAnswer.setAnswerID("206");
+                          break;
+                      case "متوسط":
+                          teacherEvaluationAnswer.setAnswerID("207");
+                          break;
+                      case "ضعیف":
+                          teacherEvaluationAnswer.setAnswerID("208");
+                          break;
+                      case "خیلی ضعیف":
+                          teacherEvaluationAnswer.setAnswerID("209");
+                          break;
+                  }
+
+                  EvaluationAnswerList.add(teacherEvaluationAnswer);
+              }
+          }
+          else
+          {
+              Optional<DynamicQuestion> dynamicQuestion = dynamicQuestionDAO.findById(evaluationAnswer.getEvaluationQuestionId());
+              TeacherEvaluationAnswerList answer = dto.getEvaluationAnswerList().stream()
+                      .filter(x -> x.getQuestion().trim().equals(dynamicQuestion.get().getQuestion().trim()))
+                      .findFirst()
+                      .orElse(null);
+              if (answer != null) {
+                  switch (answer.getAnswer()) {
+                      case "عالی":
+                          teacherEvaluationAnswer.setAnswerID("205");
+                          break;
+                      case "خوب":
+                          teacherEvaluationAnswer.setAnswerID("206");
+                          break;
+                      case "متوسط":
+                          teacherEvaluationAnswer.setAnswerID("207");
+                          break;
+                      case "ضعیف":
+                          teacherEvaluationAnswer.setAnswerID("208");
+                          break;
+                      case "خیلی ضعیف":
+                          teacherEvaluationAnswer.setAnswerID("209");
+                          break;
+                  }
+
+                  EvaluationAnswerList.add(teacherEvaluationAnswer);
+              }
+          }
+
+        }
+        evaluationAnswerObject.setEvaluationFull(evaluationAnswers.size() == dto.getEvaluationAnswerList().size());
+        evaluationAnswerObject.setEvaluationAnswerList(EvaluationAnswerList);
+        evaluationAnswerObject.setStatus(true);
+        if (dto.getDescription() != null && !dto.getDescription().isEmpty() && dto.getDescription().trim().length() > 0)
+            evaluationAnswerObject.setDescription(dto.getDescription());
+        evaluationAnswerObject.setSendDate(DateUtil.todayDate());
+        return evaluationAnswerObject;
     }
 }
