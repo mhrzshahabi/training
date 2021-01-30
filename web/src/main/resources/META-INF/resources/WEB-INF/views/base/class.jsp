@@ -1411,7 +1411,11 @@
                 click: function (form, item) {
                     item.fetchData();
                 },
-                changed: function () {
+                changed: function (form, item, value) {
+                    var termStart = form.getItem("termId").getSelectedRecord().startDate;
+                    var termEnd = form.getItem("termId").getSelectedRecord().endDate
+                    form.getItem("startDate").setValue(termStart);
+                    form.getItem("endDate").setValue(termEnd);
                     evalGroup();
                 }
             },
