@@ -74,6 +74,7 @@ nicico:
       mode: false
   training:
     version: '2'
+    pass: 'DplSkqONgQcfymUb'
   sms:
     magfa:
       username: 'maaden_81794'
