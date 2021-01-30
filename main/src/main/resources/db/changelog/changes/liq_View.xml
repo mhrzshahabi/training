@@ -5428,7 +5428,7 @@ FROM
         </createView>
     </changeSet>
 
-    <changeSet author="nick (generated)" id="VIEW_ATTENDANCE_REPORT-008">
+    <changeSet author="nick (generated)" id="1611985664505-564">
         <createView viewName="VIEW_ATTENDANCE_REPORT" replaceIfExists="true">
             <![CDATA[
                 SELECT atten.personalnum,
@@ -5493,9 +5493,9 @@ FROM
                               LEFT JOIN tbl_department dep ON dep.id = personnel.f_department_id
                               INNER JOIN tbl_session csession ON att.f_session = csession.id
                               INNER JOIN tbl_class class ON csession.f_class_id = class.id
-                              left join tbl_personnel personnelPlanner on personnelPlanner.id = class.f_planner
-                              left join tbl_department plnner_dep on plnner_dep.id = personnelPlanner.f_department_id
-                              left join TBL_INSTITUTE organizer_ins on organizer_ins.ID = class.F_INSTITUTE
+                              LEFT JOIN tbl_personnel personnelPlanner on personnelPlanner.id = class.f_planner
+                              LEFT JOIN tbl_department plnner_dep on plnner_dep.id = personnelPlanner.f_department_id
+                              LEFT JOIN TBL_INSTITUTE organizer_ins on class.F_INSTITUTE_ORGANIZER = organizer_ins.ID
                      GROUP BY std.personnel_no,
                               std.emp_no,
                               std.national_code,
