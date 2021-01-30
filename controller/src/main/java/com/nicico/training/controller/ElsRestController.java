@@ -8,7 +8,6 @@ import com.nicico.training.controller.util.GeneratePdfReport;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
-import com.nicico.training.mapper.evaluation.EvaluationMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EGender;
 import com.nicico.training.service.*;
@@ -33,8 +32,6 @@ import response.evaluation.dto.EvaluationAnswerObject;
 import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
 import response.exam.ExamResultDto;
-import response.question.QuestionsDto;
-
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.text.ParseException;
