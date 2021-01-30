@@ -74,6 +74,7 @@ nicico:
       mode: false
   training:
     version: '2'
+    pass: 'DplSkqONgQcfymUb'
   sms:
     magfa:
       username: 'maaden_81794'
@@ -139,8 +140,8 @@ spring:
   profiles: Development
   datasource:
     url: jdbc:oracle:thin:@//oragnrt01.icico.net.ir:1521/pdb_dev01
-    username: testtraining
-    password: testtraining
+    username: devtraining
+    password: devtraining
   redis:
     host: devapp01.icico.net.ir
     password: nicico

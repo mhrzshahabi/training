@@ -911,7 +911,7 @@
                         fields: [
                             {
                                 name: "description",
-                                title: "<spring:message code='description'/>",
+                                title: "<spring:message code='suggestions'/>",
                                 type: 'textArea',
                                 height: 100,
                                 length: "600",
@@ -1046,34 +1046,41 @@
                             evaluationId = result[0].evaluationId;
                             for(let i=0;i<result.size();i++){
                                 let item = {};
-                                if(result[i].questionSourceId == 199){
+                                if(result[i].questionSourceId === 199){
                                     switch (result[i].domainId) {
                                         case 54:
                                             item.name = "Q" + result[i].id;
+                                            item.domainId = result[i].domainId;
                                             item.title = "امکانات: " + result[i].question;
                                             break;
                                         case 138:
                                             item.name = "Q" + result[i].id;
+                                            item.domainId = result[i].domainId;
                                             item.title = "کلاس: " + result[i].question;
                                             break;
                                         case 53:
                                             item.name = "Q" + result[i].id;
+                                            item.domainId = result[i].domainId;
                                             item.title = "مدرس: " + result[i].question;
                                             break;
                                         case 1:
                                             item.name = "Q" + result[i].id;
+                                            item.domainId = result[i].domainId;
                                             item.title = "مدرس: " + result[i].question;
                                             break;
                                         case 183:
                                             item.name = "Q" + result[i].id;
+                                            item.domainId = result[i].domainId;
                                             item.title = "محتواي کلاس: " + result[i].question;
                                             break;
                                         case 659:
                                             item.name = "Q" + result[i].id;
+                                            item.domainId = result[i].domainId;
                                             item.title = "فراگیر: " + result[i].question;
                                             break;
                                         default:
                                             item.name = "Q" + result[i].id;
+                                            item.domainId = result[i].domainId;
                                             item.title = result[i].question;
                                     }
 
@@ -1097,7 +1104,7 @@
                                     ];
                                     record["Q" + result[i].id] = result[i].answerId;
                                 }
-                                else if(result[i].questionSourceId == 200){
+                                else if(result[i].questionSourceId === 200){
                                     item.name = "M" + result[i].id;
                                     item.title = "هدف اصلی: " + result[i].question;
                                     item.type = "radioGroup";
@@ -1120,7 +1127,7 @@
                                     ];
                                     record["M" + result[i].id] = result[i].answerId;
                                 }
-                                else if(result[i].questionSourceId == 201){
+                                else if(result[i].questionSourceId === 201){
                                     item.name = "G" + result[i].id;
                                     item.title = "هدف: " + result[i].question;
                                     item.type = "radioGroup";
@@ -1145,6 +1152,7 @@
                                 }
                                 itemList.add(item);
                             }
+                            itemList.sortByProperty("domainId", true);
                             DynamicForm_Questions_Body_JspEvaluation.setItems(itemList);
                             DynamicForm_Description_JspEvaluation.getField("description").setValue(description);
                             DynamicForm_Questions_Body_JspEvaluation.setValues(record);
