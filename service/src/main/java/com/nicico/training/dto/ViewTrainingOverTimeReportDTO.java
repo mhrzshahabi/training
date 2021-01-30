@@ -24,6 +24,9 @@ public class ViewTrainingOverTimeReportDTO {
     String date;
     String time;
     String peopleType;
+    String plannerComplex;
+    String plannerName;
+    String instituteName;
 
     @Getter
     @Setter

@@ -55,4 +55,14 @@ public class ViewTrainingOverTimeReport implements Serializable {
 
     @Column(name = "peopletype")
     private String peopleType;
+
+    @Column(name = "planner_complex")
+    private String plannerComplex;
+
+    @Column(name = "planner_name")
+    private String plannerName;
+
+    @Column(name = "institute_name")
+    private String instituteName;
+
 }
