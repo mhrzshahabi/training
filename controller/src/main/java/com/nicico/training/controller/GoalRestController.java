@@ -65,9 +65,21 @@ public class GoalRestController {
     }
 
     @Loggable
+    @PostMapping(value = "create/list/{courseId}")
+//    @PreAuthorize("hasAuthority('c_goal')")
+    public ResponseEntity create(@Validated @RequestBody List<GoalDTO.Create> requests, @PathVariable Long courseId) {
+       for (GoalDTO.Create item:requests)
+       {
+           goalService.create(item, courseId);
+       }
+        return new ResponseEntity<>(HttpStatus.CREATED);
+
+    }
+
+    @Loggable
     @PostMapping(value = "create/{courseId}")
 //    @PreAuthorize("hasAuthority('c_goal')")
-    public ResponseEntity<GoalDTO.Info> create(@Validated @RequestBody GoalDTO.Create request, @PathVariable Long courseId) {
+    public ResponseEntity<GoalDTO.Info> createList(@Validated @RequestBody GoalDTO.Create request, @PathVariable Long courseId) {
         return new ResponseEntity<>(goalService.create(request, courseId), HttpStatus.CREATED);
     }
 

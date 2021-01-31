@@ -1336,47 +1336,51 @@ public class TclassService implements ITclassService {
             Optional<EvaluationQuestion> evaluationQuestionOptional = evaluationQuestionDAO.findById(questionnaireQuestion.getEvaluationQuestionId());
             final EvaluationQuestion question = evaluationQuestionOptional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
+            if (dto.getEvaluationAnswerList() != null) {
+                TeacherEvaluationAnswerList answer = dto.getEvaluationAnswerList().stream()
+                        .filter(x -> x.getQuestion().trim().equals(question.getQuestion().trim()))
+                        .findFirst()
+                        .orElse(null);
+                if (answer != null) {
+                    switch (answer.getAnswer()) {
+                        case "عالی":
+                            teacherEvaluationAnswer.setAnswerID("205");
+                            break;
+                        case "خوب":
+                            teacherEvaluationAnswer.setAnswerID("206");
+                            break;
+                        case "متوسط":
+                            teacherEvaluationAnswer.setAnswerID("207");
+                            break;
+                        case "ضعیف":
+                            teacherEvaluationAnswer.setAnswerID("208");
+                            break;
+                        case "خیلی ضعیف":
+                            teacherEvaluationAnswer.setAnswerID("209");
+                            break;
+                    }
 
-            TeacherEvaluationAnswerList answer = dto.getEvaluationAnswerList().stream()
-                    .filter(x -> x.getQuestion().trim().equals(question.getQuestion().trim()))
-                    .findFirst()
-                    .orElse(null);
-            if (answer != null) {
-                switch (answer.getAnswer()) {
-                    case "عالی":
-                        teacherEvaluationAnswer.setAnswerID("205");
-                        break;
-                    case "خوب":
-                        teacherEvaluationAnswer.setAnswerID("206");
-                        break;
-                    case "متوسط":
-                        teacherEvaluationAnswer.setAnswerID("207");
-                        break;
-                    case "ضعیف":
-                        teacherEvaluationAnswer.setAnswerID("208");
-                        break;
-                    case "خیلی ضعیف":
-                        teacherEvaluationAnswer.setAnswerID("209");
-                        break;
+                    EvaluationAnswerList.add(teacherEvaluationAnswer);
                 }
-
-                EvaluationAnswerList.add(teacherEvaluationAnswer);
             }
+
         }
-        evaluationAnswerObject.setEvaluationFull(evaluationAnswers.size() == dto.getEvaluationAnswerList().size());
+        if (dto.getEvaluationAnswerList() != null)
+            evaluationAnswerObject.setEvaluationFull(evaluationAnswers.size() == dto.getEvaluationAnswerList().size());
         evaluationAnswerObject.setEvaluationAnswerList(EvaluationAnswerList);
         if (dto.getDescription() != null && !dto.getDescription().isEmpty() && dto.getDescription().trim().length() > 0)
             evaluationAnswerObject.setDescription(dto.getDescription());
         evaluationAnswerObject.setSendDate(DateUtil.todayDate());
         return evaluationAnswerObject;
     }
+
     @Transactional
     @Override
     public EvaluationAnswerObject classStudentEvaluations(StudentEvaluationAnswerDto dto) {
         final Optional<Tclass> optionalTclass = tclassDAO.findById(dto.getClassId());
         final Tclass tclass = optionalTclass.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         List<Evaluation> optionalEvaluation = evaluationDAO.findAllByClassIdAndQuestionnaireTypeId(tclass.getId(), 139L);
-        Long userId =   studentDAO.findOneByNationalCode(dto.getNationalCode(),dto.getClassId());
+        Long userId = studentDAO.findOneByNationalCode(dto.getNationalCode(), dto.getClassId());
 
         Evaluation evaluation = optionalEvaluation.stream()
                 .filter(x -> x.getEvaluatorId().equals(userId))
@@ -1401,70 +1405,67 @@ public class TclassService implements ITclassService {
             TeacherEvaluationAnswer teacherEvaluationAnswer = new TeacherEvaluationAnswer();
             teacherEvaluationAnswer.setId(evaluationAnswer.getId().toString());
             Optional<QuestionnaireQuestion> questionnaireQuestionOptional = questionnaireQuestionDAO.findById(evaluationAnswer.getEvaluationQuestionId());
-     final  QuestionnaireQuestion questionnaireQuestion;
-          if (questionnaireQuestionOptional.isPresent())
-          {
-              questionnaireQuestion=questionnaireQuestionOptional.get();
+            final QuestionnaireQuestion questionnaireQuestion;
+            if (questionnaireQuestionOptional.isPresent()) {
+                questionnaireQuestion = questionnaireQuestionOptional.get();
 
-              Optional<EvaluationQuestion> evaluationQuestionOptional = evaluationQuestionDAO.findById(questionnaireQuestion.getEvaluationQuestionId());
-              final EvaluationQuestion question = evaluationQuestionOptional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                Optional<EvaluationQuestion> evaluationQuestionOptional = evaluationQuestionDAO.findById(questionnaireQuestion.getEvaluationQuestionId());
+                final EvaluationQuestion question = evaluationQuestionOptional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
 
-              TeacherEvaluationAnswerList answer = dto.getEvaluationAnswerList().stream()
-                      .filter(x -> x.getQuestion().trim().equals(question.getQuestion().trim()))
-                      .findFirst()
-                      .orElse(null);
-              if (answer != null) {
-                  switch (answer.getAnswer()) {
-                      case "عالی":
-                          teacherEvaluationAnswer.setAnswerID("205");
-                          break;
-                      case "خوب":
-                          teacherEvaluationAnswer.setAnswerID("206");
-                          break;
-                      case "متوسط":
-                          teacherEvaluationAnswer.setAnswerID("207");
-                          break;
-                      case "ضعیف":
-                          teacherEvaluationAnswer.setAnswerID("208");
-                          break;
-                      case "خیلی ضعیف":
-                          teacherEvaluationAnswer.setAnswerID("209");
-                          break;
-                  }
+                TeacherEvaluationAnswerList answer = dto.getEvaluationAnswerList().stream()
+                        .filter(x -> x.getQuestion().trim().equals(question.getQuestion().trim()))
+                        .findFirst()
+                        .orElse(null);
+                if (answer != null) {
+                    switch (answer.getAnswer()) {
+                        case "عالی":
+                            teacherEvaluationAnswer.setAnswerID("205");
+                            break;
+                        case "خوب":
+                            teacherEvaluationAnswer.setAnswerID("206");
+                            break;
+                        case "متوسط":
+                            teacherEvaluationAnswer.setAnswerID("207");
+                            break;
+                        case "ضعیف":
+                            teacherEvaluationAnswer.setAnswerID("208");
+                            break;
+                        case "خیلی ضعیف":
+                            teacherEvaluationAnswer.setAnswerID("209");
+                            break;
+                    }
 
-                  EvaluationAnswerList.add(teacherEvaluationAnswer);
-              }
-          }
-          else
-          {
-              Optional<DynamicQuestion> dynamicQuestion = dynamicQuestionDAO.findById(evaluationAnswer.getEvaluationQuestionId());
-              TeacherEvaluationAnswerList answer = dto.getEvaluationAnswerList().stream()
-                      .filter(x -> x.getQuestion().trim().equals(dynamicQuestion.get().getQuestion().trim()))
-                      .findFirst()
-                      .orElse(null);
-              if (answer != null) {
-                  switch (answer.getAnswer()) {
-                      case "عالی":
-                          teacherEvaluationAnswer.setAnswerID("205");
-                          break;
-                      case "خوب":
-                          teacherEvaluationAnswer.setAnswerID("206");
-                          break;
-                      case "متوسط":
-                          teacherEvaluationAnswer.setAnswerID("207");
-                          break;
-                      case "ضعیف":
-                          teacherEvaluationAnswer.setAnswerID("208");
-                          break;
-                      case "خیلی ضعیف":
-                          teacherEvaluationAnswer.setAnswerID("209");
-                          break;
-                  }
+                    EvaluationAnswerList.add(teacherEvaluationAnswer);
+                }
+            } else {
+                Optional<DynamicQuestion> dynamicQuestion = dynamicQuestionDAO.findById(evaluationAnswer.getEvaluationQuestionId());
+                TeacherEvaluationAnswerList answer = dto.getEvaluationAnswerList().stream()
+                        .filter(x -> x.getQuestion().trim().equals(dynamicQuestion.get().getQuestion().trim()))
+                        .findFirst()
+                        .orElse(null);
+                if (answer != null) {
+                    switch (answer.getAnswer()) {
+                        case "عالی":
+                            teacherEvaluationAnswer.setAnswerID("205");
+                            break;
+                        case "خوب":
+                            teacherEvaluationAnswer.setAnswerID("206");
+                            break;
+                        case "متوسط":
+                            teacherEvaluationAnswer.setAnswerID("207");
+                            break;
+                        case "ضعیف":
+                            teacherEvaluationAnswer.setAnswerID("208");
+                            break;
+                        case "خیلی ضعیف":
+                            teacherEvaluationAnswer.setAnswerID("209");
+                            break;
+                    }
 
-                  EvaluationAnswerList.add(teacherEvaluationAnswer);
-              }
-          }
+                    EvaluationAnswerList.add(teacherEvaluationAnswer);
+                }
+            }
 
         }
         evaluationAnswerObject.setEvaluationFull(evaluationAnswers.size() == dto.getEvaluationAnswerList().size());

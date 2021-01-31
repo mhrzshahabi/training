@@ -2268,6 +2268,7 @@
                             {
                                 title: "<spring:message code="reports.need.assessment"/>",
                                 click: function () {
+                                     alert(2);
                                     createTab(this.title, "<spring:url value="web/needsAssessment-reports"/>");
                                 }
                             },
@@ -2292,12 +2293,22 @@
                                     createTab(this.title, "<spring:url value="web/personnel-course-NA-report"/>");
                                 }
                             },
+                            {isSeparator: true},
                             </sec:authorize>
                             <sec:authorize access="hasAuthority('Menu_Report_ReportsNeedsAssessment_People')">
                             {
                                 title: "گزارش مقایسه نیازسنجی با پرونده آموزشی",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/training-file-na-report"/>");
+                                }
+                            },
+                             {isSeparator: true},
+                            </sec:authorize>
+                             <sec:authorize access="hasAuthority('Menu_Report_ReportsNeedsAssessment_People')">
+                            {
+                                title: "گزارش نیازسنجی مشاغل بر اساس دوره",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/training-course-need-assessment"/>");
                                 }
                             },
                             </sec:authorize>
