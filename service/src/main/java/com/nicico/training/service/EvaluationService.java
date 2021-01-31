@@ -929,5 +929,10 @@ public class EvaluationService implements IEvaluationService {
     }
 
 
+    public Long getTclass(Long id) {
+        final Optional<Evaluation> sById = evaluationDAO.findById(id);
+        final Evaluation evaluation = sById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EvaluationNotFound));
+        return evaluation.getTclass().getId();
+    }
 
 }

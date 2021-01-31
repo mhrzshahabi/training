@@ -128,7 +128,8 @@ public class ElsRestController {
 
     @GetMapping("/evalResult/{id}")
     public ResponseEntity<EvalListResponse> getEvalResults(@PathVariable long id) {
-        EvalListResponse response = client.getEvalResults(id);
+       ;
+        EvalListResponse response = client.getEvalResults(evaluationService.getTclass(id));
         //TODO SAVE EVALUATION RESULTS TO DB OR ANYTHING THAT YOU WANT TO DO
         return new ResponseEntity(response, HttpStatus.OK);
     }
@@ -219,7 +220,7 @@ public class ElsRestController {
     public ResponseEntity<InputStreamResource> getEvalReport(@PathVariable long id) {
 
 
-        EvalListResponse pdfResponse = client.getEvalResults(id);
+        EvalListResponse pdfResponse = client.getEvalResults(evaluationService.getTclass(id));
 
         ByteArrayInputStream bis = GeneratePdfReport.ReportEvaluation(pdfResponse);
         HttpHeaders headers = new HttpHeaders();

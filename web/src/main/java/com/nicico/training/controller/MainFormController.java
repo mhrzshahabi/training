@@ -274,6 +274,10 @@ public class MainFormController {
     public String showTrainingFileNAReport() {
         return "report/trainingFileNAReport";
     }
+   @RequestMapping("/training-course-need-assessment")
+    public String showTrainingCourseNeedAssessment() {
+        return "report/trainingCourseNeedAssessment";
+    }
 
     @PostMapping("/personnel-needs-assessment-report-print/{type}")
     public ResponseEntity<?> printPersonnelNeedsAssessmentReport(final HttpServletRequest request, @PathVariable String type) {
