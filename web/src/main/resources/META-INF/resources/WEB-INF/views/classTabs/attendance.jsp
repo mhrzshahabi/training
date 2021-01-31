@@ -233,6 +233,40 @@
                 }
             }),
             isc.ToolStripButton.create({
+                title: "تبدیل همه به 'غیبت غیرموجه'",
+                click: function () {
+                    if(readOnlySession){
+                        createDialog("info","تاریخ شروع کلاس " + DynamicForm_Attendance.values.sessionDate + " می باشد");
+                        return false;
+                    }
+                    console.log(ListGrid_Attendance_AttendanceJSP.getData().localData);
+                    console.log(attendanceGrid.getAllFields())
+                    for (let i = 0; i < ListGrid_Attendance_AttendanceJSP.getData().localData.length ; i++) {
+                        for (let j = 5; j < attendanceGrid.getAllFields().length; j++) {
+                            if(attendanceGrid.getCellRecord(i).studentState != "kh") {
+                                attendanceGrid.setEditValue(i, j, "3");
+                            }
+                        }
+                    }
+                }
+            }),
+            isc.ToolStripButton.create({
+                title: "تبدیل همه به 'غیبت موجه'",
+                click: function () {
+                    if(readOnlySession){
+                        createDialog("info","تاریخ شروع کلاس " + DynamicForm_Attendance.values.sessionDate + " می باشد");
+                        return false;
+                    }
+                    for (let i = 0; i < ListGrid_Attendance_AttendanceJSP.getData().localData.length ; i++) {
+                        for (let j = 5; j < attendanceGrid.getAllFields().length; j++) {
+                            if(attendanceGrid.getCellRecord(i).studentState != "kh") {
+                                attendanceGrid.setEditValue(i, j, "4");
+                            }
+                        }
+                    }
+                }
+            }),
+            isc.ToolStripButton.create({
                 title: "چاپ فرم خام",
                 click: function () {
                     wait.show();
