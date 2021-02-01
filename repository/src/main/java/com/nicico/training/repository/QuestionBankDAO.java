@@ -3,9 +3,7 @@ ghazanfari_f, 8/29/2019, 10:43 AM
 */
 package com.nicico.training.repository;
 
-import com.nicico.training.model.JobGroup;
 import com.nicico.training.model.QuestionBank;
-import com.nicico.training.model.Tclass;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -28,14 +26,13 @@ public interface QuestionBankDAO extends JpaRepository<QuestionBank, Long>, JpaS
     @Query(value = "select max(n_code_id) from tbl_question_bank where f_category_id is null and f_subcategory_id is null",nativeQuery = true)
     Integer getMaxCodeIDWithoutCategoryAndSubCategory();*/
 
-    @Query(value = "select max(n_code_id) from tbl_question_bank",nativeQuery = true)
+    @Query(value = "select max(n_code_id) from tbl_question_bank", nativeQuery = true)
     Integer getLastCodeId();
 
-    @Query(value = "select * from tbl_question_bank where ID in(:ids)",nativeQuery = true)
+    @Query(value = "select * from tbl_question_bank where ID in(:ids)", nativeQuery = true)
     List<QuestionBank> findByIds(List<Long> ids);
 
-
-    @EntityGraph(attributePaths = {"questionType", "displayType", "category", "course", "tclass", "tclass.teacher", "tclass.teacher.personality","tclass.course", "subCategory", "teacher"})
+    @EntityGraph(attributePaths = {"questionType", "displayType", "category", "course", "tclass", "tclass.teacher", "tclass.teacher.personality", "tclass.course", "subCategory", "teacher"})
     @Override
     List<QuestionBank> findAll(@Nullable Specification<QuestionBank> var1);
 
