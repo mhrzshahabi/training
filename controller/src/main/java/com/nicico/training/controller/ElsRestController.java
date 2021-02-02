@@ -99,7 +99,6 @@ public class ElsRestController {
         response.setMessage(baseResponse.getMessage());
         response.setStatus(baseResponse.getStatus());
         iTclassService.changeOnlineEvalTeacherStatus(evaluation.getClassId(), true);
-
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
