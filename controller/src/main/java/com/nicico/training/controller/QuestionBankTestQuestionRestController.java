@@ -5,10 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.QuestionBankTestQuestionDTO;
-import com.nicico.training.dto.TestQuestionDTO;
 import com.nicico.training.iservice.IQuestionBankTestQuestionService;
-import com.nicico.training.iservice.ITestQuestionService;
 import com.nicico.training.repository.TclassDAO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,40 +29,31 @@ public class QuestionBankTestQuestionRestController {
     private final IQuestionBankTestQuestionService questionBankTestQuestionService;
     private final TclassDAO tclassDAO;
     private final ObjectMapper objectMapper;
+
     // ------------------------------
 
     @GetMapping(value = "/spec-list")
-    public ResponseEntity<QuestionBankTestQuestionDTO.QuestionBankTestQuestionSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
-                                                                                           @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
-                                                                                           @RequestParam(value = "_constructor", required = false) String constructor,
-                                                                                           @RequestParam(value = "operator", required = false) String operator,
-                                                                                           @RequestParam(value = "criteria", required = false) String criteria,
-                                                                                           @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+    public ResponseEntity<QuestionBankTestQuestionDTO.QuestionBankTestQuestionSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow, @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow, @RequestParam(value = "_constructor", required = false) String constructor, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria, @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
         SearchDTO.CriteriaRq criteriaRq;
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
             criteria = "[" + criteria + "]";
             criteriaRq = new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.valueOf(operator))
-                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
-                    }));
+            criteriaRq.setOperator(EOperator.valueOf(operator)).setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+            }));
             request.setCriteria(criteriaRq);
         }
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
         }
 
-        request.setStartIndex(startRow)
-                .setCount(endRow - startRow);
+        request.setStartIndex(startRow).setCount(endRow - startRow);
 
         SearchDTO.SearchRs<QuestionBankTestQuestionDTO.Info> response = questionBankTestQuestionService.search(request);
 
         final QuestionBankTestQuestionDTO.SpecRs specResponse = new QuestionBankTestQuestionDTO.SpecRs();
-        specResponse.setData(response.getList())
-                .setStartRow(startRow)
-                .setEndRow(startRow + response.getList().size())
-                .setTotalRows(response.getTotalCount().intValue());
+        specResponse.setData(response.getList()).setStartRow(startRow).setEndRow(startRow + response.getList().size()).setTotalRows(response.getTotalCount().intValue());
 
         final QuestionBankTestQuestionDTO.QuestionBankTestQuestionSpecRs specRs = new QuestionBankTestQuestionDTO.QuestionBankTestQuestionSpecRs();
         specRs.setResponse(specResponse);
@@ -72,23 +62,15 @@ public class QuestionBankTestQuestionRestController {
     }
 
     @GetMapping(value = "{type}/{classId}/spec-list")
-    public ResponseEntity<QuestionBankTestQuestionDTO.QuestionBankTestQuestionSpecRs> listForClass(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
-                                                                                                   @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
-                                                                                                   @RequestParam(value = "_constructor", required = false) String constructor,
-                                                                                                   @RequestParam(value = "operator", required = false) String operator,
-                                                                                                   @RequestParam(value = "criteria", required = false) String criteria,
-                                                                                                   @RequestParam(value = "_sortBy", required = false) String sortBy,
-                                                                                                   @PathVariable Long classId,
-                                                                                                   @PathVariable String type) throws IOException {
+    public ResponseEntity<QuestionBankTestQuestionDTO.QuestionBankTestQuestionSpecRs> listForClass(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow, @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow, @RequestParam(value = "_constructor", required = false) String constructor, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria, @RequestParam(value = "_sortBy", required = false) String sortBy, @PathVariable Long classId, @PathVariable String type) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
         SearchDTO.CriteriaRq criteriaRq;
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
             criteria = "[" + criteria + "]";
             criteriaRq = new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.valueOf(operator))
-                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
-                    }));
+            criteriaRq.setOperator(EOperator.valueOf(operator)).setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+            }));
             request.setCriteria(criteriaRq);
         }
 
@@ -96,8 +78,7 @@ public class QuestionBankTestQuestionRestController {
             request.setSortBy(sortBy);
         }
 
-        request.setStartIndex(startRow)
-                .setCount(endRow - startRow);
+        request.setStartIndex(startRow).setCount(endRow - startRow);
 
 
         SearchDTO.CriteriaRq tmpCriteria = null;
@@ -124,12 +105,11 @@ public class QuestionBankTestQuestionRestController {
         criteriaRq1.setOperator(EOperator.equals);
         criteriaRq1.setFieldName("testQuestion.isPreTestQuestion");
 
-        if(type.equals("preTest")){
+        if (type.equals("preTest")) {
             criteriaRq1.setValue(1);
-        }else{
+        } else {
             criteriaRq1.setValue(0);
         }
-
 
 
         criteriaRqs.add(criteriaRq1);
@@ -147,10 +127,7 @@ public class QuestionBankTestQuestionRestController {
         SearchDTO.SearchRs<QuestionBankTestQuestionDTO.Info> response = questionBankTestQuestionService.search(request);
 
         final QuestionBankTestQuestionDTO.SpecRs specResponse = new QuestionBankTestQuestionDTO.SpecRs();
-        specResponse.setData(response.getList())
-                .setStartRow(startRow)
-                .setEndRow(startRow + response.getList().size())
-                .setTotalRows(response.getTotalCount().intValue());
+        specResponse.setData(response.getList()).setStartRow(startRow).setEndRow(startRow + response.getList().size()).setTotalRows(response.getTotalCount().intValue());
 
         final QuestionBankTestQuestionDTO.QuestionBankTestQuestionSpecRs specRs = new QuestionBankTestQuestionDTO.QuestionBankTestQuestionSpecRs();
         specRs.setResponse(specResponse);
@@ -158,25 +135,39 @@ public class QuestionBankTestQuestionRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
+    @GetMapping(value = "{type}/{classId}/spec-list-final-test")
+    public ResponseEntity<List<QuestionBankTestQuestionDTO.QuestionBankTestQuestionFinalTest>> listForFinalTest(@PathVariable Long classId, @PathVariable String type) {
+
+        try {
+
+            List<QuestionBankTestQuestionDTO.QuestionBankTestQuestionFinalTest> questionBankTestQuestionFinalTests = questionBankTestQuestionService.finalTestList(type, classId);
+            if (questionBankTestQuestionFinalTests.size() == 0) {
+                return new ResponseEntity<>(questionBankTestQuestionFinalTests, HttpStatus.OK);
+            } else {
+                try {
+
+                    questionBankTestQuestionService.validateQuestions(questionBankTestQuestionFinalTests);
+                    return new ResponseEntity<>(questionBankTestQuestionFinalTests, HttpStatus.OK);
+                } catch (Exception ex) {
+                    throw new TrainingException(TrainingException.ErrorType.InvalidData, ex.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            throw new TrainingException(TrainingException.ErrorType.NotFound, e.getMessage());
+        }
+    }
+
 
     @GetMapping(value = "/byCourse/{type}/{classId}/spec-list")
-    public ResponseEntity<QuestionBankTestQuestionDTO.QuestionBankTestQuestionSpecRsUsed> questionForCourse(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
-                                                                                                            @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
-                                                                                                            @RequestParam(value = "_constructor", required = false) String constructor,
-                                                                                                            @RequestParam(value = "operator", required = false) String operator,
-                                                                                                            @RequestParam(value = "criteria", required = false) String criteria,
-                                                                                                            @RequestParam(value = "_sortBy", required = false) String sortBy,
-                                                                                                            @PathVariable Long classId,
-                                                                                                            @PathVariable String type) throws IOException {
+    public ResponseEntity<QuestionBankTestQuestionDTO.QuestionBankTestQuestionSpecRsUsed> questionForCourse(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow, @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow, @RequestParam(value = "_constructor", required = false) String constructor, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria, @RequestParam(value = "_sortBy", required = false) String sortBy, @PathVariable Long classId, @PathVariable String type) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
         SearchDTO.CriteriaRq criteriaRq;
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
             criteria = "[" + criteria + "]";
             criteriaRq = new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.valueOf(operator))
-                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
-                    }));
+            criteriaRq.setOperator(EOperator.valueOf(operator)).setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+            }));
             request.setCriteria(criteriaRq);
         }
 
@@ -184,8 +175,7 @@ public class QuestionBankTestQuestionRestController {
             request.setSortBy(sortBy);
         }
 
-        request.setStartIndex(startRow)
-                .setCount(endRow - startRow);
+        request.setStartIndex(startRow).setCount(endRow - startRow);
 
 
         SearchDTO.CriteriaRq tmpCriteria = null;
@@ -220,9 +210,9 @@ public class QuestionBankTestQuestionRestController {
         criteriaRq1.setOperator(EOperator.equals);
         criteriaRq1.setFieldName("testQuestion.isPreTestQuestion");
 
-        if(type.equals("preTest")){
+        if (type.equals("preTest")) {
             criteriaRq1.setValue(1);
-        }else{
+        } else {
             criteriaRq1.setValue(0);
         }
 
@@ -240,10 +230,7 @@ public class QuestionBankTestQuestionRestController {
         SearchDTO.SearchRs<QuestionBankTestQuestionDTO.InfoUsed> response = questionBankTestQuestionService.search1(request);
 
         final QuestionBankTestQuestionDTO.SpecRsUsed specResponse = new QuestionBankTestQuestionDTO.SpecRsUsed();
-        specResponse.setData(response.getList())
-                .setStartRow(startRow)
-                .setEndRow(startRow + response.getList().size())
-                .setTotalRows(response.getTotalCount().intValue());
+        specResponse.setData(response.getList()).setStartRow(startRow).setEndRow(startRow + response.getList().size()).setTotalRows(response.getTotalCount().intValue());
 
         final QuestionBankTestQuestionDTO.QuestionBankTestQuestionSpecRsUsed specRs = new QuestionBankTestQuestionDTO.QuestionBankTestQuestionSpecRsUsed();
         specRs.setResponse(specResponse);

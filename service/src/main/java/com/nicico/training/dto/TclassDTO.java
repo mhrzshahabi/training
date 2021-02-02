@@ -94,8 +94,7 @@ public class TclassDTO {
         public String getTeacher() {
             if (teacher != null)
                 return teacher.getPersonality().getFirstNameFa() + " " + teacher.getPersonality().getLastNameFa();
-            else
-                return " ";
+            else return " ";
         }
     }
 
@@ -124,15 +123,13 @@ public class TclassDTO {
         //*********************************
         //******old code for alarms********
         // private String hasWarning;
+        private Set<ClassStudentDTO.AttendanceInfo> classStudents;
 
         public String getTeacher() {
             if (teacher != null)
                 return teacher.getPersonality().getFirstNameFa() + " " + teacher.getPersonality().getLastNameFa();
-            else
-                return " ";
+            else return " ";
         }
-
-        private Set<ClassStudentDTO.AttendanceInfo> classStudents;
 
         public Set<ClassStudentDTO.AttendanceInfo> getClassStudentsForEvaluation(Long studentId) {
             if (studentId == -1) {
@@ -156,24 +153,18 @@ public class TclassDTO {
             if (classStudents != null) {
                 int studentEvaluations = 0;
                 for (ClassStudentDTO.AttendanceInfo classStudent : classStudents) {
-                    if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) != 0 ||
-                            Optional.ofNullable(classStudent.getEvaluationStatusLearning()).orElse(0) != 0 ||
-                            Optional.ofNullable(classStudent.getEvaluationStatusBehavior()).orElse(0) != 0 ||
-                            Optional.ofNullable(classStudent.getEvaluationStatusResults()).orElse(0) != 0) {
+                    if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) != 0 || Optional.ofNullable(classStudent.getEvaluationStatusLearning()).orElse(0) != 0 || Optional.ofNullable(classStudent.getEvaluationStatusBehavior()).orElse(0) != 0 || Optional.ofNullable(classStudent.getEvaluationStatusResults()).orElse(0) != 0) {
                         studentEvaluations++;
                     }
                 }
 
                 return studentEvaluations + "/" + classStudents.size();
-            } else
-                return "0";
+            } else return "0";
         }
 
         public Integer getStudentCount() {
-            if (classStudents != null)
-                return classStudents.size();
-            else
-                return 0;
+            if (classStudents != null) return classStudents.size();
+            else return 0;
         }
     }
 
@@ -191,7 +182,6 @@ public class TclassDTO {
         private String phone;
 
     }
-
 
     @Getter
     @Setter
@@ -223,6 +213,17 @@ public class TclassDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("FinalTestTclassInfo")
+    public static class FinalTestInfo {
+
+        private Long id;
+        private Long teacherId;
+        private TeacherDTO.FinalTestInfo teacher;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("TclassCreateRq")
     public static class Create extends TclassDTO {
         private Long courseId;
@@ -231,14 +232,11 @@ public class TclassDTO {
         private List<Object> targetSocieties;
 
         public List<Object> getTargetSocieties() {
-            if (targetSocieties == null)
-                return new ArrayList<>(0);
+            if (targetSocieties == null) return new ArrayList<>(0);
             boolean accept = true;
             for (Object society : targetSocieties) {
-                if (targetSocietyTypeId == 371 && society instanceof Integer)
-                    continue;
-                else if (targetSocietyTypeId == 372 && society instanceof String)
-                    continue;
+                if (targetSocietyTypeId == 371 && society instanceof Integer) continue;
+                else if (targetSocietyTypeId == 372 && society instanceof String) continue;
                 accept = false;
                 break;
             }
@@ -294,14 +292,11 @@ public class TclassDTO {
         private List<Object> targetSocieties;
 
         public List<Object> getTargetSocieties() {
-            if (targetSocieties == null)
-                return new ArrayList<>(0);
+            if (targetSocieties == null) return new ArrayList<>(0);
             boolean accept = true;
             for (Object society : targetSocieties) {
-                if (targetSocietyTypeId == 371 && society instanceof Integer)
-                    continue;
-                else if (targetSocietyTypeId == 372 && society instanceof String)
-                    continue;
+                if (targetSocietyTypeId == 371 && society instanceof Integer) continue;
+                else if (targetSocietyTypeId == 372 && society instanceof String) continue;
                 accept = false;
                 break;
             }
@@ -369,8 +364,7 @@ public class TclassDTO {
         public String getTeacher() {
             if (teacher != null)
                 return teacher.getPersonality().getFirstNameFa() + " " + teacher.getPersonality().getLastNameFa();
-            else
-                return " ";
+            else return " ";
         }
     }
 
@@ -416,24 +410,18 @@ public class TclassDTO {
         public String getTeacher() {
             if (teacher != null)
                 return teacher.getPersonality().getFirstNameFa() + " " + teacher.getPersonality().getLastNameFa();
-            else
-                return " ";
+            else return " ";
         }
 
         public Integer getStudentCount() {
-            if (classStudents != null)
-                return classStudents.size();
-            else
-                return 0;
+            if (classStudents != null) return classStudents.size();
+            else return 0;
         }
 
         public Integer getNumberOfStudentCompletedEvaluation() {
             int studentEvaluations = 0;
             for (ClassStudentDTO.EvaluationInfo classStudent : classStudents) {
-                if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 2 ||
-                        Optional.ofNullable(classStudent.getEvaluationStatusLearning()).orElse(0) == 2 ||
-                        Optional.ofNullable(classStudent.getEvaluationStatusBehavior()).orElse(0) == 2 ||
-                        Optional.ofNullable(classStudent.getEvaluationStatusResults()).orElse(0) == 2) {
+                if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 2 || Optional.ofNullable(classStudent.getEvaluationStatusLearning()).orElse(0) == 2 || Optional.ofNullable(classStudent.getEvaluationStatusBehavior()).orElse(0) == 2 || Optional.ofNullable(classStudent.getEvaluationStatusResults()).orElse(0) == 2) {
                     studentEvaluations++;
                 }
             }
@@ -484,10 +472,10 @@ public class TclassDTO {
         boolean FEBPass;
         double FECBGrade;
         boolean FECBPass;
-        private Set<ClassStudentDTO.EvaluationInfo> classStudents;
         Double[] studentsGrade;
         Double[] supervisorsGrade;
         String[] classStudentsName;
+        private Set<ClassStudentDTO.EvaluationInfo> classStudents;
     }
 
     @Getter
@@ -625,15 +613,12 @@ public class TclassDTO {
         public String getTeacher() {
             if (teacher != null)
                 return teacher.getPersonality().getFirstNameFa() + " " + teacher.getPersonality().getLastNameFa();
-            else
-                return " ";
+            else return " ";
         }
 
         public Integer getStudentsCount() {
-            if (classStudents != null)
-                return classStudents.size();
-            else
-                return 0;
+            if (classStudents != null) return classStudents.size();
+            else return 0;
         }
 
         public String getYear() {
@@ -702,19 +687,16 @@ public class TclassDTO {
         private Integer startEvaluation;
         private String evaluation;
         private String behavioralLevel;
-
-        public Integer getStudentCount() {
-            if (classStudents != null)
-                return classStudents.size();
-            else
-                return 0;
-        }
-
         private String classStatus;
         private List<Long> trainingPlaceIds;
         private Long instituteId;
         private String workflowEndingStatus;
         private Integer workflowEndingStatusCode;
+
+        public Integer getStudentCount() {
+            if (classStudents != null) return classStudents.size();
+            else return 0;
+        }
     }
 
     // ------------------------------
