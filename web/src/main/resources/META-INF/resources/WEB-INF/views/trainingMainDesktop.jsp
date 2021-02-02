@@ -1013,7 +1013,6 @@
                                     title: "تایید",
                                     click: function () {
                                         if (trTrim(exportExcelForm.getValue("maxRow")) != "") {
-
                                             /*if(Number(trTrim(exportExcelForm.getValue("maxRow")))+Number(trTrim(exportExcelForm.getValue("startRow"))) > Number(listgrid.getOriginalData().size())){
                                                 createDialog("info", "مجمع سطر شروع و تعداد سطر ها در خواستي براي خروجي بيشتر از تعداد کل سطرهاي موجود است");
                                                 return;
@@ -1023,6 +1022,7 @@
                                             }*/
 
                                             if(maxCount < size){
+
                                                 createDialog("info", "تعداد سطرهاي وارد شده جهت خروجي، بيشتر از حداکثر تعداد سطرهاي قابل چاپ است");
                                                 return;
                                             }
@@ -1079,6 +1079,7 @@
             }
 
             static downloadExcelRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate,warning,generateCriteria = false, exceptColumn){
+
 
                 if(listgrid.getOriginalData().size() > listgrid.getOriginalData().cachedRows || listgrid.getOriginalData().size() > 200){
 
@@ -2268,7 +2269,6 @@
                             {
                                 title: "<spring:message code="reports.need.assessment"/>",
                                 click: function () {
-                                     alert(2);
                                     createTab(this.title, "<spring:url value="web/needsAssessment-reports"/>");
                                 }
                             },
@@ -3176,6 +3176,7 @@
     const operationalUnitUrl = rootUrl + "/operationalUnit/";
     const postGradeGroupUrl = rootUrl + "/postGradeGroup/";
     const checklistUrl = rootUrl + "/checklist/";
+    const categoriesListUrl = rootUrl + "/category/";
     const checklistItemUrl = rootUrl + "/checklistItem/";
     const classCheckListUrl = rootUrl + "/class-checklist/";
     const needAssessmentSkillBasedUrl = rootUrl + "/needAssessmentSkillBased/";
@@ -3187,6 +3188,7 @@
     const provinceUrl = rootUrl + "/province/";
     const polisUrl = rootUrl + "/polis/";
     const classDocumentUrl = rootUrl + "/classDocument/"
+    const courseListNeedAssessment = rootUrl + "/trainingNeedAssessment/"
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {

@@ -3789,7 +3789,6 @@ FROM
     </changeSet>
 
 
-
     <changeSet author="NICICO" id="VIEW_ACTIVE_PERSONNEL_FOR_REGISTER_IN_CLASS-001">
         <createView viewName="VIEW_ACTIVE_PERSONNEL_FOR_REGISTER_IN_CLASS" replaceIfExists="true">
             <![CDATA[
@@ -5626,5 +5625,174 @@ SELECT
             ]]>
         </createView>
     </changeSet>
+    <changeSet author="namdari (generated)" id="1612160205578-566">
+        <createView viewName="VIEW_ATTENDANCE_REPORT" replaceIfExists="true">
+            <![CDATA[
+                SELECT atten.personalnum,
+                   atten.personalnum2,
+                   atten.nationalcode,
+                   atten.name,
+                   atten.ccparea,
+                   atten.ccpaffairs,
+                   atten.peopleType,
+                   atten.classcode,
+                   atten.classname,
+                   atten.c_session_date,
+                   atten.c_state,
+                   atten.planner_complex,
+                   atten.planner_name,
+                   atten.institute_name,
+                   case
+                       when atten.time >= 360 then
+                               FLOOR((atten.time + 120) / 60) ||
+                               (CASE WHEN MOD(atten.time + 120, 60) <> 0 THEN ':' || MOD(atten.time + 120, 60) END)
+                       else
+                               FLOOR(atten.time / 60) || (CASE WHEN MOD(atten.time, 60) <> 0 THEN ':' || MOD(atten.time, 60) END)
+                       end time
+                FROM (
+                     SELECT distinct std.personnel_no                                                           AS personalnum,
+                                     std.emp_no                                                                 AS personalnum2,
+                                     std.national_code                                                          AS nationalcode,
+                                     std.first_name || ' ' || std.last_name                                     AS name,
+                                     dep.c_hoze_title                                                           AS ccparea,
+                                     dep.c_omor_title                                                           AS ccpaffairs,
+                                     personnel.personelType                                                     AS peopleType,
+                                     class.c_code                                                               AS classcode,
+                                     class.c_title_class                                                        AS classname,
+                                     csession.c_session_date,
+                                     att.c_state                                                                as c_state,
+                                     plnner_dep.c_hoze_title                                                    as planner_complex,
+                                     CONCAT(CONCAT(personnelPlanner.FIRST_NAME, ' '), personnelPlanner.LAST_NAME) as planner_name,
+                                     organizer_ins.C_TITLE_FA                                                   as institute_name,
+                                     SUM((TO_NUMBER(SUBSTR(csession.c_session_end_hour, 1, 2)) * 60 +
+                                          TO_NUMBER(SUBSTR(csession.c_session_end_hour, 4, 2))) -
+                                         (TO_NUMBER(SUBSTR(csession.c_session_start_hour, 1, 2)) * 60 +
+                                          TO_NUMBER(SUBSTR(csession.c_session_start_hour, 4, 2))))              AS time
+                     FROM tbl_attendance att
+                              INNER JOIN tbl_student std ON att.f_student = std.id
+                              INNER JOIN (
+                         SELECT CAST("P_TYPE" AS VARCHAR2(50)) personelType,
+                                "PERSONNEL_NO",
+                                national_code,
+                                first_name,
+                                last_name,
+                                f_department_id
+                         from view_active_personnel
+                         union all
+                         SELECT CAST('personnel_registered' AS VARCHAR2(50)) personelType,
+                                "PERSONNEL_NO",
+                                national_code,
+                                first_name,
+                                last_name,
+                                f_department_id
+                         FROM tbl_personnel_registered
+                     ) personnel ON std.national_code = personnel.national_code
+                              LEFT JOIN tbl_department dep ON dep.id = personnel.f_department_id
+                              INNER JOIN tbl_session csession ON att.f_session = csession.id
+                              INNER JOIN tbl_class class ON csession.f_class_id = class.id
+                              LEFT JOIN tbl_personnel personnelPlanner on personnelPlanner.id = class.f_planner
+                              LEFT JOIN tbl_department plnner_dep on plnner_dep.id = personnelPlanner.f_department_id
+                              LEFT JOIN TBL_INSTITUTE organizer_ins on class.F_INSTITUTE_ORGANIZER = organizer_ins.ID
+                     GROUP BY std.personnel_no,
+                              std.emp_no,
+                              std.national_code,
+                              std.first_name || ' ' || std.last_name,
+                              dep.c_hoze_title,
+                              dep.c_omor_title,
+                              personnel.personelType,
+                              class.c_code,
+                              class.c_title_class,
+                              csession.c_session_date,
+                              att.c_state,
+                              plnner_dep.c_hoze_title,
+                              personnelPlanner.FIRST_NAME,
+                              personnelPlanner.LAST_NAME,
+                              organizer_ins.C_TITLE_FA
+                 ) atten
+            ]]>
+        </createView>
+    </changeSet>
+
+
+    <changeSet author="namdari (generated)" id="1612162955854-620">
+        <createView viewName="VIEW_TRAINING_NEED_ASSESSMENT" replaceIfExists="true">
+            <![CDATA[
+             SELECT DISTINCT
+    tbl_course.id,
+    tbl_course.c_code,
+    tbl_course.c_title_fa,
+    tbl_category.c_title_fa       AS c_title_fa1,
+    tbl_sub_category.c_title_fa   AS c_title_fa2
+FROM
+    tbl_course
+    INNER JOIN tbl_skill ON tbl_skill.f_course = tbl_course.id
+    INNER JOIN tbl_needs_assessment ON tbl_needs_assessment.f_skill =tbl_skill.id
+    INNER JOIN tbl_category ON tbl_category.id = tbl_course.category_id
+    INNER JOIN tbl_sub_category ON tbl_sub_category.id = tbl_course.subcategory_id
+
+            ]]>
+        </createView>
+    </changeSet>
+
+
+    <changeSet author="namdari (generated)" id="1612162955854-585">
+        <createView viewName="VIEW_NEED_ASSESSMENT_IN_RANGE_TIME" replaceIfExists="true">
+            <![CDATA[
+        SELECT "'پست'","C_CODE","C_TITLE_FA","NAME" FROM(
+SELECT
+    'پست',
+    tp.c_code,
+    tp.c_title_fa,
+--   tp.d_last_modified_date_na,
+    NVL2(p.last_name,p.first_name || p.last_name, tp.c_modified_by_na) as name
+FROM
+    tbl_training_post tp
+    left join (select * from tbl_personnel where deleted = 0) p ON tp.c_modified_by_na = p.c_username
+WHERE
+    tp.c_modified_by_na IS NOT NULL
+
+UNION ALL
+SELECT
+    'پست انفرادی',
+    tp.c_code,
+    tp.c_title_fa,
+--    tp.d_last_modified_date_na,
+    NVL2(p.last_name,p.first_name || p.last_name, tp.c_modified_by_na) as name
+FROM
+    tbl_post tp
+    left join (select * from tbl_personnel where deleted = 0) p ON tp.c_modified_by_na = p.c_username
+WHERE
+    tp.c_modified_by_na IS NOT NULL
+    )
+ORDER BY
+    name
+
+            ]]>
+        </createView>
+    </changeSet>
+
+
+
+    <changeSet author="namdari (generated)" id="1612168049786-620">
+        <createView viewName="VIEW_TRAINING_NEED_ASSESSMENT" replaceIfExists="true">
+            <![CDATA[
+             SELECT DISTINCT
+    tbl_course.id,
+    tbl_course.category_id  As c_id,
+    tbl_course.c_code,
+    tbl_course.c_title_fa,
+    tbl_category.c_title_fa       AS c_title_fa1,
+    tbl_sub_category.c_title_fa   AS c_title_fa2
+FROM
+    tbl_course
+    INNER JOIN tbl_skill ON tbl_skill.f_course = tbl_course.id
+    INNER JOIN tbl_needs_assessment ON tbl_needs_assessment.f_skill =tbl_skill.id
+    INNER JOIN tbl_category ON tbl_category.id = tbl_course.category_id
+    INNER JOIN tbl_sub_category ON tbl_sub_category.id = tbl_course.subcategory_id
+
+            ]]>
+        </createView>
+    </changeSet>
+
 
 </databaseChangeLog>
