@@ -861,6 +861,12 @@
             ToolStripButton_Goal_Add,
             ToolStripButton_Goal_Edit_WindowAllGoal,
             ToolStripButton_Goal_Remove,
+            isc.ToolStripButtonAdd.create({
+                title: 'اضافه کردن گروهي',
+                click: function () {
+                    Goal_add_group();
+                }
+            })
         ]
     });
     var ToolStrip_Actions_Syllabus = isc.ToolStrip.create({
@@ -1083,6 +1089,223 @@
         ListGrid_Syllabus_Goal.invalidateCache();
         ListGrid_Syllabus_Goal.fetchData();
     }
+    function Goal_add_group() {
+        if(numClasses>0){
+            createDialog("warning", "بدلیل تشکیل کلاس برای دوره نمی توان برای این دوره هدف جدید ایجاد کرد.", "اخطار");
+            return;
+        }
+        importFromExcel();
+    }
+
+    function importFromExcel(){
+        TabSet_GroupInsert_JspGoal=isc.TabSet.create({
+            ID:"leftTabSetGoal",
+            autoDraw:false,
+            tabBarPosition: "top",
+            width: "100%",
+            height: 115,
+            tabs: [
+                {title: "فایل اکسل", width:200, overflow:"hidden",
+                    pane: isc.DynamicForm.create({
+                        height: "100%",
+                        width:"100%",
+                        numCols: 4,
+                        colWidths: ["10%","40%","20%","20%"],
+                        fields: [
+                            {
+                                ID:"DynamicForm_GroupInsert_FileUploader_JspGoal",
+                                name:"DynamicForm_GroupInsert_FileUploader_JspGoal",
+                                type:"imageFile",
+                                title:"مسیر فایل",
+                            },
+                            {
+                                type: "button",
+                                startRow:false,
+                                title: "آپلود فايل",
+                                click:function () {
+                                    let address=DynamicForm_GroupInsert_FileUploader_JspGoal.getValue();
+                                    if(address==null){
+                                        createDialog("info", "فايل خود را انتخاب نماييد.");
+                                    }else{
+                                        var ExcelToJSON = function() {
+
+                                            this.parseExcel = function(file) {
+                                                var reader = new FileReader();
+                                                var records = [];
+
+                                                reader.onload = function(e) {
+                                                    var data = e.target.result;
+                                                    var workbook = XLSX.read(data, {
+                                                        type: 'binary'
+                                                    });
+                                                    var isEmpty=true;
+                                                    workbook.SheetNames.forEach(function(sheetName) {
+                                                        var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                                                        for(let i=0;i<XL_row_object.length;i++){
+                                                            if(GroupSelectedPersonnelsLG_Goal.data.filter(function (item) {
+                                                                return item.titleEn==Object.values(XL_row_object[i])[0] && item.titleFa==Object.values(XL_row_object[i])[1];
+                                                            }).length==0){
+                                                                let current={titleEn:Object.values(XL_row_object[i])[0], titleFa:Object.values(XL_row_object[i])[1]};
+                                                                records.add(current);
+                                                                isEmpty=false;
+                                                                continue;
+                                                            }
+                                                            else{
+                                                                isEmpty=false;
+                                                                continue;
+                                                            }
+                                                        }
+                                                        DynamicForm_GroupInsert_FileUploader_JspGoal.setValue('');
+                                                    });
+
+                                                    if(records.length > 0){
+
+                                                        let uniqueRecords = [];
+
+                                                        for (let i=0; i < records.length; i++) {
+                                                            if (uniqueRecords.filter(function (item) {return item.titleFa == records[i].titleFa && item.titleEn == records[i].titleEn;}).length==0) {
+                                                                uniqueRecords.push(records[i]);
+                                                            }
+                                                        }
+                                                        GroupSelectedPersonnelsLG_Goal.setData(GroupSelectedPersonnelsLG_Goal.data.concat(uniqueRecords));
+                                                        GroupSelectedPersonnelsLG_Goal.invalidateCache();
+                                                        GroupSelectedPersonnelsLG_Goal.fetchData();
+
+                                                        createDialog("info", "فایل به لیست اضافه شد.");
+                                                    }else{
+                                                        if(isEmpty){
+                                                            createDialog("info", "خطا در محتویات فایل");
+                                                        }else{
+                                                            createDialog("info", "هدف جدیدی برای اضافه کردن وجود ندارد.");
+                                                        }
+                                                    }
+                                                };
+
+                                                reader.onerror = function(ex) {
+                                                    createDialog("info", "خطا در باز کردن فایل");
+                                                };
+
+                                                reader.readAsBinaryString(file);
+                                            };
+                                        };
+                                        let split=$('[name="DynamicForm_GroupInsert_FileUploader_JspGoal"]')[0].files[0].name.split('.');
+
+                                        if(split[split.length-1]=='xls'||split[split.length-1]=='csv'||split[split.length-1]=='xlsx'){
+                                            var xl2json = new ExcelToJSON();
+                                            xl2json.parseExcel($('[name="DynamicForm_GroupInsert_FileUploader_JspGoal"]')[0].files[0]);
+                                        }else{
+                                            createDialog("info", "فایل انتخابی نادرست است. پسوندهای فایل مورد تایید xlsx,xls,csv هستند.");
+                                        }
+
+                                    }
+                                }
+                            },
+                            {
+                                type: "button",
+                                title: "فرمت فايل ورودی",
+                                click:function () {
+                                    window.open("excel/sample-excel.xlsx");
+                                }
+                            },
+                        ]
+                    })
+                }
+            ]
+        });
+
+        ClassStudentWin_goal_GroupInsert = isc.Window.create({
+            width: 1050,
+            height: 750,
+            minWidth: 700,
+            minHeight: 500,
+            autoSize: false,
+            overflow:"hidden",
+            title:"اضافه کردن گروهی",
+            items: [
+                isc.HLayout.create({
+                    width:1050,
+                    height: "88%",
+                    autoDraw: false,
+                    overflow:"auto",
+                    align: "center",
+                    members: [
+                        isc.TrLG.create({
+                            ID: "GroupSelectedPersonnelsLG_Goal",
+                            showFilterEditor: false,
+                            editEvent: "click",
+                            //listEndEditAction: "next",
+                            enterKeyEditAction: "nextRowStart",
+                            canSort:false,
+                            canEdit:true,
+                            filterOnKeypress: true,
+                            selectionType: "single",
+                            fields: [
+                                {name: "remove", tile: "<spring:message code="remove"/>", isRemoveField: true,width:"10%"},
+                                { name: "titleEn", title: "نام انگلیسی", canEdit: true ,autoFithWidth:true},
+                                { name: "titleFa", title: "نام فارسی", canEdit: true ,autoFithWidth:true},
+                            ],
+                            gridComponents: [TabSet_GroupInsert_JspGoal, "header", "body"],
+                            canRemoveRecords: true,
+                            deferRemoval:true,
+                            removeRecordClick:function (rowNum){
+                                GroupSelectedPersonnelsLG_Goal.data.removeAt(rowNum);
+                            }
+                        })
+                    ]
+                }),
+                isc.TrHLayoutButtons.create({
+                    members: [
+                        isc.IButtonSave.create({
+                            top: 260,
+                            title: "<spring:message code='save'/>",
+                            align: "center",
+                            icon: "[SKIN]/actions/save.png",
+                            click: function () {
+
+                                let list=GroupSelectedPersonnelsLG_Goal.data;
+                                methodGoal = "POST";
+                                let urlCreateGroupGoal = goalUrl + "create/list/" + courseRecord.id;
+                                let goalData = list.map(function(item, index) {
+                                    return {categoryId:courseRecord.category.id ,subCategoryId:courseRecord.subCategory.id ,titleFa: item.titleFa , titleEn: item.titleEn}
+                                })
+                                wait.show();
+                                isc.RPCManager.sendRequest(TrDSRequest(urlCreateGroupGoal, methodGoal, JSON.stringify(goalData), resp => {
+                                    console.log(resp)
+                                    wait.close();
+                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                    simpleDialog("انجام فرمان", "عملیات با موفقیت انجام شد.", "3000", "say");
+                                    ListGrid_Goal_refresh();
+                                    ListGrid_GoalAll.invalidateCache();
+                                    ListGrid_CourseGoal_Goal.invalidateCache();
+                                    ClassStudentWin_goal_GroupInsert.close();
+                                } else {
+                                    simpleDialog("پیغام", "اجرای عملیات با مشکل مواجه شده است!", "3000", "error")
+                                }
+                            }))
+
+                            }
+                        }), isc.IButtonCancel.create({
+                            top: 260,
+                            title: "<spring:message code='cancel'/>",
+                            align: "center",
+                            icon: "[SKIN]/actions/cancel.png",
+                            click: function () {
+                                ClassStudentWin_goal_GroupInsert.close();
+                            }
+                        })
+                    ]
+                })
+            ]
+        });
+
+
+        TabSet_GroupInsert_JspGoal.selectTab(0);
+        GroupSelectedPersonnelsLG_Goal.discardAllEdits();
+        GroupSelectedPersonnelsLG_Goal.data.clearAll();
+        DynamicForm_GroupInsert_FileUploader_JspGoal.setValue('');
+        ClassStudentWin_goal_GroupInsert.show();
+    }
+
 
     function ListGrid_Goal_Add() {
         if(numClasses>0){
