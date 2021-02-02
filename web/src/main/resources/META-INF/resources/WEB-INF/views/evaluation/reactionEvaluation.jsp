@@ -1161,23 +1161,29 @@
     function NCodeAndMobileValidation(nationalCode, mobileNum) {
 
         let isValid = true;
-        if (nationalCode.length !== 10 || !(/^-?\d+$/.test(nationalCode)))
-            isValid = false;
 
-        if((mobileNum.length !== 10 && mobileNum.length !== 11) || !(/^-?\d+$/.test(mobileNum)))
+        if (nationalCode===undefined || nationalCode===null || mobileNum===undefined || mobileNum===null )
+        {
             isValid = false;
+        }
+        else
+        {
+            if (nationalCode.length !== 10 || !(/^-?\d+$/.test(nationalCode)))
+                isValid = false;
 
-        if(mobileNum.length === 10 && !mobileNum.startsWith("9"))
-            isValid = false;
+            if((mobileNum.length !== 10 && mobileNum.length !== 11) || !(/^-?\d+$/.test(mobileNum)))
+                isValid = false;
 
-        if(mobileNum.length === 11 && !mobileNum.startsWith("09"))
-            isValid = false;
+            if(mobileNum.length === 10 && !mobileNum.startsWith("9"))
+                isValid = false;
 
+            if(mobileNum.length === 11 && !mobileNum.startsWith("09"))
+                isValid = false;
+        }
         return isValid;
     }
 
-    function toElsRquest(data) {
-
+    function toElsRquest(data,type) {
         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
             if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                 let result = JSON.parse(resp.httpResponseText).response.data;
@@ -1229,7 +1235,7 @@
             data.evaluatedTypeId = 187;
             data.questionnaireTypeId = 141;
             data.evaluationLevelId = 154;
-            toElsRquest(data);
+            toElsRquest(data,type);
         } else {
 
             data.classId = classRecord_RE.id;
@@ -1243,11 +1249,11 @@
             // wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "" + data.evaluatorId, "GET", null, function (resp) {
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-
                     let teacherInfo = JSON.parse(resp.httpResponseText);
                     if (teacherInfo.personality.genderId != null) {
 
                         let isValid = NCodeAndMobileValidation(teacherInfo.personality.nationalCode, teacherInfo.personality.contactInfo.mobile);
+
                         if (!isValid) {
 
                             let stop = isc.Dialog.create({
@@ -1259,7 +1265,7 @@
                             return;
                         } else {
 
-                            toElsRquest(data);
+                            toElsRquest(data,type);
                         }
                     } else {
 
