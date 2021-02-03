@@ -31,4 +31,6 @@ public interface IPostService {
     <T> SearchDTO.SearchRs<T> searchWithoutPermission(SearchDTO.SearchRq request, Function converter);
 
     SearchDTO.SearchRs<PostDTO.Info> unassignedSearch(SearchDTO.SearchRq request);
+
+    List<String> getAllArea();
 }

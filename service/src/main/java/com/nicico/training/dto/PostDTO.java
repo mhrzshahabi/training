@@ -3,10 +3,7 @@ ghazanfari_f, 8/29/2019, 10:48 AM
 */
 package com.nicico.training.dto;
 
-import com.nicico.training.model.ParameterValue;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

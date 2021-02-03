@@ -1,6 +1,5 @@
 package com.nicico.training.controller;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
@@ -23,7 +22,9 @@ public class MainFormController {
     }
 
     @RequestMapping("/organizationalChart")
-    public String showOrganizationalChartForm() { return "basic/organizationalChart"; }
+    public String showOrganizationalChartForm() {
+        return "basic/organizationalChart";
+    }
 
     @RequestMapping("/trainingFile")
     public String showTrainingFileForm() {
@@ -36,10 +37,14 @@ public class MainFormController {
     }
 
     @RequestMapping("/courseWithOutTeacherReaport")
-    public String courseWithOutTeacherReaport(){return "report/courseWithOutTeacherReaport";}
+    public String courseWithOutTeacherReaport() {
+        return "report/courseWithOutTeacherReaport";
+    }
 
     @RequestMapping("/annualStatisticalReportBySections")
-    public String annualStatisticalReport(){return "report/annualStatisticalReportBySections";}
+    public String annualStatisticalReport() {
+        return "report/annualStatisticalReportBySections";
+    }
 
     @RequestMapping("/personnelCourseNotPassed")
     public String showPersonalCoursesNotPassedForm() {
@@ -67,10 +72,14 @@ public class MainFormController {
     }
 
     @RequestMapping("/calenderCurrentTerm")
-     public String showCalenderCurrentTerm(){return "report/calenderCurrentTerm";}
+    public String showCalenderCurrentTerm() {
+        return "report/calenderCurrentTerm";
+    }
 
-     @RequestMapping("/classOutsideCurrentTerm")
-     public String showclassOutsideCurrentTerm(){return "report/classOutsideCurrentTerm";}
+    @RequestMapping("/classOutsideCurrentTerm")
+    public String showclassOutsideCurrentTerm() {
+        return "report/classOutsideCurrentTerm";
+    }
 
     @RequestMapping("/oaUser")
     public String showOaUserForm() {
@@ -178,7 +187,9 @@ public class MainFormController {
     }
 
     @RequestMapping("/statisticsUnitReport")
-    public String showStatisticsUnitReport() { return "report/statisticsUnitReport"; }
+    public String showStatisticsUnitReport() {
+        return "report/statisticsUnitReport";
+    }
 
     @RequestMapping("class-contract")
     public String showClassContractForm() {
@@ -237,10 +248,12 @@ public class MainFormController {
     public String showEditNeedsAssessmentForm() {
         return "needsAssessment/edit-needs-assessment";
     }
+
     @GetMapping("/diff-needs-assessment")
     public String showDiffNeedsAssessmentForm() {
         return "needsAssessment/diff-needs-assessment";
     }
+
     @GetMapping("/tree-needs-assessment")
     public String showTreeNeedsAssessmentForm() {
         return "needsAssessment/tree-needs-assessment";
@@ -270,13 +283,20 @@ public class MainFormController {
     public String showPersonnelCourseNAReportForm() {
         return "report/personnelCourseNAReportV2";
     }
+
     @RequestMapping("/training-file-na-report")
     public String showTrainingFileNAReport() {
         return "report/trainingFileNAReport";
     }
-   @RequestMapping("/training-course-need-assessment")
+
+    @RequestMapping("/training-course-need-assessment")
     public String showTrainingCourseNeedAssessment() {
         return "report/trainingCourseNeedAssessment";
+    }
+
+    @RequestMapping("/training-area-need-assessment")
+    public String showTrainingAreaNeedAssessment() {
+        return "report/trainingAreaNeedAssessment";
     }
 
     @PostMapping("/personnel-needs-assessment-report-print/{type}")
@@ -320,10 +340,7 @@ public class MainFormController {
     }
 
     @PostMapping("/calender_current_term")
-    public ResponseEntity<?> calenderCurrentTermReport(final HttpServletRequest request, @RequestParam Long objectId,
-                                                       @RequestParam String objectType,
-                                                       @RequestParam(required = false) String personnelNo, @RequestParam String nationalCode, @RequestParam String firstName, @RequestParam String lastName, @RequestParam String companyName, @RequestParam String personnelNo2, @RequestParam String postTitle, @RequestParam String postCode)
-    {
+    public ResponseEntity<?> calenderCurrentTermReport(final HttpServletRequest request, @RequestParam Long objectId, @RequestParam String objectType, @RequestParam(required = false) String personnelNo, @RequestParam String nationalCode, @RequestParam String firstName, @RequestParam String lastName, @RequestParam String companyName, @RequestParam String personnelNo2, @RequestParam String postTitle, @RequestParam String postCode) {
 //       String token;
 //          String header_authorization = request.getHeader("Authorization");
 //          String[] splitted = header_authorization.split(" ");
@@ -339,16 +356,16 @@ public class MainFormController {
         headers.add("Authorization", "Bearer " + token);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("objectId",String.valueOf(objectId));
-        map.add("objectType",objectType);
-        map.add("personnelNo",personnelNo);
-        map.add("nationalCode",nationalCode);
-        map.add("firstName",firstName);
-        map.add("lastName",lastName);
-        map.add("companyName",companyName);
-        map.add("personnelNo2",personnelNo2);
-        map.add("postTitle",postTitle);
-        map.add("postCode",postCode);
+        map.add("objectId", String.valueOf(objectId));
+        map.add("objectType", objectType);
+        map.add("personnelNo", personnelNo);
+        map.add("nationalCode", nationalCode);
+        map.add("firstName", firstName);
+        map.add("lastName", lastName);
+        map.add("companyName", companyName);
+        map.add("personnelNo2", personnelNo2);
+        map.add("postTitle", postTitle);
+        map.add("postCode", postCode);
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
         return restTemplate.exchange(restApiUrl + "/api/calenderCurrentTerm/print", HttpMethod.POST, entity, byte[].class);
@@ -361,6 +378,8 @@ public class MainFormController {
     }
 
     @RequestMapping("/reactionEvaluationReport")
-    public String reactionEvaluationReport(){return "report/reactionEvaluationReport";}
+    public String reactionEvaluationReport() {
+        return "report/reactionEvaluationReport";
+    }
 
 }

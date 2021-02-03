@@ -6,9 +6,9 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CourseDTO;
-import com.nicico.training.dto.PostDTO;
 import com.nicico.training.dto.ViewPostDTO;
 import com.nicico.training.service.BaseService;
+import com.nicico.training.service.PostService;
 import com.nicico.training.service.ViewPostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +32,7 @@ public class ViewPostRestController {
 
     private final ObjectMapper objectMapper;
     private final ViewPostService viewPostService;
+    private final PostService postService;
 
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<ViewPostDTO.Info>> iscList(HttpServletRequest iscRq) throws IOException {
@@ -41,24 +42,24 @@ public class ViewPostRestController {
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/areaList")
+    public List<String> areaList(HttpServletRequest iscRq) throws IOException {
+
+        List<String> areas = postService.getAllArea();
+        return areas;
+    }
+
     @Loggable
     @GetMapping(value = "/spec-list")
     //@PreAuthorize("hasAuthority('Course_R')")
-    public ResponseEntity<CourseDTO.CourseSpecRs> list(@RequestParam(value = "_startRow", required = false, defaultValue = "0") Integer startRow,
-                                                       @RequestParam(value = "_endRow", required = false, defaultValue = "100") Integer endRow,
-                                                       @RequestParam(value = "_constructor", required = false) String constructor,
-                                                       @RequestParam(value = "operator", required = false) String operator,
-                                                       @RequestParam(value = "criteria", required = false) String criteria,
-                                                       @RequestParam(value = "id", required = false) Long id,
-                                                       @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+    public ResponseEntity<CourseDTO.CourseSpecRs> list(@RequestParam(value = "_startRow", required = false, defaultValue = "0") Integer startRow, @RequestParam(value = "_endRow", required = false, defaultValue = "100") Integer endRow, @RequestParam(value = "_constructor", required = false) String constructor, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria, @RequestParam(value = "id", required = false) Long id, @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         SearchDTO.CriteriaRq criteriaRq;
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
             criteria = "[" + criteria + "]";
             criteriaRq = new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.valueOf(operator))
-                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
-                    }));
+            criteriaRq.setOperator(EOperator.valueOf(operator)).setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+            }));
             request.setCriteria(criteriaRq);
         }
         if (StringUtils.isNotEmpty(sortBy)) {
@@ -66,22 +67,16 @@ public class ViewPostRestController {
         }
         if (id != null) {
             criteriaRq = new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.equals)
-                    .setFieldName("id")
-                    .setValue(id);
+            criteriaRq.setOperator(EOperator.equals).setFieldName("id").setValue(id);
             request.setCriteria(criteriaRq);
             startRow = 0;
             endRow = 1;
         }
-        request.setStartIndex(startRow)
-                .setCount(endRow - startRow);
+        request.setStartIndex(startRow).setCount(endRow - startRow);
         BaseService.setCriteriaToNotSearchDeleted(request);
         SearchDTO.SearchRs<ViewPostDTO.Info> response = viewPostService.search(request);
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
-        specResponse.setData(response.getList())
-                .setStartRow(startRow)
-                .setEndRow(startRow + response.getList().size())
-                .setTotalRows(response.getTotalCount().intValue());
+        specResponse.setData(response.getList()).setStartRow(startRow).setEndRow(startRow + response.getList().size()).setTotalRows(response.getTotalCount().intValue());
 
         final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
         specRs.setResponse(specResponse);
