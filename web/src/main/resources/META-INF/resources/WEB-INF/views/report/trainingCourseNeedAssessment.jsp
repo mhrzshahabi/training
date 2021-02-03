@@ -107,7 +107,7 @@
         alignLayout: "center",
         padding: 10,
         members: [
-            IButton_JspTrainingFileNAReport
+
         ]
     });
 
