@@ -1,26 +1,21 @@
 package com.nicico.training.controller;
 
 
-import com.nicico.copper.common.Loggable;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.controller.util.GeneratePdfReport;
-import com.nicico.training.dto.PersonDTO;
-import com.nicico.training.dto.PersonalInfoDTO;
-import com.nicico.training.dto.PersonnelDTO;
-import com.nicico.training.dto.PersonnelRegisteredDTO;
-import com.nicico.training.iservice.IPersonalInfoService;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
+import com.nicico.training.mapper.person.PersonBeanMapper;
 import com.nicico.training.model.Evaluation;
 import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.model.enums.EGender;
 import com.nicico.training.service.*;
 import dto.evaluuation.EvalTargetUser;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -47,8 +42,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 
 @RestController
@@ -58,6 +52,7 @@ public class ElsRestController {
 
     private final ModelMapper modelMapper;
     private final EvaluationBeanMapper evaluationBeanMapper;
+    private final PersonBeanMapper personBeanMapper;
     private final EvaluationAnswerService answerService;
     private final QuestionnaireService questionnaireService;
     private final EvaluationService evaluationService;
@@ -235,13 +230,13 @@ public class ElsRestController {
         PersonalInfoDTO.Info personalInfo = personalInfoService.getOneByNationalCode(nationalCode);
         List<String> roles = new ArrayList<>();
         if (personnel != null ) {
-            setPersonnelFields(personDTO, personnel);
+            personBeanMapper.setPersonnelFields(personDTO, personnel);
             String role = "User";
             roles.add(role);
         } else {
             personnelRegistered = personnelRegisteredService.getOneByNationalCode(nationalCode);
             if (personnelRegistered != null){
-                setPersonnelRegisteredFields(personDTO, personnelRegistered);
+                personBeanMapper.setPersonnelRegisteredFields(personDTO, personnelRegistered);
                 String role = "User";
                 roles.add(role);
             }
@@ -251,7 +246,7 @@ public class ElsRestController {
             String role = "Instructor";
             roles.add(role);
             if (personnel == null && personnelRegistered == null){
-                setPersonalInfoFields(personDTO, personalInfo);
+                personBeanMapper.setPersonalInfoFields(personDTO, personalInfo);
             } else {
                 // we fill fields if there are valid values in other objects
                 if(personDTO.getEmail() == null && personalInfo.getContactInfo() != null && personalInfo.getContactInfo().getEmail() != null){
@@ -261,7 +256,7 @@ public class ElsRestController {
                     personDTO.setAddress(personalInfo.getContactInfo().getHomeAddress().getRestAddr());
                 }
                 if(personDTO.getMobile() == null && personalInfo.getContactInfo() != null && personalInfo.getContactInfo().getMobile() != null){
-                    personDTO.setMobile(checkMobileFormat(personalInfo.getContactInfo().getMobile()));
+                    personDTO.setMobile(personBeanMapper.checkMobileFormat(personalInfo.getContactInfo().getMobile()));
                 }
                 if(personDTO.getPhone() == null && personalInfo.getContactInfo() != null && personalInfo.getContactInfo().getHomeAddress() != null){
                     personDTO.setPhone(personalInfo.getContactInfo().getHomeAddress().getPhone());
@@ -303,39 +298,7 @@ public class ElsRestController {
         return response;
     }
 
-    /**
-     * set personal info's fields such as teacher or a company owners or ...
-     * @param personDTO
-     * @param personalInfo
-     */
-    private void setPersonalInfoFields(PersonDTO personDTO, PersonalInfoDTO.Info personalInfo) {
-        personDTO.setFirstName(personalInfo.getFirstNameFa());
-        personDTO.setLastName(personalInfo.getLastNameFa());
-        personDTO.setFatherName(personalInfo.getFatherName());
-        personDTO.setBirthDate(personalInfo.getBirthDate());
-        if (personalInfo.getGenderId() != null) {
-            if (personalInfo.getGenderId().equals(EGender.Male.getId())) {
-                personDTO.setGender(0);
-            } else {
-                personDTO.setGender(1);
-            }
-        }
-        personDTO.setNationalCode(personalInfo.getNationalCode());
-        if (personalInfo.getContactInfo() != null) {
-            personDTO.setEmail(personalInfo.getContactInfo().getEmail());
-            personDTO.setMobile(checkMobileFormat(personalInfo.getContactInfo().getMobile()));
-            if (personalInfo.getContactInfo().getHomeAddress() != null) {
-                personDTO.setPhone(personalInfo.getContactInfo().getHomeAddress().getPhone());
-                personDTO.setAddress(personalInfo.getContactInfo().getHomeAddress().getRestAddr());
-            }
-        }
-        if (personalInfo.getEducationLevel() != null) {
-            personDTO.setEducationLevelTitle(personalInfo.getEducationLevel().getTitleFa());
-        }
-        if (personalInfo.getEducationMajor() != null) {
-            personDTO.setEducationMajorTitle(personalInfo.getEducationMajor().getTitleFa());
-        }
-    }
+
 
     @PostMapping("/teacher/addAnswer/evaluation")
     public BaseResponse addTeacherEvaluationAnswer(@RequestBody TeacherEvaluationAnswerDto dto) {
@@ -347,72 +310,5 @@ public class ElsRestController {
         response.setStatus(200);
         return response;
     }
-    /**
-     * set personnel registered's fields
-     * @param personDTO
-     * @param personnelRegistered
-     */
-    private void setPersonnelRegisteredFields(PersonDTO personDTO, PersonnelRegisteredDTO.Info personnelRegistered) {
-        personDTO.setFirstName(personnelRegistered.getFirstName());
-        personDTO.setLastName(personnelRegistered.getLastName());
-        personDTO.setFatherName(personnelRegistered.getFatherName());
-        personDTO.setBirthDate(personnelRegistered.getBirthDate());
-        if (personnelRegistered.getGender() != null) {
-            if (personnelRegistered.getGender().equals(EGender.Male.getTitleFa())) {
-                personDTO.setGender(0);
-            } else if (personnelRegistered.getGender().equals(EGender.Female.getTitleFa())) {
-                personDTO.setGender(1);
-            }
-        }
-        personDTO.setNationalCode(personnelRegistered.getNationalCode());
-        personDTO.setMobile(checkMobileFormat(personnelRegistered.getMobile()));
-        personDTO.setEducationLevelTitle(personnelRegistered.getEducationLevel());
-        personDTO.setEducationMajorTitle(personnelRegistered.getEducationMajor());
-        personDTO.setPhone(personnelRegistered.getPhone());
-        personDTO.setEmail(personnelRegistered.getEmail());
-        personDTO.setPersonnelNo(personnelRegistered.getPersonnelNo());
 
-    }
-
-    /**
-     * set personnel's fields
-     * @param personDTO
-     * @param personnel
-     */
-    private void setPersonnelFields(PersonDTO personDTO, PersonnelDTO.PersonalityInfo personnel) {
-        personDTO.setFirstName(personnel.getFirstName());
-        personDTO.setLastName(personnel.getLastName());
-        personDTO.setFatherName(personnel.getFatherName());
-        personDTO.setBirthDate(personnel.getBirthDate());
-        if (personnel.getGender() != null) {
-            if (personnel.getGender().equals(EGender.Male.getTitleFa())) {
-                personDTO.setGender(0);
-            } else if (personnel.getGender().equals(EGender.Female.getTitleFa())) {
-                personDTO.setGender(1);
-            }
-        }
-        personDTO.setNationalCode(personnel.getNationalCode());
-        personDTO.setMobile(checkMobileFormat(personnel.getMobile()));
-        personDTO.setEducationLevelTitle(personnel.getEducationLevelTitle());
-        personDTO.setEducationMajorTitle(personnel.getEducationMajorTitle());
-        personDTO.setPhone(personnel.getPhone());
-        personDTO.setEmail(personnel.getEmail());
-        personDTO.setPersonnelNo(personnel.getPersonnelNo());
-        personDTO.setPersonnelNo2(personnel.getPersonnelNo2());
-
-    }
-
-    public String checkMobileFormat(String mobileNumber) {
-        if (mobileNumber == null || mobileNumber.equals("")) {
-            return null;
-        } else {
-            mobileNumber = StringUtils.leftPad(mobileNumber, 11, "0");
-            String regexStr = "^09\\d{9}";
-            Pattern pattern = Pattern.compile(regexStr);
-            Matcher matcher = pattern.matcher(mobileNumber);
-            if (!matcher.find())
-                return null;
-            return mobileNumber;
-        }
-    }
 }
