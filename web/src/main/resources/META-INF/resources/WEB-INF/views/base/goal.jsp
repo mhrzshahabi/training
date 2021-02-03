@@ -1204,7 +1204,7 @@
                                 type: "button",
                                 title: "فرمت فايل ورودی",
                                 click:function () {
-                                    window.open("excel/sample-excel.xlsx");
+                                    window.open("excel/sample-excel-goal.xlsx");
                                 }
                             },
                         ]
