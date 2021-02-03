@@ -1159,7 +1159,6 @@
     });
 
     function NCodeAndMobileValidation(nationalCode, mobileNum) {
-        alert("za1")
 
         let isValid = true;
 
@@ -1169,9 +1168,6 @@
         }
         else
         {
-            alert("za")
-            alert(mobileNum)
-            alert(nationalCode)
             if (nationalCode.length !== 10 || !(/^-?\d+$/.test(nationalCode)))
                 isValid = false;
 
