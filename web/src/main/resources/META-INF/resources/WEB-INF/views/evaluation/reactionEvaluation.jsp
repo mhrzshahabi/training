@@ -1159,6 +1159,7 @@
     });
 
     function NCodeAndMobileValidation(nationalCode, mobileNum) {
+        alert("za1")
 
         let isValid = true;
 
@@ -1168,6 +1169,9 @@
         }
         else
         {
+            alert("za")
+            alert(mobileNum)
+            alert(nationalCode)
             if (nationalCode.length !== 10 || !(/^-?\d+$/.test(nationalCode)))
                 isValid = false;
 
@@ -1248,13 +1252,15 @@
 
             // wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "" + data.evaluatorId, "GET", null, function (resp) {
+
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
                     let teacherInfo = JSON.parse(resp.httpResponseText);
-                    if (teacherInfo.personality.genderId != null) {
-
-                        let isValid = NCodeAndMobileValidation(teacherInfo.personality.nationalCode, teacherInfo.personality.contactInfo.mobile);
-
-                        if (!isValid) {
+                    if (teacherInfo.personality.genderId != null ) {
+                        if (teacherInfo.personality.contactInfo != null )
+                        {
+                            let isValid = NCodeAndMobileValidation(teacherInfo.personality.nationalCode, teacherInfo.personality.contactInfo.mobile);
+                          if (!isValid) {
 
                             let stop = isc.Dialog.create({
                                 message: "<spring:message code='msg.check.teacher.mobile.ncode'/>",
@@ -1267,6 +1273,19 @@
 
                             toElsRquest(data,type);
                         }
+
+                        } else {
+
+                            let stop = isc.Dialog.create({
+                                message: "<spring:message code='msg.check.class.teacher.info'/>",
+                                icon: "[SKIN]stop.png",
+                                title: "<spring:message code='message'/>"
+                            });
+                            stop.show();
+                            return;
+                        }
+
+
                     } else {
 
                         let stop = isc.Dialog.create({
