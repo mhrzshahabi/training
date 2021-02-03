@@ -15,6 +15,7 @@ import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.model.enums.EGender;
 import com.nicico.training.service.*;
 import dto.evaluuation.EvalTargetUser;
+import dto.exam.ImportedUser;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.io.InputStreamResource;
@@ -145,7 +146,16 @@ public class ElsRestController {
             PersonalInfo teacherInfo = personalInfoService.getPersonalInfo(teacherService.getTeacher(object.getExamItem().getTclass().getTeacherId()).getPersonalityId());
             request = evaluationBeanMapper.toGetExamRequest(tclassService.getTClass(object.getExamItem().getTclassId()), teacherInfo, object, classStudentService.getClassStudents(object.getExamItem().getTclassId()));
 
-            response = client.sendExam(request);
+            if (request.getInstructor()!=null && request.getInstructor().getNationalCode()!=null && validateTeacherExam(request.getInstructor()))
+            {
+                response = client.sendExam(request);
+            }
+            else
+            {
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                response.setMessage("اطلاعات استاد تکمیل نیست");
+                return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+            }
             if (response.getStatus() == HttpStatus.OK.value()) {
 
                 testQuestionService.changeOnlineFinalExamStatus(request.getExam().getSourceExamId(), true);
@@ -158,6 +168,19 @@ public class ElsRestController {
             response.setMessage("بروز خطا در سیستم");
             return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
         }
+    }
+
+    private boolean validateTeacherExam(ImportedUser teacher) {
+        boolean isValid = true;
+
+        if (teacher.getGender() == null) isValid = false;
+        if (teacher.getNationalCode().length() != 10 || !teacher.getNationalCode().matches("\\d+")) isValid = false;
+        if ((teacher.getCellNumber().length() != 10 && teacher.getCellNumber().length() != 11) || !teacher.getCellNumber().matches("\\d+"))
+            isValid = false;
+        if (teacher.getCellNumber().length() == 10 && !(teacher.getCellNumber().startsWith("9"))) isValid = false;
+        if (teacher.getCellNumber().length() == 11 && !(teacher.getCellNumber().startsWith("09"))) isValid = false;
+
+        return isValid;
     }
 
 
