@@ -2311,6 +2311,15 @@
                                     createTab(this.title, "<spring:url value="web/training-course-need-assessment"/>");
                                 }
                             },
+                            {isSeparator: true},
+                            </sec:authorize>
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsNeedsAssessment_People')">
+                            {
+                                title: "گزارش پست های نیازسنجی نشده براساس حوزه",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/training-area-need-assessment"/>");
+                                }
+                            },
                             </sec:authorize>
                         ]
                 },
