@@ -40,81 +40,25 @@ public class PersonRestController {
         PersonalInfoDTO.Info personalInfo = personalInfoService.getOneByNationalCode(nationalCode);
         List<String> roles = new ArrayList<>();
         if (personnel != null ) {
-            personDTO.setFirstName(personnel.getFirstName());
-            personDTO.setLastName(personnel.getLastName());
-            personDTO.setFatherName(personnel.getFatherName());
-            personDTO.setBirthDate(personnel.getBirthDate());
-            if (personnel.getGender() != null) {
-                if (personnel.getGender().equals(EGender.Male.getTitleFa())) {
-                    personDTO.setGender(0);
-                } else if (personnel.getGender().equals(EGender.Female.getTitleFa())){
-                    personDTO.setGender(1);
-                }
-            }
-            personDTO.setNationalCode(personnel.getNationalCode());
-            personDTO.setMobile(checkMobileFormat(personnel.getMobile()));
-            personDTO.setEducationLevelTitle(personnel.getEducationLevelTitle());
-            personDTO.setEducationMajorTitle(personnel.getEducationMajorTitle());
-            personDTO.setPhone(personnel.getPhone());
-            personDTO.setEmail(personnel.getEmail());
+            setPersonnelFields(personDTO, personnel);
             String role = "User";
             roles.add(role);
-            personDTO.setRoles(roles);
         } else {
             personnelRegistered = personnelRegisteredService.getOneByNationalCode(nationalCode);
             if (personnelRegistered != null){
-                personDTO.setFirstName(personnelRegistered.getFirstName());
-                personDTO.setLastName(personnelRegistered.getLastName());
-                personDTO.setFatherName(personnelRegistered.getFatherName());
-                personDTO.setBirthDate(personnelRegistered.getBirthDate());
-                if (personnelRegistered.getGender() != null) {
-                    if (personnelRegistered.getGender().equals(EGender.Male.getTitleFa())) {
-                        personDTO.setGender(0);
-                    } else if (personnelRegistered.getGender().equals(EGender.Female.getTitleFa())){
-                        personDTO.setGender(1);
-                    }
-                }
-                personDTO.setNationalCode(personnelRegistered.getNationalCode());
-                personDTO.setMobile(checkMobileFormat(personnelRegistered.getMobile()));
-                personDTO.setEducationLevelTitle(personnelRegistered.getEducationLevel());
-                personDTO.setEducationMajorTitle(personnelRegistered.getEducationMajor());
-                personDTO.setPhone(personnelRegistered.getPhone());
-                personDTO.setEmail(personnelRegistered.getEmail());
+                setPersonnelRegisteredFields(personDTO, personnelRegistered);
                 String role = "User";
                 roles.add(role);
             }
         }
+        //if user is a teacher or a company owner
         if (personalInfo != null){
             String role = "Instructor";
             roles.add(role);
             if (personnel == null && personnelRegistered == null){
-                personDTO.setFirstName(personalInfo.getFirstNameFa());
-                personDTO.setLastName(personalInfo.getLastNameFa());
-                personDTO.setFatherName(personalInfo.getFatherName());
-                personDTO.setBirthDate(personalInfo.getBirthDate());
-                if (personalInfo.getGenderId() != null) {
-                    if (personalInfo.getGenderId().equals(EGender.Male.getId())) {
-                        personDTO.setGender(0);
-                    } else {
-                        personDTO.setGender(1);
-                    }
-                }
-                personDTO.setNationalCode(personalInfo.getNationalCode());
-                if (personalInfo.getContactInfo() != null) {
-                    personDTO.setEmail(personalInfo.getContactInfo().getEmail());
-                    personDTO.setMobile(checkMobileFormat(personalInfo.getContactInfo().getMobile()));
-                    if (personalInfo.getContactInfo().getHomeAddress() != null) {
-                        personDTO.setPhone(personalInfo.getContactInfo().getHomeAddress().getPhone());
-                        personDTO.setAddress(personalInfo.getContactInfo().getHomeAddress().getRestAddr());
-                    }
-                }
-                if (personalInfo.getEducationLevel() != null) {
-                    personDTO.setEducationLevelTitle(personalInfo.getEducationLevel().getTitleFa());
-                }
-                if (personalInfo.getEducationMajor() != null) {
-                    personDTO.setEducationMajorTitle(personalInfo.getEducationMajor().getTitleFa());
-                }
+                setPersonalInfoFields(personDTO, personalInfo);
             } else {
+                // we fill fields if there are valid values in other objects
                 if(personDTO.getEmail() == null && personalInfo.getContactInfo() != null && personalInfo.getContactInfo().getEmail() != null){
                     personDTO.setEmail(personalInfo.getContactInfo().getEmail());
                 }
@@ -152,6 +96,95 @@ public class PersonRestController {
 
         PersonnelDTO.PersonalityInfo personalInfoDTO = personnelService.getByNationalCode(nationalCode);
         return new ResponseEntity<>(personDTO, HttpStatus.OK);
+    }
+
+    /**
+     * set personal info's fields such as teacher or a company owners or ...
+     * @param personDTO
+     * @param personalInfo
+     */
+    private void setPersonalInfoFields(PersonDTO personDTO, PersonalInfoDTO.Info personalInfo) {
+        personDTO.setFirstName(personalInfo.getFirstNameFa());
+        personDTO.setLastName(personalInfo.getLastNameFa());
+        personDTO.setFatherName(personalInfo.getFatherName());
+        personDTO.setBirthDate(personalInfo.getBirthDate());
+        if (personalInfo.getGenderId() != null) {
+            if (personalInfo.getGenderId().equals(EGender.Male.getId())) {
+                personDTO.setGender(0);
+            } else {
+                personDTO.setGender(1);
+            }
+        }
+        personDTO.setNationalCode(personalInfo.getNationalCode());
+        if (personalInfo.getContactInfo() != null) {
+            personDTO.setEmail(personalInfo.getContactInfo().getEmail());
+            personDTO.setMobile(checkMobileFormat(personalInfo.getContactInfo().getMobile()));
+            if (personalInfo.getContactInfo().getHomeAddress() != null) {
+                personDTO.setPhone(personalInfo.getContactInfo().getHomeAddress().getPhone());
+                personDTO.setAddress(personalInfo.getContactInfo().getHomeAddress().getRestAddr());
+            }
+        }
+        if (personalInfo.getEducationLevel() != null) {
+            personDTO.setEducationLevelTitle(personalInfo.getEducationLevel().getTitleFa());
+        }
+        if (personalInfo.getEducationMajor() != null) {
+            personDTO.setEducationMajorTitle(personalInfo.getEducationMajor().getTitleFa());
+        }
+    }
+
+    /**
+     * set personnel registered's fields
+     * @param personDTO
+     * @param personnelRegistered
+     */
+    private void setPersonnelRegisteredFields(PersonDTO personDTO, PersonnelRegisteredDTO.Info personnelRegistered) {
+        personDTO.setFirstName(personnelRegistered.getFirstName());
+        personDTO.setLastName(personnelRegistered.getLastName());
+        personDTO.setFatherName(personnelRegistered.getFatherName());
+        personDTO.setBirthDate(personnelRegistered.getBirthDate());
+        if (personnelRegistered.getGender() != null) {
+            if (personnelRegistered.getGender().equals(EGender.Male.getTitleFa())) {
+                personDTO.setGender(0);
+            } else if (personnelRegistered.getGender().equals(EGender.Female.getTitleFa())) {
+                personDTO.setGender(1);
+            }
+        }
+        personDTO.setNationalCode(personnelRegistered.getNationalCode());
+        personDTO.setMobile(checkMobileFormat(personnelRegistered.getMobile()));
+        personDTO.setEducationLevelTitle(personnelRegistered.getEducationLevel());
+        personDTO.setEducationMajorTitle(personnelRegistered.getEducationMajor());
+        personDTO.setPhone(personnelRegistered.getPhone());
+        personDTO.setEmail(personnelRegistered.getEmail());
+        personDTO.setPersonnelNo(personnelRegistered.getPersonnelNo());
+
+    }
+
+    /**
+     * set personnel's fields
+     * @param personDTO
+     * @param personnel
+     */
+    private void setPersonnelFields(PersonDTO personDTO, PersonnelDTO.PersonalityInfo personnel) {
+        personDTO.setFirstName(personnel.getFirstName());
+        personDTO.setLastName(personnel.getLastName());
+        personDTO.setFatherName(personnel.getFatherName());
+        personDTO.setBirthDate(personnel.getBirthDate());
+        if (personnel.getGender() != null) {
+            if (personnel.getGender().equals(EGender.Male.getTitleFa())) {
+                personDTO.setGender(0);
+            } else if (personnel.getGender().equals(EGender.Female.getTitleFa())) {
+                personDTO.setGender(1);
+            }
+        }
+        personDTO.setNationalCode(personnel.getNationalCode());
+        personDTO.setMobile(checkMobileFormat(personnel.getMobile()));
+        personDTO.setEducationLevelTitle(personnel.getEducationLevelTitle());
+        personDTO.setEducationMajorTitle(personnel.getEducationMajorTitle());
+        personDTO.setPhone(personnel.getPhone());
+        personDTO.setEmail(personnel.getEmail());
+        personDTO.setPersonnelNo(personnel.getPersonnelNo());
+        personDTO.setPersonnelNo2(personnel.getPersonnelNo2());
+
     }
 
     public String checkMobileFormat(String mobileNumber) {
