@@ -5,10 +5,7 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.controller.util.GeneratePdfReport;
-import com.nicico.training.dto.PersonDTO;
-import com.nicico.training.dto.PersonalInfoDTO;
-import com.nicico.training.dto.PersonnelDTO;
-import com.nicico.training.dto.PersonnelRegisteredDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonalInfoService;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
 import com.nicico.training.iservice.IPersonnelService;
@@ -21,6 +18,7 @@ import com.nicico.training.service.*;
 import dto.evaluuation.EvalTargetUser;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,11 +26,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import request.evaluation.ElsEvalRequest;
+import request.evaluation.StudentEvaluationAnswerDto;
+import request.evaluation.TeacherEvaluationAnswerDto;
 import request.exam.ElsExamRequest;
 import request.exam.ExamImportedRequest;
 import response.BaseResponse;
 import response.evaluation.EvalListResponse;
 import response.evaluation.SendEvalToElsResponse;
+import response.evaluation.dto.EvaluationAnswerObject;
 import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
 import response.exam.ExamResultDto;
@@ -52,6 +53,7 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class ElsRestController {
 
+    private final ModelMapper modelMapper;
     private final EvaluationBeanMapper evaluationBeanMapper;
     private final EvaluationAnswerService answerService;
     private final QuestionnaireService questionnaireService;
@@ -65,6 +67,8 @@ public class ElsRestController {
     private final TestQuestionService testQuestionService;
     private final IPersonnelService personnelService;
     private final IPersonnelRegisteredService personnelRegisteredService;
+    private final EvaluationAnalysisService evaluationAnalysisService;
+
     @GetMapping("/eval/{id}")
     public ResponseEntity<SendEvalToElsResponse> sendEvalToEls(@PathVariable long id) {
         SendEvalToElsResponse response = new SendEvalToElsResponse();
@@ -341,7 +345,27 @@ public class ElsRestController {
         PersonnelDTO.PersonalityInfo personalInfoDTO = personnelService.getByNationalCode(nationalCode);
         return new ResponseEntity<>(personDTO, HttpStatus.OK);
     }
+    @PostMapping("/student/addAnswer/evaluation")
+    public BaseResponse addStudentEvaluationAnswer(@RequestBody StudentEvaluationAnswerDto dto) {
+        EvaluationAnswerObject answerObject = tclassService.classStudentEvaluations(dto);
+        EvaluationDTO.Update update = modelMapper.map(answerObject, EvaluationDTO.Update.class);
+        EvaluationDTO.Info info = evaluationService.update(answerObject.getId(), update);
+        evaluationAnalysisService.updateReactionEvaluation(info.getClassId());
+        BaseResponse response=new BaseResponse();
+        response.setStatus(200);
+        return response;
+    }
 
+    @PostMapping("/teacher/addAnswer/evaluation")
+    public BaseResponse addTeacherEvaluationAnswer(@RequestBody TeacherEvaluationAnswerDto dto) {
+        EvaluationAnswerObject answerObject = tclassService.classTeacherEvaluations(dto);
+        EvaluationDTO.Update update = modelMapper.map(answerObject, EvaluationDTO.Update.class);
+        EvaluationDTO.Info info = evaluationService.update(answerObject.getId(), update);
+        evaluationAnalysisService.updateReactionEvaluation(info.getClassId());
+        BaseResponse response=new BaseResponse();
+        response.setStatus(200);
+        return response;
+    }
     public String checkMobileFormat(String mobileNumber) {
         if (mobileNumber == null || mobileNumber.equals("")) {
             return null;
