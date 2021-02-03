@@ -1137,8 +1137,7 @@
                                     isc.VLayout.create({
                                         membersMargin: 5,
                                         members: [
-                                            ToolStripButton_OnlineFormIssuanceForAll_RE,
-                                            ToolStripButton_OnlineFormIssuanceResultForAll_RE
+                                            ToolStripButton_OnlineFormIssuanceForAll_RE
                                         ]
                                     }),
                                 ]
