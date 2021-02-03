@@ -131,11 +131,11 @@ public class TestQuestionRestController {
             }
             else
                 return new ResponseEntity<>(
-                        new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
+                        new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_FOUND);
 
         } catch (TrainingException | DataIntegrityViolationException e) {
             return new ResponseEntity<>(
-                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
+                    new TrainingException(TrainingException.ErrorType.TestQuestionBadRequest).getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
     }
 

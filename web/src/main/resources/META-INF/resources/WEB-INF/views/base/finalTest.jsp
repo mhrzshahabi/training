@@ -1215,8 +1215,10 @@
                                         dialog.close();
                                     }, dialogShowTime);
                                     refresh_finalTest();
-                                } else {
+                                } else  if (resp.httpResponseCode == 406){
                                     createDialog("warning", "خطا در حذف سوال", "اخطار");
+                                }else  if (resp.httpResponseCode == 404){
+                                    createDialog("warning", "آزمون در آموزش آنلاین ثبت شده است و امکان حذف وجود ندارد", "اخطار");
                                 }
                             }
                         }))
