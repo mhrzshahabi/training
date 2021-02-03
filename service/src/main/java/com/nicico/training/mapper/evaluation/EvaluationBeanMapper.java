@@ -52,7 +52,8 @@ public abstract class EvaluationBeanMapper {
 
         EvalCourse evalCourse = new EvalCourse();
         EvalCourseProtocol evalCourseProtocol = new EvalCourseProtocol();
-        request.setId(evaluation.getTclass().getId());
+        request.setId(evaluation.getId());
+        request.setClassId(evaluation.getTclass().getId());
         request.setTitle(questionnaire.getTitle());
         try {
             request.setOrganizer(evaluation.getTclass().getOrganizer().getTitleFa());

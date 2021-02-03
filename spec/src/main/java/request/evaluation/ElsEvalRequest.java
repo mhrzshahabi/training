@@ -17,6 +17,7 @@ import java.util.List;
 public class ElsEvalRequest implements Serializable {
 
     private long id;
+    private long classId;
     private String title;
     private String planner;
     private String organizer;
