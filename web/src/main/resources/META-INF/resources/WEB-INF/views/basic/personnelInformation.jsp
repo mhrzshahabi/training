@@ -214,6 +214,8 @@
             var PersonnelInfoListGrid_PersonnelList = isc.TrLG.create({
                 dataSource: PersonnelInfoDS_PersonnelList,
                 selectionType: "single",
+                dataPageSize: 20,
+                allowAdvancedCriteria: true,
                 autoFetchData: true,
                 fields: [
                     {name: "id", hidden: true},
