@@ -1,19 +1,14 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.training.model.QuestionBankTestQuestion;
-import com.nicico.training.model.Tclass;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -70,6 +65,20 @@ public class TestQuestionDTO {
 
         private TclassDTO.Info tclass;
         //private Set<QuestionBankTestQuestionDTO.Info> QuestionBankTestQuestionList;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("FinalTestTestQuestionInfo")
+    public static class FinalTestInfo extends TestQuestionDTO {
+
+        private Long id;
+        private Integer version;
+        private String date;
+        private String time;
+        private Integer duration;
+        private TclassDTO.FinalTestInfo tclass;
     }
 
     // ------------------------------

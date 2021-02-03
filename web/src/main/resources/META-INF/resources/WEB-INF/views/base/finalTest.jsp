@@ -448,11 +448,7 @@
         questionData[index].score = value;
         }
 
-    function loadExamForScores(record){
-
-
-
-
+    function loadExamForScores(record) {
 
         var ListGrid_Questions_finalTest = isc.TrLG.create({
             width: "100%",
@@ -470,9 +466,7 @@
                    setScoreValue(value, form)
                     },canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click",
                 }
-
-            ],
-
+            ]
         });
 
             wait.show();
@@ -641,7 +635,7 @@
             <%--}))--%>
     }
 
-        function printFullClearForm(id) {
+    function printFullClearForm(id) {
           wait.show();
             isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/getExamReport/" +id, "GET", null, function (resp) {
                 <%--if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {--%>
@@ -660,7 +654,7 @@
     }));
 
     }
-         function printPdf(type,id,national,fileName,name,last ) {
+    function printPdf(type,id,national,fileName,name,last ) {
           wait.show();
             isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/printPdf/" +id+"/"+national+"/"+name+"/"+last+"/"+"exam", "POST", null, function (resp) {
                 <%--if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {--%>
@@ -783,49 +777,102 @@
                         })
                     ]
                 })
-            ],
+            ]
         });
             Window_result_Answer_FinalTest.show();
     }
 
+    function checkExamScore(examData) {
+
+        if (examData.examItem.tclass.scoringMethod === "3" || examData.examItem.tclass.scoringMethod === "4") {
+
+            let totalScore = 0;
+            for(var i = 0; i < examData.questionData.length; i++) {
+
+                let score = examData.questionData[i].score;
+                totalScore = totalScore + Number(score);
+            }
+            if (examData.examItem.tclass.scoringMethod === "3") {
+                return  totalScore === 20;
+            } else {
+                return totalScore === 100;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    function checkExamValidation (examData) {
+
+        let validationData = {
+            isValid: true,
+            message: ""
+        };
+
+        if(!examData.questions || examData.questions.length === 0) {
+
+            validationData.isValid = false;
+            validationData.message = validationData.message.concat("آزمون سوال ندارد!");
+        } else if (!examData.examItem.tclass.teacherId) {
+
+            validationData.isValid = false;
+            validationData.message = validationData.message.concat("<spring:message code='msg.check.class.teacher'/>");
+        } else if (!checkExamScore(examData)) {
+
+            validationData.isValid = false;
+            validationData.message = validationData.message.concat("بارم بندی آزمون صحیح نمی باشد");
+        }
+        return validationData;
+    }
 
     function loadExamQuestions(record,questionData,dialog){
-           wait.show();
-           isc.RPCManager.sendRequest(TrDSRequest(questionBankTestQuestionUrl +"/test/"+record.tclass.id+ "/spec-list", "GET",null, function (resp) {
-                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                            let result = JSON.parse(resp.httpResponseText).response.data;
-                              var examData = {
-                                  examItem : record,
-                                  questions: result,
-                                  questionData: questionData,
-                                };
-                                isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examToEls", "POST", JSON.stringify(examData), function (resp) {
-                                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                                        refresh_finalTest();
 
-                                        var OK = isc.Dialog.create({
-                                        message: "<spring:message code="msg.operation.successful"/>",
-                                        icon: "[SKIN]say.png",
-                                        title: "<spring:message code='message'/>"
-                                         });
-                                    setTimeout(function () {
-                                         dialog.close();
-                                        OK.close();
-                                    }, 2000);
-                                    } else {
-                                     if (resp.httpResponseCode === 500)
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(questionBankTestQuestionUrl +"/test/"+record.tclass.id+ "/spec-list-final-test", "GET",null, function (resp) {
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    let result = JSON.parse(resp.httpResponseText);
+                    var examData = {
+                    examItem : record,
+                    questions: result,
+                    questionData: questionData
+                    };
+                    let validationData = checkExamValidation(examData);
+                    if (validationData.isValid) {
+                        isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examToEls", "POST", JSON.stringify(examData), function (resp) {
+                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                refresh_finalTest();
+
+                                var OK = isc.Dialog.create({
+                                message: "<spring:message code="msg.operation.successful"/>",
+                                icon: "[SKIN]say.png",
+                                title: "<spring:message code='message'/>"
+                                });
+                                setTimeout(function () {
+                                dialog.close();
+                                OK.close();
+                                }, 2000);
+                            } else {
+                                if (resp.httpResponseCode === 500)
                                     createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
-                                     else
+                                else
                                     createDialog("info",JSON.parse(resp.httpResponseText).message, "<spring:message code="error"/>");
-                                    }
-                                    wait.close();
-                             }))
-
-                        } else {
+                            }
                             wait.close();
-                            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
-                        }
-                    }))
+                        }));
+                    } else {
+                        wait.close();
+                        createDialog("info", validationData.message, "<spring:message code="error"/>");
+                    }
+                } else {
+                    wait.close();
+                    if (resp.httpResponseCode === 405)
+                        createDialog("info", "<spring:message code="msg.check.class.multi.choice.question"/>", "<spring:message code="error"/>");
+                    else if (resp.httpResponseCode === 404)
+                        createDialog("info", "<spring:message code="msg.check.class.teacher.info"/>", "<spring:message code="error"/>");
+                    else
+                        createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                }
+            }));
     }
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
     let FinalTestDF_finalTest = isc.DynamicForm.create({
@@ -1030,7 +1077,7 @@
 
     let FinalTestWin_finalTest = isc.Window.create({
         width: 500,
-        height: 230,
+        height: 250,
         //autoCenter: true,
         overflow: "hidden",
         showMaximizeButton: false,
@@ -1068,7 +1115,6 @@
         }
     });
 
-
     // ------------------------------------------- Page UI -------------------------------------------
     let HLayout_Tab_Class = isc.HLayout.create({
         minWidth: "100%",
@@ -1077,12 +1123,9 @@
         members: [TabSet_finalTest]
     });
 
-
     isc.TrVLayout.create({
         members: [FinalTestTS_finalTest, FinalTestLG_finalTest, HLayout_Tab_Class],
     });
-
-
 
     // ------------------------------------------- Functions -------------------------------------------
     function refresh_finalTest() {
@@ -1111,7 +1154,6 @@
 
         }
     }
-
 
     function result_EditFinalTest(resp) {
 

@@ -1013,7 +1013,6 @@
                                     title: "تایید",
                                     click: function () {
                                         if (trTrim(exportExcelForm.getValue("maxRow")) != "") {
-
                                             /*if(Number(trTrim(exportExcelForm.getValue("maxRow")))+Number(trTrim(exportExcelForm.getValue("startRow"))) > Number(listgrid.getOriginalData().size())){
                                                 createDialog("info", "مجمع سطر شروع و تعداد سطر ها در خواستي براي خروجي بيشتر از تعداد کل سطرهاي موجود است");
                                                 return;
@@ -1023,6 +1022,7 @@
                                             }*/
 
                                             if(maxCount < size){
+
                                                 createDialog("info", "تعداد سطرهاي وارد شده جهت خروجي، بيشتر از حداکثر تعداد سطرهاي قابل چاپ است");
                                                 return;
                                             }
@@ -1079,6 +1079,7 @@
             }
 
             static downloadExcelRestUrl(title, listgrid, restUrl, maxSizeRecords, parentListGrid, titr, pageName, criteria, isValidate,warning,generateCriteria = false, exceptColumn){
+
 
                 if(listgrid.getOriginalData().size() > listgrid.getOriginalData().cachedRows || listgrid.getOriginalData().size() > 200){
 
@@ -2268,7 +2269,6 @@
                             {
                                 title: "<spring:message code="reports.need.assessment"/>",
                                 click: function () {
-                                     alert(2);
                                     createTab(this.title, "<spring:url value="web/needsAssessment-reports"/>");
                                 }
                             },
@@ -3176,6 +3176,7 @@
     const operationalUnitUrl = rootUrl + "/operationalUnit/";
     const postGradeGroupUrl = rootUrl + "/postGradeGroup/";
     const checklistUrl = rootUrl + "/checklist/";
+    const categoriesListUrl = rootUrl + "/category/";
     const checklistItemUrl = rootUrl + "/checklistItem/";
     const classCheckListUrl = rootUrl + "/class-checklist/";
     const needAssessmentSkillBasedUrl = rootUrl + "/needAssessmentSkillBased/";
@@ -3187,6 +3188,7 @@
     const provinceUrl = rootUrl + "/province/";
     const polisUrl = rootUrl + "/polis/";
     const classDocumentUrl = rootUrl + "/classDocument/"
+    const courseListNeedAssessment = rootUrl + "/trainingNeedAssessment/"
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
@@ -3582,16 +3584,18 @@
 
     isc.defineClass("OrganSegmentFilterDF_code", DynamicForm);
     isc.OrganSegmentFilterDF_code.addProperties({
-        colWidths: ["33%","33%","33%"],
-        numCols: 3,
-        titleAlign:"right",
+        colWidths: ["5%", "25%", "5%", "25%","5%","25%"],
+        numCols: 4,
+        align: "right",
+        titleAlign:"center",
+        titleWidth: 0,
         overflow: "auto",
-        height: 150,
-        titleOrientation: "top",
+        height: 100,
+        padding: 0,
         fields: [
             {
                 name: "companyName",
-                type: "MultiComboBoxItem",
+                type: "SelectItem",
                 title: "<spring:message code='company'/>",
                 optionDataSource: isc.TrDS.create({
                     fields: [{name: "id"}, {name: "code"}, {name: "titleFa"}],
@@ -3604,35 +3608,13 @@
                 filterOnKeypress: true,
                 multiple: true,
                 autoFitButtons: true,
-                layoutStyle: "vertical",
                 vAlign: "top",
                 titleVAlign: "top",
-                comboBoxProperties: {
-                    hint: "",
-                    filterFields: ["code", "titleFa"],
-                    textMatchStyle: "substring",
-                    pickListProperties:{showFilterEditor: false, autoFitWidthApproach: "both"},
-                    pickListFields: [
-                        {name: "id", primaryKey: true, hidden: true},
-                        {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "titleFa", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true}
-                    ],
-                    icons:[
-                        {
-                            name: "clear",
-                            src: "[SKIN]actions/remove.png",
-                            width: 15,
-                            height: 15,
-                            inline: true,
-                            prompt: "حذف همه",
-                            click : function (form) {
-                                form.parentElement.creator.clearValue();
-                                form.parentElement.creator.focusInItem();
-                                form.parentElement.creator.form.getFields().forEach(f => f.enable());
-                            }
-                        }
-                    ],
-                },
+                pickListFields: [
+                    {name: "id", primaryKey: true, hidden: true},
+                    {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains",  width: "20%"},
+                    {name: "titleFa", title: "<spring:message code='title'/>", filterOperator: "iContains",  width: "60%"}
+                ],
                 changed: function (form, item, value) {
                     if (value == null || value.length === 0 || (value.length === 1 && value[0] === "شرکت ملی صنایع مس ایران")){
                         form.getFields().forEach(f => f.enable());
@@ -3643,7 +3625,7 @@
             },
             {
                 name: "department.mojtameCode",
-                type: "MultiComboBoxItem",
+                type: "SelectItem",
                 title: "<spring:message code='complex'/>",
                 optionDataSource: isc.TrDS.create({
                     fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
@@ -3656,42 +3638,20 @@
                 filterOnKeypress: true,
                 multiple: true,
                 autoFitButtons: true,
-                layoutStyle: "vertical",
                 vAlign: "top",
-                comboBoxProperties: {
-                    hint: "",
-                    filterFields: ["code", "title"],
-                    textMatchStyle: "substring",
-                    pickListProperties:{showFilterEditor: false, autoFitWidthApproach: "both"},
-                    pickListFields: [
-                        {name: "id", primaryKey: true, hidden: true},
-                        {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "enabled", title: "<spring:message code="active.status"/>", filterOperator: "equals", autoFitWidth: true,valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
-                    ],
-                    icons:[
-                        {
-                            name: "clear",
-                            src: "[SKIN]actions/remove.png",
-                            width: 15,
-                            height: 15,
-                            inline: true,
-                            prompt: "حذف همه",
-                            click : function (form) {
-                                form.parentElement.creator.clearValue();
-                                form.parentElement.creator.focusInItem();
-                                form.parentElement.creator.changed(form.parentElement.creator.form, form.parentElement.creator, null);
-                            }
-                        }
-                    ],
-                },
+                pickListFields: [
+                    {name: "id", primaryKey: true, hidden: true},
+                    {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains",  width: "20%"},
+                    {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains",  width: "60%"},
+                    {name: "enabled", title: "<spring:message code="active.status"/>", filterOperator: "equals",  width: "20%",valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
+                ],
                 changed: function (form, item, value) {
                     form.updateCriteria(item, value, 1);
                 },
             },
             {
                 name: "department.moavenatCode",
-                type: "MultiComboBoxItem",
+                type: "SelectItem",
                 title: "<spring:message code='assistance'/>",
                 optionDataSource: isc.TrDS.create({
                     fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
@@ -3703,38 +3663,18 @@
                 filterOnKeypress: true,
                 multiple: true,
                 autoFitButtons: true,
-                layoutStyle: "vertical",
                 vAlign: "top",
                 criteriaHasChanged: false,
-                comboBoxProperties: {
-                    hint: "",
-                    filterFields: ["code", "title"],
-                    textMatchStyle: "substring",
-                    pickListProperties:{showFilterEditor: false, autoFitWidthApproach: "both"},
-                    pickListFields: [
-                        {name: "id", primaryKey: true, hidden: true},
-                        {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "enabled", title: "<spring:message code="active.status"/>", filterOperator: "equals", autoFitWidth: true,valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
-                    ],
-                    icons:[
-                        {
-                            name: "clear",
-                            src: "[SKIN]actions/remove.png",
-                            width: 15,
-                            height: 15,
-                            inline: true,
-                            prompt: "حذف همه",
-                            click : function (form) {
-                                form.parentElement.creator.clearValue();
-                                form.parentElement.creator.focusInItem();
-                                form.parentElement.creator.changed(form.parentElement.creator.form, form.parentElement.creator, null);
-                            }
-                        }
-                    ],
-                },
+                pickListFields: [
+                    {name: "id", primaryKey: true, hidden: true},
+                    {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains",  width: "20%"},
+                    {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains",  width: "60%"},
+                    {name: "enabled", title: "<spring:message code="active.status"/>", filterOperator: "equals",  width: "20%",valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
+                ],
                 click(form, item){
-                    if (this.criteriaHasChanged) {item.comboBox.fetchData(); this.criteriaHasChanged = false;}
+                    if (this.criteriaHasChanged) {
+                        this.fetchData();
+                        this.criteriaHasChanged = false;}
                 },
                 changed: function (form, item, value) {
                     form.updateCriteria(item, value, 2);
@@ -3742,7 +3682,7 @@
             },
             {
                 name: "department.omorCode",
-                type: "MultiComboBoxItem",
+                type: "SelectItem",
                 title: "<spring:message code='affairs'/>",
                 optionDataSource: isc.TrDS.create({
                     fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
@@ -3754,38 +3694,18 @@
                 filterOnKeypress: true,
                 multiple: true,
                 autoFitButtons: true,
-                layoutStyle: "vertical",
                 vAlign: "top",
                 criteriaHasChanged: false,
-                comboBoxProperties: {
-                    hint: "",
-                    filterFields: ["code", "title"],
-                    textMatchStyle: "substring",
-                    pickListProperties:{showFilterEditor: false, autoFitWidthApproach: "both"},
-                    pickListFields: [
-                        {name: "id", primaryKey: true, hidden: true},
-                        {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "enabled", title: "<spring:message code="active.status"/>", filterOperator: "equals", autoFitWidth: true,valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
-                    ],
-                    icons:[
-                        {
-                            name: "clear",
-                            src: "[SKIN]actions/remove.png",
-                            width: 15,
-                            height: 15,
-                            inline: true,
-                            prompt: "حذف همه",
-                            click : function (form) {
-                                form.parentElement.creator.clearValue();
-                                form.parentElement.creator.focusInItem();
-                                form.parentElement.creator.changed(form.parentElement.creator.form, form.parentElement.creator, null);
-                            }
-                        }
-                    ],
-                },
+                pickListFields: [
+                    {name: "id", primaryKey: true, hidden: true},
+                    {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", width: "20%"},
+                    {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains",  width: "60%"},
+                    {name: "enabled", title: "<spring:message code="active.status"/>", filterOperator: "equals",  width: "20%",valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
+                ],
                 click(form, item){
-                    if (this.criteriaHasChanged) {item.comboBox.fetchData(); this.criteriaHasChanged = false;}
+                    if (this.criteriaHasChanged) {
+                        this.fetchData();
+                        this.criteriaHasChanged = false;}
                 },
                 changed: function (form, item, value) {
                     form.updateCriteria(item, value, 3);
@@ -3793,7 +3713,7 @@
             },
             {
                 name: "department.ghesmatCode",
-                type: "MultiComboBoxItem",
+                type: "SelectItem",
                 title: "<spring:message code='section'/>",
                 optionDataSource: isc.TrDS.create({
                     fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
@@ -3805,38 +3725,16 @@
                 filterOnKeypress: true,
                 multiple: true,
                 autoFitButtons: true,
-                layoutStyle: "vertical",
                 vAlign: "top",
                 criteriaHasChanged: false,
-                comboBoxProperties: {
-                    hint: "",
-                    filterFields: ["code", "title"],
-                    textMatchStyle: "substring",
-                    pickListProperties:{showFilterEditor: false, autoFitWidthApproach: "both"},
-                    pickListFields: [
-                        {name: "id", primaryKey: true, hidden: true},
-                        {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "enabled", title: "<spring:message code="active.status"/>", filterOperator: "equals", autoFitWidth: true,valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
-                    ],
-                    icons:[
-                        {
-                            name: "clear",
-                            src: "[SKIN]actions/remove.png",
-                            width: 15,
-                            height: 15,
-                            inline: true,
-                            prompt: "حذف همه",
-                            click : function (form) {
-                                form.parentElement.creator.clearValue();
-                                form.parentElement.creator.focusInItem();
-                                form.parentElement.creator.changed(form.parentElement.creator.form, form.parentElement.creator, null);
-                            }
-                        }
-                    ],
-                },
+                pickListFields: [
+                    {name: "id", primaryKey: true, hidden: true},
+                    {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains",  width: "20%"},
+                    {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains",  width: "60%"},
+                    {name: "enabled", title: "<spring:message code="active.status"/>", filterOperator: "equals",  width: "20%",valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
+                ],
                 click(form, item){
-                    if (this.criteriaHasChanged) {item.comboBox.fetchData(); this.criteriaHasChanged = false;}
+                    if (this.criteriaHasChanged) {this.fetchData(); this.criteriaHasChanged = false;}
                 },
                 changed: function (form, item, value) {
                     form.updateCriteria(item, value, 4);
@@ -3844,7 +3742,7 @@
             },
             {
                 name: "department.vahedCode",
-                type: "MultiComboBoxItem",
+                type: "SelectItem",
                 title: "<spring:message code='unit'/>",
                 optionDataSource: isc.TrDS.create({
                     fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
@@ -3856,38 +3754,16 @@
                 filterOnKeypress: true,
                 multiple: true,
                 autoFitButtons: true,
-                layoutStyle: "vertical",
                 vAlign: "top",
                 criteriaHasChanged: false,
-                comboBoxProperties: {
-                    hint: "",
-                    filterFields: ["code", "title"],
-                    textMatchStyle: "substring",
-                    pickListProperties:{showFilterEditor: false, autoFitWidthApproach: "both"},
-                    pickListFields: [
-                        {name: "id", primaryKey: true, hidden: true},
-                        {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "enabled", title: "<spring:message code="active.status"/>", filterOperator: "equals", autoFitWidth: true,valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
-                    ],
-                    icons:[
-                        {
-                            name: "clear",
-                            src: "[SKIN]actions/remove.png",
-                            width: 15,
-                            height: 15,
-                            inline: true,
-                            prompt: "حذف همه",
-                            click : function (form) {
-                                form.parentElement.creator.clearValue();
-                                form.parentElement.creator.focusInItem();
-                                form.parentElement.creator.changed(form.parentElement.creator.form, form.parentElement.creator, null);
-                            }
-                        }
-                    ],
-                },
+                pickListFields: [
+                    {name: "id", primaryKey: true, hidden: true},
+                    {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
+                    {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true},
+                    {name: "enabled", title: "<spring:message code="active.status"/>", filterOperator: "equals", autoFitWidth: true,valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
+                ],
                 click(form, item){
-                    if (this.criteriaHasChanged) {item.comboBox.fetchData(); this.criteriaHasChanged = false;}
+                    if (this.criteriaHasChanged) {this.fetchData(); this.criteriaHasChanged = false;}
                 }
             },
         ],
@@ -3921,16 +3797,18 @@
 
     isc.defineClass("OrganSegmentFilterDF_title", DynamicForm);
     isc.OrganSegmentFilterDF_title.addProperties({
-        colWidths: ["33%","33%","33%"],
-        numCols: 3,
-        titleAlign:"right",
+        colWidths: ["5%", "25%", "5%", "25%","5%","25%"],
+        numCols: 4,
+        align: "right",
+        titleWidth: 0,
+        titleAlign:"center",
         overflow: "auto",
-        height: 150,
-        titleOrientation: "top",
+        height: 100,
+        padding: 0,
         fields: [
             {
                 name: "companyName",
-                type: "MultiComboBoxItem",
+                type: "SelectItem",
                 title: "<spring:message code='company'/>",
                 optionDataSource: isc.TrDS.create({
                     fields: [{name: "id"}, {name: "code"}, {name: "titleFa"}],
@@ -3943,36 +3821,13 @@
                 filterOnKeypress: true,
                 multiple: true,
                 autoFitButtons: true,
-                layoutStyle: "vertical",
                 vAlign: "top",
                 titleVAlign: "top",
-                comboBoxProperties: {
-                    hint: "",
-                    filterFields: ["code", "titleFa"],
-                    textMatchStyle: "substring",
-                    pickListProperties:{showFilterEditor: false, autoFitWidthApproach: "both"},
-                    pickListFields: [
-                        {name: "id", primaryKey: true, hidden: true},
-                        {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "titleFa", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true}
-                    ],
-                    icons:[
-                        {
-                            name: "clear",
-                            src: "[SKIN]actions/remove.png",
-                            width: 15,
-                            height: 15,
-                            inline: true,
-                            prompt: "حذف همه",
-                            click : function (form) {
-                                form.parentElement.creator.clearValue();
-                                form.parentElement.creator.focusInItem();
-                                form.parentElement.creator.form.getFields().forEach(f => f.enable());
-                            }
-                        }
-                    ],
-                },
-                changed: function (form, item, value) {
+                pickListFields: [
+                    {name: "id", primaryKey: true, hidden: true},
+                    {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains",  width: "20%"},
+                    {name: "titleFa", title: "<spring:message code='title'/>", filterOperator: "iContains",  width: "80%"}
+                ],                changed: function (form, item, value) {
                     if (value == null || value.length === 0 || (value.length === 1 && value[0] === "شرکت ملی صنایع مس ایران")){
                         form.getFields().forEach(f => f.enable());
                     } else {
@@ -3982,7 +3837,7 @@
             },
             {
                 name: "department.mojtameCode",
-                type: "MultiComboBoxItem",
+                type: "SelectItem",
                 title: "<spring:message code='complex'/>",
                 optionDataSource: isc.TrDS.create({
                     fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
@@ -3994,43 +3849,21 @@
                 displayField: "title",
                 filterOnKeypress: true,
                 multiple: true,
-                autoFitButtons: true,
-                layoutStyle: "vertical",
+                // layoutStyle: "vertical",
                 vAlign: "top",
-                comboBoxProperties: {
-                    hint: "",
-                    filterFields: ["code", "title"],
-                    textMatchStyle: "substring",
-                    pickListProperties:{showFilterEditor: false, autoFitWidthApproach: "both"},
-                    pickListFields: [
-                        {name: "id", primaryKey: true, hidden: true},
-                        {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "enabled", title: "<spring:message code="active.status"/>", filterOperator: "equals", autoFitWidth: true,valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
-                    ],
-                    icons:[
-                        {
-                            name: "clear",
-                            src: "[SKIN]actions/remove.png",
-                            width: 15,
-                            height: 15,
-                            inline: true,
-                            prompt: "حذف همه",
-                            click : function (form) {
-                                form.parentElement.creator.clearValue();
-                                form.parentElement.creator.focusInItem();
-                                form.parentElement.creator.changed(form.parentElement.creator.form, form.parentElement.creator, null);
-                            }
-                        }
-                    ],
-                },
+                pickListFields: [
+                    {name: "id", primaryKey: true, hidden: true},
+                    {name: "code", title: "<spring:message code='code'/>",width: "20%", filterOperator: "iContains"},
+                    {name: "title", title: "<spring:message code='title'/>",width: "60%", filterOperator: "iContains"},
+                    {name: "enabled", title: "<spring:message code="active.status"/>",width: "20%", filterOperator: "equals",valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
+                ],
                 changed: function (form, item, value) {
                     form.updateCriteria(item, value, 1);
                 },
             },
             {
                 name: "department.moavenatCode",
-                type: "MultiComboBoxItem",
+                type: "SelectItem",
                 title: "<spring:message code='assistance'/>",
                 optionDataSource: isc.TrDS.create({
                     fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
@@ -4042,38 +3875,16 @@
                 filterOnKeypress: true,
                 multiple: true,
                 autoFitButtons: true,
-                layoutStyle: "vertical",
                 vAlign: "top",
                 criteriaHasChanged: false,
-                comboBoxProperties: {
-                    hint: "",
-                    filterFields: ["code", "title"],
-                    textMatchStyle: "substring",
-                    pickListProperties:{showFilterEditor: false, autoFitWidthApproach: "both"},
-                    pickListFields: [
-                        {name: "id", primaryKey: true, hidden: true},
-                        {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "enabled", title: "<spring:message code="active.status"/>", filterOperator: "equals", autoFitWidth: true,valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
-                    ],
-                    icons:[
-                        {
-                            name: "clear",
-                            src: "[SKIN]actions/remove.png",
-                            width: 15,
-                            height: 15,
-                            inline: true,
-                            prompt: "حذف همه",
-                            click : function (form) {
-                                form.parentElement.creator.clearValue();
-                                form.parentElement.creator.focusInItem();
-                                form.parentElement.creator.changed(form.parentElement.creator.form, form.parentElement.creator, null);
-                            }
-                        }
-                    ],
-                },
+                pickListFields: [
+                    {name: "id", primaryKey: true, hidden: true},
+                    {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", width: "20%"},
+                    {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", width: "60%"},
+                    {name: "enabled", title: "<spring:message code="active.status"/>", filterOperator: "equals", width: "20%",valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
+                ],
                 click(form, item){
-                    if (this.criteriaHasChanged) {item.comboBox.fetchData(); this.criteriaHasChanged = false;}
+                    if (this.criteriaHasChanged) {this.fetchData(); this.criteriaHasChanged = false;}
                 },
                 changed: function (form, item, value) {
                     form.updateCriteria(item, value, 2);
@@ -4081,7 +3892,7 @@
             },
             {
                 name: "department.omorCode",
-                type: "MultiComboBoxItem",
+                type: "SelectItem",
                 title: "<spring:message code='affairs'/>",
                 optionDataSource: isc.TrDS.create({
                     fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
@@ -4093,38 +3904,19 @@
                 filterOnKeypress: true,
                 multiple: true,
                 autoFitButtons: true,
-                layoutStyle: "vertical",
                 vAlign: "top",
                 criteriaHasChanged: false,
-                comboBoxProperties: {
-                    hint: "",
-                    filterFields: ["code", "title"],
-                    textMatchStyle: "substring",
-                    pickListProperties:{showFilterEditor: false, autoFitWidthApproach: "both"},
-                    pickListFields: [
-                        {name: "id", primaryKey: true, hidden: true},
-                        {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "enabled", title: "<spring:message code="active.status"/>", filterOperator: "equals", autoFitWidth: true,valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
-                    ],
-                    icons:[
-                        {
-                            name: "clear",
-                            src: "[SKIN]actions/remove.png",
-                            width: 15,
-                            height: 15,
-                            inline: true,
-                            prompt: "حذف همه",
-                            click : function (form) {
-                                form.parentElement.creator.clearValue();
-                                form.parentElement.creator.focusInItem();
-                                form.parentElement.creator.changed(form.parentElement.creator.form, form.parentElement.creator, null);
-                            }
-                        }
-                    ],
-                },
+                pickListFields: [
+                    {name: "id", primaryKey: true, hidden: true},
+                    {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", width: "20%"},
+                    {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", width: "60%"},
+                    {name: "enabled", title: "<spring:message code="active.status"/>", filterOperator: "equals",  width: "20%",valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
+                ],
                 click(form, item){
-                    if (this.criteriaHasChanged) {item.comboBox.fetchData(); this.criteriaHasChanged = false;}
+                    if (this.criteriaHasChanged) {
+                        this.fetchData();
+                        this.criteriaHasChanged = false;
+                    }
                 },
                 changed: function (form, item, value) {
                     form.updateCriteria(item, value, 3);
@@ -4132,7 +3924,7 @@
             },
             {
                 name: "department.ghesmatCode",
-                type: "MultiComboBoxItem",
+                type: "SelectItem",
                 title: "<spring:message code='section'/>",
                 optionDataSource: isc.TrDS.create({
                     fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
@@ -4144,38 +3936,18 @@
                 filterOnKeypress: true,
                 multiple: true,
                 autoFitButtons: true,
-                layoutStyle: "vertical",
                 vAlign: "top",
                 criteriaHasChanged: false,
-                comboBoxProperties: {
-                    hint: "",
-                    filterFields: ["code", "title"],
-                    textMatchStyle: "substring",
-                    pickListProperties:{showFilterEditor: false, autoFitWidthApproach: "both"},
-                    pickListFields: [
-                        {name: "id", primaryKey: true, hidden: true},
-                        {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "enabled", title: "<spring:message code="active.status"/>", filterOperator: "equals", autoFitWidth: true,valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
-                    ],
-                    icons:[
-                        {
-                            name: "clear",
-                            src: "[SKIN]actions/remove.png",
-                            width: 15,
-                            height: 15,
-                            inline: true,
-                            prompt: "حذف همه",
-                            click : function (form) {
-                                form.parentElement.creator.clearValue();
-                                form.parentElement.creator.focusInItem();
-                                form.parentElement.creator.changed(form.parentElement.creator.form, form.parentElement.creator, null);
-                            }
-                        }
-                    ],
-                },
+                pickListFields: [
+                    {name: "id", primaryKey: true, hidden: true},
+                    {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains",width: "20%"},
+                    {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", width: "60%"},
+                    {name: "enabled", title: "<spring:message code="active.status"/>", filterOperator: "equals", width: "20%",valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
+                ],
                 click(form, item){
-                    if (this.criteriaHasChanged) {item.comboBox.fetchData(); this.criteriaHasChanged = false;}
+                    if (this.criteriaHasChanged) {
+                        this.fetchData();
+                        this.criteriaHasChanged = false;}
                 },
                 changed: function (form, item, value) {
                     form.updateCriteria(item, value, 4);
@@ -4183,7 +3955,7 @@
             },
             {
                 name: "department.vahedCode",
-                type: "MultiComboBoxItem",
+                type: "SelectItem",
                 title: "<spring:message code='unit'/>",
                 optionDataSource: isc.TrDS.create({
                     fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
@@ -4195,38 +3967,18 @@
                 filterOnKeypress: true,
                 multiple: true,
                 autoFitButtons: true,
-                layoutStyle: "vertical",
                 vAlign: "top",
                 criteriaHasChanged: false,
-                comboBoxProperties: {
-                    hint: "",
-                    filterFields: ["code", "title"],
-                    textMatchStyle: "substring",
-                    pickListProperties:{showFilterEditor: false, autoFitWidthApproach: "both"},
-                    pickListFields: [
-                        {name: "id", primaryKey: true, hidden: true},
-                        {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", autoFitWidth: true},
-                        {name: "enabled", title: "<spring:message code="active.status"/>", filterOperator: "equals", autoFitWidth: true,valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
-                    ],
-                    icons:[
-                        {
-                            name: "clear",
-                            src: "[SKIN]actions/remove.png",
-                            width: 15,
-                            height: 15,
-                            inline: true,
-                            prompt: "حذف همه",
-                            click : function (form) {
-                                form.parentElement.creator.clearValue();
-                                form.parentElement.creator.focusInItem();
-                                form.parentElement.creator.changed(form.parentElement.creator.form, form.parentElement.creator, null);
-                            }
-                        }
-                    ],
-                },
+                pickListFields: [
+                    {name: "id", primaryKey: true, hidden: true},
+                    {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", width: "20%"},
+                    {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", width: "60%"},
+                    {name: "enabled", title: "<spring:message code="active.status"/>", filterOperator: "equals",  width: "20%",valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
+                ],
                 click(form, item){
-                    if (this.criteriaHasChanged) {item.comboBox.fetchData(); this.criteriaHasChanged = false;}
+                    if (this.criteriaHasChanged) {
+                        this.fetchData();
+                        this.criteriaHasChanged = false;}
                 }
             },
         ],

@@ -3,7 +3,6 @@ package com.nicico.training.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -53,6 +52,18 @@ public class TeacherDTO {
         }
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("FinalTestTeacherInfo")
+    public static class FinalTestInfo extends TeacherDTO {
+
+        private Long id;
+        private Integer version;
+        private PersonalInfoDTO.CompanyManager personality;
+
+    }
+
 
     @Getter
     @Setter
@@ -73,7 +84,7 @@ public class TeacherDTO {
 
             if (personality.getContactInfo() != null && personality.getContactInfo().getHomeAddress() != null) {
                 homeAddress = personality.getContactInfo().getHomeAddress();
-            }else{
+            } else {
                 return "";
             }
 
@@ -106,14 +117,12 @@ public class TeacherDTO {
         }
 
         public List<Long> getCategories() {
-            if (categories == null)
-                return null;
+            if (categories == null) return null;
             return categories.stream().map(CategoryDTO.Info::getId).collect(Collectors.toList());
         }
 
         public List<Long> getSubCategories() {
-            if (subCategories == null)
-                return null;
+            if (subCategories == null) return null;
             return subCategories.stream().map(SubcategoryDTO.Info::getId).collect(Collectors.toList());
         }
 
@@ -124,6 +133,7 @@ public class TeacherDTO {
     @Accessors(chain = true)
     @ApiModel("TeacherReport")
     public static class Report {
+        Set<TclassDTO.TclassTeacherReport> tclasse;
         private Long id;
         private String teacherCode;
         private String personnelCode;
@@ -136,7 +146,6 @@ public class TeacherDTO {
         private String lastCourseEvaluationGrade;
         private Integer version;
         private String codes;
-        Set<TclassDTO.TclassTeacherReport> tclasse;
         private Set<CategoryDTO.CategoryInfoTuple> categories;
         private Set<SubcategoryDTO.SubCategoryInfoTuple> subCategories;
     }

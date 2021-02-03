@@ -69,6 +69,9 @@ public class StudentClassReportViewDTO {
         private String courseTitleFa;
         private String categoryTitleFa;
         private Long classHDuration;
+        private String plannerComplex;
+        private String plannerName;
+        private String instituteName;
     }
 
     @Getter

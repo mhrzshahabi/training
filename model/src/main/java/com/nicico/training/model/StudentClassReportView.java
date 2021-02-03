@@ -236,4 +236,12 @@ public class StudentClassReportView implements Serializable {
     @Column(name = "category_code")
     private String categoryCode;
 
+    @Column(name = "planner_complex")
+    private String plannerComplex;
+
+    @Column(name = "planner_name")
+    private String plannerName;
+
+    @Column(name = "institute_name")
+    private String instituteName;
 }

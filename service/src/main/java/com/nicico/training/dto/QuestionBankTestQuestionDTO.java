@@ -1,7 +1,6 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.training.model.Tclass;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -18,7 +17,6 @@ import java.util.List;
 public class QuestionBankTestQuestionDTO {
 
     private Long testQuestionId;
-
     private Long questionBankId;
 
     // ------------------------------
@@ -48,6 +46,22 @@ public class QuestionBankTestQuestionDTO {
         private TestQuestionDTO.Info testQuestion;
         private QuestionBankDTO.Info questionBank;
     }
+
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("QuestionBankTestQuestionSpecRs")
+    public static class QuestionBankTestQuestionFinalTest extends QuestionBankTestQuestionDTO {
+
+        private Long id;
+        private Integer version;
+        private QuestionBankDTO.FinalTestInfo questionBank;
+        private TestQuestionDTO.FinalTestInfo testQuestion;
+    }
+
     // ------------------------------
 
     @Getter
