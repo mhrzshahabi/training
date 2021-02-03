@@ -224,6 +224,8 @@
         dataSource: RestDataSource_TrainingPost_Jsp,
         contextMenu: Menu_ListGrid_TrainingPost_Jsp,
         canMultiSort: true,
+        dataPageSize: 20,
+        allowAdvancedCriteria: true,
         initialSort: [
             {property: "competenceCount", direction: "ascending"},
             {property: "id", direction: "descending"}
