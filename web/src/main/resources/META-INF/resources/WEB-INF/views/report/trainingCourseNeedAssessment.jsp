@@ -144,5 +144,8 @@
             if (data.length) {
                 Grid_Course_Need_Assessment_List.setData(data);
             }
+            else
+                Grid_Course_Need_Assessment_List.setData([]);
+
         });
     }
