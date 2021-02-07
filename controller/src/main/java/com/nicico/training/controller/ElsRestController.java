@@ -18,6 +18,8 @@ import dto.evaluuation.EvalTargetUser;
 import dto.exam.ImportedUser;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -37,13 +39,14 @@ import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
 import response.exam.ExamResultDto;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Objects;
 
 
 @RestController
@@ -67,6 +70,9 @@ public class ElsRestController {
     private final IPersonnelService personnelService;
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final EvaluationAnalysisService evaluationAnalysisService;
+
+    private final Environment environment;
+
 
     @GetMapping("/eval/{id}")
     public ResponseEntity<SendEvalToElsResponse> sendEvalToEls(@PathVariable long id) {
@@ -95,12 +101,17 @@ public class ElsRestController {
 
         boolean isValid = true;
 
-        if (teacher.getGender() == null) isValid = false;
-        if (teacher.getNationalCode().length() != 10 || !teacher.getNationalCode().matches("\\d+")) isValid = false;
-        if ((teacher.getCellNumber().length() != 10 && teacher.getCellNumber().length() != 11) || !teacher.getCellNumber().matches("\\d+"))
-            isValid = false;
-        if (teacher.getCellNumber().length() == 10 && !(teacher.getCellNumber().startsWith("9"))) isValid = false;
-        if (teacher.getCellNumber().length() == 11 && !(teacher.getCellNumber().startsWith("09"))) isValid = false;
+
+        if (null==teacher.getNationalCode()  || null==teacher.getCellNumber() ||teacher.getGender() == null) isValid = false;
+        else
+        {
+            if ( teacher.getNationalCode().length() != 10 || !teacher.getNationalCode().matches("\\d+")) isValid = false;
+            if ((teacher.getCellNumber().length() != 10 && teacher.getCellNumber().length() != 11) || !teacher.getCellNumber().matches("\\d+"))
+                isValid = false;
+            if (teacher.getCellNumber().length() == 10 && !(teacher.getCellNumber().startsWith("9"))) isValid = false;
+            if (teacher.getCellNumber().length() == 11 && !(teacher.getCellNumber().startsWith("09"))) isValid = false;
+
+        }
 
         return isValid;
     }
@@ -172,13 +183,15 @@ public class ElsRestController {
 
     private boolean validateTeacherExam(ImportedUser teacher) {
         boolean isValid = true;
+        if ( null==teacher.getNationalCode() || null==teacher.getCellNumber() || teacher.getGender() == null) isValid = false;
+        else {
+            if (teacher.getNationalCode().length() != 10 || !teacher.getNationalCode().matches("\\d+")) isValid = false;
+            if ((teacher.getCellNumber().length() != 10 && teacher.getCellNumber().length() != 11) || !teacher.getCellNumber().matches("\\d+"))
+                isValid = false;
+            if (teacher.getCellNumber().length() == 10 && !(teacher.getCellNumber().startsWith("9"))) isValid = false;
+            if (teacher.getCellNumber().length() == 11 && !(teacher.getCellNumber().startsWith("09"))) isValid = false;
 
-        if (teacher.getGender() == null) isValid = false;
-        if (teacher.getNationalCode().length() != 10 || !teacher.getNationalCode().matches("\\d+")) isValid = false;
-        if ((teacher.getCellNumber().length() != 10 && teacher.getCellNumber().length() != 11) || !teacher.getCellNumber().matches("\\d+"))
-            isValid = false;
-        if (teacher.getCellNumber().length() == 10 && !(teacher.getCellNumber().startsWith("9"))) isValid = false;
-        if (teacher.getCellNumber().length() == 11 && !(teacher.getCellNumber().startsWith("09"))) isValid = false;
+        }
 
         return isValid;
     }
@@ -311,27 +324,45 @@ public class ElsRestController {
         return new ResponseEntity<>(personDTO, HttpStatus.OK);
     }
     @PostMapping("/student/addAnswer/evaluation")
-    public BaseResponse addStudentEvaluationAnswer(@RequestBody StudentEvaluationAnswerDto dto) {
-        EvaluationAnswerObject answerObject = tclassService.classStudentEvaluations(dto);
-        EvaluationDTO.Update update = modelMapper.map(answerObject, EvaluationDTO.Update.class);
-        EvaluationDTO.Info info = evaluationService.update(answerObject.getId(), update);
-        evaluationAnalysisService.updateReactionEvaluation(info.getClassId());
-        BaseResponse response=new BaseResponse();
-        response.setStatus(200);
+    public BaseResponse addStudentEvaluationAnswer(HttpServletRequest header, @RequestBody StudentEvaluationAnswerDto dto) {
+        BaseResponse response = new BaseResponse();
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            EvaluationAnswerObject answerObject = tclassService.classStudentEvaluations(dto);
+            EvaluationDTO.Update update = modelMapper.map(answerObject, EvaluationDTO.Update.class);
+            EvaluationDTO.Info info = evaluationService.update(answerObject.getId(), update);
+            evaluationAnalysisService.updateReactionEvaluation(info.getClassId());
+            response.setStatus(200);
+        }
+        else
+        {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+
+        }
         return response;
+
     }
 
 
 
     @PostMapping("/teacher/addAnswer/evaluation")
-    public BaseResponse addTeacherEvaluationAnswer(@RequestBody TeacherEvaluationAnswerDto dto) {
-        EvaluationAnswerObject answerObject = tclassService.classTeacherEvaluations(dto);
-        EvaluationDTO.Update update = modelMapper.map(answerObject, EvaluationDTO.Update.class);
-        EvaluationDTO.Info info = evaluationService.update(answerObject.getId(), update);
-        evaluationAnalysisService.updateReactionEvaluation(info.getClassId());
+    public BaseResponse addTeacherEvaluationAnswer(HttpServletRequest header,@RequestBody TeacherEvaluationAnswerDto dto) {
         BaseResponse response=new BaseResponse();
-        response.setStatus(200);
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token")))
+        {
+            EvaluationAnswerObject answerObject = tclassService.classTeacherEvaluations(dto);
+            EvaluationDTO.Update update = modelMapper.map(answerObject, EvaluationDTO.Update.class);
+            EvaluationDTO.Info info = evaluationService.update(answerObject.getId(), update);
+            evaluationAnalysisService.updateReactionEvaluation(info.getClassId());
+            response.setStatus(200);
+        }
+        else
+        {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        }
         return response;
+
     }
 
 }

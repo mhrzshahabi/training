@@ -1183,6 +1183,7 @@
     }
 
     function toElsRquest(data,type) {
+        wait.show()
         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
             if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                 let result = JSON.parse(resp.httpResponseText).response.data;
@@ -1449,11 +1450,12 @@
     }
 
     function studentsToElsRquest(data, type) {
+        wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
                 let result = JSON.parse(resp.httpResponseText).response.data;
-                wait.show();
+
                 if (type == 'eval') {
 
                     isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/eval/" + result[0].evaluationId, "GET", null, function (resp) {
