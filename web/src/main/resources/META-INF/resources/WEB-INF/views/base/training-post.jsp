@@ -153,6 +153,28 @@
             },
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
+        transformRequest: function (dsRequest) {
+            if (dsRequest.data && dsRequest.data.criteria) {
+                let lastModifiedDateNA = dsRequest.data.criteria.filter(o => o.fieldName == 'lastModifiedDateNA');
+                let georgianDate;
+                if (lastModifiedDateNA && lastModifiedDateNA.length == 1)
+                    georgianDate = jalaliStrToGeorgianStr(lastModifiedDateNA[0].value);
+                if (georgianDate){
+                    let date_criteria = dsRequest.data.criteria.filter(o => o.fieldName == 'lastModifiedDateNA')[0];
+                    date_criteria.value = georgianDate;
+                    date_criteria.operator = 'greaterOrEqual';
+                    dsRequest.data.criteria.add({
+                        fieldName: 'lastModifiedDateNA',
+                        value: georgianDate.concat(" 23:59:59"),
+                        operator: 'lessOrEqual'
+                    });
+                }
+                else
+                    dsRequest.data.criteria.remove(dsRequest.data.criteria.filter(o => o.fieldName ==
+	                    'lastModifiedDateNA')[0]);
+            }
+            return this.Super("transformRequest", arguments);
+        },
         fetchDataURL: viewTrainingPostUrl + "/iscList"
     });
     var Menu_ListGrid_TrainingPost_Jsp = isc.Menu.create({

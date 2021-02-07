@@ -914,7 +914,19 @@ function CorrectDate(oldDate) {
     }
 }
 
-
+function jalaliStrToGeorgianStr(jalaliStr, delimeter) {
+   if (!jalaliStr || jalaliStr.length < 8)
+        return null;
+    let jalaliArray;
+    if (delimeter)
+        jalaliArray = jalaliStr.split(delimeter);
+    else
+        jalaliArray = jalaliStr.split(delimeter = "/");
+    if (jalaliArray.length < 3)
+        return null;
+    let georgianArray = calcPersian(Number.parseInt(jalaliArray[0]), Number.parseInt(jalaliArray[1]), Number.parseInt(jalaliArray[2]));
+    return georgianArray[0] + delimeter + georgianArray[1] + delimeter + georgianArray[2];
+}
 
 
 

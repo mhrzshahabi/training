@@ -140,7 +140,7 @@
                     name: "modifiedByNA",
                     title: "<spring:message code="updated.by"/>",
                     align: "center",
-                    filterOperator: "equals",
+                    filterOperator: "iContains",
                     autoFitWidth: true,
                     autoFitWidthApproach: "both"
                 },

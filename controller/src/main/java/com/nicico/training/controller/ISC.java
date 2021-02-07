@@ -129,6 +129,7 @@ public class ISC<T> {
             return;
         if ("createdDate".equals(criteria.getFieldName()) ||
                 "lastModifiedDate".equals(criteria.getFieldName()) ||
+                "lastModifiedDateNA".equals(criteria.getFieldName()) ||
                 "behavioralDueDate".equals(criteria.getFieldName())) {
             criteria.setValue(criteria.getValue().stream().map(o -> new Date(o.toString())).collect(Collectors.toList()));
         }
