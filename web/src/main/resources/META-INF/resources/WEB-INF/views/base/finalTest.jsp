@@ -6,7 +6,14 @@
 
     let finalTestMethod_finalTest;
     let oLoadAttachments_finalTest;
-    // ------------------------------------------- Menu -------------------------------------------
+let totalScore = 0;
+var scoreLabel=isc.Label.create({
+contents: "مجموع بارم وارد شده : ",
+border: "0px solid black",
+align: "center",
+width: "100%",
+});
+// ------------------------------------------- Menu -------------------------------------------
     FinalTestMenu_finalTest = isc.Menu.create({
         data: [
             {
@@ -428,6 +435,7 @@
                         ],
                         minWidth: 1024
                     })
+
                     Window_result_Finaltest.show();
                 } else {
                     var ERROR = isc.Dialog.create({
@@ -444,25 +452,40 @@
     }
     var questionData;
     function setScoreValue(value, form) {
-        let index = questionData.findIndex(f => f.id == form.values.id)
+        let index = questionData.findIndex(f => f.id === form.values.id)
         questionData[index].score = value;
+        // debugger
+totalScore=0;
+form.grid.data.forEach(
+    q=>{ if (q.score!== null && q.score !== undefined)
+{
+totalScore=totalScore+q.score
+}
+    }
+)
+
+scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
+
         }
+
+
 
     function loadExamForScores(record) {
 
-        var ListGrid_Questions_finalTest = isc.TrLG.create({
+        var ListGrid_Questions_finalTest = isc.ListGrid.create({
             width: "100%",
             height: 700,
 
             dataSource: RestDataSource_Questions_finalTest,
             showRecordComponents: true,
             showRecordComponentsByCell: true,
+
             fields: [
                  {name: "id",hidden:true},
                 {name: "question", title: 'سوال',  width: "20%"},
                 {name: "type", title: 'نوع پاسخ' , width: "10%"},
                 { name: "options", title: "گزینه ها", width: "20%",align:"center"},
-                { name: "score", title: "بارم", width: "10%", align:"center", change: function(form, item, value, oldValue) {
+                { name: "score",type: "float", title: "بارم", width: "10%", align:"center", change: function(form, item, value, oldValue) {
                    setScoreValue(value, form)
                     },canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click",
                 }
@@ -514,10 +537,10 @@
                 padding: 5,
                 ID: "totalsLabel_competence"
             }),
-                                    isc.HLayout.create({
+                                    isc.VLayout.create({
                                         width: "100%",
                                         height: "90%",
-                                        members: [ListGrid_Questions_finalTest]
+                                        members: [ListGrid_Questions_finalTest,scoreLabel]
                                     }),
                                     isc.HLayout.create({
                                         width: "100%",
@@ -549,6 +572,8 @@
                         ],
                         minWidth: 1024
                     })
+totalScore=0;
+scoreLabel.setContents("مجموع بارم وارد شده :")
                     Window_result_Finaltest.show();
                 } else {
                     var ERROR = isc.Dialog.create({
@@ -852,11 +877,12 @@
                                 OK.close();
                                 }, 2000);
                             } else {
-                                if (resp.httpResponseCode === 500)
-                                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                if (resp.httpResponseCode === 406)
+createDialog("info","<spring:message code="msg.check.teacher.mobile.ncode"/>"+" "+"<spring:message code="msg.check.teacher.mobile.ncode.message"/>", "<spring:message code="error"/>");
                                 else
-                                    createDialog("info",JSON.parse(resp.httpResponseText).message, "<spring:message code="error"/>");
-                            }
+createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+
+}
                             wait.close();
                         }));
                     } else {

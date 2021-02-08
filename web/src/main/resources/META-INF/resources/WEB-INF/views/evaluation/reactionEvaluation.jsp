@@ -1259,7 +1259,8 @@
                           if (!isValid) {
 
                             let stop = isc.Dialog.create({
-                                message: "<spring:message code='msg.check.teacher.mobile.ncode'/>",
+                                message: "<spring:message code='msg.check.teacher.mobile.ncode'/>"+" "+
+                                    "<spring:message code='msg.check.teacher.mobile.ncode.message'/>",
                                 icon: "[SKIN]stop.png",
                                 title: "<spring:message code='message'/>"
                             });
@@ -1479,7 +1480,7 @@
                             if (resp.httpResponseCode === 500)
                                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                             else if (resp.httpResponseCode === 406)
-                                createDialog("info", "<spring:message code="msg.check.class.teacher.info"/>", "<spring:message code="error"/>");
+                                createDialog("info", "<spring:message code="msg.check.teacher.mobile.ncode"/>"+" "+"<spring:message code="msg.check.teacher.mobile.ncode.message"/>", "<spring:message code="error"/>");
                             else
                                 createDialog("info",JSON.parse(resp.httpResponseText).message, "<spring:message code="error"/>");
                         }
@@ -1649,7 +1650,7 @@
                                 name: "text",
                                 width: "100%",
                                 colSpan: 2,
-                                value: "<spring:message code='msg.check.student.mobile.ncode'/>",
+                                value: "<spring:message code='msg.check.student.mobile.ncode'/>"+" "+"<spring:message code='msg.check.student.mobile.ncode.message'/>",
                                 showTitle: false,
                                 editorType: 'staticText'
                             },
@@ -1671,7 +1672,7 @@
                     let names = "";
                     for (var j = 0; j < inValidStudents.length; j++) {
 
-                        names = names.concat(inValidStudents[j].firstName + " " + inValidStudents[j].lastName + "\n");
+                        names = names.concat(inValidStudents[j].firstName + " " + inValidStudents[j].lastName  + "\n");
                     }
                     DynamicForm_InValid_Students.setValue("invalidNames", names);
 

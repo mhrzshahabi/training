@@ -138,7 +138,7 @@ public abstract class EvaluationBeanMapper {
 
     private ImportedUser getTeacherData(PersonalInfo teacherInfo) {
         ImportedUser teacher = new ImportedUser();
-        if (null != teacherInfo.getContactInfo() && null != teacherInfo.getContactInfo().getMobile()) {
+        if (null !=teacherInfo.getGender() && null != teacherInfo.getContactInfo() && null != teacherInfo.getContactInfo().getMobile()) {
 
             teacher.setCellNumber(teacherInfo.getContactInfo().getMobile());
             teacher.setNationalCode(teacherInfo.getNationalCode());
