@@ -661,7 +661,7 @@
     });
 
     var ToolStripButton_OnlineFormIssuanceForAll_RE = isc.ToolStripButton.create({
-        title: "ارسال فرم ارزیابی به آموزش آنلاین برای همه فراگیران",
+        title: "ارسال فرم ارزیابی به سیستم ارزشیابی آنلاین برای همه فراگیران",
         width: "100%",
         maxWidth: 500,
         baseStyle: 'MSG-btn-orange',
@@ -879,7 +879,7 @@
                                             },
                                             {
                                                 name: "sendToEls_teacher",
-                                                title: "ارسال به آموزش آنلاین",
+                                                title: "ارسال به سیستم ارزشیابی آنلاین",
                                                 type: "button",
                                                 startRow: false,
                                                 // disabled: classRecord_RE.classTeacherOnlineEvalStatus,

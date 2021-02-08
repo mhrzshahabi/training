@@ -194,10 +194,14 @@ public class TestQuestionService implements ITestQuestionService {
                     .filter(x -> x.getQuestion().trim().equals(q.getQuestion().trim()))
                     .findFirst()
                     .orElse(null);
-            if (answer != null)
-                q.setAnswer(answer.getAnswer() + "\n");
+            if (answer != null){
+                if (answer.getAnswer() != null)
+                    q.setAnswer(answer.getAnswer() + "\n");
+                else
+                    q.setAnswer("پاسخ داده نشده" + "\n");
+            }
             else
-                q.setAnswer("---" + "\n");
+                q.setAnswer("پاسخ داده نشده" + "\n");
         }
 
         String data = mapper.writeValueAsString(testQuestionBanks);
