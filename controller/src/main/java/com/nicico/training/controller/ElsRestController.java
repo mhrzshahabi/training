@@ -18,7 +18,6 @@ import dto.evaluuation.EvalTargetUser;
 import dto.exam.ImportedUser;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -159,7 +158,14 @@ public class ElsRestController {
 
             if (request.getInstructor()!=null && request.getInstructor().getNationalCode()!=null && validateTeacherExam(request.getInstructor()))
             {
+                if (request.getUsers()!=null && !request.getUsers().isEmpty())
                 response = client.sendExam(request);
+                else
+                {
+                    response.setStatus(HttpStatus.NOT_FOUND.value());
+                    response.setMessage("دوره فراگیر ندارد");
+                    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+                }
             }
             else
             {
@@ -179,6 +185,18 @@ public class ElsRestController {
             response.setMessage("بروز خطا در سیستم");
             return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
         }
+    }
+    @GetMapping("/getClassStudent/{id}")
+    public List<EvalTargetUser> getClassStudent(@PathVariable long id) {
+
+
+
+            return evaluationBeanMapper.getClassUsers(classStudentService.getClassStudents(id) );
+
+
+
+
+
     }
 
     private boolean validateTeacherExam(ImportedUser teacher) {

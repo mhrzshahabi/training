@@ -558,7 +558,98 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                                         item.score = '0';
                                     return item;
                                     })
+
+isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/getClassStudent/"+record.tclass.id, "GET",null, function (resp) {
+
+
+    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+let result = JSON.parse(resp.httpResponseText);
+
+let inValidStudents = [];
+
+                for (let i = 0; i < result.length; i++) {
+
+                    let studentData = result[i];
+
+
+if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.cellNumber)) {
+
+                        inValidStudents.add({
+                            firstName: studentData.surname,
+                            lastName: studentData.lastName
+                        });
+                    }
+                }
+
+                if (inValidStudents.length) {
+
+                    let DynamicForm_InValid_Students = isc.DynamicForm.create({
+                        width: 600,
+                        height: 100,
+                        padding: 6,
+                        titleAlign: "right",
+                        fields: [
+                            {
+                                name: "text",
+                                width: "100%",
+                                colSpan: 2,
+                                value: "<spring:message code='msg.check.student.mobile.ncode'/>"+" "+"<spring:message code='msg.check.student.mobile.ncode.message'/>",
+                                showTitle: false,
+                                editorType: 'staticText'
+                            },
+                            {
+                                type: "RowSpacerItem"
+                            },
+                            {
+                                name: "invalidNames",
+                                width: "100%",
+                                colSpan: 2,
+                                title: "<spring:message code="title"/>",
+                                showTitle: false,
+                                editorType: 'textArea',
+                                canEdit: false
+                            }
+                        ]
+                    });
+
+                    let names = "";
+                    for (var j = 0; j < inValidStudents.length; j++) {
+
+                        names = names.concat(inValidStudents[j].surname + " " + inValidStudents[j].lastName  + "\n");
+                    }
+                    DynamicForm_InValid_Students.setValue("invalidNames", names);
+
+                    let Window_InValid_Students = isc.Window.create({
+                        width: 600,
+                        height: 150,
+                        numCols: 2,
+                        title: "<spring:message code='invalid.students.window'/>",
+                        items: [
+                            DynamicForm_InValid_Students,
+                            isc.MyHLayoutButtons.create({
+                            members: [
+                                isc.IButtonSave.create({
+                                title: "<spring:message code="continue"/>",
+                                click: function () {
+
+loadExamQuestions(record,questionData,Window_result_Finaltest)
+                                    Window_InValid_Students.close();
+                                }}),
+                                isc.IButtonCancel.create({
+                                title: "<spring:message code="cancel"/>",
+                                click: function () {
+                                    Window_InValid_Students.close();
+                                }
+                            })],
+                        })]
+                    });
+                    Window_InValid_Students.show();
+                } else
                                 loadExamQuestions(record,questionData,Window_result_Finaltest)
+}
+}));
+
                             }
                         }),
                                             isc.IButtonCancel.create({
@@ -877,9 +968,12 @@ scoreLabel.setContents("مجموع بارم وارد شده :")
                                 OK.close();
                                 }, 2000);
                             } else {
+                                debugger
                                 if (resp.httpResponseCode === 406)
 createDialog("info","<spring:message code="msg.check.teacher.mobile.ncode"/>"+" "+"<spring:message code="msg.check.teacher.mobile.ncode.message"/>", "<spring:message code="error"/>");
-                                else
+                                else if (resp.httpResponseCode === 404)
+createDialog("info", "<spring:message code="msg.check.users.mobile.ncode"/>", "<spring:message code="error"/>");
+                                else if (resp.httpResponseCode === 500)
 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
 
 }
@@ -1328,5 +1422,29 @@ createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", 
             });
         TabSet_finalTest.enable();
     }
+function NCodeAndMobileValidation(nationalCode, mobileNum) {
+
+let isValid = true;
+
+if (nationalCode===undefined || nationalCode===null || mobileNum===undefined || mobileNum===null )
+{
+isValid = false;
+}
+else
+{
+if (nationalCode.length !== 10 || !(/^-?\d+$/.test(nationalCode)))
+isValid = false;
+
+if((mobileNum.length !== 10 && mobileNum.length !== 11) || !(/^-?\d+$/.test(mobileNum)))
+isValid = false;
+
+if(mobileNum.length === 10 && !mobileNum.startsWith("9"))
+isValid = false;
+
+if(mobileNum.length === 11 && !mobileNum.startsWith("09"))
+isValid = false;
+}
+return isValid;
+}
 
     //</script>

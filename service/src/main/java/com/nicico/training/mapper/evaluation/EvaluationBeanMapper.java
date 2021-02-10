@@ -816,4 +816,11 @@ public abstract class EvaluationBeanMapper {
         }
 
     }
+
+
+    public List<EvalTargetUser> getClassUsers(List<ClassStudent> classStudents) {
+
+    return     classStudents.stream()
+                .map(classStudent -> toTargetUser(classStudent.getStudent())).collect(Collectors.toList());
+    }
 }
