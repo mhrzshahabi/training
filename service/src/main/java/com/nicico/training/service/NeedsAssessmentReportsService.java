@@ -5,12 +5,11 @@ import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.NeedsAssessmentDTO;
-import com.nicico.training.dto.NeedsAssessmentReportsDTO;
-import com.nicico.training.dto.PersonnelDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICourseService;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.iservice.ISkillService;
+import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +49,7 @@ public class NeedsAssessmentReportsService {
     private final ClassStudentReportService classStudentReportService;
     private final IPersonnelService personnelService;
     private final ParameterValueService parameterValueService;
+    private final ITclassService tClassService;
     private final ICourseService courseService;
     private final ISkillService skillService;
 
@@ -97,10 +97,28 @@ public class NeedsAssessmentReportsService {
             Map<Long, Boolean> isPassed = passedCourseIds.stream().collect(Collectors.toMap(id -> id, id -> true));
 
             for (int i = 0; i < mustPass.size(); i++) {
-                if (classStudentReportService.isPassed(needsAssessmentList.get(i).getSkill().getCourse(), isPassed))
+//                 makeNewCriteria("tclassId", needsAssessmentList.get(i).getC, EOperator.equals, null);
+
+                List<TclassDTO.PersonnelClassInfo> personClasses =  tClassService.findPersonnelClassByCourseId(student.getNationalCode(), student.getPersonnelNo(), needsAssessmentList.get(i).getSkill().getCourse().getId());
+
+                if (classStudentReportService.isPassed(needsAssessmentList.get(i).getSkill().getCourse(), isPassed)) {
                     mustPass.get(i).getSkill().getCourse().setScoresState(passedCodeId);
-                else
+                    if (personClasses.size()> 0){
+                        for (TclassDTO.PersonnelClassInfo classInfo: personClasses) {
+                            if(mustPass.get(i).getSkill().getCourse().getScoresStatus() == null || mustPass.get(i).getSkill().getCourse().getScoresStatus().equals("")  ){
+                                mustPass.get(i).getSkill().getCourse().setScoresStatus(classInfo.getScoreState());
+                            } else if (classInfo.getClassStatusId().equals(401)){
+                                int x =1;
+                            }
+                        }
+
+                    }
+                } else {
                     mustPass.get(i).getSkill().getCourse().setScoresState(notPassedCodeId);
+                    if (personClasses.size()> 0){
+                        mustPass.get(i).getSkill().getCourse().setScoresStatus(personClasses.get(0).getScoreState());
+                    }
+                }
             }
         }
         return mustPass;

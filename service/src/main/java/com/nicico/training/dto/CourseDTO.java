@@ -347,6 +347,7 @@ public class CourseDTO implements Serializable {
         private String titleFa;
         private Float theoryDuration;
         private Long scoresState;
+        private String scoresStatus;
     }
 
     // ------------------------------
