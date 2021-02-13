@@ -77,6 +77,8 @@ public interface ITclassService {
 
     public List<TclassDTO.PersonnelClassInfo> findAllPersonnelClass(String national_code, String personnel_no);
 
+    public List<TclassDTO.PersonnelClassInfo> findPersonnelClassByCourseId(String national_code, String personnel_no, Long courseId);
+
     @Transactional(readOnly = true)
     SearchDTO.SearchRs<TclassDTO.TeachingHistory> searchByTeachingHistory(SearchDTO.SearchRq request, Long teacherId);
 

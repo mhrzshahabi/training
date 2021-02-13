@@ -1084,6 +1084,44 @@ public class TclassService implements ITclassService {
 
     @Transactional(readOnly = true)
     @Override
+    public List<TclassDTO.PersonnelClassInfo> findPersonnelClassByCourseId(String national_code, String personnel_no, Long courseId) {
+
+        List<TclassDTO.PersonnelClassInfo> personnelClassInfo = null;
+
+        List<?> personnelClassInfoList = tclassDAO.findPersonnelClassByCourseId(national_code, personnel_no, courseId);
+
+        if (personnelClassInfoList != null) {
+
+            personnelClassInfo = new ArrayList<>(personnelClassInfoList.size());
+
+            for (int i = 0; i < personnelClassInfoList.size(); i++) {
+                Object[] classInfo = (Object[]) personnelClassInfoList.get(i);
+                personnelClassInfo.add(new TclassDTO.PersonnelClassInfo(
+                        (classInfo[0] != null ? Long.parseLong(classInfo[0].toString()) : null),
+                        (classInfo[1] != null ? classInfo[1].toString() : null),
+                        (classInfo[2] != null ? classInfo[2].toString() : null),
+                        (classInfo[3] != null ? Long.parseLong(classInfo[3].toString()) : null),
+                        (classInfo[4] != null ? classInfo[4].toString() : null),
+                        (classInfo[5] != null ? classInfo[5].toString() : null),
+                        (classInfo[6] != null ? Long.parseLong(classInfo[6].toString()) : null),
+                        null,
+                        (classInfo[7] != null ? Long.parseLong(classInfo[7].toString()) : null),
+                        (classInfo[8] != null ? classInfo[8].toString() : null),
+                        null,
+                        null,
+                        null,
+                        (classInfo[9] != null ? Long.parseLong(classInfo[9].toString()) : null),
+                        (classInfo[10] != null ? classInfo[10].toString() : null)));
+            }
+        }
+
+        return (personnelClassInfo != null ? modelMapper.map(personnelClassInfo, new TypeToken<List<TclassDTO.PersonnelClassInfo>>() {
+        }.getType()) : null);
+
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public SearchDTO.SearchRs<TclassDTO.TeachingHistory> searchByTeachingHistory(SearchDTO.SearchRq request, Long teacherId) {
         request = (request != null) ? request : new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
