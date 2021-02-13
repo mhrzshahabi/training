@@ -1391,7 +1391,8 @@
                 sortField: ["code"],
                 sortDirection: "descending",
                 colSpan: 2,
-                pickListFields: [
+                type:'number',
+	            pickListFields: [
                     {
                         name: "code",
                         title: "<spring:message code='term.code'/>",
@@ -2465,6 +2466,7 @@
             function startEdit(record) {
                 VM_JspClass.clearErrors();
                 VM_JspClass.clearValues();
+                delete RestDataSource_Term_JspClass.implicitCriteria;
                 DynamicForm_Class_JspClass.setValue("erunType", record.course.erunType);
                 wait.show();
                 isc.RPCManager.sendRequest(TrDSRequest(classUrl + "hasSessions/" + record.id, "GET", null, (resp) => {
@@ -2677,6 +2679,7 @@
 
         DynamicForm_Class_JspClass.getItem("instituteId").setDisabled(false);
         DynamicForm_Class_JspClass.getItem("trainingPlaceIds").setDisabled(false);
+        setDefaultTerm();
     }
 
     function ListGrid_class_print(type) {
@@ -3623,6 +3626,32 @@
 
     ////******************************
 
+    function setDefaultTerm() {
+        let persianDateArray = getTodayPersian();
+        let todayPersianDate = persianDateArray[0] + "/" + persianDateArray[1] + "/" + persianDateArray[2];
+        RestDataSource_Term_JspClass.implicitCriteria = {
+            _constructor: "AdvancedCriteria",
+            operator: "and",
+            criteria: [
+                {
+                    fieldName: "startDate",
+                    operator: "lessOrEqual",
+                    value: todayPersianDate
+                },
+                {
+                    fieldName: "endDate",
+                    operator: "greaterOrEqual",
+                    value: todayPersianDate
+                }]
+        };
+        RestDataSource_Term_JspClass.fetchData(null, function (dsResponse, data, dsRequest) {
+            if (data && data.length > 0) {
+                DynamicForm1_Class_JspClass.setValue("termId", Number.parseInt(data[0].id));
+                DynamicForm1_Class_JspClass.setValue("startDate", data[0].startDate);
+                DynamicForm1_Class_JspClass.setValue("endDate", data[0].endDate);
+            }
+        });
+    }
     //------------------------------------Evaluation------------------------------------------------------>>
     function register_Training_Reaction_Form_JspClass(classRecord) {
         let evaluationResult_DS = isc.TrDS.create({
