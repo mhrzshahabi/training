@@ -139,6 +139,21 @@ public class ExportToFileController {
         }
     }
 
+    @PostMapping(value = {"/exportWordFromClient"})
+    public void exportWordFromClient(final HttpServletResponse response, @RequestParam(value = "fields") String fields,
+                                      @RequestParam(value = "data") String data,
+                                      @RequestParam(value = "titr") String titr,
+                                      @RequestParam(value = "pageName") String pageName) throws IOException {
+
+        try {
+            exportToFileService.exportToWord(response, fields, data, titr, pageName);
+        } catch (Exception ex) {
+
+            Locale locale = LocaleContextHolder.getLocale();
+            response.sendError(500, messageSource.getMessage("error", null, locale));
+        }
+    }
+
     @PostMapping(value = {"/exportExcelFromServer"})
     public void exportExcelFromServer(final HttpServletRequest req,
                                       final HttpServletResponse response,

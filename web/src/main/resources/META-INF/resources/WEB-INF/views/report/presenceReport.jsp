@@ -177,9 +177,38 @@
     IButton_JspAttendancePresenceReport_FullExcel = isc.IButtonSave.create({
         top: 260,
         title: "گزارش اکسل",
-        width: 300,
+        width: 150,
         click: function () {
             ExportToFile.downloadExcelRestUrl(null, ListGrid_JspAttendanceReport, presenceReportUrl, 0, null, '', "گزارش حضور و غياب کلاس های آموزشي", ListGrid_JspAttendanceReport.getCriteria(), null);
+        }
+    });
+
+    IButton_JspAttendancePresenceReport_Word = isc.IButtonSave.create({
+        top: 260,
+        title: "گزارش ورد",
+        width: 150,
+        click: function () {
+            let result = ExportToFile.getAllData(ListGrid_JspAttendanceReport, null);
+            let downloadForm = isc.DynamicForm.create({
+                method: "POST",
+                action: "/training/export-to-file/exportWordFromClient/",
+                target: "_Blank",
+                canSubmit: true,
+                fields:
+                    [
+                        {name: "myToken", type: "hidden"},
+                        {name: "fields", type: "hidden"},
+                        {name: "data", type: "hidden"},
+                        {name: "titr", type: "hidden"},
+                        {name: "pageName", type: "hidden"}
+                    ]
+            });
+            downloadForm.setValue("fields", JSON.stringify(result.fields.toArray()));
+            downloadForm.setValue("data", JSON.stringify(result.data.toArray()));
+            downloadForm.setValue("titr", "");
+            downloadForm.setValue("pageName", "گزارش حضور و غياب کلاس های آموزشي");
+            downloadForm.show();
+            downloadForm.submitForm();
         }
     });
 
@@ -203,7 +232,8 @@
         alignLayout: "center",
         padding: 10,
         members: [
-            IButton_JspAttendancePresenceReport_FullExcel
+            IButton_JspAttendancePresenceReport_FullExcel,
+            IButton_JspAttendancePresenceReport_Word
         ]
     });
 
