@@ -5,6 +5,7 @@
 //<script>
 
     let questionBankMethod_questionBank;
+    let forceToCloseWindow=true;
     let oLoadAttachments_questionBank;
     // ------------------------------------------- Menu -------------------------------------------
     QuestionBankMenu_questionBank = isc.Menu.create({
@@ -1126,12 +1127,19 @@
             members: [
                 isc.TrSaveBtn.create({
                     click: function () {
+                        forceToCloseWindow=true;
                         saveQuestionBank_questionBank();
                     }
                 }),
                 isc.TrCancelBtn.create({
                     click: function () {
                         QuestionBankWin_questionBank.close();
+                    }
+                }),
+                isc.TrSaveNextBtn.create({
+                    click: function () {
+                        forceToCloseWindow=false;
+                        saveQuestionBank_questionBank();
                     }
                 }),
             ],
@@ -1180,7 +1188,7 @@
 
     // ------------------------------------------- Functions -------------------------------------------
     function refresh_questionBank() {
-        if (QuestionBankWin_questionBank.isDrawn()) {
+        if (QuestionBankWin_questionBank.isDrawn() && forceToCloseWindow) {
             QuestionBankWin_questionBank.close();
         }
         QuestionBankLG_questionBank.invalidateCache();
