@@ -17,7 +17,9 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ISendMessageService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
+import com.nicico.training.service.sms.SmsFeignClient;
 import lombok.RequiredArgsConstructor;
+import net.minidev.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,10 +32,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.SecureRandom;
+import java.security.Timestamp;
 import java.time.LocalDate;
 import java.util.*;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
+import static com.nicico.training.service.ClassSessionService.getPersianDate;
 
 
 @RequiredArgsConstructor
@@ -53,11 +57,26 @@ public class SendMessageService implements ISendMessageService {
     private final TclassService tclassService;
     private final ParameterService parameterService;
     private final MessageService messageService;
+    private final SmsFeignClient smsFeignClient;
 
     @Override
     public List<String> syncEnqueue(String pid, Map<String, String> paramValMap, List<String> recipients) {
+        JSONObject json = new JSONObject();
+        json.put("to", recipients);
+        json.put("pid", pid);
+        json.put("params", new JSONObject(paramValMap));
 
-        return nimadSMSService.syncEnqueue(pid, paramValMap, recipients);
+        try {
+            smsFeignClient.sendSms(json);
+            List<String> result = new ArrayList<>(recipients.size());
+            recipients.forEach(p -> result.add(String.valueOf(System.currentTimeMillis())));
+            return result;
+        } catch (Exception e) {
+            return null;
+        }
+
+//        return nimadSMSService.syncEnqueue(pid, paramValMap, recipients);
+
     }
 
     @Scheduled(cron = "0 0 9 * * ?", zone = "Asia/Tehran")

@@ -1,12 +1,16 @@
 package com.nicico.training.utility.persianDate;
 
 import net.jcip.annotations.Immutable;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.time.*;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoPeriod;
 import java.time.chrono.Chronology;
 import java.time.temporal.*;
+import java.util.Date;
 import java.util.Objects;
 
 import static java.time.temporal.ChronoField.*;
@@ -628,5 +632,27 @@ public final class PersianDate implements ChronoLocalDate {
      */
     public String toString() {
         return String.format("%04d-%02d-%02d", year, month, day);
+    }
+
+
+    public static Date getEndDateFromDuration(String dateString, Long duration) {
+
+// parse the string
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+        DateTime dateTime = formatter.parseDateTime(dateString);
+
+
+        int hours = (int) (duration / 60); //since both are ints, you get an int
+        int minutes = (int) (duration % 60);
+        dateTime = dateTime.plusMinutes(minutes);
+        dateTime = dateTime.plusHours(hours);
+
+
+        java.sql.Timestamp ts = new java.sql.Timestamp(dateTime.getMillis());
+
+
+        return new Date(ts.getTime() / 1000);
+
+
     }
 }
