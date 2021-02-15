@@ -153,6 +153,10 @@
                     autoFitWidthApproach: "both",
                 },
             ],
+            transformRequest: function (dsRequest) {
+                transformCriteriaForLastModifiedDateNA(dsRequest);
+                return this.Super("transformRequest", arguments);
+            },
             fetchDataURL: viewJobUrl + "/iscList"
         });
 

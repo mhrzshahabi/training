@@ -110,6 +110,10 @@
             {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
+        transformRequest: function (dsRequest) {
+            transformCriteriaForLastModifiedDateNA(dsRequest);
+            return this.Super("transformRequest", arguments);
+        },
         fetchDataURL: viewPostGroupUrl + "/iscList"
     });
     var Menu_ListGrid_Post_Group_Jsp = isc.Menu.create({
