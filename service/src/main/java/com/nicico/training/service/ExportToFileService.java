@@ -7,7 +7,10 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.*;
+import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
+import org.apache.poi.xwpf.usermodel.*;
 import org.modelmapper.TypeToken;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
 import org.springframework.stereotype.Service;
 
 import javax.activation.MimetypesFileTypeMap;
@@ -158,6 +161,81 @@ public class ExportToFileService implements IExportToFileService {
         } catch (Exception ex) {
             throw new Exception("خطا در سرور");
         }
+    }
+
+    @Override
+    public void exportToWord(HttpServletResponse response, String fields, String data, String titr, String pageName) throws Exception {
+        Gson gson = new Gson();
+        Type resultType = new TypeToken<List<HashMap<String, String>>>() {
+        }.getType();
+        List<HashMap<String, String>> fields1 = gson.fromJson(fields, resultType);
+        List<HashMap<String, String>> allData = gson.fromJson(data, resultType);
+        try {
+            XWPFDocument doc = new XWPFDocument();
+            CTSectPr sectPr = doc.getDocument().getBody().addNewSectPr();
+            XWPFHeaderFooterPolicy headerFooterPolicy = new XWPFHeaderFooterPolicy(doc, sectPr);
+            XWPFHeader header = headerFooterPolicy.createHeader(XWPFHeaderFooterPolicy.DEFAULT);
+            XWPFParagraph paragraph = header.getParagraphArray(0);
+            if (paragraph == null) paragraph = header.createParagraph();
+            paragraph.setAlignment(ParagraphAlignment.CENTER);
+            XWPFRun run = paragraph.createRun();
+            run.setFontSize(8);
+            run.setText("شركت ملي صنايع مس ايران- امور آموزش و تجهيز نيروی انسانی");
+            paragraph = header.createParagraph();
+            paragraph.setAlignment(ParagraphAlignment.CENTER);
+            run = paragraph.createRun();
+            run.setFontSize(6);
+            run.setText(pageName);
+            String[] headers = new String[fields1.size()];
+            String[] columns = new String[fields1.size()];
+            for (int i = 0; i < fields1.size(); i++) {
+                headers[i] = fields1.get(fields1.size() - i - 1).get("title");
+                columns[i] = fields1.get(fields1.size() - i - 1).get("name");
+            }
+            String tmpCell;
+            paragraph = doc.createParagraph();
+            paragraph.setFontAlignment(ParagraphAlignment.RIGHT.getValue());
+            XWPFTable table = paragraph.getBody().insertNewTbl(paragraph.getCTP().newCursor());
+            table.setTableAlignment(TableRowAlign.RIGHT);
+            table.setWidthType(TableWidthType.AUTO);
+            XWPFTableRow row = table.getRow(0);
+            if (row == null) row = table.createRow();
+            for (int i = 0; i < headers.length; i++) {
+                XWPFTableCell cell = row.getCell(i);
+                if (cell == null) cell = row.createCell();
+                cell.setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
+                cell.getParagraphs().get(0).setVerticalAlignment(TextAlignment.AUTO);
+                run = cell.getParagraphs().get(0).createRun();
+                run.setFontSize(4);
+                run.setBold(true);
+                run.setText(headers[i]);
+            }
+            for (HashMap<String, String> map : allData) {
+                row = table.createRow();
+                for (int i = 0; i < columns.length; i++) {
+                    tmpCell = map.get(columns[i]) == null ? "" : map.get(columns[i]);
+                    tmpCell = tmpCell.replaceAll("(<a)([^>href]+)(href)([ ])(=)([ ])\"([^\"])\"([^>]+)(>)([^<])(<\\/a>)", "[link href=$7]$10[/link]").replaceAll("<[^>ابپتثجچحخدذرزژصضسشطظکگفقعغونيي]*>", "");
+                    XWPFTableCell cell = row.getCell(i);
+                    if (cell == null) cell = row.createCell();
+                    paragraph = cell.getParagraphs().get(0);
+                    run = paragraph.createRun();
+                    run.setFontSize(3);
+                    run.setText(tmpCell);
+                }
+            }
+            String mimeType = "application/octet-stream";
+            String fileName = URLEncoder.encode("ExportWord.docx", "UTF-8").replace("+", "%20");
+            String headerKey = "Content-Disposition";
+            String headerValue;
+            response.setContentType(mimeType);
+            headerValue = String.format("attachment; filename=\"%s\"", fileName);
+            response.setHeader(headerKey, headerValue);
+            doc.write(response.getOutputStream());
+            doc.close();
+        } catch (Exception ex) {
+            throw new Exception("خطا در سرور");
+        }
+
     }
 
 
