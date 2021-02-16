@@ -10,30 +10,37 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.copper.core.service.sms.magfa.MagfaSMSService;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.service.sms.nimad.NimadSMSService;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ISendMessageService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
+import com.nicico.training.service.sms.SmsFeignClient;
 import lombok.RequiredArgsConstructor;
+import net.minidev.json.JSONObject;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
+import com.nicico.training.model.ClassStudentUser;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.security.SecureRandom;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
+import static com.nicico.training.service.ClassSessionService.getPersianDate;
 
 
 @RequiredArgsConstructor
@@ -53,11 +60,27 @@ public class SendMessageService implements ISendMessageService {
     private final TclassService tclassService;
     private final ParameterService parameterService;
     private final MessageService messageService;
+    private final SmsFeignClient smsFeignClient;
+    private final Environment environment;
 
     @Override
     public List<String> syncEnqueue(String pid, Map<String, String> paramValMap, List<String> recipients) {
+        JSONObject json = new JSONObject();
+        json.put("to", recipients);
+        json.put("pid", pid);
+        json.put("params", new JSONObject(paramValMap));
 
-        return nimadSMSService.syncEnqueue(pid, paramValMap, recipients);
+        try {
+            smsFeignClient.sendSms(json);
+            List<String> result = new ArrayList<>(recipients.size());
+            recipients.forEach(p -> result.add(String.valueOf(System.currentTimeMillis())));
+            return result;
+        } catch (Exception e) {
+            return null;
+        }
+
+//        return nimadSMSService.syncEnqueue(pid, paramValMap, recipients);
+
     }
 
     @Scheduled(cron = "0 0 9 * * ?", zone = "Asia/Tehran")
@@ -145,14 +168,61 @@ public class SendMessageService implements ISendMessageService {
         }
     }
 
-    public ResponseEntity sendMessage(final HttpServletRequest request, @RequestBody String data) throws IOException {
+
+    @Scheduled(cron = "0 0 15,10 * * *", zone = "Asia/Tehran")
+    @Transactional
+    @Override
+    public void sendSmsForUsers() throws IOException {
+        System.out.println("send sms for scheduled");
+        System.out.println("zaza");
+
+        int dayBeforeStartCourse = Integer.parseInt(Objects.requireNonNull(environment.getProperty("nicico.training.dayBeforeStartCourse")));
+        List<Object> list = classStudentDAO.findAllUserMobiles(DateUtil.todayDate(), DateUtil.convertMiToKh(LocalDate.now().plusDays(dayBeforeStartCourse).toString()));
+        List<ClassStudentUser> classStudentUsers = new ArrayList<>();
+        JSONObject json = new JSONObject();
+        String data = "%prefix-full_name% %full-name%شما در دوره «%course-name%» ثبت نام شده اید. لطفا برای مشاهده جزئیات این دوره به آدرس %personnel-address% مراجعه فرمایید.%institute%واحد آموزش";
+        json.put("message", data);
+        json.put("link", "http://mobiles.nicico.com");
+        json.put("maxRepeat", 0);
+        json.put("timeBMessages", 1);
+        json.put("type", Collections.singletonList("sms"));
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+
+
+        if (list.size() > 0) {
+            classStudentUsers = new ArrayList<>(list.size());
+            for (Object o : list) {
+                Object[] arr = (Object[]) o;
+                classStudentUsers.add(new ClassStudentUser(arr[0].toString(), (arr[1] == null ? "" : arr[1].toString()), arr[2].toString(), arr[3].toString()));
+            }
+        }
+        for (ClassStudentUser classStudentUser : classStudentUsers) {
+            LocalDate secondDate = LocalDate.parse(DateUtil.convertMiToKh(LocalDate.now().plusDays(dayBeforeStartCourse).toString()), dtf);
+            LocalDate courseStartDate = LocalDate.parse(classStudentUser.getStartDate(), dtf);
+
+            long daysBetween = ChronoUnit.DAYS.between(courseStartDate, secondDate);
+            if (daysBetween == dayBeforeStartCourse && null!=classStudentUser.getMobile()) {
+                json.put("classID", classStudentUser.getClassID());
+                json.put("classStudentRegistered", Collections.singletonList(classStudentUser.getClassStudentRegistered()));
+//                sendMessage(json.toString());
+            }
+        }
+
+
+
+
+
+    }
+
+    public ResponseEntity sendMessage( @RequestBody String data) throws IOException {
         List<Long> ids = new ArrayList<>();
         String type = "";
         String link = "";
         List<String> mobiles = new ArrayList<>();
         List<String> fullName = new ArrayList<>();
         List<String> prefixFullName = new ArrayList<>();
-        String personelAddress = request.getRequestURL().toString().replace(request.getServletPath(), "");
+//        String personelAddress = request.getRequestURL().toString().replace(request.getServletPath(), "");
         Long classId = null;
         String courseName = "";
         String courseStartDate = "";

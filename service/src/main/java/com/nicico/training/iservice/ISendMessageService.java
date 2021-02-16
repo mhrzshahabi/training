@@ -14,7 +14,8 @@ public interface ISendMessageService {
     List<String> syncEnqueue(String pid, Map<String, String> paramValMap, List<String> recipients);
 
     void scheduling();
+    void sendSmsForUsers() throws IOException;
 
-    ResponseEntity sendMessage(final HttpServletRequest request, @RequestBody String data) throws IOException;
+    ResponseEntity sendMessage( @RequestBody String data) throws IOException;
 
 }

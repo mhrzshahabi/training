@@ -29,6 +29,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.nicico.training.utility.persianDate.PersianDate.getEndDateFromDuration;
 import static dto.exam.EQuestionType.MULTI_CHOICES;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN, uses = QuestionBankService.class)
@@ -600,26 +601,7 @@ public abstract class EvaluationBeanMapper {
         return programs;
     }
 
-    private Date getEndDateFromDuration(String dateString, Long duration) {
 
-// parse the string
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-        DateTime dateTime = formatter.parseDateTime(dateString);
-
-
-        int hours = (int) (duration / 60); //since both are ints, you get an int
-        int minutes = (int) (duration % 60);
-        dateTime = dateTime.plusMinutes(minutes);
-        dateTime = dateTime.plusHours(hours);
-
-
-        java.sql.Timestamp ts = new java.sql.Timestamp(dateTime.getMillis());
-
-
-        return new Date(ts.getTime() / 1000);
-
-
-    }
 
     private String convertToTimeZone(String dateString) {
 

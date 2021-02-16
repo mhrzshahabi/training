@@ -44,7 +44,7 @@ public class SendMessageRestController {
     @PostMapping(value = "/sendSMS")
     public ResponseEntity sendSMS(final HttpServletRequest request, @RequestBody String data) throws IOException {
 
-        return sendMessageService.sendMessage(request,data);
+        return sendMessageService.sendMessage(data);
     }
 
 
