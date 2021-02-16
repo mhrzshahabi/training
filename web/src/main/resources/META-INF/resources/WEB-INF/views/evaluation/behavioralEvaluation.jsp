@@ -63,6 +63,11 @@
                     }
                 },
                 {
+                    name: "student.mobile",
+                    title: "<spring:message code="cellPhone"/>",
+                    filterOperator: "iContains",
+                },
+                {
                     name: "applicantCompanyName",
                     title: "<spring:message code="company.applicant"/>",
                     filterOperator: "iContains",
@@ -208,6 +213,9 @@
                     }
                 },
                 {
+                    name: "student.mobile",
+                },
+	            {
                     name: "applicantCompanyName",
                     textAlign: "center"
                 },

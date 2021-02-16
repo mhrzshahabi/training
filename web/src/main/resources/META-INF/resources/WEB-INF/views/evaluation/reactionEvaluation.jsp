@@ -119,7 +119,12 @@
                 name: "evaluationStatusResults",
                 title: "<spring:message code="evaluation.results.status"/>",
                 filterOperator: "iContains"
-            }
+            },
+            {
+                name: "student.mobile",
+                title: "<spring:message code="cellPhone"/>",
+                filterOperator: "iContains",
+            },
         ],
     });
 
@@ -240,6 +245,7 @@
                 filterOnKeypress: true,
                 filterOperator: "equals"
             },
+            {name: "student.mobile"},
             {name: "sendForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true},
             {
                 name: "saveResults",
