@@ -2,6 +2,7 @@ package com.nicico.training.repository;
 
 
 import com.nicico.training.model.ClassStudent;
+import com.nicico.training.model.ClassStudentUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -78,5 +79,9 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
     List<Object> getStatusSendMessageStudents(Long classId);
 
     List<ClassStudent> findAllByTclassId(long classId);
+
+
+    @Query(value = "SELECT tbl_class.c_start_date,tbl_student.mobile,tbl_class_student.id,tbl_class_student.class_id FROM tbl_class_student INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id INNER JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id WHERE tbl_class.c_start_date > :s1 AND  tbl_class.c_start_date < :s2", nativeQuery = true)
+    List<Object> findAllUserMobiles(String s1, String s2);
 
 }
