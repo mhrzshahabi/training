@@ -17,6 +17,7 @@
     var selectedRecordPersonalID = null;
     var isCategoriesChanged;
     var selected_record = null;
+    var selected_teacher = null;
     var selectedRecordID = null;
     var isFileAttached = false;
     let oLoadAttachments_Teacher = null;
@@ -432,7 +433,7 @@
         align: "center",
         autoDraw: false,
         border: "1px solid gray",
-        close : function(){closeCalendarWindow(); Window_Teacher_JspTeacher.hide();ListGrid_Teacher_JspTeacher.invalidateCache();},
+        close : function(){closeCalendarWindow(); Window_Teacher_JspTeacher.hide();ListGrid_Teacher_JspTeacher.invalidateCache(); selected_teacher = null;},
         items: [isc.TrVLayout.create({
             members: [
                 TabSet_BasicInfo_JspTeacher,
@@ -835,19 +836,31 @@
             "callback: teacher_saveClose_result(rpcResponse)"));
 
     }
-
-    function ListGrid_teacher_edit() {
-      var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
+    function hiddenVisibilityButtons() {
+            HLayOut_TeacherSaveOrExit_JspTeacher.setVisibility(false);
+            ToolStrip_Actions_JspAcademicBK.setVisibility(false);
+            ToolStrip_Actions_JspTeachingHistory.setVisibility(false);
+            ToolStrip_Actions_JspTeacherCertification.setVisibility(false);
+            ToolStrip_Actions_JspPublication.setVisibility(false);
+            ToolStrip_Actions_JspForeignLangKnowledge.setVisibility(false);
+            ToolStrip_Actions_JspEmploymentHistory.setVisibility(false);
+            DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = true;
+    }
+    function ListGrid_teacher_edit(teacherRecordId = null) {
+        console.log(teacherRecordId)
+        selected_teacher = teacherRecordId;
+        console.log(selected_teacher)
+        var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
         selected_record = record;
-        if (record == null || record.id == null) {
+        if ((record == null || record.id == null) && (selected_teacher == null || selected_teacher == undefined)) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             return;
         }
-        isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "info/" + record.id, "GET", null,
+        isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "info/" + (selected_teacher ? selected_teacher : record.id), "GET", null,
             "callback: teacher_get_one_result(rpcResponse)"));
     }
 
-    function Edit_teacher() {
+    function  Edit_teacher() {
         showAttachViewLoader.setView();
         showAttachViewLoader.show();
         showAttach(selected_record.personalityId);
@@ -998,11 +1011,14 @@
             setTimeout(()=> {
                 oLoadAttachments_Teacher = new loadAttachments();
                 TabSet_Bottom_JspTeacher.updateTab(TeacherAttachmentsTab, oLoadAttachments_Teacher.VLayout_Body_JspAttachment);
+                if(selected_teacher) {
+                    oLoadAttachments_Teacher.ToolStrip_Actions_JspAttachment.setVisibility(false);
+                }
                 clearTabFilters(oLoadAttachments_Teacher);
             },0);
 
         });
-        selectedRecordID = ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
+        selectedRecordID = ListGrid_Teacher_JspTeacher.getSelectedRecord() ? ListGrid_Teacher_JspTeacher.getSelectedRecord().id : selected_teacher;
         loadPage_AcademicBK(selectedRecordID);
 
         DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
@@ -1010,6 +1026,9 @@
         Window_Teacher_JspTeacher.bringToFront();
         TabSet_Bottom_JspTeacher.show();
         TabSet_Bottom_JspTeacher.selectTab(0);
+        if(selected_teacher) {
+            hiddenVisibilityButtons();
+        }
     }
 
     function ListGrid_teacher_add() {
