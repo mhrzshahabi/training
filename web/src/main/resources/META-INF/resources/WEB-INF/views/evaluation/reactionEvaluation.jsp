@@ -924,6 +924,7 @@
                                             {
                                                 name: "sendButtonTraining",
                                                 title: "صدور فرم ارزیابی آموزش از مدرس",
+                                                hidden: true,
                                                 width: 170,
                                                 type: "button",
                                                 startRow: false,
@@ -955,6 +956,7 @@
                                             {
                                                 name: "registerButtonTraining",
                                                 title: "ثبت نتایج ارزیابی آموزش از مدرس",
+                                                hidden: true,
                                                 width: 170,
                                                 type: "button",
                                                 startRow: false,
@@ -1043,8 +1045,7 @@
                                                         }
                                                     }
                                                 ]
-                                            }
-                                            // ,
+                                            },
                                             // {
                                             //     name: "sendToEls_supervisor",
                                             //     title: "ارسال به آموزش آنلاین",

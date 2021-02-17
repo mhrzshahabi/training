@@ -359,6 +359,28 @@
             {property: "startDate", direction: "descending", primarySort: true}
         ],
         selectionUpdated: function (record) {
+
+            ToolStrip_SendForms_JspClass.getField("sendButtonTraining").showIcon("ok");
+            ToolStrip_SendForms_JspClass.getField("registerButtonTraining").showIcon("ok");
+            if(record) {
+
+                if (record.evaluationStatusReactionTraining === "0" || record.evaluationStatusReactionTraining === 0 || record.evaluationStatusReactionTraining == null) {
+
+                    ToolStrip_SendForms_JspClass.getField("sendButtonTraining").hideIcon("ok");
+                    ToolStrip_SendForms_JspClass.getField("registerButtonTraining").hideIcon("ok");
+                } else {
+
+                    if (record.evaluationStatusReactionTraining === "2" || record.evaluationStatusReactionTraining === 2 ||
+                        record.evaluationStatusReactionTraining === "3" || record.evaluationStatusReactionTraining === 3) {
+                        ToolStrip_SendForms_JspClass.getField("sendButtonTraining").showIcon("ok");
+                        ToolStrip_SendForms_JspClass.getField("registerButtonTraining").showIcon("ok");
+                    }
+                    else {
+                        ToolStrip_SendForms_JspClass.getField("sendButtonTraining").showIcon("ok");
+                        ToolStrip_SendForms_JspClass.getField("registerButtonTraining").hideIcon("ok");
+                    }
+                }
+            }
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
         },
         <sec:authorize access="hasAuthority('Tclass_U')">
@@ -536,7 +558,17 @@
                 autoFitWidth: true
             },
             {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"},
-            {name: "isSentMessage", title: "ارسال پيام قبل از شروع کلاس", width: 190, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", canEdit: false, canSort: false, canFilter: false},
+            {
+                name: "isSentMessage",
+                title: "ارسال پيام قبل از شروع کلاس",
+                width: 190,
+                type: "image",
+                imageURLPrefix: "",
+                imageURLSuffix: ".gif",
+                canEdit: false,
+                canSort: false,
+                canFilter: false
+            },
             {name: "course.code", title: "", hidden: true},
             {name: "course.theoryDuration", title: "", hidden: true},
             {name: "scoringMethod", hidden: true},
@@ -2257,6 +2289,183 @@
         }
     });
 
+    var HLayout_Training_Actions = isc.HLayout.create({
+        width:"50%",
+        membersMargin: 5,
+        layoutAlign: "center",
+        defaultLayoutAlign: "center",
+        members: [
+            isc.DynamicForm.create({
+                height: "100%",
+                numCols: 8,
+                defaultLayoutAlign: "center",
+                ID: "ToolStrip_SendForms_JspClass",
+                fields: [
+                    {
+                        name: "sendButtonTraining",
+                        title: "صدور فرم ارزیابی آموزش از مدرس",
+                        width: 170,
+                        type: "button",
+                        startRow: false,
+                        endRow: false,
+                        baseStyle: "sendFile",
+                        click: function () {
+
+                            let record = ListGrid_Class_JspClass.getSelectedRecord();
+                            if (record == null || record.id == null) {
+                                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                            } else {
+                                if (record.evaluationStatusReactionTraining != "0" && record.evaluationStatusReactionTraining != null)
+                                    createDialog("info", "قبلا فرم ارزیابی واکنشی برای مسئول آموزش صادر شده است");
+                                else {
+                                    if (record.supervisorId == undefined || record.teacherId == undefined)
+                                        createDialog("info", "اطلاعات کلاس ناقص است!");
+                                    else
+                                        Training_Reaction_Form_JspClass(record);
+                                }
+                            }
+                        },
+                        icons: [
+                            {
+                                name: "ok",
+                                src: "[SKIN]actions/ok.png",
+                                width: 15,
+                                height: 15,
+                                inline: true,
+                                // showIf: false,
+                                prompt: "تائید صدور",
+                                click: function (form, item, icon) {
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        name: "registerButtonTraining",
+                        title: "ثبت نتایج ارزیابی آموزش از مدرس",
+                        width: 170,
+                        type: "button",
+                        startRow: false,
+                        endRow: false,
+                        baseStyle: "registerFile",
+                        click: function () {
+
+                            let record = ListGrid_Class_JspClass.getSelectedRecord();
+                            if (record == null || record.id == null) {
+                                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                            } else {
+                                if (record.classStatus == null || record.classStatus == 1)
+                                    createDialog("info", "این کلاس در وضعیت برنامه ریزی می باشد و قابل ارزیابی نمی باشد");
+                                else {
+                                    if (record.evaluationStatusReactionTraining == null || record.evaluationStatusReactionTraining == 0)
+                                        createDialog("info", "برای مسئول آموزش این کلاس فرمی صادر نشده است");
+                                    else {
+                                        if (record.supervisor == undefined || record.teacherId == undefined)
+                                            createDialog("info", "اطلاعات کلاس ناقص است!");
+                                        else
+                                            register_Training_Reaction_Form_JspClass(record);
+
+                                    }
+                                }
+                            }
+                        },
+                        icons: [
+                            {
+                                name: "ok",
+                                src: "[SKIN]actions/ok.png",
+                                width: 15,
+                                height: 15,
+                                inline: true,
+                                // showIf: false,
+                                prompt: "تائید ثبت",
+                                click: function (form, item, icon) {
+                                }
+                            },
+                            {
+                                name: "clear",
+                                src: "[SKIN]actions/remove.png",
+                                width: 15,
+                                height: 15,
+                                inline: true,
+                                prompt: "حذف فرم",
+                                click: function (form, item, icon) {
+
+                                    let record = ListGrid_Class_JspClass.getSelectedRecord();
+                                    if (record == null || record.id == null) {
+                                        createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                                    } else {
+                                        if (record.evaluationStatusReactionTraining == "0" || record.evaluationStatusReactionTraining == null)
+                                            createDialog("info", "فرم ارزیابی واکنشی برای مسئول آموزش صادر نشده است");
+                                        else {
+                                            let Dialog_remove = createDialog("ask", "آیا از حذف فرم مطمئن هستید؟",
+                                                "<spring:message code="verify.delete"/>");
+                                            Dialog_remove.addProperties({
+                                                buttonClick: function (button, index) {
+                                                    this.close();
+                                                    if (index === 0) {
+                                                        let data = {};
+                                                        data.classId = record.id;
+                                                        data.evaluatorId = record.supervisorId;
+                                                        data.evaluatorTypeId = 454;
+                                                        data.evaluatedId = record.teacherId;
+                                                        data.evaluatedTypeId = 187;
+                                                        data.questionnaireTypeId = 141;
+                                                        data.evaluationLevelId = 154;
+                                                        wait.show();
+                                                        isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/deleteEvaluation", "POST", JSON.stringify(data), function (resp) {
+                                                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+                                                                wait.close();
+                                                                const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                                                                setTimeout(() => {
+                                                                    msg.close();
+                                                            }, 3000);
+                                                                isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
+                                                                    record.id,"GET", null, null));
+                                                                record.evaluationStatusReactionTraining = 0;
+                                                                ToolStrip_SendForms_JspClass.getField("sendButtonTraining").hideIcon("ok");
+                                                                ToolStrip_SendForms_JspClass.getField("registerButtonTraining").hideIcon("ok");
+                                                                ToolStrip_SendForms_JspClass.redraw();
+                                                            } else {
+
+                                                                wait.close();
+                                                                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                                            }
+                                                        }))
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                name: "print",
+                                src: "[SKIN]actions/print.png",
+                                width: 15,
+                                height: 15,
+                                inline: true,
+                                prompt: "چاپ فرم",
+                                click: function (form, item, icon) {
+
+                                    let record = ListGrid_Class_JspClass.getSelectedRecord();
+                                    if (record == null || record.id == null)
+                                        createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                                    else {
+                                        if (record.evaluationStatusReactionTraining == "0" || record.evaluationStatusReactionTraining == null)
+                                            createDialog("info", "فرم ارزیابی واکنشی برای مسئول آموزش صادر نشده است");
+                                        else
+                                            print_Training_Reaction_Form_JspClass(record);
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }),
+
+        ]
+    });
+
     var ToolStrip_Actions_JspClass = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -2285,7 +2494,9 @@
             ToolStrip_Excel_JspClass,
             </sec:authorize>
 
-            ToolStripButton_teacherEvaluation_JspClass,
+            HLayout_Training_Actions,
+
+            // ToolStripButton_teacherEvaluation_JspClass,
 
             <sec:authorize access="hasAuthority('Tclass_R')">
             DynamicForm_Term_Filter,
@@ -3674,6 +3885,146 @@
         });
     }
     //------------------------------------Evaluation------------------------------------------------------>>
+
+    function Training_Reaction_Form_JspClass(classRecord) {
+
+        let IButtonSave_SelectQuestionnarie_RE = isc.IButtonSave.create({
+            title: "صدور/ارسال به کارتابل",
+            width: 150,
+            click: function () {
+                if (ListGrid_SelectQuestionnarie_RE.getSelectedRecord() == null || ListGrid_SelectQuestionnarie_RE.getSelectedRecord() == undefined) {
+                    createDialog("info", "پرسشنامه ای انتخاب نشده است.");
+                } else {
+                    Window_SelectQuestionnarie_RE.close();
+                    create_evaluation_form_for_JspClass(null, ListGrid_SelectQuestionnarie_RE.getSelectedRecord().id, classRecord.supervisorId, 454, classRecord.teacherId, 187, 141, 154, classRecord.id, classRecord);
+                }
+            }
+        });
+        let RestDataSource_Questionnarie_RE = isc.TrDS.create({
+            fields: [
+                {name: "id", primaryKey: true, hidden: true},
+                {
+                    name: "title",
+                    title: "<spring:message code="title"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {name: "questionnaireTypeId", hidden: true},
+                {
+                    name: "questionnaireType.title",
+                    title: "<spring:message code="type"/>",
+                    required: true,
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
+            ],
+            fetchDataURL: questionnaireUrl + "/iscList/validQestionnaries/" + classRecord.id
+        });
+        let ListGrid_SelectQuestionnarie_RE = isc.TrLG.create({
+            width: "100%",
+            dataSource: RestDataSource_Questionnarie_RE,
+            selectionType: "single",
+            selectionAppearance: "checkbox",
+            fields: [{name: "title"}, {name: "questionnaireType.title"}, {name: "description"}, {
+                name: "id",
+                hidden: true
+            }]
+        });
+        let Window_SelectQuestionnarie_RE = isc.Window.create({
+            width: 1024,
+            placement: "fillScreen",
+            keepInParentRect: true,
+            title: "انتخاب پرسشنامه",
+            items: [
+                isc.HLayout.create({
+                    width: "100%",
+                    height: "90%",
+                    members: [ListGrid_SelectQuestionnarie_RE]
+                }),
+                isc.TrHLayoutButtons.create({
+                    width: "100%",
+                    height: "5%",
+                    members: [
+                        IButtonSave_SelectQuestionnarie_RE,
+                        isc.IButtonCancel.create({
+                            click: function () {
+                                Window_SelectQuestionnarie_RE.close();
+                            }
+                        })
+                    ]
+                })
+            ],
+            minWidth: 1024
+        });
+        let criteria = {
+            _constructor: "AdvancedCriteria",
+            operator: "and",
+            criteria: [
+                {fieldName: "enabled", operator: "isNull"},
+                {fieldName: "questionnaireTypeId", operator: "equals", value: 141}
+            ]
+        };
+        ListGrid_SelectQuestionnarie_RE.fetchData(criteria);
+        ListGrid_SelectQuestionnarie_RE.invalidateCache();
+        Window_SelectQuestionnarie_RE.show();
+    }
+
+    function create_evaluation_form_for_JspClass(id, questionnarieId, evaluatorId,
+                                             evaluatorTypeId, evaluatedId, evaluatedTypeId, questionnarieTypeId,
+                                             evaluationLevel, classId, classRecord, check) {
+
+            let data = {};
+            data.classId = classRecord.id;
+            data.status = false;
+            // if (ReturnDate_RE._value != undefined)
+            //     data.returnDate = ReturnDate_RE._value;
+            data.sendDate = todayDate;
+            data.evaluatorId = evaluatorId;
+            data.evaluatorTypeId = evaluatorTypeId;
+            data.evaluatedId = evaluatedId;
+            data.evaluatedTypeId = evaluatedTypeId;
+            data.questionnaireId = questionnarieId;
+            data.questionnaireTypeId = questionnarieTypeId;
+            data.evaluationLevelId = evaluationLevel;
+            data.evaluationFull = false;
+            data.description = null;
+
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl, "POST", JSON.stringify(data), function (resp) {
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+                    wait.close();
+                    if(check == true) {}
+                    else{
+                        const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                        msg.show();
+                    }
+                    classRecord.evaluationStatusReactionTraining = 1;
+                    ToolStrip_SendForms_JspClass.getField("sendButtonTraining").showIcon("ok");
+                    ToolStrip_SendForms_JspClass.redraw();
+                } else {
+
+                    wait.close();
+                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                }
+            }));
+    }
+
+    function print_Training_Reaction_Form_JspClass(classRecord) {
+
+        let myObj = {
+            classId: classRecord.id,
+            evaluationLevelId: 154,
+            questionnarieTypeId: 141,
+            evaluatorId: classRecord.supervisorId,
+            evaluatorTypeId: 454,
+            evaluatedId: classRecord.teacherId,
+            evaluatedTypeId: 187
+        };
+        trPrintWithCriteria("<spring:url value="/evaluation/printEvaluationForm"/>", null, JSON.stringify(myObj));
+    }
+
     function register_Training_Reaction_Form_JspClass(classRecord) {
         let evaluationResult_DS = isc.TrDS.create({
             fields:
@@ -3865,26 +4216,32 @@
                         switch (result[i].domainId) {
                             case 54:
                                 item.name = "Q" + result[i].id;
+                                item.domainId = result[i].domainId;
                                 item.title = "امکانات: " + result[i].question;
                                 break;
                             case 138:
                                 item.name = "Q" + result[i].id;
+                                item.domainId = result[i].domainId;
                                 item.title = "کلاس: " + result[i].question;
                                 break;
                             case 53:
                                 item.name = "Q" + result[i].id;
+                                item.domainId = result[i].domainId;
                                 item.title = "مدرس: " + result[i].question;
                                 break;
                             case 1:
                                 item.name = "Q" + result[i].id;
+                                item.domainId = result[i].domainId;
                                 item.title = "مدرس: " + result[i].question;
                                 break;
                             case 183:
                                 item.name = "Q" + result[i].id;
+                                item.domainId = result[i].domainId;
                                 item.title = "محتواي کلاس: " + result[i].question;
                                 break;
                             default:
                                 item.name = "Q" + result[i].id;
+                                item.domainId = result[i].domainId;
                                 item.title = result[i].question;
                         }
 
@@ -3954,6 +4311,7 @@
                     }
                     itemList.add(item);
                 }
+                itemList.sortByProperty("domainId", true);
                 DynamicForm_Questions_Body_JspEvaluation.setItems(itemList);
                 DynamicForm_Description_JspEvaluation.getField("description").setValue(description);
                 DynamicForm_Questions_Body_JspEvaluation.setValues(record);
