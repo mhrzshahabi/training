@@ -2,7 +2,8 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
-// <script>
+
+//<script>
 
     $(document).ready(()=>{
         setTimeout(()=>{
@@ -35,6 +36,8 @@
             {name: "studentPostGradeTitle", title: "<spring:message code="post.grade"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "studentJobTitle", title: "<spring:message code="job"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "classCode", title:"<spring:message code="class.code"/>", autoFitWidth: true},
+            {name: "classStatus", title:"<spring:message code="class.status"/>", autoFitWidth: true, valueMap: {
+            "1": "برنامه ريزی", "2": "در حال اجرا", "3": "پایان یافته"}},
             {name: "courseCode", title:"<spring:message code='course.code'/>", autoFitWidth: true},
             {name: "courseTitleFa", title:"<spring:message code='course'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "courseDuration", title:"<spring:message code='course_theoryDuration'/>", filterOperator: "equals", autoFitWidth: true},
@@ -1177,3 +1180,5 @@
     });
     //----------------------------------------------------End-----------------------------------------------------------
     Window_JspUnitReport.hide();
+
+//<script>

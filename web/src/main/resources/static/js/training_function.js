@@ -67,7 +67,7 @@ function defineWindowsEditNeedsAssessment(grid = null) {
         title: "ویرایش نیازسنجی",
         minWidth: 1024,
         visibility : "hidden",
-        headerControls: ["headerLabel", "closeButton"],
+        headerControls: ["headerLabel", "minimizeButton", "closeButton"],
         canDragReposition: false,
         items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],
         // items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/diff-needs-assessment/"})],
