@@ -32,5 +32,4 @@ public interface IPostService {
 
     SearchDTO.SearchRs<PostDTO.Info> unassignedSearch(SearchDTO.SearchRq request);
 
-    List<String> getAllArea();
 }
