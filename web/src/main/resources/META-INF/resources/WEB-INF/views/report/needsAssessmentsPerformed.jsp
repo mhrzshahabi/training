@@ -14,12 +14,12 @@
             {name: "postCode"},
             {name: "postTitle"},
             {name: "updateBy"},
-            {name: "updateAt"},
+            {name: "updateAt"}
         ]
     });
     function gregorianDate(date) {
         let dates = date.split("/");
-        return JalaliDate.jalaliToGregorian(dates[0],dates[1],dates[2]).join("/");
+        return JalaliDate.jalaliToGregorian(dates[0],dates[1],dates[2]).join("-");
     }
     var DynamicForm_NeedsAssessmentsPerformed = isc.DynamicForm.create({
         numCols: 6,
@@ -51,6 +51,7 @@
                     if (dateCheck === false) {
                         form.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
                     } else {
+
                         form.clearFieldErrors("startDate", true);
                     }
                 }
@@ -93,6 +94,10 @@
                 startRow: false,
                 endRow: false,
                 click(form) {
+                    if(form.getValue("endDate") < form.getValue("startDate")) {
+                        createDialog("info","تاریخ پایان نمی تواند کوچکتر از تاریخ شروع باشد");
+                        return;
+                    }
                     if(DynamicForm_NeedsAssessmentsPerformed.getValuesAsAdvancedCriteria()==null || DynamicForm_NeedsAssessmentsPerformed.getValuesAsAdvancedCriteria().criteria.size() <= 1) {
                         createDialog("info","فیلتری انتخاب نشده است.");
                         return;
@@ -106,7 +111,7 @@
                     else {
                         var training_over_time_wait = createDialog("wait");
                         setTimeout(function () {
-                            let url = needsAssessmentsPerformedUrl + "/list?startDate=" + gregorianDate(form.getValue("startDate")) + "&endDate=" + gregorianDate(form.getValue("endDate"));
+                            let url = needsAssessmentsPerformedUrl + "/list/" + gregorianDate(form.getValue("startDate")) + "/" + gregorianDate(form.getValue("endDate"));
                             RestDataSource_Class_JspNeedAssessmentsPerformed.fetchDataURL = url;
 
                             ListGrid_NeedAssessmentsPerformed.invalidateCache();
@@ -182,7 +187,7 @@
             {name: "postCode", title: "کد پست"},
             {name: "postTitle", title: "عنوان پست"},
             {name: "updateBy", title: "ویرایش توسط"},
-            {name: "updateAt", title: "ویرایش در تاریخ"}
+            {name: "updateAt", title: "ویرایش در تاریخ", hidden: true}
         ]
     });
     var VLayout_Body_NeedAssessmentsPerformed = isc.VLayout.create({

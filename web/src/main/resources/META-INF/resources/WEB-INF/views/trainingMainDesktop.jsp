@@ -1193,7 +1193,7 @@
     const needsAssessmentReportsUrl = rootUrl + "/needsAssessment-reports";
     const skillNAUrl = rootUrl + "/skill-na";
     const trainingOverTimeReportUrl = rootUrl + "/trainingOverTime";
-    const needsAssessmentsPerformedUrl = rootUrl + "/needsAssessmentsPerformed";
+    const needsAssessmentsPerformedUrl = rootUrl + "/needAssessmentInRange";
     const personnelInformationUrl = rootUrl + "/personnelInformation";
     const unfinishedClasses = rootUrl + "/unfinishedClasses";
     const studentPortalUrl = rootUrl + "/student-portal";
