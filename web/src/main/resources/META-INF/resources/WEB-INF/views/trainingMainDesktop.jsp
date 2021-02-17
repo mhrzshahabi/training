@@ -3162,6 +3162,31 @@
         criteriaForm.submitForm();
     }
 
+    function transformCriteriaForLastModifiedDateNA(dsRequest){
+        if (dsRequest.data && dsRequest.data.criteria) {
+            let lastModifiedDateNA = dsRequest.data.criteria.filter(o => o.fieldName == 'lastModifiedDateNA');
+            let georgianDate;
+            if (lastModifiedDateNA && lastModifiedDateNA.length == 1)
+                georgianDate = jalaliStrToGeorgianStr(lastModifiedDateNA[0].value);
+            if(lastModifiedDateNA && lastModifiedDateNA.length == 2)
+                georgianDate = lastModifiedDateNA[0].value.split(" ")[0];
+            if (georgianDate){
+                let date_criteria = dsRequest.data.criteria.filter(o => o.fieldName == 'lastModifiedDateNA')[0];
+                date_criteria.value = georgianDate;
+                date_criteria.operator = 'greaterOrEqual';
+                dsRequest.data.criteria.add({
+                    fieldName: 'lastModifiedDateNA',
+                    value: georgianDate.concat(" 23:59:59"),
+                    operator: 'lessOrEqual'
+                });
+            }
+            else
+                dsRequest.data.criteria.remove(dsRequest.data.criteria.filter(o => o.fieldName ==
+                    'lastModifiedDateNA')[0]);
+            if(dsRequest.data.criteria.length == 0)
+                delete dsRequest.data;
+        }
+    }
     // ---------------------------------------- Not Ok - Start ----------------------------------------
     const enumUrl = rootUrl + "/enum/";
     const goalUrl = rootUrl + "/goal/";

@@ -581,4 +581,33 @@
         }
     }
 
-
+    function printStudentList(listGrid_) {
+        var classRecord = ListGrid_class_Evaluation.getSelectedRecord();
+        var titr = "فراگیران دوره " + classRecord.courseTitleFa +
+            " دارای کد دوره: " + classRecord.courseCode +
+            " و کد کلاس: " + classRecord.tclassCode +
+            "\n" +
+            " تاریخ شروع: " + classRecord.tclassStartDate.split("/").reverse().join("/") +
+            " و تاریخ پایان: " + classRecord.tclassEndDate.split("/").reverse().join("/");
+    
+        let params = {};
+        params.titr = titr;
+        let localData = listGrid_.data.localData.toArray();
+        let data = [];
+        for (let i = 0; i < localData.length; i++) {
+            let obj = {};
+            obj.personnelNo = localData[i].student.personnelNo2;
+            obj.nationalCode = localData[i].student.nationalCode;
+            obj.firstName = localData[i].student.firstName.trim();
+            obj.lastName = localData[i].student.lastName.trim();
+            obj.fatherName = localData[i].student.fatherName;
+            obj.mobile = localData[i].student.mobile;
+            obj.ccpArea = localData[i].student.ccpArea;
+            obj.ccpAssistant = localData[i].student.ccpAssistant;
+            obj.ccpAffairs = localData[i].student.ccpAffairs;
+            data.push(obj);
+        }
+        data = data.sort(new Intl.Collator("fa").compare);
+        printToJasper(data, params, "ClassStudents.jasper");
+    }
+   

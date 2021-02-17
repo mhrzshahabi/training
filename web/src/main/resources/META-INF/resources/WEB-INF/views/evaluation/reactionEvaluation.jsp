@@ -119,7 +119,12 @@
                 name: "evaluationStatusResults",
                 title: "<spring:message code="evaluation.results.status"/>",
                 filterOperator: "iContains"
-            }
+            },
+            {
+                name: "student.mobile",
+                title: "<spring:message code="cellPhone"/>",
+                filterOperator: "iContains",
+            },
         ],
     });
 
@@ -240,6 +245,7 @@
                 filterOnKeypress: true,
                 filterOperator: "equals"
             },
+            {name: "student.mobile"},
             {name: "sendForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true},
             {
                 name: "saveResults",
@@ -726,6 +732,20 @@
         }
     });
 
+    var ToolStripButton_Excel_RE = isc.ToolStripButtonExcel.create({
+        click: function () {
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_student_RE, tclassStudentUrl, 0,
+                null, '',  "لیست فراگیران", ListGrid_student_RE.data.getCriteria(), null);
+        }
+    });
+    var ToolStripButton_Print_RE = isc.ToolStripButton.create({
+        icon: "[SKIN]/RichTextEditor/print.png",
+        title: "<spring:message code='print'/>",
+        click: function () {
+            printStudentList(ListGrid_student_RE);
+        }
+    });
+
     var ToolStrip_RE = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 10,
@@ -1147,6 +1167,8 @@
                                 align: "left",
                                 border: '0px',
                                 members: [
+                                    ToolStripButton_Excel_RE,
+                                    ToolStripButton_Print_RE,
                                     ToolStripButton_RefreshIssuance_RE
                                 ]
                             })
@@ -1481,6 +1503,8 @@
                                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                             else if (resp.httpResponseCode === 406)
                                 createDialog("info", "<spring:message code="msg.check.teacher.mobile.ncode"/>"+" "+"<spring:message code="msg.check.teacher.mobile.ncode.message"/>", "<spring:message code="error"/>");
+                            else if (resp.httpResponseCode === 408)
+                                createDialog("info", "<spring:message code="msg.els.timeOut"/>", "<spring:message code="error"/>");
                             else
                                 createDialog("info",JSON.parse(resp.httpResponseText).message, "<spring:message code="error"/>");
                         }

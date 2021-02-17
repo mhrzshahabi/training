@@ -5,6 +5,7 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@ page import="com.nicico.copper.core.SecurityUtil" %>
 <%@include file="../messenger/MLanding.jsp" %>
+<%@include file="teacher.jsp" %>
 
 // <script>
     wait.show();
@@ -351,6 +352,7 @@
         dataPageSize: 15,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
+        showRollOver:false,
         selectionType: "single",
         autoFetchData: false,
         initialSort: [
@@ -548,19 +550,29 @@
             {name: "studentCostCurrency", hidden: true}
         ],
         getCellCSSText: function (record, rowNum, colNum) {
+            let style;
             if (this.isSelected(record)) {
-                return "background-color:" + "#fe9d2a";
+                style =  "background-color:" + "#fe9d2a;";
             } else if (record.workflowEndingStatusCode === 2) {
-                return "background-color:" + "#bef5b8";
+                style =  "background-color:" + "#bef5b8;";
             } else {
                 if (record.classStatus === "1")
-                    return "background-color:" + "#ffffff";
+                    style =  "background-color:" + "#ffffff;";
                 else if (record.classStatus === "2")
-                    return "background-color:" + "#fff9c4";
+                    style =  "background-color:" + "#fff9c4;";
                 else if (record.classStatus === "3")
-                    return "background-color:" + "#cdedf5";
+                    style =  "background-color:" + "#cdedf5;";
                 else if (record.classStatus === "4")
-                    return "color:" + "#d6d6d7";
+                    style =  "color:" + "#d6d6d7;";
+            }
+            if (this.getFieldName(colNum) == "teacher") {
+                style +=  "color: #0066cc;text-decoration: underline !important;cursor: pointer !important;}"
+            }
+            return style;
+        },
+        cellClick: function (record, rowNum, colNum) {
+            if (colNum === 7) {
+                ListGrid_teacher_edit(record.teacherId)
             }
         },
         dataArrived: function () {
@@ -2481,7 +2493,7 @@
                     if (resp.data === "true" && a === 0) {
                         DynamicForm1_Class_JspClass.getItem("termId").disable();
                         DynamicForm1_Class_JspClass.getItem("startDate").disable();
-                        DynamicForm1_Class_JspClass.getItem("endDate").disable();
+                        // DynamicForm1_Class_JspClass.getItem("endDate").disable();
                     }
                     singleTargetScoiety = [];
                     etcTargetSociety = [];
@@ -3236,6 +3248,15 @@
                 createDialog("info", "تاریخ پایان کلاس قبل از تاریخ شروع کلاس نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
             }
+            if (termEnd.trim() > classEnd.trim()) {
+                createDialog("info", "تاریخ پایان کلاس قبل از تاریخ پایان ترم نمی تواند باشد.", "<spring:message code='message'/>");
+                return false;
+            }
+            if (classEnd.trim() < classStart.trim()) {
+                createDialog("info", "zaza", "<spring:message code='message'/>");
+                return false;
+            }
+
             if (termStart.trim() > classStart.trim()) {
                 createDialog("info", "تاریخ شروع کلاس قبل از تاریخ شروع ترم نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;

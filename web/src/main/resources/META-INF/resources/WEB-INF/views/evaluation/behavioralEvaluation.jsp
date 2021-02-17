@@ -63,6 +63,11 @@
                     }
                 },
                 {
+                    name: "student.mobile",
+                    title: "<spring:message code="cellPhone"/>",
+                    filterOperator: "iContains",
+                },
+                {
                     name: "applicantCompanyName",
                     title: "<spring:message code="company.applicant"/>",
                     filterOperator: "iContains",
@@ -208,6 +213,9 @@
                     }
                 },
                 {
+                    name: "student.mobile",
+                },
+	            {
                     name: "applicantCompanyName",
                     textAlign: "center"
                 },
@@ -283,6 +291,21 @@
                 ListGrid_student_BE.invalidateCache();
             }
         });
+        
+        var ToolStripButton_Excel_BE = isc.ToolStripButtonExcel.create({
+        click: function () {
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_student_BE, tclassStudentUrl, 0,
+                null, '', "لیست فراگیران", ListGrid_student_BE.data.getCriteria(), null);
+        }
+    });
+        
+        var ToolStripButton_Print_BE = isc.ToolStripButton.create({
+        icon: "[SKIN]/RichTextEditor/print.png",
+        title: "<spring:message code='print'/>",
+        click: function () {
+            printStudentList(ListGrid_student_BE);
+        }
+    });
 
         var ToolStrip_BE = isc.ToolStrip.create({
             width: "100%",
@@ -299,6 +322,8 @@
                     align: "left",
                     border: '0px',
                     members: [
+                        ToolStripButton_Excel_BE,
+                        ToolStripButton_Print_BE,
                         ToolStripButton_RefreshIssuance_BE
                     ]
                 })

@@ -42,6 +42,10 @@
             {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
+        transformRequest: function (dsRequest) {
+            transformCriteriaForLastModifiedDateNA(dsRequest);
+            return this.Super("transformRequest", arguments);
+        },
         fetchDataURL: viewJobGroupUrl + "/iscList"
     });
     var RestDataSource_Job_Group_Jobs_Jsp = isc.TrDS.create({

@@ -87,9 +87,23 @@ public class ElsRestController {
             return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
         } else {
 
-            BaseResponse baseResponse = client.sendEvaluation(request);
-            response.setMessage(baseResponse.getMessage());
-            response.setStatus(baseResponse.getStatus());
+            try {
+                BaseResponse baseResponse = client.sendEvaluation(request);
+                response.setMessage(baseResponse.getMessage());
+                response.setStatus(baseResponse.getStatus());
+            }
+            catch (Exception r)
+            {
+
+                if ( r.getCause().getMessage().equals("Read timed out")){
+                    response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
+                    response.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
+                    return new ResponseEntity<>(response, HttpStatus.REQUEST_TIMEOUT);
+
+                }
+
+            }
+
             iTclassService.changeOnlineEvalStudentStatus(evaluation.getClassId(), true);
 
             return new ResponseEntity<>(response, HttpStatus.OK);
