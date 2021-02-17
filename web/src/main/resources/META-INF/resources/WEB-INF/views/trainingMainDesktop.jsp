@@ -1193,6 +1193,7 @@
     const needsAssessmentReportsUrl = rootUrl + "/needsAssessment-reports";
     const skillNAUrl = rootUrl + "/skill-na";
     const trainingOverTimeReportUrl = rootUrl + "/trainingOverTime";
+    const needsAssessmentsPerformedUrl = rootUrl + "/needsAssessmentsPerformed";
     const personnelInformationUrl = rootUrl + "/personnelInformation";
     const unfinishedClasses = rootUrl + "/unfinishedClasses";
     const studentPortalUrl = rootUrl + "/student-portal";
@@ -2318,6 +2319,14 @@
                                 title: "گزارش پست های نیازسنجی نشده براساس حوزه",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/training-area-need-assessment"/>");
+                                }
+                            },
+                            </sec:authorize>
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsNeedsAssessment_People')">
+                            {
+                                title: "گزارش نیازسنجی های انجام شده",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/needsAssessmentsPerformed"/>");
                                 }
                             },
                             </sec:authorize>

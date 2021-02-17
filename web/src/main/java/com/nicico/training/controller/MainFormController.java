@@ -298,6 +298,10 @@ public class MainFormController {
     public String showTrainingAreaNeedAssessment() {
         return "report/trainingAreaNeedAssessment";
     }
+    @RequestMapping("/needsAssessmentsPerformed")
+    public String showReportsOfNeedsAssessmentsPerformed() {
+        return "report/needsAssessmentsPerformed";
+    }
 
     @PostMapping("/personnel-needs-assessment-report-print/{type}")
     public ResponseEntity<?> printPersonnelNeedsAssessmentReport(final HttpServletRequest request, @PathVariable String type) {
