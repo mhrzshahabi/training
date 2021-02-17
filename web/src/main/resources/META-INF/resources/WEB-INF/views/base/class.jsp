@@ -2481,7 +2481,7 @@
                     if (resp.data === "true" && a === 0) {
                         DynamicForm1_Class_JspClass.getItem("termId").disable();
                         DynamicForm1_Class_JspClass.getItem("startDate").disable();
-                        DynamicForm1_Class_JspClass.getItem("endDate").disable();
+                        // DynamicForm1_Class_JspClass.getItem("endDate").disable();
                     }
                     singleTargetScoiety = [];
                     etcTargetSociety = [];
@@ -3236,6 +3236,15 @@
                 createDialog("info", "تاریخ پایان کلاس قبل از تاریخ شروع کلاس نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
             }
+            if (termEnd.trim() > classEnd.trim()) {
+                createDialog("info", "تاریخ پایان کلاس قبل از تاریخ پایان ترم نمی تواند باشد.", "<spring:message code='message'/>");
+                return false;
+            }
+            if (classEnd.trim() < classStart.trim()) {
+                createDialog("info", "zaza", "<spring:message code='message'/>");
+                return false;
+            }
+
             if (termStart.trim() > classStart.trim()) {
                 createDialog("info", "تاریخ شروع کلاس قبل از تاریخ شروع ترم نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
