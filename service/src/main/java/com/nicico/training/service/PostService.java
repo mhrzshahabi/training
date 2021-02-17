@@ -139,10 +139,4 @@ public class PostService implements IPostService {
         return SearchUtil.search(postDAO, request, post -> modelMapper.map(post, PostDTO.Info.class));
     }
 
-    public List<String> getAllArea() {
-
-        List<String > area = postDAO.findAllArea();
-        return area;
-    }
-
 }

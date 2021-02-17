@@ -8,7 +8,6 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.ViewPostDTO;
 import com.nicico.training.service.BaseService;
-import com.nicico.training.service.PostService;
 import com.nicico.training.service.ViewPostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +31,6 @@ public class ViewPostRestController {
 
     private final ObjectMapper objectMapper;
     private final ViewPostService viewPostService;
-    private final PostService postService;
 
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<ViewPostDTO.Info>> iscList(HttpServletRequest iscRq) throws IOException {
@@ -40,13 +38,6 @@ public class ViewPostRestController {
         BaseService.setCriteriaToNotSearchDeleted(searchRq);
         SearchDTO.SearchRs<ViewPostDTO.Info> searchRs = viewPostService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/areaList")
-    public List<String> areaList(HttpServletRequest iscRq) throws IOException {
-
-        List<String> areas = postService.getAllArea();
-        return areas;
     }
 
     @Loggable

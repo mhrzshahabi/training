@@ -1,8 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
-<% final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);%>
 
 //<script>
 
@@ -48,39 +46,36 @@
             {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",}
         ],
         cacheAllData: true,
-        fetchDataURL: viewPostUrl + "/iscList?_endRow=10000"
+        fetchDataURL: viewTrainingPostUrl + "/iscList?_endRow=10000"
     });
 
     RestDataSource_Area = isc.TrDS.create({
         fields: [
             {
                 name: "area",
-                title: "<spring:message code='area'/>",
+                title: "<spring:message code='area'/>"
             }
         ]
     });
 
     //------------------------------------------------------Main Window--------------------------------------------------------------//
 
-    // ToolStripButton_Export2EXcel_THNA = isc.ToolStripButtonExcel.create({
-    //
-    //     click: function () {
-    //
-    //         ListGrid_Training_Post.getOriginalData().localData = ListGrid_Training_Post.getOriginalData();
-    //         ExportToFile.downloadExcelRestUrl(null, ListGrid_Training_Post, viewPostUrl + "/iscList?_endRow=10000", 0, null, "حوزه", "طراحی و برنامه ریزی - گزارش نیازسنجی براساس حوزه", null, null);
-    //     }
-    // });
-    //
-    // ToolStripButton_Refresh_THNA = isc.ToolStripButtonRefresh.create({
-    //     click: function () {
-    //
-    //         ListGrid_Training_Post.invalidateCache();
-    //     }
-    // });
+    ToolStripButton_Export2EXcel_THNA = isc.ToolStripButtonExcel.create({
+
+        click: function () {
+
+            makeExcelOutput();
+        }
+    });
+
+    ToolStripButton_Refresh_THNA = isc.ToolStripButtonRefresh.create({
+        click: function () {
+
+            ListGrid_Training_Post.invalidateCache();
+        }
+    });
 
     DynamicForm_Select_Hoze = isc.DynamicForm.create({
         numCols: 1,
@@ -131,7 +126,7 @@
                                     let record = ListGrid_Area.getSelectedRecord();
                                     if (record === null) {
                                             isc.Dialog.create({
-                                            message: "رکوردی انتخاب نشده است.",
+                                            message: "رکوردی انتخاب نشده است",
                                             icon: "[SKIN]ask.png",
                                             title: "پیغام",
                                             buttons: [isc.IButtonSave.create({title: "تائید"})],
@@ -143,6 +138,7 @@
                                         area = record.area;
                                         fetchListGridData(area);
                                         Window_Area.close();
+                                        wait.show();
                                     }
                                 }
             })
@@ -170,15 +166,17 @@
 
     ListGrid_Training_Post = isc.ListGrid.create({
         width: "100%",
-        padding: 10,
         showRowNumbers: true,
         dataSource: RestDataSource_view_training_Post,
         selectionType: "single",
         autoFetchData: false,
         dataPageSize: 15,
         alternateRecordStyles: true,
+        allowFilterOperators: true,
+        showFilterEditor: true,
         fields: [
-            {name: "peopleType",
+            {
+                name: "peopleType",
                 filterOnKeypress: true
             },
             {
@@ -202,35 +200,26 @@
                 }
             },
             {name: "costCenterTitleFa"},
-            {name: "competenceCount"},
-            {name: "personnelCount"},
-            {
-                name: "enabled",
-                filterOnKeypress: true,
-                valueMap: {
-                    // undefined : "فعال",
-                    74 : "غیر فعال"
-                }
-            }
+            {name: "competenceCount"}
         ]
     });
 
-    // ToolStrip_Actions_THNA = isc.ToolStrip.create({
-    //     width: "100%",
-    //     membersMargin: 5,
-    //     members:
-    //         [
-    //             isc.ToolStrip.create({
-    //                 width: "100%",
-    //                 align: "left",
-    //                 border: '0px',
-    //                 members: [
-    //                     ToolStripButton_Refresh_THNA,
-    //                     ToolStripButton_Export2EXcel_THNA
-    //                 ]
-    //             })
-    //         ]
-    // });
+    ToolStrip_Actions_THNA = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members:
+            [
+                isc.ToolStrip.create({
+                    width: "100%",
+                    align: "left",
+                    border: '0px',
+                    members: [
+                        ToolStripButton_Refresh_THNA,
+                        ToolStripButton_Export2EXcel_THNA
+                    ]
+                })
+            ]
+    });
 
     VLayout_THNA = isc.TrVLayout.create({
         members: [
@@ -242,7 +231,7 @@
     VLayout_THNA = isc.TrVLayout.create({
         border: "2px solid blue",
         members: [
-            // ToolStrip_Actions_THNA,
+            ToolStrip_Actions_THNA,
             VLayout_THNA
        ]
     });
@@ -269,15 +258,34 @@
         };
 
     RestDataSource_view_training_Post.fetchData(reportCriteria, function (dsResponse, data, dsRequest) {
-            if (data.length) {
+            wait.close();
+            ListGrid_Training_Post.setCriteria(null);
+            ListGrid_Training_Post.setImplicitCriteria({
+            _constructor: "AdvancedCriteria",
+            operator: "and",
+            criteria: [
+                {
+                    fieldName: "competenceCount",
+                    operator: "equals",
+                    value: 0
+                },
+                {
+                    fieldName: "area",
+                    operator: "equals",
+                    value: areaValue
+                }
+            ]
+        });
+            if (data.length)
                 ListGrid_Training_Post.setData(data);
-            }
+            else
+                ListGrid_Training_Post.setData([]);
         });
     }
 
     function getAreaList() {
 
-        isc.RPCManager.sendRequest(TrDSRequest(viewPostUrl + "/areaList", "GET", null, function (resp) {
+        isc.RPCManager.sendRequest(TrDSRequest(viewTrainingPostUrl + "/areaList", "GET", null, function (resp) {
                             if (generalGetResp(resp)) {
                                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
@@ -297,4 +305,33 @@
                         }));
     }
 
-    //</script>
+    function makeExcelOutput() {
+
+        let fieldNames = "peopleType,code,titleFa,area,assistance,affairs,section," +
+            "unit,costCenterCode,costCenterTitleFa";
+
+        let headerNames = '"<spring:message code="people.type"/>","<spring:message code="post.code"/>","<spring:message code="post.title"/>","<spring:message code="area"/>",' +
+                '"<spring:message code="assistance"/>","<spring:message code="affairs"/>","<spring:message code="section"/>","<spring:message code="unit"/>",' +
+                '"<spring:message code="reward.cost.center.code"/>","<spring:message code="reward.cost.center.title"/>"';
+
+        let downloadForm = isc.DynamicForm.create({
+                    method: "POST",
+                    action: "/training/reportsToExcel/areaNeedAssessment",
+                    target: "_Blank",
+                    canSubmit: true,
+                    fields:
+                        [
+                            {name: "fields", type: "hidden"},
+                            {name: "headers", type: "hidden"},
+                            {name: "area", type: "hidden"}
+                        ]
+                });
+                downloadForm.setValue("fields", fieldNames);
+                downloadForm.setValue("headers", headerNames);
+                downloadForm.setValue("area", area);
+
+                downloadForm.show();
+                downloadForm.submitForm();
+    }
+
+//</script>

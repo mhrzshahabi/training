@@ -14,7 +14,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -37,6 +36,4 @@ public interface PostDAO extends JpaRepository<Post, Long>, JpaSpecificationExec
     @Query(value = "update TBL_POST set D_LAST_MODIFIED_DATE_NA = :modificationDate, C_MODIFIED_BY_NA = :userName where ID = :objectId", nativeQuery = true)
     public int updateModifications(Long objectId, Date modificationDate, String userName);
 
-    @Query(value = "SELECT DISTINCT  p.C_AREA FROM TBL_POST p WHERE p.C_AREA is not null order by p.C_AREA", nativeQuery = true)
-    List<String> findAllArea();
 }
