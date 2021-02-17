@@ -106,7 +106,7 @@ public class ElsRestController {
 
             iTclassService.changeOnlineEvalStudentStatus(evaluation.getClassId(), true);
 
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            return new ResponseEntity<>(response,HttpStatus.valueOf(response.getStatus()));
         }
     }
 

@@ -19,6 +19,7 @@
     var societies = [];
     let oLoadAttachments_class = null;
     let OJT = false;
+    let lastDate = null;
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
@@ -2553,6 +2554,8 @@
                                 null,
                                 (resp) => {
                                     wait.close();
+                                    lastDate= DynamicForm1_Class_JspClass.getValue("endDate")
+
                                     let record = JSON.parse(resp.data).response.data[0];
                                     if(record.evaluationTeacherGrade !== undefined) {
                                         DynamicForm_Class_JspClass.setValue(
@@ -2635,6 +2638,7 @@
                         autoTimeActivation();
                     }
                 }));
+
             }
 
         }
@@ -3248,15 +3252,10 @@
                 createDialog("info", "تاریخ پایان کلاس قبل از تاریخ شروع کلاس نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
             }
-            if (termEnd.trim() > classEnd.trim()) {
+            if (lastDate > classEnd.trim()) {
                 createDialog("info", "تاریخ پایان کلاس قبل از تاریخ پایان ترم نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
             }
-            if (classEnd.trim() < classStart.trim()) {
-                createDialog("info", "zaza", "<spring:message code='message'/>");
-                return false;
-            }
-
             if (termStart.trim() > classStart.trim()) {
                 createDialog("info", "تاریخ شروع کلاس قبل از تاریخ شروع ترم نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
