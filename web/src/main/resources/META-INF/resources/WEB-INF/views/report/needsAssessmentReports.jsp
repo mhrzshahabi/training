@@ -103,6 +103,10 @@
             {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, filterOnKeypress: true,valueMap:{74 : "غیر فعال"}}
         ],
+        transformRequest: function (dsRequest) {
+            transformCriteriaForLastModifiedDateNA(dsRequest);
+            return this.Super("transformRequest", arguments);
+        },
         fetchDataURL: viewTrainingPostUrl + "/iscList"
     });
 

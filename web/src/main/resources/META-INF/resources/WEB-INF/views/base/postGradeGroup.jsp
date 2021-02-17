@@ -42,6 +42,10 @@
             {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
         ],
+        transformRequest: function (dsRequest) {
+            transformCriteriaForLastModifiedDateNA(dsRequest);
+            return this.Super("transformRequest", arguments);
+        },
         fetchDataURL: viewPostGradeGroupUrl + "/iscList"
     });
 

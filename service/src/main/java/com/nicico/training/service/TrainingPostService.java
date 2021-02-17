@@ -30,17 +30,16 @@ public class TrainingPostService implements ITrainingPostService {
     @Autowired
     private MessageSource messageSource;
 
-    private final ModelMapper modelMapper;
-    private final TrainingPostDAO trainingPostDAO;
-    private final PostDAO postDAO;
-    private final PersonnelService personnelService;
-    private final PostService postService;
-    private final ViewPostService viewPostService;
-    private final DepartmentDAO departmentDAO;
     private final JobDAO jobDAO;
+    private final PostDAO postDAO;
+    private final ModelMapper modelMapper;
     private final PostGradeDAO postGradeDAO;
-    private final NeedsAssessmentTempService needsAssessmentTempService;
+    private final DepartmentDAO departmentDAO;
+    private final TrainingPostDAO trainingPostDAO;
+    private final ViewPostService viewPostService;
+    private final PersonnelService personnelService;
     private final NeedsAssessmentService needsAssessmentService;
+    private final NeedsAssessmentTempService needsAssessmentTempService;
 
     @Transactional(readOnly = true)
     @Override
@@ -205,5 +204,11 @@ public class TrainingPostService implements ITrainingPostService {
         entity.setPeopleType(trainingPostDTO.getPeopleType());
         entity.setEnabled(trainingPostDTO.getEnabled());
         return entity;
+    }
+
+    public List<String> getAllArea() {
+
+        List<String > area = trainingPostDAO.findAllArea();
+        return area;
     }
 }

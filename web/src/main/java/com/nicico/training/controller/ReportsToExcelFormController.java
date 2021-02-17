@@ -1,39 +1,77 @@
 package com.nicico.training.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nicico.training.dto.PostDTO;
+import com.nicico.training.dto.TrainingPostDTO;
+import com.nicico.training.dto.ViewTrainingNeedAssessmentDTO;
+import com.nicico.training.model.ViewPost;
+import com.nicico.training.model.ViewTrainingNeedAssessment;
+import com.nicico.training.model.ViewTrainingPost;
+import com.nicico.training.repository.ViewPostDAO;
+import com.nicico.training.repository.ViewTrainingNeedAssessmentDAO;
+import com.nicico.training.repository.ViewTrainingPostDAO;
 import com.nicico.training.service.ExportToFileService;
+import com.nicico.training.utility.MakeExcelOutputUtil;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/reportsToExcel")
 public class ReportsToExcelFormController {
 
-    private final ExportToFileService exportToFileService;
-    private final MessageSource messageSource;
+    private final ModelMapper modelMapper;
+    private final MakeExcelOutputUtil makeExcelOutputUtil;
+    private final ViewTrainingPostDAO viewTrainingPostDAO;
+    private final ViewTrainingNeedAssessmentDAO viewTrainingNeedAssessmentDAO;
 
     @PostMapping(value = {"/areaNeedAssessment"})
-    public void exportExcelFromClient(final HttpServletResponse response,
-                                      @RequestParam(value = "fields") String fields,
-                                      @RequestParam(value = "data") String data,
-                                      @RequestParam(value = "titr") String titr,
-                                      @RequestParam(value = "pageName") String pageName) throws IOException {
+    public void areaNeedAssessmentExcel(HttpServletResponse response, @RequestParam MultiValueMap<String, String> criteria) throws Exception {
 
-        try {
-            exportToFileService.exportToExcel(response, fields, data, titr, pageName);
-        } catch (Exception ex) {
+        List<Object> resp = new ArrayList<>();
 
-            Locale locale = LocaleContextHolder.getLocale();
-            response.sendError(500, messageSource.getMessage("error", null, locale));
-        }
+        String[] fields = Objects.requireNonNull(criteria.getFirst("fields")).split(",");
+        String[] headers = Objects.requireNonNull(criteria.getFirst("headers")).split(",");
+        String area = criteria.get("area").get(0);
+
+        List<ViewTrainingPost> viewTrainingPosts = viewTrainingPostDAO.findAllByAreaAndCompetenceCount(0, area);
+
+        List<TrainingPostDTO.Info> trainingPostData = viewTrainingPosts.stream().map(item -> modelMapper.map(item, TrainingPostDTO.Info.class)).collect(Collectors.toList());
+        resp.addAll(trainingPostData);
+
+        byte[] bytes = makeExcelOutputUtil.makeOutput(resp, TrainingPostDTO.Info.class, fields, headers, true, "");
+        makeExcelOutputUtil.makeExcelResponse(bytes, response);
+    }
+
+    @PostMapping(value = {"/courseNeedAssessment"})
+    public void courseNeedAssessmentExcel(HttpServletResponse response, @RequestParam MultiValueMap<String, String> criteria) throws Exception {
+
+        List<Object> resp = new ArrayList<>();
+
+        String[] fields = Objects.requireNonNull(criteria.getFirst("fields")).split(",");
+        String[] headers = Objects.requireNonNull(criteria.getFirst("headers")).split(",");
+        Long categoryId = Long.valueOf(criteria.get("category").get(0));
+
+        List<ViewTrainingNeedAssessment> viewTrainingNeedAssessments = viewTrainingNeedAssessmentDAO.findAllByCategoryId(categoryId);
+
+        List<ViewTrainingNeedAssessmentDTO.Info> trainingNeedAssessmentData = viewTrainingNeedAssessments.stream().map(item -> modelMapper.map(item, ViewTrainingNeedAssessmentDTO.Info.class)).collect(Collectors.toList());
+        resp.addAll(trainingNeedAssessmentData);
+
+        byte[] bytes = makeExcelOutputUtil.makeOutput(resp, ViewTrainingNeedAssessmentDTO.Info.class, fields, headers, true, "");
+        makeExcelOutputUtil.makeExcelResponse(bytes, response);
     }
 }
+
