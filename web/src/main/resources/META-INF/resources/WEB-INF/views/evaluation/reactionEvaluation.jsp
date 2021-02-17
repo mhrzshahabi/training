@@ -732,6 +732,20 @@
         }
     });
 
+    var ToolStripButton_Excel_RE = isc.ToolStripButtonExcel.create({
+        click: function () {
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_student_RE, tclassStudentUrl, 0,
+                null, '',  "لیست فراگیران", ListGrid_student_RE.data.getCriteria(), null);
+        }
+    });
+    var ToolStripButton_Print_RE = isc.ToolStripButton.create({
+        icon: "[SKIN]/RichTextEditor/print.png",
+        title: "<spring:message code='print'/>",
+        click: function () {
+            printStudentList(ListGrid_student_RE);
+        }
+    });
+
     var ToolStrip_RE = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 10,
@@ -1153,6 +1167,8 @@
                                 align: "left",
                                 border: '0px',
                                 members: [
+                                    ToolStripButton_Excel_RE,
+                                    ToolStripButton_Print_RE,
                                     ToolStripButton_RefreshIssuance_RE
                                 ]
                             })
