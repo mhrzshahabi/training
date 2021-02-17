@@ -708,7 +708,7 @@
                     });
                 }
             }
-        }
+        },
     });
 
     DynamicForm_BasicInfo_JspTeacher.getItem('teacherCode').setCellStyle('teacher-code-label');
