@@ -1137,6 +1137,7 @@
                     }
                 }),
                 isc.TrSaveNextBtn.create({
+ID:"QuestionBankWin_questionBank_TrSaveNextBtn",
                     click: function () {
                         forceToCloseWindow=false;
                         saveQuestionBank_questionBank();
@@ -1242,7 +1243,9 @@
         QuestionBankDF_questionBank.getItem("questionTypeId").setValue(519);
 
         QuestionBankWin_questionBank.show();
-    }
+QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
+
+}
 
     function showEditForm_questionBank() {
 
@@ -1356,7 +1359,9 @@
                     // QuestionBankDF_questionBank.redraw();
                 }
 
+
                 QuestionBankWin_questionBank.show();
+                QuestionBankWin_questionBank.items[1].members[2].setVisibility(false);
             } else {
                 createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
             }
