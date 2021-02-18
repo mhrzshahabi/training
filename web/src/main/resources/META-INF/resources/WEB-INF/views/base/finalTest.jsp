@@ -572,8 +572,7 @@ let inValidStudents = [];
 
                     let studentData = result[i];
 
-
-if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.cellNumber)) {
+if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.cellNumber,studentData.gender)) {
 
                         inValidStudents.add({
                             firstName: studentData.surname,
@@ -616,7 +615,7 @@ if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.cellNumber))
                     let names = "";
                     for (var j = 0; j < inValidStudents.length; j++) {
 
-                        names = names.concat(inValidStudents[j].surname + " " + inValidStudents[j].lastName  + "\n");
+                        names = names.concat(inValidStudents[j].firstName + " " + inValidStudents[j].lastName  + "\n");
                     }
                     DynamicForm_InValid_Students.setValue("invalidNames", names);
 
@@ -632,8 +631,7 @@ if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.cellNumber))
                                 isc.IButtonSave.create({
                                 title: "<spring:message code="continue"/>",
                                 click: function () {
-
-loadExamQuestions(record,questionData,Window_result_Finaltest)
+                                 loadExamQuestions(record,questionData,Window_result_Finaltest)
                                     Window_InValid_Students.close();
                                 }}),
                                 isc.IButtonCancel.create({
@@ -645,8 +643,10 @@ loadExamQuestions(record,questionData,Window_result_Finaltest)
                         })]
                     });
                     Window_InValid_Students.show();
-                } else
-                                loadExamQuestions(record,questionData,Window_result_Finaltest)
+                } else {
+loadExamQuestions(record,questionData,Window_result_Finaltest)
+
+}
 }
 }));
 
@@ -968,13 +968,15 @@ scoreLabel.setContents("مجموع بارم وارد شده :")
                                 OK.close();
                                 }, 2000);
                             } else {
-                                debugger
+
                                 if (resp.httpResponseCode === 406)
 createDialog("info","<spring:message code="msg.check.teacher.mobile.ncode"/>"+" "+"<spring:message code="msg.check.teacher.mobile.ncode.message"/>", "<spring:message code="error"/>");
                                 else if (resp.httpResponseCode === 404)
 createDialog("info", "<spring:message code="msg.check.users.mobile.ncode"/>", "<spring:message code="error"/>");
                                 else if (resp.httpResponseCode === 500)
 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                else
+createDialog("info",JSON.parse(resp.httpResponseText).message, "<spring:message code="error"/>");
 
 }
                             wait.close();
@@ -1422,11 +1424,11 @@ createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", 
             });
         TabSet_finalTest.enable();
     }
-function NCodeAndMobileValidation(nationalCode, mobileNum) {
+function NCodeAndMobileValidation(nationalCode, mobileNum,gender) {
 
 let isValid = true;
 
-if (nationalCode===undefined || nationalCode===null || mobileNum===undefined || mobileNum===null )
+if (gender ===undefined || nationalCode===undefined || nationalCode===null || mobileNum===undefined || mobileNum===null )
 {
 isValid = false;
 }
@@ -1442,6 +1444,9 @@ if(mobileNum.length === 10 && !mobileNum.startsWith("9"))
 isValid = false;
 
 if(mobileNum.length === 11 && !mobileNum.startsWith("09"))
+isValid = false;
+
+if(gender===null)
 isValid = false;
 }
 return isValid;

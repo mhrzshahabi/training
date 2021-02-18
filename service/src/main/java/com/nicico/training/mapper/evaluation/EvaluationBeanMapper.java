@@ -277,7 +277,11 @@ public abstract class EvaluationBeanMapper {
         }
         else if (tClass.getScoringMethod().equals("4"))
         {
+            if (null!=tClass.getAcceptancelimit())
             exam.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
+            else
+                exam.setMinimumAcceptScore(50D);
+
             exam.setScore(100D);
 
         }
@@ -804,5 +808,47 @@ public abstract class EvaluationBeanMapper {
 
     return     classStudents.stream()
                 .map(classStudent -> toTargetUser(classStudent.getStudent())).collect(Collectors.toList());
+    }
+
+    public ElsEvalRequest removeInvalidUsers(ElsEvalRequest request) {
+        request.getTargetUsers().removeIf(user -> !validateTargetUser(user));
+        return request;
+    }
+    public ElsExamRequest removeInvalidUsersForExam(ElsExamRequest request) {
+        request.getUsers().removeIf(user -> !validateTargetUser(user));
+        return request;
+    }
+    public boolean validateTeacherExam(ImportedUser teacher) {
+        boolean isValid = true;
+        if (null == teacher.getNationalCode() || null == teacher.getCellNumber() || teacher.getGender() == null)
+            isValid = false;
+        else {
+            if (teacher.getNationalCode().length() != 10 || !teacher.getNationalCode().matches("\\d+")) isValid = false;
+            if ((teacher.getCellNumber().length() != 10 && teacher.getCellNumber().length() != 11) || !teacher.getCellNumber().matches("\\d+"))
+                isValid = false;
+            if (teacher.getCellNumber().length() == 10 && !(teacher.getCellNumber().startsWith("9"))) isValid = false;
+            if (teacher.getCellNumber().length() == 11 && !(teacher.getCellNumber().startsWith("09"))) isValid = false;
+
+        }
+
+        return isValid;
+    }
+    public boolean validateTargetUser(EvalTargetUser teacher) {
+
+        boolean isValid = true;
+
+
+        if (null == teacher.getNationalCode() || null == teacher.getCellNumber() || teacher.getGender() == null)
+            isValid = false;
+        else {
+            if (teacher.getNationalCode().length() != 10 || !teacher.getNationalCode().matches("\\d+")) isValid = false;
+            if ((teacher.getCellNumber().length() != 10 && teacher.getCellNumber().length() != 11) || !teacher.getCellNumber().matches("\\d+"))
+                isValid = false;
+            if (teacher.getCellNumber().length() == 10 && !(teacher.getCellNumber().startsWith("9"))) isValid = false;
+            if (teacher.getCellNumber().length() == 11 && !(teacher.getCellNumber().startsWith("09"))) isValid = false;
+
+        }
+
+        return isValid;
     }
 }

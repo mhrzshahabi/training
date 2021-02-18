@@ -80,7 +80,7 @@ public class ElsRestController {
         Evaluation evaluation = evaluationService.getById(id);
         ElsEvalRequest request = evaluationBeanMapper.toElsEvalRequest(evaluation, questionnaireService.get(evaluation.getQuestionnaireId()), classStudentService.getClassStudents(evaluation.getClassId()), evaluationService.getEvaluationQuestions(answerService.getAllByEvaluationId(evaluation.getId())), personalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId()));
 
-        if (!validateTeacher(request.getTeacher())) {
+        if (!evaluationBeanMapper.validateTargetUser(request.getTeacher())) {
             response.setMessage("اطلاعات استاد تکمیل نیست");
             response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
 
@@ -88,14 +88,13 @@ public class ElsRestController {
         } else {
 
             try {
+                request =evaluationBeanMapper.removeInvalidUsers(request);
                 BaseResponse baseResponse = client.sendEvaluation(request);
                 response.setMessage(baseResponse.getMessage());
                 response.setStatus(baseResponse.getStatus());
-            }
-            catch (Exception r)
-            {
+            } catch (Exception r) {
 
-                if ( r.getCause().getMessage().equals("Read timed out")){
+                if (r.getCause().getMessage().equals("Read timed out")) {
                     response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
                     response.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
                     return new ResponseEntity<>(response, HttpStatus.REQUEST_TIMEOUT);
@@ -106,27 +105,8 @@ public class ElsRestController {
 
             iTclassService.changeOnlineEvalStudentStatus(evaluation.getClassId(), true);
 
-            return new ResponseEntity<>(response,HttpStatus.valueOf(response.getStatus()));
+            return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
         }
-    }
-
-    private boolean validateTeacher(EvalTargetUser teacher) {
-
-        boolean isValid = true;
-
-
-        if (null==teacher.getNationalCode()  || null==teacher.getCellNumber() ||teacher.getGender() == null) isValid = false;
-        else
-        {
-            if ( teacher.getNationalCode().length() != 10 || !teacher.getNationalCode().matches("\\d+")) isValid = false;
-            if ((teacher.getCellNumber().length() != 10 && teacher.getCellNumber().length() != 11) || !teacher.getCellNumber().matches("\\d+"))
-                isValid = false;
-            if (teacher.getCellNumber().length() == 10 && !(teacher.getCellNumber().startsWith("9"))) isValid = false;
-            if (teacher.getCellNumber().length() == 11 && !(teacher.getCellNumber().startsWith("09"))) isValid = false;
-
-        }
-
-        return isValid;
     }
 
     @GetMapping("/teacherEval/{id}")
@@ -136,17 +116,28 @@ public class ElsRestController {
 
         Evaluation evaluation = evaluationService.getById(id);
         ElsEvalRequest request = evaluationBeanMapper.toElsEvalRequest(evaluation, questionnaireService.get(evaluation.getQuestionnaireId()), classStudentService.getClassStudents(evaluation.getClassId()), evaluationService.getEvaluationQuestions(answerService.getAllByEvaluationId(evaluation.getId())), personalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId()));
+        try {
+            request =evaluationBeanMapper.removeInvalidUsers(request);
+            BaseResponse baseResponse = client.sendEvaluationToTeacher(request);
+            response.setMessage(baseResponse.getMessage());
+            response.setStatus(baseResponse.getStatus());
+        } catch (Exception r) {
 
-        BaseResponse baseResponse = client.sendEvaluationToTeacher(request);
-        response.setMessage(baseResponse.getMessage());
-        response.setStatus(baseResponse.getStatus());
+            if (r.getCause().getMessage().equals("Read timed out")) {
+                response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
+                response.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
+                return new ResponseEntity(response, HttpStatus.valueOf(response.getStatus()));
+
+            }
+
+        }
         iTclassService.changeOnlineEvalTeacherStatus(evaluation.getClassId(), true);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/evalResult/{id}")
     public ResponseEntity<EvalListResponse> getEvalResults(@PathVariable long id) {
-       ;
+        ;
         EvalListResponse response = client.getEvalResults(id);
         //TODO SAVE EVALUATION RESULTS TO DB OR ANYTHING THAT YOU WANT TO DO
         return new ResponseEntity(response, HttpStatus.OK);
@@ -170,19 +161,30 @@ public class ElsRestController {
             PersonalInfo teacherInfo = personalInfoService.getPersonalInfo(teacherService.getTeacher(object.getExamItem().getTclass().getTeacherId()).getPersonalityId());
             request = evaluationBeanMapper.toGetExamRequest(tclassService.getTClass(object.getExamItem().getTclassId()), teacherInfo, object, classStudentService.getClassStudents(object.getExamItem().getTclassId()));
 
-            if (request.getInstructor()!=null && request.getInstructor().getNationalCode()!=null && validateTeacherExam(request.getInstructor()))
-            {
-                if (request.getUsers()!=null && !request.getUsers().isEmpty())
-                response = client.sendExam(request);
-                else
+            if (request.getInstructor() != null && request.getInstructor().getNationalCode() != null && evaluationBeanMapper.validateTeacherExam(request.getInstructor())) {
+                if (request.getUsers() != null && !request.getUsers().isEmpty())
                 {
+                    try {
+                        request =evaluationBeanMapper.removeInvalidUsersForExam(request);
+                        response = client.sendExam(request);
+                    }
+                    catch (Exception e)
+                    {
+                        if (e.getCause().getMessage().equals("Read timed out")) {
+                            response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
+                            response.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
+                            return new ResponseEntity<>(response, HttpStatus.REQUEST_TIMEOUT);
+
+                        }
+                    }
+
+                }
+                else {
                     response.setStatus(HttpStatus.NOT_FOUND.value());
                     response.setMessage("دوره فراگیر ندارد");
                     return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
                 }
-            }
-            else
-            {
+            } else {
                 response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
                 response.setMessage("اطلاعات استاد تکمیل نیست");
                 return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
@@ -191,43 +193,24 @@ public class ElsRestController {
 
                 testQuestionService.changeOnlineFinalExamStatus(request.getExam().getSourceExamId(), true);
                 return new ResponseEntity<>(response, HttpStatus.OK);
-            } else return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+            } else return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
 
         } catch (TrainingException ex) {
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                response.setMessage("بروز خطا در سیستم");
+                return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
 
-            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-            response.setMessage("بروز خطا در سیستم");
-            return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
         }
     }
+
     @GetMapping("/getClassStudent/{id}")
     public List<EvalTargetUser> getClassStudent(@PathVariable long id) {
 
 
-
-            return evaluationBeanMapper.getClassUsers(classStudentService.getClassStudents(id) );
-
-
-
+        return evaluationBeanMapper.getClassUsers(classStudentService.getClassStudents(id));
 
 
     }
-
-    private boolean validateTeacherExam(ImportedUser teacher) {
-        boolean isValid = true;
-        if ( null==teacher.getNationalCode() || null==teacher.getCellNumber() || teacher.getGender() == null) isValid = false;
-        else {
-            if (teacher.getNationalCode().length() != 10 || !teacher.getNationalCode().matches("\\d+")) isValid = false;
-            if ((teacher.getCellNumber().length() != 10 && teacher.getCellNumber().length() != 11) || !teacher.getCellNumber().matches("\\d+"))
-                isValid = false;
-            if (teacher.getCellNumber().length() == 10 && !(teacher.getCellNumber().startsWith("9"))) isValid = false;
-            if (teacher.getCellNumber().length() == 11 && !(teacher.getCellNumber().startsWith("09"))) isValid = false;
-
-        }
-
-        return isValid;
-    }
-
 
     @GetMapping("/getEvalReport/{id}")
     public ResponseEntity<InputStreamResource> getEvalReport(@PathVariable long id) {
@@ -241,7 +224,6 @@ public class ElsRestController {
 
         return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(new InputStreamResource(bis));
     }
-
 
     @PostMapping("/printPdf/{id}/{national}/{name}/{last}/{fullName}")
     public void printPdf(HttpServletResponse response, @PathVariable long id, @PathVariable String national, @PathVariable String name, @PathVariable String last, @PathVariable String fullName
@@ -297,64 +279,65 @@ public class ElsRestController {
         PersonnelRegisteredDTO.Info personnelRegistered = null;
         PersonalInfoDTO.Info personalInfo = personalInfoService.getOneByNationalCode(nationalCode);
         List<String> roles = new ArrayList<>();
-        if (personnel != null ) {
+        if (personnel != null) {
             personBeanMapper.setPersonnelFields(personDTO, personnel);
             String role = "User";
             roles.add(role);
         } else {
             personnelRegistered = personnelRegisteredService.getOneByNationalCode(nationalCode);
-            if (personnelRegistered != null){
+            if (personnelRegistered != null) {
                 personBeanMapper.setPersonnelRegisteredFields(personDTO, personnelRegistered);
                 String role = "User";
                 roles.add(role);
             }
         }
         //if user is a teacher or a company owner
-        if (personalInfo != null){
+        if (personalInfo != null) {
             String role = "Instructor";
             roles.add(role);
-            if (personnel == null && personnelRegistered == null){
+            if (personnel == null && personnelRegistered == null) {
                 personBeanMapper.setPersonalInfoFields(personDTO, personalInfo);
             } else {
                 // we fill fields if there are valid values in other objects
-                if(personDTO.getEmail() == null && personalInfo.getContactInfo() != null && personalInfo.getContactInfo().getEmail() != null){
+                if (personDTO.getEmail() == null && personalInfo.getContactInfo() != null && personalInfo.getContactInfo().getEmail() != null) {
                     personDTO.setEmail(personalInfo.getContactInfo().getEmail());
                 }
-                if(personDTO.getAddress() == null && personalInfo.getContactInfo() != null && personalInfo.getContactInfo().getHomeAddress() != null){
+                if (personDTO.getAddress() == null && personalInfo.getContactInfo() != null && personalInfo.getContactInfo().getHomeAddress() != null) {
                     personDTO.setAddress(personalInfo.getContactInfo().getHomeAddress().getRestAddr());
                 }
-                if(personDTO.getMobile() == null && personalInfo.getContactInfo() != null && personalInfo.getContactInfo().getMobile() != null){
+                if (personDTO.getMobile() == null && personalInfo.getContactInfo() != null && personalInfo.getContactInfo().getMobile() != null) {
                     personDTO.setMobile(personBeanMapper.checkMobileFormat(personalInfo.getContactInfo().getMobile()));
                 }
-                if(personDTO.getPhone() == null && personalInfo.getContactInfo() != null && personalInfo.getContactInfo().getHomeAddress() != null){
+                if (personDTO.getPhone() == null && personalInfo.getContactInfo() != null && personalInfo.getContactInfo().getHomeAddress() != null) {
                     personDTO.setPhone(personalInfo.getContactInfo().getHomeAddress().getPhone());
                 }
-                if(personDTO.getBirthDate() == null && personalInfo.getBirthDate() != null){
+                if (personDTO.getBirthDate() == null && personalInfo.getBirthDate() != null) {
                     personDTO.setBirthDate(personalInfo.getBirthDate());
                 }
-                if(personDTO.getGender() == null && personalInfo.getGenderId() != null){
+                if (personDTO.getGender() == null && personalInfo.getGenderId() != null) {
                     if (personalInfo.getGenderId().equals(EGender.Male.getId())) {
                         personDTO.setGender(0);
                     } else {
                         personDTO.setGender(1);
                     }
                 }
-                if(personDTO.getEducationLevelTitle() == null && personalInfo.getEducationLevel() != null){
+                if (personDTO.getEducationLevelTitle() == null && personalInfo.getEducationLevel() != null) {
                     personDTO.setEducationLevelTitle(personalInfo.getEducationLevel().getTitleFa());
                 }
-                if(personDTO.getEducationMajorTitle() == null && personalInfo.getEducationMajor() != null){
+                if (personDTO.getEducationMajorTitle() == null && personalInfo.getEducationMajor() != null) {
                     personDTO.setEducationMajorTitle(personalInfo.getEducationMajor().getTitleFa());
                 }
             }
 
         }
-        if ( personnel != null || personnelRegistered != null || personalInfo != null){
+        if (personnel != null || personnelRegistered != null || personalInfo != null) {
             personDTO.setRoles(roles);
         }
 
         PersonnelDTO.PersonalityInfo personalInfoDTO = personnelService.getByNationalCode(nationalCode);
         return new ResponseEntity<>(personDTO, HttpStatus.OK);
     }
+
     @PostMapping("/student/addAnswer/evaluation")
     public BaseResponse addStudentEvaluationAnswer(HttpServletRequest header, @RequestBody StudentEvaluationAnswerDto dto) {
         BaseResponse response = new BaseResponse();
@@ -365,9 +348,7 @@ public class ElsRestController {
             EvaluationDTO.Info info = evaluationService.update(answerObject.getId(), update);
             evaluationAnalysisService.updateReactionEvaluation(info.getClassId());
             response.setStatus(200);
-        }
-        else
-        {
+        } else {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
 
         }
@@ -376,21 +357,17 @@ public class ElsRestController {
     }
 
 
-
     @PostMapping("/teacher/addAnswer/evaluation")
-    public BaseResponse addTeacherEvaluationAnswer(HttpServletRequest header,@RequestBody TeacherEvaluationAnswerDto dto) {
-        BaseResponse response=new BaseResponse();
+    public BaseResponse addTeacherEvaluationAnswer(HttpServletRequest header, @RequestBody TeacherEvaluationAnswerDto dto) {
+        BaseResponse response = new BaseResponse();
 
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token")))
-        {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             EvaluationAnswerObject answerObject = tclassService.classTeacherEvaluations(dto);
             EvaluationDTO.Update update = modelMapper.map(answerObject, EvaluationDTO.Update.class);
             EvaluationDTO.Info info = evaluationService.update(answerObject.getId(), update);
             evaluationAnalysisService.updateReactionEvaluation(info.getClassId());
             response.setStatus(200);
-        }
-        else
-        {
+        } else {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
         }
         return response;
