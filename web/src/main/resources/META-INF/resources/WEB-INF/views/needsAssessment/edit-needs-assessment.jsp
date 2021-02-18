@@ -1043,9 +1043,12 @@
         showRowNumbers: false,
         selectionType:"single",
         autoSaveEdits:false,
+        sortField: 0,
+        sortDirection: "descending",
         implicitCriteria:{"needsAssessmentDomainId":108},
         contextMenu: Menu_ListGrid_JspENA,
         fields: [
+            {name: "id", hidden: true},
             {name: "titleFa"},
             {name: "objectType"},
             {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
@@ -1056,7 +1059,6 @@
                 fields: ["titleFa", "objectType"],
                 title: "<spring:message code="knowledge"/>"
             }],
-        sortField: 1,
         headerHeight: 50,
         gridComponents: [
             "filterEditor", "header", "body"
@@ -1103,7 +1105,10 @@
         showRowNumbers: false,
         contextMenu: Menu_ListGrid_JspENA,
         selectionType:"single",
+        sortField: 0,
+        sortDirection: "descending",
         fields: [
+            {name: "id", hidden: true},
             {name: "titleFa"},
             {name: "objectType"},
             {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
@@ -1124,7 +1129,6 @@
                 title: "<spring:message code="ability"/>"
             }],
         headerHeight: 50,
-        sortField: 1,
         gridComponents: [
             "filterEditor", "header", "body"
         ],
@@ -1171,7 +1175,10 @@
         autoFetchData:false,
         contextMenu: Menu_ListGrid_JspENA,
         selectionType:"single",
+        sortField: 0,
+        sortDirection: "descending",
         fields: [
+            {name: "id", hidden: true},
             {name: "titleFa"},
             {name: "objectType"},
             {name: "hasWarning", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
@@ -1186,7 +1193,6 @@
             //     }
             // }
         ],
-        sortField: 1,
         headerSpans: [
             {
                 fields: ["titleFa", "objectType"],
