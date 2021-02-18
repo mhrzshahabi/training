@@ -164,14 +164,16 @@
         ID: "NeedAssessmentsPerformedGrid",
         //dynamicTitle: true,
         filterOnKeypress: false,
-        showFilterEditor:true,
+        showFilterEditor:false,
         gridComponents: [DynamicForm_NeedsAssessmentsPerformed,
             isc.ToolStripButtonExcel.create({
                 margin:5,
                 click:function() {
-                    let title="گزارش اضافه کاری آموزشی از تاریخ "+DynamicForm_NeedsAssessmentsPerformed.getItem("startDate").getValue()+ " الی "+DynamicForm_NeedsAssessmentsPerformed.getItem("endDate").getValue();
+                    makeExcelOutput();
 
-                    ExportToFile.downloadExcel(null, ListGrid_NeedAssessmentsPerformed, 'needAssessmentsPerformed', 0, null, '', title, DynamicForm_NeedsAssessmentsPerformed.getValuesAsAdvancedCriteria(), null,2);
+                    // let title="گزارش نیازسنجی های انجام شده از تاریخ "+DynamicForm_NeedsAssessmentsPerformed.getItem("startDate").getValue()+ " الی "+DynamicForm_NeedsAssessmentsPerformed.getItem("endDate").getValue();
+                    //
+                    // ExportToFile.downloadExcel(null, ListGrid_NeedAssessmentsPerformed, 'needAssessmentsPerformed', 0, null, '', title, DynamicForm_NeedsAssessmentsPerformed.getValuesAsAdvancedCriteria(), null,2);
                 }
             })
             , "header", "filterEditor", "body"],
@@ -197,5 +199,33 @@
             ListGrid_NeedAssessmentsPerformed
         ]
     });
+
+    function makeExcelOutput() {
+
+        let fieldNames = "postType,postCode,postTitle,updateBy";
+
+        let headerNames = 'نوع پست,کد پست,عنوان پست ,کارشناس';
+
+        let downloadForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "/training/reportsToExcel/needsAssessmentsPerformed",
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "fields", type: "hidden"},
+                    {name: "headers", type: "hidden"},
+                    {name: "start", type: "hidden"},
+                    {name: "end", type: "hidden"}
+                ]
+        });
+        downloadForm.setValue("fields", fieldNames);
+        downloadForm.setValue("headers", headerNames);
+        downloadForm.setValue("start", gregorianDate(DynamicForm_NeedsAssessmentsPerformed.getItem("startDate").getValue()));
+        downloadForm.setValue("end", gregorianDate(DynamicForm_NeedsAssessmentsPerformed.getItem("endDate").getValue()));
+
+        downloadForm.show();
+        downloadForm.submitForm();
+    }
 
     //</script>

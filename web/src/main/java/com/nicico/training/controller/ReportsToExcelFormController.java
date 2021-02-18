@@ -3,7 +3,9 @@ package com.nicico.training.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.dto.TrainingPostDTO;
+import com.nicico.training.dto.ViewNeedAssessmentInRangeDTO;
 import com.nicico.training.dto.ViewTrainingNeedAssessmentDTO;
+import com.nicico.training.iservice.IViewNeedAssessmentInRangeTimeService;
 import com.nicico.training.model.ViewPost;
 import com.nicico.training.model.ViewTrainingNeedAssessment;
 import com.nicico.training.model.ViewTrainingPost;
@@ -37,6 +39,7 @@ public class ReportsToExcelFormController {
     private final MakeExcelOutputUtil makeExcelOutputUtil;
     private final ViewTrainingPostDAO viewTrainingPostDAO;
     private final ViewTrainingNeedAssessmentDAO viewTrainingNeedAssessmentDAO;
+    private final IViewNeedAssessmentInRangeTimeService iViewNeedAssessmentInRangeTimeService;
 
     @PostMapping(value = {"/areaNeedAssessment"})
     public void areaNeedAssessmentExcel(HttpServletResponse response, @RequestParam MultiValueMap<String, String> criteria) throws Exception {
@@ -71,6 +74,23 @@ public class ReportsToExcelFormController {
         resp.addAll(trainingNeedAssessmentData);
 
         byte[] bytes = makeExcelOutputUtil.makeOutput(resp, ViewTrainingNeedAssessmentDTO.Info.class, fields, headers, true, "");
+        makeExcelOutputUtil.makeExcelResponse(bytes, response);
+    }
+    @PostMapping(value = {"/needsAssessmentsPerformed"})
+    public void needsAssessmentsPerformed(HttpServletResponse response, @RequestParam MultiValueMap<String, String> criteria) throws Exception {
+
+        List<Object> resp = new ArrayList<>();
+
+        String[] fields = Objects.requireNonNull(criteria.getFirst("fields")).split(",");
+        String[] headers = Objects.requireNonNull(criteria.getFirst("headers")).split(",");
+        String start = String.valueOf(criteria.get("start").get(0));
+        String end = String.valueOf(criteria.get("end").get(0));
+
+        List<ViewNeedAssessmentInRangeDTO.Info> viewTrainingNeedAssessments = iViewNeedAssessmentInRangeTimeService.getList(start,end);
+
+        resp.addAll(viewTrainingNeedAssessments);
+
+        byte[] bytes = makeExcelOutputUtil.makeOutput(resp, ViewNeedAssessmentInRangeDTO.Info.class, fields, headers, true, "");
         makeExcelOutputUtil.makeExcelResponse(bytes, response);
     }
 }

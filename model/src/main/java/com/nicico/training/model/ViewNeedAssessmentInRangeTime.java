@@ -10,6 +10,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.Serializable;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -40,7 +41,7 @@ public class ViewNeedAssessmentInRangeTime implements Serializable{
     private String updateBy;
 
     @Column(name = "UPDATETIME")
-    private String updateAt;
+    private Date updateAt;
 
 
 

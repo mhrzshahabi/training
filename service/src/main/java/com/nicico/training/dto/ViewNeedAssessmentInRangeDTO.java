@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -33,7 +34,7 @@ public class ViewNeedAssessmentInRangeDTO implements Serializable {
     private String updateBy;
 
     @ApiModelProperty
-    private String updateAt;
+    private Date updateAt;
 
 
     @Getter

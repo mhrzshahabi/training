@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -38,30 +40,39 @@ public class ViewNeedAssessmentInRangeController {
 
         List<SearchDTO.CriteriaRq> listOfCriteria=new ArrayList<>();
 
-//        SearchDTO.CriteriaRq criteriaRq=null;
-//
-//        SimpleDateFormat formatter = new SimpleDateFormat("DD-MM-YYYY");
+        SearchDTO.CriteriaRq criteriaRq=null;
+
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date parsedDate = dateFormat.parse(startDate);
+            Date parsedDate2 = dateFormat.parse(endDate);
+            Timestamp firstTime = new Timestamp(parsedDate.getTime());
+            Timestamp secondDate = new Timestamp(parsedDate2.getTime());
+
+            criteriaRq=new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.greaterOrEqual);
+            criteriaRq.setFieldName("updateAt");
+            criteriaRq.setValue(new Date(firstTime.getTime()));
+
+            listOfCriteria.add(criteriaRq);
+
+            criteriaRq=new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.lessOrEqual);
+            criteriaRq.setFieldName("updateAt");
+            criteriaRq.setValue(new Date(secondDate.getTime()));
+        } catch(Exception e) { //this generic but you can control another types of exception
+            // look the origin of excption
+        }
 
 
 
-//        criteriaRq=new SearchDTO.CriteriaRq();
-//        criteriaRq.setOperator(EOperator.greaterOrEqual);
-//        criteriaRq.setFieldName("updateAt");
-//        criteriaRq.setValue(formatter.format(startDate));
-//
-//        listOfCriteria.add(criteriaRq);
-//
-//        criteriaRq=new SearchDTO.CriteriaRq();
-//        criteriaRq.setOperator(EOperator.lessOrEqual);
-//        criteriaRq.setFieldName("updateAt");
-//        criteriaRq.setValue(formatter.format(startDate));
-//
-//        listOfCriteria.add(criteriaRq);
-//        criteriaRq=new SearchDTO.CriteriaRq();
-//        criteriaRq.setCriteria(listOfCriteria);
-//        criteriaRq.setOperator(EOperator.and);
-//
-//        searchRq.setCriteria(criteriaRq);
+
+        listOfCriteria.add(criteriaRq);
+        criteriaRq=new SearchDTO.CriteriaRq();
+        criteriaRq.setCriteria(listOfCriteria);
+        criteriaRq.setOperator(EOperator.and);
+
+        searchRq.setCriteria(criteriaRq);
 
         SearchDTO.SearchRs result = iViewNeedAssessmentInRangeTimeService.search(searchRq, o -> modelMapper.map(o, ViewNeedAssessmentInRangeDTO.Info.class));
         final ViewNeedAssessmentInRangeDTO.SpecRs specResponse = new ViewNeedAssessmentInRangeDTO.SpecRs();
