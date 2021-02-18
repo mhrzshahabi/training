@@ -13,13 +13,16 @@
             var ToolStripButton_Refresh_PI = isc.ToolStripButtonRefresh.create({
                 title: "<spring:message code="refresh"/>",
                 click: function () {
-
                     if (PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel") {
+                        PersonnelInfoListGrid_PersonnelList.clearFilterValues();
+                        PersonnelInfoListGrid_PersonnelList.filterByEditor();
                         PersonnelInfoListGrid_PersonnelList.invalidateCache();
                         if (oPersonnelInformationDetails!=null && typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
                             oPersonnelInformationDetails.set_PersonnelInfo_Details(null);
                         }
                     } else {
+                        PersonnelInfoListGrid_RegisteredPersonnelList.clearFilterValues();
+                        PersonnelInfoListGrid_RegisteredPersonnelList.filterByEditor();
                         PersonnelInfoListGrid_RegisteredPersonnelList.invalidateCache();
                         if (oPersonnelInformationDetails!=null && typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
                             oPersonnelInformationDetails.set_PersonnelInfo_Details(null);
