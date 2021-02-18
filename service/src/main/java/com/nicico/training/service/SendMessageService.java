@@ -250,7 +250,10 @@ public class SendMessageService implements ISendMessageService {
             courseName = tclassDTO.getCourse().getTitleFa();
             courseStartDate = tclassDTO.getStartDate();
             courseEndDate = tclassDTO.getEndDate();
+            if (null!=tclassDTO.getInstitute())
             institute = tclassDTO.getInstitute().getTitleFa();
+            else
+                institute = "ثبت نشده";
         }
 
         if (jsonNode.has("classStudent")) {
