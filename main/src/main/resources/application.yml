@@ -7,7 +7,7 @@ spring:
     hikari:
       connection-test-query: SELECT 1 FROM DUAL
       maximum-pool-size: 60
-      connection-timeout: 60000
+      connection-timeout: 120000
   jpa:
     hibernate:
       ddl-auto: none
