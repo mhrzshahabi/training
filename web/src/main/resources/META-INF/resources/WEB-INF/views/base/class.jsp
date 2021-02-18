@@ -71,29 +71,31 @@
 // {name: "lastModifiedDate",hidden:true},
 // {name: "createdBy",hidden:true},
 // {name: "createdDate",hidden:true,type:d},
-            {name: "titleClass"},
-            {name: "startDate"},
-            {name: "endDate"},
-            {name: "studentCount", canFilter: false, canSort: false},
-            {name: "code"},
-            {name: "term.titleFa"},
-            {name: "courseId"},
+            {name: "titleClass", autoFitWidth: true},
+            {name: "startDate", autoFitWidth: true},
+            {name: "endDate", autoFitWidth: true},
+            {name: "studentCount", canFilter: false, canSort: false, autoFitWidth: true},
+            {name: "code", autoFitWidth: true},
+            {name: "term.titleFa", autoFitWidth: true},
+            {name: "courseId", autoFitWidth: true},
             // {name: "teacher.personality.lastNameFa"},
 // {name: "course.code"},
-            {name: "course.titleFa"},
-            {name: "course.id"},
-            {name: "teacherId"},
+            {name: "course.titleFa", autoFitWidth: true},
+            {name: "course.id", autoFitWidth: true},
+            {name: "teacherId", autoFitWidth: true},
             {
                 name: "teacher",
+                autoFitWidth: true
                 // valueField: "teacher.personality.lastNameFa",
             },
             {
                 name: "teacher.personality.lastNameFa",
+                autoFitWidth: true
                 // displayField: "teacher",
                 // type: "TextItem"
             },
-            {name: "reason"},
-            {name: "classStatus"},
+            {name: "reason" , autoFitWidth: true},
+            {name: "classStatus" , autoFitWidth: true},
             {name: "topology"},
             {name: "trainingPlaceIds"},
             {name: "instituteId"},
@@ -403,7 +405,6 @@
                 title: "titleClass",
                 align: "center",
                 filterOperator: "iContains",
-                autoFitWidth: true,
                 hidden: true
             },
             {
@@ -411,7 +412,6 @@
                 title: "<spring:message code='course.title'/>",
                 align: "center",
                 filterOperator: "iContains",
-                autoFitWidth: true,
                 sortNormalizer: function (record) {
                     return record.course.titleFa;
                 }
@@ -431,7 +431,6 @@
                 filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
                 },
-                autoFitWidth: true
             },
             {
                 name: "endDate",
@@ -441,20 +440,17 @@
                 filterEditorProperties: {
                     keyPressFilter: "[0-9/]"
                 },
-                autoFitWidth: true
             },
             {
                 name: "studentCount",
                 title: "<spring:message code='student.count'/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
             },
             {
                 name: "group",
                 title: "<spring:message code='group'/>",
                 align: "center",
                 filterOperator: "equals",
-                autoFitWidth: true
             },
             {
                 name: "teacher",
@@ -466,30 +462,29 @@
                 },
                 align: "center",
                 filterOperator: "iContains",
-                autoFitWidth: true,
             },
             {
                 name: "planner.lastName",
                 title: "<spring:message code="planner"/>",
                 canSort: false,
+                autoFitWidth: true,
                 align: "center",
                 filterOperator: "iContains",
-                autoFitWidth: true,
             },
             {
                 name: "supervisor.lastName",
                 title: "<spring:message code="supervisor"/>",
                 canSort: false,
                 align: "center",
-                filterOperator: "iContains",
                 autoFitWidth: true,
+                filterOperator: "iContains",
             },
             {
                 name: "organizer.titleFa",
                 title: "<spring:message code="executer"/>",
                 canSort: false,
-                align: "center",
                 autoFitWidth: true,
+                align: "center",
             },
             {
                 name: "reason", title: "<spring:message code='training.request'/>", align: "center",
@@ -504,7 +499,6 @@
                     },
                 },
                 filterOnKeypress: true,
-                autoFitWidth: true,
             },
             {
                 name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
@@ -540,7 +534,6 @@
                     },
                 },
                 filterOnKeypress: true,
-                autoFitWidth: true,
             },
             {name: "createdBy", hidden: true},
             {name: "createdDate", hidden: true},
@@ -604,7 +597,7 @@
             return style;
         },
         cellClick: function (record, rowNum, colNum) {
-            if (colNum === 7) {
+            if (this.getFieldName(colNum) == "teacher") {
                 ListGrid_teacher_edit(record.teacherId)
             }
         },
