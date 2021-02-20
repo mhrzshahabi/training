@@ -225,5 +225,9 @@ public class PersonnelRestController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @GetMapping("/inDepartmentIsPlanner/{mojtameCode}")
+    public ResponseEntity<List<Long>> inDepartmentIsPlanner(@PathVariable String mojtameCode) {
+        return new ResponseEntity<>(personnelService.inDepartmentIsPlanner(mojtameCode), HttpStatus.OK);
+    }
 
 }

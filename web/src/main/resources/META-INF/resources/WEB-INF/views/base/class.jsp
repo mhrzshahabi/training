@@ -252,6 +252,12 @@
         ],
         fetchDataURL: viewActivePersonnelUrl + "/iscList",
     });
+   
+    let RestDataSource_Department_Filter = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
+        cacheAllData: true,
+        fetchDataURL: departmentUrl + "/organ-segment-iscList/mojtame"
+    });
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*Menu*/
@@ -2107,9 +2113,9 @@
         TabSet_Class.setDisabled(true);
     }
     var DynamicForm_Term_Filter = isc.DynamicForm.create({
-        width: "400",
+        width: "600",
         height: 30,
-        numCols: 4,
+        numCols: 6,
         colWidths: ["2%", "28%", "2%", "68%"],
         fields: [
             {
@@ -2257,7 +2263,29 @@
                     });
 
                 }
-            }
+            },
+            {
+                name: "departmentFilter",
+                title: "<spring:message code='complex'/>",
+                width: "300",
+                height: 30,
+                optionDataSource: RestDataSource_Department_Filter,
+                autoFetchData: false,
+                displayField: "title",
+                valueField: "code",
+                textAlign: "center",
+                pickListFields: [
+                    {
+                        name: "title",
+                        title: "<spring:message code="title"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    }
+                ],
+                changed: function (form, item, value) {
+                    load_classes_by_department(value);
+                }
+           },
         ]
     });
 
@@ -3831,6 +3859,13 @@
     ////*****load term by year*****
     function load_term_by_year(value) {
         let criteria = '{"fieldName":"startDate","operator":"iStartsWith","value":"' + value + '"}';
+        if (ListGrid_Class_JspClass.implicitCriteria) {
+            let plannerCriteria = ListGrid_Class_JspClass.implicitCriteria.criteria.filter(c => c.fieldName
+                == "plannerId");
+            if (plannerCriteria.size() > 0) {
+                criteria.concat(plannerCriteria[0]);
+            }
+        }
         RestDataSource_Term_Filter.fetchDataURL = termUrl + "spec-list?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria;
         DynamicForm_Term_Filter.getItem("termFilter").fetchData();
     }
@@ -3847,6 +3882,13 @@
                     {fieldName: "term.id", operator: "inSet", value: value}
                 ]
             };
+            if (ListGrid_Class_JspClass.implicitCriteria) {
+                let plannerCriteria = ListGrid_Class_JspClass.implicitCriteria.criteria.filter(c => c.fieldName
+                    == "plannerId");
+                if (plannerCriteria.size() > 0) {
+                    criteria.criteria.push(plannerCriteria[0]);
+                }
+            }
             RestDataSource_Class_JspClass.fetchDataURL = classUrl + "spec-list";
             ListGrid_Class_JspClass.implicitCriteria = criteria;
             ListGrid_Class_JspClass.invalidateCache();
@@ -3855,6 +3897,39 @@
             createDialog("info", "<spring:message code="msg.select.term.ask"/>", "<spring:message code="message"/>")
         }
     }
+
+    ////*****load classes by department*****
+    function load_classes_by_department(value) {
+            isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/inDepartmentIsPlanner/"+value, "GET", null, res => {
+                if (value !== undefined) {
+                    let criteria = {
+                        _constructor: "AdvancedCriteria",
+                        operator: "and",
+                        criteria: [
+                            {
+                                fieldName: "plannerId", operator: "inSet", value: JSON.parse(res.data).size() > 0
+                                    ? JSON.parse(res.data) : null
+                            }
+                        ]
+                    };
+                    if (ListGrid_Class_JspClass.implicitCriteria) {
+                        let termCriteria = ListGrid_Class_JspClass.implicitCriteria.criteria.filter(c => c.fieldName
+                            == "term.id");
+                        if (termCriteria.size() > 0) {
+                            criteria.criteria.push(termCriteria[0]);
+                        }
+                    }
+                    RestDataSource_Class_JspClass.fetchDataURL = classUrl + "spec-list";
+                    ListGrid_Class_JspClass.implicitCriteria = criteria;
+                    ListGrid_Class_JspClass.invalidateCache();
+                    ListGrid_Class_JspClass.fetchData();
+                } else {
+                    createDialog("info", "<spring:message code="msg.select.term.ask"/>", "<spring:message code="message"/>")
+                }
+                
+            }));
+    }
+
 
     ////******************************
 

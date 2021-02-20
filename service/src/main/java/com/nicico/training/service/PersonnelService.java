@@ -419,6 +419,11 @@ public class PersonnelService implements IPersonnelService {
         return response;
     }
 
+    @Override
+    public List<Long> inDepartmentIsPlanner(String mojtameCode) {
+        return personnelDAO.inDepartmentIsPlanner(mojtameCode);
+    }
+
 //    @Transactional(readOnly = true)
 //    @Override
 //    public <R> R getPOrRegisteredP(String personnelNo, Function<Object, R> converter) {
