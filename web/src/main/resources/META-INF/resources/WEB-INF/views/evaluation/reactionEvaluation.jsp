@@ -1180,11 +1180,11 @@
         ]
     });
 
-    function NCodeAndMobileValidation(nationalCode, mobileNum) {
+    function NCodeAndMobileValidation(nationalCode, mobileNum, gender) {
 
         let isValid = true;
 
-        if (nationalCode===undefined || nationalCode===null || mobileNum===undefined || mobileNum===null )
+        if (nationalCode===undefined || nationalCode===null || mobileNum===undefined || mobileNum===null || gender===undefined || gender===null)
         {
             isValid = false;
         }
@@ -1275,10 +1275,9 @@
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
                     let teacherInfo = JSON.parse(resp.httpResponseText);
-                    if (teacherInfo.personality.genderId != null ) {
-                        if (teacherInfo.personality.contactInfo != null )
+                        if (teacherInfo.personality.contactInfo != null && teacherInfo.personality != null)
                         {
-                            let isValid = NCodeAndMobileValidation(teacherInfo.personality.nationalCode, teacherInfo.personality.contactInfo.mobile);
+                            let isValid = NCodeAndMobileValidation(teacherInfo.personality.nationalCode, teacherInfo.personality.contactInfo.mobile, teacherInfo.personality.genderId);
                           if (!isValid) {
 
                             let stop = isc.Dialog.create({
@@ -1297,25 +1296,13 @@
                         } else {
 
                             let stop = isc.Dialog.create({
-                                message: "<spring:message code='msg.check.class.teacher.info'/>",
+                                message: "<spring:message code='msg.check.teacher.mobile.ncode'/>",
                                 icon: "[SKIN]stop.png",
                                 title: "<spring:message code='message'/>"
                             });
                             stop.show();
                             return;
                         }
-
-
-                    } else {
-
-                        let stop = isc.Dialog.create({
-                            message: "<spring:message code='msg.check.teacher.gender'/>",
-                            icon: "[SKIN]stop.png",
-                            title: "<spring:message code='message'/>"
-                        });
-                        stop.show();
-                        return;
-                    }
                 } else {
                     wait.close()
                     return;
@@ -1654,7 +1641,7 @@
                 for (let i = 0; i < gridData.length; i++) {
 
                     let studentData = gridData[i].student;
-                    if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.mobile)) {
+                    if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.mobile, studentData.gender)) {
 
                         inValidStudents.add({
                             firstName: studentData.firstName,
@@ -1726,9 +1713,9 @@
                         })]
                     });
                     Window_InValid_Students.show();
-                } else
+                } else {
                     studentsToElsRquest(data, type);
-
+                }
             } else {
 
                 createDialog("info", "فرم ارزیابی برای همه ی شرکت کنندگان صادر نشده است.");
