@@ -2698,7 +2698,7 @@
                     if (resp.data === "true" && a === 0) {
                         DynamicForm1_Class_JspClass.getItem("termId").disable();
                         DynamicForm1_Class_JspClass.getItem("startDate").disable();
-                        // DynamicForm1_Class_JspClass.getItem("endDate").disable();
+
                     }
                     singleTargetScoiety = [];
                     etcTargetSociety = [];
@@ -2759,7 +2759,6 @@
                                 (resp) => {
                                     wait.close();
                                     lastDate= DynamicForm1_Class_JspClass.getValue("endDate")
-
                                     let record = JSON.parse(resp.data).response.data[0];
                                     if(record.evaluationTeacherGrade !== undefined) {
                                         DynamicForm_Class_JspClass.setValue(
@@ -2769,6 +2768,15 @@
                                     }
                             }));
                         }));
+
+                        if (DynamicForm_Class_JspClass.getValue("classStatus")==="3")
+                        {
+                            DynamicForm1_Class_JspClass.getItem("endDate").disable();
+                        }
+                        else
+                        {
+                            DynamicForm1_Class_JspClass.getItem("endDate").enable();
+                        }
                         highlightClassStauts(DynamicForm_Class_JspClass.getField("classStatus").getValue(), 1200);
                     } else {
                         classMethod = "POST";
@@ -3857,16 +3865,17 @@
             _constructor: "AdvancedCriteria",
             operator: "and",
             criteria: [
-                {
-                    fieldName: "startDate",
-                    operator: "lessOrEqual",
-                    value: todayPersianDate
-                },
+                // {
+                //     fieldName: "startDate",
+                //     operator: "lessOrEqual",
+                //     value: todayPersianDate
+                // },
                 {
                     fieldName: "endDate",
                     operator: "greaterOrEqual",
                     value: todayPersianDate
-                }]
+                }
+                ]
         };
         RestDataSource_Term_JspClass.fetchData(null, function (dsResponse, data, dsRequest) {
             if (data && data.length > 0) {
