@@ -3860,7 +3860,8 @@
 
     function setDefaultTerm() {
         let persianDateArray = getTodayPersian();
-        let todayPersianDate = persianDateArray[0] + "/" + persianDateArray[1] + "/" + persianDateArray[2];
+        let todayPersianDate = persianDateArray[0].toString().padStart(2,0) + "/" + persianDateArray[1].toString().padStart(2,0) + "/" +
+	        persianDateArray[2].toString().padStart(2,0);
         RestDataSource_Term_JspClass.implicitCriteria = {
             _constructor: "AdvancedCriteria",
             operator: "and",
