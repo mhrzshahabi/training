@@ -872,7 +872,6 @@
                 }],
                 width: "*",
                 type: 'text',
-                required: true,
                 keyPressFilter: "[0-9]",
                 click: function (form, item, icon) {
 
