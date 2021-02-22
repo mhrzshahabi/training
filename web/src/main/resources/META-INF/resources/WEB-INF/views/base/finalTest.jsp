@@ -261,8 +261,9 @@ width: "100%",
             {name: "time",},
             {name: "duration",},
             { name: "onlineFinalExamStatus", valueMap: {"false": "ارسال نشده", "true": "ارسال شده"}},
-            { name: "sendBtn", title: " ", width: "140"},
-            { name: "showBtn", title: " ", width: "140"},
+            { name: "sendBtn", title: "بارم بندی ", width: "140"},
+            { name: "showBtn", title: "نتایج ", width: "140"},
+            { name: "checkDate", title: "اطلاعات کاربران", width: "140"},
             { name: "onlineExamDeadLineStatus" , hidden: true},
 
             //{name: "isPreTestQuestion",}
@@ -289,11 +290,11 @@ width: "100%",
         },
          createRecordComponent: function (record, colNum) {
                     var fieldName = this.getFieldName(colNum);
-                    if (fieldName == "sendBtn") {
+                    if (fieldName === "sendBtn") {
                         let button = isc.IButton.create({
                             layoutAlign: "center",
                             disabled: record.onlineFinalExamStatus,
-                            title: "ارسال به آموزش آنلاین",
+                            title: "بارم بندی و ارسال آزمون",
                             width: "140",
                             margin: 3,
                             click: function () {
@@ -302,7 +303,7 @@ width: "100%",
                             }
                         });
                         return button;
-                    }if (fieldName == "showBtn") {
+                    }if (fieldName === "showBtn") {
                         let button = isc.IButton.create({
                             layoutAlign: "center",
                             disabled: !record.onlineFinalExamStatus,
@@ -315,7 +316,19 @@ width: "100%",
                             }
                         });
                         return button;
-                    } else {
+                    } if (fieldName == "checkDate"){
+                         let button = isc.IButton.create({
+                            layoutAlign: "center",
+                            title: " کاربران با اطلاعات ناقص ",
+                            width: "140",
+                            margin: 3,
+                            click: function () {
+                                showInvalidUsers(record)
+
+                            }
+                        });
+                        return button; }
+                    else {
                         return null;
                     }
                 },
@@ -1250,6 +1263,91 @@ createDialog("info",JSON.parse(resp.httpResponseText).message, "<spring:message 
     });
 
     // ------------------------------------------- Functions -------------------------------------------
+    function showInvalidUsers (record) {
+
+
+isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/getClassStudent/"+record.tclass.id, "GET",null, function (resp) {
+
+
+    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+let result = JSON.parse(resp.httpResponseText);
+
+let inValidStudents = [];
+
+                for (let i = 0; i < result.length; i++) {
+
+                    let studentData = result[i];
+
+        if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.cellNumber,studentData.gender)) {
+
+                        inValidStudents.add({
+                            firstName: studentData.surname,
+                            lastName: studentData.lastName
+                        });
+                    }
+                }
+
+                if (inValidStudents.length) {
+
+                    let DynamicForm_InValid_Students = isc.DynamicForm.create({
+                        width: 600,
+                        height: 100,
+                        padding: 6,
+                        titleAlign: "right",
+                        fields: [
+                            {
+                                name: "text",
+                                width: "100%",
+                                colSpan: 2,
+                                value: "<spring:message code='msg.check.student.mobile.ncode'/>"+" "+"<spring:message code='msg.check.student.mobile.ncode.message'/>",
+                                showTitle: false,
+                                editorType: 'staticText'
+                            },
+                            {
+                                type: "RowSpacerItem"
+                            },
+                            {
+                                name: "invalidNames",
+                                width: "100%",
+                                colSpan: 2,
+                                title: "<spring:message code="title"/>",
+                                showTitle: false,
+                                editorType: 'textArea',
+                                canEdit: false
+                            }
+                        ]
+                    });
+
+                    let names = "";
+                    for (var j = 0; j < inValidStudents.length; j++) {
+
+                        names = names.concat(inValidStudents[j].firstName + " " + inValidStudents[j].lastName  + "\n");
+                    }
+                    DynamicForm_InValid_Students.setValue("invalidNames", names);
+
+                    let Window_InValid_Students = isc.Window.create({
+                        width: 600,
+                        height: 150,
+                        numCols: 2,
+                        title: "<spring:message code='invalid.students.window'/>",
+                        items: [
+                            DynamicForm_InValid_Students,
+                            isc.MyHLayoutButtons.create({
+                            members: [
+                                isc.IButtonCancel.create({
+                                title: "<spring:message code="cancel"/>",
+                                click: function () {
+                                    Window_InValid_Students.close();
+                                }
+                            })],
+                        })]
+                    });
+                    Window_InValid_Students.show();
+                } else {
+                    createDialog("info", "در این کلاس کاربر با اطلاعات ناقص وجود ندارد"); }
+                    } }));
+                    }
     function refresh_finalTest() {
         FinalTestLG_finalTest.invalidateCache();
         FinalTestLG_finalTest.fetchData();
