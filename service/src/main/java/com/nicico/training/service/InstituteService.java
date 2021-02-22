@@ -95,7 +95,8 @@ public class InstituteService implements IInstituteService {
             updating.setParentInstitute(getInstitute(request.getParentInstituteId()));
         else
             updating.setParentInstitute(null);
-        updating.setManager(personalInfoService.getPersonalInfo(request.getManagerId()));
+        if (request.getManagerId() != null)
+            updating.setManager(personalInfoService.getPersonalInfo(request.getManagerId()));
         try {
             return modelMapper.map(instituteDAO.saveAndFlush(updating), InstituteDTO.Info.class);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
