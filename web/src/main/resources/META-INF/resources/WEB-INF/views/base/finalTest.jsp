@@ -912,8 +912,7 @@ scoreLabel.setContents("مجموع بارم وارد شده :")
     }
 
     function checkExamScore(examData) {
-
-        if (examData.examItem.tclass.scoringMethod === "3" || examData.examItem.tclass.scoringMethod === "4") {
+        if (examData.examItem.tclass.scoringMethod === "3" || examData.examItem.tclass.scoringMethod === "2") {
 
             let totalScore = 0;
             for(var i = 0; i < examData.questionData.length; i++) {
