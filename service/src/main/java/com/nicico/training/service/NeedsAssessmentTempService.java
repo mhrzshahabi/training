@@ -165,8 +165,8 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
             if (needsAssessmentTemps.get(0).getMainWorkflowStatusCode() == null || needsAssessmentTemps.get(0).getMainWorkflowStatusCode() == -1)
                 return 1; //this object is editable and dont needs to be initialize
             return 3; // this object is read only and user should see edited NAs
-        }
-        return 2; //this object is read only and user should not see edited NAs
+        } else
+            throw new TrainingException(TrainingException.ErrorType.NeedsAssessmentNotFound, messageSource.getMessage("na.message.doesnot.access.to.others.assessment", null, LocaleContextHolder.getLocale()));
     }
 
     @Transactional(readOnly = true)
