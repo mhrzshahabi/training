@@ -1633,15 +1633,7 @@
             }
             let data = JSON.parse(resp.data).list;
             let flags  = [];
-            buttonSendToWorkFlow.enable();
-            buttonChangeCancel.enable();
-            canSendToWorkFlowNA = true;
             for (let i = 0; i < data.length; i++) {
-                if(canSendToWorkFlowNA && (data[i].mainWorkflowStatusCode === -1)){
-                    buttonSendToWorkFlow.disable();
-                    buttonChangeCancel.disable();
-                    canSendToWorkFlowNA = false;
-                }
                 let skill = {};
                 let competence = {};
                 skill.id = data[i].id;
@@ -1835,6 +1827,10 @@
             isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/isReadOnly/" + type + "/" + objectId.id, "GET", null, (resp) => {
                 wait.close();
                 if(resp.httpResponseCode !== 200){
+                    if (JSON.parse(resp.httpResponseText).errors && JSON.parse(resp.httpResponseText).errors.size() > 0) {
+                        createDialog("info", JSON.parse(resp.httpResponseText).errors[0].field);
+                        return;
+                    }
                     createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                     return;
                 }
@@ -1856,6 +1852,8 @@
     }
     function readOnly(status){
         if(status === true){
+            buttonSendToWorkFlow.disable();
+            buttonChangeCancel.disable();
             DynamicForm_JspEditNeedsAssessment.disable();
             CompetenceTS_needsAssessment.disable();
             ListGrid_Knowledge_JspNeedsAssessment.disable();
@@ -1867,6 +1865,8 @@
             createDialog("info", "<spring:message code='read.only.na.message'/>");
         }
         else{
+            buttonSendToWorkFlow.enable();
+            buttonChangeCancel.enable();
             DynamicForm_JspEditNeedsAssessment.enable();
             CompetenceTS_needsAssessment.enable();
             ListGrid_Knowledge_JspNeedsAssessment.enable();
