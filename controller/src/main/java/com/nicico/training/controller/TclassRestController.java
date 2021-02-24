@@ -698,5 +698,9 @@ public class TclassRestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
+    @Loggable
+    @GetMapping("/hasAccessToSetEndClass/{groupId}")
+    public ResponseEntity<Boolean> hasAccessToSetEndClass(@PathVariable Long groupId) {
+        return new ResponseEntity<>(tClassService.hasAccessToSetEndClass(groupId), HttpStatus.OK);
+    }
 }

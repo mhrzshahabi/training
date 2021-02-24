@@ -42,4 +42,6 @@ public interface IWorkGroupService {
     SearchDTO.CriteriaRq addPermissionToCriteria(String entity, SearchDTO.CriteriaRq criteriaRq);
 
     boolean isAllowUseId(String entity,Long Id);
+
+    boolean hasAccess(Long userId,Long groupId);
 }

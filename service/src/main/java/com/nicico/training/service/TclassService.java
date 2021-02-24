@@ -10,10 +10,12 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.mapper.TrainingClassBeanMapper;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
 import com.nicico.training.model.*;
@@ -61,6 +63,7 @@ public class TclassService implements ITclassService {
     private final TrainingPlaceDAO trainingPlaceDAO;
     private final AttachmentService attachmentService;
     private final IEvaluationService evaluationService;
+    private final IWorkGroupService workGroupService;
     private final ParameterService parameterService;
     private final ParameterValueService parameterValueService;
     private final CourseDAO courseDAO;
@@ -1475,5 +1478,10 @@ public class TclassService implements ITclassService {
             evaluationAnswerObject.setDescription(dto.getDescription());
         evaluationAnswerObject.setSendDate(DateUtil.todayDate());
         return evaluationAnswerObject;
+    }
+
+    @Override
+    public boolean hasAccessToSetEndClass( Long groupId) {
+        return workGroupService.hasAccess(SecurityUtil.getUserId(),groupId);
     }
 }
