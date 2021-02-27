@@ -275,7 +275,7 @@ public abstract class EvaluationBeanMapper {
             exam.setScore(20D);
 
         }
-        else if (tClass.getScoringMethod().equals("4"))
+        else if (tClass.getScoringMethod().equals("2"))
         {
             if (null!=tClass.getAcceptancelimit())
             exam.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
@@ -780,7 +780,7 @@ public abstract class EvaluationBeanMapper {
     public boolean checkExamScore(ExamImportedRequest object, Tclass tclass) {
 
         try {
-            if (tclass.getScoringMethod().equals("3") || tclass.getScoringMethod().equals("4")) {
+            if (tclass.getScoringMethod().equals("3") || tclass.getScoringMethod().equals("2")) {
                 double totalScore = 0;
                 for (QuestionScores questionScores : object.getQuestionData()) {
                     double score = Double.parseDouble(questionScores.getScore());

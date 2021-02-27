@@ -792,7 +792,8 @@
                     "غیر حضوری",
                     "مجازی",
                     "عملی و کارگاهی",
-                    "آموزش حین کار(OJT)"
+                    "آموزش حین کار(OJT)",
+                    "اعزام",
                 ]
             },
             {
@@ -1404,6 +1405,11 @@
                 DynamicForm_Class_JspClass.getField('instituteId').setDisabled(false);
                 DynamicForm_Class_JspClass.getField('trainingPlaceIds').setDisabled(false);
             }
+            if (DynamicForm_Class_JspClass.getValue("teachingType") === "اعزام"){
+                DynamicForm_Class_JspClass.getItem("teacherId").setRequired(false);
+            }else {
+                DynamicForm_Class_JspClass.getItem("teacherId").setRequired(true);
+            }
         }
     });
 
@@ -1754,6 +1760,12 @@
                 DynamicForm_Class_JspClass.getItem("instituteId").setRequired(true);
                 DynamicForm_Class_JspClass.getItem("trainingPlaceIds").setRequired(true);
             }
+            if (DynamicForm_Class_JspClass.getValue("teachingType") === "اعزام"){
+                DynamicForm_Class_JspClass.getItem("teacherId").setRequired(false);
+            }else {
+                DynamicForm_Class_JspClass.getItem("teacherId").setRequired(true);
+            }
+
             if (DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord() != undefined) {
                 if (!checkValidDate(DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord().startDate, DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord().endDate, DynamicForm1_Class_JspClass.getValue("startDate"), DynamicForm1_Class_JspClass.getValue("endDate"))) {
                     return;
@@ -3496,10 +3508,10 @@
                 createDialog("info", "تاریخ پایان کلاس قبل از تاریخ پایان ترم نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
             }
-            if (termStart.trim() > classStart.trim()) {
-                createDialog("info", "تاریخ شروع کلاس قبل از تاریخ شروع ترم نمی تواند باشد.", "<spring:message code='message'/>");
-                return false;
-            }
+            <%--if (termStart.trim() > classStart.trim()) {--%>
+            <%--    createDialog("info", "تاریخ شروع کلاس قبل از تاریخ شروع ترم نمی تواند باشد.", "<spring:message code='message'/>");--%>
+            <%--    return false;--%>
+            <%--}--%>
             if (termEnd.trim() < classStart.trim()) {
                 createDialog("info", "تاریخ شروع کلاس بعد از تاریخ پایان ترم نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
