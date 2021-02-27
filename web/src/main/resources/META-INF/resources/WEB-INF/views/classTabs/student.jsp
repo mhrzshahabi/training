@@ -1722,7 +1722,7 @@
         function class_add_students_result(resp) {
             wait.close();
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                debugger
+
                 let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
                 ClassStudentWin_student.close();
                 refreshLG(StudentsLG_student);
@@ -1939,7 +1939,6 @@
                                 title: "<spring:message code="continue"/>",
                                 click: function () {
                                     wait.show();
-                                    // debugger
                                     isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST",
                                         JSON.stringify(studentsDataArray), class_add_students_result));
                                     Window_Warn_Students.close();
@@ -1948,6 +1947,7 @@
                             isc.IButtonCancel.create({
                                 title: "<spring:message code="cancel"/>",
                                     click: function () {
+                                    wait.close();
                                     Window_Warn_Students.close();
                                 }
                             })
@@ -2166,19 +2166,14 @@
                                         if (students.filter(function (item) {
                                             return item.personnelNo2 == person.personnelNo2 || item.personnelNo == person.personnelNo;
                                         }).length == 0) {
-                                            students.add(person);
-                                            students.forEach(q => {
-                                                q.personnelNo = person.personnelNo;
-                                                q.applicantCompanyName = person.companyName;
-                                                q.presenceTypeId = studentDefaultPresenceId;
-                                                q.registerTypeId = url.indexOf(personnelUrl + "/") > -1 ? 1 : 2;
+                                            students.add({
+                                                "firstName" : person.firstName,
+                                                "lastName" : person.lastName,
+                                                "personnelNo": person.personnelNo,
+                                                "applicantCompanyName": person.companyName,
+                                                "presenceTypeId": studentDefaultPresenceId,
+                                                "registerTypeId": url.indexOf(personnelUrl + "/") > -1 ? 1 : 2
                                             });
-                                            // students.add({
-                                            //     "personnelNo": person.personnelNo,
-                                            //     "applicantCompanyName": person.companyName,
-                                            //     "presenceTypeId": studentDefaultPresenceId,
-                                            //     "registerTypeId": url.indexOf(personnelUrl + "/") > -1 ? 1 : 2
-                                            // });
                                         }
                                     }
                                 }
@@ -2187,21 +2182,15 @@
                     }
                     if (students.getLength() > 0 /*allRowsOK*/ && insert) {
 
-                        // SelectedPersonnelsLG_student.endEditing();
+                        SelectedPersonnelsLG_student.endEditing();
                         let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
                         let courseId = ListGrid_Class_JspClass.getSelectedRecord().courseId;
                         let equalCourseIds = [];
                         equalCourseIds.add(courseId);
-// debugger
                         addValidStudents(classId, courseId, equalCourseIds, students);
-
-                        // debugger;
-                        // isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST", JSON.stringify(students), class_add_students_result));
-                        //
                         // SelectedPersonnelsLG_student.data.clearAll();
-
-                        //Close Window
                         ClassStudentWin_student_GroupInsert.close();
+
                     } else {
                         GroupSelectedPersonnelsLG_student.invalidateCache();
                         GroupSelectedPersonnelsLG_student.fetchData();
