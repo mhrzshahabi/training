@@ -36,6 +36,7 @@ public class TrainingFileNAReportDTO implements Serializable {
         private String courseTitleFa;
         private Float theoryDuration;
         private Integer technicalType;
+        private Long referenceCourse;
 
         private Long skillId;
         private String skillCode;

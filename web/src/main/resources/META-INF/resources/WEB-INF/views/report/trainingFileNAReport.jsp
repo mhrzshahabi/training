@@ -77,6 +77,7 @@
             {name: "courseTitleFa", title:"نام دوره", autoFitWidth: true},
             {name: "theoryDuration", title:"مدت دوره", autoFitWidth: true, operator:"equals"},
             {name: "technicalType", title:"نوع تخصصی", autoFitWidth: true, optionDataSource: RestDataSource_eTechnicalType, displayField: "titleFa", valueField:"id", operator:"equals"},
+            {name: "referenceCourse", title:"دوره مرجع", autoFitWidth: true, operator:"equals"},
 
             {name: "skillId", autoFitWidth: true},
             {name: "skillCode", title:"کد مهارت", autoFitWidth: true},
@@ -230,6 +231,7 @@
             {name: "courseTitleFa"},
             {name: "theoryDuration"},
             {name: "technicalType"},
+            {name: "referenceCourse"},
 
             {name: "skillCode"},
             {name: "skillTitleFa"},
@@ -253,7 +255,7 @@
                 title: "پرونده آموزشی"
             },
             {
-                fields: ["courseCode","courseTitleFa","theoryDuration","technicalType"],
+                fields: ["courseCode","courseTitleFa","theoryDuration","technicalType", "referenceCourse"],
                 title: "مشخصات دوره"
             }
         ],

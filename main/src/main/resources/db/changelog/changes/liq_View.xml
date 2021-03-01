@@ -6107,4 +6107,97 @@ ORDER BY
         </createView>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-001">
+        <createView viewName="VIEW_TRAINING_FILE_NA_REPORT" replaceIfExists="true">
+            <![CDATA[
+                SELECT
+                    ROWNUM AS id,
+                    nvl(passed.personnel_id, na.personnel_id) AS personnel_id,
+                    nvl(passed.course_id, na.course_id) AS course_id,
+                    nvl(passed.course_code, na.course_code) AS course_code,
+                    nvl(passed.course_title_fa, na.course_title_fa) AS course_title_fa,
+                    nvl(passed.course_theory_duration, na.course_theory_duration) AS course_theory_duration,
+                    nvl(passed.course_technical_type, na.course_technical_type) AS course_technical_type,
+                    0 AS reference_course,
+                    na.skill_id,
+                    na.skill_code,
+                    na.skill_title_fa,
+                    nvl2(na.na_priority_id, 1, 0) is_in_na,
+                    na.na_priority_id,
+                    na_priority.c_title    AS na_priority_title,
+                    passed.class_id,
+                    passed.class_code,
+                    passed.class_start_date,
+                    passed.class_end_date,
+                    passed.class_student_score,
+                    passed.class_student_scores_state_id,
+                    score_state.c_title    AS class_student_scores_state_title,
+                    institute.c_title_fa   AS class_location
+                FROM
+                    view_student_classstudent_class_term_course   passed
+                    FULL JOIN view_personnel_course_skill_na_report         na ON na.personnel_id = passed.personnel_id
+                                                                                      AND na.course_id = passed.course_id
+                    LEFT JOIN tbl_institute                                 institute ON institute.id = passed.class_institute
+                    LEFT JOIN tbl_parameter_value                                       na_priority ON na_priority.id = na.na_priority_id
+                    LEFT JOIN tbl_parameter_value                                       score_state ON score_state.id = passed.class_student_scores_state_id
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-002">
+        <createView viewName="VIEW_EQUAL_COURSE" replaceIfExists="true">
+            <![CDATA[
+                SELECT
+                    eq.F_COURSE as reference_course,
+                    c.ID as course_id,
+                    c.C_CODE as course_code,
+                    c.C_TITLE_FA as course_title_fa,
+                    c.N_THEORY_DURATION as course_theory_duration,
+                    c.E_TECHNICAL_TYPE as course_technical_type
+                FROM
+                    tbl_equal_course eq
+                    INNER JOIN tbl_equal_and_course eac
+                        ON eq.id = eac.f_equal_course_id
+                    INNER JOIN tbl_course c
+                        ON eac.LIST_EQUAL_AND_COURSE = c.ID
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-003">
+        <createView viewName="VIEW_TRAINING_FILE_NA_REPORT_AND_EQUALS" replaceIfExists="true">
+            <![CDATA[
+                SELECT *
+                FROM VIEW_TRAINING_FILE_NA_REPORT view_tr_f
+                UNION
+                SELECT
+                    ROWNUM as id,
+                    view_tf.PERSONNEL_ID as personnel_id,
+                    nvl(view_eq.course_id, view_tf.course_id) as course_id,
+                    nvl(view_eq.course_code, view_tf.course_code) as course_code,
+                    nvl(view_eq.course_title_fa, view_tf.course_title_fa) as course_title_fa,
+                    nvl(view_eq.course_theory_duration, view_tf.course_theory_duration) as course_theory_duration,
+                    nvl(view_eq.course_technical_type, view_tf.course_technical_type) as course_technical_type,
+                    view_eq.reference_course as reference_course,
+                    NULL as skill_id,
+                    NULL as skill_code,
+                    NULL as skill_title_fa,
+                    NULL as is_in_na,
+                    NULL as na_priority_id,
+                    NULL as na_priority_title,
+                    NULL as class_id,
+                    NULL as class_code,
+                    NULL as class_start_date,
+                    NULL as class_end_date,
+                    NULL as class_student_score,
+                    NULL as class_student_scores_state_id,
+                    NULL as class_student_scores_state_title,
+                    NULL as class_location
+                FROM VIEW_TRAINING_FILE_NA_REPORT view_tf
+                INNER JOIN VIEW_EQUAL_COURSE view_eq
+                  ON view_tf.COURSE_ID = view_eq.reference_course
+            ]]>
+        </createView>
+    </changeSet>
+
 </databaseChangeLog>

@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Subselect("select * from view_training_file_na_report")
+@Subselect("select * from VIEW_TRAINING_FILE_NA_REPORT_AND_EQUALS")
 public class TrainingFileNAReport implements Serializable {
 
     @Id
@@ -55,6 +55,9 @@ public class TrainingFileNAReport implements Serializable {
 
     @Column(name = "course_technical_type")
     private Integer technicalType;
+
+    @Column(name = "reference_course")
+    private Long referenceCourse;
 
     ///////////////////////////////////////////////////skill///////////////////////////////////////
 
