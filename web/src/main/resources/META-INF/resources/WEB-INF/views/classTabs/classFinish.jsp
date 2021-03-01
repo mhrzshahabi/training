@@ -23,17 +23,19 @@
                 startRow: false,
                 endRow: true,
                 click: function () {
-                 isc.RPCManager.sendRequest(TrDSRequest(hasAccessToSetEndClass+"61", "GET",null, function (resp) {
-            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                if (resp.data === "false" )
-                    TabSet_Class.disableTab(TabSet_Class.tabs[11]);
-                else
-                    TabSet_Class.enableTab(TabSet_Class.tabs[11]);
 
-            } else {
-                TabSet_Class.disableTab(TabSet_Class.tabs[11]);
-            }
-        }));
+                    Window_Class_Finish.show();
+//          isc.RPCManager.sendRequest(TrDSRequest(hasAccessToSetEndClass+"61", "GET",null, function (resp) {
+        //     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+        //         if (resp.data === "false" )
+        //             TabSet_Class.disableTab(TabSet_Class.tabs[11]);
+        //         else
+        //             TabSet_Class.enableTab(TabSet_Class.tabs[11]);
+        //
+        //     } else {
+        //         TabSet_Class.disableTab(TabSet_Class.tabs[11]);
+        //     }
+        // }));
                 }
             },
             {
@@ -50,12 +52,54 @@
         ]
     });
 
+    let DynamicForm_Finish_Reason = isc.DynamicForm.create({
+        width: 600,
+        height: 120,
+        padding: 6,
+        titleAlign: "right",
+        fields: [
+            {
+                name: "reason",
+                width: "100%",
+                height: 100,
+                title: "دلیل اختتام",
+                editorType: 'textArea'
+            }
+        ]
+    });
+
+    let Window_Class_Finish = isc.Window.create({
+        width: 600,
+        height: 120,
+        numCols: 2,
+        title: "ثبت اختتام",
+        items: [
+            DynamicForm_Finish_Reason,
+            isc.MyHLayoutButtons.create({
+            members: [
+                isc.IButtonSave.create({
+                title: "<spring:message code="save"/>",
+                click: function () {
+
+                    // func for finishing class
+                    Window_Class_Finish.close();
+                    // disable button (اختتام کلاس)
+                }}),
+                isc.IButtonCancel.create({
+                    title: "<spring:message code="cancel"/>",
+                        click: function () {
+                        Window_Class_Finish.close();
+                    }
+            })]
+        })]
+    });
+
     var VLayout_Body_JspClassFinish = isc.TrVLayout.create({
         width: "100%",
         height: "100%",
         overflow: "scroll",
         members: [
-DynamicForm_JspClassFinish
+            DynamicForm_JspClassFinish
         ]
     });
 
