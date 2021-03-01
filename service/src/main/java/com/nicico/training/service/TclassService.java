@@ -71,6 +71,7 @@ public class TclassService implements ITclassService {
     private final ParameterValueDAO parameterValueDAO;
     private final TrainingClassBeanMapper trainingClassBeanMapper;
     private final EvaluationAnalysisDAO evaluationAnalysisDAO;
+    private final ClassCheckListDAO classCheckListDAO;
     private final TclassBeanMapper tclassBeanMapper;
     private DecimalFormat numberFormat = new DecimalFormat("#.00");
 
@@ -249,6 +250,12 @@ public class TclassService implements ITclassService {
         }
         if (!tclass.getClassStudents().isEmpty()) {
             resp.sendError(409, messageSource.getMessage("کلاس فوق بدلیل داشتن فراگیر قابل حذف نیست. ", null, LocaleContextHolder.getLocale()));
+            return;
+        }
+        List<ClassCheckList> classCheckLists= classCheckListDAO.findClassCheckListByTclassId(id);
+
+        if (!classCheckLists.isEmpty()) {
+            resp.sendError(409, messageSource.getMessage("کلاس فوق بدلیل داشتن چک لیست قابل حذف نیست. ", null, LocaleContextHolder.getLocale()));
             return;
         }
         for (Evaluation eva : tclass.getEvaluations()) {

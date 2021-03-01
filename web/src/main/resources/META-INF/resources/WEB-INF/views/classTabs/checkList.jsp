@@ -648,6 +648,25 @@
         filterOperator: "iContains",
         allowFilterExpressions: true,
         filterOnKeypress: false,
+        canRemoveRecords: true,
+        removeRecordClick: function (rowNum) {
+            let Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+                "<spring:message code='verify.delete'/>");
+            Dialog_Delete.addProperties({
+                buttonClick: function (button, index) {
+                    if (index === 0) {
+                        ListGrid_ClassCheckList.data.removeAt(rowNum);
+                        wait.show();
+                        var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
+                        isc.RPCManager.sendRequest(TrDSRequest(classCheckListUrl + "delete-checkList/" + classId.toString() + "/" + ListGrid_ClassCheckList.getRecord(rowNum).id.toString(), "DELETE", null, (resp) => {
+                            wait.close()
+                            checkList_delete_result(resp);
+                            refreshLG(ListGrid_ClassCheckList);
+                        }));
+                    }
+                }
+            });
+        },
         fields: [
             {name: "id", hidden: true},
             {name: "titleFa", title: "<spring:message code="form"/>", align: "center"},
@@ -655,6 +674,23 @@
 
 
     })
+
+    function checkList_delete_result(resp) {
+        wait.close();
+        if (resp.httpResponseCode === 200) {
+            // TO DO refresh the grid
+            var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
+                "<spring:message code="msg.command.done"/>");
+            setTimeout(function () {
+                OK.close();
+            }, 3000);
+            // TO DO refresh the grid
+        } else if (resp.httpResponseCode === 406 && resp.httpResponseText === "NotDeletable") {
+            createDialog("info", "<spring:message code='global.grid.record.cannot.deleted'/>");
+        } else {
+            createDialog("warning", (JSON.parse(resp.httpResponseText).message === undefined ? "خطا" : JSON.parse(resp.httpResponseText).message));
+        }
+    }
 
     var DynamicForm_ClassCheckList = isc.DynamicForm.create({
         width: "100%",
@@ -754,7 +790,7 @@
             },
             </sec:authorize>
         ]
-    })
+    });
 
 
     var HLayout_Body_Top = isc.HLayout.create({
@@ -1153,6 +1189,7 @@
 
             if(classRecord.classStatus === "3")
             {
+
                 <sec:authorize access="hasAnyAuthority('TclassCheckListTab_classStatus_ShowOption')">
                 DynamicForm_ClassCheckList.setVisibility(false)
                 </sec:authorize>

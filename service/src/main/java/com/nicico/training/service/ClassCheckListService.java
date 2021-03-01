@@ -6,8 +6,10 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.CheckListDTO;
 import com.nicico.training.dto.ClassCheckListDTO;
 import com.nicico.training.iservice.IClassCheckListService;
+import com.nicico.training.model.CheckList;
 import com.nicico.training.model.CheckListItem;
 import com.nicico.training.model.ClassCheckList;
 import com.nicico.training.repository.CheckListItemDAO;
@@ -181,5 +183,10 @@ public class ClassCheckListService implements IClassCheckListService {
         return mapper.map(classCheckList, ClassCheckListDTO.Info.class);
     }
 
+    @Transactional
+    @Override
+    public void deleteByClassIdAndCheckListId(Long classId, Long checkListId) {
+        classCheckListDAO.deleteByClassIdAndCheckListId(classId, checkListId);
+    }
 
 }
