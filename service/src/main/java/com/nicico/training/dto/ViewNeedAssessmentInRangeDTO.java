@@ -36,6 +36,8 @@ public class ViewNeedAssessmentInRangeDTO implements Serializable {
     @ApiModelProperty
     private Date updateAt;
 
+    @ApiModelProperty
+    private Integer version;
 
     @Getter
     @Setter

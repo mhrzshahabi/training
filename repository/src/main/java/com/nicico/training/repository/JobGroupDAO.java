@@ -16,6 +16,6 @@ import java.util.Date;
 public interface JobGroupDAO extends JpaRepository<JobGroup, Long>, JpaSpecificationExecutor<JobGroup> {
 
     @Modifying
-    @Query(value = "update TBL_JOB_GROUP set D_LAST_MODIFIED_DATE_NA = :modificationDate, C_MODIFIED_BY_NA = :userName where ID = :objectId", nativeQuery = true)
+    @Query(value = "update TBL_JOB_GROUP set D_LAST_MODIFIED_DATE_NA = :modificationDate, C_MODIFIED_BY_NA = :userName,N_VERSION = N_VERSION + 1 where ID = :objectId", nativeQuery = true)
     public int updateModifications(Long objectId, Date modificationDate, String userName);
 }
