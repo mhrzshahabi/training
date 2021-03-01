@@ -3504,16 +3504,20 @@
                 createDialog("info", "تاریخ پایان کلاس قبل از تاریخ شروع کلاس نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
             }
-            if (lastDate > classEnd.trim()) {
-                createDialog("info", "تاریخ پایان کلاس قبل از تاریخ پایان ترم نمی تواند باشد.", "<spring:message code='message'/>");
-                return false;
-            }
+            <%--if (lastDate > classEnd.trim()) {--%>
+            <%--    createDialog("info", "تاریخ پایان کلاس قبل از تاریخ پایان ترم نمی تواند باشد.", "<spring:message code='message'/>");--%>
+            <%--    return false;--%>
+            <%--}--%>
             <%--if (termStart.trim() > classStart.trim()) {--%>
             <%--    createDialog("info", "تاریخ شروع کلاس قبل از تاریخ شروع ترم نمی تواند باشد.", "<spring:message code='message'/>");--%>
             <%--    return false;--%>
             <%--}--%>
             if (termEnd.trim() < classStart.trim()) {
                 createDialog("info", "تاریخ شروع کلاس بعد از تاریخ پایان ترم نمی تواند باشد.", "<spring:message code='message'/>");
+                return false;
+            }
+            if (termStart.trim() > classStart.trim()) {
+                createDialog("info", "تاریخ شروع کلاس قبل از تاریخ شروع ترم نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
             }
             return true;
