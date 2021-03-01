@@ -2070,6 +2070,15 @@
         }
     });
     </sec:authorize>
+<%--    <sec:authorize access="hasAuthority('Tclass_C')">--%>
+<%--    var ToolStripButton_finish = isc.ToolStripButton.create({--%>
+<%--        title: "اختتام",--%>
+<%--        click: function () {--%>
+<%--            TabSet_Class.disableTab(TabSet_Class.tabs[11]);--%>
+<%--     // ListGrid_class_finish()--%>
+<%--        }--%>
+<%--    });--%>
+<%--    </sec:authorize>--%>
 
     var ToolStripButton_teacherEvaluation_JspClass = isc.ToolStripButton.create({
         title: "ثبت نتایج ارزیابی مسئول آموزش از مدرس کلاس",
@@ -2519,6 +2528,9 @@
             <sec:authorize access="hasAuthority('Tclass_P')">
             ToolStripButton_Print_JspClass,
             </sec:authorize>
+<%--            <sec:authorize access="hasAuthority('Tclass_P')">--%>
+<%--            ToolStripButton_finish,--%>
+<%--            </sec:authorize>--%>
 
             <sec:authorize access="hasAuthority('Tclass_C')">
             ToolStripButton_copy_of_class,
@@ -2639,6 +2651,10 @@
                 ID: "classCosts",
                 title: "ثبت هزینه کلاس",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/class-costs-tab"})
+            },   {
+                ID: "classFinish",
+                title: "اختتام کلاس",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/class-finish-tab"})
             },
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
@@ -2694,6 +2710,27 @@
                         isc.RPCManager.sendRequest(TrDSRequest(classUrl + record.id, "DELETE", null, (resp) => {
                             wait.close()
                             class_delete_result(resp);
+                        }));
+                    }
+                }
+            });
+        }
+    }
+    function ListGrid_class_finish() {
+        let record = ListGrid_Class_JspClass.getSelectedRecord();
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+            let Dialog_Class_finish = createDialog("ask", "<spring:message code='msg.record.finish.ask'/>",
+                "<spring:message code="verify.finish"/>");
+            Dialog_Class_finish.addProperties({
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        wait.show()
+                        isc.RPCManager.sendRequest(TrDSRequest(classFinishUrl + record.id, "GET", null, (resp) => {
+                            wait.close()
+                            class_finish_result(resp);
                         }));
                     }
                 }
@@ -3389,6 +3426,22 @@
             createDialog("warning", (JSON.parse(resp.httpResponseText).message === undefined ? "خطا" : JSON.parse(resp.httpResponseText).message));
         }
     }
+    function class_finish_result(resp) {
+        wait.close();
+        <%--if (resp.httpResponseCode === 200) {--%>
+        <%--    ListGrid_Class_JspClass.invalidateCache();--%>
+        <%--    var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",--%>
+        <%--        "<spring:message code="msg.command.done"/>");--%>
+        <%--    setTimeout(function () {--%>
+        <%--        OK.close();--%>
+        <%--    }, 3000);--%>
+        <%--    refreshSelectedTab_class(tabSetClass.getSelectedTab());--%>
+        <%--} else if (resp.httpResponseCode === 406 && resp.httpResponseText === "NotDeletable") {--%>
+        <%--    createDialog("info", "<spring:message code='global.grid.record.cannot.deleted'/>");--%>
+        <%--} else {--%>
+        <%--    createDialog("warning", (JSON.parse(resp.httpResponseText).message === undefined ? "خطا" : JSON.parse(resp.httpResponseText).message));--%>
+        <%--}--%>
+    }
 
     function GetScoreState(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
@@ -3484,6 +3537,11 @@
                         loadPage_classCosts(ListGrid_Class_JspClass.getSelectedRecord().studentCost,
                             ListGrid_Class_JspClass.getSelectedRecord().studentCostCurrency,
                             ListGrid_Class_JspClass.getSelectedRecord().id);
+                    break;
+                }
+                case "classFinish": {
+                    if (typeof loadPage_classCosts !== "undefined")
+                        loadPage_classFinish(ListGrid_Class_JspClass.getSelectedRecord().id);
                     break;
                 }
             }
@@ -3886,6 +3944,18 @@
 
     ////*****load classes by term*****
     function load_classes_by_term(value) {
+        //id -> 61 = id finish in work group table
+        isc.RPCManager.sendRequest(TrDSRequest(hasAccessToSetEndClass+"61", "GET",null, function (resp) {
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                if (resp.data === "false" )
+                    TabSet_Class.disableTab(TabSet_Class.tabs[11]);
+                else
+                    TabSet_Class.enableTab(TabSet_Class.tabs[11]);
+
+            } else {
+                TabSet_Class.disableTab(TabSet_Class.tabs[11]);
+            }
+        }));
         if (value !== undefined) {
             let criteria = {
                 _constructor: "AdvancedCriteria",
@@ -3908,6 +3978,7 @@
         } else {
             createDialog("info", "<spring:message code="msg.select.term.ask"/>", "<spring:message code="message"/>")
         }
+
     }
 
     ////*****load classes by department*****

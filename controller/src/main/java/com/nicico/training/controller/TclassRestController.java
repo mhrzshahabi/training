@@ -703,4 +703,10 @@ public class TclassRestController {
     public ResponseEntity<Boolean> hasAccessToSetEndClass(@PathVariable Long groupId) {
         return new ResponseEntity<>(tClassService.hasAccessToSetEndClass(groupId), HttpStatus.OK);
     }
+    @Loggable
+    @GetMapping("/changeStatus/{classId}/{firstStatus}/{lastStatus}")
+    public void changeClassStatus(@PathVariable Long classId) {
+        String z=tClassService.get(classId).getClassStatus();
+//        return new ResponseEntity<>(tClassService.hasAccessToSetEndClass(groupId), HttpStatus.OK);
+    }
 }

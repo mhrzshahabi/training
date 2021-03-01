@@ -1190,6 +1190,7 @@
     const needsAssessmentUrl = rootUrl + "/needsAssessment";
     const workGroupUrl = rootUrl + "/work-group";
     const evaluationUrl = rootUrl + "/evaluation";
+    const hasAccessToSetEndClass = rootUrl + "/tclass/hasAccessToSetEndClass/";
     const needsAssessmentReportsUrl = rootUrl + "/needsAssessment-reports";
     const skillNAUrl = rootUrl + "/skill-na";
     const trainingOverTimeReportUrl = rootUrl + "/trainingOverTime";
@@ -3197,6 +3198,7 @@
     const teacherUrl = rootUrl + "/teacher/";
     const studentUrl = rootUrl + "/student/";
     const classUrl = rootUrl + "/tclass/";
+    const classFinishUrl = rootUrl + "/tclass/finish/";
     const targetSocietyUrl = rootUrl + "/target-society/";
     const calenderCurrentTermUrl = rootUrl + "/calenderCurrentTerm/";
     const classReportUrl = rootUrl + "/classReport/";

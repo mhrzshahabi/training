@@ -115,6 +115,6 @@ public interface ITclassService {
     EvaluationAnswerObject classTeacherEvaluations( TeacherEvaluationAnswerDto dto);
     EvaluationAnswerObject classStudentEvaluations(StudentEvaluationAnswerDto dto);
 
-    boolean hasAccessToSetEndClass(Long groupId);
+    Boolean hasAccessToSetEndClass(Long groupId);
 
 }

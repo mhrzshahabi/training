@@ -361,7 +361,7 @@ public class WorkGroupService implements IWorkGroupService {
     }
 
     @Override
-    public boolean hasAccess(Long userId, Long groupId) {
+    public Boolean hasAccess(Long userId, Long groupId) {
        WorkGroup workGroup= workGroupDAO.findByIdAndFetchUserIdsEagerly(groupId);
        if (workGroup!=null && !workGroup.getUserIds().isEmpty()){
            return workGroup.getUserIds().contains(userId);

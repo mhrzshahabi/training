@@ -1481,7 +1481,7 @@ public class TclassService implements ITclassService {
     }
 
     @Override
-    public boolean hasAccessToSetEndClass( Long groupId) {
+    public Boolean hasAccessToSetEndClass( Long groupId) {
         return workGroupService.hasAccess(SecurityUtil.getUserId(),groupId);
     }
 }

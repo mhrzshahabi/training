@@ -43,5 +43,5 @@ public interface IWorkGroupService {
 
     boolean isAllowUseId(String entity,Long Id);
 
-    boolean hasAccess(Long userId,Long groupId);
+    Boolean hasAccess(Long userId,Long groupId);
 }

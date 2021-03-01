@@ -141,6 +141,10 @@ public class ClassFormController {
     public String classCostsTab() {
         return "classTabs/classCosts";
     }
+    @RequestMapping("/class-finish-tab")
+    public String classFinishTab() {
+        return "classTabs/classFinish";
+    }
 
     @PostMapping("/reportPrint/{type}")
     public ResponseEntity<?> reportPrint(final HttpServletRequest request, @PathVariable String type) {
