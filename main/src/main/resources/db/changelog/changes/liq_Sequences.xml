@@ -280,4 +280,7 @@
     <changeSet author="golrokhi (generated)" id="1601704909443-515">
         <createSequence sequenceName="seq_message_contact_log_id"/>
     </changeSet>
+    <changeSet author="namdari (generated)" id="1614681515816-432">
+        <createSequence sequenceName="seq_lock_class_id"/>
+    </changeSet>
 </databaseChangeLog>
