@@ -19,10 +19,12 @@ import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.StudentDAO;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.*;
+import dto.LockClassDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import response.BaseResponse;
 import response.tclass.TclassCreateResponse;
 
 import javax.servlet.http.HttpServletResponse;
@@ -96,14 +99,13 @@ public class TclassRestController {
     public ResponseEntity safeCreate(@Validated @RequestBody TclassDTO.Create request, HttpServletResponse response) {
 
         TclassCreateResponse createResponse = new TclassCreateResponse();
-        try{
+        try {
             createResponse.setRecord(tClassService.safeCreate(request, response));
             createResponse.setMessage("عملیات ایجاد با موفقیت انجام شد.");
             createResponse.setStatus(200);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             createResponse.setStatus(409);
-            if(e.getLocalizedMessage().contains("UC_TBL_CLASSC_CODE_COL")){
+            if (e.getLocalizedMessage().contains("UC_TBL_CLASSC_CODE_COL")) {
                 createResponse.setMessage("کد کلاس تکراری است. احتمالا فرایند ایجاد کلاس همزمان توسط چندین کاربر انجام شده است.");
             }
         }
@@ -123,16 +125,15 @@ public class TclassRestController {
     @Loggable
     @PutMapping(value = "/update/{id}")
     public ResponseEntity safeUpdate(@PathVariable Long id,
-                                                     @RequestBody TclassDTO.Update request,
-                                                     @RequestParam(required = false) List<Long> cancelClassesIds) {
+                                     @RequestBody TclassDTO.Update request,
+                                     @RequestParam(required = false) List<Long> cancelClassesIds) {
 
         TclassCreateResponse response = new TclassCreateResponse();
-        try{
+        try {
             response.setRecord(tClassService.update(id, request, cancelClassesIds));
             response.setStatus(200);
             response.setMessage("عملیات ویرایش کلاس با موفقیت انجام شد.");
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             response.setStatus(409);
             response.setMessage("عملیات با مشکل مواجه شد.");
         }
@@ -703,10 +704,21 @@ public class TclassRestController {
     public ResponseEntity<Boolean> hasAccessToSetEndClass(@PathVariable Long groupId) {
         return new ResponseEntity<>(tClassService.hasAccessToSetEndClass(groupId), HttpStatus.OK);
     }
+
+
+//    every class after finish can edit but when lock it we can not edit that
     @Loggable
-    @GetMapping("/changeStatus/{classId}/{firstStatus}/{lastStatus}")
-    public void changeClassStatus(@PathVariable Long classId) {
-        String z=tClassService.get(classId).getClassStatus();
-//        return new ResponseEntity<>(tClassService.hasAccessToSetEndClass(groupId), HttpStatus.OK);
+    @GetMapping("/changeClassStatusToUnLock/{classId}")
+    public ResponseEntity changeClassStatusToFinish(@PathVariable Long classId) {
+        BaseResponse  response  =  tClassService.changeClassStatus(classId,"unLock",null);
+        return new ResponseEntity(response, HttpStatus.valueOf(response.getStatus()));
     }
+    //every class after finish can edit but when lock it we can not edit that
+    @Loggable
+    @PostMapping("/changeClassStatusToLock")
+    public ResponseEntity changeClassStatusToLock(@RequestBody LockClassDto lockClassDto) {
+        BaseResponse  response  =  tClassService.changeClassStatus(lockClassDto.getClassId(),"lock",lockClassDto.getReason());
+        return new ResponseEntity(response, HttpStatus.valueOf(response.getStatus()));
+    }
+
 }

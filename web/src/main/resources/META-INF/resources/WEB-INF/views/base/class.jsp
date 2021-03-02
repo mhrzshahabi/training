@@ -512,7 +512,8 @@
                     "1": "برنامه ریزی",
                     "2": "در حال اجرا",
                     "3": "پایان یافته",
-                    "4": "لغو شده"
+                    "4": "لغو شده",
+                    "5": "اختتام",
                 },
                 filterEditorProperties: {
                     pickListProperties: {
@@ -1298,6 +1299,7 @@
                     "1": "برنامه ریزی",
                     "2": "در حال اجرا",
                     "3": "پایان یافته",
+                    "5": "اختتام",
                 },
                 change: function (form, item, value, oldValue) {
                     highlightClassStauts(value, 10);
@@ -4526,8 +4528,25 @@
     //Amin HK
     //Highlight a selected item in a radio group
     function highlightClassStauts(value, time) {
+            if ("5" === value)
+            {
+                DynamicForm_Class_JspClass.getField("classStatus").getItem(0).disable();
+                DynamicForm_Class_JspClass.getField("classStatus").getItem(1).disable();
+                DynamicForm_Class_JspClass.getField("classStatus").getItem(2).disable();
+                IButton_Class_Save_JspClass.hide();
+                IButton_Class_Save_JspClass.setOpacity(30);
+                createDialog("info", "بدلیل اختتام کلاس امکان ویرایش وجود ندارد", "<spring:message code="message"/>")
+            }
+            else
+            {
+                IButton_Class_Save_JspClass.show();
+                IButton_Class_Save_JspClass.setOpacity(100);
+                DynamicForm_Class_JspClass.getField("classStatus").getItem(3).disable();
+            }
+
+
         setTimeout(() => {
-            let mapDictionary = {1: "برنامه ریزی", 2: "در حال اجرا", 3: "پایان یافته"};
+            let mapDictionary = {1: "برنامه ریزی", 2: "در حال اجرا", 3: "پایان یافته",5: "اختتام"};
 
             let result = $('input[type="radio"][name="classStatus"]').parent().next();
 

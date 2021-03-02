@@ -19,7 +19,11 @@ import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.mapper.TrainingClassBeanMapper;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
 import com.nicico.training.model.*;
+import com.nicico.training.model.enums.ClassStatus;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import request.evaluation.StudentEvaluationAnswerDto;
+import response.BaseResponse;
 import response.evaluation.dto.EvaluationAnswerObject;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -53,6 +57,7 @@ public class TclassService implements ITclassService {
     private final EvaluationQuestionDAO evaluationQuestionDAO;
     private final TclassDAO tclassDAO;
     private final ClassSessionDAO classSessionDAO;
+    private final LockClassDAO lockClassDAO;
     private final EvaluationDAO evaluationDAO;
     private final StudentDAO studentDAO;
     private final ClassStudentDAO classStudentDAO;
@@ -408,6 +413,63 @@ public class TclassService implements ITclassService {
     @Override
     public void changeOnlineEvalStudentStatus(Long classId, boolean state) {
         tclassDAO.changeOnlineEvalStudentStatus(classId, state);
+    }
+
+    //state 3 = payan yafte
+    //state 5 = ekhtemam
+    @Transactional
+    @Override
+    public BaseResponse changeClassStatus(Long classId, String state,String reason){
+        BaseResponse response=new BaseResponse();
+        Optional<LockClass> lockClassOptional=lockClassDAO.findByClassId(classId);
+        String classStatus = get(classId).getClassStatus();
+        switch (state){
+            case "lock":{
+                if (classStatus.equals(ClassStatus.finish.getId().toString())) {
+                    if (lockClassOptional.isPresent()) {
+                        response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                        response.setMessage("کلاس مورد نظر قبلا در اختتام بوده است");
+                    }
+                    else{
+                        LockClass lockClass=new LockClass();
+                        lockClass.setClassId(classId);
+                        lockClass.setReason(reason);
+                        lockClass.setClassCode(get(classId).getCode());
+                        lockClassDAO.save(lockClass);
+                        tclassDAO.changeClassStatus(classId, ClassStatus.lock.getId().toString());
+                        response.setStatus(200);
+                    }
+                } else
+                {
+                    response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                    response.setMessage("کلاس مورد نظر در وضعیت پایان یافته نیست");
+                }
+                return response;
+            }
+            case "unLock":{
+                if (classStatus.equals(ClassStatus.lock.getId().toString())) {
+                    if (lockClassOptional.isPresent()) {
+                        lockClassDAO.deleteById(lockClassOptional.get().getId());
+                        tclassDAO.changeClassStatus(classId, ClassStatus.finish.getId().toString());
+                        response.setStatus(200);
+                    }
+                    else{
+                        response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                        response.setMessage("کلاس مورد نظر در لیست کلاس های اختتام نیست");
+                    }
+                } else
+                {
+                    response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                    response.setMessage("کلاس مورد نظر در  وضعیت اختتام نیست");
+                }
+                return response;
+            }
+        }
+
+//
+
+//
+        return null;
     }
 
 

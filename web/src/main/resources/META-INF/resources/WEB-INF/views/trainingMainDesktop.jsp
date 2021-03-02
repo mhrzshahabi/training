@@ -1191,6 +1191,8 @@
     const workGroupUrl = rootUrl + "/work-group";
     const evaluationUrl = rootUrl + "/evaluation";
     const hasAccessToSetEndClass = rootUrl + "/tclass/hasAccessToSetEndClass/";
+    const changeClassStatusToLock = rootUrl + "/tclass/changeClassStatusToLock";
+    const changeClassStatusToUnLock = rootUrl + "/tclass/changeClassStatusToUnLock/";
     const needsAssessmentReportsUrl = rootUrl + "/needsAssessment-reports";
     const skillNAUrl = rootUrl + "/skill-na";
     const trainingOverTimeReportUrl = rootUrl + "/trainingOverTime";
@@ -3828,7 +3830,8 @@
             }
             for (let i = fieldIndex + 1; i < this.getFields().length; i++) {
                 let fieldCriteria = this.getField(i).optionCriteria;
-                fieldCriteria?.criteria?.remove(fieldCriteria.criteria.find({fieldName: item.organSegmentFilterFieldName}));
+                if (fieldCriteria && fieldCriteria.criteria)
+                    fieldCriteria.criteria.remove(fieldCriteria.criteria.find({fieldName: item.organSegmentFilterFieldName}));
                 if (fieldCriteria && (fieldCriteria.criteria == null || fieldCriteria.criteria.length === 0))
                     fieldCriteria = null;
                 let afterChangeCriteria = isc.DataSource.combineCriteria(criteria, fieldCriteria);
@@ -4043,7 +4046,8 @@
             }
             for (let i = fieldIndex + 1; i < this.getFields().length; i++) {
                 let fieldCriteria = this.getField(i).optionCriteria;
-                fieldCriteria?.criteria?.remove(fieldCriteria.criteria.find({fieldName: item.organSegmentFilterFieldName}));
+                if (fieldCriteria && fieldCriteria.criteria)
+                fieldCriteria.criteria.remove(fieldCriteria.criteria.find({fieldName: item.organSegmentFilterFieldName}));
                 if (fieldCriteria && (fieldCriteria.criteria == null || fieldCriteria.criteria.length === 0))
                     fieldCriteria = null;
                 let afterChangeCriteria = isc.DataSource.combineCriteria(criteria, fieldCriteria);

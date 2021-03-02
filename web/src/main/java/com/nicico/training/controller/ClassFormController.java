@@ -143,7 +143,7 @@ public class ClassFormController {
     }
     @RequestMapping("/class-finish-tab")
     public String classFinishTab() {
-        return "classTabs/classFinish";
+        return "classTabs/lockClass";
     }
 
     @PostMapping("/reportPrint/{type}")

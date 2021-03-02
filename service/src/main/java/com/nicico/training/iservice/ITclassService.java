@@ -8,6 +8,7 @@ import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.model.Tclass;
 import request.evaluation.StudentEvaluationAnswerDto;
+import response.BaseResponse;
 import response.evaluation.dto.EvaluationAnswerObject;
 import org.springframework.transaction.annotation.Transactional;
 import request.evaluation.TeacherEvaluationAnswerDto;
@@ -110,6 +111,9 @@ public interface ITclassService {
 
     @Transactional
     void changeOnlineEvalStudentStatus(Long classId ,boolean state);
+
+    @Transactional
+    BaseResponse changeClassStatus(Long classId , String statem, String reason);
 
 
     EvaluationAnswerObject classTeacherEvaluations( TeacherEvaluationAnswerDto dto);
