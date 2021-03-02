@@ -654,6 +654,7 @@
                 "<spring:message code='verify.delete'/>");
             Dialog_Delete.addProperties({
                 buttonClick: function (button, index) {
+                    this.close();
                     if (index === 0) {
                         ListGrid_ClassCheckList.data.removeAt(rowNum);
                         wait.show();
