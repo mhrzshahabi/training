@@ -4,6 +4,7 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.QuestionBankTestQuestionDTO;
+import com.nicico.training.dto.question.ElsExamRequestResponse;
 import com.nicico.training.iservice.IQuestionBankTestQuestionService;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.model.*;
@@ -124,12 +125,18 @@ public class QuestionBankTestQuestionService implements IQuestionBankTestQuestio
         object.setExamItem(examData);
         object.setQuestions(questions);
 
-        request = evaluationBeanMapper.toGetExamRequest(tclass, personalInfo, object, classStudentService.getClassStudents(questionBankTestQuestionFinalTest.getTestQuestion().getTclassId()));
-        boolean hasWrongCorrectAnswer = evaluationBeanMapper.hasWrongCorrectAnswer(request.getQuestionProtocols());
-        if (hasWrongCorrectAnswer || request.getQuestionProtocols().size() == 0)
-            throw new TrainingException(TrainingException.ErrorType.InvalidData);
-
-        return true;
+        final ElsExamRequestResponse elsExamRequestResponse =
+                evaluationBeanMapper.toGetExamRequest(tclass, personalInfo, object,
+                        classStudentService.getClassStudents(questionBankTestQuestionFinalTest.getTestQuestion().getTclassId()));
+//        if(elsExamRequestResponse.getStatus() == 200) {
+            request = elsExamRequestResponse.getElsExamRequest();
+            boolean hasWrongCorrectAnswer = evaluationBeanMapper.hasWrongCorrectAnswer(request.getQuestionProtocols());
+            if (hasWrongCorrectAnswer || request.getQuestionProtocols().size() == 0)
+                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+            return true;
+//        }else
+//            throw new TrainingException(TrainingException.ErrorType.InvalidData);
+       // return true;
     }
 
     @Transactional

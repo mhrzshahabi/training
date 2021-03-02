@@ -1,6 +1,8 @@
 package com.nicico.training.mapper.evaluation;
 
 
+import com.nicico.training.dto.question.ElsExamRequestResponse;
+import com.nicico.training.dto.question.ExamQuestionsObject;
 import com.nicico.training.model.*;
 import com.nicico.training.service.QuestionBankService;
 import com.nicico.training.utility.persianDate.PersianDate;
@@ -18,6 +20,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import request.evaluation.ElsEvalRequest;
 import request.exam.ElsExamRequest;
 import request.exam.ExamImportedRequest;
@@ -30,6 +33,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.nicico.training.utility.persianDate.PersianDate.getEndDateFromDuration;
+import static dto.exam.EQuestionType.DESCRIPTIVE;
 import static dto.exam.EQuestionType.MULTI_CHOICES;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN, uses = QuestionBankService.class)
@@ -38,6 +42,7 @@ public abstract class EvaluationBeanMapper {
     @Autowired
     protected QuestionBankService questionBankService;
 
+    private final Boolean hasDuplicateQuestion = true;
 
     @Mapping(source = "firstName", target = "surname")
     @Mapping(source = "lastName", target = "lastName")
@@ -96,9 +101,10 @@ public abstract class EvaluationBeanMapper {
     public abstract EvalTargetUser toTeacher(PersonalInfo teacher);
 
 
-    public ElsExamRequest toGetExamRequest(Tclass tClass, PersonalInfo teacherInfo, ExamImportedRequest object, List<ClassStudent> classStudents) {
+    public ElsExamRequestResponse toGetExamRequest(Tclass tClass, PersonalInfo teacherInfo, ExamImportedRequest object, List<ClassStudent> classStudents) {
         ElsExamRequest request = new ElsExamRequest();
-
+        ElsExamRequestResponse elsExamRequestResponse = new ElsExamRequestResponse();
+        ExamQuestionsObject examQuestionsObject = new ExamQuestionsObject();
 
         int time = Math.toIntExact(object.getExamItem().getDuration());
 
@@ -111,7 +117,14 @@ public abstract class EvaluationBeanMapper {
         ImportedCourseDto courseDto = getCourseData(object);
         CourseProtocolImportDTO courseProtocol = getCourseProtocolData(object);
 
-        List<ImportedQuestionProtocol> questionProtocols = getQuestions(object, timeQues);
+        examQuestionsObject = getQuestions(object, timeQues);
+//        if(examQuestionsObject.getStatus()!= 200){
+//            elsExamRequestResponse.setStatus(examQuestionsObject.getStatus());
+//            elsExamRequestResponse.setMessage(examQuestionsObject.getMessage());
+////            return elsExamRequestResponse;
+//        }
+        List<ImportedQuestionProtocol> questionProtocols = examQuestionsObject.getProtocols();
+
         ImportedUser teacher = getTeacherData(teacherInfo);
 
 
@@ -134,7 +147,14 @@ public abstract class EvaluationBeanMapper {
         request.setPrograms(getPrograms(object.getExamItem().getTclass()));
         request.setProtocol(courseProtocol);
 
-        return request;
+        elsExamRequestResponse.setElsExamRequest(request);
+        if(examQuestionsObject.getStatus()!= 200){
+            elsExamRequestResponse.setStatus(examQuestionsObject.getStatus());
+            elsExamRequestResponse.setMessage(examQuestionsObject.getMessage());
+//            return elsExamRequestResponse;
+        }else
+            elsExamRequestResponse.setStatus(200);
+        return elsExamRequestResponse;
     }
 
     private ImportedUser getTeacherData(PersonalInfo teacherInfo) {
@@ -158,9 +178,10 @@ public abstract class EvaluationBeanMapper {
         return teacher;
     }
 
-    private List<ImportedQuestionProtocol> getQuestions(ExamImportedRequest object, Integer timeQues) {
-
+    private ExamQuestionsObject getQuestions(ExamImportedRequest object, Integer timeQues) {
+        ExamQuestionsObject examQuestionsObject = new ExamQuestionsObject();
         List<ImportedQuestionProtocol> questionProtocols = new ArrayList<>();
+        Boolean findDuplicate = false;
 
         if (object.getQuestions().size() > 0) {
 //            Double questionScore = (double) (20 / object.getQuestions().size());
@@ -194,10 +215,26 @@ public abstract class EvaluationBeanMapper {
                 options.add(option2);
                 options.add(option3);
                 options.add(option4);
+                if(!findDuplicate) {
+                    findDuplicate = checkDuplicateQuestion(options, questionProtocols, question.getTitle(),question.getType());
+                    if (findDuplicate) {
+                        examQuestionsObject.setStatus(HttpStatus.CONFLICT.value());
+                        examQuestionsObject.setMessage("در آزمون سوال تکراری وجود دارد");
+                    }
+                }
                 question.setQuestionOption(options);
                 questionProtocol.setCorrectAnswerTitle(convertCorrectAnswer(questionBank.getMultipleChoiceAnswer(), questionBank));
 
+            }else if(question.getType().equals(DESCRIPTIVE)){
+                if(!findDuplicate) {
+                    findDuplicate = checkDuplicateDescriptiveQuestions(questionProtocols, question.getTitle());
+                    if (findDuplicate) {
+                        examQuestionsObject.setStatus(HttpStatus.CONFLICT.value());
+                        examQuestionsObject.setMessage("در آزمون سوال تکراری وجود دارد");
+                    }
+                }
             }
+
             if (object.getQuestionData()!=null)
             {
                 QuestionScores questionScore = object.getQuestionData().stream()
@@ -213,9 +250,46 @@ public abstract class EvaluationBeanMapper {
             questionProtocols.add(questionProtocol);
         }
     }
-
-        return questionProtocols;
+        examQuestionsObject.setProtocols(questionProtocols);
+        if(!findDuplicate)
+            examQuestionsObject.setStatus(HttpStatus.OK.value());
+        return examQuestionsObject;
+        /*return questionProtocols;*/
 }
+
+    private Boolean checkDuplicateDescriptiveQuestions(List<ImportedQuestionProtocol> protocols, String title) {
+        if(protocols.size()>0) {
+            final List<ImportedQuestion> questions = protocols.stream().map(ImportedQuestionProtocol::getQuestion).collect(Collectors.toList());
+            final boolean matchedTitle = questions.stream().map(ImportedQuestion::getTitle).anyMatch(t -> t.equals(title));
+            if (matchedTitle) {
+                return hasDuplicateQuestion;
+            }
+        }
+        return !hasDuplicateQuestion;
+    }
+
+    private Boolean checkDuplicateQuestion(List<ImportedQuestionOption> newOptions, List<ImportedQuestionProtocol> protocols, String title, EQuestionType type) {
+        if(protocols.size()>0) {
+            final List<String> newOptionsList = newOptions.stream().map(ImportedQuestionOption::getTitle).collect(Collectors.toList());
+            List<String> targetOptionsList =  new ArrayList<>();
+            final List<ImportedQuestion> questions = protocols.stream().map(ImportedQuestionProtocol::getQuestion).collect(Collectors.toList());
+            final boolean matchedTitle = questions.stream().map(ImportedQuestion::getTitle).anyMatch(t -> t.equals(title));
+            List<String> duplicateOptions = new ArrayList<>();
+            if (matchedTitle) {
+                for (ImportedQuestion question : questions) {
+                    if (question.getTitle().equals(title) && question.getType().equals(type)) {
+                        targetOptionsList = question.getQuestionOption().stream().map(ImportedQuestionOption::getTitle).collect(Collectors.toList());
+                        duplicateOptions = targetOptionsList.stream().filter(e -> newOptionsList.contains(e))
+                                .collect(Collectors.toList());
+                    }
+                }
+                if (duplicateOptions.size() == newOptions.size())
+                    return hasDuplicateQuestion;
+            }
+        }
+        return !hasDuplicateQuestion;
+    }
+
 
     private CourseProtocolImportDTO getCourseProtocolData(ExamImportedRequest object) {
         CourseProtocolImportDTO courseProtocol = new CourseProtocolImportDTO();
@@ -724,12 +798,12 @@ public abstract class EvaluationBeanMapper {
 
     }
 
-
-    public Boolean hasDuplicateQuestions(List<ImportedQuestionProtocol> questionProtocols) {
-
-        Set<String> set = new HashSet<>();
-        return !questionProtocols.stream().allMatch(t -> set.add(t.getQuestion().getTitle().trim()));
-    }
+//
+//    public Boolean hasDuplicateQuestions(List<ImportedQuestionProtocol> questionProtocols) {
+//
+//        Set<String> set = new HashSet<>();
+//        return !questionProtocols.stream().allMatch(t -> set.add(t.getQuestion().getTitle().trim()));
+//    }
 
     public Boolean hasWrongCorrectAnswer(List<ImportedQuestionProtocol> questionProtocols) {
         List<ImportedQuestionProtocol> filteredTeams =
@@ -747,34 +821,41 @@ public abstract class EvaluationBeanMapper {
 
     }
 
-    public ExamQuestionsDto toGetExamQuestions(ExamImportedRequest object) {
+    public ExamQuestionsObject toGetExamQuestions(ExamImportedRequest object) {
         ExamQuestionsDto examQuestionsDto = new ExamQuestionsDto();
+        /*List<ImportedQuestionProtocol> questionProtocols =*/
+        final ExamQuestionsObject examQuestionsObject = getQuestions(object, null);
+        if(examQuestionsObject.getStatus()== 200) {
+            List<ImportedQuestionProtocol> questionProtocols = examQuestionsObject.getProtocols();
+            List<QuestionsDto> questionsDtos = new ArrayList<>();
+            for (ImportedQuestionProtocol question : questionProtocols) {
+                QuestionsDto questionsDto = new QuestionsDto();
+                questionsDto.setQuestion(question.getQuestion().getTitle());
+                questionsDto.setType(question.getQuestion().getType().getValue());
+                questionsDto.setId(question.getQuestion().getId());
+                StringBuilder listString = new StringBuilder();
 
-        List<ImportedQuestionProtocol> questionProtocols = getQuestions(object, null);
-        List<QuestionsDto> questionsDtos = new ArrayList<>();
-        for (ImportedQuestionProtocol question : questionProtocols) {
-            QuestionsDto questionsDto = new QuestionsDto();
-            questionsDto.setQuestion(question.getQuestion().getTitle());
-            questionsDto.setType(question.getQuestion().getType().getValue());
-            questionsDto.setId(question.getQuestion().getId());
-            StringBuilder listString = new StringBuilder();
+                if (questionsDto.getType().equals(MULTI_CHOICES.getValue())) {
+                    for (int i = 0; i < question.getQuestion().getQuestionOption().size(); i++) {
+                        listString.append(i + 1).append(" - ").append(question.getQuestion().getQuestionOption().get(i).getTitle()).append("\t").append(System.lineSeparator());
+                    }
+                    questionsDto.setOptions(listString.toString());
+                } else {
+                    questionsDto.setOptions("-");
 
-            if (questionsDto.getType().equals(MULTI_CHOICES.getValue())) {
-                for (int i = 0; i < question.getQuestion().getQuestionOption().size(); i++) {
-                    listString.append(i + 1).append(" - ").append(question.getQuestion().getQuestionOption().get(i).getTitle()).append("\t").append(System.lineSeparator());
                 }
-                questionsDto.setOptions(listString.toString());
-            } else {
-                questionsDto.setOptions("-");
 
+
+                questionsDtos.add(questionsDto);
             }
+            examQuestionsDto.setData(questionsDtos);
 
+            examQuestionsObject.setDto(examQuestionsDto);
+            return examQuestionsObject;
+        }else {
 
-            questionsDtos.add(questionsDto);
+            return examQuestionsObject;
         }
-        examQuestionsDto.setData(questionsDtos);
-
-        return examQuestionsDto;
     }
 
     public boolean checkExamScore(ExamImportedRequest object, Tclass tclass) {
