@@ -17,9 +17,7 @@ import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.model.enums.EGender;
 import com.nicico.training.service.*;
 import dto.evaluuation.EvalTargetUser;
-import dto.exam.ImportedQuestion;
-import dto.exam.ImportedQuestionOption;
-import dto.exam.ImportedQuestionProtocol;
+import dto.exam.ImportedUser;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.env.Environment;
@@ -47,9 +45,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 
 @RestController
@@ -74,8 +72,6 @@ public class ElsRestController {
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final EvaluationAnalysisService evaluationAnalysisService;
     private final Environment environment;
-
-    private Boolean hasDuplicate = true;
 
     @GetMapping("/eval/{id}")
     public ResponseEntity<SendEvalToElsResponse> sendEvalToEls(@PathVariable long id) {
@@ -163,8 +159,10 @@ public class ElsRestController {
                             response.setMessage("دوره فراگیر ندارد");
                             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
                         }
-                    } catch (Exception e) {
-                        if (e.getCause() != null && e.getCause().getMessage() != null && e.getCause().getMessage().equals("Read timed out")) {
+                    }
+                    catch (Exception e)
+                    {
+                        if (e.getCause()!=null && e.getCause().getMessage()!=null && e.getCause().getMessage().equals("Read timed out")) {
                             response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
                             response.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
                             return new ResponseEntity<>(response, HttpStatus.REQUEST_TIMEOUT);

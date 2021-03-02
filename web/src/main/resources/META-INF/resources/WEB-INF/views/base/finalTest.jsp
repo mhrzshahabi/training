@@ -680,8 +680,7 @@ totalScore=0;
 scoreLabel.setContents("مجموع بارم وارد شده :")
                     Window_result_Finaltest.show();
                 } else {
-                                        let errorResponseMessage = resp.httpResponseText;
-                                        console.log(errorResponseMessage)
+                   let errorResponseMessage = resp.httpResponseText;
                     var ERROR = isc.Dialog.create({
                         message: errorResponseMessage,
                         icon: "[SKIN]stop.png",

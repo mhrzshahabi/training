@@ -118,11 +118,6 @@ public abstract class EvaluationBeanMapper {
         CourseProtocolImportDTO courseProtocol = getCourseProtocolData(object);
 
         examQuestionsObject = getQuestions(object, timeQues);
-//        if(examQuestionsObject.getStatus()!= 200){
-//            elsExamRequestResponse.setStatus(examQuestionsObject.getStatus());
-//            elsExamRequestResponse.setMessage(examQuestionsObject.getMessage());
-////            return elsExamRequestResponse;
-//        }
         List<ImportedQuestionProtocol> questionProtocols = examQuestionsObject.getProtocols();
 
         ImportedUser teacher = getTeacherData(teacherInfo);
@@ -151,7 +146,6 @@ public abstract class EvaluationBeanMapper {
         if(examQuestionsObject.getStatus()!= 200){
             elsExamRequestResponse.setStatus(examQuestionsObject.getStatus());
             elsExamRequestResponse.setMessage(examQuestionsObject.getMessage());
-//            return elsExamRequestResponse;
         }else
             elsExamRequestResponse.setStatus(200);
         return elsExamRequestResponse;
@@ -234,7 +228,6 @@ public abstract class EvaluationBeanMapper {
                     }
                 }
             }
-
             if (object.getQuestionData()!=null)
             {
                 QuestionScores questionScore = object.getQuestionData().stream()
@@ -798,12 +791,6 @@ public abstract class EvaluationBeanMapper {
 
     }
 
-//
-//    public Boolean hasDuplicateQuestions(List<ImportedQuestionProtocol> questionProtocols) {
-//
-//        Set<String> set = new HashSet<>();
-//        return !questionProtocols.stream().allMatch(t -> set.add(t.getQuestion().getTitle().trim()));
-//    }
 
     public Boolean hasWrongCorrectAnswer(List<ImportedQuestionProtocol> questionProtocols) {
         List<ImportedQuestionProtocol> filteredTeams =
@@ -823,7 +810,6 @@ public abstract class EvaluationBeanMapper {
 
     public ExamQuestionsObject toGetExamQuestions(ExamImportedRequest object) {
         ExamQuestionsDto examQuestionsDto = new ExamQuestionsDto();
-        /*List<ImportedQuestionProtocol> questionProtocols =*/
         final ExamQuestionsObject examQuestionsObject = getQuestions(object, null);
         if(examQuestionsObject.getStatus()== 200) {
             List<ImportedQuestionProtocol> questionProtocols = examQuestionsObject.getProtocols();

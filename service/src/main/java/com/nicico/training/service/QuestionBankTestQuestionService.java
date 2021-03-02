@@ -128,15 +128,11 @@ public class QuestionBankTestQuestionService implements IQuestionBankTestQuestio
         final ElsExamRequestResponse elsExamRequestResponse =
                 evaluationBeanMapper.toGetExamRequest(tclass, personalInfo, object,
                         classStudentService.getClassStudents(questionBankTestQuestionFinalTest.getTestQuestion().getTclassId()));
-//        if(elsExamRequestResponse.getStatus() == 200) {
             request = elsExamRequestResponse.getElsExamRequest();
             boolean hasWrongCorrectAnswer = evaluationBeanMapper.hasWrongCorrectAnswer(request.getQuestionProtocols());
             if (hasWrongCorrectAnswer || request.getQuestionProtocols().size() == 0)
                 throw new TrainingException(TrainingException.ErrorType.InvalidData);
             return true;
-//        }else
-//            throw new TrainingException(TrainingException.ErrorType.InvalidData);
-       // return true;
     }
 
     @Transactional
