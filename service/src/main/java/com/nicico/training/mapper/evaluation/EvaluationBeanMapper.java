@@ -21,7 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import request.evaluation.ElsEvalRequest;
 import request.exam.ElsExamRequest;
 import request.exam.ExamImportedRequest;
+import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
+import response.exam.ExamResultDto;
 import response.question.QuestionsDto;
 
 
@@ -850,5 +852,26 @@ public abstract class EvaluationBeanMapper {
         }
 
         return isValid;
+    }
+
+    public ExamListResponse toExamResult(ExamListResponse response) {
+        for (ExamResultDto examResultDto:response.getData())
+        {
+            switch (examResultDto.getResultStatus()) {
+                case "1": {
+                    examResultDto.setResultStatus("قبول");
+                    break;
+                }
+                case "2": {
+                    examResultDto.setResultStatus("مردود");
+                    break;
+                }
+                case "3": {
+                    examResultDto.setResultStatus("منتظر اعلام نتیجه");
+                    break;
+                }
+            }
+        }
+        return response;
     }
 }
