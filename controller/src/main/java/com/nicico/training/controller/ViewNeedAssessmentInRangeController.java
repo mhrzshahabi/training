@@ -43,9 +43,9 @@ public class ViewNeedAssessmentInRangeController {
         SearchDTO.CriteriaRq criteriaRq=null;
 
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date parsedDate = dateFormat.parse(startDate);
-            Date parsedDate2 = dateFormat.parse(endDate);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            Date parsedDate = dateFormat.parse(String.format("%s 00:00:00", startDate));
+            Date parsedDate2 = dateFormat.parse(String.format("%s 23:59:59", endDate));
             Timestamp firstTime = new Timestamp(parsedDate.getTime());
             Timestamp secondDate = new Timestamp(parsedDate2.getTime());
 
