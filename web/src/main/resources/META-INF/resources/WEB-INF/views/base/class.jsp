@@ -281,6 +281,7 @@
             {
                 title: "<spring:message code='create'/>",
                 click: function () {
+                    IButton_Class_Save_JspClass.show();
                     ListGrid_Class_add();
                 }
             },
@@ -2042,6 +2043,7 @@
     <sec:authorize access="hasAuthority('Tclass_C')">
     var ToolStripButton_Add_JspClass = isc.ToolStripButtonCreate.create({
         click: function () {
+            IButton_Class_Save_JspClass.show();
             ListGrid_Class_add();
         }
     });
@@ -4538,6 +4540,7 @@
     //Amin HK
     //Highlight a selected item in a radio group
     function highlightClassStauts(value, time) {
+        IButton_Class_Save_JspClass.show();
             if ("5" === value)
             {
                 DynamicForm_Class_JspClass.getField("classStatus").getItem(0).disable();
