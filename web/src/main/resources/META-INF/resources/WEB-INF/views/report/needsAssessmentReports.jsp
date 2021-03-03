@@ -572,6 +572,7 @@
                 }
             },
             {name: "skill.course.scoresState", title: "<spring:message code='status'/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "skill.course.scoresStatus", title: "<spring:message code='score.state'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "skill.course.code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "skill.course.titleFa", title: "<spring:message code="course"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
@@ -826,6 +827,9 @@
                     {name: "title", width: "30%"}
                 ],
             },
+            {
+                name: "skill.course.scoresStatus"
+            },
         ],
         sortField: "needsAssessmentPriorityId",
         dataArrived: function () {
@@ -1053,6 +1057,7 @@
             DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport'/>" + " <spring:message code='Mrs/Mr'/> " + personName + " <spring:message code='in.post'/> " + getFormulaMessage("...", 2, "red", "b");
             ReportTypeDF_NABOP.getItem("objectId").hide();
             CoursesLG_NABOP.showField("skill.course.scoresState");
+            CoursesLG_NABOP.showField("skill.course.scoresStatus");
             CoursesLG_NABOP.getField("skill.course.theoryDuration").summaryFunction = fullSummaryFunc_NABOP;
             Tabset_Object_NABOP.selectTab("TrainingPost");
         } else if (ReportTypeDF_NABOP.getValue("reportType") === "1") {
@@ -1062,6 +1067,7 @@
             DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport.post/job/postGrade'/> " + postName;
             ReportTypeDF_NABOP.getItem("objectId").setTitle("<spring:message code='needsAssessmentReport.choose.post/job/postGrade'/>");
             CoursesLG_NABOP.hideField("skill.course.scoresState");
+            CoursesLG_NABOP.hideField("skill.course.scoresStatus");
             CoursesLG_NABOP.getField("skill.course.theoryDuration").summaryFunction = totalSummaryFunc_NABOP;
             Tabset_Object_NABOP.tabs.forEach(tab => Tabset_Object_NABOP.enableTab(tab));
         } else if (ReportTypeDF_NABOP.getValue("reportType") === "2") {
@@ -1071,6 +1077,7 @@
             ReportTypeDF_NABOP.getItem("objectId").setTitle("<spring:message code='needsAssessmentReport.choose.post'/>");
             DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport.job.promotion'/> " + " <spring:message code='Mrs/Mr'/> " + personName + " <spring:message code='in.post'/> " + postName;
             CoursesLG_NABOP.showField("skill.course.scoresState");
+            CoursesLG_NABOP.showField("skill.course.scoresStatus");
             CoursesLG_NABOP.getField("skill.course.theoryDuration").summaryFunction = fullSummaryFunc_NABOP;
             for (let i = 1; i < Tabset_Object_NABOP.tabs.length; i++)
                 Tabset_Object_NABOP.disableTab(Tabset_Object_NABOP.tabs[i]);
