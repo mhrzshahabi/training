@@ -14,6 +14,7 @@ import com.nicico.training.dto.PostDTO;
 import com.nicico.training.dto.TrainingFileNAReportDTO;
 import com.nicico.training.dto.ViewActivePersonnelDTO;
 import com.nicico.training.iservice.ITrainingFileNAReportService;
+import com.nicico.training.model.TrainingFileNAReport;
 import com.nicico.training.model.enums.ETechnicalType;
 import com.nicico.training.repository.PostDAO;
 import com.nicico.training.repository.TrainingFileNAReportDAO;
@@ -54,6 +55,11 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
     @Override
     public <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Function converter) {
         return SearchUtil.search(trainingFileNAReportDAO, request, converter);
+    }
+
+    @Override
+    public List<TrainingFileNAReport> reportDetail(Long personnelId) {
+        return trainingFileNAReportDAO.findAllWithEquals(personnelId);
     }
 
     @Override
@@ -282,6 +288,7 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
             headerBoldCellStyle.getFont().setBold(true);
 
             XSSFCellStyle bodyCellStyle = setCellStyle(workbook, "Tahoma", (short) 12, null, null, VerticalAlignment.CENTER, HorizontalAlignment.CENTER);
+            XSSFCellStyle bodyEqualsCellStyle = setCellStyle(workbook, "Tahoma", (short) 12, null, new Color(124, 210, 173), VerticalAlignment.CENTER, HorizontalAlignment.CENTER);
             XSSFCellStyle bodyBoldCellStyle = setCellStyle(workbook, "Tahoma", (short) 12, null, null, VerticalAlignment.CENTER, HorizontalAlignment.CENTER);
             bodyBoldCellStyle.getFont().setBold(true);
 
@@ -381,7 +388,10 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
                         excelCellOfRow = excelRow.createCell(k);
 
                         excelCellOfRow.setCellValue(row.getDataOfGrid().get(j).get(k));
-                        excelCellOfRow.setCellStyle(bodyCellStyle);
+                        if (row.getDataOfGrid().get(j).get(5) == null && row.getDataOfGrid().get(j).get(10) == null)
+                            excelCellOfRow.setCellStyle(bodyEqualsCellStyle);
+                        else
+                            excelCellOfRow.setCellStyle(bodyCellStyle);
                     }
                     currentRow++;
                 }
