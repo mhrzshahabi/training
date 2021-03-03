@@ -1,6 +1,7 @@
 package com.nicico.training.utility;
 
 import com.nicico.copper.common.domain.i18n.CaptionFactory;
+import com.nicico.training.utility.persianDate.PersianDate;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.ss.usermodel.*;
@@ -15,8 +16,10 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -356,6 +359,24 @@ public class MakeExcelOutputUtil {
                         cell.setCellType(CellType.BOOLEAN);
                         cell.setCellValue(obj.toString().equalsIgnoreCase("true") ? CaptionFactory.getLabel("yes") : CaptionFactory.getLabel("no"));
                         cell.setCellStyle(xssfStringCellStyle);
+                    } else if (objType.equalsIgnoreCase(Date.class.getName())) {
+                        PersianDate persianDate = PersianDate.of((Date) obj);
+                        cell.setCellType(CellType.STRING);
+                        cell.setCellStyle(xssfStringCellStyle);
+                        if (persianDate == null) {
+                            cell.setCellValue(obj.toString());
+                        } else {
+                            cell.setCellValue(persianDate.toString().replaceAll("-", "/"));
+                        }
+                    } else if (objType.equalsIgnoreCase(Timestamp.class.getName())) {
+                        String persianDate = PersianDate.of((Timestamp) obj);
+                        cell.setCellType(CellType.STRING);
+                        cell.setCellStyle(xssfStringCellStyle);
+                        if (persianDate == null) {
+                            cell.setCellValue("");
+                        } else {
+                            cell.setCellValue(persianDate);
+                        }
                     } else {
 
                         cell.setCellType(CellType.STRING);

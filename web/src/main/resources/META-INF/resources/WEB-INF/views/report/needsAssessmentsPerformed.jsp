@@ -14,7 +14,8 @@
             {name: "postCode"},
             {name: "postTitle"},
             {name: "updateBy"},
-            {name: "updateAt"}
+            {name: "updateAt"},
+            {name: "version"}
         ]
     });
     function gregorianDate(date) {
@@ -189,7 +190,13 @@
             {name: "postCode", title: "کد پست"},
             {name: "postTitle", title: "عنوان پست"},
             {name: "updateBy", title: "ویرایش توسط"},
-            {name: "updateAt", title: "ویرایش در تاریخ", hidden: true}
+            {name: "updateAt", title: "ویرایش در تاریخ",
+                formatCellValue: (value) => {
+                    let d = new Date(value);
+                    return d.toLocaleString('fa',{ year: 'numeric', month: 'numeric', day: 'numeric' });
+                },
+            },
+            {name: "version",title: "تعداد دفعات نیازسنجی"}
         ]
     });
     var VLayout_Body_NeedAssessmentsPerformed = isc.VLayout.create({
@@ -202,9 +209,9 @@
 
     function makeExcelOutput() {
 
-        let fieldNames = "postType,postCode,postTitle,updateBy";
+        let fieldNames = "postType,postCode,postTitle,updateBy,updateAt,version";
 
-        let headerNames = 'نوع پست,کد پست,عنوان پست ,کارشناس';
+        let headerNames = 'نوع پست,کد پست,عنوان پست ,کارشناس,ویرایش در تاریخ,تعداد دفعات نیازسنجی';
 
         let downloadForm = isc.DynamicForm.create({
             method: "POST",

@@ -5,6 +5,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.sql.Timestamp;
 import java.time.*;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoPeriod;
@@ -654,5 +655,18 @@ public final class PersianDate implements ChronoLocalDate {
         return new Date(ts.getTime() / 1000);
 
 
+    }
+
+    public static PersianDate of(Date date) {
+        if (date == null)
+            return null;
+        return PersianDate.ofEpochDay(date.toInstant().atZone(ZoneId.of("Iran")).toLocalDate().toEpochDay());
+    }
+
+    public static String of(Timestamp time) {
+        if (time == null)
+            return null;
+        PersianDate persianDate = PersianDate.of(new Date(time.getTime()));
+        return String.format("%s - %s:%s:%s", persianDate.toString().replaceAll("-", "/"), time.getHours(), time.getMinutes(), time.getSeconds());
     }
 }

@@ -43,8 +43,8 @@ public class ViewNeedAssessmentInRangeTime implements Serializable{
     @Column(name = "UPDATETIME")
     private Date updateAt;
 
-
-
+    @Column(name = "N_VERSION")
+    private Integer version;
 
 
 }

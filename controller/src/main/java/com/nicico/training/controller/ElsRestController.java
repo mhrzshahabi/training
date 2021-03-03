@@ -5,6 +5,8 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.controller.util.GeneratePdfReport;
 import com.nicico.training.dto.*;
+import com.nicico.training.dto.question.ElsExamRequestResponse;
+import com.nicico.training.dto.question.ExamQuestionsObject;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.iservice.ITclassService;
@@ -142,9 +144,12 @@ public class ElsRestController {
         try {
             ElsExamRequest request;
             PersonalInfo teacherInfo = personalInfoService.getPersonalInfo(teacherService.getTeacher(object.getExamItem().getTclass().getTeacherId()).getPersonalityId());
-            request = evaluationBeanMapper.toGetExamRequest(tclassService.getTClass(object.getExamItem().getTclassId()), teacherInfo, object, classStudentService.getClassStudents(object.getExamItem().getTclassId()));
 
-            if (request.getInstructor() != null && request.getInstructor().getNationalCode() != null && evaluationBeanMapper.validateTeacherExam(request.getInstructor())) {
+            ElsExamRequestResponse elsExamRequestResponse = evaluationBeanMapper.toGetExamRequest(tclassService.getTClass(object.getExamItem().getTclassId()), teacherInfo, object, classStudentService.getClassStudents(object.getExamItem().getTclassId()));
+            if(elsExamRequestResponse.getStatus() == 200) {
+                request = elsExamRequestResponse.getElsExamRequest();
+                if (request.getInstructor() != null && request.getInstructor().getNationalCode() != null &&
+                        evaluationBeanMapper.validateTeacherExam(request.getInstructor())) {
                     try {
                         request = evaluationBeanMapper.removeInvalidUsersForExam(request);
                         if (request.getUsers() != null && !request.getUsers().isEmpty()) {
@@ -165,15 +170,20 @@ public class ElsRestController {
                         }
                     }
 
-            } else {
-                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-                response.setMessage("اطلاعات استاد تکمیل نیست");
+                } else {
+                    response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                    response.setMessage("اطلاعات استاد تکمیل نیست");
+                    return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+                }
+                if (response.getStatus() == HttpStatus.OK.value()) {
+                    testQuestionService.changeOnlineFinalExamStatus(request.getExam().getSourceExamId(), true);
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                } else return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+            }else {
+                response.setStatus(elsExamRequestResponse.getStatus());
+                response.setMessage(elsExamRequestResponse.getMessage());
                 return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
             }
-            if (response.getStatus() == HttpStatus.OK.value()) {
-                testQuestionService.changeOnlineFinalExamStatus(request.getExam().getSourceExamId(), true);
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            } else return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
 
         } catch (TrainingException ex) {
             response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
@@ -223,13 +233,20 @@ public class ElsRestController {
     public ResponseEntity<ExamQuestionsDto> examQuestions(@RequestBody ExamImportedRequest object) {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-
+        ExamQuestionsObject examQuestionsObject =  new ExamQuestionsObject();
+        ExamQuestionsDto response = new ExamQuestionsDto();
         try {
 //            if (dateFormat.parse(object.getExamItem().getTclass().getStartDate()).compareTo(dateFormat.parse(object.getExamItem().getTclass().getEndDate())) != 0) {
 
                 if (dateFormat.parse(object.getExamItem().getDate()).after(dateFormat.parse(object.getExamItem().getTclass().getStartDate()))) {
-                    ExamQuestionsDto response = evaluationBeanMapper.toGetExamQuestions(object);
-                    return new ResponseEntity(response, HttpStatus.OK);
+                    /*ExamQuestionsDto response*/
+                    examQuestionsObject = evaluationBeanMapper.toGetExamQuestions(object);
+                    if(examQuestionsObject.getStatus() == 200) {
+                        response.setData(examQuestionsObject.getDto().getData());
+                        return new ResponseEntity(response, HttpStatus.OK);
+                    }else {
+                        return new ResponseEntity(examQuestionsObject.getMessage(), HttpStatus.NOT_ACCEPTABLE); // سوال تکراری در آزمون وجود دارد
+                    }
                 } else {
                     return new ResponseEntity("زمان برگذاری آزمون در بازه زمانی درست نمی باشد", HttpStatus.NOT_ACCEPTABLE);
                 }
@@ -237,8 +254,13 @@ public class ElsRestController {
 //                if (dateFormat.parse(object.getExamItem().getTclass().getStartDate()).compareTo(dateFormat.parse(object.getExamItem().getDate())) != 0) {
 //                    return new ResponseEntity("زمان برگذاری آزمون در بازه زمانی درست نمی باشد", HttpStatus.NOT_ACCEPTABLE);
 //                } else {
-//                    ExamQuestionsDto response = evaluationBeanMapper.toGetExamQuestions(object);
-//                    return new ResponseEntity(response, HttpStatus.OK);
+//                    examQuestionsObject = evaluationBeanMapper.toGetExamQuestions(object);
+//                    if(examQuestionsObject.getStatus() == 200) {
+//                        response.setData(examQuestionsObject.getDto().getData());
+//                        return new ResponseEntity(response, HttpStatus.OK);
+//                    }else {
+//                        return new ResponseEntity(examQuestionsObject.getMessage(), HttpStatus.NOT_ACCEPTABLE); // سوال تکراری در آزمون وجود دارد
+//                    }
 //                }
 //            }
 
