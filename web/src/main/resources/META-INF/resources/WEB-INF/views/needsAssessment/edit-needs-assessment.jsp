@@ -1829,6 +1829,8 @@
                 if(resp.httpResponseCode !== 200){
                     if (JSON.parse(resp.httpResponseText).errors && JSON.parse(resp.httpResponseText).errors.size() > 0) {
                         createDialog("info", JSON.parse(resp.httpResponseText).errors[0].field);
+                        buttonSendToWorkFlow.disable();
+                        buttonChangeCancel.disable();
                         return;
                     }
                     createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
