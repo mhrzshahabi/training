@@ -56,6 +56,8 @@ public class ViewEvaluationStaticalReportDTO implements Serializable {
         private Long tclassDuration;
         private Long tclassOrganizerId;
         private String tclassStatus;
+        private String classCancelReasonId;
+        private String classCancelReasonTitle;
         private Long tclassPlanner;
         private Long tclassSupervisor;
         private String termTitleFa;

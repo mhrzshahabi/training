@@ -173,70 +173,73 @@ public class TclassService implements ITclassService {
         final Tclass tclass = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
         Long classOldSupervisor = tclass.getSupervisorId();
         Long classOldTeacher = tclass.getTeacherId();
-
-        Tclass mappedClass = trainingClassBeanMapper.updateTClass(request, tclass);
-        List<Long> trainingPlaceIds = request.getTrainingPlaceIds();
-        Set<TrainingPlace> set = new HashSet<>();
-        if (trainingPlaceIds != null) {
-            List<TrainingPlace> allById = trainingPlaceDAO.findAllById(trainingPlaceIds);
-            set.addAll(allById);
-        }
-
-        mappedClass.setTrainingPlaceSet(set);
-
-        if (mappedClass.getClassStatus() != null && !mappedClass.getClassStatus().equals("4")) {
-            mappedClass.setClassCancelReasonId(null);
-            mappedClass.setAlternativeClassId(null);
-            mappedClass.setPostponeStartDate(null);
-        }
-        if (cancelClassesIds != null) {
-            Set<Tclass> canceledClasses = mappedClass.getCanceledClasses();
-            for (Tclass canceledClass : canceledClasses) {
-                canceledClass.setAlternativeClassId(null);
+        if (tclass.getClassStatus().equals("4")){
+            throw new TrainingException(TrainingException.ErrorType.Forbidden);
+        } else {
+            Tclass mappedClass = trainingClassBeanMapper.updateTClass(request, tclass);
+            List<Long> trainingPlaceIds = request.getTrainingPlaceIds();
+            Set<TrainingPlace> set = new HashSet<>();
+            if (trainingPlaceIds != null) {
+                List<TrainingPlace> allById = trainingPlaceDAO.findAllById(trainingPlaceIds);
+                set.addAll(allById);
             }
-            List<Tclass> tclasses = tclassDAO.findAllById(cancelClassesIds);
-            HashSet<Tclass> tclassHashSet = new HashSet<>(tclasses);
-            for (Tclass c : tclassHashSet) {
-                c.setAlternativeClassId(id);
-                c.setPostponeStartDate(mappedClass.getStartDate());
-            }
-        }
 
-        Tclass updatedClass = tclassDAO.save(mappedClass);
+            mappedClass.setTrainingPlaceSet(set);
 
-        //TODO CHANGE THE WAY OF MAPPING ASAP
-        //updateTargetSocieties(request.getTargetSocieties(), request.getTargetSocietyTypeId(), updatedClass);
-        //updatedClass.setTargetSocietyTypeId(request.getTargetSocietyTypeId());
-        //--------------------DONE BY ROYA---------------------
-        if (classOldSupervisor != null && request.getSupervisorId() != null) {
-            if (!classOldSupervisor.equals(request.getSupervisorId())) {
-                HashMap<String, Object> evaluation = new HashMap<>();
-                evaluation.put("questionnaireTypeId", 141L);
-                evaluation.put("classId", id);
-                evaluation.put("evaluatorId", classOldSupervisor);
-                evaluation.put("evaluatorTypeId", 454L);
-                evaluation.put("evaluatedId", classOldTeacher);
-                evaluation.put("evaluatedTypeId", 187L);
-                evaluation.put("evaluationLevelId", 154L);
-                evaluationService.deleteEvaluation(evaluation);
+            if (mappedClass.getClassStatus() != null && !mappedClass.getClassStatus().equals("4")) {
+                mappedClass.setClassCancelReasonId(null);
+                mappedClass.setAlternativeClassId(null);
+                mappedClass.setPostponeStartDate(null);
             }
-        }
-        if (classOldTeacher != null && request.getTeacherId() != null) {
-            if (!classOldTeacher.equals(request.getTeacherId())) {
-                HashMap<String, Object> evaluation = new HashMap<>();
-                evaluation.put("questionnaireTypeId", 140L);
-                evaluation.put("classId", id);
-                evaluation.put("evaluatorId", classOldTeacher);
-                evaluation.put("evaluatorTypeId", 187L);
-                evaluation.put("evaluatedId", id);
-                evaluation.put("evaluatedTypeId", 504L);
-                evaluation.put("evaluationLevelId", 154L);
-                evaluationService.deleteEvaluation(evaluation);
+            if (cancelClassesIds != null) {
+                Set<Tclass> canceledClasses = mappedClass.getCanceledClasses();
+                for (Tclass canceledClass : canceledClasses) {
+                    canceledClass.setAlternativeClassId(null);
+                }
+                List<Tclass> tclasses = tclassDAO.findAllById(cancelClassesIds);
+                HashSet<Tclass> tclassHashSet = new HashSet<>(tclasses);
+                for (Tclass c : tclassHashSet) {
+                    c.setAlternativeClassId(id);
+                    c.setPostponeStartDate(mappedClass.getStartDate());
+                }
             }
-        }
-        //-----------------------------------------------------
 
-        return tclassBeanMapper.toTclassResponse(updatedClass);
+            Tclass updatedClass = tclassDAO.save(mappedClass);
+
+            //TODO CHANGE THE WAY OF MAPPING ASAP
+            //updateTargetSocieties(request.getTargetSocieties(), request.getTargetSocietyTypeId(), updatedClass);
+            //updatedClass.setTargetSocietyTypeId(request.getTargetSocietyTypeId());
+            //--------------------DONE BY ROYA---------------------
+            if (classOldSupervisor != null && request.getSupervisorId() != null) {
+                if (!classOldSupervisor.equals(request.getSupervisorId())) {
+                    HashMap<String, Object> evaluation = new HashMap<>();
+                    evaluation.put("questionnaireTypeId", 141L);
+                    evaluation.put("classId", id);
+                    evaluation.put("evaluatorId", classOldSupervisor);
+                    evaluation.put("evaluatorTypeId", 454L);
+                    evaluation.put("evaluatedId", classOldTeacher);
+                    evaluation.put("evaluatedTypeId", 187L);
+                    evaluation.put("evaluationLevelId", 154L);
+                    evaluationService.deleteEvaluation(evaluation);
+                }
+            }
+            if (classOldTeacher != null && request.getTeacherId() != null) {
+                if (!classOldTeacher.equals(request.getTeacherId())) {
+                    HashMap<String, Object> evaluation = new HashMap<>();
+                    evaluation.put("questionnaireTypeId", 140L);
+                    evaluation.put("classId", id);
+                    evaluation.put("evaluatorId", classOldTeacher);
+                    evaluation.put("evaluatorTypeId", 187L);
+                    evaluation.put("evaluatedId", id);
+                    evaluation.put("evaluatedTypeId", 504L);
+                    evaluation.put("evaluationLevelId", 154L);
+                    evaluationService.deleteEvaluation(evaluation);
+                }
+            }
+            //-----------------------------------------------------
+
+            return tclassBeanMapper.toTclassResponse(updatedClass);
+        }
     }
 
     @Transactional
