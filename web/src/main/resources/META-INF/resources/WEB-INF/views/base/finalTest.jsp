@@ -1,3 +1,4 @@
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sprig" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -567,13 +568,17 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                             layoutAlign: "center",
                             title: "ارسال به آموزش آنلاین",
                             width: "140",
-                            click: function () {
+                            click: async function () {
                                 questionData.map(item => {
                                     if(!item.score)
                                         item.score = '0';
                                     return item;
                                     })
-
+                                let isValid = await hasEvaluation(record.tclass.id);
+                                if (!isValid) {
+                                    createDialog("info", '<spring:message code="class.has.no.evaluation"/>', "<spring:message code="error"/>");
+                                    return;
+                                }
 isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/getClassStudent/"+record.tclass.id, "GET",null, function (resp) {
 
 
@@ -1552,4 +1557,23 @@ isValid = false;
 return isValid;
 }
 
+    async function hasEvaluation(classId) {
+        let criteria = {fieldName: "id", operator: "equals", value: classId};
+        let resp = await
+            fetch(viewClassDetailUrl + "/iscList?operator=and&_constructor=AdvancedCriteria&criteria=" + JSON.stringify(criteria),
+                {headers: {"Authorization": "Bearer <%= (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN) %>"}});
+        if (!resp.ok)
+            return false;
+        const resData = await resp.json();
+        if (!resp || !resData.response || !resData.response.data)
+            return false;
+        const record = resData.response.data[0]
+        if (record == null || record.length == 0)
+            return false;
+        if (!record.classStudentOnlineEvalStatus)
+            return false;
+        if (!record.classTeacherOnlineEvalStatus)
+            return false;
+        return true;
+        }
     //</script>
