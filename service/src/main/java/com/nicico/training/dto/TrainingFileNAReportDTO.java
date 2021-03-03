@@ -6,6 +6,8 @@
 
 package com.nicico.training.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.training.model.compositeKey.TrainingFileNAReportKey;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,7 +29,7 @@ public class TrainingFileNAReportDTO implements Serializable {
     @ApiModel("Info")
     public static class Info {
 
-        private Long id;
+        private TrainingFileNAReportKey id;
 
         private long personnelId;
 
@@ -83,5 +85,26 @@ public class TrainingFileNAReportDTO implements Serializable {
         private String title;
         private boolean bold;
 
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("TrainingFileNAReportSpecRs")
+    public static class TrainingFileNAReportSpecRs {
+        private TrainingFileNAReportDTO.SpecRs response;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class SpecRs {
+        private List<TrainingFileNAReportDTO.Info> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
     }
 }

@@ -77,7 +77,7 @@
             {name: "courseTitleFa", title:"نام دوره", autoFitWidth: true},
             {name: "theoryDuration", title:"مدت دوره", autoFitWidth: true, operator:"equals"},
             {name: "technicalType", title:"نوع تخصصی", autoFitWidth: true, optionDataSource: RestDataSource_eTechnicalType, displayField: "titleFa", valueField:"id", operator:"equals"},
-            {name: "referenceCourse", title:"دوره مرجع", autoFitWidth: true, operator:"equals"},
+            {name: "referenceCourse", title:"دوره مرجع", autoFitWidth: true, operator:"equals", hidden: true},
 
             {name: "skillId", autoFitWidth: true},
             {name: "skillCode", title:"کد مهارت", autoFitWidth: true},
@@ -92,8 +92,7 @@
             {name: "location", title:"محل برگزاری", autoFitWidth: true},
             {name: "score", title:"نمره", autoFitWidth: true},
             {name: "scoreStateId", title:"وضعیت نمره", autoFitWidth: true, optionDataSource: RestDataSource_ScoreState, displayField: "title", valueField:"id"},
-        ],
-        fetchDataURL: trainingFileNAReportUrl,
+        ]
     });
 
     let PersonnelDS_PTSR_DF = isc.TrDS.create({
@@ -196,12 +195,12 @@
                 criteria: [{fieldName: "personnelId", operator: "equals", value: record.id}]
             };
             ListGrid_TrainingFile_JspTrainingFileNAReport.setSort([
-                {property: "isInNA", direction: "descending"},
-                {property: "classCode", direction: "descending"},
-                {property: "priorityId", direction: "ascending"}
+                {property: "referenceCourse", direction: "ascending"},
+                {property: "courseCode", direction: "ascending"}
             ]);
-            // ListGrid_TrainingFile_JspTrainingFileNAReport.clearFilterValues();
-            ListGrid_TrainingFile_JspTrainingFileNAReport.setImplicitCriteria(cr);
+
+            RestDataSource_TrainingFile_JspTrainingFileNAReport.fetchDataURL = trainingFileNAReportUrl + "/" + record.id;
+
             ListGrid_TrainingFile_JspTrainingFileNAReport.fetchData();
             detailView.fetchData(cr);
         }
@@ -223,15 +222,15 @@
         selectionType: "single",
         canMultiSort: true,
         initialSort: [
-            {property: "isInNA", direction: "descending"},
-            {property: "classCode", direction: "ascending"}
+            {property: "referenceCourse", direction: "ascending"},
+            {property: "courseCode", direction: "ascending"}
         ],
         fields:[
             {name: "courseCode"},
             {name: "courseTitleFa"},
             {name: "theoryDuration"},
             {name: "technicalType"},
-            {name: "referenceCourse"},
+            {name: "referenceCourse", hidden: true},
 
             {name: "skillCode"},
             {name: "skillTitleFa"},
@@ -261,7 +260,14 @@
         ],
         headerHeight: 60,
         showRecordComponents: true,
-        showRecordComponentsByCell: true
+        showRecordComponentsByCell: true,
+        getCellCSSText: function (record, rowNum, colNum) {
+
+            if (record.referenceCourse != 0) {
+                return "font-weight:bold; color:green;";
+            }
+            return this.Super('getCellCSSText', arguments)
+        }
     });
 
     let IButton_JspTrainingFileNAReport_FullExcel = isc.IButtonSave.create({

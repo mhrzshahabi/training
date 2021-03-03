@@ -1,13 +1,12 @@
 
 package com.nicico.training.model;
 
+import com.nicico.training.model.compositeKey.TrainingFileNAReportKey;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Getter
@@ -20,8 +19,8 @@ import java.io.Serializable;
 @Subselect("select * from VIEW_TRAINING_FILE_NA_REPORT_AND_EQUALS")
 public class TrainingFileNAReport implements Serializable {
 
-    @Id
-    private Long id;
+    @EmbeddedId
+    private TrainingFileNAReportKey id;
 
     ///////////////////////////////////////////////////na/////////////////////////////////////////////
 
@@ -41,7 +40,7 @@ public class TrainingFileNAReport implements Serializable {
 
     ///////////////////////////////////////////////////course///////////////////////////////////////
 
-    @Column(name = "course_id")
+    @Column(name = "course_id", insertable = false, updatable = false)
     private Long courseId;
 
     @Column(name = "course_code")
@@ -56,7 +55,7 @@ public class TrainingFileNAReport implements Serializable {
     @Column(name = "course_technical_type")
     private Integer technicalType;
 
-    @Column(name = "reference_course")
+    @Column(name = "reference_course", insertable = false, updatable = false)
     private Long referenceCourse;
 
     ///////////////////////////////////////////////////skill///////////////////////////////////////

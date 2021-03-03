@@ -6,10 +6,10 @@
 
 package com.nicico.training.iservice;
 
-import com.nicico.training.dto.TrainingFileNAReportDTO;
-
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.TrainingFileNAReportDTO;
 import com.nicico.training.dto.ViewActivePersonnelDTO;
+import com.nicico.training.model.TrainingFileNAReport;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -18,6 +18,8 @@ import java.util.function.Function;
 public interface ITrainingFileNAReportService {
 
     <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Function converter);
+
+    List<TrainingFileNAReport> reportDetail(Long personnelId);
 
     void generateReport(final HttpServletResponse response, List<ViewActivePersonnelDTO.Info> data) throws Exception;
 

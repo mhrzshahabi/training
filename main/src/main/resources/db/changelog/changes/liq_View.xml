@@ -6200,4 +6200,1394 @@ ORDER BY
         </createView>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-004">
+        <createView viewName="VIEW_TRAINING_FILE_NA_REPORT_V" replaceIfExists="true">
+            <![CDATA[
+                SELECT
+                    ROWNUM AS id,
+                    nvl(passed.personnel_id,na.personnel_id) AS personnel_id,
+                    nvl(passed.course_id,na.course_id) AS course_id,
+                    nvl(passed.course_code,na.course_code) AS course_code,
+                    nvl(passed.course_title_fa,na.course_title_fa) AS course_title_fa,
+                    nvl(passed.course_theory_duration,na.course_theory_duration) AS course_theory_duration,
+                    nvl(passed.course_technical_type,na.course_technical_type) AS course_technical_type,
+                    0 AS reference_course,
+                    na.skill_id,
+                    na.skill_code,
+                    na.skill_title_fa,
+                    nvl2(na.na_priority_id,1,0) is_in_na,
+                    na.na_priority_id,
+                    na_priority.c_title AS na_priority_title,
+                    passed.class_id,
+                    passed.class_code,
+                    passed.class_start_date,
+                    passed.class_end_date,
+                    passed.class_student_score,
+                    passed.class_student_scores_state_id,
+                    score_state.c_title AS class_student_scores_state_title,
+                    institute.c_title_fa AS class_location
+                FROM
+                    (
+                        SELECT
+                            1 AS is_personnel,
+                            prs.id AS personnel_id,
+                            tbl_class_student.score AS class_student_score,
+                            tbl_class_student.scores_state_id AS class_student_scores_state_id,
+                            class.id AS class_id,
+                            class.c_status AS class_status,
+                            class.c_code AS class_code,
+                            class.n_d_duration AS class_d_duration,
+                            class.c_end_date AS class_end_date,
+                            class.n_h_duration AS class_h_duration,
+                            class.c_start_date AS class_start_date,
+                            class.c_title_class AS class_title_class,
+                            class.f_institute AS class_institute,
+                            class.n_group AS class_group,
+                            tbl_course.id AS course_id,
+                            tbl_course.c_code AS course_code,
+                            tbl_course.c_title_fa AS course_title_fa,
+                            tbl_course.n_theory_duration AS course_theory_duration,
+                            tbl_course.e_technical_type AS course_technical_type,
+                            concat(concat(personelplanner.first_name,' '),personelplanner.last_name) AS planner_name
+                        FROM
+                            tbl_student
+                            INNER JOIN tbl_class_student ON tbl_student.id = tbl_class_student.student_id
+                            INNER JOIN view_active_personnel prs ON tbl_student.national_code = prs.national_code
+                            LEFT JOIN tbl_department department ON department.id = prs.f_department_id
+                            INNER JOIN tbl_class class ON tbl_class_student.class_id = class.id
+                            INNER JOIN tbl_course ON class.f_course = tbl_course.id
+                            LEFT JOIN tbl_personnel personelplanner ON personelplanner.id = class.f_planner
+                        WHERE
+                            prs.id = 740
+                        UNION ALL
+                        SELECT
+                            0 AS is_personnel,
+                            tbl_personnel_registered.id AS personnel_id,
+                            tbl_class_student.score AS class_student_score,
+                            tbl_class_student.scores_state_id AS class_student_scores_state_id,
+                            class.id AS class_id,
+                            class.c_status AS class_status,
+                            class.c_code AS class_code,
+                            class.n_d_duration AS class_d_duration,
+                            class.c_end_date AS class_end_date,
+                            class.n_h_duration AS class_h_duration,
+                            class.c_start_date AS class_start_date,
+                            class.c_title_class AS class_title_class,
+                            class.f_institute AS class_institute,
+                            class.n_group AS class_group,
+                            tbl_course.id AS course_id,
+                            tbl_course.c_code AS course_code,
+                            tbl_course.c_title_fa AS course_title_fa,
+                            tbl_course.n_theory_duration AS course_theory_duration,
+                            tbl_course.e_technical_type AS course_technical_type,
+                            concat(concat(personelplanner.first_name,' '),personelplanner.last_name) AS planner_name
+                        FROM
+                            tbl_student
+                            INNER JOIN tbl_class_student ON tbl_student.id = tbl_class_student.student_id
+                            INNER JOIN tbl_personnel_registered ON tbl_student.national_code = tbl_personnel_registered.national_code
+                            LEFT JOIN tbl_department department ON department.id = tbl_personnel_registered.f_department_id
+                            INNER JOIN tbl_class class ON tbl_class_student.class_id = class.id
+                            INNER JOIN tbl_course ON class.f_course = tbl_course.id
+                            LEFT JOIN tbl_personnel personelplanner ON personelplanner.id = class.f_planner
+                    ) passed
+                    FULL JOIN (
+                        WITH result AS (
+                            SELECT
+                                1 AS priority,
+                                MIN(na.f_parameter_value_needs_assessment_priority) AS na_priority_id,
+                                course.id AS course_id,
+                                course.c_code AS course_code,
+                                course.c_title_fa AS course_title_fa,
+                                course.n_theory_duration AS course_theory_duration,
+                                course.e_technical_type AS course_technical_type,
+                                skill.id AS skill_id,
+                                skill.c_code AS skill_code,
+                                skill.c_title_fa AS skill_title_fa,
+                                prs.id AS personnel_id,
+                                p.f_post_grade_id AS personnel_post_grade_id
+                            FROM
+                                (
+                                    SELECT
+                                        f_object,
+                                        f_skill,
+                                        f_parameter_value_needs_assessment_priority
+                                    FROM
+                                        tbl_needs_assessment
+                                    WHERE
+                                        c_object_type = 'Post'
+                                        AND   e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) na
+                                INNER JOIN tbl_skill skill ON na.f_skill = skill.id
+                                INNER JOIN tbl_course course ON skill.f_course = course.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) p ON na.f_object = p.id
+                                INNER JOIN view_active_personnel prs ON prs.f_post_id = p.id
+                            GROUP BY
+                                prs.id,
+                                course.id,
+                                course.c_code,
+                                course.c_title_fa,
+                                course.n_theory_duration,
+                                course.e_technical_type,
+                                skill.id,
+                                skill.c_code,
+                                skill.c_title_fa,
+                                p.f_post_grade_id
+                            UNION ALL
+                            SELECT
+                                2 AS priority,
+                                MIN(na.f_parameter_value_needs_assessment_priority) AS na_priority_id,
+                                course.id AS course_id,
+                                course.c_code AS course_code,
+                                course.c_title_fa AS course_title_fa,
+                                course.n_theory_duration AS course_theory_duration,
+                                course.e_technical_type AS course_technical_type,
+                                skill.id AS skill_id,
+                                skill.c_code AS skill_code,
+                                skill.c_title_fa AS skill_title_fa,
+                                prs.id AS personnel_id,
+                                p.f_post_grade_id AS personnel_post_grade_id
+                            FROM
+                                (
+                                    SELECT
+                                        tbl_needs_assessment.f_object,
+                                        tbl_needs_assessment.f_skill,
+                                        tbl_needs_assessment.f_parameter_value_needs_assessment_priority
+                                    FROM
+                                        tbl_needs_assessment
+                                    WHERE
+                                        tbl_needs_assessment.c_object_type = 'TrainingPost'
+                                        AND   e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) na
+                                INNER JOIN tbl_skill skill ON na.f_skill = skill.id
+                                INNER JOIN tbl_course course ON skill.f_course = course.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_training_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) tp ON na.f_object = tp.id
+                                INNER JOIN tbl_post_training_post ptp ON ptp.f_training_post_id = tp.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) p ON p.id = ptp.f_post_id
+                                INNER JOIN view_active_personnel prs ON prs.f_post_id = p.id
+                            GROUP BY
+                                prs.id,
+                                course.id,
+                                course.c_code,
+                                course.c_title_fa,
+                                course.n_theory_duration,
+                                course.e_technical_type,
+                                skill.id,
+                                skill.c_code,
+                                skill.c_title_fa,
+                                p.f_post_grade_id
+                            UNION ALL
+                            SELECT
+                                3 AS priority,
+                                MIN(na.f_parameter_value_needs_assessment_priority) AS na_priority_id,
+                                course.id AS course_id,
+                                course.c_code AS course_code,
+                                course.c_title_fa AS course_title_fa,
+                                course.n_theory_duration AS course_theory_duration,
+                                course.e_technical_type AS course_technical_type,
+                                skill.id AS skill_id,
+                                skill.c_code AS skill_code,
+                                skill.c_title_fa AS skill_title_fa,
+                                prs.id AS personnel_id,
+                                p.f_post_grade_id AS personnel_post_grade_id
+                            FROM
+                                (
+                                    SELECT
+                                        f_object,
+                                        f_skill,
+                                        f_parameter_value_needs_assessment_priority
+                                    FROM
+                                        tbl_needs_assessment
+                                    WHERE
+                                        c_object_type = 'PostGroup'
+                                        AND   e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) na
+                                INNER JOIN tbl_skill skill ON na.f_skill = skill.id
+                                INNER JOIN tbl_course course ON skill.f_course = course.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post_group
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) pg ON na.f_object = pg.id
+                                INNER JOIN tbl_post_postgroup ppg ON pg.id = ppg.f_postgroup_id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) p ON ppg.f_post_id = p.id
+                                INNER JOIN view_active_personnel prs ON prs.f_post_id = p.id
+                            GROUP BY
+                                prs.id,
+                                course.id,
+                                course.c_code,
+                                course.c_title_fa,
+                                course.n_theory_duration,
+                                course.e_technical_type,
+                                skill.id,
+                                skill.c_code,
+                                skill.c_title_fa,
+                                p.f_post_grade_id
+                            UNION ALL
+                            SELECT
+                                4 AS priority,
+                                MIN(na.f_parameter_value_needs_assessment_priority) AS na_priority_id,
+                                course.id AS course_id,
+                                course.c_code AS course_code,
+                                course.c_title_fa AS course_title_fa,
+                                course.n_theory_duration AS course_theory_duration,
+                                course.e_technical_type AS course_technical_type,
+                                skill.id AS skill_id,
+                                skill.c_code AS skill_code,
+                                skill.c_title_fa AS skill_title_fa,
+                                prs.id AS personnel_id,
+                                p.f_post_grade_id AS personnel_post_grade_id
+                            FROM
+                                (
+                                    SELECT
+                                        f_object,
+                                        f_skill,
+                                        f_parameter_value_needs_assessment_priority
+                                    FROM
+                                        tbl_needs_assessment
+                                    WHERE
+                                        c_object_type = 'PostGroup'
+                                        AND   e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) na
+                                INNER JOIN tbl_skill skill ON na.f_skill = skill.id
+                                INNER JOIN tbl_course course ON skill.f_course = course.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post_group
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) pg ON na.f_object = pg.id
+                                INNER JOIN tbl_training_post_post_group tppg ON tppg.f_post_group_id = pg.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_training_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) tp ON tppg.f_training_post_id = tp.id
+                                INNER JOIN tbl_post_training_post ptp ON tp.id = ptp.f_training_post_id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) p ON ptp.f_post_id = p.id
+                                INNER JOIN view_active_personnel prs ON prs.f_post_id = p.id
+                            GROUP BY
+                                prs.id,
+                                course.id,
+                                course.c_code,
+                                course.c_title_fa,
+                                course.n_theory_duration,
+                                course.e_technical_type,
+                                skill.id,
+                                skill.c_code,
+                                skill.c_title_fa,
+                                p.f_post_grade_id
+                            UNION ALL
+                            SELECT
+                                5 AS priority,
+                                MIN(na.f_parameter_value_needs_assessment_priority) AS na_priority_id,
+                                course.id AS course_id,
+                                course.c_code AS course_code,
+                                course.c_title_fa AS course_title_fa,
+                                course.n_theory_duration AS course_theory_duration,
+                                course.e_technical_type AS course_technical_type,
+                                skill.id AS skill_id,
+                                skill.c_code AS skill_code,
+                                skill.c_title_fa AS skill_title_fa,
+                                prs.id AS personnel_id,
+                                p.f_post_grade_id AS personnel_post_grade_id
+                            FROM
+                                (
+                                    SELECT
+                                        f_object,
+                                        f_skill,
+                                        f_parameter_value_needs_assessment_priority
+                                    FROM
+                                        tbl_needs_assessment
+                                    WHERE
+                                        c_object_type = 'Job'
+                                        AND   e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) na
+                                INNER JOIN tbl_skill skill ON na.f_skill = skill.id
+                                INNER JOIN tbl_course course ON skill.f_course = course.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_job
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) j ON na.f_object = j.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_training_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) tp ON tp.f_job_id = j.id
+                                INNER JOIN tbl_post_training_post ptp ON tp.id = ptp.f_training_post_id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) p ON ptp.f_post_id = p.id
+                                INNER JOIN view_active_personnel prs ON prs.f_post_id = p.id
+                            GROUP BY
+                                prs.id,
+                                course.id,
+                                course.c_code,
+                                course.c_title_fa,
+                                course.n_theory_duration,
+                                course.e_technical_type,
+                                skill.id,
+                                skill.c_code,
+                                skill.c_title_fa,
+                                p.f_post_grade_id
+                            UNION ALL
+                            SELECT
+                                6 AS priority,
+                                MIN(na.f_parameter_value_needs_assessment_priority) AS na_priority_id,
+                                course.id AS course_id,
+                                course.c_code AS course_code,
+                                course.c_title_fa AS course_title_fa,
+                                course.n_theory_duration AS course_theory_duration,
+                                course.e_technical_type AS course_technical_type,
+                                skill.id AS skill_id,
+                                skill.c_code AS skill_code,
+                                skill.c_title_fa AS skill_title_fa,
+                                prs.id AS personnel_id,
+                                p.f_post_grade_id AS personnel_post_grade_id
+                            FROM
+                                (
+                                    SELECT
+                                        f_object,
+                                        f_skill,
+                                        f_parameter_value_needs_assessment_priority
+                                    FROM
+                                        tbl_needs_assessment
+                                    WHERE
+                                        c_object_type = 'JobGroup'
+                                        AND   e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) na
+                                INNER JOIN tbl_skill skill ON na.f_skill = skill.id
+                                INNER JOIN tbl_course course ON skill.f_course = course.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_job_group
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) jg ON na.f_object = jg.id
+                                INNER JOIN tbl_job_jobgroup jjg ON jg.id = jjg.f_jobgroup_id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_job
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) j ON jjg.f_job_id = j.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_training_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) tp ON tp.f_job_id = j.id
+                                INNER JOIN tbl_post_training_post ptp ON tp.id = ptp.f_training_post_id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) p ON ptp.f_post_id = p.id
+                                INNER JOIN view_active_personnel prs ON prs.f_post_id = p.id
+                            GROUP BY
+                                prs.id,
+                                course.id,
+                                course.c_code,
+                                course.c_title_fa,
+                                course.n_theory_duration,
+                                course.e_technical_type,
+                                skill.id,
+                                skill.c_code,
+                                skill.c_title_fa,
+                                p.f_post_grade_id
+                            UNION ALL
+                            SELECT
+                                7 AS priority,
+                                MIN(na.f_parameter_value_needs_assessment_priority) AS na_priority_id,
+                                course.id AS course_id,
+                                course.c_code AS course_code,
+                                course.c_title_fa AS course_title_fa,
+                                course.n_theory_duration AS course_theory_duration,
+                                course.e_technical_type AS course_technical_type,
+                                skill.id AS skill_id,
+                                skill.c_code AS skill_code,
+                                skill.c_title_fa AS skill_title_fa,
+                                prs.id AS personnel_id,
+                                p.f_post_grade_id AS personnel_post_grade_id
+                            FROM
+                                (
+                                    SELECT
+                                        f_object,
+                                        f_skill,
+                                        f_parameter_value_needs_assessment_priority
+                                    FROM
+                                        tbl_needs_assessment
+                                    WHERE
+                                        c_object_type = 'PostGrade'
+                                        AND   e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) na
+                                INNER JOIN tbl_skill skill ON na.f_skill = skill.id
+                                INNER JOIN tbl_course course ON skill.f_course = course.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post_grade
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) pg ON na.f_object = pg.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_training_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) tp ON tp.f_post_grade_id = pg.id
+                                INNER JOIN tbl_post_training_post ptp ON tp.id = ptp.f_training_post_id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) p ON ptp.f_post_id = p.id
+                                INNER JOIN view_active_personnel prs ON prs.f_post_id = p.id
+                            GROUP BY
+                                prs.id,
+                                course.id,
+                                course.c_code,
+                                course.c_title_fa,
+                                course.n_theory_duration,
+                                course.e_technical_type,
+                                skill.id,
+                                skill.c_code,
+                                skill.c_title_fa,
+                                p.f_post_grade_id
+                            UNION ALL
+                            SELECT
+                                8 AS priority,
+                                MIN(na.f_parameter_value_needs_assessment_priority) AS na_priority_id,
+                                course.id AS course_id,
+                                course.c_code AS course_code,
+                                course.c_title_fa AS course_title_fa,
+                                course.n_theory_duration AS course_theory_duration,
+                                course.e_technical_type AS course_technical_type,
+                                skill.id AS skill_id,
+                                skill.c_code AS skill_code,
+                                skill.c_title_fa AS skill_title_fa,
+                                prs.id AS personnel_id,
+                                p.f_post_grade_id AS personnel_post_grade_id
+                            FROM
+                                (
+                                    SELECT
+                                        f_object,
+                                        f_skill,
+                                        f_parameter_value_needs_assessment_priority
+                                    FROM
+                                        tbl_needs_assessment
+                                    WHERE
+                                        c_object_type = 'PostGradeGroup'
+                                        AND   e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) na
+                                INNER JOIN tbl_skill skill ON na.f_skill = skill.id
+                                INNER JOIN tbl_course course ON skill.f_course = course.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post_grade_group
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) pgg ON na.f_object = pgg.id
+                                INNER JOIN tbl_post_grade_post_grade_group pgpgg ON pgg.id = pgpgg.f_post_grade_group_id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post_grade
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) pg ON pgpgg.f_post_grade_id = pg.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_training_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) tp ON tp.f_post_grade_id = pg.id
+                                INNER JOIN tbl_post_training_post ptp ON tp.id = ptp.f_training_post_id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) p ON ptp.f_post_id = p.id
+                                INNER JOIN view_active_personnel prs ON prs.f_post_id = p.id
+                            GROUP BY
+                                prs.id,
+                                course.id,
+                                course.c_code,
+                                course.c_title_fa,
+                                course.n_theory_duration,
+                                course.e_technical_type,
+                                skill.id,
+                                skill.c_code,
+                                skill.c_title_fa,
+                                p.f_post_grade_id
+                        ) SELECT
+                            mod(MIN(10 * priority + na_priority_id - 111),10) + 111 AS na_priority_id,
+                            course_id,
+                            course_code,
+                            course_title_fa,
+                            course_theory_duration,
+                            course_technical_type,
+                            skill_id,
+                            skill_code,
+                            skill_title_fa,
+                            personnel_id,
+                            personnel_post_grade_id
+                          FROM
+                            result r
+                        GROUP BY
+                            course_id,
+                            course_code,
+                            course_title_fa,
+                            course_theory_duration,
+                            course_technical_type,
+                            skill_id,
+                            skill_code,
+                            skill_title_fa,
+                            personnel_id,
+                            personnel_post_grade_id
+                            ) na ON na.personnel_id = passed.personnel_id AND na.course_id = passed.course_id
+                    LEFT JOIN tbl_institute institute ON institute.id = passed.class_institute
+                    LEFT JOIN tbl_parameter_value na_priority ON na_priority.id = na.na_priority_id
+                    LEFT JOIN tbl_parameter_value score_state ON score_state.id = passed.class_student_scores_state_id
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-005">
+        <createView viewName="VIEW_TRAINING_FILE_NA_REPORT_AND_EQUALS" replaceIfExists="true">
+            <![CDATA[
+                SELECT *
+                FROM VIEW_TRAINING_FILE_NA_REPORT_V view_tr_f
+                UNION
+                SELECT
+                    ROWNUM as id,
+                    view_tf.PERSONNEL_ID as personnel_id,
+                    nvl(view_eq.course_id, view_tf.course_id) as course_id,
+                    nvl(view_eq.course_code, view_tf.course_code) as course_code,
+                    nvl(view_eq.course_title_fa, view_tf.course_title_fa) as course_title_fa,
+                    nvl(view_eq.course_theory_duration, view_tf.course_theory_duration) as course_theory_duration,
+                    nvl(view_eq.course_technical_type, view_tf.course_technical_type) as course_technical_type,
+                    view_eq.reference_course as reference_course,
+                    NULL as skill_id,
+                    NULL as skill_code,
+                    NULL as skill_title_fa,
+                    NULL as is_in_na,
+                    NULL as na_priority_id,
+                    NULL as na_priority_title,
+                    NULL as class_id,
+                    NULL as class_code,
+                    NULL as class_start_date,
+                    NULL as class_end_date,
+                    NULL as class_student_score,
+                    NULL as class_student_scores_state_id,
+                    NULL as class_student_scores_state_title,
+                    NULL as class_location
+                FROM VIEW_TRAINING_FILE_NA_REPORT_V view_tf
+                INNER JOIN VIEW_EQUAL_COURSE view_eq
+                  ON view_tf.COURSE_ID = view_eq.reference_course
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-006">
+        <createView viewName="VIEW_TRAINING_FILE_NA_REPORT_V" replaceIfExists="true">
+            <![CDATA[
+                SELECT
+                    ROWNUM AS id,
+                    nvl(passed.personnel_id,na.personnel_id) AS personnel_id,
+                    nvl(passed.course_id,na.course_id) AS course_id,
+                    nvl(passed.course_code,na.course_code) AS course_code,
+                    nvl(passed.course_title_fa,na.course_title_fa) AS course_title_fa,
+                    nvl(passed.course_theory_duration,na.course_theory_duration) AS course_theory_duration,
+                    nvl(passed.course_technical_type,na.course_technical_type) AS course_technical_type,
+                    0 AS reference_course,
+                    na.skill_id,
+                    na.skill_code,
+                    na.skill_title_fa,
+                    nvl2(na.na_priority_id,1,0) is_in_na,
+                    na.na_priority_id,
+                    na_priority.c_title AS na_priority_title,
+                    passed.class_id,
+                    passed.class_code,
+                    passed.class_start_date,
+                    passed.class_end_date,
+                    passed.class_student_score,
+                    passed.class_student_scores_state_id,
+                    score_state.c_title AS class_student_scores_state_title,
+                    institute.c_title_fa AS class_location
+                FROM
+                    (
+                        SELECT
+                            1 AS is_personnel,
+                            prs.id AS personnel_id,
+                            tbl_class_student.score AS class_student_score,
+                            tbl_class_student.scores_state_id AS class_student_scores_state_id,
+                            class.id AS class_id,
+                            class.c_status AS class_status,
+                            class.c_code AS class_code,
+                            class.n_d_duration AS class_d_duration,
+                            class.c_end_date AS class_end_date,
+                            class.n_h_duration AS class_h_duration,
+                            class.c_start_date AS class_start_date,
+                            class.c_title_class AS class_title_class,
+                            class.f_institute AS class_institute,
+                            class.n_group AS class_group,
+                            tbl_course.id AS course_id,
+                            tbl_course.c_code AS course_code,
+                            tbl_course.c_title_fa AS course_title_fa,
+                            tbl_course.n_theory_duration AS course_theory_duration,
+                            tbl_course.e_technical_type AS course_technical_type,
+                            concat(concat(personelplanner.first_name,' '),personelplanner.last_name) AS planner_name
+                        FROM
+                            tbl_student
+                            INNER JOIN tbl_class_student ON tbl_student.id = tbl_class_student.student_id
+                            INNER JOIN view_active_personnel prs ON tbl_student.national_code = prs.national_code
+                            LEFT JOIN tbl_department department ON department.id = prs.f_department_id
+                            INNER JOIN tbl_class class ON tbl_class_student.class_id = class.id
+                            INNER JOIN tbl_course ON class.f_course = tbl_course.id
+                            LEFT JOIN tbl_personnel personelplanner ON personelplanner.id = class.f_planner
+                        UNION ALL
+                        SELECT
+                            0 AS is_personnel,
+                            tbl_personnel_registered.id AS personnel_id,
+                            tbl_class_student.score AS class_student_score,
+                            tbl_class_student.scores_state_id AS class_student_scores_state_id,
+                            class.id AS class_id,
+                            class.c_status AS class_status,
+                            class.c_code AS class_code,
+                            class.n_d_duration AS class_d_duration,
+                            class.c_end_date AS class_end_date,
+                            class.n_h_duration AS class_h_duration,
+                            class.c_start_date AS class_start_date,
+                            class.c_title_class AS class_title_class,
+                            class.f_institute AS class_institute,
+                            class.n_group AS class_group,
+                            tbl_course.id AS course_id,
+                            tbl_course.c_code AS course_code,
+                            tbl_course.c_title_fa AS course_title_fa,
+                            tbl_course.n_theory_duration AS course_theory_duration,
+                            tbl_course.e_technical_type AS course_technical_type,
+                            concat(concat(personelplanner.first_name,' '),personelplanner.last_name) AS planner_name
+                        FROM
+                            tbl_student
+                            INNER JOIN tbl_class_student ON tbl_student.id = tbl_class_student.student_id
+                            INNER JOIN tbl_personnel_registered ON tbl_student.national_code = tbl_personnel_registered.national_code
+                            LEFT JOIN tbl_department department ON department.id = tbl_personnel_registered.f_department_id
+                            INNER JOIN tbl_class class ON tbl_class_student.class_id = class.id
+                            INNER JOIN tbl_course ON class.f_course = tbl_course.id
+                            LEFT JOIN tbl_personnel personelplanner ON personelplanner.id = class.f_planner
+                    ) passed
+                    FULL JOIN (
+                        WITH result AS (
+                            SELECT
+                                1 AS priority,
+                                MIN(na.f_parameter_value_needs_assessment_priority) AS na_priority_id,
+                                course.id AS course_id,
+                                course.c_code AS course_code,
+                                course.c_title_fa AS course_title_fa,
+                                course.n_theory_duration AS course_theory_duration,
+                                course.e_technical_type AS course_technical_type,
+                                skill.id AS skill_id,
+                                skill.c_code AS skill_code,
+                                skill.c_title_fa AS skill_title_fa,
+                                prs.id AS personnel_id,
+                                p.f_post_grade_id AS personnel_post_grade_id
+                            FROM
+                                (
+                                    SELECT
+                                        f_object,
+                                        f_skill,
+                                        f_parameter_value_needs_assessment_priority
+                                    FROM
+                                        tbl_needs_assessment
+                                    WHERE
+                                        c_object_type = 'Post'
+                                        AND   e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) na
+                                INNER JOIN tbl_skill skill ON na.f_skill = skill.id
+                                INNER JOIN tbl_course course ON skill.f_course = course.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) p ON na.f_object = p.id
+                                INNER JOIN view_active_personnel prs ON prs.f_post_id = p.id
+                            GROUP BY
+                                prs.id,
+                                course.id,
+                                course.c_code,
+                                course.c_title_fa,
+                                course.n_theory_duration,
+                                course.e_technical_type,
+                                skill.id,
+                                skill.c_code,
+                                skill.c_title_fa,
+                                p.f_post_grade_id
+                            UNION ALL
+                            SELECT
+                                2 AS priority,
+                                MIN(na.f_parameter_value_needs_assessment_priority) AS na_priority_id,
+                                course.id AS course_id,
+                                course.c_code AS course_code,
+                                course.c_title_fa AS course_title_fa,
+                                course.n_theory_duration AS course_theory_duration,
+                                course.e_technical_type AS course_technical_type,
+                                skill.id AS skill_id,
+                                skill.c_code AS skill_code,
+                                skill.c_title_fa AS skill_title_fa,
+                                prs.id AS personnel_id,
+                                p.f_post_grade_id AS personnel_post_grade_id
+                            FROM
+                                (
+                                    SELECT
+                                        tbl_needs_assessment.f_object,
+                                        tbl_needs_assessment.f_skill,
+                                        tbl_needs_assessment.f_parameter_value_needs_assessment_priority
+                                    FROM
+                                        tbl_needs_assessment
+                                    WHERE
+                                        tbl_needs_assessment.c_object_type = 'TrainingPost'
+                                        AND   e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) na
+                                INNER JOIN tbl_skill skill ON na.f_skill = skill.id
+                                INNER JOIN tbl_course course ON skill.f_course = course.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_training_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) tp ON na.f_object = tp.id
+                                INNER JOIN tbl_post_training_post ptp ON ptp.f_training_post_id = tp.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) p ON p.id = ptp.f_post_id
+                                INNER JOIN view_active_personnel prs ON prs.f_post_id = p.id
+                            GROUP BY
+                                prs.id,
+                                course.id,
+                                course.c_code,
+                                course.c_title_fa,
+                                course.n_theory_duration,
+                                course.e_technical_type,
+                                skill.id,
+                                skill.c_code,
+                                skill.c_title_fa,
+                                p.f_post_grade_id
+                            UNION ALL
+                            SELECT
+                                3 AS priority,
+                                MIN(na.f_parameter_value_needs_assessment_priority) AS na_priority_id,
+                                course.id AS course_id,
+                                course.c_code AS course_code,
+                                course.c_title_fa AS course_title_fa,
+                                course.n_theory_duration AS course_theory_duration,
+                                course.e_technical_type AS course_technical_type,
+                                skill.id AS skill_id,
+                                skill.c_code AS skill_code,
+                                skill.c_title_fa AS skill_title_fa,
+                                prs.id AS personnel_id,
+                                p.f_post_grade_id AS personnel_post_grade_id
+                            FROM
+                                (
+                                    SELECT
+                                        f_object,
+                                        f_skill,
+                                        f_parameter_value_needs_assessment_priority
+                                    FROM
+                                        tbl_needs_assessment
+                                    WHERE
+                                        c_object_type = 'PostGroup'
+                                        AND   e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) na
+                                INNER JOIN tbl_skill skill ON na.f_skill = skill.id
+                                INNER JOIN tbl_course course ON skill.f_course = course.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post_group
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) pg ON na.f_object = pg.id
+                                INNER JOIN tbl_post_postgroup ppg ON pg.id = ppg.f_postgroup_id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) p ON ppg.f_post_id = p.id
+                                INNER JOIN view_active_personnel prs ON prs.f_post_id = p.id
+                            GROUP BY
+                                prs.id,
+                                course.id,
+                                course.c_code,
+                                course.c_title_fa,
+                                course.n_theory_duration,
+                                course.e_technical_type,
+                                skill.id,
+                                skill.c_code,
+                                skill.c_title_fa,
+                                p.f_post_grade_id
+                            UNION ALL
+                            SELECT
+                                4 AS priority,
+                                MIN(na.f_parameter_value_needs_assessment_priority) AS na_priority_id,
+                                course.id AS course_id,
+                                course.c_code AS course_code,
+                                course.c_title_fa AS course_title_fa,
+                                course.n_theory_duration AS course_theory_duration,
+                                course.e_technical_type AS course_technical_type,
+                                skill.id AS skill_id,
+                                skill.c_code AS skill_code,
+                                skill.c_title_fa AS skill_title_fa,
+                                prs.id AS personnel_id,
+                                p.f_post_grade_id AS personnel_post_grade_id
+                            FROM
+                                (
+                                    SELECT
+                                        f_object,
+                                        f_skill,
+                                        f_parameter_value_needs_assessment_priority
+                                    FROM
+                                        tbl_needs_assessment
+                                    WHERE
+                                        c_object_type = 'PostGroup'
+                                        AND   e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) na
+                                INNER JOIN tbl_skill skill ON na.f_skill = skill.id
+                                INNER JOIN tbl_course course ON skill.f_course = course.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post_group
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) pg ON na.f_object = pg.id
+                                INNER JOIN tbl_training_post_post_group tppg ON tppg.f_post_group_id = pg.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_training_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) tp ON tppg.f_training_post_id = tp.id
+                                INNER JOIN tbl_post_training_post ptp ON tp.id = ptp.f_training_post_id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) p ON ptp.f_post_id = p.id
+                                INNER JOIN view_active_personnel prs ON prs.f_post_id = p.id
+                            GROUP BY
+                                prs.id,
+                                course.id,
+                                course.c_code,
+                                course.c_title_fa,
+                                course.n_theory_duration,
+                                course.e_technical_type,
+                                skill.id,
+                                skill.c_code,
+                                skill.c_title_fa,
+                                p.f_post_grade_id
+                            UNION ALL
+                            SELECT
+                                5 AS priority,
+                                MIN(na.f_parameter_value_needs_assessment_priority) AS na_priority_id,
+                                course.id AS course_id,
+                                course.c_code AS course_code,
+                                course.c_title_fa AS course_title_fa,
+                                course.n_theory_duration AS course_theory_duration,
+                                course.e_technical_type AS course_technical_type,
+                                skill.id AS skill_id,
+                                skill.c_code AS skill_code,
+                                skill.c_title_fa AS skill_title_fa,
+                                prs.id AS personnel_id,
+                                p.f_post_grade_id AS personnel_post_grade_id
+                            FROM
+                                (
+                                    SELECT
+                                        f_object,
+                                        f_skill,
+                                        f_parameter_value_needs_assessment_priority
+                                    FROM
+                                        tbl_needs_assessment
+                                    WHERE
+                                        c_object_type = 'Job'
+                                        AND   e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) na
+                                INNER JOIN tbl_skill skill ON na.f_skill = skill.id
+                                INNER JOIN tbl_course course ON skill.f_course = course.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_job
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) j ON na.f_object = j.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_training_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) tp ON tp.f_job_id = j.id
+                                INNER JOIN tbl_post_training_post ptp ON tp.id = ptp.f_training_post_id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) p ON ptp.f_post_id = p.id
+                                INNER JOIN view_active_personnel prs ON prs.f_post_id = p.id
+                            GROUP BY
+                                prs.id,
+                                course.id,
+                                course.c_code,
+                                course.c_title_fa,
+                                course.n_theory_duration,
+                                course.e_technical_type,
+                                skill.id,
+                                skill.c_code,
+                                skill.c_title_fa,
+                                p.f_post_grade_id
+                            UNION ALL
+                            SELECT
+                                6 AS priority,
+                                MIN(na.f_parameter_value_needs_assessment_priority) AS na_priority_id,
+                                course.id AS course_id,
+                                course.c_code AS course_code,
+                                course.c_title_fa AS course_title_fa,
+                                course.n_theory_duration AS course_theory_duration,
+                                course.e_technical_type AS course_technical_type,
+                                skill.id AS skill_id,
+                                skill.c_code AS skill_code,
+                                skill.c_title_fa AS skill_title_fa,
+                                prs.id AS personnel_id,
+                                p.f_post_grade_id AS personnel_post_grade_id
+                            FROM
+                                (
+                                    SELECT
+                                        f_object,
+                                        f_skill,
+                                        f_parameter_value_needs_assessment_priority
+                                    FROM
+                                        tbl_needs_assessment
+                                    WHERE
+                                        c_object_type = 'JobGroup'
+                                        AND   e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) na
+                                INNER JOIN tbl_skill skill ON na.f_skill = skill.id
+                                INNER JOIN tbl_course course ON skill.f_course = course.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_job_group
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) jg ON na.f_object = jg.id
+                                INNER JOIN tbl_job_jobgroup jjg ON jg.id = jjg.f_jobgroup_id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_job
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) j ON jjg.f_job_id = j.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_training_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) tp ON tp.f_job_id = j.id
+                                INNER JOIN tbl_post_training_post ptp ON tp.id = ptp.f_training_post_id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) p ON ptp.f_post_id = p.id
+                                INNER JOIN view_active_personnel prs ON prs.f_post_id = p.id
+                            GROUP BY
+                                prs.id,
+                                course.id,
+                                course.c_code,
+                                course.c_title_fa,
+                                course.n_theory_duration,
+                                course.e_technical_type,
+                                skill.id,
+                                skill.c_code,
+                                skill.c_title_fa,
+                                p.f_post_grade_id
+                            UNION ALL
+                            SELECT
+                                7 AS priority,
+                                MIN(na.f_parameter_value_needs_assessment_priority) AS na_priority_id,
+                                course.id AS course_id,
+                                course.c_code AS course_code,
+                                course.c_title_fa AS course_title_fa,
+                                course.n_theory_duration AS course_theory_duration,
+                                course.e_technical_type AS course_technical_type,
+                                skill.id AS skill_id,
+                                skill.c_code AS skill_code,
+                                skill.c_title_fa AS skill_title_fa,
+                                prs.id AS personnel_id,
+                                p.f_post_grade_id AS personnel_post_grade_id
+                            FROM
+                                (
+                                    SELECT
+                                        f_object,
+                                        f_skill,
+                                        f_parameter_value_needs_assessment_priority
+                                    FROM
+                                        tbl_needs_assessment
+                                    WHERE
+                                        c_object_type = 'PostGrade'
+                                        AND   e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) na
+                                INNER JOIN tbl_skill skill ON na.f_skill = skill.id
+                                INNER JOIN tbl_course course ON skill.f_course = course.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post_grade
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) pg ON na.f_object = pg.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_training_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) tp ON tp.f_post_grade_id = pg.id
+                                INNER JOIN tbl_post_training_post ptp ON tp.id = ptp.f_training_post_id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) p ON ptp.f_post_id = p.id
+                                INNER JOIN view_active_personnel prs ON prs.f_post_id = p.id
+                            GROUP BY
+                                prs.id,
+                                course.id,
+                                course.c_code,
+                                course.c_title_fa,
+                                course.n_theory_duration,
+                                course.e_technical_type,
+                                skill.id,
+                                skill.c_code,
+                                skill.c_title_fa,
+                                p.f_post_grade_id
+                            UNION ALL
+                            SELECT
+                                8 AS priority,
+                                MIN(na.f_parameter_value_needs_assessment_priority) AS na_priority_id,
+                                course.id AS course_id,
+                                course.c_code AS course_code,
+                                course.c_title_fa AS course_title_fa,
+                                course.n_theory_duration AS course_theory_duration,
+                                course.e_technical_type AS course_technical_type,
+                                skill.id AS skill_id,
+                                skill.c_code AS skill_code,
+                                skill.c_title_fa AS skill_title_fa,
+                                prs.id AS personnel_id,
+                                p.f_post_grade_id AS personnel_post_grade_id
+                            FROM
+                                (
+                                    SELECT
+                                        f_object,
+                                        f_skill,
+                                        f_parameter_value_needs_assessment_priority
+                                    FROM
+                                        tbl_needs_assessment
+                                    WHERE
+                                        c_object_type = 'PostGradeGroup'
+                                        AND   e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) na
+                                INNER JOIN tbl_skill skill ON na.f_skill = skill.id
+                                INNER JOIN tbl_course course ON skill.f_course = course.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post_grade_group
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) pgg ON na.f_object = pgg.id
+                                INNER JOIN tbl_post_grade_post_grade_group pgpgg ON pgg.id = pgpgg.f_post_grade_group_id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post_grade
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) pg ON pgpgg.f_post_grade_id = pg.id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_training_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) tp ON tp.f_post_grade_id = pg.id
+                                INNER JOIN tbl_post_training_post ptp ON tp.id = ptp.f_training_post_id
+                                INNER JOIN (
+                                    SELECT
+                                        *
+                                    FROM
+                                        tbl_post
+                                    WHERE
+                                        e_deleted IS NULL
+                                        AND   e_enabled IS NULL
+                                ) p ON ptp.f_post_id = p.id
+                                INNER JOIN view_active_personnel prs ON prs.f_post_id = p.id
+                            GROUP BY
+                                prs.id,
+                                course.id,
+                                course.c_code,
+                                course.c_title_fa,
+                                course.n_theory_duration,
+                                course.e_technical_type,
+                                skill.id,
+                                skill.c_code,
+                                skill.c_title_fa,
+                                p.f_post_grade_id
+                        ) SELECT
+                            mod(MIN(10 * priority + na_priority_id - 111),10) + 111 AS na_priority_id,
+                            course_id,
+                            course_code,
+                            course_title_fa,
+                            course_theory_duration,
+                            course_technical_type,
+                            skill_id,
+                            skill_code,
+                            skill_title_fa,
+                            personnel_id,
+                            personnel_post_grade_id
+                          FROM
+                            result r
+                        GROUP BY
+                            course_id,
+                            course_code,
+                            course_title_fa,
+                            course_theory_duration,
+                            course_technical_type,
+                            skill_id,
+                            skill_code,
+                            skill_title_fa,
+                            personnel_id,
+                            personnel_post_grade_id
+                            ) na ON na.personnel_id = passed.personnel_id AND na.course_id = passed.course_id
+                    LEFT JOIN tbl_institute institute ON institute.id = passed.class_institute
+                    LEFT JOIN tbl_parameter_value na_priority ON na_priority.id = na.na_priority_id
+                    LEFT JOIN tbl_parameter_value score_state ON score_state.id = passed.class_student_scores_state_id
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-007">
+        <createView viewName="VIEW_TRAINING_FILE_NA_REPORT_AND_EQUALS" replaceIfExists="true">
+            <![CDATA[
+                SELECT *
+                FROM VIEW_TRAINING_FILE_NA_REPORT_V view_tr_f
+                UNION
+                SELECT
+                    ROWNUM as id,
+                    view_tf.PERSONNEL_ID as personnel_id,
+                    nvl(view_eq.course_id, view_tf.course_id) as course_id,
+                    nvl(view_eq.course_code, view_tf.course_code) as course_code,
+                    nvl(view_eq.course_title_fa, view_tf.course_title_fa) as course_title_fa,
+                    nvl(view_eq.course_theory_duration, view_tf.course_theory_duration) as course_theory_duration,
+                    nvl(view_eq.course_technical_type, view_tf.course_technical_type) as course_technical_type,
+                    view_eq.reference_course as reference_course,
+                    NULL as skill_id,
+                    NULL as skill_code,
+                    NULL as skill_title_fa,
+                    0 as is_in_na,
+                    NULL as na_priority_id,
+                    NULL as na_priority_title,
+                    NULL as class_id,
+                    NULL as class_code,
+                    NULL as class_start_date,
+                    NULL as class_end_date,
+                    NULL as class_student_score,
+                    NULL as class_student_scores_state_id,
+                    NULL as class_student_scores_state_title,
+                    NULL as class_location
+                FROM VIEW_TRAINING_FILE_NA_REPORT_V view_tf
+                INNER JOIN VIEW_EQUAL_COURSE view_eq
+                  ON view_tf.COURSE_ID = view_eq.reference_course
+            ]]>
+        </createView>
+    </changeSet>
+
 </databaseChangeLog>
