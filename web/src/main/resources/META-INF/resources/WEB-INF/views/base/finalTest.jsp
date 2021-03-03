@@ -682,8 +682,9 @@ totalScore=0;
 scoreLabel.setContents("مجموع بارم وارد شده :")
                     Window_result_Finaltest.show();
                 } else {
+                   let errorResponseMessage = resp.httpResponseText;
                     var ERROR = isc.Dialog.create({
-                        message: "<spring:message code='exception.not-acceptable-date'/>",
+                        message: errorResponseMessage,
                         icon: "[SKIN]stop.png",
                         title: "<spring:message code='message'/>"
                     });
