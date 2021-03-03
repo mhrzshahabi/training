@@ -44,5 +44,7 @@ public interface IClassCheckListService {
 
     ClassCheckListDTO.Info updateDescriptionCheck(MultiValueMap<String, String> body) throws IOException;
 
+    void deleteByClassIdAndCheckListId(Long classId, Long checkListId);
+
 
 }
