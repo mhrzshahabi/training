@@ -32,6 +32,10 @@ public interface ClassCheckListDAO extends JpaRepository<ClassCheckList, Long>, 
     @Query(value = "delete from tbl_Class_Check_List where id=:id ",nativeQuery = true)
     void deleteByID(Long id);
 
+    @Modifying
+    @Query(value = "delete from tbl_Class_Check_List where f_Tclass_id =:tclassid and f_check_list_item_id in (select id from tbl_check_list_item where f_check_list_id =:checklistId)", nativeQuery = true)
+    void deleteByClassIdAndCheckListId(@Param("tclassid") Long tclassid, @Param("checklistId") Long checklistId);
+
     //@Query(value = "select  id from tbl_Class_Check_List where f_tclass_id =:tclassId and f_check_list_item_id =:checkListItemId", nativeQuery = true)
     ClassCheckList findClassCheckListByTclassIdAndCheckListItemId(long classId,Long checkListItemId);
 }
