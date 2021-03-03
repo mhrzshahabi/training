@@ -184,6 +184,12 @@ public class CourseService implements ICourseService {
         return listOut;
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<Long> equalCourseIdsList(Long courseId) {
+        return courseDAO.getAllEqualCourseIds(courseId);
+    }
+
     @Transactional
     @Override
     public void addEqualCourse(EqualCourseDTO.Add rq) {

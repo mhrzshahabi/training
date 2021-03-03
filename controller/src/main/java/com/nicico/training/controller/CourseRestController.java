@@ -96,6 +96,13 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     }
 
     @Loggable
+    @GetMapping(value = "/equalCourseIds/{courseId}")
+    //@PreAuthorize("hasAuthority('Course_R')")
+    public ResponseEntity<List<Long>> equalCourseIdsList(@PathVariable Long courseId) {
+        return new ResponseEntity<>(courseService.equalCourseIdsList(courseId), HttpStatus.OK);
+    }
+
+    @Loggable
     @GetMapping(value = "/checkDependence/{courseId}")
     //@PreAuthorize("hasAuthority('Course_R')")
     public ResponseEntity<CourseDTO.CourseDependence> checkDependence(@PathVariable Long courseId) {

@@ -1847,10 +1847,9 @@
         function addValidStudents(classId, courseId, equalCourseIds, studentsDataArray) {
 
             let warnStudents = [];
-            // let selectedStudents = SelectedPersonnelsLG_student.data;
-            isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "equalCourse/" + courseId, "GET", null, function (response) {
+            isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "equalCourseIds/" + courseId, "GET", null, function (response) {
 
-                JSON.parse(response.data).forEach(q => equalCourseIds.add(q.id));
+                JSON.parse(response.data).forEach(q => equalCourseIds.add(q));
                 let checkAll = 0;
 
                 for(let inx = 0; inx < studentsDataArray.length; inx++) {
