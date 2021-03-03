@@ -867,6 +867,7 @@ public abstract class EvaluationBeanMapper {
                     break;
                 }
                 case "3": {
+                    examResultDto.setScore("-");
                     examResultDto.setResultStatus("منتظر اعلام نتیجه");
                     break;
                 }

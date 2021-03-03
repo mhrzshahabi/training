@@ -225,7 +225,7 @@ public class ElsRestController {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 
         try {
-            if (dateFormat.parse(object.getExamItem().getTclass().getStartDate()).compareTo(dateFormat.parse(object.getExamItem().getTclass().getEndDate())) != 0) {
+//            if (dateFormat.parse(object.getExamItem().getTclass().getStartDate()).compareTo(dateFormat.parse(object.getExamItem().getTclass().getEndDate())) != 0) {
 
                 if (dateFormat.parse(object.getExamItem().getDate()).after(dateFormat.parse(object.getExamItem().getTclass().getStartDate()))) {
                     ExamQuestionsDto response = evaluationBeanMapper.toGetExamQuestions(object);
@@ -233,14 +233,14 @@ public class ElsRestController {
                 } else {
                     return new ResponseEntity("زمان برگذاری آزمون در بازه زمانی درست نمی باشد", HttpStatus.NOT_ACCEPTABLE);
                 }
-            } else {
-                if (dateFormat.parse(object.getExamItem().getTclass().getStartDate()).compareTo(dateFormat.parse(object.getExamItem().getDate())) != 0) {
-                    return new ResponseEntity("زمان برگذاری آزمون در بازه زمانی درست نمی باشد", HttpStatus.NOT_ACCEPTABLE);
-                } else {
-                    ExamQuestionsDto response = evaluationBeanMapper.toGetExamQuestions(object);
-                    return new ResponseEntity(response, HttpStatus.OK);
-                }
-            }
+//            } else {
+//                if (dateFormat.parse(object.getExamItem().getTclass().getStartDate()).compareTo(dateFormat.parse(object.getExamItem().getDate())) != 0) {
+//                    return new ResponseEntity("زمان برگذاری آزمون در بازه زمانی درست نمی باشد", HttpStatus.NOT_ACCEPTABLE);
+//                } else {
+//                    ExamQuestionsDto response = evaluationBeanMapper.toGetExamQuestions(object);
+//                    return new ResponseEntity(response, HttpStatus.OK);
+//                }
+//            }
 
         } catch (ParseException e) {
 
