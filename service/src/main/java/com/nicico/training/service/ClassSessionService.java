@@ -50,7 +50,7 @@ public class ClassSessionService implements IClassSession {
     private final ClassAlarmService classAlarmService;
     private final ParameterValueService parameterValueService;
 
-    //*********************************
+    //********************************
 
     @Transactional(readOnly = true)
     @Override

@@ -135,6 +135,12 @@ public class ViewEvaluationStaticalReport extends Auditable {
    @Column(name = "tclass_status")
    private String tclassStatus;
 
+   @Column(name = "class_cancel_reason_id")
+   private String classCancelReasonId;
+
+   @Column(name = "class_cancel_reason_title")
+   private String classCancelReasonTitle;
+
    @Column(name = "tclass_planner")
    private Long tclassPlanner;
 

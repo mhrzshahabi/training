@@ -33,6 +33,8 @@ public interface ICourseService {
 
     List<EqualCourseDTO.Info> equalCourseList(Long id);
 
+    List<Long> equalCourseIdsList(Long id);
+
     void addEqualCourse(EqualCourseDTO.Add rq);
 
     void removeEqualCourse(EqualCourseDTO.Remove rq);

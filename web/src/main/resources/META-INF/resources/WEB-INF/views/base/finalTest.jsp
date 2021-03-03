@@ -1,3 +1,4 @@
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sprig" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -261,8 +262,9 @@ width: "100%",
             {name: "time",},
             {name: "duration",},
             { name: "onlineFinalExamStatus", valueMap: {"false": "ارسال نشده", "true": "ارسال شده"}},
-            { name: "sendBtn", title: " ", width: "140"},
-            { name: "showBtn", title: " ", width: "140"},
+            { name: "sendBtn", title: "بارم بندی ", width: "140"},
+            { name: "showBtn", title: "نتایج ", width: "140"},
+            { name: "checkDate", title: "اطلاعات کاربران", width: "140"},
             { name: "onlineExamDeadLineStatus" , hidden: true},
 
             //{name: "isPreTestQuestion",}
@@ -289,11 +291,11 @@ width: "100%",
         },
          createRecordComponent: function (record, colNum) {
                     var fieldName = this.getFieldName(colNum);
-                    if (fieldName == "sendBtn") {
+                    if (fieldName === "sendBtn") {
                         let button = isc.IButton.create({
                             layoutAlign: "center",
                             disabled: record.onlineFinalExamStatus,
-                            title: "ارسال به آموزش آنلاین",
+                            title: "بارم بندی و ارسال آزمون",
                             width: "140",
                             margin: 3,
                             click: function () {
@@ -302,7 +304,7 @@ width: "100%",
                             }
                         });
                         return button;
-                    }if (fieldName == "showBtn") {
+                    }if (fieldName === "showBtn") {
                         let button = isc.IButton.create({
                             layoutAlign: "center",
                             disabled: !record.onlineFinalExamStatus,
@@ -315,7 +317,19 @@ width: "100%",
                             }
                         });
                         return button;
-                    } else {
+                    } if (fieldName == "checkDate"){
+                         let button = isc.IButton.create({
+                            layoutAlign: "center",
+                            title: " کاربران با اطلاعات ناقص ",
+                            width: "140",
+                            margin: 3,
+                            click: function () {
+                                showInvalidUsers(record)
+
+                            }
+                        });
+                        return button; }
+                    else {
                         return null;
                     }
                 },
@@ -351,8 +365,10 @@ width: "100%",
             showRecordComponents: true,
             showRecordComponentsByCell: true,
             fields: [
-                {name: "surname", title: 'نام',align: "center", width: "20%"},
-                {name: "lastName", title: 'نام خانوادگی' ,align: "center", width: "20%"},
+                {name: "surname", title: 'نام',align: "center", width: "15%"},
+                {name: "lastName", title: 'نام خانوادگی' ,align: "center", width: "15%"},
+                {name: "score", title: 'نمره' ,align: "center", width: "10%"},
+                {name: "resultStatus", title: 'وضعیت فراگیر' ,align: "center", width: "10%"},
                 { name: "iconField", title: "نتایج", width: "10%",align:"center"},
                 { name: "iconField2", title: "چاپ گزارش", width: "10%",align:"center"},
 
@@ -552,13 +568,17 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                             layoutAlign: "center",
                             title: "ارسال به آموزش آنلاین",
                             width: "140",
-                            click: function () {
+                            click: async function () {
                                 questionData.map(item => {
                                     if(!item.score)
                                         item.score = '0';
                                     return item;
                                     })
-
+                                let isValid = await hasEvaluation(record.tclass.id);
+                                if (!isValid) {
+                                    createDialog("info", '<spring:message code="class.has.no.evaluation"/>', "<spring:message code="error"/>");
+                                    return;
+                                }
 isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/getClassStudent/"+record.tclass.id, "GET",null, function (resp) {
 
 
@@ -667,8 +687,9 @@ totalScore=0;
 scoreLabel.setContents("مجموع بارم وارد شده :")
                     Window_result_Finaltest.show();
                 } else {
+                   let errorResponseMessage = resp.httpResponseText;
                     var ERROR = isc.Dialog.create({
-                        message: "<spring:message code='exception.not-acceptable-date'/>",
+                        message: errorResponseMessage,
                         icon: "[SKIN]stop.png",
                         title: "<spring:message code='message'/>"
                     });
@@ -899,8 +920,7 @@ scoreLabel.setContents("مجموع بارم وارد شده :")
     }
 
     function checkExamScore(examData) {
-
-        if (examData.examItem.tclass.scoringMethod === "3" || examData.examItem.tclass.scoringMethod === "4") {
+        if (examData.examItem.tclass.scoringMethod === "3" || examData.examItem.tclass.scoringMethod === "2") {
 
             let totalScore = 0;
             for(var i = 0; i < examData.questionData.length; i++) {
@@ -1250,6 +1270,91 @@ createDialog("info",JSON.parse(resp.httpResponseText).message, "<spring:message 
     });
 
     // ------------------------------------------- Functions -------------------------------------------
+    function showInvalidUsers (record) {
+
+
+isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/getClassStudent/"+record.tclass.id, "GET",null, function (resp) {
+
+
+    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+let result = JSON.parse(resp.httpResponseText);
+
+let inValidStudents = [];
+
+                for (let i = 0; i < result.length; i++) {
+
+                    let studentData = result[i];
+
+        if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.cellNumber,studentData.gender)) {
+
+                        inValidStudents.add({
+                            firstName: studentData.surname,
+                            lastName: studentData.lastName
+                        });
+                    }
+                }
+
+                if (inValidStudents.length) {
+
+                    let DynamicForm_InValid_Students = isc.DynamicForm.create({
+                        width: 600,
+                        height: 100,
+                        padding: 6,
+                        titleAlign: "right",
+                        fields: [
+                            {
+                                name: "text",
+                                width: "100%",
+                                colSpan: 2,
+                                value: "<spring:message code='msg.check.student.mobile.ncode'/>"+" "+"<spring:message code='msg.check.student.mobile.ncode.message'/>",
+                                showTitle: false,
+                                editorType: 'staticText'
+                            },
+                            {
+                                type: "RowSpacerItem"
+                            },
+                            {
+                                name: "invalidNames",
+                                width: "100%",
+                                colSpan: 2,
+                                title: "<spring:message code="title"/>",
+                                showTitle: false,
+                                editorType: 'textArea',
+                                canEdit: false
+                            }
+                        ]
+                    });
+
+                    let names = "";
+                    for (var j = 0; j < inValidStudents.length; j++) {
+
+                        names = names.concat(inValidStudents[j].firstName + " " + inValidStudents[j].lastName  + "\n");
+                    }
+                    DynamicForm_InValid_Students.setValue("invalidNames", names);
+
+                    let Window_InValid_Students = isc.Window.create({
+                        width: 600,
+                        height: 150,
+                        numCols: 2,
+                        title: "<spring:message code='invalid.students.window'/>",
+                        items: [
+                            DynamicForm_InValid_Students,
+                            isc.MyHLayoutButtons.create({
+                            members: [
+                                isc.IButtonCancel.create({
+                                title: "<spring:message code="cancel"/>",
+                                click: function () {
+                                    Window_InValid_Students.close();
+                                }
+                            })],
+                        })]
+                    });
+                    Window_InValid_Students.show();
+                } else {
+                    createDialog("info", "در این کلاس کاربر با اطلاعات ناقص وجود ندارد"); }
+                    } }));
+                    }
     function refresh_finalTest() {
         FinalTestLG_finalTest.invalidateCache();
         FinalTestLG_finalTest.fetchData();
@@ -1452,4 +1557,23 @@ isValid = false;
 return isValid;
 }
 
+    async function hasEvaluation(classId) {
+        let criteria = {fieldName: "id", operator: "equals", value: classId};
+        let resp = await
+            fetch(viewClassDetailUrl + "/iscList?operator=and&_constructor=AdvancedCriteria&criteria=" + JSON.stringify(criteria),
+                {headers: {"Authorization": "Bearer <%= (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN) %>"}});
+        if (!resp.ok)
+            return false;
+        const resData = await resp.json();
+        if (!resp || !resData.response || !resData.response.data)
+            return false;
+        const record = resData.response.data[0]
+        if (record == null || record.length == 0)
+            return false;
+        if (!record.classStudentOnlineEvalStatus)
+            return false;
+        if (!record.classTeacherOnlineEvalStatus)
+            return false;
+        return true;
+        }
     //</script>

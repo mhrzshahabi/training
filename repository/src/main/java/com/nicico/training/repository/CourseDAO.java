@@ -155,5 +155,6 @@ public interface CourseDAO extends NicicoRepository<Course> {
             /*":sort "*/, nativeQuery = true)
     List<Object> getCourseWithOutClass(String years, Object startDate, Object endDate, Object strSData2, Object strEData2, String termIds, String courseIds, String teacherIds/*, String sort*/);
 
-
+    @Query(value = "SELECT COURSE_ID FROM VIEW_EQUAL_COURSE where REFERENCE_COURSE = :courseId", nativeQuery = true)
+    List<Long> getAllEqualCourseIds(Long courseId);
 }

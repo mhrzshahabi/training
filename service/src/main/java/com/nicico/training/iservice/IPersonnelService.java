@@ -41,5 +41,7 @@ public interface IPersonnelService {
 
     SearchDTO.SearchRs<PersonnelDTO.FieldValue> findAllValuesOfOneFieldFromPersonnel(String fieldName);
 
+    List<Long> inDepartmentIsPlanner(String mojtameCode);
+
 //    <R> R getPOrRegisteredP(Long id, Function<Object, R> converter);
 }

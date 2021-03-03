@@ -26,7 +26,8 @@
                 click: function () {
                     ListGrid_Term.invalidateCache();
                 }
-            }, {
+            },
+/*            {
                 <sec:authorize access="hasAuthority('PERMISSION')">
                 </sec:authorize>
                 title: "<spring:message code="create"/>", icon: "<spring:url value="create.png"/>", click: function () {
@@ -34,15 +35,18 @@
                     <sec:authorize access="hasAuthority('PERMISSION')">
                     </sec:authorize>
                 }
-            }, {
+            }, */
+/*            {
                 title: "<spring:message code="edit"/>", icon: "<spring:url value="edit.png"/>", click: function () {
                     show_TermEditForm();
                 }
-            }, {
+            },*/
+/*            {
                 title: "<spring:message code="remove"/>", icon: "<spring:url value="remove.png"/>", click: function () {
                     show_TermRemoveForm();
                 }
-            }, {isSeparator: true}, {
+            }, {isSeparator: true}, */
+            {
                 title: "<spring:message code="print.pdf"/>", icon: "<spring:url value="pdf.png"/>", click: function () {
                     print_TermListGrid("pdf");
                 }
@@ -115,7 +119,7 @@
         ],
         recordDoubleClick: function () {
             DynamicForm_Term.clearValues();
-            show_TermEditForm();
+            // show_TermEditForm();
         },
         showFilterEditor: true,
         allowAdvancedCriteria: true,
@@ -299,6 +303,7 @@
     var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
 //icon: "[SKIN]/actions/edit.png",
         title: "<spring:message code="edit"/>",
+        disabled: true,
         click: function () {
 
             show_TermEditForm();
@@ -307,6 +312,7 @@
     var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
 
         title: "<spring:message code="create"/>",
+        disabled: true,
         click: function () {
             term_method = "POST";
             show_TermNewForm();
@@ -316,6 +322,7 @@
     var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
 //icon: "[SKIN]/actions/remove.png",
         title: "<spring:message code="remove"/>",
+        disabled: true,
         click: function () {
             show_TermRemoveForm()
         }

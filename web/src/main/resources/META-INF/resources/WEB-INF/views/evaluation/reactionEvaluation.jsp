@@ -36,6 +36,15 @@
                 }
             },
             {
+                name: "student.gender",
+                title: "<spring:message code="gender"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true,
+                sortNormalizer: function (record) {
+                    return record.student.gender;
+                }
+            },
+            {
                 name: "student.nationalCode",
                 title: "<spring:message code="national.code"/>",
                 filterOperator: "iContains",
@@ -207,6 +216,7 @@
         fields: [
             {name: "student.firstName"},
             {name: "student.lastName"},
+            {name: "student.gender"},
             {
                 name: "student.nationalCode",
                 filterEditorProperties: {
@@ -450,6 +460,15 @@
                                                 align: "center"
                                             },
                                             {
+                                                name: "student.gender",
+                                                title: "<spring:message code="gender"/>",
+                                                filterOperator: "iContains",
+                                                autoFitWidth: true,
+                                                sortNormalizer: function (record) {
+                                                    return record.student.gender;
+                                                }
+                                            },
+                                            {
                                                 name: "student.nationalCode",
                                                 title: "<spring:message code="national.code"/>",
                                                 width: 100,
@@ -510,7 +529,7 @@
 
                                         MSG_repeatOptions.getItem('maxRepeat').setValue(0);
                                         MSG_repeatOptions.getItem('timeBMessages').setValue(1);
-                                        linkFormMLanding.getItem('link').setValue('');
+                                        linkFormMLanding.getItem('link').setValue('http://mobiles.nicico.com/');
                                         linkFormMLanding.getItem('link').setRequired(true);
                                         linkFormMLanding.getItem('link').enable();
                                         MSG_Window_MSG_Main.show();
@@ -634,7 +653,7 @@
                                         MSG_classID = row.id;
                                         MSG_repeatOptions.getItem('maxRepeat').setValue(0);
                                         MSG_repeatOptions.getItem('timeBMessages').setValue(1);
-                                        linkFormMLanding.getItem('link').setValue('');
+                                        linkFormMLanding.getItem('link').setValue('http://mobiles.nicico.com/');
                                         linkFormMLanding.getItem('link').setRequired(true);
                                         linkFormMLanding.getItem('link').enable();
                                         MSG_Window_MSG_Main.show();
@@ -675,6 +694,7 @@
             showOnlineResults('eval');
         }
     });
+
 
     var ToolStripButton_OnlineFormIssuanceResultForAll_RE = isc.ToolStripButton.create({
         title: "مشاهده نتیجه ارزیابی همه فراگیران",
@@ -743,6 +763,13 @@
         title: "<spring:message code='print'/>",
         click: function () {
             printStudentList(ListGrid_student_RE);
+        }
+    });
+    var ToolStripButton_FormIssuance‌InCompleteUsers = isc.ToolStripButton.create({
+        title: "نمایش لیست کاربران کلاس بااطلاعات ناقص",
+        baseStyle: "sendFile",
+        click: function () {
+            showOnline‌InCompleteUsers();
         }
     });
 
@@ -1081,7 +1108,8 @@
                                         membersMargin: 5,
                                         members: [
                                             ToolStripButton_FormIssuanceForAll_RE,
-                                            ToolStripButton_FormIssuanceDeleteForAll_RE
+                                            ToolStripButton_FormIssuanceDeleteForAll_RE,
+                                            ToolStripButton_FormIssuance‌InCompleteUsers
                                         ]
                                     }),
                                     isc.LayoutSpacer.create({height: "22"})
@@ -1150,9 +1178,9 @@
                                 ]
                             }),
                             isc.HLayout.create({
-                                layoutAlign: "right",
-                                defaultLayoutAlign: "right",
-                                align:"right",
+                                layoutAlign: "center",
+                                defaultLayoutAlign: "center",
+                                align:"center",
                                 width: "19%",
                                 members: [
                                     isc.VLayout.create({
@@ -1724,6 +1752,110 @@
 
         }
 
+    }
+    function showOnline‌InCompleteUsers(){
+
+        if (ListGrid_student_RE.getData().localData.size() == 0){
+            createDialog("info", "کلاس هیچ شرکت کننده ای ندارد");
+            evalWait_RE.close();
+        } else {
+            let check = true;
+            for (let j = 0; j < ListGrid_student_RE.getData().localData.size(); j++) {
+                let record = ListGrid_student_RE.getData().localData[j];
+                if (record.evaluationStatusReaction === null
+                    || record.evaluationStatusReaction === 0
+                    || record.evaluationStatusReaction === undefined) {
+                    check = false;
+                }
+            }
+
+            if( classRecord_RE.id) {
+                let rec=ListGrid_student_RE.getData().localData[0];
+
+
+
+
+                let gridData = ListGrid_student_RE.getData().localData;
+                let inValidStudents = [];
+
+                for (let i = 0; i < gridData.length; i++) {
+
+                    let studentData = gridData[i].student;
+                    if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.mobile, studentData.gender)) {
+
+                        inValidStudents.add({
+                            firstName: studentData.firstName,
+                            lastName: studentData.lastName
+                        });
+                    }
+                }
+
+                if (inValidStudents.length) {
+
+                    let DynamicForm_InValid_Students = isc.DynamicForm.create({
+                        width: 600,
+                        height: 100,
+                        padding: 6,
+                        titleAlign: "right",
+                        fields: [
+                            {
+                                name: "text",
+                                width: "100%",
+                                colSpan: 2,
+                                value: "<spring:message code='msg.check.student.mobile.ncode'/>"+" "+"<spring:message code='msg.check.student.mobile.ncode.message'/>",
+                                showTitle: false,
+                                editorType: 'staticText'
+                            },
+                            {
+                                type: "RowSpacerItem"
+                            },
+                            {
+                                name: "invalidNames",
+                                width: "100%",
+                                colSpan: 2,
+                                title: "<spring:message code="title"/>",
+                                showTitle: false,
+                                editorType: 'textArea',
+                                canEdit: false
+                            }
+                        ]
+                    });
+
+                    let names = "";
+                    for (var j = 0; j < inValidStudents.length; j++) {
+
+                        names = names.concat(inValidStudents[j].firstName + " " + inValidStudents[j].lastName  + "\n");
+                    }
+                    DynamicForm_InValid_Students.setValue("invalidNames", names);
+
+                    let Window_InValid_Students = isc.Window.create({
+                        width: 600,
+                        height: 150,
+                        numCols: 2,
+                        title: "<spring:message code='invalid.students.window'/>",
+                        items: [
+                            DynamicForm_InValid_Students,
+                            isc.MyHLayoutButtons.create({
+                            members: [
+                                isc.IButtonCancel.create({
+                                title: "<spring:message code="cancel"/>",
+                                click: function () {
+                                    Window_InValid_Students.close();
+                                }
+                            })],
+                        })]
+                    });
+                    Window_InValid_Students.show();
+                } else {
+                    createDialog("info", "در این کلاس کاربر با اطلاعات ناقص وجود ندارد");
+                }
+            } else {
+
+                createDialog("info", "برای مشاهده کاربران با اطلاعات ناقص ابتدا کلاس مورد نظر را انتخاب کنید");
+                evalWait_RE.close();
+            }
+
+        }
     }
 
     function ListGrid_show_ansewrs(answers) {

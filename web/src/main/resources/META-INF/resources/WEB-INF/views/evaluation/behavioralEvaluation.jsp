@@ -54,6 +54,15 @@
                     }
                 },
                 {
+                    name: "student.gender",
+                    title: "<spring:message code="gender"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true,
+                    sortNormalizer: function (record) {
+                        return record.student.gender;
+                    }
+                },
+                {
                     name: "student.nationalCode",
                     title: "<spring:message code="national.code"/>",
                     filterOperator: "iContains",
@@ -197,6 +206,7 @@
             fields: [
                 {name: "student.firstName"},
                 {name: "student.lastName"},
+	            {name: "student.gender"},
                 {name: "student.nationalCode",
                     filterEditorProperties: {
                         keyPressFilter: "[0-9]"

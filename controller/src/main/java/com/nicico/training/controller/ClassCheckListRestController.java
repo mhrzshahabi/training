@@ -161,5 +161,12 @@ public class ClassCheckListRestController {
         return null;
     }
 
+    @Loggable
+    @DeleteMapping(value = "/delete-checkList/{classId}/{checkListId}")
+    public ResponseEntity<Void> deleteClassCheckList(@PathVariable Long classId, @PathVariable Long checkListId) {
+        classCheckListService.deleteByClassIdAndCheckListId(classId, checkListId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
 }

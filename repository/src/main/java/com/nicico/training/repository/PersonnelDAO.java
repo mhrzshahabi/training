@@ -4,6 +4,7 @@ import com.nicico.training.model.Personnel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
@@ -71,4 +72,7 @@ public interface PersonnelDAO extends JpaRepository<Personnel, Long>, JpaSpecifi
     List<Personnel> findAllByNationalCodeOrderByIdDesc(String nationalCode);
 
     List<Personnel> findAllByPersonnelNoOrderByIdDesc(String personnelNo);
+
+    @Query(value = "select pr.id from TBL_PERSONNEL pr inner join (select distinct(f_planner) as f_planner from tbl_class) cls on pr.id = f_planner inner join tbl_department dpr on dpr.id = pr.f_department_id where c_mojtame_code = :mojtameCode", nativeQuery = true)
+    List<Long> inDepartmentIsPlanner(@Param("mojtameCode")String mojtameCode);
 }

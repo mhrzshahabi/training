@@ -10,14 +10,20 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.mapper.TrainingClassBeanMapper;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
 import com.nicico.training.model.*;
+import com.nicico.training.model.enums.ClassStatus;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import request.evaluation.StudentEvaluationAnswerDto;
+import response.BaseResponse;
 import response.evaluation.dto.EvaluationAnswerObject;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +57,7 @@ public class TclassService implements ITclassService {
     private final EvaluationQuestionDAO evaluationQuestionDAO;
     private final TclassDAO tclassDAO;
     private final ClassSessionDAO classSessionDAO;
+    private final LockClassDAO lockClassDAO;
     private final EvaluationDAO evaluationDAO;
     private final StudentDAO studentDAO;
     private final ClassStudentDAO classStudentDAO;
@@ -61,6 +68,7 @@ public class TclassService implements ITclassService {
     private final TrainingPlaceDAO trainingPlaceDAO;
     private final AttachmentService attachmentService;
     private final IEvaluationService evaluationService;
+    private final IWorkGroupService workGroupService;
     private final ParameterService parameterService;
     private final ParameterValueService parameterValueService;
     private final CourseDAO courseDAO;
@@ -71,6 +79,7 @@ public class TclassService implements ITclassService {
     private final ParameterValueDAO parameterValueDAO;
     private final TrainingClassBeanMapper trainingClassBeanMapper;
     private final EvaluationAnalysisDAO evaluationAnalysisDAO;
+    private final ClassCheckListDAO classCheckListDAO;
     private final TclassBeanMapper tclassBeanMapper;
     private DecimalFormat numberFormat = new DecimalFormat("#.00");
 
@@ -164,70 +173,73 @@ public class TclassService implements ITclassService {
         final Tclass tclass = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
         Long classOldSupervisor = tclass.getSupervisorId();
         Long classOldTeacher = tclass.getTeacherId();
-
-        Tclass mappedClass = trainingClassBeanMapper.updateTClass(request, tclass);
-        List<Long> trainingPlaceIds = request.getTrainingPlaceIds();
-        Set<TrainingPlace> set = new HashSet<>();
-        if (trainingPlaceIds != null) {
-            List<TrainingPlace> allById = trainingPlaceDAO.findAllById(trainingPlaceIds);
-            set.addAll(allById);
-        }
-
-        mappedClass.setTrainingPlaceSet(set);
-
-        if (mappedClass.getClassStatus() != null && !mappedClass.getClassStatus().equals("4")) {
-            mappedClass.setClassCancelReasonId(null);
-            mappedClass.setAlternativeClassId(null);
-            mappedClass.setPostponeStartDate(null);
-        }
-        if (cancelClassesIds != null) {
-            Set<Tclass> canceledClasses = mappedClass.getCanceledClasses();
-            for (Tclass canceledClass : canceledClasses) {
-                canceledClass.setAlternativeClassId(null);
+        if (tclass.getClassStatus().equals("4")){
+            throw new TrainingException(TrainingException.ErrorType.Forbidden);
+        } else {
+            Tclass mappedClass = trainingClassBeanMapper.updateTClass(request, tclass);
+            List<Long> trainingPlaceIds = request.getTrainingPlaceIds();
+            Set<TrainingPlace> set = new HashSet<>();
+            if (trainingPlaceIds != null) {
+                List<TrainingPlace> allById = trainingPlaceDAO.findAllById(trainingPlaceIds);
+                set.addAll(allById);
             }
-            List<Tclass> tclasses = tclassDAO.findAllById(cancelClassesIds);
-            HashSet<Tclass> tclassHashSet = new HashSet<>(tclasses);
-            for (Tclass c : tclassHashSet) {
-                c.setAlternativeClassId(id);
-                c.setPostponeStartDate(mappedClass.getStartDate());
-            }
-        }
 
-        Tclass updatedClass = tclassDAO.save(mappedClass);
+            mappedClass.setTrainingPlaceSet(set);
 
-        //TODO CHANGE THE WAY OF MAPPING ASAP
-        //updateTargetSocieties(request.getTargetSocieties(), request.getTargetSocietyTypeId(), updatedClass);
-        //updatedClass.setTargetSocietyTypeId(request.getTargetSocietyTypeId());
-        //--------------------DONE BY ROYA---------------------
-        if (classOldSupervisor != null && request.getSupervisorId() != null) {
-            if (!classOldSupervisor.equals(request.getSupervisorId())) {
-                HashMap<String, Object> evaluation = new HashMap<>();
-                evaluation.put("questionnaireTypeId", 141L);
-                evaluation.put("classId", id);
-                evaluation.put("evaluatorId", classOldSupervisor);
-                evaluation.put("evaluatorTypeId", 454L);
-                evaluation.put("evaluatedId", classOldTeacher);
-                evaluation.put("evaluatedTypeId", 187L);
-                evaluation.put("evaluationLevelId", 154L);
-                evaluationService.deleteEvaluation(evaluation);
+            if (mappedClass.getClassStatus() != null && !mappedClass.getClassStatus().equals("4")) {
+                mappedClass.setClassCancelReasonId(null);
+                mappedClass.setAlternativeClassId(null);
+                mappedClass.setPostponeStartDate(null);
             }
-        }
-        if (classOldTeacher != null && request.getTeacherId() != null) {
-            if (!classOldTeacher.equals(request.getTeacherId())) {
-                HashMap<String, Object> evaluation = new HashMap<>();
-                evaluation.put("questionnaireTypeId", 140L);
-                evaluation.put("classId", id);
-                evaluation.put("evaluatorId", classOldTeacher);
-                evaluation.put("evaluatorTypeId", 187L);
-                evaluation.put("evaluatedId", id);
-                evaluation.put("evaluatedTypeId", 504L);
-                evaluation.put("evaluationLevelId", 154L);
-                evaluationService.deleteEvaluation(evaluation);
+            if (cancelClassesIds != null) {
+                Set<Tclass> canceledClasses = mappedClass.getCanceledClasses();
+                for (Tclass canceledClass : canceledClasses) {
+                    canceledClass.setAlternativeClassId(null);
+                }
+                List<Tclass> tclasses = tclassDAO.findAllById(cancelClassesIds);
+                HashSet<Tclass> tclassHashSet = new HashSet<>(tclasses);
+                for (Tclass c : tclassHashSet) {
+                    c.setAlternativeClassId(id);
+                    c.setPostponeStartDate(mappedClass.getStartDate());
+                }
             }
-        }
-        //-----------------------------------------------------
 
-        return tclassBeanMapper.toTclassResponse(updatedClass);
+            Tclass updatedClass = tclassDAO.save(mappedClass);
+
+            //TODO CHANGE THE WAY OF MAPPING ASAP
+            //updateTargetSocieties(request.getTargetSocieties(), request.getTargetSocietyTypeId(), updatedClass);
+            //updatedClass.setTargetSocietyTypeId(request.getTargetSocietyTypeId());
+            //--------------------DONE BY ROYA---------------------
+            if (classOldSupervisor != null && request.getSupervisorId() != null) {
+                if (!classOldSupervisor.equals(request.getSupervisorId())) {
+                    HashMap<String, Object> evaluation = new HashMap<>();
+                    evaluation.put("questionnaireTypeId", 141L);
+                    evaluation.put("classId", id);
+                    evaluation.put("evaluatorId", classOldSupervisor);
+                    evaluation.put("evaluatorTypeId", 454L);
+                    evaluation.put("evaluatedId", classOldTeacher);
+                    evaluation.put("evaluatedTypeId", 187L);
+                    evaluation.put("evaluationLevelId", 154L);
+                    evaluationService.deleteEvaluation(evaluation);
+                }
+            }
+            if (classOldTeacher != null && request.getTeacherId() != null) {
+                if (!classOldTeacher.equals(request.getTeacherId())) {
+                    HashMap<String, Object> evaluation = new HashMap<>();
+                    evaluation.put("questionnaireTypeId", 140L);
+                    evaluation.put("classId", id);
+                    evaluation.put("evaluatorId", classOldTeacher);
+                    evaluation.put("evaluatorTypeId", 187L);
+                    evaluation.put("evaluatedId", id);
+                    evaluation.put("evaluatedTypeId", 504L);
+                    evaluation.put("evaluationLevelId", 154L);
+                    evaluationService.deleteEvaluation(evaluation);
+                }
+            }
+            //-----------------------------------------------------
+
+            return tclassBeanMapper.toTclassResponse(updatedClass);
+        }
     }
 
     @Transactional
@@ -249,6 +261,12 @@ public class TclassService implements ITclassService {
         }
         if (!tclass.getClassStudents().isEmpty()) {
             resp.sendError(409, messageSource.getMessage("کلاس فوق بدلیل داشتن فراگیر قابل حذف نیست. ", null, LocaleContextHolder.getLocale()));
+            return;
+        }
+        List<ClassCheckList> classCheckLists= classCheckListDAO.findClassCheckListByTclassId(id);
+
+        if (!classCheckLists.isEmpty()) {
+            resp.sendError(409, messageSource.getMessage("کلاس فوق بدلیل داشتن چک لیست قابل حذف نیست. ", null, LocaleContextHolder.getLocale()));
             return;
         }
         for (Evaluation eva : tclass.getEvaluations()) {
@@ -405,6 +423,63 @@ public class TclassService implements ITclassService {
     @Override
     public void changeOnlineEvalStudentStatus(Long classId, boolean state) {
         tclassDAO.changeOnlineEvalStudentStatus(classId, state);
+    }
+
+    //state 3 = payan yafte
+    //state 5 = ekhtemam
+    @Transactional
+    @Override
+    public BaseResponse changeClassStatus(Long classId, String state,String reason){
+        BaseResponse response=new BaseResponse();
+        Optional<LockClass> lockClassOptional=lockClassDAO.findByClassId(classId);
+        String classStatus = get(classId).getClassStatus();
+        switch (state){
+            case "lock":{
+                if (classStatus.equals(ClassStatus.finish.getId().toString())) {
+                    if (lockClassOptional.isPresent()) {
+                        response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                        response.setMessage("کلاس مورد نظر قبلا در اختتام بوده است");
+                    }
+                    else{
+                        LockClass lockClass=new LockClass();
+                        lockClass.setClassId(classId);
+                        lockClass.setReason(reason);
+                        lockClass.setClassCode(get(classId).getCode());
+                        lockClassDAO.save(lockClass);
+                        tclassDAO.changeClassStatus(classId, ClassStatus.lock.getId().toString());
+                        response.setStatus(200);
+                    }
+                } else
+                {
+                    response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                    response.setMessage("کلاس مورد نظر در وضعیت پایان یافته نیست");
+                }
+                return response;
+            }
+            case "unLock":{
+                if (classStatus.equals(ClassStatus.lock.getId().toString())) {
+                    if (lockClassOptional.isPresent()) {
+                        lockClassDAO.deleteById(lockClassOptional.get().getId());
+                        tclassDAO.changeClassStatus(classId, ClassStatus.finish.getId().toString());
+                        response.setStatus(200);
+                    }
+                    else{
+                        response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                        response.setMessage("کلاس مورد نظر در لیست کلاس های اختتام نیست");
+                    }
+                } else
+                {
+                    response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                    response.setMessage("کلاس مورد نظر در  وضعیت اختتام نیست");
+                }
+                return response;
+            }
+        }
+
+//
+
+//
+        return null;
     }
 
 
@@ -1513,5 +1588,10 @@ public class TclassService implements ITclassService {
             evaluationAnswerObject.setDescription(dto.getDescription());
         evaluationAnswerObject.setSendDate(DateUtil.todayDate());
         return evaluationAnswerObject;
+    }
+
+    @Override
+    public Boolean hasAccessToSetEndClass( Long groupId) {
+        return workGroupService.hasAccess(SecurityUtil.getUserId(),groupId);
     }
 }

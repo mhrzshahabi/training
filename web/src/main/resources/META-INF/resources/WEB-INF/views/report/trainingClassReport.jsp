@@ -65,6 +65,8 @@
             {name: "termTitleFa"},
             {name: "teacherFullName"},
             {name: "tclassStatus"},
+            {name: "classCancelReasonId"},
+            {name: "classCancelReasonTitle"},
             {name: "plannerComplex"},
             {name: "plannerName"},
             {name: "instituteName"},
@@ -252,6 +254,7 @@
                         showFilterEditor: false
                     }
                 }},
+            {name: "classCancelReasonTitle", title: "علت لغو" , filterOperator: "iContains"},
         ],
         cellHeight: 43,
         filterOperator: "iContains",

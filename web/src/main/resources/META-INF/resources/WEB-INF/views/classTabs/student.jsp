@@ -103,7 +103,8 @@
 
                         let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
                         if (!(classRecord === undefined || classRecord == null)) {
-                            ExportToFile.downloadExcelRestUrl(null, StudentsLG_student, tclassStudentUrl + "/students-iscList/" + classRecord.id, 0, ListGrid_Class_JspClass, '', "کلاس - فراگيران", StudentsLG_student.getCriteria(), null);
+                            ExportToFile.downloadExcelRestUrl(null, StudentsLG_student, tclassStudentUrl + "/students-iscList/" + classRecord.id, 0,
+                                ListGrid_Class_JspClass, '', "کلاس - فراگيران", StudentsLG_student.getCriteria(), null);
                         }
                     }
                 }),
@@ -167,7 +168,9 @@
                         isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/students-iscList/" + row.id, "GET", null, function (resp) {
                             if (generalGetResp(resp)) {
                                 if (resp.httpResponseCode == 200) {
-                                    isc.RPCManager.sendRequest(TrDSRequest(parameterValueUrl + "/iscList/481?operator=and&_constructor=AdvancedCriteria&criteria={\"fieldName\":\"code\",\"operator\":\"equals\",\"value\":\"MCSR\",\"_constructor\":\"AdvancedCriteria\"}&_startRow=0&_endRow=75&_sortBy=title", "GET", null, function (resp2) {
+                                    isc.RPCManager.sendRequest(TrDSRequest(parameterValueUrl + "/iscList/481?operator=and&_constructor=AdvancedCriteria&criteria=" +
+                                        "{\"fieldName\":\"code\",\"operator\":\"equals\",\"value\":\"MCSR\",\"_constructor\":\"AdvancedCriteria\"}&_startRow=0&_endRow=75&_sortBy=title",
+                                        "GET", null, function (resp2) {
                                         wait.close();
                                         if (generalGetResp(resp)) {
                                             if (resp.httpResponseCode == 200) {
@@ -1419,7 +1422,7 @@
                     });
 
                     studentSelection = true;
-                    PersonnelsRegLG_student.deselectRecord(current)
+                    PersonnelsRegLG_student.deselectRecord(current);
                     studentSelection = false;
                 } else if (!nationalCodeExists(current.nationalCode)) {
                     if (checkIfAlreadyExist(current)) {
@@ -1457,7 +1460,7 @@
                     });
 
                     studentSelection = true;
-                    PersonnelsRegLG_student.deselectRecord(current)
+                    PersonnelsRegLG_student.deselectRecord(current);
                     studentSelection = false;
                 }
             },
@@ -1473,7 +1476,7 @@
                         personnelNo: record.personnelNo,
                         nationalCode: record.nationalCode,
                         postCode: record.postCode,
-                    }
+                    };
 
                     let window_class_Information = isc.Window.create({
                         title: "<spring:message code="personnel.information"/>",
@@ -1542,7 +1545,8 @@
                                     isc.ToolStripButtonAdd.create({
                                         title: 'اضافه کردن گروهي',
                                         click: function () {
-                                            groupFilter("اضافه کردن گروهی", personnelUrl + "/checkPersonnelNos", checkPersonnelNosResponse, true, true, ListGrid_Class_JspClass.getSelectedRecord().courseId);
+                                            groupFilter("اضافه کردن گروهی", personnelUrl + "/checkPersonnelNos", checkPersonnelNosResponse, true, true,
+                                                ListGrid_Class_JspClass.getSelectedRecord().courseId);
                                         }
                                     })
                                 ]
@@ -1572,7 +1576,8 @@
                                 isc.ToolStripButtonAdd.create({
                                     title: 'اضافه کردن گروهي',
                                     click: function () {
-                                        groupFilter("اضافه کردن گروهی", personnelRegUrl + "/checkPersonnelNos", checkPersonnelNosResponse, true, true, ListGrid_Class_JspClass.getSelectedRecord().courseId);
+                                        groupFilter("اضافه کردن گروهی", personnelRegUrl + "/checkPersonnelNos", checkPersonnelNosResponse, true, true,
+                                            ListGrid_Class_JspClass.getSelectedRecord().courseId);
                                     }
                                 })
                             ]
@@ -1625,21 +1630,17 @@
                                         align: "center",
                                         icon: "[SKIN]/actions/save.png",
                                         click: function () {
+
                                             SelectedPersonnelsLG_student.endEditing();
                                             let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
-                                            // for (let i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
-                                            //     students.add({
-                                            //         "personnelNo": SelectedPersonnelsLG_student.data[i].personnelNo,
-                                            //         "applicantCompanyName": SelectedPersonnelsLG_student.data[i].applicantCompanyName,
-                                            //         "presenceTypeId": SelectedPersonnelsLG_student.data[i].presenceTypeId,
-                                            //         "registerTypeId": SelectedPersonnelsLG_student.data[i].registerTypeId
-                                            //     });
-                                            // }
+                                            let courseId = ListGrid_Class_JspClass.getSelectedRecord().courseId;
+                                            let equalCourseIds = [];
+                                            equalCourseIds.add(courseId);
                                             if (SelectedPersonnelsLG_student.data.toArray().getLength() > 0) {
-                                                wait.show()
-                                                isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST", JSON.stringify(SelectedPersonnelsLG_student.data.toArray()), class_add_students_result));
+
+                                                addValidStudents(classId, courseId, equalCourseIds, SelectedPersonnelsLG_student.data.toArray());
                                             }
-                                            SelectedPersonnelsLG_student.data.clearAll();
+                                            // SelectedPersonnelsLG_student.data.clearAll();
                                         }
                                     }),
                                     isc.IButtonCancel.create({
@@ -1660,7 +1661,6 @@
                 }),
             ]
         });
-
 
         let evaluationViewloader = isc.ViewLoader.create({
             width: "100%",
@@ -1722,6 +1722,7 @@
         function class_add_students_result(resp) {
             wait.close();
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
                 let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
                 ClassStudentWin_student.close();
                 refreshLG(StudentsLG_student);
@@ -1729,7 +1730,8 @@
                 let invalMessage = " ";
                 let timeOut = 5000;
                 if (messages.names !== null && messages.names !== undefined) {
-                    invalMessage = "<spring:message code="for"/>" + " " + "<spring:message code="student.plural"/>" + " " + messages.names + " " + "<spring:message code="message.define.applicant.company"/>";
+                    invalMessage = "<spring:message code="for"/>" + " " + "<spring:message code="student.plural"/>" + " " + messages.names + " "
+                        + "<spring:message code="message.define.applicant.company"/>";
                     timeOut = 15000
                 }
                 let OK = createDialog("info", messages.accepted + " " + "<spring:message code="message.students.added.successfully"/>"
@@ -1840,6 +1842,124 @@
             <%--title: "<spring:message code='message'/>"--%>
             <%--});--%>
             <%--}--%>
+        }
+
+        function addValidStudents(classId, courseId, equalCourseIds, studentsDataArray) {
+
+            let warnStudents = [];
+            isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "equalCourseIds/" + courseId, "GET", null, function (response) {
+
+                JSON.parse(response.data).forEach(q => equalCourseIds.add(q));
+                let checkAll = 0;
+
+                for(let inx = 0; inx < studentsDataArray.length; inx++) {
+                    isc.RPCManager.sendRequest(TrDSRequest(classUrl + "personnel-training/" + studentsDataArray[inx].nationalCode + "/" +
+                    studentsDataArray[inx].personnelNo, "GET", null, function (resp) {
+
+                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+                            let personnelCourses = (JSON.parse(resp.httpResponseText).response.data).map(q => q.courseId);
+                            if(equalCourseIds.some(eq => personnelCourses.includes(eq))) {
+                                warnStudents.add(studentsDataArray[inx]);
+                            }
+                            checkAll ++;
+                            if(studentsDataArray.length-1 === checkAll-1) {
+                                var uniqueWarnStudents = warnStudents.filter((nationalCode, index, arr) => arr.indexOf(nationalCode) === index).sort();
+                                validateStudents(uniqueWarnStudents, classId, studentsDataArray);
+                            }
+                        } else {
+
+                            var ERROR = isc.Dialog.create({
+                                message: "<spring:message code='exception.un-managed'/>",
+                                icon: "[SKIN]stop.png",
+                                title: "<spring:message code='message'/>"
+                            });
+                            setTimeout(function () {
+                                ERROR.close();
+                            }, 8000);
+                            inx = studentsDataArray.length-1;
+                        }
+                    }));
+                }
+            }));
+        }
+
+        function validateStudents(warnStudents, classId, studentsDataArray) {
+
+            if(warnStudents.length > 0) {
+
+                let DynamicForm_Warn_Students = isc.DynamicForm.create({
+                    width: 600,
+                    height: 100,
+                    padding: 6,
+                    titleAlign: "right",
+                    fields: [
+                        {
+                            name: "text",
+                            width: "100%",
+                            colSpan: 2,
+                            value: "<spring:message code='msg.class.student.pass.course.warn'/>",
+                            showTitle: false,
+                            editorType: 'staticText'
+                        },
+                        {
+                            type: "RowSpacerItem"
+                        },
+                        {
+                            name: "warnNames",
+                            width: "100%",
+                            colSpan: 2,
+                            title: "<spring:message code="title"/>",
+                            showTitle: false,
+                            editorType: 'textArea',
+                            canEdit: false
+                        }
+                    ]
+                });
+
+                let names = "";
+                for (var j = 0; j < warnStudents.length; j++) {
+                    names = names.concat(warnStudents[j].firstName + " " + warnStudents[j].lastName);
+                    if (j !== warnStudents.length -1)
+                        names = names.concat(", ");
+                };
+                DynamicForm_Warn_Students.setValue("warnNames", names);
+
+                let Window_Warn_Students = isc.Window.create({
+                    width: 600,
+                    height: 150,
+                    numCols: 2,
+                    title: "<spring:message code='student.plural'/>",
+                    items: [
+                        DynamicForm_Warn_Students,
+                        isc.MyHLayoutButtons.create({
+                        members: [
+                            isc.IButtonSave.create({
+                                title: "<spring:message code="continue"/>",
+                                click: function () {
+                                    wait.show();
+                                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST",
+                                        JSON.stringify(studentsDataArray), class_add_students_result));
+                                    Window_Warn_Students.close();
+                                }
+                            }),
+                            isc.IButtonCancel.create({
+                                title: "<spring:message code="cancel"/>",
+                                    click: function () {
+                                    wait.close();
+                                    Window_Warn_Students.close();
+                                }
+                            })
+                        ]
+                        })
+                    ]
+                });
+                Window_Warn_Students.show();
+            } else {
+                wait.show();
+                isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST",
+                    JSON.stringify(studentsDataArray), class_add_students_result));
+            }
         }
 
         function loadPage_student() {
@@ -2046,6 +2166,8 @@
                                             return item.personnelNo2 == person.personnelNo2 || item.personnelNo == person.personnelNo;
                                         }).length == 0) {
                                             students.add({
+                                                "firstName" : person.firstName,
+                                                "lastName" : person.lastName,
                                                 "personnelNo": person.personnelNo,
                                                 "applicantCompanyName": person.companyName,
                                                 "presenceTypeId": studentDefaultPresenceId,
@@ -2057,18 +2179,17 @@
                             }
                         }
                     }
-                    if (students.getLength() > 0/*allRowsOK*/ && insert) {
-                        var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
+                    if (students.getLength() > 0 /*allRowsOK*/ && insert) {
 
-
-                        //if (students.getLength() > 0)
-                        wait.show();
-                        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST", JSON.stringify(students), class_add_students_result));
-
-                        SelectedPersonnelsLG_student.data.clearAll();
-
-                        //Close Window
+                        SelectedPersonnelsLG_student.endEditing();
+                        let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
+                        let courseId = ListGrid_Class_JspClass.getSelectedRecord().courseId;
+                        let equalCourseIds = [];
+                        equalCourseIds.add(courseId);
+                        addValidStudents(classId, courseId, equalCourseIds, students);
+                        // SelectedPersonnelsLG_student.data.clearAll();
                         ClassStudentWin_student_GroupInsert.close();
+
                     } else {
                         GroupSelectedPersonnelsLG_student.invalidateCache();
                         GroupSelectedPersonnelsLG_student.fetchData();

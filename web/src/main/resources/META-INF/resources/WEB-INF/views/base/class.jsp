@@ -255,6 +255,12 @@
         ],
         fetchDataURL: viewActivePersonnelUrl + "/iscList",
     });
+   
+    let RestDataSource_Department_Filter = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
+        cacheAllData: true,
+        fetchDataURL: departmentUrl + "/organ-segment-iscList/mojtame"
+    });
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*Menu*/
@@ -275,6 +281,7 @@
             {
                 title: "<spring:message code='create'/>",
                 click: function () {
+                    IButton_Class_Save_JspClass.show();
                     ListGrid_Class_add();
                 }
             },
@@ -506,7 +513,8 @@
                     "1": "برنامه ریزی",
                     "2": "در حال اجرا",
                     "3": "پایان یافته",
-                    "4": "لغو شده"
+                    "4": "لغو شده",
+                    "5": "اختتام",
                 },
                 filterEditorProperties: {
                     pickListProperties: {
@@ -786,7 +794,8 @@
                     "غیر حضوری",
                     "مجازی",
                     "عملی و کارگاهی",
-                    "آموزش حین کار(OJT)"
+                    "آموزش حین کار(OJT)",
+                    "اعزام",
                 ]
             },
             {
@@ -1291,6 +1300,7 @@
                     "1": "برنامه ریزی",
                     "2": "در حال اجرا",
                     "3": "پایان یافته",
+                    "5": "اختتام",
                 },
                 change: function (form, item, value, oldValue) {
                     highlightClassStauts(value, 10);
@@ -1397,6 +1407,11 @@
             } else {
                 DynamicForm_Class_JspClass.getField('instituteId').setDisabled(false);
                 DynamicForm_Class_JspClass.getField('trainingPlaceIds').setDisabled(false);
+            }
+            if (DynamicForm_Class_JspClass.getValue("teachingType") === "اعزام"){
+                DynamicForm_Class_JspClass.getItem("teacherId").setRequired(false);
+            }else {
+                DynamicForm_Class_JspClass.getItem("teacherId").setRequired(true);
             }
         }
     });
@@ -1748,6 +1763,12 @@
                 DynamicForm_Class_JspClass.getItem("instituteId").setRequired(true);
                 DynamicForm_Class_JspClass.getItem("trainingPlaceIds").setRequired(true);
             }
+            if (DynamicForm_Class_JspClass.getValue("teachingType") === "اعزام"){
+                DynamicForm_Class_JspClass.getItem("teacherId").setRequired(false);
+            }else {
+                DynamicForm_Class_JspClass.getItem("teacherId").setRequired(true);
+            }
+
             if (DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord() != undefined) {
                 if (!checkValidDate(DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord().startDate, DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord().endDate, DynamicForm1_Class_JspClass.getValue("startDate"), DynamicForm1_Class_JspClass.getValue("endDate"))) {
                     return;
@@ -2022,6 +2043,7 @@
     <sec:authorize access="hasAuthority('Tclass_C')">
     var ToolStripButton_Add_JspClass = isc.ToolStripButtonCreate.create({
         click: function () {
+            IButton_Class_Save_JspClass.show();
             ListGrid_Class_add();
         }
     });
@@ -2052,6 +2074,15 @@
         }
     });
     </sec:authorize>
+<%--    <sec:authorize access="hasAuthority('Tclass_C')">--%>
+<%--    var ToolStripButton_finish = isc.ToolStripButton.create({--%>
+<%--        title: "اختتام",--%>
+<%--        click: function () {--%>
+<%--            TabSet_Class.disableTab(TabSet_Class.tabs[11]);--%>
+<%--     // ListGrid_class_finish()--%>
+<%--        }--%>
+<%--    });--%>
+<%--    </sec:authorize>--%>
 
     var ToolStripButton_teacherEvaluation_JspClass = isc.ToolStripButton.create({
         title: "ثبت نتایج ارزیابی مسئول آموزش از مدرس کلاس",
@@ -2101,9 +2132,9 @@
         TabSet_Class.setDisabled(true);
     }
     var DynamicForm_Term_Filter = isc.DynamicForm.create({
-        width: "400",
+        width: "600",
         height: 30,
-        numCols: 4,
+        numCols: 6,
         colWidths: ["2%", "28%", "2%", "68%"],
         fields: [
             {
@@ -2251,7 +2282,29 @@
                     });
 
                 }
-            }
+            },
+            {
+                name: "departmentFilter",
+                title: "<spring:message code='complex'/>",
+                width: "300",
+                height: 30,
+                optionDataSource: RestDataSource_Department_Filter,
+                autoFetchData: false,
+                displayField: "title",
+                valueField: "code",
+                textAlign: "center",
+                pickListFields: [
+                    {
+                        name: "title",
+                        title: "<spring:message code="title"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    }
+                ],
+                changed: function (form, item, value) {
+                    load_classes_by_department(value);
+                }
+           },
         ]
     });
 
@@ -2479,6 +2532,9 @@
             <sec:authorize access="hasAuthority('Tclass_P')">
             ToolStripButton_Print_JspClass,
             </sec:authorize>
+<%--            <sec:authorize access="hasAuthority('Tclass_P')">--%>
+<%--            ToolStripButton_finish,--%>
+<%--            </sec:authorize>--%>
 
             <sec:authorize access="hasAuthority('Tclass_C')">
             ToolStripButton_copy_of_class,
@@ -2599,6 +2655,10 @@
                 ID: "classCosts",
                 title: "ثبت هزینه کلاس",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/class-costs-tab"})
+            },   {
+                ID: "classFinish",
+                title: "اختتام کلاس",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/class-finish-tab"})
             },
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
@@ -2660,6 +2720,27 @@
             });
         }
     }
+    function ListGrid_class_finish() {
+        let record = ListGrid_Class_JspClass.getSelectedRecord();
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+            let Dialog_Class_finish = createDialog("ask", "<spring:message code='msg.record.finish.ask'/>",
+                "<spring:message code="verify.finish"/>");
+            Dialog_Class_finish.addProperties({
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        wait.show()
+                        isc.RPCManager.sendRequest(TrDSRequest(classFinishUrl + record.id, "GET", null, (resp) => {
+                            wait.close()
+                            class_finish_result(resp);
+                        }));
+                    }
+                }
+            });
+        }
+    }
 
     function ListGrid_class_edit(a = 0) {
         let record = JSON.parse(JSON.stringify(ListGrid_Class_JspClass.getSelectedRecord()));
@@ -2667,7 +2748,8 @@
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             if ((a===0)&&(record.classStatus === "4")) {
-                let dialog = createDialog("ask", "کلاس انتخاب شده لغو شده است در صورت ویرایش وضعیت کلاس به حالت برنامه ریزی برمیگردد. از ویرایش کلاس مطمئن هستید؟", "هشدار");
+                createDialog("info", "کلاس انتخاب شده لغو شده است و امکان ویرایش آن وجود ندارد.", "هشدار");
+/*                let dialog = createDialog("ask", "کلاس انتخاب شده لغو شده است در صورت ویرایش وضعیت کلاس به حالت برنامه ریزی برمیگردد. از ویرایش کلاس مطمئن هستید؟", "هشدار");
                 dialog.addProperties({
                     buttonClick: function (button, index) {
                         this.close();
@@ -2675,7 +2757,7 @@
                             startEdit(record)
                         }
                     }
-                });
+                });*/
             } else {
                 startEdit(record);
             }
@@ -2940,192 +3022,195 @@
     }
 
     function cancelClass_JspClass(record) {
-        let WindowCancelClass = isc.Window.create({
-            title: "پنجره تایید لغو کلاس",
-            items: [isc.VLayout.create({
-                width: "100%",
-                height: "100%",
-                members: [
-                    isc.DynamicForm.create({
-                        ID: "DynamicFormPostponeClass",
-                        numCols: 4,
-                        validateOnChange: true,
-                        readOnlyDisplay: "readOnly",
-                        fields: [
-                            {
-                                name: "classCancelReasonId",
-                                colSpan: 4,
-                                textAlign: "center",
-                                title: "علت لغو کلاس: ",
-                                optionDataSource: RestDataSource_ClassCancel_JSPClass,
-                                valueField: "id",
-                                required: true,
-                                sortField: "id",
-                                displayField: "title",
-                                autoFitWidth: true,
-                                showFilterEditor: false
-                            },
-                            {
-                                name: "postpone",
-                                type: "checkbox",
-                                colSpan: 4,
-                                title: "در تاریخ دیگری اجرا میشود.",
-                                endRow: false,
-                                changed(form, item, value) {
-                                    if (value) {
-                                        form.getItem("postponeStartDate").show();
-                                        form.getItem("alternativeClassId").show();
-                                        form.getItem("postponeStartDate").required = true;
-                                    } else {
-                                        form.clearValue("postponeStartDate");
-                                        form.clearValue("alternativeClassId");
-                                        form.getItem("postponeStartDate").hide();
-                                        form.getItem("alternativeClassId").hide();
-                                        form.getItem("postponeStartDate").required = false;
-                                    }
-                                }
-                            },
-                            {
-                                name: "postponeStartDate",
-                                colSpan: 4,
-                                ID: "startDate_CancelClass_jspClass",
-                                title: "<spring:message code='start.date'/>:",
-                                hint: "--/--/----",
-                                hidden: true,
-                                keyPressFilter: "[0-9/]",
-                                showHintInField: true,
-                                icons: [{
-                                    src: "<spring:url value="calendar.png"/>",
-                                    click: function (form) {
-                                        closeCalendarWindow();
-                                        displayDatePicker('startDate_CancelClass_jspClass', this, 'ymd', '/');
-                                    }
-                                }],
-                                textAlign: "center",
-                                changed: function (form, item, value) {
-                                    let dateCheck = checkDate(value);
-                                    if (dateCheck === false) {
-                                        form.addFieldErrors("postponeStartDate", "<spring:message code='msg.correct.date'/>", true);
-                                    }
-                                }
-                            },
-                            {
-                                name: "alternativeClassId",
-                                title: "کلاس جایگزین: ",
-                                textAlign: "center",
-                                icons: [
-                                    {
-                                        name: "clear",
-                                        src: "[SKIN]actions/remove.png",
-                                        width: 15,
-                                        height: 15,
-                                        inline: true,
-                                        prompt: "پاک کردن",
-                                        click: function (form, item, icon) {
-                                            item.clearValue();
-                                            item.focusInItem();
-                                        }
-                                    }
-                                ],
-                                hidden: true,
-                                width: "280",
-                                editorType: "ComboBoxItem",
-                                pickListWidth: 700,
-                                optionDataSource: RestDataSource_Class_JspClass,
-                                displayField: "titleClass",
-                                valueField: "id",
-                                filterFields: ["titleClass", "code"],
-                                pickListFields: [
-                                    {name: "code", title: "کد کلاس", autoFitWidth: true},
-                                    {name: "titleClass", title: "نام کلاس", autoFitWidth: true},
-                                    {name: "teacher", title: "استاد", autoFitWidth: true},
-                                    {name: "startDate", title: "تاریخ شروع", autoFitWidth: true},
-                                    {name: "endDate", title: "تاریخ پایان", autoFitWidth: true},
-                                ],
-                                pickListProperties: {
-                                    showFilterEditor: false,
-                                    autoFitWidthApproach: "both",
+        if (record.classStatus === "4" ) {
+            simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.record.selected.class.is.canceled"/>", 3000, "say");
+        } else {
+            let WindowCancelClass = isc.Window.create({
+                title: "پنجره تایید لغو کلاس",
+                items: [isc.VLayout.create({
+                    width: "100%",
+                    height: "100%",
+                    members: [
+                        isc.DynamicForm.create({
+                            ID: "DynamicFormPostponeClass",
+                            numCols: 4,
+                            validateOnChange: true,
+                            readOnlyDisplay: "readOnly",
+                            fields: [
+                                {
+                                    name: "classCancelReasonId",
+                                    colSpan: 4,
+                                    textAlign: "center",
+                                    title: "علت لغو کلاس: ",
+                                    optionDataSource: RestDataSource_ClassCancel_JSPClass,
+                                    valueField: "id",
+                                    required: true,
+                                    sortField: "id",
+                                    displayField: "title",
+                                    autoFitWidth: true,
+                                    showFilterEditor: false
                                 },
-                                click(form, item) {
-                                    let criteria = {
-                                        _constructor: "AdvancedCriteria",
-                                        operator: "and",
-                                        criteria: [
-                                            {fieldName: "courseId", operator: "equals", value: record.courseId},
-                                            {
-                                                fieldName: "startDate",
-                                                operator: "greaterOrEqual",
-                                                value: record.startDate
-                                            },
-                                            {fieldName: "id", operator: "notEqual", value: record.id},
-                                            {fieldName: "classStatus", operator: "notEqual", value: "4"},
-                                        ]
-                                    };
-                                    item.pickListCriteria = criteria;
-                                    item.fetchData();
-                                }
-                            }
-                        ]
-                    }),
-                    isc.TrHLayoutButtons.create({
-                        members: [
-                            isc.IButtonSave.create({
-                                title: "تایید",
-                                click: function () {
-                                    DynamicFormPostponeClass.validate();
-                                    if (DynamicFormPostponeClass.getItem("postponeStartDate").required && DynamicFormPostponeClass.getValue("postponeStartDate") === undefined) {
-                                        DynamicFormPostponeClass.getItem("postponeStartDate").setError("فیلد اجباری است");
-                                        DynamicFormPostponeClass.redraw()
-                                    }
-                                    if (DynamicFormPostponeClass.hasErrors()) {
-                                        return;
-                                    }
-                                    if (!DynamicFormPostponeClass.valuesHaveChanged()) {
-                                        WindowCancelClass.close()
-                                        return;
-                                    }
-                                    record.classCancelReasonId = DynamicFormPostponeClass.getValue("classCancelReasonId");
-                                    record.alternativeClassId = DynamicFormPostponeClass.getValue("alternativeClassId");
-                                    record.postponeStartDate = DynamicFormPostponeClass.getValue("postponeStartDate");
-                                    record.classStatus = "4";
-                                    wait.show();
-                                    isc.RPCManager.sendRequest(TrDSRequest(classUrl + "update/" + record.id, "PUT", JSON.stringify(record), (resp) => {
-                                        wait.close();
-                                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                                            ListGrid_Class_refresh();
-                                            let responseID = JSON.parse(resp.data).id;
-                                            let gridState = "[{id:" + responseID + "}]";
-                                            simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
-                                            setTimeout(function () {
-                                                ListGrid_Class_JspClass.setSelectedState(gridState);
-                                                ListGrid_Class_JspClass.scrollToRow(ListGrid_Class_JspClass.getRecordIndex(ListGrid_Class_JspClass.getSelectedRecord()), 0);
-                                            }, 3000);
-                                            WindowCancelClass.close()
+                                {
+                                    name: "postpone",
+                                    type: "checkbox",
+                                    colSpan: 4,
+                                    title: "در تاریخ دیگری اجرا میشود.",
+                                    endRow: false,
+                                    changed(form, item, value) {
+                                        if (value) {
+                                            form.getItem("postponeStartDate").show();
+                                            form.getItem("alternativeClassId").show();
+                                            form.getItem("postponeStartDate").required = true;
                                         } else {
-                                            simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", "3000", "error");
+                                            form.clearValue("postponeStartDate");
+                                            form.clearValue("alternativeClassId");
+                                            form.getItem("postponeStartDate").hide();
+                                            form.getItem("alternativeClassId").hide();
+                                            form.getItem("postponeStartDate").required = false;
                                         }
-                                    }));
+                                    }
+                                },
+                                {
+                                    name: "postponeStartDate",
+                                    colSpan: 4,
+                                    ID: "startDate_CancelClass_jspClass",
+                                    title: "<spring:message code='start.date'/>:",
+                                    hint: "--/--/----",
+                                    hidden: true,
+                                    keyPressFilter: "[0-9/]",
+                                    showHintInField: true,
+                                    icons: [{
+                                        src: "<spring:url value="calendar.png"/>",
+                                        click: function (form) {
+                                            closeCalendarWindow();
+                                            displayDatePicker('startDate_CancelClass_jspClass', this, 'ymd', '/');
+                                        }
+                                    }],
+                                    textAlign: "center",
+                                    changed: function (form, item, value) {
+                                        let dateCheck = checkDate(value);
+                                        if (dateCheck === false) {
+                                            form.addFieldErrors("postponeStartDate", "<spring:message code='msg.correct.date'/>", true);
+                                        }
+                                    }
+                                },
+                                {
+                                    name: "alternativeClassId",
+                                    title: "کلاس جایگزین: ",
+                                    textAlign: "center",
+                                    icons: [
+                                        {
+                                            name: "clear",
+                                            src: "[SKIN]actions/remove.png",
+                                            width: 15,
+                                            height: 15,
+                                            inline: true,
+                                            prompt: "پاک کردن",
+                                            click: function (form, item, icon) {
+                                                item.clearValue();
+                                                item.focusInItem();
+                                            }
+                                        }
+                                    ],
+                                    hidden: true,
+                                    width: "280",
+                                    editorType: "ComboBoxItem",
+                                    pickListWidth: 700,
+                                    optionDataSource: RestDataSource_Class_JspClass,
+                                    displayField: "titleClass",
+                                    valueField: "id",
+                                    filterFields: ["titleClass", "code"],
+                                    pickListFields: [
+                                        {name: "code", title: "کد کلاس", autoFitWidth: true},
+                                        {name: "titleClass", title: "نام کلاس", autoFitWidth: true},
+                                        {name: "teacher", title: "استاد", autoFitWidth: true},
+                                        {name: "startDate", title: "تاریخ شروع", autoFitWidth: true},
+                                        {name: "endDate", title: "تاریخ پایان", autoFitWidth: true},
+                                    ],
+                                    pickListProperties: {
+                                        showFilterEditor: false,
+                                        autoFitWidthApproach: "both",
+                                    },
+                                    click(form, item) {
+                                        let criteria = {
+                                            _constructor: "AdvancedCriteria",
+                                            operator: "and",
+                                            criteria: [
+                                                {fieldName: "courseId", operator: "equals", value: record.courseId},
+                                                {
+                                                    fieldName: "startDate",
+                                                    operator: "greaterOrEqual",
+                                                    value: record.startDate
+                                                },
+                                                {fieldName: "id", operator: "notEqual", value: record.id},
+                                                {fieldName: "classStatus", operator: "notEqual", value: "4"},
+                                            ]
+                                        };
+                                        item.pickListCriteria = criteria;
+                                        item.fetchData();
+                                    }
                                 }
-                            }),
-                            isc.IButtonCancel.create({
-                                click: function () {
-                                    WindowCancelClass.close()
-                                }
-                            }),
-                        ]
-                    })
-                ]
-            })],
-            width: "400",
-            height: "150",
-        });
-        WindowCancelClass.show();
-        DynamicFormPostponeClass.setValues(record);
-        if(record.postponeStartDate !== undefined){
-            DynamicFormPostponeClass.getItem("postpone").changed(DynamicFormPostponeClass, DynamicFormPostponeClass.getItem("postpone"), true);
-            DynamicFormPostponeClass.setValue("postpone", true)
+                            ]
+                        }),
+                        isc.TrHLayoutButtons.create({
+                            members: [
+                                isc.IButtonSave.create({
+                                    title: "تایید",
+                                    click: function () {
+                                        DynamicFormPostponeClass.validate();
+                                        if (DynamicFormPostponeClass.getItem("postponeStartDate").required && DynamicFormPostponeClass.getValue("postponeStartDate") === undefined) {
+                                            DynamicFormPostponeClass.getItem("postponeStartDate").setError("فیلد اجباری است");
+                                            DynamicFormPostponeClass.redraw()
+                                        }
+                                        if (DynamicFormPostponeClass.hasErrors()) {
+                                            return;
+                                        }
+                                        if (!DynamicFormPostponeClass.valuesHaveChanged()) {
+                                            WindowCancelClass.close()
+                                            return;
+                                        }
+                                        record.classCancelReasonId = DynamicFormPostponeClass.getValue("classCancelReasonId");
+                                        record.alternativeClassId = DynamicFormPostponeClass.getValue("alternativeClassId");
+                                        record.postponeStartDate = DynamicFormPostponeClass.getValue("postponeStartDate");
+                                        record.classStatus = "4";
+                                        wait.show();
+                                        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "update/" + record.id, "PUT", JSON.stringify(record), (resp) => {
+                                            wait.close();
+                                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                                ListGrid_Class_refresh();
+                                                let responseID = JSON.parse(resp.data).id;
+                                                let gridState = "[{id:" + responseID + "}]";
+                                                simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
+                                                setTimeout(function () {
+                                                    ListGrid_Class_JspClass.setSelectedState(gridState);
+                                                    ListGrid_Class_JspClass.scrollToRow(ListGrid_Class_JspClass.getRecordIndex(ListGrid_Class_JspClass.getSelectedRecord()), 0);
+                                                }, 3000);
+                                                WindowCancelClass.close()
+                                            } else {
+                                                simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", "3000", "error");
+                                            }
+                                        }));
+                                    }
+                                }),
+                                isc.IButtonCancel.create({
+                                    click: function () {
+                                        WindowCancelClass.close()
+                                    }
+                                }),
+                            ]
+                        })
+                    ]
+                })],
+                width: "400",
+                height: "150",
+            });
+            WindowCancelClass.show();
+            DynamicFormPostponeClass.setValues(record);
+            if (record.postponeStartDate !== undefined) {
+                DynamicFormPostponeClass.getItem("postpone").changed(DynamicFormPostponeClass, DynamicFormPostponeClass.getItem("postpone"), true);
+                DynamicFormPostponeClass.setValue("postpone", true)
+            }
         }
-
     }
 
     function alternativeClass_JspClass(record) {
@@ -3349,6 +3434,22 @@
             createDialog("warning", (JSON.parse(resp.httpResponseText).message === undefined ? "خطا" : JSON.parse(resp.httpResponseText).message));
         }
     }
+    function class_finish_result(resp) {
+        wait.close();
+        <%--if (resp.httpResponseCode === 200) {--%>
+        <%--    ListGrid_Class_JspClass.invalidateCache();--%>
+        <%--    var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",--%>
+        <%--        "<spring:message code="msg.command.done"/>");--%>
+        <%--    setTimeout(function () {--%>
+        <%--        OK.close();--%>
+        <%--    }, 3000);--%>
+        <%--    refreshSelectedTab_class(tabSetClass.getSelectedTab());--%>
+        <%--} else if (resp.httpResponseCode === 406 && resp.httpResponseText === "NotDeletable") {--%>
+        <%--    createDialog("info", "<spring:message code='global.grid.record.cannot.deleted'/>");--%>
+        <%--} else {--%>
+        <%--    createDialog("warning", (JSON.parse(resp.httpResponseText).message === undefined ? "خطا" : JSON.parse(resp.httpResponseText).message));--%>
+        <%--}--%>
+    }
 
     function GetScoreState(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
@@ -3446,6 +3547,11 @@
                             ListGrid_Class_JspClass.getSelectedRecord().id);
                     break;
                 }
+                case "classFinish": {
+                    if (typeof loadPage_classCosts !== "undefined")
+                        loadPage_classFinish(ListGrid_Class_JspClass.getSelectedRecord().id);
+                    break;
+                }
             }
         }
     }
@@ -3464,16 +3570,20 @@
                 createDialog("info", "تاریخ پایان کلاس قبل از تاریخ شروع کلاس نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
             }
-            if (lastDate > classEnd.trim()) {
-                createDialog("info", "تاریخ پایان کلاس قبل از تاریخ پایان ترم نمی تواند باشد.", "<spring:message code='message'/>");
+            <%--if (lastDate > classEnd.trim()) {--%>
+            <%--    createDialog("info", "تاریخ پایان کلاس قبل از تاریخ پایان ترم نمی تواند باشد.", "<spring:message code='message'/>");--%>
+            <%--    return false;--%>
+            <%--}--%>
+            <%--if (termStart.trim() > classStart.trim()) {--%>
+            <%--    createDialog("info", "تاریخ شروع کلاس قبل از تاریخ شروع ترم نمی تواند باشد.", "<spring:message code='message'/>");--%>
+            <%--    return false;--%>
+            <%--}--%>
+            if (termEnd.trim() < classStart.trim()) {
+                createDialog("info", "تاریخ شروع کلاس بعد از تاریخ پایان ترم نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
             }
             if (termStart.trim() > classStart.trim()) {
                 createDialog("info", "تاریخ شروع کلاس قبل از تاریخ شروع ترم نمی تواند باشد.", "<spring:message code='message'/>");
-                return false;
-            }
-            if (termEnd.trim() < classStart.trim()) {
-                createDialog("info", "تاریخ شروع کلاس بعد از تاریخ پایان ترم نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
             }
             return true;
@@ -3820,7 +3930,9 @@
                     IButton_Class_Save_JspClass.setOpacity(30);
                     createDialog("info", "بدلیل پایان کلاس امکان ویرایش وجود ندارد", "<spring:message code="message"/>")
                 }
-            } else {
+            } else if (sRecord.classStatus === "4") {
+                createDialog("info", "کلاس انتخاب شده لغو شده است و امکان ویرایش آن وجود ندارد.", "هشدار");
+            }else {
                 IButton_Class_Save_JspClass.enable();
                 IButton_Class_Save_JspClass.setOpacity(100);
             }
@@ -3831,6 +3943,13 @@
     ////*****load term by year*****
     function load_term_by_year(value) {
         let criteria = '{"fieldName":"startDate","operator":"iStartsWith","value":"' + value + '"}';
+        if (ListGrid_Class_JspClass.implicitCriteria) {
+            let plannerCriteria = ListGrid_Class_JspClass.implicitCriteria.criteria.filter(c => c.fieldName
+                == "plannerId");
+            if (plannerCriteria.size() > 0) {
+                criteria.concat(plannerCriteria[0]);
+            }
+        }
         RestDataSource_Term_Filter.fetchDataURL = termUrl + "spec-list?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria;
         DynamicForm_Term_Filter.getItem("termFilter").fetchData();
     }
@@ -3839,6 +3958,18 @@
 
     ////*****load classes by term*****
     function load_classes_by_term(value) {
+        //id -> 61 = id finish in work group table
+        isc.RPCManager.sendRequest(TrDSRequest(hasAccessToSetEndClass+"61", "GET",null, function (resp) {
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                if (resp.data === "false" )
+                    TabSet_Class.disableTab(TabSet_Class.tabs[11]);
+                else
+                    TabSet_Class.enableTab(TabSet_Class.tabs[11]);
+
+            } else {
+                TabSet_Class.disableTab(TabSet_Class.tabs[11]);
+            }
+        }));
         if (value !== undefined) {
             let criteria = {
                 _constructor: "AdvancedCriteria",
@@ -3847,6 +3978,13 @@
                     {fieldName: "term.id", operator: "inSet", value: value}
                 ]
             };
+            if (ListGrid_Class_JspClass.implicitCriteria) {
+                let plannerCriteria = ListGrid_Class_JspClass.implicitCriteria.criteria.filter(c => c.fieldName
+                    == "plannerId");
+                if (plannerCriteria.size() > 0) {
+                    criteria.criteria.push(plannerCriteria[0]);
+                }
+            }
             RestDataSource_Class_JspClass.fetchDataURL = classUrl + "spec-list";
             ListGrid_Class_JspClass.implicitCriteria = criteria;
             ListGrid_Class_JspClass.invalidateCache();
@@ -3854,13 +3992,48 @@
         } else {
             createDialog("info", "<spring:message code="msg.select.term.ask"/>", "<spring:message code="message"/>")
         }
+
     }
+
+    ////*****load classes by department*****
+    function load_classes_by_department(value) {
+            isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/inDepartmentIsPlanner/"+value, "GET", null, res => {
+                if (value !== undefined) {
+                    let criteria = {
+                        _constructor: "AdvancedCriteria",
+                        operator: "and",
+                        criteria: [
+                            {
+                                fieldName: "plannerId", operator: "inSet", value: JSON.parse(res.data).size() > 0
+                                    ? JSON.parse(res.data) : null
+                            }
+                        ]
+                    };
+                    if (ListGrid_Class_JspClass.implicitCriteria) {
+                        let termCriteria = ListGrid_Class_JspClass.implicitCriteria.criteria.filter(c => c.fieldName
+                            == "term.id");
+                        if (termCriteria.size() > 0) {
+                            criteria.criteria.push(termCriteria[0]);
+                        }
+                    }
+                    RestDataSource_Class_JspClass.fetchDataURL = classUrl + "spec-list";
+                    ListGrid_Class_JspClass.implicitCriteria = criteria;
+                    ListGrid_Class_JspClass.invalidateCache();
+                    ListGrid_Class_JspClass.fetchData();
+                } else {
+                    createDialog("info", "<spring:message code="msg.select.term.ask"/>", "<spring:message code="message"/>")
+                }
+                
+            }));
+    }
+
 
     ////******************************
 
     function setDefaultTerm() {
         let persianDateArray = getTodayPersian();
-        let todayPersianDate = persianDateArray[0] + "/" + persianDateArray[1] + "/" + persianDateArray[2];
+        let todayPersianDate = persianDateArray[0].toString().padStart(2,0) + "/" + persianDateArray[1].toString().padStart(2,0) + "/" +
+	        persianDateArray[2].toString().padStart(2,0);
         RestDataSource_Term_JspClass.implicitCriteria = {
             _constructor: "AdvancedCriteria",
             operator: "and",
@@ -4367,8 +4540,26 @@
     //Amin HK
     //Highlight a selected item in a radio group
     function highlightClassStauts(value, time) {
+        IButton_Class_Save_JspClass.show();
+            if ("5" === value)
+            {
+                DynamicForm_Class_JspClass.getField("classStatus").getItem(0).disable();
+                DynamicForm_Class_JspClass.getField("classStatus").getItem(1).disable();
+                DynamicForm_Class_JspClass.getField("classStatus").getItem(2).disable();
+                IButton_Class_Save_JspClass.hide();
+                IButton_Class_Save_JspClass.setOpacity(30);
+                createDialog("info", "بدلیل اختتام کلاس امکان ویرایش وجود ندارد", "<spring:message code="message"/>")
+            }
+            else
+            {
+                IButton_Class_Save_JspClass.show();
+                IButton_Class_Save_JspClass.setOpacity(100);
+                DynamicForm_Class_JspClass.getField("classStatus").getItem(3).disable();
+            }
+
+
         setTimeout(() => {
-            let mapDictionary = {1: "برنامه ریزی", 2: "در حال اجرا", 3: "پایان یافته"};
+            let mapDictionary = {1: "برنامه ریزی", 2: "در حال اجرا", 3: "پایان یافته",5: "اختتام"};
 
             let result = $('input[type="radio"][name="classStatus"]').parent().next();
 
