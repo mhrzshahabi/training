@@ -6107,6 +6107,45 @@ ORDER BY
         </createView>
     </changeSet>
 
+    <changeSet author="zare" id="abiz-001">
+        <createView viewName="VIEW_NEED_ASSESSMENT_IN_RANGE_TIME" replaceIfExists="true">
+            <![CDATA[
+        SELECT "ID","POST","C_CODE","C_TITLE_FA","NAME","UPDATETIME","N_VERSION" FROM(
+SELECT
+tp.id ,
+     'پست' as post ,
+    tp.c_code,
+    tp.c_title_fa,
+    tp.d_last_modified_date_na as updateTime,
+    NVL2(p.last_name,p.first_name || p.last_name, tp.c_modified_by_na) as name,
+    tp.N_VERSION
+FROM
+    tbl_training_post tp
+    left join (select * from tbl_personnel where deleted = 0) p ON tp.c_modified_by_na = p.c_username
+WHERE
+    tp.c_modified_by_na IS NOT NULL
+
+UNION ALL
+SELECT
+tp.id ,
+    'پست انفرادی'  as post,
+    tp.c_code,
+    tp.c_title_fa,
+    tp.d_last_modified_date_na as updateTime,
+    NVL2(p.last_name,p.first_name || p.last_name, tp.c_modified_by_na) as name,
+    tp.N_VERSION
+FROM
+    tbl_post tp
+    left join (select * from tbl_personnel where deleted = 0) p ON tp.c_modified_by_na = p.c_username
+WHERE
+    tp.c_modified_by_na IS NOT NULL
+    )
+ORDER BY
+    name
+            ]]>
+        </createView>
+    </changeSet>
+
     <changeSet author="nick (generated)" id="1614061602308-581">
         <createView viewName="VIEW_EVALUATION_STATICAL_REPORT" replaceIfExists="true">
             <![CDATA[
