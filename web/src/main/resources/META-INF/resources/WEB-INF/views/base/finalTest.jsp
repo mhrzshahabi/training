@@ -364,8 +364,10 @@ width: "100%",
             showRecordComponents: true,
             showRecordComponentsByCell: true,
             fields: [
-                {name: "surname", title: 'نام',align: "center", width: "20%"},
-                {name: "lastName", title: 'نام خانوادگی' ,align: "center", width: "20%"},
+                {name: "surname", title: 'نام',align: "center", width: "15%"},
+                {name: "lastName", title: 'نام خانوادگی' ,align: "center", width: "15%"},
+                {name: "score", title: 'نمره' ,align: "center", width: "10%"},
+                {name: "resultStatus", title: 'وضعیت فراگیر' ,align: "center", width: "10%"},
                 { name: "iconField", title: "نتایج", width: "10%",align:"center"},
                 { name: "iconField2", title: "چاپ گزارش", width: "10%",align:"center"},
 

@@ -512,7 +512,8 @@
                     "1": "برنامه ریزی",
                     "2": "در حال اجرا",
                     "3": "پایان یافته",
-                    "4": "لغو شده"
+                    "4": "لغو شده",
+                    "5": "اختتام",
                 },
                 filterEditorProperties: {
                     pickListProperties: {
@@ -1298,6 +1299,7 @@
                     "1": "برنامه ریزی",
                     "2": "در حال اجرا",
                     "3": "پایان یافته",
+                    "5": "اختتام",
                 },
                 change: function (form, item, value, oldValue) {
                     highlightClassStauts(value, 10);
@@ -2070,6 +2072,15 @@
         }
     });
     </sec:authorize>
+<%--    <sec:authorize access="hasAuthority('Tclass_C')">--%>
+<%--    var ToolStripButton_finish = isc.ToolStripButton.create({--%>
+<%--        title: "اختتام",--%>
+<%--        click: function () {--%>
+<%--            TabSet_Class.disableTab(TabSet_Class.tabs[11]);--%>
+<%--     // ListGrid_class_finish()--%>
+<%--        }--%>
+<%--    });--%>
+<%--    </sec:authorize>--%>
 
     var ToolStripButton_teacherEvaluation_JspClass = isc.ToolStripButton.create({
         title: "ثبت نتایج ارزیابی مسئول آموزش از مدرس کلاس",
@@ -2519,6 +2530,9 @@
             <sec:authorize access="hasAuthority('Tclass_P')">
             ToolStripButton_Print_JspClass,
             </sec:authorize>
+<%--            <sec:authorize access="hasAuthority('Tclass_P')">--%>
+<%--            ToolStripButton_finish,--%>
+<%--            </sec:authorize>--%>
 
             <sec:authorize access="hasAuthority('Tclass_C')">
             ToolStripButton_copy_of_class,
@@ -2639,6 +2653,10 @@
                 ID: "classCosts",
                 title: "ثبت هزینه کلاس",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/class-costs-tab"})
+            },   {
+                ID: "classFinish",
+                title: "اختتام کلاس",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/class-finish-tab"})
             },
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
@@ -2694,6 +2712,27 @@
                         isc.RPCManager.sendRequest(TrDSRequest(classUrl + record.id, "DELETE", null, (resp) => {
                             wait.close()
                             class_delete_result(resp);
+                        }));
+                    }
+                }
+            });
+        }
+    }
+    function ListGrid_class_finish() {
+        let record = ListGrid_Class_JspClass.getSelectedRecord();
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+            let Dialog_Class_finish = createDialog("ask", "<spring:message code='msg.record.finish.ask'/>",
+                "<spring:message code="verify.finish"/>");
+            Dialog_Class_finish.addProperties({
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        wait.show()
+                        isc.RPCManager.sendRequest(TrDSRequest(classFinishUrl + record.id, "GET", null, (resp) => {
+                            wait.close()
+                            class_finish_result(resp);
                         }));
                     }
                 }
@@ -3389,6 +3428,22 @@
             createDialog("warning", (JSON.parse(resp.httpResponseText).message === undefined ? "خطا" : JSON.parse(resp.httpResponseText).message));
         }
     }
+    function class_finish_result(resp) {
+        wait.close();
+        <%--if (resp.httpResponseCode === 200) {--%>
+        <%--    ListGrid_Class_JspClass.invalidateCache();--%>
+        <%--    var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",--%>
+        <%--        "<spring:message code="msg.command.done"/>");--%>
+        <%--    setTimeout(function () {--%>
+        <%--        OK.close();--%>
+        <%--    }, 3000);--%>
+        <%--    refreshSelectedTab_class(tabSetClass.getSelectedTab());--%>
+        <%--} else if (resp.httpResponseCode === 406 && resp.httpResponseText === "NotDeletable") {--%>
+        <%--    createDialog("info", "<spring:message code='global.grid.record.cannot.deleted'/>");--%>
+        <%--} else {--%>
+        <%--    createDialog("warning", (JSON.parse(resp.httpResponseText).message === undefined ? "خطا" : JSON.parse(resp.httpResponseText).message));--%>
+        <%--}--%>
+    }
 
     function GetScoreState(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
@@ -3486,6 +3541,11 @@
                             ListGrid_Class_JspClass.getSelectedRecord().id);
                     break;
                 }
+                case "classFinish": {
+                    if (typeof loadPage_classCosts !== "undefined")
+                        loadPage_classFinish(ListGrid_Class_JspClass.getSelectedRecord().id);
+                    break;
+                }
             }
         }
     }
@@ -3504,16 +3564,20 @@
                 createDialog("info", "تاریخ پایان کلاس قبل از تاریخ شروع کلاس نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
             }
-            if (lastDate > classEnd.trim()) {
-                createDialog("info", "تاریخ پایان کلاس قبل از تاریخ پایان ترم نمی تواند باشد.", "<spring:message code='message'/>");
-                return false;
-            }
+            <%--if (lastDate > classEnd.trim()) {--%>
+            <%--    createDialog("info", "تاریخ پایان کلاس قبل از تاریخ پایان ترم نمی تواند باشد.", "<spring:message code='message'/>");--%>
+            <%--    return false;--%>
+            <%--}--%>
             <%--if (termStart.trim() > classStart.trim()) {--%>
             <%--    createDialog("info", "تاریخ شروع کلاس قبل از تاریخ شروع ترم نمی تواند باشد.", "<spring:message code='message'/>");--%>
             <%--    return false;--%>
             <%--}--%>
             if (termEnd.trim() < classStart.trim()) {
                 createDialog("info", "تاریخ شروع کلاس بعد از تاریخ پایان ترم نمی تواند باشد.", "<spring:message code='message'/>");
+                return false;
+            }
+            if (termStart.trim() > classStart.trim()) {
+                createDialog("info", "تاریخ شروع کلاس قبل از تاریخ شروع ترم نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
             }
             return true;
@@ -3886,6 +3950,18 @@
 
     ////*****load classes by term*****
     function load_classes_by_term(value) {
+        //id -> 61 = id finish in work group table
+        isc.RPCManager.sendRequest(TrDSRequest(hasAccessToSetEndClass+"61", "GET",null, function (resp) {
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                if (resp.data === "false" )
+                    TabSet_Class.disableTab(TabSet_Class.tabs[11]);
+                else
+                    TabSet_Class.enableTab(TabSet_Class.tabs[11]);
+
+            } else {
+                TabSet_Class.disableTab(TabSet_Class.tabs[11]);
+            }
+        }));
         if (value !== undefined) {
             let criteria = {
                 _constructor: "AdvancedCriteria",
@@ -3908,6 +3984,7 @@
         } else {
             createDialog("info", "<spring:message code="msg.select.term.ask"/>", "<spring:message code="message"/>")
         }
+
     }
 
     ////*****load classes by department*****
@@ -4455,8 +4532,25 @@
     //Amin HK
     //Highlight a selected item in a radio group
     function highlightClassStauts(value, time) {
+            if ("5" === value)
+            {
+                DynamicForm_Class_JspClass.getField("classStatus").getItem(0).disable();
+                DynamicForm_Class_JspClass.getField("classStatus").getItem(1).disable();
+                DynamicForm_Class_JspClass.getField("classStatus").getItem(2).disable();
+                IButton_Class_Save_JspClass.hide();
+                IButton_Class_Save_JspClass.setOpacity(30);
+                createDialog("info", "بدلیل اختتام کلاس امکان ویرایش وجود ندارد", "<spring:message code="message"/>")
+            }
+            else
+            {
+                IButton_Class_Save_JspClass.show();
+                IButton_Class_Save_JspClass.setOpacity(100);
+                DynamicForm_Class_JspClass.getField("classStatus").getItem(3).disable();
+            }
+
+
         setTimeout(() => {
-            let mapDictionary = {1: "برنامه ریزی", 2: "در حال اجرا", 3: "پایان یافته"};
+            let mapDictionary = {1: "برنامه ریزی", 2: "در حال اجرا", 3: "پایان یافته",5: "اختتام"};
 
             let result = $('input[type="radio"][name="classStatus"]').parent().next();
 

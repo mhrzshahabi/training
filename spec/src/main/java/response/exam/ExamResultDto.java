@@ -14,5 +14,7 @@ public class ExamResultDto {
     private String lastName;
     private String nationalCode;
     private String cellNumber;
+    private String score;
+    private String resultStatus;
     private List<ExamAnswerDto> answers;
 }
