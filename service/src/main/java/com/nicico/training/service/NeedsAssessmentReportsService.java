@@ -104,14 +104,7 @@ public class NeedsAssessmentReportsService {
                 if (classStudentReportService.isPassed(needsAssessmentList.get(i).getSkill().getCourse(), isPassed)) {
                     mustPass.get(i).getSkill().getCourse().setScoresState(passedCodeId);
                     if (personClasses.size()> 0){
-                        for (TclassDTO.PersonnelClassInfo classInfo: personClasses) {
-                            if(mustPass.get(i).getSkill().getCourse().getScoresStatus() == null || mustPass.get(i).getSkill().getCourse().getScoresStatus().equals("")  ){
-                                mustPass.get(i).getSkill().getCourse().setScoresStatus(classInfo.getScoreState());
-                            } else if (classInfo.getClassStatusId().equals(401)){
-                                int x =1;
-                            }
-                        }
-
+                        mustPass.get(i).getSkill().getCourse().setScoresStatus(personClasses.get(0).getScoreState());
                     }
                 } else {
                     mustPass.get(i).getSkill().getCourse().setScoresState(notPassedCodeId);

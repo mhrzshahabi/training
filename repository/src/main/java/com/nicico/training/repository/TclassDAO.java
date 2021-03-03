@@ -58,28 +58,46 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
             "    s.national_code =:national_code OR s.personnel_no = :personnel_no ", nativeQuery = true)
     public List<?> findAllPersonnelClass(String national_code, String personnel_no);
 
-    @Query(value = " SELECT c.id, " +
-            "       '<b class=\"clickableCell\">' || c.c_code || '</b>', " +
-            "       c.c_title_class, " +
-            "       c.n_h_duration, " +
-            "       c.c_start_date, " +
-            "       c.c_end_date, " +
-            "       c.c_status                                                                             as classStatus_id, " +
-            "       cs.scores_state_id, " +
-            "       '(<b class=\"' || case " +
-            "                            when scores_state_id = 400 or scores_state_id = 401 then 'acceptRTL' " +
-            "                            when scores_state_id = 403 then 'rejectedRTL' end || '\">' || pa.c_title || '</b>)' || " +
-            "       case when cs.score is not null then ' نمره: ' || cs.score else '' end || " +
-            "       case when cs.failure_reason_id is not null then ' <' || pa2.c_title || '>' else '' end as score_state, " +
-            "       cs.failure_reason_id, " +
-            "       pa2.c_title                                                                            AS failure_reason " +
-            "FROM tbl_class c " +
-            "         INNER JOIN tbl_class_student cs ON c.id = cs.class_id " +
-            "         INNER JOIN tbl_student s ON s.id = cs.student_id " +
-            "         INNER JOIN tbl_course co ON co.id = c.f_course " +
-            "         LEFT JOIN tbl_parameter_value pa ON cs.scores_state_id = pa.id " +
-            "         LEFT JOIN tbl_parameter_value pa2 ON cs.failure_reason_id = pa2.id " +
-            "WHERE c.f_course =:courseId AND (s.national_code =:national_code OR s.personnel_no = :personnel_no)", nativeQuery = true)
+    @Query(value = " select " +
+            "       id, " +
+            "       c_code, " +
+            "       c_title_class, " +
+            "       n_h_duration, " +
+            "       c_start_date, " +
+            "       c_end_date, " +
+            "       classStatus_id, " +
+            "       scores_state_id, " +
+            "       score_state, " +
+            "       failure_reason_id, " +
+            "       failure_reason " +
+            "from ( " +
+            "         SELECT c.f_course                                                                             AS f_course, " +
+            "                c.id                                                                                   AS id, " +
+            "                '<b class=\"clickableCell\">' || c.c_code || '</b>'                                      AS c_code, " +
+            "                c.c_title_class                                                                        AS c_title_class, " +
+            "                c.n_h_duration                                                                         AS n_h_duration, " +
+            "                c.c_start_date                                                                         AS c_start_date, " +
+            "                c.c_end_date                                                                           AS c_end_date, " +
+            "                c.c_status                                                                             as classStatus_id, " +
+            "                cs.scores_state_id                                                                     AS scores_state_id, " +
+            "                '(<b class=\"' || case " +
+            "                                     when scores_state_id = 400 or scores_state_id = 401 then 'acceptRTL' " +
+            "                                     when scores_state_id = 403 then 'rejectedRTL' end || '\">' || pa.c_title || " +
+            "                '</b>)' || " +
+            "                case when cs.score is not null then ' نمره: ' || cs.score else '' end || " +
+            "                case when cs.failure_reason_id is not null then ' <' || pa2.c_title || '>' else '' end AS score_state, " +
+            "                cs.failure_reason_id                                                                   AS failure_reason_id, " +
+            "                pa2.c_title                                                                            AS failure_reason, " +
+            "                rank() over (order by c.c_end_date desc)                                                  rnk " +
+            "         FROM tbl_class c " +
+            "                  INNER JOIN tbl_class_student cs ON c.id = cs.class_id " +
+            "                  INNER JOIN tbl_student s ON s.id = cs.student_id " +
+            "                  INNER JOIN tbl_course co ON co.id = c.f_course " +
+            "                  LEFT JOIN tbl_parameter_value pa ON cs.scores_state_id = pa.id " +
+            "                  LEFT JOIN tbl_parameter_value pa2 ON cs.failure_reason_id = pa2.id " +
+            "         WHERE c.f_course =:courseId " +
+            "           and (s.national_code =:national_code " +
+            "             OR s.personnel_no =:personnel_no)) WHERE rnk = 1", nativeQuery = true)
     public List<?> findPersonnelClassByCourseId(String national_code, String personnel_no, Long courseId);
 
     public List<?> findAllTclassByCourseId(Long id);
