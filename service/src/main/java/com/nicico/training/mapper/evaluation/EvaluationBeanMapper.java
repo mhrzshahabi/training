@@ -210,7 +210,8 @@ public abstract class EvaluationBeanMapper {
                 options.add(option3);
                 options.add(option4);
                 if(!findDuplicate) {
-                    findDuplicate = checkDuplicateQuestion(options, questionProtocols, question.getTitle(),question.getType());
+                    String title = question.getTitle().toUpperCase().replaceAll("[\\s]","");
+                    findDuplicate = checkDuplicateQuestion(options, questionProtocols,title ,question.getType());
                     if (findDuplicate) {
                         examQuestionsObject.setStatus(HttpStatus.CONFLICT.value());
                         examQuestionsObject.setMessage("در آزمون سوال تکراری وجود دارد");
@@ -221,7 +222,8 @@ public abstract class EvaluationBeanMapper {
 
             }else if(question.getType().equals(DESCRIPTIVE)){
                 if(!findDuplicate) {
-                    findDuplicate = checkDuplicateDescriptiveQuestions(questionProtocols, question.getTitle());
+                    String title = question.getTitle().toUpperCase().replaceAll("[\\s]","");
+                    findDuplicate = checkDuplicateDescriptiveQuestions(questionProtocols, title ,question.getType());
                     if (findDuplicate) {
                         examQuestionsObject.setStatus(HttpStatus.CONFLICT.value());
                         examQuestionsObject.setMessage("در آزمون سوال تکراری وجود دارد");
@@ -250,28 +252,40 @@ public abstract class EvaluationBeanMapper {
         /*return questionProtocols;*/
 }
 
-    private Boolean checkDuplicateDescriptiveQuestions(List<ImportedQuestionProtocol> protocols, String title) {
+    private Boolean checkDuplicateDescriptiveQuestions(List<ImportedQuestionProtocol> protocols, String title , EQuestionType type) {
         if(protocols.size()>0) {
             final List<ImportedQuestion> questions = protocols.stream().map(ImportedQuestionProtocol::getQuestion).collect(Collectors.toList());
-            final boolean matchedTitle = questions.stream().map(ImportedQuestion::getTitle).anyMatch(t -> t.equals(title));
+            List<String> questionsTitle = questions.stream().filter(t->t.getType().equals(type)).map(ImportedQuestion::getTitle)
+                    .map(str -> new String(str.toUpperCase().replaceAll("[\\s]", "")))
+                    .collect(Collectors.toList());
+            final boolean matchedTitle = questionsTitle.stream().anyMatch(t -> t.equals(title) );
             if (matchedTitle) {
                 return hasDuplicateQuestion;
             }
+
         }
         return !hasDuplicateQuestion;
     }
 
     private Boolean checkDuplicateQuestion(List<ImportedQuestionOption> newOptions, List<ImportedQuestionProtocol> protocols, String title, EQuestionType type) {
         if(protocols.size()>0) {
-            final List<String> newOptionsList = newOptions.stream().map(ImportedQuestionOption::getTitle).collect(Collectors.toList());
+            final List<String> newOptionsList = newOptions.stream().map(ImportedQuestionOption::getTitle)
+                    .map(str -> new String(str.toUpperCase().replaceAll("[\\s]", "")))
+                    .collect(Collectors.toList());
             List<String> targetOptionsList =  new ArrayList<>();
             final List<ImportedQuestion> questions = protocols.stream().map(ImportedQuestionProtocol::getQuestion).collect(Collectors.toList());
-            final boolean matchedTitle = questions.stream().map(ImportedQuestion::getTitle).anyMatch(t -> t.equals(title));
+            List<String> questionsTitle =questions.stream().map(ImportedQuestion::getTitle)
+                    .map(str -> new String(str.toUpperCase().replaceAll("[\\s]", "")))
+                    .collect(Collectors.toList());
+            final boolean matchedTitle = questionsTitle.stream().anyMatch(t -> t.equals(title));
             List<String> duplicateOptions = new ArrayList<>();
             if (matchedTitle) {
                 for (ImportedQuestion question : questions) {
-                    if (question.getTitle().equals(title) && question.getType().equals(type)) {
-                        targetOptionsList = question.getQuestionOption().stream().map(ImportedQuestionOption::getTitle).collect(Collectors.toList());
+                    String questionTitle = question.getTitle().toUpperCase().replaceAll("[\\s]", "");
+                    if (questionTitle.equals(title) && question.getType().equals(type)) {
+                        targetOptionsList = question.getQuestionOption().stream().map(ImportedQuestionOption::getTitle)
+                                .map(str -> new String(str.toUpperCase().replaceAll("[\\s]", "")))
+                                .collect(Collectors.toList());
                         duplicateOptions = targetOptionsList.stream().filter(e -> newOptionsList.contains(e))
                                 .collect(Collectors.toList());
                     }
