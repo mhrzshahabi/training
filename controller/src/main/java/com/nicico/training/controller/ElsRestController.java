@@ -196,6 +196,7 @@ public class ElsRestController {
     @GetMapping("/examResult/{id}")
     public ResponseEntity<ExamListResponse> examResult(@PathVariable long id) {
         ExamListResponse response = client.getExamResults(id);
+        if (response.getData()!=null)
         response=evaluationBeanMapper.toExamResult(response);
         return new ResponseEntity(response, HttpStatus.OK);
     }
