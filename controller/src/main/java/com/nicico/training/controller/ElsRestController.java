@@ -236,7 +236,7 @@ public class ElsRestController {
         ExamQuestionsObject examQuestionsObject =  new ExamQuestionsObject();
         ExamQuestionsDto response = new ExamQuestionsDto();
         try {
-            if (dateFormat.parse(object.getExamItem().getTclass().getStartDate()).compareTo(dateFormat.parse(object.getExamItem().getTclass().getEndDate())) != 0) {
+//            if (dateFormat.parse(object.getExamItem().getTclass().getStartDate()).compareTo(dateFormat.parse(object.getExamItem().getTclass().getEndDate())) != 0) {
 
                 if (dateFormat.parse(object.getExamItem().getDate()).after(dateFormat.parse(object.getExamItem().getTclass().getStartDate()))) {
                     /*ExamQuestionsDto response*/
@@ -250,19 +250,19 @@ public class ElsRestController {
                 } else {
                     return new ResponseEntity("زمان برگذاری آزمون در بازه زمانی درست نمی باشد", HttpStatus.NOT_ACCEPTABLE);
                 }
-            } else {
-                if (dateFormat.parse(object.getExamItem().getTclass().getStartDate()).compareTo(dateFormat.parse(object.getExamItem().getDate())) != 0) {
-                    return new ResponseEntity("زمان برگذاری آزمون در بازه زمانی درست نمی باشد", HttpStatus.NOT_ACCEPTABLE);
-                } else {
-                    examQuestionsObject = evaluationBeanMapper.toGetExamQuestions(object);
-                    if(examQuestionsObject.getStatus() == 200) {
-                        response.setData(examQuestionsObject.getDto().getData());
-                        return new ResponseEntity(response, HttpStatus.OK);
-                    }else {
-                        return new ResponseEntity(examQuestionsObject.getMessage(), HttpStatus.NOT_ACCEPTABLE); // سوال تکراری در آزمون وجود دارد
-                    }
-                }
-            }
+//            } else {
+//                if (dateFormat.parse(object.getExamItem().getTclass().getStartDate()).compareTo(dateFormat.parse(object.getExamItem().getDate())) != 0) {
+//                    return new ResponseEntity("زمان برگذاری آزمون در بازه زمانی درست نمی باشد", HttpStatus.NOT_ACCEPTABLE);
+//                } else {
+//                    examQuestionsObject = evaluationBeanMapper.toGetExamQuestions(object);
+//                    if(examQuestionsObject.getStatus() == 200) {
+//                        response.setData(examQuestionsObject.getDto().getData());
+//                        return new ResponseEntity(response, HttpStatus.OK);
+//                    }else {
+//                        return new ResponseEntity(examQuestionsObject.getMessage(), HttpStatus.NOT_ACCEPTABLE); // سوال تکراری در آزمون وجود دارد
+//                    }
+//                }
+//            }
 
         } catch (ParseException e) {
 
