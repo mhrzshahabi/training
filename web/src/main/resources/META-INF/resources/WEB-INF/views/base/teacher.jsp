@@ -847,9 +847,9 @@
             DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = true;
     }
     function ListGrid_teacher_edit(teacherRecordId = null) {
-        console.log(teacherRecordId)
+        // console.log(teacherRecordId)
         selected_teacher = teacherRecordId;
-        console.log(selected_teacher)
+        // console.log(selected_teacher)
         var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
         selected_record = record;
         if ((record == null || record.id == null) && (selected_teacher == null || selected_teacher == undefined)) {

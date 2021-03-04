@@ -967,7 +967,7 @@
                 criteriaDisplayValues = uniqueNames.join(",");
             }
 
-            console.log(criteriaDisplayValues);
+            // console.log(criteriaDisplayValues);
 
             criteriaDisplayValues = criteriaDisplayValues == ",undefined" ? "" : criteriaDisplayValues;
 
