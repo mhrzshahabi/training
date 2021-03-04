@@ -247,6 +247,34 @@
         }
     });
 
+    let pdfUrlForPrint="";
+    let Window_Choose_print_type = isc.Window.create({
+        width: 300,
+        height: 100,
+        numCols: 2,
+        title: "انتخاب نوع چاپ فایل",
+        items: [
+            isc.MyHLayoutButtons.create({
+                members: [
+                    isc.IButtonSave.create({
+                        title: "چاپ pdf",
+                        click: function () {
+                            Window_Choose_print_type.close()
+                            trPrintWithCriteria(pdfUrlForPrint+"/pdf",null,null);
+                        }
+                    }),
+                    isc.IButtonSave.create({
+                        title: "آرسال به اکسل",
+                        click: function () {
+                            Window_Choose_print_type.close()
+                            trPrintWithCriteria(pdfUrlForPrint+"/excel",null,null);
+
+                        }
+                    })]
+            })]
+    });
+
+
     let IButton_Goal_Save = isc.IButtonSave.create({
         click: function () {
             DynamicForm_Goal.validate();
@@ -445,9 +473,9 @@
             }
         }, {isSeparator: true}, {
             title: "ارسال به Pdf",
-                click :function(){
-                    trPrintWithCriteria("<spring:url value="/syllabus/print-one-course/"/>" + courseRecord.id +"/pdf" ,null,null);
-                }
+            click :function(){
+                trPrintWithCriteria("<spring:url value="/syllabus/print-one-course/"/>" + courseRecord.id +"/pdf" ,null,null);
+            }
         }, {
             title: "ارسال به Excel",
             click: function () {
@@ -464,29 +492,29 @@
         width: 150,
         data: [
             {
-            title: "بازخوانی اطلاعات",
-            click: function () {
-                ListGrid_Goal_refresh();
-            }
-        },
-        //     {
-        //     title: "ایجاد",
-        //     click: function () {
-        //         ListGrid_Goal_Add();
-        //     }
-        // },
-        //     {
-        //         title: "ویرایش",
-        //         click: function () {
-        //             ListGrid_Goal_Edit();
-        //         }
-        //     },
-        //     {
-        //         title: "حذف",
-        //         click: function () {
-        //             ListGrid_Goal_Remove();
-        //         }
-        //     },
+                title: "بازخوانی اطلاعات",
+                click: function () {
+                    ListGrid_Goal_refresh();
+                }
+            },
+            //     {
+            //     title: "ایجاد",
+            //     click: function () {
+            //         ListGrid_Goal_Add();
+            //     }
+            // },
+            //     {
+            //         title: "ویرایش",
+            //         click: function () {
+            //             ListGrid_Goal_Edit();
+            //         }
+            //     },
+            //     {
+            //         title: "حذف",
+            //         click: function () {
+            //             ListGrid_Goal_Remove();
+            //         }
+            //     },
             {isSeparator: true}, {
                 title: "ارسال به Pdf",
                 click: function () {
@@ -738,45 +766,56 @@
     var ToolStripButton_Syllabus_Print = isc.ToolStripMenuButton.create({
         autoDraw: false,
         width: 100,
-        title: "چاپ",
+        title: " چاپ pdf / ارسال به اکسل",
         showMenuOnRollOver: true,
         menu: menuPalette,
         mouseMove: function () {
             if (ListGrid_Goal.getSelectedRecord() == null) {
                 Menu_Print_GoalJsp.setData([
                     {
-                    title: "اهداف دوره " + '"' + courseRecord.titleFa + '"',
-                    click :function(){
-                        trPrintWithCriteria("<spring:url value="goal/print-one-course/"/>" +courseRecord.id + "/pdf" ,null,null);
-                    }
-                },
+                        title: "اهداف دوره " + '"' + courseRecord.titleFa + '"',
+                        click :function(){
+                            pdfUrlForPrint="<spring:url value="goal/print-one-course/"/>" +courseRecord.id ;
+                            Window_Choose_print_type.show()
+                            <%--trPrintWithCriteria("<spring:url value="goal/print-one-course/"/>" +courseRecord.id + "/pdf" ,null,null);--%>
+                        }
+                    },
                     {isSeparator: true},
                     {
-                    title: "سرفصل هاي دوره " + '"' + courseRecord.titleFa + '"',
+                        title: "سرفصل هاي دوره " + '"' + courseRecord.titleFa + '"',
                         click :function(){
-                            trPrintWithCriteria("<spring:url value="syllabus/print-one-course/"/>" +courseRecord.id + "/pdf" ,null,null);
+                            pdfUrlForPrint="<spring:url value="syllabus/print-one-course/"/>" +courseRecord.id ;
+                            Window_Choose_print_type.show()
+
+                            <%--trPrintWithCriteria("<spring:url value="syllabus/print-one-course/"/>" +courseRecord.id + "/pdf" ,null,null);--%>
                         }
-                }
+                    }
                 ])
             } else {
                 Menu_Print_GoalJsp.setData([
                     {
-                    title: "اهداف دوره " + '"' + courseRecord.titleFa + '"',
+                        title: "اهداف دوره " + '"' + courseRecord.titleFa + '"',
                         click :function(){
-                            trPrintWithCriteria("<spring:url value="goal/print-one-course/"/>" +courseRecord.id + "/pdf" ,null,null);
+                            pdfUrlForPrint="<spring:url value="goal/print-one-course/"/>" +courseRecord.id ;
+                            Window_Choose_print_type.show()
+                            <%--trPrintWithCriteria("<spring:url value="goal/print-one-course/"/>" +courseRecord.id + "/pdf" ,null,null);--%>
                         }
-                },
+                    },
                     {isSeparator: true},
                     {
-                    title: "سرفصل هاي دوره " + '"' + courseRecord.titleFa + '"',
+                        title: "سرفصل هاي دوره " + '"' + courseRecord.titleFa + '"',
                         click :function(){
-                            trPrintWithCriteria("<spring:url value="syllabus/print-one-course/"/>" +courseRecord.id + "/pdf" ,null,null);
+                            pdfUrlForPrint="<spring:url value="syllabus/print-one-course/"/>" +courseRecord.id ;
+                            Window_Choose_print_type.show()
+                            <%--trPrintWithCriteria("<spring:url value="syllabus/print-one-course/"/>" +courseRecord.id + "/pdf" ,null,null);--%>
                         }
-                },
+                    },
                     {
                         title: "سرفصل هاي هدف " + '"' + ListGrid_Goal.getSelectedRecord().titleFa + '"',
                         click :function(){
-                            trPrintWithCriteria("<spring:url value="syllabus/print-one-goal/"/>" + ListGrid_Goal.getSelectedRecord().id+"/pdf" ,null,null);
+                            pdfUrlForPrint="<spring:url value="syllabus/print-one-goal/"/>" + ListGrid_Goal.getSelectedRecord().id;
+                            Window_Choose_print_type.show()
+                            <%--trPrintWithCriteria("<spring:url value="syllabus/print-one-goal/"/>" + ListGrid_Goal.getSelectedRecord().id+"/pdf" ,null,null);--%>
                         }
                     }])
             }
@@ -1270,18 +1309,18 @@
                                 })
                                 wait.show();
                                 isc.RPCManager.sendRequest(TrDSRequest(urlCreateGroupGoal, methodGoal, JSON.stringify(goalData), resp => {
-                                    console.log(resp)
+
                                     wait.close();
-                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                                    simpleDialog("انجام فرمان", "عملیات با موفقیت انجام شد.", "3000", "say");
-                                    ListGrid_Goal_refresh();
-                                    ListGrid_GoalAll.invalidateCache();
-                                    ListGrid_CourseGoal_Goal.invalidateCache();
-                                    ClassStudentWin_goal_GroupInsert.close();
-                                } else {
-                                    simpleDialog("پیغام", "اجرای عملیات با مشکل مواجه شده است!", "3000", "error")
-                                }
-                            }))
+                                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                        simpleDialog("انجام فرمان", "عملیات با موفقیت انجام شد.", "3000", "say");
+                                        ListGrid_Goal_refresh();
+                                        ListGrid_GoalAll.invalidateCache();
+                                        ListGrid_CourseGoal_Goal.invalidateCache();
+                                        ClassStudentWin_goal_GroupInsert.close();
+                                    } else {
+                                        simpleDialog("پیغام", "اجرای عملیات با مشکل مواجه شده است!", "3000", "error")
+                                    }
+                                }))
 
                             }
                         }), isc.IButtonCancel.create({
@@ -1346,49 +1385,49 @@
                 }
             });
         } else {
-                    if(goalRecord.id == record.goalId) {
-                        let Dialog_Delete = isc.Dialog.create({
-                            message: "<spring:message code='msg.record.remove.ask'/>",
-                            icon: "[SKIN]ask.png",
-                            title: "<spring:message code="verify.delete"/>",
-                            buttons: [isc.IButtonSave.create({title: "<spring:message code='global.yes'/>"}), isc.IButtonCancel.create({
-                                title: "<spring:message
+            if(goalRecord.id == record.goalId) {
+                let Dialog_Delete = isc.Dialog.create({
+                    message: "<spring:message code='msg.record.remove.ask'/>",
+                    icon: "[SKIN]ask.png",
+                    title: "<spring:message code="verify.delete"/>",
+                    buttons: [isc.IButtonSave.create({title: "<spring:message code='global.yes'/>"}), isc.IButtonCancel.create({
+                        title: "<spring:message
         code='global.no'/>"
-                            })],
-                            buttonClick: function (button, index) {
-                                this.close();
-                                if (index == 0) {
-                                    <%--let goalWait = isc.Dialog.create({--%>
-                                        <%--message: "<spring:message code='global.form.do.operation'/>",--%>
-                                        <%--icon: "[SKIN]say.png",--%>
-                                        <%--title: "<spring:message code='global.message'/>"--%>
-                                    <%--});--%>
-                                    wait.show()
-                                    isc.RPCManager.sendRequest(TrDSRequest(goalUrl + "course/" + record.goalId, "GET", null,(resp)=>{
-                                        let courses = JSON.parse(resp.data);
-                                        let courseList = "";
-                                        if(courses.length>1){
-                                            courses.forEach(function (currentValue, index, array) {
-                                                courseList += getFormulaMessage(currentValue.titleFa, "2", "green", "b");
-                                                courseList += '<br>';
-                                            });
-                                            let dialog_Accept = createDialog("ask","سرفصل " + getFormulaMessage(record.titleFa, "2", "red", "b") + " به هدف " + getFormulaMessage(record.goal.titleFa, "2", "red", "b") + " متصل می باشد که <br>" + "هدف مورد نظر نیز به دور ه های<br>" + courseList + "متصل می باشند " + "حذف این گزینه باعث می شود که سرفصل مورد نظر از دوره های ذکر شده نیز حذف گردد،<br>آیا از انتخاب خود مطمئن هستید ؟", "توجه");
-                                            dialog_Accept.addProperties({
-                                                buttonClick: function (button, index) {
-                                                    this.close();
-                                                    if(index === 0)
-                                                        deleteGoal(record.id);
-                                                    else
-                                                        wait.close();
-                                                }
-                                            });
-                                        }else
-                                            deleteGoal(record.id);
-                                    }));
-                                }
-                            }
-                        });
+                    })],
+                    buttonClick: function (button, index) {
+                        this.close();
+                        if (index == 0) {
+                            <%--let goalWait = isc.Dialog.create({--%>
+                            <%--message: "<spring:message code='global.form.do.operation'/>",--%>
+                            <%--icon: "[SKIN]say.png",--%>
+                            <%--title: "<spring:message code='global.message'/>"--%>
+                            <%--});--%>
+                            wait.show()
+                            isc.RPCManager.sendRequest(TrDSRequest(goalUrl + "course/" + record.goalId, "GET", null,(resp)=>{
+                                let courses = JSON.parse(resp.data);
+                                let courseList = "";
+                                if(courses.length>1){
+                                    courses.forEach(function (currentValue, index, array) {
+                                        courseList += getFormulaMessage(currentValue.titleFa, "2", "green", "b");
+                                        courseList += '<br>';
+                                    });
+                                    let dialog_Accept = createDialog("ask","سرفصل " + getFormulaMessage(record.titleFa, "2", "red", "b") + " به هدف " + getFormulaMessage(record.goal.titleFa, "2", "red", "b") + " متصل می باشد که <br>" + "هدف مورد نظر نیز به دور ه های<br>" + courseList + "متصل می باشند " + "حذف این گزینه باعث می شود که سرفصل مورد نظر از دوره های ذکر شده نیز حذف گردد،<br>آیا از انتخاب خود مطمئن هستید ؟", "توجه");
+                                    dialog_Accept.addProperties({
+                                        buttonClick: function (button, index) {
+                                            this.close();
+                                            if(index === 0)
+                                                deleteGoal(record.id);
+                                            else
+                                                wait.close();
+                                        }
+                                    });
+                                }else
+                                    deleteGoal(record.id);
+                            }));
+                        }
                     }
+                });
+            }
         }
     }
 
@@ -1543,21 +1582,21 @@
     function deleteGoal(id) {
         isc.RPCManager.sendRequest(TrDSRequest(syllabusUrl + id, "DELETE", null, (resp)=>{
             wait.close();
-        if (resp.httpResponseCode == 200) {
-            ListGrid_Syllabus_Goal.invalidateCache();
-            evalDomain();
-            var OK = isc.Dialog.create({
-                message: "<spring:message code='global.form.request.successful'/>",
-                icon: "[SKIN]say.png",
-                title: "<spring:message code='global.form.command.done'/>"
-            });
-            setTimeout(function () {
-                OK.close();
-            }, 3000);
-        } else {
-            simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
-        }
-    }))
+            if (resp.httpResponseCode == 200) {
+                ListGrid_Syllabus_Goal.invalidateCache();
+                evalDomain();
+                var OK = isc.Dialog.create({
+                    message: "<spring:message code='global.form.request.successful'/>",
+                    icon: "[SKIN]say.png",
+                    title: "<spring:message code='global.form.command.done'/>"
+                });
+                setTimeout(function () {
+                    OK.close();
+                }, 3000);
+            } else {
+                simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
+            }
+        }))
     }
 
     // </script>

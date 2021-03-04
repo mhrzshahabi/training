@@ -897,7 +897,7 @@
             }
 
             criteriaDisplayValues = criteriaDisplayValues == ",undefined" ? "" : criteriaDisplayValues;
-console.log(criteriaDisplayValues);
+// console.log(criteriaDisplayValues);
             DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getField("courseCode").setValue(criteriaDisplayValues);
             Window_SelectCourses_JspEvaluationStaticalReport.close();
         }

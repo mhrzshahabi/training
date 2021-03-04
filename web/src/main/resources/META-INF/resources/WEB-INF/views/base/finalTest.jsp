@@ -77,7 +77,6 @@ width: "100%",
                             implicitCriteria.criteria.push(criteria.criteria[i]);
                         }
                     }
-                    console.log(implicitCriteria);
                      ExportToFile.downloadExcelRestUrl(null, FinalTestLG_finalTest,  testQuestionUrl + "/spec-list" , 0, null, '',"لیست آزمون های پایانی", implicitCriteria, null);
                 }
              }),
@@ -530,7 +529,6 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                         OK.close();
                     }, 1500);
                   questionData = results;
-                    console.log(results);
                   ListGrid_Questions_finalTest.setData(results);
 
                     let Window_result_Finaltest = isc.Window.create({
@@ -851,7 +849,7 @@ scoreLabel.setContents("مجموع بارم وارد شده :")
                 height:768,
                 fields: []
                 });
-        console.log(answers)
+// debugger;
         for(var i=0 ; i<answers.length; i++) {
                 let text_FormItem = { title:"Pasted value",cellStyle: 'text-exam-form-item',disabled:true, titleOrientation: "top", name:"textArea", width:"100%",height:100, editorType: "TextAreaItem", value: ''};
                 let radio_FormItem =  { name: "startMode", cellStyle: 'radio-exam-form-item', disabled:true,titleOrientation: "top", title: "Initially show ColorPicker as",
@@ -865,7 +863,7 @@ scoreLabel.setContents("مجموع بارم وارد شده :")
                 text_FormItem.name = answers[i].answer;
                 if(answers[i].type == "چند گزینه ای") {
                     radio_FormItem.title = answers[i].question;
-                    radio_FormItem.name = answers[i].answer;
+                    radio_FormItem.name = i+"";
                     if(answers[i].options.length > 0) {
                         for(let j = 0; j< answers[i].options.length; j++){
                             let key = answers[i].options[j].title;
@@ -873,9 +871,10 @@ scoreLabel.setContents("مجموع بارم وارد شده :")
                             radio_FormItem.valueMap[key] = value;
                         }
                     }
+
                     dynamicForm_Answers_List.addField(radio_FormItem)
                     if(radio_FormItem.valueMap.hasOwnProperty(answers[i].answer)) {
-                         dynamicForm_Answers_List.getField(answers[i].answer).setValue(answers[i].answer);
+                         dynamicForm_Answers_List.getField(i).setValue(answers[i].answer);
                     }
                 } else {
                     dynamicForm_Answers_List.addField(text_FormItem)

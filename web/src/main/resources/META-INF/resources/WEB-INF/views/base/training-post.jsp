@@ -1696,7 +1696,7 @@
 
     function postGroup_delete_result(resp) {
         wait.close();
-        console.log(resp)
+        // console.log(resp)
         if (resp.httpResponseCode == 200) {
             ListGrid_TrainingPost_Jsp.invalidateCache();
             simpleDialog("انجام فرمان", "حذف با موفقیت انجام شد", 2000, "say");

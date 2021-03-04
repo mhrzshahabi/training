@@ -239,8 +239,8 @@
                         createDialog("info","تاریخ شروع کلاس " + DynamicForm_Attendance.values.sessionDate + " می باشد");
                         return false;
                     }
-                    console.log(ListGrid_Attendance_AttendanceJSP.getData().localData);
-                    console.log(attendanceGrid.getAllFields())
+                    // console.log(ListGrid_Attendance_AttendanceJSP.getData().localData);
+                    // console.log(attendanceGrid.getAllFields())
                     for (let i = 0; i < ListGrid_Attendance_AttendanceJSP.getData().localData.length ; i++) {
                         for (let j = 5; j < attendanceGrid.getAllFields().length; j++) {
                             if(attendanceGrid.getCellRecord(i).studentState != "kh") {
@@ -1143,7 +1143,7 @@
                     //     console.log(record);
                     //     record.description = cause.description;
                     // }
-                    console.log(sendList);
+
                     sendObject.attendanceDtos = sendList;
                     isc.RPCManager.sendRequest({
                         // actionURL: attendanceUrl + "/save-attendance?classId=" + classGridRecordInAttendanceJsp.id + "&date=" + DynamicForm_Attendance.getValue("sessionDate"),
@@ -1408,7 +1408,7 @@
                                     object.row = i;
                                     list.push(object);
                                 }
-                                console.log(list);
+                                // console.log(list);
                                 criteriaForm.setValue("list", JSON.stringify(list));
                                 criteriaForm.submitForm();
                             }

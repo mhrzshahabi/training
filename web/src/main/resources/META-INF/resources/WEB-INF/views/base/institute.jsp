@@ -3557,7 +3557,7 @@
 
     function Function_Institute_Export2Excel(ParentListGridName, parentName) {
         var record = ParentListGridName.getSelectedRecord();
-        console.log(record);
+        // console.log(record);
         if (record == null || record.id == null) {
             console.log("123")
             isc.Dialog.create({
