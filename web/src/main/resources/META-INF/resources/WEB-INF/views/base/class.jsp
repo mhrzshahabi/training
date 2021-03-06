@@ -606,7 +606,7 @@
         },
         cellClick: function (record, rowNum, colNum) {
             if (this.getFieldName(colNum) == "teacher") {
-                ListGrid_teacher_edit(record.teacherId)
+                ListGrid_teacher_edit(record.teacherId,"class")
             }
         },
         dataArrived: function () {
