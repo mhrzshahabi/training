@@ -292,7 +292,8 @@ function checkBirthDate(date) {
 
 
 function checkDate(date) {
-    var khMonth = [0, 31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29];
+
+    var khMonth = [0, 31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 30];
     var dateIndex = [0, 1, 2, 3, 5, 6, 8, 9];
     if (date.length !== 10)
         return false;
