@@ -64,6 +64,7 @@ public class ViewEvaluationStaticalReportDTO implements Serializable {
         private String teacherFirstName;
         private String teacherLastName;
         private String teacherFullName;
+        private String tclassReason;
         private String tclassTeachingType;
         private String plannerComplex;
         private String plannerName;
