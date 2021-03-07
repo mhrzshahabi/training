@@ -149,13 +149,14 @@ public class CompanyService implements ICompanyService {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
         setManager(request, company);
+        if (null!=request.getAccountInfo())
         setAccountInfo(request, company);
         return modelMapper.map(companyDAO.saveAndFlush(company), CompanyDTO.Info.class);
     }
 
     public void setAddress(CompanyDTO.Create request, Company company) throws Exception {
         Address address1 = null;
-        if(request.getAddress().getPostalCode() != null) {
+        if(request.getAddress()!=null && request.getAddress().getPostalCode() != null) {
             Optional<Address> addressOptional = addressDAO.findByPostalCode(request.getAddress().getPostalCode());
             address1 = addressOptional.orElse(null);
         }
@@ -179,10 +180,14 @@ public class CompanyService implements ICompanyService {
 
         }else
         {
-            AddressDTO.Info AddressDTOInfo = addressService.create(modelMapper.map(request.getAddress(), AddressDTO.Create.class));
-            Address address2 = addressDAO.findById(AddressDTOInfo.getId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-            company.setAddressId(address2.getId());
-            company.setAddress(address2);
+            if (request.getAddress()!=null)
+            {
+                AddressDTO.Info AddressDTOInfo = addressService.create(modelMapper.map(request.getAddress(), AddressDTO.Create.class));
+                Address address2 = addressDAO.findById(AddressDTOInfo.getId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                company.setAddressId(address2.getId());
+                company.setAddress(address2);
+            }
+
         }
     }
 

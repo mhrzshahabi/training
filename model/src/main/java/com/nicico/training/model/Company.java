@@ -30,19 +30,19 @@ public class Company extends Auditable {
     @Column(name = "c_work_domain")
     private String workDomain;
 
-    @Column(name = "c_company_id", length = 12, nullable = false)
+    @Column(name = "c_company_id", length = 12)
     private String companyId;
 
-    @Column(name = "c_economical_id", length = 12, nullable = false)
+    @Column(name = "c_economical_id", length = 12)
     private String economicalId;
 
-    @Column(name = "c_register_id", length = 12, nullable = false)
+    @Column(name = "c_register_id", length = 12)
     private String registerId;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "f_account_info_id")
     private AccountInfo accountInfo;
-    @Column(name = "f_account_info_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "f_account_info_id", insertable = false, updatable = false)
     private Long accountInfoId;
 
     @ManyToOne(fetch = FetchType.LAZY)

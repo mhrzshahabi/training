@@ -1325,4 +1325,10 @@
             <column name="B_ONLINE_FINAL_EXAM_STATUS" type="number(1, 0)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="namdari (generated)" id="1615109700956-475">
+        <dropNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_company_id" tableName="tbl_company"/>
+        <dropNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_economical_id" tableName="tbl_company"/>
+        <dropNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_register_id" tableName="tbl_company"/>
+        <dropNotNullConstraint columnDataType="NUMBER(19, 0)" columnName="f_account_info_id" tableName="tbl_company"/>
+    </changeSet>
 </databaseChangeLog>

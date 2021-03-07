@@ -125,7 +125,7 @@
                 title: "<spring:message code="company.id"/>",
                 filterOperator: "iContains",
                 length: 12,
-                required: true,
+                required: false,
                 keyPressFilter: "[0-9]"
             },
             {
@@ -133,7 +133,7 @@
                 title: "<spring:message code="company.economical.id"/>",
                 filterOperator: "iContains",
                 length: 12,
-                required: true,
+                required: false,
                 keyPressFilter: "[0-9]"
             },
             {
@@ -141,7 +141,7 @@
                 title: "<spring:message code="company.register.id"/>",
                 filterOperator: "iContains",
                 length: 12,
-                required: true,
+                required: false,
                 keyPressFilter: "[0-9]"
             },
             {
@@ -171,38 +171,38 @@
             {
                 name: "accountInfo.bank",
                 title: "<spring:message code='bank'/>",
-                required: "true",
+                required: false,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
             {
                 name: "accountInfo.bankBranch",
                 title: "<spring:message code='bank.branch'/>",
-                required: "true",
+                required: false,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
             {
                 name: "accountInfo.bankBranchCode",
                 title: "<spring:message code='bank.branch.code'/>",
-                required: "true",
+                required: false,
                 keyPressFilter: "[0-9]"
             },
             {
                 name: "accountInfo.accountNumber",
                 title: "<spring:message code='account.number'/>",
-                required: "true",
+                required: false,
                 keyPressFilter: "[0-9]"
             },
             {
                 name: "accountInfo.cartNumber",
                 title: "<spring:message code='cart.number'/>",
-                required: "true",
+                required: false,
                 keyPressFilter: "[0-9]",
                 length: "16"
             },
             {
                 name: "accountInfo.shabaNumber",
                 title: "<spring:message code='shaba.number'/>",
-                required: "true",
+                required: false,
                 length: "30"
             },
 
@@ -295,6 +295,7 @@
                 title: "<spring:message code='postal.code'/>",
                 keyPressFilter: "[0-9]",
                 length: "10",
+                required: false,
                 validators: [TrValidators.PostalCodeValidate],
                 changed: function (form, item, value) {
                     if (value === null || !this.validate() || value === undefined)
@@ -332,7 +333,7 @@
                 title: "<spring:message code='state'/>",
                 textAlign: "center",
                 optionDataSource: RestDataSource_Work_State_Company,
-                required: true,
+                required: false,
                 changeOnKeypress: true,
                 filterOnKeypress: true,
                 displayField: "name",
@@ -353,7 +354,7 @@
                 optionDataSource: RestDataSource_Work_City_Company,
                 textAlign: "center",
                 destroyed: true,
-                required: true,
+                required: false,
                 changeOnKeypress: true,
                 filterOnKeypress: true,
                 displayField: "name",
