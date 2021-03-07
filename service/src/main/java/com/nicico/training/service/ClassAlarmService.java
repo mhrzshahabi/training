@@ -5,9 +5,11 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.dto.ClassAlarmDTO;
 import com.nicico.training.iservice.IClassAlarm;
 import com.nicico.training.model.Alarm;
+import com.nicico.training.model.ViewClassConflict;
 import com.nicico.training.repository.AlarmDAO;
 import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.TclassDAO;
+import com.nicico.training.repository.ViewClassConflictDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -34,7 +36,8 @@ public class ClassAlarmService implements IClassAlarm {
     private final AlarmDAO alarmDAO;
     private final TclassDAO tclassDAO;
     private final ClassStudentDAO classStudentDAO;
-    private MessageSource messageSource;
+    private final ViewClassConflictDAO classConflictDAO;
+    private final MessageSource messageSource;
     private final List<ClassAlarmDTO> alarmQueue;
     private final List<ClassAlarmDTO> alarmQueueType;
     private Long classIdQueue;
@@ -969,7 +972,7 @@ public class ClassAlarmService implements IClassAlarm {
                 allClassAlarmDTO.addAll(attendance);
             }
             //**********************************************************
-
+            allClassAlarmDTO.addAll(classConflictsByClass(classId));
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1974,4 +1977,37 @@ public class ClassAlarmService implements IClassAlarm {
     }
     //*********************************
 
+    public List<ClassAlarmDTO> classConflictsByClass(Long classId) {
+        List<ViewClassConflict> list = classConflictDAO.findAllByClass1Id(classId);
+        List<ClassAlarmDTO> result = new ArrayList<>();
+        if (list != null && !list.isEmpty()) {
+            final Locale locale = LocaleContextHolder.getLocale();
+            String alarmType = messageSource.getMessage("alarm.type.class.conflict", new Object[]{}, locale);
+            for (ViewClassConflict conflict : list) {
+                String warnMessage = messageSource.getMessage("alarm.class.conflict.warn", new Object[]{
+                        conflict.getC2Code(),
+                        conflict.getSessionDate(),
+                        conflict.getSession2StartHour(),
+                        conflict.getStudentFirstName(),
+                        conflict.getStudentLastName(),
+                        conflict.getStudentNationalCode(),
+                }, locale);
+                ClassAlarmDTO alarm = new ClassAlarmDTO();
+                alarm.setClassId(conflict.getClass1Id());
+                alarm.setClassIdConflict(conflict.getClass2Id());
+                alarm.setSessionId(conflict.getId().getSession1Id());
+                alarm.setSessionIdConflict(conflict.getId().getSession2Id());
+                alarm.setStudentId(conflict.getId().getStudentId());
+                alarm.setAlarmTypeTitleFa(alarmType);
+                alarm.setAlarmTypeTitleEn("Class Concurrency");
+                alarm.setAlarm(warnMessage);
+                result.add(alarm);
+            }
+        }
+        return result;
+    }
+
+    public List<ViewClassConflict> classConflictsByTerm(Long termId) {
+        return classConflictDAO.findAllByTermId(termId);
+    }
 }
