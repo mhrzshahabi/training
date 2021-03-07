@@ -18,6 +18,7 @@
     var isCategoriesChanged;
     var selected_record = null;
     var selected_teacher = null;
+    var tab_selected = null;
     var selectedRecordID = null;
     var isFileAttached = false;
     let oLoadAttachments_Teacher = null;
@@ -134,7 +135,7 @@
 
         <sec:authorize access="hasAuthority('Teacher_U')">
         rowDoubleClick: function () {
-            ListGrid_teacher_edit();
+            ListGrid_teacher_edit(null,"teacher");
         },
         </sec:authorize>
         initialSort: [
@@ -642,7 +643,7 @@
 
     var ToolStripButton_Edit_JspTeacher = isc.ToolStripButtonEdit.create({
         click: function () {
-            ListGrid_teacher_edit();
+            ListGrid_teacher_edit(null,"teacher");
 
         }
     });
@@ -846,7 +847,8 @@
             ToolStrip_Actions_JspEmploymentHistory.setVisibility(false);
             DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = true;
     }
-    function ListGrid_teacher_edit(teacherRecordId = null) {
+    function ListGrid_teacher_edit(teacherRecordId = null,tab) {
+        tab_selected=tab
         // console.log(teacherRecordId)
         selected_teacher = teacherRecordId;
         // console.log(selected_teacher)
@@ -1011,7 +1013,7 @@
             setTimeout(()=> {
                 oLoadAttachments_Teacher = new loadAttachments();
                 TabSet_Bottom_JspTeacher.updateTab(TeacherAttachmentsTab, oLoadAttachments_Teacher.VLayout_Body_JspAttachment);
-                if(selected_teacher) {
+                if(tab_selected==="class") {
                     oLoadAttachments_Teacher.ToolStrip_Actions_JspAttachment.setVisibility(false);
                 }
                 clearTabFilters(oLoadAttachments_Teacher);
@@ -1026,7 +1028,7 @@
         Window_Teacher_JspTeacher.bringToFront();
         TabSet_Bottom_JspTeacher.show();
         TabSet_Bottom_JspTeacher.selectTab(0);
-        if(selected_teacher) {
+        if(tab_selected==="class") {
             hiddenVisibilityButtons();
         }
     }
