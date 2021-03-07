@@ -11,6 +11,7 @@ import response.exam.ExamListResponse;
 
 
 
+
 @FeignClient(value = "elsClient", url = "http://devapp01.icico.net.ir/els/api/training")
 public interface ElsClient {
     @RequestMapping(method = RequestMethod.POST, value = "/evaluation")
