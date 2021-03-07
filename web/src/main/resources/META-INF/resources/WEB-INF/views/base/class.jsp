@@ -3962,12 +3962,12 @@
         isc.RPCManager.sendRequest(TrDSRequest(hasAccessToSetEndClass+"61", "GET",null, function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 if (resp.data === "false" )
-                    TabSet_Class.disableTab(TabSet_Class.tabs[11]);
+                    TabSet_Class.disableTab(TabSet_Class.getTab("classFinish"));
                 else
-                    TabSet_Class.enableTab(TabSet_Class.tabs[11]);
+                    TabSet_Class.enableTab(TabSet_Class.getTab("classFinish"));
 
             } else {
-                TabSet_Class.disableTab(TabSet_Class.tabs[11]);
+                TabSet_Class.disableTab(TabSet_Class.getTab("classFinish"));
             }
         }));
         if (value !== undefined) {
