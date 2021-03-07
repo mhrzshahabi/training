@@ -64,13 +64,15 @@
             {name: "tclassYear"},
             {name: "termTitleFa"},
             {name: "teacherFullName"},
+            {name: "tclassReason"},
+            {name: "classEvaluation"},
             {name: "tclassStatus"},
+            {name: "tclassTeachingType"},
             {name: "classCancelReasonId"},
             {name: "classCancelReasonTitle"},
             {name: "plannerComplex"},
             {name: "plannerName"},
             {name: "instituteName"},
-            // {name: "unitId"},
             {name: "tclassPlanner"},
             {name: "tclassSupervisor"},
             {name: "tclassCode"},
@@ -139,7 +141,7 @@
         fetchDataURL: instituteUrl + "spec-list",
         allowAdvancedCriteria: true
     });
-/**/
+
     var RestDataSource_SupervisorDS_JspTClassReport = isc.TrDS.create({
         fields: [
             {name: "id", filterOperator: "equals", primaryKey: true, hidden: true},
@@ -203,7 +205,7 @@
             }
         },
         {
-            title: "<spring:message code='print.html'/>", icon: "<spring:url value="html.png"/>", click: function () {
+            title: "<spring:message code='print.html'/>", icon: "<spring:url value="html.jpg"/>", click: function () {
                 Reporting();
 
                 var dataParams = new Object();
@@ -237,10 +239,28 @@
             {name: "tclassYear", title: "سال کاری"},
             {name: "termTitleFa", title: "ترم"},
             {name: "teacherFullName", title: "استاد"},
-            // {name: "unitId", title: "حوزه"},
             <%--{name: "tclassPlanner",  title: "<spring:message code="planner"/>"},--%>
             <%--{name: "tclassSupervisor",  title: "<spring:message code="supervisor"/>"},--%>
             {name: "tclassStudentsCount", title: "تعداد فراگیران" , filterOperator: "equals"},
+            {
+                name: "tclassReason",
+                title: "<spring:message code="training.request"/>",
+                valueMap: {
+                    "1": "نیازسنجی",
+                    "2": "درخواست واحد",
+                    "3": "نیاز موردی",
+                }
+            },
+            {
+                name: "classEvaluation",
+                title: "<spring:message code="evaluation.level"/>",
+                valueMap: {
+                    "1": "واکنشی",
+                    "2": "یادگیری",
+                    "3": "رفتاری",
+                    "4": "نتایج",
+                }
+            },
             {name: "tclassStatus", title: "وضعیت کلاس",
                 type: "SelectItem",
                 valueMap: {
@@ -248,15 +268,24 @@
                     "2": "در حال اجرا",
                     "3": "پایان یافته",
                     "4": "لغو شده"
-                },
-                filterEditorProperties: {
-                    pickListProperties: {
-                        showFilterEditor: false
-                    }
-                }},
+                }
+            },
+            {name: "tclassTeachingType",
+                title: "<spring:message code='teaching.type'/>",
+                type: "SelectItem",
+                valueMap: [
+                    "حضوری",
+                    "غیر حضوری",
+                    "مجازی",
+                    "عملی و کارگاهی",
+                    "آموزش حین کار(OJT)",
+                    "اعزام"
+                ]
+            },
             {name: "classCancelReasonTitle", title: "علت لغو" , filterOperator: "iContains"},
         ],
         cellHeight: 43,
+        showFilterEditor: false,
         filterOperator: "iContains",
         filterOnKeypress: false,
         autoFetchData: true,
@@ -841,20 +870,6 @@
                 title: "",
                 canEdit: false
             },
-            // {
-            //     name: "unitId",
-            //     title: "حوزه",
-            //     type: "SelectItem",
-            //     pickListProperties: {
-            //         showFilterEditor: false
-            //     },
-            //     textAlign: "center",
-            //     wrapTitle: false,
-            //     filterOperator: "equals",
-            //     optionDataSource: RestDataSource_TargetSociety_JspTClassReport,
-            //     displayField: "title",
-            //     valueField: "societyId"
-            // },
             {
                 name: "tclassSupervisor",
                 title: "<spring:message code="supervisor"/>:",
@@ -882,21 +897,37 @@
                 pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "nationalCode"}, {name: "personnelNo"}],
                 pickListProperties: {sortField: "personnelNo2", showFilterEditor: true}
             },
-            // {
-            //     name: "courseStatus",
-            //     title: "نوع دوره",
-            //     type: "SelectItem",
-            //     defaultValue: "3",
-            //     filterOperator: "equals",
-            //     valueMap: {
-            //         "1": "وابسته به نیازسنجی مشاغل",
-            //         "2": "عدم نیازسنجی",
-            //         "3": "همه"
-            //     },
-            //     pickListProperties: {
-            //         showFilterEditor: false
-            //     }
-            // },
+            {
+                name: "temp6",
+                title: "",
+                canEdit: false
+            },
+            {
+                name: "tclassReason",
+                colSpan: 1,
+                textAlign: "center",
+                wrapTitle: true,
+                title: "<spring:message code="training.request"/>:",
+                type: "ComboBoxItem",
+                valueMap: {
+                    "1": "نیازسنجی",
+                    "2": "درخواست واحد",
+                    "3": "نیاز موردی"
+                },
+            },
+            {
+                name: "classEvaluation",
+                colSpan: 1,
+                title: "<spring:message code="evaluation.level"/>:",
+                type: "ComboBoxItem",
+                textAlign: "center",
+                valueMap: {
+                    "1": "واکنشی",
+                    "2": "یادگیری",
+                    "3": "رفتاری",
+                    "4": "نتایج"
+                }
+            },
             {
                 name: "temp6",
                 title: "",
@@ -904,7 +935,7 @@
             },
             {
                 name: "tclassStatus",
-                title: "وضعیت کلاس",
+                title: "وضعیت کلاس:",
                 wrapTitle: true,
                 type: "radioGroup",
                 vertical: false,
@@ -915,7 +946,7 @@
                     "1": "برنامه ریزی",
                     "2": "در حال اجرا",
                     "3": "پایان یافته",
-                    "4": "لفو شده"  ,
+                    "4": "لفو شده",
                     "5": "همه"
                 }
             },
@@ -929,7 +960,23 @@
                 title: "",
                 canEdit: false
             },
-
+            {
+                name: "tclassTeachingType",
+                title: "<spring:message code='teaching.type'/>:",
+                type: "radioGroup",
+                vertical: false,
+                filterOperator: "equals",
+                fillHorizontalSpace: true,
+                defaultValue: "حضوری",
+                valueMap: [
+                    "حضوری",
+                    "غیر حضوری",
+                    "مجازی",
+                    "عملی و کارگاهی",
+                    "آموزش حین کار(OJT)",
+                    "اعزام"
+                ]
+            },
             {
                 name: "reactionEvaluation",
                 title: "نمره ارزیابی واکنشی کلاس",
@@ -1131,11 +1178,10 @@
         ]
     });
     DynamicForm_SelectCourses_JspTClassReport.getField("courseCode").comboBox.setHint("دوره های مورد نظر را انتخاب کنید");
-    DynamicForm_SelectCourses_JspTClassReport.getField("courseCode").comboBox.pickListFields =
-        [{name: "titleFa", title: "نام دوره", width: "30%", filterOperator: "iContains"},
-            {
-                name: "code", title: "کد دوره", width: "30%", filterOperator: "iContains"
-            }];
+    DynamicForm_SelectCourses_JspTClassReport.getField("courseCode").comboBox.pickListFields = [
+        {name: "titleFa", title: "نام دوره", width: "30%", filterOperator: "iContains"},
+        {name: "code", title: "کد دوره", width: "30%", filterOperator: "iContains"}
+    ];
     DynamicForm_SelectCourses_JspTClassReport.getField("courseCode").comboBox.filterFields = ["titleFa", "code"];
 
     IButton_ConfirmCourseSelections_JspTClassReport = isc.IButtonSave.create({
@@ -1269,82 +1315,8 @@
         }
     });
 
-    <%--IButton_Print_JspTClassReport = isc.IButtonSave.create({--%>
-    <%--    top: 260,--%>
-    <%--    title: "چاپ گزارش",--%>
-    <%--    width: 300,--%>
-    <%--    icon: "<spring:url value="pdf.png"/>",--%>
-    <%--    click: function () {--%>
-    <%--        DynamicForm_CriteriaForm_JspTClassReport.validate();--%>
-    <%--        if (DynamicForm_CriteriaForm_JspTClassReport.hasErrors())--%>
-    <%--            return;--%>
-    <%--        var startDuratiorn = DynamicForm_CriteriaForm_JspTClassReport.getValue("hDurationStart");--%>
-    <%--        var endDuratiorn = DynamicForm_CriteriaForm_JspTClassReport.getValue("hDurationEnd");--%>
-    <%--        if (startDuratiorn != undefined && endDuratiorn != undefined &&  parseFloat(startDuratiorn) > parseFloat(endDuratiorn)){--%>
-    <%--            DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("hDurationEnd", true);--%>
-    <%--            DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("hDurationStart", true);--%>
-    <%--            DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("hDurationEnd", "حداکثر مدت کلاس باید بیشتر از حداقل مدت کلاس باشد", true);--%>
-    <%--            DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("hDurationStart", "حداکثر مدت کلاس باید بیشتر از حداقل مدت کلاس باشد", true);--%>
-    <%--            return;--%>
-    <%--        }--%>
-    <%--        if (!DynamicForm_CriteriaForm_JspTClassReport.validate() ||--%>
-    <%--            startDateCheck_Order_JspTClassReport == false ||--%>
-    <%--            startDate2Check_JspTClassReport == false ||--%>
-    <%--            startDate1Check_JspTClassReport == false ||--%>
-    <%--            endDateCheck_Order_JspTClassReport == false ||--%>
-    <%--            endDate2Check_JspTClassReport == false ||--%>
-    <%--            endDate1Check_JspTClassReport == false) {--%>
-
-    <%--            if (startDateCheck_Order_JspTClassReport == false) {--%>
-    <%--                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate2", true);--%>
-    <%--                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);--%>
-    <%--            }--%>
-    <%--            if (startDateCheck_Order_JspTClassReport == false) {--%>
-    <%--                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate1", true);--%>
-    <%--                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);--%>
-    <%--            }--%>
-    <%--            if (startDate2Check_JspTClassReport == false) {--%>
-    <%--                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate2", true);--%>
-    <%--                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate2", "<spring:message--%>
-    <%--    code='msg.correct.date'/>", true);--%>
-    <%--            }--%>
-    <%--            if (startDate1Check_JspTClassReport == false) {--%>
-    <%--                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("startDate1", true);--%>
-    <%--                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("startDate1", "<spring:message--%>
-    <%--    code='msg.correct.date'/>", true);--%>
-    <%--            }--%>
-
-    <%--            if (endDateCheck_Order_JspTClassReport == false) {--%>
-    <%--                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate2", true);--%>
-    <%--                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);--%>
-    <%--            }--%>
-    <%--            if (endDateCheck_Order_JspTClassReport == false) {--%>
-    <%--                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate1", true);--%>
-    <%--                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);--%>
-    <%--            }--%>
-    <%--            if (endDate2Check_JspTClassReport == false) {--%>
-    <%--                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate2", true);--%>
-    <%--                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate2", "<spring:message code='msg.correct.date'/>", true);--%>
-    <%--            }--%>
-    <%--            if (endDate1Check_JspTClassReport == false) {--%>
-    <%--                DynamicForm_CriteriaForm_JspTClassReport.clearFieldErrors("endDate1", true);--%>
-    <%--                DynamicForm_CriteriaForm_JspTClassReport.addFieldErrors("endDate1", "<spring:message code='msg.correct.date'/>", true);--%>
-    <%--            }--%>
-    <%--            return;--%>
-    <%--        }--%>
-    <%--        Reporting();--%>
-
-    <%--        var dataParams = new Object();--%>
-    <%--        dataParams.courseInfo = courseInfo_print;--%>
-    <%--        dataParams.classTimeInfo = classTimeInfo_print;--%>
-    <%--        dataParams.executionInfo = executionInfo_print;--%>
-    <%--        dataParams.evaluationInfo = evaluationInfo_print;--%>
-
-    <%--        trPrintWithCriteria("<spring:url value="/tclass/reportPrint/"/>" + "pdf", data_values,JSON.stringify(dataParams));--%>
-    <%--    }--%>
-    <%--});--%>
     //----------------------------------- functions --------------------------------------------------------------------
-    function Reporting(){
+    function Reporting() {
         data_values = null;
         data_values = DynamicForm_CriteriaForm_JspTClassReport.getValuesAsAdvancedCriteria();
         var removedObjects = [];
@@ -1504,17 +1476,18 @@
             courseInfo_print  += DynamicForm_CriteriaForm_JspTClassReport.getField("courseSubCategory").getDisplayValue() ;
             courseInfo_print  += ", " ;
         }
-        // if (DynamicForm_CriteriaForm_JspTClassReport.getField("courseStatus").getValue() != undefined) {
-        //     courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "نوع دوره: " + "</span>";
-        //     courseInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-        //         DynamicForm_CriteriaForm_JspTClassReport.getField("courseStatus").getDisplayValue() + "</span>";
-        //     courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-        //
-        //     courseInfo_print += "نوع دوره: ";
-        //     courseInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("courseStatus").getDisplayValue() ;
-        //     courseInfo_print +=  ", " ;
-        // }
-        if (DynamicForm_CriteriaForm_JspTClassReport.getField("tclassStatus").getValue() != undefined) {
+
+        if (DynamicForm_CriteriaForm_JspTClassReport.getField("tclassReason").getValue() !== undefined) {
+            courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "درخواست آموزشی: " + "</span>";
+            courseInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
+                DynamicForm_CriteriaForm_JspTClassReport.getField("tclassReason").getDisplayValue() + "</span>";
+            courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
+
+            courseInfo_print +=  "درخواست آموزشی: " ;
+            courseInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("tclassReason").getDisplayValue();
+            courseInfo_print += ", ";
+        }
+        if (DynamicForm_CriteriaForm_JspTClassReport.getField("tclassStatus").getValue() !== undefined) {
             courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "وضعیت کلاس: " + "</span>";
             courseInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
                 DynamicForm_CriteriaForm_JspTClassReport.getField("tclassStatus").getDisplayValue() + "</span>";
@@ -1522,6 +1495,16 @@
 
             courseInfo_print +=  "وضعیت کلاس: " ;
             courseInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("tclassStatus").getDisplayValue();
+            courseInfo_print += ", ";
+        }
+        if (DynamicForm_CriteriaForm_JspTClassReport.getField("tclassTeachingType").getValue() !== undefined) {
+            courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "روش آموزش: " + "</span>";
+            courseInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
+                DynamicForm_CriteriaForm_JspTClassReport.getField("tclassTeachingType").getDisplayValue() + "</span>";
+            courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
+
+            courseInfo_print +=  "روش آموزش: " ;
+            courseInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("tclassTeachingType").getDisplayValue();
             courseInfo_print += ", ";
         }
 
@@ -1620,16 +1603,7 @@
             executionInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("teacherId").getDisplayValue();
             executionInfo_print += ", " ;
         }
-        // if (DynamicForm_CriteriaForm_JspTClassReport.getField("teacherPayingStatus").getValue() != undefined) {
-        //     executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "وضعیت هزینه ی مدرس: " + "</span>";
-        //     executionInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-        //         DynamicForm_CriteriaForm_JspTClassReport.getField("teacherPayingStatus").getDisplayValue() + "</span>";
-        //     executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
-        //
-        //     executionInfo_print  +=  "وضعیت هزینه ی مدرس: ";
-        //     executionInfo_print  += DynamicForm_CriteriaForm_JspTClassReport.getField("teacherPayingStatus").getDisplayValue();
-        //     executionInfo_print  += ", ";
-        // }
+
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("tclassOrganizerId").getValue() != undefined) {
             executionInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "برگزار کننده: " + "</span>";
             executionInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
@@ -1639,6 +1613,17 @@
             executionInfo_print +=  "برگزار کننده: " ;
             executionInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("tclassOrganizerId").getDisplayValue() ;
             executionInfo_print +=  ", " ;
+        }
+
+        if (DynamicForm_CriteriaForm_JspTClassReport.getField("classEvaluation").getValue() !== undefined) {
+            evaluationInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "سطح ارزیابی: " + "</span>";
+            evaluationInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
+                DynamicForm_CriteriaForm_JspTClassReport.getField("classEvaluation").getDisplayValue() + "</span>";
+            evaluationInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
+
+            evaluationInfo_print +=  "سطح ارزیابی: " ;
+            evaluationInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("classEvaluation").getDisplayValue() ;
+            evaluationInfo_print +=  ", " ;
         }
 
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("reactionEvaluationOperator").getValue() != undefined &&
