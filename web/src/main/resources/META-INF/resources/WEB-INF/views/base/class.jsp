@@ -1975,6 +1975,7 @@
                         ],
                         gridComponents: ["filterEditor", "header", "body"],
                         recordDoubleClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
+                            DynamicForm_Class_JspClass.setValue("erunType", record.erunType);
                             DynamicForm_Class_JspClass.setValue("course.id", record.id);
                             setTimeout(function () {
                                 DynamicForm_Class_JspClass.getItem("course.id").changed(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("course.id"));
