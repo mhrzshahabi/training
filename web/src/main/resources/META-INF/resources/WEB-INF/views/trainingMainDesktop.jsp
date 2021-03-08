@@ -2515,12 +2515,12 @@
         menu: isc.Menu.create({
             placement: "none",
             data: [
-                {
-                    title: "مدیریت کاربران",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/web/oauth/landing/show-form" />", false);
-                    }
-                },
+                <%--{--%>
+                <%--    title: "مدیریت کاربران",--%>
+                <%--    click: function () {--%>
+                <%--        createTab(this.title, "<spring:url value="/web/oauth/landing/show-form" />", false);--%>
+                <%--    }--%>
+                <%--},--%>
                 <%--{--%>
                 <%--    title: "<spring:message code="user.plural"/>",--%>
                 <%--    click: function () {--%>
