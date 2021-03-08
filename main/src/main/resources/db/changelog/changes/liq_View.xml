@@ -7823,4 +7823,26 @@ ORDER BY
         </createView>
     </changeSet>
 
+    <changeSet author="zare" id="abiz-2094-debug-2">
+        <createView viewName="view_class_conflict" replaceIfExists="true">
+            <![CDATA[
+                 select student_1.student_Id student_Id,student.FIRST_NAME student_FIRST_NAME,student.LAST_NAME student_LAST_NAME,student.NATIONAL_CODE student_NATIONAL_CODE,terms.term_cur term_Id,se1.c_session_date session_date,c1.id class1_Id ,c1.c_code c1_code,c2.id class2_Id,c2.c_code c2_code,
+                      se1.id session1_Id,se2.id session2_Id,se1.c_session_start_hour s1_start_hour, se1.c_session_end_hour s1_end_hour,se2.c_session_start_hour s2_start_hour ,se2.c_session_end_hour s2_end_hour
+                      from (select term_1.id term_cur ,term_2.id term_nxt , term_3.id term_pre from (select t.id,row_number() over(ORDER BY c_code desc) as term_order from tbl_term t) term_1
+                 left join (select term_2.term_order ,term_2.id from (select t.id,row_number() over(ORDER BY c_code desc) as term_order from tbl_term t) term_2) term_2 on (term_1.term_order = term_2.term_order + 1)
+                 left join (select term_3.term_order ,term_3.id from (select t.id,row_number() over(ORDER BY c_code desc) as term_order from tbl_term t) term_3) term_3 on (term_1.term_order = term_3.term_order - 1)) terms
+                 inner join tbl_class c1 on (c1.c_status<>4 and c1.f_term = terms.term_cur)
+                 inner join tbl_class c2 on (c2.id <> c1.id AND c2.c_status<>4 and (c2.f_term = terms.term_nxt OR c2.f_term = terms.term_pre OR c2.f_term = terms.term_cur))
+                 inner join tbl_session se1 on se1.F_CLASS_ID = c1.id
+                 inner join tbl_session se2 on (se2.F_CLASS_ID = c2.id and se1.c_session_date = se2.c_session_date and (
+                                                                         ((se1.c_session_start_hour) = (se2.c_session_start_hour) OR (se1.c_session_end_hour) = (se2.c_session_end_hour))
+                                                                         OR
+                                                                         ((se1.c_session_start_hour) > (se2.c_session_start_hour) and (se1.c_session_start_hour) < (se2.c_session_end_hour))))
+                 inner join tbl_class_student student_1 on student_1.CLASS_ID = c1.id
+                 inner join tbl_class_student student_2 on (student_2.CLASS_ID = c2.id and student_1.STUDENT_ID = student_2.STUDENT_ID)
+                 inner join tbl_student student on (student_2.STUDENT_ID = student.Id)
+                          ]]>
+        </createView>
+    </changeSet>
+
 </databaseChangeLog>
