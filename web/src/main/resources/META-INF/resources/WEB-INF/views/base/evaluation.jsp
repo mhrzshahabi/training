@@ -416,7 +416,42 @@
         width: "100%",
         height: "100%",
         members: [HLayout_Actions_Evaluation,
-            labelGuide(ListGrid_class_Evaluation.getFieldByName("evaluation").valueMap),
+            isc.HLayout.create({
+                width: "75%",
+                height: "1%",
+                members: [
+                    labelGuide(ListGrid_class_Evaluation.getFieldByName("evaluation").valueMap),
+                    isc.DynamicForm.create({
+                        padding: 0,
+                        fields: [
+                            {
+                                name: "departmentFilter",
+                                title: "<spring:message code='complex'/>",
+                                width: "300",
+                                height: 25,
+                                optionDataSource: isc.TrDS.create({
+                                    fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
+                                    cacheAllData: true,
+                                    fetchDataURL: departmentUrl + "/organ-segment-iscList/mojtame"
+                                }),
+                                autoFetchData: false,
+                                displayField: "title",
+                                valueField: "code",
+                                textAlign: "center",
+                                pickListFields: [
+                                    {
+                                        name: "title",
+                                        title: "<spring:message code="title"/>",
+                                        filterOperator: "iContains",
+                                        autoFitWidth: true
+                                    }
+                                ],
+                                changed: function (form, item, value) {
+                                    load_classList_by_department(value);
+                                },
+                            }]
+                    })]
+            }),
             Hlayout_Grid_Evaluation,
             Hlayout_Tab_Evaluation]
     });
@@ -610,4 +645,37 @@
         data = data.sort(new Intl.Collator("fa").compare);
         printToJasper(data, params, "ClassStudents.jasper");
     }
-   
+
+    ////*****load classes by department*****
+    function load_classList_by_department(value) {
+        isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/inDepartmentIsPlanner/" + value, "GET", null, res => {
+            if (value !== undefined) {
+                let criteria = {
+                    _constructor: "AdvancedCriteria",
+                    operator: "and",
+                    criteria: [
+                        {
+                            fieldName: "tclassPlanner", operator: "inSet", value: JSON.parse(res.data).size() > 0
+                                ? JSON.parse(res.data) : null
+                        }
+                    ]
+                };
+                
+                if (ListGrid_class_Evaluation.implicitCriteria) {
+                    let termCriteria = ListGrid_class_Evaluation.implicitCriteria.criteria.filter(c => c.fieldName
+                        != "tclassPlanner");
+                    if (termCriteria.size() > 0) {
+                        criteria.criteria.push(termCriteria[0]);
+                    }
+                }
+                RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
+                ListGrid_class_Evaluation.implicitCriteria = criteria;
+                ListGrid_class_Evaluation.invalidateCache();
+                ListGrid_class_Evaluation.fetchData();
+            } else {
+                createDialog("info", "<spring:message code="msg.select.term.ask"/>", "<spring:message code="message"/>")
+            }
+        }));
+    }
+
+//</script>
