@@ -155,6 +155,75 @@
 
                     }
                 }),
+                isc.ToolStripButtonExcel.create({
+                    title: 'اکسل نواقص اطلاعات فراگیران',
+                    click: function () {
+                        let sendFields = [{name:"rowNum",title:"ردیف"},{name:"fullName",title:"نام"},{name:"description",title:"توضیحات"}];
+                        let data = [];
+                        let rows = StudentsLG_student.data.getAllLoadedRows();
+                        let j = 0;
+                        for (let i = 0; i < rows.length; i++) {
+                            if(rows[i].student.nationalCode === null || rows[i].student.nationalCode === undefined ){
+                                data[j] = {};
+                                data[j].rowNum = i + 1;
+                                data[j].fullName = rows[i].fullName;
+                                data[j].description = "شماره ملی فراگیر در سیستم ثبت نشده است";
+                                j++;
+                            } else{
+                                if(rows[i].student.nationalCode.length !== 10 || !(/^-?\d+$/.test(rows[i].student.nationalCode.length))){
+                                    data[j] = {};
+                                    data[j].rowNum = i + 1;
+                                    data[j].fullName = rows[i].fullName;
+                                    data[j].description = "شماره ملی فراگیر صحیح نیست";
+                                    j++;
+                                }
+                            }
+                            if(rows[i].student.mobile === null || rows[i].student.mobile === undefined ){
+                                data[j] = {};
+                                data[j].rowNum = i + 1;
+                                data[j].fullName = rows[i].fullName;
+                                data[j].description = "شماره همراه فراگیر در سیستم ثبت نشده است";
+                                j++;
+                            } else{
+                                if((rows[i].student.mobile.length !== 10 && rows[i].student.mobile.length !== 11) || !(/^-?\d+$/.test(rows[i].student.mobile))){
+                                        data[j] = {};
+                                        data[j].rowNum = i + 1;
+                                        data[j].fullName = rows[i].fullName;
+                                        data[j].description = "تعداد ارقام همراه فراگیر در سیستم صحیح نیست";
+                                        j++;
+                                }
+                                if(rows[i].student.mobile.length === 10 && !rows[i].student.mobile.startsWith("9")){
+                                        data[j] = {};
+                                        data[j].rowNum = i + 1;
+                                        data[j].fullName = rows[i].fullName;
+                                        data[j].description = "فرمت شماره همراه فراگیر در سیستم صحیح نیست";
+                                        j++;
+                                }
+                                if(rows[i].student.mobile.length === 11 && !rows[i].student.mobile.startsWith("09")){
+                                        data[j] = {};
+                                        data[j].rowNum = i + 1;
+                                        data[j].fullName = rows[i].fullName;
+                                        data[j].description = "فرمت شماره همراه فراگیر در سیستم صحیح نیست";
+                                        j++;
+                                }
+                            }
+                            if(rows[i].student.gender === null || rows[i].student.gender === undefined ){
+                                data[j] = {};
+                                data[j].rowNum = i + 1;
+                                data[j].fullName = rows[i].fullName;
+                                data[j].description = "جنسیت فراگیر در سیستم ثبت نشده است";
+                                j++;
+                            }
+                        }
+                        if(data.length === 0){
+                            createDialog("info"," اطلاعات فراگیران این کلاس صحیح است." );
+                        } else {
+                            let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                            let fileTitle = classRecord.code + " نواقص فراگیران کلاس با کد " ;
+                            ExportToFile.exportToExcelFromClient(sendFields, data, fileTitle , "اطلاعات ناقص فراگیران");
+                        }
+                    }
+                }),
                 </sec:authorize>
 
                 isc.IButton.create({
