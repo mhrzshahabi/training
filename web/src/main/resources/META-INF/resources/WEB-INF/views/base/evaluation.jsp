@@ -152,7 +152,7 @@
                 title: "<spring:message code='course.code'/>",
                 align: "center",
                 filterOperator: "iContains",
-                autoFithWidth: true
+                autoFitWidth: true
             },
             {
                 name: "courseTitleFa",
@@ -589,7 +589,7 @@
             "\n" +
             " تاریخ شروع: " + classRecord.tclassStartDate.split("/").reverse().join("/") +
             " و تاریخ پایان: " + classRecord.tclassEndDate.split("/").reverse().join("/");
-    
+
         let params = {};
         params.titr = titr;
         let localData = listGrid_.data.localData.toArray();
