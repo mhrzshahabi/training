@@ -969,7 +969,7 @@
                 colSpan: 4,
                 blur: function () {
                     if (!QuestionBankDF_questionBank.getItem("option1").getValue()) {
-                        QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").setValue(0);
+                        QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").setValue(1);
                     }
                 }
             },
@@ -992,7 +992,7 @@
                 },
                 blur: function () {
                     if (!QuestionBankDF_questionBank.getItem("option2").getValue()) {
-                        QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").setValue(0);
+                        QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").setValue(1);
                     }
                     let option1Value = QuestionBankDF_questionBank.getItem("option1").getValue();
 
@@ -1027,7 +1027,7 @@
                 },
                 blur: function () {
                     if (!QuestionBankDF_questionBank.getItem("option3").getValue()) {
-                        QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").setValue(0);
+                        QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").setValue(1);
                     }
                     let option1Value = QuestionBankDF_questionBank.getItem("option1").getValue();
                     let option1Value2 = QuestionBankDF_questionBank.getItem("option2").getValue();
@@ -1062,7 +1062,7 @@
                 },
                 blur: function () {
                     if (!QuestionBankDF_questionBank.getItem("option4").getValue()) {
-                        QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").setValue(0);
+                        QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").setValue(1);
                     }
                     let option1Value = QuestionBankDF_questionBank.getItem("option1").getValue();
                     let option1Value2 = QuestionBankDF_questionBank.getItem("option2").getValue();
@@ -1096,7 +1096,6 @@
                 vertical: false,
                 fillHorizontalSpace: true,
                 valueMap: {
-                    "0": "<spring:message code="question.bank.unSelected"/>",
                     "1": "<spring:message code="question.bank.option1"/>",
                     "2": "<spring:message code="question.bank.option2"/>",
                     "3": "<spring:message code="question.bank.option3"/>",
@@ -1107,7 +1106,7 @@
 
                     if ((!QuestionBankDF_questionBank.getItem("option1").getValue() && value == 1) || (!QuestionBankDF_questionBank.getItem("option2").getValue() && value == 2) || (!QuestionBankDF_questionBank.getItem("option3").getValue() && value == 3) || (!QuestionBankDF_questionBank.getItem("option4").getValue() && value == 4)) {
                         createDialog("info", "<spring:message code='question.bank.option.not.exist'/>");
-                        QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").setValue(0);
+                        QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").setValue(1);
                     }
                 }
             },
@@ -1235,7 +1234,7 @@ ID:"QuestionBankWin_questionBank_TrSaveNextBtn",
         QuestionBankDF_questionBank.getItem("option3").disable();
         QuestionBankDF_questionBank.getItem("option4").disable();
 
-        QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").setValue(0);
+        QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").setValue(1);
         QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").disable();
         QuestionBankDF_questionBank.getItem("descriptiveAnswer").enable();
         QuestionBankDF_questionBank.getItem("lines").enable();
