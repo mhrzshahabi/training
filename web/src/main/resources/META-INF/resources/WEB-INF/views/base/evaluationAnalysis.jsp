@@ -143,6 +143,12 @@
                 }
             },
             {
+                name: "instituteTitleFa",
+                title: "<spring:message code='presenter'/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
                 name: "evaluation",
                 title: "<spring:message code='evaluation.type'/>",
                 align: "center",
