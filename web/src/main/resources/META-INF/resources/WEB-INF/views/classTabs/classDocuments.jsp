@@ -26,7 +26,8 @@ var saveActionUrlClassDocument;
             {name: "classId"},
             {name: "letterNum"},
             {name: "letterTypeId"},
-            {name: "referenceId"}
+            {name: "referenceId"},
+            {name: "description"}
         ]
     });
 
@@ -76,6 +77,14 @@ var saveActionUrlClassDocument;
                 required: true,
                 length: 15,
                 keyPressFilter:"[0-9 ]"
+            },
+            {
+                name: "description",
+                showHintInField: true,
+                title: "<spring:message code='description'/>",
+                height: "40",
+                length: "350", width: "*",
+                type: 'areaText'
             },
             {
                 name: "classId",
@@ -236,6 +245,11 @@ var saveActionUrlClassDocument;
             {
                 name: "letterNum",
                 title: "شماره نامه",
+                filterOperator: "iContains"
+            },
+            {
+                name: "description",
+                title: "<spring:message code='description'/>",
                 filterOperator: "iContains"
             },
             {

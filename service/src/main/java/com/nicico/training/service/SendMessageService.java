@@ -11,7 +11,6 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
-import com.nicico.copper.core.service.sms.nimad.NimadSMSService;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ISendMessageService;
@@ -47,7 +46,6 @@ import static com.nicico.training.service.ClassSessionService.getPersianDate;
 @Service
 public class SendMessageService implements ISendMessageService {
 
-    private final NimadSMSService nimadSMSService;
     private final MessageContactService messageContactService;
     private final MessageContactDAO messageContactDAO;
     private final MessageParameterDAO messageParameterDAO;

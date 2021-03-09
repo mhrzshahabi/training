@@ -27,6 +27,7 @@ public class ClassDocumentDTO {
         private Long letterTypeId;
         private ParameterValueDTO.TupleInfo reference;
         private Long referenceId;
+        private String description;
     }
 
     @Getter
@@ -40,6 +41,7 @@ public class ClassDocumentDTO {
         private Long letterTypeId;
         private ParameterValueDTO.TupleInfo reference;
         private Long referenceId;
+        private String description;
     }
 
     @Getter
@@ -53,6 +55,7 @@ public class ClassDocumentDTO {
         private Long letterTypeId;
         private ParameterValueDTO.TupleInfo reference;
         private Long referenceId;
+        private String description;
     }
 
     @Getter

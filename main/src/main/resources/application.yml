@@ -80,6 +80,9 @@ nicico:
     magfa:
       username: 'maaden_81794'
       password: 'DplSkqONgQcfymUb'
+  token:
+    revoke: false
+
 ---
 
 spring:

@@ -8,7 +8,6 @@
 package com.nicico.training.service;
 
 import com.nicico.copper.common.dto.grid.TotalResponse;
-import com.nicico.copper.core.service.sms.nimad.NimadSMSService;
 import com.nicico.training.dto.MessageContactDTO;
 import com.nicico.training.dto.MessageDTO;
 import com.nicico.training.dto.ParameterValueDTO;

@@ -45,4 +45,7 @@ public class ClassDocument extends Auditable {
 
     @Column(name = "f_reference")
     private Long referenceId;
+
+    @Column(name = "c_description")
+    private String description;
 }

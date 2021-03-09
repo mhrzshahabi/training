@@ -1331,4 +1331,9 @@
         <dropNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_register_id" tableName="tbl_company"/>
         <dropNotNullConstraint columnDataType="NUMBER(19, 0)" columnName="f_account_info_id" tableName="tbl_company"/>
     </changeSet>
+    <changeSet author="nick (generated)" id="1615268221617-522">
+        <addColumn tableName="tbl_class_document">
+            <column name="c_description" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
