@@ -2432,6 +2432,21 @@
                         ]
                 },
                 </sec:authorize>
+                //@Todo sec:authorize for this menu
+                {
+                    title: "<spring:message code="reports.evaluation.and.online.exam"/>",
+                    submenu:
+                        [
+                            //@Todo sec:authorize access="hasAuthority('Menu_Report_ReportsManagment_ReportMonthlyStatistical')">
+                            {
+                                title: "<spring:message code="reports.done.evaluations"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/evaluationDoneOnlineReport"/>");
+                                }
+                            },
+                            //@Todo /sec:authorize>
+                        ]
+                },
             ]
         }),
     });
