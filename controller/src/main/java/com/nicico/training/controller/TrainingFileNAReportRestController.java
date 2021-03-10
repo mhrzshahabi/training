@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -48,11 +50,19 @@ public class TrainingFileNAReportRestController {
         List<TrainingFileNAReportDTO.Info> data = modelMapper.map(trainingFileNAReports, new TypeToken<List<TrainingFileNAReportDTO.Info>>() {
         }.getType());
 
+        List<TrainingFileNAReportDTO.Info> passedCourseList = data.stream().filter(item -> item.getReferenceCourse() == 0).collect(Collectors.toList());
+        List<TrainingFileNAReportDTO.Info> equalCourseList = data.stream().filter(item -> item.getReferenceCourse() != 0).collect(Collectors.toList());
+
+        equalCourseList.forEach(eq -> {
+            if (!passedCourseList.stream().map(TrainingFileNAReportDTO.Info::getCourseId).collect(Collectors.toList()).contains(eq.getCourseId()))
+                passedCourseList.add(eq);
+        });
+
         final TrainingFileNAReportDTO.SpecRs specResponse = new TrainingFileNAReportDTO.SpecRs();
-        specResponse.setData(data)
+        specResponse.setData(passedCourseList)
                 .setStartRow(startRow)
-                .setEndRow(startRow + data.size())
-                .setTotalRows(data.size());
+                .setEndRow(startRow + passedCourseList.size())
+                .setTotalRows(passedCourseList.size());
 
         final TrainingFileNAReportDTO.TrainingFileNAReportSpecRs specRs = new TrainingFileNAReportDTO.TrainingFileNAReportSpecRs();
         specRs.setResponse(specResponse);

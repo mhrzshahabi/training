@@ -14,13 +14,16 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode(of = {"id"}, callSuper = false)
+@EqualsAndHashCode(callSuper = false)
 @Entity
 @Subselect("select * from VIEW_TRAINING_FILE_NA_REPORT_AND_EQUALS")
 public class TrainingFileNAReport implements Serializable {
 
     @EmbeddedId
-    private TrainingFileNAReportKey id;
+    private TrainingFileNAReportKey reportId;
+
+    @Column(name = "id", insertable = false, updatable = false)
+    private Long id;
 
     ///////////////////////////////////////////////////na/////////////////////////////////////////////
 
