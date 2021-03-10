@@ -557,6 +557,7 @@
                 filterFields: ["titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
+                required: true,
                 generateExactMatchCriteria: true,
                 pickListProperties: {
                     showFilterEditor: true
@@ -654,6 +655,7 @@
                 title: "<spring:message code='cellPhone'/>",
                 keyPressFilter: "[0-9|-|+]",
                 length: "11",
+                required: true,
                 // validators: [TrValidators.MobileValidate],
                 changed: function () {
                     DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("mobile", true);
@@ -1189,7 +1191,7 @@
     });
 
     var personnelRegTabs = isc.TabSet.create({
-        width: 820,
+        width: 850,
         titleWidth: 120,
         height: 400,
         showTabScroller: false,
@@ -1297,8 +1299,8 @@
 
     var Window_PersonnelReg_JspPersonnelReg = isc.Window.create({
         title: "<spring:message code='student'/>",
-        width: 800,
-        height: 200,
+        width: 850,
+        height: 250,
         autoSize: true,
         autoCenter: true,
         isModal: true,

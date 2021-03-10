@@ -353,11 +353,13 @@
                 textAlign: "center",
                 width: "*",
                 autoFetchData: false,
+                defaultToFirstOption: true,
                 editorType: "ComboBoxItem",
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_Egender_JspTeacher,
                 filterFields: ["titleFa"],
+                required: true,
                 sortField: ["id"],
                 pickListProperties: {
                     showFilterEditor: false
