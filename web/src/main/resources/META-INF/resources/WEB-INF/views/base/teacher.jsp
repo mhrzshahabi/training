@@ -1034,6 +1034,7 @@
     }
 
     function ListGrid_teacher_add() {
+        ListGrid_Teacher_JspTeacher.invalidateCache();
         vm.clearValues();
         vm.clearErrors(true);
         showAttachViewLoader.show();
