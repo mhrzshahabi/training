@@ -18,7 +18,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode(of = {"course_id","reference_course"}, callSuper = false)
+@EqualsAndHashCode(of = {"course_id","reference_course","id"}, callSuper = false)
 @Embeddable
 public class TrainingFileNAReportKey implements Serializable {
 
@@ -27,5 +27,9 @@ public class TrainingFileNAReportKey implements Serializable {
 
     @Column(name = "reference_course", insertable = false, updatable = false)
     private Long referenceCourse;
+
+    @Column(name = "id", insertable = false, updatable = false)
+    private Long id;
+
 }
 

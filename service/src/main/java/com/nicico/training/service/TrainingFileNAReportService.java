@@ -64,6 +64,7 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
 
     @Override
     public void generateReport(HttpServletResponse response, List<ViewActivePersonnelDTO.Info> data) throws Exception {
+
         TrainingFileNAReportDTO.GenerateReport generateReport = null;
         List<List<TrainingFileNAReportDTO.Cell>> headers = null;
         List<TrainingFileNAReportDTO.Cell> rowsOfHeader = null;
@@ -86,9 +87,6 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
         sortBy.add("priorityId");
         searchRq.setSortBy(sortBy);
 
-        List<TrainingFileNAReportDTO.Info> ListOfTFNR = modelMapper.map(search(searchRq, e -> modelMapper.map(e, TrainingFileNAReportDTO.Info.class)).getList(), new TypeToken<List<TrainingFileNAReportDTO.Info>>() {
-        }.getType());
-
         searchRq = new SearchDTO.SearchRq();
         searchRq.setStartIndex(null);
         searchRq.setCriteria(new SearchDTO.CriteriaRq());
@@ -103,10 +101,21 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
         int cnt = data.size();
 
         for (int i = 0; i < cnt; i++) {
+
             generateReport = new TrainingFileNAReportDTO.GenerateReport();
             ViewActivePersonnelDTO.Info VAPD = data.get(i);
 
-            List<TrainingFileNAReportDTO.Info> TFNR = ListOfTFNR.stream().filter(p -> p.getPersonnelId() == VAPD.getId()).collect(Collectors.toList());
+            List<TrainingFileNAReport> trainingFileNAReports = reportDetail(VAPD.getId());
+            List<TrainingFileNAReportDTO.Info> ListOfTFNRData = modelMapper.map(trainingFileNAReports, new TypeToken<List<TrainingFileNAReportDTO.Info>>() {
+            }.getType());
+
+            List<TrainingFileNAReportDTO.Info> ListOfTFNR = ListOfTFNRData.stream().filter(item -> item.getReferenceCourse() == 0).collect(Collectors.toList());
+            List<TrainingFileNAReportDTO.Info> equalCourseList = ListOfTFNRData.stream().filter(item -> item.getReferenceCourse() != 0).collect(Collectors.toList());
+
+            equalCourseList.forEach(eq -> {
+                if (!ListOfTFNR.stream().map(TrainingFileNAReportDTO.Info::getCourseId).collect(Collectors.toList()).contains(eq.getCourseId()))
+                    ListOfTFNR.add(eq);
+            });
 
             headers = new ArrayList<>();
             rowsOfHeader = new ArrayList<>();
@@ -157,11 +166,11 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
             List<List<String>> dataOfGrid = new ArrayList<>();
             List<String> row = new ArrayList<>();
 
-            int cnt2 = TFNR.size();
+            int cnt2 = ListOfTFNR.size();
 
             for (int j = 0; j < cnt2; j++) {
                 row = new ArrayList<>();
-                final TrainingFileNAReportDTO.Info tmpTFNR = TFNR.get(j);
+                final TrainingFileNAReportDTO.Info tmpTFNR = ListOfTFNR.get(j);
 
                 row.add(((Integer) (j + 1)).toString());
                 row.add(tmpTFNR.getCourseCode());
@@ -390,8 +399,7 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
                         excelCellOfRow.setCellValue(row.getDataOfGrid().get(j).get(k));
                         if (row.getDataOfGrid().get(j).get(5) == null && row.getDataOfGrid().get(j).get(10) == null)
                             excelCellOfRow.setCellStyle(bodyEqualsCellStyle);
-                        else
-                            excelCellOfRow.setCellStyle(bodyCellStyle);
+                        else excelCellOfRow.setCellStyle(bodyCellStyle);
                     }
                     currentRow++;
                 }

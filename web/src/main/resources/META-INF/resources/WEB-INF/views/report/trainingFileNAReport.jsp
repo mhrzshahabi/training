@@ -181,14 +181,14 @@
         dataSource : RestDataSource_Personnel_JspTrainingFileNAReport,
         cellHeight: 43,
         sortField: 1,
-        // showFilterEditor: false,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         selectionType: "single",
         showResizeBar: true,
         showRecordComponents: true,
         showRecordComponentsByCell: true,
-        rowClick(record){
+        rowClick(record) {
+
             let cr = {
                 _constructor: "AdvancedCriteria",
                 operator: "and",
@@ -198,10 +198,15 @@
                 {property: "referenceCourse", direction: "ascending"},
                 {property: "courseCode", direction: "ascending"}
             ]);
-
             RestDataSource_TrainingFile_JspTrainingFileNAReport.fetchDataURL = trainingFileNAReportUrl + "/" + record.id;
 
-            ListGrid_TrainingFile_JspTrainingFileNAReport.fetchData();
+            ListGrid_TrainingFile_JspTrainingFileNAReport.fetchData(null, function (dsResponse, data, dsRequest) {
+
+                if (data.length)
+                    ListGrid_TrainingFile_JspTrainingFileNAReport.setData(data);
+                else
+                    ListGrid_TrainingFile_JspTrainingFileNAReport.setData([]);
+            });
             detailView.fetchData(cr);
         }
     });

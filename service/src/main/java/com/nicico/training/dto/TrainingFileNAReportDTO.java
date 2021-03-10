@@ -29,7 +29,8 @@ public class TrainingFileNAReportDTO implements Serializable {
     @ApiModel("Info")
     public static class Info {
 
-        private TrainingFileNAReportKey id;
+        private TrainingFileNAReportKey reportId;
+        private Long id;
 
         private long personnelId;
 
