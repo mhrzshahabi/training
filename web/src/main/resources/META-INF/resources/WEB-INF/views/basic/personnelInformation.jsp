@@ -129,6 +129,11 @@
                         name: "mobile",
                         title: "<spring:message code="mobile"/>",
                         filterOperator: "iContains"
+                    },
+                    {
+                        name: "email",
+                        title: "<spring:message code="email"/>",
+                        filterOperator: "iContains"
                     }
                 ],
                 fetchDataURL: personnelUrl + "/iscList"
@@ -255,7 +260,8 @@
                     {name: "ccpAffairs"},
                     {name: "ccpSection"},
                     {name: "ccpUnit"},
-                    {name: "mobile"}
+                    {name: "mobile"},
+                    {name: "email"}
                 ],
                 recordClick: function () {
                     if (oPersonnelInformationDetails!=null && typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
@@ -384,6 +390,11 @@
                         name: "mobile",
                         title: "<spring:message code="mobile"/>",
                         filterOperator: "iContains"
+                    },
+                    {
+                        name: "email",
+                        title: "<spring:message code="email"/>",
+                        filterOperator: "iContains"
                     }
                 ],
                 fetchDataURL: personnelRegUrl + "/spec-list"
@@ -419,10 +430,11 @@
                     },
                     {name: "postTitle"},
                     {name: "ccpArea"},
+                    {name: "email"},
                     {name: "ccpAssistant", hidden: true},
                     {name: "ccpAffairs", hidden: true},
                     {name: "ccpSection", hidden: true},
-                    {name: "ccpUnit", hidden: true}
+                    {name: "ccpUnit", hidden: true},
                 ],
                 recordClick: function () {
                     if (oPersonnelInformationDetails!=null && typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
