@@ -47,7 +47,7 @@ server:
     session:
       cookie:
         name: App_${spring.application.name}
-      timeout: 180m
+      timeout: 30m
 
 management:
   endpoint:
