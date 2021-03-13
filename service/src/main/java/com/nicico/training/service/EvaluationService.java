@@ -745,10 +745,10 @@ public class EvaluationService implements IEvaluationService {
             trainingGrade[index] = 0.0;
             coWorkersGrade[index] = 0.0;
 
-            Integer studentGradeNum = 0 ;
-            Integer supervisorGradeNum = 0;
-            Integer trainingGradeNum = 0;
-            Integer coWorkersGradeNum = 0;
+            int studentGradeNum = 0 ;
+            int supervisorGradeNum = 0;
+            int trainingGradeNum = 0;
+            int coWorkersGradeNum = 0;
 
             for (Evaluation evaluation : evaluations) {
                 int index1 = 0;
@@ -809,13 +809,13 @@ public class EvaluationService implements IEvaluationService {
                     trainingGrade[index] += res;
                 }
             }
-            if(!studentGradeNum.equals(new Integer(0)))
+            if(studentGradeNum!=0)
                 studentGrade[index] = studentGrade[index]/studentGradeNum;
-            if(!supervisorGradeNum.equals(new Integer(0)))
+            if(supervisorGradeNum!=0)
                 supervisorGrade[index] = supervisorGrade[index]/supervisorGradeNum;
-            if(!trainingGradeNum.equals(new Integer(0)))
+            if(trainingGradeNum!=0)
                 trainingGrade[index] = trainingGrade[index]/trainingGradeNum;
-            if(!coWorkersGradeNum.equals(new Integer(0)))
+            if(coWorkersGradeNum!=0)
                 coWorkersGrade[index] = coWorkersGrade[index]/coWorkersGradeNum;
             classStudentsName[index] = classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName();
             index++;

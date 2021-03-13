@@ -1113,8 +1113,10 @@ public class TclassService implements ITclassService {
     private Double getPercenetOfFilledReactionEvaluationForms(Set<ClassStudent> classStudents) {
         double r1 = getNumberOfFilledReactionEvaluationForms(classStudents);
         double r2 = getNumberOfFilledReactionEvaluationForms(classStudents) + getNumberOfEmptyReactionEvaluationForms(classStudents);
-        double result = (r1 / r2) * 100;
-        return result;
+    if (r2!=0.0)
+        return (r1 / r2) * 100;
+    else
+        return null;
     }
 
     ///---------------------------------------------- Reaction Evaluation ----------------------------------------------
