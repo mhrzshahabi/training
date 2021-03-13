@@ -93,5 +93,11 @@ public class ReportsToExcelFormController {
         byte[] bytes = makeExcelOutputUtil.makeOutput(resp, ViewNeedAssessmentInRangeDTO.Info.class, fields, headers, true, "");
         makeExcelOutputUtil.makeExcelResponse(bytes, response);
     }
+
+    @PostMapping(value = {"/masterDetail"})
+    public void masterDetail(HttpServletResponse response, @RequestParam MultiValueMap<String, String> criteria) throws Exception {
+
+    }
+
 }
 
