@@ -36,7 +36,8 @@ public class EvaluationDoneOnlineRestController {
                     }
                 });
             }
-            EvaluationDoneOnlineResponse response = new EvaluationDoneOnlineResponse().setResponse(new EvaluationDoneOnlineResponse.SpecRs().setData(evaluations).setStartRow(0).setEndRow(evaluations.size()).setTotalRows(evaluations.size()));
+            int size = (evaluations == null ? 0 : evaluations.size());
+            EvaluationDoneOnlineResponse response = new EvaluationDoneOnlineResponse().setResponse(new EvaluationDoneOnlineResponse.SpecRs().setData(evaluations).setStartRow(0).setEndRow(size).setTotalRows(size));
             return new ResponseEntity(response, HttpStatus.OK);
         } catch (Exception e) {
             BaseResponse response = new BaseResponse();
