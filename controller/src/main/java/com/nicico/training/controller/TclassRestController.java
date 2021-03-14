@@ -721,4 +721,17 @@ public class TclassRestController {
         return new ResponseEntity(response, HttpStatus.valueOf(response.getStatus()));
     }
 
+    @Loggable
+    @GetMapping(value = "/defaultYear")
+    public String getDefaultYear() {
+        return tClassService.getClassDefaultYear();
+    }
+
+    @Loggable
+    @GetMapping(value = "/defaultTerm/{year}")
+    public Long getDefaultTerm(@PathVariable String year) {
+        return tClassService.getClassDefaultTerm(year);
+    }
+
+
 }
