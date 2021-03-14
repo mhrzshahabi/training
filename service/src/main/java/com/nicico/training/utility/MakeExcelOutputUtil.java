@@ -102,18 +102,20 @@ public class MakeExcelOutputUtil {
     }
 
     private int createHorizontalCells(Map<String, String> extraMap, int rowNum) {
+        XSSFCellStyle cellStyle = workbook.createCellStyle();
+        cellStyle.setAlignment(HorizontalAlignment.RIGHT);
         if (extraMap != null && extraMap.size() > 0) {
-                for (String key : extraMap.keySet()) {
-                    Row row = sheet.createRow(rowNum++);
-                    Cell cell = row.createCell(0);
-                    cell.setCellStyle(xssftopRowTitleCellStyle);
-                    cell.setCellType(CellType.STRING);
-                    cell.setCellValue(key);
-                    cell = row.createCell(1);
-                    cell.setCellType(CellType.STRING);
-                    cell.setCellValue(extraMap.get(key));
-                }
-
+            for (String key : extraMap.keySet()) {
+                Row row = sheet.createRow(rowNum++);
+                Cell cell = row.createCell(0);
+                cell.setCellStyle(xssftopRowTitleCellStyle);
+                cell.setCellType(CellType.STRING);
+                cell.setCellValue(key);
+                cell = row.createCell(1);
+                cell.setCellType(CellType.STRING);
+                cell.setCellValue(extraMap.get(key));
+                cell.setCellStyle(cellStyle);
+            }
         }
         return rowNum;
     }
@@ -361,7 +363,7 @@ public class MakeExcelOutputUtil {
     }
 
     private int createItemRows(List<Object> list, Class<?> entityClass, String[] fieldsName, Boolean insertRowNum, String topRowTitle, int rowNum) throws Exception {
-
+        int radif = topRowTitle.trim().equals("") ? 0 : 1;
         for (Object item : list) {
 
             Row row = sheet.createRow(rowNum++);
@@ -370,7 +372,7 @@ public class MakeExcelOutputUtil {
             if (insertRowNum) {
 
                 Cell cell = row.createCell(i++);
-                cell.setCellValue(row.getRowNum() - (topRowTitle.trim().equals("") ? 0 : 1));
+                cell.setCellValue(radif++);
                 cell.setCellStyle(xssfNumberCellStyle);
             }
 

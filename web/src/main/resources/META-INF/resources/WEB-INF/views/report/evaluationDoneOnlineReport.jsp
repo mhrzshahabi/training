@@ -232,8 +232,7 @@
         };
         let detailFields = "fullName,nationalCode,phoneNumber,answered";
         let detailHeaders = '<spring:message code="full.name"/>,<spring:message code="national.code"/>,<spring:message code="cellPhone"/>,<spring:message code="reports.online.evaluation.answered"/>';
-        let title = '<spring:message code="reports.done.evaluations"/>' + ' ' +
-            DynamicForm_EvaluationDoneOnline.getItem("startDate").getValue() + ' تا ' + DynamicForm_EvaluationDoneOnline.getItem("endDate").getValue();
+        let title = '<spring:message code="reports.done.evaluations"/>';
         let downloadForm = isc.DynamicForm.create({
             method: "POST",
             action: "/training/reportsToExcel/masterDetail",
