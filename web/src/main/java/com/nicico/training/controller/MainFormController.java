@@ -166,6 +166,11 @@ public class MainFormController {
         return "report/evaluationDoneOnlineReport";
     }
 
+    @RequestMapping("/doneOnlineExamReport")
+    public String showDoneOnlineExamReportForm() {
+        return "report/doneOnlineExamReport";
+    }
+
     @RequestMapping("/categoriesPerformanceReport")
     public String showCategoriesPerformanceReportForm() {
         return "report/categoriesPerformanceReport";
