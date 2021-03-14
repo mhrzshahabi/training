@@ -123,4 +123,8 @@ public interface ITclassService {
 
     Boolean hasAccessToSetEndClass(Long groupId);
 
+    String getClassDefaultYear();
+
+    Long getClassDefaultTerm(String year);
+
 }

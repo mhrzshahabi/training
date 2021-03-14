@@ -65,6 +65,7 @@ public class TclassService implements ITclassService {
     private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
     private final DynamicQuestionDAO dynamicQuestionDAO;
     private final ClassSessionService classSessionService;
+    private final TermDAO termDAO;
     private final TrainingPlaceDAO trainingPlaceDAO;
     private final AttachmentService attachmentService;
     private final IEvaluationService evaluationService;
@@ -1595,5 +1596,28 @@ public class TclassService implements ITclassService {
     @Override
     public Boolean hasAccessToSetEndClass( Long groupId) {
         return workGroupService.hasAccess(SecurityUtil.getUserId(),groupId);
+    }
+
+    @Override
+    public String getClassDefaultYear() {
+
+        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("ClassConfig");
+        ParameterValueDTO.Info info = parameters.getResponse().getData().stream().filter(p -> p.getCode().equals("defaultYear")).findFirst().orElse(null);
+        List<Term> termByYear = termDAO.getTermByYear(info.getValue());
+        if (termByYear.size() != 0) return info.getValue();
+        else throw new TrainingException(TrainingException.ErrorType.NotFound);
+    }
+
+    @Override
+    public Long getClassDefaultTerm(String year) {
+
+        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("ClassConfig");
+        ParameterValueDTO.Info termParameter = parameters.getResponse().getData().stream().filter(p -> p.getCode().equals("defaultTerm")).findFirst().orElse(null);
+        Term termByCode = termDAO.getTermByCode(termParameter.getValue());
+        if (termByCode == null) throw new TrainingException(TrainingException.ErrorType.NotFound);
+        else {
+            if (termByCode.getCode().startsWith(year)) return termByCode.getId();
+            else throw new TrainingException(TrainingException.ErrorType.InvalidData);
+        }
     }
 }

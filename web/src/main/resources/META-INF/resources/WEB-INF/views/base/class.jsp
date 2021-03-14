@@ -17,6 +17,7 @@
     var endDateCheck = true;
     var isReadOnlyClass = true;
     var societies = [];
+    let firstLoad = true;
     let oLoadAttachments_class = null;
     let OJT = false;
     let lastDate = null;
@@ -2266,22 +2267,24 @@
                     load_classes_by_term(value);
                 },
                 dataArrived: function (startRow, endRow, data) {
-                    isc.RPCManager.sendRequest({
-                        actionURL: termUrl + "getCurrentTerm/" + DynamicForm_Term_Filter.getField("yearFilter").getValue(),
-                        httpMethod: "GET",
-                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                        useSimpleHttp: true,
-                        contentType: "application/json; charset=utf-8",
-                        showPrompt: false,
-                        serverOutputAsString: false,
-                        callback: function (resp) {
-                                DynamicForm_Term_Filter.getItem("termFilter").clearValue();
-                                DynamicForm_Term_Filter.getField("termFilter").setValue(resp.httpResponseText);
-                                load_classes_by_term(resp.httpResponseText);
-                                clearClassTabValue();
-                        }
-                    });
 
+                    if(firstLoad) {
+                        let year = DynamicForm_Term_Filter.getValue("yearFilter");
+                        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "defaultTerm/" + year, "GET", null,
+                            function (resp) {
+                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+                                    let term = JSON.parse(resp.httpResponseText);
+                                    DynamicForm_Term_Filter.getField("termFilter").setValue(term);
+                                    load_classes_by_term(term);
+                                    clearClassTabValue();
+                                    firstLoad = false;
+                                } else
+                                    getCurrentTermByYear();
+                            }
+                        ));
+                    } else
+                        getCurrentTermByYear();
                 }
             },
             {
@@ -2309,8 +2312,39 @@
         ]
     });
 
-    DynamicForm_Term_Filter.getField("yearFilter").setValue(todayDate.substring(0, 4));
-    load_term_by_year(todayDate.substring(0, 4));
+    isc.RPCManager.sendRequest(TrDSRequest(classUrl + "defaultYear", "GET", null,
+        function (resp) {
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+                let year = resp.httpResponseText;
+                DynamicForm_Term_Filter.getField("yearFilter").setValue(year);
+                load_term_by_year(year);
+            } else {
+
+                DynamicForm_Term_Filter.getField("yearFilter").setValue(todayDate.substring(0, 4));
+                load_term_by_year(todayDate.substring(0, 4));
+            }
+        }
+    ));
+
+    function getCurrentTermByYear() {
+
+        isc.RPCManager.sendRequest({
+            actionURL: termUrl + "getCurrentTerm/" + DynamicForm_Term_Filter.getField("yearFilter").getValue(),
+            httpMethod: "GET",
+            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+            useSimpleHttp: true,
+            contentType: "application/json; charset=utf-8",
+            showPrompt: false,
+            serverOutputAsString: false,
+            callback: function (resp) {
+                DynamicForm_Term_Filter.getItem("termFilter").clearValue();
+                DynamicForm_Term_Filter.getField("termFilter").setValue(resp.httpResponseText);
+                load_classes_by_term(resp.httpResponseText);
+                clearClassTabValue();
+            }
+        });
+    }
 
     var ToolStrip_Excel_JspClass = isc.ToolStripButtonExcel.create({
         click: function () {
