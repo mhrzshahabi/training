@@ -164,11 +164,11 @@
         dataSource: RestDataSource_Class_JspEvaluationDoneOnline,
         fields: [
             {name: "evalTitle", title: '<spring:message code="reports.online.evaluation.evalTitle"/>'},
-            {name: "answeredCount", title: '<spring:message code="reports.online.evaluation.answereds"/>'},
-            {name: "unAnsweredCount", title: '<spring:message code="reports.online.evaluation.withoutAnswereds"/>'},
+            {name: "course", title: '<spring:message code="class"/>'},
             {name: "instructor", title: '<spring:message code="teacher"/>'},
             {name: "evalCreateDate", title: '<spring:message code="reports.online.evaluation.evalCreateDate"/>'},
-            {name: "course", title: '<spring:message code="class"/>'},
+            {name: "answeredCount", title: '<spring:message code="reports.online.evaluation.answereds"/>'},
+            {name: "unAnsweredCount", title: '<spring:message code="reports.online.evaluation.withoutAnswereds"/>'},
             {name: "excelBtn", title: " ", width: "110"},
         ],
         getExpansionComponent: function (record, rowNum, colNum) {
@@ -179,6 +179,7 @@
                 fields: [
                     {name: "fullName", title: '<spring:message code="full.name"/>'},
                     {name: "nationalCode", title: '<spring:message code="national.code"/>'},
+                    {name: "phoneNumber", title: '<spring:message code="cellPhone"/>'},
                     {name: "answered", title: '<spring:message code="reports.online.evaluation.answered"/>',
                         valueMap: {
                             true: "<spring:message code='yes'/>",
@@ -229,8 +230,8 @@
             '<spring:message code="reports.online.evaluation.evalCreateDate"/>': record.evalCreateDate,
             '<spring:message code="class"/>': record.course,
         };
-        let detailFields = "fullName,nationalCode,answered";
-        let detailHeaders = '<spring:message code="full.name"/>,<spring:message code="national.code"/>,<spring:message code="reports.online.evaluation.answered"/>';
+        let detailFields = "fullName,nationalCode,phoneNumber,answered";
+        let detailHeaders = '<spring:message code="full.name"/>,<spring:message code="national.code"/>,<spring:message code="cellPhone"/>,<spring:message code="reports.online.evaluation.answered"/>';
         let title = '<spring:message code="reports.done.evaluations"/>' + ' ' +
             DynamicForm_EvaluationDoneOnline.getItem("startDate").getValue() + ' تا ' + DynamicForm_EvaluationDoneOnline.getItem("endDate").getValue();
         let downloadForm = isc.DynamicForm.create({

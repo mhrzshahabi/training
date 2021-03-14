@@ -32,6 +32,7 @@ public class EvaluationDoneOnlineRestController {
                         long unAnsweredCount = dto.getUsers().values().stream().filter(user -> (user.getAnswered() != null && !user.getAnswered())).count();
                         dto.setAnsweredCount((int) answeredCount);
                         dto.setUnAnsweredCount((int) unAnsweredCount);
+                        dto.getUsers().entrySet().stream().forEach(stringUserDetailDtoEntry -> {stringUserDetailDtoEntry.getValue().setPhoneNumber(stringUserDetailDtoEntry.getKey());});
                     }
                 });
             }
