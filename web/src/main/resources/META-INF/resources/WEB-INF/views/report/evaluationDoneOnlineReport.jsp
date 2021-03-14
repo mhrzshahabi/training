@@ -9,7 +9,7 @@
 //<script>
 
     RestDataSource_Class_JspEvaluationDoneOnline = isc.TrDS.create({
-      fields: [
+        fields: [
             {name: "evalTitle"},
             {name: "instructor"},
             {name: "evalCreateDate"},
@@ -21,13 +21,13 @@
         ],
     });
 
-    function gregorianDateJoined(date,j) {
+    function gregorianDateJoined(date, j) {
         let dates = date.split("/");
-        if(!j)
-            j='';
-        else j='-';
+        if (!j)
+            j = '';
+        else j = '-';
         let arr = JalaliDate.jalaliToGregorian(dates[0], dates[1], dates[2]);
-        return arr[0].toString().concat(j).concat(arr[1].toString().padStart(2,0)).concat(j).concat(arr[2].toString().padStart(2,0));
+        return arr[0].toString().concat(j).concat(arr[1].toString().padStart(2, 0)).concat(j).concat(arr[2].toString().padStart(2, 0));
     }
 
     var DynamicForm_EvaluationDoneOnline = isc.DynamicForm.create({
@@ -121,7 +121,7 @@
                         var training_over_time_wait = createDialog("wait");
                         setTimeout(function () {
                             let url = rootUrl + "/evaluationDoneOnline/" + gregorianDateJoined(form.getValue("startDate"))
-	                                          + "/" + gregorianDateJoined(form.getValue("endDate"));
+                                + "/" + gregorianDateJoined(form.getValue("endDate"));
                             RestDataSource_Class_JspEvaluationDoneOnline.fetchDataURL = url;
                             ListGrid_EvaluationDoneOnline.invalidateCache();
                             ListGrid_EvaluationDoneOnline.fetchData();
@@ -156,69 +156,61 @@
         //dynamicTitle: true,
         filterOnKeypress: false,
         showFilterEditor: false,
-canExpandRecords: true,
-showRecordComponents: true,
-showRecordComponentsByCell: true,
-gridComponents: [DynamicForm_EvaluationDoneOnline,
-               "header", "filterEditor", "body"],
+        canExpandRecords: true,
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
+        gridComponents: [DynamicForm_EvaluationDoneOnline,
+            "header", "filterEditor", "body"],
         dataSource: RestDataSource_Class_JspEvaluationDoneOnline,
         fields: [
-{name: "evalTitle" ,title: '<spring:message code="reports.online.evaluation.evalTitle"/>'},
-{name: "answeredCount" ,title: '<spring:message code="reports.online.evaluation.answereds"/>'},
-{name: "unAnsweredCount",title: '<spring:message code="reports.online.evaluation.withoutAnswereds"/>'},
-{name: "instructor",title: '<spring:message code="teacher"/>'},
-{name: "evalCreateDate",title: '<spring:message code="reports.online.evaluation.evalCreateDate"/>'},
-{name: "course",title: '<spring:message code="class"/>'},
-{name: "excelBtn" ,title: " ",width:"110"},
-
-/*
-{name: "createDate",title: '<spring:message code="creation.date"/>'},
-{
-name: "updateAt", title: "ویرایش در تاریخ",
-formatCellValue: (value) => {
-let d = new Date(value);
-return d.toLocaleString('fa', {year: 'numeric', month: 'numeric', day: 'numeric'});
-},
-},*/
+            {name: "evalTitle", title: '<spring:message code="reports.online.evaluation.evalTitle"/>'},
+            {name: "answeredCount", title: '<spring:message code="reports.online.evaluation.answereds"/>'},
+            {name: "unAnsweredCount", title: '<spring:message code="reports.online.evaluation.withoutAnswereds"/>'},
+            {name: "instructor", title: '<spring:message code="teacher"/>'},
+            {name: "evalCreateDate", title: '<spring:message code="reports.online.evaluation.evalCreateDate"/>'},
+            {name: "course", title: '<spring:message code="class"/>'},
+            {name: "excelBtn", title: " ", width: "110"},
         ],
         getExpansionComponent: function (record, rowNum, colNum) {
-        let detail = isc.TrLG.create({
-        height: "250",
-        filterOnKeypress: false,
-           showFilterEditor: false,
-           fields: [
-               {name: "fullName" ,title: '<spring:message code="full.name"/>'},
-               {name: "nationalCode" ,title: '<spring:message code="national.code"/>'},
-               {name: "answered" ,title: '<spring:message code="reports.online.evaluation.answered"/>',
-valueMap: {
-true: "<spring:message code='yes'/>",
-false: "<spring:message code='no'/>",
-}
-},
-           ],
-getCellCSSText: function (record) {
-if (record.answered)
-return "color:green";
-else
-return "color:red";
-},
-         });
-       if(record.users)
-       detail.setData(Object.values(record.users));
-       return isc.VLayout.create({
-          members: [detail]});
-       },
-createRecordComponent: function (record, colNum) {
+            let detail = isc.TrLG.create({
+                height: "250",
+                filterOnKeypress: false,
+                showFilterEditor: false,
+                fields: [
+                    {name: "fullName", title: '<spring:message code="full.name"/>'},
+                    {name: "nationalCode", title: '<spring:message code="national.code"/>'},
+                    {name: "answered", title: '<spring:message code="reports.online.evaluation.answered"/>',
+                        valueMap: {
+                            true: "<spring:message code='yes'/>",
+                            false: "<spring:message code='no'/>",
+                        }
+                    },
+                ],
+                getCellCSSText: function (record) {
+                    if (record.answered)
+                        return "color:green";
+                    else
+                        return "color:red";
+                },
+            });
+            if (record.users)
+                detail.setData(Object.values(record.users));
+            return isc.VLayout.create({
+                members: [detail]
+            });
+        },
+        createRecordComponent: function (record, colNum) {
             var fieldName = this.getFieldName(colNum);
-if (fieldName === "excelBtn") {
-let button = isc.ToolStripButtonExcel.create({
-margin: 5,
-click: function () {
-makeExcelOutput(Object.values(record.users));
-}
-});
-return button;
-}}
+            if (fieldName === "excelBtn") {
+                let button = isc.ToolStripButtonExcel.create({
+                    margin: 5,
+                    click: function () {
+                        makeExcelOutput(record, JSON.stringify(Object.values(record.users)));
+                    }
+                });
+                return button;
+            }
+        }
     });
     var VLayout_Body_EvaluationDoneOnline = isc.VLayout.create({
         width: "100%",
@@ -228,11 +220,19 @@ return button;
         ]
     });
 
-    function makeExcelOutput() {
-        
-       /* let fieldNames = "evalTitle,postCode,postTitle,updateBy,updateAt,version";
-        let headerNames = '<spring:message code="evaluation.evaluated"/>,<spring:message code="teacher"/>,<spring:message code="class"/>,<spring:message code="reports.online.evaluation.answereds"/>,<spring:message code="reports.online.evaluation.withoutAnswereds"/>,<spring:message code="reports.online.evaluation.evalCreateDate"/>,<spring:message code="creation.date"/>' ;
-
+    function makeExcelOutput(record, detailData) {
+        let masterData = {
+            '<spring:message code="reports.online.evaluation.evalTitle"/>': record.evalTitle,
+            '<spring:message code="reports.online.evaluation.answereds"/>': record.answeredCount + " ",
+            '<spring:message code="reports.online.evaluation.withoutAnswereds"/>': record.unAnsweredCount + " ",
+            '<spring:message code="teacher"/>': record.instructor,
+            '<spring:message code="reports.online.evaluation.evalCreateDate"/>': record.evalCreateDate,
+            '<spring:message code="class"/>': record.course,
+        };
+        let detailFields = "fullName,nationalCode,answered";
+        let detailHeaders = '<spring:message code="full.name"/>,<spring:message code="national.code"/>,<spring:message code="reports.online.evaluation.answered"/>';
+        let title = '<spring:message code="reports.done.evaluations"/>' + ' ' +
+            DynamicForm_EvaluationDoneOnline.getItem("startDate").getValue() + ' تا ' + DynamicForm_EvaluationDoneOnline.getItem("endDate").getValue();
         let downloadForm = isc.DynamicForm.create({
             method: "POST",
             action: "/training/reportsToExcel/masterDetail",
@@ -240,22 +240,22 @@ return button;
             canSubmit: true,
             fields:
                 [
-                    {name: "fields", type: "hidden"},
-                    {name: "headers", type: "hidden"},
-                    {name: "start", type: "hidden"},
-                    {name: "end", type: "hidden"}
+                    {name: "masterData", type: "hidden"},
+                    {name: "detailFields", type: "hidden"},
+                    {name: "detailHeaders", type: "hidden"},
+                    {name: "detailDto", type: "hidden"},
+                    {name: "title", type: "hidden"},
+                    {name: "detailData", type: "hidden"},
                 ]
         });
-        downloadForm.setValue("fields", fieldNames);
-        downloadForm.setValue("headers", headerNames);
-        downloadForm.setValue("start",
-gregorianDateJoined(DynamicForm_EvaluationDoneOnline.getItem("startDate").getValue()),'-');
-        downloadForm.setValue("end",
-gregorianDateJoined(DynamicForm_EvaluationDoneOnline.getItem("endDate").getValue()),'-');
+        downloadForm.setValue("masterData", JSON.stringify(masterData));
+        downloadForm.setValue("detailFields", detailFields);
+        downloadForm.setValue("detailHeaders", detailHeaders);
+        downloadForm.setValue("detailData", detailData);
+        downloadForm.setValue("title", title);
+        downloadForm.setValue("detailDto", "response.evaluation.dto.EvaluationDoneOnlineDto$UserDetailDto");
         downloadForm.show();
-        downloadForm.submitForm();*/
-
-
+        downloadForm.submitForm();
     }
 
-    //</script>
+//</script>

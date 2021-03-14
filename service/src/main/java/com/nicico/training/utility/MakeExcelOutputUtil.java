@@ -17,10 +17,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @Component
@@ -75,6 +72,50 @@ public class MakeExcelOutputUtil {
         byteArrayOutputStream.close();
 
         return byteArrayOutputStream.toByteArray();
+    }
+
+    public byte[] makeOutputWithExtraHeader(List<Object> list, Class<?> entityClass, String[] fieldsName, String[] headers, Boolean insertRowNum, String topRowTitle, Map<String, String> extraMap) throws Exception {
+
+        workbook = new XSSFWorkbook();
+        sheet = workbook.createSheet("sheet1");
+        sheet.addIgnoredErrors(new CellRangeAddress(0, list.size() + 1 + (!topRowTitle.trim().equals("") ? 1 : 0), 0, fieldsName.length + 1 + (insertRowNum ? 1 : 0)), IgnoredErrorType.NUMBER_STORED_AS_TEXT);
+        sheet.setRightToLeft(true);
+        setCellStyles();
+        int rowNum = 0;
+        rowNum = createTopRow(fieldsName, insertRowNum, topRowTitle, rowNum);
+        rowNum = createHorizontalCells(extraMap, rowNum);
+        rowNum = createHeaderRow(headers, insertRowNum, rowNum);
+        // Freeze Pane
+        if (!topRowTitle.trim().equals("")) sheet.createFreezePane(0, rowNum);
+        else sheet.createFreezePane(1, rowNum);
+
+        rowNum = createItemRows(list, entityClass, fieldsName, insertRowNum, topRowTitle, rowNum);
+
+        createSumField(list, entityClass, fieldsName, insertRowNum, topRowTitle, rowNum);
+        // AutoSize Columns
+        makeColumnsAutoSize(fieldsName, insertRowNum);
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        workbook.write(byteArrayOutputStream);
+        byteArrayOutputStream.close();
+        return byteArrayOutputStream.toByteArray();
+    }
+
+    private int createHorizontalCells(Map<String, String> extraMap, int rowNum) {
+        if (extraMap != null && extraMap.size() > 0) {
+                for (String key : extraMap.keySet()) {
+                    Row row = sheet.createRow(rowNum++);
+                    Cell cell = row.createCell(0);
+                    cell.setCellStyle(xssftopRowTitleCellStyle);
+                    cell.setCellType(CellType.STRING);
+                    cell.setCellValue(key);
+                    cell = row.createCell(1);
+                    cell.setCellType(CellType.STRING);
+                    cell.setCellValue(extraMap.get(key));
+                }
+
+        }
+        return rowNum;
     }
 
     private void setCellStyles() {
