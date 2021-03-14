@@ -1,6 +1,7 @@
 package com.nicico.training.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.dto.TrainingPostDTO;
 import com.nicico.training.dto.ViewNeedAssessmentInRangeDTO;
@@ -16,6 +17,7 @@ import com.nicico.training.service.ExportToFileService;
 import com.nicico.training.utility.MakeExcelOutputUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
@@ -25,9 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -86,12 +86,34 @@ public class ReportsToExcelFormController {
         String start = String.valueOf(criteria.get("start").get(0));
         String end = String.valueOf(criteria.get("end").get(0));
 
-        List<ViewNeedAssessmentInRangeDTO.Info> viewTrainingNeedAssessments = iViewNeedAssessmentInRangeTimeService.getList(start,end);
+        List<ViewNeedAssessmentInRangeDTO.Info> viewTrainingNeedAssessments = iViewNeedAssessmentInRangeTimeService.getList(start, end);
 
         resp.addAll(viewTrainingNeedAssessments);
 
         byte[] bytes = makeExcelOutputUtil.makeOutput(resp, ViewNeedAssessmentInRangeDTO.Info.class, fields, headers, true, "");
         makeExcelOutputUtil.makeExcelResponse(bytes, response);
     }
+
+    @PostMapping(value = {"/masterDetail"})
+    public void masterDetail(HttpServletResponse response, @RequestParam MultiValueMap<String, Object> req) throws Exception {
+
+        Gson gson = new Gson();
+        HashMap masterData = gson.fromJson((String) Objects.requireNonNull(req.getFirst("masterData")), new TypeToken<HashMap<String, String>>() {
+        }.getType());
+        String[] detailFields = ((String) Objects.requireNonNull(req.getFirst("detailFields"))).split(",");
+        String[] detailHeaders = ((String) Objects.requireNonNull(req.getFirst("detailHeaders"))).split(",");
+        String detailDto = ((String) Objects.requireNonNull(req.getFirst("detailDto")));
+        String title = ((String) Objects.requireNonNull(req.getFirst("title")));
+        List<Object> resp = new ArrayList<>(gson.fromJson((String) Objects.requireNonNull(req.getFirst("detailData")), new TypeToken<List<Object>>() {
+        }.getType()));
+        List list = new ArrayList();
+        for (Object obj : resp) {
+            String s = gson.toJson(obj);
+            list.add(gson.fromJson(s,Class.forName(detailDto)));
+        }
+        byte[] bytes = makeExcelOutputUtil.makeOutputWithExtraHeader(list, Class.forName(detailDto), detailFields, detailHeaders, true, title, masterData);
+        makeExcelOutputUtil.makeExcelResponse(bytes, response);
+    }
+
 }
 

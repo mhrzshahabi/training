@@ -7,8 +7,10 @@ import request.exam.ElsExamRequest;
 import response.BaseResponse;
 import response.evaluation.EvalListResponse;
 import response.evaluation.PdfResponse;
+import response.evaluation.dto.EvaluationDoneOnlineDto;
 import response.exam.ExamListResponse;
 
+import java.util.List;
 
 
 
@@ -34,4 +36,8 @@ public interface ElsClient {
 
     @RequestMapping(method = RequestMethod.POST, value = "/evaluationToTeacher")
     BaseResponse sendEvaluationToTeacher(@RequestBody ElsEvalRequest request);
+
+    @GetMapping("/report/importedEvaluations/{fromDate}/{toDate}")
+    List<EvaluationDoneOnlineDto> getDoneEvaluations(@PathVariable("fromDate") String fromDate, @PathVariable("toDate") String toDate);
+
 }
