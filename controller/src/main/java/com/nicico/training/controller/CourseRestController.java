@@ -474,7 +474,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
         String domain = courseService.getDomain(courseId);
         List<CourseDTO.Info> preCourseList = courseService.preCourseList(courseId);
         StringBuilder preCourse = new StringBuilder();
-        String equalCourse = "";
+        StringBuilder equalCourse = new StringBuilder();
         for (CourseDTO.Info courseDTO : preCourseList) {
             preCourse.append(" - ").append(courseDTO.getTitleFa());
         }
@@ -482,9 +482,9 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
         preCourse = new StringBuilder(!preCourse.toString().equals("") ? preCourse.substring(2) : "");
         List<EqualCourseDTO.Info> equalCourseList = courseService.equalCourseList(courseId);
         for (EqualCourseDTO.Info map : equalCourseList) {
-            equalCourse = equalCourse + "   یا   " + map.getNameEC();
+            equalCourse.append("   یا   ").append(map.getNameEC());
         }
-        equalCourse = equalCourse != "" ? equalCourse.substring(6) : "";
+        equalCourse = new StringBuilder(!equalCourse.toString().equals("") ? equalCourse.substring(6) : "");
         CourseDTO.Info info = courseService.get(courseId);
         ERunType eRun = new ModelMapper().map(info.getERunType(), ERunType.class);
         ETheoType eTheo = new ModelMapper().map(info.getETheoType(), ETheoType.class);
@@ -492,7 +492,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
         params.put("courseId", courseId);
         params.put("domain", domain);
         params.put("preCourse", preCourse.toString());
-        params.put("equalCourse", equalCourse);
+        params.put("equalCourse", equalCourse.toString());
         params.put("eRun", eRun.getTitleFa());
         params.put("theo", eTheo.getTitleFa());
         reportUtil.export("/reports/test1.jasper", params, response);

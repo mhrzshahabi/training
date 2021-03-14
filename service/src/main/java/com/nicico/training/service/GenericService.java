@@ -196,8 +196,6 @@ public abstract class GenericService<T, ID extends Serializable, R, C, U, D> imp
             return update(id, request);
 
         } catch (IllegalAccessException | InvocationTargetException e) {
-
-            e.printStackTrace();
             log.error("Exception", e);
         }
 
@@ -225,8 +223,6 @@ public abstract class GenericService<T, ID extends Serializable, R, C, U, D> imp
             return save(updating);
 
         } catch (InstantiationException | IllegalAccessException e) {
-
-            e.printStackTrace();
             log.error("Exception", e);
         }
 
@@ -246,8 +242,6 @@ public abstract class GenericService<T, ID extends Serializable, R, C, U, D> imp
                 return (ID) idGetterMethod.invoke(q);
 
             } catch (IllegalAccessException | InvocationTargetException e) {
-
-                e.printStackTrace();
                 log.error("Exception", e);
             }
 
@@ -288,8 +282,6 @@ public abstract class GenericService<T, ID extends Serializable, R, C, U, D> imp
             return saveAll(updatingList);
 
         } catch (InstantiationException | IllegalAccessException e) {
-
-            e.printStackTrace();
             log.error("Exception", e);
         }
 
@@ -330,8 +322,6 @@ public abstract class GenericService<T, ID extends Serializable, R, C, U, D> imp
             repository.deleteAll(entities);
 
         } catch (IllegalAccessException | InvocationTargetException e) {
-
-            e.printStackTrace();
             log.error("Exception", e);
         }
     }
@@ -371,8 +361,6 @@ public abstract class GenericService<T, ID extends Serializable, R, C, U, D> imp
                 return clazz.getDeclaredMethod(name);
 
             } catch (NoSuchMethodException e) {
-
-                e.printStackTrace();
                 log.error("Exception", e);
             }
         }

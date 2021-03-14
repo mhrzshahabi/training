@@ -312,13 +312,13 @@ public class ClassStudentRestController {
         try {
             //Long classId = null;
             boolean haveError = false;
-            String message = "";
+            StringBuilder message = new StringBuilder();
             for (Long studentId : studentIds) {
                 String error = classStudentService.delete(studentId);
 
-                if (error != "") {
+                if (!error.equals("")) {
                     haveError = true;
-                    message += error + "<br />";
+                    message.append(error).append("<br />");
                 }
             }
 
@@ -329,7 +329,7 @@ public class ClassStudentRestController {
 //                classAlarmService.saveAlarms();
 //            }
             if (haveError) {
-                return new ResponseEntity<>(message, HttpStatus.NOT_ACCEPTABLE);
+                return new ResponseEntity<>(message.toString(), HttpStatus.NOT_ACCEPTABLE);
             } else {
                 return new ResponseEntity<>(HttpStatus.OK);
             }

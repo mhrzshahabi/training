@@ -20,6 +20,7 @@ import com.nicico.training.mapper.TrainingClassBeanMapper;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.model.enums.ClassStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import request.evaluation.StudentEvaluationAnswerDto;
@@ -47,7 +48,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TclassService implements ITclassService {
@@ -520,7 +521,7 @@ public class TclassService implements ITclassService {
             try {
                 sum += sdf.parse(session.getSessionEndHour()).getTime() - sdf.parse(session.getSessionStartHour()).getTime();
             } catch (ParseException e) {
-                e.printStackTrace();
+                log.error("Exception", e);
             }
         }
         return sum;

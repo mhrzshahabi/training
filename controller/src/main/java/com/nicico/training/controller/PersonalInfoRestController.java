@@ -193,7 +193,7 @@ public class PersonalInfoRestController {
                     .setTotalRows(response.getTotalCount().intValue());
             specRs.setResponse(specResponse);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Exception", e);
         }
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
@@ -218,7 +218,7 @@ public class PersonalInfoRestController {
             return new ResponseEntity<>(new InputStreamResource(new FileInputStream(file)), HttpStatus.OK);
 
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            log.error("Exception", e);
             return null;
         }
     }
@@ -235,7 +235,7 @@ public class PersonalInfoRestController {
             else
                 return new ResponseEntity<>(true, HttpStatus.OK);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Exception", e);
             return null;
         }
     }
@@ -247,7 +247,7 @@ public class PersonalInfoRestController {
             return new ResponseEntity<>(new InputStreamResource(new FileInputStream(file)), HttpStatus.OK);
 
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            log.error("Exception", e);
             return null;
         }
     }

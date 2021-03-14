@@ -1,6 +1,5 @@
 package com.nicico.training.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
@@ -10,10 +9,10 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.GenericPermission;
 import com.nicico.training.model.Permission;
-import com.nicico.training.model.Tclass;
 import com.nicico.training.model.WorkGroup;
 import com.nicico.training.repository.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -23,14 +22,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class WorkGroupService implements IWorkGroupService {
@@ -241,7 +239,7 @@ public class WorkGroupService implements IWorkGroupService {
             try {
                 entityType = Class.forName("com.nicico.training.model." + entity);
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                log.error("Exception", e);
             }
             assert entityType != null;
             tableName = entityType.getAnnotation(Table.class).name().toUpperCase();
@@ -334,7 +332,8 @@ public class WorkGroupService implements IWorkGroupService {
             }
             criteriaRqs.getCriteria().add(makeNewCriteria(permission.getAttributeName(), values, operator, null));
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            log.error("Exception", e);
+
         }
     }
 

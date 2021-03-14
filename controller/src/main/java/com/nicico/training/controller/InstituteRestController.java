@@ -166,7 +166,8 @@ public class InstituteRestController {
                     .setTotalRows(response.getTotalCount().intValue());
             specRs.setResponse(specResponse);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Exception", e);
+
         }
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
@@ -612,7 +613,7 @@ public class InstituteRestController {
                     .setTotalRows(response.getTotalCount().intValue());
             specRs.setResponse(specResponse);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Exception", e);
         }
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }

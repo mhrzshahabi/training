@@ -502,10 +502,10 @@ public class MasterDataService implements IMasterDataService {
 
     @Override
     public TotalResponse<PersonnelDTO.Info> getPeople(HttpServletRequest iscRq, HttpServletResponse resp) throws IOException {
-        if (token == "") {
+        if (token.equals("")) {
             authorize();
         }
-        if (token == "") {
+        if (token.equals("")) {
             Locale locale = LocaleContextHolder.getLocale();
             resp.sendError(500, messageSource.getMessage("masterdata.cannot.get.token", null, locale));
             return new TotalResponse<PersonnelDTO.Info>(new GridResponse<>());
@@ -557,10 +557,10 @@ public class MasterDataService implements IMasterDataService {
     }
 
     public TotalResponse<CompetenceDTO.Info> getCompetencies(HttpServletRequest iscRq, HttpServletResponse resp) throws IOException {
-        if (token == "") {
+        if (token.equals("")) {
             authorize();
         }
-        if (token == "") {
+        if (token.equals("")) {
             Locale locale = LocaleContextHolder.getLocale();
             resp.sendError(500, messageSource.getMessage("masterdata.cannot.get.token", null, locale));
 
@@ -615,10 +615,10 @@ public class MasterDataService implements IMasterDataService {
     }
 
     public TotalResponse<ViewPostDTO.Info> getPosts(HttpServletRequest iscRq, HttpServletResponse resp) throws IOException {
-        if (token == "") {
+        if (token.equals("")) {
             authorize();
         }
-        if (token == "") {
+        if (token.equals("")) {
             Locale locale = LocaleContextHolder.getLocale();
             resp.sendError(500, messageSource.getMessage("masterdata.cannot.get.token", null, locale));
 
@@ -681,10 +681,10 @@ public class MasterDataService implements IMasterDataService {
     }
 
     public TotalResponse<CompetenceWebserviceDTO> getDepartments(HttpServletRequest iscRq, HttpServletResponse resp) throws IOException {
-        if (token == "") {
+        if (token.equals("")) {
             authorize();
         }
-        if (token == "") {
+        if (token.equals("")) {
             Locale locale = LocaleContextHolder.getLocale();
             resp.sendError(500, messageSource.getMessage("masterdata.cannot.get.token", null, locale));
 
@@ -736,10 +736,10 @@ public class MasterDataService implements IMasterDataService {
     }
 
     public List<CompetenceWebserviceDTO> getDepartmentsByParentCode(String xUrl) throws IOException {
-        if (token == "") {
+        if (token.equals("")) {
             authorize();
         }
-        if (token == "") {
+        if (token.equals("")) {
             return null;
         } else {
             int index = 0;
@@ -763,12 +763,10 @@ public class MasterDataService implements IMasterDataService {
     }
 
     public List<CompetenceWebserviceDTO> getDepartmentsChilderenByParentCode(List<Long> xUrl) throws IOException {
-        if (token == "") {
+        if (token.equals("")) {
             authorize();
         }
-        if (token == "") {
-            return null;
-        } else {
+        if (!token.equals("")) {
             int index = 0;
             while (index <= 1) {
                 index++;
@@ -789,15 +787,15 @@ public class MasterDataService implements IMasterDataService {
                 }
                 return result;
             }
-            return null;
         }
+        return null;
     }
 
     public List<CompetenceWebserviceDTO> getDepartmentsByParams(String convertedCriteriaStr, String count, String operator, String startIndex, String sortBy) throws IOException {
-        if (token == "") {
+        if (token.equals("")) {
             authorize();
         }
-        if (token == "") {
+        if (token.equals("")) {
             return new ArrayList<CompetenceWebserviceDTO>(0);
         } else {
             int index = 0;
@@ -835,10 +833,10 @@ public class MasterDataService implements IMasterDataService {
     }
 
     public CompetenceWebserviceDTO getDepartmentsById(Long id) throws IOException {
-        if (token == "") {
+        if (token.equals("")) {
             authorize();
         }
-        if (token == "") {
+        if (token.equals("")) {
 
             return null;
         } else {
@@ -862,10 +860,10 @@ public class MasterDataService implements IMasterDataService {
     }
 
     public PersonnelDTO.Info getParentEmployee(Long id) throws IOException {
-        if (token == "") {
+        if (token.equals("")) {
             authorize();
         }
-        if (token == "") {
+        if (token.equals("")) {
             return null;
         } else {
             int index = 0;
@@ -887,10 +885,10 @@ public class MasterDataService implements IMasterDataService {
     }
 
     public List<PersonnelDTO.Info> getChildrenEmployee(Long id) throws IOException {
-        if (token == "") {
+        if (token.equals("")) {
             authorize();
         }
-        if (token == "") {
+        if (token.equals("")) {
             return null;
         } else {
             int index = 0;
@@ -911,10 +909,10 @@ public class MasterDataService implements IMasterDataService {
     }
 
     public List<PersonnelDTO.Info> getSiblingsEmployee(Long id) throws IOException {
-        if (token == "") {
+        if (token.equals("")) {
             authorize();
         }
-        if (token == "") {
+        if (token.equals("")) {
             return null;
         } else {
             int index = 0;
@@ -936,10 +934,10 @@ public class MasterDataService implements IMasterDataService {
     }
 
     public List<PersonnelDTO.Info> getPersonByNationalCode(String nationalCode) throws IOException {
-        if (token == "") {
+        if (token.equals("")) {
             authorize();
         }
-        if (token == "") {
+        if (token.equals("")) {
             return null;
         } else {
             int index = 0;
