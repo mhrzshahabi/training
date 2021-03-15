@@ -143,8 +143,8 @@ public class AnnualRestController {
         final AnnualStatisticalReportDTO.AnnualStatisticalReportDTOSpecRs specRs = new AnnualStatisticalReportDTO.AnnualStatisticalReportDTOSpecRs();
         specResponse.setData(response)
                 .setStartRow(0)
-                .setEndRow(response.size())
-                .setTotalRows(response.size());
+                .setEndRow(response!=null ? response.size() : 0)
+                .setTotalRows(response!=null ? response.size() : 0);
 
         specRs.setResponse(specResponse);
 
