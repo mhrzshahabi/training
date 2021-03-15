@@ -2445,6 +2445,13 @@
                                 }
                             },
                             //@Todo /sec:authorize>
+                            {
+                                title: "<spring:message code="reports.done.exams"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/doneOnlineExamReport"/>");
+                                }
+                            },
+                            //@Todo /sec:authorize>
                         ]
                 },
             ]

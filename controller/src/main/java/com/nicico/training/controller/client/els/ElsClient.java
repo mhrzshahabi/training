@@ -8,6 +8,7 @@ import response.BaseResponse;
 import response.evaluation.EvalListResponse;
 import response.evaluation.PdfResponse;
 import response.evaluation.dto.EvaluationDoneOnlineDto;
+import response.exam.DoneOnlineExamDto;
 import response.exam.ExamListResponse;
 
 import java.util.List;
@@ -39,5 +40,8 @@ public interface ElsClient {
 
     @GetMapping("/report/importedEvaluations/{fromDate}/{toDate}")
     List<EvaluationDoneOnlineDto> getDoneEvaluations(@PathVariable("fromDate") String fromDate, @PathVariable("toDate") String toDate);
+
+    @GetMapping("/report/importedExams/{startDate}/{endDate}")
+    List<DoneOnlineExamDto> getDoneOnlineExams(@PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate);
 
 }
