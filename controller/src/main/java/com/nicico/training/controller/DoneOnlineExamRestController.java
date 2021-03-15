@@ -40,7 +40,8 @@ public class DoneOnlineExamRestController {
                     }
                 });
             }
-            DoneOnlineExamResponse response = new DoneOnlineExamResponse().setResponse(new DoneOnlineExamResponse.SpecRs().setData(exams).setStartRow(0).setEndRow(exams.size()).setTotalRows(exams.size()));
+            int examSize = (exams == null ? 0 : exams.size());
+            DoneOnlineExamResponse response = new DoneOnlineExamResponse().setResponse(new DoneOnlineExamResponse.SpecRs().setData(exams).setStartRow(0).setEndRow(examSize).setTotalRows(examSize));
             return new ResponseEntity(response, HttpStatus.OK);
         } catch (Exception e) {
             BaseResponse response = new BaseResponse();
