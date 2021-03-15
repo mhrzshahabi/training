@@ -53,6 +53,8 @@ public class ExportController {
         List<HashMap<String, String>> fields1 = gson.fromJson(fields, resultType);
         List<HashMap<String, String>> allData = gson.fromJson(data, resultType);
         String fileFullPath = "export.xlsx";
+        Workbook workbook = null;
+        FileInputStream in = null;
         try {
 
             String[] headers = new String[fields1.size()];
@@ -61,7 +63,7 @@ public class ExportController {
                 headers[i] = fields1.get(i).get("title");
                 columns[i] = fields1.get(i).get("name");
             }
-            Workbook workbook = new XSSFWorkbook();
+            workbook = new XSSFWorkbook();
             CreationHelper createHelper = workbook.getCreationHelper();
             Sheet sheet = workbook.createSheet("گزارش excel");
             sheet.setRightToLeft(true);
@@ -114,7 +116,7 @@ public class ExportController {
             fileOut.close();
 
             File file = new File(fileFullPath);
-            FileInputStream in = new FileInputStream(file);
+            in = new FileInputStream(file);
             String mimeType = new MimetypesFileTypeMap().getContentType(fileFullPath);
             String fileName = URLEncoder.encode("excel.xlsx", "UTF-8").replace("+", "%20");
             if (mimeType == null) {
@@ -136,6 +138,21 @@ public class ExportController {
             in.close();
 
         } catch (Exception ex) {
+        } finally {
+            if (workbook != null) {
+                try {
+                    workbook.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

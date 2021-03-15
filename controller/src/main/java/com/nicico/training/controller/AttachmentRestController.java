@@ -125,10 +125,11 @@ public class AttachmentRestController {
     public void getAttach(HttpServletRequest request, HttpServletResponse response, @PathVariable Long Id) {
         AttachmentDTO.Info attachment = attachmentService.get(Id);
         String fileFullPath = uploadDir + File.separator + attachment.getObjectType() + File.separator + attachment.getId();
+        FileInputStream inputStream = null;
         try {
 
             File file = new File(fileFullPath);
-            FileInputStream inputStream = new FileInputStream(file);
+            inputStream =  new FileInputStream(file);
             String mimeType = new MimetypesFileTypeMap().getContentType(fileFullPath);
             String fileName = URLEncoder.encode(attachment.getFileName(), "UTF-8").replace("+", "%20");
             if (mimeType == null) {
@@ -160,6 +161,14 @@ public class AttachmentRestController {
             response.setHeader(headerKey, headerValue);
         } catch (Exception ex) {
             ex.printStackTrace();
+        } finally {
+            if(inputStream != null){
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
     // ---------------

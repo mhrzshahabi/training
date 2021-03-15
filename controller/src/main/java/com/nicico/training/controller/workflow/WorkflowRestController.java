@@ -56,6 +56,7 @@ public class WorkflowRestController {
     public ResponseEntity uploadProcessDefinition(@RequestParam("file") MultipartFile file) {
 
         File uploadedFile = null;
+        FileInputStream stream = null;
         if (!file.isEmpty()) {
 
             String fileName = file.getOriginalFilename();
@@ -65,7 +66,7 @@ public class WorkflowRestController {
                     return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 
                 uploadedFile = fileUtil.upload(file, bpmnUploadDir);
-                FileInputStream stream = new FileInputStream(uploadedFile);
+                stream = new FileInputStream(uploadedFile);
                 DeploymentBuilder deployment = repositoryService.createDeployment().addInputStream(uploadedFile.getName(), stream);
                 Deployment deployId = deployment.deploy();
                 return new ResponseEntity<>(HttpStatus.OK);
@@ -79,6 +80,14 @@ public class WorkflowRestController {
 
 
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            } finally {
+                if (stream != null) {
+                    try {
+                        stream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         } else
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
