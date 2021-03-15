@@ -77,7 +77,8 @@ public class AttachmentService implements IAttachmentService {
             File file = new File(fileFullPath);
             new File(uploadDir + File.separator + attachment.getObjectType() + File.separator + "deleted").mkdirs();
             File movedFile = new File(uploadDir + File.separator + attachment.getObjectType() + File.separator + "deleted" + File.separator + attachment.getId());
-            file.renameTo(movedFile);
+            boolean  fileRenamed=file.renameTo(movedFile);
+            System.out.println("file delete :"+ fileRenamed);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.NotDeletable);
         }

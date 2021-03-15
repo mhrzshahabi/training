@@ -266,7 +266,8 @@ public class PersonalInfoRestController {
         String[] tempFiles = new File(tempUploadDir).list();
         for (String tempFile : tempFiles) {
             File file1 = new File(tempUploadDir + "/" + tempFile);
-            file1.delete();
+            boolean fileDeleted=file1.delete();
+            System.out.println("file delete :"+ fileDeleted);
         }
 
         try {
@@ -285,16 +286,16 @@ public class PersonalInfoRestController {
                    tempFiles = new File(tempUploadDir).list();
                     for (String tempFile : tempFiles) {
                         File file1 = new File(tempUploadDir + "/" + tempFile);
-                        file1.delete();
-                    }
+                        boolean fileDeleted=file1.delete();
+                        System.out.println("file delete :"+ fileDeleted);                    }
                     return new ResponseEntity<>("wrong dimension", HttpStatus.NOT_ACCEPTABLE);
                 }
             } else {
                 tempFiles = new File(tempUploadDir).list();
                 for (String tempFile : tempFiles) {
                     File file1 = new File(tempUploadDir + "/" + tempFile);
-                    file1.delete();
-                }
+                    boolean fileDeleted=file1.delete();
+                    System.out.println("file delete :"+ fileDeleted);                }
                 return new ResponseEntity<>("wrong size", HttpStatus.NOT_ACCEPTABLE);
             }
         } catch (Exception ex) {
@@ -302,8 +303,8 @@ public class PersonalInfoRestController {
             String[] tempFiles1 = new File(tempUploadDir).list();
             for (String tempFile : tempFiles1) {
                 File file1 = new File(tempUploadDir + "/" + tempFile);
-                file1.delete();
-            }
+                boolean fileDeleted=file1.delete();
+                System.out.println("file delete :"+ fileDeleted);            }
             ex.printStackTrace();
             return new ResponseEntity<>(fileName, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -323,8 +324,8 @@ public class PersonalInfoRestController {
                 final PersonalInfo personalInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                 if (personalInfo.getPhoto() != null && personalInfo.getPhoto() != "") {
                     File file1 = new File(personUploadDir + "/" + personalInfo.getPhoto());
-                    file1.delete();
-                }
+                    boolean fileDeleted=file1.delete();
+                    System.out.println("file delete :"+ fileDeleted);                }
                 String fileType = file.getOriginalFilename().replace(file.getOriginalFilename(), "." + FilenameUtils.getExtension(file.getOriginalFilename())).toUpperCase();
                 fileName = "Teacher_Photo"+"_"+Id+fileType;
                 destinationFile = new File(personUploadDir + File.separator + fileName);

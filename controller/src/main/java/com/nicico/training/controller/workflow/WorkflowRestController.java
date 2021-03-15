@@ -72,7 +72,12 @@ public class WorkflowRestController {
             } catch (Exception e) {
 
                 if (uploadedFile != null)
-                    uploadedFile.delete();
+                {
+                    boolean fileDeleted=   uploadedFile.delete();
+                    System.out.println("file delete :"+ fileDeleted);
+                }
+
+
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } else
