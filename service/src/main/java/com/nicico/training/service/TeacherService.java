@@ -341,13 +341,13 @@ public class TeacherService implements ITeacherService {
                 boolean subCat_related = false;
                 List<CategoryDTO.CategoryInfoTuple> employmentHistory_catrgories = employmentHistory.getCategories();
                 for (CategoryDTO.CategoryInfoTuple employmentHistory_catrgory : employmentHistory_catrgories) {
-                    if (employmentHistory_catrgory.getId() == category_selected.getId())
+                    if (employmentHistory_catrgory.getId().equals(category_selected.getId()))
                         cat_related = true;
                 }
-                if (cat_related == true) {
+                if (cat_related) {
                     List<SubcategoryDTO.SubCategoryInfoTuple> employmentHistory_sub_catrgories = employmentHistory.getSubCategories();
                     for (SubcategoryDTO.SubCategoryInfoTuple employmentHistory_sub_catrgory : employmentHistory_sub_catrgories) {
-                        if (employmentHistory_sub_catrgory.getId() == subCategory_selected.getId())
+                        if (employmentHistory_sub_catrgory.getId().equals(subCategory_selected.getId()))
                             subCat_related = true;
                     }
                 }
@@ -377,13 +377,13 @@ public class TeacherService implements ITeacherService {
             boolean subCat_related = false;
             List<CategoryDTO.CategoryInfoTuple> teachingHistory_catrgories = teachingHistory.getCategories();
             for (CategoryDTO.CategoryInfoTuple teachingHistory_catrgory : teachingHistory_catrgories) {
-                if (teachingHistory_catrgory.getId() == category_selected.getId())
+                if (teachingHistory_catrgory.getId().equals(category_selected.getId()))
                     cat_related = true;
             }
-            if (cat_related == true) {
+            if (cat_related) {
                 List<SubcategoryDTO.SubCategoryInfoTuple> teachingHistory_sub_catrgories = teachingHistory.getSubCategories();
                 for (SubcategoryDTO.SubCategoryInfoTuple teachingHistory_sub_catrgory : teachingHistory_sub_catrgories) {
-                    if (teachingHistory_sub_catrgory.getId() == subCategory_selected.getId())
+                    if (teachingHistory_sub_catrgory.getId().equals(subCategory_selected.getId()))
                         subCat_related = true;
                 }
             }
@@ -419,13 +419,13 @@ public class TeacherService implements ITeacherService {
             boolean subCat_related = false;
             List<CategoryDTO.CategoryInfoTuple> teacherCertification_catrgories = teacherCertification.getCategories();
             for (CategoryDTO.CategoryInfoTuple teacherCertification_catrgory : teacherCertification_catrgories) {
-                if (teacherCertification_catrgory.getId() == category_selected.getId())
+                if (teacherCertification_catrgory.getId().equals(category_selected.getId()))
                     cat_related = true;
             }
-            if (cat_related == true) {
+            if (cat_related) {
                 List<SubcategoryDTO.SubCategoryInfoTuple> teacherCertification_sub_catrgories = teacherCertification.getSubCategories();
                 for (SubcategoryDTO.SubCategoryInfoTuple teacherCertification_sub_catrgory : teacherCertification_sub_catrgories) {
-                    if (teacherCertification_sub_catrgory.getId() == subCategory_selected.getId())
+                    if (teacherCertification_sub_catrgory.getId().equals(subCategory_selected.getId()))
                         subCat_related = true;
                 }
             }
@@ -454,10 +454,10 @@ public class TeacherService implements ITeacherService {
         Category teacherMajorCategory = teacher.getMajorCategory();
         Subcategory teacherMajorSubCategory = teacher.getMajorSubCategory();
         if (teacherMajorCategory != null) {
-            if (category_selected.getId() == teacherMajorCategory.getId()) {
+            if (category_selected.getId().equals(teacherMajorCategory.getId())) {
                 table_2_relation += 1;
                 if (subCategory_selected != null && teacherMajorSubCategory != null)
-                    if (subCategory_selected.getId() == teacherMajorSubCategory.getId())
+                    if (subCategory_selected.getId().equals(teacherMajorSubCategory.getId()))
                         table_2_relation += 1;
             }
         }
@@ -482,13 +482,13 @@ public class TeacherService implements ITeacherService {
             boolean subCat_related = false;
             List<CategoryDTO.CategoryInfoTuple> publication_catrgories = publication.getCategories();
             for (CategoryDTO.CategoryInfoTuple publication_catrgory : publication_catrgories) {
-                if (publication_catrgory.getId() == category_selected.getId())
+                if (publication_catrgory.getId().equals(category_selected.getId()))
                     cat_related = true;
             }
-            if (cat_related == true) {
+            if (cat_related) {
                 List<SubcategoryDTO.SubCategoryInfoTuple> publication_sub_catrgories = publication.getSubCategories();
                 for (SubcategoryDTO.SubCategoryInfoTuple publication_sub_catrgory : publication_sub_catrgories) {
-                    if (publication_sub_catrgory.getId() == subCategory_selected.getId())
+                    if (publication_sub_catrgory.getId().equals(subCategory_selected.getId()))
                         subCat_related = true;
                 }
             }
@@ -635,13 +635,13 @@ public class TeacherService implements ITeacherService {
                 boolean subCat_related = false;
                 List<CategoryDTO.CategoryInfoTuple> employmentHistory_catrgories = employmentHistory.getCategories();
                 for (CategoryDTO.CategoryInfoTuple employmentHistory_catrgory : employmentHistory_catrgories) {
-                    if (employmentHistory_catrgory.getId() == category_selected.getId())
+                    if (employmentHistory_catrgory.getId().equals(category_selected.getId()))
                         cat_related = true;
                 }
-                if (cat_related == true) {
+                if (cat_related) {
                     List<SubcategoryDTO.SubCategoryInfoTuple> employmentHistory_sub_catrgories = employmentHistory.getSubCategories();
                     for (SubcategoryDTO.SubCategoryInfoTuple employmentHistory_sub_catrgory : employmentHistory_sub_catrgories) {
-                        if (employmentHistory_sub_catrgory.getId() == subCategory_selected.getId())
+                        if (employmentHistory_sub_catrgory.getId().equals(subCategory_selected.getId()))
                             subCat_related = true;
                     }
                 }
@@ -672,13 +672,13 @@ public class TeacherService implements ITeacherService {
             boolean subCat_related = false;
             List<CategoryDTO.CategoryInfoTuple> teachingHistory_catrgories = teachingHistory.getCategories();
             for (CategoryDTO.CategoryInfoTuple teachingHistory_catrgory : teachingHistory_catrgories) {
-                if (teachingHistory_catrgory.getId() == category_selected.getId())
+                if (teachingHistory_catrgory.getId().equals(category_selected.getId()))
                     cat_related = true;
             }
-            if (cat_related == true) {
+            if (cat_related) {
                 List<SubcategoryDTO.SubCategoryInfoTuple> teachingHistory_sub_catrgories = teachingHistory.getSubCategories();
                 for (SubcategoryDTO.SubCategoryInfoTuple teachingHistory_sub_catrgory : teachingHistory_sub_catrgories) {
-                    if (teachingHistory_sub_catrgory.getId() == subCategory_selected.getId())
+                    if (teachingHistory_sub_catrgory.getId().equals(subCategory_selected.getId()))
                         subCat_related = true;
                 }
             }
@@ -715,13 +715,13 @@ public class TeacherService implements ITeacherService {
             boolean subCat_related = false;
             List<CategoryDTO.CategoryInfoTuple> teacherCertification_catrgories = teacherCertification.getCategories();
             for (CategoryDTO.CategoryInfoTuple teacherCertification_catrgory : teacherCertification_catrgories) {
-                if (teacherCertification_catrgory.getId() == category_selected.getId())
+                if (teacherCertification_catrgory.getId().equals(category_selected.getId()))
                     cat_related = true;
             }
-            if (cat_related == true) {
+            if (cat_related) {
                 List<SubcategoryDTO.SubCategoryInfoTuple> teacherCertification_sub_catrgories = teacherCertification.getSubCategories();
                 for (SubcategoryDTO.SubCategoryInfoTuple teacherCertification_sub_catrgory : teacherCertification_sub_catrgories) {
-                    if (teacherCertification_sub_catrgory.getId() == subCategory_selected.getId())
+                    if (teacherCertification_sub_catrgory.getId().equals(subCategory_selected.getId()))
                         subCat_related = true;
                 }
             }
@@ -750,10 +750,10 @@ public class TeacherService implements ITeacherService {
         Category teacherMajorCategory = teacher.getMajorCategory();
         Subcategory teacherMajorSubCategory = teacher.getMajorSubCategory();
         if (teacherMajorCategory != null) {
-            if (category_selected.getId() == teacherMajorCategory.getId()) {
+            if (category_selected.getId().equals(teacherMajorCategory.getId())) {
                 table_2_relation += 1;
                 if (subCategory_selected != null && teacherMajorSubCategory != null)
-                    if (subCategory_selected.getId() == teacherMajorSubCategory.getId())
+                    if (subCategory_selected.getId().equals(teacherMajorSubCategory.getId()))
                         table_2_relation += 1;
             }
         }
@@ -779,13 +779,13 @@ public class TeacherService implements ITeacherService {
             boolean subCat_related = false;
             List<CategoryDTO.CategoryInfoTuple> publication_catrgories = publication.getCategories();
             for (CategoryDTO.CategoryInfoTuple publication_catrgory : publication_catrgories) {
-                if (publication_catrgory.getId() == category_selected.getId())
+                if (publication_catrgory.getId().equals(category_selected.getId()))
                     cat_related = true;
             }
-            if (cat_related == true) {
+            if (cat_related) {
                 List<SubcategoryDTO.SubCategoryInfoTuple> publication_sub_catrgories = publication.getSubCategories();
                 for (SubcategoryDTO.SubCategoryInfoTuple publication_sub_catrgory : publication_sub_catrgories) {
-                    if (publication_sub_catrgory.getId() == subCategory_selected.getId())
+                    if (publication_sub_catrgory.getId().equals(subCategory_selected.getId()))
                         subCat_related = true;
                 }
             }
