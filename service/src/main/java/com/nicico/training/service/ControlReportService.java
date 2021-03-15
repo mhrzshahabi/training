@@ -23,9 +23,9 @@ public class ControlReportService {
                                         List<List<StudentDTO.clearAttendanceWithState>> students)
             throws Exception {
         String[] headersTable = {"ردیف", "نام و نام خانوادگی", "شماره کار", "امور", "مدرک", "شغل"};
-
+        XSSFWorkbook workbook = null;
         try {
-            XSSFWorkbook workbook = new XSSFWorkbook();
+            workbook = new XSSFWorkbook();
             CreationHelper createHelper = workbook.getCreationHelper();
             XSSFSheet sheet = workbook.createSheet("گزارش حضور و غیاب");
             sheet.setColumnWidth(0, 1000);
@@ -529,15 +529,18 @@ public class ControlReportService {
 
         } catch (Exception ex) {
             throw new Exception("Server problem");
-        }//end catch
+        } finally {
+            if (workbook != null)
+                workbook.close();
+        }
     }//end exportToExcelAttendance
 
     public void exportToExcelScore(HttpServletResponse response, List<Map<String, String>> masterHeader, List<List<StudentDTO.scoreAttendance>> students)
             throws Exception {
         String[] headersTable = {"ردیف", "نام و نام خانوادگی", "شماره کار", "نمره به عدد", "نمره به حروف"};
-
+        XSSFWorkbook workbook = null;
         try {
-            XSSFWorkbook workbook = new XSSFWorkbook();
+            workbook = new XSSFWorkbook();
             CreationHelper createHelper = workbook.getCreationHelper();
             XSSFSheet sheet = workbook.createSheet("گزارش نمرات");
             sheet.setColumnWidth(0, 1000);
@@ -927,15 +930,18 @@ public class ControlReportService {
 
         } catch (Exception ex) {
             throw new Exception("Server problem");
-        }//end catch
+        } finally {
+            if (workbook != null)
+                workbook.close();
+        }
     }//end exportToExcelScore
 
     public void exportToExcelControl(HttpServletResponse response, List<Map<String, String>> masterHeader, List<List<StudentDTO.controlAttendance>> students)
             throws Exception {
         String[] headersTable = {"ردیف", "نام و نام خانوادگی", "شماره کار جدید", "شماره کار قدیم", "امور"};
-
+        XSSFWorkbook workbook = null;
         try {
-            XSSFWorkbook workbook = new XSSFWorkbook();
+            workbook = new XSSFWorkbook();
             CreationHelper createHelper = workbook.getCreationHelper();
             XSSFSheet sheet = workbook.createSheet("گزارش کنترل");
             sheet.setColumnWidth(0, 1000);
@@ -1325,15 +1331,19 @@ public class ControlReportService {
 
         } catch (Exception ex) {
             throw new Exception("Server problem");
-        }//end catch
+        } finally {
+            if (workbook != null)
+                workbook.close();
+        }
     }//end exportToExcelControl
 
     public void exportToExcelFull(HttpServletResponse response, List<Map<String, String>> masterHeader, List<List<ClassSession>> sessionList, List<List<StudentDTO.fullAttendance>> students)
             throws Exception {
+        XSSFWorkbook workbook = null;
         //نمرات
         try {
             String[] headersTable = {"ردیف", "نام و نام خانوادگی", "شماره کار", "نمره به عدد", "نمره به حروف"};
-            XSSFWorkbook workbook = new XSSFWorkbook();
+            workbook = new XSSFWorkbook();
             CreationHelper createHelper = workbook.getCreationHelper();
             XSSFSheet sheet = workbook.createSheet("گزارش نمرات");
             sheet.setColumnWidth(0, 1000);
@@ -2569,6 +2579,9 @@ public class ControlReportService {
 
         } catch (Exception ex) {
             throw new Exception("Server problem");
-        }//end catch
+        } finally {
+            if (workbook != null)
+                workbook.close();
+        }
     }//end exportToExcelFull
 }

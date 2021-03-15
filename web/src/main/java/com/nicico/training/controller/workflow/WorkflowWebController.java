@@ -203,6 +203,7 @@ public class WorkflowWebController {
 //    }
 
     private String generateProcessDefinitionPng(String id, ModelMap modelMap, InputStream definitionImageStream) {
+        FileOutputStream stream = null;
         try {
 
             String filename = "snapshot-" + id.replace(":", "-") + ".png";
@@ -212,7 +213,7 @@ public class WorkflowWebController {
             if (!file.exists()) {
                 file.mkdirs();
             }
-            FileOutputStream stream = new FileOutputStream(uploadDir + "\\" + filename);
+            stream = new FileOutputStream(uploadDir + "\\" + filename);
             int read = 0;
             byte[] bytes = new byte[1024];
             while ((read = definitionImageStream.read(bytes)) != -1) {
@@ -223,6 +224,14 @@ public class WorkflowWebController {
         } catch (Exception ex) {
             ex.printStackTrace();
             ex.getMessage();
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return "workflow/processDiagramForm";
     }
