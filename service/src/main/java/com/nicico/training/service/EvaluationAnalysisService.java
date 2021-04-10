@@ -22,7 +22,7 @@ import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.EvaluationAnalysisDAO;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.utility.PersianCharachtersUnicode;
-import lombok.RequiredArgsConstructor;;
+import lombok.RequiredArgsConstructor;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
