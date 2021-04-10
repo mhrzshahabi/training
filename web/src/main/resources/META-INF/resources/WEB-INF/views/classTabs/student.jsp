@@ -2039,7 +2039,8 @@
                 btnAdd_student_class.setVisibility(true);
                 btnRemove_student_class.setVisibility(true);
 
-                if (classRecord.classStatus === "3" || classRecord.classStatus === "4") {
+                if (classRecord.classStatus === "3" || classRecord.classStatus === "4"
+                     || classRecord.classStatus === "5") {
                     //StudentTS_student.setVisibility(false)
                     btnAdd_student_class.setVisibility(false);
                     btnRemove_student_class.setVisibility(false);
