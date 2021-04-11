@@ -166,7 +166,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
                 return 1; //this object is editable and dont needs to be initialize
             return 3; // this object is read only and user should see edited NAs
         } else
-            throw new TrainingException(TrainingException.ErrorType.NeedsAssessmentNotFound, messageSource.getMessage("na.message.doesnot.access.to.others.assessment", null, LocaleContextHolder.getLocale()));
+            return 2;
     }
 
     @Transactional(readOnly = true)
@@ -278,5 +278,14 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
     @Transactional
     public Integer updateNeedsAssessmentTempMainWorkflow(String objectType, Long objectId, Integer workflowStatusCode, String workflowStatus) {
         return dao.updateNeedsAssessmentTempWorkflowMainStatus(objectType, objectId, workflowStatusCode, workflowStatus);
+    }
+
+    @Transactional(readOnly = true)
+    public Boolean isCreatedByCurrentUser(String objectType, Long objectId) {
+        SearchDTO.CriteriaRq criteriaRq = getCriteria(objectType, objectId, false);
+        List<NeedsAssessmentTemp> needsAssessmentTemps = dao.findAll(NICICOSpecification.of(criteriaRq));
+        if (needsAssessmentTemps == null || needsAssessmentTemps.isEmpty())
+            return null;
+        return needsAssessmentTemps.get(0).getCreatedBy().equals(SecurityUtil.getUsername());
     }
 }
