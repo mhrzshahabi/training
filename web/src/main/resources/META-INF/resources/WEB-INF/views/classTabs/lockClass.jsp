@@ -16,6 +16,7 @@
         margin: 5,
         fields: [
             {
+                ID:"lock",
                 type: "button",
                 title: "اختتام کلاس",
                 width: 160,
@@ -114,21 +115,5 @@
     });
 
     function loadPage_classFinish(classId) {
-        //id -> 61 = id lock in work group table
-        //id -> 81 = id unLock in work group table
-        // isc.RPCManager.sendRequest(TrDSRequest(hasAccessToGroups+"61,81", "GET",null, function (resp) {
-        //     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-        //                 console.log(resp.data)
-        //
-        //         alert(resp.data.getItem("61").getValue())
-        //
-        //         // if (resp.data === "false" )
-        //         //     TabSet_Class.disableTab(TabSet_Class.getTab("classFinish"));
-        //         // else
-        //         //     TabSet_Class.enableTab(TabSet_Class.getTab("classFinish"));
-        //
-        //     }
-
-        // }));
         classIdForFinish = classId;
     }

@@ -377,8 +377,18 @@ public class WorkGroupService implements IWorkGroupService {
         for (String groupId:groupIds)
         {
             WorkGroup workGroup= workGroupDAO.findByIdAndFetchUserIdsEagerly(Long.parseLong(groupId));
-            response.put(groupId, workGroup != null && !workGroup.getUserIds().isEmpty() && workGroup.getUserIds().contains(userId));
-        }
+            switch (groupId)
+            {
+                case "61":
+                {
+                    response.put("lock", workGroup != null && !workGroup.getUserIds().isEmpty() && workGroup.getUserIds().contains(userId));
+                }
+                case "81":
+                {
+                    response.put("unLock", workGroup != null && !workGroup.getUserIds().isEmpty() && workGroup.getUserIds().contains(userId));
+                }
+            }
+         }
            return response;
     }
 
