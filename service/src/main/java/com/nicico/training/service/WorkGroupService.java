@@ -360,16 +360,26 @@ public class WorkGroupService implements IWorkGroupService {
     }
 
     @Override
-    public Boolean hasAccess(Long userId, Long groupId) {
-       WorkGroup workGroup= workGroupDAO.findByIdAndFetchUserIdsEagerly(groupId);
-       if (workGroup!=null && !workGroup.getUserIds().isEmpty()){
-           return workGroup.getUserIds().contains(userId);
-       }
-       else {
+    public Boolean hasAccess(Long userId, List<String> groupIds) {
+        for (String groupId:groupIds)
+        {
+            WorkGroup workGroup= workGroupDAO.findByIdAndFetchUserIdsEagerly(Long.parseLong(groupId));
+            if (workGroup!=null && !workGroup.getUserIds().isEmpty() && workGroup.getUserIds().contains(userId)){
+                return true;
+            }
+        }
            return false;
-       }
+    }
 
-
+    @Override
+    public Map<String,Boolean> hasAccessToGroups(Long userId, List<String> groupIds) {
+        final Map<String, Boolean> response = new HashMap<>();
+        for (String groupId:groupIds)
+        {
+            WorkGroup workGroup= workGroupDAO.findByIdAndFetchUserIdsEagerly(Long.parseLong(groupId));
+            response.put(groupId, workGroup != null && !workGroup.getUserIds().isEmpty() && workGroup.getUserIds().contains(userId));
+        }
+           return response;
     }
 
 

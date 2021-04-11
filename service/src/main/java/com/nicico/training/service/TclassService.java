@@ -47,6 +47,8 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -1595,8 +1597,14 @@ public class TclassService implements ITclassService {
     }
 
     @Override
-    public Boolean hasAccessToSetEndClass( Long groupId) {
-        return workGroupService.hasAccess(SecurityUtil.getUserId(),groupId);
+    public Boolean hasAccessToChangeClassStatus( String groupIds) {
+        List<String> ids = Arrays.stream(groupIds.split( "," )).collect(Collectors.toList());;
+        return workGroupService.hasAccess(SecurityUtil.getUserId(),ids);
+    }
+    @Override
+    public Map<String,Boolean> hasAccessToGroups( String groupIds) {
+        List<String> ids = Arrays.stream(groupIds.split( "," )).collect(Collectors.toList());;
+        return workGroupService.hasAccessToGroups(SecurityUtil.getUserId(),ids);
     }
 
     @Override

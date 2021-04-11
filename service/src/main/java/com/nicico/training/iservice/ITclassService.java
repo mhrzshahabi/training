@@ -121,7 +121,8 @@ public interface ITclassService {
     EvaluationAnswerObject classTeacherEvaluations( TeacherEvaluationAnswerDto dto);
     EvaluationAnswerObject classStudentEvaluations(StudentEvaluationAnswerDto dto);
 
-    Boolean hasAccessToSetEndClass(Long groupId);
+    Boolean hasAccessToChangeClassStatus(String groupIds);
+    Map<String,Boolean> hasAccessToGroups(String groupIds);
 
     String getClassDefaultYear();
 

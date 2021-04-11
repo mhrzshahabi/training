@@ -7,5 +7,6 @@ import lombok.Setter;
 @Setter
 public class LockClassDto {
     private Long classId;
+    private String groupId;
     private String reason;
 }

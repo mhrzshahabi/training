@@ -3993,8 +3993,9 @@
 
     ////*****load classes by term*****
     function load_classes_by_term(value) {
-        //id -> 61 = id finish in work group table
-        isc.RPCManager.sendRequest(TrDSRequest(hasAccessToSetEndClass+"61", "GET",null, function (resp) {
+        //id -> 61 = id lock in work group table
+        //id -> 81 = id unLock in work group table
+        isc.RPCManager.sendRequest(TrDSRequest(hasAccessToChangeClassStatus+"61,81", "GET",null, function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 if (resp.data === "false" )
                     TabSet_Class.disableTab(TabSet_Class.getTab("classFinish"));

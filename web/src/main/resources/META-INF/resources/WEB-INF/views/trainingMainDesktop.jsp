@@ -1190,7 +1190,8 @@
     const needsAssessmentUrl = rootUrl + "/needsAssessment";
     const workGroupUrl = rootUrl + "/work-group";
     const evaluationUrl = rootUrl + "/evaluation";
-    const hasAccessToSetEndClass = rootUrl + "/tclass/hasAccessToSetEndClass/";
+    const hasAccessToChangeClassStatus = rootUrl + "/tclass/hasAccessToChangeClassStatus/";
+    const hasAccessToGroups= rootUrl + "/tclass/hasAccessToGroups/";
     const changeClassStatusToLock = rootUrl + "/tclass/changeClassStatusToLock";
     const changeClassStatusToUnLock = rootUrl + "/tclass/changeClassStatusToUnLock/";
     const needsAssessmentReportsUrl = rootUrl + "/needsAssessment-reports";

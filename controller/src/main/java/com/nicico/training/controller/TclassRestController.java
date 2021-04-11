@@ -25,6 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.formula.functions.T;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,6 +65,7 @@ public class TclassRestController {
     private final ClassSessionService classSessionService;
     private final PersonnelDAO personnelDAO;
     private final InstituteDAO instituteDAO;
+    private final MessageSource messageSource;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -700,25 +703,49 @@ public class TclassRestController {
     }
 
     @Loggable
-    @GetMapping("/hasAccessToSetEndClass/{groupId}")
-    public ResponseEntity<Boolean> hasAccessToSetEndClass(@PathVariable Long groupId) {
-        return new ResponseEntity<>(tClassService.hasAccessToSetEndClass(groupId), HttpStatus.OK);
+    @GetMapping("/hasAccessToGroups/{groupIds}")
+    public ResponseEntity<Map<String,Boolean>> hasAccessToGroups(@PathVariable String groupIds) {
+        return new ResponseEntity(tClassService.hasAccessToGroups(groupIds), HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping("/hasAccessToChangeClassStatus/{groupIds}")
+    public ResponseEntity<Boolean> hasAccessToChangeClassStatus(@PathVariable String groupIds) {
+        return new ResponseEntity<>(tClassService.hasAccessToChangeClassStatus(groupIds), HttpStatus.OK);
     }
 
 
 //    every class after finish can edit but when lock it we can not edit that
     @Loggable
-    @GetMapping("/changeClassStatusToUnLock/{classId}")
-    public ResponseEntity changeClassStatusToFinish(@PathVariable Long classId) {
-        BaseResponse  response  =  tClassService.changeClassStatus(classId,"unLock",null);
-        return new ResponseEntity(response, HttpStatus.valueOf(response.getStatus()));
+    @GetMapping("/changeClassStatusToUnLock/{classId}/{groupId}")
+    public ResponseEntity changeClassStatusToFinish(@PathVariable Long classId,@PathVariable Long groupId) {
+        BaseResponse  response =new BaseResponse();
+        if (tClassService.hasAccessToChangeClassStatus(String.valueOf(groupId)))
+        {
+            response  =  tClassService.changeClassStatus(classId,"unLock",null);
+        }
+        else
+        {
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+            response.setMessage(messageSource.getMessage("hasNotAccessToUnLock", null, LocaleContextHolder.getLocale()));
+        }
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
     }
     //every class after finish can edit but when lock it we can not edit that
     @Loggable
     @PostMapping("/changeClassStatusToLock")
     public ResponseEntity changeClassStatusToLock(@RequestBody LockClassDto lockClassDto) {
-        BaseResponse  response  =  tClassService.changeClassStatus(lockClassDto.getClassId(),"lock",lockClassDto.getReason());
-        return new ResponseEntity(response, HttpStatus.valueOf(response.getStatus()));
+        BaseResponse  response =new BaseResponse();
+        if (tClassService.hasAccessToChangeClassStatus(String.valueOf(lockClassDto.getGroupId())))
+        {
+            response  =  tClassService.changeClassStatus(lockClassDto.getClassId(),"lock",lockClassDto.getReason());
+        }
+        else
+        {
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+            response.setMessage(messageSource.getMessage("hasNotAccessToLock", null, LocaleContextHolder.getLocale()));
+        }
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
     }
 
     @Loggable

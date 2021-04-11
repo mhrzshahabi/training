@@ -7,6 +7,7 @@ import com.nicico.training.dto.WorkGroupDTO;
 import com.nicico.training.model.WorkGroup;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IWorkGroupService {
 
@@ -43,5 +44,6 @@ public interface IWorkGroupService {
 
     boolean isAllowUseId(String entity,Long Id);
 
-    Boolean hasAccess(Long userId,Long groupId);
+    Boolean hasAccess(Long userId,List<String> groupId);
+    Map<String,Boolean> hasAccessToGroups(Long userId, List<String> groupId);
 }
