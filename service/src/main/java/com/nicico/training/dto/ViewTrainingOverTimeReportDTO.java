@@ -27,6 +27,10 @@ public class ViewTrainingOverTimeReportDTO {
     String plannerComplex;
     String plannerName;
     String instituteName;
+    String ccpAssistant;
+    String ccpSection;
+    String ccpUnit;
+    String complexTitle;
 
     @Getter
     @Setter
@@ -40,7 +44,7 @@ public class ViewTrainingOverTimeReportDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("TrainingOverTimeReportDTOSpecRs")
-    public static class TrainingOverTimeReportDTOSpecRs {
+    public static class TrainingOverTimeReportDTOSpecRs extends ViewTrainingOverTimeReportDTO {
         private ViewTrainingOverTimeReportDTO.SpecRs response;
     }
 

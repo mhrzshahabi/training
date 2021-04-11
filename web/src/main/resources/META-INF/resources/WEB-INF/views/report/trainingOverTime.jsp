@@ -27,6 +27,8 @@
         ]
     });
 
+    var organSegmentFilter = init_OrganSegmentFilterDF(true, true , null, "complexTitle","assistant","affairs", "section", "unit")
+
     var DynamicForm_TrainingOverTime = isc.DynamicForm.create({
         numCols: 6,
         padding: 10,
@@ -89,71 +91,7 @@
                         form.clearFieldErrors("endDate", true);
                     }
                 }
-            },
-            {
-                name: "searchBtn",
-                ID: "searchBtnJspTrainingOverTime",
-                title: "<spring:message code="search"/>",
-                type: "ButtonItem",
-                width: "*",
-                startRow: false,
-                endRow: false,
-                click(form) {
-                    if(DynamicForm_TrainingOverTime.getValuesAsAdvancedCriteria()==null || DynamicForm_TrainingOverTime.getValuesAsAdvancedCriteria().criteria.size() <= 1) {
-                        createDialog("info","فیلتری انتخاب نشده است.");
-                        return;
-                    }
-
-                    DynamicForm_TrainingOverTime.validate();
-                    if (DynamicForm_TrainingOverTime.hasErrors())
-                        return;
-
-
-                    else {
-                        var training_over_time_wait = createDialog("wait");
-                        setTimeout(function () {
-                            let url = trainingOverTimeReportUrl + "/list?startDate=" + form.getValue("startDate") + "&endDate=" + form.getValue("endDate");
-                            RestDataSource_Class_JspTrainingOverTime.fetchDataURL = url;
-
-                            ListGrid_TrainingOverTime_TrainingOverTimeJSP.invalidateCache();
-                            ListGrid_TrainingOverTime_TrainingOverTimeJSP.fetchData();
-                            training_over_time_wait.close();
-
-                        }, 100);
-
-                        // data_values = DynamicForm_TrainingOverTime.getValuesAsAdvancedCriteria();
-                        // for (let i = 0; i < data_values.criteria.size(); i++) {
-                        //
-                        //     if (data_values.criteria[i].fieldName == "startDate") {
-                        //         data_values.criteria[i].fieldName = "date";
-                        //         data_values.criteria[i].operator = "greaterThan";
-                        //     } else if (data_values.criteria[i].fieldName == "endDate") {
-                        //         data_values.criteria[i].fieldName = "date";
-                        //         data_values.criteria[i].operator = "lessThan";
-                        //     }
-                        // }
-                        //
-                        //     ListGrid_TrainingOverTime_TrainingOverTimeJSP.invalidateCache();
-                        //     ListGrid_TrainingOverTime_TrainingOverTimeJSP.fetchData(data_values);
-                        //
-                        //     return;
-
-                    }
-                }
-            },
-            {
-                name: "clearBtn",
-                title: "<spring:message code="clear"/>",
-                type: "ButtonItem",
-                width: "*",
-                startRow: false,
-                endRow: false,
-                click(form, item) {
-                    form.clearValues();
-                    form.clearErrors();
-                    ListGrid_TrainingOverTime_TrainingOverTimeJSP.setData([]);
-                }
-            },
+            }
         ],
         itemKeyPress: function (item, keyName) {
             if (keyName == "Enter") {
@@ -161,12 +99,107 @@
             }
         }
     });
+
+    searchBtn = isc.IButtonSave.create({
+        top: 260,
+        title: "<spring:message code="search"/>",
+        width: 300,
+        click() {
+            if ((DynamicForm_TrainingOverTime.getValuesAsAdvancedCriteria() == null || DynamicForm_TrainingOverTime.getValuesAsAdvancedCriteria().criteria.size() <= 1)
+                && ((organSegmentFilter.getCriteria(DynamicForm_TrainingOverTime.getValuesAsAdvancedCriteria())).criteria.length <= 1)) {
+                createDialog("info", "فیلتری انتخاب نشده است.");
+                return;
+            }
+
+
+            DynamicForm_TrainingOverTime.validate();
+            if (DynamicForm_TrainingOverTime.hasErrors())
+                return;
+
+
+            else {
+                data_values = organSegmentFilter.getCriteria(DynamicForm_TrainingOverTime.getValuesAsAdvancedCriteria());
+
+                var training_over_time_wait = createDialog("wait");
+                setTimeout(function () {
+                    for (let i = 0; i < data_values.criteria.size(); i++){
+                        if (data_values.criteria[i].fieldName == "startDate") {
+                            data_values.criteria[i].fieldName = "date";
+                            data_values.criteria[i].operator = "greaterOrEqual";
+                        }
+                        else if (data_values.criteria[i].fieldName == "endDate") {
+                            data_values.criteria[i].fieldName = "date";
+                            data_values.criteria[i].operator = "lessOrEqual";
+                        }
+                        else if (data_values.criteria[i].fieldName == "companyName") {
+                            data_values.criteria[i].fieldName = "companyName";
+                            data_values.criteria[i].operator = "iContains";
+                        }
+                        else if (data_values.criteria[i].fieldName == "assistant") {
+                            data_values.criteria[i].fieldName = "ccpAssistant";
+                            data_values.criteria[i].operator = "inSet";
+                        }
+                        else if (data_values.criteria[i].fieldName == "unit") {
+                            data_values.criteria[i].fieldName = "ccpUnit";
+                            data_values.criteria[i].operator = "inSet";
+                        }
+                        else if (data_values.criteria[i].fieldName == "affairs") {
+                            data_values.criteria[i].fieldName = "ccpAffairs";
+                            data_values.criteria[i].operator = "inSet";
+                        }
+                        else if (data_values.criteria[i].fieldName == "section") {
+                            data_values.criteria[i].fieldName = "ccpSection";
+                            data_values.criteria[i].operator = "inSet";
+                        }
+
+                        else if (data_values.criteria[i].fieldName == "complexTitle") {
+                            data_values.criteria[i].fieldName = "complexTitle";
+                            data_values.criteria[i].operator = "inSet";
+                        }
+
+                    }
+                    let url = trainingOverTimeReportUrl + "/minList";
+                    RestDataSource_Class_JspTrainingOverTime.fetchDataURL = url;
+                    ListGrid_TrainingOverTime_TrainingOverTimeJSP.invalidateCache();
+                    ListGrid_TrainingOverTime_TrainingOverTimeJSP.fetchData(data_values);
+                    training_over_time_wait.close();
+                }, 100);
+            }
+        }
+    });
+
+    clearBtn = isc.IButtonCancel.create({
+        top: 260,
+        title: "<spring:message code="clear"/>",
+        width: 100,
+        click(form, item) {
+            DynamicForm_TrainingOverTime.clearValues();
+            DynamicForm_TrainingOverTime.clearErrors();
+            organSegmentFilter.clearValues();
+            ListGrid_TrainingOverTime_TrainingOverTimeJSP.invalidateCache();
+            ListGrid_TrainingOverTime_TrainingOverTimeJSP.setData([]);
+        }
+    });
+
+    var HLayOut_Confirm_TrainingOverTime_buttons = isc.TrHLayoutButtons.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        width: "70%",
+        height: "10%",
+        alignLayout: "center",
+        padding: 10,
+        members: [
+            searchBtn,clearBtn
+        ]
+    });
+
     var ListGrid_TrainingOverTime_TrainingOverTimeJSP = isc.TrLG.create({
         ID: "TrainingOverTimeGrid",
         //dynamicTitle: true,
         filterOnKeypress: false,
         showFilterEditor:true,
-        gridComponents: [DynamicForm_TrainingOverTime,
+        gridComponents: [DynamicForm_TrainingOverTime,organSegmentFilter,HLayOut_Confirm_TrainingOverTime_buttons,
             isc.ToolStripButtonExcel.create({
                 margin:5,
                 click:function() {
