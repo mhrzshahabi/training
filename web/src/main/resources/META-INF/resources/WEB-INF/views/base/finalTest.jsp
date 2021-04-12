@@ -1250,6 +1250,13 @@ createDialog("info",JSON.parse(resp.httpResponseText).message, "<spring:message 
                 title: "<spring:message code="questions"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation-final-test/questions/show-form"})
             },
+            {
+                ID: "resendFinalTest",
+                name: "resendFinalTest",
+                title: "<spring:message code="resend.final.test"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation-final-test/resend-final-exam-form"})
+            },
+
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
             loadTab();
