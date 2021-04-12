@@ -128,4 +128,6 @@ public interface ITclassService {
 
     Long getClassDefaultTerm(String year);
 
+    List<String> getClassDefaultTermScope();
+
 }

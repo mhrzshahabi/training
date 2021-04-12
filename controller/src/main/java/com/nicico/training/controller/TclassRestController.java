@@ -760,5 +760,11 @@ public class TclassRestController {
         return tClassService.getClassDefaultTerm(year);
     }
 
+    @Loggable
+    @GetMapping(value = "/termScope")
+    public List<String> getDefaultTermScope() {
+        return tClassService.getClassDefaultTermScope();
+    }
+
 
 }
