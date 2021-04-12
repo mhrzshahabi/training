@@ -22,7 +22,6 @@ import com.nicico.training.model.*;
 import com.nicico.training.model.enums.ClassStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import request.evaluation.StudentEvaluationAnswerDto;
 import response.BaseResponse;
 import response.evaluation.dto.EvaluationAnswerObject;
@@ -1630,6 +1629,28 @@ public class TclassService implements ITclassService {
                 if (termByCode.getCode().startsWith(year)) return termByCode.getId();
                 else throw new TrainingException(TrainingException.ErrorType.InvalidData);
             } else throw new TrainingException(TrainingException.ErrorType.NotFound);
+        } else throw new TrainingException(TrainingException.ErrorType.NotFound);
+    }
+
+    @Override
+    public List<String> getClassDefaultTermScope() {
+
+        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("ClassConfig");
+
+        List<String> termScope = new ArrayList<>();
+        ParameterValueDTO.Info from = parameters.getResponse().getData().stream().filter(p -> p.getCode().equals("from")).findFirst().orElse(null);
+        ParameterValueDTO.Info to = parameters.getResponse().getData().stream().filter(p -> p.getCode().equals("to")).findFirst().orElse(null);
+
+        if (from != null && to != null) {
+            Term fromTerm = termDAO.getTermByCode(from.getValue());
+            Term toTerm = termDAO.getTermByCode(to.getValue());
+            if (fromTerm != null && toTerm != null) {
+
+                termScope.add(fromTerm.getCode());
+                termScope.add(toTerm.getCode());
+                return termScope;
+            }
+            else throw new TrainingException(TrainingException.ErrorType.NotFound);
         } else throw new TrainingException(TrainingException.ErrorType.NotFound);
     }
 }

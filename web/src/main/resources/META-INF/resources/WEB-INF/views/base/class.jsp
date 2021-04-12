@@ -17,6 +17,9 @@
     var endDateCheck = true;
     var isReadOnlyClass = true;
     var societies = [];
+    let termId = null;
+    let termStart = null;
+    let termEnd = null;
     let firstLoad = true;
     let oLoadAttachments_class = null;
     let OJT = false;
@@ -256,7 +259,7 @@
         ],
         fetchDataURL: viewActivePersonnelUrl + "/iscList",
     });
-   
+
     let RestDataSource_Department_Filter = isc.TrDS.create({
         fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
         cacheAllData: true,
@@ -1468,7 +1471,7 @@
                 },
                 changed: function (form, item, value) {
                     var termStart = form.getItem("termId").getSelectedRecord().startDate;
-                    var termEnd = form.getItem("termId").getSelectedRecord().endDate
+                    var termEnd = form.getItem("termId").getSelectedRecord().endDate;
                     form.getItem("startDate").setValue(termStart);
                     form.getItem("endDate").setValue(termEnd);
                     evalGroup();
@@ -2273,9 +2276,11 @@
                         isc.RPCManager.sendRequest(TrDSRequest(classUrl + "defaultTerm/" + year, "GET", null,
                             function (resp) {
                                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-
                                     let term = JSON.parse(resp.httpResponseText);
                                     DynamicForm_Term_Filter.getField("termFilter").setValue(term);
+                                    termId = term;
+                                    termStart = DynamicForm_Term_Filter.getField("termFilter").getSelectedRecord().startDate;
+                                    termEnd = DynamicForm_Term_Filter.getField("termFilter").getSelectedRecord().endDate;
                                     load_classes_by_term(term);
                                     clearClassTabValue();
                                     firstLoad = false;
@@ -2338,8 +2343,13 @@
             showPrompt: false,
             serverOutputAsString: false,
             callback: function (resp) {
+
+                let term = JSON.parse(resp.httpResponseText);
                 DynamicForm_Term_Filter.getItem("termFilter").clearValue();
-                DynamicForm_Term_Filter.getField("termFilter").setValue(resp.httpResponseText);
+                DynamicForm_Term_Filter.getField("termFilter").setValue(term);
+                termId = term;
+                termStart = DynamicForm_Term_Filter.getField("termFilter").getSelectedRecord().startDate;
+                termEnd = DynamicForm_Term_Filter.getField("termFilter").getSelectedRecord().endDate;
                 load_classes_by_term(resp.httpResponseText);
                 clearClassTabValue();
             }
@@ -4059,7 +4069,7 @@
                 } else {
                     createDialog("info", "<spring:message code="msg.select.term.ask"/>", "<spring:message code="message"/>")
                 }
-                
+
             }));
     }
 
@@ -4067,30 +4077,67 @@
     ////******************************
 
     function setDefaultTerm() {
-        let persianDateArray = getTodayPersian();
-        let todayPersianDate = persianDateArray[0].toString().padStart(2,0) + "/" + persianDateArray[1].toString().padStart(2,0) + "/" +
-	        persianDateArray[2].toString().padStart(2,0);
-        RestDataSource_Term_JspClass.implicitCriteria = {
-            _constructor: "AdvancedCriteria",
-            operator: "and",
-            criteria: [
-                // {
-                //     fieldName: "startDate",
-                //     operator: "lessOrEqual",
-                //     value: todayPersianDate
-                // },
-                {
-                    fieldName: "endDate",
-                    operator: "greaterOrEqual",
-                    value: todayPersianDate
+
+        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "termScope", "GET", null,
+            function (resp) {
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+                    let termScope = JSON.parse(resp.httpResponseText);
+                    RestDataSource_Term_JspClass.implicitCriteria = {
+                        _constructor: "AdvancedCriteria",
+                        operator: "and",
+                        criteria: [
+                            {
+                                fieldName: "code",
+                                operator: "greaterOrEqual",
+                                value: termScope[0]
+                            },
+                            {
+                                fieldName: "code",
+                                operator: "lessOrEqual",
+                                value: termScope[1]
+                            }
+                        ]
+                    };
+                    fetchTermData();
+                } else {
+
+                    let persianDateArray = getTodayPersian();
+                    let todayPersianDate = persianDateArray[0].toString().padStart(2,0) + "/" + persianDateArray[1].toString().padStart(2,0) + "/" +
+                        persianDateArray[2].toString().padStart(2,0);
+                    RestDataSource_Term_JspClass.implicitCriteria = {
+                        _constructor: "AdvancedCriteria",
+                        operator: "and",
+                        criteria: [
+                            {
+                                fieldName: "endDate",
+                                operator: "greaterOrEqual",
+                                value: todayPersianDate
+                            }
+                        ]
+                    };
+                    fetchTermData();
                 }
-                ]
-        };
+            }
+        ));
+    }
+
+    function fetchTermData() {
+
         RestDataSource_Term_JspClass.fetchData(null, function (dsResponse, data, dsRequest) {
             if (data && data.length > 0) {
-                DynamicForm1_Class_JspClass.setValue("termId", Number.parseInt(data[0].id));
-                DynamicForm1_Class_JspClass.setValue("startDate", data[0].startDate);
-                DynamicForm1_Class_JspClass.setValue("endDate", data[0].endDate);
+
+                let termIds = data.map(q => q.id);
+                if (termIds.contains(termId)) {
+                    DynamicForm1_Class_JspClass.setValue("termId", termId);
+                    DynamicForm1_Class_JspClass.getItem("startDate").setValue(termStart);
+                    DynamicForm1_Class_JspClass.getItem("endDate").setValue(termEnd);
+
+                } else {
+                    DynamicForm1_Class_JspClass.setValue("termId", Number.parseInt(data[0].id));
+                    DynamicForm1_Class_JspClass.setValue("startDate", data[0].startDate);
+                    DynamicForm1_Class_JspClass.setValue("endDate", data[0].endDate);
+                }
             }
         });
     }
