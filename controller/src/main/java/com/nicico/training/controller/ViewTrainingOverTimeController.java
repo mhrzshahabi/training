@@ -16,9 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,6 +32,24 @@ public class ViewTrainingOverTimeController {
 
     private final IViewTrainingOverTimeReportService iTrainingOverTimeReportService;
     private final ModelMapper modelMapper;
+
+
+    private <E, T> ResponseEntity<ISC<T>> search(HttpServletRequest iscRq, Function<E, T> converter) throws IOException {
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        if (searchRq.getCriteria() != null)
+            criteriaRq.getCriteria().add(searchRq.getCriteria());
+        searchRq.setCriteria(criteriaRq);
+        SearchDTO.SearchRs<T> searchRs = iTrainingOverTimeReportService.search(searchRq, converter);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping("/minList")
+    @Transactional(readOnly = true)
+    public ResponseEntity<ISC<ViewTrainingOverTimeReportDTO.TrainingOverTimeReportDTOSpecRs>> minlist(HttpServletRequest iscRq) throws IOException {
+        return search(iscRq, r -> modelMapper.map(r, ViewTrainingOverTimeReportDTO.TrainingOverTimeReportDTOSpecRs.class));
+    }
 
     @Loggable
     @GetMapping(value = "/list")
