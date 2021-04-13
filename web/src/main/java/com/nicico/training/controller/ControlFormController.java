@@ -353,6 +353,12 @@ public class ControlFormController {
                 .thenComparing(ClassSession::getSessionStartHour))
                 .collect(Collectors.toList());
 
+        studentArrayList = studentArrayList.stream().sorted((o2, o1) -> {
+            if (o1.getCcpAffairs() == null) return -1;
+            if (o2.getCcpAffairs() == null) return 1;
+            return o1.getCcpAffairs().compareTo(o2.getCcpAffairs());
+        }).collect(Collectors.toList());
+
         Set<String> daysOnClass = sessionList.stream().map(ClassSession::getDayName).collect(Collectors.toSet());
 
         params.put("days", "روزهای تشکیل کلاس: " + daysOnClass.toString());
