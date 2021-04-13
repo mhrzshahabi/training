@@ -48,7 +48,8 @@ public class ParameterValueRestController {
     public ResponseEntity create(@RequestBody Object rq) {
         ParameterValueDTO.Create create = modelMapper.map(rq, ParameterValueDTO.Create.class);
         try {
-            return new ResponseEntity<>(parameterValueService.checkAndCreate(create), HttpStatus.OK);
+            ParameterValueDTO.Info info=parameterValueService.checkAndCreate(create);
+            return new ResponseEntity<>(info, HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
         }
