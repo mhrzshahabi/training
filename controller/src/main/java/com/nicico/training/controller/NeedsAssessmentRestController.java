@@ -178,4 +178,12 @@ public class NeedsAssessmentRestController {
             return new ResponseEntity<>(true, HttpStatus.OK);
         return new ResponseEntity<>(false, HttpStatus.OK);
     }
+
+    @Loggable
+    @GetMapping("/isCreatedByCurrentUser/{objectType}/{objectId}")
+    public ResponseEntity<Boolean> isCreatedByCurrentUser(@PathVariable String objectType,
+                                                          @PathVariable Long objectId) {
+        return new ResponseEntity<>(needsAssessmentTempService.isCreatedByCurrentUser(objectType, objectId), HttpStatus.OK);
+    }
+
 }

@@ -1,3 +1,4 @@
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
@@ -1843,9 +1844,21 @@
                 editNeedsAssessmentRecord(objectId.id, type);
                 // refreshPersonnelLG(objectId);
                 updateLabelEditNeedsAssessment(objectId);
-                if(resp.data === "true"){
+                if (resp.data === "true") {
                     readOnly(true);
-                }
+                    fetch(needsAssessmentUrl + "/isCreatedByCurrentUser/" + type + "/" + objectId.id,
+                        {
+                            headers: {
+                                "Authorization": "Bearer <%= (String)
+                        session.getAttribute(ConstantVARs.ACCESS_TOKEN) %>"
+                            }
+                        }).then(r => r.json()).then(d => {
+                            if(d == false)
+                               createDialog("info", "<spring:message code='na.message.doesnot.access.to.others.assessment'/>");
+                            else
+                               createDialog("info", "<spring:message code='read.only.na.message'/>");
+                        });
+                 }
                 else{
                     readOnly(false);
                 }
@@ -1864,9 +1877,8 @@
             Button_changeShow_JspEditNeedsAssessment.show();
             Button_CopyOf_JspEditNeedsAssessment.hide();
             ToolStrip_JspNeedsAssessment.disable();
-            createDialog("info", "<spring:message code='read.only.na.message'/>");
         }
-        else{
+        else {
             buttonSendToWorkFlow.enable();
             buttonChangeCancel.enable();
             DynamicForm_JspEditNeedsAssessment.enable();
