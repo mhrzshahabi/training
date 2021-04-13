@@ -172,7 +172,7 @@ function showWindowDiffNeedsAssessment(objectId, objectType, unchangeable = fals
         minWidth: 1024,
         items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/diff-needs-assessment/"})],
         showUs(id, type) {
-            loadDiffNeedsAssessment(id, type);
+            loadDiffNeedsAssessment(id, type,"read");
             this.Super("show", arguments);
         },
     });
@@ -180,23 +180,6 @@ function showWindowDiffNeedsAssessment(objectId, objectType, unchangeable = fals
         if(Window_NeedsAssessment_Diff != null) {
             clearInterval(interval);
             Window_NeedsAssessment_Diff.showUs(objectId, objectType);
-            if(unchangeable) {
-                DynamicForm_JspEditNeedsAssessment.disable();
-                CompetenceTS_diffNeedsAssessment.disable();
-                ListGridTop_Knowledge_JspDiffNeedsAssessment.disable();
-                ListGridTop_Ability_JspDiffNeedsAssessment.disable();
-                ListGridTop_Attitude_JspDiffNeedsAssessment.disable();
-            }
-            else{
-                DynamicForm_JspEditNeedsAssessment.enable();
-                CompetenceTS_diffNeedsAssessment.enable();
-                ListGridTop_Knowledge_JspDiffNeedsAssessment.enable();
-                ListGridTop_Ability_JspDiffNeedsAssessment.enable();
-                ListGridTop_Attitude_JspDiffNeedsAssessment.enable();
-            }
-            if(typeof Window_NeedsAssessment_Edit !== "undefined"){
-                Window_NeedsAssessment_Edit.close(0);
-            }
         }
     wait.close();
     },1000)

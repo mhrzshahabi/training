@@ -1584,6 +1584,10 @@
     function loadDiffNeedsAssessment(objectId, type, state = "R&W") {
         if(state === "read"){
             NeedsAssessmentTargetDF_diffNeedsAssessment.disable()
+            CompetenceTS_diffNeedsAssessment.disable();
+            ListGridTop_Knowledge_JspDiffNeedsAssessment.disable();
+            ListGridTop_Ability_JspDiffNeedsAssessment.disable();
+            ListGridTop_Attitude_JspDiffNeedsAssessment.disable();
         }
         updateObjectIdLG_Diff(NeedsAssessmentTargetDF_diffNeedsAssessment, type);
         NeedsAssessmentTargetDF_diffNeedsAssessment.setValue("objectType", type);

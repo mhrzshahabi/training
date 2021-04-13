@@ -65,4 +65,16 @@ public class ViewTrainingOverTimeReport implements Serializable {
     @Column(name = "institute_name")
     private String instituteName;
 
+    @Column(name = "cpp_assistant")
+    private String ccpAssistant;
+
+    @Column(name = "cpp_section")
+    private String ccpSection;
+
+    @Column(name = "cpp_unit")
+    private String ccpUnit;
+
+    @Column(name = "cpp_complex_title")
+    private String complexTitle;
+
 }

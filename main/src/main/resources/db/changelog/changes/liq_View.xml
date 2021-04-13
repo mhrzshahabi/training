@@ -8302,4 +8302,5 @@ FROM (
              ]]>
         </createView>
     </changeSet>
+    
 </databaseChangeLog>
