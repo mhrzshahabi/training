@@ -925,7 +925,11 @@ scoreLabel.setContents("مجموع بارم وارد شده :")
             for(var i = 0; i < examData.questionData.length; i++) {
 
                 let score = examData.questionData[i].score;
+                if (Number(score)!==0)
                 totalScore = totalScore + Number(score);
+                else
+                       return false;
+
             }
             if (examData.examItem.tclass.scoringMethod === "3") {
                 return  totalScore === 20;
