@@ -273,14 +273,15 @@
             {name: "tclassTeachingType",
                 title: "<spring:message code='teaching.type'/>",
                 type: "SelectItem",
-                valueMap: [
-                    "حضوری",
-                    "غیر حضوری",
-                    "مجازی",
-                    "عملی و کارگاهی",
-                    "آموزش حین کار(OJT)",
-                    "اعزام"
-                ]
+                valueMap: {
+                   "حضوری": "حضوری",
+                   "غیر حضوری":"غیر حضوری",
+                   "مجازی":"مجازی",
+                   "عملی و کارگاهی":"عملی و کارگاهی",
+                   "آموزش حین کار(OJT)":"آموزش حین کار(OJT)",
+                   "اعزام":"اعزام",
+                   "null":"همه"
+                }
             },
             {name: "classCancelReasonTitle", title: "علت لغو" , filterOperator: "iContains"},
         ],
@@ -968,14 +969,15 @@
                 filterOperator: "equals",
                 fillHorizontalSpace: true,
                 defaultValue: "حضوری",
-                valueMap: [
-                    "حضوری",
-                    "غیر حضوری",
-                    "مجازی",
-                    "عملی و کارگاهی",
-                    "آموزش حین کار(OJT)",
-                    "اعزام"
-                ]
+                valueMap: {
+                    "حضوری": "حضوری",
+                    "غیر حضوری":"غیر حضوری",
+                    "مجازی":"مجازی",
+                    "عملی و کارگاهی":"عملی و کارگاهی",
+                    "آموزش حین کار(OJT)":"آموزش حین کار(OJT)",
+                    "اعزام":"اعزام",
+                    "null":"همه"
+                }
             },
             {
                 name: "reactionEvaluation",
@@ -1414,7 +1416,8 @@
             }
             else if(data_values.criteria[i].fieldName == "tclassStatus" && data_values.criteria[i].value == "5")
                 removedObjects.add(data_values.criteria[i]);
-
+            else if(data_values.criteria[i].fieldName == "tclassTeachingType" && data_values.criteria[i].value == "null")
+                removedObjects.add(data_values.criteria[i]);
             //-----------------------------------TEMP----------------------------
             // else if (data_values.criteria[i].fieldName == "teacherPayingStatus") {
             //     removedObjects.add(data_values.criteria[i]);
