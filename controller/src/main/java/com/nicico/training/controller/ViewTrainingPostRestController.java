@@ -39,12 +39,21 @@ public class ViewTrainingPostRestController {
     private final ViewTrainingPostService viewTrainingPostService;
     private final JobGroupService jobGroupService;
     private final PostGradeGroupService postGradeGroupService;
+    private final ViewTrainingPostReportService viewTrainingPostReportService;
 
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<ViewTrainingPostDTO.Info>> iscList(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         BaseService.setCriteriaToNotSearchDeleted(searchRq);
         SearchDTO.SearchRs<ViewTrainingPostDTO.Info> searchRs = viewTrainingPostService.search(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/iscListReport")
+    public ResponseEntity<ISC<ViewTrainingPostDTO.Report>> iscListReport(HttpServletRequest iscRq) throws IOException {
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
+        SearchDTO.SearchRs<ViewTrainingPostDTO.Report> searchRs = viewTrainingPostReportService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 
