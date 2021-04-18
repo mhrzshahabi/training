@@ -678,20 +678,34 @@
 
     let fullSummaryFunc_NABOP = [
         function (records) {
+            let recWithoutDuplicate1 = [];
             let total = 0;
             for (let i = 0; i < records.length; i++) {
-                total += records[i].skill.course.theoryDuration;
+                if (!recWithoutDuplicate1.contains(records[i].skill.course.code))
+                {
+                    recWithoutDuplicate1.add(records[i].skill.course.code);
+                    total += records[i].skill.course.theoryDuration;
+
+                }
             }
             let index = getIndexById_NABOP(records[0].needsAssessmentPriorityId);
             chartData_NABOP.find({title:priorities_NABOP[index].title, type:"<spring:message code='total'/>"}).duration = total;
             return "<spring:message code="duration.hour.sum"/>" + total;
         },
         function (records) {
+            let recWithoutDuplicate2 = [];
             let passed = 0;
             for (let i = 0; i < records.length; i++) {
-                if (records[i].skill.course.scoresState === passedStatusId_NABOP)
-                    passed += records[i].skill.course.theoryDuration;
+
+                if (!recWithoutDuplicate2.contains(records[i].skill.course.code)) {
+                    recWithoutDuplicate2.add(records[i].skill.course.code);
+
+                    if (records[i].skill.course.scoresState === passedStatusId_NABOP)
+                        passed += records[i].skill.course.theoryDuration;
+
+                }
             }
+
             let index = getIndexById_NABOP(records[0].needsAssessmentPriorityId);
             chartData_NABOP.find({title:priorities_NABOP[index].title, type:"<spring:message code='passed'/>"}).duration = passed;
             return "<spring:message code="duration.hour.sum.passed"/>" + passed;
@@ -710,10 +724,16 @@
 
     let totalSummaryFunc_NABOP = [
         function (records) {
+            let recWithoutDuplicate = [];
             let total = 0;
             for (let i = 0; i < records.length; i++) {
-                total += records[i].skill.course.theoryDuration;
+                if (!recWithoutDuplicate.contains(records[i].skill.course.code)) {
+                    recWithoutDuplicate.add(records[i].skill.course.code);
+                    total += records[i].skill.course.theoryDuration;
+                }
             }
+
+
             let index = getIndexById_NABOP(records[0].needsAssessmentPriorityId);
             chartData_NABOP.find({title:priorities_NABOP[index].title, type:"<spring:message code='total'/>"}).duration = total;
             return "<spring:message code="duration.hour.sum"/>" + total;
