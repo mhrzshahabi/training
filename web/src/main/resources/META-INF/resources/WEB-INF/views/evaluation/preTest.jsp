@@ -12,6 +12,14 @@
     var questionsSelection=false;
     var classId_preTest;
     var scoringMethod_preTest;
+    var questionData;
+    let totalScore = 0;
+    var scoreLabel = isc.Label.create({
+        contents: "مجموع بارم وارد شده : ",
+        border: "0px solid black",
+        align: "center",
+        width: "100%"
+    });
     //----------------------------------------- DataSources ------------------------------------------------------------
     var RestDataSource_PreTest = isc.TrDS.create({
         fields: [
@@ -35,8 +43,85 @@
                 align: "center",
                 filterOperator: "iContains",
                 autoFitWidth: true
+            }
+        ]
+    });
+
+    var RestDataSource_Result_PreTest = isc.TrDS.create({
+        fields: [
+            {name: "surname", title: 'نام'},
+            {name: "lastName", title: 'نام خانوادگی'},
+            {name: "answers",title: 'asdasd', hidden: true },
+            {name: "answers", hidden: true },
+        ]
+    });
+
+    var RestDataSource_Questions_preTest = isc.TrDS.create({
+        fields: [
+            {name: "id", hidden:true },
+            {name: "question", title: 'سوال'},
+            {name: "type", title: 'نوع پاسخ' },
+            { name: "options", title: "گزینه ها"},
+            { name: "score", title: "بارم",canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click"}
+        ]
+    });
+
+    RestDataSource_Class_preTest = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {
+                name: "tclass.code",
+                title: "<spring:message code="class.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
             },
+            {
+                name: "tclass.course.titleFa",
+                title: "<spring:message code="course"/>",
+                filterOperator: "iContains"
+            },
+            {
+                name: "tclass.startDate",
+                title: "<spring:message code="start.date"/>",
+                filterOperator: "iContains", autoFitWidth: true
+            },
+            {
+                name: "tclass.endDate",
+                title: "<spring:message code="end.date"/>",
+                filterOperator: "iContains", autoFitWidth: true
+            },
+            {
+                name: "tclass.teacher",
+                title: "<spring:message code="teacher"/>",
+                filterOperator: "iContains", autoFitWidth: true
+            },
+            {
+                name: "date",
+                title: "<spring:message code="test.question.date"/>",
+                filterOperator: "iContains", autoFitWidth: true
+            },
+            {
+                name: "time",
+                title: "<spring:message code="test.question.time"/>",
+                filterOperator: "iContains", autoFitWidth: true
+            },
+            {
+                name: "duration",
+                title: "<spring:message code="test.question.duration"/>",
+                filterOperator: "iContains", autoFitWidth: true
+            },
+            { name: "onlineFinalExamStatus",
+                title: "<spring:message code="test.question.status"/>",
+                autoFitWidth: true
+            },
+            { name: "onlineExamDeadLineStatus", hidden: true}
         ],
+        fetchDataURL: testQuestionUrl + "/spec-list",
+        implicitCriteria: {
+            _constructor: "AdvancedCriteria",
+            operator: "and",
+            criteria: [{fieldName: "isPreTestQuestion", operator: "equals", value: true}]
+        }
     });
 
     var RestDataSource_All_PreTest = isc.TrDS.create();
@@ -703,12 +788,13 @@
                         title: "<spring:message code='end.date'/>",
                         align: "center",
                         filterOperator: "iContains",
-                        autoFitWidth: true},
-                    {name: "OnAdd", title: " ",canSort:false,canFilter:false, width:30}
+                        autoFitWidth: true
+                    },
+                    {name: "OnAdd", title: " ", canSort: false, canFilter: false, width: 30}
                 ]);
 
 
-                RestDataSource_ForThisClass_PreTest.fetchDataURL = questionBankTestQuestionUrl +"/preTest/"+record.id+ "/spec-list";
+                RestDataSource_ForThisClass_PreTest.fetchDataURL = questionBankTestQuestionUrl + "/preTest/" + record.id + "/spec-list";
 
                 //ListGrid_ForQuestions_PreTestJSP.implicitCriteria=criteria;
                 ListGrid_ForQuestions_PreTestJSP.invalidateCache();
@@ -727,7 +813,7 @@
             let data = ListGrid_PreTest.getData().localData.get(0).testQuestionId;
             params.teacher = ListGrid_class_Evaluation.getSelectedRecord().teacherFullName;
 
-            print(data, params, "testForm.jasper");
+            printPreTest(data, params, "testForm.jasper");
         }
     });
 
@@ -736,17 +822,672 @@
     var ToolStripButton_RegisterScorePreTest = isc.ToolStripButton.create({
         title: "ثبت نمرات پیش آزمون",
         click: function () {
-           Window_registerScorePreTest = isc.Window.create({
+            Window_registerScorePreTest = isc.Window.create({
                 title: "ثبت نمرات پیش آزمون",
                 placement: "fillScreen",
                 items: [
-                    isc.ViewLoader.create({autoDraw: true, viewURL: "registerScorePreTest/show-form", viewLoaded() {
-                            eval('call_registerScorePreTest(classId_preTest,scoringMethod_preTest)');}})
+                    isc.ViewLoader.create({
+                        autoDraw: true, viewURL: "registerScorePreTest/show-form", viewLoaded() {
+                            eval('call_registerScorePreTest(classId_preTest,scoringMethod_preTest)');
+                        }
+                    })
                 ]
             });
             Window_registerScorePreTest.show();
         }
     });
+
+    function loadPreExamForScores(record) {
+
+        var ListGrid_Questions_preTest = isc.ListGrid.create({
+            width: "100%",
+            height: 600,
+            dataSource: RestDataSource_Questions_preTest,
+            showRecordComponents: true,
+            showRecordComponentsByCell: true,
+            fields: [
+                {name: "id", hidden: true},
+                {name: "question", title: 'سوال', width: "40%"},
+                {name: "type", title: 'نوع پاسخ', width: "10%"},
+                {name: "options", title: "گزینه ها", width: "40%", align: "center"},
+                {
+                    name: "score", type: "float", title: "بارم", width: "10%", align: "center",
+                    change: function (form, item, value, oldValue) {
+                        setScoreValue(value, form)
+                    },
+                    canEdit: true, filterOnKeypress: true, keyPressFilter: "[0-9.]", editEvent: "click"
+                }
+            ]
+        });
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(questionBankTestQuestionUrl + "/preTest/" + record.id + "/spec-list", "GET", null, function (resp) {
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                let result = JSON.parse(resp.httpResponseText).response.data;
+                wait.close();
+                wait.show();
+                let classIdCriteria = {
+                    _constructor: "AdvancedCriteria",
+                    operator: "and",
+                    criteria: [{fieldName: "tclassId", operator: "equals", value: record.id}]
+                };
+                RestDataSource_Class_preTest.fetchData(classIdCriteria, function (dsResponse, data, dsRequest) {
+                    if (data && data.length > 0) {
+                        if(!data[0].onlineFinalExamStatus) {
+                            var examData = {
+                                examItem : data[0],
+                                questions: result
+                            };
+                            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/preExamQuestions", "POST", JSON.stringify(examData), function (resp) {
+                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                    let results = JSON.parse(resp.data).data;
+                                    wait.close();
+                                    questionData = results;
+                                    ListGrid_Questions_preTest.setData(results);
+
+                                    let Window_result_preTest = isc.Window.create({
+                                        width: 1024,
+                                        title: "ارسال پیش آزمون به آزمون آنلاین",
+                                        items: [
+                                            isc.VLayout.create({
+                                                width: "100%",
+                                                height: "100%",
+                                                defaultLayoutAlign: "center",
+                                                align: "center",
+                                                members: [
+                                                    isc.Label.create({
+                                                        contents: "<br/> <span style='color: #000000; font-weight: bold; font-size: large'>برای ارسال پیش آزمون به سیستم آزمون آنلاین لطفا بارم هر سوال را در مقابل آن بنویسید و در نهایت دکمه ارسال آزمون را بزنید</span> <br/>",
+                                                        align: "center",
+                                                        height: "10%",
+                                                        padding: 5,
+                                                    }),
+                                                    isc.VLayout.create({
+                                                        width: "100%",
+                                                        height: "80%",
+                                                        members: [
+                                                            ListGrid_Questions_preTest,
+                                                            scoreLabel
+                                                        ]
+                                                    }),
+                                                    isc.HLayout.create({
+                                                        width: "100%",
+                                                        height: "10%",
+                                                        align: "center",
+                                                        membersMargin: 10,
+                                                        members: [
+                                                            isc.IButtonSave.create({
+                                                                layoutAlign: "center",
+                                                                title: "ارسال به آزمون آنلاین",
+                                                                width: "140",
+                                                                click: async function () {
+
+                                                                    questionData.map(item => {
+                                                                        if(!item.score)
+                                                                    item.score = '0';
+                                                                    return item;
+                                                                });
+                                                                    let record = data[0];
+                                                                    isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/getClassStudent/"+record.tclass.id, "GET",null, function (resp) {
+                                                                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+                                                                            let result = JSON.parse(resp.httpResponseText);
+                                                                            let inValidStudents = [];
+                                                                            for (let i = 0; i < result.length; i++) {
+                                                                                let studentData = result[i];
+                                                                                if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.cellNumber,studentData.gender)) {
+                                                                                    inValidStudents.add({
+                                                                                        firstName: studentData.surname,
+                                                                                        lastName: studentData.lastName
+                                                                                    });
+                                                                                }
+                                                                            }
+
+                                                                            if (inValidStudents.length) {
+                                                                                let DynamicForm_InValid_Students = isc.DynamicForm.create({
+                                                                                    width: 600,
+                                                                                    height: 100,
+                                                                                    padding: 6,
+                                                                                    titleAlign: "right",
+                                                                                    fields: [
+                                                                                        {
+                                                                                            name: "text",
+                                                                                            width: "100%",
+                                                                                            colSpan: 2,
+                                                                                            value: "<spring:message code='msg.check.student.mobile.ncode'/>"+" "+"<spring:message code='msg.check.student.mobile.ncode.message'/>",
+                                                                                            showTitle: false,
+                                                                                            editorType: 'staticText'
+                                                                                        },
+                                                                                        {
+                                                                                            type: "RowSpacerItem"
+                                                                                        },
+                                                                                        {
+                                                                                            name: "invalidNames",
+                                                                                            width: "100%",
+                                                                                            colSpan: 2,
+                                                                                            title: "<spring:message code="title"/>",
+                                                                                            showTitle: false,
+                                                                                            editorType: 'textArea',
+                                                                                            canEdit: false
+                                                                                        }
+                                                                                    ]
+                                                                                });
+                                                                                let names = "";
+                                                                                for (var j = 0; j < inValidStudents.length; j++) {
+                                                                                    names = names.concat(inValidStudents[j].firstName + " " + inValidStudents[j].lastName  + "\n");
+                                                                                }
+                                                                                DynamicForm_InValid_Students.setValue("invalidNames", names);
+
+                                                                                let Window_InValid_Students = isc.Window.create({
+                                                                                    width: 600,
+                                                                                    height: 150,
+                                                                                    numCols: 2,
+                                                                                    title: "<spring:message code='invalid.students.window'/>",
+                                                                                    items: [
+                                                                                        DynamicForm_InValid_Students,
+                                                                                        isc.MyHLayoutButtons.create({
+                                                                                            members: [
+                                                                                                isc.IButtonSave.create({
+                                                                                                    title: "<spring:message code="continue"/>",
+                                                                                                    click: function () {
+
+                                                                                                        loadPreExamQuestions(record, questionData, Window_result_preTest);
+                                                                                                        Window_InValid_Students.close();
+                                                                                                    }}),
+                                                                                                isc.IButtonCancel.create({
+                                                                                                    title: "<spring:message code="cancel"/>",
+                                                                                                    click: function () {
+                                                                                                        Window_InValid_Students.close();
+                                                                                                    }
+                                                                                                })
+                                                                                            ]
+                                                                                        })
+                                                                                    ]
+                                                                                });
+                                                                                Window_InValid_Students.show();
+                                                                            } else {
+                                                                                loadPreExamQuestions(record, questionData, Window_result_preTest)
+                                                                            }
+
+                                                                        }
+                                                                    }));
+                                                                }
+                                                            }),
+                                                            isc.IButtonCancel.create({
+                                                                click: function () {
+                                                                    Window_result_preTest.close();
+                                                                }
+                                                            })
+                                                        ]
+                                                    })
+                                                ]
+                                            })
+                                        ]
+                                    });
+                                    totalScore=0;
+                                    scoreLabel.setContents("مجموع بارم وارد شده :");
+                                    Window_result_preTest.show();
+                                } else {
+                                    wait.close();
+                                    let errorResponseMessage = resp.httpResponseText;
+                                    var ERROR = isc.Dialog.create({
+                                        message: errorResponseMessage,
+                                        icon: "[SKIN]stop.png",
+                                        title: "<spring:message code='message'/>"
+                                    });
+                                    setTimeout(function () {
+                                        ERROR.close();
+                                    }, 8000);
+                                }
+                            }));
+                        } else {
+                            wait.close();
+                            createDialog("info", "پیش آزمون پیش تر برای آزمون آنلاین ارسال شده است", "<spring:message code="error"/>");
+                        }
+                    } else {
+                        wait.close();
+                        createDialog("info", "سوالی برای پیش آزمون انتخاب نشده است", "<spring:message code="error"/>");
+                    }
+                });
+            } else {
+                wait.close();
+                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+            }
+        }));
+    }
+
+    function loadPreExamQuestions(record, questionData, dialog) {
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(questionBankTestQuestionUrl +"/preTest/"+record.tclass.id+ "/spec-list-final-test", "GET",null, function (resp) {
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                let result = JSON.parse(resp.httpResponseText);
+                wait.close();
+                var examData = {
+                    examItem : record,
+                    questions: result,
+                    questionData: questionData
+                };
+                let validationData = checkPreExamValidation(examData);
+                if (validationData.isValid) {
+                    wait.show();
+                    isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examToEls/preTest", "POST", JSON.stringify(examData), function (resp) {
+                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+                            // ListGrid_class_Evaluation.invalidateCache();
+                            var OK = isc.Dialog.create({
+                                message: "<spring:message code="msg.operation.successful"/>",
+                                icon: "[SKIN]say.png",
+                                title: "<spring:message code='message'/>"
+                            });
+                            setTimeout(function () {
+                                dialog.close();
+                                OK.close();
+                            }, 2000);
+                        } else {
+
+                            if (resp.httpResponseCode === 406)
+                                createDialog("info","<spring:message code="msg.check.teacher.mobile.ncode"/>"+" "+"<spring:message code="msg.check.teacher.mobile.ncode.message"/>", "<spring:message code="error"/>");
+                            else if (resp.httpResponseCode === 404)
+                                createDialog("info", "<spring:message code="msg.check.users.mobile.ncode"/>", "<spring:message code="error"/>");
+                            else if (resp.httpResponseCode === 500)
+                                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                            else
+                                createDialog("info",JSON.parse(resp.httpResponseText).message, "<spring:message code="error"/>");
+
+                        }
+                        wait.close();
+                    }));
+                } else {
+                    wait.close();
+                    createDialog("info", validationData.message, "<spring:message code="error"/>");
+                }
+            } else {
+                wait.close();
+                if (resp.httpResponseCode === 405)
+                    createDialog("info", "<spring:message code="msg.check.class.multi.choice.question"/>", "<spring:message code="error"/>");
+                else if (resp.httpResponseCode === 404)
+                    createDialog("info", "<spring:message code="msg.check.class.teacher.info"/>", "<spring:message code="error"/>");
+                else
+                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+            }
+        }));
+    }
+
+    function checkPreExamScore(examData) {
+        if (examData.examItem.tclass.scoringMethod === "3" || examData.examItem.tclass.scoringMethod === "2") {
+
+            let totalScore = 0;
+            for(var i = 0; i < examData.questionData.length; i++) {
+
+                let score = examData.questionData[i].score;
+                totalScore = totalScore + Number(score);
+            }
+            if (examData.examItem.tclass.scoringMethod === "3") {
+                return  totalScore === 20;
+            } else {
+                return totalScore === 100;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    function checkPreExamValidation (examData) {
+
+        let validationData = {
+            isValid: true,
+            message: ""
+        };
+
+        if(!examData.questions || examData.questions.length === 0) {
+
+            validationData.isValid = false;
+            validationData.message = validationData.message.concat("آزمون سوال ندارد!");
+        } else if (!examData.examItem.tclass.teacherId) {
+
+            validationData.isValid = false;
+            validationData.message = validationData.message.concat("<spring:message code='msg.check.class.teacher'/>");
+        } else if (!checkPreExamScore(examData)) {
+
+            validationData.isValid = false;
+            validationData.message = validationData.message.concat("بارم بندی آزمون صحیح نمی باشد");
+        }
+        return validationData;
+    }
+
+    function NCodeAndMobileValidation(nationalCode, mobileNum, gender) {
+
+        let isValid = true;
+        if (gender ===undefined || nationalCode===undefined || nationalCode===null || mobileNum===undefined || mobileNum===null ) {
+            isValid = false;
+        }
+        else {
+            if (nationalCode.length !== 10 || !(/^-?\d+$/.test(nationalCode)))
+                isValid = false;
+
+            if((mobileNum.length !== 10 && mobileNum.length !== 11) || !(/^-?\d+$/.test(mobileNum)))
+                isValid = false;
+
+            if(mobileNum.length === 10 && !mobileNum.startsWith("9"))
+                isValid = false;
+
+            if(mobileNum.length === 11 && !mobileNum.startsWith("09"))
+                isValid = false;
+
+            if(gender===null)
+                isValid = false;
+        }
+        return isValid;
+    }
+
+    function setScoreValue (value, form) {
+        let index = questionData.findIndex(f => f.id === form.values.id);
+        questionData[index].score = value;
+        totalScore = 0;
+        form.grid.data.forEach(q=> {
+            if (q.score!== null && q.score !== undefined) {
+                totalScore = totalScore + q.score;
+            }
+        });
+        scoreLabel.setContents("مجموع بارم وارد شده : " + totalScore)
+    }
+
+    function loadPreExamResult (recordList) {
+
+        let testQId = null;
+        let ListGrid_Result_preTest = isc.TrLG.create({
+            width: "100%",
+            height: 700,
+            canHover: true,
+            dataSource: RestDataSource_Result_PreTest,
+            filterOperator: "iContains",
+            filterOnKeypress: false,
+            allowAdvancedCriteria: true,
+            allowFilterExpressions: true,
+            showRecordComponents: true,
+            showRecordComponentsByCell: true,
+            fields: [
+                {name: "surname", title: 'نام',align: "center", width: "15%"},
+                {name: "lastName", title: 'نام خانوادگی' ,align: "center", width: "15%"},
+                {name: "score", title: 'نمره' ,align: "center", width: "10%"},
+                {name: "resultStatus", title: 'وضعیت فراگیر' ,align: "center", width: "10%"},
+                { name: "iconField", title: "نتایج", width: "10%",align:"center"},
+                { name: "iconField2", title: "چاپ گزارش", width: "10%",align:"center"},
+
+            ],
+            createRecordComponent: function (record, colNum) {
+                var fieldName = this.getFieldName(colNum);
+                if (fieldName == "iconField") {
+                    let button = isc.IButton.create({
+                        layoutAlign: "center",
+                        title: "پاسخ ها",
+                        width: "120",
+                        click: function () {
+                            ListGrid_show_preTest_results(record.answers);
+                        }
+                    });
+                    return button;
+                }
+                else if(fieldName == "iconField2") {
+                    let button2 = isc.IButton.create({
+                        layoutAlign: "center",
+                        title: "چاپ گزارش",
+                        width: "120",
+                        click: function () {
+                            printEls("pdf", testQId, record.nationalCode, "ElsExam.jasper", record.surname, record.lastName);
+                        }
+                    });
+                    return button2;
+                }
+                else {
+                    return null;
+                }
+            }
+        });
+
+        wait.show();
+        let classIdCriteria = {
+            _constructor: "AdvancedCriteria",
+            operator: "and",
+            criteria: [{fieldName: "tclassId", operator: "equals", value: recordList.id}]
+        };
+        RestDataSource_Class_preTest.fetchData(classIdCriteria, function (dsResponse, data, dsRequest) {
+            if (data && data.length > 0) {
+
+                if (data[0].onlineFinalExamStatus) {
+
+                    testQId = data[0].id;
+                    isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examResult/" + testQId, "GET", null, function (resp) {
+                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+                            let results = JSON.parse(resp.data).data;
+                            ListGrid_Result_preTest.setData(results);
+
+                            let Window_result_preTest = isc.Window.create({
+                                width: 1024,
+                                height: 768,
+                                keepInParentRect: true,
+                                title: "مشاهده نتایج آزمون",
+                                items: [
+                                    isc.VLayout.create({
+                                        width: "100%",
+                                        height: "100%",
+                                        defaultLayoutAlign: "center",
+                                        align: "center",
+                                        members: [
+                                            isc.HLayout.create({
+                                                width: "100%",
+                                                height: "90%",
+                                                members: [ListGrid_Result_preTest]
+                                            }),
+                                            isc.HLayout.create({
+                                                width: "100%",
+                                                height: "90%",
+                                                align: "center",
+                                                membersMargin: 10,
+                                                members: [
+                                                    isc.IButtonCancel.create({
+                                                        click: function () {
+                                                            Window_result_preTest.close();
+                                                        }
+                                                    })
+                                                ]
+                                            })]
+                                    })
+                                ]
+                            });
+                            Window_result_preTest.show();
+                        } else {
+                            var ERROR = isc.Dialog.create({
+                                message: "<spring:message code='exception.un-managed'/>",
+                                icon: "[SKIN]stop.png",
+                                title: "<spring:message code='message'/>"
+                            });
+                            setTimeout(function () {
+                                ERROR.close();
+                            }, 3000);
+                        }
+                        wait.close();
+                    }));
+                } else {
+                    wait.close();
+                    createDialog("info", "پیش آزمون برای آزمون آنلاین ارسال نشده است", "<spring:message code="error"/>");
+                }
+            } else {
+                wait.close();
+                createDialog("info", "پیش آزمون برای آزمون آنلاین ارسال نشده است", "<spring:message code="error"/>");
+            }
+        });
+    }
+
+    function ListGrid_show_preTest_results(answers) {
+
+        let dynamicForm_Answers_List = isc.DynamicForm.create({
+            padding: 6,
+            numCols: 1,
+            values: {},
+            styleName: "answers-form",
+            height:768,
+            fields: []
+        });
+        for(var i=0 ; i<answers.length; i++) {
+            let text_FormItem = { title:"Pasted value",cellStyle: 'text-exam-form-item',disabled:true, titleOrientation: "top", name:"textArea", width:"100%",height:100, editorType: "TextAreaItem", value: ''};
+            let radio_FormItem =  { name: "startMode", cellStyle: 'radio-exam-form-item', disabled:true,titleOrientation: "top", title: "Initially show ColorPicker as",
+                width: "100%",
+                type: "radioGroup",
+                valueMap: {}
+            };
+
+            text_FormItem.title = (i+1)+"-"+answers[i].question;
+            text_FormItem.value = answers[i].answer;
+            text_FormItem.name = answers[i].answer;
+            if(answers[i].type == "چند گزینه ای") {
+                radio_FormItem.title = answers[i].question;
+                radio_FormItem.name = i+"";
+                if(answers[i].options.length > 0) {
+                    for(let j = 0; j< answers[i].options.length; j++){
+                        let key = answers[i].options[j].title;
+                        let value = answers[i].options[j].title;
+                        radio_FormItem.valueMap[key] = value;
+                    }
+                }
+
+                dynamicForm_Answers_List.addField(radio_FormItem)
+                if(radio_FormItem.valueMap.hasOwnProperty(answers[i].answer)) {
+                    dynamicForm_Answers_List.getField(i).setValue(answers[i].answer);
+                }
+            } else {
+                dynamicForm_Answers_List.addField(text_FormItem)
+            }
+        }
+        let Window_result_Answer_preTest = isc.Window.create({
+            width: 1024,
+            height: 768,
+            keepInParentRect: true,
+            title: "مشاهده پاسخ ها",
+            autoSize: false,
+            isModal: true,
+            autoDraw: true,
+            overflow: "auto",
+            items: [
+                isc.VLayout.create({
+                    width: "100%",
+                    height: "100%",
+                    defaultLayoutAlign: "center",
+                    align: "center",
+                    members: [
+                        isc.HLayout.create({
+                            width: "100%",
+                            height: "100%",
+                            overflow: "auto",
+                            styleName: "hLayout-scrollable",
+                            autoDraw: false,
+                            members: [
+                                dynamicForm_Answers_List
+                            ]
+                        }),
+                        isc.IButtonCancel.create({
+                            click: function () {
+                                Window_result_Answer_preTest.close();
+                            }
+                        })
+                    ]
+                })
+            ]
+        });
+        Window_result_Answer_preTest.show();
+    }
+
+    function printEls(type, id, national, fileName, name, last) {
+
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "/training/anonymous/els/printPdf/" +id+"/"+national+"/"+name+"/"+last+"/"+"exam",
+            target: "_Blank",
+            canSubmit: true
+        });
+        criteriaForm.show();
+        criteriaForm.submitForm();
+    }
+
+    function showPreTestInvalidUsers (record) {
+
+        isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/getClassStudent/"+record.id, "GET",null, function (resp) {
+
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+                let result = JSON.parse(resp.httpResponseText);
+                let inValidStudents = [];
+
+                for (let i = 0; i < result.length; i++) {
+                    let studentData = result[i];
+                    if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.cellNumber,studentData.gender)) {
+                        inValidStudents.add({
+                            firstName: studentData.surname,
+                            lastName: studentData.lastName
+                        });
+                    }
+                }
+
+                if (inValidStudents.length) {
+                    let DynamicForm_InValid_Students = isc.DynamicForm.create({
+                        width: 600,
+                        height: 100,
+                        padding: 6,
+                        titleAlign: "right",
+                        fields: [
+                            {
+                                name: "text",
+                                width: "100%",
+                                colSpan: 2,
+                                value: "<spring:message code='msg.check.student.mobile.ncode'/>"+" "+"<spring:message code='msg.check.student.mobile.ncode.message'/>",
+                                showTitle: false,
+                                editorType: 'staticText'
+                            },
+                            {
+                                type: "RowSpacerItem"
+                            },
+                            {
+                                name: "invalidNames",
+                                width: "100%",
+                                colSpan: 2,
+                                title: "<spring:message code="title"/>",
+                                showTitle: false,
+                                editorType: 'textArea',
+                                canEdit: false
+                            }
+                        ]
+                    });
+
+                    let names = "";
+                    for (var j = 0; j < inValidStudents.length; j++) {
+
+                        names = names.concat(inValidStudents[j].firstName + " " + inValidStudents[j].lastName  + "\n");
+                    }
+                    DynamicForm_InValid_Students.setValue("invalidNames", names);
+
+                    let Window_InValid_Students = isc.Window.create({
+                        width: 600,
+                        height: 150,
+                        numCols: 2,
+                        title: "<spring:message code='invalid.students.window'/>",
+                        items: [
+                            DynamicForm_InValid_Students,
+                            isc.MyHLayoutButtons.create({
+                                members: [
+                                    isc.IButtonCancel.create({
+                                        title: "<spring:message code="cancel"/>",
+                                        click: function () {
+                                            Window_InValid_Students.close();
+                                        }
+                                    })]
+                            })]
+                    });
+                    Window_InValid_Students.show();
+                } else {
+                    createDialog("info", "در این کلاس فراگیر با اطلاعات ناقص وجود ندارد");
+                }
+            } }));
+    }
 
     var ToolStrip_Actions_PreTest = isc.ToolStrip.create({
         width: "100%",
@@ -756,6 +1497,37 @@
             ToolStripButton_InsertQuestionFromLatestQuestions_PreTest,
             ToolStripButton_PrintJasper,
             ToolStripButton_RegisterScorePreTest,
+
+            isc.IButton.create({
+                // disabled: ListGrid_class_Evaluation.getSelectedRecord().onlineFinalExamStatus,
+                title: "بارم بندی و ارسال پیش آزمون",
+                width: "170",
+                height: "30",
+                margin: 3,
+                click: function () {
+                    loadPreExamForScores(ListGrid_class_Evaluation.getSelectedRecord());
+                }
+            }),
+            isc.IButton.create({
+                // disabled: !ListGrid_class_Evaluation.getSelectedRecord().onlineFinalExamStatus,
+                title: "نمایش نتایج ",
+                width: "170",
+                height: "30",
+                margin: 3,
+                click: function () {
+                    loadPreExamResult(ListGrid_class_Evaluation.getSelectedRecord());
+                }
+            }),
+            isc.IButton.create({
+                title: "فراگیران با اطلاعات ناقص",
+                width: "170",
+                height: "30",
+                margin: 3,
+                click: function () {
+                    showPreTestInvalidUsers(ListGrid_class_Evaluation.getSelectedRecord());
+                }
+            }),
+
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -779,20 +1551,24 @@
         width: "100%",
         height: "100%",
         border: "3px solid gray",
-        align:"center",
+        align: "center",
         layoutLeftMargin: 5,
         layoutRightMargin: 5,
         members: [
             DynamicForm_Header_PreTestJsp,
             ListGrid_AllQuestions_PreTestJSP,
             isc.ToolStripButtonAdd.create({
-                width:"100%",
-                height:25,
-                title:"اضافه کردن گروهی",
+                width: "100%",
+                height: 25,
+                title: "اضافه کردن گروهی",
                 click: function () {
-                    var ids = ListGrid_AllQuestions_PreTestJSP.getSelection().filter(function(x){return x.enabled!==false}).map(function(item) {return (!item.questionBank)?item.id:item.questionBank.id;});
-                    if(ids &&ids.length>0){
-                    let dialog = createDialog('ask', "<spring:message code="msg.record.adds.ask"/>");
+                    var ids = ListGrid_AllQuestions_PreTestJSP.getSelection().filter(function (x) {
+                        return x.enabled !== false
+                    }).map(function (item) {
+                        return (!item.questionBank) ? item.id : item.questionBank.id;
+                    });
+                    if (ids && ids.length > 0) {
+                        let dialog = createDialog('ask', "<spring:message code="msg.record.adds.ask"/>");
                     dialog.addProperties({
                         buttonClick: function (button, index) {
                             this.close();
@@ -932,7 +1708,7 @@
         members: [HLayout_Actions_PreTest, Hlayout_Grid_PreTest]
     });
 
-    function print(TestQuestionId, params, fileName, type = "pdf") {
+    function printPreTest(TestQuestionId, params, fileName, type = "pdf") {
         var criteriaForm = isc.DynamicForm.create({
             method: "POST",
             action: "<spring:url value="test-question-form/print/"/>" + type,
