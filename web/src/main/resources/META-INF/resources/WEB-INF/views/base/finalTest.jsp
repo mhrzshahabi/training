@@ -7,13 +7,13 @@
 
     let finalTestMethod_finalTest;
     let oLoadAttachments_finalTest;
-let totalScore = 0;
-var scoreLabel=isc.Label.create({
-contents: "مجموع بارم وارد شده : ",
-border: "0px solid black",
-align: "center",
-width: "100%",
-});
+    let totalScore = 0;
+    var scoreLabel = isc.Label.create({
+        contents: "مجموع بارم وارد شده : ",
+        border: "0px solid black",
+        align: "center",
+        width: "100%"
+    });
 // ------------------------------------------- Menu -------------------------------------------
     FinalTestMenu_finalTest = isc.Menu.create({
         data: [
@@ -261,9 +261,9 @@ width: "100%",
             {name: "time",},
             {name: "duration",},
             { name: "onlineFinalExamStatus", valueMap: {"false": "ارسال نشده", "true": "ارسال شده"}},
-            { name: "sendBtn", title: "بارم بندی ", width: "140"},
-            { name: "showBtn", title: "نتایج ", width: "140"},
-            { name: "checkDate", title: "اطلاعات کاربران", width: "140"},
+            { name: "sendBtn", title: "بارم بندی ", width: "145"},
+            { name: "showBtn", title: "نتایج ", width: "130"},
+            { name: "checkDate", title: "اطلاعات کاربران", width: "145"},
             { name: "onlineExamDeadLineStatus" , hidden: true},
 
             //{name: "isPreTestQuestion",}
@@ -295,7 +295,7 @@ width: "100%",
                             layoutAlign: "center",
                             disabled: record.onlineFinalExamStatus,
                             title: "بارم بندی و ارسال آزمون",
-                            width: "140",
+                            width: "145",
                             margin: 3,
                             click: function () {
                                loadExamForScores(record);
@@ -308,7 +308,7 @@ width: "100%",
                             layoutAlign: "center",
                             disabled: !record.onlineFinalExamStatus,
                             title: "نمایش نتایج ",
-                            width: "140",
+                            width: "130",
                             margin: 3,
 
                             click: function () {
@@ -319,8 +319,8 @@ width: "100%",
                     } if (fieldName == "checkDate"){
                          let button = isc.IButton.create({
                             layoutAlign: "center",
-                            title: " کاربران با اطلاعات ناقص ",
-                            width: "140",
+                            title: "فراگیران با اطلاعات ناقص",
+                            width: "145",
                             margin: 3,
                             click: function () {
                                 showInvalidUsers(record)
@@ -351,7 +351,8 @@ width: "100%",
                 }
         ]
     });
-    function loadExamResult(recordList){
+    function loadExamResult(recordList) {
+
         let ListGrid_Result_finalTest = isc.TrLG.create({
             width: "100%",
             height: 700,
@@ -535,7 +536,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                         width: 1024,
                         height: 768,
                         keepInParentRect: true,
-                        title: "ارسال آزمون به آموزش آنلاین",
+                        title: "ارسال آزمون به آزمون آنلاین",
                         items: [
                             isc.VLayout.create({
                                 width: "100%",
@@ -545,7 +546,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                                 members: [
                                        isc.Label.create({
 
-              contents: "<br/> <span style='color: #000000; font-weight: bold; font-size: large'>برای ارسال آزمون به سیستم آموزش آنلاین لطفا بارم هر سوال را در مقابل آن بنویسید و در نهایت دکمه ارسال آزمون را بزنید</span> <br/>",
+              contents: "<br/> <span style='color: #000000; font-weight: bold; font-size: large'>برای ارسال آزمون به سیستم آزمون آنلاین لطفا بارم هر سوال را در مقابل آن بنویسید و در نهایت دکمه ارسال آزمون را بزنید</span> <br/>",
 
                  align: "center",
                 padding: 5,
@@ -562,114 +563,102 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                                         align: "center",
                                         membersMargin: 10,
                                         members: [
-                                                 isc.IButtonSave.create({
-                            layoutAlign: "center",
-                            title: "ارسال به آموزش آنلاین",
-                            width: "140",
-                            click: async function () {
-                                questionData.map(item => {
-                                    if(!item.score)
-                                        item.score = '0';
-                                    return item;
-                                    })
-                                let isValid = await hasEvaluation(record.tclass.id);
-                                if (!isValid) {
-                                    createDialog("info", '<spring:message code="class.has.no.evaluation"/>', "<spring:message code="error"/>");
-                                    return;
-                                }
-isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/getClassStudent/"+record.tclass.id, "GET",null, function (resp) {
+                                            isc.IButtonSave.create({
+                                                layoutAlign: "center",
+                                                title: "ارسال به آزمون آنلاین",
+                                                width: "140",
+                                                click: async function () {
+                                                    questionData.map(item => {
+                                                        if(!item.score)
+                                                            item.score = '0';
+                                                        return item;
+                                                        });
+                                                    let isValid = await hasEvaluation(record.tclass.id);
+                                                    if (!isValid) {
+                                                        createDialog("info", '<spring:message code="class.has.no.evaluation"/>', "<spring:message code="error"/>");
+                                                        return;
+                                                    }
+                                                    isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/getClassStudent/"+record.tclass.id, "GET",null, function (resp) {
+                                                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
+                                                            let result = JSON.parse(resp.httpResponseText);
+                                                            let inValidStudents = [];
+                                                            for (let i = 0; i < result.length; i++) {
 
-    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                                                let studentData = result[i];
+                                                                if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.cellNumber,studentData.gender)) {
+                                                                    inValidStudents.add({
+                                                                        firstName: studentData.surname,
+                                                                        lastName: studentData.lastName
+                                                                     });
+                                                                }
+                                                            }
+                                                            if (inValidStudents.length) {
+                                                                let DynamicForm_InValid_Students = isc.DynamicForm.create({
+                                                                                    width: 600,
+                                                                                    height: 100,
+                                                                                    padding: 6,
+                                                                                    titleAlign: "right",
+                                                                                    fields: [
+                                                                                        {
+                                                                                            name: "text",
+                                                                                            width: "100%",
+                                                                                            colSpan: 2,
+                                                                                            value: "<spring:message code='msg.check.student.mobile.ncode'/>"+" "+"<spring:message code='msg.check.student.mobile.ncode.message'/>",
+                                                                                            showTitle: false,
+                                                                                            editorType: 'staticText'
+                                                                                        },
+                                                                                        {
+                                                                                            type: "RowSpacerItem"
+                                                                                        },
+                                                                                        {
+                                                                                            name: "invalidNames",
+                                                                                            width: "100%",
+                                                                                            colSpan: 2,
+                                                                                            title: "<spring:message code="title"/>",
+                                                                                            showTitle: false,
+                                                                                            editorType: 'textArea',
+                                                                                            canEdit: false
+                                                                                        }
+                                                                                    ]
+                                                                                });
+                                                                let names = "";
+                                                                for (var j = 0; j < inValidStudents.length; j++) {
+                                                                    names = names.concat(inValidStudents[j].firstName + " " + inValidStudents[j].lastName  + "\n");
+                                                                 }
+                                                                DynamicForm_InValid_Students.setValue("invalidNames", names);
 
-let result = JSON.parse(resp.httpResponseText);
-
-let inValidStudents = [];
-
-                for (let i = 0; i < result.length; i++) {
-
-                    let studentData = result[i];
-
-if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.cellNumber,studentData.gender)) {
-
-                        inValidStudents.add({
-                            firstName: studentData.surname,
-                            lastName: studentData.lastName
-                        });
-                    }
-                }
-
-                if (inValidStudents.length) {
-
-                    let DynamicForm_InValid_Students = isc.DynamicForm.create({
-                        width: 600,
-                        height: 100,
-                        padding: 6,
-                        titleAlign: "right",
-                        fields: [
-                            {
-                                name: "text",
-                                width: "100%",
-                                colSpan: 2,
-                                value: "<spring:message code='msg.check.student.mobile.ncode'/>"+" "+"<spring:message code='msg.check.student.mobile.ncode.message'/>",
-                                showTitle: false,
-                                editorType: 'staticText'
-                            },
-                            {
-                                type: "RowSpacerItem"
-                            },
-                            {
-                                name: "invalidNames",
-                                width: "100%",
-                                colSpan: 2,
-                                title: "<spring:message code="title"/>",
-                                showTitle: false,
-                                editorType: 'textArea',
-                                canEdit: false
-                            }
-                        ]
-                    });
-
-                    let names = "";
-                    for (var j = 0; j < inValidStudents.length; j++) {
-
-                        names = names.concat(inValidStudents[j].firstName + " " + inValidStudents[j].lastName  + "\n");
-                    }
-                    DynamicForm_InValid_Students.setValue("invalidNames", names);
-
-                    let Window_InValid_Students = isc.Window.create({
-                        width: 600,
-                        height: 150,
-                        numCols: 2,
-                        title: "<spring:message code='invalid.students.window'/>",
-                        items: [
-                            DynamicForm_InValid_Students,
-                            isc.MyHLayoutButtons.create({
-                            members: [
-                                isc.IButtonSave.create({
-                                title: "<spring:message code="continue"/>",
-                                click: function () {
-                                 loadExamQuestions(record,questionData,Window_result_Finaltest)
-                                    Window_InValid_Students.close();
-                                }}),
-                                isc.IButtonCancel.create({
-                                title: "<spring:message code="cancel"/>",
-                                click: function () {
-                                    Window_InValid_Students.close();
-                                }
-                            })],
-                        })]
-                    });
-                    Window_InValid_Students.show();
-                } else {
-loadExamQuestions(record,questionData,Window_result_Finaltest)
-
-}
-}
-}));
-
-                            }
-                        }),
+                                                                let Window_InValid_Students = isc.Window.create({
+                                                                                    width: 600,
+                                                                                    height: 150,
+                                                                                    numCols: 2,
+                                                                                    title: "<spring:message code='invalid.students.window'/>",
+                                                                                    items: [
+                                                                                        DynamicForm_InValid_Students,
+                                                                                        isc.MyHLayoutButtons.create({
+                                                                                        members: [
+                                                                                            isc.IButtonSave.create({
+                                                                                            title: "<spring:message code="continue"/>",
+                                                                                            click: function () {
+                                                                                             loadExamQuestions(record,questionData,Window_result_Finaltest)
+                                                                                                Window_InValid_Students.close();
+                                                                                            }}),
+                                                                                            isc.IButtonCancel.create({
+                                                                                            title: "<spring:message code="cancel"/>",
+                                                                                            click: function () {
+                                                                                                Window_InValid_Students.close();
+                                                                                            }
+                                                                                        })],
+                                                                                    })]
+                                                                                });
+                                                                Window_InValid_Students.show();
+                                                            } else {
+                                                                loadExamQuestions(record,questionData,Window_result_Finaltest)
+                                                            }
+                                                        }
+                                                    }));
+                                                }
+                                            }),
                                             isc.IButtonCancel.create({
                                                 click: function () {
                                                 Window_result_Finaltest.close();
@@ -680,9 +669,9 @@ loadExamQuestions(record,questionData,Window_result_Finaltest)
                             })
                         ],
                         minWidth: 1024
-                    })
-totalScore=0;
-scoreLabel.setContents("مجموع بارم وارد شده :")
+                    });
+                    totalScore=0;
+                    scoreLabel.setContents("مجموع بارم وارد شده :")
                     Window_result_Finaltest.show();
                 } else {
                    let errorResponseMessage = resp.httpResponseText;
@@ -704,70 +693,6 @@ scoreLabel.setContents("مجموع بارم وارد شده :")
                             createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                         }
                     }))
-
-
-            // wait.show();
-            <%--isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examQuestions/" + id, "GET", null, function (resp) {--%>
-            <%--    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {--%>
-            <%--        let results = JSON.parse(resp.data).data;--%>
-            <%--        var OK = isc.Dialog.create({--%>
-            <%--            message: "<spring:message code="msg.operation.successful"/>",--%>
-            <%--            icon: "[SKIN]say.png",--%>
-            <%--            title: "<spring:message code='message'/>"--%>
-            <%--        });--%>
-            <%--        setTimeout(function () {--%>
-            <%--            OK.close();--%>
-            <%--        }, 1500);--%>
-
-            <%--        istGrid_Questions_finalTest.setData(results);--%>
-
-            <%--        let Window_result_Finaltest = isc.Window.create({--%>
-            <%--            width: 1024,--%>
-            <%--            height: 768,--%>
-            <%--            keepInParentRect: true,--%>
-            <%--            title: "ارسال آزمون به آموزش آنلاین",--%>
-            <%--            items: [--%>
-            <%--                isc.VLayout.create({--%>
-            <%--                    width: "100%",--%>
-            <%--                    height: "100%",--%>
-            <%--                    defaultLayoutAlign: "center",--%>
-            <%--                    align: "center",--%>
-            <%--                    members: [--%>
-            <%--                        isc.HLayout.create({--%>
-            <%--                            width: "100%",--%>
-            <%--                            height: "90%",--%>
-            <%--                            members: [ListGrid_Questions_finalTest]--%>
-            <%--                        }),--%>
-            <%--                        isc.HLayout.create({--%>
-            <%--                            width: "100%",--%>
-            <%--                            height: "90%",--%>
-            <%--                            align: "center",--%>
-            <%--                            membersMargin: 10,--%>
-            <%--                            members: [--%>
-            <%--                                isc.IButtonCancel.create({--%>
-            <%--                                    click: function () {--%>
-            <%--                                    Window_result_Finaltest.close();--%>
-            <%--                                    }--%>
-            <%--                                })--%>
-            <%--                            ]--%>
-            <%--                        })]--%>
-            <%--                })--%>
-            <%--            ],--%>
-            <%--            minWidth: 1024--%>
-            <%--        })--%>
-            <%--        Window_result_Finaltest.show();--%>
-            <%--    } else {--%>
-            <%--        var ERROR = isc.Dialog.create({--%>
-            <%--            message: "<spring:message code='exception.un-managed'/>",--%>
-            <%--            icon: "[SKIN]stop.png",--%>
-            <%--            title: "<spring:message code='message'/>"--%>
-            <%--        });--%>
-            <%--        setTimeout(function () {--%>
-            <%--            ERROR.close();--%>
-            <%--        }, 8000);--%>
-            <%--    }--%>
-            <%--    wait.close();--%>
-            <%--}))--%>
     }
 
     function printFullClearForm(id) {
@@ -964,7 +889,7 @@ scoreLabel.setContents("مجموع بارم وارد شده :")
         return validationData;
     }
 
-    function loadExamQuestions(record,questionData,dialog){
+    function loadExamQuestions(record,questionData,dialog) {
 
             wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(questionBankTestQuestionUrl +"/test/"+record.tclass.id+ "/spec-list-final-test", "GET",null, function (resp) {
@@ -977,7 +902,7 @@ scoreLabel.setContents("مجموع بارم وارد شده :")
                     };
                     let validationData = checkExamValidation(examData);
                     if (validationData.isValid) {
-                        isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examToEls", "POST", JSON.stringify(examData), function (resp) {
+                        isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examToEls/test", "POST", JSON.stringify(examData), function (resp) {
                             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                 refresh_finalTest();
 
@@ -993,15 +918,14 @@ scoreLabel.setContents("مجموع بارم وارد شده :")
                             } else {
 
                                 if (resp.httpResponseCode === 406)
-createDialog("info","<spring:message code="msg.check.teacher.mobile.ncode"/>"+" "+"<spring:message code="msg.check.teacher.mobile.ncode.message"/>", "<spring:message code="error"/>");
+                                    createDialog("info","<spring:message code="msg.check.teacher.mobile.ncode"/>"+" "+"<spring:message code="msg.check.teacher.mobile.ncode.message"/>", "<spring:message code="error"/>");
                                 else if (resp.httpResponseCode === 404)
-createDialog("info", "<spring:message code="msg.check.users.mobile.ncode"/>", "<spring:message code="error"/>");
+                                    createDialog("info", "<spring:message code="msg.check.users.mobile.ncode"/>", "<spring:message code="error"/>");
                                 else if (resp.httpResponseCode === 500)
-createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                                 else
-createDialog("info",JSON.parse(resp.httpResponseText).message, "<spring:message code="error"/>");
-
-}
+                                    createDialog("info",JSON.parse(resp.httpResponseText).message, "<spring:message code="error"/>");
+                            }
                             wait.close();
                         }));
                     } else {
@@ -1355,7 +1279,7 @@ let inValidStudents = [];
                     });
                     Window_InValid_Students.show();
                 } else {
-                    createDialog("info", "در این کلاس کاربر با اطلاعات ناقص وجود ندارد"); }
+                    createDialog("info", "در این کلاس فراگیر با اطلاعات ناقص وجود ندارد"); }
                     } }));
                     }
     function refresh_finalTest() {
@@ -1448,7 +1372,7 @@ let inValidStudents = [];
                                 } else  if (resp.httpResponseCode == 406){
                                     createDialog("warning", "خطا در حذف سوال", "اخطار");
                                 }else  if (resp.httpResponseCode == 404){
-                                    createDialog("warning", "آزمون در آموزش آنلاین ثبت شده است و امکان حذف وجود ندارد", "اخطار");
+                                    createDialog("warning", "آزمون در آزمون آنلاین ثبت شده است و امکان حذف وجود ندارد", "اخطار");
                                 }
                             }
                         }))
@@ -1532,33 +1456,26 @@ let inValidStudents = [];
             });
         TabSet_finalTest.enable();
     }
-function NCodeAndMobileValidation(nationalCode, mobileNum,gender) {
+    function NCodeAndMobileValidation(nationalCode, mobileNum,gender) {
 
-let isValid = true;
-
-if (gender ===undefined || nationalCode===undefined || nationalCode===null || mobileNum===undefined || mobileNum===null )
-{
-isValid = false;
-}
-else
-{
-if (nationalCode.length !== 10 || !(/^-?\d+$/.test(nationalCode)))
-isValid = false;
-
-if((mobileNum.length !== 10 && mobileNum.length !== 11) || !(/^-?\d+$/.test(mobileNum)))
-isValid = false;
-
-if(mobileNum.length === 10 && !mobileNum.startsWith("9"))
-isValid = false;
-
-if(mobileNum.length === 11 && !mobileNum.startsWith("09"))
-isValid = false;
-
-if(gender===null)
-isValid = false;
-}
-return isValid;
-}
+        let isValid = true;
+        if (gender===undefined || nationalCode===undefined || nationalCode===null || mobileNum===undefined || mobileNum===null) {
+            isValid = false;
+        }
+        else {
+            if (nationalCode.length !== 10 || !(/^-?\d+$/.test(nationalCode)))
+                isValid = false;
+            if((mobileNum.length !== 10 && mobileNum.length !== 11) || !(/^-?\d+$/.test(mobileNum)))
+                isValid = false;
+            if(mobileNum.length === 10 && !mobileNum.startsWith("9"))
+                isValid = false;
+            if(mobileNum.length === 11 && !mobileNum.startsWith("09"))
+                isValid = false;
+            if(gender===null)
+                isValid = false;
+        }
+        return isValid;
+    }
 
     async function hasEvaluation(classId) {
         let criteria = {fieldName: "id", operator: "equals", value: classId};

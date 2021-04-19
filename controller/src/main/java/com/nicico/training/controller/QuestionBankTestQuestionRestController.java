@@ -146,17 +146,14 @@ public class QuestionBankTestQuestionRestController {
             } else {
                 try {
 
-                    questionBankTestQuestionService.validateQuestions(questionBankTestQuestionFinalTests);
+                    questionBankTestQuestionService.validateQuestions(type, questionBankTestQuestionFinalTests);
                     return new ResponseEntity<>(questionBankTestQuestionFinalTests, HttpStatus.OK);
                 } catch (Exception ex) {
                     return new ResponseEntity("", HttpStatus.METHOD_NOT_ALLOWED);
-
-//                    throw new TrainingException(TrainingException.ErrorType.InvalidData, ex.getMessage());
                 }
             }
         } catch (Exception e) {
             return new ResponseEntity("", HttpStatus.NOT_FOUND);
-//            throw new TrainingException(TrainingException.ErrorType.NotFound, e.getMessage());
         }
     }
 

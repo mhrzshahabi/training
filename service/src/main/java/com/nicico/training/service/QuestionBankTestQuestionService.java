@@ -108,7 +108,7 @@ public class QuestionBankTestQuestionService implements IQuestionBankTestQuestio
     }
 
     @Override
-    public boolean validateQuestions(List<QuestionBankTestQuestionDTO.QuestionBankTestQuestionFinalTest> questionFinalTests) {
+    public boolean validateQuestions(String type, List<QuestionBankTestQuestionDTO.QuestionBankTestQuestionFinalTest> questionFinalTests) {
 
         ElsExamRequest request;
         ExamImportedRequest object = new ExamImportedRequest();
@@ -124,15 +124,20 @@ public class QuestionBankTestQuestionService implements IQuestionBankTestQuestio
 
         object.setExamItem(examData);
         object.setQuestions(questions);
+        final ElsExamRequestResponse elsExamRequestResponse;
 
-        final ElsExamRequestResponse elsExamRequestResponse =
-                evaluationBeanMapper.toGetExamRequest(tclass, personalInfo, object,
-                        classStudentService.getClassStudents(questionBankTestQuestionFinalTest.getTestQuestion().getTclassId()));
-            request = elsExamRequestResponse.getElsExamRequest();
-            boolean hasWrongCorrectAnswer = evaluationBeanMapper.hasWrongCorrectAnswer(request.getQuestionProtocols());
-            if (hasWrongCorrectAnswer || request.getQuestionProtocols().size() == 0)
-                throw new TrainingException(TrainingException.ErrorType.InvalidData);
-            return true;
+        if (type.equals("preTest")) {
+            elsExamRequestResponse = evaluationBeanMapper.toGetPreExamRequest(tclass, personalInfo, object,
+                            classStudentService.getClassStudents(questionBankTestQuestionFinalTest.getTestQuestion().getTclassId()));
+        } else {
+            elsExamRequestResponse = evaluationBeanMapper.toGetExamRequest(tclass, personalInfo, object,
+                            classStudentService.getClassStudents(questionBankTestQuestionFinalTest.getTestQuestion().getTclassId()));
+        }
+        request = elsExamRequestResponse.getElsExamRequest();
+        boolean hasWrongCorrectAnswer = evaluationBeanMapper.hasWrongCorrectAnswer(request.getQuestionProtocols());
+        if (hasWrongCorrectAnswer || request.getQuestionProtocols().size() == 0)
+            throw new TrainingException(TrainingException.ErrorType.InvalidData);
+        return true;
     }
 
     @Transactional
