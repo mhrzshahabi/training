@@ -2,17 +2,15 @@ package com.nicico.training.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.nicico.training.dto.PostDTO;
-import com.nicico.training.dto.TrainingPostDTO;
-import com.nicico.training.dto.ViewNeedAssessmentInRangeDTO;
-import com.nicico.training.dto.ViewTrainingNeedAssessmentDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IViewNeedAssessmentInRangeTimeService;
 import com.nicico.training.model.ViewPost;
 import com.nicico.training.model.ViewTrainingNeedAssessment;
-import com.nicico.training.model.ViewTrainingPost;
+import com.nicico.training.model.ViewTrainingPostReport;
 import com.nicico.training.repository.ViewPostDAO;
 import com.nicico.training.repository.ViewTrainingNeedAssessmentDAO;
 import com.nicico.training.repository.ViewTrainingPostDAO;
+import com.nicico.training.repository.ViewTrainingPostReportDAO;
 import com.nicico.training.service.ExportToFileService;
 import com.nicico.training.utility.MakeExcelOutputUtil;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +35,7 @@ public class ReportsToExcelFormController {
 
     private final ModelMapper modelMapper;
     private final MakeExcelOutputUtil makeExcelOutputUtil;
-    private final ViewTrainingPostDAO viewTrainingPostDAO;
+    private final ViewTrainingPostReportDAO viewTrainingPostReportDAO;
     private final ViewTrainingNeedAssessmentDAO viewTrainingNeedAssessmentDAO;
     private final IViewNeedAssessmentInRangeTimeService iViewNeedAssessmentInRangeTimeService;
 
@@ -48,14 +46,14 @@ public class ReportsToExcelFormController {
 
         String[] fields = Objects.requireNonNull(criteria.getFirst("fields")).split(",");
         String[] headers = Objects.requireNonNull(criteria.getFirst("headers")).split(",");
-        String area = criteria.get("area").get(0);
+        String[] areas = Objects.requireNonNull(criteria.getFirst("areas")).split(",");
 
-        List<ViewTrainingPost> viewTrainingPosts = viewTrainingPostDAO.findAllByAreaAndCompetenceCount(0, area);
+        List<ViewTrainingPostReport> viewTrainingPosts = viewTrainingPostReportDAO.findAllByAreaAndCompetenceCount(0, areas);
 
-        List<TrainingPostDTO.Info> trainingPostData = viewTrainingPosts.stream().map(item -> modelMapper.map(item, TrainingPostDTO.Info.class)).collect(Collectors.toList());
+        List<ViewTrainingPostDTO.Report> trainingPostData = viewTrainingPosts.stream().map(item -> modelMapper.map(item, ViewTrainingPostDTO.Report.class)).collect(Collectors.toList());
         resp.addAll(trainingPostData);
 
-        byte[] bytes = makeExcelOutputUtil.makeOutput(resp, TrainingPostDTO.Info.class, fields, headers, true, "");
+        byte[] bytes = makeExcelOutputUtil.makeOutput(resp, ViewTrainingPostDTO.Report.class, fields, headers, true, "");
         makeExcelOutputUtil.makeExcelResponse(bytes, response);
     }
 

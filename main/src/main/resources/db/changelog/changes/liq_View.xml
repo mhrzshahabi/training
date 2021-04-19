@@ -8302,5 +8302,92 @@ FROM (
              ]]>
         </createView>
     </changeSet>
-    
+
+    <changeSet author="zare" id="abiz-2176">
+        <createView viewName="VIEW_TRAINING_POST_REPORT" replaceIfExists="true">
+            <![CDATA[
+                SELECT tr_post_view.* ,dep.C_MOJTAME_TITLE ,dep.C_MOJTAME_CODE FROM (SELECT
+    tp.id,
+    tp.c_created_by,
+    tp.d_created_date,
+    tp.e_deleted,
+    tp.e_enabled,
+    tp.c_last_modified_by,
+    tp.d_last_modified_date,
+    tp.n_version,
+    tp.c_code,
+    tp.c_title_fa,
+    tp.c_affairs,
+    tp.c_area,
+    tp.c_assistance,
+    tp.c_cost_center_title_fa,
+    tp.c_cost_center_code,
+    tp.c_section,
+    tp.c_unit,
+    tp.f_department_id,
+    tp.f_post_grade_id,
+    tp.f_job_id,
+    tp.d_last_modified_date_na,
+    tp.c_modified_by_na,
+    tp.c_people_type,
+    j.c_title_fa    AS job_c_title_fa,
+    j.c_code        AS job_c_code,
+    pg.c_title_fa   AS post_grade_c_title_fa,
+    pg.c_code       AS post_grade_c_code,
+    COUNT(DISTINCT na.f_competence) AS n_competence_count
+FROM
+    tbl_training_post                                             tp
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            tbl_needs_assessment
+        WHERE
+            c_object_type = 'TrainingPost'
+            AND e_deleted IS NULL
+            AND e_enabled IS NULL
+    ) na ON tp.id = na.f_object
+    LEFT JOIN tbl_post_training_post                                        ptp ON tp.id = ptp.f_training_post_id
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            tbl_post
+        WHERE
+            e_deleted IS NULL
+            AND e_enabled IS NULL
+    ) p ON p.id = ptp.f_post_id
+    LEFT JOIN tbl_job                                                       j ON j.id = tp.f_job_id
+    LEFT JOIN tbl_post_grade                                                pg ON pg.id = tp.f_post_grade_id
+GROUP BY
+    tp.id,
+    tp.c_created_by,
+    tp.d_created_date,
+    tp.e_deleted,
+    tp.e_enabled,
+    tp.c_last_modified_by,
+    tp.d_last_modified_date,
+    tp.n_version,
+    tp.c_code,
+    tp.c_title_fa,
+    tp.c_affairs,
+    tp.c_area,
+    tp.c_assistance,
+    tp.c_cost_center_title_fa,
+    tp.c_cost_center_code,
+    tp.c_section,
+    tp.c_unit,
+    tp.f_department_id,
+    tp.f_post_grade_id,
+    tp.f_job_id,
+    tp.d_last_modified_date_na,
+    tp.c_modified_by_na,
+    tp.c_people_type,
+    j.c_title_fa,
+    j.c_code,
+    pg.c_title_fa,
+    pg.c_code) tr_post_view  LEFT JOIN tbl_department dep on dep.id = tr_post_view.f_department_id
+            ]]>
+        </createView>
+    </changeSet>
 </databaseChangeLog>

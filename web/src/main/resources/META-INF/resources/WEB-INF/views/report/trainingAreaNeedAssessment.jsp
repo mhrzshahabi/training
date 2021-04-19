@@ -4,33 +4,10 @@
 
 //<script>
 
-    var area = null;
+    var areas = [];
 
     //--------------------------------------------------------REST DataSources-----------------------------------------------------//
-
-    RestDataSource_Department = isc.TrDS.create({
-        fields: [
-            {
-                name: "id",
-                title: "id",
-                primaryKey: true,
-                canEdit: false,
-                hidden: true
-            },
-            {
-                name: "title",
-                title: "<spring:message code='department'/>",
-            },
-            {
-                name: "hozeTitle",
-                title: "<spring:message code='area'/>",
-            }
-        ],
-        cacheAllData: true,
-        fetchDataURL: departmentUrl + "/spec-list"
-    });
-
-    RestDataSource_view_training_Post = isc.TrDS.create({
+    var RestDataSource_view_training_Post = isc.TrDS.create({
         fields: [
             { name: "id", title: "id", primaryKey: true, hidden: true },
             {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap, filterOnKeypress: true},
@@ -38,7 +15,7 @@
             {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "postGradeTitleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "mojtameTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -47,17 +24,7 @@
             {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
         ],
-        cacheAllData: true,
-        fetchDataURL: viewTrainingPostUrl + "/iscList?_endRow=10000"
-    });
-
-    RestDataSource_Area = isc.TrDS.create({
-        fields: [
-            {
-                name: "area",
-                title: "<spring:message code='area'/>"
-            }
-        ]
+        fetchDataURL: viewTrainingPostUrl + "/iscListReport?_endRow=10000"
     });
 
     //------------------------------------------------------Main Window--------------------------------------------------------------//
@@ -85,7 +52,7 @@
                 width: 100,
                 colSpan: 1,
                 wrapTitle: false,
-                title: "<spring:message code='reports.need.assessment.select.hoze'/>",
+                title: "<spring:message code='reports.need.assessment.select.complex'/>",
                 type: "button",
                 startRow: false,
                 endRow: false,
@@ -100,16 +67,24 @@
     ListGrid_Area = isc.ListGrid.create({
         width: "100%",
         height: 470,
-        dataSource: RestDataSource_Area,
         showRowNumbers: true,
-        selectionType: "single",
+        canEdit: true,
+        modalEditing: true,
+        editEvent: "click",
         autoFetchData: false,
         alternateRecordStyles: true,
         fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "code", hidden: true},
             {
-                name: "area",
-                title: "<spring:message code='area'/>",
-                type: "text"
+                name: "selected",
+                title: " ",
+                type: "boolean"
+            },
+            {
+                canEdit: false,
+                name: "title",
+                title: "<spring:message code='title'/>",
             }
         ]
     });
@@ -118,35 +93,33 @@
         members: [
             ListGrid_Area,
             isc.IButtonSave.create({
-                                height: 30,
-                                title: "اجرای گزارش",
-                                align: "center",
-                                icon: "[SKIN]/actions/save.png",
-                                click: function () {
-                                    let record = ListGrid_Area.getSelectedRecord();
-                                    if (record === null) {
-                                            isc.Dialog.create({
-                                            message: "رکوردی انتخاب نشده است",
-                                            icon: "[SKIN]ask.png",
-                                            title: "پیغام",
-                                            buttons: [isc.IButtonSave.create({title: "تائید"})],
-                                            buttonClick: function (button, index) {
-                                                this.close();
-                                            }
-                                            });
-                                    } else {
-                                        area = record.area;
-                                        fetchListGridData(area);
-                                        Window_Area.close();
-                                        wait.show();
-                                    }
-                                }
+                height: 30,
+                title: "اجرای گزارش",
+                align: "center",
+                icon: "[SKIN]/actions/save.png",
+                click: function () {
+                    let records = ListGrid_Area.getData().filter(d => d.selected);
+                    if (records === null || records.length < 1) {
+                        isc.Dialog.create({
+                            message: "رکوردی انتخاب نشده است",
+                            icon: "[SKIN]ask.png",
+                            title: "پیغام",
+                            buttons: [isc.IButtonSave.create({title: "تائید"})],
+                            buttonClick: function (button, index) {
+                                this.close();
+                            }
+                        });
+                    } else {
+                        fetchListGridData(records.map(a => a.code));
+                        Window_Area.close();
+                    }
+                }
             })
         ]
     });
 
     Window_Area = isc.Window.create({
-        title: "<spring:message code='area'/>",
+        title: "<spring:message code='complex'/>",
         width: 400,
         height: 500,
         autoSize: true,
@@ -164,13 +137,14 @@
         ]
     });
 
-    ListGrid_Training_Post = isc.ListGrid.create({
+    var ListGrid_Training_Post = isc.TrLG.create({
         width: "100%",
         showRowNumbers: true,
         dataSource: RestDataSource_view_training_Post,
         selectionType: "single",
         autoFetchData: false,
         dataPageSize: 15,
+        allowAdvancedCriteria: true,
         alternateRecordStyles: true,
         allowFilterOperators: true,
         showFilterEditor: true,
@@ -188,7 +162,7 @@
             {name: "titleFa"},
             {name: "jobTitleFa"},
             {name: "postGradeTitleFa"},
-            {name: "area"},
+            {name: "mojtameTitle"},
             {name: "assistance"},
             {name: "affairs"},
             {name: "section"},
@@ -238,7 +212,7 @@
 
     //-----------------------------------------------------------FUNCTIONS---------------------------------------------------------//
 
-    function fetchListGridData(areaValue) {
+    function fetchListGridData(records) {
 
     let reportCriteria = {
             _constructor: "AdvancedCriteria",
@@ -250,67 +224,46 @@
                     value: 0
                 },
                 {
-                    fieldName: "area",
-                    operator: "equals",
-                    value: areaValue
+                    fieldName: "mojtameCode",
+                    operator: "inSet",
+                    value: records
                 }
             ]
         };
 
-    RestDataSource_view_training_Post.fetchData(reportCriteria, function (dsResponse, data, dsRequest) {
-            wait.close();
-            ListGrid_Training_Post.setCriteria(null);
-            ListGrid_Training_Post.setImplicitCriteria({
-            _constructor: "AdvancedCriteria",
-            operator: "and",
-            criteria: [
-                {
-                    fieldName: "competenceCount",
-                    operator: "equals",
-                    value: 0
-                },
-                {
-                    fieldName: "area",
-                    operator: "equals",
-                    value: areaValue
-                }
-            ]
-        });
-            if (data.length)
-                ListGrid_Training_Post.setData(data);
-            else
-                ListGrid_Training_Post.setData([]);
-        });
+        ListGrid_Training_Post.implicitCriteria = reportCriteria;
+        ListGrid_Training_Post.invalidateCache();
+        ListGrid_Training_Post.fetchData();
     }
 
     function getAreaList() {
+        if (areas.length == 0)
+            isc.RPCManager.sendRequest(TrDSRequest(departmentUrl + "/organ-segment-iscList/mojtame", "GET", null, function (resp) {
+                if (generalGetResp(resp)) {
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
-        isc.RPCManager.sendRequest(TrDSRequest(viewTrainingPostUrl + "/areaList", "GET", null, function (resp) {
-                            if (generalGetResp(resp)) {
-                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-
-                                    let result = JSON.parse(resp.httpResponseText);
-                                    let areaList = [];
-                                    result.forEach(a =>
-                                        areaList.add({area: a}));
-                                    ListGrid_Area.setData(areaList);
-                                } else {
-
-                                    wait.close();
-                                    createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
-                                }
-                            } else {
-                                wait.close();
-                            }
-                        }));
+                        let result = JSON.parse(resp.httpResponseText);
+                        result.response.data.forEach(a => {
+                            a.selected = false;
+                            areas.push(a);
+                        })
+                        ListGrid_Area.setData(areas);
+                    } else {
+                        wait.close();
+                        createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
+                    }
+                } else {
+                    wait.close();
+                }
+            }));
     }
 
     function makeExcelOutput() {
 
-        let fieldNames = "peopleType,code,titleFa,area,assistance,affairs,section," +
+        let fieldNames = "peopleType,code,titleFa,mojtameTitle,assistance,affairs,section," +
             "unit,costCenterCode,costCenterTitleFa";
 
-        let headerNames = '"<spring:message code="people.type"/>","<spring:message code="post.code"/>","<spring:message code="post.title"/>","<spring:message code="area"/>",' +
+        let headerNames = '"<spring:message code="people.type"/>","<spring:message code="post.code"/>","<spring:message code="post.title"/>","<spring:message code="complex"/>",' +
                 '"<spring:message code="assistance"/>","<spring:message code="affairs"/>","<spring:message code="section"/>","<spring:message code="unit"/>",' +
                 '"<spring:message code="reward.cost.center.code"/>","<spring:message code="reward.cost.center.title"/>"';
 
@@ -323,12 +276,12 @@
                         [
                             {name: "fields", type: "hidden"},
                             {name: "headers", type: "hidden"},
-                            {name: "area", type: "hidden"}
+                            {name: "areas", type: "hidden"}
                         ]
                 });
                 downloadForm.setValue("fields", fieldNames);
                 downloadForm.setValue("headers", headerNames);
-                downloadForm.setValue("area", area);
+                downloadForm.setValue("areas", areas.filter(a=>a.selected).map(a => a.code));
 
                 downloadForm.show();
                 downloadForm.submitForm();
