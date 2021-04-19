@@ -2,6 +2,7 @@ package com.nicico.training.mapper.evaluation;
 
 
 import com.nicico.training.dto.question.ElsExamRequestResponse;
+import com.nicico.training.dto.question.ElsResendExamRequestResponse;
 import com.nicico.training.dto.question.ExamQuestionsObject;
 import com.nicico.training.model.*;
 import com.nicico.training.service.QuestionBankService;
@@ -23,7 +24,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import request.evaluation.ElsEvalRequest;
 import request.exam.ElsExamRequest;
+import request.exam.ElsExtendedExamRequest;
 import request.exam.ExamImportedRequest;
+import request.exam.ResendExamImportedRequest;
 import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
 import response.exam.ExamResultDto;
@@ -151,6 +154,27 @@ public abstract class EvaluationBeanMapper {
         }else
             elsExamRequestResponse.setStatus(200);
         return elsExamRequestResponse;
+    }
+
+    public ElsResendExamRequestResponse toGetResendExamRequest( ResendExamImportedRequest object) {
+        ElsExtendedExamRequest request = new ElsExtendedExamRequest();
+        ElsResendExamRequestResponse elsResendExamRequestResponse = new ElsResendExamRequestResponse();
+        int time = Math.toIntExact(object.getDuration());
+
+        String newTime = convertToTimeZone(object.getTime());
+
+        Date startDate = getDate(object.getStartDate(), newTime);
+        Date endDate = getEndDateFromDuration(getStringGeoDate(object.getStartDate(), newTime)
+                , object.getDuration());
+
+        request.setStartDate(startDate.getTime());
+        request.setEndDate(endDate.getTime());
+        request.setUsers(object.getUsers());
+        request.setDuration(time);
+        request.setSourceExamId(object.getSourceExamId());
+        elsResendExamRequestResponse.setElsResendExamRequest(request);
+        elsResendExamRequestResponse.setStatus(200);
+        return elsResendExamRequestResponse;
     }
 
     private ImportedUser getTeacherData(PersonalInfo teacherInfo) {
@@ -898,6 +922,10 @@ public abstract class EvaluationBeanMapper {
         return request;
     }
     public ElsExamRequest removeInvalidUsersForExam(ElsExamRequest request) {
+        request.getUsers().removeIf(user -> !validateTargetUser(user));
+        return request;
+    }
+    public ElsExtendedExamRequest removeInvalidUsersForResendExam(ElsExtendedExamRequest request) {
         request.getUsers().removeIf(user -> !validateTargetUser(user));
         return request;
     }

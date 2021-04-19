@@ -279,7 +279,24 @@ width: "100%",
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         selectionUpdated: function (record) {
-           loadTab();
+            if (TabSet_finalTest.getSelectedTab() === undefined || TabSet_finalTest.getSelectedTab() === null){
+                refreshSelectedTab_class(0);
+            } else {
+                refreshSelectedTab_class(TabSet_finalTest.getSelectedTab());
+                if (TabSet_finalTest.getSelectedTab().ID === 'resendFinalTest'){
+                    if (record.onlineFinalExamStatus === false){
+                        resendFinalExam_DynamicForm.getItem("time").setDisabled(true);
+                        resendFinalExam_DynamicForm.getItem("startDate").setDisabled(true);
+                        resendFinalExam_DynamicForm.getItem("duration").setDisabled(true);
+                        resendFinalExam_DynamicForm.getItem("sendBtn").setDisabled(true);
+                    } else {
+                        resendFinalExam_DynamicForm.getItem("time").setDisabled(false);
+                        resendFinalExam_DynamicForm.getItem("startDate").setDisabled(false);
+                        resendFinalExam_DynamicForm.getItem("duration").setDisabled(false);
+                        resendFinalExam_DynamicForm.getItem("sendBtn").setDisabled(false);
+                    }
+                }
+            }
 
         },
         doubleClick: function () {
@@ -1259,9 +1276,42 @@ createDialog("info",JSON.parse(resp.httpResponseText).message, "<spring:message 
 
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
-            loadTab();
+            if (isc.Page.isLoaded())
+                refreshSelectedTab_class(tab);
+                if (TabSet_finalTest.getSelectedTab().ID === 'resendFinalTest'){
+                    if (FinalTestLG_finalTest.getSelectedRecord().onlineFinalExamStatus === false){
+                        resendFinalExam_DynamicForm.getItem("time").setDisabled(true);
+                        resendFinalExam_DynamicForm.getItem("startDate").setDisabled(true);
+                        resendFinalExam_DynamicForm.getItem("duration").setDisabled(true);
+                        resendFinalExam_DynamicForm.getItem("sendBtn").setDisabled(true);
+                    } else {
+                        resendFinalExam_DynamicForm.getItem("time").setDisabled(false);
+                        resendFinalExam_DynamicForm.getItem("startDate").setDisabled(false);
+                        resendFinalExam_DynamicForm.getItem("duration").setDisabled(false);
+                        resendFinalExam_DynamicForm.getItem("sendBtn").setDisabled(false);
+                    }
+                }
+
         }
     });
+
+        function refreshSelectedTab_class(tab) {
+        let classRecord = FinalTestLG_finalTest.getSelectedRecord();
+        if (!(classRecord == undefined || classRecord == null)) {
+            switch (tab.ID) {
+                case "resendFinalTest": {
+                    if (typeof loadPage_student !== "undefined")
+                        loadPage_student();
+                    break;
+                }
+                case "finalTestQuestionBank": {
+                        loadTab();
+                    break;
+                }
+
+            }
+        }
+    }
 
     // ------------------------------------------- Page UI -------------------------------------------
     let HLayout_Tab_Class = isc.HLayout.create({
