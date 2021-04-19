@@ -2,7 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
-<!-- <script> -->
+// <<script>
     {
         var studentRemoveWait;
         var studentDefaultPresenceId = 103;
@@ -2023,11 +2023,23 @@
                         })
                     ]
                 });
-                Window_Warn_Students.show();
+
+                let appCompany = SelectedPersonnelsLG_student.getData().map(std => std.applicantCompanyName);
+                if (appCompany.contains(undefined)) {
+                    createDialog("info", "لطفا ابتدا شرکت اعلام کننده همه فراگیران را مشخص کنید");
+                } else {
+                    Window_Warn_Students.show();
+                }
+
             } else {
-                wait.show();
-                isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST",
-                    JSON.stringify(studentsDataArray), class_add_students_result));
+                let appCompany = SelectedPersonnelsLG_student.getData().map(std => std.applicantCompanyName);
+                if (appCompany.contains(undefined)) {
+                    createDialog("info", "لطفا ابتدا شرکت اعلام کننده همه فراگیران را مشخص کنید");
+                } else {
+                    wait.show();
+                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST",
+                        JSON.stringify(studentsDataArray), class_add_students_result));
+                }
             }
         }
 
@@ -2239,6 +2251,7 @@
                                                 "firstName" : person.firstName,
                                                 "lastName" : person.lastName,
                                                 "personnelNo": person.personnelNo,
+                                                "nationalCode" : person.nationalCode,
                                                 "applicantCompanyName": person.companyName,
                                                 "presenceTypeId": studentDefaultPresenceId,
                                                 "registerTypeId": url.indexOf(personnelUrl + "/") > -1 ? 1 : 2
@@ -2256,21 +2269,21 @@
                         let courseId = ListGrid_Class_JspClass.getSelectedRecord().courseId;
                         let equalCourseIds = [];
                         equalCourseIds.add(courseId);
+                        SelectedPersonnelsLG_student.setData(students);
+                        wait.close();
                         addValidStudents(classId, courseId, equalCourseIds, students);
                         // SelectedPersonnelsLG_student.data.clearAll();
                         ClassStudentWin_student_GroupInsert.close();
 
                     } else {
+
                         GroupSelectedPersonnelsLG_student.invalidateCache();
                         GroupSelectedPersonnelsLG_student.fetchData();
-
                         wait.close();
-
                         if (insert) {
                             createDialog('info', 'شخصي جهت اضافه شدن وجود ندارد.');
                         }
                     }
-
 
                 } else {
                     wait.close();
@@ -2372,4 +2385,4 @@
         );
     }
 
-    // </script>
+// </script>
