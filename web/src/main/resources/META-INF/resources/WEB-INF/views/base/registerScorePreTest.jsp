@@ -34,12 +34,16 @@
                 filterOperator: "iContains",
 
             },
-
             {
                 name: "student.personnelNo",
                 title: "<spring:message code="personnel.no"/>",
                 filterOperator: "iContains",
 
+            },
+            {
+                name: "student.postTitle",
+                title: "<spring:message code="post"/>",
+                filterOperator: "iContains",
             },
             {name:"preTestScore", title: "<spring:message code="score"/>", filterOperator: "iContains"},
         ],
@@ -86,6 +90,12 @@
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
                 }
+            },
+            {
+                name: "student.postTitle",
+                title: "<spring:message code="post"/>",
+                filterOperator: "iContains",
+
             },
             {
                 name: "preTestScore",
