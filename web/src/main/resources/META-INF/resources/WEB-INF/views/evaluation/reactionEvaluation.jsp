@@ -235,6 +235,8 @@
                     keyPressFilter: "[0-9]"
                 }
             },
+            {name: "student.postTitle"},
+            {name: "student.mobile"},
             {
                 name: "applicantCompanyName",
                 textAlign: "center"
@@ -255,7 +257,6 @@
                 filterOnKeypress: true,
                 filterOperator: "equals"
             },
-            {name: "student.mobile"},
             {name: "sendForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true},
             {
                 name: "saveResults",

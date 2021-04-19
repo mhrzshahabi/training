@@ -223,6 +223,9 @@
                     }
                 },
                 {
+                    name: "student.postTitle",
+                },
+                {
                     name: "student.mobile",
                 },
 	            {
