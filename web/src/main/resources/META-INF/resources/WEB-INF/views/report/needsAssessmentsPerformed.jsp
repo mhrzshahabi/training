@@ -163,38 +163,33 @@
     });
     var ListGrid_NeedAssessmentsPerformed = isc.TrLG.create({
         ID: "NeedAssessmentsPerformedGrid",
-        //dynamicTitle: true,
         filterOnKeypress: false,
-        showFilterEditor:false,
-        gridComponents: [DynamicForm_NeedsAssessmentsPerformed,
+        showFilterEditor: true,
+        gridComponents: [
+            DynamicForm_NeedsAssessmentsPerformed,
             isc.ToolStripButtonExcel.create({
                 margin:5,
                 click:function() {
                     makeExcelOutput();
-
-                    // let title="گزارش نیازسنجی های انجام شده از تاریخ "+DynamicForm_NeedsAssessmentsPerformed.getItem("startDate").getValue()+ " الی "+DynamicForm_NeedsAssessmentsPerformed.getItem("endDate").getValue();
-                    //
-                    // ExportToFile.downloadExcel(null, ListGrid_NeedAssessmentsPerformed, 'needAssessmentsPerformed', 0, null, '', title, DynamicForm_NeedsAssessmentsPerformed.getValuesAsAdvancedCriteria(), null,2);
                 }
             })
-            , "header", "filterEditor", "body"],
-        // groupByField:"name",
-        // groupStartOpen:"none",
-        // groupByMaxRecords:5000000,
-        // showGridSummary:true,
-        // showGroupSummary:true,
+            , "filterEditor", "header", "body"],
         dataSource: RestDataSource_Class_JspNeedAssessmentsPerformed,
-
         fields: [
             {name: "postType", title: "نوع پست"},
             {name: "postCode", title: "کد پست"},
             {name: "postTitle", title: "عنوان پست"},
             {name: "updateBy", title: "ویرایش توسط"},
-            {name: "updateAt", title: "ویرایش در تاریخ",
-                formatCellValue: (value) => {
-                    let d = new Date(value);
-                    return d.toLocaleString('fa',{ year: 'numeric', month: 'numeric', day: 'numeric' });
-                },
+            {
+                name: "updateAt",
+                title: "ویرایش در تاریخ",
+                canFilter: false,
+                formatCellValue: function (value) {
+                    if (value) {
+                        let d = new Date(value);
+                        return d.toLocaleString('fa',{ year: 'numeric', month: 'numeric', day: 'numeric' });
+                    }
+                }
             },
             {name: "version",title: "تعداد دفعات نیازسنجی"}
         ]
@@ -211,7 +206,7 @@
 
         let fieldNames = "postType,postCode,postTitle,updateBy,updateAt,version";
 
-        let headerNames = 'نوع پست,کد پست,عنوان پست ,کارشناس,ویرایش در تاریخ,تعداد دفعات نیازسنجی';
+        let headerNames = 'نوع پست,کد پست,عنوان پست ,ویرایش توسط,ویرایش در تاریخ,تعداد دفعات نیازسنجی';
 
         let downloadForm = isc.DynamicForm.create({
             method: "POST",
