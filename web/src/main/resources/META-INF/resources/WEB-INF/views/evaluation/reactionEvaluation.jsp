@@ -1075,7 +1075,7 @@
                                             },
                                             // {
                                             //     name: "sendToEls_supervisor",
-                                            //     title: "ارسال به آزمون آنلاین",
+                                            //     title: "ارسال به آموزش آنلاین",
                                             //     type: "button",
                                             //     startRow: false,
                                             //     endRow: false,
@@ -1847,11 +1847,11 @@
                     });
                     Window_InValid_Students.show();
                 } else {
-                    createDialog("info", "در این کلاس فراگیر با اطلاعات ناقص وجود ندارد");
+                    createDialog("info", "در این کلاس کاربر با اطلاعات ناقص وجود ندارد");
                 }
             } else {
 
-                createDialog("info", "برای مشاهده فراگیران با اطلاعات ناقص ابتدا کلاس مورد نظر را انتخاب کنید");
+                createDialog("info", "برای مشاهده کاربران با اطلاعات ناقص ابتدا کلاس مورد نظر را انتخاب کنید");
                 evalWait_RE.close();
             }
 

@@ -138,20 +138,14 @@ public class ElsRestController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/examToEls/{type}")
-    public ResponseEntity sendExam(@RequestBody ExamImportedRequest object, @PathVariable String type) {
+    @PostMapping("/examToEls")
+    public ResponseEntity sendExam(@RequestBody ExamImportedRequest object) {
         BaseResponse response = new BaseResponse();
-        final ElsExamRequestResponse elsExamRequestResponse;
-
         try {
             ElsExamRequest request;
             PersonalInfo teacherInfo = personalInfoService.getPersonalInfo(teacherService.getTeacher(object.getExamItem().getTclass().getTeacherId()).getPersonalityId());
 
-            if (type.equals("preTest"))
-                elsExamRequestResponse = evaluationBeanMapper.toGetPreExamRequest(tclassService.getTClass(object.getExamItem().getTclassId()), teacherInfo, object, classStudentService.getClassStudents(object.getExamItem().getTclassId()));
-            else
-                elsExamRequestResponse = evaluationBeanMapper.toGetExamRequest(tclassService.getTClass(object.getExamItem().getTclassId()), teacherInfo, object, classStudentService.getClassStudents(object.getExamItem().getTclassId()));
-
+            ElsExamRequestResponse elsExamRequestResponse = evaluationBeanMapper.toGetExamRequest(tclassService.getTClass(object.getExamItem().getTclassId()), teacherInfo, object, classStudentService.getClassStudents(object.getExamItem().getTclassId()));
             if(elsExamRequestResponse.getStatus() == 200) {
                 request = elsExamRequestResponse.getElsExamRequest();
                 if (request.getInstructor() != null && request.getInstructor().getNationalCode() != null &&
@@ -166,7 +160,8 @@ public class ElsRestController {
                             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
                         }
                     }
-                    catch (Exception e) {
+                    catch (Exception e)
+                    {
                         if (e.getCause()!=null && e.getCause().getMessage()!=null && e.getCause().getMessage().equals("Read timed out")) {
                             response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
                             response.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
@@ -183,9 +178,8 @@ public class ElsRestController {
                 if (response.getStatus() == HttpStatus.OK.value()) {
                     testQuestionService.changeOnlineFinalExamStatus(request.getExam().getSourceExamId(), true);
                     return new ResponseEntity<>(response, HttpStatus.OK);
-                } else
-                    return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
-            } else {
+                } else return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+            }else {
                 response.setStatus(elsExamRequestResponse.getStatus());
                 response.setMessage(elsExamRequestResponse.getMessage());
                 return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
@@ -279,21 +273,6 @@ public class ElsRestController {
 
     }
 
-    @PostMapping("/preExamQuestions")
-    public ResponseEntity<ExamQuestionsDto> preExamQuestions(@RequestBody ExamImportedRequest object) {
-
-        ExamQuestionsObject examQuestionsObject =  new ExamQuestionsObject();
-        ExamQuestionsDto response = new ExamQuestionsDto();
-
-        /*ExamQuestionsDto response*/
-        examQuestionsObject = evaluationBeanMapper.toGetExamQuestions(object);
-        if(examQuestionsObject.getStatus() == 200) {
-            response.setData(examQuestionsObject.getDto().getData());
-            return new ResponseEntity(response, HttpStatus.OK);
-        } else {
-            return new ResponseEntity(examQuestionsObject.getMessage(), HttpStatus.NOT_ACCEPTABLE); // سوال تکراری در آزمون وجود دارد
-        }
-    }
 
     @GetMapping(value = "/peopleByNationalCode/{nationalCode}")
     public ResponseEntity<PersonDTO> findPeopleByNationalCode(@PathVariable String nationalCode) {

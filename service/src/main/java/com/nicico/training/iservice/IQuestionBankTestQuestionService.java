@@ -14,7 +14,7 @@ public interface IQuestionBankTestQuestionService {
 
     List<QuestionBankTestQuestionDTO.QuestionBankTestQuestionFinalTest> finalTestList(String type, Long classId);
 
-    boolean validateQuestions(String type, List<QuestionBankTestQuestionDTO.QuestionBankTestQuestionFinalTest> questionFinalTests);
+    boolean validateQuestions(List<QuestionBankTestQuestionDTO.QuestionBankTestQuestionFinalTest> questionFinalTests);
 
     void addQuestions(String type, Long classId, List<Long> questionIds);
 

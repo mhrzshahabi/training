@@ -153,49 +153,6 @@ public abstract class EvaluationBeanMapper {
         return elsExamRequestResponse;
     }
 
-    public ElsExamRequestResponse toGetPreExamRequest(Tclass tClass, PersonalInfo teacherInfo, ExamImportedRequest object, List<ClassStudent> classStudents) {
-
-        ElsExamRequest request = new ElsExamRequest();
-        ElsExamRequestResponse elsExamRequestResponse = new ElsExamRequestResponse();
-        ExamQuestionsObject examQuestionsObject = new ExamQuestionsObject();
-
-        ExamCreateDTO exam = getPreExamData(object, tClass);
-        ImportedCourseCategory courseCategory = getCourseCategoryData(object);
-        ImportedCourseDto courseDto = getCourseData(object);
-        CourseProtocolImportDTO courseProtocol = getCourseProtocolData(object);
-
-        examQuestionsObject = getQuestions(object, 0);
-        examQuestionsObject.getProtocols().stream().forEach(question -> question.setTime(null));
-        List<ImportedQuestionProtocol> questionProtocols = examQuestionsObject.getProtocols();
-
-        ImportedUser teacher = getTeacherData(teacherInfo);
-
-        request.setUsers(classStudents.stream()
-                .map(classStudent -> toTargetUser(classStudent.getStudent())).collect(Collectors.toList()));
-
-        ////////////////////
-        //todo
-        exam.setType(getExamType(questionProtocols));
-        if (exam.getType() != ExamType.MULTI_CHOICES)
-            exam.setResultDate(1638036038L);
-
-        request.setExam(exam);
-        request.setCategory(courseCategory);
-        request.setCourse(courseDto);
-        request.setInstructor(teacher);
-        request.setQuestionProtocols(questionProtocols);
-        request.setPrograms(getPrograms(object.getExamItem().getTclass()));
-        request.setProtocol(courseProtocol);
-
-        elsExamRequestResponse.setElsExamRequest(request);
-        if(examQuestionsObject.getStatus()!= 200) {
-            elsExamRequestResponse.setStatus(examQuestionsObject.getStatus());
-            elsExamRequestResponse.setMessage(examQuestionsObject.getMessage());
-        } else
-            elsExamRequestResponse.setStatus(200);
-        return elsExamRequestResponse;
-    }
-
     private ImportedUser getTeacherData(PersonalInfo teacherInfo) {
         ImportedUser teacher = new ImportedUser();
         if (null !=teacherInfo.getGender() && null != teacherInfo.getContactInfo() && null != teacherInfo.getContactInfo().getMobile()) {
@@ -206,6 +163,14 @@ public abstract class EvaluationBeanMapper {
             teacher.setLastName(teacherInfo.getLastNameFa());
             teacher.setSurname(teacherInfo.getFirstNameFa());
      }
+
+//        else {‍
+//            teacher.setCellNumber("09189996626");
+//            teacher.setNationalCode("3240939177");
+//            teacher.setGender("زن");
+//            teacher.setLastName("اردلانی");
+//            teacher.setSurname("الناز");
+//        }
         return teacher;
     }
 
@@ -417,37 +382,6 @@ public abstract class EvaluationBeanMapper {
         else
             exam.setStatus(ExamStatus.ACTIVE);
 
-        return exam;
-    }
-
-    private ExamCreateDTO getPreExamData(ExamImportedRequest object, Tclass tClass) {
-
-        ExamCreateDTO exam = new ExamCreateDTO();
-        exam.setCode(object.getExamItem().getTclass().getCode());
-        exam.setName(object.getExamItem().getTclass().getTitleClass());
-        exam.setStartDate(null);
-        exam.setEndDate(null);
-        exam.setQuestionCount(object.getQuestions().size());
-        exam.setSourceExamId(object.getExamItem().getId());
-        exam.setDuration(0);
-
-        if (tClass.getScoringMethod().equals("3")) {
-            exam.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
-            exam.setScore(20D);
-        }
-        else if (tClass.getScoringMethod().equals("2")) {
-            if (null!=tClass.getAcceptancelimit())
-                exam.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
-            else
-                exam.setMinimumAcceptScore(50D);
-            exam.setScore(100D);
-        }
-        else {
-            exam.setMinimumAcceptScore(0D);
-            exam.setScore(0D);
-        }
-
-        exam.setStatus(ExamStatus.ACTIVE);
         return exam;
     }
 
@@ -755,6 +689,7 @@ public abstract class EvaluationBeanMapper {
     }
 
 
+
     private String convertToTimeZone(String dateString) {
 
 // parse the string
@@ -765,6 +700,8 @@ public abstract class EvaluationBeanMapper {
         dateTime = dateTime.plusMinutes(minutes);
         dateTime = dateTime.plusHours(hours);
         return dateTime.getHourOfDay() + ":" + dateTime.getMinuteOfHour();
+
+
     }
 
     private Date getDate(String date, String time) {
@@ -951,19 +888,19 @@ public abstract class EvaluationBeanMapper {
 
 
     public List<EvalTargetUser> getClassUsers(List<ClassStudent> classStudents) {
-        return classStudents.stream().map(classStudent -> toTargetUser(classStudent.getStudent())).collect(Collectors.toList());
+
+    return     classStudents.stream()
+                .map(classStudent -> toTargetUser(classStudent.getStudent())).collect(Collectors.toList());
     }
 
     public ElsEvalRequest removeInvalidUsers(ElsEvalRequest request) {
         request.getTargetUsers().removeIf(user -> !validateTargetUser(user));
         return request;
     }
-
     public ElsExamRequest removeInvalidUsersForExam(ElsExamRequest request) {
         request.getUsers().removeIf(user -> !validateTargetUser(user));
         return request;
     }
-
     public boolean validateTeacherExam(ImportedUser teacher) {
         boolean isValid = true;
         if (null == teacher.getNationalCode() || null == teacher.getCellNumber() || teacher.getGender() == null)
@@ -979,7 +916,6 @@ public abstract class EvaluationBeanMapper {
 
         return isValid;
     }
-
     public boolean validateTargetUser(EvalTargetUser teacher) {
 
         boolean isValid = true;
