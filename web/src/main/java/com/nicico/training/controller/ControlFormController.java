@@ -453,7 +453,11 @@ public class ControlFormController {
                 studentArrayList.add(st);
             }//end outer for
 
-            listStudentArray.add(studentArrayList);
+            listStudentArray.add(studentArrayList.stream().sorted((o2, o1) -> {
+                if (o1.getCcpAffairs() == null) return -1;
+                if (o2.getCcpAffairs() == null) return 1;
+                return o1.getCcpAffairs().compareTo(o2.getCcpAffairs());
+            }).collect(Collectors.toList()));
 
             final Map<String, String> params = new HashMap<>();
             params.put("days", sessionList.stream().map(ClassSession::getDayName).collect(Collectors.toSet()).toString());
@@ -581,7 +585,11 @@ public class ControlFormController {
                 i++;
             }//end outer for
 
-            listStudentArray.add(studentArrayList);
+            listStudentArray.add(studentArrayList.stream().sorted((o2, o1) -> {
+                if (o1.getCcpAffairs() == null) return -1;
+                if (o2.getCcpAffairs() == null) return 1;
+                return o1.getCcpAffairs().compareTo(o2.getCcpAffairs());
+            }).collect(Collectors.toList()));
 
             Set<ClassSession> sessions = tClass.getClassSessions();
             List<ClassSession> sessionList = sessions.stream().sorted(Comparator.comparing(ClassSession::getSessionDate)

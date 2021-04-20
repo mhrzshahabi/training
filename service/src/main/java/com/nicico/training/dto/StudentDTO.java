@@ -209,6 +209,7 @@ public class StudentDTO {
         private String nationalCode;
         @ApiModelProperty(required = true)
         private String personnelNo;
+        private String postTitle;
     }
 
     @Getter

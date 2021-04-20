@@ -106,4 +106,13 @@ public class ViewTrainingPostDTO implements Serializable {
         private Long id;
         private Long enabled;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("PostReport")
+    public static class Report extends Info {
+        private String mojtameCode;
+        private String mojtameTitle;
+    }
 }

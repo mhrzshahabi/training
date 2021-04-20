@@ -235,6 +235,8 @@
                     keyPressFilter: "[0-9]"
                 }
             },
+            {name: "student.postTitle"},
+            {name: "student.mobile"},
             {
                 name: "applicantCompanyName",
                 textAlign: "center"
@@ -255,7 +257,6 @@
                 filterOnKeypress: true,
                 filterOperator: "equals"
             },
-            {name: "student.mobile"},
             {name: "sendForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true},
             {
                 name: "saveResults",
@@ -1075,7 +1076,7 @@
                                             },
                                             // {
                                             //     name: "sendToEls_supervisor",
-                                            //     title: "ارسال به آموزش آنلاین",
+                                            //     title: "ارسال به آزمون آنلاین",
                                             //     type: "button",
                                             //     startRow: false,
                                             //     endRow: false,
@@ -1847,11 +1848,11 @@
                     });
                     Window_InValid_Students.show();
                 } else {
-                    createDialog("info", "در این کلاس کاربر با اطلاعات ناقص وجود ندارد");
+                    createDialog("info", "در این کلاس فراگیر با اطلاعات ناقص وجود ندارد");
                 }
             } else {
 
-                createDialog("info", "برای مشاهده کاربران با اطلاعات ناقص ابتدا کلاس مورد نظر را انتخاب کنید");
+                createDialog("info", "برای مشاهده فراگیران با اطلاعات ناقص ابتدا کلاس مورد نظر را انتخاب کنید");
                 evalWait_RE.close();
             }
 

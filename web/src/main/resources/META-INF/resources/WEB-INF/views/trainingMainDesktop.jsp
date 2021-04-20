@@ -2320,7 +2320,7 @@
                             </sec:authorize>
                             <sec:authorize access="hasAuthority('Menu_Report_ReportsNeedsAssessment_People')">
                             {
-                                title: "گزارش پست های نیازسنجی نشده براساس حوزه",
+                                title: "گزارش پست های نیازسنجی نشده براساس مجتمع",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/training-area-need-assessment"/>");
                                 }

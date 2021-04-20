@@ -685,7 +685,6 @@
                 {
                     recWithoutDuplicate1.add(records[i].skill.course.code);
                     total += records[i].skill.course.theoryDuration;
-
                 }
             }
             let index = getIndexById_NABOP(records[0].needsAssessmentPriorityId);
@@ -907,7 +906,9 @@
                     let data = [];
                     for (let i = 0; i < rows.length; i++) {
                         data[i] = {};
+
                         for (let j = 0; j < fields.length; j++) {
+
                             if (fields[j].name == 'rowNum') {
                                 data[i][fields[j].name] = (i + 1).toString();
                             }else if(fields[j].name == 'needsAssessmentPriorityId'){
@@ -917,6 +918,45 @@
                                 data[i][fields[j].name] = typeof (tmpStr) == 'undefined' ? '' : ((!isValueMaps[j]) ? tmpStr : CoursesLG_NABOP.getDisplayValue(fields[j].name, tmpStr));
                             }
                         }
+                    }
+
+                        let dataForExcel=getDataForExcel(data);
+
+                    var str =rows.length;
+
+                    if(dataForExcel["totalNecessary"]!==0 )
+                    {
+
+                        data[str] = {};
+                        data[str][fields[1].name] = ("جمع کل ساعات ضروری:").toString();
+                        data[str][fields[2].name] = (dataForExcel["totalNecessary"]).toString();
+                        data[str][fields[3].name] = ("جمع ساعات ضروری گذرانده شده:").toString();
+                        data[str][fields[4].name] = (dataForExcel["passedNecessary"]).toString();
+
+                        str++;
+                    }
+                    if(dataForExcel["totalImprovement"]!==0 )
+                    {
+
+
+                        data[str] = {};
+                        data[str][fields[1].name] = ("جمع کل ساعات بهبودی:").toString();
+                        data[str][fields[2].name] = (dataForExcel["totalImprovement"]).toString();
+                        data[str][fields[3].name] = ("جمع ساعات بهبودی  گذرانده شده:").toString();
+                        data[str][fields[4].name] = (dataForExcel["passedImprovement"]).toString();
+                        str++;
+
+                    }
+                    if(dataForExcel["totalDevelopmental"]!==0 )
+                    {
+
+
+                        data[str] = {};
+                        data[str][fields[1].name] = ("جمع کل ساعات توسعه ای:").toString();
+                        data[str][fields[2].name] = (dataForExcel["totalDevelopmental"]).toString();
+                        data[str][fields[3].name] = ("جمع ساعات توسعه ای  گذرانده شده:").toString();
+                        data[str][fields[4].name] = (dataForExcel["passedDevelopmental"]).toString();
+                        str++;
                     }
 
                     if (CoursesLG_NABOP.data.size()>1)
@@ -1231,6 +1271,65 @@
         criteriaForm_course.setValue("reportType", reportType_NABOP);
         criteriaForm_course.show();
         criteriaForm_course.submitForm();
+    }
+
+    function getDataForExcel(data) {
+
+        let totalNecessary = 0;
+        let totalDevelopmental = 0;
+        let totalImprovement = 0;
+        let passedNecessary = 0;
+        let passedDevelopmental = 0;
+        let passedImprovement = 0;
+
+        let newRecNecessary = [];
+        let newRecDevelopmental = [];
+        let newRecImprovement = [];
+
+        for (let i = 0; i < data.length; i++) {
+
+            if (data.get(i).needsAssessmentPriorityId.toString()==="عملکردی ضروری")
+            {
+                if (!newRecNecessary.contains(data[i]["skill.course.code"]))
+                {
+                    newRecNecessary.add(data[i]["skill.course.code"]);
+                    totalNecessary += data[i]["skill.course.theoryDuration"];
+                    if (data[i]["skill.course.scoresState"] === "گذرانده")
+                        passedNecessary += data[i]["skill.course.theoryDuration"];
+                }
+            }
+            if (data.get(i).needsAssessmentPriorityId.toString()==="عملکردی بهبود")
+            {
+                if (!newRecImprovement.contains(data[i]["skill.course.code"]))
+                {
+                    newRecImprovement.add(data[i]["skill.course.code"]);
+                    totalImprovement += data[i]["skill.course.theoryDuration"];
+
+                    if (data[i]["skill.course.scoresState"] === "گذرانده")
+                        passedImprovement += data[i]["skill.course.theoryDuration"];
+
+                }
+            }
+            if (data.get(i).needsAssessmentPriorityId.toString()==="عملکردی توسعه")
+            {
+                if (!newRecDevelopmental.contains(data[i]["skill.course.code"]))
+                {
+                    newRecDevelopmental.add(data[i]["skill.course.code"]);
+                    totalDevelopmental += data[i]["skill.course.theoryDuration"];
+
+                    if (data[i]["skill.course.scoresState"] === "گذرانده")
+                        passedDevelopmental += data[i]["skill.course.theoryDuration"];
+                }
+            }
+            }
+        return {
+            totalNecessary: totalNecessary,
+            totalDevelopmental: totalDevelopmental,
+            totalImprovement: totalImprovement,
+            passedNecessary: passedNecessary,
+            passedDevelopmental: passedDevelopmental,
+            passedImprovement: passedImprovement
+        };
     }
 
     //*************this function calls from personnelInformation page**************

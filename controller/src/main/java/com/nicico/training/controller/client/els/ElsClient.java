@@ -4,6 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 import request.evaluation.ElsEvalRequest;
 import request.exam.ElsExamRequest;
+import request.exam.ElsExtendedExamRequest;
 import response.BaseResponse;
 import response.evaluation.EvalListResponse;
 import response.evaluation.PdfResponse;
@@ -43,5 +44,8 @@ public interface ElsClient {
 
     @GetMapping("/report/importedExams/{startDate}/{endDate}")
     List<DoneOnlineExamDto> getDoneOnlineExams(@PathVariable("startDate") String startDate, @PathVariable("endDate") String endDate);
+
+    @RequestMapping(method = RequestMethod.POST, value = "/exam/extend")
+    BaseResponse resendExam(@RequestBody ElsExtendedExamRequest request);
 
 }
