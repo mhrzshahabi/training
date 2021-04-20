@@ -6,6 +6,7 @@ import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.controller.util.GeneratePdfReport;
 import com.nicico.training.dto.*;
 import com.nicico.training.dto.question.ElsExamRequestResponse;
+import com.nicico.training.dto.question.ElsResendExamRequestResponse;
 import com.nicico.training.dto.question.ExamQuestionsObject;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
 import com.nicico.training.iservice.IPersonnelService;
@@ -31,7 +32,9 @@ import request.evaluation.ElsEvalRequest;
 import request.evaluation.StudentEvaluationAnswerDto;
 import request.evaluation.TeacherEvaluationAnswerDto;
 import request.exam.ElsExamRequest;
+import request.exam.ElsExtendedExamRequest;
 import request.exam.ExamImportedRequest;
+import request.exam.ResendExamImportedRequest;
 import response.BaseResponse;
 import response.evaluation.EvalListResponse;
 import response.evaluation.SendEvalToElsResponse;
@@ -186,6 +189,53 @@ public class ElsRestController {
                 } else
                     return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
             } else {
+                response.setStatus(elsExamRequestResponse.getStatus());
+                response.setMessage(elsExamRequestResponse.getMessage());
+                return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+            }
+
+        } catch (TrainingException ex) {
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+            response.setMessage("بروز خطا در سیستم");
+            return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+
+        }
+    }
+
+    @PostMapping("/resendExamToEls")
+    public ResponseEntity resendExam(@RequestBody ResendExamImportedRequest object) {
+        BaseResponse response = new BaseResponse();
+        try {
+            ElsExtendedExamRequest request;
+
+            ElsResendExamRequestResponse elsExamRequestResponse = evaluationBeanMapper.toGetResendExamRequest(object);
+            if(elsExamRequestResponse.getStatus() == 200) {
+                request = elsExamRequestResponse.getElsResendExamRequest();
+                    try {
+                        request = evaluationBeanMapper.removeInvalidUsersForResendExam(request);
+                        if (request.getUsers() != null && !request.getUsers().isEmpty()) {
+                            response = client.resendExam(request);
+                        } else {
+                            response.setStatus(HttpStatus.NOT_FOUND.value());
+                            response.setMessage("هیچ فراگیری انتخاب نشده است");
+                            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        if (e.getCause()!=null && e.getCause().getMessage()!=null && e.getCause().getMessage().equals("Read timed out")) {
+                            response.setMessage("اطلاعات به سیستم آزمون آنلاین ارسال نشد");
+                            response.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
+                            return new ResponseEntity<>(response, HttpStatus.REQUEST_TIMEOUT);
+
+                        }
+                    }
+
+
+                if (response.getStatus() == HttpStatus.OK.value()) {
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                } else return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+            }else {
                 response.setStatus(elsExamRequestResponse.getStatus());
                 response.setMessage(elsExamRequestResponse.getMessage());
                 return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);

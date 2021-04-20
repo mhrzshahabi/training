@@ -20,4 +20,8 @@ public class EvaluationFinalTestFormController {
     public String questionsShowForm() {
         return "base/questionsfinalTest";
     }
+    @RequestMapping("/resend-final-exam-form")
+    public String resendFinalExamForm() {
+        return "base/resendFinalExam";
+    }
 }
