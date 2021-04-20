@@ -279,6 +279,7 @@
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         selectionUpdated: function (record) {
+             loadTab();
             if (TabSet_finalTest.getSelectedTab() === undefined || TabSet_finalTest.getSelectedTab() === null){
                 refreshSelectedTab_class(0);
             } else {
@@ -1258,7 +1259,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
 
 
 isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/getClassStudent/"+record.tclass.id, "GET",null, function (resp) {
-
+    loadTab();
 
     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
