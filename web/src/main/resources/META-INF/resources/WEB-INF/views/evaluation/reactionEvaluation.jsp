@@ -1213,7 +1213,7 @@
 
         let isValid = true;
 
-        if (nationalCode===undefined || nationalCode===null || mobileNum===undefined || mobileNum===null || gender===undefined || gender===null)
+        if (nationalCode===undefined || nationalCode===null || mobileNum===undefined || mobileNum===null)
         {
             isValid = false;
         }

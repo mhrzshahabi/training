@@ -1517,7 +1517,7 @@ let inValidStudents = [];
     function NCodeAndMobileValidation(nationalCode, mobileNum,gender) {
 
         let isValid = true;
-        if (gender===undefined || nationalCode===undefined || nationalCode===null || mobileNum===undefined || mobileNum===null) {
+        if (nationalCode===undefined || nationalCode===null || mobileNum===undefined || mobileNum===null) {
             isValid = false;
         }
         else {
@@ -1528,8 +1528,6 @@ let inValidStudents = [];
             if(mobileNum.length === 10 && !mobileNum.startsWith("9"))
                 isValid = false;
             if(mobileNum.length === 11 && !mobileNum.startsWith("09"))
-                isValid = false;
-            if(gender===null)
                 isValid = false;
         }
         return isValid;
