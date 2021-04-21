@@ -1596,6 +1596,7 @@
         editNeedsAssessmentRecord_Diff(objectId, type);
         // refreshPersonnelLG(objectId);
         updateLabelDiffNeedsAssessment(objectId);
+        Window_NeedsAssessment_Diff.show();
     }
     Window_NeedsAssessment_Diff.addProperties({
         hide(){
