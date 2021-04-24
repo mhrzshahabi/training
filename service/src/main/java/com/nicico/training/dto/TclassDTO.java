@@ -77,6 +77,7 @@ public class TclassDTO {
     private Long studentCostCurrency;
     private Boolean teacherOnlineEvalStatus;
     private Boolean studentOnlineEvalStatus;
+    private String courseCode;
 
 
     @Getter
@@ -549,6 +550,7 @@ public class TclassDTO {
         private String courseTitle;
         private Long failureReasonId;
         private String failureReason;
+        private String courseCode;
     }
 
     @Getter
