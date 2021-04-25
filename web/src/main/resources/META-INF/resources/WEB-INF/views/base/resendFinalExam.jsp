@@ -7,7 +7,7 @@
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-<%--<script>--%>
+// <script>
     // ---------------------------------Functions-----------------------------------------------
 
     function loadPage_student() {
@@ -54,8 +54,8 @@
     }
 
     function resendFinalExam_func() {
-        let record = FinalTestLG_finalTest.getSelectedRecord();
 
+        let record = FinalTestLG_finalTest.getSelectedRecord();
         if (!resendFinalExam_DynamicForm.validate()) {
             return;
         }
@@ -75,42 +75,85 @@
                 users.add(EvalTargetUser);
             }
 
-            var examData = {
-                sourceExamId: record.id,
-                duration: resendFinalExam_DynamicForm.getValue("duration"),
-                time: resendFinalExam_DynamicForm.getValue("time"),
-                startDate: resendFinalExam_DynamicForm.getValue("startDate"),
-                users: users
-            };
+            let inValidStudents = [];
+            for (let i = 0; i < users.length; i++) {
 
-            wait.show();
-            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/resendExamToEls", "POST", JSON.stringify(examData), function (resp) {
-                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                    refresh_finalTest();
+                let studentData = users[i];
+                if (!NCodeAndMobileValidationOnResend(studentData.nationalCode, studentData.cellNumber, studentData.gender)) {
 
-                    var OK = isc.Dialog.create({
-                        message: "<spring:message code="msg.operation.successful"/>",
-                        icon: "[SKIN]say.png",
-                        title: "<spring:message code='message'/>"
+                    inValidStudents.add({
+                        firstName: studentData.surname,
+                        lastName: studentData.lastName
                     });
-                    setTimeout(function () {
-                        dialog.close();
-                        OK.close();
-                    }, 2000);
-                } else {
-
-                    if (resp.httpResponseCode === 406)
-                        createDialog("info", "<spring:message code="msg.check.teacher.mobile.ncode"/>" + " " + "<spring:message code="msg.check.teacher.mobile.ncode.message"/>", "<spring:message code="error"/>");
-                    else if (resp.httpResponseCode === 404)
-                        createDialog("info", "<spring:message code="msg.check.users.mobile.ncode"/>", "<spring:message code="error"/>");
-                    else if (resp.httpResponseCode === 500)
-                        createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
-                    else
-                        createDialog("info", JSON.parse(resp.httpResponseText).message, "<spring:message code="error"/>");
-
                 }
-                wait.close();
-            }));
+            }
+
+            if (inValidStudents.length) {
+
+                let DynamicForm_InValid_Students_Resend = isc.DynamicForm.create({
+                    width: 600,
+                    height: 100,
+                    padding: 6,
+                    titleAlign: "right",
+                    fields: [
+                        {
+                            name: "text",
+                            width: "100%",
+                            colSpan: 2,
+                            value: "<spring:message code='msg.check.student.mobile.ncode'/>"+" "+"<spring:message code='msg.check.student.mobile.ncode.message'/>",
+                            showTitle: false,
+                            editorType: 'staticText'
+                        },
+                        {
+                            type: "RowSpacerItem"
+                        },
+                        {
+                            name: "invalidNames",
+                            width: "100%",
+                            colSpan: 2,
+                            title: "<spring:message code="title"/>",
+                            showTitle: false,
+                            editorType: 'textArea',
+                            canEdit: false
+                        }
+                    ]
+                });
+
+                let names = "";
+                for (var j = 0; j < inValidStudents.length; j++) {
+
+                    names = names.concat(inValidStudents[j].firstName + " " + inValidStudents[j].lastName  + "\n");
+                }
+                DynamicForm_InValid_Students_Resend.setValue("invalidNames", names);
+
+                let Window_InValid_Students_Resend = isc.Window.create({
+                    width: 600,
+                    height: 150,
+                    numCols: 2,
+                    title: "<spring:message code='invalid.students.window'/>",
+                    items: [
+                        DynamicForm_InValid_Students_Resend,
+                        isc.MyHLayoutButtons.create({
+                            members: [
+                                isc.IButtonSave.create({
+                                    title: "<spring:message code="continue"/>",
+                                    click: function () {
+
+                                        studentsToElsResendExam(record, users);
+                                        Window_InValid_Students_Resend.close();
+                                    }}),
+                                isc.IButtonCancel.create({
+                                    title: "<spring:message code="cancel"/>",
+                                    click: function () {
+                                        Window_InValid_Students_Resend.close();
+                                    }
+                                })],
+                        })]
+                });
+                Window_InValid_Students_Resend.show();
+            } else {
+                studentsToElsResendExam(record, users);
+            }
         }
 
     }
@@ -211,7 +254,6 @@
                 click(form, item) {
                     form.clearErrors();
                     resendFinalExam_func();
-                    form.clearValues();
                 }
             }
         ]
@@ -536,4 +578,67 @@
         ]
     });
 
-<%--</script>--%>
+    function NCodeAndMobileValidationOnResend(nationalCode, mobileNum, gender) {
+
+        let isValid = true;
+        if (nationalCode===undefined || nationalCode===null || mobileNum===undefined || mobileNum===null) {
+            isValid = false;
+        } else {
+            if (nationalCode.length !== 10 || !(/^-?\d+$/.test(nationalCode)))
+                isValid = false;
+
+            if((mobileNum.length !== 10 && mobileNum.length !== 11) || !(/^-?\d+$/.test(mobileNum)))
+                isValid = false;
+
+            if(mobileNum.length === 10 && !mobileNum.startsWith("9"))
+                isValid = false;
+
+            if(mobileNum.length === 11 && !mobileNum.startsWith("09"))
+                isValid = false;
+        }
+        return isValid;
+    }
+
+    function studentsToElsResendExam(record, users) {
+
+        var examData = {
+            sourceExamId: record.id,
+            duration: resendFinalExam_DynamicForm.getValue("duration"),
+            time: resendFinalExam_DynamicForm.getValue("time"),
+            startDate: resendFinalExam_DynamicForm.getValue("startDate"),
+            users: users
+        };
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/resendExamToEls", "POST", JSON.stringify(examData), function (resp) {
+
+            resendFinalExam_DynamicForm.clearValues();
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                refresh_finalTest();
+
+                var OK = isc.Dialog.create({
+                    message: "<spring:message code="msg.operation.successful"/>",
+                    icon: "[SKIN]say.png",
+                    title: "<spring:message code='message'/>"
+                });
+                setTimeout(function () {
+                    dialog.close();
+                    OK.close();
+                }, 2000);
+            } else {
+
+                if (resp.httpResponseCode === 406)
+                    createDialog("info", "<spring:message code="msg.check.teacher.mobile.ncode"/>" + " " + "<spring:message code="msg.check.teacher.mobile.ncode.message"/>", "<spring:message code="error"/>");
+                else if (resp.httpResponseCode === 404)
+                    createDialog("info", "<spring:message code="msg.check.users.mobile.ncode"/>", "<spring:message code="error"/>");
+                else if (resp.httpResponseCode === 500)
+                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                else
+                    createDialog("info", JSON.parse(resp.httpResponseText).message, "<spring:message code="error"/>");
+
+            }
+            wait.close();
+        }));
+    }
+
+// </script>

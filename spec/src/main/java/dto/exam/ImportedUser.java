@@ -13,5 +13,5 @@ public class ImportedUser {
     private String lastName;
     private String cellNumber;
     private String nationalCode;
-//    private String gender;
+    private String gender;
 }

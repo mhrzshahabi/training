@@ -52,7 +52,7 @@ public abstract class EvaluationBeanMapper {
     @Mapping(source = "firstName", target = "surname")
     @Mapping(source = "lastName", target = "lastName")
     @Mapping(source = "nationalCode", target = "nationalCode")
-//    @Mapping(source = "gender", target = "gender")
+    @Mapping(source = "gender", target = "gender")
     @Mapping(source = "mobile", target = "cellNumber")
     public abstract EvalTargetUser toTargetUser(Student student);
 
@@ -101,7 +101,7 @@ public abstract class EvaluationBeanMapper {
     @Mapping(source = "firstNameFa", target = "surname")
     @Mapping(source = "lastNameFa", target = "lastName")
     @Mapping(source = "nationalCode", target = "nationalCode")
-//    @Mapping(source = "gender", target = "gender")
+    @Mapping(source = "gender", target = "gender")
     @Mapping(source = "contactInfo.mobile", target = "cellNumber")
     public abstract EvalTargetUser toTeacher(PersonalInfo teacher);
 
@@ -125,9 +125,7 @@ public abstract class EvaluationBeanMapper {
         examQuestionsObject = getQuestions(object, timeQues);
         List<ImportedQuestionProtocol> questionProtocols = examQuestionsObject.getProtocols();
 
-        ///// remove teacher gender
         ImportedUser teacher = getTeacherData(teacherInfo);
-
 
         request.setUsers(classStudents.stream()
                 .map(classStudent -> toTargetUser(classStudent.getStudent())).collect(Collectors.toList()));
@@ -172,7 +170,6 @@ public abstract class EvaluationBeanMapper {
         examQuestionsObject.getProtocols().stream().forEach(question -> question.setTime(null));
         List<ImportedQuestionProtocol> questionProtocols = examQuestionsObject.getProtocols();
 
-        ///// remove teacher gender
         ImportedUser teacher = getTeacherData(teacherInfo);
 
         request.setUsers(classStudents.stream()
@@ -221,19 +218,17 @@ public abstract class EvaluationBeanMapper {
         elsResendExamRequestResponse.setStatus(200);
         return elsResendExamRequestResponse;
     }
-    private ImportedUser getTeacherData(PersonalInfo teacherInfo) {
 
-        ///// remove teacher gender
+    private ImportedUser getTeacherData(PersonalInfo teacherInfo) {
         ImportedUser teacher = new ImportedUser();
-//        if (null !=teacherInfo.getGender() && null != teacherInfo.getContactInfo() && null != teacherInfo.getContactInfo().getMobile()) {
-        if (null != teacherInfo.getContactInfo() && null != teacherInfo.getContactInfo().getMobile()) {
+        if (/*null !=teacherInfo.getGender() && */ null != teacherInfo.getContactInfo() && null != teacherInfo.getContactInfo().getMobile()) {
 
             teacher.setCellNumber(teacherInfo.getContactInfo().getMobile());
             teacher.setNationalCode(teacherInfo.getNationalCode());
-//            teacher.setGender(teacherInfo.getGender().getTitleFa());
+            teacher.setGender(teacher.getGender() != null ? teacherInfo.getGender().getTitleFa() : null);
             teacher.setLastName(teacherInfo.getLastNameFa());
             teacher.setSurname(teacherInfo.getFirstNameFa());
-     }
+        }
         return teacher;
     }
 
@@ -997,6 +992,7 @@ public abstract class EvaluationBeanMapper {
     }
 
     public boolean validateTeacherExam(ImportedUser teacher) {
+
         boolean isValid = true;
         if (null == teacher.getNationalCode() || null == teacher.getCellNumber())
             isValid = false;
@@ -1015,8 +1011,6 @@ public abstract class EvaluationBeanMapper {
     public boolean validateTargetUser(EvalTargetUser teacher) {
 
         boolean isValid = true;
-
-
         if (null == teacher.getNationalCode() || null == teacher.getCellNumber())
             isValid = false;
         else {
