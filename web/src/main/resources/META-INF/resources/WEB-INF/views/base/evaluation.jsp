@@ -44,8 +44,10 @@
             implicitCriteria: {
                 _constructor: "AdvancedCriteria",
                 operator: "and",
-                criteria: [{fieldName: "tclassStudentsCount", operator: "notEqual", value: 0},
-                    {fieldName: "evaluation", operator: "notNull"}]
+                criteria: [
+                    {fieldName: "tclassStudentsCount", operator: "notEqual", value: 0},
+                    {fieldName: "evaluation", operator: "notNull"},
+                    {fieldName: "tclassStatus", operator: "notEqual", value: "1"}]
             },
         });
 
@@ -244,7 +246,7 @@
                         }
                     },
                     valueMap: {
-                        "1": "برنامه ریزی",
+                        // "1": "برنامه ریزی",
                         "2": "در حال اجرا",
                         "3": "پایان یافته",
                         "4": "لغو شده"
