@@ -46,7 +46,7 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
             "     when co.e_run_type = 4 then 'سمينار اعزام' when co.e_run_type = 5 then 'حين كار' when co.e_run_type = 6 then 'خارجی'  " +
             "      when co.e_run_type = 7 then 'سمینار خارجی' when co.e_run_type = 8 then 'مجازي' when co.e_run_type = 9 then 'بازآموزي'  " +
             "       when co.e_run_type = 10 then 'جعبه ابزار' end as ERun_Type, co.id as course_id, co.c_title_fa as course_title,  " +
-            "       cs.failure_reason_id,pa2.c_title AS failure_reason  " +
+            "       cs.failure_reason_id,pa2.c_title AS failure_reason , co.c_code as course_code " +
             " FROM  " +
             "    tbl_class c  " +
             "    INNER JOIN tbl_class_student cs ON c.id = cs.class_id  " +
