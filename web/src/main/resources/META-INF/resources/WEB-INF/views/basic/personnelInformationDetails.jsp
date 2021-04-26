@@ -301,6 +301,7 @@
                     {name: "id", primaryKey: true},
                     {name: "courseId"},
                     {name: "courseTitle"},
+                    {name: "courseCode"},
                     {name: "code"},
                     {name: "titleClass"},
                     {name: "hduration"},
@@ -347,6 +348,13 @@
                         summaryFunction: function(records){
                             return this.totalPassed(records)
                         }.bind(this)
+                    },
+                    {
+                        name: "courseCode",
+                        title: "<spring:message code="course.code"/>",
+                        align: "center",
+                        width: 100,
+                        filterOperator: "iContains"
                     },
                     {
                         name: "titleClass",
