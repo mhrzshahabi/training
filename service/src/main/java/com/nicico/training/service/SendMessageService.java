@@ -18,6 +18,7 @@ import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import com.nicico.training.service.sms.SmsFeignClient;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.env.Environment;
@@ -44,6 +45,7 @@ import static com.nicico.training.service.ClassSessionService.getPersianDate;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class SendMessageService implements ISendMessageService {
 
     private final MessageContactService messageContactService;
@@ -167,20 +169,23 @@ public class SendMessageService implements ISendMessageService {
     }
 
 
-    @Scheduled(cron = "0 0 15,10 * * *", zone = "Asia/Tehran")
+    @Scheduled(cron = "0 30 17 1/1 * ?")
     @Transactional
     @Override
     public void sendSmsForUsers() throws IOException {
-        System.out.println("send sms for scheduled");
-        System.out.println("zaza");
 
-        int dayBeforeStartCourse = Integer.parseInt(Objects.requireNonNull(environment.getProperty("nicico.training.dayBeforeStartCourse")));
+        log.info("send sms for scheduled");
+
+        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("ClassConfig");
+
+
+        int dayBeforeStartCourse = Integer.parseInt(Objects.requireNonNull(parameters.getResponse().getData().stream().filter(p -> p.getCode().equals("dayBeforeStartCourse")).findFirst().orElse(null)).getValue())+1;
         List<Object> list = classStudentDAO.findAllUserMobiles(DateUtil.todayDate(), DateUtil.convertMiToKh(LocalDate.now().plusDays(dayBeforeStartCourse).toString()));
         List<ClassStudentUser> classStudentUsers = new ArrayList<>();
         JSONObject json = new JSONObject();
         String data = "%prefix-full_name% %full-name%شما در دوره «%course-name%» ثبت نام شده اید. لطفا برای مشاهده جزئیات این دوره به آدرس %personnel-address% مراجعه فرمایید.%institute%واحد آموزش";
         json.put("message", data);
-        json.put("link", "http://mobiles.nicico.com");
+        json.put("link", "https://mobiles.nicico.com");
         json.put("maxRepeat", 0);
         json.put("timeBMessages", 1);
         json.put("type", Collections.singletonList("sms"));
@@ -196,10 +201,10 @@ public class SendMessageService implements ISendMessageService {
             }
         }
         for (ClassStudentUser classStudentUser : classStudentUsers) {
-            LocalDate secondDate = LocalDate.parse(DateUtil.convertMiToKh(LocalDate.now().plusDays(dayBeforeStartCourse).toString()), dtf);
+            LocalDate secondDate = LocalDate.parse(DateUtil.convertMiToKh(LocalDate.now().plusDays(-1).toString()), dtf);
             LocalDate courseStartDate = LocalDate.parse(classStudentUser.getStartDate(), dtf);
 
-            long daysBetween = ChronoUnit.DAYS.between(courseStartDate, secondDate);
+            long daysBetween = ChronoUnit.DAYS.between(secondDate,courseStartDate );
             if (daysBetween == dayBeforeStartCourse && null!=classStudentUser.getMobile()) {
                 json.put("classID", classStudentUser.getClassID());
                 json.put("classStudentRegistered", Collections.singletonList(classStudentUser.getClassStudentRegistered()));
