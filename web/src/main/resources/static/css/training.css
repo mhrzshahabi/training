@@ -469,6 +469,15 @@ span {
     padding: 10px 10px;
     margin: 5px 0px !important;
 }
+.answers-form .correct-exam-form-itemDisabledRTL textarea{
+    color: #324458;
+    font-weight: bold;
+    background: #d5fab5 !important;
+    border: solid 2px #ececec !important;
+    border-radius: 5px;
+    padding: 10px 10px;
+    margin: 5px 0px !important;
+}
 .answers-form  .radio-exam-form-itemDisabledRTL .labelAnchorDisabledRTL {
     color: #848484;
     font-weight: bold;

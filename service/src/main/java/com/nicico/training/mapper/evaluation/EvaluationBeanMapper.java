@@ -248,13 +248,13 @@ public abstract class EvaluationBeanMapper {
             question.setId(questionData.getQuestionBank().getId());
             question.setTitle(questionData.getQuestionBank().getQuestion());
             question.setType(convertQuestionType(questionData.getQuestionBank().getQuestionType().getTitle()));
+            QuestionBank questionBank = questionBankService.getById(questionData.getQuestionBank().getId());
 
             if (question.getType().equals(MULTI_CHOICES)) {
 
 
                 List<ImportedQuestionOption> options = new ArrayList<>();
 
-                QuestionBank questionBank = questionBankService.getById(questionData.getQuestionBank().getId());
 
                 ImportedQuestionOption option1 = new ImportedQuestionOption();
                 ImportedQuestionOption option2 = new ImportedQuestionOption();
@@ -289,6 +289,8 @@ public abstract class EvaluationBeanMapper {
                         examQuestionsObject.setMessage("در آزمون سوال تکراری وجود دارد");
                     }
                 }
+                questionProtocol.setCorrectAnswerTitle(questionBank.getDescriptiveAnswer());
+
             }
             if (object.getQuestionData()!=null)
             {

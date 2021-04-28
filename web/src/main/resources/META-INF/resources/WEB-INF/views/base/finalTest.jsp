@@ -783,7 +783,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
 
     function ListGrid_show_results(answers) {
 
-
+debugger
         let dynamicForm_Answers_List = isc.DynamicForm.create({
                 padding: 6,
                 numCols: 1,
@@ -792,18 +792,23 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 height:768,
                 fields: []
                 });
-// debugger;
         for(var i=0 ; i<answers.length; i++) {
                 let text_FormItem = { title:"Pasted value",cellStyle: 'text-exam-form-item',disabled:true, titleOrientation: "top", name:"textArea", width:"100%",height:100, editorType: "TextAreaItem", value: ''};
+                let correct_FormItem = { title:"Pasted value",cellStyle: 'correct-exam-form-item',disabled:true, titleOrientation: "top", name:"textArea", width:"100%",height:100, editorType: "TextAreaItem", value: ''};
                 let radio_FormItem =  { name: "startMode", cellStyle: 'radio-exam-form-item', disabled:true,titleOrientation: "top", title: "Initially show ColorPicker as",
                         width: "100%",
                         type: "radioGroup",
                         valueMap: {}
                     };
-
                 text_FormItem.title = (i+1)+"-"+answers[i].question;
+                correct_FormItem.title = "بارم این سوال : "+answers[i].mark + "  و جواب صحیح طراح سوال:  ";
                 text_FormItem.value = answers[i].answer;
                 text_FormItem.name = answers[i].answer;
+                if (answers[i].correctAnswer!==null)
+                correct_FormItem.value = answers[i].correctAnswer;
+                else
+                correct_FormItem.value = "جوابی برای این سوال توسط استاد ثبت نشده";
+
                 if(answers[i].type == "چند گزینه ای") {
                     radio_FormItem.title = answers[i].question;
                     radio_FormItem.name = i+"";
@@ -821,7 +826,11 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                     }
                 } else {
                     dynamicForm_Answers_List.addField(text_FormItem)
+                    // dynamicForm_Answers_List.addField(correct_FormItem)
+
                 }
+
+
             }
         let Window_result_Answer_FinalTest = isc.Window.create({
             width: 1024,
@@ -1196,12 +1205,12 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 title: "<spring:message code="questions"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation-final-test/questions/show-form"})
             },
-            <%--{--%>
-            <%--    ID: "resendFinalTest",--%>
-            <%--    name: "resendFinalTest",--%>
-            <%--    title: "<spring:message code="resend.final.test"/>",--%>
-            <%--    pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation-final-test/resend-final-exam-form"})--%>
-            <%--},--%>
+            {
+                ID: "resendFinalTest",
+                name: "resendFinalTest",
+                title: "<spring:message code="resend.final.test"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation-final-test/resend-final-exam-form"})
+            },
 
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {

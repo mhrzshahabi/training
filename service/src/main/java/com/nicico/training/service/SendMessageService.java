@@ -175,6 +175,7 @@ public class SendMessageService implements ISendMessageService {
     public void sendSmsForUsers() throws IOException {
 
         log.info("send sms for scheduled");
+        log.info("zaza");
 
         TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("ClassConfig");
 
