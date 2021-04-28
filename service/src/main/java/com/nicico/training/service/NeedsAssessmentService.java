@@ -88,6 +88,17 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
         return rs;
     }
 
+
+    @Transactional(readOnly = true)
+    public SearchDTO.SearchRs<NeedsAssessmentDTO.Info> verifiedNeedsAssessmentList(Long objectId, String objectType) {
+        List<NeedsAssessmentDTO.Info> naList = modelMapper.map(needsAssessmentReportsService.getNeedsAssessmentList(objectId, objectType), new TypeToken<List<NeedsAssessmentDTO.Info>>() {
+            }.getType());
+        SearchDTO.SearchRs<NeedsAssessmentDTO.Info> rs = new SearchDTO.SearchRs<>();
+        rs.setTotalCount((long) naList.size());
+        rs.setList(naList);
+        return rs;
+    }
+
     @Transactional(readOnly = true)
     public SearchDTO.SearchRs<NeedsAssessmentDTO.Info> workflowSearch(Long objectId, String objectType) {
         List<NeedsAssessmentDTO.Info> naList = modelMapper.map(needsAssessmentReportsService.getUnverifiedNeedsAssessmentList(objectId, objectType), new TypeToken<List<NeedsAssessmentDTO.Info>>() {

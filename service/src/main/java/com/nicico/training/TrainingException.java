@@ -118,7 +118,10 @@ public class TrainingException extends NICICOException {
         DepartmentNotFound(404),
         PostGradeNotFound(404),
         TestQuestionBadRequest(400),
-        TestQuestionNotFound(404);
+        TestQuestionNotFound(404),
+        SkillSubCatIsNotEqualWithNASubCat(408),
+        SkillCatIsNotEqualWithNACat(411),
+        NeedsAssessmentIsNotEditable(412);
 
         private final Integer httpStatusCode;
 
