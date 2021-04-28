@@ -4,9 +4,14 @@
 
 //<script>
 
-    var areas = [];
+    var complex = [];
+    var assistance = [];
+    var affairs = [];
+    var section = [];
+    var unit = [];
 
     //--------------------------------------------------------REST DataSources-----------------------------------------------------//
+
     var RestDataSource_view_training_Post = isc.TrDS.create({
         fields: [
             { name: "id", title: "id", primaryKey: true, hidden: true },
@@ -44,96 +49,69 @@
         }
     });
 
-    DynamicForm_Select_Hoze = isc.DynamicForm.create({
-        numCols: 1,
-        fields: [
-            {
-                name: "selectArea",
-                width: 100,
-                colSpan: 1,
-                wrapTitle: false,
-                title: "<spring:message code='reports.need.assessment.select.complex'/>",
-                type: "button",
-                startRow: false,
-                endRow: false,
-                click: function() {
-                    getAreaList();
-                    Window_Area.show();
+    IButton_JspTrainingAreaNeedAsssesment = isc.IButtonSave.create({
+        top: 260,
+        title: "چاپ گزارش",
+        width: 300,
+        click: function () {
+
+            if (organSegmentFilter.hasErrors())
+                return;
+
+            let reportCriteria = organSegmentFilter.getCriteria();
+            complex = [];
+            assistance = [];
+            affairs = [];
+            section = [];
+            unit = [];
+
+            for (let i = 0; i < reportCriteria.criteria.size(); i++) {
+
+                if (reportCriteria.criteria[i].fieldName === "complexTitle") {
+                    reportCriteria.criteria[i].fieldName = "mojtameTitle";
+                    reportCriteria.criteria[i].operator = "inSet";
+                    complex.add(reportCriteria.criteria[i].value);
+                } else if (reportCriteria.criteria[i].fieldName === "assistant") {
+                    reportCriteria.criteria[i].fieldName = "assistance";
+                    reportCriteria.criteria[i].operator = "inSet";
+                    assistance.add(reportCriteria.criteria[i].value);
+                } else if (reportCriteria.criteria[i].fieldName === "affairs") {
+                    reportCriteria.criteria[i].fieldName = "affairs";
+                    reportCriteria.criteria[i].operator = "inSet";
+                    affairs.add(reportCriteria.criteria[i].value);
+                } else if (reportCriteria.criteria[i].fieldName === "section") {
+                    reportCriteria.criteria[i].fieldName = "section";
+                    reportCriteria.criteria[i].operator = "inSet";
+                    section.add(reportCriteria.criteria[i].value);
+                } else if (reportCriteria.criteria[i].fieldName === "unit") {
+                    reportCriteria.criteria[i].fieldName = "unit";
+                    reportCriteria.criteria[i].operator = "inSet";
+                    unit.add(reportCriteria.criteria[i].value);
                 }
             }
-        ]
+
+            reportCriteria.criteria.add({
+                fieldName: "competenceCount",
+                operator: "equals",
+                value: 0
+                });
+
+            ListGrid_Training_Post.implicitCriteria = reportCriteria;
+            ListGrid_Training_Post.invalidateCache();
+            ListGrid_Training_Post.fetchData();
+        }
     });
 
-    ListGrid_Area = isc.ListGrid.create({
-        width: "100%",
-        height: 470,
-        showRowNumbers: true,
-        canEdit: true,
-        modalEditing: true,
-        editEvent: "click",
-        autoFetchData: false,
-        alternateRecordStyles: true,
-        fields: [
-            {name: "id", primaryKey: true, hidden: true},
-            {name: "code", hidden: true},
-            {
-                name: "selected",
-                title: " ",
-                type: "boolean"
-            },
-            {
-                canEdit: false,
-                name: "title",
-                title: "<spring:message code='title'/>",
-            }
-        ]
-    });
-
-    VLayout_area = isc.TrVLayout.create({
+    var HLayOut_Confirm_JspTrainingAreaNeedAsssesment = isc.TrHLayoutButtons.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        width: "70%",
+        height: "10%",
+        alignLayout: "center",
+        padding: 10,
         members: [
-            ListGrid_Area,
-            isc.IButtonSave.create({
-                height: 30,
-                title: "اجرای گزارش",
-                align: "center",
-                icon: "[SKIN]/actions/save.png",
-                click: function () {
-                    let records = ListGrid_Area.getData().filter(d => d.selected);
-                    if (records === null || records.length < 1) {
-                        isc.Dialog.create({
-                            message: "رکوردی انتخاب نشده است",
-                            icon: "[SKIN]ask.png",
-                            title: "پیغام",
-                            buttons: [isc.IButtonSave.create({title: "تائید"})],
-                            buttonClick: function (button, index) {
-                                this.close();
-                            }
-                        });
-                    } else {
-                        fetchListGridData(records.map(a => a.code));
-                        Window_Area.close();
-                    }
-                }
-            })
-        ]
-    });
-
-    Window_Area = isc.Window.create({
-        title: "<spring:message code='complex'/>",
-        width: 400,
-        height: 500,
-        autoSize: true,
-        autoCenter: true,
-        isModal: true,
-        showModalMask: true,
-        align: "center",
-        autoDraw: false,
-        dismissOnEscape: true,
-        closeClick: function () {
-            this.Super("closeClick", arguments)
-        },
-        items: [
-            VLayout_area
+            IButton_JspTrainingAreaNeedAsssesment
         ]
     });
 
@@ -195,68 +173,25 @@
             ]
     });
 
-    VLayout_THNA = isc.TrVLayout.create({
+    var organSegmentFilter = init_OrganSegmentFilterDF(true, true , null, "complexTitle","assistant","affairs", "section", "unit");
+
+    VLayout_Body_Training_Area = isc.TrVLayout.create({
         members: [
-            DynamicForm_Select_Hoze,
+            organSegmentFilter,
+            HLayOut_Confirm_JspTrainingAreaNeedAsssesment,
             ListGrid_Training_Post
         ]
     });
 
-    VLayout_THNA = isc.TrVLayout.create({
+    VLayout_Report = isc.TrVLayout.create({
         border: "2px solid blue",
         members: [
             ToolStrip_Actions_THNA,
-            VLayout_THNA
+            VLayout_Body_Training_Area
        ]
     });
 
     //-----------------------------------------------------------FUNCTIONS---------------------------------------------------------//
-
-    function fetchListGridData(records) {
-
-    let reportCriteria = {
-            _constructor: "AdvancedCriteria",
-            operator: "and",
-            criteria: [
-                {
-                    fieldName: "competenceCount",
-                    operator: "equals",
-                    value: 0
-                },
-                {
-                    fieldName: "mojtameCode",
-                    operator: "inSet",
-                    value: records
-                }
-            ]
-        };
-
-        ListGrid_Training_Post.implicitCriteria = reportCriteria;
-        ListGrid_Training_Post.invalidateCache();
-        ListGrid_Training_Post.fetchData();
-    }
-
-    function getAreaList() {
-        if (areas.length == 0)
-            isc.RPCManager.sendRequest(TrDSRequest(departmentUrl + "/organ-segment-iscList/mojtame", "GET", null, function (resp) {
-                if (generalGetResp(resp)) {
-                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-
-                        let result = JSON.parse(resp.httpResponseText);
-                        result.response.data.forEach(a => {
-                            a.selected = false;
-                            areas.push(a);
-                        })
-                        ListGrid_Area.setData(areas);
-                    } else {
-                        wait.close();
-                        createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
-                    }
-                } else {
-                    wait.close();
-                }
-            }));
-    }
 
     function makeExcelOutput() {
 
@@ -276,12 +211,21 @@
                         [
                             {name: "fields", type: "hidden"},
                             {name: "headers", type: "hidden"},
-                            {name: "areas", type: "hidden"}
+                            {name: "complex", type: "hidden"},
+                            {name: "assistance", type: "hidden"},
+                            {name: "affairs", type: "hidden"},
+                            {name: "section", type: "hidden"},
+                            {name: "unit", type: "hidden"}
                         ]
                 });
                 downloadForm.setValue("fields", fieldNames);
                 downloadForm.setValue("headers", headerNames);
-                downloadForm.setValue("areas", areas.filter(a=>a.selected).map(a => a.code));
+
+                downloadForm.setValue("complex", complex);
+                downloadForm.setValue("assistance", assistance);
+                downloadForm.setValue("affairs", affairs);
+                downloadForm.setValue("section", section);
+                downloadForm.setValue("unit", unit);
 
                 downloadForm.show();
                 downloadForm.submitForm();
