@@ -200,6 +200,10 @@ public class MainFormController {
     public String showStatisticsUnitReport() {
         return "report/statisticsUnitReport";
     }
+    @RequestMapping("/manHourStatisticsPerDepartmentReport")
+    public String showManHourStatisticsPerDepartmentReport() {
+        return "report/manHourStatisticsPerDepartmentReport";
+    }
 
     @RequestMapping("class-contract")
     public String showClassContractForm() {

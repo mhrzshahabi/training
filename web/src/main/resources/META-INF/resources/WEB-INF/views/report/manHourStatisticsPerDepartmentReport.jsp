@@ -1,0 +1,378 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+//<script>
+
+
+    //----------------------------------------------------Rest DataSource-----------------------------------------------
+
+    CompanyDS_PresenceReport = isc.TrDS.create({
+        fields: [
+            {
+                name: "value",
+                title: "<spring:message code="company"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true,
+                primaryKey: true
+            },
+        ],
+        cacheAllData: true,
+        fetchDataURL: personnelUrl + "/all-field-values?fieldName=companyName"
+    });
+
+    ComplexDS_PresenceReport = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=complexTitle"
+    });
+
+    AssistantDS_PresenceReport = isc.TrDS.create({
+        fields: [
+            {
+                name: "value",
+                title: "<spring:message code="assistance"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+        ],
+        cacheAllData: true,
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAssistant"
+    });
+
+    AffairsDS_PresenceReport = isc.TrDS.create({
+        fields: [
+            {name: "value", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        cacheAllData: true,
+        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAffairs"
+    });
+
+
+    //---------------------------------------------------- variables -----------------------------------------------
+    var organizationFilter = init_OrganSegmentFilterDF(true, false, null, "complexTitle", "ccpAssistant", "ccpAffairs", null, null);
+
+    var startDate1Check_JspStaticalUnitReport = true;
+    var startDate2Check_JspStaticalUnitReport = true;
+    var startDateCheck_Order_JspStaticalUnitReport = true;
+
+    //----------------------------------------------------Criteria Form------------------------------------------------
+
+    var DynamicForm_CriteriaForm_ManHourReport = isc.DynamicForm.create({
+        align: "right",
+        titleWidth: 0,
+        titleAlign: "center",
+        showInlineErrors: true,
+        showErrorText: false,
+        numCols: 4,
+        colWidths: ["5%", "25%", "5%", "25%", "5%", "25%"],
+        fields: [
+            {
+                name: "classStatus",
+                title: "<spring:message code="class.status"/>",
+                type: "SelectItem",
+                operator: "inSet",
+                required: true,
+                multiple: true,
+                valueMap: {
+                    "1": "برنامه ريزی",
+                    "2": "در حال اجرا",
+                    "3": "پایان یافته",
+                },
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                defaultValue: ["1", "2", "3"]
+            },
+            {
+                name: "fromDate",
+                ID: "fromDate_ManHourStatisticReport",
+                title: "از تاریخ: ",
+                hint: oneMonthBeforeToday,
+                defaultValue: oneMonthBeforeToday,
+                keyPressFilter: "[0-9/]",
+                length: 10,
+                showHintInField: true,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('fromDate_ManHourStatisticReport', this, 'ymd', '/', 'right');
+                    }
+                }],
+                editorExit: function (form, item, value) {
+                    if (value == undefined || value == null) {
+                        form.clearFieldErrors("toDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                        form.clearFieldErrors("fromDate", true);
+                        startDateCheck_Order_JspStaticalUnitReport = true;
+                        startDate1Check_JspStaticalUnitReport = true;
+                        return;
+                    }
+
+                    var dateCheck;
+                    var endDate = form.getValue("toDate");
+                    dateCheck = checkDate(value);
+                    if (dateCheck === false) {
+                        startDate1Check_JspStaticalUnitReport = false;
+                        startDateCheck_Order_JspStaticalUnitReport = true;
+                        form.clearFieldErrors("fromDate", true);
+                        form.addFieldErrors("fromDate", "<spring:message code='msg.correct.date'/>", true);
+                    } else if (endDate < value) {
+                        startDateCheck_Order_JspStaticalUnitReport = false;
+                        startDate1Check_JspStaticalUnitReport = true;
+                        form.clearFieldErrors("fromDate", true);
+                        form.addFieldErrors("fromDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                    } else {
+                        startDate1Check_JspStaticalUnitReport = true;
+                        startDateCheck_Order_JspStaticalUnitReport = true;
+                        form.clearFieldErrors("fromDate", true);
+                    }
+                }
+            },
+            {
+                name: "toDate",
+                ID: "toDate_ManHourStatisticReport",
+                title: "تا",
+                hint: todayDate,
+                defaultValue: todayDate,
+                keyPressFilter: "[0-9/]",
+                showHintInField: true,
+                length: 10,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function (form) {
+                        closeCalendarWindow();
+                        displayDatePicker('toDate_ManHourStatisticReport', this, 'ymd', '/', 'right');
+                    }
+                }],
+                editorExit: function (form, item, value) {
+                    if (value == undefined || value == null) {
+                        form.clearFieldErrors("fromDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                        form.clearFieldErrors("toDate", true);
+                        startDateCheck_Order_JspStaticalUnitReport = true;
+                        startDate2Check_JspStaticalUnitReport = true;
+                        return;
+                    }
+
+                    var dateCheck;
+                    dateCheck = checkDate(value);
+                    var startDate = form.getValue("fromDate");
+                    if (dateCheck === false) {
+                        startDate2Check_JspStaticalUnitReport = false;
+                        startDateCheck_Order_JspStaticalUnitReport = true;
+                        form.clearFieldErrors("toDate", true);
+                        form.addFieldErrors("toDate", "<spring:message code='msg.correct.date'/>", true);
+                    } else if (startDate != undefined && value < startDate) {
+                        form.clearFieldErrors("toDate", true);
+                        form.addFieldErrors("toDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                        startDate2Check_JspStaticalUnitReport = true;
+                        startDateCheck_Order_JspStaticalUnitReport = false;
+                    } else {
+                        form.clearFieldErrors("toDate", true);
+                        startDate2Check_JspStaticalUnitReport = true;
+                        startDateCheck_Order_JspStaticalUnitReport = true;
+                    }
+                }
+            },
+
+        ]
+    });
+
+
+    IButton_ManHourReport = isc.IButtonSave.create({
+        top: 260,
+        title: "چاپ گزارش",
+        width: 300,
+        click: function () {
+
+            if (DynamicForm_CriteriaForm_ManHourReport.getValuesAsAdvancedCriteria().criteria.size() <= 1 ||
+                (organizationFilter.getCriteria(DynamicForm_CriteriaForm_ManHourReport.getValuesAsAdvancedCriteria())).criteria.length <= 1) {
+                createDialog("info", "فیلتری انتخاب نشده است.");
+                return;
+            }
+
+            DynamicForm_CriteriaForm_ManHourReport.validate();
+            if (DynamicForm_CriteriaForm_ManHourReport.hasErrors() || organizationFilter.hasErrors()) {
+                return;
+            } else {
+                data_values = organizationFilter.getCriteria(DynamicForm_CriteriaForm_ManHourReport.getValuesAsAdvancedCriteria());
+                for (var i = 0; i < data_values.criteria.size(); i++) {
+                     if (data_values.criteria[i].fieldName == "complexTitle") {
+                        data_values.criteria[i].fieldName = "complexTitle";
+                        data_values.criteria[i].operator = "inSet";
+                    } else if (data_values.criteria[i].fieldName == "applicantCompanyName") {
+                        data_values.criteria[i].fieldName = "applicantCompanyName";
+                        data_values.criteria[i].operator = "iContains";
+                    } else if (data_values.criteria[i].fieldName == "ccpAssistant") {
+                        data_values.criteria[i].fieldName = "ccpAssistant";
+                        data_values.criteria[i].operator = "inSet";
+                    } else if (data_values.criteria[i].fieldName == "ccpAffairs") {
+                        data_values.criteria[i].fieldName = "ccpAffairs";
+                        data_values.criteria[i].operator = "inSet";
+                    } else if (data_values.criteria[i].fieldName == "fromDate") {
+                        //todo change the parameter for class sections
+                        data_values.criteria[i].fieldName = "startDate";
+                        data_values.criteria[i].operator = "greaterOrEqual";
+                    } else if (data_values.criteria[i].fieldName == "toDate") {
+                        //todo change the parameter for class sections
+                        data_values.criteria[i].fieldName = "endDate";
+                        data_values.criteria[i].operator = "lessOrEqual";
+                    } else if (data_values.criteria[i].fieldName == "year") {
+                        data_values.criteria[i].fieldName = "year";
+                        data_values.criteria[i].operator = "iContains";
+                    } else if (data_values.criteria[i].fieldName == "termId") {
+                        data_values.criteria[i].fieldName = "termId";
+                        data_values.criteria[i].operator = "equals";
+                    }
+                }
+
+                ListGrid_ManHourReport.invalidateCache();
+                ListGrid_ManHourReport.fetchData(data_values);
+                Window_ManHourReport.show();
+            }
+        }
+    });
+
+    //----------------------------------------------------Rest DataSource-----------------------------------------------
+    RestDataSource_ManHourReport = isc.TrDS.create({
+        fields: [
+            {
+                name: "complexTitle",
+                title: "<spring:message code="complex"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "applicantCompanyName",
+                title: "<spring:message code='company.applicant'/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "ccpAssistant",
+                title: "<spring:message code='assistance'/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "ccpAffairs",
+                title: "<spring:message code="affairs"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+
+            {name: "presenceManHour", title: "نفرساعت حضور", filterOperator: "iContains", autoFitWidth: true},
+            {name: "absenceManHour", title: "نفرساعت حذف و غیبت", filterOperator: "equals", autoFitWidth: true},
+            {name: "presentStudentNumbers", title: "تعداد فراگیران حاضر", filterOperator: "equals", autoFitWidth: true},
+            {
+                name: "absentStudentNumbers",
+                title: "تعداد فراگیران حذف و غایب",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "departmentPersonnelNumbers",
+                title: "تعداد کل پرسنل دپارتمان",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {name: "participationPercentage", title: "درصد مشارکت", filterOperator: "iContains", autoFitWidth: true},
+            {name: "PerCapita", title: "سرانه", filterOperator: "iContains", autoFitWidth: true},
+
+        ],
+        fetchDataURL: manHourStatisticsPerDepartmentReportUrl
+    });
+
+    //----------------------------------------------------ListGrid Result-----------------------------------------------
+
+    var ListGrid_ManHourReport = isc.TrLG.create({
+        width: "100%",
+        height: "100%",
+        dataSource: RestDataSource_ManHourReport,
+        cellHeight: 43,
+        sortField: 0,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        selectionType: "single",
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
+        initialSort: [
+            {property: "studentId", direction: "ascending", primarySort: true}
+        ],
+    });
+
+    IButton_ManHourReport_FullExcel = isc.IButtonSave.create({
+        top: 260,
+        title: "گزارش اکسل",
+        width: 300,
+        click: function () {
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_ManHourReport, manHourStatisticsPerDepartmentReportUrl, 0, null, '', "گزارش اصلی واحد آمار", ListGrid_ManHourReport.data.getCriteria(), null);
+        }
+    });
+
+    var HLayOut_CriteriaForm_ManHourReport_Details = isc.TrHLayoutButtons.create({
+        showEdges: false,
+        edgeImage: "",
+        width: "100%",
+        height: "100%",
+        alignLayout: "center",
+        members: [
+            ListGrid_ManHourReport
+        ]
+    });
+    var HLayOut_Confirm_ManHourReport_UnitExcel = isc.TrHLayoutButtons.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        width: "70%",
+        height: "10%",
+        alignLayout: "center",
+        padding: 10,
+        members: [
+            IButton_ManHourReport_FullExcel
+        ]
+    });
+
+    var Window_ManHourReport = isc.Window.create({
+        placement: "fillScreen",
+        title: "گزارش آمار نفر ساعت بر اساس دپارتمان",
+        canDragReposition: true,
+        align: "center",
+        autoDraw: false,
+        border: "1px solid gray",
+        minWidth: 1024,
+        items: [
+            isc.TrVLayout.create({
+                members: [
+                    HLayOut_CriteriaForm_ManHourReport_Details, HLayOut_Confirm_ManHourReport_UnitExcel
+                ]
+            })
+        ]
+    });
+
+    //----------------------------------- layOut -----------------------------------------------------------------------
+
+    var HLayOut_Confirm_ManHourReport = isc.TrHLayoutButtons.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        width: "70%",
+        height: "10%",
+        alignLayout: "center",
+        padding: 10,
+        members: [
+            IButton_ManHourReport
+        ]
+    });
+
+    var VLayout_Body_JspUnitReport = isc.TrVLayout.create({
+        members: [
+            organizationFilter,
+            DynamicForm_CriteriaForm_ManHourReport,
+            HLayOut_Confirm_ManHourReport
+        ]
+    });
+
+//</script>

@@ -1229,6 +1229,7 @@
     const departmentUrl = rootUrl + "/department";
     const viewClassDetailUrl = rootUrl + "/view-class-detail";
     const statisticsUnitReportUrl = rootUrl + "/ViewStatisticsUnitReport";
+    const manHourStatisticsPerDepartmentReportUrl = rootUrl + "/ViewManHourStatisticsPerDepartmentReport";
     const questionBankUrl = rootUrl + "/question-bank";
     const viewPersonnelTrainingStatusReportUrl = rootUrl + "/view-personnel-training-status-report";
     const viewCoursesPassedPersonnelReportUrl = rootUrl + "/view-courses-passed-personnel-report";
@@ -2406,10 +2407,10 @@
                             </sec:authorize>
                             <sec:authorize access="hasAuthority('Menu_Personnel_Training_Status_Report')">
                             {
-                            title: "<spring:message code="personnel.training.status.report"/>",
-                            click: function () {
-                            createTab(this.title, "<spring:url value="web/personnelTrainingStatusReport"/>");
-                            }
+                                title: "<spring:message code="personnel.training.status.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/personnelTrainingStatusReport"/>");
+                                }
                             },
                             {isSeparator: true},
                             </sec:authorize>
@@ -2429,7 +2430,14 @@
                                     createTab(this.title, "<spring:url value="web/statisticsUnitReport/"/>");
                                 }
                             },
+                            {isSeparator: true},
                             </sec:authorize>
+                            {
+                                title: "<spring:message code="man.hour.statistics.per.department.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/manHourStatisticsPerDepartmentReport/"/>");
+                                }
+                            },
                         ]
                 },
                 </sec:authorize>
@@ -3576,6 +3584,7 @@
     var workflowRecordId = null;
     var workflowParameters = null;
     var todayDate = JalaliDate.JalaliTodayDate();
+    var oneMonthBeforeToday = JalaliDate.JalaliOneMonthBeforeDate();
     var userPersonInfo = null;
     isc.RPCManager.sendRequest(TrDSRequest(viewActivePersonnelUrl + "/get-user-info", "GET", null, setUserPersonInfo));
 
