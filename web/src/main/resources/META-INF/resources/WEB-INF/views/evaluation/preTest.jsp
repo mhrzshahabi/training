@@ -1340,27 +1340,65 @@
                 valueMap: {}
             };
 
-            text_FormItem.title = (i+1)+"-"+answers[i].question;
-            text_FormItem.value = answers[i].answer;
-            text_FormItem.name = answers[i].answer;
-            if(answers[i].type == "چند گزینه ای") {
-                radio_FormItem.title = answers[i].question;
-                radio_FormItem.name = i+"";
-                if(answers[i].options.length > 0) {
-                    for(let j = 0; j< answers[i].options.length; j++){
-                        let key = answers[i].options[j].title;
-                        let value = answers[i].options[j].title;
-                        radio_FormItem.valueMap[key] = value;
-                    }
-                }
+                let correctAnswer="<span class=\"correctAnswer\"></span>";
+                if (answers[i].examinerAnswer!==null && answers[i].examinerAnswer!==undefined)
+                  correctAnswer = "<div class=\"correctAnswer\" ><span>"+answers[i].examinerAnswer+"</span></div>";
+                else
+                correctAnswer = "<span class=\"correctAnswer\">جوابی برای این سوال توسط استاد ثبت نشده</span>";
 
-                dynamicForm_Answers_List.addField(radio_FormItem)
-                if(radio_FormItem.valueMap.hasOwnProperty(answers[i].answer)) {
-                    dynamicForm_Answers_List.getField(i).setValue(answers[i].answer);
-                }
-            } else {
-                dynamicForm_Answers_List.addField(text_FormItem)
-            }
+                      let mark="<span class=\"mark\"></span>";
+                if (answers[i].mark!==null && answers[i].mark!==undefined)
+                  mark = "<div class=\"mark\" ><span>"+" ( "+answers[i].mark +" نمره ) "+"</span></div>";
+                else
+                mark = "<span class=\"mark\">( بارم ثبت نشده )</span>";
+
+
+                text_FormItem.title = (i+1)+"-"+answers[i].question +"   "+mark+ "\n"+
+                 " جواب استاد :"+ "\n"+ "  "+correctAnswer;
+                // correct_FormItem.title = "بارم این سوال : "+answers[i].mark + "  و جواب صحیح طراح سوال:  ";
+                text_FormItem.value = answers[i].answer;
+                text_FormItem.name = answers[i].answer;
+
+                if(answers[i].type == "چند گزینه ای") {
+                    radio_FormItem.title = (i+1)+"-"+answers[i].question+"   "+mark+ "\n"+
+                     " جواب استاد :"+  "\n"+ "  "+correctAnswer;
+                    radio_FormItem.name = i+"";
+                    if(answers[i].options.length > 0) {
+                        for(let j = 0; j< answers[i].options.length; j++){
+                            let key = answers[i].options[j].title;
+                            let value = answers[i].options[j].title;
+                            radio_FormItem.valueMap[key] = value;
+                        }
+                    }
+
+                    dynamicForm_Answers_List.addField(radio_FormItem)
+                    if(radio_FormItem.valueMap.hasOwnProperty(answers[i].answer)) {
+                         dynamicForm_Answers_List.getField(i).setValue(answers[i].answer);
+                    }
+               } else {
+                    dynamicForm_Answers_List.addField(text_FormItem)
+                      }
+            // text_FormItem.title = (i+1)+"-"+answers[i].question;
+            // text_FormItem.value = answers[i].answer;
+            // text_FormItem.name = answers[i].answer;
+            // if(answers[i].type == "چند گزینه ای") {
+            //     radio_FormItem.title = answers[i].question;
+            //     radio_FormItem.name = i+"";
+            //     if(answers[i].options.length > 0) {
+            //         for(let j = 0; j< answers[i].options.length; j++){
+            //             let key = answers[i].options[j].title;
+            //             let value = answers[i].options[j].title;
+            //             radio_FormItem.valueMap[key] = value;
+            //         }
+            //     }
+            //
+            //     dynamicForm_Answers_List.addField(radio_FormItem)
+            //     if(radio_FormItem.valueMap.hasOwnProperty(answers[i].answer)) {
+            //         dynamicForm_Answers_List.getField(i).setValue(answers[i].answer);
+            //     }
+            // } else {
+            //     dynamicForm_Answers_List.addField(text_FormItem)
+            // }
         }
         let Window_result_Answer_preTest = isc.Window.create({
             width: 1024,

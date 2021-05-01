@@ -18,7 +18,6 @@ import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.model.enums.EGender;
 import com.nicico.training.service.*;
 import dto.evaluuation.EvalTargetUser;
-import dto.exam.ImportedUser;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.env.Environment;
@@ -31,17 +30,13 @@ import org.springframework.web.bind.annotation.*;
 import request.evaluation.ElsEvalRequest;
 import request.evaluation.StudentEvaluationAnswerDto;
 import request.evaluation.TeacherEvaluationAnswerDto;
-import request.exam.ElsExamRequest;
-import request.exam.ElsExtendedExamRequest;
-import request.exam.ExamImportedRequest;
-import request.exam.ResendExamImportedRequest;
+import request.exam.*;
 import response.BaseResponse;
 import response.evaluation.EvalListResponse;
 import response.evaluation.SendEvalToElsResponse;
 import response.evaluation.dto.EvaluationAnswerObject;
 import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
-import response.exam.ExamResultDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -75,6 +70,8 @@ public class ElsRestController {
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final EvaluationAnalysisService evaluationAnalysisService;
     private final Environment environment;
+    private final ElsService elsService;
+
 
     @GetMapping("/eval/{id}")
     public ResponseEntity<SendEvalToElsResponse> sendEvalToEls(@PathVariable long id) {
@@ -89,14 +86,12 @@ public class ElsRestController {
             return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
         } else {
             try {
-                request =evaluationBeanMapper.removeInvalidUsers(request);
-                if (!request.getTargetUsers().isEmpty())
-                {
+                request = evaluationBeanMapper.removeInvalidUsers(request);
+                if (!request.getTargetUsers().isEmpty()) {
                     BaseResponse baseResponse = client.sendEvaluation(request);
                     response.setMessage(baseResponse.getMessage());
                     response.setStatus(baseResponse.getStatus());
-                }
-                else {
+                } else {
                     response.setMessage("دوره فراگیری با اطلاعات کامل ندارد.");
                     response.setStatus(HttpStatus.NOT_FOUND.value());
                     return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
@@ -104,7 +99,7 @@ public class ElsRestController {
 
             } catch (Exception r) {
 
-                if (r.getCause()!=null && r.getCause().getMessage()!=null && r.getCause().getMessage().equals("Read timed out")) {
+                if (r.getCause() != null && r.getCause().getMessage() != null && r.getCause().getMessage().equals("Read timed out")) {
                     response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
                     response.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
                     return new ResponseEntity<>(response, HttpStatus.REQUEST_TIMEOUT);
@@ -123,13 +118,13 @@ public class ElsRestController {
         Evaluation evaluation = evaluationService.getById(id);
         ElsEvalRequest request = evaluationBeanMapper.toElsEvalRequest(evaluation, questionnaireService.get(evaluation.getQuestionnaireId()), classStudentService.getClassStudents(evaluation.getClassId()), evaluationService.getEvaluationQuestions(answerService.getAllByEvaluationId(evaluation.getId())), personalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId()));
         try {
-            request =evaluationBeanMapper.removeInvalidUsers(request);
+            request = evaluationBeanMapper.removeInvalidUsers(request);
             BaseResponse baseResponse = client.sendEvaluationToTeacher(request);
             response.setMessage(baseResponse.getMessage());
             response.setStatus(baseResponse.getStatus());
         } catch (Exception r) {
 
-            if (r.getCause()!=null && r.getCause().getMessage()!=null && r.getCause().getMessage().equals("Read timed out")) {
+            if (r.getCause() != null && r.getCause().getMessage() != null && r.getCause().getMessage().equals("Read timed out")) {
                 response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
                 response.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
                 return new ResponseEntity(response, HttpStatus.valueOf(response.getStatus()));
@@ -155,7 +150,7 @@ public class ElsRestController {
             else
                 elsExamRequestResponse = evaluationBeanMapper.toGetExamRequest(tclassService.getTClass(object.getExamItem().getTclassId()), teacherInfo, object, classStudentService.getClassStudents(object.getExamItem().getTclassId()));
 
-            if(elsExamRequestResponse.getStatus() == 200) {
+            if (elsExamRequestResponse.getStatus() == 200) {
                 request = elsExamRequestResponse.getElsExamRequest();
                 if (request.getInstructor() != null && request.getInstructor().getNationalCode() != null &&
                         evaluationBeanMapper.validateTeacherExam(request.getInstructor())) {
@@ -168,9 +163,8 @@ public class ElsRestController {
                             response.setMessage("دوره فراگیر ندارد");
                             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
                         }
-                    }
-                    catch (Exception e) {
-                        if (e.getCause()!=null && e.getCause().getMessage()!=null && e.getCause().getMessage().equals("Read timed out")) {
+                    } catch (Exception e) {
+                        if (e.getCause() != null && e.getCause().getMessage() != null && e.getCause().getMessage().equals("Read timed out")) {
                             response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
                             response.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
                             return new ResponseEntity<>(response, HttpStatus.REQUEST_TIMEOUT);
@@ -209,33 +203,31 @@ public class ElsRestController {
             ElsExtendedExamRequest request;
 
             ElsResendExamRequestResponse elsExamRequestResponse = evaluationBeanMapper.toGetResendExamRequest(object);
-            if(elsExamRequestResponse.getStatus() == 200) {
+            if (elsExamRequestResponse.getStatus() == 200) {
                 request = elsExamRequestResponse.getElsResendExamRequest();
-                    try {
-                        request = evaluationBeanMapper.removeInvalidUsersForResendExam(request);
-                        if (request.getUsers() != null && !request.getUsers().isEmpty()) {
-                            response = client.resendExam(request);
-                        } else {
-                            response.setStatus(HttpStatus.NOT_FOUND.value());
-                            response.setMessage("هیچ فراگیری انتخاب نشده است");
-                            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-                        }
+                try {
+                    request = evaluationBeanMapper.removeInvalidUsersForResendExam(request);
+                    if (request.getUsers() != null && !request.getUsers().isEmpty()) {
+                        response = client.resendExam(request);
+                    } else {
+                        response.setStatus(HttpStatus.NOT_FOUND.value());
+                        response.setMessage("هیچ فراگیری انتخاب نشده است");
+                        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
                     }
-                    catch (Exception e)
-                    {
-                        if (e.getCause()!=null && e.getCause().getMessage()!=null && e.getCause().getMessage().equals("Read timed out")) {
-                            response.setMessage("اطلاعات به سیستم آزمون آنلاین ارسال نشد");
-                            response.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
-                            return new ResponseEntity<>(response, HttpStatus.REQUEST_TIMEOUT);
+                } catch (Exception e) {
+                    if (e.getCause() != null && e.getCause().getMessage() != null && e.getCause().getMessage().equals("Read timed out")) {
+                        response.setMessage("اطلاعات به سیستم آزمون آنلاین ارسال نشد");
+                        response.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
+                        return new ResponseEntity<>(response, HttpStatus.REQUEST_TIMEOUT);
 
-                        }
                     }
+                }
 
 
                 if (response.getStatus() == HttpStatus.OK.value()) {
                     return new ResponseEntity<>(response, HttpStatus.OK);
                 } else return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
-            }else {
+            } else {
                 response.setStatus(elsExamRequestResponse.getStatus());
                 response.setMessage(elsExamRequestResponse.getMessage());
                 return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
@@ -252,8 +244,8 @@ public class ElsRestController {
     @GetMapping("/examResult/{id}")
     public ResponseEntity<ExamListResponse> examResult(@PathVariable long id) {
         ExamListResponse response = client.getExamResults(id);
-        if (response.getData()!=null)
-        response=evaluationBeanMapper.toExamResult(response);
+        if (response.getData() != null)
+            response = evaluationBeanMapper.toExamResult(response);
         return new ResponseEntity(response, HttpStatus.OK);
     }
 
@@ -265,7 +257,8 @@ public class ElsRestController {
 
     @GetMapping("/getClassStudent/{id}")
     public List<EvalTargetUser> getClassStudent(@PathVariable long id) {
-        return evaluationBeanMapper.getClassUsers(classStudentService.getClassStudents(id)); }
+        return evaluationBeanMapper.getClassUsers(classStudentService.getClassStudents(id));
+    }
 
     @GetMapping("/getEvalReport/{id}")
     public ResponseEntity<InputStreamResource> getEvalReport(@PathVariable long id) {
@@ -279,7 +272,7 @@ public class ElsRestController {
     @PostMapping("/printPdf/{id}/{national}/{name}/{last}/{fullName}")
     public void printPdf(HttpServletResponse response, @PathVariable long id, @PathVariable String national, @PathVariable String name, @PathVariable String last, @PathVariable String fullName) throws Exception {
         ExamListResponse pdfData = client.getExamResults(id);
-        ExamResultDto data;
+        response.exam.ExamResultDto data;
         data = pdfData.getData().stream().filter(x -> x.getNationalCode().trim().equals(national.trim())).findFirst().get();
         String params = "{\"student\":\"" + name + "" + last + "\"}";
         testQuestionService.printElsPdf(response, "pdf", "ElsExam.jasper", id, params, data);
@@ -290,23 +283,23 @@ public class ElsRestController {
     public ResponseEntity<ExamQuestionsDto> examQuestions(@RequestBody ExamImportedRequest object) {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-        ExamQuestionsObject examQuestionsObject =  new ExamQuestionsObject();
+        ExamQuestionsObject examQuestionsObject = new ExamQuestionsObject();
         ExamQuestionsDto response = new ExamQuestionsDto();
         try {
 //            if (dateFormat.parse(object.getExamItem().getTclass().getStartDate()).compareTo(dateFormat.parse(object.getExamItem().getTclass().getEndDate())) != 0) {
 
-                if (dateFormat.parse(object.getExamItem().getDate()).after(dateFormat.parse(object.getExamItem().getTclass().getStartDate()))) {
-                    /*ExamQuestionsDto response*/
-                    examQuestionsObject = evaluationBeanMapper.toGetExamQuestions(object);
-                    if(examQuestionsObject.getStatus() == 200) {
-                        response.setData(examQuestionsObject.getDto().getData());
-                        return new ResponseEntity(response, HttpStatus.OK);
-                    }else {
-                        return new ResponseEntity(examQuestionsObject.getMessage(), HttpStatus.NOT_ACCEPTABLE); // سوال تکراری در آزمون وجود دارد
-                    }
+            if (dateFormat.parse(object.getExamItem().getDate()).after(dateFormat.parse(object.getExamItem().getTclass().getStartDate()))) {
+                /*ExamQuestionsDto response*/
+                examQuestionsObject = evaluationBeanMapper.toGetExamQuestions(object);
+                if (examQuestionsObject.getStatus() == 200) {
+                    response.setData(examQuestionsObject.getDto().getData());
+                    return new ResponseEntity(response, HttpStatus.OK);
                 } else {
-                    return new ResponseEntity("زمان برگذاری آزمون در بازه زمانی درست نمی باشد", HttpStatus.NOT_ACCEPTABLE);
+                    return new ResponseEntity(examQuestionsObject.getMessage(), HttpStatus.NOT_ACCEPTABLE); // سوال تکراری در آزمون وجود دارد
                 }
+            } else {
+                return new ResponseEntity("زمان برگذاری آزمون در بازه زمانی درست نمی باشد", HttpStatus.NOT_ACCEPTABLE);
+            }
 //            } else {
 //                if (dateFormat.parse(object.getExamItem().getTclass().getStartDate()).compareTo(dateFormat.parse(object.getExamItem().getDate())) != 0) {
 //                    return new ResponseEntity("زمان برگذاری آزمون در بازه زمانی درست نمی باشد", HttpStatus.NOT_ACCEPTABLE);
@@ -332,12 +325,12 @@ public class ElsRestController {
     @PostMapping("/preExamQuestions")
     public ResponseEntity<ExamQuestionsDto> preExamQuestions(@RequestBody ExamImportedRequest object) {
 
-        ExamQuestionsObject examQuestionsObject =  new ExamQuestionsObject();
+        ExamQuestionsObject examQuestionsObject = new ExamQuestionsObject();
         ExamQuestionsDto response = new ExamQuestionsDto();
 
         /*ExamQuestionsDto response*/
         examQuestionsObject = evaluationBeanMapper.toGetExamQuestions(object);
-        if(examQuestionsObject.getStatus() == 200) {
+        if (examQuestionsObject.getStatus() == 200) {
             response.setData(examQuestionsObject.getDto().getData());
             return new ResponseEntity(response, HttpStatus.OK);
         } else {
@@ -442,6 +435,21 @@ public class ElsRestController {
         }
         return response;
 
+    }
+
+    @PostMapping("/final/test/{id}")
+    public BaseResponse setFinalScores(@PathVariable long id, @RequestBody List<ExamResult> examResult) {
+        BaseResponse baseResponse = new BaseResponse();
+        boolean checkValidScores = evaluationBeanMapper.checkValidScores(examResult);
+        if (!checkValidScores) {
+            baseResponse.setStatus(406);
+            baseResponse.setMessage("مقدار های وارد شده صحیح نمی باشد");
+
+        } else
+            baseResponse.setStatus(200);
+
+
+        return baseResponse;
     }
 
 }
