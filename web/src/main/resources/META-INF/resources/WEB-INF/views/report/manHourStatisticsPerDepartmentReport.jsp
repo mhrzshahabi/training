@@ -50,9 +50,25 @@
         fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAffairs"
     });
 
+    var RestDataSource_Term_ManHourReport = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "code"},
+            {name: "startDate"},
+            {name: "endDate"}
+        ]
+    });
+
+    var RestDataSource_Year_ManHourReport = isc.TrDS.create({
+        fields: [
+            {name: "year", primaryKey: true}
+        ],
+        fetchDataURL: termUrl + "yearList"
+    });
+
 
     //---------------------------------------------------- variables -----------------------------------------------
-    var organizationFilter = init_OrganSegmentFilterDF_optional(true, false, null, "complexTitle", "ccpAssistant", "ccpAffairs", null, null,false,false,false,true,true);
+    var organizationFilter = init_OrganSegmentFilterDF_optional(true, true, null, "complexTitle", "ccpAssistant", "ccpAffairs", null, null, false, false, false, true, true);
 
     var startDate1Check_JspStaticalUnitReport = true;
     var startDate2Check_JspStaticalUnitReport = true;
@@ -70,22 +86,52 @@
         colWidths: ["5%", "25%", "5%", "25%", "5%", "25%"],
         fields: [
             {
-                name: "classStatus",
-                title: "<spring:message code="class.status"/>",
+                name: "timeStatus",
+                title: "<spring:message code="man.hour.report.time.type"/>",
                 type: "SelectItem",
                 operator: "inSet",
                 required: true,
-                multiple: true,
+                multiple: false,
                 valueMap: {
-                    "1": "برنامه ريزی",
-                    "2": "در حال اجرا",
-                    "3": "پایان یافته",
+                    "1": "گزارش بر اساس تاریخ شروع و پایان",
+                    "2": "گزارش بر اساس سال و ترم",
                 },
                 pickListProperties: {
                     showFilterEditor: false
                 },
-                defaultValue: ["1", "2", "3"]
+                defaultValue: ["1"],
+                changed: function (form, item, value) {
+                    if (value != null && value != undefined) {
+                        if (value == 2) {
+                            DynamicForm_CriteriaForm_ManHourReport.getField("fromDate").hide();
+                            DynamicForm_CriteriaForm_ManHourReport.getField("toDate").hide();
+                            DynamicForm_CriteriaForm_ManHourReport.setValue("fromDate", "");
+                            DynamicForm_CriteriaForm_ManHourReport.setValue("toDate", "");
+                            DynamicForm_CriteriaForm_ManHourReport.getField("classYear").show();
+                            DynamicForm_CriteriaForm_ManHourReport.getField("termId").show();
+                        } else if (value == 1) {
+                            DynamicForm_CriteriaForm_ManHourReport.getField("classYear").hide();
+                            DynamicForm_CriteriaForm_ManHourReport.getField("termId").hide();
+                            DynamicForm_CriteriaForm_ManHourReport.getField("classYear").clearValue();
+                            DynamicForm_CriteriaForm_ManHourReport.getField("termId").clearValue();
+                            DynamicForm_CriteriaForm_ManHourReport.setValue("fromDate", oneMonthBeforeToday);
+                            DynamicForm_CriteriaForm_ManHourReport.setValue("toDate", todayDate);
+                            DynamicForm_CriteriaForm_ManHourReport.getField("fromDate").show();
+                            DynamicForm_CriteriaForm_ManHourReport.getField("toDate").show();
+                        }
+                    } else {
+                        DynamicForm_CriteriaForm_ManHourReport.getField("classYear").hide();
+                        DynamicForm_CriteriaForm_ManHourReport.getField("termId").hide();
+                        DynamicForm_CriteriaForm_ManHourReport.getField("classYear").clearValue();
+                        DynamicForm_CriteriaForm_ManHourReport.getField("termId").clearValue();
+                        DynamicForm_CriteriaForm_ManHourReport.setValue("fromDate", oneMonthBeforeToday);
+                        DynamicForm_CriteriaForm_ManHourReport.setValue("toDate", todayDate);
+                        DynamicForm_CriteriaForm_ManHourReport.getField("fromDate").show();
+                        DynamicForm_CriteriaForm_ManHourReport.getField("toDate").show();
+                    }
+                }
             },
+            {type: "SpacerItem"},
             {
                 name: "fromDate",
                 ID: "fromDate_ManHourStatisticReport",
@@ -176,6 +222,62 @@
                     }
                 }
             },
+            {
+                name: "classYear",
+                title: "سال کاری",
+                type: "SelectItem",
+                multiple: true,
+                optionDataSource: RestDataSource_Year_ManHourReport,
+                valueField: "year",
+                displayField: "year",
+                filterFields: ["year"],
+                hidden: true,
+                filterLocally: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                    filterOperator: "iContains"
+                },
+                changed: function (form, item, value) {
+                    if (value != null && value != undefined && value.size() == 1) {
+                        RestDataSource_Term_ManHourReport.fetchDataURL = termUrl + "listByYear/" + value[0];
+                        DynamicForm_CriteriaForm_ManHourReport.getField("termId").optionDataSource = RestDataSource_Term_ManHourReport;
+                        DynamicForm_CriteriaForm_ManHourReport.getField("termId").fetchData();
+                        DynamicForm_CriteriaForm_ManHourReport.getField("termId").enable();
+                    } else {
+                        form.getField("termId").disabled = true;
+                        form.getField("termId").clearValue();
+                    }
+                }
+            },
+            {
+                name: "termId",
+                title: "ترم",
+                type: "SelectItem",
+                multiple: true,
+                filterOperator: "equals",
+                disabled: true,
+                hidden: true,
+                valueField: "id",
+                displayField: "titleFa",
+                filterLocally: true
+            },
+            {
+                name: "classStatus",
+                title: "<spring:message code="class.status"/>",
+                type: "SelectItem",
+                operator: "inSet",
+                required: true,
+                multiple: true,
+                valueMap: {
+                    "1": "برنامه ريزی",
+                    "2": "در حال اجرا",
+                    "3": "پایان یافته",
+                },
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                defaultValue: ["1", "2", "3"]
+            },
 
         ]
     });
@@ -199,7 +301,7 @@
             } else {
                 data_values = organizationFilter.getCriteria(DynamicForm_CriteriaForm_ManHourReport.getValuesAsAdvancedCriteria());
                 for (var i = 0; i < data_values.criteria.size(); i++) {
-                     if (data_values.criteria[i].fieldName == "complexTitle") {
+                    if (data_values.criteria[i].fieldName == "complexTitle") {
                         data_values.criteria[i].fieldName = "complexTitle";
                         data_values.criteria[i].operator = "inSet";
                     } else if (data_values.criteria[i].fieldName == "applicantCompanyName") {
