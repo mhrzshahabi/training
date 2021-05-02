@@ -445,10 +445,29 @@ public class ElsRestController {
             baseResponse.setStatus(406);
             baseResponse.setMessage("مقدار های وارد شده صحیح نمی باشد");
 
-        } else
-            baseResponse.setStatus(200);
+        } else{
+            String scoringMethod=testQuestionService.get(id).getTclass().getScoringMethod();
+            boolean checkScoreInRange = evaluationBeanMapper.checkScoreInRange(scoringMethod,examResult);
+            if (!checkScoreInRange)
+            {
+                baseResponse.setStatus(406);
+                baseResponse.setMessage("نمرات نهایی وارد شده از بیشترین مقدار روش نمره دهی کلاس بیشتر است");
 
+            }else
+            {
+                UpdateRequest requestDto=evaluationBeanMapper.convertScoresToDto(examResult,id);
+                try {
+                    baseResponse = client.sendScoresToEls(requestDto);
+                    if (baseResponse.getStatus()!=200 && baseResponse.getMessage()!=null)
+                        return baseResponse;
+                } catch (Exception e) {
+                        baseResponse.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
+                        baseResponse.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
+                        return baseResponse;
 
+                }
+            }
+        }
         return baseResponse;
     }
 

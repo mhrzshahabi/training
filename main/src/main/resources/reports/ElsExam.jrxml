@@ -30,6 +30,7 @@
 	<field name="option4" class="java.lang.String"/>
 	<field name="questionType.code" class="java.lang.String"/>
 	<field name="displayType.code" class="java.lang.String"/>
+	<field name="examinerAnswer" class="java.lang.String"/>
 	<background>
 		<band height="802" splitType="Stretch">
 			<rectangle radius="5">
@@ -72,23 +73,6 @@
 					</textElement>
 					<text><![CDATA[نام دوره :]]></text>
 				</staticText>
-			</frame>
-			<frame>
-				<reportElement x="290" y="38" width="190" height="20" uuid="f9d81464-78cf-4429-b8cd-2093285a4f93"/>
-				<staticText>
-					<reportElement x="150" y="0" width="40" height="20" uuid="3555add0-078a-4ebf-accc-35500870e286"/>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Shabnam-FD" size="8"/>
-					</textElement>
-					<text><![CDATA[نام مدرس :]]></text>
-				</staticText>
-				<textField isBlankWhenNull="true">
-					<reportElement x="0" y="0" width="150" height="20" uuid="7f0070f2-e11c-4f21-a983-e95f6e31c378"/>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Shabnam-FD" size="8"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$P{teacher}]]></textFieldExpression>
-				</textField>
 			</frame>
 			<frame>
 				<reportElement x="310" y="10" width="120" height="20" uuid="f9d81464-78cf-4429-b8cd-2093285a4f93"/>
@@ -152,16 +136,16 @@
 				</textField>
 			</frame>
 			<frame>
-				<reportElement x="160" y="63" width="130" height="20" uuid="eb41d2db-98e9-4180-bc33-f4c32470f721"/>
+				<reportElement x="351" y="43" width="130" height="20" uuid="eb41d2db-98e9-4180-bc33-f4c32470f721"/>
 				<staticText>
-					<reportElement x="95" y="0" width="35" height="20" uuid="0050324b-a0c5-4a96-9b43-cfc491f3c7e5"/>
+					<reportElement x="94" y="0" width="35" height="20" uuid="0050324b-a0c5-4a96-9b43-cfc491f3c7e5"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Shabnam-FD" size="8"/>
 					</textElement>
 					<text><![CDATA[کد کلاس :]]></text>
 				</staticText>
 				<textField isBlankWhenNull="true">
-					<reportElement x="0" y="0" width="95" height="20" uuid="a7700906-90ab-4461-8c60-060885da6c0d"/>
+					<reportElement x="-1" y="0" width="95" height="20" uuid="a7700906-90ab-4461-8c60-060885da6c0d"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Shabnam-FD" size="8"/>
 					</textElement>
@@ -374,6 +358,27 @@ new Boolean(true) : new Boolean(false)]]></printWhenExpression>
 					<font fontName="Shabnam-FD"/>
 				</textElement>
 				<text><![CDATA[پاسخ دانشجو :
+]]></text>
+			</staticText>
+		</band>
+		<band height="35" splitType="Prevent">
+			<property name="com.jaspersoft.studio.layout"/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="0" y="7" width="490" height="20" isPrintWhenDetailOverflows="true" uuid="c06b54d1-650a-4477-8b33-5d03d9d5ce87">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a4612b74-2dce-4db8-afd5-df173a4d4d70"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{examinerAnswer}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="490" y="5" width="68" height="21" uuid="e3c1752d-d636-4a64-9d67-c7a138a4ab98"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD"/>
+				</textElement>
+				<text><![CDATA[پاسخ استاد :
 ]]></text>
 			</staticText>
 		</band>

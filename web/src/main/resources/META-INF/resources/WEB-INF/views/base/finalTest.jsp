@@ -386,7 +386,7 @@
             showRecordComponents: true,
             showRecordComponentsByCell: true,
             fields: [
-                {name: "nationalCode", title: 'نام',align: "center", width: "10%",  hidden: true},
+                {name: "cellNumber", title: 'موبایل',align: "center", width: "10%",  hidden: true},
                 {name: "surname", title: 'نام',align: "center", width: "10%"},
                 {name: "lastName", title: 'نام خانوادگی' ,align: "center", width: "15%"},
                 {name: "score", title: 'نمره کسب شده دانشجو' ,align: "center", width: "15%"},
@@ -428,6 +428,9 @@
                         title: "چاپ گزارش",
                         width: "120",
                         click: function () {
+                               if  (record.resultStatus ==="بدون پاسخ") {
+                                  createDialog("warning", "دانشجو مورد نظر به سوالی پاسخ نداده است", "اخطار"); }
+                            else
                             printEls("pdf",recordList.id,record.nationalCode,"ElsExam.jasper",record.surname,record.lastName);
                         }
                     });
@@ -452,7 +455,7 @@
                     }, 1500);
                     allResultScores=results
                     ListGrid_Result_finalTest.setData(results);
-
+                    hideFields(ListGrid_Result_finalTest,JSON.parse(resp.data).examType)
                     let Window_result_Finaltest = isc.Window.create({
                         width: 1324,
                         height: 768,
@@ -529,12 +532,12 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
 
     function setDescriptiveResultValue(value, form) {
 
-         let index = allResultScores.findIndex(f => f.nationalCode === form.values.nationalCode)
+         let index = allResultScores.findIndex(f => f.cellNumber === form.values.cellNumber)
             allResultScores[index].descriptiveResult = value;
 
         }
     function setFinalResultValue(value, form) {
-   let index = allResultScores.findIndex(f => f.nationalCode === form.values.nationalCode)
+   let index = allResultScores.findIndex(f => f.cellNumber === form.values.cellNumber)
             allResultScores[index].finalResult = value;
         }
 
@@ -1582,6 +1585,20 @@ let inValidStudents = [];
 
     }));
 }
+    function hideFields(form,examType) {
+// form.getField("cellNumber")
+    }
+    // switch (examType) {
+    // case "چند گزینه ای":
+    //     break;
+    // case "تشریحی":
+    //     break;
+    // case "تستی-تشریحی":
+    //     break;
+    //
+    //     default:
+    //
+    //     } }
     function NCodeAndMobileValidation(nationalCode, mobileNum,gender) {
 
         let isValid = true;

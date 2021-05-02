@@ -89,6 +89,7 @@ public class QuestionBankDTO {
         private String option4;
         private String question;
         private String answer;
+        private String examinerAnswer;
         private Integer lines;
         private ParameterValueDTO.TupleInfo questionType;
         private ParameterValueDTO.TupleInfo displayType;

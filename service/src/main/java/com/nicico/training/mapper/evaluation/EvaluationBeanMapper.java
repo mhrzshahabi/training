@@ -1,6 +1,7 @@
 package com.nicico.training.mapper.evaluation;
 
 
+import com.nicico.training.dto.TestQuestionDTO;
 import com.nicico.training.dto.question.ElsExamRequestResponse;
 import com.nicico.training.dto.question.ElsResendExamRequestResponse;
 import com.nicico.training.dto.question.ExamQuestionsObject;
@@ -1059,8 +1060,6 @@ public abstract class EvaluationBeanMapper {
     }
 
     public boolean checkValidScores(List<ExamResult> examResult) {
-
-//        List<UpdatedResultDto>  updatedResultDtos=new ArrayList<>();
         for (ExamResult data : examResult) {
             try
             {
@@ -1086,5 +1085,94 @@ public abstract class EvaluationBeanMapper {
             }
         }
         return true;
+    }
+
+    public boolean checkScoreInRange(String scoringMethod, List<ExamResult> examResult) {
+        if (scoringMethod.equals("3") || scoringMethod.equals("2")) {
+
+           if (scoringMethod.equals("3") )
+           {
+               for (ExamResult data : examResult) {
+                   double finalResult=0D;
+
+                   if ( data.getFinalResult()!=null && !data.getFinalResult().equals("-")) {
+                       String englishFinalResult = new BigDecimal(data.getFinalResult()).toString();
+                       finalResult= Double.parseDouble(englishFinalResult);
+                       if (finalResult>20D)
+                           return false;
+                   }
+
+               }
+               return true;
+               }
+           else
+           {
+               for (ExamResult data : examResult) {
+                   double finalResult=0D;
+
+                   if ( data.getFinalResult()!=null && !data.getFinalResult().equals("-")) {
+                       String englishFinalResult = new BigDecimal(data.getFinalResult()).toString();
+                       finalResult= Double.parseDouble(englishFinalResult);
+                       if (finalResult>100D)
+                           return false;
+                   }
+
+               }
+               return true;
+           }
+           }
+          else
+        return false;
+    }
+
+    public UpdateRequest convertScoresToDto(List<ExamResult> examResult, long id) {
+        UpdateRequest request=new UpdateRequest();
+        request.setSourceExamId(id);
+        List<UpdatedResultDto> resultDtoList=new ArrayList<>();
+        for (ExamResult data:examResult)
+        {
+            UpdatedResultDto updatedResultDto=new UpdatedResultDto();
+            double descriptiveResult;
+            double finalResult;
+            double score;
+            if ( data.getDescriptiveResult()!=null && !data.getDescriptiveResult().equals("-"))
+            {
+                String englishDescriptiveResult = new BigDecimal(data.getDescriptiveResult()).toString();
+                descriptiveResult=  Double.parseDouble(englishDescriptiveResult);
+                updatedResultDto.setDescriptiveResult(descriptiveResult);
+            }
+            else
+            {
+                updatedResultDto.setDescriptiveResult(null);
+
+            }
+            if ( data.getFinalResult()!=null && !data.getFinalResult().equals("-"))
+            {
+                String englishFinalResult = new BigDecimal(data.getFinalResult()).toString();
+                finalResult= Double.parseDouble(englishFinalResult);
+                updatedResultDto.setFinalResult(finalResult);
+            }
+            else
+            {
+                updatedResultDto.setFinalResult(null);
+            }
+
+            if ( data.getScore()!=null && !data.getScore().equals("-"))
+            {
+                String englishScore = new BigDecimal(data.getScore()).toString();
+                score= Double.parseDouble(englishScore);
+                updatedResultDto.setScore(score);
+            }
+            else
+            {
+                updatedResultDto.setScore(null);
+            }
+
+            updatedResultDto.setMobileNumber(data.getCellNumber());
+
+            resultDtoList.add(updatedResultDto);
+        }
+        request.setResults(resultDtoList);
+        return request;
     }
 }

@@ -1225,6 +1225,9 @@
                         title: "پاسخ ها",
                         width: "120",
                         click: function () {
+                            if  (record.resultStatus ==="بدون پاسخ") {
+                                createDialog("warning", "دانشجو مورد نظر به سوالی پاسخ نداده است", "اخطار"); }
+                            else
                             ListGrid_show_preTest_results(record.answers);
                         }
                     });
@@ -1236,7 +1239,10 @@
                         title: "چاپ گزارش",
                         width: "120",
                         click: function () {
-                            printEls("pdf", testQId, record.nationalCode, "ElsExam.jasper", record.surname, record.lastName);
+                            if  (record.resultStatus ==="بدون پاسخ") {
+                                createDialog("warning", "دانشجو مورد نظر به سوالی پاسخ نداده است", "اخطار"); }
+                            else
+                            printElsPreTest("pdf", testQId, record.nationalCode, "ElsExam.jasper", record.surname, record.lastName);
                         }
                     });
                     return button2;
@@ -1438,7 +1444,7 @@
         Window_result_Answer_preTest.show();
     }
 
-    function printEls(type, id, national, fileName, name, last) {
+    function printElsPreTest(type, id, national, fileName, name, last) {
 
         var criteriaForm = isc.DynamicForm.create({
             method: "POST",

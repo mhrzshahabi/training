@@ -14,5 +14,6 @@ public class ExamListResponse extends BaseResponse implements Serializable {
 
     private List<ExamResultDto> data;
     private String title;
+    private String examType;
 
 }

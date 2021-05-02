@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import request.evaluation.ElsEvalRequest;
 import request.exam.ElsExamRequest;
 import request.exam.ElsExtendedExamRequest;
+import request.exam.UpdateRequest;
 import response.BaseResponse;
 import response.evaluation.EvalListResponse;
 import response.evaluation.PdfResponse;
@@ -48,4 +49,6 @@ public interface ElsClient {
     @RequestMapping(method = RequestMethod.POST, value = "/exam/extend")
     BaseResponse resendExam(@RequestBody ElsExtendedExamRequest request);
 
+    @RequestMapping(method = RequestMethod.PUT, value = "/updateResult")
+    BaseResponse sendScoresToEls(@RequestBody UpdateRequest requestDto);
 }
