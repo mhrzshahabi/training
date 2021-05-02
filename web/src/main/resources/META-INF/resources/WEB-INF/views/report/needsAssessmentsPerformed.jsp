@@ -8,6 +8,14 @@
 
 // <script>
 
+    var complex = [];
+    var assistance = [];
+    var affairs = [];
+    var section = [];
+    var unit = [];
+
+    let reportCriteria_NeedAssessmentsPerformed;
+
     //---------------------------------------------------- REST DataSources--------------------------------------------------------//
 
     RestDataSource_Class_JspNeedAssessmentsPerformed = isc.TrDS.create({
@@ -15,10 +23,16 @@
             {name: "postType"},
             {name: "postCode"},
             {name: "postTitle"},
+            {name: "mojtameTitle"},
+            {name: "assistance"},
+            {name: "affairs"},
+            {name: "section"},
+            {name: "unit"},
             {name: "updateBy"},
             {name: "updateAt"},
             {name: "version"}
-        ]
+        ],
+        fetchDataURL: needsAssessmentsPerformedUrl + "/iscList?_endRow=10000"
     });
 
     //---------------------------------------------------- Main Window--------------------------------------------------------------//
@@ -26,15 +40,13 @@
     ToolStripButton_Excel_NeedAssessmentsPerformed = isc.ToolStripButtonExcel.create({
 
         click: function () {
-
             makeExcelOutput();
         }
     });
 
     ToolStripButton_Refresh_NeedAssessmentsPerformed = isc.ToolStripButtonRefresh.create({
         click: function () {
-
-            ListGrid_Training_Post.invalidateCache();
+            ListGrid_NeedAssessmentsPerformed.invalidateCache();
         }
     });
 
@@ -63,7 +75,6 @@
         titleAlign: "center",
         width: "100%",
         align: "center",
-        // colWidths: [70, 200, 70, 200, 100, 100],
         colWidths: ["10%", "10%", "10%", "10%", "10%", "10%", "10%", "10%"],
         fields: [
             {
@@ -95,7 +106,6 @@
                     if (dateCheck === false) {
                         form.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
                     } else {
-
                         form.clearFieldErrors("startDate", true);
                     }
                 }
@@ -136,68 +146,8 @@
             {
                 colSpan: 1,
                 hidden: true
-            },
-            <%--{--%>
-                <%--name: "searchBtn",--%>
-                <%--ID: "searchBtnJspNeedsAssessmentsPerformed",--%>
-                <%--title: "<spring:message code="search"/>",--%>
-                <%--type: "ButtonItem",--%>
-                <%--width: "*",--%>
-                <%--startRow: false,--%>
-                <%--endRow: false,--%>
-                <%--click(form) {--%>
-                    <%--if(form.getValue("endDate") < form.getValue("startDate")) {--%>
-                        <%--createDialog("info","تاریخ پایان نمی تواند کوچکتر از تاریخ شروع باشد");--%>
-                        <%--return;--%>
-                    <%--}--%>
-                    <%--if(DynamicForm_NeedsAssessmentsPerformed.getValuesAsAdvancedCriteria()==null || DynamicForm_NeedsAssessmentsPerformed.getValuesAsAdvancedCriteria().criteria.size() <= 1) {--%>
-                        <%--createDialog("info","فیلتری انتخاب نشده است.");--%>
-                        <%--return;--%>
-                    <%--}--%>
-
-                    <%--DynamicForm_NeedsAssessmentsPerformed.validate();--%>
-                    <%--if (DynamicForm_NeedsAssessmentsPerformed.hasErrors())--%>
-                        <%--return;--%>
-
-
-                    <%--else {--%>
-                        <%--var training_over_time_wait = createDialog("wait");--%>
-                        <%--setTimeout(function () {--%>
-                            <%--let url = needsAssessmentsPerformedUrl + "/list/" + gregorianDate(form.getValue("startDate")) + "/" + gregorianDate(form.getValue("endDate"));--%>
-                            <%--RestDataSource_Class_JspNeedAssessmentsPerformed.fetchDataURL = url;--%>
-
-                            <%--ListGrid_NeedAssessmentsPerformed.invalidateCache();--%>
-                            <%--ListGrid_NeedAssessmentsPerformed.fetchData();--%>
-                            <%--training_over_time_wait.close();--%>
-
-                        <%--}, 100);--%>
-
-                        <%--// data_values = DynamicForm_NeedsAssessmentsPerformed.getValuesAsAdvancedCriteria();--%>
-                        <%--// for (let i = 0; i < data_values.criteria.size(); i++) {--%>
-                        <%--//--%>
-                        <%--//     if (data_values.criteria[i].fieldName == "startDate") {--%>
-                        <%--//         data_values.criteria[i].fieldName = "date";--%>
-                        <%--//         data_values.criteria[i].operator = "greaterThan";--%>
-                        <%--//     } else if (data_values.criteria[i].fieldName == "endDate") {--%>
-                        <%--//         data_values.criteria[i].fieldName = "date";--%>
-                        <%--//         data_values.criteria[i].operator = "lessThan";--%>
-                        <%--//     }--%>
-                        <%--// }--%>
-                        <%--//--%>
-                        <%--//     ListGrid_NeedAssessmentsPerformed.invalidateCache();--%>
-                        <%--//     ListGrid_NeedAssessmentsPerformed.fetchData(data_values);--%>
-                        <%--//--%>
-                        <%--//     return;--%>
-
-                    <%--}--%>
-                <%--}--%>
-            <%--}--%>
-        ],
-        itemKeyPress: function (item, keyName) {
-            if (keyName == "Enter") {
-                searchBtnJspNeedsAssessmentsPerformed.click(DynamicForm_NeedsAssessmentsPerformed);
             }
-        }
+        ]
     });
 
     IButton_NeedAssessmentsPerformed = isc.IButtonSave.create({
@@ -212,27 +162,78 @@
                 return;
             }
             if(form.getValuesAsAdvancedCriteria() == null || form.getValuesAsAdvancedCriteria().criteria.size() <= 1) {
-                createDialog("info","فیلتری انتخاب نشده است.");
+                createDialog("info","بازه زمان مشخص نشده است");
                 return;
             }
 
-            DynamicForm_NeedsAssessmentsPerformed.validate();
-            if (DynamicForm_NeedsAssessmentsPerformed.hasErrors())
-                return;
+            reportCriteria_NeedAssessmentsPerformed = organSegmentFilter_NeedAssessmentsPerformed.getCriteria();
 
+            complex = [];
+            assistance = [];
+            affairs = [];
+            section = [];
+            unit = [];
 
+            if (reportCriteria_NeedAssessmentsPerformed !== undefined) {
 
+                DynamicForm_NeedsAssessmentsPerformed.validate();
+                if (DynamicForm_NeedsAssessmentsPerformed.hasErrors())
+                    return;
 
-            // wait.show();
-            // setTimeout(function () {
-            //     let url = needsAssessmentsPerformedUrl + "/list/" + gregorianDate(form.getValue("startDate")) + "/" + gregorianDate(form.getValue("endDate"));
-            //     RestDataSource_Class_JspNeedAssessmentsPerformed.fetchDataURL = url;
-            //
-            //     ListGrid_NeedAssessmentsPerformed.invalidateCache();
-            //     ListGrid_NeedAssessmentsPerformed.fetchData();
-            //     wait.close();
-            //
-            // }, 100);
+                for (let i = 0; i < reportCriteria_NeedAssessmentsPerformed.criteria.size(); i++) {
+
+                    if (reportCriteria_NeedAssessmentsPerformed.criteria[i].fieldName === "complexTitle") {
+                        reportCriteria_NeedAssessmentsPerformed.criteria[i].fieldName = "mojtameTitle";
+                        reportCriteria_NeedAssessmentsPerformed.criteria[i].operator = "inSet";
+                        complex.add(reportCriteria_NeedAssessmentsPerformed.criteria[i].value);
+                    } else if (reportCriteria_NeedAssessmentsPerformed.criteria[i].fieldName === "assistant") {
+                        reportCriteria_NeedAssessmentsPerformed.criteria[i].fieldName = "assistance";
+                        reportCriteria_NeedAssessmentsPerformed.criteria[i].operator = "inSet";
+                        assistance.add(reportCriteria_NeedAssessmentsPerformed.criteria[i].value);
+                    } else if (reportCriteria_NeedAssessmentsPerformed.criteria[i].fieldName === "affairs") {
+                        reportCriteria_NeedAssessmentsPerformed.criteria[i].fieldName = "affairs";
+                        reportCriteria_NeedAssessmentsPerformed.criteria[i].operator = "inSet";
+                        affairs.add(reportCriteria_NeedAssessmentsPerformed.criteria[i].value);
+                    } else if (reportCriteria_NeedAssessmentsPerformed.criteria[i].fieldName === "section") {
+                        reportCriteria_NeedAssessmentsPerformed.criteria[i].fieldName = "section";
+                        reportCriteria_NeedAssessmentsPerformed.criteria[i].operator = "inSet";
+                        section.add(reportCriteria_NeedAssessmentsPerformed.criteria[i].value);
+                    } else if (reportCriteria_NeedAssessmentsPerformed.criteria[i].fieldName === "unit") {
+                        reportCriteria_NeedAssessmentsPerformed.criteria[i].fieldName = "unit";
+                        reportCriteria_NeedAssessmentsPerformed.criteria[i].operator = "inSet";
+                        unit.add(reportCriteria_NeedAssessmentsPerformed.criteria[i].value);
+                    }
+                }
+
+                data_values = DynamicForm_NeedsAssessmentsPerformed.getValuesAsAdvancedCriteria();
+
+                for (let i = 0; i < data_values.criteria.size(); i++) {
+                    if (data_values.criteria[i].fieldName === "startDate") {
+                        reportCriteria_NeedAssessmentsPerformed.criteria.add(
+                            {
+                                fieldName: "updateAt",
+                                operator: "greaterOrEqual",
+                                value: JalaliDate.jalaliToGregori(data_values.criteria[i].value).getTime()
+                            }
+                        );
+                    } else if (data_values.criteria[i].fieldName === "endDate") {
+                        reportCriteria_NeedAssessmentsPerformed.criteria.add(
+                            {
+                                fieldName: "updateAt",
+                                operator: "lessOrEqual",
+                                value: JalaliDate.jalaliToGregori(data_values.criteria[i].value).getTime()
+                            }
+                        );
+                    }
+                }
+
+                ListGrid_NeedAssessmentsPerformed.invalidateCache();
+                ListGrid_NeedAssessmentsPerformed.fetchData(reportCriteria_NeedAssessmentsPerformed);
+
+            } else {
+                createDialog("info", "فیلتری برای مجتمع، امور، ... انتخاب نشده است");
+            }
+
         }
     });
 
@@ -273,6 +274,11 @@
             {name: "postType", title: "نوع پست"},
             {name: "postCode", title: "کد پست"},
             {name: "postTitle", title: "عنوان پست"},
+            {name: "mojtameTitle", title: "مجتمع"},
+            {name: "assistance", title: "معاونت"},
+            {name: "affairs", title: "امور"},
+            {name: "section", title: "قسمت"},
+            {name: "unit", title: "واحد"},
             {name: "updateBy", title: "ویرایش توسط"},
             {
                 name: "updateAt",
@@ -309,30 +315,10 @@
 
     function makeExcelOutput() {
 
-        let fieldNames = "postType,postCode,postTitle,updateBy,updateAt,version";
-
-        let headerNames = 'نوع پست,کد پست,عنوان پست ,ویرایش توسط,ویرایش در تاریخ,تعداد دفعات نیازسنجی';
-
-        let downloadForm = isc.DynamicForm.create({
-            method: "POST",
-            action: "/training/reportsToExcel/needsAssessmentsPerformed",
-            target: "_Blank",
-            canSubmit: true,
-            fields:
-                [
-                    {name: "fields", type: "hidden"},
-                    {name: "headers", type: "hidden"},
-                    {name: "start", type: "hidden"},
-                    {name: "end", type: "hidden"}
-                ]
-        });
-        downloadForm.setValue("fields", fieldNames);
-        downloadForm.setValue("headers", headerNames);
-        downloadForm.setValue("start", gregorianDate(DynamicForm_NeedsAssessmentsPerformed.getItem("startDate").getValue()));
-        downloadForm.setValue("end", gregorianDate(DynamicForm_NeedsAssessmentsPerformed.getItem("endDate").getValue()));
-
-        downloadForm.show();
-        downloadForm.submitForm();
+        if (ListGrid_NeedAssessmentsPerformed.getOriginalData().localData === undefined)
+            createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
+        else
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_NeedAssessmentsPerformed, needsAssessmentsPerformedUrl + "/iscList?_endRow=10000", 0, null, '',"گزارش نیازسنجی های انجام شده"  , reportCriteria_NeedAssessmentsPerformed, null);
     }
 
     //</script>

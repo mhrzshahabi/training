@@ -33,6 +33,9 @@ public class ViewPostDTO implements Serializable {
     private String area;
 
     @ApiModelProperty
+    private String mojtameTitle;
+
+    @ApiModelProperty
     private String assistance;
 
     @ApiModelProperty

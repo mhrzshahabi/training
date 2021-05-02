@@ -47,6 +47,9 @@ public class Post extends Auditable {
     @Column(name = "c_area")
     private String area;
 
+    @Column(name = "c_mojtame_title")
+    private String mojtameTitle;
+
     @Column(name = "c_assistance")
     private String assistance;
 

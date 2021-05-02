@@ -10,6 +10,8 @@
     var section = [];
     var unit = [];
 
+    let reportCriteria_AreaNeedAsssesment;
+
     //--------------------------------------------------------REST DataSources-----------------------------------------------------//
 
     var RestDataSource_view_training_Post = isc.TrDS.create({
@@ -58,47 +60,53 @@
             if (organSegmentFilter.hasErrors())
                 return;
 
-            let reportCriteria = organSegmentFilter.getCriteria();
+            reportCriteria_AreaNeedAsssesment = organSegmentFilter.getCriteria();
             complex = [];
             assistance = [];
             affairs = [];
             section = [];
             unit = [];
 
-            for (let i = 0; i < reportCriteria.criteria.size(); i++) {
+            if (reportCriteria_AreaNeedAsssesment !== undefined) {
 
-                if (reportCriteria.criteria[i].fieldName === "complexTitle") {
-                    reportCriteria.criteria[i].fieldName = "mojtameTitle";
-                    reportCriteria.criteria[i].operator = "inSet";
-                    complex.add(reportCriteria.criteria[i].value);
-                } else if (reportCriteria.criteria[i].fieldName === "assistant") {
-                    reportCriteria.criteria[i].fieldName = "assistance";
-                    reportCriteria.criteria[i].operator = "inSet";
-                    assistance.add(reportCriteria.criteria[i].value);
-                } else if (reportCriteria.criteria[i].fieldName === "affairs") {
-                    reportCriteria.criteria[i].fieldName = "affairs";
-                    reportCriteria.criteria[i].operator = "inSet";
-                    affairs.add(reportCriteria.criteria[i].value);
-                } else if (reportCriteria.criteria[i].fieldName === "section") {
-                    reportCriteria.criteria[i].fieldName = "section";
-                    reportCriteria.criteria[i].operator = "inSet";
-                    section.add(reportCriteria.criteria[i].value);
-                } else if (reportCriteria.criteria[i].fieldName === "unit") {
-                    reportCriteria.criteria[i].fieldName = "unit";
-                    reportCriteria.criteria[i].operator = "inSet";
-                    unit.add(reportCriteria.criteria[i].value);
+                for (let i = 0; i < reportCriteria_AreaNeedAsssesment.criteria.size(); i++) {
+
+                    if (reportCriteria_AreaNeedAsssesment.criteria[i].fieldName === "complexTitle") {
+                        reportCriteria_AreaNeedAsssesment.criteria[i].fieldName = "mojtameTitle";
+                        reportCriteria_AreaNeedAsssesment.criteria[i].operator = "inSet";
+                        complex.add(reportCriteria_AreaNeedAsssesment.criteria[i].value);
+                    } else if (reportCriteria_AreaNeedAsssesment.criteria[i].fieldName === "assistant") {
+                        reportCriteria_AreaNeedAsssesment.criteria[i].fieldName = "assistance";
+                        reportCriteria_AreaNeedAsssesment.criteria[i].operator = "inSet";
+                        assistance.add(reportCriteria_AreaNeedAsssesment.criteria[i].value);
+                    } else if (reportCriteria_AreaNeedAsssesment.criteria[i].fieldName === "affairs") {
+                        reportCriteria_AreaNeedAsssesment.criteria[i].fieldName = "affairs";
+                        reportCriteria_AreaNeedAsssesment.criteria[i].operator = "inSet";
+                        affairs.add(reportCriteria_AreaNeedAsssesment.criteria[i].value);
+                    } else if (reportCriteria_AreaNeedAsssesment.criteria[i].fieldName === "section") {
+                        reportCriteria_AreaNeedAsssesment.criteria[i].fieldName = "section";
+                        reportCriteria_AreaNeedAsssesment.criteria[i].operator = "inSet";
+                        section.add(reportCriteria_AreaNeedAsssesment.criteria[i].value);
+                    } else if (reportCriteria_AreaNeedAsssesment.criteria[i].fieldName === "unit") {
+                        reportCriteria_AreaNeedAsssesment.criteria[i].fieldName = "unit";
+                        reportCriteria_AreaNeedAsssesment.criteria[i].operator = "inSet";
+                        unit.add(reportCriteria_AreaNeedAsssesment.criteria[i].value);
+                    }
                 }
-            }
 
-            reportCriteria.criteria.add({
-                fieldName: "competenceCount",
-                operator: "equals",
-                value: 0
+                reportCriteria_AreaNeedAsssesment.criteria.add({
+                    fieldName: "competenceCount",
+                    operator: "equals",
+                    value: 0
                 });
 
-            ListGrid_Training_Post.implicitCriteria = reportCriteria;
-            ListGrid_Training_Post.invalidateCache();
-            ListGrid_Training_Post.fetchData();
+                ListGrid_Training_Post.implicitCriteria = reportCriteria_AreaNeedAsssesment;
+                ListGrid_Training_Post.invalidateCache();
+                ListGrid_Training_Post.fetchData();
+
+            } else {
+                createDialog("info", "فیلتری انتخاب نشده است");
+            }
         }
     });
 
@@ -195,40 +203,11 @@
 
     function makeExcelOutput() {
 
-        let fieldNames = "peopleType,code,titleFa,mojtameTitle,assistance,affairs,section," +
-            "unit,costCenterCode,costCenterTitleFa";
-
-        let headerNames = '"<spring:message code="people.type"/>","<spring:message code="post.code"/>","<spring:message code="post.title"/>","<spring:message code="complex"/>",' +
-                '"<spring:message code="assistance"/>","<spring:message code="affairs"/>","<spring:message code="section"/>","<spring:message code="unit"/>",' +
-                '"<spring:message code="reward.cost.center.code"/>","<spring:message code="reward.cost.center.title"/>"';
-
-        let downloadForm = isc.DynamicForm.create({
-                    method: "POST",
-                    action: "/training/reportsToExcel/areaNeedAssessment",
-                    target: "_Blank",
-                    canSubmit: true,
-                    fields:
-                        [
-                            {name: "fields", type: "hidden"},
-                            {name: "headers", type: "hidden"},
-                            {name: "complex", type: "hidden"},
-                            {name: "assistance", type: "hidden"},
-                            {name: "affairs", type: "hidden"},
-                            {name: "section", type: "hidden"},
-                            {name: "unit", type: "hidden"}
-                        ]
-                });
-                downloadForm.setValue("fields", fieldNames);
-                downloadForm.setValue("headers", headerNames);
-
-                downloadForm.setValue("complex", complex);
-                downloadForm.setValue("assistance", assistance);
-                downloadForm.setValue("affairs", affairs);
-                downloadForm.setValue("section", section);
-                downloadForm.setValue("unit", unit);
-
-                downloadForm.show();
-                downloadForm.submitForm();
+        if (ListGrid_Training_Post.getOriginalData().localData === undefined)
+            createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
+        else
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_Training_Post, viewTrainingPostUrl + "/iscListReport?_endRow=10000", 0, null, '',"گزارش پست های نیازسنجی نشده"  ,
+                reportCriteria_AreaNeedAsssesment, null);
     }
 
 //</script>
