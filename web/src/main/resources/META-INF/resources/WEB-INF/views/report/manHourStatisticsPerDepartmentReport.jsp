@@ -68,11 +68,12 @@
 
 
     //---------------------------------------------------- variables -----------------------------------------------
-    var organizationFilter = init_OrganSegmentFilterDF_optional(true, true, null, "complexTitle", "ccpAssistant", "ccpAffairs", null, null, false, false, false, true, true);
+    var organizationFilter = init_OrganSegmentFilterDF_optional(false, true, null, "complexTitle", "ccpAssistant", "ccpAffairs", null, null, false, false, false, true, true);
 
     var startDate1Check_JspStaticalUnitReport = true;
     var startDate2Check_JspStaticalUnitReport = true;
     var startDateCheck_Order_JspStaticalUnitReport = true;
+    var criteriaInHeader = "";
 
     //----------------------------------------------------Criteria Form------------------------------------------------
 
@@ -253,7 +254,7 @@
                 name: "termId",
                 title: "ترم",
                 type: "SelectItem",
-                multiple: true,
+                // multiple: true,
                 filterOperator: "equals",
                 disabled: true,
                 hidden: true,
@@ -300,19 +301,28 @@
                 return;
             } else {
                 data_values = organizationFilter.getCriteria(DynamicForm_CriteriaForm_ManHourReport.getValuesAsAdvancedCriteria());
+                ListGrid_ManHourReport.showField("moavenatTitle");
+                ListGrid_ManHourReport.showField("mojtameTitle");
                 for (var i = 0; i < data_values.criteria.size(); i++) {
                     if (data_values.criteria[i].fieldName == "complexTitle") {
                         data_values.criteria[i].fieldName = "complexTitle";
                         data_values.criteria[i].operator = "inSet";
+                        ListGrid_ManHourReport.hideField("mojtameTitle");
+                        criteriaInHeader += DynamicForm_CriteriaForm_ManHourReport.getField("termId");
                     } else if (data_values.criteria[i].fieldName == "applicantCompanyName") {
                         data_values.criteria[i].fieldName = "applicantCompanyName";
                         data_values.criteria[i].operator = "iContains";
                     } else if (data_values.criteria[i].fieldName == "ccpAssistant") {
                         data_values.criteria[i].fieldName = "ccpAssistant";
                         data_values.criteria[i].operator = "inSet";
+                        ListGrid_ManHourReport.hideField("moavenatTitle");
+                        ListGrid_ManHourReport.hideField("mojtameTitle");
+
                     } else if (data_values.criteria[i].fieldName == "ccpAffairs") {
                         data_values.criteria[i].fieldName = "ccpAffairs";
                         data_values.criteria[i].operator = "inSet";
+                        ListGrid_ManHourReport.hideField("moavenatTitle");
+                        ListGrid_ManHourReport.hideField("mojtameTitle");
                     } else if (data_values.criteria[i].fieldName == "fromDate") {
                         //todo change the parameter for class sections
                         data_values.criteria[i].fieldName = "startDate";
@@ -333,6 +343,7 @@
                 ListGrid_ManHourReport.invalidateCache();
                 ListGrid_ManHourReport.fetchData(data_values);
                 Window_ManHourReport.show();
+
             }
         }
     });
@@ -341,49 +352,53 @@
     RestDataSource_ManHourReport = isc.TrDS.create({
         fields: [
             {
-                name: "complexTitle",
+                name: "mojtameTitle",
                 title: "<spring:message code="complex"/>",
                 filterOperator: "iContains",
                 autoFitWidth: true
             },
             {
-                name: "applicantCompanyName",
-                title: "<spring:message code='company.applicant'/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "ccpAssistant",
+                name: "moavenatTitle",
                 title: "<spring:message code='assistance'/>",
                 filterOperator: "iContains",
                 autoFitWidth: true
             },
             {
-                name: "ccpAffairs",
+                name: "omorTitle",
                 title: "<spring:message code="affairs"/>",
                 filterOperator: "iContains",
                 autoFitWidth: true
             },
 
-            {name: "presenceManHour", title: "نفرساعت حضور", filterOperator: "iContains", autoFitWidth: true},
-            {name: "absenceManHour", title: "نفرساعت حذف و غیبت", filterOperator: "equals", autoFitWidth: true},
-            {name: "presentStudentNumbers", title: "تعداد فراگیران حاضر", filterOperator: "equals", autoFitWidth: true},
             {
-                name: "absentStudentNumbers",
-                title: "تعداد فراگیران حذف و غایب",
-                filterOperator: "iContains",
-                autoFitWidth: true
+                name: "presenceManHour",
+                title: "نفرساعت حضور", filterOperator: "iContains", autoFitWidth: true
             },
             {
-                name: "departmentPersonnelNumbers",
+                name: "absenceManHour",
+                title: "نفرساعت حذف و غیبت", filterOperator: "equals", autoFitWidth: true
+            },
+            {
+                name: "personnelCount",
                 title: "تعداد کل پرسنل دپارتمان",
                 filterOperator: "iContains",
                 autoFitWidth: true
             },
-            {name: "participationPercentage", title: "درصد مشارکت", filterOperator: "iContains", autoFitWidth: true},
-            {name: "PerCapita", title: "سرانه", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "participationPercent",
+                format: "00.00",
+                title: "درصد مشارکت", filterOperator: "iContains", autoFitWidth: true
+            },
+            {
+                name: "presencePerPerson",
+                title: "سرانه", filterOperator: "iContains", autoFitWidth: true
+            },
 
         ],
+        transformResponse: function (dsResponse, dsRequest, data) {
+            criteriaInHeader = data.response.criteriaStr;
+            return this.Super("transformResponse", arguments);
+        },
         fetchDataURL: manHourStatisticsPerDepartmentReportUrl
     });
 
@@ -393,6 +408,9 @@
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_ManHourReport,
+        gridComponents: [
+            "filterEditor", "header", "body"
+        ],
         cellHeight: 43,
         sortField: 0,
         allowAdvancedCriteria: true,
@@ -451,7 +469,14 @@
                     HLayOut_CriteriaForm_ManHourReport_Details, HLayOut_Confirm_ManHourReport_UnitExcel
                 ]
             })
-        ]
+        ],
+        closeClick: function () {
+            this.close();
+        },
+        close: function () {
+            this.Super("close", arguments);
+
+        }
     });
 
     //----------------------------------- layOut -----------------------------------------------------------------------

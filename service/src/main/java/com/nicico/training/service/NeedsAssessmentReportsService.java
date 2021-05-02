@@ -104,7 +104,13 @@ public class NeedsAssessmentReportsService {
                 if (classStudentReportService.isPassed(needsAssessmentList.get(i).getSkill().getCourse(), isPassed)) {
                     mustPass.get(i).getSkill().getCourse().setScoresState(passedCodeId);
                     if (personClasses.size()> 0){
-                        mustPass.get(i).getSkill().getCourse().setScoresStatus(personClasses.get(0).getScoreState());
+                        String courseStatus = personClasses.get(0).getScoreState();
+                        if (!passedCourseIds.contains(needsAssessmentList.get(i).getSkill().getCourse().getId()) &&
+                                isPassed.get(needsAssessmentList.get(i).getSkill().getCourse().getId()) != null
+                                && isPassed.get(needsAssessmentList.get(i).getSkill().getCourse().getId())){
+                            courseStatus += " - دوره معادل گذرانده شده است ";
+                        }
+                        mustPass.get(i).getSkill().getCourse().setScoresStatus(courseStatus);
                     }
                 } else {
                     mustPass.get(i).getSkill().getCourse().setScoresState(notPassedCodeId);

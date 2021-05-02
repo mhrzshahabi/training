@@ -1229,7 +1229,7 @@
     const departmentUrl = rootUrl + "/department";
     const viewClassDetailUrl = rootUrl + "/view-class-detail";
     const statisticsUnitReportUrl = rootUrl + "/ViewStatisticsUnitReport";
-    const manHourStatisticsPerDepartmentReportUrl = rootUrl + "/ViewManHourStatisticsPerDepartmentReport";
+    const manHourStatisticsPerDepartmentReportUrl = rootUrl + "/ManHourStatisticsPerDepartmentReport";
     const questionBankUrl = rootUrl + "/question-bank";
     const viewPersonnelTrainingStatusReportUrl = rootUrl + "/view-personnel-training-status-report";
     const viewCoursesPassedPersonnelReportUrl = rootUrl + "/view-courses-passed-personnel-report";

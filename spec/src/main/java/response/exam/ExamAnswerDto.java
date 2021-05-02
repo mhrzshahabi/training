@@ -12,6 +12,8 @@ public class ExamAnswerDto {
 
     private String question;
     private String answer;
+    private String correctAnswer="zaza";
+    private String mark="444";
     private String type;
     private List<ImportedQuestionOption> options;
 }

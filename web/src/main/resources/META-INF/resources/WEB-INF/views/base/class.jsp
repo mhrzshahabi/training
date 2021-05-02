@@ -1330,6 +1330,7 @@
                 title: "<spring:message code="evaluation.level"/>:",
                 textAlign: "center",
                 startRow: true,
+                defaultValue: 1,
                 width: 120,
                 valueMap: {
                     "1": "واکنشی",
