@@ -1191,6 +1191,7 @@
     const workGroupUrl = rootUrl + "/work-group";
     const evaluationUrl = rootUrl + "/evaluation";
     const hasAccessToChangeClassStatus = rootUrl + "/tclass/hasAccessToChangeClassStatus/";
+    const isValidForExam = rootUrl + "/tclass/isValidForExam/";
     const hasAccessToGroups= rootUrl + "/tclass/hasAccessToGroups/";
     const changeClassStatusToLock = rootUrl + "/tclass/changeClassStatusToLock";
     const changeClassStatusToUnLock = rootUrl + "/tclass/changeClassStatusToUnLock/";

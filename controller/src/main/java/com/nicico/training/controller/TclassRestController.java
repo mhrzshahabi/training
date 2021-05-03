@@ -765,6 +765,18 @@ public class TclassRestController {
     public List<String> getDefaultTermScope() {
         return tClassService.getClassDefaultTermScope();
     }
+    @Loggable
+    @GetMapping(value = "/isValidForExam/{id}")
+    public BaseResponse isValidForExam(@PathVariable long id) {
+        BaseResponse response=new BaseResponse();
+        boolean isValidForExam= tClassService.isValidForExam(id);
+
+        if (isValidForExam)
+            response.setStatus(200);
+        else
+            response.setStatus(406);
+        return response;
+    }
 
 
 }

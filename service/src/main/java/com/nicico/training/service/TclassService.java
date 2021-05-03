@@ -1656,4 +1656,16 @@ public class TclassService implements ITclassService {
             else throw new TrainingException(TrainingException.ErrorType.NotFound);
         } else throw new TrainingException(TrainingException.ErrorType.NotFound);
     }
+
+    @Override
+    public boolean isValidForExam(long id) {
+        final Optional<Tclass> optionalTclass = tclassDAO.findById(id);
+        if (optionalTclass.isPresent())
+        {
+            Tclass tclass=optionalTclass.get();
+            return tclass.getScoringMethod() != null && (tclass.getScoringMethod().equals("2") || tclass.getScoringMethod().equals("3"));
+        }
+        else
+        return false;
+    }
 }

@@ -130,4 +130,5 @@ public interface ITclassService {
 
     List<String> getClassDefaultTermScope();
 
+    boolean isValidForExam(long id);
 }

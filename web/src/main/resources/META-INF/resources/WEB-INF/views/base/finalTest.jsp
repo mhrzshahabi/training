@@ -1456,10 +1456,33 @@ let inValidStudents = [];
             finalTestSaveUrl += "/" + record.id;
             finalTestAction = '<spring:message code="edited"/>';
         }
+          let data = FinalTestDF_finalTest.getValues();
+        if (finalTestMethod_finalTest.localeCompare("POST") == 0) {
+
+            isc.RPCManager.sendRequest(TrDSRequest(isValidForExam+data.tclassId, "GET",null, function (resp) {
+             let respText = JSON.parse(resp.httpResponseText);
+                if (respText.status === 200)
+            {
+        isc.RPCManager.sendRequest(
+            TrDSRequest(finalTestSaveUrl, finalTestMethod_finalTest, JSON.stringify(data), "callback: rcpResponse(rpcResponse, '<spring:message code="exam"/>', '" + finalTestAction + "')")
+        );
+
+              }
+                else
+             {
+          createDialog("warning", "روش نمره دهی این کلاس بدون نمره و یا ارزشی می باشد و قابلیت ایجاد آزمون آنلاین وجود ندارد", "اخطار");
+         }
+            }));
+        }
+        else
+         {
         let data = FinalTestDF_finalTest.getValues();
         isc.RPCManager.sendRequest(
             TrDSRequest(finalTestSaveUrl, finalTestMethod_finalTest, JSON.stringify(data), "callback: rcpResponse(rpcResponse, '<spring:message code="exam"/>', '" + finalTestAction + "')")
         );
+
+          }
+
     };
 
     function showRemoveForm_finalTest() {
