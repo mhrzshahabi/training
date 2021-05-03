@@ -133,6 +133,7 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
                     .setUnknownManHour(Integer.parseInt(record[5].toString()))
                     .setStudentCount(Integer.parseInt(record[6].toString()));
 
+            int index = 1;
             if (groupBy.equals(GroupBy.CLASS_TEACHING_TYPE))
                 dto.setClassTeachingType(record[7].toString());
             if (groupBy.equals(GroupBy.CLASS_STATUS))
@@ -145,19 +146,21 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
                 dto.setCourseTechnicalType(record[7].toString());
             if (groupBy.equals(GroupBy.COURSE_THEO_TYPE))
                 dto.setCourseTheoType(record[7].toString());
+            else
+                index = 0;
 
             if (omorCode != null) {
-                dto.setGhesmatCode(record[8] == null ? null : record[8].toString());
-                dto.setGhesmatTitle(record[9] == null ? null : record[9].toString());
+                dto.setGhesmatCode(record[index + 7] == null ? null : record[index + 7].toString());
+                dto.setGhesmatTitle(record[index + 8] == null ? null : record[index + 8].toString());
             } else if (moavenatCode != null) {
-                dto.setOmorCode(record[8] == null ? null : record[8].toString());
-                dto.setOmorTitle(record[9] == null ? null : record[9].toString());
+                dto.setOmorCode(record[index + 7] == null ? null : record[index + 7].toString());
+                dto.setOmorTitle(record[index + 8] == null ? null : record[index + 8].toString());
             } else if (mojtameCode != null) {
-                dto.setMoavenatCode(record[8] == null ? null : record[8].toString());
-                dto.setMoavenatTitle(record[9] == null ? null : record[9].toString());
+                dto.setMoavenatCode(record[index + 7] == null ? null : record[index + 7].toString());
+                dto.setMoavenatTitle(record[index + 8] == null ? null : record[index + 8].toString());
             } else {
-                dto.setMojtameCode(record[8] == null ? null : record[8].toString());
-                dto.setMojtameTitle(record[9] == null ? null : record[9].toString());
+                dto.setMojtameCode(record[index + 7] == null ? null : record[index + 7].toString());
+                dto.setMojtameTitle(record[index + 8] == null ? null : record[index + 8].toString());
             }
 
             list.add(dto);
