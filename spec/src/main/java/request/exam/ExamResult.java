@@ -12,6 +12,6 @@ public class ExamResult implements Serializable {
     private String  cellNumber;
     private String  descriptiveResult;
     private String  finalResult;
-    private String  score;
+    private String  testResult;
 
 }

@@ -1157,15 +1157,15 @@ public abstract class EvaluationBeanMapper {
                 updatedResultDto.setFinalResult(null);
             }
 
-            if ( data.getScore()!=null && !data.getScore().equals("-"))
+            if ( data.getTestResult()!=null && !data.getTestResult().equals("-"))
             {
-                String englishScore = new BigDecimal(data.getScore()).toString();
+                String englishScore = new BigDecimal(data.getTestResult()).toString();
                 score= Double.parseDouble(englishScore);
-                updatedResultDto.setScore(score);
+                updatedResultDto.setTestResult(score);
             }
             else
             {
-                updatedResultDto.setScore(null);
+                updatedResultDto.setTestResult(null);
             }
 
             updatedResultDto.setMobileNumber(data.getCellNumber());

@@ -10,7 +10,7 @@ public class UpdatedResultDto {
 
     private String mobileNumber;
 
-    private Double score;
+    private Double testResult;
 
     private Double descriptiveResult;
 
