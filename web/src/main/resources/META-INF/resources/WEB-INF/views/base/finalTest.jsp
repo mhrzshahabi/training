@@ -1586,19 +1586,29 @@ let inValidStudents = [];
     }));
 }
     function hideFields(form,examType) {
-// form.getField("cellNumber")
+            switch (examType) {
+            case "چند گزینه ای":
+                              form.getField("descriptiveResult").hidden = true;
+                              form.getField("testResult").hidden = false;
+
+                break;
+            case "تشریحی":
+                              form.getField("descriptiveResult").hidden = false;
+                              form.getField("testResult").hidden = true;
+                 break;
+            case "تستی-تشریحی":
+                              form.getField("descriptiveResult").hidden = false;
+                              form.getField("testResult").hidden = false;
+                 break;
+
+            default:
+                              form.getField("descriptiveResult").hidden = false;
+                              form.getField("testResult").hidden = false;
+
+        }
+
     }
-    // switch (examType) {
-    // case "چند گزینه ای":
-    //     break;
-    // case "تشریحی":
-    //     break;
-    // case "تستی-تشریحی":
-    //     break;
-    //
-    //     default:
-    //
-    //     } }
+
     function NCodeAndMobileValidation(nationalCode, mobileNum,gender) {
 
         let isValid = true;
