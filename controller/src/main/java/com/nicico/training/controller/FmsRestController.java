@@ -36,7 +36,7 @@ public class FmsRestController {
 
 
 
-    @PostMapping("uploadFile")
+    @PostMapping("downloadFile")
     public UploadFmsRes downloadFile(String token, String groupId , String key) {
         return client.downloadFile(token,groupId,key);
     }
