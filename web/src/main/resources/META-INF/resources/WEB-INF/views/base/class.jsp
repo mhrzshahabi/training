@@ -2752,24 +2752,72 @@
     //--------------------------------------------------------------------------------------------------------------------//
 
     function ListGrid_class_remove() {
+
         let record = ListGrid_Class_JspClass.getSelectedRecord();
         if (record == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            let Dialog_Class_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
-                "<spring:message code="verify.delete"/>");
-            Dialog_Class_remove.addProperties({
-                buttonClick: function (button, index) {
-                    this.close();
-                    if (index === 0) {
-                        wait.show()
-                        isc.RPCManager.sendRequest(TrDSRequest(classUrl + record.id, "DELETE", null, (resp) => {
-                            wait.close()
-                            class_delete_result(resp);
-                        }));
+
+            let DynamicForm_Remove_Class_Warn = isc.DynamicForm.create({
+                width: 600,
+                height: 50,
+                padding: 6,
+                titleAlign: "right",
+                fields: [
+                    {
+                        name: "warnMessage",
+                        width: "100%",
+                        colSpan: 2,
+                        title: "<spring:message code="title"/>",
+                        showTitle: false,
+                        editorType: 'textArea',
+                        canEdit: false
+                    },
+                    {
+                        name: "confirm",
+                        width: "100%",
+                        colSpan: 2,
+                        title: "<spring:message code="title"/>",
+                        showTitle: false,
+                        editorType: 'textArea',
+                        canEdit: false
                     }
-                }
+                ]
             });
+
+            DynamicForm_Remove_Class_Warn.setValue("warnMessage", "<spring:message code='remove.class.dependency'/>");
+            DynamicForm_Remove_Class_Warn.setValue("confirm", "<spring:message code='confirm.remove.class'/>");
+
+            let Window_Remove_Class_Warn = isc.Window.create({
+                width: 600,
+                height: 150,
+                numCols: 2,
+                title: "<spring:message code='warning'/>",
+                items: [
+                    DynamicForm_Remove_Class_Warn,
+                    isc.MyHLayoutButtons.create({
+                        members: [
+                            isc.IButtonSave.create({
+                                title: "<spring:message code="continue"/>",
+                                click: function () {
+
+                                    wait.show();
+                                    isc.RPCManager.sendRequest(TrDSRequest(classUrl + record.id, "DELETE", null, (resp) => {
+                                        Window_Remove_Class_Warn.close();
+                                        wait.close();
+                                        class_delete_result(resp);
+                                    }));
+                                }}),
+                            isc.IButtonCancel.create({
+                                title: "<spring:message code="cancel"/>",
+                                click: function () {
+
+                                    Window_Remove_Class_Warn.close();
+                                }
+                            })]
+                    })]
+            });
+            Window_Remove_Class_Warn.show();
         }
     }
     function ListGrid_class_finish() {
