@@ -27,8 +27,7 @@ public interface MinIoClient {
                             @PathVariable("key") String key);
 
 
-//    @RequestMapping(method = RequestMethod.POST, value = "/group/join")
-//    BaseResponse joinGroup(@RequestBody ElsEvalRequest request);
+
 //
 //    @RequestMapping(method = RequestMethod.POST, value = "/group/leave")
 //    BaseResponse leaveGroup(@RequestBody ElsEvalRequest request);
