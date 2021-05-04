@@ -1441,9 +1441,22 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
         }
         let data = QuestionBankDF_questionBank.getValues();
         isc.RPCManager.sendRequest(
-            TrDSRequest(questionBankSaveUrl, questionBankMethod_questionBank, JSON.stringify(data), "callback: rcpResponse(rpcResponse, '<spring:message code="question.bank.question"/>', '" + questionBankAction + "')")
-        );
-    };
+            TrDSRequest(questionBankSaveUrl, questionBankMethod_questionBank, JSON.stringify(data), function (resp) {
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+                    let question = JSON.parse(resp.httpResponseText).question;
+                    debugger;
+                    if (question.length > 50)
+                        question = question.slice(0, 50) + " ...";
+                    QuestionBankWin_questionBank.close();
+                    createDialog("info", "سوال ( " + question + " ) " + questionBankAction);
+                    QuestionBankLG_questionBank.invalidateCache();
+                } else {
+                    QuestionBankWin_questionBank.close();
+                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                }
+        }));
+    }
 
     function showRemoveForm_questionBank() {
         let record = QuestionBankLG_questionBank.getSelectedRecord();
