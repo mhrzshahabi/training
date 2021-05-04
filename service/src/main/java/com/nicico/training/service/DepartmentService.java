@@ -5,7 +5,7 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.DepartmentDTO;
 import com.nicico.training.iservice.IDepartmentService;
-import com.nicico.training.model.Department;
+import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -171,6 +173,112 @@ public class DepartmentService extends GenericService<Department, Long, Departme
                 nullResp.setTotalCount(0L);
                 return nullResp;
         }
+    }
+
+    @Override
+    public List<DepartmentDTO.DepChart> getDepChartData() {
+
+        List<DepartmentDTO.DepChart> complexes = modelMapper.map(complexDAO.findAll(), new TypeToken<List<DepartmentDTO.DepChart>>() {
+        }.getType());
+        complexes.forEach(complex -> {
+            complex.setParentTitle("");
+            complex.setCategory("complex");
+        });
+
+        List<Assistant> assistants = assistantDAO.findAll();
+        assistants.forEach(assistant -> {
+            DepartmentDTO.DepChart map = modelMapper.map(assistant, DepartmentDTO.DepChart.class);
+            map.setParentTitle(assistant.getMojtameTitle());
+            map.setCategory("assistant");
+            complexes.add(map);
+        });
+
+        List<Affairs> affairs = affairsDAO.findAll();
+        affairs.forEach(affair -> {
+            DepartmentDTO.DepChart map = modelMapper.map(affair, DepartmentDTO.DepChart.class);
+            map.setParentTitle(affair.getMoavenatTitle());
+            map.setCategory("affair");
+            complexes.add(map);
+        });
+
+        List<Section> sections = sectionDAO.findAll();
+        sections.forEach(section -> {
+            DepartmentDTO.DepChart map = modelMapper.map(section, DepartmentDTO.DepChart.class);
+            map.setParentTitle(section.getOmorTitle());
+            map.setCategory("section");
+            complexes.add(map);
+        });
+
+        List<Unit> units = unitDAO.findAll();
+        units.forEach(unit -> {
+            DepartmentDTO.DepChart map = modelMapper.map(unit, DepartmentDTO.DepChart.class);
+            map.setParentTitle(unit.getGhesmatTitle());
+            map.setCategory("unit");
+            complexes.add(map);
+        });
+
+        return complexes;
+    }
+
+    @Override
+    public List<DepartmentDTO.DepChart> getDepChartChildren(String category, String parentTitle, List<Long> childrenIds) {
+
+        List<DepartmentDTO.DepChart> depChildren = new ArrayList<>();
+
+        switch (category) {
+
+            case "complex":
+                List<Assistant> assistants = assistantDAO.findAllById(childrenIds);
+                assistants.forEach(assistant -> {
+                    DepartmentDTO.DepChart map = modelMapper.map(assistant, DepartmentDTO.DepChart.class);
+                    map.setParentTitle(parentTitle);
+                    map.setCategory("assistant");
+                    depChildren.add(map);
+                });
+                break;
+
+            case "assistant":
+                List<Affairs> affairs = affairsDAO.findAllById(childrenIds);
+                affairs.forEach(affair -> {
+                    DepartmentDTO.DepChart map = modelMapper.map(affair, DepartmentDTO.DepChart.class);
+                    map.setParentTitle(parentTitle);
+                    map.setCategory("affair");
+                    depChildren.add(map);
+                });
+                break;
+
+            case "affair":
+                List<Section> sections = sectionDAO.findAllById(childrenIds);
+                sections.forEach(section -> {
+                    DepartmentDTO.DepChart map = modelMapper.map(section, DepartmentDTO.DepChart.class);
+                    map.setParentTitle(parentTitle);
+                    map.setCategory("section");
+                    depChildren.add(map);
+                });
+                break;
+
+            case "section":
+                List<Unit> units = unitDAO.findAllById(childrenIds);
+                units.forEach(unit -> {
+                    DepartmentDTO.DepChart map = modelMapper.map(unit, DepartmentDTO.DepChart.class);
+                    map.setParentTitle(parentTitle);
+                    map.setCategory("unit");
+                    depChildren.add(map);
+                });
+                break;
+
+            case "unit":
+                break;
+        }
+
+        return depChildren;
+    }
+
+    @Override
+    public List<DepartmentDTO.DepChart> getSearchDepChartData(String value) {
+
+        List<DepartmentDTO.DepChart> depChartData = this.getDepChartData();
+        return depChartData.stream().filter(data -> data.getTitle().contains(value)).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

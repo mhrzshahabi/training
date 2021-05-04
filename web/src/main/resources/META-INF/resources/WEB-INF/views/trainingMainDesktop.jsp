@@ -1673,6 +1673,13 @@
                     }
                 },
                 </sec:authorize>
+
+                {
+                    title: "<spring:message code="department.chart"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/departmentChart"/>");
+                    }
+                }
             ]
         }),
     });
