@@ -1758,7 +1758,7 @@
 
     var IButton_Class_Save_JspClass = isc.IButtonSave.create({
         align: "center",
-        click: function () {
+        click: async function () {
             if (DynamicForm_Class_JspClass.getValue("teachingType") === "غیر حضوری" || DynamicForm_Class_JspClass.getValue("teachingType") === "مجازی") {
                 DynamicForm_Class_JspClass.getItem("instituteId").setRequired(false);
                 DynamicForm_Class_JspClass.getItem("trainingPlaceIds").setRequired(false);
@@ -1814,6 +1814,12 @@
             VM_JspClass.validate();
             if (VM_JspClass.hasErrors()) {
                 return;
+            }
+            if (classMethod.localeCompare("PUT") === 0) {
+                let haserror = await
+	                classDateHasConflictWithSession(classRecord.id, DynamicForm1_Class_JspClass.getValue("endDate"));
+                if(haserror)
+                    return;
             }
             let data = VM_JspClass.getValues();
             data.courseId = data.course.id;
@@ -3637,6 +3643,19 @@
         return false;
     }
 
+    async function classDateHasConflictWithSession(classId , endDate) {
+        let resp = await fetch(sessionServiceUrl + "sessions/" + classId, {headers: {"Authorization": "Bearer <%= (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN) %>"}});
+        const resData = await resp.json();
+        if(!resData || resData.length == 0)
+            return false;
+        let lastSession = resData.sortByProperty("sessionDate")[0];
+        //let firstSession = resData.sortByProperty("sessionDate")[resData.length-1]; check with start date !!!
+        if(endDate < lastSession.sessionDate){
+            simpleDialog("<spring:message code="message"/>",'<spring:message code="session.date.after.class.end.date"/>' , "0", "error");
+            return true;
+        }
+    }
+    
     function getDaysOfClass(classId) {
         wait.show();
         isc.RPCManager.sendRequest({
