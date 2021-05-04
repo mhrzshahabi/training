@@ -213,7 +213,6 @@
                 affairs.forEach(a => a.directReports = sections.filter(s => s.parentTitle === a.title));
                 assistants.forEach(a => a.directReports = affairs.filter(af => af.parentTitle === a.title));
                 complexes.forEach(c => c.directReports = assistants.filter(a => a.parentTitle === c.title));
-                debugger;
                 let treeData = setTreeData(departmentSearchTree, complexes, false);
                 return treeData;
             }
