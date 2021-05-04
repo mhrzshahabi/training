@@ -1445,8 +1445,7 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
                     let question = JSON.parse(resp.httpResponseText).question;
-                    debugger;
-                    if (question.length > 50)
+                    if (question!==null && question!==undefined &&  question.length > 50)
                         question = question.slice(0, 50) + " ...";
                     QuestionBankWin_questionBank.close();
                     createDialog("info", "سوال ( " + question + " ) " + questionBankAction);
