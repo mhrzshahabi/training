@@ -166,15 +166,15 @@
                 return;
             }
 
-            reportCriteria_NeedAssessmentsPerformed = organSegmentFilter_NeedAssessmentsPerformed.getCriteria();
-
             complex = [];
             assistance = [];
             affairs = [];
             section = [];
             unit = [];
 
-            if (reportCriteria_NeedAssessmentsPerformed !== undefined) {
+            if (organSegmentFilter_NeedAssessmentsPerformed.getCriteria() !== undefined) {
+
+                reportCriteria_NeedAssessmentsPerformed = organSegmentFilter_NeedAssessmentsPerformed.getCriteria();
 
                 DynamicForm_NeedsAssessmentsPerformed.validate();
                 if (DynamicForm_NeedsAssessmentsPerformed.hasErrors())
@@ -231,7 +231,37 @@
                 ListGrid_NeedAssessmentsPerformed.fetchData(reportCriteria_NeedAssessmentsPerformed);
 
             } else {
-                createDialog("info", "فیلتری برای مجتمع، امور، ... انتخاب نشده است");
+
+                reportCriteria_NeedAssessmentsPerformed = {
+                    "operator": "and",
+                    "_constructor": "AdvancedCriteria",
+                    "criteria": []
+                };
+
+                data_values = DynamicForm_NeedsAssessmentsPerformed.getValuesAsAdvancedCriteria();
+
+                for (let i = 0; i < data_values.criteria.size(); i++) {
+                    if (data_values.criteria[i].fieldName === "startDate") {
+                        reportCriteria_NeedAssessmentsPerformed.criteria.add(
+                            {
+                                fieldName: "updateAt",
+                                operator: "greaterOrEqual",
+                                value: JalaliDate.jalaliToGregori(data_values.criteria[i].value).getTime()
+                            }
+                        );
+                    } else if (data_values.criteria[i].fieldName === "endDate") {
+                        reportCriteria_NeedAssessmentsPerformed.criteria.add(
+                            {
+                                fieldName: "updateAt",
+                                operator: "lessOrEqual",
+                                value: JalaliDate.jalaliToGregori(data_values.criteria[i].value).getTime()
+                            }
+                        );
+                    }
+                }
+
+                ListGrid_NeedAssessmentsPerformed.invalidateCache();
+                ListGrid_NeedAssessmentsPerformed.fetchData(reportCriteria_NeedAssessmentsPerformed);
             }
 
         }
