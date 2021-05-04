@@ -8390,4 +8390,226 @@ GROUP BY
             ]]>
         </createView>
     </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-011">
+        <createView viewName="VIEW_NEED_ASSESSMENT_IN_RANGE_TIME" replaceIfExists="true">
+            <![CDATA[
+                SELECT "ID","POST","C_CODE","C_TITLE_FA","C_MOJTAME_TITLE","C_ASSISTANCE","C_AFFAIRS","C_SECTION","C_UNIT","NAME","UPDATETIME","N_VERSION" FROM(
+                    SELECT
+                    tp.id ,
+                         'پست' as post ,
+                        tp.c_code,
+                        tp.c_title_fa,
+                        tp.c_mojtame_title,
+                        tp.c_assistance,
+                        tp.c_affairs,
+                        tp.c_section,
+                        tp.c_unit,
+                        tp.d_last_modified_date_na as updateTime,
+                        NVL2(p.last_name,p.first_name || p.last_name, tp.c_modified_by_na) as name,
+                        tp.N_VERSION
+                    FROM
+                        tbl_training_post tp
+                        left join (select * from tbl_personnel where deleted = 0) p ON tp.c_modified_by_na = p.c_username
+                    WHERE
+                        tp.c_modified_by_na IS NOT NULL
+
+                    UNION ALL
+                    SELECT
+                    tp.id ,
+                        'پست انفرادی'  as post,
+                        tp.c_code,
+                        tp.c_title_fa,
+                        tp.c_mojtame_title,
+                        tp.c_assistance,
+                        tp.c_affairs,
+                        tp.c_section,
+                        tp.c_unit,
+                        tp.d_last_modified_date_na as updateTime,
+                        NVL2(p.last_name,p.first_name || p.last_name, tp.c_modified_by_na) as name,
+                        tp.N_VERSION
+                    FROM
+                        tbl_post tp
+                        left join (select * from tbl_personnel where deleted = 0) p ON tp.c_modified_by_na = p.c_username
+                    WHERE
+                        tp.c_modified_by_na IS NOT NULL
+                )
+                ORDER BY
+                    name
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-012">
+        <createView viewName="VIEW_TRAINING_POST" replaceIfExists="true">
+            <![CDATA[
+                SELECT
+                    tp.id,
+                    tp.c_created_by,
+                    tp.d_created_date,
+                    tp.e_deleted,
+                    tp.e_enabled,
+                    tp.c_last_modified_by,
+                    tp.d_last_modified_date,
+                    tp.n_version,
+                    tp.c_code,
+                    tp.c_title_fa,
+                    tp.c_affairs,
+                    tp.c_area,
+                    tp.c_mojtame_title,
+                    tp.c_assistance,
+                    tp.c_cost_center_title_fa,
+                    tp.c_cost_center_code,
+                    tp.c_section,
+                    tp.c_unit,
+                    tp.f_department_id,
+                    tp.f_post_grade_id,
+                    tp.f_job_id,
+                    tp.d_last_modified_date_na,
+                    tp.c_modified_by_na,
+                    tp.c_people_type,
+                    j.c_title_fa AS job_c_title_fa,
+                    j.c_code AS job_c_code,
+                    pg.c_title_fa AS post_grade_c_title_fa,
+                    pg.c_code AS post_grade_c_code,
+                    COUNT(DISTINCT na.f_competence) AS n_competence_count,
+                    COUNT(DISTINCT prs.id) AS n_personnel_count
+                FROM
+                    tbl_training_post tp
+                    LEFT JOIN (
+                        SELECT
+                            *
+                        FROM
+                            tbl_needs_assessment
+                        WHERE
+                            c_object_type = 'TrainingPost'
+                            AND   e_deleted IS NULL
+                            AND   e_enabled IS NULL
+                    ) na ON tp.id = na.f_object
+                    LEFT JOIN tbl_post_training_post ptp ON tp.id = ptp.f_training_post_id
+                    LEFT JOIN (
+                        SELECT
+                            *
+                        FROM
+                            tbl_post
+                        WHERE
+                            e_deleted IS NULL
+                            AND   e_enabled IS NULL
+                    ) p ON p.id = ptp.f_post_id
+                    LEFT JOIN view_active_personnel prs ON p.id = prs.f_post_id
+                    LEFT JOIN tbl_job j ON j.id = tp.f_job_id
+                    LEFT JOIN tbl_post_grade pg ON pg.id = tp.f_post_grade_id
+                GROUP BY
+                    tp.id,
+                    tp.c_created_by,
+                    tp.d_created_date,
+                    tp.e_deleted,
+                    tp.e_enabled,
+                    tp.c_last_modified_by,
+                    tp.d_last_modified_date,
+                    tp.n_version,
+                    tp.c_code,
+                    tp.c_title_fa,
+                    tp.c_affairs,
+                    tp.c_area,
+                    tp.c_mojtame_title,
+                    tp.c_assistance,
+                    tp.c_cost_center_title_fa,
+                    tp.c_cost_center_code,
+                    tp.c_section,
+                    tp.c_unit,
+                    tp.f_department_id,
+                    tp.f_post_grade_id,
+                    tp.f_job_id,
+                    tp.d_last_modified_date_na,
+                    tp.c_modified_by_na,
+                    tp.c_people_type,
+                    j.c_title_fa,
+                    j.c_code,
+                    pg.c_title_fa,
+                    pg.c_code
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-013">
+        <createView viewName="VIEW_POST" replaceIfExists="true">
+            <![CDATA[
+                SELECT
+                    p.id,
+                    p.c_created_by,
+                    p.d_created_date,
+                    p.e_deleted,
+                    p.e_enabled,
+                    p.c_last_modified_by,
+                    p.d_last_modified_date,
+                    p.n_version,
+                    p.c_code,
+                    p.c_title_fa,
+                    p.c_affairs,
+                    p.c_area,
+                    p.c_mojtame_title,
+                    p.c_assistance,
+                    p.c_cost_center_title_fa,
+                    p.c_cost_center_code,
+                    p.c_section,
+                    p.c_unit,
+                    p.f_post_grade_id,
+                    p.f_job_id,
+                    p.d_last_modified_date_na,
+                    p.c_modified_by_na,
+                    p.c_people_type,
+                    j.c_title_fa AS job_c_title_fa,
+                    j.c_code AS job_c_code,
+                    pg.c_title_fa AS post_grade_c_title_fa,
+                    pg.c_code AS post_grade_c_code,
+                    COUNT(DISTINCT na.f_competence) AS n_competence_count,
+                    COUNT(DISTINCT prs.id) AS n_personnel_count
+                FROM
+                    tbl_post p
+                    LEFT JOIN (
+                        SELECT
+                            *
+                        FROM
+                            tbl_needs_assessment
+                        WHERE
+                            c_object_type = 'Post'
+                            AND   e_deleted IS NULL
+                            AND   e_enabled IS NULL
+                    ) na ON p.id = na.f_object
+                    LEFT JOIN view_active_personnel prs ON p.id = prs.f_post_id
+                    INNER JOIN tbl_job j ON j.id = p.f_job_id
+                    INNER JOIN tbl_post_grade pg ON pg.id = p.f_post_grade_id
+                GROUP BY
+                    p.id,
+                    p.c_created_by,
+                    p.d_created_date,
+                    p.e_deleted,
+                    p.e_enabled,
+                    p.c_last_modified_by,
+                    p.d_last_modified_date,
+                    p.n_version,
+                    p.c_code,
+                    p.c_title_fa,
+                    p.c_affairs,
+                    p.c_area,
+                    p.c_mojtame_title,
+                    p.c_assistance,
+                    p.c_cost_center_title_fa,
+                    p.c_cost_center_code,
+                    p.c_section,
+                    p.c_unit,
+                    p.f_post_grade_id,
+                    p.f_job_id,
+                    p.d_last_modified_date_na,
+                    p.c_modified_by_na,
+                    p.c_people_type,
+                    j.c_title_fa,
+                    j.c_code,
+                    pg.c_title_fa,
+                    pg.c_code
+            ]]>
+        </createView>
+    </changeSet>
+
 </databaseChangeLog>

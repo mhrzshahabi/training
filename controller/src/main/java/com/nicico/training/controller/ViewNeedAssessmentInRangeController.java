@@ -3,7 +3,6 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.dto.ViewNeedAssessmentInRangeDTO;
 import com.nicico.training.iservice.IViewNeedAssessmentInRangeTimeService;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +31,13 @@ public class ViewNeedAssessmentInRangeController {
 
     private final IViewNeedAssessmentInRangeTimeService iViewNeedAssessmentInRangeTimeService;
     private final ModelMapper modelMapper;
+
+    @GetMapping(value = "/iscList")
+    public ResponseEntity<ISC<ViewNeedAssessmentInRangeDTO.TrainingNeedAssessmentDTOSpecRs>> iscListReport(HttpServletRequest iscRq) throws IOException {
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs result = iViewNeedAssessmentInRangeTimeService.search(searchRq, o -> modelMapper.map(o, ViewNeedAssessmentInRangeDTO.Info.class));
+        return new ResponseEntity<>(ISC.convertToIscRs(result, searchRq.getStartIndex()), HttpStatus.OK);
+    }
 
     @Loggable
     @GetMapping(value = "/list/{startDate}/{endDate}")
@@ -81,9 +87,5 @@ public class ViewNeedAssessmentInRangeController {
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
-
-
-
-
     }
 }
