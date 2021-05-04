@@ -36,4 +36,6 @@ public interface QuestionBankDAO extends JpaRepository<QuestionBank, Long>, JpaS
     @Override
     List<QuestionBank> findAll(@Nullable Specification<QuestionBank> var1);
 
+    List<QuestionBank> findByTclassId(Long id);
+
 }
