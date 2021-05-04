@@ -127,7 +127,6 @@ public abstract class EvaluationBeanMapper {
 
         ImportedUser teacher = getTeacherData(teacherInfo);
 
-
         request.setUsers(classStudents.stream()
                 .map(classStudent -> toTargetUser(classStudent.getStudent())).collect(Collectors.toList()));
 
@@ -222,11 +221,11 @@ public abstract class EvaluationBeanMapper {
 
     private ImportedUser getTeacherData(PersonalInfo teacherInfo) {
         ImportedUser teacher = new ImportedUser();
-        if (null != teacherInfo.getGender() && null != teacherInfo.getContactInfo() && null != teacherInfo.getContactInfo().getMobile()) {
+        if (/*null !=teacherInfo.getGender() && */ null != teacherInfo.getContactInfo() && null != teacherInfo.getContactInfo().getMobile()) {
 
             teacher.setCellNumber(teacherInfo.getContactInfo().getMobile());
             teacher.setNationalCode(teacherInfo.getNationalCode());
-            teacher.setGender(teacherInfo.getGender().getTitleFa());
+            teacher.setGender(teacher.getGender() != null ? teacherInfo.getGender().getTitleFa() : null);
             teacher.setLastName(teacherInfo.getLastNameFa());
             teacher.setSurname(teacherInfo.getFirstNameFa());
         }
@@ -988,8 +987,9 @@ public abstract class EvaluationBeanMapper {
     }
 
     public boolean validateTeacherExam(ImportedUser teacher) {
+
         boolean isValid = true;
-        if (null == teacher.getNationalCode() || null == teacher.getCellNumber() || teacher.getGender() == null)
+        if (null == teacher.getNationalCode() || null == teacher.getCellNumber())
             isValid = false;
         else {
             if (teacher.getNationalCode().length() != 10 || !teacher.getNationalCode().matches("\\d+")) isValid = false;
@@ -1006,9 +1006,7 @@ public abstract class EvaluationBeanMapper {
     public boolean validateTargetUser(EvalTargetUser teacher) {
 
         boolean isValid = true;
-
-
-        if (null == teacher.getNationalCode() || null == teacher.getCellNumber() || teacher.getGender() == null)
+        if (null == teacher.getNationalCode() || null == teacher.getCellNumber())
             isValid = false;
         else {
             if (teacher.getNationalCode().length() != 10 || !teacher.getNationalCode().matches("\\d+")) isValid = false;
